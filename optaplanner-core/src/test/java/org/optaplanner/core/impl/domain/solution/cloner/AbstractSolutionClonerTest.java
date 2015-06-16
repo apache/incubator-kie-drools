@@ -112,7 +112,7 @@ public abstract class AbstractSolutionClonerTest {
     }
 
 
-    @Test @Ignore("TODO")
+    @Test
     public void cloneFieldAnnotatedSolution() {
         SolutionDescriptor solutionDescriptor = TestdataFieldAnnotatedSolution.buildSolutionDescriptor();
         SolutionCloner<TestdataFieldAnnotatedSolution> cloner = createSolutionCloner(solutionDescriptor);

@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.domain.policy;
 
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,59 +26,60 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
 
 public class DescriptorPolicy {
 
-    private Map<String, Method> fromSolutionValueRangeProviderMap = new LinkedHashMap<String, Method>();
-    private Map<String, Method> fromEntityValueRangeProviderMap = new LinkedHashMap<String, Method>();
+    private Map<String, MemberAccessor> fromSolutionValueRangeProviderMap = new LinkedHashMap<String, MemberAccessor>();
+    private Map<String, MemberAccessor> fromEntityValueRangeProviderMap = new LinkedHashMap<String, MemberAccessor>();
 
-    public void addFromSolutionValueRangeProvider(Method method) {
-        String id = extractValueRangeProviderId(method);
-        fromSolutionValueRangeProviderMap.put(id, method);
+    public void addFromSolutionValueRangeProvider(MemberAccessor memberAccessor) {
+        String id = extractValueRangeProviderId(memberAccessor);
+        fromSolutionValueRangeProviderMap.put(id, memberAccessor);
     }
 
     public boolean hasFromSolutionValueRangeProvider(String id) {
         return fromSolutionValueRangeProviderMap.containsKey(id);
     }
 
-    public Method getFromSolutionValueRangeProvider(String id) {
+    public MemberAccessor getFromSolutionValueRangeProvider(String id) {
         return fromSolutionValueRangeProviderMap.get(id);
     }
 
-    public void addFromEntityValueRangeProvider(Method method) {
-        String id = extractValueRangeProviderId(method);
-        fromEntityValueRangeProviderMap.put(id, method);
+    public void addFromEntityValueRangeProvider(MemberAccessor memberAccessor) {
+        String id = extractValueRangeProviderId(memberAccessor);
+        fromEntityValueRangeProviderMap.put(id, memberAccessor);
     }
 
     public boolean hasFromEntityValueRangeProvider(String id) {
         return fromEntityValueRangeProviderMap.containsKey(id);
     }
 
-    public Method getFromEntityValueRangeProvider(String id) {
+    public MemberAccessor getFromEntityValueRangeProvider(String id) {
         return fromEntityValueRangeProviderMap.get(id);
     }
 
-    private String extractValueRangeProviderId(Method method) {
-        ValueRangeProvider annotation = method.getAnnotation(ValueRangeProvider.class);
+    private String extractValueRangeProviderId(MemberAccessor memberAccessor) {
+        ValueRangeProvider annotation = memberAccessor.getAnnotation(ValueRangeProvider.class);
         String id = annotation.id();
         if (StringUtils.isEmpty(id)) {
             throw new IllegalStateException("The " + ValueRangeProvider.class.getSimpleName()
-                    + " annotated method (" + method + ")'s id (" + id + ") must not be empty.");
+                    + " annotated member (" + memberAccessor + ")'s id (" + id + ") must not be empty.");
         }
-        validateUniqueValueRangeProviderId(id, method);
+        validateUniqueValueRangeProviderId(id, memberAccessor);
         return id;
     }
 
-    private void validateUniqueValueRangeProviderId(String id, Method method) {
-        Method duplicate = fromSolutionValueRangeProviderMap.get(id);
+    private void validateUniqueValueRangeProviderId(String id, MemberAccessor memberAccessor) {
+        MemberAccessor duplicate = fromSolutionValueRangeProviderMap.get(id);
         if (duplicate != null) {
-            throw new IllegalStateException("2 methods (" + duplicate + ", " + method
+            throw new IllegalStateException("2 members (" + duplicate + ", " + memberAccessor
                     + ") with a " + ValueRangeProvider.class.getSimpleName()
                     + " annotation must not have the same id (" + id + ").");
         }
         duplicate = fromEntityValueRangeProviderMap.get(id);
         if (duplicate != null) {
-            throw new IllegalStateException("2 methods (" + duplicate + ", " + method
+            throw new IllegalStateException("2 members (" + duplicate + ", " + memberAccessor
                     + ") with a " + ValueRangeProvider.class.getSimpleName()
                     + " annotation must not have the same id (" + id + ").");
         }

@@ -120,4 +120,9 @@ public final class BeanPropertyMemberAccessor implements MemberAccessor {
         return getterMethod.getDeclaredAnnotations();
     }
 
+    @Override
+    public String toString() {
+        return "bean property " + propertyName + " on class " + getterMethod.getDeclaringClass();
+    }
+
 }

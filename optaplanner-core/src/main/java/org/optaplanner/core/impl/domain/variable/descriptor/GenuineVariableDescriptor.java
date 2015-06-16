@@ -135,11 +135,11 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
     private ValueRangeDescriptor buildValueRangeDescriptor(DescriptorPolicy descriptorPolicy,
             String valueRangeProviderRef, boolean addNullInValueRange) {
         if (descriptorPolicy.hasFromSolutionValueRangeProvider(valueRangeProviderRef)) {
-            Method readMethod = descriptorPolicy.getFromSolutionValueRangeProvider(valueRangeProviderRef);
-            return new FromSolutionPropertyValueRangeDescriptor(this, addNullInValueRange, readMethod);
+            MemberAccessor memberAccessor = descriptorPolicy.getFromSolutionValueRangeProvider(valueRangeProviderRef);
+            return new FromSolutionPropertyValueRangeDescriptor(this, addNullInValueRange, memberAccessor);
         } else if (descriptorPolicy.hasFromEntityValueRangeProvider(valueRangeProviderRef)) {
-            Method readMethod = descriptorPolicy.getFromEntityValueRangeProvider(valueRangeProviderRef);
-            return new FromEntityPropertyValueRangeDescriptor(this, addNullInValueRange, readMethod);
+            MemberAccessor memberAccessor = descriptorPolicy.getFromEntityValueRangeProvider(valueRangeProviderRef);
+            return new FromEntityPropertyValueRangeDescriptor(this, addNullInValueRange, memberAccessor);
         } else {
             Collection<String> providerIds = descriptorPolicy.getValueRangeProviderIds();
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()

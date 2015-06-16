@@ -20,14 +20,15 @@ import java.lang.reflect.Method;
 
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
+import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
 public class FromEntityPropertyValueRangeDescriptor extends AbstractFromPropertyValueRangeDescriptor {
 
     public FromEntityPropertyValueRangeDescriptor(
             GenuineVariableDescriptor variableDescriptor, boolean addNullInValueRange,
-            Method readMethod) {
-        super(variableDescriptor, addNullInValueRange, readMethod);
+            MemberAccessor memberAccessor) {
+        super(variableDescriptor, addNullInValueRange, memberAccessor);
     }
 
     // ************************************************************************

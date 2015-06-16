@@ -44,6 +44,7 @@ import org.optaplanner.core.impl.domain.common.member.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.member.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
+import org.optaplanner.core.impl.domain.common.member.MethodMemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
@@ -124,12 +125,14 @@ public class SolutionDescriptor {
     }
 
     private void processValueRangeProviderAnnotations(DescriptorPolicy descriptorPolicy) {
-        // TODO This does not support annotations on private/protected methods like EntityDescriptor
-        List<Method> methodList = Arrays.asList(solutionClass.getMethods());
+        // TODO This does not support annotations on inherited fields
+        List<Method> methodList = Arrays.asList(solutionClass.getDeclaredMethods());
         Collections.sort(methodList, new AlphabeticMemberComparator());
         for (Method method : methodList) {
             if (method.isAnnotationPresent(ValueRangeProvider.class)) {
-                descriptorPolicy.addFromSolutionValueRangeProvider(method);
+                ReflectionHelper.assertReadMethod(method, ValueRangeProvider.class);
+                MemberAccessor memberAccessor = new MethodMemberAccessor(method);
+                descriptorPolicy.addFromSolutionValueRangeProvider(memberAccessor);
             }
         }
     }
@@ -156,13 +159,8 @@ public class SolutionDescriptor {
             boolean entityCollectionPropertyAnnotated = method.isAnnotationPresent(PlanningEntityCollectionProperty.class);
             if (entityPropertyAnnotated || entityCollectionPropertyAnnotated) {
                 noEntityPropertyAnnotation = false;
-                if (!ReflectionHelper.isGetterMethod(method)) {
-                    throw new IllegalStateException("The solutionClass (" + solutionClass
-                            + ")'s method (" + method + ") with a " + PlanningEntityProperty.class.getSimpleName()
-                            + " or " + PlanningEntityCollectionProperty.class.getSimpleName()
-                            + " annotation must be a valid getter method.\n"
-                            + "  That annotation can only be used on a JavaBeans getter method or on a field.");
-                }
+                ReflectionHelper.assertGetterMethod(method,
+                        entityPropertyAnnotated ? PlanningEntityProperty.class : PlanningEntityCollectionProperty.class);
                 MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
                 registerEntityPropertyAccessor(entityPropertyAnnotated, entityCollectionPropertyAnnotated, memberAccessor);
             }

@@ -94,4 +94,9 @@ public final class FieldMemberAccessor implements MemberAccessor {
         return field.getDeclaredAnnotations();
     }
 
+    @Override
+    public String toString() {
+        return "field " + field;
+    }
+
 }

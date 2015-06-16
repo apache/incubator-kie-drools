@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -25,51 +24,50 @@ import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.impl.domain.common.readmethod.DefaultReadMethodAccessor;
-import org.optaplanner.core.impl.domain.common.readmethod.ReadMethodAccessor;
+import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
 public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractValueRangeDescriptor {
 
-    protected final ReadMethodAccessor readMethodAccessor;
+    protected final MemberAccessor memberAccessor;
     protected boolean collectionWrapping;
     protected boolean countable;
 
     public AbstractFromPropertyValueRangeDescriptor(
             GenuineVariableDescriptor variableDescriptor, boolean addNullInValueRange,
-            Method readMethod) {
+            MemberAccessor memberAccessor) {
         super(variableDescriptor, addNullInValueRange);
-        readMethodAccessor = new DefaultReadMethodAccessor(readMethod);
-        ValueRangeProvider valueRangeProviderAnnotation = readMethod.getAnnotation(ValueRangeProvider.class);
+        this.memberAccessor = memberAccessor;
+        ValueRangeProvider valueRangeProviderAnnotation = memberAccessor.getAnnotation(ValueRangeProvider.class);
         if (valueRangeProviderAnnotation == null) {
-            throw new IllegalStateException("The readMethod (" + readMethod
+            throw new IllegalStateException("The member (" + memberAccessor
                     + ") must have a valueRangeProviderAnnotation (" + valueRangeProviderAnnotation + ").");
         }
         processValueRangeProviderAnnotation(valueRangeProviderAnnotation);
         if (addNullInValueRange && !countable) {
             throw new IllegalStateException("The valueRangeDescriptor (" + this
                     + ") is nullable, but not countable (" + countable + ").\n"
-                    + "Maybe the readMethod (" + readMethod + ") should return "
+                    + "Maybe the member (" + memberAccessor + ") should return "
                     + CountableValueRange.class.getSimpleName() + ".");
         }
     }
 
     private void processValueRangeProviderAnnotation(ValueRangeProvider valueRangeProviderAnnotation) {
         EntityDescriptor entityDescriptor = variableDescriptor.getEntityDescriptor();
-        Class<?> returnType = readMethodAccessor.getReturnType();
-        collectionWrapping = Collection.class.isAssignableFrom(returnType);
-        if (!collectionWrapping && !ValueRange.class.isAssignableFrom(returnType)) {
+        Class<?> type = memberAccessor.getType();
+        collectionWrapping = Collection.class.isAssignableFrom(type);
+        if (!collectionWrapping && !ValueRange.class.isAssignableFrom(type)) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                     + ") has a " + PlanningVariable.class.getSimpleName()
                     + " annotated property (" + variableDescriptor.getVariableName()
                     + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
-                    + " annotated method (" + readMethodAccessor.getReadMethod()
+                    + " annotated member (" + memberAccessor
                     + ") that does not return a " + Collection.class.getSimpleName()
                     + " or a " + ValueRange.class.getSimpleName() + ".");
         }
-        countable = collectionWrapping || CountableValueRange.class.isAssignableFrom(returnType);
+        countable = collectionWrapping || CountableValueRange.class.isAssignableFrom(type);
     }
 
     // ************************************************************************
@@ -82,10 +80,10 @@ public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractV
     }
 
     protected ValueRange<?> readValueRange(Object bean) {
-        Object valueRangeObject = readMethodAccessor.read(bean);
+        Object valueRangeObject = memberAccessor.executeGetter(bean);
         if (valueRangeObject == null) {
             throw new IllegalStateException("The @" + ValueRangeProvider.class.getSimpleName()
-                    + " annotated readMethod (" + readMethodAccessor.getReadMethod()
+                    + " annotated member (" + memberAccessor
                     + ") called on bean (" + bean
                     + ") must not return a null valueRangeObject (" + valueRangeObject + ").");
         }
@@ -99,7 +97,7 @@ public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractV
         valueRange = doNullInValueRangeWrapping(valueRange);
         if (valueRange.isEmpty()) {
             throw new IllegalStateException("The @" + ValueRangeProvider.class.getSimpleName()
-                    + " annotated readMethod (" + readMethodAccessor.getReadMethod()
+                    + " annotated member (" + memberAccessor
                     + ") called on bean (" + bean
                     + ") must not return an empty valueRange (" + valueRangeObject + ").\n"
                     + "  If this a valid dataset, apply overconstrained planning as described in the documentation.");

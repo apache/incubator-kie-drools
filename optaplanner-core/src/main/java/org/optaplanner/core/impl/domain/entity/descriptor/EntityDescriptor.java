@@ -43,6 +43,7 @@ import org.optaplanner.core.impl.domain.common.member.FieldMemberAccessor;
 import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
 import org.optaplanner.core.impl.domain.common.member.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
+import org.optaplanner.core.impl.domain.common.member.MethodMemberAccessor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorShadowVariableDescriptor;
@@ -150,7 +151,9 @@ public class EntityDescriptor {
         Collections.sort(methodList, new AlphabeticMemberComparator());
         for (Method method : methodList) {
             if (method.isAnnotationPresent(ValueRangeProvider.class)) {
-                descriptorPolicy.addFromEntityValueRangeProvider(method);
+                ReflectionHelper.assertReadMethod(method, ValueRangeProvider.class);
+                MemberAccessor memberAccessor = new MethodMemberAccessor(method);
+                descriptorPolicy.addFromEntityValueRangeProvider(memberAccessor);
             }
         }
     }
@@ -175,12 +178,7 @@ public class EntityDescriptor {
             Class<? extends Annotation> variableAnnotationClass = extractVariableAnnotationClass(method);
             if (variableAnnotationClass != null) {
                 noVariableAnnotation = false;
-                if (!ReflectionHelper.isGetterMethod(method)) {
-                    throw new IllegalStateException("The entityClass (" + entityClass
-                            + ")'s method (" + method + ") with a "
-                            + variableAnnotationClass.getSimpleName() + " annotation must be a valid getter method.\n"
-                            + "  That annotation can only be used on a JavaBeans getter method or on a field.");
-                }
+                ReflectionHelper.assertGetterMethod(method, variableAnnotationClass);
                 MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
                 if (!memberAccessor.supportSetter()) {
                     throw new IllegalStateException("The entityClass (" + entityClass

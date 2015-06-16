@@ -17,14 +17,18 @@
 
 package org.optaplanner.core.impl.domain.common;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.WildcardType;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 
 /**
  * Avoids the usage of Introspector to work on Android too.
@@ -135,6 +139,47 @@ public final class ReflectionHelper {
             return containingClass.getMethod(setterName, propertyType);
         } catch (NoSuchMethodException e) {
             return null;
+        }
+    }
+
+    public static void assertGetterMethod(Method getterMethod, Class<? extends Annotation> annotationClass) {
+        if (getterMethod.getParameterTypes().length != 0) {
+            throw new IllegalStateException("The getterMethod (" + getterMethod + ") with a "
+                    + annotationClass.getSimpleName() + " annotation must not have any parameters ("
+                    + Arrays.toString(getterMethod.getParameterTypes()) + ").");
+        }
+        String methodName = getterMethod.getName();
+        if (methodName.startsWith(PROPERTY_ACCESSOR_PREFIX_GET)) {
+            if (getterMethod.getReturnType() != void.class) {
+                throw new IllegalStateException("The getterMethod (" + getterMethod + ") with a "
+                        + annotationClass.getSimpleName() + " annotation must have a non-void return type ("
+                        + getterMethod.getReturnType() + ").");
+            }
+        } else if (methodName.startsWith(PROPERTY_ACCESSOR_PREFIX_IS)) {
+            if (getterMethod.getReturnType() == boolean.class) {
+                throw new IllegalStateException("The getterMethod (" + getterMethod + ") with a "
+                        + annotationClass.getSimpleName() + " annotation must have a primitive boolean return type ("
+                        + getterMethod.getReturnType() + ") or use another prefix in its methodName ("
+                        + methodName + ").");
+            }
+        } else {
+            throw new IllegalStateException("The getterMethod (" + getterMethod + ") with a "
+                    + annotationClass.getSimpleName() + " annotation has a methodName ("
+                    + methodName + ") that does not start with a valid prefix ("
+                    + Arrays.toString(PROPERTY_ACCESSOR_PREFIXES) + ").");
+        }
+    }
+
+    public static void assertReadMethod(Method readMethod, Class<? extends Annotation> annotationClass) {
+        if (readMethod.getParameterTypes().length != 0) {
+            throw new IllegalStateException("The readMethod (" + readMethod + ") with a "
+                    + annotationClass.getSimpleName() + " annotation must not have any parameters ("
+                    + Arrays.toString(readMethod.getParameterTypes()) + ").");
+        }
+        if (readMethod.getReturnType() == void.class) {
+            throw new IllegalStateException("The readMethod (" + readMethod + ") with a "
+                    + annotationClass.getSimpleName() + " annotation must have a non-void return type ("
+                    + readMethod.getReturnType() + ").");
         }
     }
 
