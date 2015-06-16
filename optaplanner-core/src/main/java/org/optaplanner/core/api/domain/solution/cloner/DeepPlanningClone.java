@@ -44,7 +44,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * This annotation is ignored if a custom {@link SolutionCloner} is set with {@link PlanningSolution#solutionCloner()}
  * or if the {@link Solution} implements {@link PlanningCloneable}.
  */
-@Target({TYPE, METHOD})
+@Target({TYPE, METHOD, FIELD})
 @Inherited
 @Retention(RUNTIME)
 public @interface DeepPlanningClone {

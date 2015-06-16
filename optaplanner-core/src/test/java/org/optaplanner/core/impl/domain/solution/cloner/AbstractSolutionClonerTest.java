@@ -36,6 +36,8 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.deepcloning.field.TestdataFieldAnnotatedDeepCloningEntity;
+import org.optaplanner.core.impl.testdata.domain.deepcloning.field.TestdataFieldAnnotatedDeepCloningSolution;
 import org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier.TestdataAccessModifierSolution;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
@@ -614,6 +616,102 @@ public abstract class AbstractSolutionClonerTest {
     }
 
     private void assertDeepCloningEntityClone(TestdataDeepCloningEntity originalEntity, TestdataDeepCloningEntity cloneEntity,
+            String entityCode, String valueCode) {
+        assertNotSame(originalEntity, cloneEntity);
+        assertCode(entityCode, originalEntity);
+        assertCode(entityCode, cloneEntity);
+        assertSame(originalEntity.getValue(), cloneEntity.getValue());
+
+        List<String> originalShadowVariableList = originalEntity.getShadowVariableList();
+        List<String> cloneShadowVariableList = cloneEntity.getShadowVariableList();
+        if (originalShadowVariableList == null) {
+            assertNull(cloneShadowVariableList);
+        } else {
+            assertNotSame(originalShadowVariableList, cloneShadowVariableList);
+            assertEquals(originalShadowVariableList.size(), cloneShadowVariableList.size());
+            for (int i = 0; i < originalShadowVariableList.size(); i++) {
+                assertSame(originalShadowVariableList.get(i), cloneShadowVariableList.get(i));
+            }
+        }
+
+        Map<String, String> originalShadowVariableMap = originalEntity.getShadowVariableMap();
+        Map<String, String> cloneShadowVariableMap = cloneEntity.getShadowVariableMap();
+        if (originalShadowVariableMap == null) {
+            assertNull(cloneShadowVariableMap);
+        } else {
+            assertNotSame(originalShadowVariableMap, cloneShadowVariableMap);
+            assertEquals(originalShadowVariableMap.size(), cloneShadowVariableMap.size());
+            for (String key : originalShadowVariableMap.keySet()) {
+                assertSame(originalShadowVariableMap.get(key), cloneShadowVariableMap.get(key));
+            }
+        }
+    }
+
+    @Test
+    public void fieldAnnotatedDeepPlanningClone() {
+        SolutionDescriptor solutionDescriptor = TestdataFieldAnnotatedDeepCloningSolution.buildSolutionDescriptor();
+        SolutionCloner<TestdataFieldAnnotatedDeepCloningSolution> cloner = createSolutionCloner(solutionDescriptor);
+
+        TestdataValue val1 = new TestdataValue("1");
+        TestdataValue val2 = new TestdataValue("2");
+        TestdataValue val3 = new TestdataValue("3");
+        TestdataFieldAnnotatedDeepCloningEntity a = new TestdataFieldAnnotatedDeepCloningEntity("a", val1);
+        List<String> aShadowVariableList = Arrays.asList("shadow a1", "shadow a2");
+        a.setShadowVariableList(aShadowVariableList);
+        TestdataFieldAnnotatedDeepCloningEntity b = new TestdataFieldAnnotatedDeepCloningEntity("b", val1);
+        Map<String, String> bShadowVariableMap = new HashMap<String, String>();
+        bShadowVariableMap.put("shadow key b1", "shadow value b1");
+        bShadowVariableMap.put("shadow key b2", "shadow value b2");
+        b.setShadowVariableMap(bShadowVariableMap);
+        TestdataFieldAnnotatedDeepCloningEntity c = new TestdataFieldAnnotatedDeepCloningEntity("c", val3);
+        List<String> cShadowVariableList = Arrays.asList("shadow c1", "shadow c2");
+        c.setShadowVariableList(cShadowVariableList);
+        TestdataFieldAnnotatedDeepCloningEntity d = new TestdataFieldAnnotatedDeepCloningEntity("d", val3);
+
+        TestdataFieldAnnotatedDeepCloningSolution original = new TestdataFieldAnnotatedDeepCloningSolution("solution");
+        List<TestdataValue> valueList = Arrays.asList(val1, val2, val3);
+        original.setValueList(valueList);
+        List<TestdataFieldAnnotatedDeepCloningEntity> originalEntityList = Arrays.asList(a, b, c, d);
+        original.setEntityList(originalEntityList);
+        List<String> generalShadowVariableList = Arrays.asList("shadow g1", "shadow g2");
+        original.setGeneralShadowVariableList(generalShadowVariableList);
+
+        TestdataFieldAnnotatedDeepCloningSolution clone = cloner.cloneSolution(original);
+
+        assertNotSame(original, clone);
+        assertCode("solution", clone);
+        assertSame(valueList, clone.getValueList());
+
+        List<TestdataFieldAnnotatedDeepCloningEntity> cloneEntityList = clone.getEntityList();
+        assertNotSame(originalEntityList, cloneEntityList);
+        assertEquals(4, cloneEntityList.size());
+        TestdataFieldAnnotatedDeepCloningEntity cloneA = cloneEntityList.get(0);
+        assertDeepCloningEntityClone(a, cloneA, "a", "1");
+        TestdataFieldAnnotatedDeepCloningEntity cloneB = cloneEntityList.get(1);
+        assertDeepCloningEntityClone(b, cloneB, "b", "1");
+        TestdataFieldAnnotatedDeepCloningEntity cloneC = cloneEntityList.get(2);
+        assertDeepCloningEntityClone(c, cloneC, "c", "3");
+        TestdataFieldAnnotatedDeepCloningEntity cloneD = cloneEntityList.get(3);
+        assertDeepCloningEntityClone(d, cloneD, "d", "3");
+
+        List<String> cloneGeneralShadowVariableList = clone.getGeneralShadowVariableList();
+        assertNotSame(generalShadowVariableList, cloneGeneralShadowVariableList);
+        assertEquals(2, cloneGeneralShadowVariableList.size());
+        assertSame(generalShadowVariableList.get(0), cloneGeneralShadowVariableList.get(0));
+        assertEquals(generalShadowVariableList.get(1), cloneGeneralShadowVariableList.get(1));
+
+        b.setValue(val2);
+        assertCode("2", b.getValue());
+        // Clone remains unchanged
+        assertCode("1", cloneB.getValue());
+
+        b.getShadowVariableMap().put("shadow key b1", "other shadow value b1");
+        assertEquals("other shadow value b1", b.getShadowVariableMap().get("shadow key b1"));
+        // Clone remains unchanged
+        assertEquals("shadow value b1", cloneB.getShadowVariableMap().get("shadow key b1"));
+    }
+
+    private void assertDeepCloningEntityClone(TestdataFieldAnnotatedDeepCloningEntity originalEntity, TestdataFieldAnnotatedDeepCloningEntity cloneEntity,
             String entityCode, String valueCode) {
         assertNotSame(originalEntity, cloneEntity);
         assertCode(entityCode, originalEntity);

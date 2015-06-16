@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.domain.solution.cloner;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -47,6 +45,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
@@ -166,14 +165,14 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
     }
 
     private boolean isFieldADeepCloneProperty(Field field, Class fieldInstanceClass) {
-        PropertyDescriptor propertyDescriptor;
-        try {
-            propertyDescriptor = new PropertyDescriptor(field.getName(), fieldInstanceClass);
-        } catch (IntrospectionException e) {
-            return false;
+        if (field.isAnnotationPresent(DeepPlanningClone.class)) {
+            return true;
         }
-        Method readMethod = propertyDescriptor.getReadMethod();
-        return readMethod != null && readMethod.isAnnotationPresent(DeepPlanningClone.class);
+        Method getterMethod = ReflectionHelper.getGetterMethod(fieldInstanceClass, field.getName());
+        if (getterMethod != null && getterMethod.isAnnotationPresent(DeepPlanningClone.class)) {
+            return true;
+        }
+        return false;
     }
 
     protected boolean retrieveDeepCloneDecisionForActualValueClass(Class<?> actualValueClass) {
