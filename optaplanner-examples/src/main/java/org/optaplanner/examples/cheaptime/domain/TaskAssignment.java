@@ -32,7 +32,9 @@ public class TaskAssignment extends AbstractPersistable {
     private Task task;
 
     // Planning variables: changes during planning, between score calculations.
+    @PlanningVariable(valueRangeProviderRefs = {"machineRange"})
     private Machine machine;
+    @PlanningVariable(valueRangeProviderRefs = {"startPeriodRange"})
     private Integer startPeriod;
 
     public Task getTask() {
@@ -43,7 +45,6 @@ public class TaskAssignment extends AbstractPersistable {
         this.task = task;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"machineRange"})
     public Machine getMachine() {
         return machine;
     }
@@ -52,7 +53,6 @@ public class TaskAssignment extends AbstractPersistable {
         this.machine = machine;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"startPeriodRange"})
     public Integer getStartPeriod() {
         return startPeriod;
     }
@@ -85,7 +85,7 @@ public class TaskAssignment extends AbstractPersistable {
     // ************************************************************************
 
     @ValueRangeProvider(id = "startPeriodRange")
-    public CountableValueRange<Integer> getDelayRange() {
+    public CountableValueRange<Integer> getStartPeriodRange() {
         return ValueRangeFactory.createIntValueRange(task.getStartPeriodRangeFrom(), task.getStartPeriodRangeTo());
     }
 

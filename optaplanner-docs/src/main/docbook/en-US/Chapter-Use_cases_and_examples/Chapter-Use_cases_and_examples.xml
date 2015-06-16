@@ -206,7 +206,7 @@
 
             <entry><itemizedlist>
                 <listitem>
-                  <para>Decision Table spreadsheet for score constraints</para>
+                  <para>Decision Table spreadsheet (XLS) for score constraints</para>
                 </listitem>
               </itemizedlist></entry>
           </row>
@@ -396,11 +396,19 @@
 
             <entry><itemizedlist>
                 <listitem>
-                  <para><link linkend="customVariableListener">VariableListener</link></para>
+                  <para><link linkend="shadowVariable">Shadow variable</link></para>
                 </listitem>
 
                 <listitem>
                   <para><link linkend="realTimePlanning">Real-time planning</link></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="nearbySelection">Nearby selection</link></para>
+                </listitem>
+
+                <listitem>
+                  <para>Real road distances</para>
                 </listitem>
               </itemizedlist></entry>
           </row>
@@ -438,13 +446,9 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry><itemizedlist>
+            <entry><para>Extra on Vehicle routing:</para><itemizedlist>
                 <listitem>
-                  <para><link linkend="customVariableListener">VariableListener</link></para>
-                </listitem>
-
-                <listitem>
-                  <para><link linkend="realTimePlanning">Real-time planning</link></para>
+                  <para>Custom <link linkend="customVariableListener">VariableListener</link></para>
                 </listitem>
               </itemizedlist></entry>
           </row>
@@ -496,7 +500,11 @@
                 </listitem>
 
                 <listitem>
-                  <para><link linkend="customVariableListener">VariableListener</link></para>
+                  <para>Custom <link linkend="customVariableListener">VariableListener</link></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="valueRangeFactory">ValueRangeFactory</link></para>
                 </listitem>
               </itemizedlist></entry>
           </row>
@@ -585,7 +593,7 @@
 
             <entry><itemizedlist>
                 <listitem>
-                  <para><link linkend="customVariableListener">VariableListener</link></para>
+                  <para>Custom <link linkend="customVariableListener">VariableListener</link></para>
                 </listitem>
               </itemizedlist></entry>
           </row>
@@ -675,7 +683,11 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>None</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Custom <link linkend="moveListFactory">MoveListFactory</link></para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
 
           <row>
@@ -715,7 +727,15 @@
                 </listitem>
               </itemizedlist></entry>
 
-            <entry>None</entry>
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="annotationAlternatives">Field annotations</link></para>
+                </listitem>
+
+                <listitem>
+                  <para><link linkend="valueRangeFactory">ValueRangeFactory</link></para>
+                </listitem>
+              </itemizedlist></entry>
           </row>
         </tbody>
       </tgroup>
@@ -1723,6 +1743,7 @@ testdata11 has 4 specialisms, 4 equipments, 4 departments, 107 rooms, 318 beds, 
 testdata12 has 4 specialisms, 4 equipments, 4 departments, 105 rooms, 310 beds, 84 nights, 2750 patients and 2750 admissions with a search space of 10^6851.
 testdata13 has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 28 nights,  907 patients and 1109 admissions with a search space of 10^2845.</programlisting>
       </section>
+
       <section xml:id="bedAllocationDomainModel">
         <title>Domain Model</title>
 

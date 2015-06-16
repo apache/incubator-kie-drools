@@ -40,6 +40,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
     private int globalPeriodRangeTo; // Exclusive
 
     private List<Resource> resourceList;
+    @ValueRangeProvider(id = "machineRange")
     private List<Machine> machineList;
     private List<MachineCapacity> machineCapacityList;
     private List<Task> taskList;
@@ -47,6 +48,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
     // Order is equal to global periodRange so int period can be used for the index
     private List<PeriodPowerPrice> periodPowerPriceList;
 
+    @PlanningEntityCollectionProperty
     private List<TaskAssignment> taskAssignmentList;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardMediumSoftLongScoreDefinition.class})
@@ -80,7 +82,6 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         return resourceList;
     }
 
-    @ValueRangeProvider(id = "machineRange")
     public List<Machine> getMachineList() {
         return machineList;
     }
@@ -125,7 +126,6 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         this.periodPowerPriceList = periodPowerPriceList;
     }
 
-    @PlanningEntityCollectionProperty
     public List<TaskAssignment> getTaskAssignmentList() {
         return taskAssignmentList;
     }
