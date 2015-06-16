@@ -88,7 +88,7 @@ public class KieHelper {
     }
 
     public Results verify() {
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs, classLoader ).buildAll();
         return kieBuilder.getResults();
     }
 
@@ -118,6 +118,9 @@ public class KieHelper {
 
     public KieHelper addFromClassPath(String name, String encoding) {
         InputStream input = getClass().getResourceAsStream(name);
+        if ( input == null && classLoader != null ) {
+            input = classLoader.getResourceAsStream( name );
+        }
         if (input == null) {
             throw new IllegalArgumentException("The file (" + name + ") does not exist as a classpath resource.");
         }
