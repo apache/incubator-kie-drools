@@ -206,7 +206,7 @@ public class TypeDeclarationNameResolver {
 
 
     private void fillStaticInterfaces( TypeDeclarationDescr typeDescr, Class<?> typeClass ) {
-        for ( Class iKlass : ClassUtils.getAllImplementedInterfaceNames( typeClass ) ) {
+        for ( Class iKlass : ClassUtils.getMinimalImplementedInterfaceNames( typeClass ) ) {
             typeDescr.addSuperType( iKlass.getName() );
         }
 

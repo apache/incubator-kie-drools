@@ -560,7 +560,7 @@ public final class ClassUtils {
     }
 
     public static Class<?> convertPrimitiveNameToType( String typeName ) {
-        if (typeName.equals("int")) {
+        if (typeName.equals( "int" )) {
             return int.class;
         }
         if (typeName.equals("boolean")) {
@@ -605,6 +605,30 @@ public final class ClassUtils {
             traitInterfaces.add( sup );
             exploreSuperInterfaces( sup, traitInterfaces );
         }
+    }
+
+    public static Set<Class<?>> getMinimalImplementedInterfaceNames( Class<?> klass ) {
+        Set<Class<?>> interfaces = new HashSet<Class<?>>();
+        while( klass != null ) {
+            Class<?>[] localInterfaces = klass.getInterfaces();
+            for ( Class<?> intf : localInterfaces ) {
+                boolean subsumed = false;
+                for ( Class<?> i : new ArrayList<Class<?>>( interfaces ) ) {
+                    if ( intf.isAssignableFrom( i ) ) {
+                        subsumed = true;
+                        break;
+                    } else if ( i.isAssignableFrom( intf ) ) {
+                        interfaces.remove( i );
+                    }
+                }
+                if ( subsumed ) {
+                    continue;
+                }
+                interfaces.add( intf );
+            }
+            klass = klass.getSuperclass();
+        }
+        return interfaces;
     }
 
     public static boolean isWindows() {
