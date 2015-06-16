@@ -10,7 +10,7 @@ import java.util.Map;
 public interface AdHocProcessService {
 
     /**
-     * Starts a process with no variables
+     * Starts a process with a map of variables
      *
      * @param deploymentId deployment information for the process's kjar
      * @param processId The process's identifier

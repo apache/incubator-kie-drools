@@ -628,4 +628,11 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         return deploymentId;
     }
 
+    @Override
+    public String toString() {
+        return "TaskSummaryImpl{" + "id=" + id + ", name=" + name + ", subject=" + subject + ", description=" + description + ", statusId=" + statusId + ", priority=" + priority + ", skipable=" + skipable + ", actualOwnerId=" + actualOwnerId + ", createdById=" + createdById + ", createdOn=" + createdOn + ", activationTime=" + activationTime + ", expirationTime=" + expirationTime + ", processInstanceId=" + processInstanceId + ", processId=" + processId + ", processSessionId=" + processSessionId + ", deploymentId=" + deploymentId + ", parentId=" + parentId + ", potentialOwners=" + potentialOwners + ", quickTaskSummary=" + quickTaskSummary + '}';
+    }
+    
+    
+
 }

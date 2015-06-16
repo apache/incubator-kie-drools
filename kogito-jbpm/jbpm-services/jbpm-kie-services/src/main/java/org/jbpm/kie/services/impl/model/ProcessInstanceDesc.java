@@ -101,11 +101,6 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
         return dataTimeStamp;
     }
 
-    @Override
-    public String toString() {
-        return "ProcessInstanceDesc{" + "id=" + id + ", processId=" + processId + ", processName=" + processName + ", processVersion=" + processVersion + "correlationKey=" + correlationKey + ", state=" + state + ", deploymentId=" + deploymentId + ", initiator=" + initiator + ", dataTimeStamp=" + dataTimeStamp + '}';
-    }
-
     public String getProcessVersion() {
         return processVersion;
     }
@@ -157,4 +152,11 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
     public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
+
+    @Override
+    public String toString() {
+        return "ProcessInstanceDesc{" + "id=" + id + ", processId=" + processId + ", processName=" + processName + ", processVersion=" + processVersion + ", state=" + state + ", deploymentId=" + deploymentId + ", initiator=" + initiator + ", dataTimeStamp=" + dataTimeStamp + ", processInstanceDescription=" + processInstanceDescription + ", correlationKey=" + correlationKey + ", parentId=" + parentId + ", activeTasks=" + activeTasks + '}';
+    }
+    
+    
 }
