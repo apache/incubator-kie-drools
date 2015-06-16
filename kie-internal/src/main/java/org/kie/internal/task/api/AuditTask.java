@@ -78,8 +78,12 @@ public interface AuditTask {
     String getDeploymentId();
 
     void setDeploymentId(String deploymentId);
+        
+    long getWorkItemId();
     
-	long getWorkItemId();
+    void setWorkItemId(long workItemId);
+        
+    String getPotentialOwners();
 
-	void setWorkItemId(long workItemId);
+    String getBusinessAdministrators();    
 }
