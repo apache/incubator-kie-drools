@@ -154,6 +154,58 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         
     }
     
+    @Test
+    public void testGroupTasks() {
+      
+        Task task = new TaskFluent().setName("This is my task name")
+                                    .addPotentialUser("salaboy")
+                                    .addPotentialUser("krisv")
+                                    .addPotentialGroup("Knights Templer")
+                                    .setAdminUser("Administrator")
+                                    .getTask();
+        taskService.addTask(task, new HashMap<String, Object>());
+        long taskId = task.getId();
+        
+         
+        List<TaskSummary> allGroupTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
+        
+        
+        assertEquals(1, allGroupTasks.size());
+        
+        assertTrue(allGroupTasks.get(0).getStatusId().equals("Ready"));
+        
+        List<AuditTask> allGroupAuditTasksByUser = taskAuditService.getAllGroupAuditTasksByUser("salaboy", new QueryFilter(0,0));
+        
+        assertEquals(1, allGroupAuditTasksByUser.size());
+        
+        assertTrue(allGroupAuditTasksByUser.get(0).getStatus().equals("Ready"));
+        
+    }
+    
+    @Test
+    public void testAdminTasks() {
+      
+        Task task = new TaskFluent().setName("This is my task name")
+                                    .setAdminUser("salaboy")
+                                    .getTask();
+        
+        taskService.addTask(task, new HashMap<String, Object>());
+        
+        
+         
+        List<TaskSummary> allAdminTasks = taskService.getTasksAssignedAsBusinessAdministrator("salaboy", null);
+        
+        
+        assertEquals(1, allAdminTasks.size());
+        
+        
+        
+        List<AuditTask> allAdminAuditTasksByUser = taskAuditService.getAllAdminAuditTasksByUser("salaboy", new QueryFilter(0,0));
+        
+        assertEquals(1, allAdminAuditTasksByUser.size());
+        
+    }
+    
     
     @Test
     public void testExitAfterClaim() {
@@ -196,7 +248,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         
     }
 //    
-     @Test
+    @Test
     public void testExitBeforeClaim() {
        
 

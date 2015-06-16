@@ -16,6 +16,7 @@
 
 package org.jbpm.services.cdi.impl;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Instance;
@@ -29,6 +30,7 @@ import org.jbpm.services.cdi.Deactivate;
 import org.jbpm.services.cdi.Deploy;
 import org.jbpm.services.cdi.RequestScopedBackupIdentityProvider;
 import org.jbpm.services.cdi.Undeploy;
+import org.jbpm.services.task.audit.service.TaskAuditService;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.api.task.TaskService;
 import org.kie.internal.identity.IdentityProvider;
@@ -76,6 +78,16 @@ public class RuntimeDataServiceCDIImpl extends RuntimeDataServiceImpl {
 	public void setTaskService(TaskService taskService) {
 		super.setTaskService(taskService);
 	}
-	    
+	  
+    @Inject
+    @Override
+    public void setTaskAuditService(TaskAuditService taskAuditService) {
+        super.setTaskAuditService(taskAuditService);
+    }
+    
+    @PostConstruct
+    public void init() {
+        taskAuditService.setTaskService(taskService);
+    }
 	    
 }

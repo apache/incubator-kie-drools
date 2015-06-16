@@ -5,6 +5,7 @@
 package org.jbpm.services.task.audit;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -14,6 +15,7 @@ import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.persistence.PersistableEventListener;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.api.task.TaskEvent;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
@@ -241,7 +243,30 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
 	                                                                                ti.getTaskData().getDeploymentId(),
 	                                                                                ti.getTaskData().getParentId(),
 	                                                                                ti.getTaskData().getWorkItemId());
-	        persistenceContext.persist(auditTaskImpl);
+                List<OrganizationalEntity> potentialOwners = ti.getPeopleAssignments().getPotentialOwners();
+                List<OrganizationalEntity> businessAdministrators = ti.getPeopleAssignments().getBusinessAdministrators();
+                
+                StringBuilder sb = new StringBuilder();
+                String separator = "";
+                for(OrganizationalEntity oe : potentialOwners){
+                    sb.append(separator).append(oe.getId());
+                    if(separator.equals("")){
+                        separator = System.getProperty("org.jbpm.ht.user.separator", ",");
+                    }                
+                }
+                auditTaskImpl.setPotentialOwners(sb.toString());
+                
+                sb = new StringBuilder();
+                separator = "";
+                for(OrganizationalEntity oe : businessAdministrators){
+                    sb.append(separator).append(oe.getId());
+                    if(separator.equals("")){
+                        separator = System.getProperty("org.jbpm.ht.user.separator", ",");
+                    }
+                }
+                auditTaskImpl.setBusinessAdministrators(sb.toString());
+
+                persistenceContext.persist(auditTaskImpl);
 	        
 	        persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.ADDED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
 		} finally {
@@ -395,6 +420,28 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
 	        auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
 	        auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
 	        auditTaskImpl.setActualOwner(userId);
+                
+                List<OrganizationalEntity> potentialOwners = ti.getPeopleAssignments().getPotentialOwners();
+                List<OrganizationalEntity> businessAdministrators = ti.getPeopleAssignments().getBusinessAdministrators();
+                StringBuilder sb = new StringBuilder();
+                String separator = "";
+                for(OrganizationalEntity oe : potentialOwners){
+                    sb.append(separator).append(oe.getId());
+                    if(separator.equals("")){
+                        separator = System.getProperty("org.jbpm.ht.user.separator", ",");
+                    }                
+                }
+                auditTaskImpl.setPotentialOwners(sb.toString());
+                
+                sb = new StringBuilder();
+                separator = "";
+                for(OrganizationalEntity oe : businessAdministrators){
+                    sb.append(separator).append(oe.getId());
+                    if(separator.equals("")){
+                        separator = System.getProperty("org.jbpm.ht.user.separator", ",");
+                    }
+                }
+                auditTaskImpl.setBusinessAdministrators(sb.toString());
 	            
 	        persistenceContext.merge(auditTaskImpl);
 		} finally {
@@ -456,7 +503,29 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
 	        auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
 	        auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
 	        auditTaskImpl.setActualOwner(userId);
-	            
+	        
+                List<OrganizationalEntity> potentialOwners = ti.getPeopleAssignments().getPotentialOwners();
+                List<OrganizationalEntity> businessAdministrators = ti.getPeopleAssignments().getBusinessAdministrators();
+                StringBuilder sb = new StringBuilder();
+                String separator = "";
+                for(OrganizationalEntity oe : potentialOwners){
+                    sb.append(separator).append(oe.getId());
+                    if(separator.equals("")){
+                        separator = System.getProperty("org.jbpm.ht.user.separator", ",");
+                    }                
+                }
+                auditTaskImpl.setPotentialOwners(sb.toString());
+                
+                sb = new StringBuilder();
+                separator = "";
+                for(OrganizationalEntity oe : businessAdministrators){
+                    sb.append(separator).append(oe.getId());
+                    if(separator.equals("")){
+                        separator = System.getProperty("org.jbpm.ht.user.separator", ",");
+                    }
+                }
+                auditTaskImpl.setBusinessAdministrators(sb.toString());
+                
 	        persistenceContext.merge(auditTaskImpl);
 		} finally {
 	        cleanup(persistenceContext);

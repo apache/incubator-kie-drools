@@ -453,6 +453,27 @@ public interface RuntimeDataService {
 	 * @return
 	 */
     List<AuditTask> getAllAuditTask(String userId, QueryFilter filter);
+    
+    /**
+	 * Get a list of group tasks (actualOwner == null) audit logs for the user provides applying the query filter
+	 * listed statuses.
+	 * 
+	 * @param userId
+	 * @param filter
+	 * @return
+	 */
+    List<AuditTask> getAllGroupAuditTask(String userId, QueryFilter filter);
+    
+    
+    /**
+	 * Get a list of tasks admin audit (user in businessAdministrators) logs for the user provides applying the query filter
+	 * listed statuses.
+	 * 
+	 * @param userId
+	 * @param filter
+	 * @return
+	 */
+    List<AuditTask> getAllAdminAuditTask(String userId, QueryFilter filter);
      
     /**
      * Gets a list of task events for given task

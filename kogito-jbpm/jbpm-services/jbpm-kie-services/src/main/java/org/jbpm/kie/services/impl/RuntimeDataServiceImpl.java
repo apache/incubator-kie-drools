@@ -42,6 +42,7 @@ import org.jbpm.services.api.model.ProcessDefinition;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
 import org.jbpm.services.api.model.UserTaskInstanceDesc;
 import org.jbpm.services.api.model.VariableDesc;
+import org.jbpm.services.task.audit.service.TaskAuditService;
 import org.jbpm.shared.services.impl.QueryManager;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
@@ -77,7 +78,9 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         
     private IdentityProvider identityProvider;
     
-    private TaskService taskService;
+    protected TaskService taskService;
+    
+    protected TaskAuditService taskAuditService;
     
     
     public RuntimeDataServiceImpl() {
@@ -98,6 +101,11 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     public void setTaskService(TaskService taskService) {
 		this.taskService = taskService;
 	}
+
+    public void setTaskAuditService(TaskAuditService taskAuditService) {
+        this.taskAuditService = taskAuditService;
+    }
+    
     
 	/*
      * start
@@ -805,6 +813,18 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         List<AuditTask> auditTasks = commandService.execute(
     				new QueryNameCommand<List<AuditTask>>("getAllAuditTasksByUser", params));
         return auditTasks;
+    }    
+    
+        @Override
+    public List<AuditTask> getAllGroupAuditTask(String userId, QueryFilter filter){
+        
+        return taskAuditService.getAllGroupAuditTasksByUser(userId, filter);
+
+    }    
+    
+     @Override
+    public List<AuditTask> getAllAdminAuditTask(String userId, QueryFilter filter){
+        return taskAuditService.getAllAdminAuditTasksByUser(userId, filter);
     }    
         
     public List<TaskEvent> getTaskEvents(long taskId, QueryFilter filter) {

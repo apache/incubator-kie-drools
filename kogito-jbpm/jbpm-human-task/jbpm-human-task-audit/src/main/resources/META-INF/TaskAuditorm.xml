@@ -37,6 +37,18 @@
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
+    <named-query name="getAllGroupAuditTasksByUser">
+        <query>
+            select t from AuditTaskImpl t where (t.actualOwner = null or t.actualOwner = '') order by t.taskId DESC  
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    <named-query name="getAllAdminAuditTasksByUser">
+        <query>
+            select t from AuditTaskImpl t order by t.taskId DESC  
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
     <named-query name="getAuditTaskById">
         <query>
             select t from AuditTaskImpl t where t.taskId = :taskId 

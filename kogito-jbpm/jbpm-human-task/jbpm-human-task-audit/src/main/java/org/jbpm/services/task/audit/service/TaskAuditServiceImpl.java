@@ -17,6 +17,8 @@
 package org.jbpm.services.task.audit.service;
 
 import java.util.List;
+import org.jbpm.services.task.audit.commands.GetAllAdminAuditTasksByUserCommand;
+import org.jbpm.services.task.audit.commands.GetAllGroupAuditTasksByUserCommand;
 
 import org.jbpm.services.task.audit.commands.GetAllHistoryAuditTasksByUserCommand;
 import org.jbpm.services.task.audit.commands.GetAllHistoryAuditTasksCommand;
@@ -61,6 +63,16 @@ import org.kie.internal.task.api.model.TaskEvent;
     @Override
     public void setTaskService(TaskService taskService) {
         this.taskService = (InternalTaskService) taskService;
+    }
+
+    @Override
+    public List<AuditTask> getAllGroupAuditTasksByUser(String userId, QueryFilter filter) {
+        return taskService.execute(new GetAllGroupAuditTasksByUserCommand(userId, filter));
+    }
+
+    @Override
+    public List<AuditTask> getAllAdminAuditTasksByUser(String userId, QueryFilter filter) {
+        return taskService.execute(new GetAllAdminAuditTasksByUserCommand(userId, filter));
     }
     
      

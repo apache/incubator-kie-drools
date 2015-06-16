@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.jbpm.services.task.audit.impl.model;
 
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,19 +32,17 @@ import org.kie.internal.task.api.AuditTask;
  * @author salaboy
  */
 @Entity
-@SequenceGenerator(name="auditIdSeq", sequenceName="AUDIT_ID_SEQ", allocationSize=1)
+@SequenceGenerator(name = "auditIdSeq", sequenceName = "AUDIT_ID_SEQ", allocationSize = 1)
 public class AuditTaskImpl implements Serializable, AuditTask {
-    
-	private static final long serialVersionUID = 5388016330549830043L;
 
+    private static final long serialVersionUID = 5388016330549830043L;
 
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator="auditIdSeq")
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO, generator = "auditIdSeq")
     private Long id;
-    
-    
+
     private Long taskId;
-    
+
     private String status;
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date activationTime;
@@ -65,13 +61,15 @@ public class AuditTaskImpl implements Serializable, AuditTask {
     private long parentId;
     private String deploymentId;
     private Long workItemId;
+    private String potentialOwners;
+    private String businessAdministrators;
 
     public AuditTaskImpl() {
     }
-    
-    public AuditTaskImpl(long taskId, String name, String status, Date activationTime, 
-            String actualOwner , String description, int priority, String createdBy, 
-            Date createdOn, Date dueDate, long processInstanceId, String processId, 
+
+    public AuditTaskImpl(long taskId, String name, String status, Date activationTime,
+            String actualOwner, String description, int priority, String createdBy,
+            Date createdOn, Date dueDate, long processInstanceId, String processId,
             long processSessionId, String deploymentId, long parentId, long workItemId) {
         this.taskId = taskId;
         this.status = status;
@@ -98,8 +96,7 @@ public class AuditTaskImpl implements Serializable, AuditTask {
     public void setId(Long id) {
         this.id = id;
     }
-    
-    
+
     @Override
     public long getTaskId() {
         return taskId;
@@ -247,13 +244,31 @@ public class AuditTaskImpl implements Serializable, AuditTask {
     }
 
     @Override
-	public long getWorkItemId() {
-		return workItemId;
-	}
+    public long getWorkItemId() {
+        return workItemId;
+    }
 
     @Override
-	public void setWorkItemId(long workItemId) {
-		this.workItemId = workItemId;
-	}
+    public void setWorkItemId(long workItemId) {
+        this.workItemId = workItemId;
+    }
+
+    public String getPotentialOwners() {
+        return potentialOwners;
+    }
+
+    public void setPotentialOwners(String potentialOwners) {
+        this.potentialOwners = potentialOwners;
+    }
+
+    public String getBusinessAdministrators() {
+        return businessAdministrators;
+    }
+
+    public void setBusinessAdministrators(String businessAdministrators) {
+        this.businessAdministrators = businessAdministrators;
+    }
+    
+    
 
 }

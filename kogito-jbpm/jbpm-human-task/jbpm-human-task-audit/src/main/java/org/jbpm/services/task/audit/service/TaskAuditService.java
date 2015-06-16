@@ -36,6 +36,9 @@ public interface TaskAuditService {
     
     List<AuditTask> getAllAuditTasksByUser(String userId, QueryFilter filter);
     
+    List<AuditTask> getAllGroupAuditTasksByUser(String userId, QueryFilter filter);
+    
+    List<AuditTask> getAllAdminAuditTasksByUser(String userId, QueryFilter filter);
     
       
 }
