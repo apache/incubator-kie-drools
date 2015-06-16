@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.domain.policy;
 
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -26,7 +24,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 
 public class DescriptorPolicy {
 

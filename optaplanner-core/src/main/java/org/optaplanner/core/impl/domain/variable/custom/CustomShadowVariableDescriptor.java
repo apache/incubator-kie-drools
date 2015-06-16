@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;

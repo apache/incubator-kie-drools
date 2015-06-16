@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,7 +30,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.CompositeValueRangeDescriptor;

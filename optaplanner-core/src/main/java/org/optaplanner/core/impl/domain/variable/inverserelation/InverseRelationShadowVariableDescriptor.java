@@ -21,7 +21,7 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
-import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;

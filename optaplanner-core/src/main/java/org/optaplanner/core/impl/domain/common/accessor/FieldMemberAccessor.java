@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.common.member;
+package org.optaplanner.core.impl.domain.common.accessor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

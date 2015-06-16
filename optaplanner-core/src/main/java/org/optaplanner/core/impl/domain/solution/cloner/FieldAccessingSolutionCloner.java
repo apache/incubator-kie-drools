@@ -47,7 +47,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
-import org.optaplanner.core.impl.domain.common.member.MemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
 public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements SolutionCloner<SolutionG> {

@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.common.member;
+package org.optaplanner.core.impl.domain.common.accessor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-
-import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
 /**
  * A {@link MemberAccessor} based on a single read {@link Method}.

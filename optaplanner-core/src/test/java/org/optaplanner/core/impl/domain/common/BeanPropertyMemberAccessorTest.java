@@ -18,7 +18,7 @@ package org.optaplanner.core.impl.domain.common;
 
 import org.junit.Test;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
-import org.optaplanner.core.impl.domain.common.member.BeanPropertyMemberAccessor;
+import org.optaplanner.core.impl.domain.common.accessor.BeanPropertyMemberAccessor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
