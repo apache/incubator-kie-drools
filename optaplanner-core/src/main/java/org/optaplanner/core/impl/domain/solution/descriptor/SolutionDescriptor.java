@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.domain.solution.descriptor;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -37,6 +39,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;
@@ -152,26 +155,23 @@ public class SolutionDescriptor {
         List<Field> fieldList = Arrays.asList(solutionClass.getDeclaredFields());
         Collections.sort(fieldList, new AlphabeticMemberComparator());
         for (Field field : fieldList) {
-            boolean entityPropertyAnnotated = field.isAnnotationPresent(PlanningEntityProperty.class);
-            boolean entityCollectionPropertyAnnotated = field.isAnnotationPresent(PlanningEntityCollectionProperty.class);
-            if (entityPropertyAnnotated || entityCollectionPropertyAnnotated) {
+            Class<? extends Annotation> entityPropertyAnnotationClass = extractEntityPropertyAnnotationClass(field);
+            if (entityPropertyAnnotationClass != null) {
                 noEntityPropertyAnnotation = false;
                 MemberAccessor memberAccessor = new FieldMemberAccessor(field);
-                registerEntityPropertyAccessor(entityPropertyAnnotated, entityCollectionPropertyAnnotated, memberAccessor);
+                registerEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
             }
         }
         // TODO This does not support annotations on inherited methods
         List<Method> methodList = Arrays.asList(solutionClass.getDeclaredMethods());
         Collections.sort(methodList, new AlphabeticMemberComparator());
         for (Method method : methodList) {
-            boolean entityPropertyAnnotated = method.isAnnotationPresent(PlanningEntityProperty.class);
-            boolean entityCollectionPropertyAnnotated = method.isAnnotationPresent(PlanningEntityCollectionProperty.class);
-            if (entityPropertyAnnotated || entityCollectionPropertyAnnotated) {
+            Class<? extends Annotation> entityPropertyAnnotationClass = extractEntityPropertyAnnotationClass(method);
+            if (entityPropertyAnnotationClass != null) {
                 noEntityPropertyAnnotation = false;
-                ReflectionHelper.assertGetterMethod(method,
-                        entityPropertyAnnotated ? PlanningEntityProperty.class : PlanningEntityCollectionProperty.class);
+                ReflectionHelper.assertGetterMethod(method, entityPropertyAnnotationClass);
                 MemberAccessor memberAccessor = new BeanPropertyMemberAccessor(method);
-                registerEntityPropertyAccessor(entityPropertyAnnotated, entityCollectionPropertyAnnotated, memberAccessor);
+                registerEntityPropertyAccessor(entityPropertyAnnotationClass, memberAccessor);
             }
         }
         if (noEntityPropertyAnnotation) {
@@ -181,24 +181,48 @@ public class SolutionDescriptor {
         }
     }
 
-    private void registerEntityPropertyAccessor(boolean entityPropertyAnnotated, boolean entityCollectionPropertyAnnotated,
-            MemberAccessor memberAccessor) {
-        if (entityPropertyAnnotated && entityCollectionPropertyAnnotated) {
-            throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") has a member (" + memberAccessor.getName() + ") that has both a "
-                    + PlanningEntityProperty.class.getSimpleName() + " annotation and a "
-                    + PlanningEntityCollectionProperty.class.getSimpleName() + " annotation.");
+    private Class<? extends Annotation> extractEntityPropertyAnnotationClass(AnnotatedElement member) {
+        Class<? extends Annotation> annotationClass = null;
+        for (Class<? extends Annotation> detectedAnnotationClass : Arrays.asList(PlanningEntityProperty.class, PlanningEntityCollectionProperty.class)) {
+            if (member.isAnnotationPresent(detectedAnnotationClass)) {
+                if (annotationClass != null) {
+                    throw new IllegalStateException("The solutionClass (" + solutionClass
+                            + ") has a member (" + member + ") that has both a "
+                            + annotationClass.getSimpleName() + " annotation and a "
+                            + detectedAnnotationClass.getSimpleName() + " annotation.");
+                }
+                annotationClass = detectedAnnotationClass;
+                // Do not break early: check other annotations too
+            }
         }
-        if (entityPropertyAnnotated) {
-            entityPropertyAccessorMap.put(memberAccessor.getName(), memberAccessor);
-        } else if (entityCollectionPropertyAnnotated) {
+        return annotationClass;
+    }
+
+    private void registerEntityPropertyAccessor(Class<? extends Annotation> entityPropertyAnnotationClass,
+            MemberAccessor memberAccessor) {
+        String memberName = memberAccessor.getName();
+        if (entityPropertyAccessorMap.containsKey(memberName)
+                || entityCollectionPropertyAccessorMap.containsKey(memberName)) {
+            MemberAccessor duplicate = entityPropertyAccessorMap.get(memberName);
+            if (duplicate == null) {
+                duplicate = entityCollectionPropertyAccessorMap.get(memberName);
+            }
+            throw new IllegalStateException("The solutionClass (" + solutionClass
+                    + ") has a " + entityPropertyAnnotationClass.getSimpleName()
+                    + " annotated member (" + memberAccessor
+                    + ") that is duplicated by another member (" + duplicate + ").\n"
+                    + "  Verify that the annotation is not defined on both the field and its getter.");
+        }
+        if (entityPropertyAnnotationClass.equals(PlanningEntityProperty.class)) {
+            entityPropertyAccessorMap.put(memberName, memberAccessor);
+        } else if (entityPropertyAnnotationClass.equals(PlanningEntityCollectionProperty.class)) {
             if (!Collection.class.isAssignableFrom(memberAccessor.getType())) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
                         + ") has a " + PlanningEntityCollectionProperty.class.getSimpleName()
-                        + " annotated member (" + memberAccessor.getName() + ") that does not return a "
+                        + " annotated member (" + memberName + ") that does not return a "
                         + Collection.class.getSimpleName() + ".");
             }
-            entityCollectionPropertyAccessorMap.put(memberAccessor.getName(), memberAccessor);
+            entityCollectionPropertyAccessorMap.put(memberName, memberAccessor);
         }
     }
 
@@ -312,19 +336,6 @@ public class SolutionDescriptor {
             }
         }
         return entityDescriptor;
-    }
-    
-    public Collection<GenuineVariableDescriptor> getChainedVariableDescriptors() {
-        Collection<GenuineVariableDescriptor> chainedVariableDescriptors
-                = new ArrayList<GenuineVariableDescriptor>();
-        for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
-            for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
-                if (variableDescriptor.isChained()) {
-                    chainedVariableDescriptors.add(variableDescriptor);
-                }
-            }
-        }
-        return chainedVariableDescriptors;
     }
 
     public GenuineVariableDescriptor findGenuineVariableDescriptor(Object entity, String variableName) {

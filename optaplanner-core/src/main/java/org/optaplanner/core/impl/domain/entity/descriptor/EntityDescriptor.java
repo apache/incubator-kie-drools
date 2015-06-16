@@ -204,49 +204,62 @@ public class EntityDescriptor {
         }
     }
 
+    private Class<? extends Annotation> extractVariableAnnotationClass(AnnotatedElement member) {
+        Class<? extends Annotation> annotationClass = null;
+        for (Class<? extends Annotation> detectedAnnotationClass : VARIABLE_ANNOTATION_CLASSES) {
+            if (member.isAnnotationPresent(detectedAnnotationClass)) {
+                if (annotationClass != null) {
+                    throw new IllegalStateException("The entityClass (" + entityClass
+                            + ") has a member (" + member + ") that has both a "
+                            + annotationClass.getSimpleName() + " annotation and a "
+                            + detectedAnnotationClass.getSimpleName() + " annotation.");
+                }
+                annotationClass = detectedAnnotationClass;
+                // Do not break early: check other annotations too
+            }
+        }
+        return annotationClass;
+    }
+
     private void registerVariableAccessor(DescriptorPolicy descriptorPolicy,
             Class<? extends Annotation> variableAnnotationClass, MemberAccessor memberAccessor) {
+        String memberName = memberAccessor.getName();
+        if (declaredGenuineVariableDescriptorMap.containsKey(memberName)
+                || declaredShadowVariableDescriptorMap.containsKey(memberName)) {
+            VariableDescriptor duplicate = declaredGenuineVariableDescriptorMap.get(memberName);
+            if (duplicate == null) {
+                duplicate = declaredShadowVariableDescriptorMap.get(memberName);
+            }
+            throw new IllegalStateException("The entityClass (" + entityClass
+                    + ") has a " + variableAnnotationClass.getSimpleName()
+                    + " annotated member (" + memberAccessor
+                    + ") that is duplicated by another member for variableDescriptor (" + duplicate + ").\n"
+                    + "  Verify that the annotation is not defined on both the field and its getter.");
+        }
         if (variableAnnotationClass.equals(PlanningVariable.class)) {
             GenuineVariableDescriptor variableDescriptor = new GenuineVariableDescriptor(
                     this, memberAccessor);
-            declaredGenuineVariableDescriptorMap.put(memberAccessor.getName(), variableDescriptor);
+            declaredGenuineVariableDescriptorMap.put(memberName, variableDescriptor);
             variableDescriptor.processAnnotations(descriptorPolicy);
         } else if (variableAnnotationClass.equals(InverseRelationShadowVariable.class)) {
             ShadowVariableDescriptor variableDescriptor = new InverseRelationShadowVariableDescriptor(
                     this, memberAccessor);
-            declaredShadowVariableDescriptorMap.put(memberAccessor.getName(), variableDescriptor);
+            declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
             variableDescriptor.processAnnotations(descriptorPolicy);
         } else if (variableAnnotationClass.equals(AnchorShadowVariable.class)) {
             ShadowVariableDescriptor variableDescriptor = new AnchorShadowVariableDescriptor(
                     this, memberAccessor);
-            declaredShadowVariableDescriptorMap.put(memberAccessor.getName(), variableDescriptor);
+            declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
             variableDescriptor.processAnnotations(descriptorPolicy);
         } else if (variableAnnotationClass.equals(CustomShadowVariable.class)) {
             ShadowVariableDescriptor variableDescriptor = new CustomShadowVariableDescriptor(
                     this, memberAccessor);
-            declaredShadowVariableDescriptorMap.put(memberAccessor.getName(), variableDescriptor);
+            declaredShadowVariableDescriptorMap.put(memberName, variableDescriptor);
             variableDescriptor.processAnnotations(descriptorPolicy);
         } else {
             throw new IllegalStateException("The variableAnnotationClass ("
                     + variableAnnotationClass + ") is not implemented.");
         }
-    }
-
-    private Class<? extends Annotation> extractVariableAnnotationClass(AnnotatedElement member) {
-        Class<? extends Annotation> variableAnnotationClass = null;
-        for (Class<? extends Annotation> detectedAnnotationClass : VARIABLE_ANNOTATION_CLASSES) {
-            if (member.isAnnotationPresent(detectedAnnotationClass)) {
-                if (variableAnnotationClass != null) {
-                    throw new IllegalStateException("The entityClass (" + entityClass
-                            + ") has a member (" + member + ") that has both a "
-                            + variableAnnotationClass.getSimpleName() + " annotation and a "
-                            + detectedAnnotationClass.getSimpleName() + " annotation.");
-                }
-                variableAnnotationClass = detectedAnnotationClass;
-                // Do not break early: check other annotations too
-            }
-        }
-        return variableAnnotationClass;
     }
 
     public void linkInheritedEntityDescriptors(DescriptorPolicy descriptorPolicy) {
