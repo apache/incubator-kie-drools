@@ -150,13 +150,13 @@ public final class ReflectionHelper {
         }
         String methodName = getterMethod.getName();
         if (methodName.startsWith(PROPERTY_ACCESSOR_PREFIX_GET)) {
-            if (getterMethod.getReturnType() != void.class) {
+            if (getterMethod.getReturnType() == void.class) {
                 throw new IllegalStateException("The getterMethod (" + getterMethod + ") with a "
                         + annotationClass.getSimpleName() + " annotation must have a non-void return type ("
                         + getterMethod.getReturnType() + ").");
             }
         } else if (methodName.startsWith(PROPERTY_ACCESSOR_PREFIX_IS)) {
-            if (getterMethod.getReturnType() == boolean.class) {
+            if (getterMethod.getReturnType() != boolean.class) {
                 throw new IllegalStateException("The getterMethod (" + getterMethod + ") with a "
                         + annotationClass.getSimpleName() + " annotation must have a primitive boolean return type ("
                         + getterMethod.getReturnType() + ") or use another prefix in its methodName ("

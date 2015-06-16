@@ -126,6 +126,15 @@ public class SolutionDescriptor {
 
     private void processValueRangeProviderAnnotations(DescriptorPolicy descriptorPolicy) {
         // TODO This does not support annotations on inherited fields
+        List<Field> fieldList = Arrays.asList(solutionClass.getDeclaredFields());
+        Collections.sort(fieldList, new AlphabeticMemberComparator());
+        for (Field field : fieldList) {
+            if (field.isAnnotationPresent(ValueRangeProvider.class)) {
+                MemberAccessor memberAccessor = new FieldMemberAccessor(field);
+                descriptorPolicy.addFromSolutionValueRangeProvider(memberAccessor);
+            }
+        }
+        // TODO This does not support annotations on inherited members
         List<Method> methodList = Arrays.asList(solutionClass.getDeclaredMethods());
         Collections.sort(methodList, new AlphabeticMemberComparator());
         for (Method method : methodList) {

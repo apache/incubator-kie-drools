@@ -146,7 +146,15 @@ public class EntityDescriptor {
     }
 
     private void processValueRangeProviderAnnotations(DescriptorPolicy descriptorPolicy) {
-        // Only iterate declared methods, not inherited methods, to avoid registering the same ValueRangeProvider twice
+        // Only iterate declared fields and methods, not inherited members, to avoid registering the same ValueRangeProvider twice
+        List<Field> fieldList = Arrays.asList(entityClass.getDeclaredFields());
+        Collections.sort(fieldList, new AlphabeticMemberComparator());
+        for (Field field : fieldList) {
+            if (field.isAnnotationPresent(ValueRangeProvider.class)) {
+                MemberAccessor memberAccessor = new FieldMemberAccessor(field);
+                descriptorPolicy.addFromEntityValueRangeProvider(memberAccessor);
+            }
+        }
         List<Method> methodList = Arrays.asList(entityClass.getDeclaredMethods());
         Collections.sort(methodList, new AlphabeticMemberComparator());
         for (Method method : methodList) {
