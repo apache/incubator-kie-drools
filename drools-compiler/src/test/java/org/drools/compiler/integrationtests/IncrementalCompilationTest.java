@@ -790,9 +790,9 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         kfs.generateAndWritePomXML( id );
         kfs.write( ks.getResources()
-                           .newReaderResource( new StringReader( drl1 ) )
-                           .setResourceType( ResourceType.DRL )
-                           .setSourcePath( "drl1.drl" ) );
+                     .newReaderResource( new StringReader( drl1 ) )
+                     .setResourceType( ResourceType.DRL )
+                     .setSourcePath( "drl1.drl" ) );
 
         kieBuilder.buildAll();
 
@@ -1350,14 +1350,14 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         FactA factA = new FactA(105742);
         factA.setField1( "entry:" + 105742 );
-        FactHandle fh = ksession.insert(factA);
+        FactHandle fh = ksession.insert( factA );
 
         // Create a new jar for version 1.1.0
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
         km = createAndDeployJarInStreamMode(ks, releaseId2);
 
         // try to update the container to version 1.1.0
-        kc.updateToVersion(releaseId2);
+        kc.updateToVersion( releaseId2 );
 
         ksession.delete(fh);
     }
@@ -1503,10 +1503,10 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         KieContainer kc = ks.newKieContainer( km.getReleaseId() );
 
         StatelessKieSession statelessKieSession = kc.newStatelessKieSession();
-        KieRuntimeLogger kieRuntimeLogger = ks.getLoggers().newConsoleLogger(statelessKieSession);
+        KieRuntimeLogger kieRuntimeLogger = ks.getLoggers().newConsoleLogger( statelessKieSession );
 
         List<Command> cmds = new ArrayList<Command>();
-        cmds.add( CommandFactory.newInsertElements( new ArrayList() ));
+        cmds.add( CommandFactory.newInsertElements( new ArrayList() ) );
         FireAllRulesCommand fireAllRulesCommand = (FireAllRulesCommand) CommandFactory.newFireAllRules();
         cmds.add( fireAllRulesCommand );
         cmds.add( CommandFactory.newGetObjects( "returnedObjects" ) );
@@ -1518,7 +1518,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
         km = createAndDeployJar( ks, releaseId2, drl1 + drl2 );
 
-        kc.updateToVersion(km.getReleaseId());
+        kc.updateToVersion( km.getReleaseId() );
     }
 
     @Test
@@ -1595,5 +1595,49 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
         assertEquals( 0, list.size() );
+    }
+
+    @Test
+    public void testRuleRemovalAfterUpdate() {
+        // DROOLS-801
+        String drl = "rule Rule1\n" +
+                     "  when\n" +
+                     "    Integer()\n" +
+                     "    String()\n" +
+                     "    Long()\n" +
+                     "    not (Double())\n" +
+                     "  then \n" +
+                     "end\n" +
+                     "\n" +
+                     "rule Rule2\n" +
+                     "  when\n" +
+                     "    Integer()\n" +
+                     "    String()\n" +
+                     "  then \n" +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1 );
+
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+
+        ksession.insert( "test" );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        createAndDeployJar( ks, releaseId2, drl );
+        kc.updateToVersion( releaseId2 );
+
+        FactHandle handle = ksession.insert( 1 );
+        ksession.fireAllRules();
+
+        ksession.update( handle, 1 );
+        ksession.fireAllRules();
+
+        ReleaseId releaseId3 = ks.newReleaseId( "org.kie", "test-upgrade", "1.2.0" );
+        createAndDeployJar( ks, releaseId3 );
+        kc.updateToVersion( releaseId3 );
     }
 }

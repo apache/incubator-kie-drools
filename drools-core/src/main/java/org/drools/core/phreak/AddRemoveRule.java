@@ -962,20 +962,17 @@ public class AddRemoveRule {
      }
 
      private static void splitBitMasks(SegmentMemory sm1, SegmentMemory sm2, int pos) {
+         int splitPos = pos + 1; // +1 as zero based
          long currentAllLinkedMaskTest = sm1.getAllLinkedMaskTest();
-         long mask = 1;
-         for ( int i = 1; i <= pos; i++ ) {
-             mask = mask << 1;
-             mask = mask | 1;
-         }
+         long currentLinkedNodeMask = sm1.getLinkedNodeMask();
+         long mask = (1L << splitPos) - 1;
 
          sm1.setAllLinkedMaskTest( mask & currentAllLinkedMaskTest );
          sm1.setLinkedNodeMask( sm1.getLinkedNodeMask() & sm1.getAllLinkedMaskTest() );
 
-
-         mask = currentAllLinkedMaskTest >> pos + 1; // +1 as zero based
+         mask = currentAllLinkedMaskTest >> splitPos;
          sm2.setAllLinkedMaskTest( mask );
-         sm2.setLinkedNodeMask( mask );
+         sm2.setLinkedNodeMask( mask & (currentLinkedNodeMask >> splitPos) );
      }
 
      private static void mergeBitMasks(SegmentMemory sm1, SegmentMemory sm2) {
