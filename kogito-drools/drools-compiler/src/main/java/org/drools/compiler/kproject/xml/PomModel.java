@@ -10,42 +10,52 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PomModel {
+public interface PomModel {
 
-    private static final String NATIVE_MAVEN_PARSER_CLASS = "org.kie.scanner.MavenPomModelGenerator";
+    String NATIVE_MAVEN_PARSER_CLASS = "org.kie.scanner.MavenPomModelGenerator";
 
-    private static final Logger log = LoggerFactory.getLogger(PomModel.class);
+    ReleaseId getReleaseId();
 
-    private ReleaseId releaseId;
-    private ReleaseId parentReleaseId;
-    private Set<ReleaseId> dependencies = new HashSet<ReleaseId>();
+    ReleaseId getParentReleaseId();
 
+    Collection<ReleaseId> getDependencies();
 
-    public ReleaseId getReleaseId() {
-        return releaseId;
-    }
+    public static class InternalModel implements PomModel {
+        private ReleaseId releaseId;
+        private ReleaseId parentReleaseId;
+        private Set<ReleaseId> dependencies = new HashSet<ReleaseId>();
 
-    public void setReleaseId(ReleaseId releaseId) {
-        this.releaseId = releaseId;
-    }
+        @Override
+        public ReleaseId getReleaseId() {
+            return releaseId;
+        }
 
-    public ReleaseId getParentReleaseId() {
-        return parentReleaseId;
-    }
+        public void setReleaseId(ReleaseId releaseId) {
+            this.releaseId = releaseId;
+        }
 
-    public void setParentReleaseId(ReleaseId parentReleaseId) {
-        this.parentReleaseId = parentReleaseId;
-    }
+        @Override
+        public ReleaseId getParentReleaseId() {
+            return parentReleaseId;
+        }
 
-    public Collection<ReleaseId> getDependencies() {
-        return dependencies;
-    }
+        public void setParentReleaseId(ReleaseId parentReleaseId) {
+            this.parentReleaseId = parentReleaseId;
+        }
 
-    public void addDependency(ReleaseId dependency) {
-        this.dependencies.add(dependency);
+        @Override
+        public Collection<ReleaseId> getDependencies() {
+            return dependencies;
+        }
+
+        public void addDependency(ReleaseId dependency) {
+            this.dependencies.add(dependency);
+        }
     }
 
     public static class Parser {
+
+        private static final Logger log = LoggerFactory.getLogger(PomModel.class);
 
         private static class PomModelGeneratorHolder {
             private static PomModelGenerator pomModelGenerator;
@@ -84,7 +94,7 @@ public class PomModel {
         }
     }
 
-    private static class DefaultPomModelGenerator implements PomModelGenerator {
+    static class DefaultPomModelGenerator implements PomModelGenerator {
         @Override
         public PomModel parse(String path, InputStream is) {
             return MinimalPomParser.parse(path, is);

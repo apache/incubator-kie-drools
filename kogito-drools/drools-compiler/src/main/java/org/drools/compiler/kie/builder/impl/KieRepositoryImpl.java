@@ -3,6 +3,7 @@ package org.drools.compiler.kie.builder.impl;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.io.internal.InternalResource;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.KieRepository;
@@ -85,7 +86,7 @@ public class KieRepositoryImpl
         return kieModule != null ? kieModule : getKieModule(releaseId);
     }
 
-    public KieModule getKieModule(ReleaseId releaseId, byte[] pomXml) {
+    public KieModule getKieModule(ReleaseId releaseId, PomModel pomModel) {
         KieModule kieModule = kieModuleRepo.load(releaseId);
         if (kieModule == null) {
             log.debug("KieModule Lookup. ReleaseId {} was not in cache, checking classpath",
@@ -96,7 +97,7 @@ public class KieRepositoryImpl
         if (kieModule == null) {
             log.debug("KieModule Lookup. ReleaseId {} was not in cache, checking maven repository",
                       releaseId.toExternalForm());
-            kieModule = loadKieModuleFromMavenRepo(releaseId, pomXml);
+            kieModule = loadKieModuleFromMavenRepo(releaseId, pomModel);
         }
 
         return kieModule;
@@ -109,10 +110,8 @@ public class KieRepositoryImpl
         return null;
     }
 
-    private KieModule loadKieModuleFromMavenRepo(ReleaseId releaseId, byte[] pomXml) {
-        return pomXml != null ?
-               getInternalKieScanner().loadArtifact(releaseId, new ByteArrayInputStream(pomXml)) :
-               getInternalKieScanner().loadArtifact(releaseId);
+    private KieModule loadKieModuleFromMavenRepo(ReleaseId releaseId, PomModel pomModel) {
+        return getInternalKieScanner().loadArtifact(releaseId, pomModel);
     }
 
     private InternalKieScanner getInternalKieScanner() {
@@ -147,6 +146,10 @@ public class KieRepositoryImpl
         }
 
         public KieModule loadArtifact(ReleaseId releaseId, InputStream pomXML) {
+            return null;
+        }
+
+        public KieModule loadArtifact(ReleaseId releaseId, PomModel pomModel) {
             return null;
         }
 
@@ -372,9 +375,9 @@ public class KieRepositoryImpl
 
         private interface Item {
 
-            final int INTEGER_ITEM = 0;
-            final int STRING_ITEM = 1;
-            final int LIST_ITEM = 2;
+            int INTEGER_ITEM = 0;
+            int STRING_ITEM = 1;
+            int LIST_ITEM = 2;
 
             int compareTo(Item item);
 
@@ -495,7 +498,6 @@ public class KieRepositoryImpl
              * or QUALIFIERS.size and then resort to lexical ordering. Most comparisons are decided by the first character,
              * so this is still fast. If more characters are needed then it requires a lexical sort anyway.
              *
-             * @param qualifier
              * @return an equivalent value that can be used with lexical comparison
              */
             public static String comparableQualifier(String qualifier) {

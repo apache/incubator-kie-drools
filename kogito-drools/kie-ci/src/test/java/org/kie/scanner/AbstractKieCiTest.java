@@ -36,6 +36,18 @@ public class AbstractKieCiTest {
         return (InternalKieModule) kieBuilder.getKieModule();
     }
 
+    protected InternalKieModule createKieJarWithDependencies(KieServices ks, ReleaseId releaseId, boolean isdefault, String rule, ReleaseId... dependencies) throws IOException {
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks, isdefault);
+        kfs.writePomXML(getPom(releaseId, dependencies));
+
+        String file = "org/test/" + rule + ".drl";
+        kfs.write("src/main/resources/KBase1/" + file, createDRL(rule));
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        return (InternalKieModule) kieBuilder.getKieModule();
+    }
+
     protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, String pomXml, boolean isdefault,  String... rules) throws IOException {
         KieFileSystem kfs = createKieFileSystemWithKProject(ks, isdefault);
         kfs.writePomXML(pomXml);

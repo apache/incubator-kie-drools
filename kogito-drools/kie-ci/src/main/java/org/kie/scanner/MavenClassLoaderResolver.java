@@ -1,5 +1,13 @@
 package org.kie.scanner;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.eclipse.aether.artifact.Artifact;
+import org.kie.api.builder.KieModule;
+import org.kie.api.builder.ReleaseId;
+import org.kie.internal.utils.ClassLoaderResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -10,14 +18,6 @@ import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.kie.api.builder.KieModule;
-import org.kie.api.builder.ReleaseId;
-import org.kie.internal.utils.ClassLoaderResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.eclipse.aether.artifact.Artifact;
 
 
 public class MavenClassLoaderResolver implements ClassLoaderResolver {
@@ -52,7 +52,7 @@ public class MavenClassLoaderResolver implements ClassLoaderResolver {
             return parent;
         }
 
-        ArtifactResolver resolver = ArtifactResolver.getResolverFor(kmodule.getReleaseId(),true);
+        ArtifactResolver resolver = ArtifactResolver.getResolverFor(internalKModule.getPomModel());
         List<URL> urls = new ArrayList<URL>();
         List<ReleaseId> unresolvedDeps = new ArrayList<ReleaseId>();
 

@@ -81,7 +81,7 @@ class ArtifactResolver {
     }
 
     public static ArtifactResolver getResolverFor(ReleaseId releaseId, boolean allowDefaultPom) {
-        File pomFile = getPomFileForGAV(releaseId, allowDefaultPom);
+        File pomFile = getPomFileForGAV( releaseId, allowDefaultPom );
         if (pomFile != null) {
             ArtifactResolver artifactResolver = getResolverFor(pomFile);
             if (artifactResolver != null) {
@@ -111,6 +111,12 @@ class ArtifactResolver {
     public static ArtifactResolver getResolverFor(InputStream pomStream) {
         MavenProject mavenProject = parseMavenPom(pomStream);
         return new ArtifactResolver(mavenProject);
+    }
+
+    public static ArtifactResolver getResolverFor(PomModel pomModel) {
+        return pomModel instanceof MavenPomModelGenerator.MavenModel ?
+               new ArtifactResolver( ( (MavenPomModelGenerator.MavenModel) pomModel ).getMavenProject() ) :
+               new ArtifactResolver();
     }
 
     private static File getPomFileForGAV(ReleaseId releaseId, boolean allowDefaultPom) {

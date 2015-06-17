@@ -64,7 +64,6 @@ public class KieBuilderImpl
 
     private MemoryKieModule       kModule;
 
-    private PomModel              pomModel;
     private byte[]                pomXml;
     private ReleaseId             releaseId;
 
@@ -106,14 +105,14 @@ public class KieBuilderImpl
         return this;
     }
 
-    private void init() {
+    private PomModel init() {
         KieServices ks = KieServices.Factory.get();
 
         results = new ResultsImpl();
 
         // if pomXML is null it will generate a default, using default ReleaseId
         // if pomXml is invalid, it assign pomModel to null
-        buildPomModel();
+        PomModel pomModel = buildPomModel();
 
         // if kModuleModelXML is null it will generate a default kModule, with a default kbase name
         // if kModuleModelXML is  invalid, it will kModule to null
@@ -127,7 +126,7 @@ public class KieBuilderImpl
             // add all the pom dependencies to this builder ... not sure this is a good idea (?)
             KieRepositoryImpl repository = (KieRepositoryImpl) ks.getRepository();
             for ( ReleaseId dep : pomModel.getDependencies() ) {
-                KieModule depModule = repository.getKieModule( dep, pomXml );
+                KieModule depModule = repository.getKieModule( dep, pomModel );
                 if ( depModule != null ) {
                     addKieDependency( depModule );
                 }
@@ -136,6 +135,8 @@ public class KieBuilderImpl
             // if the pomModel is null it means that the provided pom.xml is invalid so use the default releaseId
             releaseId = KieServices.Factory.get().getRepository().getDefaultReleaseId();
         }
+
+        return pomModel;
     }
 
     private void addKieDependency(KieModule depModule) {
@@ -146,7 +147,7 @@ public class KieBuilderImpl
     }
 
     public KieBuilder buildAll() {
-        init();
+        PomModel pomModel = init();
 
         // kModuleModel will be null if a provided pom.xml or kmodule.xml is invalid
         if ( !isBuilt() && kModuleModel != null ) {
@@ -396,23 +397,24 @@ public class KieBuilderImpl
         return false;
     }
 
-    private void buildPomModel() {
+    private PomModel buildPomModel() {
         pomXml = getOrGeneratePomXml( srcMfs );
         if ( pomXml == null ) {
             // will be null if the provided pom is invalid
-            return;
+            return null;
         }
 
         try {
             PomModel tempPomModel = PomModel.Parser.parse( "pom.xml",
                                                             new ByteArrayInputStream( pomXml ) );
             validatePomModel( tempPomModel ); // throws an exception if invalid
-            pomModel = tempPomModel;
+            return tempPomModel;
         } catch ( Exception e ) {
             results.addMessage( Level.ERROR,
                                 "pom.xml",
                                 "maven pom.xml found, but unable to read\n" + e.getMessage() );
         }
+        return null;
     }
 
     public static void validatePomModel(PomModel pomModel) {
