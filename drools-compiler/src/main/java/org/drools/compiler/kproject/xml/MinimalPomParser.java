@@ -14,7 +14,7 @@ public class MinimalPomParser extends DefaultHandler {
 
     private int           depth;
 
-    private PomModel      model;
+    private PomModel.InternalModel model;
 
     private StringBuilder characters;    
     
@@ -28,7 +28,7 @@ public class MinimalPomParser extends DefaultHandler {
     private String        currentScope;
 
     private MinimalPomParser() {
-        model = new PomModel();
+        model = new PomModel.InternalModel();
     }
     
     public static PomModel parse(String path, InputStream is) {
