@@ -274,7 +274,7 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter {
             for (Course course : courseList) {
                 for (int i = 0; i < course.getLectureSize(); i++) {
                     Lecture lecture = new Lecture();
-                    lecture.setId((long) id);
+                    lecture.setId(id);
                     id++;
                     lecture.setCourse(course);
                     lecture.setLectureIndexInCourse(i);

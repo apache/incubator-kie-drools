@@ -1214,8 +1214,7 @@ public class Customer {
         <title><literal>Solution</literal> Interface</title>
 
         <para>You need to present the problem as a <literal>Solution</literal> instance to the
-        <literal>Solver</literal>. So you need to have a class that implements the <literal>Solution</literal>
-        interface:</para>
+        <literal>Solver</literal>. So your class needs to implement the <literal>Solution</literal> interface:</para>
 
         <programlisting language="java">public interface Solution&lt;S extends Score&gt; {
 
@@ -1229,7 +1228,8 @@ public class Customer {
         <para>For example, an <literal>NQueens</literal> instance holds a list of all columns, all rows and all
         <literal>Queen</literal> instances:</para>
 
-        <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
+        <programlisting language="java">@PlanningSolution
+public class NQueens implements Solution&lt;SimpleScore&gt; {
 
     private int n;
 
@@ -1252,7 +1252,8 @@ public class Customer {
         <literal>score</literal> property is usually typed to the specific <literal>Score</literal> implementation you
         use. For example, <literal>NQueens</literal> uses a <literal>SimpleScore</literal>:</para>
 
-        <programlisting language="java">public class NQueens implements Solution&lt;SimpleScore&gt; {
+        <programlisting language="java">@PlanningSolution
+public class NQueens implements Solution&lt;SimpleScore&gt; {
 
     private SimpleScore score;
 
@@ -1269,7 +1270,8 @@ public class Customer {
 
         <para>Most use cases use a <literal>HardSoftScore</literal> instead:</para>
 
-        <programlisting language="java">public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
+        <programlisting language="java">@PlanningSolution
+public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
 
     private HardSoftScore score;
 
@@ -1317,20 +1319,19 @@ public class Customer {
 
         <para>The <literal>getProblemFacts()</literal> method is not called much: at most only once per solver phase per
         solver thread.</para>
-      </section>
 
-      <section xml:id="cachedProblemFact">
-        <title>Cached Problem Fact</title>
+        <section xml:id="cachedProblemFact">
+          <title>Cached Problem Fact</title>
 
-        <para>A cached problem fact is a problem fact that doesn't exist in the real domain model, but is calculated
-        before the <literal>Solver</literal> really starts solving. The <literal>getProblemFacts()</literal> method has
-        the chance to enrich the domain model with such cached problem facts, which can lead to simpler and faster score
-        constraints.</para>
+          <para>A cached problem fact is a problem fact that doesn't exist in the real domain model, but is calculated
+          before the <literal>Solver</literal> really starts solving. The <literal>getProblemFacts()</literal> method
+          has the chance to enrich the domain model with such cached problem facts, which can lead to simpler and faster
+          score constraints.</para>
 
-        <para>For example in examination, a cached problem fact <literal>TopicConflict</literal> is created for every 2
-        <literal>Topic</literal>'s which share at least 1 <literal>Student</literal>.</para>
+          <para>For example in examination, a cached problem fact <literal>TopicConflict</literal> is created for every
+          2 <literal>Topic</literal>'s which share at least 1 <literal>Student</literal>.</para>
 
-        <programlisting language="java">    public Collection&lt;? extends Object&gt; getProblemFacts() {
+          <programlisting language="java">    public Collection&lt;? extends Object&gt; getProblemFacts() {
         List&lt;Object&gt; facts = new ArrayList&lt;Object&gt;();
         // ...
         facts.addAll(calculateTopicConflictList());
@@ -1358,10 +1359,38 @@ public class Customer {
         return topicConflictList;
     }</programlisting>
 
-        <para>Any score constraint that needs to check if no 2 exams have a topic which share a student are being
-        scheduled close together (depending on the constraint: at the same time, in a row or in the same day), can
-        simply use the <literal>TopicConflict</literal> instance as a problem fact, instead of having to combine every 2
-        <literal>Student</literal> instances.</para>
+          <para>Any score constraint that needs to check if no 2 exams have a topic which share a student are being
+          scheduled close together (depending on the constraint: at the same time, in a row or in the same day), can
+          simply use the <literal>TopicConflict</literal> instance as a problem fact, instead of having to combine every
+          2 <literal>Student</literal> instances.</para>
+        </section>
+      </section>
+
+      <section xml:id="extractTheEntitiesFromTheSolution">
+        <title>Extract the entities from the <literal>Solution</literal></title>
+
+        <para>Planner needs to extract the entity instances from the <literal>Solution</literal> instance. It gets those
+        collection(s) by calling every getter (or field) that is annotated with
+        <literal>@PlanningEntityCollectionProperty</literal>:</para>
+
+        <programlisting language="java">@PlanningSolution
+public class NQueens implements Solution&lt;SimpleScore&gt; {
+    ...
+
+    private List&lt;Queen&gt; queenList;
+
+    @PlanningEntityCollectionProperty
+    public List&lt;Queen&gt; getQueenList() {
+        return queenList;
+    }
+
+}</programlisting>
+
+        <para>There can be multiple <literal>@PlanningEntityCollectionProperty</literal> annotated members. Those can
+        even return a <literal>Collection</literal> with the same entity class type.</para>
+
+        <para>In rare cases, a planning entity might be a singleton: use <literal>@PlanningEntityProperty</literal> on
+        its getter (or field) instead.</para>
       </section>
 
       <section xml:id="cloningASolution">
@@ -1507,7 +1536,7 @@ public class SeatDesignationDependency {
     private List&lt;Queen&gt; createQueenList(NQueens nQueens) {
         int n = nQueens.getN();
         List&lt;Queen&gt; queenList = new ArrayList&lt;Queen&gt;(n);
-        long id = 0;
+        long id = 0L;
         for (Column column : nQueens.getColumnList()) {
             Queen queen = new Queen();
             queen.setId(id);
@@ -1535,9 +1564,12 @@ public class SeatDesignationDependency {
         <programlisting language="java">        private void createLectureList(CourseSchedule schedule) {
             List&lt;Course&gt; courseList = schedule.getCourseList();
             List&lt;Lecture&gt; lectureList = new ArrayList&lt;Lecture&gt;(courseList.size());
+            long id = 0L;
             for (Course course : courseList) {
                 for (int i = 0; i &lt; course.getLectureSize(); i++) {
                     Lecture lecture = new Lecture();
+                    lecture.setId(id);
+                    id++;
                     lecture.setCourse(course);
                     lecture.setLectureIndexInCourse(i);
                     // Notice that we leave the PlanningVariable properties (period and room) on null
