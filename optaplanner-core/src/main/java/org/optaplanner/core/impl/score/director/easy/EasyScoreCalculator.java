@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.score.director.easy;
 
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.heuristic.move.Move;
 
 /**
  * Used for easy java {@link Score} calculation. This is non-incremental calculation, which is slow.
@@ -29,6 +30,8 @@ import org.optaplanner.core.api.score.Score;
 public interface EasyScoreCalculator<Sol extends Solution> {
 
     /**
+     * This method is only called if the {@link Score} cannot be predicted.
+     * The {@link Score} can be predicted for example after an undo {@link Move}.
      * @param solution never null
      * @return never null
      */

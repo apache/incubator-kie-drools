@@ -16,8 +16,11 @@
 
 package org.optaplanner.core.impl.score.director.incremental;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 
 /**
@@ -37,19 +40,40 @@ public interface IncrementalScoreCalculator<Sol extends Solution> {
      */
     void resetWorkingSolution(Sol workingSolution);
 
+    /**
+     * @param entity never null, an instance of a {@link PlanningEntity} class
+     */
     void beforeEntityAdded(Object entity);
 
+    /**
+     * @param entity never null, an instance of a {@link PlanningEntity} class
+     */
     void afterEntityAdded(Object entity);
 
+    /**
+     * @param entity never null, an instance of a {@link PlanningEntity} class
+     * @param variableName never null, either a genuine or shadow {@link PlanningVariable}
+     */
     void beforeVariableChanged(Object entity, String variableName);
 
+    /**
+     * @param entity never null, an instance of a {@link PlanningEntity} class
+     * @param variableName never null, either a genuine or shadow {@link PlanningVariable}
+     */
     void afterVariableChanged(Object entity, String variableName);
 
+    /**
+     * @param entity never null, an instance of a {@link PlanningEntity} class
+     */
     void beforeEntityRemoved(Object entity);
-
+    /**
+     * @param entity never null, an instance of a {@link PlanningEntity} class
+     */
     void afterEntityRemoved(Object entity);
 
     /**
+     * This method is only called if the {@link Score} cannot be predicted.
+     * The {@link Score} can be predicted for example after an undo {@link Move}.
      * @return never null
      */
     Score calculateScore();
