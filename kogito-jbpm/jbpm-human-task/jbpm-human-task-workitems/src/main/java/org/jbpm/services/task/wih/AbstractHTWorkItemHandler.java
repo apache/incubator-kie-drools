@@ -98,14 +98,20 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
         if (comment == null) {
             comment = "";
         }
+        
+        String description = (String) workItem.getParameter("Description");
+        if (description == null) {
+            description = comment;
+        }
+        
         List<I18NText> descriptions = new ArrayList<I18NText>();
         I18NText descText = TaskModelProvider.getFactory().newI18NText();
         ((InternalI18NText) descText).setLanguage(locale);
-        ((InternalI18NText) descText).setText(comment);
+        ((InternalI18NText) descText).setText(description);
         descriptions.add(descText);
         task.setDescriptions(descriptions);
         
-        task.setDescription(comment);
+        task.setDescription(description);
         
         List<I18NText> subjects = new ArrayList<I18NText>();
         I18NText subjectText = TaskModelProvider.getFactory().newI18NText();
