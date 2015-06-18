@@ -692,15 +692,16 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
 	        }
 
 			
-                if(ti.getDescription() != null 
-                        && !ti.getDescription().equals(auditTaskImpl.getDescription())){
+                if((ti.getDescription() != null && !ti.getDescription().equals(auditTaskImpl.getDescription()))
+                        || (ti.getDescription() == null && auditTaskImpl.getDescription() != null)){
                     String message ="Updated Description {From: "+auditTaskImpl.getDescription()+
                                                                         ", to: "+ti.getDescription()+"}";
                     persistenceContext.persist(new TaskEventImpl(ti.getId(),
                                 org.kie.internal.task.api.model.TaskEvent.TaskEventType.UPDATED,
                                 ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId, message));
                 }
-                if( ti.getName() != null && !ti.getName().equals(auditTaskImpl.getName())){
+                if( (ti.getName() != null && !ti.getName().equals(auditTaskImpl.getName()))
+                        || (ti.getName() == null && auditTaskImpl.getName() != null)){
                     String message ="Updated Name {From: "+auditTaskImpl.getName()+
                                                                         ", to: "+ti.getName()+"}";
                     persistenceContext.persist(new TaskEventImpl(ti.getId(),
@@ -715,8 +716,10 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
                                 ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId, message));
                 }
 
-                if(auditTaskImpl.getDueDate() != null && ti.getTaskData().getExpirationTime() != null 
-                        && auditTaskImpl.getDueDate().getTime() != ti.getTaskData().getExpirationTime().getTime()){
+                if((auditTaskImpl.getDueDate() != null && ti.getTaskData().getExpirationTime() != null 
+                        && auditTaskImpl.getDueDate().getTime() != ti.getTaskData().getExpirationTime().getTime()) 
+                        || (auditTaskImpl.getDueDate() == null && ti.getTaskData().getExpirationTime() != null)
+                        || (auditTaskImpl.getDueDate() != null && ti.getTaskData().getExpirationTime() == null)){
                     String message ="Updated DueDate {From: "+auditTaskImpl.getDueDate()+
                                                                         ", to: "+ti.getTaskData().getExpirationTime()+"}";
                     persistenceContext.persist(new TaskEventImpl(ti.getId(),
