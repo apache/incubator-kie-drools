@@ -173,8 +173,12 @@
     <section xml:id="integrationWithOSGi">
       <title>OSGi</title>
 
-      <para>The <literal>optaplanner-core</literal> jar includes OSGi metadata to function properly in an OSGi
-      environment too.</para>
+      <para>The <literal>optaplanner-core</literal> jar includes OSGi metadata in its <literal>MANIFEST.MF</literal>
+      file to function properly in an OSGi environment too.</para>
+
+      <para>Furthermore, the maven artifact <literal>drools-karaf-features</literal> (which will be renamed to
+      <literal>kie-karaf-features</literal>) contains a <literal>features.xml</literal> file that supports the
+      OSGi-feature <literal>optaplanner-engine</literal>.</para>
 
       <note>
         <para>Planner does <emphasis>not</emphasis> require OSGi. It works perfectly fine in a normal Java environment
@@ -221,9 +225,9 @@
         </listitem>
 
         <listitem>
-          <para>Add these lines to the <literal>android</literal> area in the <literal>build.gradle</literal> file in your Android
-          project to allow classes of the <literal>java.*</literal> package inside the <literal>javabeans-1.0.jar</literal>
-          file to be used:</para>
+          <para>Add these lines to the <literal>android</literal> area in the <literal>build.gradle</literal> file in
+          your Android project to allow classes of the <literal>java.*</literal> package inside the
+          <literal>javabeans-1.0.jar</literal> file to be used:</para>
 
           <programlisting language="gradle">android {
     ...
