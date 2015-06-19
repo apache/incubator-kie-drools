@@ -183,6 +183,11 @@ public class SelectorTestUtils {
                 return valueList.iterator();
             }
         });
+        when(valueSelector.endingIterator(any())).thenAnswer(new Answer<Iterator<Object>>() {
+            public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
+                return valueList.iterator();
+            }
+        });
         when(valueSelector.iterator()).thenAnswer(new Answer<Iterator<Object>>() {
             public Iterator<Object> answer(InvocationOnMock invocation) throws Throwable {
                 return valueList.iterator();

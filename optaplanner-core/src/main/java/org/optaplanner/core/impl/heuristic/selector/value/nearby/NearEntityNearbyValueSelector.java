@@ -53,7 +53,7 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
             throw new IllegalArgumentException("The valueSelector (" + this
                     + ") with randomSelection (" + randomSelection + ") has no nearbyRandom (" + nearbyRandom + ").");
         }
-        // TODO Remove this limitation
+        // TODO Remove this limitation and unignore test NearEntityNearbyValueSelectorTest.originalSelection()
         if (!childValueSelector.getVariableDescriptor().getVariablePropertyType().isAssignableFrom(
                 originEntitySelector.getEntityDescriptor().getEntityClass())) {
             throw new IllegalArgumentException("The valueSelector (" + this
@@ -155,6 +155,11 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
 
         private final Iterator<Object> originEntityIterator;
         private final long childSize;
+
+        private boolean originSelected = false;
+        private boolean originIsNotEmpty;
+        private Object origin;
+
         private int nextNearbyIndex;
 
         public OriginalEntityNearbyValueIterator(Iterator<Object> originEntityIterator, long childSize) {
@@ -163,14 +168,24 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
             nextNearbyIndex = discardNearbyIndexZero ? 1 : 0;
         }
 
+        private void selectOrigin() {
+            if (originSelected) {
+                return;
+            }
+            originIsNotEmpty = originEntityIterator.hasNext();
+            origin = originEntityIterator.next();
+            originSelected = true;
+        }
+
         @Override
         public boolean hasNext() {
-            return originEntityIterator.hasNext() && nextNearbyIndex < childSize;
+            selectOrigin();
+            return originIsNotEmpty && nextNearbyIndex < childSize;
         }
 
         @Override
         public Object next() {
-            Object origin = originEntityIterator.next();
+            selectOrigin();
             Object[] destinations = originToDestinationsMap.get(origin);
             Object next = destinations[nextNearbyIndex];
             nextNearbyIndex++;
