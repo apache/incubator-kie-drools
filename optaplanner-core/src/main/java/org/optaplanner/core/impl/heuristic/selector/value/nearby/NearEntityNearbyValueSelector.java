@@ -212,4 +212,9 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
 
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + originEntitySelector + ", " + childValueSelector + ")";
+    }
+
 }

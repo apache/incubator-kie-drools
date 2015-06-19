@@ -76,4 +76,9 @@ public class ManualEntityMimicRecorder implements EntityMimicRecorder {
         return sourceEntitySelector.endingIterator();
     }
 
+    @Override
+    public String toString() {
+        return "Manual(" + sourceEntitySelector + ")";
+    }
+
 }
