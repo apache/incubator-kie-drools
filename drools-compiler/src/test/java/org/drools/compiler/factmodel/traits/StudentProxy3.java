@@ -82,7 +82,7 @@ public class StudentProxy3 extends TraitProxy implements IStudent {
     }
 
     @Override
-    public String getTraitName() {
+    public String _getTraitName() {
         return traitType;
     }
 

@@ -46,7 +46,7 @@ public abstract class TraitProxy implements Externalizable, TraitType, Comparabl
 
     protected Map<String, Object> fields;
 
-    public boolean isVirtual() {
+    public boolean _isVirtual() {
         return false;
     }
 
@@ -58,7 +58,7 @@ public abstract class TraitProxy implements Externalizable, TraitType, Comparabl
         fields = m;
     }
 
-    public abstract String getTraitName();
+    public abstract String _getTraitName();
 
     
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -139,7 +139,7 @@ public abstract class TraitProxy implements Externalizable, TraitType, Comparabl
         this.tripleFactory = tripleFactory;
     }
 
-    public BitSet getTypeCode() {
+    public BitSet _getTypeCode() {
         return typeCode;
     }
 
@@ -196,7 +196,7 @@ public abstract class TraitProxy implements Externalizable, TraitType, Comparabl
     }
 
     @Override
-    public boolean hasTypeCode( BitSet typeCode ) {
+    public boolean _hasTypeCode( BitSet typeCode ) {
         if ( otns == null ) {
             return false;
         }

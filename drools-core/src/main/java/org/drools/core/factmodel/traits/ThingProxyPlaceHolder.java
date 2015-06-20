@@ -19,7 +19,7 @@ public class ThingProxyPlaceHolder<K> extends TraitProxy implements Thing<K>, Tr
     }
 
     @Override
-    public boolean isVirtual() {
+    public boolean _isVirtual() {
         return true;
     }
 
@@ -32,7 +32,7 @@ public class ThingProxyPlaceHolder<K> extends TraitProxy implements Thing<K>, Tr
     }
 
     @Override
-    public String getTraitName() {
+    public String _getTraitName() {
         return Thing.class.getName();
     }
 

@@ -167,11 +167,11 @@ public class TraitField implements Serializable, Externalizable {
             if ( defaultValuesByTraits == null ) {
                 defaultValuesByTraits = new DefaultValueHierarchy();
             }
-            defaultValuesByTraits.addMember( defaultValue, trait.getTypeCode() );
+            defaultValuesByTraits.addMember( defaultValue, trait._getTypeCode() );
             if ( defaultValuesByTraits.getBottomCode() == null ) {
-                defaultValuesByTraits.setBottomCode( (BitSet) trait.getTypeCode().clone() );
+                defaultValuesByTraits.setBottomCode( (BitSet) trait._getTypeCode().clone() );
             } else {
-                defaultValuesByTraits.getBottomCode().or( trait.getTypeCode() );
+                defaultValuesByTraits.getBottomCode().or( trait._getTypeCode() );
             }
         }
 
@@ -262,7 +262,7 @@ public class TraitField implements Serializable, Externalizable {
 
     public Object shed( TraitType trait, TypeWrapper rangeWrapper, TypeWrapper asWrapper, WorkingMemory workingMemory ) {
         if ( this.defaultValuesByTraits != null ) {
-            this.defaultValuesByTraits.removeMember( trait.getTypeCode() );
+            this.defaultValuesByTraits.removeMember( trait._getTypeCode() );
         }
 
         this.rangeTypes.remove( rangeWrapper );
