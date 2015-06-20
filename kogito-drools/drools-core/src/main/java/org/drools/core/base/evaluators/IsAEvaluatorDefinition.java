@@ -322,7 +322,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getCurrentTypeCode();
                 if ( sourceTraits == null && source instanceof TraitType ) {
                     CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
-                    sourceTraits = x.getCode( ((TraitType)source).getTraitName() );
+                    sourceTraits = x.getCode( ((TraitType)source)._getTraitName() );
                 }
             } else if ( source instanceof TraitableBean ) {
                 sourceTraits = ((TraitableBean) source).getCurrentTypeCode();
@@ -346,7 +346,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 targetTraits = ((TraitableBean) ((Thing) target).getCore()).getCurrentTypeCode();
                 if ( targetTraits == null && target instanceof TraitType ) {
                     CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
-                    targetTraits = x.getCode( ((TraitType)target).getTraitName() );
+                    targetTraits = x.getCode( ((TraitType)target)._getTraitName() );
                 }
             } else if ( target instanceof TraitableBean ) {
                 targetTraits = ((TraitableBean) target).getCurrentTypeCode();

@@ -68,7 +68,7 @@ public class StudentProxy2 extends TraitProxy implements IStudent {
         return false;
     }
 
-    public String getTraitName() {
+    public String _getTraitName() {
         return traitType;
     }
 

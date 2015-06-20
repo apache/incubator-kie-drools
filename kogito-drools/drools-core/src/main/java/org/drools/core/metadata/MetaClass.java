@@ -6,5 +6,5 @@ public interface MetaClass<T> extends Identifiable {
 
     public int getPropertyIndex( MetaProperty propertyLiteral );
 
-    public NewInstance<T> newInstance( Object id, With... args );
+    //public NewInstance<T> newInstance( Object id, With... args );
 }
