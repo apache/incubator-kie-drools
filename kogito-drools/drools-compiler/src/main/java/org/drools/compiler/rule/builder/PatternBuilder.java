@@ -935,22 +935,23 @@ public class PatternBuilder
 
     private boolean findExpressionValues(RelationalExprDescr relDescr, String[] values) {
         boolean usesThisRef;
+        //FIXME use regexp for 'this'?
         if ( relDescr.getRight() instanceof AtomicExprDescr ) {
             AtomicExprDescr rdescr = ((AtomicExprDescr) relDescr.getRight());
             values[1] = rdescr.getRewrittenExpression().trim();
-            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.");
+            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.") || values[1].contains( ")this)." );;
         } else {
             BindingDescr rdescr = ((BindingDescr) relDescr.getRight());
             values[1] = rdescr.getExpression().trim();
-            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.");
+            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.") || values[1].contains( ")this)." );;
         }
         if ( relDescr.getLeft() instanceof AtomicExprDescr ) {
             AtomicExprDescr ldescr = (AtomicExprDescr) relDescr.getLeft();
             values[0] = ldescr.getRewrittenExpression();
-            usesThisRef = usesThisRef || "this".equals( values[0] ) || values[0].startsWith("this.");
+            usesThisRef = usesThisRef || "this".equals( values[0] ) || values[0].startsWith("this.") || values[0].contains( ")this)." );
         } else {
             values[0] = ((BindingDescr) relDescr.getLeft()).getExpression();
-            usesThisRef = usesThisRef || "this".equals( values[0] ) || values[0].startsWith("this.");
+            usesThisRef = usesThisRef || "this".equals( values[ 0 ] ) || values[0].startsWith( "this." ) || values[0].contains( ")this)." );
         }
         return usesThisRef;
     }
