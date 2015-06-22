@@ -41,8 +41,8 @@ public class GuidedDTTemplateDataProvider
         if ( rowData == null ) {
             throw new NullPointerException( "rowData cannot be null" );
         }
-        //rowData does not contain the Analysis column, columns does
-        if ( rowData.size() != columns.size() - 1 ) {
+
+        if ( rowData.size() != columns.size() ) {
             throw new IllegalArgumentException( "rowData contains a different number of columns to those provided" );
         }
 

@@ -80,8 +80,6 @@ public class GuidedDecisionTable52 implements HasImports,
 
     private List<ActionCol52> actionCols = new ArrayList<ActionCol52>();
 
-    private transient AnalysisCol52 analysisCol;
-
     private AuditLog auditLog;
 
     private Imports imports = new Imports();
@@ -101,13 +99,6 @@ public class GuidedDecisionTable52 implements HasImports,
      * conditionCols, then actionCols, in that order, left to right.
      */
     private List<List<DTCellValue52>> data = new ArrayList<List<DTCellValue52>>();
-
-    private transient List<Analysis> analysisData;
-
-    public GuidedDecisionTable52() {
-        analysisCol = new AnalysisCol52();
-        analysisCol.setHideColumn( true );
-    }
 
     public List<ActionCol52> getActionCols() {
         return actionCols;
@@ -225,10 +216,6 @@ public class GuidedDecisionTable52 implements HasImports,
         return data;
     }
 
-    public List<Analysis> getAnalysisData() {
-        return analysisData;
-    }
-
     /**
      * This method expands Composite columns into individual columns where
      * knowledge of individual columns is necessary; for example separate
@@ -267,7 +254,6 @@ public class GuidedDecisionTable52 implements HasImports,
                 columns.add( ac );
             }
         }
-        columns.add( analysisCol );
         return columns;
     }
 
@@ -296,17 +282,6 @@ public class GuidedDecisionTable52 implements HasImports,
             this.rowNumberCol = new RowNumberCol52();
         }
         return this.rowNumberCol;
-    }
-
-    public void initAnalysisColumn() {
-        analysisData = new ArrayList<Analysis>( data.size() );
-        for ( int i = 0; i < data.size(); i++ ) {
-            analysisData.add( new Analysis() );
-        }
-    }
-
-    public AnalysisCol52 getAnalysisCol() {
-        return analysisCol;
     }
 
     public String getTableName() {

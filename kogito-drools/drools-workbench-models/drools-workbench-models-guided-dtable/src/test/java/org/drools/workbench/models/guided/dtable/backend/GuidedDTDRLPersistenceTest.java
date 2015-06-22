@@ -51,7 +51,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.ActionSetFieldCol5
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemInsertFactCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionWorkItemSetFieldCol52;
-import org.drools.workbench.models.guided.dtable.shared.model.AnalysisCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.AttributeCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionVariableColumn;
@@ -562,10 +561,6 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
 
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
-
         List<DTCellValue52> rowData = DataUtilities.makeDataRowList( row );
         TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
                                                                                  rowData );
@@ -673,10 +668,6 @@ public class GuidedDTDRLPersistenceTest {
         p1.getChildColumns().add( col3 );
         allColumns.add( col3 );
 
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
-
         List<DTCellValue52> rowData = DataUtilities.makeDataRowList( row );
         TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
                                                                                  rowData );
@@ -783,10 +774,6 @@ public class GuidedDTDRLPersistenceTest {
         col4.setConstraintValueType( BaseSingleFieldConstraint.TYPE_LITERAL );
         p2.getChildColumns().add( col4 );
         allColumns.add( col4 );
-
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
 
         List<DTCellValue52> rowData = DataUtilities.makeDataRowList( row );
         TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
@@ -920,10 +907,6 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
 
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
-
         TemplateDataProvider rowDataProvider0 = new GuidedDTTemplateDataProvider( allColumns,
                                                                                   rowDTModel0 );
 
@@ -1027,10 +1010,6 @@ public class GuidedDTDRLPersistenceTest {
         allColumns.add( col2 );
 
         RuleModel rm = new RuleModel();
-
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
 
         TemplateDataProvider rowDataProvider0 = new GuidedDTTemplateDataProvider( allColumns,
                                                                                   rowDTModel0 );
@@ -1161,10 +1140,6 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
 
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
-
         TemplateDataProvider rowDataProvider0 = new GuidedDTTemplateDataProvider( allColumns,
                                                                                   rowDTModel0 );
 
@@ -1293,10 +1268,6 @@ public class GuidedDTDRLPersistenceTest {
         allColumns.add( col2 );
 
         RuleModel rm = new RuleModel();
-
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
 
         TemplateDataProvider rowDataProvider0 = new GuidedDTTemplateDataProvider( allColumns,
                                                                                   rowDTModel0 );
@@ -1534,10 +1505,6 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
 
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
-
         List<DTCellValue52> rowData = DataUtilities.makeDataRowList( row );
         TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
                                                                                  rowData );
@@ -1599,10 +1566,6 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
-
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
 
         List<DTCellValue52> rowData = DataUtilities.makeDataRowList( row );
         TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
@@ -2834,10 +2797,6 @@ public class GuidedDTDRLPersistenceTest {
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
 
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
-
         List<DTCellValue52> rowData = DataUtilities.makeDataRowList( row );
         TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
                                                                                  rowData );
@@ -2925,10 +2884,6 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
-
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
 
         List<DTCellValue52> rowData = DataUtilities.makeDataRowList( row );
         TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
@@ -3054,10 +3009,6 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
-
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
 
         List<DTCellValue52> rowData = DataUtilities.makeDataRowList( row );
         TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
@@ -3212,10 +3163,6 @@ public class GuidedDTDRLPersistenceTest {
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
 
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
-
         List<DTCellValue52> rowData = DataUtilities.makeDataRowList( row );
         TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
                                                                                  rowData );
@@ -3343,10 +3290,6 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
-
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
 
         List<DTCellValue52> rowData = DataUtilities.makeDataRowList( row );
         TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
@@ -3500,10 +3443,6 @@ public class GuidedDTDRLPersistenceTest {
 
         RuleModel rm = new RuleModel();
         allColumns.addAll( cols );
-
-        //When using a TemplateDataProvider the assumption is that we 
-        //have a "complete" decision table including AnalysisCol52
-        allColumns.add( new AnalysisCol52() );
 
         List<DTCellValue52> rowData = DataUtilities.makeDataRowList( row );
         TemplateDataProvider rowDataProvider = new GuidedDTTemplateDataProvider( allColumns,
