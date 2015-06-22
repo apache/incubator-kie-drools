@@ -37,6 +37,14 @@
       <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/F-n135-k7.vrp</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/F-n45-k4.vrp</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/import/capacitated/vrpweb/F-n72-k4.vrp</inputSolutionFile>
+      <!-- USA datasets -->
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/usa-n100-k10.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/usa-n500-k20.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/usa-n1000-k20.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/usa-n5000-k100.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/usa-n10000-k100.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/usa-n50000-k500.vrp</inputSolutionFile>
+      <inputSolutionFile>data/vehiclerouting/import/capacitated/usa-n100000-k500.vrp</inputSolutionFile>
       <!-- Belgium datasets -->
       <inputSolutionFile>data/vehiclerouting/import/capacitated/belgium-n50-k10.vrp</inputSolutionFile>
       <inputSolutionFile>data/vehiclerouting/import/capacitated/belgium-n100-k10.vrp</inputSolutionFile>
