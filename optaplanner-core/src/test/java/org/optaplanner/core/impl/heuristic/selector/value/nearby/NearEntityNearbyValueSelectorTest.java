@@ -113,6 +113,9 @@ public class NearEntityNearbyValueSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
+        // The movingEntity can be the same (ChangeMove) or different (SwapMove) as the nearby source
+        TestdataEntity movingEntity = europe;
+
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeA);
@@ -121,14 +124,14 @@ public class NearEntityNearbyValueSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         valueSelector.stepStarted(stepScopeA1);
         entityMimicRecorder.setRecordedEntity(europe);
-        assertAllCodesOfValueSelectorForEntity(valueSelector, null, "Spain", "Morocco", "Brazil", "Australia");
+        assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Spain", "Morocco", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         valueSelector.stepStarted(stepScopeA2);
         entityMimicRecorder.setRecordedEntity(africa);
-        assertAllCodesOfValueSelectorForEntity(valueSelector, null, "Morocco", "Spain", "Brazil", "Australia");
+        assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Morocco", "Spain", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeA2);
 
         valueSelector.phaseEnded(phaseScopeA);
@@ -141,21 +144,21 @@ public class NearEntityNearbyValueSelectorTest {
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB1);
         entityMimicRecorder.setRecordedEntity(africa);
-        assertAllCodesOfValueSelectorForEntity(valueSelector, null, "Morocco", "Spain", "Brazil", "Australia");
+        assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Morocco", "Spain", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB2);
         entityMimicRecorder.setRecordedEntity(oceania);
-        assertAllCodesOfValueSelectorForEntity(valueSelector, null, "Australia", "Brazil", "Morocco", "Spain");
+        assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Australia", "Brazil", "Morocco", "Spain");
         valueSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB3);
         entityMimicRecorder.setRecordedEntity(europe);
-        assertAllCodesOfValueSelectorForEntity(valueSelector, null, "Spain", "Morocco", "Brazil", "Australia");
+        assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Spain", "Morocco", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeB3);
 
         valueSelector.phaseEnded(phaseScopeB);
@@ -229,6 +232,9 @@ public class NearEntityNearbyValueSelectorTest {
         DefaultSolverScope solverScope = mock(DefaultSolverScope.class);
         valueSelector.solvingStarted(solverScope);
 
+        // The movingEntity can be the same (ChangeMove) or different (SwapMove) as the nearby source
+        TestdataChainedEntity movingEntity = spain;
+
         AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
         when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
         valueSelector.phaseStarted(phaseScopeA);
@@ -237,14 +243,14 @@ public class NearEntityNearbyValueSelectorTest {
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         valueSelector.stepStarted(stepScopeA1);
         entityMimicRecorder.setRecordedEntity(spain);
-        assertAllCodesOfValueSelectorForEntity(valueSelector, null, "Morocco", "Brazil", "Australia"); // TODO that entity dependent value null is ignored!
+        assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Morocco", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         valueSelector.stepStarted(stepScopeA2);
         entityMimicRecorder.setRecordedEntity(morocco);
-        assertAllCodesOfValueSelectorForEntity(valueSelector, null, "Spain", "Brazil", "Australia"); // TODO that entity dependent value null is ignored!
+        assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Spain", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeA2);
 
         valueSelector.phaseEnded(phaseScopeA);
@@ -257,21 +263,21 @@ public class NearEntityNearbyValueSelectorTest {
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB1);
         entityMimicRecorder.setRecordedEntity(morocco);
-        assertAllCodesOfValueSelectorForEntity(valueSelector, null, "Spain", "Brazil", "Australia"); // TODO that entity dependent value null is ignored!
+        assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Spain", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeB1);
 
         AbstractStepScope stepScopeB2 = mock(AbstractStepScope.class);
         when(stepScopeB2.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB2);
         entityMimicRecorder.setRecordedEntity(australia);
-        assertAllCodesOfValueSelectorForEntity(valueSelector, null, "Brazil", "Morocco", "Spain"); // TODO that entity dependent value null is ignored!
+        assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Brazil", "Morocco", "Spain");
         valueSelector.stepEnded(stepScopeB2);
 
         AbstractStepScope stepScopeB3 = mock(AbstractStepScope.class);
         when(stepScopeB3.getPhaseScope()).thenReturn(phaseScopeB);
         valueSelector.stepStarted(stepScopeB3);
         entityMimicRecorder.setRecordedEntity(spain);
-        assertAllCodesOfValueSelectorForEntity(valueSelector, null, "Morocco", "Brazil", "Australia"); // TODO that entity dependent value null is ignored!
+        assertAllCodesOfValueSelectorForEntity(valueSelector, movingEntity, "Morocco", "Brazil", "Australia");
         valueSelector.stepEnded(stepScopeB3);
 
         valueSelector.phaseEnded(phaseScopeB);
