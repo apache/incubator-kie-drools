@@ -194,7 +194,14 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 if ( code != null ) {
                     return this.getOperator().isNegated() ^ isA( code, cachedLiteral );
                 } else {
-                    return this.getOperator().isNegated() ^ hasTrait( core, literal );
+                    boolean hasTrait =  this.getOperator().isNegated() ^ hasTrait( core, literal );
+                    if ( hasTrait ) {
+                        return true;
+                    } else if ( literal instanceof Class ) {
+                        return this.getOperator().isNegated() ^ ( (Class) literal ).isInstance( objectValue );
+                    } else {
+                        return false;
+                    }
                 }
             } else if ( objectValue instanceof TraitableBean ) {
                 core = (TraitableBean) objectValue;
