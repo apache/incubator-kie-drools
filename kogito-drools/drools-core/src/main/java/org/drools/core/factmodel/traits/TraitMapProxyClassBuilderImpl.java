@@ -315,7 +315,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         }
 
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "getTraitName", "()" + Type.getDescriptor( String.class ), null, null);
+            mv = cw.visitMethod( ACC_PUBLIC, "_getTraitName", "()" + Type.getDescriptor( String.class ), null, null);
             mv.visitCode();
             mv.visitFieldInsn( GETSTATIC, internalProxy, TraitType.traitNameField, Type.getDescriptor( String.class ) );
             mv.visitInsn( ARETURN );
@@ -357,7 +357,7 @@ public class TraitMapProxyClassBuilderImpl implements TraitProxyClassBuilder, Se
         }
 
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "isTop", "()Z", null, null );
+            mv = cw.visitMethod( ACC_PUBLIC, "_isTop", "()Z", null, null );
             mv.visitCode();
             mv.visitInsn( Thing.class.equals( trait.getDefinedClass() ) ? ICONST_1 : ICONST_0 );
             mv.visitInsn( IRETURN );
