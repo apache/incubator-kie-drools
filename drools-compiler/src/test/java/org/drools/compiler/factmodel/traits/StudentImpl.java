@@ -167,20 +167,20 @@ public class StudentImpl implements IStudent<StudentImpl>, TraitableBean<Student
         return null;
     }
 
-    public BitSet getTypeCode() {
+    public BitSet _getTypeCode() {
         return new BitSet();
     }
 
-    public boolean isVirtual() {
+    public boolean _isVirtual() {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public String getTraitName() {
+    public String _getTraitName() {
         return IStudent.class.getName();
     }
 
     @Override
-    public boolean hasTypeCode( BitSet typeCode ) {
+    public boolean _hasTypeCode( BitSet typeCode ) {
         return false;
     }
 }

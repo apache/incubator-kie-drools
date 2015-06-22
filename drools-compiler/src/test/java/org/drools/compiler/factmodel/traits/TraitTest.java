@@ -74,7 +74,6 @@ import org.kie.internal.command.CommandFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
 import java.util.ArrayList;
@@ -2911,7 +2910,7 @@ public class TraitTest extends CommonTestMethodBase {
                         "" +
                         "rule \"Rule 0 >> http://t/x#D\"\n" +
                         "when\n" +
-                        "   $t : org.drools.core.factmodel.traits.Thing( $c : core, top == true, this not isA t.x.E.class, this isA t.x.D.class ) " +
+                        "   $t : org.drools.core.factmodel.traits.Thing( $c : core, _isTop(), this not isA t.x.E.class, this isA t.x.D.class ) " +
                         "then\n" +
                         "   list.add( \"E\" ); \n" +
                         "   System.out.println( \"E due to \" + $t); \n" +
@@ -4584,7 +4583,7 @@ public class TraitTest extends CommonTestMethodBase {
             public void objectDeleted( org.kie.api.event.rule.ObjectDeletedEvent objectRetractedEvent ) {
                 Object o = objectRetractedEvent.getOldObject();
                 if ( o instanceof TraitProxy ) {
-                    String traitName = ( (TraitProxy) o ).getTraitName();
+                    String traitName = ( (TraitProxy) o )._getTraitName();
                     list.add( traitName.substring( traitName.lastIndexOf( "." ) + 1 ) );
                 }
             }
@@ -5692,11 +5691,11 @@ public class TraitTest extends CommonTestMethodBase {
         for ( Object o : ksession.getObjects() ) {
             if ( o instanceof TraitProxy ) {
                 TraitProxy tp = (TraitProxy) o;
-                if ( tp.getTypeCode().equals( c ) ) {
+                if ( tp._getTypeCode().equals( c ) ) {
                     assertEquals( 1, tp.listAssignedOtnTypeCodes().size() );
                     assertTrue( tp.listAssignedOtnTypeCodes().contains( b ) );
                     counter++;
-                } else if ( tp.getTypeCode().equals( d ) ) {
+                } else if ( tp._getTypeCode().equals( d ) ) {
                     assertTrue( tp.listAssignedOtnTypeCodes().isEmpty() );
                     counter++;
                 }
@@ -5718,7 +5717,7 @@ public class TraitTest extends CommonTestMethodBase {
         for ( Object o : ksession.getObjects() ) {
             if ( o instanceof TraitProxy ) {
                 TraitProxy tp = (TraitProxy) o;
-                assertEquals( d, tp.getTypeCode() );
+                assertEquals( d, tp._getTypeCode() );
                 assertEquals( 1, tp.listAssignedOtnTypeCodes().size() );
                 assertTrue( tp.listAssignedOtnTypeCodes().contains( b ) );
                 counter2++;

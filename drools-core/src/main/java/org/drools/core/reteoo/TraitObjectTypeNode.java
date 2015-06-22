@@ -76,10 +76,10 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
 
             boolean allowed = ! vetoed || sameAndNotCoveredByDescendants( (TraitProxy) factHandle.getObject(), typeMask );
             if ( allowed ) {
-                //System.err.println(" INSERT PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                //System.err.println(" INSERT PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
                 proxy.assignOtn( this.typeMask );
             } else {
-                //System.err.println(" INSERT BLOCK !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
+                //System.err.println(" INSERT BLOCK !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> " + vetoMask + " checks in " + typeMask );
             }
             return allowed;
         }
@@ -95,7 +95,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
      *  already covered by one of its descendants (D)
      */
     private boolean sameAndNotCoveredByDescendants( TraitProxy proxy, BitSet typeMask ) {
-        boolean isSameType = typeMask.equals( proxy.getTypeCode() );
+        boolean isSameType = typeMask.equals( proxy._getTypeCode() );
         if ( isSameType ) {
             TraitTypeMap<String,Thing<?>,?> ttm = (TraitTypeMap<String,Thing<?>,?>) proxy.getObject()._getTraitMap();
             Collection<Thing<?>> descs = ttm.lowerDescendants( typeMask );
@@ -105,7 +105,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
             } else {
                 for ( Thing sub : descs ) {
                     TraitType tt = (TraitType) sub;
-                    if ( tt != proxy && tt.hasTypeCode( typeMask ) ) {
+                    if ( tt != proxy && tt._hasTypeCode( typeMask ) ) {
                         return false;
                     }
                 }
@@ -159,7 +159,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                         BitMask originalMask = context.getModificationMask();
                         context.setModificationMask( AllSetBitMask.get() );
 
-                        //System.err.println(" MODIFY DON PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + " checks in " + typeMask );
+                        //System.err.println(" MODIFY DON PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> " + " checks in " + typeMask );
 
                         this.sink.propagateModifyObject( factHandle,
                                                          modifyPreviousTuples,
@@ -168,7 +168,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                         context.setModificationMask( originalMask );
 
                     } else {
-                        // System.err.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> "  + " checks in " + typeMask );
+                        // System.err.println(" MODIFY PASS !! " + factHandle.getObject() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> "  + " checks in " + typeMask );
                         this.sink.propagateModifyObject( factHandle,
                                 modifyPreviousTuples,
                                 context.adaptModificationMaskForObjectType( objectType, workingMemory ),
@@ -176,7 +176,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                     }
 
                 } else {
-                    //System.err.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() ).getTypeCode() + " >> " + " checks in " + typeMask );
+                    //System.err.println( ((ClassObjectType) this.getObjectType()).getClassName() + " : MODIFY BLOCK !! " + ( (TraitProxy) factHandle.getObject() ).getTraitName() + " " + ( (TraitProxy) factHandle.getObject() )._getTypeCode() + " >> " + " checks in " + typeMask );
                 }
             } else {
                 this.sink.propagateModifyObject( factHandle,

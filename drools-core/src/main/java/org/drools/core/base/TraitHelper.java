@@ -42,11 +42,8 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.PriorityQueue;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
@@ -325,7 +322,7 @@ public class TraitHelper implements Externalizable {
 
                 removedTypes = new ArrayList<Thing<K>>( core._getTraitMap().values() );
                 for ( Thing t : removedTypes ) {
-                    if ( ! ((TraitType) t).isVirtual() ) {
+                    if ( ! ((TraitType) t)._isVirtual() ) {
                         delete( getFactHandle( t ), activation );
                     }
                 }
@@ -344,7 +341,7 @@ public class TraitHelper implements Externalizable {
             removedTypes = new ArrayList<Thing<K>>( removedTypes );
             reassignNodes( core, removedTypes );
             for ( Thing t : removedTypes ) {
-                if ( ! ((TraitType) t).isVirtual() ) {
+                if ( ! ((TraitType) t)._isVirtual() ) {
                     InternalFactHandle handle = (InternalFactHandle) getFactHandle( t );
                     if ( handle.getEqualityKey() != null && handle.getEqualityKey().getLogicalFactHandle() == handle ) {
                         entryPoint.getTruthMaintenanceSystem().delete( handle );
@@ -374,7 +371,7 @@ public class TraitHelper implements Externalizable {
                 boolean found = false;
                 for ( Thing<K> tp : mst ) {
                     TraitProxy candidate = (TraitProxy) tp;
-                    if ( HierarchyEncoderImpl.supersetOrEqualset( candidate.getTypeCode(), bs ) ) {
+                    if ( HierarchyEncoderImpl.supersetOrEqualset( candidate._getTypeCode(), bs ) ) {
                         candidate.assignOtn( bs );
                         found = true;
                         break;
@@ -634,7 +631,7 @@ public class TraitHelper implements Externalizable {
 
             while ( ! removedTypes.isEmpty() ) {
                 TraitProxy proxy = removedTypes.poll();
-                if ( ! proxy.isVirtual() ) {
+                if ( ! proxy._isVirtual() ) {
                     InternalFactHandle proxyHandle = (InternalFactHandle) getFactHandle( proxy );
                     if ( proxyHandle.getEqualityKey() == null || proxyHandle.getEqualityKey().getLogicalFactHandle() != proxyHandle ) {
                         entryPoint.delete( proxyHandle,

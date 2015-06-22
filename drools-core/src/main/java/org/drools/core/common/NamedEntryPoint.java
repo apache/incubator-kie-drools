@@ -22,8 +22,6 @@ import org.drools.core.base.TraitHelper;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.TraitProxy;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
-import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -568,7 +566,7 @@ public class NamedEntryPoint
                                            this.wm );
 
         if ( handle.isTraiting() && handle.getObject() instanceof TraitProxy ) {
-            (( (TraitProxy) handle.getObject() ).getObject()).removeTrait( ( (TraitProxy) handle.getObject() ).getTypeCode() );
+            (( (TraitProxy) handle.getObject() ).getObject()).removeTrait( ( (TraitProxy) handle.getObject() )._getTypeCode() );
         } else if ( handle.isTraitable() ) {
             traitHelper.deleteWMAssertedTraitProxies( handle, rule, activation );
         }
