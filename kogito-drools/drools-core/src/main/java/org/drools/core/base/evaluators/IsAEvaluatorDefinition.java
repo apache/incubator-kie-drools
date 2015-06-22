@@ -197,8 +197,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                     boolean hasTrait =  this.getOperator().isNegated() ^ hasTrait( core, literal );
                     if ( hasTrait ) {
                         return true;
-                    } else if ( literal instanceof Class ) {
-                        return this.getOperator().isNegated() ^ ( (Class) literal ).isInstance( objectValue );
+                    } else if ( literal instanceof Class<?> ) {
+                        return this.getOperator().isNegated() ^ ( (Class<?>) literal ).isInstance( objectValue );
                     } else {
                         return false;
                     }
@@ -214,7 +214,11 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             } else {
                 core = lookForWrapper( objectValue, workingMemory );
                 if ( core == null ) {
-                    return this.getOperator().isNegated();
+                    if ( literal instanceof Class<?> ) {
+                        return this.getOperator().isNegated() ^ ( (Class<?>) literal ).isInstance( objectValue );
+                    } else {
+                        return this.getOperator().isNegated();
+                    }
                 }
                 BitSet code = core.getCurrentTypeCode();
                 if ( code != null ) {
