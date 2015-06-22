@@ -66,7 +66,7 @@
         <ksession name="PongKS"/>
     </kbase>
 
-    <kbase name="TextAdventureKB" packages="org.drools.games.adventures" equalsBehavior="equality">
+    <kbase name="TextAdventureKB" packages="org.drools.games.adventures">
         <ksession name="TextAdventureKS"/>
     </kbase>
 
