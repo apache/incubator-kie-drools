@@ -5850,6 +5850,32 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
+    @Test(timeout=10000)
+    public void testIsAInstanceOfNonTraitable() {
+
+        String drl = "package org.drools.test; " +
+                     "global java.util.List list; " +
+
+                     "rule Test1 " +
+                     "when " +
+                     "  Object( this isA String.class ) " +
+                     "then list.add( 1 ); end " +
+
+                     "";
+
+        final KnowledgeBase kbase = getKieBaseFromString( drl );
+        List list = new ArrayList(  );
+        TraitFactory.setMode( mode, kbase );
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+        knowledgeSession.insert( "hello" );
+
+        assertEquals( 1, knowledgeSession.fireAllRules() );
+        assertEquals( Arrays.asList( 1 ), list );
+    }
+
+
 
     @Traitable
     @PropertyReactive
