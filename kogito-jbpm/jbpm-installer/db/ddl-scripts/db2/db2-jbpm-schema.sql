@@ -705,3 +705,4 @@
     create index IDX_PInstLog_pVersion on ProcessInstanceLog(processVersion);
     create index IDX_PInstLog_start_date on ProcessInstanceLog(start_date);
     create index IDX_PInstLog_status on ProcessInstanceLog(status);
+    create index IDX_PInstLog_correlation on ProcessInstanceLog(correlationKey);
