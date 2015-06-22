@@ -5816,6 +5816,41 @@ public class TraitTest extends CommonTestMethodBase {
         assertEquals( Arrays.asList( "x1", 42, "x1", 42 ), list );
     }
 
+
+    @Test(timeout=10000)
+    public void testIsAInstanceOf() {
+
+        String drl = "package org.drools.test; " +
+                     "import " + StudentImpl.class.getName() + "; " +
+                     "import " + IStudent.class.getName() + "; " +
+                     "global java.util.List list; " +
+
+                     "rule Test1 " +
+                     "when " +
+                     "  StudentImpl( this isA IStudent.class ) " +
+                     "then list.add( 1 ); end " +
+
+                     "rule Test2 " +
+                     "when " +
+                     "  IStudent( this isA StudentImpl.class ) " +
+                     "then list.add( 2 ); end " +
+
+                     "";
+
+        final KnowledgeBase kbase = getKieBaseFromString( drl );
+        List list = new ArrayList(  );
+        TraitFactory.setMode( mode, kbase );
+
+        StatefulKnowledgeSession knowledgeSession = kbase.newStatefulKnowledgeSession();
+        knowledgeSession.setGlobal( "list", list );
+        knowledgeSession.insert( new StudentImpl(  ) );
+
+        assertEquals( 2, knowledgeSession.fireAllRules() );
+        assertEquals( Arrays.asList( 1, 2 ), list );
+    }
+
+
+
     @Traitable
     @PropertyReactive
     public static class ExtEntity extends Entity {
