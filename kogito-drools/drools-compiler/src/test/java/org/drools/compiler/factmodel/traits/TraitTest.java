@@ -20,8 +20,10 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.ObjectFilter;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
+import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.factmodel.traits.Entity;
 import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
@@ -42,7 +44,9 @@ import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.util.CodedHierarchyImpl;
 import org.drools.core.util.HierarchyEncoder;
 import org.junit.Assert;
@@ -5524,6 +5528,45 @@ public class TraitTest extends CommonTestMethodBase {
         StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
 
         assertEquals( 3, kSession.fireAllRules() );
+    }
+
+    @Test
+    public void testAlphaNodeSharing() {
+        String drl =
+                "package test; " +
+                "import " + Entity.class.getName() + " " +
+
+                "declare trait Person\n" +
+                "    name : String\n" +
+                "end\n" +
+
+                "rule Init " +
+                "when " +
+                "then " +
+                "    don( new Entity(), Person.class ); " +
+                "end\n" +
+
+                "rule One when" +
+                "    $core: Entity( this isA Person ) " +
+                "then " +
+                "end " +
+
+                "rule Two when" +
+                "    $core: Entity( this isA Person ) " +
+                "then " +
+                "end " +
+
+                "\n";
+
+        final KnowledgeBase kbase = getKieBaseFromString( drl );
+        TraitFactory.setMode( mode, kbase );
+        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+
+        assertEquals( 3, kSession.fireAllRules() );
+        NamedEntryPoint nep = ( (NamedEntryPoint) kSession.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) );
+        ObjectTypeNode otn = nep.getEntryPointNode().getObjectTypeNodes().get( new ClassObjectType( Entity.class ) );
+        assertNotNull( otn );
+        assertEquals( 1, otn.getSinkPropagator().getSinks().length );
     }
 
 
