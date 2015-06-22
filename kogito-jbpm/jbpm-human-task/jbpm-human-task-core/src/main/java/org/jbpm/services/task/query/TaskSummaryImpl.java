@@ -115,7 +115,8 @@ public class TaskSummaryImpl implements InternalTaskSummary {
             String processId,
             long processInstanceId,
             long parentId,
-            String deploymentId) {
+            String deploymentId,
+            boolean skipable) {
         this.id = id;
         this.processInstanceId = processInstanceId;
         this.name = name;
@@ -133,6 +134,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.processId = processId;
         this.parentId = parentId;
         this.deploymentId = deploymentId;
+        this.skipable = skipable;
         this.quickTaskSummary = true;
     }
 

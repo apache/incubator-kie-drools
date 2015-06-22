@@ -20,7 +20,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.businessAdministrators businessAdministrators
@@ -48,7 +49,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t,
             OrganizationalEntityImpl businessAdministrator
@@ -79,7 +81,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.excludedOwners excludedOwners
@@ -107,7 +110,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
@@ -139,7 +143,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
@@ -171,7 +176,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
@@ -203,7 +209,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
@@ -235,7 +242,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
@@ -267,7 +275,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners 
@@ -319,7 +328,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
@@ -353,7 +363,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners 
@@ -453,7 +464,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
@@ -487,7 +499,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t,
             OrganizationalEntityImpl potentialOwners
@@ -518,7 +531,8 @@
                     t.taskData.processId,
                     t.taskData.processInstanceId,
                     t.taskData.parentId,
-                    t.taskData.deploymentId              )
+                    t.taskData.deploymentId,
+                    t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.recipients recipients
@@ -546,7 +560,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.taskInitiator taskInitiators
@@ -574,7 +589,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.taskStakeholders taskStakeholders
@@ -603,7 +619,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
     
@@ -634,7 +651,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t 
             left join t.peopleAssignments.potentialOwners potOwners
@@ -666,7 +684,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t 
     
@@ -699,7 +718,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t 
             left join t.peopleAssignments.potentialOwners potOwners
@@ -736,7 +756,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
                 TaskImpl t 
             
@@ -764,7 +785,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t 
             
@@ -796,7 +818,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t 
             where
@@ -824,7 +847,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t 
     
@@ -857,7 +881,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t 
     
@@ -1040,7 +1065,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t 
             
@@ -1070,7 +1096,8 @@
                 t.taskData.processId,
                 t.taskData.processInstanceId,
                 t.taskData.parentId,
-                t.taskData.deploymentId              )
+                t.taskData.deploymentId,
+                t.taskData.skipable              )
             from
             TaskImpl t
             
@@ -1130,7 +1157,8 @@
             t.taskData.processId,
             t.taskData.processInstanceId,
             t.taskData.parentId,
-            t.taskData.deploymentId              )
+            t.taskData.deploymentId,
+            t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
@@ -1167,7 +1195,8 @@
             t.taskData.processId,
             t.taskData.processInstanceId,
             t.taskData.parentId,
-            t.taskData.deploymentId              )
+            t.taskData.deploymentId,
+            t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
@@ -1201,7 +1230,8 @@
             t.taskData.processId,
             t.taskData.processInstanceId,
             t.taskData.parentId,
-            t.taskData.deploymentId              )
+            t.taskData.deploymentId,
+            t.taskData.skipable              )
             from
             TaskImpl t
             join t.peopleAssignments.potentialOwners potentialOwners
@@ -1235,7 +1265,8 @@
                     t.taskData.processId,
                     t.taskData.processInstanceId,
                     t.taskData.parentId,
-                    t.taskData.deploymentId              )
+                    t.taskData.deploymentId,
+                    t.taskData.skipable               )
             from
                 TaskImpl t
                 join t.peopleAssignments.potentialOwners potentialOwners
@@ -1268,7 +1299,8 @@
                     t.taskData.processId,
                     t.taskData.processInstanceId,
                     t.taskData.parentId,
-                    t.taskData.deploymentId              )
+                    t.taskData.deploymentId,
+                    t.taskData.skipable              )
             from
                 TaskImpl t
                 join t.peopleAssignments.potentialOwners potentialOwners
@@ -1301,7 +1333,8 @@
                     t.taskData.processId,
                     t.taskData.processInstanceId,
                     t.taskData.parentId,
-                    t.taskData.deploymentId              )
+                    t.taskData.deploymentId,
+                    t.taskData.skipable              )
             from
                 TaskImpl t
                 join t.peopleAssignments.potentialOwners potentialOwners
@@ -1334,7 +1367,8 @@
                     t.taskData.processId,
                     t.taskData.processInstanceId,
                     t.taskData.parentId,
-                    t.taskData.deploymentId              )
+                    t.taskData.deploymentId,
+                    t.taskData.skipable              )
             from
                 TaskImpl t
             where
