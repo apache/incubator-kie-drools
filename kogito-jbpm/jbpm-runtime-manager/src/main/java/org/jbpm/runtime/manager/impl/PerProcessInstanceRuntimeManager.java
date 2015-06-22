@@ -51,6 +51,7 @@ import org.kie.internal.runtime.manager.Mapper;
 import org.kie.internal.runtime.manager.SessionFactory;
 import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
+import org.kie.internal.runtime.manager.context.CorrelationKeyContext;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.ContentMarshallerContext;
@@ -103,8 +104,8 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     	RuntimeEngine runtime = null;
     	Object contextId = context.getContextId();
     	
-    	if (!(context instanceof ProcessInstanceIdContext)) {
-    		logger.warn("ProcessInstanceIdContext shall be used when interacting with PerProcessInstance runtime manager");
+    	if (!(context instanceof ProcessInstanceIdContext || context instanceof CorrelationKeyContext)) {
+    		logger.warn("ProcessInstanceIdContext or CorrelationKeyContext shall be used when interacting with PerProcessInstance runtime manager");
     	}
     	
     	if (engineInitEager) {
