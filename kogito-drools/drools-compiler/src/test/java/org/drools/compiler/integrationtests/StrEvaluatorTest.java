@@ -1,13 +1,10 @@
 package org.drools.compiler.integrationtests;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.compiler.RoutingMessage;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -16,7 +13,9 @@ import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class StrEvaluatorTest extends CommonTestMethodBase {
 
@@ -185,7 +184,6 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testStrWithInlineCastOnThis() {
         String drl = "package org.drools.compiler.integrationtests " +
                      "rule R1 " +

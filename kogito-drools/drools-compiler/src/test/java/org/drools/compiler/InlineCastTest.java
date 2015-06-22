@@ -1,6 +1,5 @@
 package org.drools.compiler;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -375,7 +374,6 @@ public class InlineCastTest extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore
     public void testInlineCastWithThis() {
         String drl = "package org.drools.compiler.integrationtests "
                      + "import org.drools.compiler.*; "

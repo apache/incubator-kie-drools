@@ -13,6 +13,20 @@
  */
 package org.drools.compiler.lang;
 
+import org.drools.compiler.compiler.DrlExprParser;
+import org.drools.compiler.lang.descr.AtomicExprDescr;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BindingDescr;
+import org.drools.compiler.lang.descr.ConnectiveType;
+import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
+import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.OperatorDescr;
+import org.drools.compiler.lang.descr.RelationalExprDescr;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.base.EvaluatorWrapper;
+import org.drools.core.base.evaluators.Operator;
+import org.drools.core.util.ReflectiveVisitor;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -21,23 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import org.drools.compiler.lang.descr.ConnectiveType;
-import org.drools.core.base.EvaluatorWrapper;
-import org.drools.core.base.evaluators.Operator;
-import org.drools.compiler.compiler.DrlExprParser;
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.BindingDescr;
-import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
-import org.drools.compiler.lang.descr.OperatorDescr;
-import org.drools.compiler.lang.descr.RelationalExprDescr;
-import org.drools.core.util.ReflectiveVisitor;
-import org.drools.compiler.lang.descr.AtomicExprDescr;
-import org.drools.compiler.lang.descr.ExprConstraintDescr;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.findClassByName;
 import static org.drools.core.util.ClassUtils.findClass;
 import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.findClassByName;
 
 public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter {
 
@@ -225,16 +225,18 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
         int sharpPos2 = expr.indexOf('#', sharpPos+1);
         String part2 = sharpPos2 < 0 ? expr.substring(sharpPos+1).trim() : expr.substring(sharpPos+1, sharpPos2).trim();
         String[] classAndField = splitInClassAndField(part2, context);
+        BaseDescr desc = parentIdx >= 0 ? ccd.getDescrs().get( parentIdx ) : null;
+
         if (classAndField == null) {
             return new String[] { "", expr };
-        } else if ( classAndField.length == 1 ) {
+        } else if ( desc instanceof AtomicExprDescr && classAndField.length == 1 ) {
             return new String[] { "", field1 + " instanceof " + classAndField[ 0 ] };
         }
 
         String className = classAndField[0];
-        String field2 = classAndField[1];
-
-        String castedExpression = "((" + className + ")" + field1 + ")." + field2 + (sharpPos2 > 0 ? expr.substring(sharpPos2) : "");
+        String castedExpression = classAndField.length == 1 ?
+                                  "((" + className + ")" + field1 + ")" :
+                                  "((" + className + ")" + field1 + ")." + classAndField[1] + (sharpPos2 > 0 ? expr.substring(sharpPos2) : "");
 
         RelationalExprDescr check = new RelationalExprDescr( "instanceof",
                                                              false,
@@ -246,7 +248,6 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
         if ( ccd.getConnective() == ConnectiveType.AND || ccd.getConnective() == ConnectiveType.INC_AND ) {
             ccd.getDescrs().add( childIdx, check );
         } else {
-            BaseDescr desc = ccd.getDescrs().get( parentIdx );
             if ( desc instanceof ConstraintConnectiveDescr ) {
                 ((ConstraintConnectiveDescr) desc).getDescrs().add( childIdx, check );
             } else {
