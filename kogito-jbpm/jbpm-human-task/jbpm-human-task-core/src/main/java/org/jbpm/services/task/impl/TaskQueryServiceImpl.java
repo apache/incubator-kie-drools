@@ -695,7 +695,8 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                 "       t.taskData.processId,\n" +
                 "       t.taskData.processInstanceId,\n" +
                 "       t.taskData.parentId,\n" +
-                "       t.taskData.deploymentId )\n";
+                "       t.taskData.deploymentId,\n" +
+                "       t.taskData.skipable )\n";
 
     public static String TASKSUMMARY_FROM = 
                 "FROM TaskImpl t,\n"
