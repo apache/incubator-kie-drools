@@ -1,4 +1,3 @@
-package org.drools.workbench.models.commons.backend.rule;
 /*
  * Copyright 2013 JBoss Inc
  *
@@ -14,6 +13,8 @@ package org.drools.workbench.models.commons.backend.rule;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.workbench.models.commons.backend.rule;
 
 import java.io.IOException;
 import java.io.StringReader;
