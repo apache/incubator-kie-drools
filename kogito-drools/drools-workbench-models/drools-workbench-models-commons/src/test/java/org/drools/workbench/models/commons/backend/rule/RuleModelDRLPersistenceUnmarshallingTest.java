@@ -7801,6 +7801,63 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1234640
+    public void testStringFieldsWithDoubleForwardSlashes() throws Exception {
+        String drl = "rule \"test\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  MyType( url == \"http://www.redhat.com\" )\n" +
+                "then\n" +
+                "end";
+
+        addModelField( "org.test.MyType",
+                       "this",
+                       "org.test.MyType",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.MyType",
+                       "url",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "MyType",
+                      fp0.getFactType() );
+        assertEquals( 1,
+                      fp0.getNumberOfConstraints() );
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint fp0sfc0 = (SingleFieldConstraint) fp0.getConstraint( 0 );
+        assertEquals( "MyType",
+                      fp0sfc0.getFactType() );
+        assertEquals( "url",
+                      fp0sfc0.getFieldName() );
+        assertEquals( "==",
+                      fp0sfc0.getOperator() );
+        assertEquals( DataType.TYPE_STRING,
+                      fp0sfc0.getFieldType() );
+        assertEquals( "http://www.redhat.com",
+                      fp0sfc0.getValue() );
+
+        assertEquals( 0,
+                      m.rhs.length );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
     private void assertEqualsIgnoreWhitespace( final String expected,
                                                final String actual ) {
         final String cleanExpected = expected.replaceAll( "\\s+",
