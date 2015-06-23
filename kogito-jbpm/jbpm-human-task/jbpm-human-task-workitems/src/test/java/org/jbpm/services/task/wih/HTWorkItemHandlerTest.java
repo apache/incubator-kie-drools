@@ -1,4 +1,3 @@
-package org.jbpm.services.task.wih;
 /**
  * Copyright 2010 JBoss Inc
  *
@@ -14,6 +13,8 @@ package org.jbpm.services.task.wih;
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
+package org.jbpm.services.task.wih;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
