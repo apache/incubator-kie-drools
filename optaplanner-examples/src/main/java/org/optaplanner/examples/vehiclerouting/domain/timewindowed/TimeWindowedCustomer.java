@@ -28,43 +28,43 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver.Arriva
 public class TimeWindowedCustomer extends Customer {
 
     // Times are multiplied by 1000 to avoid floating point arithmetic rounding errors
-    private int readyTime;
-    private int dueTime;
-    private int serviceDuration;
+    private long readyTime;
+    private long dueTime;
+    private long serviceDuration;
 
     // Shadow variable
-    private Integer arrivalTime;
+    private Long arrivalTime;
 
     /**
      * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getReadyTime() {
+    public long getReadyTime() {
         return readyTime;
     }
 
-    public void setReadyTime(int readyTime) {
+    public void setReadyTime(long readyTime) {
         this.readyTime = readyTime;
     }
 
     /**
      * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getDueTime() {
+    public long getDueTime() {
         return dueTime;
     }
 
-    public void setDueTime(int dueTime) {
+    public void setDueTime(long dueTime) {
         this.dueTime = dueTime;
     }
 
     /**
      * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getServiceDuration() {
+    public long getServiceDuration() {
         return serviceDuration;
     }
 
-    public void setServiceDuration(int serviceDuration) {
+    public void setServiceDuration(long serviceDuration) {
         this.serviceDuration = serviceDuration;
     }
 
@@ -73,11 +73,11 @@ public class TimeWindowedCustomer extends Customer {
      */
     @CustomShadowVariable(variableListenerClass = ArrivalTimeUpdatingVariableListener.class,
             sources = {@CustomShadowVariable.Source(variableName = "previousStandstill")})
-    public Integer getArrivalTime() {
+    public Long getArrivalTime() {
         return arrivalTime;
     }
 
-    public void setArrivalTime(Integer arrivalTime) {
+    public void setArrivalTime(Long arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
@@ -88,7 +88,7 @@ public class TimeWindowedCustomer extends Customer {
     /**
      * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public Integer getDepartureTime() {
+    public Long getDepartureTime() {
         if (arrivalTime == null) {
             return null;
         }
@@ -113,17 +113,17 @@ public class TimeWindowedCustomer extends Customer {
     /**
      * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getTimeWindowGapTo(TimeWindowedCustomer other) {
+    public long getTimeWindowGapTo(TimeWindowedCustomer other) {
         // dueTime doesn't account for serviceDuration
-        int latestDepartureTime = dueTime + serviceDuration;
-        int otherLatestDepartureTime = other.getDueTime() + other.getServiceDuration();
+        long latestDepartureTime = dueTime + serviceDuration;
+        long otherLatestDepartureTime = other.getDueTime() + other.getServiceDuration();
         if (latestDepartureTime < other.getReadyTime()) {
             return other.getReadyTime() - latestDepartureTime;
         }
         if (otherLatestDepartureTime < readyTime) {
             return readyTime - otherLatestDepartureTime;
         }
-        return 0;
+        return 0L;
     }
 
 }

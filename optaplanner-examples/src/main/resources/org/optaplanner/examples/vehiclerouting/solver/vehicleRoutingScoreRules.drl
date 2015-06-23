@@ -17,7 +17,7 @@
 package org.optaplanner.examples.tsp.solver;
     dialect "java"
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScoreHolder;
 
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
@@ -29,7 +29,7 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedV
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedCustomer
 import org.optaplanner.examples.vehiclerouting.domain.Vehicle;
 
-global HardSoftScoreHolder scoreHolder;
+global HardSoftLongScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -77,7 +77,7 @@ rule "arrivalAfterDueTime"
     when
         TimeWindowedCustomer(dueTime < arrivalTime, $dueTime : dueTime, $arrivalTime : arrivalTime)
     then
-        scoreHolder.addHardConstraintMatch(kcontext, $dueTime - $arrivalTime.intValue());
+        scoreHolder.addHardConstraintMatch(kcontext, $dueTime - $arrivalTime.longValue());
 end
 
 // Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter

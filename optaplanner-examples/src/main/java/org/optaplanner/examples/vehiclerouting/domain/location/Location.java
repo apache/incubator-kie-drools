@@ -76,7 +76,7 @@ public abstract class Location extends AbstractPersistable {
      * @param location never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public abstract int getDistanceTo(Location location);
+    public abstract long getDistanceTo(Location location);
 
     public double getAirDistanceDoubleTo(Location location) {
         // Implementation specified by TSPLIB http://www2.iwr.uni-heidelberg.de/groups/comopt/software/TSPLIB95/

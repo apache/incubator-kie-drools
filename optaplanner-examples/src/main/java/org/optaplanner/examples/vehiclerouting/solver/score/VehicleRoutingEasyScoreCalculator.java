@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
@@ -31,7 +31,7 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedV
 
 public class VehicleRoutingEasyScoreCalculator implements EasyScoreCalculator<VehicleRoutingSolution> {
 
-    public HardSoftScore calculateScore(VehicleRoutingSolution solution) {
+    public HardSoftLongScore calculateScore(VehicleRoutingSolution solution) {
         boolean timeWindowed = solution instanceof TimeWindowedVehicleRoutingSolution;
         List<Customer> customerList = solution.getCustomerList();
         List<Vehicle> vehicleList = solution.getVehicleList();
@@ -39,8 +39,8 @@ public class VehicleRoutingEasyScoreCalculator implements EasyScoreCalculator<Ve
         for (Vehicle vehicle : vehicleList) {
             vehicleDemandMap.put(vehicle, 0);
         }
-        int hardScore = 0;
-        int softScore = 0;
+        long hardScore = 0L;
+        long softScore = 0L;
         for (Customer customer : customerList) {
             Standstill previousStandstill = customer.getPreviousStandstill();
             if (previousStandstill != null) {
@@ -54,8 +54,8 @@ public class VehicleRoutingEasyScoreCalculator implements EasyScoreCalculator<Ve
                 }
                 if (timeWindowed) {
                     TimeWindowedCustomer timeWindowedCustomer = (TimeWindowedCustomer) customer;
-                    int dueTime = timeWindowedCustomer.getDueTime();
-                    Integer arrivalTime = timeWindowedCustomer.getArrivalTime();
+                    long dueTime = timeWindowedCustomer.getDueTime();
+                    Long arrivalTime = timeWindowedCustomer.getArrivalTime();
                     if (dueTime < arrivalTime) {
                         // Score constraint arrivalAfterDueTime
                         hardScore -= (arrivalTime - dueTime);
@@ -72,7 +72,7 @@ public class VehicleRoutingEasyScoreCalculator implements EasyScoreCalculator<Ve
             }
         }
         // Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter
-        return HardSoftScore.valueOf(hardScore, softScore);
+        return HardSoftLongScore.valueOf(hardScore, softScore);
     }
 
 }

@@ -39,10 +39,10 @@ public class DepotDistanceCustomerDifficultyWeightFactory
             implements Comparable<DepotDistanceCustomerDifficultyWeight> {
 
         private final Customer customer;
-        private final int depotRoundTripDistance;
+        private final long depotRoundTripDistance;
 
         public DepotDistanceCustomerDifficultyWeight(Customer customer,
-                int depotRoundTripDistance) {
+                long depotRoundTripDistance) {
             this.customer = customer;
             this.depotRoundTripDistance = depotRoundTripDistance;
         }

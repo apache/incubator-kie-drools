@@ -23,28 +23,28 @@ import org.optaplanner.examples.vehiclerouting.domain.Depot;
 public class TimeWindowedDepot extends Depot {
 
     // Times are multiplied by 1000 to avoid floating point arithmetic rounding errors
-    private int readyTime;
-    private int dueTime;
+    private long readyTime;
+    private long dueTime;
 
     /**
      * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getReadyTime() {
+    public long getReadyTime() {
         return readyTime;
     }
 
-    public void setReadyTime(int readyTime) {
+    public void setReadyTime(long readyTime) {
         this.readyTime = readyTime;
     }
 
     /**
      * @return a positive number, the time multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getDueTime() {
+    public long getDueTime() {
         return dueTime;
     }
 
-    public void setDueTime(int dueTime) {
+    public void setDueTime(long dueTime) {
         this.dueTime = dueTime;
     }
 

@@ -441,9 +441,9 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 location.setLongitude(Double.parseDouble(lineTokens[2]));
                 locationList.add(location);
                 int demand = Integer.parseInt(lineTokens[3]);
-                int readyTime = Integer.parseInt(lineTokens[4]) * 1000;
-                int dueTime = Integer.parseInt(lineTokens[5]) * 1000;
-                int serviceDuration = Integer.parseInt(lineTokens[6]) * 1000;
+                long readyTime = Long.parseLong(lineTokens[4]) * 1000L;
+                long dueTime = Long.parseLong(lineTokens[5]) * 1000L;
+                long serviceDuration = Long.parseLong(lineTokens[6]) * 1000L;
                 if (first) {
                     depot = new TimeWindowedDepot();
                     depot.setId(id);
@@ -467,7 +467,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                     customer.setDemand(demand);
                     customer.setReadyTime(readyTime);
                     // Score constraint arrivalAfterDueTimeAtDepot is a build-in hard constraint in VehicleRoutingImporter
-                    int maximumDueTime = depot.getDueTime()
+                    long maximumDueTime = depot.getDueTime()
                             - serviceDuration - location.getDistanceTo(depot.getLocation());
                     if (dueTime > maximumDueTime) {
                         logger.warn("The customer ({})'s dueTime ({}) was automatically reduced" +

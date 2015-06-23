@@ -28,8 +28,8 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
+import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.location.DistanceType;
 import org.optaplanner.examples.vehiclerouting.domain.location.Location;
@@ -41,7 +41,7 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 @XStreamInclude({
         TimeWindowedVehicleRoutingSolution.class
 })
-public class VehicleRoutingSolution extends AbstractPersistable implements Solution<HardSoftScore> {
+public class VehicleRoutingSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
 
     protected String name;
     protected DistanceType distanceType;
@@ -52,8 +52,8 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
 
     protected List<Customer> customerList;
 
-    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
-    protected HardSoftScore score;
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftLongScoreDefinition.class})
+    protected HardSoftLongScore score;
 
     public String getName() {
         return name;
@@ -115,11 +115,11 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
         this.customerList = customerList;
     }
 
-    public HardSoftScore getScore() {
+    public HardSoftLongScore getScore() {
         return score;
     }
 
-    public void setScore(HardSoftScore score) {
+    public void setScore(HardSoftLongScore score) {
         this.score = score;
     }
 
@@ -139,23 +139,23 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
         if (score == null) {
             return null;
         }
-        int distance = - score.getSoftScore();
+        long distance = - score.getSoftScore();
         if (distanceUnitOfMeasurement == null) {
             return numberFormat.format(((double) distance) / 1000.0);
         }
         if (distanceUnitOfMeasurement.equals("sec")) { // TODO why are the values 1000 larger?
-            int hours = distance / 3600000;
-            int minutes = distance % 3600000 / 60000;
-            int seconds = distance % 60000 / 1000;
-            int milliseconds = distance % 1000;
+            long hours = distance / 3600000L;
+            long minutes = distance % 3600000L / 60000L;
+            long seconds = distance % 60000L / 1000L;
+            long milliseconds = distance % 1000L;
             return hours + "h " + minutes + "m " + seconds + "s " + milliseconds + "ms";
         } else if (distanceUnitOfMeasurement.equals("km")) { // TODO why are the values 1000 larger?
-            int km = distance / 1000;
-            int meter = distance % 1000;
+            long km = distance / 1000L;
+            long meter = distance % 1000L;
             return km + "km " + meter + "m";
         } else if (distanceUnitOfMeasurement.equals("meter")) {
-            int km = distance / 1000;
-            int meter = distance % 1000;
+            long km = distance / 1000L;
+            long meter = distance % 1000L;
             return km + "km " + meter + "m";
         } else {
             return numberFormat.format(((double) distance) / 1000.0) + " " + distanceUnitOfMeasurement;

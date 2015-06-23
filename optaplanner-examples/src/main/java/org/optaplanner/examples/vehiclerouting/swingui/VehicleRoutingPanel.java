@@ -24,6 +24,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
+import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
@@ -136,11 +137,11 @@ public class VehicleRoutingPanel extends SolutionPanel {
         if (solution instanceof TimeWindowedVehicleRoutingSolution) {
             TimeWindowedCustomer newTimeWindowedCustomer = new TimeWindowedCustomer();
             TimeWindowedDepot timeWindowedDepot = (TimeWindowedDepot) solution.getDepotList().get(0);
-            int windowTime = (timeWindowedDepot.getDueTime() - timeWindowedDepot.getReadyTime()) / 4;
-            int readyTime = demandRandom.nextInt(windowTime * 3);
+            long windowTime = (timeWindowedDepot.getDueTime() - timeWindowedDepot.getReadyTime()) / 4L;
+            long readyTime = RandomUtils.nextLong(demandRandom, windowTime * 3L);
             newTimeWindowedCustomer.setReadyTime(readyTime);
             newTimeWindowedCustomer.setDueTime(readyTime + windowTime);
-            newTimeWindowedCustomer.setServiceDuration(Math.min(10000, windowTime / 2));
+            newTimeWindowedCustomer.setServiceDuration(Math.min(10000L, windowTime / 2L));
             newCustomer = newTimeWindowedCustomer;
         } else {
             newCustomer = new Customer();

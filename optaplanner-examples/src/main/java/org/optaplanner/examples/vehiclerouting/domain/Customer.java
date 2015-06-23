@@ -94,7 +94,7 @@ public class Customer extends AbstractPersistable implements Standstill {
     /**
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getDistanceFromPreviousStandstill() {
+    public long getDistanceFromPreviousStandstill() {
         if (previousStandstill == null) {
             return 0;
         }
@@ -105,7 +105,7 @@ public class Customer extends AbstractPersistable implements Standstill {
      * @param standstill never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getDistanceFrom(Standstill standstill) {
+    public long getDistanceFrom(Standstill standstill) {
         return standstill.getLocation().getDistanceTo(location);
     }
 
@@ -113,7 +113,7 @@ public class Customer extends AbstractPersistable implements Standstill {
      * @param standstill never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getDistanceTo(Standstill standstill) {
+    public long getDistanceTo(Standstill standstill) {
         return location.getDistanceTo(standstill.getLocation());
     }
 

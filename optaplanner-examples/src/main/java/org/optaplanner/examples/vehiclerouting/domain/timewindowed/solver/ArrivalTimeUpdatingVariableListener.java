@@ -56,10 +56,10 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
 
     protected void updateArrivalTime(ScoreDirector scoreDirector, TimeWindowedCustomer sourceCustomer) {
         Standstill previousStandstill = sourceCustomer.getPreviousStandstill();
-        Integer departureTime = (previousStandstill instanceof TimeWindowedCustomer)
+        Long departureTime = (previousStandstill instanceof TimeWindowedCustomer)
                 ? ((TimeWindowedCustomer) previousStandstill).getDepartureTime() : null;
         TimeWindowedCustomer shadowCustomer = sourceCustomer;
-        Integer arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
+        Long arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
         while (shadowCustomer != null && ObjectUtils.notEqual(shadowCustomer.getArrivalTime(), arrivalTime)) {
             scoreDirector.beforeVariableChanged(shadowCustomer, "arrivalTime");
             shadowCustomer.setArrivalTime(arrivalTime);
@@ -70,7 +70,7 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
         }
     }
 
-    private Integer calculateArrivalTime(TimeWindowedCustomer customer, Integer previousDepartureTime) {
+    private Long calculateArrivalTime(TimeWindowedCustomer customer, Long previousDepartureTime) {
         if (customer == null) {
             return null;
         }

@@ -27,7 +27,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import javax.swing.ImageIcon;
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
@@ -85,7 +85,7 @@ public class VehicleRoutingSolutionPainter {
             translator.addCoordinates(location.getLatitude(), location.getLongitude());
         }
 
-        int maximumTimeWindowTime = determineMaximumTimeWindowTime(solution);
+        long maximumTimeWindowTime = determineMaximumTimeWindowTime(solution);
 
         double width = size.getWidth();
         double height = size.getHeight();
@@ -143,7 +143,7 @@ public class VehicleRoutingSolutionPainter {
         for (Vehicle vehicle : solution.getVehicleList()) {
             g.setColor(TangoColorFactory.SEQUENCE_2[colorIndex]);
             Customer vehicleInfoCustomer = null;
-            int longestNonDepotDistance = -1;
+            long longestNonDepotDistance = -1L;
             int load = 0;
             for (Customer customer : solution.getCustomerList()) {
                 if (customer.getPreviousStandstill() != null && customer.getVehicle() == vehicle) {
@@ -154,7 +154,7 @@ public class VehicleRoutingSolutionPainter {
                             location.getLongitude(), location.getLatitude(),
                             location instanceof AirLocation, false);
                     // Determine where to draw the vehicle info
-                    int distance = customer.getDistanceFromPreviousStandstill();
+                    long distance = customer.getDistanceFromPreviousStandstill();
                     if (customer.getPreviousStandstill() instanceof Customer) {
                         if (longestNonDepotDistance < distance) {
                             longestNonDepotDistance = distance;
@@ -217,7 +217,7 @@ public class VehicleRoutingSolutionPainter {
         }
         // Show soft score
         g.setColor(TangoColorFactory.ORANGE_3);
-        HardSoftScore score = solution.getScore();
+        HardSoftLongScore score = solution.getScore();
         if (score != null) {
             String distanceString;
             if (!score.isFeasible()) {
@@ -231,11 +231,11 @@ public class VehicleRoutingSolutionPainter {
         }
     }
 
-    private int determineMaximumTimeWindowTime(VehicleRoutingSolution solution) {
-        int maximumTimeWindowTime = 0;
+    private long determineMaximumTimeWindowTime(VehicleRoutingSolution solution) {
+        long maximumTimeWindowTime = 0L;
         for (Depot depot : solution.getDepotList()) {
             if (depot instanceof TimeWindowedDepot) {
-                int timeWindowTime = ((TimeWindowedDepot) depot).getDueTime();
+                long timeWindowTime = ((TimeWindowedDepot) depot).getDueTime();
                 if (timeWindowTime > maximumTimeWindowTime) {
                     maximumTimeWindowTime = timeWindowTime;
                 }
@@ -243,7 +243,7 @@ public class VehicleRoutingSolutionPainter {
         }
         for (Customer customer : solution.getCustomerList()) {
             if (customer instanceof TimeWindowedCustomer) {
-                int timeWindowTime = ((TimeWindowedCustomer) customer).getDueTime();
+                long timeWindowTime = ((TimeWindowedCustomer) customer).getDueTime();
                 if (timeWindowTime > maximumTimeWindowTime) {
                     maximumTimeWindowTime = timeWindowTime;
                 }
@@ -252,8 +252,8 @@ public class VehicleRoutingSolutionPainter {
         return maximumTimeWindowTime;
     }
 
-    private int calculateTimeWindowDegree(int maximumTimeWindowTime, int timeWindowTime) {
-        return (360 * timeWindowTime / maximumTimeWindowTime);
+    private int calculateTimeWindowDegree(long maximumTimeWindowTime, long timeWindowTime) {
+        return (int) (360L * timeWindowTime / maximumTimeWindowTime);
     }
 
     public Graphics2D createCanvas(double width, double height) {

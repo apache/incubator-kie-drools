@@ -41,10 +41,10 @@ public class DepotAngleCustomerDifficultyWeightFactory
 
         private final Customer customer;
         private final double depotAngle;
-        private final int depotRoundTripDistance;
+        private final long depotRoundTripDistance;
 
         public DepotAngleCustomerDifficultyWeight(Customer customer,
-                double depotAngle, int depotRoundTripDistance) {
+                double depotAngle, long depotRoundTripDistance) {
             this.customer = customer;
             this.depotAngle = depotAngle;
             this.depotRoundTripDistance = depotRoundTripDistance;

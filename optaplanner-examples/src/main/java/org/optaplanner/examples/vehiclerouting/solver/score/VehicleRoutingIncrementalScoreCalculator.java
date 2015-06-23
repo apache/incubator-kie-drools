@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Standstill;
@@ -34,8 +34,8 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
     private boolean timeWindowed;
     private Map<Vehicle, Integer> vehicleDemandMap;
 
-    private int hardScore;
-    private int softScore;
+    private long hardScore;
+    private long softScore;
 
     public void resetWorkingSolution(VehicleRoutingSolution solution) {
         timeWindowed = solution instanceof TimeWindowedVehicleRoutingSolution;
@@ -44,8 +44,8 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         for (Vehicle vehicle : vehicleList) {
             vehicleDemandMap.put(vehicle, 0);
         }
-        hardScore = 0;
-        softScore = 0;
+        hardScore = 0L;
+        softScore = 0L;
         for (Customer customer : solution.getCustomerList()) {
             insertPreviousStandstill(customer);
             insertVehicle(customer);
@@ -191,9 +191,9 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
     }
 
     private void insertArrivalTime(TimeWindowedCustomer customer) {
-        Integer arrivalTime = customer.getArrivalTime();
+        Long arrivalTime = customer.getArrivalTime();
         if (arrivalTime != null) {
-            int dueTime = customer.getDueTime();
+            long dueTime = customer.getDueTime();
             if (dueTime < arrivalTime) {
                 // Score constraint arrivalAfterDueTime
                 hardScore -= (arrivalTime - dueTime);
@@ -203,9 +203,9 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
     }
 
     private void retractArrivalTime(TimeWindowedCustomer customer) {
-        Integer arrivalTime = customer.getArrivalTime();
+        Long arrivalTime = customer.getArrivalTime();
         if (arrivalTime != null) {
-            int dueTime = customer.getDueTime();
+            long dueTime = customer.getDueTime();
             if (dueTime < arrivalTime) {
                 // Score constraint arrivalAfterDueTime
                 hardScore += (arrivalTime - dueTime);
@@ -213,8 +213,8 @@ public class VehicleRoutingIncrementalScoreCalculator extends AbstractIncrementa
         }
     }
 
-    public HardSoftScore calculateScore() {
-        return HardSoftScore.valueOf(hardScore, softScore);
+    public HardSoftLongScore calculateScore() {
+        return HardSoftLongScore.valueOf(hardScore, softScore);
     }
 
 }

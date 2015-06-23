@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Random;
 
 import org.apache.commons.io.IOUtils;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
@@ -158,7 +158,7 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
             previousStandstill.setNextCustomer(customer);
         }
         vehicleRoutingSolution.setCustomerList(customerList);
-        vehicleRoutingSolution.setScore(HardSoftScore.valueOf(0, (int) tour.getScore().getScore()));
+        vehicleRoutingSolution.setScore(HardSoftLongScore.valueOf(0, tour.getScore().getScore()));
         return vehicleRoutingSolution;
     }
 

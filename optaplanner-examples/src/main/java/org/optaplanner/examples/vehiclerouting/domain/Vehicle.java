@@ -69,7 +69,7 @@ public class Vehicle extends AbstractPersistable implements Standstill {
      * @param standstill never null
      * @return a positive number, the distance multiplied by 1000 to avoid floating point arithmetic rounding errors
      */
-    public int getDistanceTo(Standstill standstill) {
+    public long getDistanceTo(Standstill standstill) {
         return depot.getDistanceTo(standstill);
     }
 

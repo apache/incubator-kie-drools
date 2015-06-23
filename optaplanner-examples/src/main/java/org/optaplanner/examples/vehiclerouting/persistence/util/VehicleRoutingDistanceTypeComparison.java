@@ -21,7 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
@@ -66,7 +66,7 @@ public class VehicleRoutingDistanceTypeComparison extends LoggingMain {
             // Intentionally create a new instance instead of reusing the older one.
             VehicleRoutingSolution variablesSolution = (VehicleRoutingSolution) vehicleRoutingDao.readSolution(varFile);
             for (File inputFile : files) {
-                HardSoftScore score;
+                HardSoftLongScore score;
                 if (inputFile == varFile) {
                     score = variablesSolution.getScore();
                 } else {
