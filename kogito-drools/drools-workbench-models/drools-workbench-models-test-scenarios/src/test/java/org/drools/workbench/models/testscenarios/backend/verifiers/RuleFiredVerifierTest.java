@@ -1,16 +1,3 @@
-package org.drools.workbench.models.testscenarios.backend.verifiers;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Test;
-import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
-
 /*
 * Copyright 2010 JBoss Inc
 *
@@ -26,6 +13,20 @@ import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+
+package org.drools.workbench.models.testscenarios.backend.verifiers;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
+import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
+
 public class RuleFiredVerifierTest {
 
     @Test

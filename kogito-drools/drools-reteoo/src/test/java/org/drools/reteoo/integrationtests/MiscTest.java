@@ -2112,12 +2112,12 @@ public class MiscTest extends CommonTestMethodBase {
         assertEquals( stiltonError.getLine(),
                       stiltonError.getDescr().getLine() );
         // check the absolute error line number (there are more).
-        assertEquals( 11,
+        assertEquals( 26,
                       stiltonError.getLine() );
 
         final DescrBuildError poisonError = (DescrBuildError) errors[1];
         assertTrue( poisonError.getMessage().contains( "Poison" ) );
-        assertEquals( 13,
+        assertEquals( 28,
                       poisonError.getLine() );
 
         KnowledgeBuilderConfigurationImpl cfg = new KnowledgeBuilderConfigurationImpl();
@@ -2135,7 +2135,7 @@ public class MiscTest extends CommonTestMethodBase {
         // now check the RHS, not being too specific yet, as long as it has the
         // rules line number, not zero
         final DescrBuildError rhsError = (DescrBuildError) errors[2];
-        assertTrue( rhsError.getLine() >= 8 && rhsError.getLine() <= 17 ); // TODO this should be 16
+        assertTrue( rhsError.getLine() >= 23 && rhsError.getLine() <= 32 ); // TODO this should be 16
     }
 
     @Test

@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
 package org.drools.compiler.compiler.xml.rules;
 
 import java.io.InputStreamReader;
@@ -190,9 +205,10 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
 
         String expected = StringUtils.readFileAsString( new InputStreamReader( getClass().getResourceAsStream( "test_ParseCollect.drl" ) ) );
+        String expectedWithoutHeader = removeLicenseHeader( expected );
         String actual = new DrlDumper().dump( packageDescr );
         
-        DumperTestHelper.assertEqualsIgnoreWhitespace( expected, actual );
+        DumperTestHelper.assertEqualsIgnoreWhitespace( expectedWithoutHeader, actual );
     }
 
     @Test
@@ -315,11 +331,14 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
 
         String expected = StringUtils.readFileAsString( new InputStreamReader( getClass().getResourceAsStream( "test_ParseRule.drl" ) ) );
+        // remove license header as that one is not stored in the XML
+        String expectedWithoutHeader = removeLicenseHeader(expected);
+        System.out.println(expectedWithoutHeader);
         String actual = new DrlDumper().dump( packageDescr );
         
-        DumperTestHelper.assertEqualsIgnoreWhitespace( expected, actual );
+        DumperTestHelper.assertEqualsIgnoreWhitespace( expectedWithoutHeader, actual );
     }
-    
+
     @Test
     public void testParseSimpleRule() throws Exception {
         final XmlPackageReader xmlPackageReader = getXmReader();
@@ -410,9 +429,10 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
         final PackageDescr packageDescr = xmlPackageReader.getPackageDescr();
 
         String expected = StringUtils.readFileAsString( new InputStreamReader( getClass().getResourceAsStream( "test_ParseLhs.drl" ) ) );
+        String expectedWithoutHeader = removeLicenseHeader( expected );
         String actual = new DrlDumper().dump( packageDescr );
         
-        DumperTestHelper.assertEqualsIgnoreWhitespace( expected, actual );
+        DumperTestHelper.assertEqualsIgnoreWhitespace( expectedWithoutHeader, actual );
     }
 
     @Test
@@ -539,4 +559,25 @@ public class XmlPackageReaderTest extends CommonTestMethodBase {
 
         return xmlReader;
     }
+
+    private String removeLicenseHeader(String content) {
+        String[] lines = content.trim().split("\n");
+        StringBuilder result = new StringBuilder();
+        if (lines.length > 1 && lines[0].startsWith("/*")) {
+            boolean inHeader = true;
+            for (String line : lines) {
+                if (line.trim().startsWith("package")) {
+                    inHeader = false;
+                }
+                if (!inHeader) {
+                    result.append(line);
+                    result.append("\n");
+                }
+            }
+            return result.toString();
+        } else {
+            return content;
+        }
+    }
+
 }
