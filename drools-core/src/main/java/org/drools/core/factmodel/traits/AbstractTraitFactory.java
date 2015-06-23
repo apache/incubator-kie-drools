@@ -59,7 +59,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
 
     private InstantiatorFactory instantiatorFactory = new InstantiatorFactory() {
         @Override
-        public TraitableBean instantiate( Class<? extends Thing> trait, Object id ) {
+        public TraitableBean instantiate( Class<?> trait, Object id ) {
             return new Entity( id.toString() );
         }
 
