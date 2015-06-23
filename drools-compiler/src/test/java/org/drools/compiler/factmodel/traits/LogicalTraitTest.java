@@ -1,5 +1,3 @@
-package org.drools.compiler.factmodel.traits;
-
 /*
  * Copyright 2011 JBoss Inc
  *
@@ -15,6 +13,9 @@ package org.drools.compiler.factmodel.traits;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.compiler.factmodel.traits;
+
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.integrationtests.SerializationHelper;

@@ -1019,7 +1019,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "simple_rule",
                       rule.getName() );
 
-        assertEquals( 7,
+        assertEquals( 22,
                       rule.getConsequenceLine() );
         assertEquals( 2,
                       rule.getConsequencePattern() );
@@ -1135,7 +1135,7 @@ public class RuleParserTest extends TestCase {
         assertEquals( "simple_rule",
                       rule.getName() );
 
-        assertEquals( 7,
+        assertEquals( 22,
                       rule.getConsequenceLine() );
         assertEquals( 2,
                       rule.getConsequencePattern() );
@@ -1167,11 +1167,11 @@ public class RuleParserTest extends TestCase {
         assertEquals( "Baz",
                       third.getObjectType() );
 
-        assertEquals( 4,
+        assertEquals( 19,
                       first.getLine() );
-        assertEquals( 5,
+        assertEquals( 20,
                       second.getLine() );
-        assertEquals( 6,
+        assertEquals( 21,
                       third.getLine() );
     }
 
@@ -2018,7 +2018,7 @@ public class RuleParserTest extends TestCase {
                       func.getParameterNames().size() );
         assertEquals( 2,
                       func.getParameterTypes().size() );
-        assertEquals( 4,
+        assertEquals( 19,
                       func.getLine() );
         assertEquals( 0,
                       func.getColumn() );
@@ -2498,9 +2498,9 @@ public class RuleParserTest extends TestCase {
                                                                "test_EndPosition.drl" );
         final RuleDescr rule = (RuleDescr) pkg.getRules().get( 0 );
         final PatternDescr col = (PatternDescr) rule.getLhs().getDescrs().get( 0 );
-        assertEquals( 6,
+        assertEquals( 21,
                       col.getLine() );
-        assertEquals( 8,
+        assertEquals( 23,
                       col.getEndLine() );
     }
 
