@@ -44,6 +44,8 @@ import org.slf4j.LoggerFactory;
 public class PlannerBenchmarkRunner implements PlannerBenchmark {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
+    protected final transient Logger singleBenchmarkRunnerExceptionLogger = LoggerFactory.getLogger(
+            getClass().getName() + ".singleBenchmarkRunnerException");
 
     private final PlannerBenchmarkResult plannerBenchmarkResult;
 
@@ -141,7 +143,8 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         }
     }
 
-    protected long warmUp(ProblemBenchmarkResult problemBenchmarkResult, long startingTimeMillis, long warmUpTimeMillisSpentLimit, long timeLeft) {
+    protected long warmUp(ProblemBenchmarkResult problemBenchmarkResult,
+            long startingTimeMillis, long warmUpTimeMillisSpentLimit, long timeLeft) {
         for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
             SolverBenchmarkResult solverBenchmarkResult = singleBenchmarkResult.getSolverBenchmarkResult();
             TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
@@ -154,7 +157,8 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 Solver solver = solverBenchmarkResult.getSolverConfig().buildSolver();
                 solver.solve(problemBenchmarkResult.readPlanningProblem());
             } catch (RuntimeException e) {
-                logger.error("The warmUp of singleBenchmark (" + singleBenchmarkResult.getName() + ") failed.", e);
+                singleBenchmarkRunnerExceptionLogger.warn("The warmUp of singleBenchmark ("
+                        + singleBenchmarkResult.getName() + ") failed.", e);
                 // TODO update firstFailureSingleBenchmarkRunner (when warmups happen in a Runner too in parallel)
             }
 
@@ -195,11 +199,12 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 failureThrowable = e;
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
-                logger.error("The singleBenchmarkRunner (" + singleBenchmarkRunner.getName() + ") failed.", cause);
+                singleBenchmarkRunnerExceptionLogger.warn("The singleBenchmarkRunner ("
+                        + singleBenchmarkRunner.getName() + ") failed.", cause);
                 failureThrowable = cause;
             } catch (IllegalStateException e) {
                 // TODO WORKAROUND Remove when PLANNER-46 is fixed.
-                logger.error("The singleBenchmarkRunner (" + singleBenchmarkRunner.getName() + ") failed.", e);
+                singleBenchmarkRunnerExceptionLogger.warn("The singleBenchmarkRunner (" + singleBenchmarkRunner.getName() + ") failed.", e);
                 failureThrowable = e;
             }
             if (failureThrowable == null) {
