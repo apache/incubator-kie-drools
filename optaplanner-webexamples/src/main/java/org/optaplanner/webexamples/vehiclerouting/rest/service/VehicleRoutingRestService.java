@@ -37,7 +37,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 
 import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
@@ -111,7 +111,7 @@ public class VehicleRoutingRestService {
             jsonVehicleRouteList.add(jsonVehicleRoute);
         }
         jsonSolution.setVehicleRouteList(jsonVehicleRouteList);
-        HardSoftScore score = solution.getScore();
+        HardSoftLongScore score = solution.getScore();
         jsonSolution.setFeasible(score == null ? false : score.isFeasible());
         jsonSolution.setDistance(solution.getDistanceString(NUMBER_FORMAT));
         return jsonSolution;
