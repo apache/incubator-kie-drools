@@ -137,7 +137,7 @@ SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, de
 FROM Task;
 
 -- mysql
-ALTER TABLE SessionInfo MODIFY id BIGINT;
+ALTER TABLE SessionInfo MODIFY id BIGINT NOT NULL AUTO_INCREMENT;
 ALTER TABLE AuditTaskImpl MODIFY processSessionId BIGINT;
 ALTER TABLE ContextMappingInfo MODIFY KSESSION_ID BIGINT;
 ALTER TABLE Task MODIFY processSessionId BIGINT;
