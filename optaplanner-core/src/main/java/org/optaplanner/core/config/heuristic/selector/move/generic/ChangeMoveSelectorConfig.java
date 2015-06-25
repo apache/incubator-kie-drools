@@ -99,7 +99,7 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
         if (onlyEntityDescriptor != null) {
             entityDescriptors = Collections.singletonList(onlyEntityDescriptor);
         } else {
-            entityDescriptors = configPolicy.getSolutionDescriptor().getEntityDescriptors();
+            entityDescriptors = configPolicy.getSolutionDescriptor().getGenuineEntityDescriptors();
         }
         List<GenuineVariableDescriptor> variableDescriptorList = new ArrayList<GenuineVariableDescriptor>();
         for (EntityDescriptor entityDescriptor : entityDescriptors) {
