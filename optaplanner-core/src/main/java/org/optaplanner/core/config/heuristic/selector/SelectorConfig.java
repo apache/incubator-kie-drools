@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
@@ -73,7 +74,8 @@ public abstract class SelectorConfig {
                         + ") has an entityClass (" + entityClass + ") that is not a known planning entity.\n"
                         + "Check your solver configuration. If that class (" + entityClass.getSimpleName()
                         + ") is not in the entityClassSet (" + solutionDescriptor.getEntityClassSet()
-                        + "), check your Solution implementation's annotated methods too.");
+                        + "), check your " + PlanningSolution.class.getSimpleName()
+                        + " implementation's annotated methods too.");
             }
         } else {
             Collection<EntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();

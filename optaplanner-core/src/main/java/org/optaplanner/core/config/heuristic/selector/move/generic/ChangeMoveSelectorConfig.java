@@ -30,9 +30,7 @@ import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
@@ -46,6 +44,14 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
     @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
 
+    public ChangeMoveSelectorConfig() {
+    }
+
+    public ChangeMoveSelectorConfig(ChangeMoveSelectorConfig inheritedConfig) {
+        if (inheritedConfig != null) {
+            inherit(inheritedConfig);
+        }
+    }
 
     public EntitySelectorConfig getEntitySelectorConfig() {
         return entitySelectorConfig;
@@ -88,64 +94,43 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
     @Override
     protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {
         Collection<EntityDescriptor> entityDescriptors;
-        SolutionDescriptor solutionDescriptor = configPolicy.getSolutionDescriptor();
-        if (entitySelectorConfig != null && (entitySelectorConfig.getEntityClass() != null || entitySelectorConfig.getMimicSelectorRef() != null)) {
-            if (valueSelectorConfig != null && valueSelectorConfig.getVariableName() != null) {
-                return null;
-            }
-            EntityDescriptor entityDescriptor;
-            if (entitySelectorConfig.getEntityClass() != null) {
-                entityDescriptor = solutionDescriptor.getEntityDescriptorStrict(entitySelectorConfig.getEntityClass());
-                if (entityDescriptor == null) {
-                    throw new IllegalArgumentException("The selectorConfig (" + entitySelectorConfig
-                            + ") has an entityClass (" + entitySelectorConfig.getEntityClass() + ") that is not a known planning entity.\n"
-                            + "Check your solver configuration. If that class (" + entitySelectorConfig.getEntityClass().getSimpleName()
-                            + ") is not in the entityClassSet (" + solutionDescriptor.getEntityClassSet()
-                            + "), check your Solution implementation's annotated methods too.");
-                }
-            } else {
-                entityDescriptor = configPolicy.getEntityMimicRecorder(entitySelectorConfig.getMimicSelectorRef()).getEntityDescriptor();
-            }
-            entityDescriptors = Collections.singletonList(entityDescriptor);
+        EntityDescriptor onlyEntityDescriptor = entitySelectorConfig == null ? null
+                : entitySelectorConfig.extractEntityDescriptor(configPolicy);
+        if (onlyEntityDescriptor != null) {
+            entityDescriptors = Collections.singletonList(onlyEntityDescriptor);
         } else {
-            entityDescriptors = solutionDescriptor.getEntityDescriptors();
+            entityDescriptors = configPolicy.getSolutionDescriptor().getEntityDescriptors();
         }
-
         List<GenuineVariableDescriptor> variableDescriptorList = new ArrayList<GenuineVariableDescriptor>();
         for (EntityDescriptor entityDescriptor : entityDescriptors) {
-            if (valueSelectorConfig != null && valueSelectorConfig.getVariableName() != null) {
-                GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor(valueSelectorConfig.getVariableName());
-                if (variableDescriptor == null) {
-                    throw new IllegalArgumentException("The selectorConfig (" + valueSelectorConfig
-                            + ") has a variableName (" + valueSelectorConfig.getVariableName()
-                            + ") which is not a valid planning variable on entityClass ("
-                            + entityDescriptor.getEntityClass() + ").\n"
-                            + entityDescriptor.buildInvalidVariableNameExceptionMessage(valueSelectorConfig.getVariableName()));
+            GenuineVariableDescriptor onlyVariableDescriptor = valueSelectorConfig == null ? null
+                    : valueSelectorConfig.extractVariableDescriptor(configPolicy, entityDescriptor);
+            if (onlyVariableDescriptor != null) {
+                if (onlyEntityDescriptor != null) {
+                    // No need for unfolding or deducing
+                    return null;
                 }
-                variableDescriptorList.add(variableDescriptor);
+                variableDescriptorList.add(onlyVariableDescriptor);
             } else {
                 variableDescriptorList.addAll(entityDescriptor.getGenuineVariableDescriptors());
             }
         }
+        return buildUnfoldedMoveSelectorConfig(variableDescriptorList);
+    }
 
+    protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(
+            List<GenuineVariableDescriptor> variableDescriptorList) {
         List<MoveSelectorConfig> moveSelectorConfigList = new ArrayList<MoveSelectorConfig>(variableDescriptorList.size());
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
-            ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
-            changeMoveSelectorConfig.inherit(this);
-            EntitySelectorConfig entitySelectorConfig = new EntitySelectorConfig();
-            if (this.entitySelectorConfig != null) {
-                entitySelectorConfig.inherit(this.entitySelectorConfig);
+            ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig(this);
+            EntitySelectorConfig childEntitySelectorConfig = new EntitySelectorConfig(entitySelectorConfig);
+            if (childEntitySelectorConfig.getMimicSelectorRef() == null) {
+                childEntitySelectorConfig.setEntityClass(variableDescriptor.getEntityDescriptor().getEntityClass());
             }
-            if (entitySelectorConfig.getMimicSelectorRef() == null) {
-                entitySelectorConfig.setEntityClass(variableDescriptor.getEntityDescriptor().getEntityClass());
-            }
-            changeMoveSelectorConfig.setEntitySelectorConfig(entitySelectorConfig);
-            ValueSelectorConfig valueSelectorConfig = new ValueSelectorConfig();
-            if (this.valueSelectorConfig != null) {
-                valueSelectorConfig.inherit(this.valueSelectorConfig);
-            }
-            valueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
-            changeMoveSelectorConfig.setValueSelectorConfig(valueSelectorConfig);
+            changeMoveSelectorConfig.setEntitySelectorConfig(childEntitySelectorConfig);
+            ValueSelectorConfig childValueSelectorConfig = new ValueSelectorConfig(valueSelectorConfig);
+            childValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
+            changeMoveSelectorConfig.setValueSelectorConfig(childValueSelectorConfig);
             moveSelectorConfigList.add(changeMoveSelectorConfig);
         }
         return moveSelectorConfigList.size() == 1 ? moveSelectorConfigList.get(0)

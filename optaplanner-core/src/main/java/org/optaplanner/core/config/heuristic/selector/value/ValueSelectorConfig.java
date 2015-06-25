@@ -84,6 +84,12 @@ public class ValueSelectorConfig extends SelectorConfig {
         this.variableName = variableName;
     }
 
+    public ValueSelectorConfig(ValueSelectorConfig inheritedConfig) {
+        if (inheritedConfig != null) {
+            inherit(inheritedConfig);
+        }
+    }
+
     public Class<?> getDowncastEntityClass() {
         return downcastEntityClass;
     }
@@ -183,6 +189,24 @@ public class ValueSelectorConfig extends SelectorConfig {
     // ************************************************************************
     // Builder methods
     // ************************************************************************
+
+    public GenuineVariableDescriptor extractVariableDescriptor(HeuristicConfigPolicy configPolicy,
+            EntityDescriptor entityDescriptor) {
+        entityDescriptor = downcastEntityDescriptor(configPolicy, entityDescriptor);
+        if (variableName != null) {
+            GenuineVariableDescriptor variableDescriptor = entityDescriptor.getGenuineVariableDescriptor(variableName);
+            if (variableDescriptor == null) {
+                throw new IllegalArgumentException("The selectorConfig (" + this
+                        + ") has a variableName (" + variableName
+                        + ") which is not a valid planning variable on entityClass ("
+                        + entityDescriptor.getEntityClass() + ").\n"
+                        + entityDescriptor.buildInvalidVariableNameExceptionMessage(variableName));
+            }
+            return variableDescriptor;
+        } else {
+            return null;
+        }
+    }
 
     /**
      *

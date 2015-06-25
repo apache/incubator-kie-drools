@@ -23,6 +23,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -31,6 +32,7 @@ import org.optaplanner.core.config.heuristic.selector.common.decorator.Selection
 import org.optaplanner.core.config.heuristic.selector.common.nearby.NearbySelectionConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
@@ -83,6 +85,12 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     public EntitySelectorConfig(Class<?> entityClass) {
         this.entityClass = entityClass;
+    }
+
+    public EntitySelectorConfig(EntitySelectorConfig inheritedConfig) {
+        if (inheritedConfig != null) {
+            inherit(inheritedConfig);
+        }
     }
 
     public String getId() {
@@ -200,6 +208,26 @@ public class EntitySelectorConfig extends SelectorConfig {
     // ************************************************************************
     // Builder methods
     // ************************************************************************
+
+    public EntityDescriptor extractEntityDescriptor(HeuristicConfigPolicy configPolicy) {
+        if (entityClass != null) {
+            SolutionDescriptor solutionDescriptor = configPolicy.getSolutionDescriptor();
+            EntityDescriptor entityDescriptor = solutionDescriptor.getEntityDescriptorStrict(entityClass);
+            if (entityDescriptor == null) {
+                throw new IllegalArgumentException("The selectorConfig (" + this
+                        + ") has an entityClass (" + entityClass + ") that is not a known planning entity.\n"
+                        + "Check your solver configuration. If that class (" + entityClass.getSimpleName()
+                        + ") is not in the entityClassSet (" + solutionDescriptor.getEntityClassSet()
+                        + "), check your " + PlanningSolution.class.getSimpleName()
+                        + " implementation's annotated methods too.");
+            }
+            return entityDescriptor;
+        } else if (mimicSelectorRef != null) {
+            return configPolicy.getEntityMimicRecorder(mimicSelectorRef).getEntityDescriptor();
+        } else {
+            return null;
+        }
+    }
 
     /**
      * @param configPolicy never null
