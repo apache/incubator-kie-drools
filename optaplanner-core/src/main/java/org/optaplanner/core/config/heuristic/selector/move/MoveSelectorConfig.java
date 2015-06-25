@@ -168,7 +168,6 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
     // ************************************************************************
 
     /**
-     *
      * @param configPolicy never null
      * @param minimumCacheType never null, If caching is used (different from {@link SelectionCacheType#JUST_IN_TIME}),
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
@@ -178,6 +177,11 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
      */
     public MoveSelector buildMoveSelector(HeuristicConfigPolicy configPolicy,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
+        MoveSelectorConfig unfoldedMoveSelectorConfig = buildUnfoldedMoveSelectorConfig(configPolicy);
+        if (unfoldedMoveSelectorConfig != null) {
+            return unfoldedMoveSelectorConfig.buildMoveSelector(configPolicy, minimumCacheType, inheritedSelectionOrder);
+        }
+
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
         SelectionOrder resolvedSelectionOrder = SelectionOrder.resolve(selectionOrder, inheritedSelectionOrder);
 
@@ -197,6 +201,13 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         moveSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         moveSelector = applySelectedLimit(resolvedCacheType, resolvedSelectionOrder, moveSelector);
         return moveSelector;
+    }
+
+    /**
+     * @return null if no unfolding is needed
+     */
+    protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {
+        return null;
     }
 
     protected boolean determineBaseRandomSelection(

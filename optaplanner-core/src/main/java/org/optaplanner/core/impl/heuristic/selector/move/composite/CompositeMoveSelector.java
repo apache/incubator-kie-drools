@@ -56,6 +56,10 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
         }
     }
 
+    public List<MoveSelector> getChildMoveSelectorList() {
+        return childMoveSelectorList;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

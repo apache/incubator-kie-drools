@@ -77,6 +77,13 @@ public class ValueSelectorConfig extends SelectorConfig {
 
     protected Long selectedCountLimit = null;
 
+    public ValueSelectorConfig() {
+    }
+
+    public ValueSelectorConfig(String variableName) {
+        this.variableName = variableName;
+    }
+
     public Class<?> getDowncastEntityClass() {
         return downcastEntityClass;
     }

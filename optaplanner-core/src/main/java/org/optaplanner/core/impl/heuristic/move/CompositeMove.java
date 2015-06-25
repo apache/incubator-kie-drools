@@ -62,6 +62,10 @@ public class CompositeMove extends AbstractMove {
         }
     }
 
+    // ************************************************************************
+    // Non-static members
+    // ************************************************************************
+
     protected final Move[] moves;
 
     /**

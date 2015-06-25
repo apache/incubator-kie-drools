@@ -78,6 +78,13 @@ public class EntitySelectorConfig extends SelectorConfig {
 
     protected Long selectedCountLimit = null;
 
+    public EntitySelectorConfig() {
+    }
+
+    public EntitySelectorConfig(Class<?> entityClass) {
+        this.entityClass = entityClass;
+    }
+
     public String getId() {
         return id;
     }
