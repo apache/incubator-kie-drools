@@ -47,16 +47,7 @@
         <solver>
           <localSearch>
             <unionMoveSelector>
-              <changeMoveSelector>
-                <valueSelector>
-                  <variableName>period</variableName>
-                </valueSelector>
-              </changeMoveSelector>
-              <changeMoveSelector>
-                <valueSelector>
-                  <variableName>room</variableName>
-                </valueSelector>
-              </changeMoveSelector>
+              <changeMoveSelector/>
               <swapMoveSelector>
                 <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
               </swapMoveSelector>
@@ -79,16 +70,7 @@
         <solver>
           <localSearch>
             <unionMoveSelector>
-              <changeMoveSelector>
-                <valueSelector>
-                  <variableName>period</variableName>
-                </valueSelector>
-              </changeMoveSelector>
-              <changeMoveSelector>
-                <valueSelector>
-                  <variableName>room</variableName>
-                </valueSelector>
-              </changeMoveSelector>
+              <changeMoveSelector/>
               <swapMoveSelector>
                 <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
               </swapMoveSelector>
@@ -111,16 +93,7 @@
         <solver>
           <localSearch>
             <unionMoveSelector>
-              <changeMoveSelector>
-                <valueSelector>
-                  <variableName>period</variableName>
-                </valueSelector>
-              </changeMoveSelector>
-              <changeMoveSelector>
-                <valueSelector>
-                  <variableName>room</variableName>
-                </valueSelector>
-              </changeMoveSelector>
+              <changeMoveSelector/>
               <swapMoveSelector>
                 <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
               </swapMoveSelector>
