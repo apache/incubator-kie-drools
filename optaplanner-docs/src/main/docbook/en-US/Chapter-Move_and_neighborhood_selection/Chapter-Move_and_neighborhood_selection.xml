@@ -142,6 +142,10 @@
 
       <programlisting language="xml">    &lt;changeMoveSelector/&gt;</programlisting>
 
+      <para>If there are multiple entity classes or multiple planning variables for 1 entity class, a simple
+      configuration will automatically unfold into a <link linkend="unionMoveSelector">union</link> of
+      <literal>ChangeMove</literal> selectors for every planning variable.</para>
+
       <para>Advanced configuration:</para>
 
       <programlisting language="xml">    &lt;changeMoveSelector&gt;
