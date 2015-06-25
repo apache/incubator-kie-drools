@@ -26,6 +26,7 @@ import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.CartesianProductMoveSelector;
+import org.optaplanner.core.impl.heuristic.selector.move.composite.UnionMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.multientity.TestdataHerdEntity;
@@ -62,8 +63,8 @@ public class ChangeMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CartesianProductMoveSelector.class, moveSelector);
-        assertEquals(3, ((CartesianProductMoveSelector) moveSelector).getChildMoveSelectorList().size());
+        assertInstanceOf(UnionMoveSelector.class, moveSelector);
+        assertEquals(3, ((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size());
     }
 
     @Test
@@ -91,8 +92,8 @@ public class ChangeMoveSelectorConfigTest extends AbstractSelectorConfigTest {
         ChangeMoveSelectorConfig moveSelectorConfig = new ChangeMoveSelectorConfig();
         MoveSelector moveSelector = moveSelectorConfig.buildMoveSelector(
                 buildHeuristicConfigPolicy(solutionDescriptor), SelectionCacheType.JUST_IN_TIME, SelectionOrder.RANDOM);
-        assertInstanceOf(CartesianProductMoveSelector.class, moveSelector);
-        assertEquals(2, ((CartesianProductMoveSelector) moveSelector).getChildMoveSelectorList().size());
+        assertInstanceOf(UnionMoveSelector.class, moveSelector);
+        assertEquals(2, ((UnionMoveSelector) moveSelector).getChildMoveSelectorList().size());
     }
 
 }

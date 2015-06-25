@@ -411,4 +411,8 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
                 fixedProbabilityWeight, inheritedConfig.getFixedProbabilityWeight());
     }
 
+    public void inheritFolded(MoveSelectorConfig foldedConfig) {
+        inherit(foldedConfig);
+    }
+
 }

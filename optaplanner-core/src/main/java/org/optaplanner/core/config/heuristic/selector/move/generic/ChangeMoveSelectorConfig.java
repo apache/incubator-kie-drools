@@ -28,6 +28,7 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -45,12 +46,6 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
     private ValueSelectorConfig valueSelectorConfig = null;
 
     public ChangeMoveSelectorConfig() {
-    }
-
-    public ChangeMoveSelectorConfig(ChangeMoveSelectorConfig inheritedConfig) {
-        if (inheritedConfig != null) {
-            inherit(inheritedConfig);
-        }
     }
 
     public EntitySelectorConfig getEntitySelectorConfig() {
@@ -122,7 +117,8 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
             List<GenuineVariableDescriptor> variableDescriptorList) {
         List<MoveSelectorConfig> moveSelectorConfigList = new ArrayList<MoveSelectorConfig>(variableDescriptorList.size());
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
-            ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig(this);
+            // No changeMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
+            ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
             EntitySelectorConfig childEntitySelectorConfig = new EntitySelectorConfig(entitySelectorConfig);
             if (childEntitySelectorConfig.getMimicSelectorRef() == null) {
                 childEntitySelectorConfig.setEntityClass(variableDescriptor.getEntityDescriptor().getEntityClass());
@@ -133,8 +129,15 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
             changeMoveSelectorConfig.setValueSelectorConfig(childValueSelectorConfig);
             moveSelectorConfigList.add(changeMoveSelectorConfig);
         }
-        return moveSelectorConfigList.size() == 1 ? moveSelectorConfigList.get(0)
-                : new CartesianProductMoveSelectorConfig(moveSelectorConfigList);
+
+        MoveSelectorConfig unfoldedMoveSelectorConfig;
+        if (moveSelectorConfigList.size() == 1) {
+            unfoldedMoveSelectorConfig = moveSelectorConfigList.get(0);
+        } else {
+            unfoldedMoveSelectorConfig = new UnionMoveSelectorConfig(moveSelectorConfigList);
+        }
+        unfoldedMoveSelectorConfig.inheritFolded(this);
+        return unfoldedMoveSelectorConfig;
     }
 
     public void inherit(ChangeMoveSelectorConfig inheritedConfig) {

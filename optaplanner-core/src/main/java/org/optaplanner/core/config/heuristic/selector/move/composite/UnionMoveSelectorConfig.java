@@ -27,6 +27,7 @@ import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.FixedSelectorProbabilityWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionProbabilityWeightFactory;
@@ -103,7 +104,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
         } else {
             selectorProbabilityWeightFactory = null;
         }
-       return new UnionMoveSelector(moveSelectorList, randomSelection,
+        return new UnionMoveSelector(moveSelectorList, randomSelection,
                 selectorProbabilityWeightFactory);
     }
 
