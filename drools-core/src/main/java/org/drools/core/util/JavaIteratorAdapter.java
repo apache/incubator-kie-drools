@@ -16,15 +16,15 @@
 
 package org.drools.core.util;
 
-import java.util.NoSuchElementException;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.kie.api.runtime.ObjectFilter;
 
-public class JavaIteratorAdapter
+import java.util.NoSuchElementException;
+
+public class JavaIteratorAdapter<T>
     implements
-    java.util.Iterator {
+    java.util.Iterator<T> {
     public static final int    OBJECT = 0;
     public static final int    FACT_HANDLE = 1;
 
@@ -53,7 +53,7 @@ public class JavaIteratorAdapter
         return (this.nextEntry != null);
     }
 
-    public Object next() {
+    public T next() {
         ObjectEntry current = this.nextEntry;
 
         if ( current != null ) {
@@ -63,9 +63,9 @@ public class JavaIteratorAdapter
         }
 
         if ( this.type == OBJECT ) {
-            return ((InternalFactHandle) current.getKey()).getObject();
+            return (T)((InternalFactHandle) current.getKey()).getObject();
         } else {
-            return current.getKey();
+            return (T)current.getKey();
         }
     }
 

@@ -71,10 +71,8 @@ public class BetaNodeBuilder {
 
     public BetaNode build() {
         NodeFactory nFactory = buildContext.getComponentFactory().getNodeFactoryService();
-        EntryPointNode epn = nFactory.buildEntryPointNode(buildContext.getNextId(),
-                                                          buildContext.getKnowledgeBase().getRete(),
-                                                          buildContext);
-        epn.attach(buildContext);
+
+        EntryPointNode epn = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();
 
         ObjectTypeNode otn = nFactory.buildObjectTypeNode(buildContext.getNextId(),
                                                           epn,

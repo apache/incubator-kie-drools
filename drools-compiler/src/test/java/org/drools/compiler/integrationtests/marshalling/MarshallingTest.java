@@ -1,24 +1,5 @@
 package org.drools.compiler.integrationtests.marshalling;
 
-import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.jar.JarEntry;
-import java.util.jar.JarInputStream;
-
 import org.drools.compiler.Address;
 import org.drools.compiler.Cell;
 import org.drools.compiler.Cheese;
@@ -40,6 +21,7 @@ import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.EnvironmentFactory;
@@ -64,6 +46,7 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyAcceptor;
@@ -83,6 +66,26 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
+
+import static org.drools.compiler.integrationtests.SerializationHelper.getSerialisedStatefulKnowledgeSession;
 
 public class MarshallingTest extends CommonTestMethodBase {
 
@@ -175,6 +178,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         final Person bob = new Person( "bob" );
         session.insert( bob );
+        ((InternalWorkingMemory)session).flushPropagations();
 
         org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getKnowledgePackage("org.drools.compiler.test").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
 
@@ -239,6 +243,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         final Person bob = new Person( "bob" );
         session.insert( bob );
+        ((InternalWorkingMemory)session).flushPropagations();
 
         org.kie.api.definition.rule.Rule[] rules = (org.kie.api.definition.rule.Rule[]) kBase.getKnowledgePackage("org.drools.compiler.test").getRules().toArray(new org.kie.api.definition.rule.Rule[0] );
 
@@ -1175,12 +1180,12 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         // Make sure the rete node map is created correctly
         Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap((InternalKnowledgeBase) kBase);
-        assertEquals( 2,
+        assertEquals( 3,
                       nodes.size() );
         assertEquals( "Person",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 2 )).getObjectType()).getClassType().getSimpleName() );
+                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 3 )).getObjectType()).getClassType().getSimpleName() );
         assertEquals( "Rule 1",
-                      ((RuleTerminalNode) nodes.get( 4 )).getRule().getName() );
+                      ((RuleTerminalNode) nodes.get( 5 )).getRule().getName() );
 
         StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
 
@@ -1220,15 +1225,15 @@ public class MarshallingTest extends CommonTestMethodBase {
         // Make sure the rete node map is created correctly
         Map<Integer, BaseNode> nodes = RuleBaseNodes.getNodeMap( (InternalKnowledgeBase) kBase );
 
-        assertEquals( 4,
+        assertEquals( 5,
                       nodes.size() );
         assertEquals( "Cheese",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 2 )).getObjectType()).getClassType().getSimpleName() );
+                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 3 )).getObjectType()).getClassType().getSimpleName() );
         assertEquals( "Person",
-                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 4 )).getObjectType()).getClassType().getSimpleName() );
-        assertTrue( "Should end with JoinNode",  nodes.get( 5 ).getClass().getSimpleName().endsWith( "JoinNode") );
+                      ((ClassObjectType) ((ObjectTypeNode) nodes.get( 5 )).getObjectType()).getClassType().getSimpleName() );
+        assertTrue( "Should end with JoinNode",  nodes.get( 6 ).getClass().getSimpleName().endsWith( "JoinNode") );
         assertEquals( "Rule 1",
-                      ((RuleTerminalNode) nodes.get( 6 )).getRule().getName() );
+                      ((RuleTerminalNode) nodes.get( 7 )).getRule().getName() );
 
         StatefulKnowledgeSession session = kBase.newStatefulKnowledgeSession();
 
@@ -1701,6 +1706,7 @@ public class MarshallingTest extends CommonTestMethodBase {
 
         ksession = getSerialisedStatefulKnowledgeSession( ksession,
                                                           true );
+
         ksession.fireAllRules();
         assertEquals( 2,
                       list.size() );
@@ -2038,6 +2044,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         ksession.insert( new Message() );
         ksession.insert( new Message() );
         ksession.insert( new Message() );
+        ((InternalWorkingMemory)ksession).flushPropagations();
 
         assertEquals( 1,
                       ((InternalAgenda) ksession.getAgenda()).agendaSize()  );
@@ -2697,5 +2704,35 @@ public class MarshallingTest extends CommonTestMethodBase {
         Marshaller marshaller = MarshallerFactory.newMarshaller( knowledgeBase,
                                                                  new ObjectMarshallingStrategy[]{strategy} );
         return marshaller;
+    }
+
+    @Test
+    public void testMarshallWithCollects() throws Exception {
+        // BZ-1193600
+        String str =
+                "import java.util.Collection\n" +
+                "rule R1 when\n" +
+                "    Collection(empty==false) from collect( Integer() )\n" +
+                "    Collection() from collect( String() )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when then end\n";
+
+        KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
+        KieSession ksession = kbase.newKieSession();
+
+        try {
+            Marshaller marshaller = MarshallerFactory.newMarshaller(kbase);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            marshaller.marshall(baos, ksession);
+            marshaller = MarshallerFactory.newMarshaller(kbase);
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            baos.close();
+            ksession = marshaller.unmarshall(bais);
+            bais.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("unexpected exception :" + e.getMessage());
+        }
     }
 }

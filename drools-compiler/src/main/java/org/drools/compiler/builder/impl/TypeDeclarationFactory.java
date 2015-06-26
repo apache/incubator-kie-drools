@@ -16,6 +16,8 @@ import org.kie.api.definition.type.Role;
 import org.kie.api.definition.type.TypeSafe;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,62 +31,25 @@ public class TypeDeclarationFactory {
     }
 
     public TypeDeclaration processTypeDeclaration( PackageRegistry pkgRegistry,
-                                                   AbstractClassTypeDeclarationDescr typeDescr,
-                                                   List<TypeDefinition> unresolvedTypes,
-                                                   Map<String,AbstractClassTypeDeclarationDescr> unprocessableDescrs ) {
+                                                   AbstractClassTypeDeclarationDescr typeDescr ) {
 
-        TypeDeclaration type = createTypeDeclaration( typeDescr, unresolvedTypes );
-        TypeDeclaration parent = getParentDeclaration( typeDescr, unresolvedTypes );
+        TypeDeclaration type = kbuilder.getTypeBuilder().getExistingTypeDeclaration( typeDescr.getFullTypeName() );
+        if (type == null) {
+            type = new TypeDeclaration( typeDescr.getTypeName() );
+            type.setResource( typeDescr.getResource() );
 
-        processTypeAnnotations(typeDescr, type, parent);
-
-        //if is not new, search the already existing declaration and
-        //compare them o see if they are at least compatibles
-        // check whether it is necessary to build the class or not
-        type.setNovel( TypeDeclarationUtils.isNovelClass( typeDescr, pkgRegistry ) );
-        type.setNature( type.isNovel() ? TypeDeclaration.Nature.DEFINITION : TypeDeclaration.Nature.DECLARATION );
-
-        return type;
-    }
-
-    protected TypeDeclaration createTypeDeclaration( AbstractClassTypeDeclarationDescr typeDescr, List<TypeDefinition> unresolvedTypes ) {
-        TypeDeclaration type = new TypeDeclaration( typeDescr.getTypeName() );
-        type.setResource(typeDescr.getResource());
-        return type;
-    }
-
-    protected TypeDeclaration getParentDeclaration( AbstractClassTypeDeclarationDescr typeDescr, List<TypeDefinition> unresolvedTypes ) {
-        TypeDeclaration parent = null;
-        if ( ! typeDescr.getSuperTypes().isEmpty() ) {
-            // parent might have inheritable properties
-            PackageRegistry sup = kbuilder.getPackageRegistry( typeDescr.getSuperTypeNamespace() );
-            if ( sup != null ) {
-                parent = sup.getPackage().getTypeDeclaration( typeDescr.getSuperTypeName() );
-                if ( parent == null ) {
-                    /*
-                    for ( TypeDefinition tdef : unresolvedTypes ) {
-                        if ( tdef.getTypeClassName().equals( typeDescr.getSuperTypes().get( 0 ).getFullName() ) ) {
-                            parent = tdef.type;
-                        }
-                    }
-                    */
-                }
-                if (parent == null) {
-                    // FIXME Does this behavior still make sense? The need to redeclare an existing (java) class in order to be able to extend it...
-                    // kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "Declared class " + typeDescr.getTypeName() + " can't extend class " + typeDescr.getSuperTypeName() + ", it should be declared"));
-                } else {
-                    if (parent.getNature() == TypeDeclaration.Nature.DECLARATION && kbuilder.getKnowledgeBase() != null) {
-                        // trying to find a definition
-                        parent = kbuilder.getKnowledgeBase().getPackagesMap().get(typeDescr.getSuperTypeNamespace()).getTypeDeclaration(typeDescr.getSuperTypeName());
-                    }
-                }
-            }
+            // if is not new, search the already existing declaration and
+            // compare them o see if they are at least compatibles
+            // check whether it is necessary to build the class or not
+            type.setNovel( TypeDeclarationUtils.isNovelClass( typeDescr, pkgRegistry ) );
+            type.setNature( type.isNovel() ? TypeDeclaration.Nature.DEFINITION : TypeDeclaration.Nature.DECLARATION );
         }
-        return parent;
+
+        processTypeAnnotations(typeDescr, type);
+        return type;
     }
 
-
-    private void processTypeAnnotations( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, TypeDeclaration parent ) {
+    private void processTypeAnnotations( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type ) {
         try {
             Role role = typeDescr.getTypedAnnotation(Role.class);
             if (role != null) {
@@ -152,11 +117,7 @@ public class TypeDeclarationFactory {
                         }
 
                         if ( fieldCount != typeDescr.getFields().size() ) {
-                            kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName()
-                                                                                          +" can't declare a different set of fields \n" +
-                                                                                          "existing : " + cfi.getFieldTypesField() + "\n" +
-                                                                                          "declared : " + typeDescr.getFields() ));
-
+                            kbuilder.addBuilderResult( reportDeclarationDiff( cfi, typeDescr ) );
                         }
                     } catch ( IOException e ) {
                         e.printStackTrace();
@@ -322,5 +283,33 @@ public class TypeDeclarationFactory {
         return c2 != null && c1.compareTo(c2) == 0;
     }
 
+
+    private TypeDeclarationError reportDeclarationDiff( ClassFieldInspector cfi, AbstractClassTypeDeclarationDescr typeDescr) {
+        List<String> existing = new ArrayList<String>();
+        for ( String existingFieldName : cfi.getFieldTypesField().keySet() ) {
+            if ( ! cfi.isNonGetter( existingFieldName ) && ! "class".equals( existingFieldName ) && cfi.getSetterMethods().containsKey( existingFieldName ) ) {
+                existing.add( existingFieldName );
+            }
+        }
+        Collections.sort( existing );
+        List<String> declared = new ArrayList<String>( typeDescr.getFields().keySet() );
+        Collections.sort( declared );
+        List<String> deltas = new ArrayList<String>();
+        for ( String s : existing ) {
+            if ( ! declared.contains( s ) ) {
+                deltas.add( "--" + s );
+            }
+        }
+        for ( String s : declared ) {
+            if ( ! existing.contains( s ) ) {
+                deltas.add( "++" + s );
+            }
+        }
+        return new TypeDeclarationError( typeDescr, "New declaration of " + typeDescr.getType().getFullName() +
+                                                    " can't declare a different set of fields \n" +
+                                                    "existing : " + existing + "\n" +
+                                                    "declared : " + declared + "\n" +
+                                                    "diff : " + deltas );
+    }
 
 }

@@ -61,6 +61,7 @@ public class ActionGlobalCollectionAdd implements IAction {
     public int hashCode() {
         int result = globalName != null ? globalName.hashCode() : 0;
         result = 31 * result + (factName != null ? factName.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

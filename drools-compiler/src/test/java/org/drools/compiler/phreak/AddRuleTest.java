@@ -1,8 +1,8 @@
 package org.drools.compiler.phreak;
 
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.JoinNode;
@@ -10,13 +10,12 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.Match;
-import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -29,11 +28,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertSame;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 public class AddRuleTest {
 
@@ -43,7 +41,7 @@ public class AddRuleTest {
         kconf.setOption( RuleEngineOption.PHREAK );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         wm.insert(new A(1));
         wm.insert(new B(1));
@@ -79,7 +77,7 @@ public class AddRuleTest {
         kconf.setOption( RuleEngineOption.PHREAK );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newStatefulKnowledgeSession());
 
         wm.insert(new A(1));
         wm.insert(new A(2));
@@ -119,7 +117,7 @@ public class AddRuleTest {
     @Test
     public void testPopulatedRuleMidwayShare() throws Exception {
         KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a : A() B() C(1;) D() E()\n");
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -179,7 +177,7 @@ public class AddRuleTest {
     @Test
     public void testPopulatedRuleWithEvals() throws Exception {
         KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   a:A() B() eval(1==1) eval(1==1) C(1;) \n");
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -240,7 +238,7 @@ public class AddRuleTest {
     @Test
     public void testPopulatedSharedLiaNode() throws Exception {
         KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B(1;) C() D() E()\n");
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -275,17 +273,20 @@ public class AddRuleTest {
         assertEquals( "r1", ((Match)list.get(1)).getRule().getName() );
         assertEquals( "r1", ((Match)list.get(2)).getRule().getName() );
         assertEquals( "r2", ((Match)list.get(3)).getRule().getName() );
-        assertEquals( 3, ((A)((Match)list.get(3)).getDeclarationValue("a")).getObject() );
         assertEquals( "r2", ((Match)list.get(4)).getRule().getName() );
-        assertEquals( 2, ((A)((Match)list.get(4)).getDeclarationValue("a")).getObject() );
         assertEquals( "r2", ((Match)list.get(5)).getRule().getName() );
-        assertEquals( 1, ((A)((Match)list.get(5)).getDeclarationValue("a")).getObject() );
+
+        List results = new ArrayList();
+        results.add(((A)((Match)list.get(3)).getDeclarationValue("a")).getObject());
+        results.add(((A)((Match)list.get(4)).getDeclarationValue("a")).getObject());
+        results.add(((A)((Match)list.get(5)).getDeclarationValue("a")).getObject());
+        assertTrue(results.containsAll(asList(1, 2, 3)));
     }
 
     @Test
     public void testPopulatedSharedToRtn() throws Exception {
         KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A() B() C() D() E()\n");
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -324,7 +325,7 @@ public class AddRuleTest {
     @Test
     public void testPopulatedMultipleShares() throws Exception {
         KnowledgeBase kbase1 = buildKnowledgeBase("r1", "   A(1;)  A(2;) B(1;) B(2;) C(1;) D() E()\n" );
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
@@ -364,12 +365,13 @@ public class AddRuleTest {
         kbase1.addKnowledgePackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;)\n") );
         kbase1.addKnowledgePackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
 
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
         wm.insert(new E(1));
         wm.insert(new E(2));
+        wm.flushPropagations();
 
         RuleTerminalNode rtn1 = getRtn( "r1", kbase1 );
         RuleTerminalNode rtn2 = getRtn( "r2", kbase1 );
@@ -416,12 +418,13 @@ public class AddRuleTest {
         kbase1.addKnowledgePackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;)\n") );
         kbase1.addKnowledgePackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
 
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
         wm.insert(new D(1));
         wm.insert(new D(2));
+        wm.flushPropagations();
 
         RuleTerminalNode rtn1 = getRtn( "r1", kbase1 );
         RuleTerminalNode rtn2 = getRtn( "r2", kbase1 );
@@ -487,12 +490,13 @@ public class AddRuleTest {
         kbase1.addKnowledgePackages( buildKnowledgePackage("r3", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) D(1;) D(2;)\n") );
         kbase1.addKnowledgePackages( buildKnowledgePackage("r4", "   A(1;)  A(2;) B(1;) B(2;) C(1;) C(2;) \n") );
 
-        ReteooWorkingMemoryInterface wm = ((StatefulKnowledgeSessionImpl)kbase1.newStatefulKnowledgeSession());
+        InternalWorkingMemory wm = ((InternalWorkingMemory)kbase1.newStatefulKnowledgeSession());
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
         wm.insert(new D(1));
         wm.insert(new D(2));
+        wm.flushPropagations();
 
         RuleTerminalNode rtn1 = getRtn( "r1", kbase1 );
 

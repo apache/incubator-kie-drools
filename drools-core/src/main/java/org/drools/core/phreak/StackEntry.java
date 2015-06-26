@@ -1,17 +1,13 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.LeftTupleSets;
-import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
-import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-
-import java.util.Set;
 
 /**
 * Created with IntelliJ IDEA.
@@ -30,7 +26,6 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
     private SegmentMemory[]      smems;
     private int                  smemIndex;
     private LeftTupleSets        trgTuples;
-    private Set<String>          visitedRules;
     private boolean              resumeFromNextNode;
     private boolean              processRian;
 
@@ -44,7 +39,6 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
                       SegmentMemory[] smems,
                       int smemIndex,
                       LeftTupleSets trgTuples,
-                      Set<String> visitedRules,
                       boolean resumeFromNextNode,
                       boolean processRian) {
         this.liaNode = liaNode;
@@ -56,7 +50,6 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
         this.smems = smems;
         this.smemIndex = smemIndex;
         this.trgTuples = trgTuples;
-        this.visitedRules = visitedRules;
         this.resumeFromNextNode = resumeFromNextNode;
         this.processRian = processRian;
     }
@@ -97,10 +90,6 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
 
     public LeftTupleSinkNode getSink() {
         return sink;
-    }
-
-    public Set<String> getVisitedRules() {
-        return visitedRules;
     }
 
     public boolean isResumeFromNextNode() {

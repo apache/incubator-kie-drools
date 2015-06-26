@@ -27,13 +27,13 @@ import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 
 @foreach{ attr : pkg.attributes }@{attr.name} @{attr.valueString}@end{"\n"}@end{}@if{!pkg.typeDeclarations.isEmpty()}
 
-@foreach{ decl : pkg.typeDeclarations }declare @if{ decl.trait }trait@end{} @{decl.typeName} @if{ decl.superTypes.size() > 0 } extends @foreach{ sup : decl.superTypes } @{sup} @end{','} @end{}
+@foreach{ decl : pkg.typeDeclarations }declare @if{ decl.trait }trait@end{} @{decl.fullTypeName} @if{ decl.superTypes.size() > 0 } extends @foreach{ sup : decl.superTypes } @{sup} @end{','} @end{}
 @foreach{ ann : decl.annotations }    @includeNamed{"annotation"; ann=ann}@end{"\n"}
 @foreach{ fld : decl.fields.values() }    @{fld.fieldName} : @{fld.pattern.objectType} @if{fld.initExpr != null}= @{fld.initExpr}@end{} @foreach{ann:fld.annotations}@includeNamed{"annotation"; ann=ann}@end{}@end{"\n"}
 end
 @end{"\n"}@end{}@if{!pkg.enumDeclarations.isEmpty()}
 
-@foreach{ decl : pkg.enumDeclarations }declare enum @{ decl.typeName }
+@foreach{ decl : pkg.enumDeclarations }declare enum @{ decl.fullTypeName }
 @foreach{ ann : decl.annotations }    @includeNamed{"annotation"; ann=ann}@end{"\n"}
 @foreach{ lit : decl.literals }@{lit.name}@if{ ! lit.constructorArgs.isEmpty()}( @foreach{ arg : lit.constructorArgs } @{arg}@end{","} )
 @end{}@end{","};
@@ -73,7 +73,7 @@ then
 }forall( @includeNamed{"cedchildren"; list=base.descrs; connect=""} )@elseif{ base instanceof EvalDescr }@comment{    
 }eval( @{base.content} )@elseif{ base instanceof NamedConsequenceDescr }@comment{
 }@if{base.breaking}break@else{}do@end{}[@{base.text}] @elseif{ base instanceof PatternDescr }@comment{
-}@if{base.identifier!=null}@{base.identifier} : @end{}@{base.objectType}( @foreach{constr:base.descrs}@{constr}@end{", "} ) @foreach{b:base.behaviors}| @{b.type}:@{b.subType}(@foreach{p:b.params}@{p}@end{", "})@end{}@includeNamed{"psource";source=base.source}@end{}@end{}
+}@if{base.identifier!=null}@{base.identifier} :@if{base.unification}=@end{} @end{}@code{topAcc=(base.source instanceof AccumulateDescr && "Object[]".equals(base.objectType))}@if{!topAcc}@{base.objectType}( @foreach{constr:base.positionalConstraints}@{constr}@end{", "}@if{base.positionalConstraints.size()>0}; @end{}@foreach{constr:base.slottedConstraints}@{constr}@end{", "} ) @foreach{b:base.behaviors}| @{b.type}:@{b.subType}(@foreach{p:b.params}@{p}@end{", "})@end{}@end{}@includeNamed{"psource";source=base.source;topLevelAcc=topAcc;constrs=base.descrs}@end{}@end{}
 
 @comment{***************************************************************
                        CONDITIONAL ELEMENT CHILD TEMPLATE
@@ -86,14 +86,14 @@ then
 ************************************************************************ }
 @declare{"psource"}@if{source!=null}@if{(source instanceof FromDescr) || (source instanceof EntryPointDescr)}@{source.toString()}@comment{
 }@elseif{source instanceof CollectDescr}from collect( @includeNamed{"ced"; base=source.inputPattern; root=false} )@comment{
-}@elseif{source instanceof AccumulateDescr}@code{isFunc=source.isExternalFunction()}@code{cp=source}from accumulate(     @includeNamed{"ced"; base=source.input; root=false},
-        @if{isFunc}@includeNamed{"accFunctions"; functions=cp.functions}@else{}@includeNamed{"accCustom";acc=cp}@end{} )
-@end{}@end{}@end{}
+}@elseif{source instanceof AccumulateDescr}@code{isFunc=source.isExternalFunction()}@code{cp=source}@if{!topLevelAcc}from @end{}accumulate(     @includeNamed{"ced"; base=source.input; root=false},
+        @if{isFunc}@includeNamed{"accFunctions"; functions=cp.functions}@else{}@includeNamed{"accCustom";acc=cp}@end{} @if{topLevelAcc};
+        @foreach{constr:constrs}@{constr}@end{", "}@end{} )@end{}@end{}@end{}
 
 @comment{***************************************************************
                        ACCUMULATE FUNCTIONS TEMPLATE
 ************************************************************************ }
-@declare{"accFunctions"}@foreach{func:functions}@if{func.bind!=null}@{func.bind} : @end{}@{func.function}( @foreach{p:func.params}@{p}@end{", "} )@end{",\n        "}@end{}
+@declare{"accFunctions"}@foreach{func:functions}@if{func.bind!=null}@{func.bind} @if{func.unification}:=@else{}:@end{} @end{}@{func.function}( @foreach{p:func.params}@{p}@end{", "} )@end{",\n        "}@end{}
 
 @comment{***************************************************************
                        CUSTOM ACCUMULATE TEMPLATE

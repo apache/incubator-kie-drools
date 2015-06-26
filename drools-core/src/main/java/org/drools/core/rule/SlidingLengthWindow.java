@@ -16,18 +16,17 @@
 
 package org.drools.core.rule;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.WindowNode.WindowMemory;
 import org.drools.core.spi.PropagationContext;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * A length window behavior implementation
@@ -37,7 +36,7 @@ public class SlidingLengthWindow
     Externalizable,
     Behavior {
 
-    private int size;
+    protected int size;
 
     public SlidingLengthWindow() {
         this( 0 );
@@ -96,8 +95,7 @@ public class SlidingLengthWindow
     /**
      * @inheritDoc
      */
-    public boolean assertFact(final WindowMemory memory,
-                              final Object context,
+    public boolean assertFact(final Object context,
                               final InternalFactHandle handle,
                               final PropagationContext pctx,
                               final InternalWorkingMemory workingMemory) {
@@ -116,8 +114,7 @@ public class SlidingLengthWindow
         return true;
     }
 
-    public void retractFact(final WindowMemory memory,
-                            final Object context,
+    public void retractFact(final Object context,
                             final InternalFactHandle handle,
                             final PropagationContext pctx,
                             final InternalWorkingMemory workingMemory) {
@@ -134,8 +131,7 @@ public class SlidingLengthWindow
         }
     }
 
-    public void expireFacts(final WindowMemory memory,
-                            final Object context,
+    public void expireFacts(final Object context,
                             final PropagationContext pctx,
                             final InternalWorkingMemory workingMemory) {
         // do nothing?

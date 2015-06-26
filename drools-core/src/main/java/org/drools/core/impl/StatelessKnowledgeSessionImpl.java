@@ -306,7 +306,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
                                                                                  null,
                                                                                  null,
                                                                                  ksession,
-                                                                                 null );
+                                                                                 new ExecutionResultImpl() );
 
         try {
             ((StatefulKnowledgeSessionImpl) ksession).startBatchExecution( new ExecutionResultImpl() );

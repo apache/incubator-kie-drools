@@ -7,6 +7,7 @@ import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.core.RuleBaseConfiguration;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -26,6 +27,7 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieLoggers;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
@@ -41,9 +43,11 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -92,6 +96,10 @@ public class KieContainerImpl
         return kProject.getGAV();
     }
 
+    public InputStream getPomAsStream() {
+        return kProject.getPomAsStream();
+    }
+
     public long getCreationTimestamp() {
         return kProject.getCreationTimestamp();
     }
@@ -109,10 +117,21 @@ public class KieContainerImpl
 
     public Results updateDependencyToVersion(ReleaseId currentReleaseId, ReleaseId newReleaseId) {
         checkNotClasspathKieProject();
-        // if the new and the current release are equal (a snapshot) check if there is an older version with the same releaseId
-        InternalKieModule currentKM = currentReleaseId.equals( newReleaseId ) ?
-                                      (InternalKieModule) ((KieRepositoryImpl)kr).getOldKieModule( currentReleaseId ) :
-                                      (InternalKieModule) kr.getKieModule( currentReleaseId );
+
+        ReleaseId installedReleaseId = getReleaseId();
+        InternalKieModule currentKM;
+        if (currentReleaseId.getGroupId().equals(installedReleaseId.getGroupId()) &&
+            currentReleaseId.getArtifactId().equals(installedReleaseId.getArtifactId())) {
+            // upgrading the kProject itself: taking the kmodule from there
+            currentKM = ((KieModuleKieProject)kProject).getInternalKieModule();
+        } else {
+            // upgrading a transitive dependency: taking the kmodule from the krepo
+            // if the new and the current release are equal (a snapshot) check if there is an older version with the same releaseId
+            currentKM = currentReleaseId.equals(newReleaseId) ?
+                        (InternalKieModule) ((KieRepositoryImpl) kr).getOldKieModule(currentReleaseId) :
+                        (InternalKieModule) kr.getKieModule(currentReleaseId);
+        }
+
         return update(currentKM, newReleaseId);
     }
 
@@ -126,7 +145,9 @@ public class KieContainerImpl
         InternalKieModule newKM = (InternalKieModule) kr.getKieModule( newReleaseId );
         ChangeSetBuilder csb = new ChangeSetBuilder();
         KieJarChangeSet cs = csb.build( currentKM, newKM );
+
         List<String> modifiedClasses = getModifiedClasses(cs);
+        List<String> dslFiles = getUnchangedDslFiles(newKM, cs);
 
         ((KieModuleKieProject) kProject).updateToModule( newKM );
 
@@ -142,28 +163,13 @@ public class KieContainerImpl
                 kbasesToRemove.add( kbaseName );
             } else {
                 // attaching the builder to the kbase
-                KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder((KnowledgeBase) kBaseEntry.getValue());
+                KnowledgeBase kBase = (KnowledgeBase) kBaseEntry.getValue();
+                KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kBase);
                 KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
                 CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
-                boolean modifyingUsedClass = false;
-                for (String modifiedClass : modifiedClasses) {
-                    if ( pkgbuilder.isClassInUse( convertResourceToClassName(modifiedClass) ) ) {
-                        modifyingUsedClass = true;
-                        break;
-                    }
-                }
-
-                boolean shouldRebuild = modifyingUsedClass;
-                if (modifyingUsedClass) {
-                    // there are modified classes used by this kbase, so it has to be completely updated
-                    updateAllResources(currentKM, newKM, kieBaseModel, pkgbuilder, ckbuilder);
-                } else {
-                    // there are no modified classes used by this kbase, so update it incrementally
-                    shouldRebuild = updateResourcesIncrementally(currentKM, newKM, cs, modifiedClasses, kBaseEntry,
-                                                                 kieBaseModel, pkgbuilder, ckbuilder) > 0;
-                }
-
+                boolean shouldRebuild = applyResourceChanges(currentKM, newKM, cs, modifiedClasses,
+                                                             kBaseEntry, kieBaseModel, pkgbuilder, ckbuilder);
                 pkgbuilder.startPackageUpdate();
                 try {
                     // remove resources first
@@ -177,7 +183,17 @@ public class KieContainerImpl
                     }
 
                     if ( shouldRebuild ) {
+                        // readd unchanged dsl files to the kbuilder
+                        for (String dslFile : dslFiles) {
+                            if (isFileInKBase(newKM, kieBaseModel, dslFile)) {
+                                newKM.addResourceToCompiler(ckbuilder, dslFile);
+                            }
+                        }
                         rebuildAll(newReleaseId, results, newKM, modifiedClasses, kieBaseModel, pkgbuilder, ckbuilder);
+                    }
+
+                    for (StatefulKnowledgeSession session : kBase.getStatefulKnowledgeSessions()) {
+                        ( (InternalWorkingMemory) session ).notifyHalt();
                     }
                 } finally {
                     pkgbuilder.completePackageUpdate();
@@ -206,6 +222,37 @@ public class KieContainerImpl
         }
 
         return results;
+    }
+
+    private List<String> getUnchangedDslFiles(InternalKieModule newKM, KieJarChangeSet cs) {
+        List<String> dslFiles = new ArrayList<String>();
+        for (String file : newKM.getFileNames()) {
+            if (ResourceType.DSL.matchesExtension(file) && !cs.contains(file)) {
+                dslFiles.add(file);
+            }
+        }
+        return dslFiles;
+    }
+
+    private boolean applyResourceChanges(InternalKieModule currentKM, InternalKieModule newKM, KieJarChangeSet cs, List<String> modifiedClasses, Entry<String, KieBase> kBaseEntry, KieBaseModel kieBaseModel, KnowledgeBuilderImpl pkgbuilder, CompositeKnowledgeBuilder ckbuilder) {
+        boolean modifyingUsedClass = false;
+        for (String modifiedClass : modifiedClasses) {
+            if ( pkgbuilder.isClassInUse( convertResourceToClassName(modifiedClass) ) ) {
+                modifyingUsedClass = true;
+                break;
+            }
+        }
+
+        boolean shouldRebuild = modifyingUsedClass;
+        if (modifyingUsedClass) {
+            // there are modified classes used by this kbase, so it has to be completely updated
+            updateAllResources(currentKM, newKM, kieBaseModel, pkgbuilder, ckbuilder);
+        } else {
+            // there are no modified classes used by this kbase, so update it incrementally
+            shouldRebuild = updateResourcesIncrementally(currentKM, newKM, cs, modifiedClasses, kBaseEntry,
+                                                         kieBaseModel, pkgbuilder, ckbuilder) > 0;
+        }
+        return shouldRebuild;
     }
 
     private boolean isFileInKBase(InternalKieModule kieModule, KieBaseModel kieBase, String fileName) {
@@ -527,11 +574,10 @@ public class KieContainerImpl
             log.error("Unknown KieBase name: " + kSessionModel.getKieBaseModel().getName());
             return null;
         }
+
         KieSession kSession = kBase.newKieSession( conf != null ? conf : getKnowledgeSessionConfiguration(kSessionModel), environment );
         wireListnersAndWIHs(kSessionModel, kSession);
-
         registerLoggers(kSessionModel, kSession);
-
         kSessions.put(kSessionName, kSession);
         return kSession;
     }
@@ -557,7 +603,7 @@ public class KieContainerImpl
 
     public StatelessKieSession newStatelessKieSession(String kSessionName, KieSessionConfiguration conf) {
         KieSessionModelImpl kSessionModel = (KieSessionModelImpl) kProject.getKieSessionModel( kSessionName );
-        if ( kSessionName == null ) {
+        if ( kSessionModel == null ) {
             log.error("Unknown KieSession name: " + kSessionName);
             return null;
         }
@@ -569,7 +615,9 @@ public class KieContainerImpl
             log.error("Unknown KieBase name: " + kSessionModel.getKieBaseModel().getName());
             return null;
         }
+
         StatelessKieSession statelessKieSession = kBase.newStatelessKieSession( conf != null ? conf : getKnowledgeSessionConfiguration(kSessionModel) );
+        wireListnersAndWIHs(kSessionModel, statelessKieSession);
         registerLoggers(kSessionModel, statelessKieSession);
         statelessKSessions.put(kSessionName, statelessKieSession);
         return statelessKieSession;

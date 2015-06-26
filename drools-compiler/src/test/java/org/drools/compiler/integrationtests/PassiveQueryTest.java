@@ -95,7 +95,7 @@ public class PassiveQueryTest {
                 "query Q (Integer i)\n" +
                 "    String( this == i.toString() )\n" +
                 "end\n" +
-                "rule R @DataDriven when\n" +
+                "rule R @Propagation(IMMEDIATE) when\n" +
                 "    $i : Integer()\n" +
                 "    ?Q( $i; )\n" +
                 "then\n" +
@@ -123,7 +123,7 @@ public class PassiveQueryTest {
                 "query Q (Integer i)\n" +
                 "    String( this == i.toString() )\n" +
                 "end\n" +
-                "rule R @DataDriven when\n" +
+                "rule R @Propagation(IMMEDIATE) when\n" +
                 "    $i : Integer()\n" +
                 "    Q( $i; )\n" +
                 "then\n" +
@@ -151,7 +151,7 @@ public class PassiveQueryTest {
                 "query Q (Integer i)\n" +
                 "    String( this == i.toString() )\n" +
                 "end\n" +
-                "rule R @DataDriven when\n" +
+                "rule R @Propagation(IMMEDIATE) when\n" +
                 "    $i : Integer()\n" +
                 "    $j : Integer( this == $i+1 )\n" +
                 "    ?Q( $j; )\n" +
@@ -181,7 +181,7 @@ public class PassiveQueryTest {
                 "query Q (Integer i)\n" +
                 "    String( this == i.toString() )\n" +
                 "end\n" +
-                "rule R1 @DataDriven when\n" +
+                "rule R1 @Propagation(IMMEDIATE) when\n" +
                 "    $i : Integer()\n" +
                 "    ?Q( $i; )\n" +
                 "then\n" +
@@ -216,13 +216,13 @@ public class PassiveQueryTest {
                 "query Q (Integer i)\n" +
                 "    String( this == i.toString() )\n" +
                 "end\n" +
-                "rule R1a @DataDriven when\n" +
+                "rule R1a @Propagation(IMMEDIATE) when\n" +
                 "    $i : Integer()\n" +
                 "    ?Q( $i; )\n" +
                 "then\n" +
                 "    list.add( \"R1a\" );\n" +
                 "end\n" +
-                "rule R1b @DataDriven when\n" +
+                "rule R1b @Propagation(IMMEDIATE) when\n" +
                 "    Long( $i : intValue )\n" +
                 "    ?Q( $i; )\n" +
                 "then\n" +
@@ -264,13 +264,13 @@ public class PassiveQueryTest {
                 "query Q (Integer i)\n" +
                 "    String( this == i.toString() )\n" +
                 "end\n" +
-                "rule R1a @DataDriven when\n" +
+                "rule R1a @Propagation(IMMEDIATE) when\n" +
                 "    $i : Integer()\n" +
                 "    ?Q( $i; )\n" +
                 "then\n" +
                 "    list.add( \"R1a\" );\n" +
                 "end\n" +
-                "rule R1b @DataDriven when\n" +
+                "rule R1b @Propagation(IMMEDIATE) when\n" +
                 "    $i : Integer()\n" +
                 "    ?Q( $i; )\n" +
                 "    Long( intValue == $i )\n" +
@@ -312,6 +312,7 @@ public class PassiveQueryTest {
         QueryElementNode q2 = (QueryElementNode)sinks[1];
 
         InternalWorkingMemory wm = (InternalWorkingMemory)ksession;
+        wm.flushPropagations();
 
         Memory memory1 = wm.getNodeMemory(q1);
         assertTrue(memory1.getSegmentMemory().getStagedLeftTuples().isEmpty());

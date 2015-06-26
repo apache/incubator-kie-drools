@@ -675,10 +675,14 @@ public class ASMConditionEvaluatorJitter {
         private void jitStringConcat(Expression left, Expression right) {
             invokeConstructor(StringBuilder.class);
             jitExpression(left, String.class);
-            invokeVirtual(StringBuilder.class, "append", StringBuilder.class, left.getType());
+            invokeVirtual(StringBuilder.class, "append", StringBuilder.class, getTypeForAppend(left.getType()));
             jitExpression(right, String.class);
-            invokeVirtual(StringBuilder.class, "append", StringBuilder.class, right.getType());
+            invokeVirtual(StringBuilder.class, "append", StringBuilder.class, getTypeForAppend(right.getType()));
             invokeVirtual(StringBuilder.class, "toString", String.class);
+        }
+
+        private Class<?> getTypeForAppend(Class<?> c) {
+            return c.isPrimitive() ? c : Object.class;
         }
 
         private void jitExpressionToPrimitiveType(Expression expression, Class<?> primitiveType) {

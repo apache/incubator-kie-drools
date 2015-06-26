@@ -194,13 +194,21 @@ public class SingleFieldConstraint extends BaseSingleFieldConstraint
     @Override
     public int hashCode() {
         int result = super.hashCode();
+        result = ~~result;
         result = 31 * result + (fieldBinding != null ? fieldBinding.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (factType != null ? factType.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (fieldName != null ? fieldName.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (fieldType != null ? fieldType.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (parent != null ? parent.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (id != null ? id.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (connectives != null ? Arrays.hashCode(connectives) : 0);
+        result = ~~result;
         return result;
     }
 }

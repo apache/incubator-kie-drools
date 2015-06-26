@@ -20,6 +20,7 @@ import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
+import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.io.impl.ByteArrayResource;
@@ -35,8 +36,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import static org.drools.core.util.StringUtils.isEmpty;
 
@@ -100,6 +103,9 @@ public class ChangeSetBuilder {
 
                 List<FunctionDescr> ofuncs = new ArrayList<FunctionDescr>( opkg.getFunctions() ); // needs to be cloned
                 diffDescrs(ob, cb, pkgcs, ofuncs, cpkg.getFunctions(), ResourceChange.Type.FUNCTION, FUNC_CONVERTER);
+
+                List<GlobalDescr> oglobals = new ArrayList<GlobalDescr>( opkg.getGlobals() ); // needs to be cloned
+                diffDescrs(ob, cb, pkgcs, oglobals, cpkg.getGlobals(), ResourceChange.Type.GLOBAL, GLOBAL_CONVERTER);
             } catch ( Exception e ) {
                 logger.error( "Error analyzing the contents of "+file+". Skipping.", e );
             }
@@ -133,10 +139,25 @@ public class ChangeSetBuilder {
         }
     }
 
+    private static final GlobalDescrNameConverter GLOBAL_CONVERTER = new GlobalDescrNameConverter();
+    private static class GlobalDescrNameConverter implements DescrNameConverter<GlobalDescr> {
+        @Override
+        public String getName(GlobalDescr descr) {
+            return descr.getIdentifier();
+        }
+    }
+
     private <T extends BaseDescr> void diffDescrs(byte[] ob, byte[] cb,
                                                   ResourceChangeSet pkgcs,
                                                   List<T> odescrs, List<T> cdescrs,
                                                   ResourceChange.Type type, DescrNameConverter<T> descrNameConverter) {
+
+        Set<String> updatedRules = null;
+        if (type == ResourceChange.Type.RULE) {
+            updatedRules = new HashSet<String>();
+            Collections.sort( (List<RuleDescr>) cdescrs, RULE_HIERARCHY_COMPARATOR );
+        }
+
         for( T crd : cdescrs ) {
             String cName = descrNameConverter.getName(crd);
 
@@ -150,30 +171,37 @@ public class ChangeSetBuilder {
 
                     // using byte[] comparison because using the descriptor equals() method
                     // is brittle and heavier than iterating an array
-                    if( !segmentEquals(ob, ord.getStartCharacter(), ord.getEndCharacter(),
-                            cb, crd.getStartCharacter(), crd.getEndCharacter() ) ) {
-                        pkgcs.getChanges().add( new ResourceChange( ChangeType.UPDATED,
-                                                                    type,
-                                                                    cName ) );
+                    if ( !segmentEquals(ob, ord.getStartCharacter(), ord.getEndCharacter(), cb, crd.getStartCharacter(), crd.getEndCharacter() ) ||
+                         (type == ResourceChange.Type.RULE && updatedRules.contains( ( (RuleDescr) crd ).getParentName() )) ) {
+                        pkgcs.getChanges().add( new ResourceChange( ChangeType.UPDATED, type, cName ) );
+                        if (type == ResourceChange.Type.RULE) {
+                            updatedRules.add(cName);
+                        }
                     }
                     break;
                 }
             }
             if( !found ) {
-                pkgcs.getChanges().add( new ResourceChange( ChangeType.ADDED,
-                                                            type,
-                                                            cName ) );
+                pkgcs.getChanges().add( new ResourceChange( ChangeType.ADDED, type, cName ) );
             }
         }
 
-        for( T ord : odescrs ) {
+        for ( T ord : odescrs ) {
             pkgcs.getChanges().add( new ResourceChange( ChangeType.REMOVED,
                                                         type,
                                                         descrNameConverter.getName(ord) ) );
         }
     }
 
-    private boolean segmentEquals( byte[] a1, int s1, int e1, 
+    private static final RuleHierarchyComparator RULE_HIERARCHY_COMPARATOR = new RuleHierarchyComparator();
+    private static class RuleHierarchyComparator implements Comparator<RuleDescr> {
+        @Override
+        public int compare( RuleDescr r1, RuleDescr r2 ) {
+            return r1.getName().equals( r2.getParentName() ) ? -1 : r1.getName().equals( r2.getParentName() ) ? 1 : 0;
+        }
+    }
+
+    private boolean segmentEquals( byte[] a1, int s1, int e1,
                                      byte[] a2, int s2, int e2) {
         int length = e1 - s1;
         if( length <= 0 || length != e2-s2 || s1+length > a1.length || s2+length > a2.length ) {

@@ -1,15 +1,19 @@
 package org.drools.compiler.kie.util;
 
+import org.kie.internal.builder.ResourceChangeSet;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import org.kie.internal.builder.ResourceChangeSet;
 
 public class KieJarChangeSet {
     private final Map<String, ResourceChangeSet> changes = new HashMap<String, ResourceChangeSet>();
 
     public Map<String, ResourceChangeSet> getChanges() {
         return changes;
+    }
+
+    public boolean contains(String resourceName) {
+        return changes.keySet().contains(resourceName);
     }
 
     @Override
@@ -36,5 +40,4 @@ public class KieJarChangeSet {
     public String toString() {
         return "KieJarChangeSet [changes=" + changes + "]";
     }
-    
 }

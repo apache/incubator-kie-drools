@@ -16,11 +16,6 @@
 
 package org.drools.workbench.models.testscenarios.backend;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.drools.core.base.TypeResolver;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
@@ -28,12 +23,14 @@ import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.workbench.models.testscenarios.backend.executors.MethodExecutor;
 import org.drools.workbench.models.testscenarios.backend.verifiers.FactVerifier;
 import org.drools.workbench.models.testscenarios.backend.verifiers.RuleFiredVerifier;
-import org.drools.workbench.models.testscenarios.shared.CallMethod;
-import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
-import org.drools.workbench.models.testscenarios.shared.Expectation;
-import org.drools.workbench.models.testscenarios.shared.VerifyFact;
-import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
+import org.drools.workbench.models.testscenarios.shared.*;
 import org.kie.api.runtime.KieSession;
+
+import java.lang.reflect.InvocationTargetException;
+import java.security.InvalidParameterException;
+import java.util.Date;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class TestScenarioKSessionWrapper {
 
@@ -44,14 +41,17 @@ public class TestScenarioKSessionWrapper {
     private TestingEventListener eventListener = null;
     private final MethodExecutor methodExecutor;
     private final Map<String, Object> populatedData;
+    private final boolean usesTimeWalk;
 
 
-    public TestScenarioKSessionWrapper( KieSession ksession,
-                                        final TypeResolver resolver,
-                                        Map<String, Object> populatedData,
-                                        Map<String, Object> globalData ) {
+    public TestScenarioKSessionWrapper(KieSession ksession,
+                                       final TypeResolver resolver,
+                                       Map<String, Object> populatedData,
+                                       Map<String, Object> globalData,
+                                       boolean usesTimeWalk) {
         this.ksession = ksession;
         this.populatedData = populatedData;
+        this.usesTimeWalk = usesTimeWalk;
         this.methodExecutor = new MethodExecutor( populatedData );
 
         factVerifier = initFactVerifier( resolver,
@@ -104,12 +104,15 @@ public class TestScenarioKSessionWrapper {
     }
 
     public void executeSubScenario( ExecutionTrace executionTrace,
-                                    ScenarioSettings scenarioSettings ) {
+                                    ScenarioSettings scenarioSettings ) throws InvalidClockTypeException {
 
         resetEventListener();
 
         //set up the time machine
-        applyTimeMachine( executionTrace );
+        if (usesTimeWalk) {
+            applyTimeMachine(executionTrace);
+        }
+
 
         long startTime = System.currentTimeMillis();
 
@@ -120,9 +123,13 @@ public class TestScenarioKSessionWrapper {
         executionTrace.setRulesFired( eventListener.getRulesFiredSummary() );
     }
 
-    private void applyTimeMachine( ExecutionTrace executionTrace ) {
-        ( (PseudoClockScheduler) ksession.getSessionClock() ).advanceTime( getTargetTime( executionTrace ) - getCurrentTime(),
-                                                                           TimeUnit.MILLISECONDS );
+    private void applyTimeMachine( ExecutionTrace executionTrace ) throws InvalidClockTypeException {
+        if(ksession.getSessionClock() instanceof PseudoClockScheduler) {
+            ((PseudoClockScheduler) ksession.getSessionClock()).advanceTime(getTargetTime(executionTrace) - getCurrentTime(),
+                    TimeUnit.MILLISECONDS);
+        }else{
+            throw new InvalidClockTypeException();
+        }
     }
 
     private long getTargetTime( ExecutionTrace executionTrace ) {

@@ -10,6 +10,13 @@ import org.drools.core.util.bitmask.BitMask;
 import java.io.Serializable;
 
 public class PhreakPropagationContextFactory implements PropagationContextFactory, Serializable  {
+
+    private static final PropagationContextFactory INSTANCE = new PhreakPropagationContextFactory();
+
+    public static PropagationContextFactory getInstance() {
+        return INSTANCE;
+    }
+
     public PropagationContext createPropagationContext(final long number,
                                                        final int type,
                                                        final RuleImpl rule,

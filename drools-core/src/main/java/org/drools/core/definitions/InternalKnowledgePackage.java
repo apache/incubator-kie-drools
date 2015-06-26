@@ -64,6 +64,7 @@ public interface InternalKnowledgePackage extends KnowledgePackage, Externalizab
     void removeFunction( String functionName );
     void removeRuleFlow( String id );
     void removeRule( RuleImpl rule );
+    void removeGlobal( String identifier );
 
     boolean removeObjectsGeneratedFromResource(Resource resource);
     List<RuleImpl> removeRulesGeneratedFromResource(Resource resource);

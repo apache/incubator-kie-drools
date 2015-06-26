@@ -118,6 +118,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -3770,7 +3772,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "import org.drools.compiler.Person; \n" +
                      "" +
                      "rule \"Rule1\" \n" +
-                     "@Eager(true) \n" +
+                     "@Propagation(EAGER) \n" +
                      "salience 1 \n" +
                      "lock-on-active true\n" +
                      "when\n" +
@@ -3781,7 +3783,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end;\n" +
                      "\n" +
                      "rule \"Rule2\"\n" +
-                     "@Eager(true) \n" +
+                     "@Propagation(EAGER) \n" +
                      "lock-on-active true\n" +
                      "when\n" +
                      "  $p: Person() \n" +
@@ -5730,10 +5732,7 @@ public class Misc2Test extends CommonTestMethodBase {
         // BZ-1092084
         String str = "rule R salience 10 salience 100 when then end\n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(1, results.getMessages().size());
+        assertDrlHasCompilationError(str, 1);
     }
 
     @Test
@@ -5818,10 +5817,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      " @role(event)\n" +
                      "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(1, results.getMessages().size());
+        assertDrlHasCompilationError(str, 1);
     }
 
     @Test
@@ -6278,10 +6274,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      " e : int[]\n" +
                      "end\n";
 
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(1, results.getMessages().size());
+        assertDrlHasCompilationError(str, 1);
     }
 
     @Test
@@ -7140,5 +7133,179 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert(asList("Julie", "Leiti"));
 
         assertEquals(4, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testFromAfterOr() {
+        // DROOLS-707
+        String drl2 =
+                "rule \"Disaster Rule\"\n" +
+                "    when\n" +
+                "        eval(true) or ( eval(false) and Integer() )\n" +
+                "        $a : Integer()\n" +
+                "        Integer() from $a\n" +
+                "    then\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl2, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        ksession.insert(1);
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testMalformedAccumulate() {
+        // DROOLS-725
+        String str =
+                "rule R when\n" +
+                "    Number() from accumulate(not Number(),\n" +
+                "        init( double total = 0; ),\n" +
+                "        action( ),\n" +
+                "        reverse( ),\n" +
+                "        result( new Double( total ) )\n" +
+                "    )\n" +
+                "then end\n";
+
+        assertDrlHasCompilationError(str, 1);
+    }
+
+    private void assertDrlHasCompilationError(String str, int errorNr) {
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertEquals(errorNr, results.getMessages().size());
+    }
+
+    @Test
+    public void testDuplicateDeclarationInAccumulate1() {
+        // DROOLS-727
+        String drl1 =
+                "import java.util.*\n" +
+                "rule \"Version 1 - crash\"\n" +
+                " when\n" +
+                " accumulate( Integer($int: intValue), $list: collectSet($int) )\n" +
+                " List() from collect( Integer($list not contains intValue) )\n\n" +
+                " accumulate( Integer($int: intValue), $list: collectSet($int) )\n" +
+                " then\n" +
+                "end\n";
+
+        assertDrlHasCompilationError(drl1, 1);
+    }
+
+    @Test
+    public void testDuplicateDeclarationInAccumulate2() {
+        // DROOLS-727
+        String drl1 =
+                "import java.util.*\n" +
+                "rule \"Version 2 - pass\"\n" +
+                "when\n" +
+                " $list: List() from collect( Integer() )\n\n" +
+                " accumulate( Integer($int: intValue), $list: collectSet($int) )\n" +
+                " List() from collect( Integer($list not contains intValue) )\n" +
+                "then\n" +
+                "end;\n";
+
+        assertDrlHasCompilationError(drl1, 1);
+    }
+
+    @Test
+    public void testCompilationFailureOnNonExistingVariable() {
+        // DROOLS-734
+        String drl1 =
+                "import java.util.*\n" +
+                "rule R\n" +
+                "when\n" +
+                "  String(this after $event)\n" +
+                "then\n" +
+                "end;\n";
+
+        assertDrlHasCompilationError(drl1, 1);
+    }
+
+    @Test
+    public void testJittedConstraintStringAndLong() {
+        // DROOLS-740
+        String drl =
+                " import org.drools.compiler.Person; " +
+                " rule 'hello person' " +
+                " when " +
+                " Person( name == \"Elizabeth\" + new Long(2L) ) " +
+                " then " +
+                " end " +
+                "\n";
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        ksession.insert(new org.drools.compiler.Person("Elizabeth2", 88));
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testKieBuilderWithClassLoader() {
+        // DROOLS-763
+        String drl =
+                "import com.billasurf.Person\n" +
+                "\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $i : Integer()\n" +
+                "then\n" +
+                "    Person p = new Person();\n" +
+                "    p.setAge($i);\n" +
+                "    insert(p);\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    $p : Person()\n" +
+                "then\n" +
+                "    list.add($p.getAge());\n" +
+                "end\n";
+
+        URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{ this.getClass().getResource("/billasurf.jar") } );
+        KieSession ksession = new KieHelper().setClassLoader(urlClassLoader)
+                                             .addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(18);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals(18, (int)list.get(0));
+    }
+
+    @Test
+    public void testInsertAndDelete() {
+        String drl =
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $i : Integer()\n" +
+                "    $s : String()\n" +
+                "then\n" +
+                "    delete($i);\n" +
+                "    list.add($s);\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( 1 );
+        ksession.insert( "a" );
+        ksession.insert( "b" );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
     }
 }

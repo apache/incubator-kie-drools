@@ -13,6 +13,12 @@ import java.io.Serializable;
 
 public class PhreakWorkingMemoryFactory implements WorkingMemoryFactory, Serializable {
 
+    private static final WorkingMemoryFactory INSTANCE = new PhreakWorkingMemoryFactory();
+
+    public static WorkingMemoryFactory getInstance() {
+        return INSTANCE;
+    }
+
     public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, SessionConfiguration config, Environment environment) {
         InternalWorkingMemory cachedWm = kBase.getCachedSession(config, environment);
         if (cachedWm != null) {
@@ -21,8 +27,8 @@ public class PhreakWorkingMemoryFactory implements WorkingMemoryFactory, Seriali
         return new StatefulKnowledgeSessionImpl(id, kBase, true, config,  environment);
     }
 
-    public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
-        return new StatefulKnowledgeSessionImpl(id, kBase, handleFactory, initialFactHandle, propagationContext, config, agenda, environment);
+    public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, long propagationContext, SessionConfiguration config, InternalAgenda agenda, Environment environment) {
+        return new StatefulKnowledgeSessionImpl(id, kBase, handleFactory, propagationContext, config, agenda, environment);
     }
 
     public InternalWorkingMemory createWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, Environment environment, RuleRuntimeEventSupport workingMemoryEventSupport, AgendaEventSupport agendaEventSupport, RuleEventListenerSupport ruleEventListenerSupport, InternalAgenda agenda) {

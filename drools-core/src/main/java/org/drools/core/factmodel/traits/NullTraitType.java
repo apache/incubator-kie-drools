@@ -36,19 +36,24 @@ public class NullTraitType implements TraitType, Thing, Externalizable {
         typeCode = code;
     }
 
-    public BitSet getTypeCode() {
+    public BitSet _getTypeCode() {
         return typeCode;
     }
 
-    public boolean isVirtual() {
+    public boolean _isVirtual() {
         return true;
     }
 
-    public String getTraitName() {
+    public String _getTraitName() {
         return "";
     }
 
-    public void setTypeCode(BitSet typeCode) {
+    @Override
+    public boolean _hasTypeCode( BitSet typeCode ) {
+        return false;
+    }
+
+    public void _setTypeCode(BitSet typeCode) {
         this.typeCode = typeCode;
     }
 

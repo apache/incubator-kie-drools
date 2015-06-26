@@ -157,10 +157,12 @@ public class AccumulateDescr extends PatternSourceDescr
     }
 
     public void addFunction( String function,
-                             String bind, 
+                             String bind,
+                             boolean unify,
                              String[] params ) {
         addFunction( new AccumulateFunctionCallDescr( function,
-                                                      bind, 
+                                                      bind,
+                                                      unify,
                                                       params ) );
     }
 
@@ -184,7 +186,8 @@ public class AccumulateDescr extends PatternSourceDescr
             if( this.input instanceof PatternDescr ) {
                 return (PatternDescr) this.input;
             } else {
-                return (PatternDescr) ((AndDescr)this.input).getDescrs().get( 0 );
+                BaseDescr firstDescr = ((AndDescr)this.input).getDescrs().get( 0 );
+                return firstDescr instanceof PatternDescr ? (PatternDescr) firstDescr : null;
             }
         }
         return null;
@@ -226,13 +229,16 @@ public class AccumulateDescr extends PatternSourceDescr
 
         private final String      function;
         private final String      bind;
+        private final boolean     unification;
         private final String[]    params;
 
         public AccumulateFunctionCallDescr(String function,
                                            String bind,
+                                           boolean unify,
                                            String[] params) {
             this.function = function;
             this.bind = bind;
+            this.unification = unify;
             this.params = params;
         }
 
@@ -246,6 +252,10 @@ public class AccumulateDescr extends PatternSourceDescr
 
         public String[] getParams() {
             return params;
+        }
+
+        public boolean isUnification() {
+            return unification;
         }
 
         @Override

@@ -138,10 +138,6 @@ public interface KnowledgeHelper
     
     void halt();
 
-    IdentityHashMap<Object, InternalFactHandle> getIdentityMap();
-
-    void setIdentityMap(IdentityHashMap<Object, InternalFactHandle> identityMap);
-    
     <T> T getContext(Class<T> contextClass);
 
     <T, K> T don( K core, Class<T> trait, boolean logical );
@@ -166,4 +162,7 @@ public interface KnowledgeHelper
 
     <T, K, X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait );
 
+    public InternalFactHandle bolster( Object object, Object value );
+
+    public InternalFactHandle bolster( Object object );
 }

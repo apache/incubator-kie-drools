@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.drools</groupId>
-    <artifactId>drools-multiproject</artifactId>
+    <artifactId>drools</artifactId>
     <version>6.3.0-SNAPSHOT</version>
   </parent>
 
@@ -261,6 +261,9 @@
               org.drools.compiler.*
             </Export-Package>
             <Bundle-Activator>org.drools.compiler.osgi.Activator</Bundle-Activator>
+            <Provide-Capability>
+              org.ops4j.pax.cdi.extension; extension=kie-cdi
+            </Provide-Capability>
             <_removeheaders>Private-Package</_removeheaders>
           </instructions>
         </configuration>

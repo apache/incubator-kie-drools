@@ -22,8 +22,6 @@ import org.drools.core.base.mvel.ActivationPropertyHandler;
 import org.drools.core.base.mvel.MVELCompilationUnit.PropertyHandlerFactoryFixer;
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InstanceNotEqualsConstraint;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
@@ -31,7 +29,6 @@ import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.From;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.IntervalProviderConstraint;
 import org.drools.core.rule.InvalidPatternException;
@@ -52,7 +49,6 @@ import org.kie.api.conf.EventProcessingOption;
 import org.mvel2.integration.PropertyHandler;
 import org.mvel2.integration.PropertyHandlerFactory;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -151,11 +147,11 @@ public class PatternBuilder
 
         if( ! behaviors.isEmpty() ) {
             // build the window node:
-            WindowNode wn = new WindowNode( context.getNextId(),
-                                            constraints.alphaConstraints,
-                                            behaviors,
-                                            context.getObjectSource(),
-                                            context );
+            WindowNode wn = context.getComponentFactory().getNodeFactoryService().buildWindowNode( context.getNextId(),
+                                                                                                   constraints.alphaConstraints,
+                                                                                                   behaviors,
+                                                                                                   context.getObjectSource(),
+                                                                                                   context );
             context.setObjectSource( (WindowNode) utils.attachNode( context, wn ) );
 
             // alpha constraints added to the window node already
@@ -168,14 +164,18 @@ public class PatternBuilder
             buildTupleSource(context, utils);
 
             List<BetaNodeFieldConstraint> xpathConstraints = context.getBetaconstraints();
-            context.setBetaconstraints(Collections.<BetaNodeFieldConstraint>emptyList());
             buildJoinNode(context, utils);
             context.setBetaconstraints(xpathConstraints);
 
-            context.setAlphaConstraints(null);
-            ReteooComponentBuilder builder = utils.getBuilderFor(From.class);
+            ReteooComponentBuilder builder = utils.getBuilderFor(XpathConstraint.class);
             for (XpathConstraint xpathConstraint : constraints.xpathConstraints) {
-                context.incrementCurrentPatternOffset();
+                for (XpathConstraint.XpathChunk chunk : xpathConstraint.getChunks()) {
+                    context.setAlphaConstraints(chunk.getAlphaConstraints());
+                    context.setBetaconstraints(chunk.getBetaaConstraints());
+                    builder.build(context, utils, chunk.asFrom());
+                    context.incrementCurrentPatternOffset();
+                }
+
                 Declaration declaration = xpathConstraint.getDeclaration();
 
                 Pattern clonedPattern = new Pattern( pattern.getIndex(),
@@ -185,8 +185,9 @@ public class PatternBuilder
                                                      declaration.isInternalFact() );
 
                 declaration.setPattern( clonedPattern );
-                builder.build(context, utils, xpathConstraint.asFrom());
             }
+
+            context.popRuleComponent();
         }
     }
 
@@ -280,34 +281,6 @@ public class PatternBuilder
             }
         }
         return false;
-    }
-
-    public static ObjectTypeNode attachObjectTypeNode(BuildContext context,
-                                                      ObjectType objectType) {
-        final InternalKnowledgeBase ruleBase = context.getKnowledgeBase();
-        ruleBase.lock();
-        try {
-            InternalWorkingMemory[] wms = context.getWorkingMemories();
-            NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
-
-            EntryPointNode epn = ruleBase.getRete().getEntryPointNode( context.getCurrentEntryPoint() );
-            if ( epn == null ) {
-                epn = nfactory.buildEntryPointNode( context.getNextId(), ruleBase.getRete(), context );
-                epn.attach( context );
-            }
-
-            ObjectTypeNode otn = nfactory.buildObjectTypeNode( context.getNextId(), epn, objectType, context );
-
-            long expirationOffset = getExpiratioOffsetForType( context,
-                                                               objectType );
-            otn.setExpirationOffset( expirationOffset );
-
-            otn.attach( context );
-
-            return otn;
-        } finally {
-            ruleBase.unlock();
-        }
     }
 
     private static long getExpiratioOffsetForType(BuildContext context,

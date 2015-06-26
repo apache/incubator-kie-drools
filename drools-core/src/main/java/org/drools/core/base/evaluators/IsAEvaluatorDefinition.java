@@ -61,9 +61,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
 
     private static String[]         SUPPORTED_IDS;
 
-    { init(); }
-
-    static void init() {
+    static {
         if ( Operator.determineOperator( isAOp, false ) == null ) {
             ISA = Operator.addOperatorToRegistry( isAOp, false );
             NOT_ISA = Operator.addOperatorToRegistry( isAOp, true );
@@ -158,10 +156,6 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         private BitSet cachedLiteral;
         private Object cachedValue;
 
-        {
-            IsAEvaluatorDefinition.init();
-        }
-
         public IsAEvaluator() { }
 
         public void setParameterText(String parameterText) {
@@ -194,7 +188,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 if ( code != null ) {
                     return this.getOperator().isNegated() ^ isA( code, cachedLiteral );
                 } else {
-                    return this.getOperator().isNegated() ^ hasTrait( core, literal );
+                    boolean hasTrait = this.getOperator().isNegated() ^ hasTrait( core, literal );
+                    return hasTrait || literal instanceof Class<?> && this.getOperator().isNegated() ^ ( (Class<?>) literal ).isInstance( objectValue );
                 }
             } else if ( objectValue instanceof TraitableBean ) {
                 core = (TraitableBean) objectValue;
@@ -207,7 +202,11 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             } else {
                 core = lookForWrapper( objectValue, workingMemory );
                 if ( core == null ) {
-                    return this.getOperator().isNegated();
+                    if ( literal instanceof Class<?> ) {
+                        return this.getOperator().isNegated() ^ ( (Class<?>) literal ).isInstance( objectValue );
+                    } else {
+                        return this.getOperator().isNegated();
+                    }
                 }
                 BitSet code = core.getCurrentTypeCode();
                 if ( code != null ) {
@@ -275,7 +274,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 }
             });
             if ( iter.hasNext() ) {
-                return (TraitableBean) ((TraitProxy) iter.next()).getObject();
+                return ((TraitProxy) iter.next()).getObject();
             } else {
                 return null;
 // throw new RuntimeException(" Error : the isA operator must be used on a trait-type, was applied to " + objectValue );
@@ -285,11 +284,8 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
         public boolean evaluate(InternalWorkingMemory workingMemory,
                                 InternalReadAccessor leftExtractor, InternalFactHandle left,
                                 InternalReadAccessor rightExtractor, InternalFactHandle right) {
-            final Object value1 = leftExtractor.getValue( workingMemory, left != null ? left.getObject() : left );
-            final Object value2 = rightExtractor.getValue( workingMemory, right != null ? right.getObject() : right );
-
-            Object target = value1;
-            Object source = value2;
+            Object target = leftExtractor.getValue( workingMemory, left != null ? left.getObject() : null );
+            Object source = rightExtractor.getValue( workingMemory, right != null ? right.getObject() : null );
 
             return compare( source, target, workingMemory );
         }
@@ -322,7 +318,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 sourceTraits = ((TraitableBean) ((Thing) source).getCore()).getCurrentTypeCode();
                 if ( sourceTraits == null && source instanceof TraitType ) {
                     CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
-                    sourceTraits = x.getCode( ((TraitType)source).getTraitName() );
+                    sourceTraits = x.getCode( ((TraitType)source)._getTraitName() );
                 }
             } else if ( source instanceof TraitableBean ) {
                 sourceTraits = ((TraitableBean) source).getCurrentTypeCode();
@@ -346,7 +342,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
                 targetTraits = ((TraitableBean) ((Thing) target).getCore()).getCurrentTypeCode();
                 if ( targetTraits == null && target instanceof TraitType ) {
                     CodedHierarchy x = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getTraitRegistry().getHierarchy();
-                    targetTraits = x.getCode( ((TraitType)target).getTraitName() );
+                    targetTraits = x.getCode( ((TraitType)target)._getTraitName() );
                 }
             } else if ( target instanceof TraitableBean ) {
                 targetTraits = ((TraitableBean) target).getCurrentTypeCode();
@@ -369,10 +365,7 @@ public class IsAEvaluatorDefinition implements EvaluatorDefinition {
             if ( sourceTraits == null ) {
                 return false;
             }
-            if ( targetTraits == null ) {
-                return true;
-            }
-            return HierarchyEncoderImpl.supersetOrEqualset( sourceTraits, targetTraits );
+            return targetTraits == null || HierarchyEncoderImpl.supersetOrEqualset( sourceTraits, targetTraits );
         }
 
         @Override

@@ -1,75 +1,68 @@
 package org.drools.core.phreak;
 
+import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
-import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.ModifyPreviousTuples;
-import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.LeftTupleSinkNode;
+import org.drools.core.reteoo.ReactiveFromNode;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.util.bitmask.AllSetBitMask;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.drools.core.phreak.PhreakFromNode.checkConstraintsAndPropagate;
 
 public abstract class ReactiveObject {
-    private InternalFactHandle factHandle;
-    private PropagationContextFactory pctxFactory;
+    private final List<LeftTuple> lts = new ArrayList<LeftTuple>();
 
-    private Set<ObjectSink> sinks = new HashSet<ObjectSink>();
-
-    private Set<ReactiveObject> parents = new HashSet<ReactiveObject>();
-
-    public InternalFactHandle getFactHandle() {
-        return factHandle;
-    }
-
-    public void setFactHandle(InternalFactHandle factHandle) {
-        this.factHandle = factHandle;
-        if (pctxFactory == null) {
-            InternalWorkingMemoryEntryPoint ep = (InternalWorkingMemoryEntryPoint)factHandle.getEntryPoint();
-            pctxFactory = ep.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-        }
-    }
-
-    public void addParent(Object parent) {
-        if (parent instanceof ReactiveObject) {
-            parents.add((ReactiveObject) parent);
-        }
-    }
-
-    public void addSink(ObjectSink sink) {
-        sinks.add(sink);
+    public void addLeftTuple(LeftTuple leftTuple) {
+        lts.add(leftTuple);
     }
 
     protected void notifyModification() {
-        if (factHandle != null) {
-            propagateModify();
-        } else {
-            for (ReactiveObject parent : parents) {
-                parent.notifyModification();
-            }
+        notifyModification(this);
+    }
+
+    protected void notifyModification(Object object) {
+        for (LeftTuple leftTuple : lts) {
+            PropagationContext propagationContext = leftTuple.getPropagationContext();
+            ReactiveFromNode node = (ReactiveFromNode)leftTuple.getSink();
+
+            LeftTupleSinkNode sink = node.getSinkPropagator().getFirstLeftTupleSink();
+            InternalWorkingMemory wm = getInternalWorkingMemory(propagationContext);
+            ReactiveFromNode.ReactiveFromMemory mem = (ReactiveFromNode.ReactiveFromMemory)wm.getNodeMemory(node);
+
+            RightTuple rightTuple = node.createRightTuple(leftTuple, propagationContext, wm, object);
+
+            ContextEntry[] context = mem.getBetaMemory().getContext();
+            BetaConstraints betaConstraints = node.getBetaConstraints();
+            betaConstraints.updateFromTuple(context,
+                                            wm,
+                                            leftTuple);
+
+            checkConstraintsAndPropagate(sink,
+                                         leftTuple,
+                                         rightTuple,
+                                         node.getAlphaConstraints(),
+                                         betaConstraints,
+                                         propagationContext,
+                                         wm,
+                                         mem,
+                                         context,
+                                         RuleNetworkEvaluator.useLeftMemory(node, leftTuple),
+                                         mem.getStagedLeftTuples(),
+                                         null);
+
+            mem.getBetaMemory().setNodeDirty(wm);
         }
     }
 
-    private void propagateModify() {
-        InternalWorkingMemoryEntryPoint ep = (InternalWorkingMemoryEntryPoint)factHandle.getEntryPoint();
-        InternalWorkingMemory wm = ep.getInternalWorkingMemory();
-
-        ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(factHandle.getFirstLeftTuple(),
-                                                                             factHandle.getFirstRightTuple(),
-                                                                             ep.getEntryPointNode());
-
-        PropagationContext ctx = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(),
-                                                                      PropagationContext.MODIFICATION,
-                                                                      (RuleImpl)null, (LeftTuple)null,
-                                                                      factHandle, ep.getEntryPoint(),
-                                                                      AllSetBitMask.get(), Object.class, null);
-
-        for (ObjectSink sink : sinks) {
-            sink.modifyObject(factHandle, modifyPreviousTuples, ctx, wm);
-        }
+    private InternalWorkingMemory getInternalWorkingMemory(PropagationContext propagationContext) {
+        InternalFactHandle fh = (InternalFactHandle) propagationContext.getFactHandleOrigin();
+        return ((InternalWorkingMemoryEntryPoint) fh.getEntryPoint()).getInternalWorkingMemory();
     }
 }

@@ -1,5 +1,7 @@
 package org.drools.compiler.kie.builder.impl;
 
+import org.drools.compiler.kproject.xml.PomModel;
+import org.drools.core.common.ResourceProvider;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
@@ -11,6 +13,7 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.definition.KnowledgePackage;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
@@ -52,9 +55,15 @@ public interface InternalKieModule extends KieModule {
     
     File getFile();
 
+    ResourceProvider createResourceProvider();
+
     Map<String, byte[]> getClassesMap(boolean includeTypeDeclarations);
 
     boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, String fileName);
 
     long getCreationTimestamp();
+
+    InputStream getPomAsStream();
+
+    PomModel getPomModel();
 }

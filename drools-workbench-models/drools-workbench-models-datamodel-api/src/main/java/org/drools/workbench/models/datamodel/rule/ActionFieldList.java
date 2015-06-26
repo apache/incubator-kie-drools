@@ -84,7 +84,7 @@ public abstract class ActionFieldList
         return true;
     }
 
-    @Override
+        @Override
     public int hashCode() {
         return fieldValues != null ? Arrays.hashCode(fieldValues) : 0;
     }

@@ -10,7 +10,6 @@ import org.drools.compiler.Person;
 import org.drools.compiler.Worker;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
-import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.EntryPointNode;
@@ -18,9 +17,6 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
-import org.drools.core.util.Entry;
-import org.drools.core.util.ObjectHashMap.ObjectEntry;
-import org.drools.core.util.ObjectHashSet;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
@@ -45,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -386,20 +383,8 @@ public class QueryTest extends CommonTestMethodBase {
 
         ObjectType key = new ClassObjectType( DroolsQuery.class );
         ObjectTypeNode droolsQueryNode = obnodes.get( key );
-        ObjectHashSet droolsQueryMemory = ((ObjectTypeNodeMemory) sessionImpl.getNodeMemory( droolsQueryNode )).memory;
-        assertEquals( 0,
-                      droolsQueryMemory.size() );
-
-        Entry[] entries = droolsQueryMemory.getTable();
-        int entryCounter = 0;
-        for ( Entry entry : entries ) {
-            if ( entry != null ) {
-                entryCounter++;
-                ObjectEntry oEntry = (ObjectEntry) entry;
-                DefaultFactHandle factHandle = (DefaultFactHandle) oEntry.getValue();
-                assertNull( factHandle.getObject() );
-            }
-        }
+        Iterator<InternalFactHandle> it = ((ObjectTypeNodeMemory) sessionImpl.getNodeMemory( droolsQueryNode )).iterator();
+        assertFalse( it.hasNext() );
     }
 
     @Test

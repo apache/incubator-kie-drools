@@ -93,9 +93,13 @@ public class ConnectiveConstraint extends BaseSingleFieldConstraint {
     @Override
     public int hashCode() {
         int result = super.hashCode();
+        result = ~~result;
         result = 31 * result + (factType != null ? factType.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (fieldName != null ? fieldName.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (fieldType != null ? fieldType.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

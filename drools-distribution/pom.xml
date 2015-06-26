@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.drools</groupId>
-        <artifactId>drools-multiproject</artifactId>
+        <artifactId>drools</artifactId>
         <version>6.3.0-SNAPSHOT</version>
     </parent>
 
@@ -76,6 +76,15 @@
         <dependency>
             <groupId>org.drools</groupId>
             <artifactId>drools-compiler</artifactId>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-reteoo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-reteoo</artifactId>
             <classifier>sources</classifier>
         </dependency>
         <dependency>
@@ -154,11 +163,6 @@
             <groupId>org.kie</groupId>
             <artifactId>kie-api</artifactId>
             <classifier>javadoc</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.drools</groupId>
-            <artifactId>drools-docs</artifactId>
-            <type>jdocbook</type>
         </dependency>
     </dependencies>
 

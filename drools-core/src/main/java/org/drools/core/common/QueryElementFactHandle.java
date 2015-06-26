@@ -85,7 +85,11 @@ public class QueryElementFactHandle
         }
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
-    
+
+    public String getObjectClassName() {
+        return this.object != null ? object.getClass().getName() : null;
+    }
+
     public void setObject(Object object) {
         this.object = object;
     }    
@@ -242,5 +246,10 @@ public class QueryElementFactHandle
     public void removeRightTuple( RightTuple rightTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
-    
+
+    @Override
+    public <K> K as( Class<K> klass ) throws ClassCastException {
+        throw new UnsupportedOperationException( "QueryElementFactHandle does not yet support this method" );
+    }
+
 }

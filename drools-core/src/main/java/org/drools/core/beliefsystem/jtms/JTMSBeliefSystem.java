@@ -42,11 +42,11 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         return this.tms;
     }
 
-    public BeliefSet<M> insert(LogicalDependency<M> node,
-                               BeliefSet<M> beliefSet,
-                               PropagationContext context,
-                               ObjectTypeConf typeConf) {
-        log.trace( "TMSInsert {} {}", node.getObject(), node.getMode().getValue() );
+    @Override
+    public BeliefSet<M> insert( M mode, RuleImpl rule, Activation activation, Object payload, BeliefSet<M> beliefSet, PropagationContext context, ObjectTypeConf typeConf ) {
+        if ( log.isTraceEnabled() ) {
+            log.trace( "TMSInsert {} {}", payload, mode.getValue() );
+        }
 
         JTMSBeliefSet jtmsBeliefSet = (JTMSBeliefSet) beliefSet;
         boolean wasEmpty = jtmsBeliefSet.isEmpty();
@@ -54,7 +54,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         boolean wasDecided = jtmsBeliefSet.isDecided();
         InternalFactHandle fh =  jtmsBeliefSet.getFactHandle();
 
-        jtmsBeliefSet.add( node.getMode() );
+        jtmsBeliefSet.add( mode );
 
         if ( !wasEmpty && wasDecided && fh.isNegated() != beliefSet.isNegated() ) {
             // if it was decided, first remove it and re-add it. So it's in the correct map
@@ -68,15 +68,23 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
 
         if ( wasEmpty && jtmsBeliefSet.isDecided()  ) {
             ep.insert(jtmsBeliefSet.getFactHandle(),
-                      node.getObject(),
-                      node.getJustifier().getRule(),
-                      node.getJustifier(),
+                      payload,
+                      rule,
+                      activation,
                       typeConf,
                       null);
         } else {
-            processBeliefSet(node, context, jtmsBeliefSet, wasDecided,wasNegated, fh);
+            processBeliefSet(rule, activation, payload, context, jtmsBeliefSet, wasDecided,wasNegated, fh);
         }
         return beliefSet;
+    }
+
+
+    public BeliefSet<M> insert(LogicalDependency<M> node,
+                               BeliefSet<M> beliefSet,
+                               PropagationContext context,
+                               ObjectTypeConf typeConf) {
+        return insert( node.getMode(), node.getJustifier().getRule(), node.getJustifier(), node.getObject(), beliefSet, context, typeConf );
     }
 
     public void read(LogicalDependency<M> node,
@@ -86,10 +94,18 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         throw new UnsupportedOperationException( "This is not serializable yet" );
     }
 
+    @Override
     public void delete(LogicalDependency<M> node,
                        BeliefSet<M> beliefSet,
                        PropagationContext context) {
-        log.trace( "TMSDelete {} {}", node.getObject(), node.getMode().getValue() );
+        delete( node.getMode(), node.getJustifier().getRule(), node.getJustifier(), node.getObject(), beliefSet, context );
+    }
+
+    @Override
+    public void delete( M mode, RuleImpl rule, Activation activation, Object payload, BeliefSet<M> beliefSet, PropagationContext context ) {
+        if ( log.isTraceEnabled() ) {
+            log.trace( "TMSDelete {} {}", payload, mode.getValue() );
+        }
 
         JTMSBeliefSet<M> jtmsBeliefSet = (JTMSBeliefSet<M>) beliefSet;
         boolean wasDecided = jtmsBeliefSet.isDecided();
@@ -97,7 +113,7 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
 
         InternalFactHandle fh =  jtmsBeliefSet.getFactHandle();
 
-        beliefSet.remove( node.getMode() );
+        beliefSet.remove( mode );
 
         if ( wasDecided && fh.isNegated() != beliefSet.isNegated() ) {
             // if it was decided, first remove it and re-add it. So it's in the correct map
@@ -112,9 +128,9 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         if ( beliefSet.isEmpty() && fh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
             // the set is empty, so delete form the EP, so things are cleaned up.
             ep.delete(fh, fh.getObject(), getObjectTypeConf(beliefSet), (RuleImpl) context.getRule(), (Activation) context.getLeftTupleOrigin() );
-        } else  if ( !(processBeliefSet(node, context, jtmsBeliefSet, wasDecided, wasNegated, fh) && beliefSet.isEmpty())  ) {
+        } else  if ( !(processBeliefSet( rule, activation, payload, context, jtmsBeliefSet, wasDecided, wasNegated, fh) && beliefSet.isEmpty())  ) {
             //  The state of the BS did not change, but maybe the prime did
-            if ( fh.getObject() == node.getObject() ) {
+            if ( fh.getObject() == payload ) {
                 // prime, node.object which is the current fh.object,  has changed and object is decided, so update
                 String value;
                 Object object = null;
@@ -160,12 +176,12 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         }
     }
 
-    private boolean processBeliefSet(LogicalDependency<M> node, PropagationContext pctx, JTMSBeliefSet<M> jtmsBeliefSet, boolean wasDecided, boolean wasNegated, InternalFactHandle fh) {
+    private boolean processBeliefSet(RuleImpl rule, Activation activation, Object payload, PropagationContext pctx, JTMSBeliefSet<M> jtmsBeliefSet, boolean wasDecided, boolean wasNegated, InternalFactHandle fh) {
         if ( !wasDecided && jtmsBeliefSet.isDecided()  ) {
             ep.insert(jtmsBeliefSet.getFactHandle(),
-                      node.getObject(),
-                      node.getJustifier().getRule(),
-                      node.getJustifier(),
+                      payload,
+                      rule,
+                      activation,
                       getObjectTypeConf(jtmsBeliefSet),
                       null);
             return true;
@@ -221,6 +237,15 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
                                                   BeliefSet<M> beliefSet,
                                                   Object object,
                                                   Object value) {
+        JTMSMode<M> mode = asMode( value );
+        SimpleLogicalDependency dep =  new SimpleLogicalDependency(activation, beliefSet, object, mode);
+        mode.setLogicalDependency( dep );
+
+        return dep;
+    }
+
+    @Override
+    public M asMode( Object value ) {
         JTMSMode<M> mode;
         if ( value == null ) {
             mode = new JTMSMode(MODE.POSITIVE.getId(), this);
@@ -233,10 +258,6 @@ public class JTMSBeliefSystem<M extends JTMSMode<M>>
         } else {
             mode = new JTMSMode(((MODE)value).getId(), this);
         }
-
-        SimpleLogicalDependency dep =  new SimpleLogicalDependency(activation, beliefSet, object, mode);
-        mode.setLogicalDependency( dep );
-
-        return dep;
+        return (M) mode;
     }
 }

@@ -8,6 +8,7 @@ import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.xml.PomModel;
 import org.eclipse.aether.artifact.Artifact;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -69,7 +70,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         kieProjectDescr = new DependencyDescriptor(this.kieContainer.getReleaseId(),
                                                    this.kieContainer.getCreationTimestamp());
 
-        artifactResolver = getResolverFor(kieContainer.getReleaseId(), true);
+        artifactResolver = getResolverFor(this.kieContainer, true);
         usedDependencies = indexAtifacts(artifactResolver);
 
         KieScannersRegistry.register(this);
@@ -88,13 +89,24 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     }
 
     public synchronized KieModule loadArtifact(ReleaseId releaseId) {
-        return loadArtifact(releaseId, null);
+        return loadArtifact(releaseId, getArtifactResolver());
     }
 
     public synchronized KieModule loadArtifact(ReleaseId releaseId, InputStream pomXml) {
         ArtifactResolver resolver = pomXml != null ?
                                     ArtifactResolver.getResolverFor(pomXml) :
                                     getArtifactResolver();
+        return loadArtifact( releaseId, resolver );
+    }
+
+    public synchronized KieModule loadArtifact(ReleaseId releaseId, PomModel pomModel) {
+        ArtifactResolver resolver = pomModel != null ?
+                                    ArtifactResolver.getResolverFor(pomModel) :
+                                    getArtifactResolver();
+        return loadArtifact( releaseId, resolver );
+    }
+
+    private KieModule loadArtifact( ReleaseId releaseId, ArtifactResolver resolver ) {
         Artifact artifact = resolver.resolveArtifact(releaseId);
         return artifact != null ? buildArtifact(artifact, resolver) : loadPomArtifact(releaseId);
     }
@@ -286,15 +298,14 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
             addDependencies(kieModule, artifactResolver, artifactResolver.getArtifactDependecies(newReleaseId.toString()));
             ResultsImpl messages = build(kieModule);
             if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
-                ((InternalKieContainer)kieContainer).updateDependencyToVersion(oldDependency.getArtifactReleaseId(),
-                                                                               newReleaseId);
+                kieContainer.updateDependencyToVersion(oldDependency.getArtifactReleaseId(), newReleaseId);
                 oldDependency.setArtifactVersion(artifact.getVersion());
             }
         }
     }
 
     private Map<DependencyDescriptor, Artifact> scanForUpdates() {
-        artifactResolver = getResolverFor(kieContainer.getReleaseId(), true);
+        artifactResolver = getResolverFor(kieContainer, true);
         Map<DependencyDescriptor, Artifact> newArtifacts = new HashMap<DependencyDescriptor, Artifact>();
 
         Artifact newArtifact = artifactResolver.resolveArtifact(this.kieContainer.getContainerReleaseId());

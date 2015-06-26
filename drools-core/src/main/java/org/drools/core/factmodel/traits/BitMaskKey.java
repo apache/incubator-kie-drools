@@ -9,7 +9,7 @@ public class BitMaskKey<T> extends Key<T> implements LatticeElement<T> {
     }
 
     public BitSet getBitMask() {
-        return ((TraitType) getValue()).getTypeCode();
+        return ((TraitType) getValue())._getTypeCode();
     }
 
 }

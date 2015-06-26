@@ -16,10 +16,6 @@
 
 package org.drools.core.base;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.core.util.asm.BeanInherit;
 import org.drools.core.util.asm.InterfaceChild;
 import org.drools.core.util.asm.TestAbstract;
@@ -27,6 +23,10 @@ import org.drools.core.util.asm.TestAbstractImpl;
 import org.drools.core.util.asm.TestBean;
 import org.drools.core.util.asm.TestInterface;
 import org.drools.core.util.asm.TestInterfaceImpl;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 public class ClassFieldAccessorTest {
 
@@ -140,18 +140,10 @@ public class ClassFieldAccessorTest {
         obj.setSomething( "no" );
         obj.setObjArray( objArray );
 
-        try {
-            final ClassFieldReader ext = store.getReader( TestBean.class,
-                                                          "xyz",
-                                                          getClass().getClassLoader() );
-            fail( "A RuntimeException should have been raised" );
-        } catch ( RuntimeException e ) {
-            // everything is fine, since field does not exist
-            // e.printStackTrace();
-        } catch ( Exception e ) {
-            fail( "A RuntimeException should have been raised" );
-        }
-
+        ClassFieldReader ext = store.getReader( TestBean.class,
+                                                "xyz",
+                                                getClass().getClassLoader() );
+        assertNull(ext);
     }
 
     @Test

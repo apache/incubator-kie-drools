@@ -358,9 +358,7 @@ public class XpathTest {
         debbie.setAge(11);
         ksession.fireAllRules();
 
-        assertEquals(3, list.size());
-        assertTrue(list.contains("car"));
-        assertTrue(list.contains("ball"));
+        assertEquals(1, list.size());
         assertTrue(list.contains("doll"));
     }
 
@@ -409,9 +407,7 @@ public class XpathTest {
         debbie.setAge(11);
         ksession.fireAllRules();
 
-        assertEquals(3, list.size());
-        assertTrue(list.contains("car"));
-        assertTrue(list.contains("ball"));
+        assertEquals(1, list.size());
         assertTrue(list.contains("doll"));
     }
 
@@ -473,13 +469,10 @@ public class XpathTest {
         assertTrue(teenagers.contains("Charles"));
 
         toyList.clear();
-        teenagers.clear();
         debbie.setAge(13);
         ksession.fireAllRules();
 
-        assertEquals(3, toyList.size());
-        assertTrue(toyList.contains("car"));
-        assertTrue(toyList.contains("ball"));
+        assertEquals(1, toyList.size());
         assertTrue(toyList.contains("doll"));
 
         assertEquals(2, teenagers.size());
@@ -564,5 +557,52 @@ public class XpathTest {
         assertEquals(2, list.size());
         assertTrue(list.contains("Debbie"));
         assertTrue(list.contains("Farrah"));
+    }
+
+    @Test
+    public void testReactiveList() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  Man( $toy: /wife/children[age > 10]/toys )\n" +
+                "then\n" +
+                "  list.add( $toy.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        Woman alice = new Woman("Alice", 38);
+        Man bob = new Man("Bob", 40);
+        bob.setWife(alice);
+
+        Child charlie = new Child("Charles", 12);
+        Child debbie = new Child("Debbie", 10);
+        alice.addChild(charlie);
+        alice.addChild(debbie);
+
+        charlie.addToy(new Toy("car"));
+        charlie.addToy(new Toy("ball"));
+        debbie.addToy(new Toy("doll"));
+
+        ksession.insert(bob);
+        ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue(list.contains("car"));
+        assertTrue(list.contains("ball"));
+
+        list.clear();
+        charlie.addToy(new Toy("gun"));
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertTrue(list.contains("gun"));
     }
 }

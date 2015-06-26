@@ -33,6 +33,8 @@ public class NamedConsequenceBuilder implements ReteooComponentBuilder {
         if  ( context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && timer != null ) {
             context.setTupleSource( context.getTupleSource().getLeftTupleSource() );
         }
+
+        context.setTerminated(namedConsequence.isTerminal());
     }
 
     public boolean requiresLeftActivation(BuildUtils utils, RuleConditionElement rce) {

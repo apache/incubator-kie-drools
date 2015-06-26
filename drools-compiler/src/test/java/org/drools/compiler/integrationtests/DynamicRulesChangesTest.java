@@ -1,8 +1,17 @@
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.api.command.Command;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.command.CommandFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,24 +22,6 @@ import java.util.concurrent.CompletionService;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.api.command.Command;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.command.CommandFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.rule.FactHandle;
 
 public class DynamicRulesChangesTest extends CommonTestMethodBase {
 
@@ -221,7 +212,7 @@ public class DynamicRulesChangesTest extends CommonTestMethodBase {
                 "rule \"Cancel the alarm when all the fires have gone\"\n" +
                 "when\n" +
                 "    not DynamicRulesChangesTest.Fire()\n" +
-                "    $alarm : DynamicRulesChangesTest.Alarm()\n" +
+                "    $alarm : DynamicRulesChangesTest.ParentAlarm()\n" +
                 "then\n" +
                 "    retract( $alarm );\n" +
                 "    events.add( \"Cancel the alarm\" );\n" +
@@ -242,7 +233,9 @@ public class DynamicRulesChangesTest extends CommonTestMethodBase {
 
     // Model
 
-    public static class Alarm { }
+    public static class ParentAlarm { }
+
+    public static class Alarm extends ParentAlarm { }
 
     public static class Fire {
 

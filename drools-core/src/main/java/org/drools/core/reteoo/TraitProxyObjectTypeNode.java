@@ -30,12 +30,6 @@ public class TraitProxyObjectTypeNode extends ObjectTypeNode {
     }
 
 
-    @Override
-    public void assertObject( InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory ) {
-        super.assertObject( factHandle, context, workingMemory );
-    }
-
-
     public void modifyObject( InternalFactHandle factHandle,
                               ModifyPreviousTuples modifyPreviousTuples,
                               PropagationContext context,

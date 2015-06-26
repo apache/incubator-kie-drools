@@ -16,10 +16,7 @@
 
 package org.drools.core;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
-
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.GlobalResolver;
@@ -30,6 +27,10 @@ import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.time.SessionClock;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * A knowledge session for a <code>RuleBase</code>.
@@ -46,7 +47,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *         the Agenda
      */
-    public Agenda getAgenda();
+    Agenda getAgenda();
 
     /**
      * Set a specific instance as a global in this working memory. Null values will return doing nothing.
@@ -162,7 +163,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator<?> iterateFactHandles();
+    Iterator<InternalFactHandle> iterateFactHandles();
 
     /**
      *  Returns an Iterator for the Objects in the Working Memory. This Iterator will filter out
@@ -174,7 +175,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @return
      *     the Iterator
      */
-    Iterator<?> iterateFactHandles(org.kie.api.runtime.ObjectFilter filter);
+    Iterator<InternalFactHandle> iterateFactHandles(org.kie.api.runtime.ObjectFilter filter);
 
     /**
      * Set the focus to the specified AgendaGroup
@@ -197,7 +198,7 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @throws IllegalArgumentException
      *         if no query named "query" is found in the rulebase
      */
-    public QueryResultsImpl getQueryResults(String query, Object... arguments);
+    QueryResultsImpl getQueryResults(String query, Object... arguments);
 
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda
@@ -215,19 +216,19 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
     /**
      * Clear the Agenda Group, cancelling all its Activations.
      */
-    public void clearAgendaGroup(String group);
+    void clearAgendaGroup(String group);
 
     /**
      * Clears the Activation Group, cancellings all its Activations
      * @param group
      */
-    public void clearActivationGroup(String group);
+    void clearActivationGroup(String group);
 
     /**
      * Clears the RuleFlow group, cancelling all its Activations
      * @param group
      */
-    public void clearRuleFlowGroup(String group);
+    void clearRuleFlowGroup(String group);
 
     /**
      * Starts a new process instance for the process with the given id.
@@ -244,22 +245,22 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * This list is unmodifiable.
      * @return the list of process instances
      */
-    public Collection<ProcessInstance> getProcessInstances();
+    Collection<ProcessInstance> getProcessInstances();
 
     /**
      * Returns the process instance with the given id.
      * @return the process instance with the given id
      */
-    public ProcessInstance getProcessInstance(long id);
+    ProcessInstance getProcessInstance(long id);
 
-    public ProcessInstance getProcessInstance(long id, boolean readOnly);
+    ProcessInstance getProcessInstance(long id, boolean readOnly);
 
-    public WorkItemManager getWorkItemManager();
+    WorkItemManager getWorkItemManager();
 
     /**
      * Stops rule firing after the current rule finishes executing
      */
-    public void halt();
+    void halt();
 
     /**
      * Returns the interface instance for a given entry point, so
@@ -268,12 +269,12 @@ public interface WorkingMemory extends WorkingMemoryEventManager, WorkingMemoryE
      * @param id the id of the entry point, as defined in the rules file
      * @return
      */
-    public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint( String id );
+    WorkingMemoryEntryPoint getWorkingMemoryEntryPoint( String id );
     
     /**
      * Returns the session clock instance associated with this session
      * @return
      */
-    public SessionClock getSessionClock();
+    SessionClock getSessionClock();
     
 }

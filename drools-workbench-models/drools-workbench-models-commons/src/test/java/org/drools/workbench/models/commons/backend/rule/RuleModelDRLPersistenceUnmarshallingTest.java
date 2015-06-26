@@ -17,6 +17,7 @@ package org.drools.workbench.models.commons.backend.rule;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -1328,7 +1329,7 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         String drl =
                 "rule rule1\n"
                         + "when\n"
-                        + "p : Person( address.postalCode == p.address.postalCode) )\n"
+                        + "p : Person( address.postalCode == p.address.postalCode )\n"
                         + "then\n"
                         + "end";
 
@@ -2636,11 +2637,11 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     @Test
     public void testSingleFieldConstraintEBLeftSide() throws Exception {
         String drl = "" +
-                "rule \" broken \""
-                + "dialect \"mvel\""
-                + "  when"
-                + "    Customer( contact != null , contact.tel1 > \"15\" )"
-                + "  then"
+                "rule \" broken \"\n"
+                + "dialect \"mvel\"\n"
+                + "  when\n"
+                + "    Customer( contact != null , contact.tel1 > \"15\" )\n"
+                + "  then\n"
                 + "end";
 
         addModelField( "Customer",
@@ -6933,6 +6934,924 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                                                                  dmo );
 
         assertNotNull( m );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1189930
+    //Formatted as generated from a Guided Rule in the Workbench
+    public void testBigDecimal1() throws Exception {
+        String drl = "package org.test;\n" +
+                "import java.lang.Number;\n" +
+                "import java.math.BigDecimal;\n" +
+                "import java.util.Calendar;\n" +
+                "rule \"BigDecimalRule\"\n" +
+                "  dialect \"java\"\n" +
+                "when\n" +
+                "  $bd : BigDecimal( )\n" +
+                "then\n" +
+                "  LastRunInformation lastRun = new LastRunInformation();\n" +
+                "  lastRun.setLastNumber( $bd );\n" +
+                "  insert( lastRun );\n" +
+                "end";
+
+        addModelField( "org.test.LastRunInformation",
+                       "this",
+                       "org.test.LastRunInformation",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.LastRunInformation",
+                       "lastNumber",
+                       BigDecimal.class.getName(),
+                       DataType.TYPE_NUMERIC_BIGDECIMAL );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+        final FactPattern fp = (FactPattern) p;
+        assertEquals( "$bd",
+                      fp.getBoundName() );
+        assertEquals( "BigDecimal",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        final IAction a = m.rhs[ 0 ];
+        assertTrue( a instanceof ActionInsertFact );
+        final ActionInsertFact aif = (ActionInsertFact) a;
+        assertEquals( "lastRun",
+                      aif.getBoundName() );
+        assertEquals( "LastRunInformation",
+                      aif.getFactType() );
+
+        assertEquals( 1,
+                      aif.getFieldValues().length );
+        final ActionFieldValue afv0 = aif.getFieldValues()[ 0 ];
+        assertEquals( "lastNumber",
+                      afv0.getField() );
+        assertEquals( FieldNatureType.TYPE_VARIABLE,
+                      afv0.getNature() );
+        assertEquals( "=$bd",
+                      afv0.getValue() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1189930
+    public void testBigDecimal2() throws Exception {
+        String drl = "package org.test;\n" +
+                "import java.lang.Number;\n" +
+                "import java.math.BigDecimal;\n" +
+                "import java.util.Calendar;\n" +
+                "rule \"BigDecimalRule\"\n" +
+                "  dialect \"java\"\n" +
+                "when\n" +
+                "  $bd : BigDecimal( )\n" +
+                "then\n" +
+                "  LastRunInformation lastRun = new LastRunInformation();\n" +
+                "  lastRun.setLastNumber($bd);\n" +
+                "  insert(lastRun);\n" +
+                "end";
+
+        addModelField( "org.test.LastRunInformation",
+                       "this",
+                       "org.test.LastRunInformation",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.LastRunInformation",
+                       "lastNumber",
+                       BigDecimal.class.getName(),
+                       DataType.TYPE_NUMERIC_BIGDECIMAL );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+        final FactPattern fp = (FactPattern) p;
+        assertEquals( "$bd",
+                      fp.getBoundName() );
+        assertEquals( "BigDecimal",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        final IAction a = m.rhs[ 0 ];
+        assertTrue( a instanceof ActionInsertFact );
+        final ActionInsertFact aif = (ActionInsertFact) a;
+        assertEquals( "lastRun",
+                      aif.getBoundName() );
+        assertEquals( "LastRunInformation",
+                      aif.getFactType() );
+
+        assertEquals( 1,
+                      aif.getFieldValues().length );
+        final ActionFieldValue afv0 = aif.getFieldValues()[ 0 ];
+        assertEquals( "lastNumber",
+                      afv0.getField() );
+        assertEquals( FieldNatureType.TYPE_VARIABLE,
+                      afv0.getNature() );
+        assertEquals( "=$bd",
+                      afv0.getValue() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1189930
+    public void testBigDecimal3() throws Exception {
+        String drl = "package org.test;\n" +
+                "import java.lang.Number;\n" +
+                "import java.math.BigDecimal;\n" +
+                "import java.util.Calendar;\n" +
+                "rule \"BigDecimalRule\"\n" +
+                "  dialect \"java\"\n" +
+                "when\n" +
+                "  $bd : BigDecimal( )\n" +
+                "then\n" +
+                "  LastRunInformation lastRun = new LastRunInformation();\n" +
+                "  lastRun.setLastNumber($bd);\n" +
+                "\n" +
+                "  insert(lastRun);\n" +
+                "end";
+
+        addModelField( "org.test.LastRunInformation",
+                       "this",
+                       "org.test.LastRunInformation",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.LastRunInformation",
+                       "lastNumber",
+                       BigDecimal.class.getName(),
+                       DataType.TYPE_NUMERIC_BIGDECIMAL );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p = m.lhs[ 0 ];
+        assertTrue( p instanceof FactPattern );
+        final FactPattern fp = (FactPattern) p;
+        assertEquals( "$bd",
+                      fp.getBoundName() );
+        assertEquals( "BigDecimal",
+                      fp.getFactType() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        final IAction a = m.rhs[ 0 ];
+        assertTrue( a instanceof ActionInsertFact );
+        final ActionInsertFact aif = (ActionInsertFact) a;
+        assertEquals( "lastRun",
+                      aif.getBoundName() );
+        assertEquals( "LastRunInformation",
+                      aif.getFactType() );
+
+        assertEquals( 1,
+                      aif.getFieldValues().length );
+        final ActionFieldValue afv0 = aif.getFieldValues()[ 0 ];
+        assertEquals( "lastNumber",
+                      afv0.getField() );
+        assertEquals( FieldNatureType.TYPE_VARIABLE,
+                      afv0.getNature() );
+        assertEquals( "=$bd",
+                      afv0.getValue() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1191737
+    public void testMultipleFromKeywords() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"ToyWithoutName \"\n" +
+                "dialect \"java\"\n" +
+                "when\n" +
+                "  $father: Father()\n" +
+                "  $kid: Kid() from $father.kids\n" +
+                "  $toy: Toy(name == null) from $kid.toys\n" +
+                "then\n" +
+                "  System.out.println(\"blabla\");\n" +
+                "end";
+
+        addModelField( "org.test.Father",
+                       "this",
+                       "org.test.Father",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Father",
+                       "kids",
+                       "org.test.Kid",
+                       DataType.TYPE_COLLECTION );
+        addModelField( "org.test.Kid",
+                       "this",
+                       "org.test.Kid",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Kid",
+                       "toys",
+                       "org.test.Toy",
+                       DataType.TYPE_COLLECTION );
+        addModelField( "org.test.Toy",
+                       "this",
+                       "org.test.Toy",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Toy",
+                       "name",
+                       "java.lang.String",
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 3,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "$father",
+                      fp0.getBoundName() );
+        assertEquals( "Father",
+                      fp0.getFactType() );
+
+        final IPattern p1 = m.lhs[ 1 ];
+        assertTrue( p1 instanceof FromCompositeFactPattern );
+        final FromCompositeFactPattern fp1 = (FromCompositeFactPattern) p1;
+        assertEquals( "$kid",
+                      fp1.getFactPattern().getBoundName() );
+        assertEquals( "Kid",
+                      fp1.getFactType() );
+
+        final IPattern p2 = m.lhs[ 2 ];
+        assertTrue( p2 instanceof FromCompositeFactPattern );
+        final FromCompositeFactPattern fp2 = (FromCompositeFactPattern) p2;
+        assertEquals( "$toy",
+                      fp2.getFactPattern().getBoundName() );
+        assertEquals( "Toy",
+                      fp2.getFactType() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        final IAction a = m.rhs[ 0 ];
+        assertTrue( a instanceof FreeFormLine );
+        final FreeFormLine affl = (FreeFormLine) a;
+        assertEquals( "System.out.println(\"blabla\");",
+                      affl.getText() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://issues.jboss.org/browse/DROOLS-713
+    public void testLHSFormula() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"MyRule\"\n" +
+                "dialect \"java\"\n" +
+                "agenda-group \"MyGroup\"\n" +
+                "salience 900\n" +
+                "when\n" +
+                "  $bundle : MyClass( $protocolSequence : protocolSequence )\n" +
+                "  eval( $protocolSequence != null )\n" +
+                "  $followupBundle : MyClass( protocolSequence == ( $protocolSequence + 1 ) )\n" +
+                "then\n" +
+                "end";
+
+        addModelField( "org.test.MyClass",
+                       "this",
+                       "org.test.MyClass",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.MyClass",
+                       "protocolSequence",
+                       Integer.class.getName(),
+                       DataType.TYPE_NUMERIC_INTEGER );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 3,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "$bundle",
+                      fp0.getBoundName() );
+        assertEquals( "MyClass",
+                      fp0.getFactType() );
+
+        final IPattern p1 = m.lhs[ 1 ];
+        assertTrue( p1 instanceof FreeFormLine );
+        final FreeFormLine ffl1 = (FreeFormLine) p1;
+        assertEquals( "eval( $protocolSequence != null )",
+                      ffl1.getText() );
+
+        final IPattern p2 = m.lhs[ 2 ];
+        assertTrue( p2 instanceof FactPattern );
+        final FactPattern fp2 = (FactPattern) p2;
+        assertEquals( "$followupBundle",
+                      fp2.getBoundName() );
+        assertEquals( "MyClass",
+                      fp2.getFactType() );
+
+        assertEquals( 1,
+                      fp2.getNumberOfConstraints() );
+        assertTrue( fp2.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        final SingleFieldConstraint sfc1 = (SingleFieldConstraint) fp2.getConstraint( 0 );
+        assertEquals( "MyClass",
+                      sfc1.getFactType() );
+        assertEquals( "protocolSequence",
+                      sfc1.getFieldName() );
+        assertEquals( DataType.TYPE_NUMERIC_INTEGER,
+                      sfc1.getFieldType() );
+        assertEquals( "==",
+                      sfc1.getOperator() );
+        assertEquals( "$protocolSequence + 1",
+                      sfc1.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_RET_VALUE,
+                      sfc1.getConstraintValueType() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1127303
+    public void testRHSChainedMethodCalls1() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"MyRule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  Person( $n : name )\n" +
+                "then\n" +
+                "  $n.toUpperCase().indexOf(\"S\", 1);\n" +
+                "end";
+
+        addModelField( "org.test.Person",
+                       "this",
+                       "org.test.Person",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Person",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "Person",
+                      fp0.getFactType() );
+
+        assertEquals( 1,
+                      fp0.getNumberOfConstraints() );
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        final SingleFieldConstraint sfc1 = (SingleFieldConstraint) fp0.getConstraint( 0 );
+        assertEquals( "Person",
+                      sfc1.getFactType() );
+        assertEquals( "name",
+                      sfc1.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfc1.getFieldType() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        final IAction a0 = m.rhs[ 0 ];
+        assertTrue( a0 instanceof FreeFormLine );
+        final FreeFormLine ffl1 = (FreeFormLine) a0;
+        assertEquals( "$n.toUpperCase().indexOf(\"S\", 1);",
+                      ffl1.getText() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1127303
+    public void testRHSChainedMethodCalls2() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"MyRule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  Person( $n : name )\n" +
+                "then\n" +
+                "  $n.toUpperCase().indexOf(\".\", 1);\n" +
+                "end";
+
+        addModelField( "org.test.Person",
+                       "this",
+                       "org.test.Person",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Person",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "Person",
+                      fp0.getFactType() );
+
+        assertEquals( 1,
+                      fp0.getNumberOfConstraints() );
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        final SingleFieldConstraint sfc1 = (SingleFieldConstraint) fp0.getConstraint( 0 );
+        assertEquals( "Person",
+                      sfc1.getFactType() );
+        assertEquals( "name",
+                      sfc1.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfc1.getFieldType() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        final IAction a0 = m.rhs[ 0 ];
+        assertTrue( a0 instanceof FreeFormLine );
+        final FreeFormLine ffl1 = (FreeFormLine) a0;
+        assertEquals( "$n.toUpperCase().indexOf(\".\", 1);",
+                      ffl1.getText() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1127303
+    public void testRHSChainedMethodCalls3() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"MyRule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  Person( $n : name )\n" +
+                "then\n" +
+                "  $n.toUpperCase().indexOf(\"(\", 1);\n" +
+                "end";
+
+        addModelField( "org.test.Person",
+                       "this",
+                       "org.test.Person",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Person",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "Person",
+                      fp0.getFactType() );
+
+        assertEquals( 1,
+                      fp0.getNumberOfConstraints() );
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        final SingleFieldConstraint sfc1 = (SingleFieldConstraint) fp0.getConstraint( 0 );
+        assertEquals( "Person",
+                      sfc1.getFactType() );
+        assertEquals( "name",
+                      sfc1.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfc1.getFieldType() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        final IAction a0 = m.rhs[ 0 ];
+        assertTrue( a0 instanceof FreeFormLine );
+        final FreeFormLine ffl1 = (FreeFormLine) a0;
+        assertEquals( "$n.toUpperCase().indexOf(\"(\", 1);",
+                      ffl1.getText() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1127303
+    public void testRHSChainedMethodCalls4() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"MyRule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  Person( $n : name )\n" +
+                "then\n" +
+                "  $n.toUpperCase().indexOf(\"\\\").\", 1);\n" +
+                "end";
+
+        addModelField( "org.test.Person",
+                       "this",
+                       "org.test.Person",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Person",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "Person",
+                      fp0.getFactType() );
+
+        assertEquals( 1,
+                      fp0.getNumberOfConstraints() );
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        final SingleFieldConstraint sfc1 = (SingleFieldConstraint) fp0.getConstraint( 0 );
+        assertEquals( "Person",
+                      sfc1.getFactType() );
+        assertEquals( "name",
+                      sfc1.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfc1.getFieldType() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+        final IAction a0 = m.rhs[ 0 ];
+        assertTrue( a0 instanceof FreeFormLine );
+        final FreeFormLine ffl1 = (FreeFormLine) a0;
+        assertEquals( "$n.toUpperCase().indexOf(\"\\\").\", 1);",
+                      ffl1.getText() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://issues.jboss.org/browse/DROOLS-715
+    public void testLHSValidLiteralFieldName() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"MyRule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  MyClass( valid == true )\n" +
+                "then\n" +
+                "end";
+
+        addModelField( "org.test.MyClass",
+                       "this",
+                       "org.test.MyClass",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.MyClass",
+                       "valid",
+                       Boolean.class.getName(),
+                       DataType.TYPE_BOOLEAN );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "MyClass",
+                      fp0.getFactType() );
+
+        assertEquals( 1,
+                      fp0.getNumberOfConstraints() );
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        final SingleFieldConstraint sfc1 = (SingleFieldConstraint) fp0.getConstraint( 0 );
+        assertEquals( "MyClass",
+                      sfc1.getFactType() );
+        assertEquals( "valid",
+                      sfc1.getFieldName() );
+        assertEquals( DataType.TYPE_BOOLEAN,
+                      sfc1.getFieldType() );
+        assertEquals( "==",
+                      sfc1.getOperator() );
+        assertEquals( "true",
+                      sfc1.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_ENUM,
+                      sfc1.getConstraintValueType() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1218308
+    public void testInvalidFromSyntax() throws Exception {
+        String drl = "rule \"test\"\n" +
+                "    dialect \"mvel\"\n" +
+                "    when\n" +
+                "    obj : MyClass( ) from my.package\n" +
+                "    then\n" +
+                "    System.out.println(\"Test\")\n" +
+                "    end";
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FromCompositeFactPattern );
+        final FromCompositeFactPattern fp0 = (FromCompositeFactPattern) p0;
+        assertEquals( "MyClass",
+                      fp0.getFactType() );
+
+        final FactPattern fp1 = fp0.getFactPattern();
+        assertEquals( "MyClass",
+                      fp1.getFactType() );
+        assertEquals( 0,
+                      fp1.getNumberOfConstraints() );
+
+        final ExpressionFormLine efl = fp0.getExpression();
+        assertNotNull( efl );
+        assertEquals( 2,
+                      efl.getParts().size() );
+        assertTrue( efl.getParts().get( 0 ) instanceof ExpressionVariable );
+        final ExpressionVariable ev = (ExpressionVariable) efl.getParts().get( 0 );
+        assertEquals( "my",
+                      ev.getName() );
+        assertTrue( efl.getParts().get( 1 ) instanceof ExpressionText );
+        final ExpressionText et = (ExpressionText) efl.getParts().get( 1 );
+        assertEquals( "package",
+                      et.getName() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1218308
+    public void testValidSyntaxNonImportedType() throws Exception {
+        String drl = "rule \"x\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  var : NotImported( )\n" +
+                "  OtherType( field != var.field )\n" +
+                "  MyType( ) from var.collectionField\n" +
+                "then\n" +
+                "end";
+
+        addModelField( "org.test.OtherType",
+                       "this",
+                       "org.test.OtherType",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.OtherType",
+                       "field",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+        addModelField( "org.test.MyType",
+                       "this",
+                       "org.test.MyType",
+                       DataType.TYPE_THIS );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 3,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "NotImported",
+                      fp0.getFactType() );
+        assertEquals( "var",
+                      fp0.getBoundName() );
+        assertEquals( 0,
+                      fp0.getNumberOfConstraints() );
+
+        final IPattern p1 = m.lhs[ 1 ];
+        assertTrue( p1 instanceof FactPattern );
+        final FactPattern fp1 = (FactPattern) p1;
+        assertEquals( "OtherType",
+                      fp1.getFactType() );
+        assertEquals( 1,
+                      fp1.getNumberOfConstraints() );
+        assertTrue( fp1.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint fp1sfc0 = (SingleFieldConstraint) fp1.getConstraint( 0 );
+        assertEquals( "OtherType",
+                      fp1sfc0.getFactType() );
+        assertEquals( "field",
+                      fp1sfc0.getFieldName() );
+        assertEquals( "!=",
+                      fp1sfc0.getOperator() );
+        assertEquals( 2,
+                      fp1sfc0.getExpressionValue().getParts().size() );
+        assertTrue( fp1sfc0.getExpressionValue().getParts().get( 0 ) instanceof ExpressionText );
+        final ExpressionText fp1sfc0e0 = (ExpressionText) fp1sfc0.getExpressionValue().getParts().get( 0 );
+        assertEquals( "var",
+                      fp1sfc0e0.getName() );
+        assertTrue( fp1sfc0.getExpressionValue().getParts().get( 1 ) instanceof ExpressionText );
+        final ExpressionText fp1sfc0e1 = (ExpressionText) fp1sfc0.getExpressionValue().getParts().get( 1 );
+        assertEquals( "field",
+                      fp1sfc0e1.getName() );
+
+        final IPattern p2 = m.lhs[ 2 ];
+        assertTrue( p2 instanceof FromCompositeFactPattern );
+        final FromCompositeFactPattern fp2 = (FromCompositeFactPattern) p2;
+        assertEquals( "MyType",
+                      fp2.getFactType() );
+        assertEquals( 2,
+                      fp2.getExpression().getParts().size() );
+        assertTrue( fp2.getExpression().getParts().get( 0 ) instanceof ExpressionVariable );
+        final ExpressionVariable fp2e0 = (ExpressionVariable) fp2.getExpression().getParts().get( 0 );
+        assertEquals( "var",
+                      fp2e0.getName() );
+        assertTrue( fp2.getExpression().getParts().get( 1 ) instanceof ExpressionText );
+        final ExpressionText fp2e1 = (ExpressionText) fp2.getExpression().getParts().get( 1 );
+        assertEquals( "collectionField",
+                      fp2e1.getName() );
+
+        assertEquals( 0,
+                      m.rhs.length );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1218308
+    public void testInvalidSyntax1() throws Exception {
+        String drl = "rule \"test\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  Smurf( flange \n" +
+                "then\n" +
+                "end";
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FreeFormLine );
+        final FreeFormLine ffl = (FreeFormLine) p0;
+        assertEquals( "Smurf( flange",
+                      ffl.getText() );
+
+        assertEquals( 0,
+                      m.rhs.length );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1234640
+    public void testStringFieldsWithDoubleForwardSlashes() throws Exception {
+        String drl = "rule \"test\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  MyType( url == \"http://www.redhat.com\" )\n" +
+                "then\n" +
+                "end";
+
+        addModelField( "org.test.MyType",
+                       "this",
+                       "org.test.MyType",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.MyType",
+                       "url",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "MyType",
+                      fp0.getFactType() );
+        assertEquals( 1,
+                      fp0.getNumberOfConstraints() );
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint fp0sfc0 = (SingleFieldConstraint) fp0.getConstraint( 0 );
+        assertEquals( "MyType",
+                      fp0sfc0.getFactType() );
+        assertEquals( "url",
+                      fp0sfc0.getFieldName() );
+        assertEquals( "==",
+                      fp0sfc0.getOperator() );
+        assertEquals( DataType.TYPE_STRING,
+                      fp0sfc0.getFieldType() );
+        assertEquals( "http://www.redhat.com",
+                      fp0sfc0.getValue() );
+
+        assertEquals( 0,
+                      m.rhs.length );
 
         //Check round-trip
         assertEqualsIgnoreWhitespace( drl,

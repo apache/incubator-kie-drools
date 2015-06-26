@@ -16,6 +16,12 @@
 
 package org.drools.decisiontable;
 
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
 import org.drools.decisiontable.parser.RuleMatrixSheetListener;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
@@ -35,12 +41,6 @@ import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -574,6 +574,65 @@ public class SpreadsheetCompilerUnitTest {
                                       drl );
     }
 
+    @Test
+    public void testForAllConstraintQuoteRemoval() {
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+
+        String drl = converter.compile( "/data/ForAllConstraintQuoteRemoval.xls",
+                                        InputType.XLS );
+
+        assertNotNull( drl );
+
+        final String expected = "package Connexis_Cash_Enrichment;\n" +
+                "//generated from Decision Table\n" +
+                "import com.brms.dto.fact.*;\n" +
+                "dialect \"mvel\";\n" +
+                "// rule values at C21, header at C16\n" +
+                "rule \"enrichment_21\"\n" +
+                "  when\n" +
+                "    p:Payment(fileFormat == \"TOTO\")\n" +
+                "  then\n" +
+                "    System.out.println(true);\n" +
+                "end\n" +
+                "// rule values at C22, header at C16\n" +
+                "rule \"enrichment_22\"\n" +
+                "  when\n" +
+                "    p:Payment(fileFormat == \"TOTO\")\n" +
+                "  then\n" +
+                "    System.out.println(true);\n" +
+                "end\n" +
+                "// rule values at C23, header at C16\n" +
+                "rule \"enrichment_23\"\n" +
+                "  when\n" +
+                "    p:Payment(fileFormat == \"TOTO\" || fileFormat == \"TITI\" || fileFormat == \"TOR\")\n" +
+                "  then\n" +
+                "    System.out.println(true);\n" +
+                "end\n" +
+                "// rule values at C24, header at C16\n" +
+                "rule \"enrichment_24\"\n" +
+                "  when\n" +
+                "    p:Payment(fileFormat == \"TOTO\" || fileFormat == \"TOR\")\n" +
+                "  then\n" +
+                "    System.out.println(true);\n" +
+                "end\n" +
+                "// rule values at C25, header at C16\n" +
+                "rule \"enrichment_25\"\n" +
+                "  when\n" +
+                "    p:Payment(fileFormat == \"TITI\", isConsistencyCheckEnabled == \"true\")\n" +
+                "  then\n" +
+                "    System.out.println(true);\n" +
+                "end\n" +
+                "// rule values at C26, header at C16\n" +
+                "rule \"enrichment_26\"\n" +
+                "  when\n" +
+                "  then\n" +
+                "    System.out.println(false);\n" +
+                "end\n";
+
+        assertEqualsIgnoreWhitespace( expected,
+                                      drl );
+    }
+
     public static class IntHolder {
 
         private int value;
@@ -629,10 +688,10 @@ public class SpreadsheetCompilerUnitTest {
     public void testFunctionCellMerged() {
         // BZ-1147402
         final SpreadsheetCompiler converter = new SpreadsheetCompiler();
-        String drl = converter.compile("/data/FunctionCellMerged.xls",
-                                       InputType.XLS);
+        String drl = converter.compile( "/data/FunctionCellMerged.xls",
+                                        InputType.XLS );
 
-        assertNotNull(drl);
-        assertTrue(drl.contains("function void test(){"));
+        assertNotNull( drl );
+        assertTrue( drl.contains( "function void test(){" ) );
     }
 }

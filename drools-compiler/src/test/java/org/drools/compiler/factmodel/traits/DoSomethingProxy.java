@@ -76,7 +76,7 @@ public class DoSomethingProxy<K,T> extends TraitProxy implements ISomethingWithB
     }
 
     @Override
-    public String getTraitName() {
+    public String _getTraitName() {
         return traitType;
     }
 }

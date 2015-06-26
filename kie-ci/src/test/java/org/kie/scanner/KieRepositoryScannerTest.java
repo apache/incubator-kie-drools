@@ -85,6 +85,49 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         ks.getRepository().removeKieModule(releaseId);
     }
 
+    @Test @Ignore("used only for check performances")
+    public void testKScannerWithDependencies() throws Exception {
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseIdNoDep = ks.newReleaseId( "org.kie", "test-no-dep", "1.0-SNAPSHOT" );
+        ReleaseId releaseIdWithDep = ks.newReleaseId( "org.kie", "test-with-dep", "1.0-SNAPSHOT" );
+
+        long start = System.nanoTime();
+        InternalKieModule kJar1 = createKieJar( ks, releaseIdNoDep, false, "rule1" );
+        KieContainer kieContainer1 = ks.newKieContainer( releaseIdNoDep );
+        System.out.println("done in " + (System.nanoTime() - start));
+
+        ReleaseId dep1 = ks.newReleaseId( "org.slf4j", "slf4j-api", "1.7.2" );
+        ReleaseId dep2 = ks.newReleaseId( "com.google.gwt", "gwt-user", "2.7.0" );
+        ReleaseId dep3 = ks.newReleaseId( "org.hibernate", "hibernate-validator", "4.1.0.Final" );
+
+        start = System.nanoTime();
+        InternalKieModule kJar2 = createKieJarWithDependencies( ks, releaseIdWithDep, false, "rule1", dep1, dep2, dep3);
+        KieContainer kieContainer2 = ks.newKieContainer( releaseIdWithDep );
+        System.out.println("done in " + (System.nanoTime() - start));
+    }
+
+    @Test
+    public void testKScannerStartNotDeployed() throws Exception {
+        // BZ-1200784
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-start-not-deployed-test", "1.0-SNAPSHOT");
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, "rule1", "rule2");
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
+
+        // starting KieScanner
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+
+        // scan the maven repo to get the new kjar version before it is deployed into Maven repo
+        // should not throw NPE because of uninitialized dependencies due to parsing parent pom failure
+        scanner.scanNow();
+        MavenRepository repository = getMavenRepository();
+        repository.deployArtifact(releaseId, kJar1, kPom);
+
+        // create a ksesion and check it works as expected
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        checkKSession(ksession, "rule1", "rule2");
+    }
+
     @Test
     public void testKScannerWithRange() throws Exception {
         KieServices ks = KieServices.Factory.get();

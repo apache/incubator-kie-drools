@@ -248,18 +248,19 @@ public class PatternBuilder
             return rce;
         }
 
-        boolean duplicateBindings = objectType instanceof ClassObjectType &&
+        String patternIdentifier = patternDescr.getIdentifier();
+        boolean duplicateBindings = patternIdentifier != null && objectType instanceof ClassObjectType &&
                                     context.getDeclarationResolver().isDuplicated( context.getRule(),
-                                                                                   patternDescr.getIdentifier(),
+                                                                                   patternIdentifier,
                                                                                    ((ClassObjectType) objectType).getClassName() );
 
         Pattern pattern;
-        if ( !StringUtils.isEmpty( patternDescr.getIdentifier() ) && !duplicateBindings ) {
+        if ( !StringUtils.isEmpty( patternIdentifier ) && !duplicateBindings ) {
 
             pattern = new Pattern( context.getNextPatternId(),
                                    0, // offset is 0 by default
                                    objectType,
-                                   patternDescr.getIdentifier(),
+                                   patternIdentifier,
                                    patternDescr.isInternalFact() );
             if ( objectType instanceof ClassObjectType ) {
                 // make sure PatternExtractor is wired up to correct ClassObjectType and set as a target for rewiring
@@ -934,22 +935,23 @@ public class PatternBuilder
 
     private boolean findExpressionValues(RelationalExprDescr relDescr, String[] values) {
         boolean usesThisRef;
+        //FIXME use regexp for 'this'?
         if ( relDescr.getRight() instanceof AtomicExprDescr ) {
             AtomicExprDescr rdescr = ((AtomicExprDescr) relDescr.getRight());
             values[1] = rdescr.getRewrittenExpression().trim();
-            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.");
+            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.") || values[1].contains( ")this)." );;
         } else {
             BindingDescr rdescr = ((BindingDescr) relDescr.getRight());
             values[1] = rdescr.getExpression().trim();
-            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.");
+            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.") || values[1].contains( ")this)." );;
         }
         if ( relDescr.getLeft() instanceof AtomicExprDescr ) {
             AtomicExprDescr ldescr = (AtomicExprDescr) relDescr.getLeft();
             values[0] = ldescr.getRewrittenExpression();
-            usesThisRef = usesThisRef || "this".equals( values[0] ) || values[0].startsWith("this.");
+            usesThisRef = usesThisRef || "this".equals( values[0] ) || values[0].startsWith("this.") || values[0].contains( ")this)." );
         } else {
             values[0] = ((BindingDescr) relDescr.getLeft()).getExpression();
-            usesThisRef = usesThisRef || "this".equals( values[0] ) || values[0].startsWith("this.");
+            usesThisRef = usesThisRef || "this".equals( values[ 0 ] ) || values[0].startsWith( "this." ) || values[0].contains( ")this)." );
         }
         return usesThisRef;
     }

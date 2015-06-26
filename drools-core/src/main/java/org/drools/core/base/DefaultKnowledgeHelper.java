@@ -16,17 +16,14 @@
 
 package org.drools.core.base;
 
+import org.drools.core.beliefsystem.BeliefSystem;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
-import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.rule.EntryPointId;
 import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
-import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
-import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalAgenda;
@@ -36,32 +33,19 @@ import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
-import org.drools.core.common.ObjectStore;
-import org.drools.core.common.ObjectTypeConfigurationRegistry;
 import org.drools.core.common.TruthMaintenanceSystemHelper;
-import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.factmodel.traits.LogicalTypeInconsistencyException;
 import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.factmodel.traits.TraitFieldTMS;
-import org.drools.core.factmodel.traits.TraitProxy;
-import org.drools.core.factmodel.traits.TraitRegistry;
-import org.drools.core.factmodel.traits.TraitType;
-import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
-import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.bitmask.BitMask;
@@ -73,7 +57,6 @@ import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.beliefs.Mode;
@@ -82,14 +65,8 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
@@ -106,9 +83,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     private Tuple                                     tuple;
     private InternalWorkingMemoryActions              workingMemory;
 
-    private IdentityHashMap<Object, InternalFactHandle>
-                                                      identityMap;
-
     private LinkedList<LogicalDependency<T>>          previousJustified;
 
     private LinkedList<LogicalDependency<SimpleMode>> previousBlocked;
@@ -119,16 +93,11 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     public DefaultKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
-
-        this.identityMap = null;
-
     }
 
     public DefaultKnowledgeHelper(Activation activation, final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
         this.activation = activation;
-        this.identityMap = null;
-
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -136,14 +105,12 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         activation = (Activation) in.readObject();
         tuple = (Tuple) in.readObject();
         workingMemory = (InternalWorkingMemoryActions) in.readObject();
-        identityMap = (IdentityHashMap<Object, InternalFactHandle>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( activation );
         out.writeObject( tuple );
         out.writeObject( workingMemory );
-        out.writeObject( identityMap );
     }
 
     public void setActivation(final Activation agendaItem) {
@@ -160,7 +127,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     public void reset() {
         this.activation = null;
         this.tuple = null;
-        this.identityMap = null;
         this.previousJustified = null;
         this.previousBlocked = null;
     }
@@ -239,11 +205,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                                                                                     false,
                                                                                     this.activation.getRule(),
                                                                                     this.activation );
-        if ( this.identityMap != null ) {
-            this.getIdentityMap().put( object,
-                                       handle );
-        }
-
         return handle;
     }
 
@@ -319,14 +280,64 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 //                                                           this.activation.getRule(),
 //                                                           this.activation );
 
-            if ( this.identityMap != null ) {
-                this.getIdentityMap().put( object,
-                                           handle );
-            }
             return handle;
         }
     }
-    
+
+    public InternalFactHandle bolster( final Object object ) {
+        return bolster( object, null );
+    }
+
+    public InternalFactHandle bolster( final Object object,
+                                     final Object value ) {
+
+        if ( object == null || ! activation.isMatched() ) {
+            return null;
+        }
+
+        InternalFactHandle handle = getFactHandleFromWM( object );
+        NamedEntryPoint ep = (NamedEntryPoint) workingMemory.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() );
+        ObjectTypeConf otc = ep.getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(), object );
+
+        Object mode = value;
+        BeliefSystem beliefSystem;
+        if ( value == null ) {
+            beliefSystem = workingMemory.getTruthMaintenanceSystem().getBeliefSystem();
+        } else {
+            if ( value instanceof Mode ) {
+                Mode m = (Mode) value;
+                beliefSystem = (BeliefSystem) m.getBeliefSystem();
+            } else {
+                beliefSystem = workingMemory.getTruthMaintenanceSystem().getBeliefSystem();
+                mode = value;
+            }
+        }
+
+        BeliefSet beliefSet = null;
+        if ( handle == null ) {
+            handle = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getFactHandleFactoryService().newFactHandle( object,
+                                                                                                                                            otc,
+                                                                                                                                            workingMemory, ep );
+        }
+        if ( handle.getEqualityKey() == null ) {
+            handle.setEqualityKey( new EqualityKey( handle, EqualityKey.STATED ) );
+        } else {
+            beliefSet = handle.getEqualityKey().getBeliefSet();
+        }
+        if ( beliefSet == null ) {
+            beliefSet = beliefSystem.newBeliefSet( handle );
+            handle.getEqualityKey().setBeliefSet( beliefSet );
+        }
+
+        return beliefSystem.insert( beliefSystem.asMode( value ),
+                                    activation.getRule(),
+                                    activation,
+                                    object,
+                                    beliefSet,
+                                    activation.getPropagationContext(),
+                                    otc ).getFactHandle();
+    }
+
     public void cancelRemainingPreviousLogicalDependencies() {
         if ( this.previousJustified != null ) {
             for ( LogicalDependency dep = (LogicalDependency) this.previousJustified.getFirst(); dep != null; dep = (LogicalDependency) dep.getNext() ) {
@@ -357,10 +368,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     public InternalFactHandle getFactHandle(Object object) {
         InternalFactHandle handle = null;
-        if ( identityMap != null ) {
-            handle = identityMap.get( object );
-        }
-        
+
         if ( handle != null ) {
             return handle;
         }
@@ -395,10 +403,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                                                                       onlyTraitBitSetMask(),
                                                                       newObject.getClass(),
                                                                       this.activation );
-        if ( getIdentityMap() != null ) {
-            this.getIdentityMap().put( newObject,
-                                       h );
-        }
     }
 
     public void update(final FactHandle handle) {
@@ -453,9 +457,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             ((InternalWorkingMemoryEntryPoint) ifh.getEntryPoint()).getTruthMaintenanceSystem().delete( ifh );
         }
 
-        if ( this.identityMap != null ) {
-            this.getIdentityMap().remove( o );
-        }
     }
 
     public RuleImpl getRule() {
@@ -489,10 +490,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             Object object = declaration.getValue( wmTmp.getInternalWorkingMemory(),
                                                   this.tuple.get( declaration ).getObject() );
             
-            if ( identityMap != null ) {
-                getIdentityMap().put( object,
-                                      (InternalFactHandle) wmTmp.getFactHandleByIdentity( object ) );
-            }
             return object;
         }
         return null;
@@ -518,30 +515,12 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         return Collections.unmodifiableMap( this.workingMemory.getChannels() );
     }
 
-    /**
-     * @return the identityMap
-     */
-    public IdentityHashMap<Object, InternalFactHandle> getIdentityMap() {
-        return identityMap;
-    }
-
-    /**
-     * @param identityMap the identityMap to set
-     */
-    public void setIdentityMap(IdentityHashMap<Object, InternalFactHandle> identityMap) {
-        this.identityMap = identityMap;
-    }
-
     private InternalFactHandle getFactHandleFromWM(final Object object) {
         InternalFactHandle handle = null;
         // entry point null means it is a generated fact, not a regular inserted fact
         // NOTE: it would probably be a good idea to create a specific attribute for that
             for ( EntryPoint ep : workingMemory.getEntryPoints() ) {
                 handle = (InternalFactHandle) ep.getFactHandle( object );
-                if ( identityMap != null ) {
-                    identityMap.put( object,
-                                     handle );
-                }
                 if( handle != null ) {
                     break;
                 }

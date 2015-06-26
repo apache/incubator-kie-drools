@@ -27,6 +27,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.HierarchyEncoder;
+import org.drools.core.util.HierarchyEncoderImpl;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
@@ -40,10 +41,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
+import java.util.Collections;
 import java.util.Iterator;
-import java.util.Map;
+import java.util.List;
 import java.util.PriorityQueue;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.onlyTraitBitSetMask;
@@ -53,7 +53,6 @@ public class TraitHelper implements Externalizable {
 
     private InternalWorkingMemoryActions              workingMemory;
     private NamedEntryPoint                           entryPoint;
-    private IdentityHashMap<Object, FactHandle>       identityMap;
 
 
     public TraitHelper( InternalWorkingMemoryActions workingMemory, NamedEntryPoint nep ) {
@@ -94,40 +93,34 @@ public class TraitHelper implements Externalizable {
         }
     }
 
-    protected <T> T doInsertTrait( Activation activation, T thing, Object core, boolean logical, BitSet boundary, Mode... modes ) {
+    protected <T> T doInsertTrait( Activation activation, T thing, Object core, boolean logical, Mode... modes ) {
         if ( thing == core ) {
             return thing;
         }
 
-        ((TraitProxy) thing).setTypeFilter( boundary );
         if ( logical ) {
             insertLogical( activation, thing, modes );
         } else {
             insert( thing, activation );
         }
-        ((TraitProxy) thing).setTypeFilter( null );
         return thing;
     }
 
-    private void updateTraits( Object object, BitMask mask, Thing originator, Class<?> modifiedClass, BitSet veto, Collection<Thing> mostSpecificTraits, Activation activation ) {
-        updateManyTraits( object, mask, Arrays.asList( originator ), modifiedClass, veto, mostSpecificTraits, activation );
+    private void updateTraits( Object object, BitMask mask, Thing originator, Class<?> modifiedClass, Collection<Thing> traits, Activation activation ) {
+        updateManyTraits( object, mask, Arrays.asList( originator ), modifiedClass, traits, activation );
     }
 
-    private void updateManyTraits( Object object, BitMask mask, Collection<Thing> originators, Class<?> modifiedClass, BitSet veto, Collection<Thing> mostSpecificTraits, Activation activation ) {
-        veto = veto != null ? (BitSet) veto.clone() : null;
+    private void updateManyTraits( Object object, BitMask mask, Collection<Thing> originators, Class<?> modifiedClass, Collection<Thing> traits, Activation activation ) {
 
-        for ( Thing t : mostSpecificTraits ) {
+        for ( Thing t : traits ) {
             if ( ! originators.contains( t ) ) {
-                TraitProxy proxy = (TraitProxy) t;
-
-                proxy.setTypeFilter( veto );
                 InternalFactHandle h = (InternalFactHandle) lookupFactHandle( t );
                 if ( h != null ) {
                     NamedEntryPoint nep = (NamedEntryPoint) h.getEntryPoint();
                     PropagationContext propagationContext = nep.getPctxFactory().createPropagationContext( nep.getInternalWorkingMemory().getNextPropagationIdCounter(),
                                                                                                            PropagationContext.MODIFICATION,
-                                                                                                           activation.getRule(),
-                                                                                                           activation.getTuple(),
+                                                                                                           activation != null ? activation.getRule() : null,
+                                                                                                           activation != null ? activation.getTuple() : null,
                                                                                                            h,
                                                                                                            nep.getEntryPoint(),
                                                                                                            mask,
@@ -137,16 +130,8 @@ public class TraitHelper implements Externalizable {
                                 t,
                                 t,
                                 nep.getObjectTypeConfigurationRegistry().getObjectTypeConf( nep.getEntryPoint(), t ),
-                                activation.getRule(),
+                                activation != null ? activation.getRule() : null,
                                 propagationContext );
-                }
-                proxy.setTypeFilter( null );
-
-                BitSet tc = proxy.getTypeCode();
-                if ( veto == null ) {
-                    veto = (BitSet) tc.clone();
-                } else {
-                    veto.or( tc );
                 }
             }
         }
@@ -157,7 +142,7 @@ public class TraitHelper implements Externalizable {
         if (  handle.isTraitable() ) {
             // this is a traitable core object, so its traits must be updated as well
             if ( ((TraitableBean) handle.getObject()).hasTraits() ) {
-                updateTraits( handle.getObject(), mask, null, modifiedClass, null, ((TraitableBean) handle.getObject()).getMostSpecificTraits(), activation );
+                updateTraits( handle.getObject(), mask, null, modifiedClass, ((TraitableBean) handle.getObject())._getTraitMap().values(), activation );
             }
         } else if ( handle.isTraiting() ) {
             Thing x = (Thing) handle.getObject();
@@ -171,8 +156,7 @@ public class TraitHelper implements Externalizable {
                         mask,
                         modifiedClass,
                         activation );
-                BitSet veto = ((TraitProxy) x).getTypeCode();
-                updateTraits( core, mask, x, modifiedClass, veto, ((TraitableBean) core).getMostSpecificTraits(), activation );
+                updateTraits( core, mask, x, modifiedClass, ((TraitableBean) core)._getTraitMap().values(), activation );
             }
         }
     }
@@ -182,7 +166,7 @@ public class TraitHelper implements Externalizable {
         if ( mostSpecificTraits != null ) {
             updateCore( inner, core, trait, logical, activation );
             if ( ! mostSpecificTraits.isEmpty() ) {
-                updateTraits( inner, onlyTraitBitSetMask(), (Thing) thing, trait, null, mostSpecificTraits, activation );
+                updateTraits( inner, onlyTraitBitSetMask(), (Thing) thing, trait, mostSpecificTraits, activation );
             }
         } else if ( Thing.class == trait ) {
             updateCore( inner, core, trait, logical,activation );
@@ -199,7 +183,7 @@ public class TraitHelper implements Externalizable {
         Collection<Thing> mostSpecificTraits = inner.getMostSpecificTraits();
         boolean newTraitsAdded = false;
         T firstThing = null;
-        Map<Thing, BitSet> things = new HashMap<Thing, BitSet>( traits.size() );
+        List<Thing> things = new ArrayList<Thing>( traits.size() );
 
         checkStaticTypeCode( inner );
 
@@ -209,13 +193,11 @@ public class TraitHelper implements Externalizable {
             boolean needsUpdate = needsProxy || core != inner;
 
             if ( ! hasTrait ) {
-                BitSet boundary = inner.getCurrentTypeCode() != null ? (BitSet) inner.getCurrentTypeCode().clone() : null;
-
                 T thing = (T) asTrait( core, inner, trait, needsProxy, hasTrait, needsUpdate, builder, logical, activation );
 
                 configureTrait( thing, value );
 
-                things.put( (Thing) thing, boundary );
+                things.add( (Thing) thing );
 
                 if ( ! newTraitsAdded && trait != Thing.class ) {
                     firstThing = thing;
@@ -224,15 +206,15 @@ public class TraitHelper implements Externalizable {
             }
         }
 
-        for ( Thing t : things.keySet() ) {
-            doInsertTrait( activation, t, core, logical, things.get( t ), modes );
+        for ( Thing t : things ) {
+            doInsertTrait( activation, t, core, logical, modes );
         }
 
         if ( newTraitsAdded ) {
             if ( mostSpecificTraits != null ) {
                 updateCore( inner, core, null, logical, activation );
                 if ( ! mostSpecificTraits.isEmpty() ) {
-                    updateManyTraits( inner, onlyTraitBitSetMask(), things.keySet(), core.getClass(), null, mostSpecificTraits, activation );
+                    updateManyTraits( inner, onlyTraitBitSetMask(), things, core.getClass(), mostSpecificTraits, activation );
                 }
             }
         }
@@ -257,10 +239,6 @@ public class TraitHelper implements Externalizable {
     }
 
     protected <T, K> T applyTrait( Activation activation, K core, Class<T> trait, Object value, boolean logical, Mode... modes ) throws LogicalTypeInconsistencyException {
-        if ( identityMap == null ) {
-            // traits and proxies can benefit from a cached lookup
-            identityMap = new IdentityHashMap<Object, FactHandle>(  );
-        }
         TraitFactory builder = TraitFactory.getTraitBuilderForKnowledgeBase( entryPoint.getKnowledgeBase() );
 
         TraitableBean inner = makeTraitable( core, builder, logical, activation );
@@ -279,7 +257,7 @@ public class TraitHelper implements Externalizable {
 
         configureTrait( thing, value );
 
-        thing = doInsertTrait( activation, thing, core, logical, boundary, modes );
+        thing = doInsertTrait( activation, thing, core, logical, modes );
 
         refresh( thing, core, inner, trait, mostSpecificTraits, logical, activation );
 
@@ -320,18 +298,15 @@ public class TraitHelper implements Externalizable {
                                                 logical,
                                                 activation.getRule(),
                                                 activation );
-            if ( this.identityMap != null ) {
-                this.identityMap.put( inner,
-                                      handle );
-            }
         }
 
     }
 
     public <T,K,X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait, Activation activation ) {
         if ( trait.isAssignableFrom( core.getClass() ) ) {
-            Collection removedTraits = core.removeTrait( trait.getName() );
-            if ( ! removedTraits.isEmpty() ) {
+            Collection<Thing<K>> removedTypes = core.removeTrait( trait.getName() );
+            if ( ! removedTypes.isEmpty() ) {
+                reassignNodes( core, removedTypes );
                 update( getFactHandle( core ), onlyTraitBitSetMask(), core.getClass(), activation );
                 //updateTraits( core, Long.MIN_VALUE, null, core.getClass(), null, ((TraitableBean) core).getMostSpecificTraits()  );
             }
@@ -347,7 +322,7 @@ public class TraitHelper implements Externalizable {
 
                 removedTypes = new ArrayList<Thing<K>>( core._getTraitMap().values() );
                 for ( Thing t : removedTypes ) {
-                    if ( ! ((TraitType) t).isVirtual() ) {
+                    if ( ! ((TraitType) t)._isVirtual() ) {
                         delete( getFactHandle( t ), activation );
                     }
                 }
@@ -364,8 +339,9 @@ public class TraitHelper implements Externalizable {
             }
 
             removedTypes = new ArrayList<Thing<K>>( removedTypes );
+            reassignNodes( core, removedTypes );
             for ( Thing t : removedTypes ) {
-                if ( ! ((TraitType) t).isVirtual() ) {
+                if ( ! ((TraitType) t)._isVirtual() ) {
                     InternalFactHandle handle = (InternalFactHandle) getFactHandle( t );
                     if ( handle.getEqualityKey() != null && handle.getEqualityKey().getLogicalFactHandle() == handle ) {
                         entryPoint.getTruthMaintenanceSystem().delete( handle );
@@ -385,18 +361,49 @@ public class TraitHelper implements Externalizable {
         }
     }
 
-
-
-
-
-    protected Collection<Thing> getTraitBoundary( TraitableBean inner, boolean needsProxy, boolean hasTrait, Class trait ) {
-        boolean refresh = ! needsProxy && ! hasTrait && Thing.class != trait;
-        if ( refresh ) {
-            return inner.getMostSpecificTraits();
+    private <K, X extends TraitableBean> void reassignNodes( TraitableBean<K, X> core, Collection<Thing<K>> removedTraits ) {
+        if ( ! core.hasTraits() ) {
+            return;
         }
-        return null;
+        Collection<Thing<K>> mst = ( (TraitTypeMap) core._getTraitMap() ).getMostSpecificTraits();
+        for ( Thing<K> shedded : removedTraits ) {
+            for ( BitSet bs : ( (TraitProxy) shedded ).listAssignedOtnTypeCodes() ) {
+                boolean found = false;
+                for ( Thing<K> tp : mst ) {
+                    TraitProxy candidate = (TraitProxy) tp;
+                    if ( HierarchyEncoderImpl.supersetOrEqualset( candidate._getTypeCode(), bs ) ) {
+                        candidate.assignOtn( bs );
+                        found = true;
+                        break;
+                    }
+                }
+                if ( found ) {
+                    continue;
+                }
+            }
+        }
     }
 
+
+    protected <K> Collection<Thing> getTraitBoundary( TraitableBean<K,?> inner, boolean needsProxy, boolean hasTrait, Class trait ) {
+        boolean refresh = ! needsProxy && ! hasTrait && Thing.class != trait;
+        if ( ! refresh ) {
+            return null;
+        }
+
+        if ( inner._getTraitMap() == null || inner instanceof Thing ) return Collections.EMPTY_LIST;
+        if ( inner._getTraitMap().isEmpty() ) return null;
+
+        Collection<Thing> ts = new ArrayList<Thing>();
+        for ( Thing t : inner._getTraitMap().values() )     {
+            if ( t instanceof TraitProxy ) {
+                if ( ( (TraitProxy) t ).hasOtns() ) {
+                    ts.add( t );
+                }
+            }
+        }
+        return ts;
+    }
 
     private <T, K> T asTrait( K core, TraitableBean inner, Class<T> trait, boolean needsProxy, boolean hasTrait, boolean needsUpdate, TraitFactory builder, boolean logical, Activation activation ) throws LogicalTypeInconsistencyException {
         T thing;
@@ -421,10 +428,6 @@ public class TraitHelper implements Externalizable {
                                                                     logical,
                                                                     activation.getRule(),
                                                                     activation );
-                if ( this.identityMap != null ) {
-                    this.identityMap.put( core,
-                                          h );
-                }
             }
             if ( ! h.isTraitOrTraitable() ) {
                 throw new IllegalStateException( "A traited working memory element is being used with a default fact handle. " +
@@ -466,10 +469,6 @@ public class TraitHelper implements Externalizable {
                                                         logical,
                                                         activation.getRule(),
                                                         activation );
-                    if ( this.identityMap != null ) {
-                        this.identityMap.put( inner,
-                                              handle );
-                    }
                 }
                 if ( ftms.needsInit() ) {
                     ftms.init( workingMemory );
@@ -493,9 +492,9 @@ public class TraitHelper implements Externalizable {
     private <K> InternalFactHandle lookupHandleForWrapper( K core ) {
         for ( EntryPoint ep : workingMemory.getEntryPoints() ) {
             ObjectStore store = ((InternalWorkingMemoryEntryPoint) ep).getObjectStore();
-            Iterator iter = store.iterateFactHandles();
+            Iterator<InternalFactHandle> iter = store.iterateFactHandles();
             while ( iter.hasNext() ) {
-                InternalFactHandle handle = (InternalFactHandle) iter.next();
+                InternalFactHandle handle = iter.next();
                 if ( handle.isTraitable() && handle.getObject() instanceof CoreWrapper && ( (CoreWrapper) handle.getObject() ).getCore() == core ) {
                     return handle;
                 }
@@ -506,9 +505,6 @@ public class TraitHelper implements Externalizable {
 
     public FactHandle lookupFactHandle(Object object) {
         FactHandle handle = null;
-        if ( identityMap != null ) {
-            handle = identityMap.get( object );
-        }
 
         if ( handle != null ) {
             return handle;
@@ -532,19 +528,12 @@ public class TraitHelper implements Externalizable {
         // NOTE: it would probably be a good idea to create a specific attribute for that
             handle = (FactHandle) entryPoint.getFactHandle( object );
         if ( handle != null ) {
-            if ( identityMap != null ) {
-                identityMap.put( object,
-                                 handle );
-            }
         }
         return handle;
     }
 
     public FactHandle getFactHandle(Object object) {
         FactHandle handle = null;
-        if ( identityMap != null ) {
-            handle = identityMap.get( object );
-        }
 
         if ( handle != null ) {
             return handle;
@@ -566,12 +555,10 @@ public class TraitHelper implements Externalizable {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         workingMemory = (InternalWorkingMemoryActions) in.readObject();
-        identityMap = (IdentityHashMap<Object, FactHandle>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( workingMemory );
-        out.writeObject( identityMap );
     }
 
 
@@ -584,10 +571,6 @@ public class TraitHelper implements Externalizable {
                                                                       onlyTraitBitSetMask(),
                                                                       newObject.getClass(),
                                                                       activation );
-        if ( identityMap != null ) {
-            identityMap.put( newObject,
-                             handle );
-        }
     }
 
     public void update( final FactHandle handle,
@@ -610,9 +593,6 @@ public class TraitHelper implements Externalizable {
         ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).delete( handle,
                                                                                                   activation.getRule(),
                                                                                                   activation );
-        if ( this.identityMap != null ) {
-            this.identityMap.remove( o );
-        }
     }
 
     public FactHandle insert(final Object object,
@@ -623,11 +603,6 @@ public class TraitHelper implements Externalizable {
                                                        false,
                                                        activation.getRule(),
                                                        activation );
-        if ( this.identityMap != null ) {
-            this.identityMap.put( object,
-                                  handle );
-        }
-
         return handle;
     }
 
@@ -645,11 +620,6 @@ public class TraitHelper implements Externalizable {
                                                                               activation.getRule(),
                                                                               activation );
 
-        if ( this.identityMap != null ) {
-            this.identityMap.put( object,
-                                  handle );
-        }
-
     }
 
     public void deleteWMAssertedTraitProxies( InternalFactHandle handle, RuleImpl rule, Activation activation ) {
@@ -661,7 +631,7 @@ public class TraitHelper implements Externalizable {
 
             while ( ! removedTypes.isEmpty() ) {
                 TraitProxy proxy = removedTypes.poll();
-                if ( ! proxy.isVirtual() ) {
+                if ( ! proxy._isVirtual() ) {
                     InternalFactHandle proxyHandle = (InternalFactHandle) getFactHandle( proxy );
                     if ( proxyHandle.getEqualityKey() == null || proxyHandle.getEqualityKey().getLogicalFactHandle() != proxyHandle ) {
                         entryPoint.delete( proxyHandle,
@@ -671,5 +641,36 @@ public class TraitHelper implements Externalizable {
                 }
             }
         }
+    }
+
+    public static <K> K extractTrait( InternalFactHandle handle, Class<K> klass ) {
+        TraitableBean tb;
+        if ( handle.isTraitable() ) {
+            tb = (TraitableBean) handle.getObject();
+        } else if ( handle.isTraiting() ) {
+            tb = ((TraitProxy) handle.getObject()).getObject();
+        } else {
+            return null;
+        }
+        K k = (K) tb.getTrait( klass.getCanonicalName() );
+        if ( k != null ) {
+            return k;
+        }
+        for ( Object t : tb.getMostSpecificTraits() ) {
+            if ( klass.isAssignableFrom( t.getClass() ) ) {
+                return (K) t;
+            }
+        }
+        return null;
+    }
+
+    public void replaceCore( InternalFactHandle handle, Object object, Object originalObject, BitMask modificationMask, Class<? extends Object> aClass, Activation activation ) {
+        TraitableBean src = (TraitableBean) originalObject;
+        TraitableBean tgt = (TraitableBean) object;
+        tgt._setTraitMap( src._getTraitMap() );
+        tgt._setDynamicProperties( src._getDynamicProperties() );
+        tgt._setFieldTMS( src._getFieldTMS() );
+
+        updateTraits( handle, modificationMask, object.getClass(), activation );
     }
 }

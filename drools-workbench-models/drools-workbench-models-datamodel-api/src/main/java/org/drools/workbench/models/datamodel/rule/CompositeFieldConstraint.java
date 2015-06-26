@@ -151,7 +151,9 @@ public class CompositeFieldConstraint
     @Override
     public int hashCode() {
         int result = compositeJunctionType != null ? compositeJunctionType.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + (constraints != null ? Arrays.hashCode(constraints) : 0);
+        result = ~~result;
         return result;
     }
 }

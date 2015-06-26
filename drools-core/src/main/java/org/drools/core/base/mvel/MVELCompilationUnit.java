@@ -406,7 +406,6 @@ public class MVELCompilationUnit
         
         if ( knowledgeHelper instanceof KnowledgeHelper ) {
             KnowledgeHelper kh = ( KnowledgeHelper ) knowledgeHelper;
-            kh.setIdentityMap( identityMap );
             df.setKnowledgeHelper( kh );
         }        
     }

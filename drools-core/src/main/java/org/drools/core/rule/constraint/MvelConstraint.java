@@ -515,6 +515,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         clone.setType(getType());
         clone.packageNames = packageNames;
         clone.expression = expression;
+        clone.fieldValue = fieldValue;
         clone.constraintType = constraintType;
         clone.declarations = clonedDeclarations;
         clone.indexingDeclaration = indexingDeclaration;

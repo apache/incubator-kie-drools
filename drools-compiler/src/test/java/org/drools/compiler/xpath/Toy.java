@@ -1,8 +1,12 @@
 package org.drools.compiler.xpath;
 
-public class Toy {
+import org.drools.core.phreak.ReactiveObject;
+
+public class Toy extends ReactiveObject {
 
     private final String name;
+
+    private String owner;
 
     public Toy(String name) {
         this.name = name;
@@ -10,5 +14,13 @@ public class Toy {
 
     public String getName() {
         return name;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 }

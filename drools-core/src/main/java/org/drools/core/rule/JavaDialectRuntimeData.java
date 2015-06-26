@@ -21,6 +21,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Constraint;
 import org.drools.core.spi.Wireable;
+import org.drools.core.util.ClassUtils;
 import org.drools.core.util.KeyStoreHelper;
 import org.drools.core.util.StringUtils;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
@@ -74,7 +75,7 @@ public class JavaDialectRuntimeData
 
     private Map<String, byte[]>            store;
 
-    private transient PackageClassLoader   classLoader;
+    private transient ClassLoader          classLoader;
 
     private transient ClassLoader          rootClassLoader;
 
@@ -238,8 +239,7 @@ public class JavaDialectRuntimeData
     public void onAdd( DialectRuntimeRegistry registry,
                        ClassLoader rootClassLoader ) {
         this.rootClassLoader = rootClassLoader;
-        this.classLoader = new PackageClassLoader( this,
-                                                   this.rootClassLoader );
+        this.classLoader = makeClassLoader();
     }
 
     public void onRemove() {
@@ -280,18 +280,18 @@ public class JavaDialectRuntimeData
         }
     }
 
-    private static void wireAll(PackageClassLoader classLoader, Map<String, Object> invokerLookups, List<String> wireList) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private static void wireAll(ClassLoader classLoader, Map<String, Object> invokerLookups, List<String> wireList) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         for (String resourceName : wireList) {
             wire( classLoader, invokerLookups, convertResourceToClassName( resourceName ) );
         }
     }
 
     private static class WiringExecutor implements Callable<Boolean> {
-        private final PackageClassLoader classLoader;
+        private final ClassLoader classLoader;
         private final Map<String, Object> invokerLookups;
         private final List<String> wireList;
 
-        private WiringExecutor(PackageClassLoader classLoader, Map<String, Object> invokerLookups, List<String> wireList) {
+        private WiringExecutor(ClassLoader classLoader, Map<String, Object> invokerLookups, List<String> wireList) {
             this.classLoader = classLoader;
             this.invokerLookups = invokerLookups;
             this.wireList = wireList;
@@ -476,15 +476,15 @@ public class JavaDialectRuntimeData
         wire(className, getInvokers().get(className));
     }
 
-    private static void wire( PackageClassLoader classLoader, Map<String, Object> invokerLookups, String className ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        wire( classLoader, className, invokerLookups.get( className ) );
+    private static void wire( ClassLoader classLoader, Map<String, Object> invokerLookups, String className ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+        wire( classLoader, className, invokerLookups.get(className) );
     }
 
     public void wire( final String className, final Object invoker ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         wire( classLoader, className, invoker );
     }
 
-    private static void wire( PackageClassLoader classLoader, String className, Object invoker ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private static void wire( ClassLoader classLoader, String className, Object invoker ) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
         final Class clazz = classLoader.loadClass( className );
 
         if (clazz != null) {
@@ -523,8 +523,7 @@ public class JavaDialectRuntimeData
      */
     public void reload() {
         // drops the classLoader and adds a new one
-        this.classLoader = new PackageClassLoader( this,
-                                                   this.rootClassLoader );
+        this.classLoader = makeClassLoader();
 
         // Wire up invokers
         try {
@@ -613,6 +612,13 @@ public class JavaDialectRuntimeData
         getClassDefinitions().remove( className );
     }
 
+    private ClassLoader makeClassLoader() {
+        return ClassUtils.isAndroid() ?
+                (ClassLoader) ClassUtils.instantiateObject(
+                        "org.drools.android.DexPackageClassLoader", null, this, this.rootClassLoader)
+                : new PackageClassLoader( this, this.rootClassLoader );
+    }
+
     /**
      * This is an Internal Drools Class
      */
@@ -621,7 +627,7 @@ public class JavaDialectRuntimeData
         protected JavaDialectRuntimeData store;
 
         private Set<String> existingPackages = new ConcurrentSkipListSet<String>();
-        
+
         public PackageClassLoader( JavaDialectRuntimeData store,
                                    ClassLoader rootClassLoader ) {
             super( rootClassLoader );

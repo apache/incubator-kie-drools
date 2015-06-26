@@ -106,6 +106,8 @@ public class SimpleLogicalDependency<T extends ModedAssertion<T>> extends Abstra
     public String toString() {
         return "SimpleLogicalDependency [justifier=" + justifier.getRule().getName() + ",\n justified=" + justified + ",\n object=" + object + ", mode=" + mode  + "]";
     }
-    
-    
+
+    public void setObject( Object object ) {
+        this.object = object;
+    }
 }

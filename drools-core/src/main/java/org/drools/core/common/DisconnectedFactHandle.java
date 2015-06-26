@@ -129,6 +129,11 @@ public class DisconnectedFactHandle
         this.negated = negated;
     }
 
+    @Override
+    public <K> K as( Class<K> klass ) throws ClassCastException {
+        throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
     public int getId() {
         return this.id;
     }
@@ -147,6 +152,10 @@ public class DisconnectedFactHandle
 
     public LeftTuple getLastLeftTuple() {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
+    }
+
+    public String getObjectClassName() {
+        return this.object != null ? object.getClass().getName() : null;
     }
 
     public Object getObject() {
@@ -238,7 +247,9 @@ public class DisconnectedFactHandle
                ":" +
                this.entryPointId +
                ":" +
-               this.traitType.name();
+               this.traitType.name() +
+               ":" +
+               getObjectClassName();
     }
 
     @XmlAttribute(name = "external-form")
@@ -324,7 +335,7 @@ public class DisconnectedFactHandle
                                               ifh.getObjectHashCode(),
                                               ifh.getRecency(),
                                               ifh.getEntryPoint() != null ? ifh.getEntryPoint().getEntryPointId() : null,
-                                                  null,
+                                              ifh.getObject(),
                                               ifh.isTraitOrTraitable() );
         }
     }

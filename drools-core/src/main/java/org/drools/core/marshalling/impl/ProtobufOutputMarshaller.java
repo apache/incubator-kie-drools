@@ -50,6 +50,7 @@ import org.drools.core.marshalling.impl.ProtobufMessages.ProcessData.Builder;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers;
 import org.drools.core.marshalling.impl.ProtobufMessages.Timers.Timer;
 import org.drools.core.marshalling.impl.ProtobufMessages.Tuple;
+import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
@@ -84,7 +85,6 @@ import org.drools.core.util.ObjectHashMap;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.internal.runtime.beliefs.Mode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -242,14 +242,17 @@ public class ProtobufOutputMarshaller {
                     }
     	});
         for( ObjectTypeConf otc : otcs ) {
-    		final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) context.wm.getNodeMemory( otc.getConcreteObjectTypeNode() );
-    		if( memory != null && ! memory.memory.isEmpty() ) {
-        		ObjectTypeConfiguration _otc = ObjectTypeConfiguration.newBuilder()
-                        .setType( otc.getTypeName() )
-                        .setTmsEnabled( otc.isTMSEnabled() )
-                        .build();
-                _epb.addOtc(_otc );
-    		}
+            ObjectTypeNode objectTypeNode = otc.getConcreteObjectTypeNode();
+            if (objectTypeNode != null) {
+                final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) context.wm.getNodeMemory(objectTypeNode);
+                if (memory != null) {
+                    ObjectTypeConfiguration _otc = ObjectTypeConfiguration.newBuilder()
+                                                                          .setType(otc.getTypeName())
+                                                                          .setTmsEnabled(otc.isTMSEnabled())
+                                                                          .build();
+                    _epb.addOtc(_otc);
+                }
+            }
     	}
 	}
 
@@ -272,7 +275,7 @@ public class ProtobufOutputMarshaller {
             for ( Activation activation : ((InternalAgenda)wm.getAgenda()).getActivations() ) {
                 if ( activation.isRuleAgendaItem() /*&& evaluated.contains( activation.getRule().getPackageName()+"."+activation.getRule().getName() )*/ ) {
                     // evaluate it
-                    ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( wm, null );
+                    ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( wm );
                     ((RuleAgendaItem)activation).getRuleExecutor().removeRuleAgendaItemWhenEmpty( wm );
                 }
             }
@@ -286,6 +289,7 @@ public class ProtobufOutputMarshaller {
                     }
                 }
             }
+            wm.flushNonMarshallablePropagations();
         }
     }
 
@@ -337,6 +341,7 @@ public class ProtobufOutputMarshaller {
                 dormant.add( item );
             }
         }
+
         Collections.sort( dormant, ActivationsSorter.INSTANCE );
         for ( org.drools.core.spi.Activation activation : dormant ) {
             _ab.addMatch( writeActivation( context, (AgendaItem) activation ) );
@@ -572,13 +577,15 @@ public class ProtobufOutputMarshaller {
     public static void writeActionQueue(MarshallerWriteContext context,
                                         ProtobufMessages.RuleData.Builder _session) throws IOException {
 
-        StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl) context.wm;
-        if ( !wm.getActionQueue().isEmpty() ) {
+        if ( context.wm.hasPendingPropagations() ) {
             ProtobufMessages.ActionQueue.Builder _queue = ProtobufMessages.ActionQueue.newBuilder();
 
-            WorkingMemoryAction[] queue = wm.getActionQueue().toArray( new WorkingMemoryAction[wm.getActionQueue().size()] );
-            for ( int i = queue.length - 1; i >= 0; i-- ) {
-                _queue.addAction( queue[i].serialize( context ) );
+            Iterator<? extends PropagationEntry> i = context.wm.getActionsIterator();
+            while ( i.hasNext() ) {
+                PropagationEntry entry = i.next();
+                if (entry instanceof WorkingMemoryAction) {
+                    _queue.addAction(((WorkingMemoryAction) entry).serialize(context));
+                }
             }
             _session.setActionQueue( _queue.build() );
         }
@@ -759,8 +766,8 @@ public class ProtobufOutputMarshaller {
         int size = objectStore.size();
         InternalFactHandle[] handles = new InternalFactHandle[size];
         int i = 0;
-        for ( Iterator< ? > it = objectStore.iterateFactHandles(); it.hasNext(); ) {
-            handles[i++] = (InternalFactHandle) it.next();
+        for ( Iterator<InternalFactHandle> it = objectStore.iterateFactHandles(); it.hasNext(); ) {
+            handles[i++] = it.next();
         }
 
         Arrays.sort( handles,

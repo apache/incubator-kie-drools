@@ -16,13 +16,13 @@
 
 package org.drools.core.conflict;
 
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.ConflictResolver;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import org.drools.core.spi.Activation;
-import org.drools.core.spi.ConflictResolver;
 
 public class DepthConflictResolver
         implements
@@ -38,15 +38,6 @@ public class DepthConflictResolver
 
     public static ConflictResolver getInstance() {
         return DepthConflictResolver.INSTANCE;
-    }
-
-    /**
-     * @see ConflictResolver
-     */
-    public final int compare(final Object existing,
-                             final Object adding) {
-        return compare( (Activation) existing,
-                        (Activation) adding );
     }
 
     public final int compare(final Activation existing,

@@ -76,7 +76,7 @@ public class MannersBenchmark {
                 String arg = args[0];
                 filename = arg;
             } else {
-                filename = "manners128.dat";
+                filename = "manners5.dat";
             }
     
             InputStream is = MannersBenchmark.class.getResourceAsStream( "data/" + filename );

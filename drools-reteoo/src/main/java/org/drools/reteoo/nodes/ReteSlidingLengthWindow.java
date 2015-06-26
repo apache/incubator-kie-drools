@@ -14,8 +14,31 @@
  * limitations under the License.
  */
 
-package org.drools.core.util;
+package org.drools.reteoo.nodes;
 
-public class ThreadSafeJavaIteratorAdapter {
+import org.drools.core.rule.Behavior;
+import org.drools.core.rule.SlidingLengthWindow;
 
+import java.io.Externalizable;
+
+/**
+ * A length window behavior implementation
+ */
+public class ReteSlidingLengthWindow extends SlidingLengthWindow
+    implements
+    Externalizable,
+    Behavior {
+
+    private int size;
+
+    public ReteSlidingLengthWindow() {
+        this( 0 );
+    }
+
+    /**
+     * @param size
+     */
+    public ReteSlidingLengthWindow(final int size) {
+        super(size);
+    }
 }

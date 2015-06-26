@@ -7,4 +7,5 @@ public @interface Abductive {
 
     String mode() default "";
 
+    String[] args() default {};
 }

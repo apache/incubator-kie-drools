@@ -1,6 +1,6 @@
 package org.drools.compiler
 
-rule "notNotRule" @Eager(true)
+rule "notNotRule" @Propagation(EAGER)
     when        
         not ( not ( Cheese() ) )
     then     

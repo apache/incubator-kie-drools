@@ -19,6 +19,7 @@ package org.drools.core.common;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
@@ -149,7 +150,7 @@ public interface InternalAgenda
 
     void fireConsequenceEvent(Activation activation, String consequenceName) throws ConsequenceException;
 
-    boolean fireTimedActivation(final Activation activation, boolean saveForLater ) throws ConsequenceException;
+    boolean fireTimedActivation(final Activation activation) throws ConsequenceException;
 
     void removeScheduleItem(final ScheduledAgendaItem item);
 
@@ -237,8 +238,6 @@ public interface InternalAgenda
      */
     void halt();
 
-    void notifyHalt();
-
     /**
      * Keeps firing activations until a halt is called. If in a given moment, there is
      * no activation to fire, it will wait for an activation to be added to an active
@@ -285,7 +284,8 @@ public interface InternalAgenda
 
     RuleAgendaItem peekNextRule();
 
-    boolean continueFiring(int fireLimit);
+    boolean isFiring();
+    void executeTask( ExecutableEntry executable );
 
     void insertAndStageActivation(AgendaItem activation);
 
@@ -305,8 +305,6 @@ public interface InternalAgenda
          * @see org.kie.common.AgendaI#setFocus(org.kie.spi.AgendaGroup)
          */
     boolean setFocus(AgendaGroup agendaGroup);
-
-    boolean isFireUntilHalt();
 
     void stageLeftTuple(RuleAgendaItem ruleAgendaItem, AgendaItem justified);
 
@@ -331,6 +329,4 @@ public interface InternalAgenda
     boolean createPostponedActivation(LeftTuple postponedTuple, PropagationContext propagationContext, InternalWorkingMemory workingMemory, TerminalNode terminalNode);
 
     boolean isRuleActiveInRuleFlowGroup(String ruleflowGroupName, String ruleName, long processInstanceId);
-
-    GarbageCollector getGarbageCollector();
 }

@@ -17,8 +17,8 @@ import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.rule.TypeDeclaration;
 import org.kie.api.io.Resource;
+import org.kie.internal.builder.ResourceChange;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,6 +51,10 @@ public class TypeDeclarationBuilder {
 
     public TypeDeclaration getAndRegisterTypeDeclaration( Class<?> cls, String packageName ) {
         return classDeclarationExtractor.getAndRegisterTypeDeclaration( cls, packageName );
+    }
+
+    public TypeDeclaration getExistingTypeDeclaration( String className ) {
+        return classDeclarationExtractor.getCachedTypeDeclaration( className );
     }
 
     public TypeDeclaration getTypeDeclaration( Class<?> cls ) {
@@ -196,9 +200,7 @@ public class TypeDeclarationBuilder {
         }
 
         TypeDeclaration type = typeDeclarationFactory.processTypeDeclaration( pkgRegistry,
-                                                                              typeDescr,
-                                                                              unresolvedTypes,
-                                                                              unprocesseableDescrs );
+                                                                              typeDescr );
         boolean success = ! kbuilder.hasErrors();
 
         try {
@@ -266,7 +268,7 @@ public class TypeDeclarationBuilder {
         Map<String, PackageDescr> foreignPackages = null;
 
         for ( AbstractClassTypeDeclarationDescr typeDescr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
-            if ( kbuilder.filterAccepts(typeDescr.getNamespace(), typeDescr.getTypeName()) ) {
+            if ( kbuilder.filterAccepts( ResourceChange.Type.DECLARATION, typeDescr.getNamespace(), typeDescr.getTypeName()) ) {
 
                 if ( ! typeDescr.getNamespace().equals( packageDescr.getNamespace() ) ) {
                     // If the type declaration is for a different namespace, process that separately.
@@ -330,6 +332,10 @@ public class TypeDeclarationBuilder {
                     String availableName = typeDescr.getType().getFullName();
                     Class<?> resolvedType = reg.getTypeResolver().resolveType(availableName);
                     if (!Thing.class.isAssignableFrom(resolvedType)) {
+                        if ( ! resolvedType.isInterface() ) {
+                            kbuilder.addBuilderResult( new TypeDeclarationError( typeDescr, "Unable to redeclare concrete class " + resolvedType.getName() + " as a trait." ) );
+                            return;
+                        }
                         updateTraitDefinition( type,
                                                resolvedType,
                                                false );
@@ -340,6 +346,7 @@ public class TypeDeclarationBuilder {
                         tempDescr.setFields(typeDescr.getFields());
                         tempDescr.setType(target,
                                           typeDescr.getNamespace());
+                        tempDescr.setTrait( true );
                         tempDescr.addSuperType(typeDescr.getType());
                         TypeDeclaration tempDeclr = new TypeDeclaration(target);
                         tempDeclr.setKind(TypeDeclaration.Kind.TRAIT);
@@ -359,8 +366,6 @@ public class TypeDeclarationBuilder {
                         tempDef.setDefinedClass(resolvedType);
                         tempDef.setAbstrakt(true);
                         tempDeclr.setTypeClassDef(tempDef);
-
-                        type.setKind(TypeDeclaration.Kind.CLASS);
 
                         declaredClassBuilder.generateBeanFromDefinition( tempDescr,
                                                                          tempDeclr,

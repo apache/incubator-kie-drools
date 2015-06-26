@@ -1,7 +1,6 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.StreamTupleEntryQueue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,19 +16,10 @@ public class RiaPathMemory extends PathMemory {
         this.riaNode = riaNode;
     }
 
-    public void initQueue() {
-        throw new UnsupportedOperationException("Queues can only be created onthe outer Rule PathMemory");
-    }
-
-    public void setStreamQueue(StreamTupleEntryQueue queue) {
-        this.queue = queue;
-    }
-
     public RightInputAdapterNode getRightInputAdapterNode() {
         return this.riaNode;
     }
-    
-    
+
     public void doLinkRule(InternalWorkingMemory wm) {
         riaNode.getSinkPropagator().doLinkRiaNode( wm );
     }

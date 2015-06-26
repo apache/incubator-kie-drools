@@ -53,8 +53,6 @@ public class SequentialKnowledgeHelper
     private Activation                         activation;
     private Tuple                              tuple;
     private final InternalWorkingMemoryActions workingMemory;
-    private IdentityHashMap<Object,InternalFactHandle>
-                                               identityMap;
 
     public SequentialKnowledgeHelper(final WorkingMemory workingMemory) {
         this.workingMemory = (InternalWorkingMemoryActions) workingMemory;
@@ -65,7 +63,6 @@ public class SequentialKnowledgeHelper
         this.subrule = agendaItem.getSubRule();
         this.activation = agendaItem;
         this.tuple = agendaItem.getTuple();
-        this.identityMap = new IdentityHashMap<Object,InternalFactHandle>();
     }
     
     public void reset() {
@@ -158,14 +155,6 @@ public class SequentialKnowledgeHelper
         return Collections.unmodifiableMap( this.workingMemory.getChannels() );
     }
 
-    public IdentityHashMap<Object, InternalFactHandle> getIdentityMap() {
-        return this.identityMap;
-    }
-
-    public void setIdentityMap(IdentityHashMap<Object, InternalFactHandle> identityMap) {
-        this.identityMap = identityMap;
-    }
-
     public <T> T getContext(Class<T> contextClass) {
         return null;
     }
@@ -217,6 +206,16 @@ public class SequentialKnowledgeHelper
 
     public <T, K, X extends TraitableBean> Thing<K> shed( TraitableBean<K,X> core, Class<T> trait) {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public InternalFactHandle bolster( Object object, Object value ) {
+        return null;
+    }
+
+    @Override
+    public InternalFactHandle bolster( Object object ) {
+        return null;
     }
 
     public void cancelRemainingPreviousLogicalDependencies() {

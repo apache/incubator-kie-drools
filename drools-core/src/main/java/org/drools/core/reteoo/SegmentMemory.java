@@ -6,10 +6,7 @@ import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
-import org.drools.core.common.StreamTupleEntryQueue;
-import org.drools.core.common.SynchronizedLeftTupleSets;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.util.AtomicBitwiseLong;
@@ -43,30 +40,16 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private          boolean            active;
     private          SegmentMemory      previous;
     private          SegmentMemory      next;
-    private StreamTupleEntryQueue queue;
 
     private transient List<PathMemory>  dataDrivenPMems;
 
     public SegmentMemory(NetworkNode rootNode) {
-        this(rootNode, null);
-    }
-
-    public SegmentMemory(NetworkNode rootNode, StreamTupleEntryQueue queue) {
         this.rootNode = rootNode;
         this.linkedNodeMask = new AtomicBitwiseLong();
         this.dirtyNodeMask = new AtomicBitwiseLong();
         this.pathMemories = new ArrayList<PathMemory>(1);
         this.nodeMemories = new LinkedList<Memory>();
         this.stagedLeftTuples = new LeftTupleSetsImpl();
-        this.queue = queue;
-    }
-
-    public StreamTupleEntryQueue getStreamQueue() {
-        return queue;
-    }
-
-    public void setStreamQueue(StreamTupleEntryQueue queue) {
-        this.queue = queue;
     }
 
     public NetworkNode getRootNode() {
@@ -357,9 +340,6 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     public void reset(Prototype prototype) {
         this.dirtyNodeMask.set(0);
         this.linkedNodeMask.set( prototype != null ? prototype.linkedNodeMask : 0 );
-        if (queue != null) {
-            queue.takeAllForFlushing();
-        }
         stagedLeftTuples.resetAll();
     }
 
@@ -371,8 +351,6 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         private long                        segmentPosMaskBit;
         private int                         pos;
         private List<MemoryPrototype>       memories = new ArrayList<MemoryPrototype>();
-        private boolean                     hasQueue;
-        private boolean                     hasSyncStagedLeftTuple;
         private List<NetworkNode>           nodesInSegment;
 
         private Prototype(SegmentMemory smem) {
@@ -385,8 +363,6 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             for (Memory mem = smem.nodeMemories.getFirst(); mem != null; mem = mem.getNext()) {
                 memories.add(MemoryPrototype.get(mem));
             }
-            hasQueue = smem.queue != null;
-            hasSyncStagedLeftTuple = smem.getStagedLeftTuples() instanceof SynchronizedLeftTupleSets;
         }
 
         public SegmentMemory newSegmentMemory(InternalWorkingMemory wm) {
@@ -407,15 +383,6 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                 }
             }
 
-            if ( hasQueue && smem.getStreamQueue() == null ) {
-                // need to make sure there is one Queue, for the rule, when a stream mode node is found.
-                StreamTupleEntryQueue queue = SegmentUtilities.initAndGetTupleQueue(smem.getTipNode(), wm);
-                smem.setStreamQueue( queue );
-            }
-
-            if (hasSyncStagedLeftTuple) {
-                smem.setStagedTuples( new SynchronizedLeftTupleSets() );
-            }
             return smem;
         }
 
@@ -443,6 +410,9 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             }
             if (memory instanceof AccumulateNode.AccumulateMemory) {
                 return new AccumulateMemoryPrototype((AccumulateNode.AccumulateMemory)memory);
+            }
+            if (memory instanceof ReactiveFromNode.ReactiveFromMemory) {
+                return new ReactiveFromMemoryPrototype((ReactiveFromNode.ReactiveFromMemory)memory);
             }
             return null;
         }
@@ -484,6 +454,20 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         @Override
         public void populateMemory(InternalWorkingMemory wm, Memory liaMemory) {
             ((LeftInputAdapterNode.LiaNodeMemory)liaMemory).setNodePosMaskBit(nodePosMaskBit);
+        }
+    }
+
+    public static class ReactiveFromMemoryPrototype extends MemoryPrototype {
+
+        private final long nodePosMaskBit;
+
+        private ReactiveFromMemoryPrototype(ReactiveFromNode.ReactiveFromMemory memory) {
+            this.nodePosMaskBit = memory.getBetaMemory().getNodePosMaskBit();
+        }
+
+        @Override
+        public void populateMemory(InternalWorkingMemory wm, Memory memory) {
+            ((ReactiveFromNode.ReactiveFromMemory)memory).getBetaMemory().setNodePosMaskBit(nodePosMaskBit);
         }
     }
 

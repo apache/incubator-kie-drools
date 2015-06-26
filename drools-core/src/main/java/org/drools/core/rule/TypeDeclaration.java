@@ -20,7 +20,6 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateObjectType;
-import org.drools.core.spi.AcceptsReadAccessor;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.util.ClassUtils;
@@ -32,7 +31,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,15 +53,15 @@ public class TypeDeclaration
 
     public int setMask                                  = 0;
 
-    public static enum Kind {
-        CLASS, TRAIT, ENUM;
+    public enum Kind {
+        CLASS, TRAIT, ENUM
     }
 
-    public static enum Format {
-        POJO, TEMPLATE;
+    public enum Format {
+        POJO, TEMPLATE
     }
 
-    public static enum Nature {
+    public enum Nature {
         /**
          * A DECLARATION is a Type Declaration that does not contain any
          * field definition and that is just used to add meta-data to an
@@ -134,7 +132,7 @@ public class TypeDeclaration
         this(typeClass.getSimpleName());
         setTypeClass(typeClass);
         javaBased = true;
-        setTypeClassDef(new ClassDefinition(typeClass));
+        setTypeClassDef( new ClassDefinition( typeClass ) );
     }
 
     public TypeDeclaration( String typeName ) {
@@ -334,18 +332,11 @@ public class TypeDeclaration
 
     /**
      * Returns true if the given parameter matches this type declaration
-     *
-     * @param clazz
-     * @return
      */
     public boolean matches(Object clazz) {
-        boolean matches = false;
-        if ( clazz instanceof FactTemplate ) {
-            matches = this.typeTemplate.equals( clazz );
-        } else {
-            matches = this.typeClass.isAssignableFrom( (Class< ? >) clazz );
-        }
-        return matches;
+        return clazz instanceof FactTemplate ?
+               this.typeTemplate.equals( clazz ) :
+               this.typeClass.isAssignableFrom( (Class< ? >) clazz );
     }
 
     /**
@@ -402,28 +393,6 @@ public class TypeDeclaration
 
     public void setTimestampExtractor(InternalReadAccessor timestampExtractor) {
         this.timestampExtractor = timestampExtractor;
-    }
-
-    public class DurationAccessorSetter
-        implements
-        AcceptsReadAccessor,
-        Serializable {
-        private static final long serialVersionUID = 510l;
-
-        public void setReadAccessor(InternalReadAccessor readAccessor) {
-            setDurationExtractor( readAccessor );
-        }
-    }
-
-    public class TimestampAccessorSetter
-        implements
-        AcceptsReadAccessor,
-        Serializable {
-        private static final long serialVersionUID = 510l;
-
-        public void setReadAccessor(InternalReadAccessor readAccessor) {
-            setTimestampExtractor( readAccessor );
-        }
     }
 
     public Resource getResource() {

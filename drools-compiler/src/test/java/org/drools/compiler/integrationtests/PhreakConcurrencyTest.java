@@ -38,7 +38,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
-import static org.drools.core.reteoo.ReteDumper.dumpRete;
 
 @Ignore
 public class PhreakConcurrencyTest extends CommonTestMethodBase {

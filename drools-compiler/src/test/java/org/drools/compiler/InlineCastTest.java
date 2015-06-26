@@ -1,6 +1,5 @@
 package org.drools.compiler;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -368,7 +367,29 @@ public class InlineCastTest extends CommonTestMethodBase {
             mark3.setAddress(new LongAddress("Czech Republic"));
             ksession.insert(mark3);
 
-            assertEquals("wrong number of rules fired", 2, ksession.fireAllRules());
+            assertEquals( "wrong number of rules fired", 2, ksession.fireAllRules() );
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test
+    public void testInlineCastWithThis() {
+        String drl = "package org.drools.compiler.integrationtests "
+                     + "import org.drools.compiler.*; "
+                     + "rule R1 "
+                     + " when "
+                     + " Object( this#String matches \"[Uu]nited.*\" ) "
+                     + " then "
+                     + "end ";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        try {
+            ksession.insert( "United States" );
+            ksession.insert( "United Kingdom" );
+            ksession.insert( "Italy" );
+            assertEquals( "wrong number of rules fired", 2, ksession.fireAllRules() );
         } finally {
             ksession.dispose();
         }

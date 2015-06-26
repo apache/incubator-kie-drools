@@ -169,8 +169,11 @@ public class ExpressionFormLine
     @Override
     public int hashCode() {
         int result = binding != null ? binding.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + ( parts != null ? parts.hashCode() : 0 );
+        result = ~~result;
         result = 31 * result + index;
+        result = ~~result;
         return result;
     }
 }

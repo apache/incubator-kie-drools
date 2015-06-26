@@ -25,6 +25,18 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
+
+    <!-- Needed by the example as it uses these kjars -->
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>named-kiesession</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>kiebase-inclusion</artifactId>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
 
 </project>

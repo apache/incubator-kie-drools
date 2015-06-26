@@ -21,7 +21,6 @@ import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;

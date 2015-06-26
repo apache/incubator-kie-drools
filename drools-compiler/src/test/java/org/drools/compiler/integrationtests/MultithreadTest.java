@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -38,6 +39,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +47,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.Executors;
@@ -58,7 +61,16 @@ import java.util.concurrent.TimeUnit;
 public class MultithreadTest extends CommonTestMethodBase {
 
     @Test(timeout = 10000)
-    public void testConcurrentInsertions() {
+    public void testConcurrentInsertionsFewObjectsManyThreads() {
+        testConcurrentInsertions(1, 1000);
+    }
+
+    @Test(timeout = 10000)
+    public void testConcurrentInsertionsManyObjectsFewThreads() {
+        testConcurrentInsertions(1000, 4);
+    }
+
+    private void testConcurrentInsertions(final int objectCount, final int threadCount) {
         String str = "import org.drools.compiler.integrationtests.MultithreadTest.Bean\n" +
                      "\n" +
                      "rule \"R\"\n" +
@@ -67,8 +79,7 @@ public class MultithreadTest extends CommonTestMethodBase {
                      "then\n" +
                      "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        final KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
 
         Executor executor = Executors.newCachedThreadPool(new ThreadFactory() {
             public Thread newThread(Runnable r) {
@@ -78,18 +89,15 @@ public class MultithreadTest extends CommonTestMethodBase {
             }
         });
 
-        final int OBJECT_NR = 1000;
-        final int THREAD_NR = 4;
-
         CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-        for (int i = 0; i < THREAD_NR; i++) {
+        for (int i = 0; i < threadCount; i++) {
             ecs.submit(new Callable<Boolean>() {
                 public Boolean call() throws Exception {
                     try {
-                        FactHandle[] facts = new FactHandle[OBJECT_NR];
-                        for (int i = 0; i < OBJECT_NR; i++) facts[i] = ksession.insert(new Bean(i));
+                        FactHandle[] facts = new FactHandle[objectCount];
+                        for (int i = 0; i < objectCount; i++) facts[i] = ksession.insert(new Bean(i));
                         ksession.fireAllRules();
-                        for (FactHandle fact : facts) ksession.retract(fact);
+                        for (FactHandle fact : facts) ksession.delete(fact);
                         ksession.fireAllRules();
                         return true;
                     } catch (Exception e) {
@@ -101,7 +109,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         }
 
         boolean success = true;
-        for (int i = 0; i < THREAD_NR; i++) {
+        for (int i = 0; i < threadCount; i++) {
             try {
                 success = ecs.take().get() && success;
             } catch (Exception e) {
@@ -115,7 +123,7 @@ public class MultithreadTest extends CommonTestMethodBase {
 
     public static class Bean {
 
-        private int seed;
+        private final int seed;
 
         public Bean(int seed) {
             this.seed = seed;
@@ -202,12 +210,16 @@ public class MultithreadTest extends CommonTestMethodBase {
                         final String s = Thread.currentThread().getName();
                         long endTS = System.currentTimeMillis() + RUN_TIME;
                         int j = 0;
-                        while( System.currentTimeMillis() < endTS) {
-                            ep.insert( new StockTick( j++, s, 0.0, 0 ) );
-                            Thread.sleep(1);
+                        long lastTimeInserted = -1;
+                        while( System.currentTimeMillis() < endTS ) {
+                            final long currentTimeInMillis = System.currentTimeMillis();
+                            if ( currentTimeInMillis > lastTimeInserted ) {
+                                lastTimeInserted = currentTimeInMillis;
+                                ep.insert( new StockTick( j++, s, 0.0, 0 ) );
+                            }
                         }
                         return true;
-                    } catch (Exception e) {
+                    } catch ( Exception e ) {
                         errors.add( e );
                         e.printStackTrace();
                         return false;
@@ -237,7 +249,7 @@ public class MultithreadTest extends CommonTestMethodBase {
         assertTrue( errors.isEmpty() );
         assertTrue( success );
 
-        assertTrue( ! list.isEmpty() && ( (Number) list.get( list.size() - 1 ) ).intValue() > 200 );
+        assertTrue( ! list.isEmpty() && ( (Number) list.get( list.size() - 1 ) ).intValue() > 400 );
         ksession.dispose();
     }
 
@@ -549,6 +561,83 @@ public class MultithreadTest extends CommonTestMethodBase {
         assertTrue(success);
         ksession.dispose();
     }
+
+    @Test
+    public void testConcurrentDelete() {
+        String drl =
+                "import " + SlowBean.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $sb1: SlowBean() \n" +
+                "  $sb2: SlowBean( id > $sb1.id ) \n" +
+                "then " +
+                "  System.out.println($sb2 + \" > \"+ $sb1);" +
+                "end\n";
+
+        final KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        final int BEAN_NR = 4;
+        for (int step = 0; step < 2 ; step++) {
+            FactHandle[] fhs = new FactHandle[BEAN_NR];
+            for (int i = 0; i < BEAN_NR; i++) {
+                fhs[i] = ksession.insert(new SlowBean(i + step * BEAN_NR));
+            }
+
+            final CyclicBarrier barrier = new CyclicBarrier(2);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ksession.fireAllRules();
+                    try {
+                        barrier.await();
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }).start();
+
+            try {
+                Thread.sleep(15L);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            for (int i = 0; i < BEAN_NR; i++) {
+                if (i % 2 == 1) ksession.delete(fhs[i]);
+            }
+
+            try {
+                barrier.await();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            System.out.println("Done step " + step);
+        }
+    }
+
+    public class SlowBean {
+        private final int id;
+
+        public SlowBean(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            try {
+                Thread.sleep(10L);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            return id;
+        }
+
+        @Override
+        public String toString() {
+            return "" + id;
+        }
+    }
+
 
     // FIXME
 //

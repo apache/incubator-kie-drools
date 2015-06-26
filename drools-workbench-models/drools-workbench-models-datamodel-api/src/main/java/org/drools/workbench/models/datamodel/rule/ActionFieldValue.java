@@ -139,8 +139,11 @@ public class ActionFieldValue
     public int hashCode() {
         int result = field != null ? field.hashCode() : 0;
         result = 31 * result + (value != null ? value.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + nature;
+        result = ~~result;
         result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }

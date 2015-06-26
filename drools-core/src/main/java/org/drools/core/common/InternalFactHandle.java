@@ -31,6 +31,8 @@ public interface InternalFactHandle
 
     Object getObject();
 
+    String getObjectClassName();
+
     void setObject(Object object);
 
     void setEqualityKey(EqualityKey key);
@@ -115,4 +117,6 @@ public interface InternalFactHandle
     public boolean isNegated();
 
     public void setNegated(boolean negated);
+
+    public <K> K as( Class<K> klass ) throws ClassCastException;
 }

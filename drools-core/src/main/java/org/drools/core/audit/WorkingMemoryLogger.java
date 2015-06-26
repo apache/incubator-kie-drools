@@ -34,7 +34,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatelessKnowledgeSessionImpl;
-import org.drools.core.reteoo.ReteooWorkingMemoryInterface;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.spi.Activation;
 import org.kie.api.definition.process.Node;
@@ -152,7 +151,7 @@ public abstract class WorkingMemoryLogger
             StatefulKnowledgeSessionImpl statefulSession =
                     ((StatefulKnowledgeSessionImpl)((KnowledgeCommandContext)((CommandBasedStatefulKnowledgeSession) session).getCommandService().getContext()).getKieSession());
             isPhreak = statefulSession.getKnowledgeBase().getConfiguration().isPhreakEnabled();
-            ReteooWorkingMemoryInterface eventManager = statefulSession;
+            InternalWorkingMemory eventManager = statefulSession;
             eventManager.addEventListener( (RuleRuntimeEventListener) this );
             eventManager.addEventListener( (AgendaEventListener) this );
             InternalProcessRuntime processRuntime = eventManager.getProcessRuntime();

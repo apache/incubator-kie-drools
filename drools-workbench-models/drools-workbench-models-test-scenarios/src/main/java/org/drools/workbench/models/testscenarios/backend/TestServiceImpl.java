@@ -20,9 +20,12 @@ import org.drools.core.base.TypeResolver;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 import org.kie.api.runtime.KieSession;
+
+import java.util.Map;
 
 public class TestServiceImpl
         implements
@@ -30,16 +33,23 @@ public class TestServiceImpl
 
     @Override
     public void run( Scenario scenario,
-                     KieSession ksession,
+                     Map<String, KieSession> ksessions,
                      TypeResolver resolver,
                      RunListener listener ) {
         try {
+
+            long time = System.nanoTime();
+
             // execute the test scenario
             ScenarioRunner4JUnit runner = new ScenarioRunner4JUnit( scenario,
-                                                                    ksession );
+                                                                    ksessions );
             JUnitCore junit = new JUnitCore();
             junit.addListener( listener );
             junit.run( runner );
+
+            Result result = new Result();
+            listener.testRunFinished(result);
+
         } catch ( Exception e ) {
             reportUnrecoverableError( "Error running scenario " + scenario.getName(),
                                       listener,

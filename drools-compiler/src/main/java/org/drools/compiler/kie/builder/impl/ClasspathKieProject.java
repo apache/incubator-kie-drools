@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
@@ -195,7 +196,7 @@ public class ClasspathKieProject extends AbstractKieProject {
             rootPath = IoUtils.asSystemSpecificPath( rootPath, rootPath.lastIndexOf( ':' ) );
         }
 
-        if ( urlPathToAdd.endsWith( ".jar" ) || urlPathToAdd.endsWith( "/content" ) ) {
+        if ( urlPathToAdd.endsWith( ".apk" ) || urlPathToAdd.endsWith( ".jar" ) || urlPathToAdd.endsWith( "/content" ) ) {
             pomProperties = getPomPropertiesFromZipFile(rootPath);
         } else {
             pomProperties = getPomPropertiesFromFileSystem(rootPath);
@@ -299,7 +300,7 @@ public class ClasspathKieProject extends AbstractKieProject {
                 ReleaseIdImpl gav = (ReleaseIdImpl) pomModel.getReleaseId();
 
                 String str =  KieBuilderImpl.generatePomProperties( gav );
-                log.info( "Recursed up folders,  found and used pom.xml " + file );
+                log.info( "Recursed up folders, found and used pom.xml " + file );
 
                 return str;
             } catch ( Exception e ) {
@@ -412,5 +413,9 @@ public class ClasspathKieProject extends AbstractKieProject {
 
     public ClassLoader getClonedClassLoader() {
         return createProjectClassLoader(classLoader.getParent());
+    }
+
+    public InputStream getPomAsStream() {
+        return classLoader.getResourceAsStream("pom.xml");
     }
 }

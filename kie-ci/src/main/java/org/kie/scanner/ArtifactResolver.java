@@ -1,6 +1,7 @@
 package org.kie.scanner;
 
 import org.apache.maven.project.MavenProject;
+import org.drools.compiler.kie.builder.impl.InternalKieContainer;
 import org.drools.compiler.kproject.xml.MinimalPomParser;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.kie.api.builder.KieScanner;
@@ -68,8 +69,19 @@ class ArtifactResolver {
         return dependencies;
     }
 
+    public static ArtifactResolver getResolverFor(InternalKieContainer kieContainer, boolean allowDefaultPom) {
+        InputStream pomStream = kieContainer.getPomAsStream();
+        if (pomStream != null) {
+            ArtifactResolver artifactResolver = getResolverFor(pomStream);
+            if (artifactResolver != null) {
+                return artifactResolver;
+            }
+        }
+        return getResolverFor(kieContainer.getReleaseId(), allowDefaultPom);
+    }
+
     public static ArtifactResolver getResolverFor(ReleaseId releaseId, boolean allowDefaultPom) {
-        File pomFile = getPomFileForGAV(releaseId, allowDefaultPom);
+        File pomFile = getPomFileForGAV( releaseId, allowDefaultPom );
         if (pomFile != null) {
             ArtifactResolver artifactResolver = getResolverFor(pomFile);
             if (artifactResolver != null) {
@@ -99,6 +111,12 @@ class ArtifactResolver {
     public static ArtifactResolver getResolverFor(InputStream pomStream) {
         MavenProject mavenProject = parseMavenPom(pomStream);
         return new ArtifactResolver(mavenProject);
+    }
+
+    public static ArtifactResolver getResolverFor(PomModel pomModel) {
+        return pomModel instanceof MavenPomModelGenerator.MavenModel ?
+               new ArtifactResolver( ( (MavenPomModelGenerator.MavenModel) pomModel ).getMavenProject() ) :
+               new ArtifactResolver();
     }
 
     private static File getPomFileForGAV(ReleaseId releaseId, boolean allowDefaultPom) {

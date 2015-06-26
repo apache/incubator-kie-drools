@@ -1,32 +1,26 @@
 package org.drools.compiler.common;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CyclicBarrier;
-
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.common.ActivationIterator;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.Iterator;
 import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.rule.Match;
 import org.kie.internal.runtime.conf.ForceEagerActivationFilter;
 import org.kie.internal.runtime.conf.ForceEagerActivationOption;
+import org.kie.internal.utils.KieHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ActivationIteratorTest extends CommonTestMethodBase {
 
@@ -34,28 +28,20 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testSingleLian() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1 @Eager(true) when\n" +
+                     "rule rule1 @Propagation(EAGER) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule6 @Eager(true) when\n" +
+                     "rule rule6 @Propagation(EAGER) when\n" +
                      "     java.util.Map()\n" +
                      "then\n" +
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -81,7 +67,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                         list );
     }
 
-    private void evaluateEagerList(StatefulKnowledgeSession ksession) {
+    private void evaluateEagerList(KieSession ksession) {
+        ((InternalWorkingMemory) ksession).flushPropagations();
         ((InternalAgenda) ksession.getAgenda()).evaluateEagerList();
     }
 
@@ -89,29 +76,21 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testLianPlusEvaln() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1 @Eager(true) when\n" +
+                     "rule rule1 @Propagation(EAGER) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule6 @Eager(true) when\n" +
+                     "rule rule6 @Propagation(EAGER) when\n" +
                      "     java.util.Map()\n" +
                      "then\n" +
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -141,59 +120,51 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testLianPlusEvalnWithSharing() {
         // Rule 0 single LiaNode
         // Rule 1 and 2 are shared
-        // Rule 3 shares the LIANode with 1 and 2    
+        // Rule 3 shares the LIANode with 1 and 2
         // Rule 4 Shares the eval with 3
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule0 @Eager(true) when\n" +
+                     "rule rule0 @Propagation(EAGER) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule1 @Eager(true) when\n" +
-                     "    $s : String( this != 'xx' )\n" +
-                     "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
-                     "then\n" +
-                     "end\n" +
-                     "rule rule2 @Eager(true) when\n" +
+                     "rule rule1 @Propagation(EAGER) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule3 @Eager(true) when\n" +
+                     "rule rule2 @Propagation(EAGER) when\n" +
+                     "    $s : String( this != 'xx' )\n" +
+                     "    eval( Integer.parseInt( $s ) <= 2 ) \n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule rule3 @Propagation(EAGER) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) > 2 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule4 @Eager(true) when\n" +
+                     "rule rule4 @Propagation(EAGER) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) > 2 ) \n" +
                      "    eval( Integer.parseInt( $s ) > 3 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule5 @Eager(true) when\n" +
+                     "rule rule5 @Propagation(EAGER) when\n" +
                      "    $s : String( this != 'xx' )\n" +
                      "    eval( Integer.parseInt( $s ) > 2 ) \n" +
                      "    eval( Integer.parseInt( $s ) > 3 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule6 @Eager(true) when\n" +
+                     "rule rule6 @Propagation(EAGER) when\n" +
                      "     java.util.Map()\n" +
                      "then\n" +
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -230,7 +201,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testLianPlusEvalnWithSharingWithMixedDormantAndActive() {
         // Rule 0 single LiaNode
         // Rule 1 and 2 are shared
-        // Rule 3 shares the LIANode with 1 and 2    
+        // Rule 3 shares the LIANode with 1 and 2
         // Rule 4 Shares the eval with 3
         String str = "package org.kie.test \n" +
                      "\n" +
@@ -267,18 +238,10 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 5; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -301,24 +264,16 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testSingleJoinNode() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1  @Eager(true)  when\n" +
+                     "rule rule1  @Propagation(EAGER)  when\n" +
                      "    $s1 : String( )\n" +
                      "    $s2 : String( )\n" +
                      "then\n" +
                      "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -347,7 +302,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testSingleJoinNodePlusEvaln() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1 @Eager(true) when\n" +
+                     "rule rule1 @Propagation(EAGER) when\n" +
                      "    $s1 : String( )\n" +
                      "    $s2 : String( )\n" +
                      "    eval( 1 == 1 ) \n" +
@@ -355,18 +310,10 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -395,17 +342,17 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testSingleJoinNodePlusEvalnWithSharing() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1  @Eager(true)  when\n" +
+                     "rule rule1  @Propagation(EAGER)  when\n" +
                      "    $s1 : String( )\n" +
                      "    $s2 : String( )\n" +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule2  @Eager(true)  when\n" +
+                     "rule rule2  @Propagation(EAGER)  when\n" +
                      "    $s1 : String( )\n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule3  @Eager(true)  when\n" +
+                     "rule rule3  @Propagation(EAGER)  when\n" +
                      "    $s1 : String( )\n" +
                      "    $s2 : String( )\n" +
                      "    $s3 : String( )\n" +
@@ -414,18 +361,10 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -491,18 +430,10 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         for ( int i = 0; i < 2; i++ ) {
             ksession.insert( new String( "" + i ) );
         }
@@ -531,17 +462,17 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testNotSharingWithMixedDormantAndActive() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1  @Eager(true)  salience 10 when\n" +
+                     "rule rule1  @Propagation(EAGER)  salience 10 when\n" +
                      "    not String( this == '1' )\n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule2   @Eager(true)  salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
+                     "rule rule2   @Propagation(EAGER)  salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
                      "    not String( this == '1' )\n" +
                      "    $s1 : String( )\n" +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule3  @Eager(true)  salience ( Integer.parseInt( $s1+'2' ) ) when\n" +
+                     "rule rule3  @Propagation(EAGER)  salience ( Integer.parseInt( $s1+'2' ) ) when\n" +
                      "    $s1 : String( )\n" +
                      "    not String( this == '1' )\n" +
                      "    eval( 1 == 1 ) \n" +
@@ -551,18 +482,10 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.insert( "0" );
         ksession.insert( "2" );
 
@@ -588,7 +511,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testExistsSharingWithMixedDormantAndActive() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule3  @Eager(true)  salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
+                     "rule rule3  @Propagation(EAGER)  salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
                      "    $s1 : String( )\n" +
                      "    exists String( this == '1' )\n" +
                      "    eval( 1 == 1 ) \n" +
@@ -596,11 +519,11 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "then\n" +
                      "    kcontext.getKieRuntime().halt();\n" +
                      "end\n" +
-                     "rule rule1  @Eager(true)  salience 100 when\n" +
+                     "rule rule1  @Propagation(EAGER)  salience 100 when\n" +
                      "    exists String( this == '1' )\n" +
                      "then\n" +
                      "end\n" +
-                     "rule rule2   @Eager(true)  salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
+                     "rule rule2   @Propagation(EAGER)  salience ( Integer.parseInt( $s1+'1' ) ) when\n" +
                      "    exists String( this == '1' )\n" +
                      "    $s1 : String( )\n" +
                      "    eval( 1 == 1 ) \n" +
@@ -608,18 +531,10 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
-                      ResourceType.DRL );
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.insert( "0" );
         ksession.insert( "1" );
         ksession.insert( "2" );
@@ -665,18 +580,10 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         List list = new ArrayList();
         list.add( "0" );
         list.add( "1" );
@@ -701,11 +608,11 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testAccnSharingWithMixedDormantAndActive() {
         String str = "package org.kie.test \n" +
                      "\n" +
-                     "rule rule1 @Eager(true) when\n" +
+                     "rule rule1 @Propagation(EAGER) when\n" +
                      "    $s1 : Double() from accumulate( $i : Integer(), sum ( $i ) )    " +
                      "then\n" +
                      "end\n" +
-                     "rule rule2 @Eager(true) when\n" +
+                     "rule rule2 @Propagation(EAGER) when\n" +
                      "    $s1 : Double() from accumulate( $i : Integer(), sum ( $i ) )    " +
                      "    eval( 1 == 1 ) \n" +
                      "then\n" +
@@ -719,18 +626,10 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
+        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         ksession.insert( new Integer( 1 ) );
         ksession.insert( new Integer( 2 ) );
         ksession.insert( new Integer( 3 ) );
@@ -761,12 +660,12 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testEagerEvaluation() throws Exception {
         String str =
                 "package org.simple \n" +
-                "rule xxx @Eager(true) \n" +
+                "rule xxx @Propagation(EAGER) \n" +
                 "when \n" +
                 "  $s : String()\n" +
                 "then \n" +
                 "end  \n" +
-                "rule yyy @Eager(true) \n" +
+                "rule yyy @Propagation(EAGER) \n" +
                 "when \n" +
                 "  $s : String()\n" +
                 "then \n" +
@@ -788,6 +687,7 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         ksession.addEventListener(agendaEventListener);
 
         ksession.insert("test");
+
         assertEquals(2, list.size());
     }
 
@@ -795,12 +695,12 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
     public void testFilteredEagerEvaluation() throws Exception {
         String str =
                 "package org.simple \n" +
-                "rule xxx @Eager(true) \n" +
+                "rule xxx @Propagation(EAGER) \n" +
                 "when \n" +
                 "  $s : String()\n" +
                 "then \n" +
                 "end  \n" +
-                "rule yyy @Eager(true) \n" +
+                "rule yyy @Propagation(EAGER) \n" +
                 "when \n" +
                 "  $s : String()\n" +
                 "then \n" +
@@ -827,6 +727,8 @@ public class ActivationIteratorTest extends CommonTestMethodBase {
         ksession.addEventListener(agendaEventListener);
 
         ksession.insert("test");
+        ((InternalWorkingMemory) ksession).flushPropagations();
+
         assertEquals(1, list.size());
     }
 }

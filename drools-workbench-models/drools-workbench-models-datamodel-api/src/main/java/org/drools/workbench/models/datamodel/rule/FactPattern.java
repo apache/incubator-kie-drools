@@ -171,10 +171,15 @@ public class FactPattern
     @Override
     public int hashCode() {
         int result = constraintList != null ? constraintList.hashCode() : 0;
+        result = ~~result;
         result = 31 * result + (factType != null ? factType.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (boundName != null ? boundName.hashCode() : 0);
+        result = ~~result;
         result = 31 * result + (isNegated ? 1 : 0);
+        result = ~~result;
         result = 31 * result + (window != null ? window.hashCode() : 0);
+        result = ~~result;
         return result;
     }
 }
