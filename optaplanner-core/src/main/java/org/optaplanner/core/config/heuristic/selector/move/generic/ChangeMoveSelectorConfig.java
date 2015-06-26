@@ -117,17 +117,17 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
             List<GenuineVariableDescriptor> variableDescriptorList) {
         List<MoveSelectorConfig> moveSelectorConfigList = new ArrayList<MoveSelectorConfig>(variableDescriptorList.size());
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
-            // No changeMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
-            ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
+            // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
+            ChangeMoveSelectorConfig childMoveSelectorConfig = new ChangeMoveSelectorConfig();
             EntitySelectorConfig childEntitySelectorConfig = new EntitySelectorConfig(entitySelectorConfig);
             if (childEntitySelectorConfig.getMimicSelectorRef() == null) {
                 childEntitySelectorConfig.setEntityClass(variableDescriptor.getEntityDescriptor().getEntityClass());
             }
-            changeMoveSelectorConfig.setEntitySelectorConfig(childEntitySelectorConfig);
+            childMoveSelectorConfig.setEntitySelectorConfig(childEntitySelectorConfig);
             ValueSelectorConfig childValueSelectorConfig = new ValueSelectorConfig(valueSelectorConfig);
             childValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
-            changeMoveSelectorConfig.setValueSelectorConfig(childValueSelectorConfig);
-            moveSelectorConfigList.add(changeMoveSelectorConfig);
+            childMoveSelectorConfig.setValueSelectorConfig(childValueSelectorConfig);
+            moveSelectorConfigList.add(childMoveSelectorConfig);
         }
 
         MoveSelectorConfig unfoldedMoveSelectorConfig;

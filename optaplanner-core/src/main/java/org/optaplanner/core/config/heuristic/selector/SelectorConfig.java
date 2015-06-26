@@ -137,7 +137,7 @@ public abstract class SelectorConfig {
                 }
             }
             if (!found) {
-                throw new IllegalStateException("The selectorConfig (" + this
+                throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has a variableNameInclude (" + variableNameInclude
                         + ") which does not exist in the entity (" + entityDescriptor.getEntityClass()
                         + ")'s variableDescriptors (" + variableDescriptors + ").");

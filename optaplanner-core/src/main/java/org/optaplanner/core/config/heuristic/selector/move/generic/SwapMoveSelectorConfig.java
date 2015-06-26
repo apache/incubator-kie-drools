@@ -16,7 +16,9 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -26,7 +28,10 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
+import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
@@ -90,6 +95,60 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
                 leftEntitySelector.getEntityDescriptor(), variableNameIncludeList);
         return new SwapMoveSelector(leftEntitySelector, rightEntitySelector, variableDescriptors,
                 randomSelection);
+    }
+
+    @Override
+    protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {
+        EntityDescriptor onlyEntityDescriptor = entitySelectorConfig == null ? null
+                : entitySelectorConfig.extractEntityDescriptor(configPolicy);
+        if (secondaryEntitySelectorConfig != null) {
+            EntityDescriptor onlySecondaryEntityDescriptor = secondaryEntitySelectorConfig == null ? null
+                    : secondaryEntitySelectorConfig.extractEntityDescriptor(configPolicy);
+            if (onlyEntityDescriptor != onlySecondaryEntityDescriptor) {
+                throw new IllegalArgumentException("The entitySelector (" + entitySelectorConfig
+                        + ")'s entityDescriptor (" + onlyEntityDescriptor
+                        + ") and secondaryEntitySelectorConfig (" + secondaryEntitySelectorConfig
+                        + ")'s entityDescriptor (" + onlySecondaryEntityDescriptor
+                        + ") must have the same entity class.");
+            }
+        }
+        if (onlyEntityDescriptor != null) {
+            return null;
+        }
+        Collection<EntityDescriptor> entityDescriptors = configPolicy.getSolutionDescriptor().getGenuineEntityDescriptors();
+        return buildUnfoldedMoveSelectorConfig(entityDescriptors);
+    }
+
+    protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(
+            Collection<EntityDescriptor> entityDescriptors) {
+        List<MoveSelectorConfig> moveSelectorConfigList = new ArrayList<MoveSelectorConfig>(entityDescriptors.size());
+        for (EntityDescriptor entityDescriptor : entityDescriptors) {
+            // No childMoveSelectorConfig.inherit() because of unfoldedMoveSelectorConfig.inheritFolded()
+            SwapMoveSelectorConfig childMoveSelectorConfig = new SwapMoveSelectorConfig();
+            EntitySelectorConfig childEntitySelectorConfig = new EntitySelectorConfig(entitySelectorConfig);
+            if (childEntitySelectorConfig.getMimicSelectorRef() == null) {
+                childEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
+            }
+            childMoveSelectorConfig.setEntitySelectorConfig(childEntitySelectorConfig);
+            if (secondaryEntitySelectorConfig != null) {
+                EntitySelectorConfig childSecondaryEntitySelectorConfig = new EntitySelectorConfig(secondaryEntitySelectorConfig);
+                if (childSecondaryEntitySelectorConfig.getMimicSelectorRef() == null) {
+                    childSecondaryEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
+                }
+                childMoveSelectorConfig.setEntitySelectorConfig(childSecondaryEntitySelectorConfig);
+            }
+            childMoveSelectorConfig.setVariableNameIncludeList(variableNameIncludeList);
+            moveSelectorConfigList.add(childMoveSelectorConfig);
+        }
+
+        MoveSelectorConfig unfoldedMoveSelectorConfig;
+        if (moveSelectorConfigList.size() == 1) {
+            unfoldedMoveSelectorConfig = moveSelectorConfigList.get(0);
+        } else {
+            unfoldedMoveSelectorConfig = new UnionMoveSelectorConfig(moveSelectorConfigList);
+        }
+        unfoldedMoveSelectorConfig.inheritFolded(this);
+        return unfoldedMoveSelectorConfig;
     }
 
     public void inherit(SwapMoveSelectorConfig inheritedConfig) {

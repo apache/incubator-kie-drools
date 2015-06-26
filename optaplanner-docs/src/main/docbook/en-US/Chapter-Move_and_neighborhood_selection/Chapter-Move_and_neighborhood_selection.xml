@@ -194,6 +194,9 @@
 
       <programlisting language="xml">    &lt;swapMoveSelector/&gt;</programlisting>
 
+      <para>If there are multiple entity classes, a simple configuration will automatically unfold into a <link
+      linkend="unionMoveSelector">union</link> of <literal>SwapMove</literal> selectors for every entity class.</para>
+
       <para>Advanced configuration:</para>
 
       <programlisting language="xml">    &lt;swapMoveSelector&gt;
