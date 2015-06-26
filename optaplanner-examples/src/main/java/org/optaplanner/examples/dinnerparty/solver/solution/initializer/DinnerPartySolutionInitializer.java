@@ -42,30 +42,20 @@ public class DinnerPartySolutionInitializer implements CustomPhaseCommand {
     }
 
     private void initializeSeatDesignationList(ScoreDirector scoreDirector, DinnerParty dinnerParty) {
-        // TODO the planning entity list from the solution should be used and might already contain initialized entities
-        List<SeatDesignation> seatDesignationList = createSeatDesignationList(dinnerParty);
         // Assign one guest at a time
         List<Seat> undesignatedSeatList = new ArrayList<Seat>(dinnerParty.getSeatList());
-        for (SeatDesignation seatDesignation : seatDesignationList) {
+        for (SeatDesignation seatDesignation : dinnerParty.getSeatDesignationList()) {
             Score bestScore = SimpleScore.valueOf(Integer.MIN_VALUE);
             Seat bestSeat = null;
 
-            boolean added = false;
             // Try every seat for that guest
             // TODO by reordening the seats so index 0 has a different table then index 1 and so on,
             // this will probably be faster because perfectMatch will be true sooner
             for (Seat seat : undesignatedSeatList) {
                 if (seatDesignation.getGuest().getGender() == seat.getRequiredGender()) {
-                    if (!added) {
-                        scoreDirector.beforeEntityAdded(seatDesignation);
-                        seatDesignation.setSeat(seat);
-                        scoreDirector.afterEntityAdded(seatDesignation);
-                        added = true;
-                    } else {
-                        scoreDirector.beforeVariableChanged(seatDesignation, "seat");
-                        seatDesignation.setSeat(seat);
-                        scoreDirector.afterVariableChanged(seatDesignation, "seat");
-                    }
+                    scoreDirector.beforeVariableChanged(seatDesignation, "seat");
+                    seatDesignation.setSeat(seat);
+                    scoreDirector.afterVariableChanged(seatDesignation, "seat");
                     Score score = scoreDirector.calculateScore();
                     if (score.compareTo(bestScore) > 0) {
                         bestScore = score;
@@ -82,20 +72,6 @@ public class DinnerPartySolutionInitializer implements CustomPhaseCommand {
             // There will always be enough allowed seats: ok to do this for this problem, but not ok for most problems
             undesignatedSeatList.remove(bestSeat);
         }
-        // For the GUI's combobox list mainly, not really needed
-        Collections.sort(seatDesignationList, new PersistableIdComparator());
-        dinnerParty.setSeatDesignationList(seatDesignationList);
-    }
-
-    private List<SeatDesignation> createSeatDesignationList(DinnerParty dinnerParty) {
-        List<SeatDesignation> seatDesignationList = new ArrayList<SeatDesignation>(dinnerParty.getGuestList().size());
-        for (Guest guest : dinnerParty.getGuestList()) {
-            SeatDesignation seatDesignation = new SeatDesignation();
-            seatDesignation.setId(guest.getId());
-            seatDesignation.setGuest(guest);
-            seatDesignationList.add(seatDesignation);
-        }
-        return seatDesignationList;
     }
 
 }
