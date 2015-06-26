@@ -2450,3 +2450,44 @@ The docs have also been fixed to reflect reality, which is also the desired beha
 (so it no longer creates a new KieSession) upon solver restart.
 This might expose a hidden bug in your ProblemFactChange implementation.
 Enable environmentMode FULL_ASSERT and do a few addProblemFactChange() calls to validate that there are no such bugs.
+
+[MAJOR] If you use multiple planning variables, consider switching to the folded configuration.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <changeMoveSelector>
+        <valueSelector>
+          <variableName>period</variableName>
+        </valueSelector>
+      </changeMoveSelector>
+      <changeMoveSelector>
+        <valueSelector>
+          <variableName>room</variableName>
+        </valueSelector>
+      </changeMoveSelector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <changeMoveSelector/>
+
+[MAJOR] If you use multiple entity classes, consider switching to the folded configuration.
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <changeMoveSelector>
+        <entitySelector>
+          <entityClass>...CoachEntity</entityClass>
+        </entitySelector>
+      </changeMoveSelector>
+      <changeMoveSelector>
+        <entitySelector>
+          <entityClass>...ShuttleEntity</entityClass>
+        </entitySelector>
+      </changeMoveSelector>
+      <swapMoveSelector>
+        <entitySelector>
+          <entityClass>...CoachEntity</entityClass>
+        </entitySelector>
+      </swapMoveSelector>
+      <swapMoveSelector>
+        <entitySelector>
+          <entityClass>...ShuttleEntity</entityClass>
+        </entitySelector>
+      </swapMoveSelector>
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+      <changeMoveSelector/>
+      <swapMoveSelector/>
