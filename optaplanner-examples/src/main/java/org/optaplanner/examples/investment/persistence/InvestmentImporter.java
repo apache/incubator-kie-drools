@@ -58,6 +58,8 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter {
 
         private InvestmentSolution solution;
 
+        private Map<String, Region> regionMap;
+
         public Solution readSolution() throws IOException {
             solution = new InvestmentSolution();
             solution.setId(0L);
@@ -83,25 +85,42 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter {
 
         private void readRegionList() throws IOException {
             Sheet sheet = readSheet(1, "Regions");
-            List<Region> regionList = new ArrayList<Region>(0);
+            Row headerRow = sheet.getRow(0);
+            assertCellConstant(headerRow.getCell(0), "Name");
+            assertCellConstant(headerRow.getCell(1), "Quantity maximum");
+            List<Region> regionList = new ArrayList<Region>();
+            regionMap = new LinkedHashMap<String, Region>();
+            long id = 0L;
+            for (Row row : sheet) {
+                if (row.getRowNum() < 1) {
+                    continue;
+                }
+                Region region = new Region();
+                region.setId(id);
+                id++;
+                region.setName(readStringCell(row.getCell(0)));
+                region.setQuantityMillisMaximum(parsePercentageMillis(readDoubleCell(row.getCell(1))));
+                regionList.add(region);
+                regionMap.put(region.getName(), region);
+            }
             solution.setRegionList(regionList);
         }
 
         private void readAssetClassList() throws IOException {
             Sheet sheet = readSheet(2, "AssetClasses");
+            final int ASSET_CLASS_PROPERTIES_COUNT = 5;
             Row groupHeaderRow = sheet.getRow(0);
             assertCellConstant(groupHeaderRow.getCell(0), "Asset class");
-            assertCellConstant(groupHeaderRow.getCell(4), "Correlation");
+            assertCellConstant(groupHeaderRow.getCell(ASSET_CLASS_PROPERTIES_COUNT), "Correlation");
             Row headerRow = sheet.getRow(1);
             assertCellConstant(headerRow.getCell(0), "ID");
             assertCellConstant(headerRow.getCell(1), "Name");
-            assertCellConstant(headerRow.getCell(2), "Expected return");
-            assertCellConstant(headerRow.getCell(3), "Standard deviation");
+            assertCellConstant(headerRow.getCell(2), "Region");
+            assertCellConstant(headerRow.getCell(3), "Expected return");
+            assertCellConstant(headerRow.getCell(4), "Standard deviation");
 
-            final int ASSET_CLASS_PROPERTIES_COUNT = 4;
             int assetClassListSize = headerRow.getPhysicalNumberOfCells() - ASSET_CLASS_PROPERTIES_COUNT;
             List<AssetClass> assetClassList = new ArrayList<AssetClass>(assetClassListSize);
-
             Map<Long, AssetClass> idToAssetClassMap = new HashMap<Long, AssetClass>(assetClassListSize);
             for (int i = 0; i < assetClassListSize; i++) {
                 AssetClass assetClass = new AssetClass();
@@ -113,7 +132,7 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter {
                 }
             }
             for (Row row : sheet) {
-                if (row.getRowNum() <= 1) {
+                if (row.getRowNum() < 2) {
                     continue;
                 }
                 if (row.getPhysicalNumberOfCells() != (ASSET_CLASS_PROPERTIES_COUNT + assetClassListSize)) {
@@ -128,8 +147,15 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter {
                             + ") has an assetClass id (" + id + ") that is not in the header.");
                 }
                 assetClass.setName(readStringCell(row.getCell(1)));
-                assetClass.setExpectedReturnMillis(parsePercentageMillis(readDoubleCell(row.getCell(2))));
-                assetClass.setStandardDeviationRiskMillis(parsePercentageMillis(readDoubleCell(row.getCell(3))));
+                String regionName = readStringCell(row.getCell(2));
+                Region region = regionMap.get(regionName);
+                if (region == null) {
+                    throw new IllegalStateException("The row (" + row.getRowNum()
+                            + ") has a region (" + regionName + ") that is not in the regions sheet.");
+                }
+                assetClass.setRegion(region);
+                assetClass.setExpectedReturnMillis(parsePercentageMillis(readDoubleCell(row.getCell(3))));
+                assetClass.setStandardDeviationRiskMillis(parsePercentageMillis(readDoubleCell(row.getCell(4))));
                 Map<AssetClass, Long> correlationMillisMap = new LinkedHashMap<AssetClass, Long>(assetClassListSize);
                 for (int i = 0; i < assetClassListSize; i++) {
                     AssetClass other = assetClassList.get(i);

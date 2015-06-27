@@ -4,131 +4,148 @@
     <id>0</id>
     <standardDeviationMillisMaximum>73</standardDeviationMillisMaximum>
   </parametrization>
-  <regionList id="3"/>
-  <assetClassList id="4">
-    <AssetClass id="5">
+  <regionList id="3">
+    <Region id="4">
+      <id>0</id>
+      <name>UK</name>
+      <quantityMillisMaximum>180</quantityMillisMaximum>
+    </Region>
+    <Region id="5">
+      <id>1</id>
+      <name>Global</name>
+      <quantityMillisMaximum>1000</quantityMillisMaximum>
+    </Region>
+  </regionList>
+  <assetClassList id="6">
+    <AssetClass id="7">
       <id>1</id>
       <name>UK Equities</name>
+      <region reference="4"/>
       <expectedReturnMillis>100</expectedReturnMillis>
       <standardDeviationRiskMillis>150</standardDeviationRiskMillis>
-      <correlationMillisMap class="linked-hash-map" id="6">
+      <correlationMillisMap class="linked-hash-map" id="8">
         <entry>
-          <AssetClass reference="5"/>
+          <AssetClass reference="7"/>
           <long>1000</long>
         </entry>
         <entry>
-          <AssetClass id="7">
+          <AssetClass id="9">
             <id>2</id>
             <name>Ex-UK Equities</name>
+            <region reference="5"/>
             <expectedReturnMillis>80</expectedReturnMillis>
             <standardDeviationRiskMillis>120</standardDeviationRiskMillis>
-            <correlationMillisMap class="linked-hash-map" id="8">
+            <correlationMillisMap class="linked-hash-map" id="10">
               <entry>
-                <AssetClass reference="5"/>
+                <AssetClass reference="7"/>
                 <long>760</long>
               </entry>
               <entry>
-                <AssetClass reference="7"/>
+                <AssetClass reference="9"/>
                 <long>1000</long>
               </entry>
               <entry>
-                <AssetClass id="9">
+                <AssetClass id="11">
                   <id>3</id>
-                  <name>Intermediate Bond</name>
+                  <name>Intermediate Bonds</name>
+                  <region reference="5"/>
                   <expectedReturnMillis>40</expectedReturnMillis>
                   <standardDeviationRiskMillis>70</standardDeviationRiskMillis>
-                  <correlationMillisMap class="linked-hash-map" id="10">
+                  <correlationMillisMap class="linked-hash-map" id="12">
                     <entry>
-                      <AssetClass reference="5"/>
+                      <AssetClass reference="7"/>
                       <long>350</long>
                     </entry>
                     <entry>
-                      <AssetClass reference="7"/>
+                      <AssetClass reference="9"/>
                       <long>40</long>
                     </entry>
                     <entry>
-                      <AssetClass reference="9"/>
+                      <AssetClass reference="11"/>
                       <long>1000</long>
                     </entry>
                     <entry>
-                      <AssetClass id="11">
+                      <AssetClass id="13">
                         <id>4</id>
                         <name>Long-Term Bonds</name>
+                        <region reference="5"/>
                         <expectedReturnMillis>45</expectedReturnMillis>
                         <standardDeviationRiskMillis>80</standardDeviationRiskMillis>
-                        <correlationMillisMap class="linked-hash-map" id="12">
+                        <correlationMillisMap class="linked-hash-map" id="14">
                           <entry>
-                            <AssetClass reference="5"/>
+                            <AssetClass reference="7"/>
                             <long>500</long>
                           </entry>
                           <entry>
-                            <AssetClass reference="7"/>
+                            <AssetClass reference="9"/>
                             <long>300</long>
                           </entry>
                           <entry>
-                            <AssetClass reference="9"/>
+                            <AssetClass reference="11"/>
                             <long>870</long>
                           </entry>
                           <entry>
-                            <AssetClass reference="11"/>
+                            <AssetClass reference="13"/>
                             <long>1000</long>
                           </entry>
                           <entry>
-                            <AssetClass id="13">
+                            <AssetClass id="15">
                               <id>5</id>
-                              <name>Intermediate Bond</name>
+                              <name>UK Bonds</name>
+                              <region reference="4"/>
                               <expectedReturnMillis>50</expectedReturnMillis>
                               <standardDeviationRiskMillis>90</standardDeviationRiskMillis>
-                              <correlationMillisMap class="linked-hash-map" id="14">
+                              <correlationMillisMap class="linked-hash-map" id="16">
                                 <entry>
-                                  <AssetClass reference="5"/>
+                                  <AssetClass reference="7"/>
                                   <long>240</long>
                                 </entry>
                                 <entry>
-                                  <AssetClass reference="7"/>
+                                  <AssetClass reference="9"/>
                                   <long>360</long>
                                 </entry>
                                 <entry>
-                                  <AssetClass reference="9"/>
+                                  <AssetClass reference="11"/>
                                   <long>620</long>
                                 </entry>
                                 <entry>
-                                  <AssetClass reference="11"/>
+                                  <AssetClass reference="13"/>
                                   <long>520</long>
                                 </entry>
                                 <entry>
-                                  <AssetClass reference="13"/>
+                                  <AssetClass reference="15"/>
                                   <long>1000</long>
                                 </entry>
                                 <entry>
-                                  <AssetClass id="15">
+                                  <AssetClass id="17">
                                     <id>6</id>
                                     <name>Real Estate</name>
+                                    <region reference="5"/>
                                     <expectedReturnMillis>70</expectedReturnMillis>
                                     <standardDeviationRiskMillis>100</standardDeviationRiskMillis>
-                                    <correlationMillisMap class="linked-hash-map" id="16">
+                                    <correlationMillisMap class="linked-hash-map" id="18">
                                       <entry>
-                                        <AssetClass reference="5"/>
+                                        <AssetClass reference="7"/>
                                         <long>300</long>
                                       </entry>
                                       <entry>
-                                        <AssetClass reference="7"/>
+                                        <AssetClass reference="9"/>
                                         <long>250</long>
                                       </entry>
                                       <entry>
-                                        <AssetClass reference="9"/>
+                                        <AssetClass reference="11"/>
                                         <long>-50</long>
                                       </entry>
                                       <entry>
-                                        <AssetClass reference="11"/>
+                                        <AssetClass reference="13"/>
                                         <long>-20</long>
                                       </entry>
                                       <entry>
-                                        <AssetClass reference="13"/>
+                                        <AssetClass reference="15"/>
                                         <long>200</long>
                                       </entry>
                                       <entry>
-                                        <AssetClass reference="15"/>
+                                        <AssetClass reference="17"/>
                                         <long>1000</long>
                                       </entry>
                                     </correlationMillisMap>
@@ -140,7 +157,7 @@
                             <long>0</long>
                           </entry>
                           <entry>
-                            <AssetClass reference="15"/>
+                            <AssetClass reference="17"/>
                             <long>0</long>
                           </entry>
                         </correlationMillisMap>
@@ -148,19 +165,15 @@
                       <long>0</long>
                     </entry>
                     <entry>
-                      <AssetClass reference="13"/>
+                      <AssetClass reference="15"/>
                       <long>0</long>
                     </entry>
                     <entry>
-                      <AssetClass reference="15"/>
+                      <AssetClass reference="17"/>
                       <long>0</long>
                     </entry>
                   </correlationMillisMap>
                 </AssetClass>
-                <long>0</long>
-              </entry>
-              <entry>
-                <AssetClass reference="11"/>
                 <long>0</long>
               </entry>
               <entry>
@@ -171,12 +184,12 @@
                 <AssetClass reference="15"/>
                 <long>0</long>
               </entry>
+              <entry>
+                <AssetClass reference="17"/>
+                <long>0</long>
+              </entry>
             </correlationMillisMap>
           </AssetClass>
-          <long>0</long>
-        </entry>
-        <entry>
-          <AssetClass reference="9"/>
           <long>0</long>
         </entry>
         <entry>
@@ -191,38 +204,42 @@
           <AssetClass reference="15"/>
           <long>0</long>
         </entry>
+        <entry>
+          <AssetClass reference="17"/>
+          <long>0</long>
+        </entry>
       </correlationMillisMap>
     </AssetClass>
-    <AssetClass reference="7"/>
     <AssetClass reference="9"/>
     <AssetClass reference="11"/>
     <AssetClass reference="13"/>
     <AssetClass reference="15"/>
+    <AssetClass reference="17"/>
   </assetClassList>
-  <assetClassAllocationList id="17">
-    <AssetClassAllocation id="18">
+  <assetClassAllocationList id="19">
+    <AssetClassAllocation id="20">
       <id>1</id>
-      <assetClass reference="5"/>
-    </AssetClassAllocation>
-    <AssetClassAllocation id="19">
-      <id>2</id>
       <assetClass reference="7"/>
     </AssetClassAllocation>
-    <AssetClassAllocation id="20">
-      <id>3</id>
+    <AssetClassAllocation id="21">
+      <id>2</id>
       <assetClass reference="9"/>
     </AssetClassAllocation>
-    <AssetClassAllocation id="21">
-      <id>4</id>
+    <AssetClassAllocation id="22">
+      <id>3</id>
       <assetClass reference="11"/>
     </AssetClassAllocation>
-    <AssetClassAllocation id="22">
-      <id>5</id>
+    <AssetClassAllocation id="23">
+      <id>4</id>
       <assetClass reference="13"/>
     </AssetClassAllocation>
-    <AssetClassAllocation id="23">
-      <id>6</id>
+    <AssetClassAllocation id="24">
+      <id>5</id>
       <assetClass reference="15"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="25">
+      <id>6</id>
+      <assetClass reference="17"/>
     </AssetClassAllocation>
   </assetClassAllocationList>
 </InvestmentSolution>
