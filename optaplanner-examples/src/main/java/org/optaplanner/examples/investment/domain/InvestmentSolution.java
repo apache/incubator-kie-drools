@@ -39,6 +39,7 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 public class InvestmentSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
 
     private InvestmentParametrization parametrization;
+    private List<Region> regionList;
     private List<AssetClass> assetClassList;
 
     private List<AssetClassAllocation> assetClassAllocationList;
@@ -52,6 +53,14 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
 
     public void setParametrization(InvestmentParametrization parametrization) {
         this.parametrization = parametrization;
+    }
+
+    public List<Region> getRegionList() {
+        return regionList;
+    }
+
+    public void setRegionList(List<Region> regionList) {
+        this.regionList = regionList;
     }
 
     public List<AssetClass> getAssetClassList() {
@@ -91,6 +100,7 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.add(parametrization);
+        facts.addAll(regionList);
         facts.addAll(assetClassList);
         // Do not add the planning entity's (assetClassAllocationList) because that will be done automatically
         return facts;

@@ -26,6 +26,7 @@ import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 public class AssetClass extends AbstractPersistable {
 
     private String name;
+    private Region region;
     private long expectedReturnMillis; // In milli's (so multiplied by 1000)
     private long standardDeviationRiskMillis; // In milli's (so multiplied by 1000)
 
@@ -37,6 +38,14 @@ public class AssetClass extends AbstractPersistable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Region getRegion() {
+        return region;
+    }
+
+    public void setRegion(Region region) {
+        this.region = region;
     }
 
     public long getExpectedReturnMillis() {

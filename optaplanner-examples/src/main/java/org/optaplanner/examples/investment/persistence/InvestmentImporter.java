@@ -30,6 +30,7 @@ import org.optaplanner.examples.investment.domain.AssetClass;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.InvestmentParametrization;
+import org.optaplanner.examples.investment.domain.Region;
 
 public class InvestmentImporter extends AbstractTxtSolutionImporter {
 
@@ -65,6 +66,7 @@ public class InvestmentImporter extends AbstractTxtSolutionImporter {
             solution = new InvestmentSolution();
             solution.setId(0L);
             readHeaders();
+            readRegionList();
             readAssetClassList();
             createAssetClassAllocationList();
 
@@ -80,6 +82,11 @@ public class InvestmentImporter extends AbstractTxtSolutionImporter {
             parametrization.setId(0L);
             parametrization.setStandardDeviationMillisMaximum(73); // TODO do not hardcode
             solution.setParametrization(parametrization);
+        }
+
+        private void readRegionList() throws IOException {
+            List<Region> regionList = new ArrayList<Region>(0);
+            solution.setRegionList(regionList);
         }
 
         private void readAssetClassList() throws IOException {

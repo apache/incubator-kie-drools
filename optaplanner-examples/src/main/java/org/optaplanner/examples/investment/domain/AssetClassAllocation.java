@@ -63,6 +63,10 @@ public class AssetClassAllocation extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    public Region getRegion() {
+        return assetClass.getRegion();
+    }
+
     public long getQuantifiedExpectedReturnMicros() {
         if (quantityMillis == null) {
             return 0L;

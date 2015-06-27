@@ -16,32 +16,45 @@
 
 package org.optaplanner.examples.investment.domain;
 
+import java.util.Map;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
+import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 
-/**
- * Institutional weightings
- */
-@XStreamAlias("InvestmentParametrization")
-public class InvestmentParametrization extends AbstractPersistable {
+@XStreamAlias("Region")
+public class Region extends AbstractPersistable {
 
-    private long standardDeviationMillisMaximum; // In milli's (so multiplied by 1000)
+    private String name;
+    private Long quantityMillisMaximum; // In milli's (so multiplied by 1000)
 
-    public long getStandardDeviationMillisMaximum() {
-        return standardDeviationMillisMaximum;
+    public String getName() {
+        return name;
     }
 
-    public void setStandardDeviationMillisMaximum(long standardDeviationMillisMaximum) {
-        this.standardDeviationMillisMaximum = standardDeviationMillisMaximum;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getQuantityMillisMaximum() {
+        return quantityMillisMaximum;
+    }
+
+    public void setQuantityMillisMaximum(Long quantityMillisMaximum) {
+        this.quantityMillisMaximum = quantityMillisMaximum;
     }
 
     // ************************************************************************
     // Complex methods
     // ************************************************************************
 
-    public long calculateSquaredStandardDeviationFemtosMaximum() {
-        return standardDeviationMillisMaximum * standardDeviationMillisMaximum
-                * 1000L * 1000L * 1000L;
+    public String getquantityMaximumLabel() {
+        return InvestmentNumericUtil.formatMillisAsPercentage(quantityMillisMaximum);
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 
 }
