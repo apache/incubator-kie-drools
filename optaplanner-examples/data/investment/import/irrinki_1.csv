@@ -1,9 +1,0 @@
-ABC Institutional Investor Capital Markets Expectations;;;;;;;;;
-Asset class;;;;Correlation;;;;;
-ID;Name;Expected return;Standard deviation;1;2;3;4;5;6
-1;UK Equities;10%;15%;100%;76%;35%;50%;24%;30%
-2;Ex-UK Equities;8%;12%;76%;100%;4%;30%;36%;25%
-3;Intermediate Bond;4%;7%;35%;4%;100%;87%;62%;-5%
-4;Long-Term Bonds;4.5%;8%;50%;30%;87%;100%;52%;-2%
-5;Intermediate Bond;5%;9%;24%;36%;62%;52%;100%;20%
-6;Real Estate;7%;10%;30%;25%;-5%;-2%;20%;100%

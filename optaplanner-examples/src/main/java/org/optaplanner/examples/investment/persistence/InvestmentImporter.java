@@ -24,21 +24,21 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionImporter;
 import org.optaplanner.examples.investment.domain.AssetClass;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.InvestmentParametrization;
 import org.optaplanner.examples.investment.domain.Region;
 
-public class InvestmentImporter extends AbstractTxtSolutionImporter {
-
-    private static final String INPUT_FILE_SUFFIX = "csv";
+public class InvestmentImporter extends AbstractXlsxSolutionImporter {
 
     public static void main(String[] args) {
         InvestmentImporter importer = new InvestmentImporter();
-        importer.convert("irrinki_1.csv", "irrinki_1.xml");
+        importer.convert("irrinki_1.xlsx", "irrinki_1.xml");
     }
 
     public InvestmentImporter() {
@@ -50,22 +50,18 @@ public class InvestmentImporter extends AbstractTxtSolutionImporter {
     }
 
     @Override
-    public String getInputFileSuffix() {
-        return INPUT_FILE_SUFFIX;
-    }
-
-    public TxtInputBuilder createTxtInputBuilder() {
+    public XslxInputBuilder createXslxInputBuilder() {
         return new InvestmentAllocationInputBuilder();
     }
 
-    public static class InvestmentAllocationInputBuilder extends TxtInputBuilder {
+    public static class InvestmentAllocationInputBuilder extends XslxInputBuilder {
 
         private InvestmentSolution solution;
 
         public Solution readSolution() throws IOException {
             solution = new InvestmentSolution();
             solution.setId(0L);
-            readHeaders();
+            readParametrization();
             readRegionList();
             readAssetClassList();
             createAssetClassAllocationList();
@@ -75,53 +71,69 @@ public class InvestmentImporter extends AbstractTxtSolutionImporter {
             return solution;
         }
 
-        private void readHeaders() throws IOException {
-            readConstantLine("ABC Institutional Investor Capital Markets Expectations;*");
-            readConstantLine("Asset class;+Correlation;*");
+        private void readParametrization() throws IOException {
+            Sheet sheet = readSheet(0, "Parametrization");
+            assertCellConstant(sheet.getRow(0).getCell(0), "Investment parametrization");
             InvestmentParametrization parametrization = new InvestmentParametrization();
             parametrization.setId(0L);
-            parametrization.setStandardDeviationMillisMaximum(73); // TODO do not hardcode
+            parametrization.setStandardDeviationMillisMaximum(
+                    parsePercentageMillis(readDoubleParameter(sheet.getRow(1), "Standard deviation maximum")));
             solution.setParametrization(parametrization);
         }
 
         private void readRegionList() throws IOException {
+            Sheet sheet = readSheet(1, "Regions");
             List<Region> regionList = new ArrayList<Region>(0);
             solution.setRegionList(regionList);
         }
 
         private void readAssetClassList() throws IOException {
-            String headerLine = bufferedReader.readLine();
-            String[] headerTokens = splitBySemicolonSeparatedValue(headerLine);
-            String headerRegex = "ID;Name;Expected return;Standard deviation(;\\d+)+";
-            if (!headerLine.trim().matches(headerRegex)) {
-                throw new IllegalArgumentException("Read line (" + headerLine + ") is expected to be a constant regex ("
-                        + headerRegex + ").");
-            }
+            Sheet sheet = readSheet(2, "AssetClasses");
+            Row groupHeaderRow = sheet.getRow(0);
+            assertCellConstant(groupHeaderRow.getCell(0), "Asset class");
+            assertCellConstant(groupHeaderRow.getCell(4), "Correlation");
+            Row headerRow = sheet.getRow(1);
+            assertCellConstant(headerRow.getCell(0), "ID");
+            assertCellConstant(headerRow.getCell(1), "Name");
+            assertCellConstant(headerRow.getCell(2), "Expected return");
+            assertCellConstant(headerRow.getCell(3), "Standard deviation");
+
             final int ASSET_CLASS_PROPERTIES_COUNT = 4;
-            int assetClassListSize = headerTokens.length - ASSET_CLASS_PROPERTIES_COUNT;
+            int assetClassListSize = headerRow.getPhysicalNumberOfCells() - ASSET_CLASS_PROPERTIES_COUNT;
             List<AssetClass> assetClassList = new ArrayList<AssetClass>(assetClassListSize);
+
             Map<Long, AssetClass> idToAssetClassMap = new HashMap<Long, AssetClass>(assetClassListSize);
             for (int i = 0; i < assetClassListSize; i++) {
                 AssetClass assetClass = new AssetClass();
-                assetClass.setId(Long.parseLong(headerTokens[ASSET_CLASS_PROPERTIES_COUNT + i]));
+                assetClass.setId(readLongCell(headerRow.getCell(ASSET_CLASS_PROPERTIES_COUNT + i)));
                 assetClassList.add(assetClass);
-                idToAssetClassMap.put(assetClass.getId(), assetClass);
+                AssetClass old = idToAssetClassMap.put(assetClass.getId(), assetClass);
+                if (old != null) {
+                    throw new IllegalStateException("The assetClass id (" + assetClass.getId() + ") is not unique.");
+                }
             }
-            for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
-                String[] tokens = splitBySemicolonSeparatedValue(line, ASSET_CLASS_PROPERTIES_COUNT + assetClassListSize);
-                long id = Long.parseLong(tokens[0]);
+            for (Row row : sheet) {
+                if (row.getRowNum() <= 1) {
+                    continue;
+                }
+                if (row.getPhysicalNumberOfCells() != (ASSET_CLASS_PROPERTIES_COUNT + assetClassListSize)) {
+                    throw new IllegalArgumentException("The row (" + row.getRowNum() + ") has "
+                            + row.getPhysicalNumberOfCells() + " cells, but is expected to have "
+                            + (ASSET_CLASS_PROPERTIES_COUNT + assetClassListSize) + " cells instead.");
+                }
+                long id = readLongCell(row.getCell(0));
                 AssetClass assetClass = idToAssetClassMap.get(id);
                 if (assetClass == null) {
-                    throw new IllegalStateException("The assetClass line (" + line
-                            + ") has an assetClass id (" + id + ") that is not in the headerLine (" + headerLine + ")");
+                    throw new IllegalStateException("The row (" + row.getRowNum()
+                            + ") has an assetClass id (" + id + ") that is not in the header.");
                 }
-                assetClass.setName(tokens[1]);
-                assetClass.setExpectedReturnMillis(parsePercentageMillis(tokens[2]));
-                assetClass.setStandardDeviationRiskMillis(parsePercentageMillis(tokens[3]));
+                assetClass.setName(readStringCell(row.getCell(1)));
+                assetClass.setExpectedReturnMillis(parsePercentageMillis(readDoubleCell(row.getCell(2))));
+                assetClass.setStandardDeviationRiskMillis(parsePercentageMillis(readDoubleCell(row.getCell(3))));
                 Map<AssetClass, Long> correlationMillisMap = new LinkedHashMap<AssetClass, Long>(assetClassListSize);
                 for (int i = 0; i < assetClassListSize; i++) {
                     AssetClass other = assetClassList.get(i);
-                    long correlationMillis = parsePercentageMillis(tokens[ASSET_CLASS_PROPERTIES_COUNT + i]);
+                    long correlationMillis = parsePercentageMillis(readDoubleCell(row.getCell(ASSET_CLASS_PROPERTIES_COUNT + i)));
                     correlationMillisMap.put(other, correlationMillis);
                 }
                 assetClass.setCorrelationMillisMap(correlationMillisMap);
@@ -139,6 +151,10 @@ public class InvestmentImporter extends AbstractTxtSolutionImporter {
                 assetClassAllocationList.add(allocation);
             }
             solution.setAssetClassAllocationList(assetClassAllocationList);
+        }
+
+        protected long parsePercentageMillis(double numericValue) {
+            return (long) (numericValue * 1000.0);
         }
 
         protected long parsePercentageMillis(String token) {

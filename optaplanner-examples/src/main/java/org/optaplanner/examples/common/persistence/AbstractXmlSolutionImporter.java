@@ -37,6 +37,10 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
         super(solutionDao);
     }
 
+    protected AbstractXmlSolutionImporter(boolean withoutDao) {
+        super(withoutDao);
+    }
+
     public String getInputFileSuffix() {
         return DEFAULT_INPUT_FILE_SUFFIX;
     }
@@ -50,11 +54,11 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
             in = new FileInputStream(inputFile);
             SAXBuilder builder = new SAXBuilder(false);
             Document document = builder.build(in);
-            XmlInputBuilder txtInputBuilder = createXmlInputBuilder();
-            txtInputBuilder.setInputFile(inputFile);
-            txtInputBuilder.setDocument(document);
+            XmlInputBuilder xmlInputBuilder = createXmlInputBuilder();
+            xmlInputBuilder.setInputFile(inputFile);
+            xmlInputBuilder.setDocument(document);
             try {
-                solution = txtInputBuilder.readSolution();
+                solution = xmlInputBuilder.readSolution();
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Exception in inputFile (" + inputFile + ")", e);
             } catch (IllegalStateException e) {
