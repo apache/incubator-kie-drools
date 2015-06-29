@@ -94,7 +94,11 @@ public class TypeDeclarationFactory {
 
                         int fieldCount = 0;
                         for ( String existingFieldName : cfi.getFieldTypesField().keySet() ) {
-                            if ( ! cfi.isNonGetter( existingFieldName ) && ! "class".equals( existingFieldName ) && cfi.getSetterMethods().containsKey( existingFieldName ) ) {
+                            if ( ! cfi.isNonGetter( existingFieldName )
+                                 && ! "class".equals( existingFieldName )
+                                 && cfi.getSetterMethods().containsKey( existingFieldName )
+                                 && cfi.getGetterMethods().containsKey( existingFieldName )
+                                    ) {
                                 if ( ! typeDescr.getFields().containsKey( existingFieldName ) ) {
                                     type.setValid(false);
                                     kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName() +
