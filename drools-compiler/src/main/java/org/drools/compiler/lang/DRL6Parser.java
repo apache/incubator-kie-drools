@@ -2576,7 +2576,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @return
      * @throws org.antlr.runtime.RecognitionException
      */
-    private BaseDescr lhsExists(CEDescrBuilder<?, ?> ce,
+    protected BaseDescr lhsExists(CEDescrBuilder<?, ?> ce,
             boolean allowOr) throws RecognitionException {
         CEDescrBuilder<?, ExistsDescr> exists = null;
 
@@ -2655,7 +2655,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @return
      * @throws org.antlr.runtime.RecognitionException
      */
-    private BaseDescr lhsNot(CEDescrBuilder<?, ?> ce,
+    protected BaseDescr lhsNot(CEDescrBuilder<?, ?> ce,
             boolean allowOr) throws RecognitionException {
         CEDescrBuilder<?, NotDescr> not = null;
 
@@ -2734,7 +2734,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @return
      * @throws org.antlr.runtime.RecognitionException
      */
-    private BaseDescr lhsForall(CEDescrBuilder<?, ?> ce) throws RecognitionException {
+    protected BaseDescr lhsForall(CEDescrBuilder<?, ?> ce) throws RecognitionException {
         ForallDescrBuilder<?> forall = helper.start(ce,
                 ForallDescrBuilder.class,
                 null);
