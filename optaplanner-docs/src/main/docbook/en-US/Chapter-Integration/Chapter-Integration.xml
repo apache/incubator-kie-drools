@@ -189,58 +189,15 @@
     <section xml:id="integrationWithAndroid">
       <title>Android</title>
 
-      <para>Android is not a complete JVM. Some JDK libraries of the <literal>java.beans</literal> package are missing
-      for proper Planner functionality. However, it is possible to use Planner with Java score calculation by adding
-      missing libraries to your Android project. The Drools rule engine does not work on Android yet, so Drools score
-      calculation doesn't work on Android.</para>
+      <para>Android is not a complete JVM (because some JDK libraries are missing), but Planner works on Android with
+      <link linkend="easyJavaScoreCalculation">easy Java</link> or <link
+      linkend="incrementalJavaScoreCalculation">incremental Java</link> score calculation. The Drools rule engine does
+      not work on Android yet, so Drools score calculation doesn't work on Android and its dependencies need to be
+      excluded.</para>
 
       <para><emphasis role="bold">Workaround to use Planner on Android:</emphasis></para>
 
       <orderedlist>
-        <listitem>
-          <para>Download <link xlink:href="https://openbeans.googlecode.com/files/openbeans-1.0.jar">OpenBeans</link>
-          redistribution of the <literal>java.beans</literal> package.</para>
-        </listitem>
-
-        <listitem>
-          <para>Download <link xlink:href="https://jarjar.googlecode.com/files/jarjar-1.4.jar">Jar Jar Links</link>
-          utility for repacking the redistribution.</para>
-        </listitem>
-
-        <listitem>
-          <para>Create a <literal>jarJarRule.txt</literal> text file with a single line:</para>
-
-          <programlisting>rule com.googlecode.openbeans.** java.beans.@1</programlisting>
-        </listitem>
-
-        <listitem>
-          <para>Place all the files in the same folder and run the command:</para>
-
-          <programlisting>$ java -jar jarjar-1.4.jar process jarJarRule.txt openbeans-1.0.jar javabeans-1.0.jar</programlisting>
-        </listitem>
-
-        <listitem>
-          <para>Move the created <literal>javabeans-1.0.jar</literal> into the <literal>libs</literal> folder in your
-          Android project.</para>
-        </listitem>
-
-        <listitem>
-          <para>Add these lines to the <literal>android</literal> area in the <literal>build.gradle</literal> file in
-          your Android project to allow classes of the <literal>java.*</literal> package inside the
-          <literal>javabeans-1.0.jar</literal> file to be used:</para>
-
-          <programlisting language="gradle">android {
-    ...
-    dexOptions {
-        preDexLibraries = false
-    }
-    project.tasks.withType(com.android.build.gradle.tasks.Dex) {
-        additionalParameters=['--core-library']
-    }
-    ...
-}</programlisting>
-        </listitem>
-
         <listitem>
           <para>Add a dependency to the <literal>build.gradle</literal> file in your Android project to exclude
           <literal>org.drools</literal> and <literal>xmlpull</literal> dependencies:</para>
@@ -264,7 +221,7 @@
     <para>A good Planner implementation beats any good human planner for non-trivial datasets. Many human planners fail
     to accept this, often because they feel threatened by an automated system.</para>
 
-    <para>But despite that, Planner can benefit from a human planner as supervisor:</para>
+    <para>But despite that, both can benefit if the human planner acts as supervisor to Planner:</para>
 
     <itemizedlist>
       <listitem>
