@@ -4,6 +4,7 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.rule.TypeDeclaration;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -1204,6 +1205,59 @@ public class TypeDeclarationTest {
         kh.addContent( s1, ResourceType.DRL );
 
         assertEquals( 1, kh.verify().getMessages( Message.Level.ERROR ).size() );
+    }
+
+    public static class BeanishClass {
+        private int foo;
+        public int getFoo() { return foo; }
+        public void setFoo( int x ) { foo = x; }
+        public void setFooAsString( String x ) { foo = Integer.parseInt( x ); }
+    }
+
+    @Test
+    public void testDeclarationOfClassWithNonStandardSetter() {
+        final String s1 = "package test; " +
+                          "import " + BeanishClass.class.getCanonicalName() + "; " +
+
+                          "declare " + BeanishClass.class.getSimpleName() + " @propertyReactive end " +
+
+                          "rule Check when BeanishClass() @Watch( foo ) then end ";
+
+        KieHelper kh = new KieHelper();
+        kh.addContent( s1, ResourceType.DRL );
+
+        assertEquals( 0, kh.verify().getMessages( Message.Level.ERROR ).size() );
+    }
+
+    @Test
+    @Ignore( "DROOLS-815" )
+    public void testDeclarationOfClassWithNonStandardSetterAndCanonicalName() {
+        final String s1 = "package test; " +
+                          "import " + BeanishClass.class.getCanonicalName() + "; " +
+
+                          "declare " + BeanishClass.class.getCanonicalName() + " @propertyReactive end " +
+
+                          "rule Check when BeanishClass() @Watch( foo ) then end ";
+
+        KieHelper kh = new KieHelper();
+        kh.addContent( s1, ResourceType.DRL );
+
+        assertEquals( 0, kh.verify().getMessages( Message.Level.ERROR ).size() );
+    }
+
+    @Test
+    public void testDeclarationOfClassWithNonStandardSetterAndFulllName() {
+        final String s1 = "package test; " +
+                          "import " + BeanishClass.class.getCanonicalName() + "; " +
+
+                          "declare " + BeanishClass.class.getName() + " @propertyReactive end " +
+
+                          "rule Check when BeanishClass() @watch( foo ) then end ";
+
+        KieHelper kh = new KieHelper();
+        kh.addContent( s1, ResourceType.DRL );
+
+        assertEquals( 0, kh.verify().getMessages( Message.Level.ERROR ).size() );
     }
 
 }
