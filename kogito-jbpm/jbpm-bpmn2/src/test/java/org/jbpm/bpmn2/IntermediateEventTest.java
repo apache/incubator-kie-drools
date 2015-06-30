@@ -47,7 +47,6 @@ import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
-import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -63,7 +62,6 @@ import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -955,6 +953,53 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertTrue(nodeId > 0);
         assertNotNull(nodeInstanceId);
         assertTrue(nodeInstanceId > 0);
+    }
+    
+    @Test
+    public void testMessageIntermediateThrowVerifyWorkItemDataDeploymentId() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventMessage.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        ksession.getWorkItemManager().registerWorkItemHandler("Send Task", handler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "MyValue");
+        ProcessInstance processInstance = ksession.startProcess("MessageIntermediateEvent", params);
+        assertProcessInstanceCompleted(processInstance);
+        
+        WorkItem workItem = handler.getWorkItem();
+        assertNotNull(workItem);
+        assertTrue(workItem instanceof org.drools.core.process.instance.WorkItem);
+        
+        long nodeInstanceId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId();
+        long nodeId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeId();
+        String deploymentId = ((org.drools.core.process.instance.WorkItem) workItem).getDeploymentId();
+        
+        assertNotNull(nodeId);
+        assertTrue(nodeId > 0);
+        assertNotNull(nodeInstanceId);
+        assertTrue(nodeInstanceId > 0);
+        assertNull(deploymentId);
+        
+        // now set deployment id as part of ksession's env
+        ksession.getEnvironment().set("deploymentId", "testDeploymentId");
+        
+        ksession.startProcess("MessageIntermediateEvent", params);
+        assertProcessInstanceCompleted(processInstance);
+        
+        workItem = handler.getWorkItem();
+        assertNotNull(workItem);
+        assertTrue(workItem instanceof org.drools.core.process.instance.WorkItem);
+        
+        nodeInstanceId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId();
+        nodeId = ((org.drools.core.process.instance.WorkItem) workItem).getNodeId();
+        deploymentId = ((org.drools.core.process.instance.WorkItem) workItem).getDeploymentId();
+        
+        assertNotNull(nodeId);
+        assertTrue(nodeId > 0);
+        assertNotNull(nodeInstanceId);
+        assertTrue(nodeInstanceId > 0);
+        assertNotNull(deploymentId);
+        assertEquals("testDeploymentId", deploymentId);
     }
 
     @Test

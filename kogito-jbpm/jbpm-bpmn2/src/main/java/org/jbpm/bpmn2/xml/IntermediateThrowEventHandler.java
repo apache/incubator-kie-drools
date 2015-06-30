@@ -274,6 +274,8 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 										+ EOL
 										+ "workItem.setNodeId(kcontext.getNodeInstance().getNodeId());"
 										+ EOL
+										+ "workItem.setDeploymentId((String) kcontext.getKnowledgeRuntime().getEnvironment().get(\"deploymentId\"));"
+										+ EOL
 										+ (variable == null ? ""
 												: "workItem.setParameter(\"Message\", tVariable);" + EOL)
 										+ "((org.drools.core.process.instance.WorkItemManager) kcontext.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);"));

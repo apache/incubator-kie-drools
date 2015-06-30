@@ -16,8 +16,6 @@
 
 package org.jbpm.bpmn2.xml;
 
-import static org.jbpm.bpmn2.xml.ProcessHandler.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -182,8 +180,11 @@ public class EndEventHandler extends AbstractNodeHandler {
                 actions.add(new DroolsConsequenceAction("java",
                     "org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();" + EOL +
                     "workItem.setName(\"Send Task\");" + EOL + 
+                    "workItem.setNodeInstanceId(kcontext.getNodeInstance().getId());" + EOL + 
+                    "workItem.setNodeId(kcontext.getNodeInstance().getNodeId());" + EOL +
                     "workItem.setParameter(\"MessageType\", \"" + message.getType() + "\");" + EOL + 
                     (variable == null ? "" : "workItem.setParameter(\"Message\", " + variable + ");" + EOL) +
+					"workItem.setDeploymentId((String) kcontext.getKnowledgeRuntime().getEnvironment().get(\"deploymentId\"));" + EOL +
                     "((org.drools.core.process.instance.WorkItemManager) kcontext.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);"));
                 endNode.setActions(EndNode.EVENT_NODE_ENTER, actions);
             }
