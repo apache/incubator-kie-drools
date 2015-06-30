@@ -23,6 +23,7 @@ import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.AgendaGroup;
@@ -117,7 +118,7 @@ public interface InternalAgenda
      * Clears all Activations from an Agenda Group. Any Activations that are also in an Xor Group are removed the
      * the Xor Group.
      */
-    void clearAndCancelAgendaGroup(AgendaGroup agendaGroup);
+    void clearAndCancelAgendaGroup(InternalAgendaGroup agendaGroup);
 
     /**
      * Clears all Activations from an Activation-Group. Any Activations that are also in an Agenda Group are removed
@@ -160,17 +161,11 @@ public interface InternalAgenda
 
     void scheduleItem(final ScheduledAgendaItem item, InternalWorkingMemory workingMemory);
 
-    AgendaItem createAgendaItem(final LeftTuple tuple,
-                                       final int salience,
-                                       final PropagationContext context,
-                                       final TerminalNode rtn,
-                                       RuleAgendaItem ruleAgendaItem,
-                                       InternalAgendaGroup agendaGroup);
-
-    ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
-                                                         final PropagationContext context,
-                                                         final TerminalNode rtn,
-                                                         InternalAgendaGroup agendaGroup);
+    AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
+                                int salience,
+                                PropagationContext context,
+                                RuleAgendaItem ruleAgendaItem,
+                                InternalAgendaGroup agendaGroup);
 
     boolean createActivation(final LeftTuple tuple,
                                     final PropagationContext context,
@@ -296,8 +291,6 @@ public interface InternalAgenda
 
     void addQueryAgendaItem(final RuleAgendaItem item);
     void removeQueryAgendaItem(final RuleAgendaItem item);
-
-    long getNextActivationCounter();
 
     /*
          * (non-Javadoc)
