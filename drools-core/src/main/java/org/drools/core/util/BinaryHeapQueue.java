@@ -121,7 +121,8 @@ public class BinaryHeapQueue
     }
 
     public Activation[] getAndClear() {
-        Activation[] queue = this.elements;
+        Activation[] queue = new Activation[size];
+        System.arraycopy( this.elements, 1, queue, 0, size );
         this.elements = new Activation[this.elements.length]; // for gc
         this.size = 0;
         return queue;

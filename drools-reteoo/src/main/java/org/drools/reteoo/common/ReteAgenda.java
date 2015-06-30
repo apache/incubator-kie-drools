@@ -219,18 +219,11 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         return lazyAgendaItem;
     }
 
-    @Override
-    public long getNextActivationCounter() {
-        return activationCounter++;
-    }
-
-    public AgendaItem createAgendaItem(final LeftTuple tuple,
+    public AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
                                        final int salience,
                                        final PropagationContext context,
-                                       final TerminalNode rtn,
                                        RuleAgendaItem ruleAgendaItem,
                                        InternalAgendaGroup agendaGroup) {
-        RuleTerminalNodeLeftTuple rtnLeftTuple = (RuleTerminalNodeLeftTuple) tuple;
         rtnLeftTuple.init(activationCounter++,
                           salience,
                           context,
@@ -562,8 +555,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         // ControlRules for now re-use the same PropagationContext
         if ( rtn.isFireDirect() ) {
             // Fire RunLevel == 0 straight away. agenda-groups, rule-flow groups, salience are ignored
-            AgendaItem item = createAgendaItem( tuple, 0, context,
-                                                rtn, null, null );
+            AgendaItem item = createAgendaItem( (RuleTerminalNodeLeftTuple)tuple, 0, context, null, null );
             tuple.setObject( item );
             if ( activationsFilter != null && !activationsFilter.accept( item,
                                                                          workingMemory,
@@ -606,10 +598,9 @@ public class ReteAgenda<M extends ModedAssertion<M>>
                 return false;
             }
 
-            item = createAgendaItem( tuple,
+            item = createAgendaItem( (RuleTerminalNodeLeftTuple)tuple,
                                      0,
                                      context,
-                                     rtn,
                                      null,
                                      agendaGroup
                                    );
@@ -654,10 +645,9 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             return false;
         }
 
-        item = createAgendaItem( tuple,
+        item = createAgendaItem( (RuleTerminalNodeLeftTuple)tuple,
                                  0,
                                  context,
-                                 rtn,
                                  null,
                                  agendaGroup
                                );
@@ -1097,7 +1087,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
      * @see org.kie.common.AgendaI#clearAgendaGroup(java.lang.String)
      */
     public void clearAndCancelAgendaGroup(final String name) {
-        final AgendaGroup agendaGroup = this.agendaGroups.get( name );
+        InternalAgendaGroup agendaGroup = this.agendaGroups.get( name );
         if ( agendaGroup != null ) {
             clearAndCancelAgendaGroup( agendaGroup );
         }
@@ -1108,7 +1098,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
      *
      * @see org.kie.common.AgendaI#clearAgendaGroup(org.kie.common.AgendaGroupImpl)
      */
-    public void clearAndCancelAgendaGroup(final AgendaGroup agendaGroup) {
+    public void clearAndCancelAgendaGroup(InternalAgendaGroup agendaGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
         ((InternalAgendaGroup) agendaGroup).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );

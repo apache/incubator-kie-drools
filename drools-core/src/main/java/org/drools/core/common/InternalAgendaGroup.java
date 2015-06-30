@@ -60,7 +60,7 @@ public interface InternalAgendaGroup extends AgendaGroup {
 
     void removeNodeInstance(Long processInstanceId, String nodeInstanceId);
 
-    public Activation[] getActivations();
+    Activation[] getActivations();
 
     Map<Long, String> getNodeInstances();
 
@@ -70,10 +70,9 @@ public interface InternalAgendaGroup extends AgendaGroup {
 
     InternalWorkingMemory getWorkingMemory();
 
-
     void hasRuleFlowListener(boolean hasRuleFlowLister);
 
     boolean isRuleFlowListener();
 
-    public boolean isSequential();
+    boolean isSequential();
 }
