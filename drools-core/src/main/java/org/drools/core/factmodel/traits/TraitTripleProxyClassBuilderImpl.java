@@ -851,7 +851,8 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
         if ( core.isFullTraiting() ) {
             // The trait field update will be done by the core setter. However, types may mismatch here
             FieldDefinition hardField = core.getFieldByAlias( field.resolveAlias() );
-            if ( ! field.getType().isPrimitive() && ! field.getTypeName().equals( hardField.getTypeName() ) ) {
+            boolean isHardField = field.getTypeName().equals( hardField.getTypeName() );
+            if ( ! field.getType().isPrimitive() && ! isHardField ) {
                 boolean isCoreTrait = hardField.getType().getAnnotation( Trait.class ) != null;
                 boolean isTraitTrait = field.getType().getAnnotation( Trait.class ) != null;
 
@@ -894,6 +895,10 @@ public class TraitTripleProxyClassBuilderImpl implements TraitProxyClassBuilder,
                 if ( ! hardField.getType().equals( field.getType() ) ) {
                     mv.visitInsn( RETURN );
                 }
+            }
+
+            if ( isHardField && CoreWrapper.class.isAssignableFrom( core.getDefinedClass() ) ) {
+                logicalSetter( mv, field, masterName, this.trait, core, true );
             }
         }
 
