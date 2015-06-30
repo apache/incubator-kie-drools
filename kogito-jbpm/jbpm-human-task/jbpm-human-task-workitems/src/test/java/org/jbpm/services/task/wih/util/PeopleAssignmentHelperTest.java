@@ -55,39 +55,37 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
 		List<OrganizationalEntity> organizationalEntities = new ArrayList<OrganizationalEntity>();
 		
 		String ids = "espiegelberg,   drbug   ";
-		assertTrue(organizationalEntities.size() == 0);		
+		assertTrue(organizationalEntities.isEmpty());
 		peopleAssignmentHelper.processPeopleAssignments(ids, organizationalEntities, true);
 		assertTrue(organizationalEntities.size() == 2);
-		organizationalEntities.contains("drbug");
-		organizationalEntities.contains("espiegelberg");
-		assertTrue(organizationalEntities.get(0) instanceof User);
-		assertTrue(organizationalEntities.get(1) instanceof User);
+		assertTrue(organizationalEntities.contains(createUser("drbug")));
+		assertTrue(organizationalEntities.contains(createUser("espiegelberg")));
 		
 		ids = null;
 		organizationalEntities = new ArrayList<OrganizationalEntity>();
-		assertTrue(organizationalEntities.size() == 0);		
+		assertTrue(organizationalEntities.isEmpty());
 		peopleAssignmentHelper.processPeopleAssignments(ids, organizationalEntities, true);
-		assertTrue(organizationalEntities.size() == 0);
+		assertTrue(organizationalEntities.isEmpty());
 		
 		ids = "     ";
 		organizationalEntities = new ArrayList<OrganizationalEntity>();
-		assertTrue(organizationalEntities.size() == 0);		
+		assertTrue(organizationalEntities.isEmpty());
 		peopleAssignmentHelper.processPeopleAssignments(ids, organizationalEntities, true);
-		assertTrue(organizationalEntities.size() == 0);
+		assertTrue(organizationalEntities.isEmpty());
 		
 		ids = "Software Developer";
 		organizationalEntities = new ArrayList<OrganizationalEntity>();
-		assertTrue(organizationalEntities.size() == 0);		
+		assertTrue(organizationalEntities.isEmpty());
 		peopleAssignmentHelper.processPeopleAssignments(ids, organizationalEntities, false);
 		assertTrue(organizationalEntities.size() == 1);
-		assertTrue(organizationalEntities.get(0) instanceof Group);
+		assertTrue(organizationalEntities.contains(createGroup("Software Developer")));
 		
 		// Test that a duplicate is not added; only 1 of the 2 passed in should be added
 		ids = "Software Developer,Project Manager";
 		peopleAssignmentHelper.processPeopleAssignments(ids, organizationalEntities, false);
 		assertTrue(organizationalEntities.size() == 2);
-		assertTrue(organizationalEntities.get(0) instanceof Group);
-		assertTrue(organizationalEntities.get(1) instanceof Group);
+		assertTrue(organizationalEntities.contains(createGroup("Software Developer")));
+		assertTrue(organizationalEntities.contains(createGroup("Project Manager")));
 		
 	}
 	
@@ -483,5 +481,12 @@ public class PeopleAssignmentHelperTest  extends AbstractBaseTest {
         assertEquals(recipientId, organizationalEntity1.getId());
 
     }
-	
+
+    private User createUser(String id) {
+        return TaskModelProvider.getFactory().newUser(id);
+    }
+
+    private Group createGroup(String id) {
+        return TaskModelProvider.getFactory().newGroup(id);
+    }
 }

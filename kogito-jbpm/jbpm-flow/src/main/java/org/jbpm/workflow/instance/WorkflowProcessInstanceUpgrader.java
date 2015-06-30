@@ -18,6 +18,7 @@ package org.jbpm.workflow.instance;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -31,7 +32,6 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.NodeInstance;
-import java.util.Stack;
 
 public class WorkflowProcessInstanceUpgrader {
 
@@ -93,7 +93,7 @@ public class WorkflowProcessInstanceUpgrader {
             if (processFrom instanceof WorkflowProcess) {
                 from = getNodeId(((WorkflowProcess) processFrom).getNodes(), entry.getKey(), true);
             } else if (processFrom instanceof RuleFlowProcess) {
-                from = getNodeId(((RuleFlowProcessInstance) processFrom).getWorkflowProcess().getNodes(), entry.getKey(), true);
+                from = getNodeId(((RuleFlowProcess) processFrom).getNodes(), entry.getKey(), true);
             } else if (processFrom != null) {
                 throw new IllegalArgumentException("Suported processes are WorkflowProcess and RuleFlowProcess, it was:" + processFrom.getClass());
             } else {

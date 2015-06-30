@@ -120,7 +120,7 @@ public class GlobalJPATimerJobFactoryManager implements TimerJobFactoryManager {
         return singleTimerInstances.values();
     }
     
-    public Collection<TimerJobInstance> getTimerJobInstances(Integer sessionId) {
+    public Collection<TimerJobInstance> getTimerJobInstances(Long sessionId) {
         Map<Long, TimerJobInstance> sessionTimerJobs = timerInstances.get(sessionId);
         if (sessionTimerJobs == null) {
             return Collections.EMPTY_LIST;

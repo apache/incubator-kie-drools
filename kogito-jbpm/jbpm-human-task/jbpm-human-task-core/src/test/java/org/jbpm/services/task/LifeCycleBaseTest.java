@@ -147,7 +147,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
         ContentData data = ContentMarshallerHelper.marshal("content", null);
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, data);
 
         long taskId = task.getId();
@@ -179,7 +179,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         variablesMap.put("key3", "value3");
         ContentData data = ContentMarshallerHelper.marshal(variablesMap, null);
         
-        Task task = ( Task )  TaskFactory.evalTask( new StringReader( str ));
+        Task task = TaskFactory.evalTask( new StringReader( str ));
         taskService.addTask( task, data );
         
         long taskId = task.getId();
@@ -230,7 +230,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         variablesMap.put("key3", "value3");
         ContentData data = ContentMarshallerHelper.marshal(variablesMap, null);
         
-        Task task = ( Task )  TaskFactory.evalTask( new StringReader( str ));
+        Task task = TaskFactory.evalTask( new StringReader( str ));
         taskService.addTask( task, data );
         
         long taskId = task.getId();
@@ -312,7 +312,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
         ContentData data = ContentMarshallerHelper.marshal(largeContent, null);
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, data);
 
         long taskId = task.getId();
@@ -342,7 +342,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -371,7 +371,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -424,16 +424,16 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         statuses.add(Status.Reserved);
         
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
         
         
-        Task task3 = (Task) TaskFactory.evalTask(new StringReader(str2));
+        Task task3 = TaskFactory.evalTask(new StringReader(str2));
         taskService.addTask(task3, new HashMap<String, Object>());
         
-        Task task4 = (Task) TaskFactory.evalTask(new StringReader(str3));
+        Task task4 = TaskFactory.evalTask(new StringReader(str3));
         taskService.addTask(task4, new HashMap<String, Object>());
         
         List<TaskSummary> tasksAssignedByGroups = taskService.getTasksAssignedByGroups(groupIds);
@@ -504,7 +504,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -532,7 +532,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name'})";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -569,7 +569,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -602,7 +602,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -640,7 +640,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -672,7 +672,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -716,7 +716,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -753,7 +753,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name'})";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -788,7 +788,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -832,7 +832,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name'})";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -867,7 +867,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -900,7 +900,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -941,7 +941,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -982,7 +982,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1028,7 +1028,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1066,7 +1066,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1089,7 +1089,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1119,7 +1119,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
@@ -1130,11 +1130,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task2 = taskService.getTaskById(taskId);
-        User user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Darth Vader");
+        User user = createUser("Darth Vader");
         assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
-        user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Tony Stark");
+        user = createUser("Tony Stark");
         assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
         assertEquals("Tony Stark", task2.getTaskData().getActualOwner().getId());
         // this was checking for ready, but it should be reserved.. it was an old bug
@@ -1151,7 +1149,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1173,11 +1171,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task2 = taskService.getTaskById(taskId);
-        User user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Darth Vader");
+        User user = createUser("Darth Vader");
         assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
-        user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Tony Stark");
+        user = createUser("Tony Stark");
         assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
         assertEquals("Tony Stark", task2.getTaskData().getActualOwner().getId());
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
@@ -1193,7 +1189,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
@@ -1217,16 +1213,15 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertNotNull("Should get permissed denied exception", denied);
 
         Task task2 = taskService.getTaskById(taskId);
-        User user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Darth Vader");
+        User user = createUser("Darth Vader");
         assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
-        user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Tony Stark");
+        user = createUser("Tony Stark");
         assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(user));
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
     }
 
+    @Test
     public void testForwardFromReady() throws Exception {
         
 
@@ -1236,7 +1231,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1245,10 +1240,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
         taskService.forward(taskId, "Darth Vader", "Tony Stark");
 
-
         Task task2 = taskService.getTaskById(taskId);
-        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains("Darth Vader"));
-        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains("Tony Stark"));
+        assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(createUser("Darth Vader")));
+        assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(createUser("Tony Stark")));
         assertNull(task2.getTaskData().getActualOwner());
         assertEquals(Status.Ready, task2.getTaskData().getStatus());
     }
@@ -1263,7 +1257,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1285,11 +1279,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task2 = taskService.getTaskById(taskId);
-        User user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Darth Vader");
+        User user = createUser("Darth Vader");
         assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(user));
-        user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Tony Stark");
+        user = createUser("Tony Stark");
         assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
         assertNull(task2.getTaskData().getActualOwner());
         assertEquals(Status.Ready, task2.getTaskData().getStatus());
@@ -1305,7 +1297,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1335,11 +1327,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task2 = taskService.getTaskById(taskId);
-        User user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Darth Vader");
+        User user = createUser("Darth Vader");
         assertTrue(task2.getPeopleAssignments().getPotentialOwners().contains(user));
-        user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Tony Stark");
+        user = createUser("Tony Stark");
         assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(user));
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
@@ -1355,7 +1345,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1391,7 +1381,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1433,7 +1423,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1499,7 +1489,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1542,7 +1532,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1577,7 +1567,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1621,7 +1611,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1741,12 +1731,11 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), null);
+        Task task = TaskFactory.evalTask(new StringReader(str), null);
         // We need to add the Admin if we don't initialize the task
         if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
             List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
-            User user = TaskModelProvider.getFactory().newUser();
-            ((InternalOrganizationalEntity) user).setId("Administrator");
+            User user = createUser("Administrator");
             businessAdmins.add(user);
             businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
             ((InternalPeopleAssignments) task.getPeopleAssignments()).setBusinessAdministrators(businessAdmins);
@@ -1781,8 +1770,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
 
         Task task1 = taskService.getTaskById(taskId);
-        User user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Bobba Fet");
+        User user = createUser("Bobba Fet");
         assertTrue(((InternalPeopleAssignments) task1.getPeopleAssignments()).getRecipients().contains(user));
     }
 
@@ -1801,7 +1789,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += " potentialOwners = [ new User('Darth Vader'), new User('Bobba Fet') ] } ),";
         str += "name =  'This is my task name' })";
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), null);
+        Task task = TaskFactory.evalTask(new StringReader(str), null);
 
         taskService.addTask(task, new HashMap<String, Object>());
 
@@ -1811,8 +1799,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
         try {
             List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
-            User user = TaskModelProvider.getFactory().newUser();
-            ((InternalOrganizationalEntity) user).setId("Bobba Fet");
+            User user = createUser("Bobba Fet");
             potentialOwners.add(user);
             taskService.nominate(taskId, "Darth Vader", potentialOwners);
 
@@ -1826,11 +1813,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         //shouldn't affect the assignments
 
         Task task1 = taskService.getTaskById(taskId);
-        User user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Darth Vader");
+        User user = createUser("Darth Vader");
         assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(user));
-        user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Bobba Fet");
+        user = createUser("Bobba Fet");
         assertTrue(task1.getPeopleAssignments().getPotentialOwners().contains(user));
     }
 
@@ -1843,7 +1828,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1851,8 +1836,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
         try {
             List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>(1);
-            User user = TaskModelProvider.getFactory().newUser();
-            ((InternalOrganizationalEntity) user).setId("Jabba Hutt");
+            User user = createUser("Jabba Hutt");
             potentialOwners.add(user);
             taskService.nominate(taskId, "Darth Vader", potentialOwners);
 
@@ -1866,8 +1850,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         //shouldn't affect the assignments
 
         Task task1 = taskService.getTaskById(taskId);
-        User user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Bobba Fet");
+        User user = createUser("Bobba Fet");
         assertTrue(task1.getPeopleAssignments().getBusinessAdministrators().contains(user));
         assertEquals(task1.getTaskData().getStatus(), Status.Created);
     }
@@ -1881,15 +1864,14 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
 
 
         List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>(1);
-        User user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Jabba Hutt");
+        User user = createUser("Jabba Hutt");
         potentialOwners.add(user);
         taskService.nominate(taskId, "Darth Vader", potentialOwners);
 
@@ -1911,7 +1893,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name'})";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1942,7 +1924,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1968,7 +1950,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "businessAdministrators = [ new User('Jabba Hutt') ] } ),";
         str += "name =  'This is my task name'})";
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -1996,12 +1978,11 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str), null);
+        Task task = TaskFactory.evalTask(new StringReader(str), null);
         // We need to add the Admin if we don't initialize the task
         if (task.getPeopleAssignments() != null && task.getPeopleAssignments().getBusinessAdministrators() != null) {
             List<OrganizationalEntity> businessAdmins = new ArrayList<OrganizationalEntity>();
-            User user = TaskModelProvider.getFactory().newUser();
-            ((InternalOrganizationalEntity) user).setId("Administrator");
+            User user = createUser("Administrator");
             businessAdmins.add(user);
             businessAdmins.addAll(task.getPeopleAssignments().getBusinessAdministrators());
             ((InternalPeopleAssignments) task.getPeopleAssignments()).setBusinessAdministrators(businessAdmins);
@@ -2033,7 +2014,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -2056,7 +2037,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -2079,7 +2060,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -2105,7 +2086,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -2131,7 +2112,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -2156,7 +2137,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name = 'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -2185,7 +2166,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         // Create a local instance of the TaskService
 
         // Deploy the Task Definition to the Task Component
-        taskService.addTask((Task) TaskFactory.evalTask(new StringReader(str)), new HashMap<String, Object>());
+        taskService.addTask(TaskFactory.evalTask(new StringReader(str)), new HashMap<String, Object>());
 
         // Because the Task contains a direct assignment we can query it for its Potential Owner
         // Notice that we obtain a list of TaskSummary (a lightweight representation of a task)
@@ -2233,7 +2214,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
         // Deploy the Task Definition to the Task Component
-        taskService.addTask((Task) TaskFactory.evalTask(new StringReader(str)), new HashMap<String, Object>());
+        taskService.addTask(TaskFactory.evalTask(new StringReader(str)), new HashMap<String, Object>());
 
         // we don't need to query for our task to see what we will claim, just claim the next one available for us
 
@@ -2257,7 +2238,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
         // Deploy the Task Definition to the Task Component
-        taskService.addTask((Task) TaskFactory.evalTask(new StringReader(str)), new HashMap<String, Object>());
+        taskService.addTask(TaskFactory.evalTask(new StringReader(str)), new HashMap<String, Object>());
 
         // we don't need to query for our task to see what we will claim, just claim the next one available for us
         List<String> groups = new ArrayList<String>();
@@ -2282,7 +2263,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "name =  'This is my task name' })";
 
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -2333,7 +2314,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
         str += "name = 'This is my task name' })";
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
         long taskId = task.getId();
@@ -2342,8 +2323,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertNotNull(comments);
         assertEquals(0, comments.size());
         
-        User user = TaskModelProvider.getFactory().newUser();
-        ((InternalOrganizationalEntity) user).setId("Bobba Fet");
+        User user = createUser("Bobba Fet");
         
         Comment comment = TaskModelProvider.getFactory().newComment();
         ((InternalComment)comment).setAddedAt(new Date());
@@ -2398,7 +2378,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
         str += "name = 'This is my task name' })";
 
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
 
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 1000; i++) {
@@ -2439,7 +2419,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
         Date creationTime = new Date();
         
-        Task task = (Task) TaskFactory.evalTask(new StringReader(str));
+        Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
 
@@ -2487,5 +2467,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         List<TaskSummary> archiveddTasks = taskService.getArchivedTasks();
         assertNotNull(archiveddTasks);
         assertEquals(1,  archiveddTasks.size());
+    }
+
+    private User createUser(String id) {
+        return TaskModelProvider.getFactory().newUser(id);
     }
 }

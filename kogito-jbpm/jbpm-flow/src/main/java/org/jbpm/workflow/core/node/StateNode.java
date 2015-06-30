@@ -52,8 +52,8 @@ public class StateNode extends CompositeContextNode implements Constrainable {
         constraints.put(connectionRef, constraint);
     }
     
-    public Constraint getConstraint(String name){
-        return constraints.get(name);
+    public Constraint getConstraint(ConnectionRef connectionRef){
+        return constraints.get(connectionRef);
     }
     
     public Map<ConnectionRef, Constraint> getConstraints(){
