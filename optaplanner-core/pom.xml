@@ -67,6 +67,11 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Scan for annotated classes (can be excluded if scanAnnotatedClasses isn't used) -->
+    <dependency>
+      <groupId>org.scannotation</groupId>
+      <artifactId>scannotation</artifactId>
+    </dependency>
     <!-- XML -->
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
