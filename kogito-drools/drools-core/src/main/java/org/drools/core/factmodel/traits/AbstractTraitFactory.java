@@ -317,7 +317,7 @@ public abstract class AbstractTraitFactory<T extends Thing<K>, K extends Traitab
     }
 
     public <K> TraitableBean<K,CoreWrapper<K>> asTraitable( K core, ClassDefinition coreDef) {
-        if ( coreDef.getDefinedClass() != core.getClass() ) {
+        if ( coreDef == null || coreDef.getDefinedClass() != core.getClass() ) {
             // ensure that a compatible interface cDef is not replaced for the missing actual definition
             try {
                 coreDef = buildClassDefinition( core.getClass(), core.getClass() );
