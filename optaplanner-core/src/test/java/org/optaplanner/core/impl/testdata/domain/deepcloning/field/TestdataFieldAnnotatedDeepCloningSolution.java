@@ -27,14 +27,13 @@ import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
-import org.optaplanner.core.impl.testdata.domain.TestdataUtils;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
 public class TestdataFieldAnnotatedDeepCloningSolution extends TestdataObject implements Solution<SimpleScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return TestdataUtils.buildSolutionDescriptor(TestdataFieldAnnotatedDeepCloningSolution.class, TestdataFieldAnnotatedDeepCloningEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataFieldAnnotatedDeepCloningSolution.class, TestdataFieldAnnotatedDeepCloningEntity.class);
     }
 
     @ValueRangeProvider(id = "valueRange")

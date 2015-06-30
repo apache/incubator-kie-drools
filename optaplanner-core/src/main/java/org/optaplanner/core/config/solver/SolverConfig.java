@@ -24,6 +24,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
+import org.optaplanner.core.config.domain.ScanAnnotatedClassesConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
@@ -59,6 +60,8 @@ public class SolverConfig {
     protected Long randomSeed = null;
     protected Class<? extends RandomFactory> randomFactoryClass = null;
 
+    @XStreamAlias("scanAnnotatedClasses")
+    protected ScanAnnotatedClassesConfig scanAnnotatedClassesConfig = null;
     protected Class<? extends Solution> solutionClass = null;
     @XStreamImplicit(itemFieldName = "entityClass")
     protected List<Class<?>> entityClassList = null;
@@ -110,6 +113,14 @@ public class SolverConfig {
 
     public void setRandomFactoryClass(Class<? extends RandomFactory> randomFactoryClass) {
         this.randomFactoryClass = randomFactoryClass;
+    }
+
+    public ScanAnnotatedClassesConfig getScanAnnotatedClassesConfig() {
+        return scanAnnotatedClassesConfig;
+    }
+
+    public void setScanAnnotatedClassesConfig(ScanAnnotatedClassesConfig scanAnnotatedClassesConfig) {
+        this.scanAnnotatedClassesConfig = scanAnnotatedClassesConfig;
     }
 
     public Class<? extends Solution> getSolutionClass() {
@@ -207,23 +218,26 @@ public class SolverConfig {
     }
 
     protected SolutionDescriptor buildSolutionDescriptor() {
-        if (solutionClass == null) {
-            throw new IllegalArgumentException("Configure a <solutionClass> in the solver configuration.");
+        if (scanAnnotatedClassesConfig != null) {
+            if (solutionClass != null || entityClassList != null) {
+                throw new IllegalArgumentException("The solver configuration with scanAnnotatedClasses ("
+                        + scanAnnotatedClassesConfig + ") cannot also have a solutionClass (" + solutionClass
+                        + ") or an entityClass (" + entityClassList + ").\n"
+                        + "  Please decide between automatic scanning or manual referencing.");
+            }
+            return scanAnnotatedClassesConfig.buildSolutionDescriptor();
+        } else {
+            if (solutionClass == null) {
+                throw new IllegalArgumentException("The solver configuration must have a solutionClass (" + solutionClass
+                        + "), if it has no scanAnnotatedClasses (" + scanAnnotatedClassesConfig + ").");
+            }
+            if (ConfigUtils.isEmptyCollection(entityClassList)) {
+                throw new IllegalArgumentException(
+                        "The solver configuration must have at least 1 entityClass (" + entityClassList
+                        + "), if it has no scanAnnotatedClasses (" + scanAnnotatedClassesConfig + ").");
+            }
+            return SolutionDescriptor.buildSolutionDescriptor(solutionClass, entityClassList);
         }
-        DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
-        SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
-        solutionDescriptor.processAnnotations(descriptorPolicy);
-        if (ConfigUtils.isEmptyCollection(entityClassList)) {
-            throw new IllegalArgumentException(
-                    "Configure at least 1 <entityClass> in the solver configuration.");
-        }
-        for (Class<?> entityClass : entityClassList) {
-            EntityDescriptor entityDescriptor = new EntityDescriptor(solutionDescriptor, entityClass);
-            solutionDescriptor.addEntityDescriptor(entityDescriptor);
-            entityDescriptor.processAnnotations(descriptorPolicy);
-        }
-        solutionDescriptor.afterAnnotationsProcessed(descriptorPolicy);
-        return solutionDescriptor;
     }
 
     protected BestSolutionRecaller buildBestSolutionRecaller(EnvironmentMode environmentMode) {
@@ -263,6 +277,11 @@ public class SolverConfig {
         randomSeed = ConfigUtils.inheritOverwritableProperty(randomSeed, inheritedConfig.getRandomSeed());
         randomFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 randomFactoryClass, inheritedConfig.getRandomFactoryClass());
+        if (scanAnnotatedClassesConfig == null) {
+            scanAnnotatedClassesConfig = inheritedConfig.getScanAnnotatedClassesConfig();
+        } else if (inheritedConfig.getScoreDirectorFactoryConfig() != null) {
+            scanAnnotatedClassesConfig.inherit(inheritedConfig.getScanAnnotatedClassesConfig());
+        }
         solutionClass = ConfigUtils.inheritOverwritableProperty(solutionClass, inheritedConfig.getSolutionClass());
         entityClassList = ConfigUtils.inheritMergeableListProperty(
                 entityClassList, inheritedConfig.getEntityClassList());

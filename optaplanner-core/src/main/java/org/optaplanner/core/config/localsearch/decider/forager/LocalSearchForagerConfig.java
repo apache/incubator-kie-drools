@@ -81,7 +81,7 @@ public class LocalSearchForagerConfig {
     public Forager buildForager(HeuristicConfigPolicy configPolicy) {
         if (foragerClass != null) {
             if (pickEarlyType != null || acceptedCountLimit != null || finalistPodiumType != null) {
-                throw new IllegalArgumentException("The foragerConfig with foragerClass (" + foragerClass
+                throw new IllegalArgumentException("The forager with foragerClass (" + foragerClass
                         + ") must not also have a pickEarlyType (" + pickEarlyType
                         + "), acceptedCountLimit (" + acceptedCountLimit
                         + ") or finalistPodiumType (" + finalistPodiumType + ").");

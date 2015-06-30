@@ -30,7 +30,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 public class TestdataSolution extends TestdataObject implements Solution<SimpleScore> {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return TestdataUtils.buildSolutionDescriptor(TestdataSolution.class, TestdataEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataSolution.class, TestdataEntity.class);
     }
 
     private List<TestdataValue> valueList;

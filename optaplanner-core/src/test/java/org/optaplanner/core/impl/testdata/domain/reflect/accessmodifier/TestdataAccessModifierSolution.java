@@ -27,7 +27,6 @@ import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
-import org.optaplanner.core.impl.testdata.domain.TestdataUtils;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
@@ -50,7 +49,7 @@ public class TestdataAccessModifierSolution extends TestdataObject implements So
     }
 
     public static SolutionDescriptor buildSolutionDescriptor() {
-        return TestdataUtils.buildSolutionDescriptor(TestdataAccessModifierSolution.class, TestdataEntity.class);
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataAccessModifierSolution.class, TestdataEntity.class);
     }
 
     private final String finalField;

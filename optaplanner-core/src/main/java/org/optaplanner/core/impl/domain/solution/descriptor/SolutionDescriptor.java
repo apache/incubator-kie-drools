@@ -60,6 +60,29 @@ import org.slf4j.LoggerFactory;
 
 public class SolutionDescriptor {
 
+    public static SolutionDescriptor buildSolutionDescriptor(Class<? extends Solution> solutionClass,
+            Class<?> ... entityClasses) {
+        return buildSolutionDescriptor(solutionClass, Arrays.asList(entityClasses));
+    }
+
+    public static SolutionDescriptor buildSolutionDescriptor(Class<? extends Solution> solutionClass,
+            List<Class<?>> entityClassList) {
+        DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
+        SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
+        solutionDescriptor.processAnnotations(descriptorPolicy);
+        for (Class<?> entityClass : entityClassList) {
+            EntityDescriptor entityDescriptor = new EntityDescriptor(solutionDescriptor, entityClass);
+            solutionDescriptor.addEntityDescriptor(entityDescriptor);
+            entityDescriptor.processAnnotations(descriptorPolicy);
+        }
+        solutionDescriptor.afterAnnotationsProcessed(descriptorPolicy);
+        return solutionDescriptor;
+    }
+
+    // ************************************************************************
+    // Non-static members
+    // ************************************************************************
+
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Class<? extends Solution> solutionClass;
