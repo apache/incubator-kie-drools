@@ -585,6 +585,12 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         executorService.setInterval((int)delay);
         executorService.setTimeunit(TimeUnit.MILLISECONDS);
         executorService.init();
+
+        // let the executor start worker threads
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+        }
         
         return executorService;
     }
