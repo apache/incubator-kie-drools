@@ -24,8 +24,7 @@ public class MavenProjectLoader {
         MavenRequest mavenRequest = createMavenRequest(offline);
         mavenRequest.setPom( pomFile.getAbsolutePath() );
         try {
-            MavenEmbedder mavenEmbedder = new MavenEmbedder( Thread.currentThread().getContextClassLoader(), mavenRequest );
-            return mavenEmbedder.readProject( pomFile );
+            return new MavenEmbedder( mavenRequest ).readProject( pomFile );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -38,8 +37,7 @@ public class MavenProjectLoader {
     public static MavenProject parseMavenPom(InputStream pomStream, boolean offline) {
         MavenRequest mavenRequest = createMavenRequest(offline);
         try {
-            MavenEmbedder mavenEmbedder = new MavenEmbedder( Thread.currentThread().getContextClassLoader(), mavenRequest );
-            return mavenEmbedder.readProject( pomStream );
+            return new MavenEmbedder( mavenRequest ).readProject( pomStream );
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
