@@ -28,6 +28,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.core.time.TimeUtils;
 import org.jbpm.executor.ExecutorNotStartedException;
 import org.jbpm.executor.entities.RequestInfo;
 import org.kie.internal.executor.api.CommandContext;
@@ -222,6 +223,17 @@ public class ExecutorImpl implements Executor {
         } else {
             requestInfo.setRetries(retries);
         }
+        
+        if (ctx.getData("retryDelay") != null) {
+            List<Long> retryDelay = new ArrayList<Long>();
+            String[] timeExpressions = ((String) ctx.getData("retryDelay")).split(",");
+            
+            for (String timeExpr : timeExpressions) {
+                retryDelay.add(TimeUtils.parseTimeString(timeExpr));
+            }
+            ctx.setData("retryDelay", retryDelay);
+        }
+        
         if (ctx != null) {
             try {
                 ByteArrayOutputStream bout = new ByteArrayOutputStream();

@@ -18,6 +18,7 @@ package org.jbpm.executor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -373,6 +374,66 @@ public abstract class BasicExecutorBaseTest {
         assertEquals(1, executedRequests.size());
     }
 
+    @Test
+    public void testCustomConstantRequestRetry() throws InterruptedException {
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+        ctxCMD.setData("retryDelay", "5s");
+        ctxCMD.setData("retries", 2);
+
+        executorService.scheduleRequest("org.jbpm.executor.ThrowExceptionCommand", ctxCMD);
+
+        Thread.sleep(16000);
+
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        assertEquals(1, inErrorRequests.size());
+
+        List<ErrorInfo> errors = executorService.getAllErrors();
+        // Three retries means 4 executions in total 1(regular) + 2(retries)
+        assertEquals(3, errors.size());
+        
+        long firstError = errors.get(0).getTime().getTime();
+        long secondError = errors.get(1).getTime().getTime();
+        long thirdError = errors.get(2).getTime().getTime();
+
+        // time difference between first and second should be at least 3 seconds
+        long diff = secondError - firstError;
+        assertTrue(diff > 5000);
+        // time difference between second and third should be at least 6 seconds
+        diff = thirdError - secondError;
+        assertTrue(diff > 5000);
+
+    }
+    
+    @Test
+    public void testCustomIncrementingRequestRetry() throws InterruptedException {
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+        ctxCMD.setData("retryDelay", "3s, 6s");
+        ctxCMD.setData("retries", 2);
+
+        executorService.scheduleRequest("org.jbpm.executor.ThrowExceptionCommand", ctxCMD);
+
+        Thread.sleep(20000);
+
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        assertEquals(1, inErrorRequests.size());
+
+        List<ErrorInfo> errors = executorService.getAllErrors();
+        // Three retries means 4 executions in total 1(regular) + 3(retries)
+        assertEquals(3, errors.size());
+        
+        long firstError = errors.get(0).getTime().getTime();
+        long secondError = errors.get(1).getTime().getTime();
+        long thirdError = errors.get(2).getTime().getTime();
+
+        // time difference between first and second should be at least 3 seconds
+        long diff = secondError - firstError;
+        assertTrue(diff > 3000);
+        // time difference between second and third should be at least 6 seconds
+        diff = thirdError - secondError;
+        assertTrue(diff > 6000);
+    }
     
     public void FIXMEfutureRequestTest() throws InterruptedException {
         CommandContext ctxCMD = new CommandContext();

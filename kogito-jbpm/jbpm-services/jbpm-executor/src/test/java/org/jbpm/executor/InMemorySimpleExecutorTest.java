@@ -52,5 +52,19 @@ public class InMemorySimpleExecutorTest extends BasicExecutorBaseTest{
     public void reoccurringExecutionTest() throws InterruptedException {
     	
     }
+
+    @Override
+    @Test
+    @Ignore("It's only for JPA based as it in memory does not care about delays")
+    public void testCustomConstantRequestRetry() throws InterruptedException {
+        super.testCustomConstantRequestRetry();
+    }
+
+    @Override
+    @Test
+    @Ignore("It's only for JPA based as it in memory does not care about delays")
+    public void testCustomIncrementingRequestRetry() throws InterruptedException {
+        super.testCustomIncrementingRequestRetry();
+    }
     
 }

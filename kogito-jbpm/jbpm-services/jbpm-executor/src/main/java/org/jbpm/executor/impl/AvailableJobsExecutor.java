@@ -155,7 +155,25 @@ public class AvailableJobsExecutor {
                     if (request.getRetries() > 0) {
                         request.setStatus(STATUS.RETRYING);
                         request.setRetries(request.getRetries() - 1);
-                        request.setExecutions(request.getExecutions() + 1);
+                        
+                        
+                        // calculate next retry time
+                        List<Long> retryDelay = (List<Long>) ctx.getData("retryDelay");
+                        if (retryDelay != null) {
+                            long retryAdd = 0l;
+
+                            try {
+                                retryAdd = retryDelay.get(request.getExecutions());
+                            } catch (IndexOutOfBoundsException ex) {
+                                // in case there is no element matching given execution, use last one
+                                retryAdd = retryDelay.get(retryDelay.size()-1);
+                            }
+                            
+                            request.setTime(new Date(System.currentTimeMillis() + retryAdd));
+                            request.setExecutions(request.getExecutions() + 1);
+                            logger.info("Retrying request ( with id {}) - delay configured, next retry at {}", request.getId(), request.getTime());
+                        }
+                        
                         logger.debug("Retrying ({}) still available!", request.getRetries());
                         
                         executorStoreService.updateRequest(request);

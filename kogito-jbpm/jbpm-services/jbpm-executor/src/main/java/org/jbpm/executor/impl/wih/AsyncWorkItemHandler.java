@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
  * <ul>
  *  <li>CommandClass - FQCN of the command to be executed - mandatory unless this handler is configured with default command class</li>
  *  <li>Retries - number of retires for the command execution - optional</li>
+ *  <li>RetryDelay - Comma separated list of time expressions (5s, 2m, 4h) to be used in case of errors and retry needed.</li>
  * </ul>
  * During execution it will set contextual data that will be available inside the command:
  * <ul>
@@ -90,6 +91,11 @@ public class AsyncWorkItemHandler implements WorkItemHandler {
         }
         if (workItem.getParameter("Owner") != null) {
             ctxCMD.setData("owner", workItem.getParameter("Owner"));
+        }
+        
+        if (workItem.getParameter("RetryDelay") != null) {
+     
+            ctxCMD.setData("retryDelay", workItem.getParameter("RetryDelay"));
         }
         
         logger.trace("Command context {}", ctxCMD);

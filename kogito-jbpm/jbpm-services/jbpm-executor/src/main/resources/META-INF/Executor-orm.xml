@@ -15,12 +15,12 @@
     </named-query>
     <named-query name="RunningRequests">
         <query>
-            Select r from RequestInfo as r where r.status ='RUNNING'
+            Select r from RequestInfo as r where r.status ='RUNNING' ORDER BY r.id
         </query>
     </named-query>
     <named-query name="QueuedRequests">
         <query>
-            Select r from RequestInfo as r where r.status ='QUEUED'
+            Select r from RequestInfo as r where r.status ='QUEUED' ORDER BY r.id
         </query>
     </named-query>
     <named-query name="FutureQueuedRequests">
@@ -30,31 +30,31 @@
     </named-query>
     <named-query name="CompletedRequests">
         <query>
-            Select r from RequestInfo as r where r.status ='DONE'
+            Select r from RequestInfo as r where r.status ='DONE' ORDER BY r.id
         </query>
     </named-query>
       
     <named-query name="InErrorRequests">
         <query>
-            Select r from RequestInfo as r where r.status ='ERROR'
+            Select r from RequestInfo as r where r.status ='ERROR' ORDER BY r.id
         </query>
     </named-query>
       
     <named-query name="CancelledRequests">
         <query>
-            Select r from RequestInfo as r where r.status ='CANCELLED'
+            Select r from RequestInfo as r where r.status ='CANCELLED' ORDER BY r.id
         </query>
     </named-query>
       
     <named-query name="GetAllRequests">
         <query>
-            Select r from RequestInfo as r 
+            Select r from RequestInfo as r  ORDER BY r.id
         </query>
     </named-query>
       
     <named-query name="GetAllErrors">
         <query>
-            Select e from ErrorInfo as e 
+            Select e from ErrorInfo as e  ORDER BY e.id
         </query>
     </named-query>
     
@@ -66,13 +66,13 @@
     
     <named-query name="GetRequestsByStatus">
         <query>
-            Select r from RequestInfo as r where r.status in (:statuses) ORDER BY r.time DESC
+            Select r from RequestInfo as r where r.status in (:statuses) ORDER BY r.id DESC
         </query>
     </named-query>
 
     <named-query name="GetRequestsByBusinessKey">
         <query>
-            Select r from RequestInfo as r where r.key = :businessKey
+            Select r from RequestInfo as r where r.key = :businessKey ORDER BY r.id
         </query>
     </named-query>
     <named-query name="PendingRequestsForProcessing"> 
