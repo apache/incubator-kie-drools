@@ -95,7 +95,7 @@ public class TypeDeclarationBuilder {
         setResourcesInDescriptors( packageDescrs );
 
         // ensure all names are fully qualified before continuing
-        typeDeclarationNameResolver.resolveTypes( packageDescrs, unsortedDescrs, unresolvedTypes, unprocesseableDescrs );
+        typeDeclarationNameResolver.resolveTypes( packageDescrs, unresolvedTypes );
 
         // create "implicit" packages
         for ( PackageDescr packageDescr : packageDescrs ) {
@@ -411,7 +411,7 @@ public class TypeDeclarationBuilder {
     protected void updateTraitDefinition( TypeDeclaration type,
                                           Class concrete,
                                           boolean asTrait ) {
-        classDefinitionFactory.populateDefinitionFromClass( type.getTypeClassDef(), concrete, asTrait );
+        ClassDefinitionFactory.populateDefinitionFromClass( type.getTypeClassDef(), concrete, asTrait );
     }
 
 }

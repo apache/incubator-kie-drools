@@ -7342,4 +7342,44 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals(1, list.size());
         assertEquals("Rule without agenda group executed", list.get(0));
     }
+
+    public static class $X {
+        public static class $Y {
+            private final int value;
+
+            public $Y( int value ) {
+                this.value = value;
+            }
+
+            public int getValue() {
+                return value;
+            }
+        }
+    }
+
+    @Test
+    public void testDoubleNestedClass() {
+        // DROOLS-815
+        String drl =
+                "import " + $X.$Y.class.getCanonicalName() + ";\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "    $X.$Y($v : value)\n" +
+                "then\n" +
+                "    list.add($v);\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new $X.$Y(42) );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( 42, list.get(0) );
+    }
 }
