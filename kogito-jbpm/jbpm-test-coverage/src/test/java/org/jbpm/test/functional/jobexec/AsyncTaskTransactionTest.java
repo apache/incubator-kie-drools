@@ -18,6 +18,7 @@ package org.jbpm.test.functional.jobexec;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
@@ -28,6 +29,7 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.runtime.query.QueryContext;
 
 public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
 
@@ -56,7 +58,7 @@ public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
         assertProcessInstanceCompleted(pi.getId());
 
         Thread.sleep(4 * 1000);
-        Assertions.assertThat(getExecutorService().getCompletedRequests()).hasSize(1);
+        Assertions.assertThat(getExecutorService().getCompletedRequests(new QueryContext())).hasSize(1);
     }
 
     @Test
@@ -75,7 +77,7 @@ public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
         ut.rollback();
 
         assertProcessInstanceNeverRun(pi.getId());
-        Assertions.assertThat(getExecutorService().getCompletedRequests()).hasSize(0);
+        Assertions.assertThat(getExecutorService().getCompletedRequests(new QueryContext())).hasSize(0);
     }
 
     @Test

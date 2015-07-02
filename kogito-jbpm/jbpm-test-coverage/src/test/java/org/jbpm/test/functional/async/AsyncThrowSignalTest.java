@@ -27,7 +27,7 @@ import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.executor.api.ExecutorService;
+import org.kie.api.executor.ExecutorService;
 
 /**
  * process1: start -> catch signal -> first time exception -> end process2:

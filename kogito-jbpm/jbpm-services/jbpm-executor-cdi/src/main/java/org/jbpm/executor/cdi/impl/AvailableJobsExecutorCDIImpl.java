@@ -24,8 +24,8 @@ import javax.inject.Inject;
 
 import org.jbpm.executor.impl.AvailableJobsExecutor;
 import org.jbpm.executor.impl.ClassCacheManager;
-import org.kie.internal.executor.api.ExecutorQueryService;
-import org.kie.internal.executor.api.ExecutorStoreService;
+import org.kie.api.executor.ExecutorQueryService;
+import org.kie.api.executor.ExecutorStoreService;
 
 
 @Stateless(name="AvailableJobsExecutor")

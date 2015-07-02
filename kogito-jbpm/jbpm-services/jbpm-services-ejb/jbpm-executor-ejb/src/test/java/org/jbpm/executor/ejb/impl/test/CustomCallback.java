@@ -15,9 +15,11 @@
 
 package org.jbpm.executor.ejb.impl.test;
 
-import org.kie.internal.executor.api.CommandCallback;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutionResults;
+import org.kie.api.executor.CommandCallback;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutionResults;
+
+
 
 public class CustomCallback implements CommandCallback {
     

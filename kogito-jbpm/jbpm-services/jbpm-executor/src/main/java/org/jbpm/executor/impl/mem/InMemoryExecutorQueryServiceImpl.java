@@ -18,16 +18,19 @@ package org.jbpm.executor.impl.mem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
-import org.kie.internal.executor.api.ErrorInfo;
+import org.kie.api.executor.ErrorInfo;
+import org.kie.api.executor.RequestInfo;
+import org.kie.api.executor.STATUS;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.executor.api.ExecutorQueryService;
-import org.kie.internal.executor.api.RequestInfo;
-import org.kie.internal.executor.api.STATUS;
+
 
 @SuppressWarnings("unchecked")
 public class InMemoryExecutorQueryServiceImpl implements ExecutorQueryService {
@@ -66,10 +69,16 @@ public class InMemoryExecutorQueryServiceImpl implements ExecutorQueryService {
 
 	
 	@Override
-	public List<RequestInfo> getRequestByBusinessKey(String businessKey) {
+	public List<RequestInfo> getRequestByBusinessKey(String businessKey, QueryContext queryContext) {
 		Map<Long, RequestInfo> requests = storeService.getRequests();
 		return (List<RequestInfo>) CollectionUtils.select(requests.values(), new GetRequestsByKey(businessKey));
 	}
+	
+	@Override
+    public List<RequestInfo> getRequestByCommand(String command, QueryContext queryContext) {
+        Map<Long, RequestInfo> requests = storeService.getRequests();
+        return (List<RequestInfo>) CollectionUtils.select(requests.values(), new GetRequestsByCommand(command));
+    }
 
 	@Override
 	public List<ErrorInfo> getErrorsByRequestId(Long id) {
@@ -206,6 +215,93 @@ public class InMemoryExecutorQueryServiceImpl implements ExecutorQueryService {
 		
 	}
 	
+    private class GetRequestsByCommand implements Predicate {
+        
+        private String command;
+        
+        GetRequestsByCommand(String command) {
+            this.command = command;
+        }
 
+        @Override
+        public boolean evaluate(Object object) {
+            if (object instanceof RequestInfo) {
+                if (command.equals(((RequestInfo)object).getCommandName())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        
+    }
+
+    @Override
+    public List<RequestInfo> getPendingRequests(QueryContext queryContext) {
+        return applyPaginition(getPendingRequests(), queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getQueuedRequests(QueryContext queryContext) {
+        return applyPaginition(getQueuedRequests(), queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getCompletedRequests(QueryContext queryContext) {
+        return applyPaginition(getCompletedRequests(), queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getInErrorRequests(QueryContext queryContext) {
+        return applyPaginition(getInErrorRequests(), queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getCancelledRequests(QueryContext queryContext) {
+        return applyPaginition(getCancelledRequests(), queryContext);
+    }
+
+    @Override
+    public List<ErrorInfo> getAllErrors(QueryContext queryContext) {
+        return applyPaginition(getAllErrors(), queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getAllRequests(QueryContext queryContext) {
+        
+        return applyPaginition(getAllRequests(), queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getRunningRequests(QueryContext queryContext) {
+        
+        return applyPaginition(getRunningRequests(), queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getFutureQueuedRequests(QueryContext queryContext) {
+        
+        return applyPaginition(getFutureQueuedRequests(), queryContext);
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByStatus(List<STATUS> statuses, QueryContext queryContext) {
+
+        return applyPaginition(getRequestsByStatus(statuses), queryContext);
+    }
+	
+    protected <T> List<T> applyPaginition(List<T> input, QueryContext queryContext) {
+        
+        int end = queryContext.getOffset() + queryContext.getCount();
+        if (input.size() < queryContext.getOffset()) {
+            // no elements in given range
+            return new ArrayList<T>();
+        } else if (input.size() >= end) {
+            return Collections.unmodifiableList(new ArrayList<T>(input.subList(queryContext.getOffset(), end)));
+        } else if (input.size() < end) {
+            return Collections.unmodifiableList(new ArrayList<T>(input.subList(queryContext.getOffset(), input.size())));
+        } else {
+            return Collections.unmodifiableList(input);
+        }
+    }
 
 }

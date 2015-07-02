@@ -241,6 +241,7 @@
               org.kie.api.command,
               org.kie.api.event.process,
               org.kie.api.event.rule,
+              org.kie.api.executor,
               org.kie.api.io,
               org.kie.api.marshalling,
               org.kie.api.runtime,

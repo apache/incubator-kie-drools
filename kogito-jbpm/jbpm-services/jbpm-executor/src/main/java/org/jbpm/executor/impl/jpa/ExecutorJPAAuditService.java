@@ -23,7 +23,7 @@ import java.util.Date;
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.services.task.audit.service.TaskJPAAuditService;
-import org.kie.internal.executor.api.STATUS;
+import org.kie.api.executor.STATUS;
 import org.kie.internal.runtime.manager.audit.query.ErrorInfoLogDeleteBuilder;
 import org.kie.internal.runtime.manager.audit.query.RequestInfoLogDeleteBuilder;
 

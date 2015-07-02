@@ -31,7 +31,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.kie.internal.executor.api.ExecutorService;
+import org.kie.api.executor.ExecutorService;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 

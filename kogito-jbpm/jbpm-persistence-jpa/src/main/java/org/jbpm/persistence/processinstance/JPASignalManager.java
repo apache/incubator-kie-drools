@@ -22,10 +22,10 @@ import org.jbpm.persistence.ProcessPersistenceContext;
 import org.jbpm.persistence.ProcessPersistenceContextManager;
 import org.jbpm.process.core.async.AsyncSignalEventCommand;
 import org.jbpm.process.instance.event.DefaultSignalManager;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutorService;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.manager.RuntimeManager;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

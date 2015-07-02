@@ -27,6 +27,8 @@ import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.runtime.query.QueryContext;
+
 import qa.tools.ikeeper.annotation.BZ;
 
 //
@@ -64,8 +66,8 @@ public class AsyncTaskTest extends JbpmAsyncJobTestCase {
         assertNodeTriggered(pi.getId(), "Runtime Error Handling", "RuntimeErrorEnd");
         assertNodeNotTriggered(pi.getId(), "Output");
         assertNodeNotTriggered(pi.getId(), "Illegal Argument Error Handling");
-        Assertions.assertThat(getExecutorService().getInErrorRequests()).hasSize(1);
-        Assertions.assertThat(getExecutorService().getInErrorRequests().get(0).getErrorInfo().get(0).getMessage())
+        Assertions.assertThat(getExecutorService().getInErrorRequests(new QueryContext())).hasSize(1);
+        Assertions.assertThat(getExecutorService().getInErrorRequests(new QueryContext()).get(0).getErrorInfo().get(0).getMessage())
                 .isEqualTo("Internal Error");
         assertProcessInstanceCompleted(pi.getId());
     }
@@ -88,7 +90,7 @@ public class AsyncTaskTest extends JbpmAsyncJobTestCase {
         Thread.sleep(10 * 1000);
 
         assertNodeTriggered(pi.getId(), "Output", "EndProcess");
-        Assertions.assertThat(getExecutorService().getCompletedRequests()).hasSize(1);
+        Assertions.assertThat(getExecutorService().getCompletedRequests(new QueryContext())).hasSize(1);
         assertProcessInstanceCompleted(pi.getId());
     }
 
@@ -110,9 +112,9 @@ public class AsyncTaskTest extends JbpmAsyncJobTestCase {
         Thread.sleep(10 * 1000);
 
         assertNodeNotTriggered(pi.getId(), "Output");
-        Assertions.assertThat(getExecutorService().getInErrorRequests()).hasSize(1);
-        Assertions.assertThat(getExecutorService().getInErrorRequests().get(0).getExecutions()).isEqualTo(4);
-        Assertions.assertThat(getExecutorService().getInErrorRequests().get(0).getErrorInfo().get(0).getMessage())
+        Assertions.assertThat(getExecutorService().getInErrorRequests(new QueryContext())).hasSize(1);
+        Assertions.assertThat(getExecutorService().getInErrorRequests(new QueryContext()).get(0).getExecutions()).isEqualTo(4);
+        Assertions.assertThat(getExecutorService().getInErrorRequests(new QueryContext()).get(0).getErrorInfo().get(0).getMessage())
                 .isEqualTo("Internal Error");
         assertProcessInstanceActive(pi.getId());
 

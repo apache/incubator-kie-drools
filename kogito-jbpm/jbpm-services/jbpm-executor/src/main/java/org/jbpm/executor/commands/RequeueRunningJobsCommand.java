@@ -18,10 +18,10 @@ package org.jbpm.executor.commands;
 
 import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.RequeueAware;
-import org.kie.internal.executor.api.Command;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutionResults;
-import org.kie.internal.executor.api.ExecutorService;
+import org.kie.api.executor.Command;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutionResults;
+import org.kie.api.executor.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

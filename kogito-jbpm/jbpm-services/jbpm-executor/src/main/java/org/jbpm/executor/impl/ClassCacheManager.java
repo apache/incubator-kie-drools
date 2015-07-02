@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.internal.executor.api.Command;
-import org.kie.internal.executor.api.CommandCallback;
-import org.kie.internal.executor.api.CommandContext;
+import org.kie.api.executor.Command;
+import org.kie.api.executor.CommandCallback;
+import org.kie.api.executor.CommandContext;
 import org.kie.internal.runtime.Cacheable;
 import org.kie.internal.runtime.Closeable;
 import org.slf4j.Logger;

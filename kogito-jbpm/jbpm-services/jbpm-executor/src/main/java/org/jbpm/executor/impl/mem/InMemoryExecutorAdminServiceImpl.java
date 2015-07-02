@@ -18,9 +18,11 @@ package org.jbpm.executor.impl.mem;
 
 import java.util.Map;
 
-import org.kie.internal.executor.api.ErrorInfo;
-import org.kie.internal.executor.api.ExecutorAdminService;
-import org.kie.internal.executor.api.RequestInfo;
+import org.kie.api.executor.ErrorInfo;
+import org.kie.api.executor.ExecutorAdminService;
+import org.kie.api.executor.RequestInfo;
+
+
 
 public class InMemoryExecutorAdminServiceImpl implements ExecutorAdminService {
 

@@ -26,8 +26,8 @@ import org.kie.api.definition.process.Node;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutorService;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutorService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

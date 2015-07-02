@@ -23,10 +23,10 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.jbpm.executor.ExecutorServiceFactory;
-import org.kie.internal.executor.api.ErrorInfo;
-import org.kie.internal.executor.api.ExecutorStoreService;
-import org.kie.internal.executor.api.RequestInfo;
-import org.kie.internal.executor.api.STATUS;
+import org.kie.api.executor.ErrorInfo;
+import org.kie.api.executor.ExecutorStoreService;
+import org.kie.api.executor.RequestInfo;
+import org.kie.api.executor.STATUS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

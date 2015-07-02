@@ -24,9 +24,9 @@ import org.drools.core.command.impl.GenericCommand;
 import org.jbpm.executor.RequeueAware;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
+import org.kie.api.executor.ExecutorAdminService;
+import org.kie.api.executor.STATUS;
 import org.kie.internal.command.Context;
-import org.kie.internal.executor.api.ExecutorAdminService;
-import org.kie.internal.executor.api.STATUS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -31,10 +31,10 @@ import java.util.concurrent.TimeUnit;
 import org.drools.core.time.TimeUtils;
 import org.jbpm.executor.ExecutorNotStartedException;
 import org.jbpm.executor.entities.RequestInfo;
-import org.kie.internal.executor.api.CommandContext;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutorStoreService;
+import org.kie.api.executor.STATUS;
 import org.kie.internal.executor.api.Executor;
-import org.kie.internal.executor.api.ExecutorStoreService;
-import org.kie.internal.executor.api.STATUS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -24,7 +24,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.jbpm.executor.commands.PrintOutCommand;
 import org.jbpm.executor.impl.wih.AsyncWorkItemHandler;
 import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.internal.executor.api.ExecutorService;
+import org.kie.api.executor.ExecutorService;
 import org.kie.internal.runtime.cdi.Activate;
 import org.kie.internal.runtime.manager.WorkItemHandlerProducer;
 

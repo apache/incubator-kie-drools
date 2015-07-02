@@ -15,9 +15,11 @@
 
 package org.jbpm.executor.test;
 
-import org.kie.internal.executor.api.Command;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutionResults;
+import org.kie.api.executor.Command;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutionResults;
+
+
 
 public class AddAnotherCallbackCommand implements Command {
 

@@ -30,11 +30,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.api.executor.ExecutorService;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.manager.audit.VariableInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.executor.api.ExecutorService;
+
 
 public class AsyncThreadContinuationTest extends JbpmTestCase {
 
@@ -104,14 +105,14 @@ public class AsyncThreadContinuationTest extends JbpmTestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("message", "Ivo");
         ProcessInstance pi = ksession.startProcess(PROCESS_ATC, params);
-        
+
         synchronized (LOCK_ATC) {
             try {
                 LOCK_ATC.wait();
             } catch (InterruptedException e) {
             }
         }
-        
+
         ksession.getProcessInstance(pi.getId());
         List<? extends VariableInstanceLog> vars = getLogService().findVariableInstances(pi.getId(), "message");
         List<String> varValues = new ArrayList<String>();

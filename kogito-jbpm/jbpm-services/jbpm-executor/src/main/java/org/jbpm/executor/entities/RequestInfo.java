@@ -37,7 +37,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.kie.internal.executor.api.STATUS;
+import org.kie.api.executor.STATUS;
+
 
 @Entity
 @SequenceGenerator(name="requestInfoIdSeq", sequenceName="REQUEST_INFO_ID_SEQ")

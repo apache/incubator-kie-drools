@@ -25,12 +25,16 @@ import javax.persistence.NoResultException;
 
 import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.GenericCommand;
+import org.jbpm.shared.services.impl.JpaPersistenceContext;
+import org.jbpm.shared.services.impl.QueryManager;
+import org.kie.api.executor.ErrorInfo;
+import org.kie.api.executor.ExecutorService;
+import org.kie.api.executor.RequestInfo;
+import org.kie.api.executor.STATUS;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.command.Context;
-import org.kie.internal.executor.api.ErrorInfo;
 import org.kie.internal.executor.api.ExecutorQueryService;
-import org.kie.internal.executor.api.ExecutorService;
-import org.kie.internal.executor.api.RequestInfo;
-import org.kie.internal.executor.api.STATUS;
+
 
 
 /**
@@ -40,11 +44,10 @@ import org.kie.internal.executor.api.STATUS;
  */
 public class ExecutorQueryServiceImpl implements ExecutorQueryService {
 
-
-    
     private CommandService commandService;
    
     public ExecutorQueryServiceImpl(boolean active) {
+        QueryManager.get().addNamedQueries("META-INF/Executor-orm.xml");
     }
 
     public void setCommandService(CommandService commandService) {
@@ -57,9 +60,8 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getPendingRequests() {
-    	Map<String, Object> params = new HashMap<String, Object>();
-    	params.put("now", new Date());
-        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("PendingRequests", params));
+    	
+        return getPendingRequests(new QueryContext(0, 100));
     }
 
     /**
@@ -87,7 +89,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getRunningRequests() {
-        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("RunningRequests"));
+        return getRunningRequests(new QueryContext(0, 100));
     }
 
     /**
@@ -96,7 +98,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getQueuedRequests() {
-        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("QueuedRequests"));
+        return getQueuedRequests(new QueryContext(0, 100));
     }
 
     /**
@@ -105,9 +107,8 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getFutureQueuedRequests() {
-    	Map<String, Object> params = new HashMap<String, Object>();
-    	params.put("now", new Date());
-        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("FutureQueuedRequests", params));
+    	
+        return getFutureQueuedRequests(new QueryContext(0, 100));
     }
 
     /**
@@ -116,7 +117,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getCompletedRequests() {
-        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("CompletedRequests"));
+        return getCompletedRequests(new QueryContext(0, 100));
     }
 
     /**
@@ -125,7 +126,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getInErrorRequests() {
-        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("InErrorRequests"));
+        return getInErrorRequests(new QueryContext(0, 100));
     }
 
     /**
@@ -134,7 +135,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getCancelledRequests() {
-        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("CancelledRequests"));
+        return getCancelledRequests(new QueryContext(0, 100));
     }
 
     /**
@@ -143,7 +144,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<ErrorInfo> getAllErrors() {
-    	return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<ErrorInfo>>("GetAllErrors"));
+    	return getAllErrors(new QueryContext(0, 100));
     }
 
     /**
@@ -163,7 +164,7 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getAllRequests() {
-    	return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("GetAllRequests"));
+    	return getAllRequests(new QueryContext(0, 100));
     }
 
     /**
@@ -172,9 +173,8 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     
     @Override
     public List<RequestInfo> getRequestsByStatus(List<STATUS> statuses) {
-    	Map<String, Object> params = new HashMap<String, Object>();
-    	params.put("statuses", statuses);
-    	return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("GetRequestsByStatus",params));
+    	
+    	return getRequestsByStatus(statuses, new QueryContext(0, 100));
     }
 
     /**
@@ -182,10 +182,23 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
      */
     
     @Override
-    public List<RequestInfo> getRequestByBusinessKey(String businessKey) {
+    public List<RequestInfo> getRequestByBusinessKey(String businessKey, QueryContext queryContext) {
     	Map<String, Object> params = new HashMap<String, Object>();
     	params.put("businessKey", businessKey);
+    	applyQueryContext(params, queryContext);
         return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("GetRequestsByBusinessKey", params));
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    
+    @Override
+    public List<RequestInfo> getRequestByCommand(String command, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("command", command);
+        applyQueryContext(params, queryContext);
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("GetRequestsByCommand", params));
     }
 
     /**
@@ -230,4 +243,102 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
     	
     }
 
+    @Override
+    public List<RequestInfo> getQueuedRequests(QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        applyQueryContext(params, queryContext);
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("QueuedRequests", params));
+    }
+
+    @Override
+    public List<RequestInfo> getCompletedRequests(QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        applyQueryContext(params, queryContext);
+        
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("CompletedRequests", params));
+    }
+
+    @Override
+    public List<RequestInfo> getInErrorRequests(QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        applyQueryContext(params, queryContext);
+        
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("InErrorRequests", params));
+    }
+
+    @Override
+    public List<RequestInfo> getCancelledRequests(QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        applyQueryContext(params, queryContext);
+        
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("CancelledRequests", params));
+    }
+
+    @Override
+    public List<ErrorInfo> getAllErrors(QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        applyQueryContext(params, queryContext);
+        
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<ErrorInfo>>("GetAllErrors", params));
+    }
+
+    @Override
+    public List<RequestInfo> getAllRequests(QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        applyQueryContext(params, queryContext);
+        
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("GetAllRequests", params));
+    }
+
+    @Override
+    public List<RequestInfo> getRunningRequests(QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        applyQueryContext(params, queryContext);
+        
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("RunningRequests", params));
+    }
+
+    @Override
+    public List<RequestInfo> getFutureQueuedRequests(QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        applyQueryContext(params, queryContext);
+        
+        params.put("now", new Date());
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("FutureQueuedRequests", params));
+    }
+
+    @Override
+    public List<RequestInfo> getRequestsByStatus(List<STATUS> statuses, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        applyQueryContext(params, queryContext);
+        
+        params.put("statuses", statuses);
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("GetRequestsByStatus", params));
+    }
+
+    @Override
+    public List<RequestInfo> getPendingRequests(QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();        
+        applyQueryContext(params, queryContext);
+        
+        params.put("now", new Date());
+        return commandService.execute(new org.jbpm.shared.services.impl.commands.QueryNameCommand<List<RequestInfo>>("PendingRequests", params));
+    }
+
+    protected void applyQueryContext(Map<String, Object> params, QueryContext queryContext) {
+        if (queryContext != null) {
+            params.put(JpaPersistenceContext.FIRST_RESULT, queryContext.getOffset());
+            params.put(JpaPersistenceContext.MAX_RESULTS, queryContext.getCount());
+            
+            if (queryContext.getOrderBy() != null && !queryContext.getOrderBy().isEmpty()) {
+                params.put(QueryManager.ORDER_BY_KEY, queryContext.getOrderBy());
+            
+                if (queryContext.isAscending()) {
+                    params.put(QueryManager.ASCENDING_KEY, "true");
+                } else {
+                    params.put(QueryManager.DESCENDING_KEY, "true");            
+                }
+            }
+        }
+    }
 }

@@ -19,13 +19,14 @@ package org.jbpm.executor.impl.wih;
 import java.util.List;
 
 import org.drools.core.process.instance.impl.WorkItemImpl;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutorService;
+import org.kie.api.executor.RequestInfo;
+import org.kie.api.executor.STATUS;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutorService;
-import org.kie.internal.executor.api.RequestInfo;
-import org.kie.internal.executor.api.STATUS;
+import org.kie.api.runtime.query.QueryContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,7 +108,7 @@ public class AsyncWorkItemHandler implements WorkItemHandler {
     public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
         String businessKey = buildBusinessKey(workItem);
         logger.info("Looking up for not cancelled and not done requests for business key {}", businessKey);
-        List<RequestInfo> requests = executorService.getRequestsByBusinessKey(businessKey);
+        List<RequestInfo> requests = executorService.getRequestsByBusinessKey(businessKey, new QueryContext());
         if (requests != null) {
             for (RequestInfo request : requests) {
                 if (request.getStatus() != STATUS.CANCELLED && request.getStatus() != STATUS.DONE

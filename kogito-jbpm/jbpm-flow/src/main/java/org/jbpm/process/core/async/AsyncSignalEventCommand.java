@@ -15,11 +15,11 @@
 
 package org.jbpm.process.core.async;
 
+import org.kie.api.executor.Command;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutionResults;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
-import org.kie.internal.executor.api.Command;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutionResults;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 

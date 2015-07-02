@@ -26,11 +26,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutorService;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutorService;
 
 /**
  * process1: start -> catch signal -> first time exception -> end

@@ -22,10 +22,10 @@ import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.impl.mem.InMemoryExecutorAdminServiceImpl;
 import org.jbpm.executor.impl.mem.InMemoryExecutorQueryServiceImpl;
 import org.jbpm.executor.impl.mem.InMemoryExecutorStoreService;
-import org.kie.internal.executor.api.ExecutorAdminService;
-import org.kie.internal.executor.api.ExecutorQueryService;
-import org.kie.internal.executor.api.ExecutorService;
-import org.kie.internal.executor.api.ExecutorStoreService;
+import org.kie.api.executor.ExecutorAdminService;
+import org.kie.api.executor.ExecutorQueryService;
+import org.kie.api.executor.ExecutorService;
+import org.kie.api.executor.ExecutorStoreService;
 import org.kie.internal.runtime.cdi.Activate;
 
 @Activate(whenNotAvailable="org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl")

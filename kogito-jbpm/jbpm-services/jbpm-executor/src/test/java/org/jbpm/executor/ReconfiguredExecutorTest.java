@@ -30,9 +30,10 @@ import org.jbpm.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutorService;
-import org.kie.internal.executor.api.RequestInfo;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutorService;
+import org.kie.api.executor.RequestInfo;
+import org.kie.api.runtime.query.QueryContext;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -82,11 +83,11 @@ public class ReconfiguredExecutorTest {
 
         Thread.sleep(10000);
 
-        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
-        List<RequestInfo> queuedRequests = executorService.getQueuedRequests();
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests(new QueryContext());
         assertEquals(0, queuedRequests.size());
-        List<RequestInfo> executedRequests = executorService.getCompletedRequests();
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
         assertEquals(1, executedRequests.size());
 
 

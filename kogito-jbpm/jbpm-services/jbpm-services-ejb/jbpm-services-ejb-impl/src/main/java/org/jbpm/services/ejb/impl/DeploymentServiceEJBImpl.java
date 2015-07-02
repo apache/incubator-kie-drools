@@ -49,7 +49,7 @@ import org.jbpm.services.ejb.api.DeploymentServiceEJBRemote;
 import org.jbpm.services.ejb.api.ExecutorServiceEJB;
 import org.jbpm.services.ejb.api.RuntimeDataServiceEJBLocal;
 import org.jbpm.services.ejb.impl.identity.EJBContextIdentityProvider;
-import org.kie.internal.executor.api.ExecutorService;
+import org.kie.api.executor.ExecutorService;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.NamedObjectModel;

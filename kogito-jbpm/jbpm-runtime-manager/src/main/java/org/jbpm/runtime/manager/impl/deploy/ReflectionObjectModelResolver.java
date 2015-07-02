@@ -25,7 +25,7 @@ import javax.persistence.EntityManagerFactory;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.task.TaskService;
-import org.kie.internal.executor.api.ExecutorService;
+import org.kie.api.executor.ExecutorService;
 import org.kie.internal.runtime.Cacheable;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.ObjectModelResolver;

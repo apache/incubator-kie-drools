@@ -45,7 +45,7 @@ import org.jbpm.services.cdi.impl.manager.InjectableRegisterableItemsFactory;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.manager.RegisterableItemsFactory;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
-import org.kie.internal.executor.api.ExecutorService;
+import org.kie.api.executor.ExecutorService;
 import org.kie.internal.identity.IdentityProvider;
 
 @ApplicationScoped

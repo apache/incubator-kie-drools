@@ -24,9 +24,9 @@ import org.assertj.core.api.Assertions;
 import org.jbpm.executor.ExecutorServiceFactory;
 import org.junit.After;
 import org.junit.Before;
+import org.kie.api.executor.ExecutorService;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.executor.api.ExecutorService;
 
 public class JbpmAsyncJobTestCase extends JbpmTestCase {
 

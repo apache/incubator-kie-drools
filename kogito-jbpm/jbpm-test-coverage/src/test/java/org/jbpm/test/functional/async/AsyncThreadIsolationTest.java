@@ -30,10 +30,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
+import org.kie.api.executor.ExecutorService;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.audit.VariableInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.executor.api.ExecutorService;
+
 
 public class AsyncThreadIsolationTest extends JbpmTestCase {
 

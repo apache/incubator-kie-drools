@@ -17,10 +17,10 @@
 package org.jbpm.test.jobexec;
 
 import org.jbpm.executor.impl.wih.AsyncWorkItemHandlerCmdCallback;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutionResults;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutionResults;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 public class UserCommandCallback extends AsyncWorkItemHandlerCmdCallback {

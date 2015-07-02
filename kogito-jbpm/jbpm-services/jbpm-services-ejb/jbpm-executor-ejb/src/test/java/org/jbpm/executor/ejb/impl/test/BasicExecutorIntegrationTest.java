@@ -44,11 +44,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ErrorInfo;
-import org.kie.internal.executor.api.ExecutionResults;
-import org.kie.internal.executor.api.RequestInfo;
-import org.kie.internal.executor.api.STATUS;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ErrorInfo;
+import org.kie.api.executor.ExecutionResults;
+import org.kie.api.executor.RequestInfo;
+import org.kie.api.executor.STATUS;
+import org.kie.api.runtime.query.QueryContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,11 +102,11 @@ public class BasicExecutorIntegrationTest {
 
         Thread.sleep(10000);
 
-        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
-        List<RequestInfo> queuedRequests = executorService.getQueuedRequests();
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests(new QueryContext());
         assertEquals(0, queuedRequests.size());
-        List<RequestInfo> executedRequests = executorService.getCompletedRequests();
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
         assertEquals(1, executedRequests.size());
 
 
@@ -123,11 +124,11 @@ public class BasicExecutorIntegrationTest {
 
         Thread.sleep(10000);
 
-        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
-        List<RequestInfo> queuedRequests = executorService.getQueuedRequests();
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests(new QueryContext());
         assertEquals(0, queuedRequests.size());
-        List<RequestInfo> executedRequests = executorService.getCompletedRequests();
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
         assertEquals(1, executedRequests.size());
 
         assertEquals(2, ((AtomicLong) cachedEntities.get((String) commandContext.getData("businessKey"))).longValue());
@@ -146,11 +147,11 @@ public class BasicExecutorIntegrationTest {
 
         Thread.sleep(10000);
 
-        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
-        List<RequestInfo> queuedRequests = executorService.getQueuedRequests();
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests(new QueryContext());
         assertEquals(0, queuedRequests.size());
-        List<RequestInfo> executedRequests = executorService.getCompletedRequests();
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
         assertEquals(1, executedRequests.size());
 
         assertEquals(2, ((AtomicLong) cachedEntities.get((String) commandContext.getData("businessKey"))).longValue());
@@ -191,11 +192,11 @@ public class BasicExecutorIntegrationTest {
 
         Thread.sleep(10000);
 
-        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
-        List<RequestInfo> queuedRequests = executorService.getQueuedRequests();
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests(new QueryContext());
         assertEquals(0, queuedRequests.size());
-        List<RequestInfo> executedRequests = executorService.getCompletedRequests();
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
         assertEquals(1, executedRequests.size());
 
         assertEquals(2, ((AtomicLong) cachedEntities.get((String) commandContext.getData("businessKey"))).longValue());
@@ -237,11 +238,11 @@ public class BasicExecutorIntegrationTest {
         logger.info("{} Sleeping for 10 secs", System.currentTimeMillis());
         Thread.sleep(10000);
 
-        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(1, inErrorRequests.size());
         logger.info("Error: {}", inErrorRequests.get(0));
 
-        List<ErrorInfo> errors = executorService.getAllErrors();
+        List<ErrorInfo> errors = executorService.getAllErrors(new QueryContext());
         logger.info("Errors: {}", errors);
         assertEquals(1, errors.size());
 
@@ -259,10 +260,10 @@ public class BasicExecutorIntegrationTest {
 
 
 
-        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(1, inErrorRequests.size());
 
-        List<ErrorInfo> errors = executorService.getAllErrors();
+        List<ErrorInfo> errors = executorService.getAllErrors(new QueryContext());
         logger.info("Errors: {}", errors);
         // Three retries means 4 executions in total 1(regular) + 3(retries)
         assertEquals(4, errors.size());
@@ -280,7 +281,7 @@ public class BasicExecutorIntegrationTest {
 
         Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", ctxCMD);
         
-        List<RequestInfo> requests = executorService.getRequestsByBusinessKey(businessKey);
+        List<RequestInfo> requests = executorService.getRequestsByBusinessKey(businessKey, new QueryContext());
         assertNotNull(requests);
         assertEquals(1, requests.size());
         assertEquals(requestId, requests.get(0).getId());
@@ -288,7 +289,7 @@ public class BasicExecutorIntegrationTest {
         // cancel the task immediately
         executorService.cancelRequest(requestId);
 
-        List<RequestInfo> cancelledRequests = executorService.getCancelledRequests();
+        List<RequestInfo> cancelledRequests = executorService.getCancelledRequests(new QueryContext());
         assertEquals(1, cancelledRequests.size());
 
     }
@@ -307,11 +308,11 @@ public class BasicExecutorIntegrationTest {
         logger.info("{} Sleeping for 10 secs", System.currentTimeMillis());
         Thread.sleep(10000);
 
-        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(1, inErrorRequests.size());
         logger.info("Error: {}", inErrorRequests.get(0));
 
-        List<ErrorInfo> errors = executorService.getAllErrors();
+        List<ErrorInfo> errors = executorService.getAllErrors(new QueryContext());
         logger.info("Errors: {}", errors);
         assertEquals(1, errors.size());
         
@@ -332,11 +333,11 @@ public class BasicExecutorIntegrationTest {
 
         Thread.sleep(10000);
 
-        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
-        List<RequestInfo> queuedRequests = executorService.getQueuedRequests();
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests(new QueryContext());
         assertEquals(1, queuedRequests.size());
-        List<RequestInfo> executedRequests = executorService.getCompletedRequests();
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
         assertEquals(4, executedRequests.size());
 
 
@@ -351,16 +352,16 @@ public class BasicExecutorIntegrationTest {
 
         Thread.sleep(9000);
 
-        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests();
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
-        List<RequestInfo> queuedRequests = executorService.getQueuedRequests();
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests(new QueryContext());
         assertEquals(1, queuedRequests.size());
-        List<RequestInfo> executedRequests = executorService.getCompletedRequests();
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
         assertEquals(3, executedRequests.size());
         
         executorService.cancelRequest(requestId+3);
         
-        List<RequestInfo> canceled = executorService.getCancelledRequests();
+        List<RequestInfo> canceled = executorService.getCancelledRequests(new QueryContext());
         
         ExecutorJPAAuditService auditService = new ExecutorJPAAuditService(emf);
         int resultCount = auditService.requestInfoLogDeleteBuilder()
@@ -388,14 +389,35 @@ public class BasicExecutorIntegrationTest {
         
         Thread.sleep(5000);
         
-        inErrorRequests = executorService.getInErrorRequests();
+        inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
-        queuedRequests = executorService.getQueuedRequests();
+        queuedRequests = executorService.getQueuedRequests(new QueryContext());
         assertEquals(0, queuedRequests.size());
-        executedRequests = executorService.getCompletedRequests();
+        executedRequests = executorService.getCompletedRequests(new QueryContext());
         assertEquals(1, executedRequests.size());
     }
 
+    @Test
+    public void cancelRequestWithSearchByCommandTest() throws InterruptedException {
+
+        CommandContext ctxCMD = new CommandContext();
+        String businessKey = UUID.randomUUID().toString();
+        ctxCMD.setData("businessKey", businessKey);
+
+        Long requestId = executorService.scheduleRequest("org.jbpm.executor.test.CustomCommand", ctxCMD);
+        
+        List<RequestInfo> requests = executorService.getRequestsByCommand("org.jbpm.executor.test.CustomCommand", new QueryContext());
+        assertNotNull(requests);
+        assertEquals(1, requests.size());
+        assertEquals(requestId, requests.get(0).getId());
+
+        // cancel the task immediately
+        executorService.cancelRequest(requestId);
+
+        List<RequestInfo> cancelledRequests = executorService.getCancelledRequests(new QueryContext());
+        assertEquals(1, cancelledRequests.size());
+
+    }
     
     public void FIXMEfutureRequestTest() throws InterruptedException {
         CommandContext ctxCMD = new CommandContext();
@@ -405,15 +427,15 @@ public class BasicExecutorIntegrationTest {
         assertNotNull(requestId);
         Thread.sleep(5000);
         
-        List<RequestInfo> runningRequests = executorService.getRunningRequests();
+        List<RequestInfo> runningRequests = executorService.getRunningRequests(new QueryContext());
         assertEquals(0, runningRequests.size());
         
-        List<RequestInfo> futureQueuedRequests = executorService.getFutureQueuedRequests();
+        List<RequestInfo> futureQueuedRequests = executorService.getFutureQueuedRequests(new QueryContext());
         assertEquals(1, futureQueuedRequests.size());
         
         Thread.sleep(10000);
         
-        List<RequestInfo> completedRequests = executorService.getCompletedRequests();
+        List<RequestInfo> completedRequests = executorService.getCompletedRequests(new QueryContext());
         assertEquals(1, completedRequests.size());
     }
     

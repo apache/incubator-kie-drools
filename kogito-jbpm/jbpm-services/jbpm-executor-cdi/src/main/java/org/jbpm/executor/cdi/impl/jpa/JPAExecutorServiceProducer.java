@@ -25,10 +25,10 @@ import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.impl.jpa.ExecutorQueryServiceImpl;
 import org.jbpm.executor.impl.jpa.ExecutorRequestAdminServiceImpl;
 import org.jbpm.executor.impl.jpa.JPAExecutorStoreService;
-import org.kie.internal.executor.api.ExecutorAdminService;
-import org.kie.internal.executor.api.ExecutorQueryService;
-import org.kie.internal.executor.api.ExecutorService;
-import org.kie.internal.executor.api.ExecutorStoreService;
+import org.kie.api.executor.ExecutorAdminService;
+import org.kie.api.executor.ExecutorQueryService;
+import org.kie.api.executor.ExecutorService;
+import org.kie.api.executor.ExecutorStoreService;
 import org.kie.internal.runtime.cdi.Activate;
 
 /**

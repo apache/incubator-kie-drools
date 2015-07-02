@@ -16,8 +16,8 @@
 
 package org.jbpm.executor.commands;
 
-import org.kie.internal.executor.api.CommandContext;
-import org.kie.internal.executor.api.ExecutionResults;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutionResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

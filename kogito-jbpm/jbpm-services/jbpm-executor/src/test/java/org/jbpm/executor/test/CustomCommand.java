@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 
-package org.jbpm.executor.commands;
+package org.jbpm.executor.test;
 
 import org.kie.api.executor.Command;
 import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ExecutionResults;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/**
- * Simple command to log the contextual data and return empty results. 
- * Just for demo purpose.
- * 
- */
-public class PrintOutCommand implements Command{
-    
-    private static final Logger logger = LoggerFactory.getLogger(PrintOutCommand.class);
 
-    public ExecutionResults execute(CommandContext ctx) {
-        logger.info("Command executed on executor with data {}", ctx.getData());
-        ExecutionResults executionResults = new ExecutionResults();
-        return executionResults;
+public class CustomCommand implements Command {
+
+    @Override
+    public ExecutionResults execute(CommandContext ctx) throws Exception {
+        
+        return new ExecutionResults();
     }
-    
+
 }

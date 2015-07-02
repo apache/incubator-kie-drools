@@ -25,11 +25,13 @@ import org.jbpm.executor.impl.jpa.ExecutorJPAAuditService;
 import org.jbpm.executor.impl.wih.AsyncWorkItemHandler;
 import org.jbpm.test.JbpmAsyncJobTestCase;
 import org.junit.Test;
+import org.kie.api.executor.ErrorInfo;
+import org.kie.api.executor.STATUS;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemManager;
-import org.kie.internal.executor.api.ErrorInfo;
-import org.kie.internal.executor.api.STATUS;
+import org.kie.api.runtime.query.QueryContext;
+
 import qa.tools.ikeeper.annotation.BZ;
 
 public class ExecutorLogCleanTest extends JbpmAsyncJobTestCase {
@@ -76,7 +78,7 @@ public class ExecutorLogCleanTest extends JbpmAsyncJobTestCase {
         Thread.sleep(10 * 1000);
 
         // Assert completion of the job
-        Assertions.assertThat(getExecutorService().getCompletedRequests()).hasSize(1);
+        Assertions.assertThat(getExecutorService().getCompletedRequests(new QueryContext())).hasSize(1);
 
         // Delete a record
         int resultCount = auditService.requestInfoLogDeleteBuilder()
@@ -86,7 +88,7 @@ public class ExecutorLogCleanTest extends JbpmAsyncJobTestCase {
         Assertions.assertThat(resultCount).isEqualTo(1);
 
         // Assert remaining records
-        Assertions.assertThat(getExecutorService().getCompletedRequests()).hasSize(0);
+        Assertions.assertThat(getExecutorService().getCompletedRequests(new QueryContext())).hasSize(0);
     }
 
     @Test
@@ -104,7 +106,7 @@ public class ExecutorLogCleanTest extends JbpmAsyncJobTestCase {
         Thread.sleep(10 * 1000);
 
         // Assert comletion of the job
-        List<ErrorInfo> errorList = getExecutorService().getAllErrors();
+        List<ErrorInfo> errorList = getExecutorService().getAllErrors(new QueryContext());
         Assertions.assertThat(errorList).hasSize(2);
 
         // Delete a record
@@ -115,7 +117,7 @@ public class ExecutorLogCleanTest extends JbpmAsyncJobTestCase {
         Assertions.assertThat(resultCount).isEqualTo(1);
 
         // Assert remaining records
-        Assertions.assertThat(getExecutorService().getAllErrors()).hasSize(1);
+        Assertions.assertThat(getExecutorService().getAllErrors(new QueryContext())).hasSize(1);
 
         // Abort running process instance
         ksession.abortProcessInstance(pi.getId());

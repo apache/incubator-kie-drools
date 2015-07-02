@@ -25,11 +25,11 @@ import javax.persistence.NoResultException;
 import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.GenericCommand;
 import org.jbpm.executor.ExecutorServiceFactory;
+import org.kie.api.executor.ErrorInfo;
+import org.kie.api.executor.ExecutorStoreService;
+import org.kie.api.executor.RequestInfo;
+import org.kie.api.executor.STATUS;
 import org.kie.internal.command.Context;
-import org.kie.internal.executor.api.ErrorInfo;
-import org.kie.internal.executor.api.ExecutorStoreService;
-import org.kie.internal.executor.api.RequestInfo;
-import org.kie.internal.executor.api.STATUS;
 
 /**
  * 
