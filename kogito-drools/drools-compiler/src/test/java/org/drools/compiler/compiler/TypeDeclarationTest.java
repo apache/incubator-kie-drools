@@ -4,7 +4,6 @@ import org.drools.core.common.EventFactHandle;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.rule.TypeDeclaration;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -1230,8 +1229,8 @@ public class TypeDeclarationTest {
     }
 
     @Test
-    @Ignore( "DROOLS-815" )
     public void testDeclarationOfClassWithNonStandardSetterAndCanonicalName() {
+        // DROOLS-815
         final String s1 = "package test; " +
                           "import " + BeanishClass.class.getCanonicalName() + "; " +
 
