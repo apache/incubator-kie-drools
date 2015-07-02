@@ -103,7 +103,7 @@ public class WorkflowProcessInstanceUpgrader {
             if (processTo instanceof WorkflowProcess) {
                 to = Long.valueOf(getNodeId(((WorkflowProcess) processTo).getNodes(), entry.getValue(), false));
             } else if (processTo instanceof RuleFlowProcess) {
-                to = Long.valueOf(getNodeId(((RuleFlowProcessInstance) processTo).getWorkflowProcess().getNodes(), entry.getValue(), false));
+                to = Long.valueOf(getNodeId(((RuleFlowProcess) processTo).getNodes(), entry.getValue(), false));
             } else if (processTo != null) {
                 throw new IllegalArgumentException("Suported processes are WorkflowProcess and RuleFlowProcess, it was:" + processTo.getClass());
             } else {
@@ -165,7 +165,7 @@ public class WorkflowProcessInstanceUpgrader {
                 newNodeId = nodeInstance.getNodeId();
             }
 
-            // clean up iteration levels for removed (old) nodes 
+            // clean up iteration levels for removed (old) nodes
             Map<String, Integer> iterLevels = ((WorkflowProcessInstanceImpl) nodeInstance.getProcessInstance()).getIterationLevels();
             String uniqueId = (String) ((NodeImpl) nodeInstance.getNode()).getMetaData("UniqueId");
             iterLevels.remove(uniqueId);
