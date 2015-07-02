@@ -18,107 +18,95 @@ package org.kie.internal.executor.api;
 
 import java.util.List;
 
+import org.kie.api.executor.ErrorInfo;
+import org.kie.api.executor.RequestInfo;
+import org.kie.api.executor.STATUS;
+
+
 /**
- * Executor query interface that provides runtime access to data.
+ * @see org.kie.api.executor.ExecutorQueryService
  *
  */
-public interface ExecutorQueryService {
-    /**
-     * Returns list of pending execution requests.
-     * @return
-     */
-    List<RequestInfo> getPendingRequests();
-    
-    /**
-     * Returns given pending request identified by <code>id</code>
-     * @param id - unique id of the request
-     * @return
-     */
-    List<RequestInfo> getPendingRequestById(Long id);
-    
-    /**
-     * Returns request identified by <code>id</code> regardless of its status
-     * @param id - unique id of the request
-     * @return
-     */
-    RequestInfo getRequestById(Long id);
-    
-    /**
-     * Returns requests identified by <code>businessKey</code> usually it should be only one with given 
-     * business key but it does not have to as same business key requests can be processed sequentially and 
-     * thus might be in different statuses.
-     * @param businessKey - business key of the request
-     * @return
-     */
-    List<RequestInfo> getRequestByBusinessKey(String businessKey);
-    
-    /**
-     * Returns all errors (if any) for given request
-     * @param id - unique id of the request
-     * @return
-     */
-    List<ErrorInfo> getErrorsByRequestId(Long id);
+public interface ExecutorQueryService extends org.kie.api.executor.ExecutorQueryService {
     
     /**
      * Returns all queued requests
      * @return
+     * @deprecated use equivalent method with paging arguments
      */
+    @Deprecated
     List<RequestInfo> getQueuedRequests();
     
     /**
      * Returns all comleted requests.
      * @return
+     * @deprecated use equivalent method with paging arguments
      */
+    @Deprecated
     List<RequestInfo> getCompletedRequests();
     
     /**
      * Returns all requests that have errors.
      * @return
+     * @deprecated use equivalent method with paging arguments
      */
+    @Deprecated
     List<RequestInfo> getInErrorRequests();
     
     /**
      * Returns all requests that were cancelled
      * @return
+     * @deprecated use equivalent method with paging arguments
      */
+    @Deprecated
     List<RequestInfo> getCancelledRequests();
     
     /**
      * Returns all errors.
      * @return
+     * @deprecated use equivalent method with paging arguments
      */
+    @Deprecated
     List<ErrorInfo> getAllErrors(); 
     
     /**
      * Returns all requests
      * @return
+     * @deprecated use equivalent method with paging arguments
      */
+    @Deprecated
     List<RequestInfo> getAllRequests(); 
     
     /**
      * Returns all currently running requests
      * @return
+     * @deprecated use equivalent method with paging arguments
      */
+    @Deprecated
     List<RequestInfo> getRunningRequests();
     
     /**
      * Returns requests queued for future execution
      * @return
+     * @deprecated use equivalent method with paging arguments
      */
+    @Deprecated
     List<RequestInfo> getFutureQueuedRequests();
     
     /**
      * Returns requests based on their status
      * @param statuses - statuses that requests should be in
      * @return
+     * @deprecated use equivalent method with paging arguments
      */
+    @Deprecated
     List<RequestInfo> getRequestsByStatus(List<STATUS> statuses);
     
     /**
-     * Dedicated method for handling special case that is get the request for processing.
-     * To ensure its efficient use it shall perform necessary operation to minimize risk of 
-     * race conditions and deadlock.
+     * Returns list of pending execution requests.
      * @return
+     * @deprecated use equivalent method with paging arguments
      */
-    RequestInfo getRequestForProcessing();
+    @Deprecated
+    List<RequestInfo> getPendingRequests();
 }

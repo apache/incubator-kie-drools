@@ -16,18 +16,10 @@
 
 package org.kie.internal.executor.api;
 
-import java.util.Date;
 
 /**
- * Marks given executor command it is reoccurring and shall be rescheduled after completion of single instance.
- *
+ * @see org.kie.api.executor.Reoccurring
  */
-public interface Reoccurring {
+public interface Reoccurring extends org.kie.api.executor.Reoccurring {
 
-	/**
-	 * Returns next time to be scheduled. Date must be in future as jobs cannot be scheduled in past.
-	 * Returns null in case it should not be scheduled any more.
-	 * @return
-	 */
-	Date getScheduleTime();
 }

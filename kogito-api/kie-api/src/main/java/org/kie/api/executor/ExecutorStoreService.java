@@ -1,10 +1,9 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -12,13 +11,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
-package org.kie.internal.executor.api;
+package org.kie.api.executor;
 
-/**
- * @see extends org.kie.api.executor.ExecutorAdminService
- */
-public interface ExecutorAdminService extends org.kie.api.executor.ExecutorAdminService {
+public interface ExecutorStoreService {
 
+	void persistRequest(RequestInfo request);
+	
+	void updateRequest(RequestInfo request);
+	
+	RequestInfo removeRequest(Long requestId);
+	
+	RequestInfo findRequest(Long id);	
+	
+	void persistError(ErrorInfo error);
+	
+	void updateError(ErrorInfo error);
+	
+	ErrorInfo removeError(Long errorId);
+	
+	ErrorInfo findError(Long id);
+	
+	Runnable buildExecutorRunnable();
+	
 }

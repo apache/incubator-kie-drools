@@ -16,89 +16,13 @@
 
 package org.kie.internal.executor.api;
 
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 
 /**
- * Top level facade that aggregates operations defined in:
- * <ul>
- *  <li><code>Executor</code></li>
- *  <li><code>ExecutorQueryService</code></li>
- *  <li><code>ExecutorAdminService</code></li>
- * </ul>
- * @see Executor
- * @see ExecutorQueryService
- * @see ExecutorAdminService
+ * @see org.kie.api.executor.ExecutorService
  */
-public interface ExecutorService {
+public interface ExecutorService extends org.kie.api.executor.ExecutorService {
 	
-	/**
-	 * Allow to use custom identifiers for the executor instance where default is to rely on local id of clustering of kie
-	 * if present, otherwise use simple 'default-executor'
-	 */
-	public static final String EXECUTOR_ID = System.getProperty("org.kie.executor.id", 
-			System.getProperty("org.uberfire.cluster.local.id", "default-executor"));
 
-    public List<RequestInfo> getQueuedRequests();
-
-    public List<RequestInfo> getCompletedRequests();
-
-    public List<RequestInfo> getInErrorRequests();
-
-    public List<RequestInfo> getCancelledRequests();
-
-    public List<ErrorInfo> getAllErrors();
-
-    public List<RequestInfo> getAllRequests();
-    
-    public List<RequestInfo> getRequestsByStatus(List<STATUS> statuses);
-    
-    public List<RequestInfo> getRequestsByBusinessKey(String businessKey);
-
-    public int clearAllRequests();
-
-    public int clearAllErrors();
-
-    public Long scheduleRequest(String commandName, CommandContext ctx);
-
-    public void cancelRequest(Long requestId);
-
-    public void init();
-
-    public void destroy();
-    
-    public boolean isActive();
-
-    public int getInterval();
-
-    public void setInterval(int waitTime);
-
-    public int getRetries();
-
-    public void setRetries(int defaultNroOfRetries);
-
-    public int getThreadPoolSize();
-
-    public void setThreadPoolSize(int nroOfThreads);
-    
-    public TimeUnit getTimeunit();
-   
-    public void setTimeunit(TimeUnit timeunit);
-    
-    public List<RequestInfo> getPendingRequests();
-
-    public List<RequestInfo> getPendingRequestById(Long id);
-
-    public Long scheduleRequest(String commandId, Date date, CommandContext ctx);
-
-    public List<RequestInfo> getRunningRequests();
-    
-    public List<RequestInfo> getFutureQueuedRequests();
-
-    public RequestInfo getRequestById(Long requestId);
-
-    public List<ErrorInfo> getErrorsByRequestId(Long requestId);
     
 }
