@@ -16,84 +16,12 @@
 
 package org.kie.internal.executor.api;
 
-import java.util.Date;
-import java.util.List;
 
 /**
- * Represents request information for the executor service.
+ * @see org.kie.api.executor.RequestInfo
  *
  */
-public interface RequestInfo {
+public interface RequestInfo extends org.kie.api.executor.RequestInfo {
 
-    /**
-     * Sets status for the request
-     * @param status
-     */
-    void setStatus(STATUS status);
-    
-    /**
-     * Returns status of the request
-     * @return
-     */
-    STATUS getStatus();
-    
-    /**
-     * Returns unique id of the request
-     * @return
-     */
-    Long getId();
-    
-    /**
-     * Returns list of errors for this request if any
-     * @return
-     */
-    List<? extends ErrorInfo> getErrorInfo();
-    
-    /**
-     * Returns number of retries available for this request
-     * @return
-     */
-    int getRetries();
-    
-    /**
-     * Returns number of already executed attempts
-     * @return
-     */
-    int getExecutions();
-    
-    /**
-     * Returns command name for this request
-     * @return
-     */
-    String getCommandName();
-    
-    /**
-     * Returns business key assigned to this request
-     * @return
-     */
-    String getKey();
-    
-    /**
-     * Returns descriptive message assigned to this request
-     * @return
-     */
-    String getMessage();
-    
-    /**
-     * Returns time that this request shall be executed (for the first attempt)
-     * @return
-     */
-    Date getTime();
-    
-    /**
-     * Serialized bytes of the contextual request data
-     * @return
-     */
-    byte[] getRequestData();
-    
-    /**
-     * Serialized bytes of the response data
-     * @return
-     */
-    byte[] getResponseData();
+   
 }

@@ -16,35 +16,11 @@
 
 package org.kie.internal.executor.api;
 
-import java.util.Date;
 
 /**
- * Represents Error information of the executor service data model.
+ * @see org.kie.api.executor.ErrorInfo
  *
  */
-public interface ErrorInfo {
+public interface ErrorInfo extends org.kie.api.executor.ErrorInfo {
 
-    /**
-     * Returns unique identifier of the error instance.
-     * @return
-     */
-    Long getId();
-    
-    /**
-     * Returns error message for the error instance.
-     * @return
-     */
-    String getMessage();
-    
-    /**
-     * Returns complete stack trace of the exception that generated this error instance
-     * @return
-     */
-    String getStacktrace();
-    
-    /**
-     * Returns exact time when the exception happened.
-     * @return
-     */
-    Date getTime();
 }

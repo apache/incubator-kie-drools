@@ -14,11 +14,22 @@
  * limitations under the License.
  */
 
-package org.kie.internal.executor.api;
+package org.kie.api.executor;
 
 /**
- * @see extends org.kie.api.executor.ExecutorAdminService
+ * Simple administration api for executor service.
  */
-public interface ExecutorAdminService extends org.kie.api.executor.ExecutorAdminService {
-
+public interface ExecutorAdminService {
+    
+    /**
+     * Removes all requests
+     * @return
+     */
+    public int clearAllRequests();
+    
+    /**
+     * Removes all errors
+     * @return
+     */
+    public int clearAllErrors();
 }

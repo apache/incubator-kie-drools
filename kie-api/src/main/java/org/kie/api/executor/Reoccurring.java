@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 JBoss Inc
+ * Copyright 2013 JBoss by Red Hat.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.internal.executor.api;
+package org.kie.api.executor;
+
+import java.util.Date;
 
 /**
- * @see extends org.kie.api.executor.ExecutorAdminService
+ * Marks given executor command it is reoccurring and shall be rescheduled after completion of single instance.
+ *
  */
-public interface ExecutorAdminService extends org.kie.api.executor.ExecutorAdminService {
+public interface Reoccurring {
 
+	/**
+	 * Returns next time to be scheduled. Date must be in future as jobs cannot be scheduled in past.
+	 * Returns null in case it should not be scheduled any more.
+	 * @return
+	 */
+	Date getScheduleTime();
 }

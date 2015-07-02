@@ -16,48 +16,13 @@
 
 package org.kie.internal.executor.api;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 /**
- * Data holder for command's result data. Whatever command produces should be placed in
- * this results so they can be later on referenced by name by the requestor - e.g. process instance.
+ * @see org.kie.api.executor.ExecutionResults
  *
  */
-public class ExecutionResults implements Serializable {
+public class ExecutionResults extends org.kie.api.executor.ExecutionResults {
 
     private static final long serialVersionUID = -1738336024526084091L;
-    private Map<String, Object> data = new HashMap<String, Object>();
-
-    public ExecutionResults() {
-    }
-
-    public void setData(Map<String, Object> data) {
-        this.data = data;
-    }
-
-    public Map<String, Object> getData() {
-        return data;
-    }
-
-    public Object getData(String key) {
-        return data.get(key);
-    }
-
-    public void setData(String key, Object value) {
-        data.put(key, value);
-    }
-
-    public Set<String> keySet() {
-        return data.keySet();
-    }
-
-    @Override
-    public String toString() {
-        return "ExecutionResults{" + "data=" + data + '}';
-    }
-    
     
 }

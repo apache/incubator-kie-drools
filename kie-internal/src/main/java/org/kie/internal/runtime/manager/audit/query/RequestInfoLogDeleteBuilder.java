@@ -17,8 +17,9 @@ package org.kie.internal.runtime.manager.audit.query;
 
 import java.util.Date;
 
-import org.kie.internal.executor.api.STATUS;
+import org.kie.api.executor.STATUS;
 import org.kie.internal.query.ParametrizedUpdate;
+import org.kie.internal.task.api.AuditTask;
 
 public interface RequestInfoLogDeleteBuilder extends AuditDeleteBuilder<RequestInfoLogDeleteBuilder>{
 

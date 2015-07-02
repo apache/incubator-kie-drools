@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package org.kie.internal.executor.api;
+package org.kie.api.executor;
 
 /**
- * @see extends org.kie.api.executor.ExecutorAdminService
+ * Possible statuses of the request
+ *
  */
-public interface ExecutorAdminService extends org.kie.api.executor.ExecutorAdminService {
+public enum STATUS {
+   QUEUED, DONE, CANCELLED, ERROR, RETRYING, RUNNING;
 
+   
 }
