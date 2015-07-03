@@ -1,6 +1,6 @@
 /*
  * Copyright 2012 JBoss by Red Hat.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,10 +18,10 @@ package org.jbpm.kie.services.impl.model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanceDesc, Serializable{
-    
+public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanceDesc, Serializable {
+
     private static final long serialVersionUID = -5724814793988493958L;
-    
+
     private long id;
     private String nodeId;
     private String name;
@@ -30,12 +30,13 @@ public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanc
     private String nodeType;
     private String connection;
     private int type;
-    
+
     private Date dataTimeStamp;
-    
+
     private Long workItemId;
 
     public NodeInstanceDesc() {
+        // default constructor
     }
 
 
@@ -89,7 +90,7 @@ public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanc
     public boolean isCompleted() {
         return (this.type==1);
     }
-    
+
     @Override
     public String toString() {
         return "NodeInstanceDesc{" + "id=" + id + ", nodeId=" + nodeId + ", nodeUniqueId=" + nodeId + ", name=" + name + ", deploymentId=" + deploymentId + ", processInstanceId="
@@ -104,14 +105,16 @@ public class NodeInstanceDesc implements org.jbpm.services.api.model.NodeInstanc
         this.connection = incomingConnection;
     }
 
+    public int getType() {
+        return type;
+    }
 
-	public Long getWorkItemId() {
-		return workItemId;
-	}
+    public Long getWorkItemId() {
+        return workItemId;
+    }
 
+    public void setWorkItemId(Long workItemId) {
+        this.workItemId = workItemId;
+   }
 
-	public void setWorkItemId(Long workItemId) {
-		this.workItemId = workItemId;
-	}
-    
 }
