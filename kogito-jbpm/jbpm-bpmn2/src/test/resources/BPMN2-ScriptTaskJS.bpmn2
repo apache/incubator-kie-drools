@@ -25,13 +25,18 @@
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
     <scriptTask id="_2" name="Hello" scriptFormat="http://www.javascript.com/javascript" >
-      <script>var text = 'Hello ';
-print(text + kcontext.getVariable('name') + '\n');
-try {
-   somethingInvalid;
-} catch(err) {
-    print(err + '\n');
-}</script>
+      <script>
+        // this is comment
+
+        kcontext.setVariable('surname', "tester");
+        var text = 'Hello ';
+        print(text + kcontext.getVariable('name') + '\n');
+        try {
+            somethingInvalid;
+        } catch(err) {
+            print(err + '\n');
+        }
+      </script>
     </scriptTask>
     <userTask id="_3" name="Hello" >
       <extensionElements>

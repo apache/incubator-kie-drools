@@ -233,11 +233,14 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", "krisv");
+
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("ScriptTask", params);
         assertEquals("Entry", processInstance.getVariable("x"));
         assertNull(processInstance.getVariable("y"));
+
         ksession.getWorkItemManager().completeWorkItem(handler.getWorkItem().getId(), null);
         assertEquals("Exit", getProcessVarValue(processInstance, "y"));
+        assertEquals("tester", processInstance.getVariable("surname"));
     }
 
     @Test
@@ -517,28 +520,28 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         
         ksession.execute(new GenericCommand<Void>() {
 
-			@Override
-			public Void execute(Context context) {
-				
-				KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-		        ProcessInstance processInstance = ksession.getProcessInstance(pId);
-		        assertNotNull(processInstance);
-		        NodeInstance nodeInstance = ((WorkflowProcessInstance) processInstance)
-		        		.getNodeInstance(((org.drools.core.process.instance.WorkItem)workItem).getNodeInstanceId());
-		        
-		        assertNotNull(nodeInstance);
-		        assertTrue(nodeInstance instanceof WorkItemNodeInstance);
-		        String deploymentId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getDeploymentId();
-		        long nodeInstanceId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeInstanceId();
-		        long nodeId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeId();
-		        
-		        assertEquals(((org.drools.core.process.instance.WorkItem)workItem).getDeploymentId(), deploymentId);
-		        assertEquals(((org.drools.core.process.instance.WorkItem)workItem).getNodeId(), nodeId);
-		        assertEquals(((org.drools.core.process.instance.WorkItem)workItem).getNodeInstanceId(), nodeInstanceId);
-		        
-		        return null;
-			}
-		});
+            @Override
+            public Void execute(Context context) {
+
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                ProcessInstance processInstance = ksession.getProcessInstance(pId);
+                assertNotNull(processInstance);
+                NodeInstance nodeInstance = ((WorkflowProcessInstance) processInstance)
+                        .getNodeInstance(((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId());
+
+                assertNotNull(nodeInstance);
+                assertTrue(nodeInstance instanceof WorkItemNodeInstance);
+                String deploymentId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getDeploymentId();
+                long nodeInstanceId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeInstanceId();
+                long nodeId = ((WorkItemNodeInstance) nodeInstance).getWorkItem().getNodeId();
+
+                assertEquals(((org.drools.core.process.instance.WorkItem) workItem).getDeploymentId(), deploymentId);
+                assertEquals(((org.drools.core.process.instance.WorkItem) workItem).getNodeId(), nodeId);
+                assertEquals(((org.drools.core.process.instance.WorkItem) workItem).getNodeInstanceId(), nodeInstanceId);
+
+                return null;
+            }
+        });
         
 
         
@@ -700,7 +703,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 		ksession = createKnowledgeSession(kbase);
 		TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
 		ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
-				workItemHandler);
+                workItemHandler);
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("x", "oldValue");
 		ProcessInstance processInstance = ksession.startProcess(
@@ -1229,8 +1232,8 @@ public class ActivityTest extends JbpmBpmn2TestCase {
                         assertEquals("SimpleService", workItem.getParameter("interfaceImplementationRef"));
                         super.executeWorkItem(workItem, manager);
                     }
-            
-        });
+
+                });
         Map<String, Object> params = new HashMap<String, Object>();
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession
                 .startProcess("org.jboss.qa.jbpm.CallWS", params);
@@ -1583,13 +1586,13 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         KieBase kbase = createKnowledgeBaseWithoutDumper("BPMN2-CallActivityWithTransformation.bpmn2", "BPMN2-CallActivitySubProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
         final List<ProcessInstance> instances = new ArrayList<ProcessInstance>();
-        ksession.addEventListener(new DefaultProcessEventListener(){
+        ksession.addEventListener(new DefaultProcessEventListener() {
 
-			@Override
-			public void beforeProcessStarted(ProcessStartedEvent event) {
-				instances.add(event.getProcessInstance());
-			}
-        	
+            @Override
+            public void beforeProcessStarted(ProcessStartedEvent event) {
+                instances.add(event.getProcessInstance());
+            }
+
         });
         
         
@@ -1603,7 +1606,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertEquals("oldValue",((WorkflowProcessInstance) instances.get(0)).getVariable("x"));
         assertEquals("NEW VALUE",((WorkflowProcessInstance) instances.get(0)).getVariable("y"));
         // assert variables of subprocess, first in start (input transformation, then on end output transformation)
-        assertEquals("OLDVALUE",((WorkflowProcessInstance) instances.get(1)).getVariable("subX"));
+        assertEquals("OLDVALUE", ((WorkflowProcessInstance) instances.get(1)).getVariable("subX"));
         assertEquals("new value",((WorkflowProcessInstance) instances.get(1)).getVariable("subY"));
     }
     
