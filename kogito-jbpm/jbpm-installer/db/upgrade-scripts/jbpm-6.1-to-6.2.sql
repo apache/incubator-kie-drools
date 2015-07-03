@@ -250,7 +250,7 @@ INSERT INTO AuditTaskImpl (activationTime, actualOwner, createdBy, createdOn, de
 SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id 
 FROM Task;
 
---sql server
+-- sql server
 ALTER TABLE SessionInfo ALTER COLUMN id numeric(19,0);
 ALTER TABLE AuditTaskImpl ALTER COLUMN processSessionId numeric(19,0);
 ALTER TABLE ContextMappingInfo ALTER COLUMN KSESSION_ID numeric(19,0);
@@ -281,4 +281,37 @@ update task t set description = (select shorttext from I18NText where task_descr
 
 INSERT INTO AuditTaskImpl (activationTime, actualOwner, createdBy, createdOn, deploymentId, description, dueDate, name, parentId, priority, processId, processInstanceId, processSessionId, status, taskId)
 SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id 
+FROM Task;
+
+-- sybase
+ALTER TABLE SessionInfo MODIFY id NUMERIC(19,0);
+ALTER TABLE AuditTaskImpl MODIFY processSessionId NUMERIC(19,0);
+ALTER TABLE ContextMappingInfo MODIFY KSESSION_ID NUMERIC(19,0);
+ALTER TABLE Task MODIFY processSessionId NUMERIC(19,0);
+
+CREATE TABLE DeploymentStore (
+    id BIGINT NOT NULL,
+    attributes VARCHAR(255),
+    DEPLOYMENT_ID VARCHAR(255),
+    deploymentUnit TEXT,
+    state INTEGER,
+    updateDate TIMESTAMP,
+    PRIMARY KEY(id)
+);
+
+CREATE UNIQUE INDEX UK_DeploymentStore_1 on DeploymentStore(DEPLOYMENT_ID);
+
+ALTER TABLE ProcessInstanceLog ADD processInstanceDescription VARCHAR(255);
+ALTER TABLE RequestInfo ADD owner VARCHAR(255);
+ALTER TABLE Task ADD description VARCHAR(255);
+ALTER TABLE Task ADD name VARCHAR(255);
+ALTER TABLE Task ADD subject VARCHAR(255);
+
+-- update all tasks with its name, subject and description
+UPDATE task SET name = (SELECT shorttext FROM I18NText WHERE task_names_id = task.id);
+UPDATE task SET subject = (SELECT shorttext FROM I18NText WHERE task_subjects_id = task.id);
+UPDATE task SET description = (SELECT shorttext FROM I18NText WHERE task_descriptions_id = task.id);
+
+INSERT INTO AuditTaskImpl (activationTime, actualOwner, createdBy, createdOn, deploymentId, description, dueDate, name, parentId, priority, processId, processInstanceId, processSessionId, status, taskId)
+SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id
 FROM Task;

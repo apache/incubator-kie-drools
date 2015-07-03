@@ -41,9 +41,15 @@ ALTER TABLE ProcessInstanceLog ADD COLUMN correlationKey varchar(255);
 ALTER TABLE TaskEvent ADD COLUMN message varchar(255); 
 
 create index IDX_PInstLog_correlation on ProcessInstanceLog(correlationKey);
---sql server
+-- sql server
 
 ALTER TABLE ProcessInstanceLog ADD correlationKey varchar(255);
 ALTER TABLE TaskEvent ADD message varchar(255); 
 
 create index IDX_PInstLog_correlation on ProcessInstanceLog(correlationKey);
+
+-- sybase
+ALTER TABLE ProcessInstanceLog ADD correlationKey VARCHAR(255);
+ALTER TABLE TaskEvent ADD message VARCHAR(255);
+
+CREATE INDEX IDX_PInstLog_correlation on ProcessInstanceLog(correlationKey);
