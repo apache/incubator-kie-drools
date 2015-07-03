@@ -17,12 +17,16 @@
 package org.jbpm.process.workitem.rest;
 
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.bind.JAXBContext;
 
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
@@ -60,11 +64,14 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.util.EntityUtils;
+import org.drools.core.util.StringUtils;
 import org.jbpm.process.workitem.AbstractLogOrThrowWorkItemHandler;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * WorkItemHandler that is capable of interacting with REST service. Supports both types of services
@@ -87,6 +94,8 @@ import org.slf4j.LoggerFactory;
  *  <li>AuthUrl - url that is handling authentication (usually j_security_check url)</li>
  *  <li>HandleResponseErrors - optional parameter that instructs handler to throw errors in case 
  *  of non successful response codes (other than 2XX)</li>
+ *  <li>ResultClass - fully qualified class name of the class that response should be transformed to, 
+ *  if not given string format will be returned</li>
  * </ul>
  */
 public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
@@ -97,6 +106,9 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	private String password;
 	private AuthenticationType type;
 	private String authUrl;	
+	
+	private ClassLoader classLoader;
+	
 	// protected for test purpose
 	protected static boolean HTTP_CLIENT_API_43 = true;
 	
@@ -115,6 +127,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	public RESTWorkItemHandler() {
 		logger.debug("REST work item handler will use http client 4.3 api " + HTTP_CLIENT_API_43);
 		this.type = AuthenticationType.NONE;
+		this.classLoader = this.getClass().getClassLoader();
 	}
 	
 	/**
@@ -127,6 +140,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 		this.username = username;
 		this.password = password;
 		this.type = AuthenticationType.BASIC;
+		this.classLoader = this.getClass().getClassLoader();
 	}
 
 	/**
@@ -141,7 +155,45 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 		this.password = password;
 		this.type = AuthenticationType.FORM_BASED;
 		this.authUrl = authUrl;
+		this.classLoader = this.getClass().getClassLoader();
 	}
+	
+	/**
+     * Used when no authentication is required
+     */
+    public RESTWorkItemHandler(ClassLoader classLoader) {
+        logger.debug("REST work item handler will use http client 4.3 api " + HTTP_CLIENT_API_43);
+        this.type = AuthenticationType.NONE;
+        this.classLoader = classLoader;
+    }
+    
+    /**
+     * Dedicated constructor when BASIC authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     */
+    public RESTWorkItemHandler(String username, String password, ClassLoader classLoader) {
+        this();
+        this.username = username;
+        this.password = password;
+        this.type = AuthenticationType.BASIC;
+        this.classLoader = classLoader;
+    }
+
+    /**
+     * Dedicated constructor when FORM BASED authentication method shall be used
+     * @param username - user name to be used for authentication
+     * @param password - password to be used for authentication
+     * @param authUrl
+     */
+    public RESTWorkItemHandler(String username, String password, String authUrl, ClassLoader classLoader) {
+        this();
+        this.username = username;
+        this.password = password;
+        this.type = AuthenticationType.FORM_BASED;
+        this.authUrl = authUrl;
+        this.classLoader = classLoader;
+    }
 
     public String getAuthUrl() {
 		return authUrl;
@@ -153,6 +205,7 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
         String urlStr = (String) workItem.getParameter("Url");
         String method = (String) workItem.getParameter("Method");
         String handleExceptionStr = (String) workItem.getParameter("HandleResponseErrors");
+        String resultClass = (String) workItem.getParameter("ResultClass");
         if (urlStr == null) {
             throw new IllegalArgumentException("Url is a required parameter");
         }
@@ -186,11 +239,16 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	        Map<String, Object> results = new HashMap<String, Object>();
 	        HttpEntity respEntity = response.getEntity();
 	        String responseBody = null;
+	        String contentType = null;
 	        if( respEntity != null ) { 
 	            responseBody = EntityUtils.toString(respEntity);
+	            
+	            if (respEntity.getContentType() != null) {
+	                contentType = respEntity.getContentType().getValue();
+	            }
 	        }
 	        if (responseCode >= 200 && responseCode < 300) {
-	            postProcessResult(responseBody, results);
+	            postProcessResult(responseBody, resultClass, contentType, results);
 	            results.put("StatusMsg", "request to endpoint " + urlStr + " successfully completed " + statusLine.getReasonPhrase());
 	        } else {
 	        	if (handleException) {
@@ -232,9 +290,13 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	protected void setBody(RequestBuilder builder, Map<String, Object> params) {
         if (params.containsKey("Content")) {
             try {
-                String content = (String) params.get("Content");
-                StringEntity entity = new StringEntity(content);
                 String contentType = (String)params.get("ContentType");
+                Object content = params.get("Content");
+                if (!(content instanceof String)) {
+                    
+                    content = transformRequest(content, contentType);
+                }
+                StringEntity entity = new StringEntity((String)content);                
                 entity.setContentType(contentType);
                 builder.setEntity(entity);
             } catch (UnsupportedEncodingException e) {
@@ -245,12 +307,70 @@ public class RESTWorkItemHandler extends AbstractLogOrThrowWorkItemHandler {
 	
 	protected void setBody(HttpRequestBase theMethod, Map<String, Object> params) {
         if (params.containsKey("Content")) {
-            ((HttpEntityEnclosingRequestBase)theMethod).setEntity(new StringEntity((String)params.get("Content"), ContentType.create((String)params.get("ContentType"))));
+            Object content = params.get("Content");
+            if (!(content instanceof String)) {
+                
+                content = transformRequest(content, (String)params.get("ContentType"));
+            }
+            ((HttpEntityEnclosingRequestBase)theMethod).setEntity(new StringEntity((String) content, 
+                    ContentType.create((String)params.get("ContentType"))));
         }
 	}
 
-    protected void postProcessResult(String result, Map<String, Object> results) {
-        results.put("Result", result);
+    protected void postProcessResult(String result, String resultClass, String contentType, Map<String, Object> results) {
+        if (!StringUtils.isEmpty(resultClass) && !StringUtils.isEmpty(contentType)) {
+            try {
+                Class<?> clazz = Class.forName(resultClass, true, classLoader);
+                
+                Object resultObject = transformResult(clazz, contentType, result);
+                                
+                results.put("Result", resultObject);
+            } catch (Throwable e) {
+                throw new RuntimeException("Unable to transform respose to object", e);
+            }
+        } else {
+        
+            results.put("Result", result);
+        }
+    }
+    
+    protected String transformRequest(Object data, String contentType) {
+        try {
+            if (contentType.equals("application/json")) {
+                ObjectMapper mapper = new ObjectMapper();
+                
+                return mapper.writeValueAsString(data);
+            } else if (contentType.equals("application/xml")) {
+                StringWriter stringRep = new StringWriter();
+                JAXBContext jaxbContext = JAXBContext.newInstance(new Class[]{data.getClass()});
+                
+                jaxbContext.createMarshaller().marshal(data, stringRep);
+                
+                return stringRep.toString();
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to transform request to object", e);
+        }
+        throw new IllegalArgumentException("Unable to find transformer for content type '" +contentType + "' to handle data " + data);
+        
+    }
+    
+    protected Object transformResult(Class<?> clazz, String contentType, String content) throws Exception {
+        
+        if (contentType.equals("application/json")) {
+            ObjectMapper mapper = new ObjectMapper();
+            
+            return mapper.readValue(content, clazz);
+        } else if (contentType.equals("application/xml")) {
+            StringReader result = new StringReader(content);
+            JAXBContext jaxbContext = JAXBContext.newInstance(new Class[]{clazz});
+            
+            return jaxbContext.createUnmarshaller().unmarshal(result);
+        }
+        logger.warn("Unable to find transformer for content type '{}' to handle for content '{}'", contentType, content);
+        // unknown content type, returning string representation
+        return content;
+        
     }
     
     protected HttpResponse doRequestWithAuthorization(HttpClient httpclient, Object method, Map<String, Object> params, AuthenticationType authType) {

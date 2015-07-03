@@ -71,5 +71,22 @@ public class TestRESTResource {
         person.setName("deleted " + name);
         return person;
     }
+    
+    @GET
+    @Path("/xml")
+    @Produces("application/xml")
+    public Person getXml() {
+        Person person = new Person();
+        person.setName("Person Xml");
+        return person;
+    }
+    
+    @GET
+    @Path("/json")
+    @Produces("application/json")
+    public String getJson() {
+
+        return "{\"name\":\"Person Json\"}";
+    }
 
 }
