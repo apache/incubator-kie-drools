@@ -16,7 +16,6 @@
 
 package org.drools.core.common;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.ExecutableEntry;
@@ -46,7 +45,7 @@ public interface InternalAgenda
      * @return
      *      The WorkingMemory
      */
-    WorkingMemory getWorkingMemory();
+    InternalWorkingMemory getWorkingMemory();
 
     /**
      * Sets the Agenda's focus to the specified AgendaGroup

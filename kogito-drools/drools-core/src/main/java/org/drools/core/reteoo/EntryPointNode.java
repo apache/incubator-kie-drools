@@ -23,7 +23,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
@@ -43,8 +42,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static org.drools.core.reteoo.ObjectTypeNode.scheduleExpiration;
 
 /**
  * A node that is an entry point into the Rete network.
@@ -224,25 +221,7 @@ public class EntryPointNode extends ObjectSource
             log.trace("Insert {}", handle.toString());
         }
 
-        ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
-
-        for (int i = 0, length = cachedNodes.length; i < length; i++) {
-            cachedNodes[i].assertObject(handle,
-                                        context,
-                                        workingMemory);
-        }
-
-        if (objectTypeConf.getConcreteObjectTypeNode() == null && context.getReaderContext() == null) {
-            long expirationOffset = ((ClassObjectTypeConf) objectTypeConf).getExpirationOffset();
-            if ( expirationOffset >= 0 && expirationOffset != Long.MAX_VALUE ) {
-                scheduleExpiration(context, workingMemory, handle, expirationOffset,
-                                   new StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction((EventFactHandle)handle));
-            }
-        }
-
-        if (cachedNodes.length > 0) {
-            ((StatefulKnowledgeSessionImpl) workingMemory).addPropagation(new PropagationEntry.Insert(cachedNodes, handle, context));
-        }
+        workingMemory.addPropagation(new PropagationEntry.Insert(handle, context, workingMemory, objectTypeConf ));
     }
 
 

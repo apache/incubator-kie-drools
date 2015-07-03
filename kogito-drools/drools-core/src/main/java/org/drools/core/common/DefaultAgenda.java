@@ -17,7 +17,6 @@
 package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -260,7 +259,7 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#getWorkingMemory()
      */
-    public WorkingMemory getWorkingMemory() {
+    public InternalWorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
 
@@ -612,7 +611,7 @@ public class DefaultAgenda
             addAgendaGroup( agendaGroup );
         }
 
-        agendaGroup.setWorkingMemory( (InternalWorkingMemory) getWorkingMemory() );
+        agendaGroup.setWorkingMemory( getWorkingMemory() );
 
         return agendaGroup;
     }
@@ -861,7 +860,7 @@ public class DefaultAgenda
         // this is thread safe for BinaryHeapQueue
         // Binary Heap locks while it returns the array and reset's it's own internal array. Lock is released afer getAndClear()
         List<RuleAgendaItem> lazyItems = new ArrayList<RuleAgendaItem>();
-        for ( Activation aQueueable : ((InternalAgendaGroup) agendaGroup).getAndClear() ) {
+        for ( Activation aQueueable : agendaGroup.getAndClear() ) {
             final AgendaItem item = (AgendaItem) aQueueable;
             if ( item.isRuleAgendaItem() ) {
                 lazyItems.add( (RuleAgendaItem) item );

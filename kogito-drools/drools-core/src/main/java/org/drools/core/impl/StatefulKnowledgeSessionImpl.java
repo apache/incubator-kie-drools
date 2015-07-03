@@ -98,7 +98,6 @@ import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.type.DateFormats;
@@ -380,7 +379,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.lock = new ReentrantLock();
 
         timerService = TimerServiceFactory.getTimerService(this.config);
-        ((AcceptsTimerJobFactoryManager) timerService).setTimerJobFactoryManager(config.getTimerJobFactoryManager());
 
         this.firing = new AtomicBoolean(false);
 
@@ -1067,7 +1065,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         initTransient();
 
         timerService = TimerServiceFactory.getTimerService(this.config);
-        ((AcceptsTimerJobFactoryManager) timerService).setTimerJobFactoryManager( config.getTimerJobFactoryManager() );
 
         if (this.processRuntime != null) {
             this.processRuntime = createProcessRuntime();
@@ -1738,7 +1735,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.node = node;
         }
 
-        public InternalFactHandle getFactHandle() {
+        public EventFactHandle getFactHandle() {
             return factHandle;
         }
 

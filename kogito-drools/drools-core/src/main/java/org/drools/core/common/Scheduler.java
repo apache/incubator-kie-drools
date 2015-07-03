@@ -63,12 +63,12 @@ public final class Scheduler {
         ActivationTimerJob job = new ActivationTimerJob();
         ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );
                 
-        JobHandle jobHandle = ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().scheduleJob( job, ctx, trigger );
+        JobHandle jobHandle = agenda.getWorkingMemory().getTimerService().scheduleJob( job, ctx, trigger );
         item.setJobHandle( jobHandle );
     }
     
     public static void removeAgendaItem(final ScheduledAgendaItem item, final InternalAgenda agenda) {
-        ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().removeJob( item.getJobHandle() );
+        agenda.getWorkingMemory().getTimerService().removeJob( item.getJobHandle() );
     }
     
     public static class ActivationTimerJob<T extends ModedAssertion<T>> implements Job {
@@ -125,10 +125,10 @@ public final class Scheduler {
 //                item.getTuple().getHandle().addLastLeftTuple( postponedTuple );
             }
 
-            ((InternalAgenda) agenda).createPostponedActivation( postponedTuple,
-                                                                item.getPropagationContext(),
-                                                                (InternalWorkingMemory) agenda.getWorkingMemory(),
-                                                                item.getTerminalNode() );
+            agenda.createPostponedActivation( postponedTuple,
+                                              item.getPropagationContext(),
+                                              agenda.getWorkingMemory(),
+                                              item.getTerminalNode() );
             agenda.addActivation( (AgendaItem) postponedTuple.getObject() );
             
         }
@@ -178,7 +178,12 @@ public final class Scheduler {
 
         public void setTrigger(Trigger trigger) {
             this.trigger = trigger;
-        }               
+        }
+
+        @Override
+        public InternalWorkingMemory getWorkingMemory() {
+            return ((InternalAgenda)agenda).getWorkingMemory();
+        }
     }
     
     
@@ -217,11 +222,8 @@ public final class Scheduler {
             Trigger trigger = ProtobufInputMarshaller.readTrigger( inCtx,
                                                                    _activation.getTrigger() );
 
-            InternalAgenda agenda = ( InternalAgenda ) inCtx.wm.getAgenda();
-            ActivationTimerJob job = new ActivationTimerJob();
-            ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );
-                    
-            JobHandle jobHandle = ((InternalWorkingMemory)agenda.getWorkingMemory()).getTimerService().scheduleJob( job, ctx, trigger );
+            ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, inCtx.wm.getAgenda() );
+            JobHandle jobHandle = inCtx.wm.getTimerService().scheduleJob( new ActivationTimerJob(), ctx, trigger );
             item.setJobHandle( jobHandle );            
         }
     }

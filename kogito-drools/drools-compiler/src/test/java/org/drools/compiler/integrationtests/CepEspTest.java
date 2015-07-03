@@ -1628,6 +1628,7 @@ public class CepEspTest extends CommonTestMethodBase {
             wm.insert( new OrderEvent( "1",
                                        "customer A",
                                        70 ) );
+            wm.fireAllRules();
             assertEquals( 0,
                           wm.getIdleTime() );
             // now, there is a next job in 30 seconds: expire the event
