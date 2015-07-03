@@ -75,7 +75,8 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         wm.insert( new Person() );
         wm.insert( new Cat("yyy") );
         wm.insert( new Cheese() );
-        
+        wm.fireAllRules();
+
         assertEquals( 2, otnPerson.getOtnIdCounter() );
         assertEquals( 4, otnCheese.getOtnIdCounter() );
         assertEquals( 2, otnCat.getOtnIdCounter() );
@@ -191,7 +192,8 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         assertEquals( 0, otnCheese.getOtnIdCounter() );
         wm.insert( new Person() );
         wm.insert( new Cheese() );
-        
+        wm.fireAllRules();
+
         assertEquals( 5, otnPerson.getOtnIdCounter() );
         assertEquals( 4, otnCheese.getOtnIdCounter() );
     }       

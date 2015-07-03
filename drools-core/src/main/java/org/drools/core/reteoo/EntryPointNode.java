@@ -230,9 +230,7 @@ public class EntryPointNode extends ObjectSource
                                          workingMemory );
         }
 
-        if (cachedNodes.length > 0) {
-            workingMemory.addPropagation(new PropagationEntry.Insert(cachedNodes, handle, context));
-        }
+        workingMemory.addPropagation(new PropagationEntry.Insert(handle, context, workingMemory, objectTypeConf ));
     }
     
     public void modifyObject(final InternalFactHandle handle,

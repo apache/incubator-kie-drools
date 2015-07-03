@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package org.drools.core.time;
+package org.drools.core.time.impl;
 
-import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.time.JobContext;
+import org.drools.core.time.SelfRemovalJobContext;
 
-import java.io.Serializable;
+import java.util.concurrent.ConcurrentHashMap;
 
-public interface JobContext extends Serializable {
-    /**
-     * This method should only be called by the scheduler
-     */    
-    void setJobHandle(JobHandle jobHandle);
-    
-    JobHandle getJobHandle();
+public class ThreadSafeTrackableTimeJobFactoryManager extends TrackableTimeJobFactoryManager {
+    public ThreadSafeTrackableTimeJobFactoryManager() {
+        super(new ConcurrentHashMap<Long, TimerJobInstance>());
+    }
 
-    InternalWorkingMemory getWorkingMemory();
+    protected SelfRemovalJobContext createJobContext( JobContext ctx ) {
+        return new SelfRemovalJobContext( ctx, timerInstances );
+    }
 }

@@ -22,7 +22,6 @@ import org.drools.core.command.impl.AbstractInterceptor;
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;
-import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.command.runtime.UnpersistableCommand;
@@ -30,7 +29,8 @@ import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.marshalling.impl.MarshallingConfigurationImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
-import org.drools.core.time.AcceptsTimerJobFactoryManager;
+import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
+import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
@@ -44,13 +44,11 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.command.Context;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.Date;
-import javax.persistence.EntityManager;
 
 public class SingleSessionCommandService
     implements
@@ -145,10 +143,13 @@ public class SingleSessionCommandService
 
         this.commandService = new TransactionInterceptor(kContext);
 
-        ((AcceptsTimerJobFactoryManager) ((InternalKnowledgeRuntime) ksession).getTimerService()).getTimerJobFactoryManager().setCommandService( this );
+        TimerJobFactoryManager timerJobFactoryManager = ((InternalKnowledgeRuntime) ksession ).getTimerService().getTimerJobFactoryManager();
+        if (timerJobFactoryManager instanceof CommandServiceTimerJobFactoryManager) {
+           ( (CommandServiceTimerJobFactoryManager) timerJobFactoryManager ).setCommandService( this );
+        }
     }
     
-    public SingleSessionCommandService(Long sessionId,
+    public SingleSessionCommandService( Long sessionId,
                                        KieBase kbase,
                                        KieSessionConfiguration conf,
                                        Environment env) {
@@ -232,20 +233,23 @@ public class SingleSessionCommandService
 
         this.sessionInfo.setJPASessionMashallingHelper(this.marshallingHelper);
 
-        // The CommandService for the TimerJobFactoryManager must be set before any timer jobs are scheduled. 
-        // Otherwise, if overdue jobs are scheduled (and then run before the .commandService field can be set), 
-        //  they will retrieve a null commandService (instead of a reference to this) and fail.
-        ((SessionConfiguration) conf).getTimerJobFactoryManager().setCommandService(this);
-
         // if this.ksession is null, it'll create a new one, else it'll use the existing one
-        this.ksession = (StatefulKnowledgeSession)
-            this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(),
-                                                 this.ksession );
+        this.ksession = this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(), this.ksession );
+
+        InternalKnowledgeRuntime kruntime = ((InternalKnowledgeRuntime) ksession);
+
+        // The CommandService for the TimerJobFactoryManager must be set before any timer jobs are scheduled.
+        // Otherwise, if overdue jobs are scheduled (and then run before the .commandService field can be set),
+        //  they will retrieve a null commandService (instead of a reference to this) and fail.
+        TimerJobFactoryManager timerJobFactoryManager = ((InternalKnowledgeRuntime) ksession ).getTimerService().getTimerJobFactoryManager();
+        if (timerJobFactoryManager instanceof CommandServiceTimerJobFactoryManager) {
+            ( (CommandServiceTimerJobFactoryManager) timerJobFactoryManager ).setCommandService( this );
+        }
 
         // update the session id to be the same as the session info id
-        ((InternalKnowledgeRuntime) ksession).setId( this.sessionInfo.getId() );
+        kruntime.setId( this.sessionInfo.getId() );
 
-        ((InternalKnowledgeRuntime) this.ksession).setEndOperationListener( new EndOperationListenerImpl( this.txm, this.sessionInfo ) );
+        kruntime.setEndOperationListener( new EndOperationListenerImpl( this.txm, this.sessionInfo ) );
 
         if ( this.kContext == null ) {
             // this should only happen when this class is first constructed
@@ -275,7 +279,7 @@ public class SingleSessionCommandService
                     env.set( EnvironmentName.TRANSACTION_MANAGER, this.txm );
                     cls = Class.forName( "org.kie.spring.persistence.KieSpringJpaManager" );
                     con = cls.getConstructors()[0];
-                    this.jpm = (PersistenceContextManager) con.newInstance( new Object[]{this.env} );
+                    this.jpm = (PersistenceContextManager) con.newInstance( this.env );
                 } catch ( Exception e ) {
                     //fall back for drools5-legacy spring module
                     logger.warn( "Could not instantiate KieSpringTransactionManager. Trying with DroolsSpringTransactionManager." );
@@ -289,7 +293,7 @@ public class SingleSessionCommandService
                         // configure spring for JPA and local transactions
                         cls = Class.forName( "org.drools.container.spring.beans.persistence.DroolsSpringJpaManager" );
                         con = cls.getConstructors()[0];
-                        this.jpm = (PersistenceContextManager) con.newInstance( new Object[]{this.env} );
+                        this.jpm = (PersistenceContextManager) con.newInstance( this.env );
                     } catch ( Exception ex ) {
                         logger.warn( "Could not instantiate DroolsSpringTransactionManager" );
                         throw new RuntimeException( "Could not instantiate org.kie.container.spring.beans.persistence.DroolsSpringTransactionManager", ex );
@@ -304,7 +308,7 @@ public class SingleSessionCommandService
                 try {
                     Class< ? > jpaPersistenceCtxMngrClass = Class.forName( "org.jbpm.persistence.JpaProcessPersistenceContextManager" );
                     Constructor< ? > jpaPersistenceCtxMngrCtor = jpaPersistenceCtxMngrClass.getConstructors()[0];
-                    this.jpm = (PersistenceContextManager) jpaPersistenceCtxMngrCtor.newInstance( new Object[]{this.env} );
+                    this.jpm = (PersistenceContextManager) jpaPersistenceCtxMngrCtor.newInstance( this.env );
                 } catch ( ClassNotFoundException e ) {
                     this.jpm = new JpaPersistenceContextManager( this.env );
                 } catch ( Exception e ) {
@@ -504,7 +508,7 @@ public class SingleSessionCommandService
             }
 
             if (command instanceof DisposeCommand) {
-                T result = executeNext( (GenericCommand<T>) command );
+                T result = executeNext( command );
                 jpm.dispose();
                 return result;
             }
@@ -545,7 +549,7 @@ public class SingleSessionCommandService
                 }
                 else {
                     logger.trace("Executing " + command.getClass().getSimpleName());
-                    result = executeNext((GenericCommand<T>) command);
+                    result = executeNext(command);
                 }
                 registerUpdateSync();
                 txm.commit( transactionOwner );
@@ -561,11 +565,6 @@ public class SingleSessionCommandService
                         transactionOwner );
                 throw new RuntimeException( "Wrapped exception see cause",
                         t1 );
-            } finally {
-                if ( command instanceof DisposeCommand) {
-                    executeNext((GenericCommand<T>) command);
-                    jpm.dispose();
-                }
             }
         }
     }

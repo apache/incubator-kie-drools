@@ -1,14 +1,13 @@
 package org.drools.core.time.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-
-import org.drools.core.command.CommandService;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.Trigger;
+
+import java.util.Collection;
+import java.util.Collections;
 
 public class DefaultTimerJobFactoryManager
     implements
@@ -33,19 +32,7 @@ public class DefaultTimerJobFactoryManager
         return Collections.emptyList();
     }
 
-    public void addTimerJobInstance(TimerJobInstance instance) {
-  
-    }
+    public void addTimerJobInstance(TimerJobInstance instance) { }
 
-    public void removeTimerJobInstance(TimerJobInstance instance) {
-
-    }
-
-    public void setCommandService(CommandService commandService) { 
-    }
-
-    public CommandService getCommandService() {
-        return null;
-    }
-
+    public void removeTimerJobInstance(TimerJobInstance instance) { }
 }

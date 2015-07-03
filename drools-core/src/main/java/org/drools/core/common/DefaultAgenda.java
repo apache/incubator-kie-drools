@@ -17,7 +17,6 @@
 package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -270,7 +269,7 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#getWorkingMemory()
      */
-    public WorkingMemory getWorkingMemory() {
+    public InternalWorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
 
@@ -620,7 +619,7 @@ public class DefaultAgenda
             addAgendaGroup( agendaGroup );
         }
 
-        agendaGroup.setWorkingMemory( (InternalWorkingMemory) getWorkingMemory() );
+        agendaGroup.setWorkingMemory( getWorkingMemory() );
 
         return agendaGroup;
     }

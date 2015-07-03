@@ -66,6 +66,8 @@ public class ClassObjectTypeConf
 
     private boolean                    isEvent;
 
+    private long                       expirationOffset = -1;
+
     private boolean                    isTrait;
 
 
@@ -81,6 +83,11 @@ public class ClassObjectTypeConf
         this.entryPoint = entryPoint;
         this.typeDecl = kBase.getTypeDeclaration( clazz );
         isEvent = typeDecl != null && typeDecl.getRole() == Role.Type.EVENT;
+
+        if (isEvent) {
+            expirationOffset = typeDecl.getExpirationOffset();
+        }
+
         isTrait = determineTraitStatus();
 
         ObjectType objectType = kBase.getClassFieldAccessorCache().getClassObjectType( new ClassObjectType( clazz, isEvent ), false );
@@ -139,6 +146,14 @@ public class ClassObjectTypeConf
         stream.writeBoolean( supportsPropertyListeners );
         stream.writeBoolean( isEvent );
         stream.writeBoolean(isTrait);
+    }
+
+    public long getExpirationOffset() {
+        return expirationOffset;
+    }
+
+    public void setExpirationOffset(long expirationOffset) {
+        this.expirationOffset = expirationOffset;
     }
 
     public boolean isAssignableFrom(Object object) {
@@ -276,5 +291,9 @@ public class ClassObjectTypeConf
     public String getTypeName() {
     	return getClassName();
     }
-    
+
+    @Override
+    public String toString() {
+        return "Class " + cls + " from entry-point " + entryPoint;
+    }
 }
