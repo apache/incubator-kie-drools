@@ -79,8 +79,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <scope>compile</scope>
-      <optional>true</optional>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Test -->
