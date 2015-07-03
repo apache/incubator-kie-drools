@@ -398,9 +398,12 @@ public class SlidingTimeWindow
 
         public void writeExternal(ObjectOutput out) throws IOException {
             // TODO Auto-generated method stub
-
         }
 
+        @Override
+        public InternalWorkingMemory getWorkingMemory() {
+            return workingMemory;
+        }
     }
 
     public static class BehaviorJob

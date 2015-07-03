@@ -16,12 +16,13 @@
 package org.drools.core;
 
 import org.drools.core.time.impl.DefaultTimerJobFactoryManager;
+import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
 import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.core.time.impl.TrackableTimeJobFactoryManager;
 
 public enum TimerJobFactoryType {
 
-    DEFUALT("default") {
+    DEFAULT("default") {
         public TimerJobFactoryManager createInstance() {
             return DefaultTimerJobFactoryManager.instance;
         }
@@ -30,6 +31,12 @@ public enum TimerJobFactoryType {
     TRACKABLE("trackable") {
         public TimerJobFactoryManager createInstance() {
             return new TrackableTimeJobFactoryManager();
+        }
+    },
+
+    THREAD_SAFE_TRACKABLE("thread_safe_trackable") {
+        public TimerJobFactoryManager createInstance() {
+            return new ThreadSafeTrackableTimeJobFactoryManager();
         }
     },
 
@@ -65,8 +72,8 @@ public enum TimerJobFactoryType {
     public static TimerJobFactoryType resolveTimerJobFactoryType( String id ) {
         if( TRACKABLE.getId().equalsIgnoreCase( id ) ) {
             return TRACKABLE;
-        } else if( DEFUALT.getId().equalsIgnoreCase( id ) ) {
-            return DEFUALT;
+        } else if( DEFAULT.getId().equalsIgnoreCase( id ) ) {
+            return DEFAULT;
         } else if( JPA.getId().equalsIgnoreCase( id ) ) {
             return JPA;
         }

@@ -15,16 +15,17 @@
 
 package org.drools.core.time;
 
-import java.util.Map;
-
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.time.impl.TimerJobInstance;
 
+import java.util.Map;
+
 public class SelfRemovalJobContext implements JobContext {
-    private JobContext jobContext;
-    private Map<Long, TimerJobInstance> timerInstances;
-    
-    public SelfRemovalJobContext(JobContext jobContext,
-                                 Map<Long, TimerJobInstance> timerInstances) {
+    protected final JobContext jobContext;
+    protected final Map<Long, TimerJobInstance> timerInstances;
+
+    public SelfRemovalJobContext( JobContext jobContext,
+                                  Map<Long, TimerJobInstance> timerInstances ) {
         this.jobContext = jobContext;
         this.timerInstances = timerInstances;
     }
@@ -33,17 +34,22 @@ public class SelfRemovalJobContext implements JobContext {
         return jobContext;
     }
 
+    @Override
     public void setJobHandle(JobHandle jobHandle) {
         jobContext.setJobHandle( jobHandle );
     }
 
+    @Override
     public JobHandle getJobHandle() {
         return jobContext.getJobHandle();
+    }
+
+    @Override
+    public InternalWorkingMemory getWorkingMemory() {
+        return jobContext.getWorkingMemory();
     }
 
     public void remove() {
         this.timerInstances.remove( jobContext.getJobHandle().getId() );
     }
-  
-    
 }

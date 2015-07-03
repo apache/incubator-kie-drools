@@ -15,11 +15,7 @@
 
 package org.drools.core.time.impl;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.drools.core.command.CommandService;
+import org.drools.core.time.EnqueuedSelfRemovalJobContext;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -28,14 +24,22 @@ import org.drools.core.time.SelfRemovalJob;
 import org.drools.core.time.SelfRemovalJobContext;
 import org.drools.core.time.Trigger;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 public class TrackableTimeJobFactoryManager
     implements
     TimerJobFactoryManager {
 
-    private Map<Long, TimerJobInstance> timerInstances;
+    protected final Map<Long, TimerJobInstance> timerInstances;
 
     public TrackableTimeJobFactoryManager() {
-        timerInstances = new ConcurrentHashMap<Long, TimerJobInstance>();
+        this(new HashMap<Long, TimerJobInstance>());
+    }
+
+    protected TrackableTimeJobFactoryManager(Map<Long, TimerJobInstance> timerInstances) {
+        this.timerInstances = timerInstances;
     }
 
     public TimerJobInstance createTimerJobInstance(Job job,
@@ -44,14 +48,16 @@ public class TrackableTimeJobFactoryManager
                                                    JobHandle handle,
                                                    InternalSchedulerService scheduler) {
         ctx.setJobHandle( handle );
-        DefaultTimerJobInstance jobInstance = new DefaultTimerJobInstance( new SelfRemovalJob( job ),
-                                                                           new SelfRemovalJobContext( ctx,
-                                                                                                      timerInstances ),
-                                                                           trigger,
-                                                                           handle,
-                                                                           scheduler );
 
-        return jobInstance; 
+        return new DefaultTimerJobInstance( new SelfRemovalJob( job ),
+                                            createJobContext( ctx ),
+                                            trigger,
+                                            handle,
+                                            scheduler );
+    }
+
+    protected SelfRemovalJobContext createJobContext( JobContext ctx ) {
+        return new EnqueuedSelfRemovalJobContext( ctx, timerInstances );
     }
 
     public void addTimerJobInstance(TimerJobInstance instance) {
@@ -68,13 +74,4 @@ public class TrackableTimeJobFactoryManager
     public Collection<TimerJobInstance> getTimerJobInstances() {
         return timerInstances.values();
     }
-
-    public void setCommandService(CommandService commandService) {
-        
-    }
-    
-    public CommandService getCommandService() {
-        return null;
-    }
-
 }

@@ -82,7 +82,7 @@ public class ClassObjectTypeConf
 
         this.typeDecl = kBase.getTypeDeclaration( clazz );
         isEvent = typeDecl != null && typeDecl.getRole() == Role.Type.EVENT;
-        if (isEvent && typeDecl != null) {
+        if (isEvent) {
             expirationOffset = typeDecl.getExpirationOffset();
         }
 
@@ -275,5 +275,9 @@ public class ClassObjectTypeConf
     public String getTypeName() {
     	return getClassName();
     }
-    
+
+    @Override
+    public String toString() {
+        return "Class " + cls + " from entry-point " + entryPoint;
+    }
 }

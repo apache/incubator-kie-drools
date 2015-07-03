@@ -17,7 +17,6 @@
 package org.drools.reteoo.common;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.common.ActivationGroupImpl;
@@ -287,7 +286,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
      *
      * @see org.kie.common.AgendaI#getWorkingMemory()
      */
-    public WorkingMemory getWorkingMemory() {
+    public InternalWorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
 
@@ -690,8 +689,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
         if ( activation.isQueued() ) {
             // on fact expiration, we don't remove the activation, but let it fire
-            if ( context.getType() == PropagationContext.EXPIRATION && context.getFactHandleOrigin() != null ) {
-            } else {
+            if ( context.getType() != PropagationContext.EXPIRATION || context.getFactHandleOrigin() == null ) {
                 activation.remove();
 
                 if ( activation.getActivationGroupNode() != null ) {
@@ -849,7 +847,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             addAgendaGroup( agendaGroup );
         }
 
-        agendaGroup.setWorkingMemory( (InternalWorkingMemory) getWorkingMemory() );
+        agendaGroup.setWorkingMemory( getWorkingMemory() );
 
         return agendaGroup;
     }
@@ -860,7 +858,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
      * @see org.kie.common.AgendaI#getAgendaGroups()
      */
     public AgendaGroup[] getAgendaGroups() {
-        return (AgendaGroup[]) this.agendaGroups.values().toArray( new AgendaGroup[this.agendaGroups.size()] );
+        return this.agendaGroups.values().toArray( new AgendaGroup[this.agendaGroups.size()] );
     }
 
     public Map<String, InternalAgendaGroup> getAgendaGroupsMap() {
@@ -937,7 +935,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             group.addNodeInstance( processInstanceId, nodeInstanceId );
             group.setActive( true );
         }
-        setFocus( (InternalAgendaGroup)  group);
+        setFocus(group);
         ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupActivated( group,
                                                                                                      this.workingMemory );
     }
@@ -996,8 +994,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
      */
     public Activation[] getActivations() {
         final List<Activation> list = new ArrayList<Activation>();
-        for ( final Iterator<InternalAgendaGroup> it = this.agendaGroups.values().iterator(); it.hasNext(); ) {
-            final AgendaGroup group = it.next();
+        for ( final InternalAgendaGroup group : this.agendaGroups.values() ) {
             for ( Match activation : group.getActivations() ) {
                 list.add( (Activation) activation );
             }
