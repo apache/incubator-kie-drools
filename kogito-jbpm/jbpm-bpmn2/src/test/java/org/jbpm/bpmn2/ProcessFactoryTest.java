@@ -24,6 +24,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.KieBase;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.process.ProcessInstance;
 
 public class ProcessFactoryTest extends JbpmBpmn2TestCase {
     
@@ -54,4 +55,38 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 		ksession.dispose();
 	}
 
+    @Test
+    public void testCompositeNode() throws Exception {
+        RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
+        factory
+            // header
+            .name("My process").packageName("org.jbpm")
+            // nodes
+            .startNode(1).name("Start").done()
+            .compositeNode(2)
+                .name("SubProcess")
+                .startNode(1).name("SubProcess Start").done()
+                .actionNode(2).name("SubProcess Action").action("java", "System.out.println(\"SubProcess Action\");").done()
+                .endNode(3).name("SubProcess End").terminate(true).done()
+                .connection(1, 2)
+                .connection(2, 3)
+                .done()
+            .endNode(3).name("End").done()
+            // connections
+            .connection(1, 2)
+            .connection(2, 3);
+        RuleFlowProcess process = factory.validate().getProcess();
+
+        assertEquals("SubProcess", process.getNode(2).getName());
+
+        Resource res = ResourceFactory.newByteArrayResource(XmlBPMNProcessDumper.INSTANCE.dump(process).getBytes());
+        res.setSourcePath("/tmp/processFactory.bpmn2"); // source path or target path must be set to be added into kbase
+        KieBase kbase = createKnowledgeBaseFromResources(res);
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ProcessInstance pi = ksession.startProcess("org.jbpm.process");
+
+        assertEquals(ProcessInstance.STATE_COMPLETED, pi.getState());
+
+        ksession.dispose();
+    }
 }

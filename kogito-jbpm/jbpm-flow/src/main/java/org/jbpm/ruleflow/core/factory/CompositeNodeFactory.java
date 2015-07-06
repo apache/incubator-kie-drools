@@ -51,6 +51,11 @@ public class CompositeNodeFactory extends RuleFlowNodeContainerFactory {
     	return (CompositeContextNode) getNodeContainer();
     }
 
+    public CompositeNodeFactory name(String name) {
+        getCompositeNode().setName(name);
+        return this;
+    }
+
     public CompositeNodeFactory variable(String name, DataType type) {
     	return variable(name, type, null);
     }
