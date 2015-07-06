@@ -694,4 +694,20 @@ public class SpreadsheetCompilerUnitTest {
         assertNotNull( drl );
         assertTrue( drl.contains( "function void test(){" ) );
     }
+
+    @Test
+    public void testMoreThan9InputParamSubstitution() throws Exception {
+        //https://issues.jboss.org/browse/DROOLS-836
+        final String EXPECTED_CONDITION = "eval ($objects: Object (id == a ||  == b ||  == c ||  == d ||  == e ||  == f ||  == g ||  == h ||  == i  ||  == j  ) )";
+        final String EXPECTED_ACTION = "System.out.println(“test” + a  + b   + c  + d  + e  + f  + g + h  + i + j);";
+
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        String drl = converter.compile( "/data/DROOLS-836.xls",
+                                        InputType.XLS );
+
+        assertNotNull( drl );
+        assertTrue( drl.contains( EXPECTED_CONDITION ) );
+        assertTrue( drl.contains( EXPECTED_ACTION ) );
+    }
+
 }
