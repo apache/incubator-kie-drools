@@ -36,7 +36,8 @@ import org.optaplanner.examples.tsp.domain.location.RoadLocation;
 
 public class TspImageStipplerImporter extends AbstractPngSolutionImporter {
 
-    private static final int DITHERING_THRESHOLD = (256 * 3) / 2;
+    private static final double GRAY_MAXIMUM = 256.0 * 3.0;
+    private static final double DITHERING_THRESHOLD = 0.5;
 
     public static void main(String[] args) {
         new TspImageStipplerImporter().convertAll();
@@ -82,7 +83,7 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter {
             travelingSalesmanTour.setDistanceUnitOfMeasurement("distance");
             int width = image.getWidth();
             int height = image.getHeight();
-            int[][] errorDiffusion = new int[width][height];
+            double[][] errorDiffusion = new double[width][height];
             List<Location> locationList = new ArrayList<Location>(1000);
             long id = 0L;
             for (int y = 0; y < height; y++) {
@@ -91,28 +92,30 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter {
                     int r = (rgb) & 0xFF;
                     int g = (rgb >> 8) & 0xFF;
                     int b = (rgb >> 16) & 0xFF;
-                    int grayStrength = r + g + b + errorDiffusion[x][y];
-                    int error;
-                    if (grayStrength >= DITHERING_THRESHOLD) {
+                    double originalGray = (r + g + b) / GRAY_MAXIMUM;
+                    double diffusedGray = originalGray + errorDiffusion[x][y];
+                    double error;
+                    if (diffusedGray <= DITHERING_THRESHOLD) {
                         Location location = new AirLocation();
                         location.setId(id);
                         id++;
                         location.setLatitude(- y);
                         location.setLongitude(x);
                         locationList.add(location);
+                        error = diffusedGray;
                     } else {
-                        error = grayStrength;
+                        error = diffusedGray - 1.0;
                     }
                     if (x + 1 < width) {
-                        errorDiffusion[x + 1][y] += grayStrength * 7 / 16;
+                        errorDiffusion[x + 1][y] += error * 7.0 / 16.0;
                     }
                     if (y + 1 < height) {
                         if (x - 1 >= 0) {
-                            errorDiffusion[x - 1][y + 1] += grayStrength * 3 / 16;
+                            errorDiffusion[x - 1][y + 1] += error * 3.0 / 16.0;
                         }
-                        errorDiffusion[x][y + 1] += grayStrength * 5 / 16;
+                        errorDiffusion[x][y + 1] += error * 5.0 / 16.0;
                         if (x + 1 < width) {
-                            errorDiffusion[x + 1][y + 1] += grayStrength * 1 / 16;
+                            errorDiffusion[x + 1][y + 1] += error * 1.0 / 16.0;
                         }
                     }
                 }
