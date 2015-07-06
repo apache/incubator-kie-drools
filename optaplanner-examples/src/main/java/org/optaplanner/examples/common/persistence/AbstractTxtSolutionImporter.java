@@ -384,14 +384,6 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             }
         }
 
-        public BigInteger factorial(int base) {
-            BigInteger value = BigInteger.ONE;
-            for (int i = 1; i <= base; i++) {
-                value = value.multiply(BigInteger.valueOf(base));
-            }
-            return value;
-        }
-
     }
 
 }
