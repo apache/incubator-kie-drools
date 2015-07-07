@@ -15,17 +15,7 @@
  */
 package org.jbpm.services.task.impl;
 
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
@@ -49,6 +39,17 @@ import org.kie.internal.task.api.model.Deadlines;
 import org.kie.internal.task.api.model.InternalTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
     
@@ -349,7 +350,11 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
 		public Long getProcessInstanceId() {
 			return processInstanceId;
 		}
-        
+
+        @Override
+        public InternalWorkingMemory getWorkingMemory() {
+            return null;
+        }
     }
 
 

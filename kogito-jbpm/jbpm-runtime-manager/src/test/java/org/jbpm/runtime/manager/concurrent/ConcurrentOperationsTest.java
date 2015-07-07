@@ -15,20 +15,8 @@
 
 package org.jbpm.runtime.manager.concurrent;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.naming.InitialContext;
-import javax.transaction.UserTransaction;
-
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
-import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -52,7 +40,13 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.UserGroupCallback;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import javax.naming.InitialContext;
+import javax.transaction.UserTransaction;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.junit.Assert.*;
 
 public class ConcurrentOperationsTest extends AbstractBaseTest {
     
@@ -183,6 +177,7 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
         taskService.complete(taskId, "john", null);
         logger.debug("Task completed, committing...");
         ut.commit();
+        ksession.fireAllRules();
         Thread.sleep(2000);
         
         processInstance = ksession.getProcessInstance(processInstance.getId());

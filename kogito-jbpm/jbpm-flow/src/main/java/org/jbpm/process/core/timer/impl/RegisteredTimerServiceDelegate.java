@@ -15,9 +15,6 @@
  */
 package org.jbpm.process.core.timer.impl;
 
-import java.util.Collection;
-
-import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -28,6 +25,8 @@ import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.kie.api.time.SessionClock;
+
+import java.util.Collection;
 
 /**
  * Simple delegate for timer service that fetches the real instance of timer service from
@@ -44,8 +43,7 @@ import org.kie.api.time.SessionClock;
  * </code>
  *
  */
-public class RegisteredTimerServiceDelegate implements TimerService, InternalSchedulerService,
-                                                    AcceptsTimerJobFactoryManager, SessionClock {
+public class RegisteredTimerServiceDelegate implements TimerService, InternalSchedulerService, SessionClock {
     
     private TimerService timerService;
     
@@ -74,12 +72,12 @@ public class RegisteredTimerServiceDelegate implements TimerService, InternalSch
     @Override
     public void setTimerJobFactoryManager(
             TimerJobFactoryManager timerJobFactoryManager) {
-        ((AcceptsTimerJobFactoryManager)timerService).setTimerJobFactoryManager(timerJobFactoryManager);
+        timerService.setTimerJobFactoryManager(timerJobFactoryManager);
     }
 
     @Override
     public TimerJobFactoryManager getTimerJobFactoryManager() {
-        return ((AcceptsTimerJobFactoryManager)timerService).getTimerJobFactoryManager();
+        return timerService.getTimerJobFactoryManager();
     }
 
     @Override

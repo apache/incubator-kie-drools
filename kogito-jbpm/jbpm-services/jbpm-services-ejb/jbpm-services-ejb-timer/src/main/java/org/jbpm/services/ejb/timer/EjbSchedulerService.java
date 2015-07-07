@@ -15,12 +15,6 @@
 
 package org.jbpm.services.ejb.timer;
 
-import java.util.concurrent.atomic.AtomicLong;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
-import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -36,6 +30,10 @@ import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.GlobalJobHandle;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
 import org.jbpm.process.instance.timer.TimerManager.StartProcessJobContext;
+
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 public class EjbSchedulerService implements GlobalSchedulerService {
@@ -58,7 +56,7 @@ public class EjbSchedulerService implements GlobalSchedulerService {
 			return jobInstance.getJobHandle();
 		}
 		
-		jobInstance = ((AcceptsTimerJobFactoryManager) globalTimerService).getTimerJobFactoryManager().createTimerJobInstance(
+		jobInstance = globalTimerService.getTimerJobFactoryManager().createTimerJobInstance(
 														job, 
 														ctx, 
 														trigger, 

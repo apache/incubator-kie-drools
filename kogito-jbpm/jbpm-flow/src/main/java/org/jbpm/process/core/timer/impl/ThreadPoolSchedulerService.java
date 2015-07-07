@@ -15,16 +15,6 @@
  */
 package org.jbpm.process.core.timer.impl;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicLong;
-
-import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -39,6 +29,15 @@ import org.jbpm.process.core.timer.SchedulerServiceInterceptor;
 import org.jbpm.process.core.timer.impl.GlobalTimerService.GlobalJobHandle;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
 import org.jbpm.process.instance.timer.TimerManager.StartProcessJobContext;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * ThreadPool based scheduler service backed by <code>ThreadPoolSchedulerService</code>
@@ -99,7 +98,7 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
             }
             GlobalJDKJobHandle jobHandle = new GlobalJDKJobHandle( idCounter.getAndIncrement() );
             
-            TimerJobInstance jobInstance = ((AcceptsTimerJobFactoryManager) globalTimerService).
+            TimerJobInstance jobInstance = globalTimerService.
                                  getTimerJobFactoryManager().createTimerJobInstance( job,
                                                                                      ctx,
                                                                                      trigger,
@@ -137,8 +136,7 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
                 jobname = "StartProcess-"+((StartProcessJobContext) processCtx).getProcessId()+ "-" + processCtx.getTimer().getId();
             }
             activeTimer.remove(jobname);
-            ((AcceptsTimerJobFactoryManager) globalTimerService).getTimerJobFactoryManager().
-            removeTimerJobInstance( ((GlobalJDKJobHandle) jobHandle).getTimerJobInstance() );
+            globalTimerService.getTimerJobFactoryManager().removeTimerJobInstance( ((GlobalJDKJobHandle) jobHandle).getTimerJobInstance() );
         } catch (ClassCastException e) {
             // do nothing in case ProcessJobContext was not given
         }
@@ -169,7 +167,7 @@ public class ThreadPoolSchedulerService implements GlobalSchedulerService {
         }
 
         jobHandle.setFuture( future );
-        ((AcceptsTimerJobFactoryManager) globalTimerService).getTimerJobFactoryManager().addTimerJobInstance( timerJobInstance );
+        globalTimerService.getTimerJobFactoryManager().addTimerJobInstance( timerJobInstance );
     }
     
     public static class GlobalJDKJobHandle extends GlobalJobHandle implements Serializable {

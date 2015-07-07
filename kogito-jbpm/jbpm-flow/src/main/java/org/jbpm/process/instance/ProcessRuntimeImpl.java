@@ -28,11 +28,11 @@ import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.ActionQueue.Action;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.TimeUtils;
+import org.drools.core.time.TimerService;
+import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
 import org.drools.core.time.impl.CronExpression;
-import org.drools.core.time.impl.DefaultTimerJobFactoryManager;
-import org.drools.core.time.impl.TrackableTimeJobFactoryManager;
+import org.drools.core.time.impl.ThreadSafeTrackableTimeJobFactoryManager;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.event.EventTypeFilter;
@@ -87,11 +87,11 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
 
 	public ProcessRuntimeImpl(InternalKnowledgeRuntime kruntime) {
 		this.kruntime = kruntime;
-        AcceptsTimerJobFactoryManager jfm = ( AcceptsTimerJobFactoryManager ) kruntime.getTimerService();
-        if ( jfm.getTimerJobFactoryManager() instanceof DefaultTimerJobFactoryManager ) {
-            jfm.setTimerJobFactoryManager( new TrackableTimeJobFactoryManager() );
-        }		
-		((AcceptsTimerJobFactoryManager)kruntime.getTimerService()).setTimerJobFactoryManager( new TrackableTimeJobFactoryManager() );		
+        TimerService timerService = kruntime.getTimerService();
+        if ( !(timerService.getTimerJobFactoryManager() instanceof CommandServiceTimerJobFactoryManager) ) {
+            timerService.setTimerJobFactoryManager( new ThreadSafeTrackableTimeJobFactoryManager() );
+        }
+
 		((CompositeClassLoader) getRootClassLoader()).addClassLoader( getClass().getClassLoader() );
 		initProcessInstanceManager();
 		initSignalManager();
@@ -116,10 +116,10 @@ public class ProcessRuntimeImpl implements InternalProcessRuntime {
     }
 
 	public ProcessRuntimeImpl(InternalWorkingMemory workingMemory) {
-		AcceptsTimerJobFactoryManager jfm = ( AcceptsTimerJobFactoryManager ) workingMemory.getTimerService();
-		if ( jfm.getTimerJobFactoryManager() instanceof DefaultTimerJobFactoryManager ) {
-		    jfm.setTimerJobFactoryManager( new TrackableTimeJobFactoryManager() );
-		}
+        TimerService timerService = workingMemory.getTimerService();
+        if ( !(timerService.getTimerJobFactoryManager() instanceof CommandServiceTimerJobFactoryManager) ) {
+            timerService.setTimerJobFactoryManager( new ThreadSafeTrackableTimeJobFactoryManager() );
+        }
 		
 		this.kruntime = (InternalKnowledgeRuntime) workingMemory.getKnowledgeRuntime();
 		initProcessInstanceManager();

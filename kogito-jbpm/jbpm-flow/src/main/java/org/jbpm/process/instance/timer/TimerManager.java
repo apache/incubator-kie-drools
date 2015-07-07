@@ -17,6 +17,7 @@
 package org.jbpm.process.instance.timer;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
@@ -409,6 +410,10 @@ public class TimerManager {
             this.kruntime = kruntime;
         }
 
+        @Override
+        public InternalWorkingMemory getWorkingMemory() {
+            return kruntime instanceof InternalWorkingMemory ? (InternalWorkingMemory)kruntime : null;
+        }
     }
 
     public static class StartProcessJobContext extends ProcessJobContext {

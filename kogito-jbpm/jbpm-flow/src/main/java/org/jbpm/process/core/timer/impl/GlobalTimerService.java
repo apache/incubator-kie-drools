@@ -15,17 +15,10 @@
  */
 package org.jbpm.process.core.timer.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-
 import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
-import org.drools.core.time.AcceptsTimerJobFactoryManager;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
@@ -33,6 +26,7 @@ import org.drools.core.time.JobHandle;
 import org.drools.core.time.SelfRemovalJobContext;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.Trigger;
+import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.core.time.impl.TimerJobInstance;
@@ -49,8 +43,14 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-public class GlobalTimerService implements TimerService, InternalSchedulerService, AcceptsTimerJobFactoryManager {
+
+public class GlobalTimerService implements TimerService, InternalSchedulerService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(GlobalTimerService.class);
     
@@ -179,8 +179,10 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
 
     @Override
     public void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager) {
-    	if (this.jobFactoryManager.getCommandService() == null) {
-    		this.jobFactoryManager.setCommandService(timerJobFactoryManager.getCommandService());
+    	if (jobFactoryManager instanceof CommandServiceTimerJobFactoryManager &&
+            timerJobFactoryManager instanceof CommandServiceTimerJobFactoryManager &&
+            getCommandService() == null) {
+            ( (CommandServiceTimerJobFactoryManager) jobFactoryManager ).setCommandService( ( (CommandServiceTimerJobFactoryManager) timerJobFactoryManager ).getCommandService() );
     	}
     }
 
@@ -200,7 +202,7 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
         } else if(ctxorig instanceof NamedJobContext){
         	return getCommandService(((NamedJobContext)ctxorig).getProcessInstanceId(), ctx);
         } else {
-            return jobFactoryManager.getCommandService(); 
+            return getCommandService();
         }
         
         return getCommandService(ctx.getProcessInstanceId(), ctx);
@@ -238,9 +240,14 @@ public class GlobalTimerService implements TimerService, InternalSchedulerServic
             ctx.setKnowledgeRuntime((InternalKnowledgeRuntime) runtime.getKieSession());
         }
         
-        return new DisposableCommandService(jobFactoryManager.getCommandService(), manager, runtime, schedulerService.retryEnabled());
+        return new DisposableCommandService(getCommandService(), manager, runtime, schedulerService.retryEnabled());
     }
 
+    private CommandService getCommandService() {
+        return jobFactoryManager instanceof CommandServiceTimerJobFactoryManager ?
+               ( (CommandServiceTimerJobFactoryManager) jobFactoryManager ).getCommandService() :
+               null;
+    }
 
     public static class GlobalJobHandle extends DefaultJobHandle
         implements

@@ -15,12 +15,6 @@
  */
 package org.jbpm.persistence.timer;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.drools.core.command.CommandService;
 import org.drools.core.time.InternalSchedulerService;
 import org.drools.core.time.Job;
@@ -29,11 +23,17 @@ import org.drools.core.time.JobHandle;
 import org.drools.core.time.SelfRemovalJob;
 import org.drools.core.time.SelfRemovalJobContext;
 import org.drools.core.time.Trigger;
-import org.drools.core.time.impl.TimerJobFactoryManager;
+import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.instance.timer.TimerManager.ProcessJobContext;
 
-public class GlobalJPATimerJobFactoryManager implements TimerJobFactoryManager {
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class GlobalJPATimerJobFactoryManager implements CommandServiceTimerJobFactoryManager {
 
     private Map<Long, TimerJobInstance> emptyStore = new HashMap<Long,TimerJobInstance>();
     private CommandService commandService;
