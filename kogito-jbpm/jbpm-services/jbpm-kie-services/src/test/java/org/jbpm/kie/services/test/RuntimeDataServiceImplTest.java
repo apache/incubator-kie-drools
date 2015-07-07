@@ -1156,4 +1156,61 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	processInstanceId = null;
     
     }
+    
+    @Test
+    public void testGetProcessInstancesByVariable() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("approval_document", "initial content");
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
+        assertNotNull(processInstanceId);
+        
+        Collection<ProcessInstanceDesc> processInstanceLogs = runtimeDataService.getProcessInstancesByVariable("approval_document", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+        
+        processService.setProcessVariable(processInstanceId, "approval_document", "updated content");
+        
+        processInstanceLogs = runtimeDataService.getProcessInstancesByVariable("approval_reviewComment", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(0, processInstanceLogs.size());
+        
+        processService.setProcessVariable(processInstanceId, "approval_reviewComment", "under review - content");
+        
+        processInstanceLogs = runtimeDataService.getProcessInstancesByVariable("approval_reviewComment", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+        
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+    }
+    
+    @Test
+    public void testGetProcessInstancesByVariableAndValue() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("approval_document", "initial content");
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
+        assertNotNull(processInstanceId);
+        
+        Collection<ProcessInstanceDesc> processInstanceLogs = runtimeDataService.getProcessInstancesByVariableAndValue("approval_document", "initial content", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+        
+        processService.setProcessVariable(processInstanceId, "approval_document", "updated content");
+        
+        processInstanceLogs = runtimeDataService.getProcessInstancesByVariableAndValue("approval_document", "initial content", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(0, processInstanceLogs.size());
+        
+        processInstanceLogs = runtimeDataService.getProcessInstancesByVariableAndValue("approval_document", "updated content", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+        
+        processInstanceLogs = runtimeDataService.getProcessInstancesByVariableAndValue("approval_document", "updated%", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+        
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+        
+    }
 }

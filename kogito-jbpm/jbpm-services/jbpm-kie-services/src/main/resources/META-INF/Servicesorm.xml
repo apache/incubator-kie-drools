@@ -297,6 +297,61 @@
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
   
+  <named-query name="getProcessInstancesByVariableName">
+
+    <query>
+      select
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.externalId,
+      log.start,
+      log.identity,
+      log.processInstanceDescription,
+      log.correlationKey,
+      log.parentProcessInstanceId
+      )
+      from
+        ProcessInstanceLog log
+      where log.status in (:states) and log.processInstanceId in (select vlog.processInstanceId from
+        VariableInstanceLog vlog where vlog.variableId like :variable)
+      ORDER BY
+        log.processId, log.start
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+  <named-query name="getProcessInstancesByVariableNameAndValue">
+
+    <query>
+      select
+      new org.jbpm.kie.services.impl.model.ProcessInstanceDesc(
+      log.processInstanceId,
+      log.processId,
+      log.processName,
+      log.processVersion,
+      log.status,
+      log.externalId,
+      log.start,
+      log.identity,
+      log.processInstanceDescription,
+      log.correlationKey,
+      log.parentProcessInstanceId
+      )
+      from
+        ProcessInstanceLog log
+      where log.status in (:states) and log.processInstanceId in 
+      (select vlog.processInstanceId from VariableInstanceLog vlog where vlog.variableId=:variable and vlog.value like :variableValue
+      and vlog.id in (select max(vlog2.id) from VariableInstanceLog vlog2 group by vlog2.processInstanceId))
+      ORDER BY
+        log.processId, log.start
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>  
+  
   <!-- node instance queries -->
 
   <named-query name="getProcessInstanceFullHistory">

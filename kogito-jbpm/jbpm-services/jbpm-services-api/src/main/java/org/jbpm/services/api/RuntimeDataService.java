@@ -162,6 +162,24 @@ public interface RuntimeDataService {
      */
     Collection<ProcessInstanceDesc> getProcessInstancesByProcessDefinition(String processDefId, List<Integer> states, QueryContext queryContext);
 
+    /**
+     * Returns process instance descriptions found for process instance that have defined given variable 
+     * @param variableName name of the variable that process instance should have
+     * @param states A list of possible state (int) values that the {@link ProcessInstance} can have. If null will return only active instances
+     * @param queryContext control parameters for the result e.g. sorting, paging
+     * @returnA list of {@link ProcessInstanceDesc} instances representing the process instances that have defined given variable
+     */
+    Collection<ProcessInstanceDesc> getProcessInstancesByVariable(String variableName, List<Integer> states, QueryContext queryContext);
+    
+    /**
+     * Returns process instance descriptions found for process instance that have defined given variable and its value matches given variableValue
+     * @param variableName name of the variable that process instance should have
+     * @param variableValue value of the variable to match
+     * @param states A list of possible state (int) values that the {@link ProcessInstance} can have. If null will return only active instances
+     * @param queryContext control parameters for the result e.g. sorting, paging
+     * @returnA list of {@link ProcessInstanceDesc} instances representing the process instances that have defined given variable with given value
+     */
+    Collection<ProcessInstanceDesc> getProcessInstancesByVariableAndValue(String variableName, String variableValue, List<Integer> states, QueryContext queryContext);
     
     // Node and Variable instance information
    

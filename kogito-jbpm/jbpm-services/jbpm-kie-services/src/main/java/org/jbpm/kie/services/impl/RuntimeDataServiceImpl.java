@@ -46,6 +46,7 @@ import org.jbpm.services.task.audit.service.TaskAuditService;
 import org.jbpm.shared.services.impl.QueryManager;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
@@ -531,7 +532,49 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         }
 
         return Collections.unmodifiableCollection(processInstances);
-    }    
+    }   
+    
+
+    @Override
+    public Collection<ProcessInstanceDesc> getProcessInstancesByVariable(String variableName, List<Integer> states, QueryContext queryContext) {
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        if (states == null || states.isEmpty()) {
+            states = new ArrayList<Integer>();
+            states.add(ProcessInstance.STATE_ACTIVE);
+        }
+        params.put("states", states);
+        params.put("variable", variableName);        
+        applyQueryContext(params, queryContext);
+        applyDeploymentFilter(params);
+        
+        List<ProcessInstanceDesc> processInstances = commandService.execute(
+                    new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByVariableName", params));
+        
+
+        return Collections.unmodifiableCollection(processInstances);
+    }
+
+    @Override
+    public Collection<ProcessInstanceDesc> getProcessInstancesByVariableAndValue(String variableName, String variableValue, List<Integer> states, QueryContext queryContext) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        if (states == null || states.isEmpty()) {
+            states = new ArrayList<Integer>();
+            states.add(ProcessInstance.STATE_ACTIVE);
+        }
+        params.put("states", states);
+        params.put("variable", variableName);        
+        params.put("variableValue", variableValue);
+        applyQueryContext(params, queryContext);
+        applyDeploymentFilter(params);
+        
+        List<ProcessInstanceDesc> processInstances = commandService.execute(
+                    new QueryNameCommand<List<ProcessInstanceDesc>>("getProcessInstancesByVariableNameAndValue", params));
+        
+
+        return Collections.unmodifiableCollection(processInstances);
+    }
     
     /*
      * end
@@ -1045,5 +1088,6 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         	}
         }
     }
+
 
 }

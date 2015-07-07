@@ -449,43 +449,82 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessInstanceByCorrelationKey() {
-    	Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
-    	assertNotNull(instances);
-    	assertEquals(0, instances.size());
-    	
-    	CorrelationKey key = KieInternalServices.Factory.get().newCorrelationKeyFactory().newCorrelationKey("my business key");
-    	
-    	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", key);
-    	assertNotNull(processInstanceId);
-    	
-    	ProcessInstanceDesc instance = runtimeDataService.getProcessInstanceByCorrelationKey(key);
-    	assertNotNull(instance);
-    	assertEquals(1, (int)instance.getState());
-    	assertEquals("org.jbpm.writedocument", instance.getProcessId());
-    	assertEquals("my business key", instance.getCorrelationKey());
-    	
-    	List<UserTaskInstanceDesc> tasks = instance.getActiveTasks();
-    	assertNotNull(tasks);
-    	assertEquals(1, tasks.size());
-    	
-    	UserTaskInstanceDesc activeTask = tasks.get(0);
-    	assertNotNull(activeTask);
-    	assertEquals(Status.Reserved.name(), activeTask.getStatus());
-    	assertEquals(instance.getId(), activeTask.getProcessInstanceId());
-    	assertEquals(instance.getProcessId(), activeTask.getProcessId());
-    	assertEquals("Write a Document", activeTask.getName());
-    	assertEquals("salaboy", activeTask.getActualOwner());
-    	assertEquals(deploymentUnit.getIdentifier(), activeTask.getDeploymentId());
-    	
-    	processService.abortProcessInstance(processInstanceId);
-    	    	
-    	instance = runtimeDataService.getProcessInstanceByCorrelationKey(key);
-    	processInstanceId = null;
-    	assertNotNull(instance);
-    	assertEquals(3, (int)instance.getState());
-    	assertEquals("org.jbpm.writedocument", instance.getProcessId());
-    	assertEquals("my business key", instance.getCorrelationKey());
-    	
+        Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
+        assertNotNull(instances);
+        assertEquals(0, instances.size());
+        
+        CorrelationKey key = KieInternalServices.Factory.get().newCorrelationKeyFactory().newCorrelationKey("my business key");
+        
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", key);
+        assertNotNull(processInstanceId);
+        
+        ProcessInstanceDesc instance = runtimeDataService.getProcessInstanceByCorrelationKey(key);
+        assertNotNull(instance);
+        assertEquals(1, (int)instance.getState());
+        assertEquals("org.jbpm.writedocument", instance.getProcessId());
+        assertEquals("my business key", instance.getCorrelationKey());
+        
+        List<UserTaskInstanceDesc> tasks = instance.getActiveTasks();
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());
+        
+        UserTaskInstanceDesc activeTask = tasks.get(0);
+        assertNotNull(activeTask);
+        assertEquals(Status.Reserved.name(), activeTask.getStatus());
+        assertEquals(instance.getId(), activeTask.getProcessInstanceId());
+        assertEquals(instance.getProcessId(), activeTask.getProcessId());
+        assertEquals("Write a Document", activeTask.getName());
+        assertEquals("salaboy", activeTask.getActualOwner());
+        assertEquals(deploymentUnit.getIdentifier(), activeTask.getDeploymentId());
+        
+        processService.abortProcessInstance(processInstanceId);
+                
+        instance = runtimeDataService.getProcessInstanceByCorrelationKey(key);
+        processInstanceId = null;
+        assertNull(instance);
+        
+    }
+    
+    @Test
+    public void testGetProcessInstancesByCorrelationKey() {
+        Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
+        assertNotNull(instances);
+        assertEquals(0, instances.size());
+        
+        CorrelationKey key = KieInternalServices.Factory.get().newCorrelationKeyFactory().newCorrelationKey("my business key");
+        
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", key);
+        assertNotNull(processInstanceId);
+        
+        Collection<ProcessInstanceDesc> keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key);
+        assertNotNull(keyedInstances);
+        assertEquals(1, keyedInstances.size());
+        
+        ProcessInstanceDesc instance = keyedInstances.iterator().next();
+        
+        assertNotNull(instance);
+        assertEquals(1, (int)instance.getState());
+        assertEquals("org.jbpm.writedocument", instance.getProcessId());
+        assertEquals("my business key", instance.getCorrelationKey());
+        
+        List<UserTaskInstanceDesc> tasks = instance.getActiveTasks();
+        assertNull(tasks);
+        
+        processService.abortProcessInstance(processInstanceId);
+                
+        instance = runtimeDataService.getProcessInstanceByCorrelationKey(key);
+        processInstanceId = null;
+        assertNull(instance);
+        
+        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key);
+        assertNotNull(keyedInstances);
+        assertEquals(1, keyedInstances.size());
+        
+        instance = keyedInstances.iterator().next();
+        assertEquals(3, (int)instance.getState());
+        assertEquals("org.jbpm.writedocument", instance.getProcessId());
+        assertEquals("my business key", instance.getCorrelationKey());
+        
     }
     
     @Test
@@ -1015,5 +1054,62 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
     	assertEquals(TaskEvent.TaskEventType.ADDED, auditTasks.get(0).getType());
     	assertEquals(TaskEvent.TaskEventType.STARTED, auditTasks.get(1).getType());
     
+    }
+    
+    @Test
+    public void testGetProcessInstancesByVariable() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("approval_document", "initial content");
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
+        assertNotNull(processInstanceId);
+        
+        Collection<ProcessInstanceDesc> processInstanceLogs = runtimeDataService.getProcessInstancesByVariable("approval_document", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+        
+        processService.setProcessVariable(processInstanceId, "approval_document", "updated content");
+        
+        processInstanceLogs = runtimeDataService.getProcessInstancesByVariable("approval_reviewComment", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(0, processInstanceLogs.size());
+        
+        processService.setProcessVariable(processInstanceId, "approval_reviewComment", "under review - content");
+        
+        processInstanceLogs = runtimeDataService.getProcessInstancesByVariable("approval_reviewComment", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+    }
+    
+    @Test
+    public void testGetProcessInstancesByVariableAndValue() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("approval_document", "initial content");
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
+        assertNotNull(processInstanceId);
+        
+        Collection<ProcessInstanceDesc> processInstanceLogs = runtimeDataService.getProcessInstancesByVariableAndValue("approval_document", "initial content", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+        
+        processService.setProcessVariable(processInstanceId, "approval_document", "updated content");
+        
+        processInstanceLogs = runtimeDataService.getProcessInstancesByVariableAndValue("approval_document", "initial content", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(0, processInstanceLogs.size());
+        
+        processInstanceLogs = runtimeDataService.getProcessInstancesByVariableAndValue("approval_document", "updated content", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+        
+        processInstanceLogs = runtimeDataService.getProcessInstancesByVariableAndValue("approval_document", "updated%", null, new QueryContext());
+        assertNotNull(processInstanceLogs);
+        assertEquals(1, processInstanceLogs.size());
+
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+        
     }
 }
