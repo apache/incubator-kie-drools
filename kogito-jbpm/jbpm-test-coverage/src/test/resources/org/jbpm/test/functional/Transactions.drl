@@ -1,0 +1,8 @@
+package org.jbpm.test.functional
+
+rule dummyRule
+	ruleflow-group "dummy"
+	when
+	then
+		System.out.println("rule fired");
+end

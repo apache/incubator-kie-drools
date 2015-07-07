@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions id="defs" targetNamespace="http://www.jboss.org/drools" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:drools="http://www.jboss.org/drools"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+    <itemDefinition id="personItem" structureRef="org.jbpm.test.domain.Person" />
+    <itemDefinition id="personListItem" structureRef="java.util.List" />
+    <itemDefinition id="outputItem" structureRef="String" />
+    <process id="org.jbpm.test.functional.task.ScriptTask">
+        <extensionElements>
+            <drools:import name="java.util.List"/>
+            <drools:import name="org.jbpm.test.domain.Person"/>
+        </extensionElements>
+        <property id="person" itemSubjectRef="personItem" />
+        <property id="personList" itemSubjectRef="personListItem" />
+        <property id="output" itemSubjectRef="outputItem" />
+        <startEvent id="start" name="start" />
+        <scriptTask id="scriptJava" name="scriptJava" scriptFormat="http://www.java.com/java">
+            <script>String temp = "";for(Object o : personList) {
+                Person p = (Person) o;
+                temp+=p.getName();
+                }
+                temp += person.getName();
+                kcontext.setVariable("output", temp);
+            </script>
+        </scriptTask>
+        <scriptTask id="scriptMvel" name="scriptMvel" scriptFormat="http://www.mvel.org/2.0">
+            <script>p = person;
+                temp = p.name;
+                foreach(p : personList) {
+                temp += p.name;
+                }
+                kcontext.setVariable("output", temp);
+            </script>
+        </scriptTask>
+        <endEvent id="end" name="end"/>
+        <sequenceFlow id="sf1" sourceRef="start" targetRef="scriptJava"/>
+        <sequenceFlow id="sf2" sourceRef="scriptJava" targetRef="scriptMvel"/>
+        <sequenceFlow id="sf3" sourceRef="scriptMvel" targetRef="end"/>
+    </process>
+</definitions>

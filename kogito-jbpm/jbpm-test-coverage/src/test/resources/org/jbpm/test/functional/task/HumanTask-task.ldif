@@ -1,0 +1,36 @@
+dn: dc=jboss,dc=org
+objectclass: top
+objectclass: dcObject
+objectclass: organization
+dc: jboss
+o: JBoss
+
+dn: ou=People,dc=jboss,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: People
+
+dn: uid=john,ou=People,dc=jboss,dc=org
+objectclass: top
+objectclass: uidObject
+objectclass: person
+uid: john
+cn: John Doe
+sn: Doe
+userPassword: john1234;
+
+dn: ou=Roles,dc=jboss,dc=org
+objectclass: top
+objectclass: organizationalUnit
+ou: Roles
+
+dn: cn=manager,ou=Roles,dc=jboss,dc=org
+objectclass: top
+objectclass: groupOfNames
+member: uid=john,ou=People,dc=jboss,dc=org
+cn: manager
+
+dn: cn=Administrators,ou=Roles,dc=jboss,dc=org
+objectclass: top
+objectclass: groupOfNames
+cn: Administrators

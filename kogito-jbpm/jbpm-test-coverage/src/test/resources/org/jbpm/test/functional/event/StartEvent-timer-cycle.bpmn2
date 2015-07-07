@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_3Z8P0G22EeGKHscdJtk_0w" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:process id="org.jbpm.test.functional.event.StartEvent-timer-cycle" drools:packageName="org.jbpm.test.functional.event" name="StartEvent-timer-cycle" isExecutable="true">
+    <bpmn2:startEvent id="_689FBA33-E28C-45D4-A6A8-D13A1D4D767F" drools:bgcolor="#ffffff" name="start">
+      <bpmn2:outgoing>_CAA1381F-630C-44A8-9BC8-9FD4D13A4AE2</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="_3Z8P0W22EeGKHscdJtk_0w">
+        <bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="_3Z8P0m22EeGKHscdJtk_0w">1s</bpmn2:timeCycle>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="_9F5F4C8F-C32D-4F6A-B833-155D915FBDF4" name="script" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_CAA1381F-630C-44A8-9BC8-9FD4D13A4AE2</bpmn2:incoming>
+      <bpmn2:outgoing>_D50319DC-EBF2-45C1-BF2A-4E5B6F0FE327</bpmn2:outgoing>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_CAA1381F-630C-44A8-9BC8-9FD4D13A4AE2" sourceRef="_689FBA33-E28C-45D4-A6A8-D13A1D4D767F" targetRef="_9F5F4C8F-C32D-4F6A-B833-155D915FBDF4"/>
+    <bpmn2:sequenceFlow id="_D50319DC-EBF2-45C1-BF2A-4E5B6F0FE327" sourceRef="_9F5F4C8F-C32D-4F6A-B833-155D915FBDF4" targetRef="_E6EE898D-47B9-49BF-9F63-7997B0779355"/>
+    <bpmn2:endEvent id="_E6EE898D-47B9-49BF-9F63-7997B0779355" drools:bgcolor="#ffffff" name="end">
+      <bpmn2:incoming>_D50319DC-EBF2-45C1-BF2A-4E5B6F0FE327</bpmn2:incoming>
+      <bpmn2:terminateEventDefinition id="_3Z824G22EeGKHscdJtk_0w"/>
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_3Z824W22EeGKHscdJtk_0w">
+    <bpmndi:BPMNPlane id="_3Z824m22EeGKHscdJtk_0w" bpmnElement="org.jbpm.test.functional.event.StartEvent-timer-cycle">
+      <bpmndi:BPMNShape id="_3Z824222EeGKHscdJtk_0w" bpmnElement="_689FBA33-E28C-45D4-A6A8-D13A1D4D767F">
+        <dc:Bounds height="30.0" width="30.0" x="144.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_3Z825G22EeGKHscdJtk_0w" bpmnElement="_9F5F4C8F-C32D-4F6A-B833-155D915FBDF4">
+        <dc:Bounds height="80.0" width="100.0" x="219.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_3Z825W22EeGKHscdJtk_0w" bpmnElement="_CAA1381F-630C-44A8-9BC8-9FD4D13A4AE2">
+        <di:waypoint xsi:type="dc:Point" x="159.0" y="178.0"/>
+        <di:waypoint xsi:type="dc:Point" x="269.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_3Z825m22EeGKHscdJtk_0w" bpmnElement="_D50319DC-EBF2-45C1-BF2A-4E5B6F0FE327">
+        <di:waypoint xsi:type="dc:Point" x="269.0" y="178.0"/>
+        <di:waypoint xsi:type="dc:Point" x="378.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_3Z825222EeGKHscdJtk_0w" bpmnElement="_E6EE898D-47B9-49BF-9F63-7997B0779355">
+        <dc:Bounds height="28.0" width="28.0" x="364.0" y="164.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

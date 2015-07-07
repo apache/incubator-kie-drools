@@ -897,6 +897,9 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
 
     protected static class TestWorkItemHandler implements WorkItemHandler {
 
+        public TestWorkItemHandler() {
+        }
+
         private List<WorkItem> workItems = new ArrayList<WorkItem>();
 
         public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {

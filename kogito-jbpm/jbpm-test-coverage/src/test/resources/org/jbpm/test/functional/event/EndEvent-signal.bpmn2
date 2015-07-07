@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/bpmn20" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:drools="http://www.jboss.org/drools" id="_JVg44G9JEeGs1Pm2oPR3jQ" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" targetNamespace="http://www.omg.org/bpmn20">
+  <bpmn2:process id="org.jbpm.test.functional.event.EndEvent-signal" drools:packageName="org.jbpm.test.functional.event" name="EndEvent-signal" isExecutable="true">
+    <bpmn2:startEvent id="_3C4EC736-D5CC-41F4-869E-0F1FD19D6547" drools:bgcolor="#ffffff" name="start">
+      <bpmn2:outgoing>_084DF7D8-54CB-4CCD-A49B-452F292F65EA</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:scriptTask id="_24852B2F-920F-4A1B-8F01-1A2E184685D7" name="script" scriptFormat="http://www.java.com/java">
+      <bpmn2:incoming>_084DF7D8-54CB-4CCD-A49B-452F292F65EA</bpmn2:incoming>
+      <bpmn2:outgoing>_50E5D864-BB63-4FAD-AEF5-E32D815091EC</bpmn2:outgoing>
+    </bpmn2:scriptTask>
+    <bpmn2:sequenceFlow id="_084DF7D8-54CB-4CCD-A49B-452F292F65EA" sourceRef="_3C4EC736-D5CC-41F4-869E-0F1FD19D6547" targetRef="_24852B2F-920F-4A1B-8F01-1A2E184685D7"/>
+    <bpmn2:sequenceFlow id="_50E5D864-BB63-4FAD-AEF5-E32D815091EC" sourceRef="_24852B2F-920F-4A1B-8F01-1A2E184685D7" targetRef="_9301D8BC-1BF2-4DDE-8BB2-B1CC92883D6D"/>
+    <bpmn2:endEvent id="_9301D8BC-1BF2-4DDE-8BB2-B1CC92883D6D" drools:bgcolor="#ffffff" name="end">
+      <bpmn2:incoming>_50E5D864-BB63-4FAD-AEF5-E32D815091EC</bpmn2:incoming>
+      <bpmn2:signalEventDefinition id="_JVg44W9JEeGs1Pm2oPR3jQ" signalRef="start"/>
+    </bpmn2:endEvent>
+  </bpmn2:process>
+  <bpmndi:BPMNDiagram id="_JVg44m9JEeGs1Pm2oPR3jQ">
+    <bpmndi:BPMNPlane id="_JVg4429JEeGs1Pm2oPR3jQ" bpmnElement="org.jbpm.test.functional.event.EndEvent-signal">
+      <bpmndi:BPMNShape id="_JVg45G9JEeGs1Pm2oPR3jQ" bpmnElement="_3C4EC736-D5CC-41F4-869E-0F1FD19D6547">
+        <dc:Bounds height="30.0" width="30.0" x="128.0" y="119.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_JVg45W9JEeGs1Pm2oPR3jQ" bpmnElement="_24852B2F-920F-4A1B-8F01-1A2E184685D7">
+        <dc:Bounds height="80.0" width="100.0" x="203.0" y="94.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_JVg45m9JEeGs1Pm2oPR3jQ" bpmnElement="_084DF7D8-54CB-4CCD-A49B-452F292F65EA">
+        <di:waypoint xsi:type="dc:Point" x="143.0" y="134.0"/>
+        <di:waypoint xsi:type="dc:Point" x="253.0" y="134.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_JVg4529JEeGs1Pm2oPR3jQ" bpmnElement="_50E5D864-BB63-4FAD-AEF5-E32D815091EC">
+        <di:waypoint xsi:type="dc:Point" x="253.0" y="134.0"/>
+        <di:waypoint xsi:type="dc:Point" x="361.0" y="133.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_JVg46G9JEeGs1Pm2oPR3jQ" bpmnElement="_9301D8BC-1BF2-4DDE-8BB2-B1CC92883D6D">
+        <dc:Bounds height="28.0" width="28.0" x="347.0" y="119.0"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>

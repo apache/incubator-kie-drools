@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+	xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+	xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+	xmlns:drools="http://www.jboss.org/drools"
+	xmlns="http://www.jboss.org/drools"
+	xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/20100501/BPMN20.xsd
+                    http://www.jboss.org/drools drools.xsd 
+                    http://www.bpsim.org/schemas/1.0 bpsim.xsd" 
+	id="Definition"
+	expressionLanguage="http://www.mvel.org/2.0"
+	targetNamespace="http://www.jboss.org/drools"
+	typeLanguage="http://www.java.com/javaTypes">
+
+  <bpmn2:itemDefinition id="_inputString" structureRef="String"/>
+
+  <bpmn2:process processType="Private" isExecutable="true" id="org.jbpm.test.functional.log.TaskLogClean-inputAssociation" name="TaskLogClean-inputAssociation" drools:packageName="org.jbpm.test.functional.log" >
+    <bpmn2:property id="input" itemSubjectRef="_inputString"/>
+    <bpmn2:startEvent id="_1" name="Start"/>
+    <bpmn2:endEvent id="_3" name="End" />
+    <bpmn2:userTask id="_2" drools:selectable="true" drools:taskName="user task" name="Simple user task">
+      <bpmn2:ioSpecification id="rovVUQ5bEeSCi7YVCkBKVg">
+        <bpmn2:dataInput id="_InputX" name="Input"/>
+        <bpmn2:inputSet id="_rouuQw5bEeSCi7YVCkBKVg">
+          <bpmn2:dataInputRefs>_InputX</bpmn2:dataInputRefs>
+        </bpmn2:inputSet>
+        <bpmn2:outputSet id="_rovVUA5bEeSCi7YVCkBKVg" />
+      </bpmn2:ioSpecification>
+      <bpmn2:dataInputAssociation id="_rovVVQ5bEeSCi7YVCkBKVg">
+        <bpmn2:sourceRef>input</bpmn2:sourceRef>
+        <bpmn2:targetRef>_InputX</bpmn2:targetRef>
+        <bpmn2:transformation id="_rovVV91bEeSCi7YVCkBKVg" language="http://www.mvel.org/2.0"><![CDATA[
+            return "Transformed String";]]>
+        </bpmn2:transformation>
+      </bpmn2:dataInputAssociation>
+      <bpmn2:potentialOwner id="_RAorKDNDEeSs_60lFRs61Q">
+        <bpmn2:resourceAssignmentExpression id="_RAorKTNDEeSs_60lFRs61Q">
+          <bpmn2:formalExpression id="_RAorKjNDEeSs_60lFRs61Q">john</bpmn2:formalExpression>
+        </bpmn2:resourceAssignmentExpression>
+      </bpmn2:potentialOwner>
+    </bpmn2:userTask>
+    <bpmn2:sequenceFlow id="_1-_2" sourceRef="_1" targetRef="_2" />
+    <bpmn2:sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+  </bpmn2:process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="org.jbpm.test.functional.log.TaskLogClean-inputAssociation" >
+      <bpmndi:BPMNShape bpmnElement="_1" >
+        <dc:Bounds x="16" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2" >
+        <dc:Bounds x="96" y="16" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3" >
+        <dc:Bounds x="228" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_1-_2" >
+        <di:waypoint x="40" y="40" />
+        <di:waypoint x="146" y="40" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3" >
+        <di:waypoint x="146" y="40" />
+        <di:waypoint x="252" y="40" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</bpmn2:definitions>
