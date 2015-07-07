@@ -27,19 +27,26 @@ import java.util.List;
 
 public class NQueensStepTracker extends StepTestListener {
 
-    private List<Integer> filledColumns = new ArrayList<Integer>();
+    private NQueens lastTrackedPlanningProblem;
     private List<NQueensStepTracking> trackingList = new ArrayList<NQueensStepTracking>();
+
+    public NQueensStepTracker(NQueens lastTrackedPlanningProblem) {
+        this.lastTrackedPlanningProblem = lastTrackedPlanningProblem;
+    }
 
     @Override
     public void stepEnded(AbstractStepScope stepScope) {
         NQueens queens = (NQueens) stepScope.getWorkingSolution();
 
-        for (Queen queen : queens.getQueenList()) {
-            if (queen.getRow() != null && !filledColumns.contains(queen.getColumn().getIndex())) {
-                filledColumns.add(queen.getColumn().getIndex());
-                trackingList.add(new NQueensStepTracking(queen.getColumnIndex(), queen.getRowIndex()));
+        for (int i = 0; i < queens.getQueenList().size(); i++) {
+            Queen queen1 = queens.getQueenList().get(i);
+            Queen queen2 = lastTrackedPlanningProblem.getQueenList().get(i);
+            if(queen1.getRowIndex() != queen2.getRowIndex()) {
+                trackingList.add(new NQueensStepTracking(queen1.getColumnIndex(), queen1.getRowIndex()));
+                break;
             }
         }
+        lastTrackedPlanningProblem = (NQueens) stepScope.createOrGetClonedSolution();
     }
 
     public List<NQueensStepTracking> getTrackingList() {
