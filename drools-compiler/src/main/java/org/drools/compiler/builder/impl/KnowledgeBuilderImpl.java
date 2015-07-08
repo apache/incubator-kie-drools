@@ -49,10 +49,13 @@ import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
+import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.CollectDescr;
+import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
 import org.drools.compiler.lang.descr.FunctionDescr;
@@ -60,6 +63,9 @@ import org.drools.compiler.lang.descr.FunctionImportDescr;
 import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.PatternDestinationDescr;
+import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
@@ -2253,13 +2259,26 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     public void normalizeRuleAnnotations(PackageDescr packageDescr) {
         TypeResolver typeResolver = pkgRegistryMap.get(packageDescr.getName()).getTypeResolver();
         boolean isStrict = configuration.getLanguageLevel().useJavaAnnotations();
-        for (RuleDescr ruleDescr : packageDescr.getRules()) {
-            normalizeAnnotations(ruleDescr, typeResolver, isStrict);
-            for (BaseDescr baseDescr : ruleDescr.getLhs().getDescrs()) {
-                if (baseDescr instanceof AnnotatedBaseDescr) {
-                    normalizeAnnotations((AnnotatedBaseDescr)baseDescr, typeResolver, isStrict);
-                }
+        for ( RuleDescr ruleDescr : packageDescr.getRules() ) {
+            normalizeAnnotations( ruleDescr, typeResolver, isStrict );
+            traverseAnnotations( ruleDescr.getLhs(), typeResolver, isStrict );
+        }
+    }
+
+    private void traverseAnnotations( BaseDescr descr, TypeResolver typeResolver, boolean isStrict ) {
+        if ( descr instanceof AnnotatedBaseDescr ) {
+            normalizeAnnotations( (AnnotatedBaseDescr) descr, typeResolver, isStrict );
+        }
+        if ( descr instanceof ConditionalElementDescr ) {
+            for ( BaseDescr baseDescr : ( (ConditionalElementDescr) descr ).getDescrs() ) {
+                traverseAnnotations( baseDescr, typeResolver, isStrict );
             }
+        }
+        if ( descr instanceof PatternDescr && ( (PatternDescr) descr ).getSource() != null ) {
+            traverseAnnotations( ( (PatternDescr) descr ).getSource(), typeResolver, isStrict );
+        }
+        if ( descr instanceof PatternDestinationDescr ) {
+            traverseAnnotations( ( (PatternDestinationDescr) descr ).getInputPattern(), typeResolver, isStrict );
         }
     }
 
