@@ -17,6 +17,7 @@
 package org.jbpm.ruleflow.core;
 
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
+import org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory;
 import org.jbpm.ruleflow.core.factory.CompositeNodeFactory;
 import org.jbpm.ruleflow.core.factory.DynamicNodeFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
@@ -94,6 +95,10 @@ public abstract class RuleFlowNodeContainerFactory {
 
     public EventNodeFactory eventNode(long id) {
         return new EventNodeFactory(this, nodeContainer, id);
+    }
+
+    public BoundaryEventNodeFactory boundaryEventNode(long id) {
+        return new BoundaryEventNodeFactory(this, nodeContainer, id);
     }
 
     public CompositeNodeFactory compositeNode(long id) {
