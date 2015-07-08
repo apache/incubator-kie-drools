@@ -67,6 +67,7 @@ import org.kie.api.definition.rule.Query;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Role;
+import org.kie.api.event.kiebase.BeforeRuleRemovedEvent;
 import org.kie.api.event.kiebase.KieBaseEventListener;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
@@ -114,6 +115,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static org.drools.core.common.ProjectClassLoader.createProjectClassLoader;
 import static org.drools.core.util.BitMaskUtil.isSet;
+import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 
 public class KnowledgeBaseImpl
@@ -162,9 +164,6 @@ public class KnowledgeBaseImpl
      * This lock is used when adding to, or reading the <field>statefulSessions</field>
      */
     private final ReentrantLock statefulSessionLock = new ReentrantLock();
-
-    private int additionsSinceLock;
-    private int removalsSinceLock;
 
     private transient Map<String, TypeDeclaration> classTypeDeclaration;
 
@@ -281,9 +280,7 @@ public class KnowledgeBaseImpl
     public Collection<KnowledgePackage> getKnowledgePackages() {
         InternalKnowledgePackage[] pkgs = getPackages();
         List<KnowledgePackage> list = new ArrayList<KnowledgePackage>( pkgs.length );
-        for ( InternalKnowledgePackage pkg : pkgs ) {
-            list.add( pkg );
-        }
+        Collections.addAll( list, pkgs );
         return list;
     }
 
@@ -309,7 +306,7 @@ public class KnowledgeBaseImpl
         StatefulKnowledgeSessionImpl[] sss = getStatefulSessions();
         if (sss != null) {
             for (StatefulKnowledgeSession ss : sss) {
-                c.add((StatefulKnowledgeSessionImpl) ss);
+                c.add( ss );
             }
         }
         return c;
@@ -331,8 +328,6 @@ public class KnowledgeBaseImpl
                 throw new IllegalArgumentException( "Package name '" + packageName +
                                                     "' does not exist for this Rule Base." );
             }
-            this.removalsSinceLock++;
-
             this.eventSupport.fireBeforePackageRemoved( pkg );
 
             for (Rule rule : pkg.getRules()) {
@@ -382,7 +377,7 @@ public class KnowledgeBaseImpl
     
     public Query getQuery(String packageName,
                           String queryName) {
-        return ( Query ) getPackage(packageName).getRule( queryName );
+        return getPackage(packageName).getRule( queryName );
     }
     
     public KieSession newKieSession(KieSessionConfiguration conf,
@@ -575,7 +570,6 @@ public class KnowledgeBaseImpl
     /**
      * globals class types must be re-wired after serialization
      *
-     * @param globs
      * @throws ClassNotFoundException
      */
     private void populateGlobalsMap(Map<String, String> globs) throws ClassNotFoundException {
@@ -677,14 +671,6 @@ public class KnowledgeBaseImpl
         return this.globals;
     }
 
-    public int getAdditionsSinceLock() {
-        return additionsSinceLock;
-    }
-
-    public int getRemovalsSinceLock() {
-        return removalsSinceLock;
-    }
-
     public void lock() {
         // The lock is reentrant, so we need additional magic here to skip
         // notifications for locked if this thread already has locked it.
@@ -695,8 +681,6 @@ public class KnowledgeBaseImpl
         // Always lock to increase the counter
         this.lock.writeLock().lock();
         if ( firstLock ) {
-            this.additionsSinceLock = 0;
-            this.removalsSinceLock = 0;
             this.eventSupport.fireAfterRuleBaseLocked();
         }
     }
@@ -774,7 +758,6 @@ public class KnowledgeBaseImpl
         // we need to merge all byte[] first, so that the root classloader can resolve classes
         for (InternalKnowledgePackage newPkg : clonedPkgs) {
             newPkg.checkValidity();
-            this.additionsSinceLock++;
             this.eventSupport.fireBeforePackageAdded( newPkg );
 
             if ( newPkg.hasTraitRegistry() ) {
@@ -977,14 +960,14 @@ public class KnowledgeBaseImpl
 
         existingDecl.addRedeclaration(newDecl);
 
-        if ( ! nullSafeEquals( existingDecl.getFormat(),
-                               newDecl.getFormat() ) ||
-             ! nullSafeEquals( existingDecl.getObjectType(),
-                               newDecl.getObjectType() ) ||
-             ! nullSafeEquals( existingDecl.getTypeClassName(),
-                               newDecl.getTypeClassName() ) ||
-             ! nullSafeEquals( existingDecl.getTypeName(),
-                               newDecl.getTypeName() ) ) {
+        if ( ! areNullSafeEquals( existingDecl.getFormat(),
+                                  newDecl.getFormat() ) ||
+             ! areNullSafeEquals( existingDecl.getObjectType(),
+                                  newDecl.getObjectType() ) ||
+             ! areNullSafeEquals( existingDecl.getTypeClassName(),
+                                  newDecl.getTypeClassName() ) ||
+             ! areNullSafeEquals( existingDecl.getTypeName(),
+                                  newDecl.getTypeName() ) ) {
 
             throw new RuntimeException( "Unable to merge Type Declaration for class '" + existingDecl.getTypeName() + "'" );
 
@@ -1065,8 +1048,7 @@ public class KnowledgeBaseImpl
                              boolean errorOnDiff,
                              boolean override ) {
         T newValue = leftVal;
-        if ( ! nullSafeEquals( leftVal,
-                               rightVal ) ) {
+        if ( ! areNullSafeEquals( leftVal, rightVal ) ) {
             if ( leftVal == null && rightVal != null ) {
                 newValue = rightVal;
             } else if ( leftVal != null && rightVal != null ) {
@@ -1082,11 +1064,6 @@ public class KnowledgeBaseImpl
             }
         }
         return newValue;
-    }
-
-    private boolean nullSafeEquals( Object o1,
-                                    Object o2 ) {
-        return ( o1 == null ) ? o2 == null : o1.equals( o2 );
     }
 
     /**
@@ -1603,8 +1580,6 @@ public class KnowledgeBaseImpl
                                                 "'." );
         }
 
-        this.removalsSinceLock++;
-
         removeRule( pkg,
                     rule );
         pkg.removeRule( rule );
@@ -1613,9 +1588,6 @@ public class KnowledgeBaseImpl
 
     /**
      * Notify listeners and sub-classes about imminent removal of a rule from a package.
-     *
-     * @param pkg
-     * @param rule
      */
     // FIXME: removeTerminalNode(String, String) and removeTerminalNode(Package, Rule) do totally different things!
     public void removeRule( final InternalKnowledgePackage pkg,
@@ -1671,7 +1643,7 @@ public class KnowledgeBaseImpl
      * Handle function removal.
      *
      * This method is intended for sub-classes, and called after the
-     *  {@link KieBaseEventListener#beforeRuleRemoved(org.drools.core.event.BeforeRuleRemovedEvent) before-rule-removed}
+     *  {@link KieBaseEventListener#beforeRuleRemoved(BeforeRuleRemovedEvent)} before-rule-removed}
      * event is fired, and before the function is physically removed from the package.
      *
      * This method is called with the rulebase lock held.
@@ -1685,8 +1657,6 @@ public class KnowledgeBaseImpl
      * Notify listeners and sub-classes about imminent removal of a function from a package.
      *
      * This method is called with the rulebase lock held.
-     * @param pkg
-     * @param functionName
      */
     private void removeFunction( final InternalKnowledgePackage pkg,
                                  final String functionName ) {

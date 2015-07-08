@@ -1077,7 +1077,7 @@ public class StringUtils {
     }
 
     // To be extended in the future with more comparison strategies
-    public static enum SIMILARITY_STRATS { DICE };
+    public enum SIMILARITY_STRATS { DICE }
 
     public static double stringSimilarity( String s1, String s2, SIMILARITY_STRATS method ) {
         switch ( method ) {
@@ -1108,5 +1108,9 @@ public class StringUtils {
             acc += s2.indexOf( bigram ) >= 0 ? 1 : 0;
         }
         return acc;
+    }
+
+    public static boolean equalsIgnoreSpaces(String s1, String s2) {
+        return s1.replaceAll( "\\s+", "" ).equals( s2.replaceAll( "\\s+", "" ) );
     }
 }

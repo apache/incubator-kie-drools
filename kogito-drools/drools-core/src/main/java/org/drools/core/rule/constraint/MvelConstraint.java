@@ -64,12 +64,15 @@ import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
+import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 import static org.drools.core.util.ClassUtils.getter2property;
+import static org.drools.core.util.StringUtils.equalsIgnoreSpaces;
 import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.core.util.StringUtils.skipBlanks;
 
@@ -434,9 +437,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     private BitMask calculateMask(Condition condition, List<String> settableProperties) {
         if (condition instanceof SingleCondition) {
-            return calculateMask((SingleCondition) condition, settableProperties);
+            return calculateMask(condition, settableProperties);
         }
-        BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());;
+        BitMask mask = getEmptyPropertyReactiveMask(settableProperties.size());
         for (Condition c : ((CombinedCondition)condition).getConditions()) {
             String propertyName = getFirstInvokedPropertyName(((SingleCondition) c).getLeft());
             if (propertyName != null) {
@@ -572,7 +575,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                 return false;
             }
         } else {
-            if (!expression.equals(other.expression)) {
+            if (!equalsIgnoreSpaces( expression, other.expression )) {
                 return false;
             }
         }
@@ -586,7 +589,29 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         }
         return true;
     }
-    
+
+    public boolean equals(Object object, InternalKnowledgeBase kbase) {
+        if ( !equals( object ) ) {
+            return false;
+        }
+        String thisPkg = packageNames.iterator().next();
+        String otherPkg = ((MvelConstraint) object).packageNames.iterator().next();
+        if (thisPkg.equals( otherPkg )) {
+            return true;
+        }
+
+        Map<String, Object> thisImports = ((MVELDialectRuntimeData) kbase.getPackage( thisPkg ).getDialectRuntimeRegistry().getDialectData("mvel")).getImports();
+        Map<String, Object> otherImports = ((MVELDialectRuntimeData) kbase.getPackage( otherPkg ).getDialectRuntimeRegistry().getDialectData("mvel")).getImports();
+
+        for (String token : expression.split( "[\\s\\.=<>!\\(\\)\\[\\]]" )) {
+            if ( !areNullSafeEquals(thisImports.get(token), otherImports.get(token)) ) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public String toString() {
         return expression;
@@ -597,8 +622,12 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     protected MVELDialectRuntimeData getMVELDialectRuntimeData(InternalWorkingMemory workingMemory) {
+        return getMVELDialectRuntimeData(workingMemory.getKnowledgeBase());
+    }
+
+    protected MVELDialectRuntimeData getMVELDialectRuntimeData(InternalKnowledgeBase kbase) {
         for (String packageName : packageNames) {
-            InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage(packageName);
+            InternalKnowledgePackage pkg = kbase.getPackage( packageName );
             if (pkg != null) {
                 return ((MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData("mvel"));
             }

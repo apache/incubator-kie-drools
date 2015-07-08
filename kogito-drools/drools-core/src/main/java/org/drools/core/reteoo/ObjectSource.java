@@ -23,6 +23,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.TypeDeclaration;
@@ -77,8 +78,6 @@ public abstract class ObjectSource extends BaseNode
 
     /**
      * Single parameter constructor that specifies the unique id of the node.
-     *
-     * @param id
      */
     ObjectSource(final int id,
                  final RuleBasePartitionId partitionId,
@@ -92,8 +91,6 @@ public abstract class ObjectSource extends BaseNode
 
     /**
      * Single parameter constructor that specifies the unique id of the node.
-     *
-     * @param id
      */
     ObjectSource(final int id,
                  final RuleBasePartitionId partitionId,
@@ -127,7 +124,11 @@ public abstract class ObjectSource extends BaseNode
     public ObjectSource getParentObjectSource() {
         return this.source;
     }
-    
+
+    public InternalKnowledgeBase getKnowledgeBase() {
+        return source.getKnowledgeBase();
+    }
+
     public void initDeclaredMask(BuildContext context) {
         if ( context == null || context.getLastBuiltPatterns() == null ) {
             // only happens during unit tests

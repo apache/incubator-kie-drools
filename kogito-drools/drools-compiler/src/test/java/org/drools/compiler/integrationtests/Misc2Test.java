@@ -7382,4 +7382,46 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
         assertEquals( 42, list.get(0) );
     }
+
+    @Test
+    public void testWrongNodeSharing() {
+        // DROOLS-588
+        String drl1 =
+                "package test1\n" +
+                "import static " + Misc2Test.class.getCanonicalName() + ".parseInt;\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    String( parseInt(this) == 0 )\n" +
+                "then\n" +
+                "    list.add(\"OK\");\n" +
+                "end";
+
+        String drl2 =
+                "package test2\n" +
+                "import static java.lang.Integer.parseInt;\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    String( parseInt(this) == 0 )\n" +
+                "then\n" +
+                "    list.add(\"NOT OK\");\n" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl1, ResourceType.DRL );
+        helper.addContent( drl2, ResourceType.DRL );
+        KieSession kieSession = helper.build().newKieSession();
+
+        List list = new ArrayList();
+        kieSession.setGlobal( "list", list );
+
+        kieSession.insert( "3" );
+        kieSession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "OK", list.get(0) );
+    }
+
+    public static int parseInt(String s) {
+        return 0;
+    }
 }
