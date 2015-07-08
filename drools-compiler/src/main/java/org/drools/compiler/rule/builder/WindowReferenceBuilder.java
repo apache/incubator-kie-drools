@@ -15,6 +15,7 @@
 
 package org.drools.compiler.rule.builder;
 
+import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.WindowReferenceDescr;
 import org.drools.core.rule.Pattern;
@@ -39,6 +40,13 @@ public class WindowReferenceBuilder
                                       BaseDescr descr,
                                       Pattern prefixPattern) {
         final WindowReferenceDescr window = (WindowReferenceDescr) descr;
+
+        if ( !context.getPkg().getWindowDeclarations().containsKey( window.getName() ) ) {
+            context.addError(new DescrBuildError(context.getParentDescr(),
+                                                 descr,
+                                                 null,
+                                                 "Unknown window " + window.getName()));
+        }
 
         return new WindowReference( window.getName() );
     }
