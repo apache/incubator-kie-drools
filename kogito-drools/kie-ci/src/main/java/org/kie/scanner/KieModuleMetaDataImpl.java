@@ -15,19 +15,16 @@
 
 package org.kie.scanner;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.rule.KieModuleMetaInfo;
-import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.rule.TypeMetaInfo;
-import org.kie.api.builder.ReleaseId;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.eclipse.aether.artifact.Artifact;
+import org.kie.api.builder.ReleaseId;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
@@ -78,10 +75,8 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     }
 
     public KieModuleMetaDataImpl(InternalKieModule kieModule) {
-        String pomXmlPath = ((ReleaseIdImpl)kieModule.getReleaseId()).getPomXmlPath();
-        InputStream pomStream = new ByteArrayInputStream(kieModule.getBytes(pomXmlPath));
-        this.artifactResolver = getResolverFor(pomStream);
         this.kieModule = kieModule;
+        this.artifactResolver = getResolverFor( kieModule.getPomModel() );
         for (String file : kieModule.getFileNames()) {
             if (!indexClass(file)) {
                 if (file.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH)) {
@@ -148,9 +143,16 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
         if (releaseId != null) {
             addArtifact(artifactResolver.resolveArtifact(releaseId));
         }
-        for (DependencyDescriptor dep : artifactResolver.getAllDependecies()) {
-            addArtifact(artifactResolver.resolveArtifact(dep.getReleaseId()));
+        if ( kieModule != null ) {
+            for ( ReleaseId releaseId : kieModule.getPomModel().getDependencies() ) {
+                addArtifact( artifactResolver.resolveArtifact( releaseId ) );
+            }
+        } else {
+            for ( DependencyDescriptor dep : artifactResolver.getAllDependecies() ) {
+                addArtifact( artifactResolver.resolveArtifact( dep.getReleaseId() ) );
+            }
         }
+
         packages.addAll(classes.keySet());
         packages.addAll(rulesByPackage.keySet());
     }

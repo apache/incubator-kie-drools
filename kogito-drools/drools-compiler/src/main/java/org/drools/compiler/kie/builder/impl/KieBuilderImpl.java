@@ -91,6 +91,8 @@ public class KieBuilderImpl
 
     private ClassLoader           classLoader;
 
+    private PomModel              pomModel;
+
     public KieBuilderImpl(File file) {
         this.srcMfs = new DiskResourceReader( file );
     }
@@ -127,7 +129,7 @@ public class KieBuilderImpl
 
         // if pomXML is null it will generate a default, using default ReleaseId
         // if pomXml is invalid, it assign pomModel to null
-        PomModel pomModel = buildPomModel();
+        PomModel pomModel = getPomModel();
 
         // if kModuleModelXML is null it will generate a default kModule, with a default kbase name
         // if kModuleModelXML is  invalid, it will kModule to null
@@ -283,6 +285,7 @@ public class KieBuilderImpl
     }
 
     void cloneKieModuleForIncrementalCompilation() {
+        pomModel = null;
         trgMfs = trgMfs.clone();
         init();
         kModule = kModule.cloneForIncrementalCompilation( releaseId, kModuleModel, trgMfs );
@@ -410,6 +413,20 @@ public class KieBuilderImpl
             return true;
         }
         return false;
+    }
+
+    public PomModel getPomModel() {
+        if (pomModel == null) {
+            pomModel = buildPomModel();
+        }
+        return pomModel;
+    }
+
+    /**
+     * This can be used for performance reason to avoid the recomputation of the pomModel when it is already available
+     */
+    public void setPomModel( PomModel pomModel ) {
+        this.pomModel = pomModel;
     }
 
     private PomModel buildPomModel() {
