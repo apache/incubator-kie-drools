@@ -23,6 +23,7 @@ import org.drools.core.process.core.datatype.impl.type.StringDataType;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
+import org.jbpm.bpmn2.core.SequenceFlow;
 import org.jbpm.process.core.ValueObject;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
@@ -39,7 +40,7 @@ public class MetaDataHandler extends BaseAbstractHandler
             this.validParents.add( Node.class );
             this.validParents.add( RuleFlowProcess.class );
             this.validParents.add( Variable.class );
-
+            this.validParents.add( SequenceFlow.class );
 
             this.validPeers = new HashSet();         
             this.validPeers.add( null );
@@ -91,7 +92,10 @@ public class MetaDataHandler extends BaseAbstractHandler
 				return ((RuleFlowProcess) parent).getMetaData();
 			} else if (parent instanceof Variable) {
 				return ((Variable) parent).getMetaData();
-			} else {
+			}
+            else if (parent instanceof SequenceFlow) {
+                return ((SequenceFlow) parent).getMetaData();
+            } else {
 				throw new IllegalArgumentException("Unknown parent " + parent);
 			}
 		}

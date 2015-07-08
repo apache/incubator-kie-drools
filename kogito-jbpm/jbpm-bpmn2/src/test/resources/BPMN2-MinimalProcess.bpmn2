@@ -14,7 +14,14 @@
     <scriptTask id="_2" name="Hello">
       <script>System.out.println("Hello World");</script>
     </scriptTask>
-    <sequenceFlow sourceRef="_2" targetRef="_3"/>
+    <sequenceFlow sourceRef="_2" targetRef="_3">
+      <extensionElements>
+        <tns:metaData name="elementname">
+          <tns:metaValue><![CDATA[connection
+                name]]></tns:metaValue>
+        </tns:metaData>
+      </extensionElements>
+    </sequenceFlow>
     <endEvent id="_3" name="EndProcess">
       <terminateEventDefinition/>
     </endEvent>

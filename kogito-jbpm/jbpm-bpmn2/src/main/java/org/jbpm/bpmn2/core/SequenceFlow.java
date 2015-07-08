@@ -17,6 +17,8 @@
 package org.jbpm.bpmn2.core;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SequenceFlow implements Serializable {
 
@@ -31,6 +33,7 @@ public class SequenceFlow implements Serializable {
 	private String language;
 	private String name;
 	private int priority;
+    private Map<String, Object> metaData = new HashMap<String, Object>();
 	
 	public SequenceFlow(String id, String sourceRef, String targetRef) {
 		this.id = id;
@@ -97,6 +100,14 @@ public class SequenceFlow implements Serializable {
 	public void setPriority(int priority) {
 		this.priority = priority;
 	}
+
+    public Map<String, Object> getMetaData() {
+        return this.metaData;
+    }
+
+    public void setMetaData(String name, Object data) {
+        this.metaData.put(name, data);
+    }
 	
 	public String toString() { 
 	    return "SequenceFlow (" + this.id + ") [" + this.sourceRef + " -> " + this.targetRef + "]";
