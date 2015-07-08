@@ -153,11 +153,6 @@ public class PatternBuilder
     /**
      * Build a pattern for the given descriptor in the current
      * context and using the given utils object
-     *
-     * @param context
-     * @param descr
-     * @param prefixPattern
-     * @return
      */
     public RuleConditionElement build( RuleBuildContext context,
                                        BaseDescr descr,
@@ -939,11 +934,11 @@ public class PatternBuilder
         if ( relDescr.getRight() instanceof AtomicExprDescr ) {
             AtomicExprDescr rdescr = ((AtomicExprDescr) relDescr.getRight());
             values[1] = rdescr.getRewrittenExpression().trim();
-            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.") || values[1].contains( ")this)." );;
+            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.") || values[1].contains( ")this)." );
         } else {
             BindingDescr rdescr = ((BindingDescr) relDescr.getRight());
             values[1] = rdescr.getExpression().trim();
-            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.") || values[1].contains( ")this)." );;
+            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.") || values[1].contains( ")this)." );
         }
         if ( relDescr.getLeft() instanceof AtomicExprDescr ) {
             AtomicExprDescr ldescr = (AtomicExprDescr) relDescr.getLeft();
@@ -1533,12 +1528,6 @@ public class PatternBuilder
         return context.getCompilerFactory().getConstraintBuilderFactoryService().newConstraintBuilder();
     }
 
-    /**
-     * @param context
-     * @param pattern
-     * @param unboundIdentifiers
-     * @param factDeclarations
-     */
     public static void createImplicitBindings( final RuleBuildContext context,
                                                final Pattern pattern,
                                                final Set<String> unboundIdentifiers,
@@ -1570,11 +1559,6 @@ public class PatternBuilder
     /**
      * Creates a declaration object for the field identified by the given identifier
      * on the give pattern object
-     *
-     * @param context
-     * @param identifier
-     * @param pattern
-     * @return
      */
     protected static Declaration createDeclarationObject( final RuleBuildContext context,
                                                           final String identifier,
