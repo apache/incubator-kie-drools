@@ -377,4 +377,8 @@ public class MVELDialectRuntimeData
         JavaDialectRuntimeData javaRuntime = (JavaDialectRuntimeData) registry.getDialectData("java");
         return javaRuntime.getClassLoader();
     }
+
+    public Map<String, Object> getImports() {
+        return imports;
+    }
 }
