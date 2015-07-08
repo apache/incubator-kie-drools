@@ -285,7 +285,9 @@ public class KieBuilderImpl
     }
 
     void cloneKieModuleForIncrementalCompilation() {
-        pomModel = null;
+        if (!Arrays.equals( pomXml, getOrGeneratePomXml( srcMfs ) )) {
+            pomModel = null;
+        }
         trgMfs = trgMfs.clone();
         init();
         kModule = kModule.cloneForIncrementalCompilation( releaseId, kModuleModel, trgMfs );
