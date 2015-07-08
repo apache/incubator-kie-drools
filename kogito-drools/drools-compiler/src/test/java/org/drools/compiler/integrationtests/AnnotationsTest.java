@@ -35,12 +35,16 @@ import java.util.Map;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.lang.api.impl.AnnotationDescrBuilderImpl;
 import org.drools.compiler.lang.descr.AnnotationDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.rule.Pattern;
+import org.drools.core.rule.RuleConditionElement;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.theories.suppliers.TestedOn;
@@ -55,6 +59,7 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.MBeansOption;
@@ -570,6 +575,54 @@ public class AnnotationsTest  extends CommonTestMethodBase {
         assertEquals( "b", ((Map) obj).get( "test" ) );
         assertEquals( "a", ((Map) obj).get( "text" ) );
 
+    }
+
+
+    @Test
+    public void testCollectAnnotationsParsingAndBuilding() throws Exception {
+        final DrlParser parser = new DrlParser( LanguageLevelOption.DRL6 );
+
+        final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
+        kBuilder.addPackage(new PackageDescr("org.drools"));
+
+        String ruleDrl =
+                "package org.drools.compiler; " +
+                " " +
+                "dialect 'mvel' " +
+                " " +
+                "import java.util.Collection; " +
+                "import " + Annot.class.getCanonicalName() + "; " +
+                " " +
+                "rule \"test collect with annotation\" " +
+                "    when " +
+                "        Collection() from collect ( " +
+                "            String() @Annot " +
+                "        ) " +
+                "    then " +
+                "end " +
+                "";
+
+        final PackageDescr pkgDescr = parser.parse( new StringReader( ruleDrl ) );
+
+        // just checking there is no parsing errors
+        assertFalse(parser.getErrors().toString(),
+                    parser.hasErrors());
+
+        kBuilder.addPackage(pkgDescr);
+
+        assertTrue(kBuilder.getErrors().toString(),
+                   kBuilder.getErrors().isEmpty());
+
+        final RuleImpl rule = kBuilder.getPackage().getRule("test collect with annotation");
+
+        List<RuleConditionElement> nested = ((Pattern) rule.getLhs().getChildren().get( 0 )).getSource().getNestedElements();
+
+        assertEquals(1, nested.size());
+
+        Map<String, AnnotationDefinition> annotations = ((Pattern) nested.get( 0 )).getAnnotations();
+
+        assertEquals(1, annotations.size());
+        assertNotNull(annotations.keySet().iterator().next());
     }
 
 
