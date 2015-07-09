@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,6 +29,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.drools.core.command.CommandService;
+import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
+import org.drools.persistence.SingleSessionCommandService;
+import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;
+import org.drools.persistence.jta.TransactionLockInterceptor;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
@@ -35,6 +41,7 @@ import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.jbpm.workflow.instance.WorkflowRuntimeException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -54,6 +61,7 @@ import org.kie.api.runtime.manager.audit.AuditService;
 import org.kie.api.runtime.manager.audit.NodeInstanceLog;
 import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.TaskService;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
@@ -736,6 +744,56 @@ public class SingletonRuntimeManagerTest extends AbstractBaseTest {
         manager.disposeRuntimeEngine(runtime1);
         manager.disposeRuntimeEngine(runtime2);
         
+        // close manager which will close session maintained by the manager
+        manager.close();
+    }
+
+    @Test
+    public void testInterceptorAfterRollback() throws Exception {
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTaskWithRollback.bpmn2"), ResourceType.BPMN2)
+                .get();
+
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+
+        ProcessInstance processInstance = ksession.startProcess("UserTaskWithRollback");
+
+        CommandService commandService = ((CommandBasedStatefulKnowledgeSession)ksession).getCommandService();
+        assertEquals(SingleSessionCommandService.class, commandService.getClass());
+
+     
+        CommandService internalCommandService = ((SingleSessionCommandService)commandService).getCommandService();
+        assertEquals(TransactionLockInterceptor.class, internalCommandService.getClass());
+
+        TaskService taskService = runtime.getTaskService();
+        List<Long> taskIds = taskService.getTasksByProcessInstanceId(processInstance.getId());
+        taskService.start(taskIds.get(0), "john");
+        HashMap<String, Object> result = new HashMap<String, Object>();
+        result.put("output1", "rollback");
+        try {
+            taskService.complete(taskIds.get(0), "john", result); // rollback transaction
+        } catch (WorkflowRuntimeException e) {
+            // ignore
+        }
+
+        result = new HashMap<String, Object>();
+        result.put("output1", "ok");
+        taskService.complete(taskIds.get(0), "john", result); // this time, execute normally
+
+        
+        internalCommandService =  ((SingleSessionCommandService)commandService).getCommandService();
+        assertEquals(TransactionLockInterceptor.class, internalCommandService.getClass());
+        
+        internalCommandService = ((TransactionLockInterceptor) internalCommandService).getNext();
+        assertEquals(OptimisticLockRetryInterceptor.class, internalCommandService.getClass());
+        
+        internalCommandService = ((OptimisticLockRetryInterceptor) internalCommandService).getNext();
+        assertEquals("org.drools.persistence.SingleSessionCommandService$TransactionInterceptor", internalCommandService.getClass().getName());
+
         // close manager which will close session maintained by the manager
         manager.close();
     }
