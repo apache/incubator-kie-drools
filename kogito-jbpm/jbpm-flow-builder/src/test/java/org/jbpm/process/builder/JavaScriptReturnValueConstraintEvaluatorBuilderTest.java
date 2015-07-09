@@ -75,7 +75,7 @@ public class JavaScriptReturnValueConstraintEvaluatorBuilderTest {
         SplitInstance splitInstance = new SplitInstance();
         splitInstance.setProcessInstance(processInstance);
 
-        ksession.setGlobal("value", false);
+        ksession.setGlobal("value", true);
 
         assertTrue(node.evaluate(splitInstance,
                         null,

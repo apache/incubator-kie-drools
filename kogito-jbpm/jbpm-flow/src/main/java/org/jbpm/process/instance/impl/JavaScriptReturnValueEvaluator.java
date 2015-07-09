@@ -21,11 +21,10 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.SimpleBindings;
 
+import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.process.ProcessContext;
 
 public class JavaScriptReturnValueEvaluator implements ReturnValueEvaluator, Externalizable {
@@ -52,6 +51,16 @@ public class JavaScriptReturnValueEvaluator implements ReturnValueEvaluator, Ext
     public Object evaluate(ProcessContext context) throws Exception {
         ScriptEngineManager factory = new ScriptEngineManager();
         ScriptEngine engine = factory.getEngineByName("JavaScript");
+        
+        // insert globals into context
+        Globals globals = context.getKieRuntime().getGlobals();
+        
+        if (globals != null && globals.getGlobalKeys() != null) {
+            for (String gKey : globals.getGlobalKeys()) {
+                engine.put(gKey, globals.get(gKey));
+            }
+        }
+        // insert process kcontext
         engine.put("kcontext", context);
         Object value = engine.eval(expr);
 
