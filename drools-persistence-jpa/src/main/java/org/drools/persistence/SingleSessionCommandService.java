@@ -260,7 +260,22 @@ public class SingleSessionCommandService
                                                               null );
         }
 
-        this.commandService = new TransactionInterceptor(kContext);
+        // recreate TransactionInterceptor in the Interceptor stack
+        Interceptor transactionInterceptorHolder = null;
+        CommandService tmpCs = this.commandService;
+        while (tmpCs instanceof Interceptor) {
+            CommandService next = ((Interceptor)tmpCs).getNext();
+            if (next instanceof TransactionInterceptor) {
+                transactionInterceptorHolder = (Interceptor)tmpCs;
+                transactionInterceptorHolder.setNext(new TransactionInterceptor(kContext));
+                break;
+            } else {
+                tmpCs = next;
+            }
+        }
+        if (transactionInterceptorHolder == null) {
+            this.commandService = new TransactionInterceptor(kContext);
+        }
     }
 
     public void initTransactionManager(Environment env) {
