@@ -90,6 +90,7 @@ import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.MapBackedClassLoader;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.command.Setter;
@@ -121,6 +122,7 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mvel2.MVEL;
@@ -10059,4 +10061,16 @@ import static org.mockito.Mockito.*;
              return new Date();
          }
      }
- }
+
+    @Test
+    @Ignore
+    public void testEmptyCommentInConsequence() {
+        String str = "rule R1 when " +
+                     "then " +
+                     "// " +
+                     "end " +
+                     "";
+        assertFalse( new KieHelper().addContent( str, ResourceType.DRL ).verify().hasMessages( org.kie.api.builder.Message.Level.ERROR ) );
+    }
+
+}
