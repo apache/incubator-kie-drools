@@ -37,7 +37,6 @@ import org.optaplanner.examples.tsp.domain.location.RoadLocation;
 public class TspImageStipplerImporter extends AbstractPngSolutionImporter {
 
     private static final double GRAY_MAXIMUM = 256.0 * 3.0;
-    private static final double DITHERING_THRESHOLD = 0.5;
 
     public static void main(String[] args) {
         new TspImageStipplerImporter().convertAll();
@@ -95,7 +94,7 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter {
                     double originalGray = (r + g + b) / GRAY_MAXIMUM;
                     double diffusedGray = originalGray + errorDiffusion[x][y];
                     double error;
-                    if (diffusedGray <= DITHERING_THRESHOLD) {
+                    if (diffusedGray <= 0.5) {
                         Location location = new AirLocation();
                         location.setId(id);
                         id++;
