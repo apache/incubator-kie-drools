@@ -70,6 +70,11 @@
     <maven.jdbc.db.port/>
     <maven.jdbc.db.server/>
     <maven.jdbc.url>jdbc:h2:mem:test;MVCC=true</maven.jdbc.url>
+
+    <!-- Don't run the tests by default as they take considerable amount of time to complete.
+         The tests can be re-enabled by activation of profile "integration-tests" (see below).
+         (e.g. used -Pintegration-tests or -Dintegration-tests when executing the maven build) -->
+    <skipTests>true</skipTests>
   </properties>
 
   <build>
@@ -83,6 +88,19 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <skip>${skipTests}</skip>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
     <plugins>
       <plugin>
         <!--  ensure that db/tx log files are deleted before runs -->
@@ -101,5 +119,19 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>integration-tests</id>
+      <activation>
+        <property>
+          <name>integration-tests</name>
+        </property>
+      </activation>
+      <properties>
+        <skipTests>false</skipTests>
+      </properties>
+    </profile>
+  </profiles>
 
 </project>

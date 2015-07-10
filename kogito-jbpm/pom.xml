@@ -80,7 +80,7 @@
     <module>jbpm-services</module>
     <module>jbpm-document</module>
     <module>jbpm-test</module>
-    <!--module>jbpm-test-coverage</module-->
+    <module>jbpm-test-coverage</module>
     <module>jbpm-examples</module>
   </modules>
 
