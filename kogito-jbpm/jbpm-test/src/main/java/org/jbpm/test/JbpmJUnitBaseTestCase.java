@@ -217,15 +217,6 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
             clearHistory();
         } finally {
             if (setupDataSource) {
-                if (emf != null) {
-                    emf.close();
-                    emf = null;
-                    EntityManagerFactoryManager.get().clear();
-                }
-                if (ds != null) {
-                    ds.close();
-                    ds = null;
-                }
                 try {
                     InitialContext context = new InitialContext();
                     UserTransaction ut = (UserTransaction) context.lookup( JtaTransactionManager.DEFAULT_USER_TRANSACTION_NAME );
@@ -235,6 +226,15 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
                     }
                 } catch( Exception e ) {
                     // do nothing
+                }
+                if (emf != null) {
+                    emf.close();
+                    emf = null;
+                    EntityManagerFactoryManager.get().clear();
+                }
+                if (ds != null) {
+                    ds.close();
+                    ds = null;
                 }
             }
         }
