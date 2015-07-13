@@ -253,4 +253,17 @@ public class DefaultTemplateContainerTest {
         assertTrue( contents.endsWith( "then\nend\n" ) );
     }
 
+    @Test
+    public void testParseTemplateWithComments() {
+        // BZ-1242010
+        InputStream is = DefaultTemplateContainerTest.class.getResourceAsStream( "/templates/test_template_with_comment.drl" );
+        DefaultTemplateContainer t = new DefaultTemplateContainer( is );
+        Map<String, RuleTemplate> templates = t.getTemplates();
+        RuleTemplate template = (RuleTemplate) templates.get( "template1" );
+        List<TemplateColumn> columns = template.getColumns();
+        TemplateColumn templateColumn = (TemplateColumn) columns.get( 0 );
+        String contents = template.getContents();
+        assertTrue( contents.contains( "@{name}" ) );
+        assertFalse( contents.contains( "@{invalidName}" ) );
+    }
 }

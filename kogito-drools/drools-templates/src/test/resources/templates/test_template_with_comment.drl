@@ -1,0 +1,18 @@
+template header
+name
+
+package This_is_a_ruleset;
+
+template "template1"
+name == "name1"
+rule "How cool is @{name} @{row.rowNumber}"
+    when
+        /* user.getName().equals("@{invalidName}") */ user.getName().equals("@{name}")
+        // user.getName().equals("@{invalidName}")
+        /*
+        user.getName().equals("@{invalidName}")
+        */
+    then
+end
+end template
+
