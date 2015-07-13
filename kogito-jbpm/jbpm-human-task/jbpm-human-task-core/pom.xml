@@ -206,6 +206,8 @@
               !org.jbpm.services.task.rule,
               !org.jbpm.services.task.utils,
               org.jbpm.services.task.persistence;resolution:=optional,
+              org.drools.persistence;resolution:=optional,
+              org.drools.persistence.jpa;resolution:=optional,
               org.drools.persistence.jta;resolution:=optional,
               *
             </Import-Package>

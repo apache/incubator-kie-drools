@@ -73,6 +73,9 @@
               org.hibernate.proxy;resolution:=optional,
               org.jbpm.services.task.utils;
               org.kie.spring.persistence;resolution:=optional,
+              org.drools.persistence;resolution:=optional,
+              org.drools.persistence.jpa;resolution:=optional,
+              org.drools.persistence.jta;resolution:=optional,
               *
             </Import-Package>
             <Export-Package>
