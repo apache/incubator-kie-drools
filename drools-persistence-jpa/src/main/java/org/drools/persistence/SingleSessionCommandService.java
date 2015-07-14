@@ -15,6 +15,11 @@
  */
 package org.drools.persistence;
 
+import java.lang.reflect.Constructor;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.CommandService;
 import org.drools.core.command.Interceptor;
@@ -47,9 +52,6 @@ import org.kie.internal.command.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Constructor;
-import java.util.Date;
-
 public class SingleSessionCommandService
     implements
     org.drools.core.command.SingleSessionCommandService {
@@ -68,6 +70,8 @@ public class SingleSessionCommandService
     private PersistenceContextManager  jpm;
 
     private volatile boolean           doRollback;
+
+    private LinkedList<Interceptor> interceptors = new LinkedList<Interceptor>();
 
     public void checkEnvironment(Environment env) {
         if ( env.get( EnvironmentName.ENTITY_MANAGER_FACTORY ) == null &&
@@ -261,6 +265,12 @@ public class SingleSessionCommandService
         }
 
         this.commandService = new TransactionInterceptor(kContext);
+        // apply interceptors
+        Iterator<Interceptor> iterator = this.interceptors.descendingIterator();
+        while (iterator.hasNext()) {
+            addInterceptor(iterator.next(), false);
+        }
+
     }
 
     public void initTransactionManager(Environment env) {
@@ -358,6 +368,10 @@ public class SingleSessionCommandService
         return this.kContext;
     }
 
+    public CommandService getCommandService() {
+        return this.commandService;
+    }
+
     public synchronized <T> T execute(Command<T> command) {
         return commandService.execute(command);
     }
@@ -380,6 +394,7 @@ public class SingleSessionCommandService
         if ( ksession != null ) {
             ksession.dispose();
         }
+        this.interceptors.clear();
     }
 
     @Override
@@ -480,8 +495,16 @@ public class SingleSessionCommandService
     }
 
     public void addInterceptor(Interceptor interceptor) {
+        addInterceptor(interceptor, true);
+    }
+
+    protected void addInterceptor(Interceptor interceptor, boolean store) {
         interceptor.setNext( this.commandService );
         this.commandService = interceptor;
+        if (store) {
+            // put it on a stack so it can be recreated upon rollback
+            this.interceptors.push(interceptor);
+        }
     }
 
     private void rollback() {
