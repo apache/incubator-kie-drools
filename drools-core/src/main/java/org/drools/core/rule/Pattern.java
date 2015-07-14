@@ -191,9 +191,7 @@ public class Pattern
     public Declaration[] getRequiredDeclarations() {
         Set<Declaration> decl = new HashSet<Declaration>();
         for( Constraint constr : this.constraints ) {
-            for( Declaration d : constr.getRequiredDeclarations() ) {
-                decl.add( d );
-            }
+            Collections.addAll( decl, constr.getRequiredDeclarations() );
         }
         return decl.toArray( new Declaration[decl.size()] );
     }
@@ -450,7 +448,7 @@ public class Pattern
         return (this.source == null) ? other.source == null : this.source.equals( other.source );
     }
 
-    public List getNestedElements() {
+    public List<RuleConditionElement> getNestedElements() {
         return this.source != null ? Collections.singletonList( this.source ) : Collections.EMPTY_LIST;
     }
 
@@ -458,9 +456,6 @@ public class Pattern
         return true;
     }
 
-    /**
-     * @param constraint
-     */
     private void setConstraintType(final MutableTypeConstraint constraint) {
         final Declaration[] declarations = constraint.getRequiredDeclarations();
 
