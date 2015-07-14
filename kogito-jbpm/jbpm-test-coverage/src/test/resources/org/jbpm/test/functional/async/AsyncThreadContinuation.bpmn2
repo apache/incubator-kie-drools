@@ -25,7 +25,7 @@
       <bpmn2:script><![CDATA[kcontext.setVariable("message", kcontext.getVariable("message") + " asynchronously");]]></bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="_3B66B261-79F1-4076-A5CD-4BCF67790C13" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_DF62F292-B41E-4C15-B83C-FB2BF11A1B07" targetRef="_AA2F8D8C-D035-47DC-9BDB-6765D8D83C95"/>
-    <bpmn2:task id="_8F321124-243A-4D29-924D-9F218DC9FCEF" drools:taskName="SyncError" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Sync bye with first time exception" scriptFormat="http://www.java.com/java">
+    <bpmn2:task id="_8F321124-243A-4D29-924D-9F218DC9FCEF" drools:taskName="SyncError" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Sync bye with first time exception">
       <bpmn2:incoming>_C6BEAC25-4496-4BE1-A9B3-B94C8634227B</bpmn2:incoming>
       <bpmn2:outgoing>_1AE18AEE-0B86-4991-9EEF-383F4B27DEA9</bpmn2:outgoing>
     </bpmn2:task>

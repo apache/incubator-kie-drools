@@ -28,6 +28,8 @@ import org.jbpm.test.JbpmTestCase;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.event.process.DefaultProcessEventListener;
+import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.audit.VariableInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -35,10 +37,13 @@ import org.kie.internal.executor.api.ExecutorService;
 
 public class AsyncThreadIsolationTest extends JbpmTestCase {
 
+    private static Object LOCK = new Object();
+
     private static final String PROCESS_ATI = "org.jbpm.test.functional.async.AsyncThreadIsolation";
     private static final String BPMN_ATI = "org/jbpm/test/functional/async/AsyncThreadIsolation.bpmn2";
 
     private ExecutorService executorService;
+    private boolean firstAttempt = true;
 
     @Before
     @Override
@@ -50,6 +55,20 @@ public class AsyncThreadIsolationTest extends JbpmTestCase {
         executorService.init();
         addEnvironmentEntry("ExecutorService", executorService);
         addWorkItemHandler("Service Task", new ServiceTaskHandler());
+        addProcessEventListener(new DefaultProcessEventListener() {
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                if (event.getNodeInstance().getNodeName().equals("Async Hello Service Exception")) {
+                    if (firstAttempt) {
+                        firstAttempt = false;
+                    } else {
+                        synchronized (LOCK) {
+                            LOCK.notifyAll();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     @After
@@ -59,27 +78,28 @@ public class AsyncThreadIsolationTest extends JbpmTestCase {
         executorService.destroy();
     }
 
-    @Test
+    @Test(timeout = 10000)
     public void testCorrectProcessStateAfterException() {
         KieSession ksession = createKSession(BPMN_ATI);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("message", "Ivo");
         ProcessInstance pi = ksession.startProcess(PROCESS_ATI, params);
-        
-        try {
-            Thread.sleep(2500);
-        } catch (Exception ex) {
-            
+
+        synchronized (LOCK) {
+            try {
+                LOCK.wait();
+            } catch (InterruptedException e) {
+            }
         }
-        
+
         List<? extends VariableInstanceLog> vars = getLogService().findVariableInstances(pi.getId(), "message");
         List<String> varValues = new ArrayList<String>();
         for (VariableInstanceLog v : vars) {
             varValues.add(v.getValue());
         }
-        
+
         Assertions.assertThat(varValues).contains("Hello Ivo asynchronously");
-        
+
         pi = ksession.getProcessInstance(pi.getId());
         Assertions.assertThat(pi).isNotNull();
         Assertions.assertThat(pi.getState()).isEqualTo(ProcessInstance.STATE_ACTIVE);

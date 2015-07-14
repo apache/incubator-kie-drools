@@ -8,12 +8,12 @@ import org.kie.api.runtime.process.WorkItemManager;
 
 public class FirstErrorWorkItemHandler implements WorkItemHandler {
 
-    private boolean first = true;
+    private boolean first = false;
 
     @Override
     public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+        first = !first;
         if (first) {
-            first = false;
             throw new RuntimeException("Error");
         }
         manager.completeWorkItem(workItem.getId(), new HashMap<String, Object>());
