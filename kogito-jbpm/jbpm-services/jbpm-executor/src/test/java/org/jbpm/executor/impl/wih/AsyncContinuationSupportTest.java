@@ -47,6 +47,7 @@ import org.kie.api.runtime.manager.RuntimeEnvironment;
 import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
+import org.kie.api.runtime.manager.audit.NodeInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.task.UserGroupCallback;
@@ -120,15 +121,20 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         ProcessInstance processInstance = ksession.startProcess("AsyncScriptTask");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        long processInstanceId = processInstance.getId();
         
         // make sure that waiting for event process is not finished yet as it must be through executor/async
-        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        processInstance = runtime.getKieSession().getProcessInstance(processInstanceId);
         assertNotNull(processInstance);
         
         Thread.sleep(delay);
         
-        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        processInstance = runtime.getKieSession().getProcessInstance(processInstanceId);
         assertNull(processInstance);
+        
+        List<? extends NodeInstanceLog> logs = runtime.getAuditService().findNodeInstances(processInstanceId);
+        assertNotNull(logs);
+        assertEquals(8, logs.size());
     } 
     
     @Test
@@ -158,9 +164,14 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         assertNotNull(ksession);       
         
         ProcessInstance processInstance = ksession.startProcess("AsyncScriptTask");
+        long processInstanceId = processInstance.getId();
         
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNull(processInstance);
+        
+        List<? extends NodeInstanceLog> logs = runtime.getAuditService().findNodeInstances(processInstanceId);
+        assertNotNull(logs);
+        assertEquals(8, logs.size());
     } 
     
     @Test
@@ -196,6 +207,7 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         ProcessInstance processInstance = ksession.startProcess("ServiceProcess", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        long processInstanceId = processInstance.getId();
         
         // make sure that waiting for event process is not finished yet as it must be through executor/async
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
@@ -205,6 +217,10 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNull(processInstance);
+        
+        List<? extends NodeInstanceLog> logs = runtime.getAuditService().findNodeInstances(processInstanceId);
+        assertNotNull(logs);
+        assertEquals(6, logs.size());
     } 
     
     @Test
@@ -244,6 +260,7 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         ProcessInstance processInstance = ksession.startProcess("MultiInstanceLoopCharacteristicsTask", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        long processInstanceId = processInstance.getId();
         
         // make sure that waiting for event process is not finished yet as it must be through executor/async
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
@@ -274,6 +291,10 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNull(processInstance);
+        
+        List<? extends NodeInstanceLog> logs = runtime.getAuditService().findNodeInstances(processInstanceId);
+        assertNotNull(logs);
+        assertEquals(6, logs.size());
     } 
     
     @Test
@@ -313,6 +334,7 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         ProcessInstance processInstance = ksession.startProcess("MultiInstanceLoopCharacteristicsProcess", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        long processInstanceId = processInstance.getId();
         
         // make sure that waiting for event process is not finished yet as it must be through executor/async
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
@@ -332,6 +354,10 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNull(processInstance);
+        
+        List<? extends NodeInstanceLog> logs = runtime.getAuditService().findNodeInstances(processInstanceId);
+        assertNotNull(logs);
+        assertEquals(26, logs.size());
     } 
     
     @Test
@@ -366,6 +392,7 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         ProcessInstance processInstance = ksession.startProcess("SubProcess", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        long processInstanceId = processInstance.getId();
         
         // make sure that waiting for event process is not finished yet as it must be through executor/async
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
@@ -375,6 +402,10 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNull(processInstance);
+        
+        List<? extends NodeInstanceLog> logs = runtime.getAuditService().findNodeInstances(processInstanceId);
+        assertNotNull(logs);
+        assertEquals(18, logs.size());
     } 
     
     @Test
@@ -408,6 +439,7 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         ProcessInstance processInstance = ksession.startProcess("SubProcess", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        long processInstanceId = processInstance.getId();
         
         // make sure that waiting for event process is not finished yet as it must be through executor/async
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
@@ -432,6 +464,10 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNull(processInstance);
+        
+        List<? extends NodeInstanceLog> logs = runtime.getAuditService().findNodeInstances(processInstanceId);
+        assertNotNull(logs);
+        assertEquals(18, logs.size());
     } 
     
     @Test
@@ -465,6 +501,7 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         ProcessInstance processInstance = ksession.startProcess("SubProcess", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        long processInstanceId = processInstance.getId();
         
         // make sure that waiting for event process is not finished yet as it must be through executor/async
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
@@ -479,6 +516,10 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNull(processInstance);
+        
+        List<? extends NodeInstanceLog> logs = runtime.getAuditService().findNodeInstances(processInstanceId);
+        assertNotNull(logs);
+        assertEquals(18, logs.size());
     } 
     
     @Test
@@ -511,6 +552,7 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         ProcessInstance processInstance = ksession.startProcess("ParentProcess");
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        long processInstanceId = processInstance.getId();
         
         // make sure that waiting for event process is not finished yet as it must be through executor/async
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
@@ -520,6 +562,10 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNull(processInstance);
+        
+        List<? extends NodeInstanceLog> logs = runtime.getAuditService().findNodeInstances(processInstanceId);
+        assertNotNull(logs);
+        assertEquals(6, logs.size());
     } 
     
     
@@ -556,6 +602,7 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         ProcessInstance processInstance = ksession.startProcess("async-cont.async-service-task", params);
         assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        long processInstanceId = processInstance.getId();
         
         // make sure that waiting for event process is not finished yet as it must be through executor/async
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
@@ -575,6 +622,10 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
         
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNull(processInstance);
+        
+        List<? extends NodeInstanceLog> logs = runtime.getAuditService().findNodeInstances(processInstanceId);
+        assertNotNull(logs);
+        assertEquals(14, logs.size());
     }
       
     

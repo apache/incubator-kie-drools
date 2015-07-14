@@ -16,6 +16,7 @@
 
 package org.jbpm.workflow.core.node;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.jbpm.workflow.core.impl.NodeImpl;
@@ -29,8 +30,7 @@ public class AsyncEventNode extends EventNode {
     private Node node;
     
     public AsyncEventNode(Node node) {
-        this.node = node;
-        setMetaData("hidden", "true");
+        this.node = node;        
     }
     
     public Node getActualNode() {
@@ -49,7 +49,9 @@ public class AsyncEventNode extends EventNode {
 
     @Override
     public Map<String, Object> getMetaData() {
-        return node.getMetaData();
+        Map<String, Object> metaData = new HashMap<String, Object>(node.getMetaData());
+        metaData.put("hidden", "true");
+        return metaData;       
     }
 
     
