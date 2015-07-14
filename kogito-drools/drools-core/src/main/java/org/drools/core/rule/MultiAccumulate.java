@@ -16,6 +16,7 @@
 package org.drools.core.rule;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.base.accumulators.MVELAccumulatorFunctionExecutor;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.CompiledInvoker;
@@ -162,6 +163,14 @@ public class MultiAccumulate extends Accumulate {
             return results;
         } catch ( final Exception e ) {
             throw new RuntimeException( e );
+        }
+    }
+
+    protected void replaceAccumulatorDeclaration(Declaration declaration, Declaration resolved) {
+        for (Accumulator accumulator : accumulators) {
+            if ( accumulator instanceof MVELAccumulatorFunctionExecutor ) {
+                ( (MVELAccumulatorFunctionExecutor) accumulator ).replaceDeclaration( declaration, resolved );
+            }
         }
     }
 

@@ -124,8 +124,7 @@ public class MVELAccumulatorFunctionExecutor
                                                      handle.getObject(),
                                                      factory );
         if ( this.function.supportsReverse() ) {
-            ((MVELAccumulatorFunctionContext) context).reverseSupport.put( Integer.valueOf( handle.getId() ),
-                                                                           value );
+            ((MVELAccumulatorFunctionContext) context).reverseSupport.put( handle.getId(), value );
         }
         this.function.accumulate( ((MVELAccumulatorFunctionContext) context).context,
                                   value );
@@ -138,7 +137,7 @@ public class MVELAccumulatorFunctionExecutor
                         Declaration[] declarations,
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
-        final Object value = ((MVELAccumulatorFunctionContext) context).reverseSupport.remove( Integer.valueOf( handle.getId() ) );
+        final Object value = ((MVELAccumulatorFunctionContext) context).reverseSupport.remove( handle.getId() );
         this.function.reverse( ((MVELAccumulatorFunctionContext) context).context,
                                value );
     }
@@ -165,6 +164,10 @@ public class MVELAccumulatorFunctionExecutor
     @Override
     public Declaration[] getRequiredDeclarations() {
         return unit.getPreviousDeclarations();
+    }
+
+    public void replaceDeclaration( Declaration declaration, Declaration resolved ) {
+        unit.replaceDeclaration( declaration, resolved );
     }
 
     private static class MVELAccumulatorFunctionContext

@@ -118,8 +118,6 @@ public class MVELCompilationUnit
                            char.class );
     }
 
-    public static final Object                   COMPILER_LOCK    = new Object();
-
     public MVELCompilationUnit() {
     }
 
@@ -240,10 +238,7 @@ public class MVELCompilationUnit
 
         String[] varNames = parserContext.getIndexedVarNames();
         
-        ExecutableStatement stmt = (ExecutableStatement) compile( expression,
-                                                                  runtimeData.getPackageClassLoader(),
-                                                                  parserContext,
-                                                                  languageLevel );
+        ExecutableStatement stmt = (ExecutableStatement) compile( expression, parserContext );
         
         Set<String> localNames = parserContext.getVariables().keySet();
 
@@ -415,10 +410,8 @@ public class MVELCompilationUnit
         return handles.length > declaration.getPattern().getOffset() ? handles[declaration.getPattern().getOffset()] : null;
     }
 
-    public static Serializable compile( final String text,
-                                        final ClassLoader classLoader,
-                                        final ParserContext parserContext,
-                                        final int languageLevel ) {
+    private static Serializable compile( final String text,
+                                         final ParserContext parserContext ) {
         MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
         MVEL.COMPILER_OPT_ALLOW_OVERRIDE_ALL_PROPHANDLING = true;
         MVEL.COMPILER_OPT_ALLOW_RESOLVE_INNERCLASSES_WITH_DOTNOTATION = true;
@@ -539,10 +532,6 @@ public class MVELCompilationUnit
 
     public static Map<String, Class< ? >> getPrimitivesmap() {
         return primitivesMap;
-    }
-
-    public static Object getCompilerLock() {
-        return COMPILER_LOCK;
     }
 
     public static class DroolsVarFactory implements VariableResolverFactory {
@@ -666,15 +655,6 @@ public class MVELCompilationUnit
 //            variableResolvers.put( name,
 //                                   vr );
 //            return vr;
-        }
-    
-        private VariableResolver getResolver( String name ) {
-//            for ( int i = 0; i < indexedVariableNames.length; i++ ) {
-//                if ( indexedVariableNames[i].equals( name ) ) {
-//                    return indexedVariableResolvers[i];
-//                }
-//            }
-            return null;
         }
     
         public boolean isTarget( String name ) {
