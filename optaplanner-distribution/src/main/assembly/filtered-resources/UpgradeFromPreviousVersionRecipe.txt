@@ -2512,7 +2512,31 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <changeMoveSelector/>
       <swapMoveSelector/>
 
+[MINOR] If your planning solution has a superclass with planner annotations,
+those will now be ignored (just like solution subclass annotations are ignored
+and just like entity superclass or subclass annotations are ignored unless they are a declare planning entity class too).
+Declare the @PlanningSolution on the superclass instead, the solver will handle subclass instances gracefully
+(presuming there are no planner annotations in the subclass).
+Before in *.java:
+    public abstract class ParentSolution {
+        @ValueRangeProvider(...)
+        public List<Computer> getComputers() {...}
+    }
+    @PlanningSolution
+    public class ChildSolution extends ParentSolution {...}
+Before in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <solutionClass>...ChildSolution</solutionClass>
+After in *.java:
+    @PlanningSolution
+    public abstract class ParentSolution {
+        @ValueRangeProvider(...)
+        public List<Computer> getComputers() {...}
+    }
+    public class ChildSolution extends ParentSolution {...}
+After in *SolverConfig.xml and *BenchmarkConfig.xml:
+    <solutionClass>...ParentSolution</solutionClass>
 
 
 From 6.3.0.Beta2 to 6.3.0.Beta3
 -------------------------------
+
