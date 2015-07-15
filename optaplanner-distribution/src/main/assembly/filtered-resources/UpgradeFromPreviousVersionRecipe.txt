@@ -2451,6 +2451,26 @@ The docs have also been fixed to reflect reality, which is also the desired beha
 This might expose a hidden bug in your ProblemFactChange implementation.
 Enable environmentMode FULL_ASSERT and do a few addProblemFactChange() calls to validate that there are no such bugs.
 
+
+From 6.3.0.Beta1 to 6.3.0.Beta2
+-------------------------------
+
+[MINOR] If you implemented a custom ValueRange, also implement the method isEmpty().
+Normally, you should not have any need for a custom ValueRange, because ValueRangeFactory supports all sensible ranges.
+Before in *.java:
+    public class MyDoubleValueRange extends AbstractUncountableValueRange<Double> {
+        ...
+    }
+After in *.java:
+    public class MyDoubleValueRange extends AbstractUncountableValueRange<Double> {
+        ...
+
+        @Override
+        public boolean isEmpty() {
+            return from == to;
+        }
+    }
+
 [MAJOR] If you use multiple planning variables, consider switching to the folded configuration.
 Before in *SolverConfig.xml and *BenchmarkConfig.xml:
       <changeMoveSelector>
@@ -2491,3 +2511,8 @@ Before in *SolverConfig.xml and *BenchmarkConfig.xml:
 After in *SolverConfig.xml and *BenchmarkConfig.xml:
       <changeMoveSelector/>
       <swapMoveSelector/>
+
+
+
+From 6.3.0.Beta2 to 6.3.0.Beta3
+-------------------------------
