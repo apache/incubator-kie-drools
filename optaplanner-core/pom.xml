@@ -69,8 +69,8 @@
     </dependency>
     <!-- Scan for annotated classes (can be excluded if scanAnnotatedClasses isn't used) -->
     <dependency>
-      <groupId>org.scannotation</groupId>
-      <artifactId>scannotation</artifactId>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
     </dependency>
     <!-- XML -->
     <dependency>

@@ -30,8 +30,11 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.scannotation.AnnotationDB;
-import org.scannotation.ClasspathUrlFinder;
+import org.reflections.Reflections;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 
 @XStreamAlias("scanAnnotatedClasses")
 public class ScanAnnotatedClassesConfig {
@@ -52,70 +55,46 @@ public class ScanAnnotatedClassesConfig {
     // ************************************************************************
 
     public SolutionDescriptor buildSolutionDescriptor() {
-        AnnotationDB annotationDB = new AnnotationDB();
-        annotationDB.setScanClassAnnotations(true);
-        annotationDB.setScanFieldAnnotations(false);
-        annotationDB.setScanMethodAnnotations(false);
-        annotationDB.setScanParameterAnnotations(false);
+        ConfigurationBuilder builder = new ConfigurationBuilder();
         if (!ConfigUtils.isEmptyCollection(packageIncludeList)) {
-            annotationDB.setScanPackages(packageIncludeList.toArray(new String[packageIncludeList.size()]));
+            FilterBuilder filterBuilder = new FilterBuilder();
+            for (String packageInclude : packageIncludeList) {
+                builder.addUrls(ClasspathHelper.forPackage(packageInclude, (ClassLoader[]) null));
+                filterBuilder.includePackage(packageInclude);
+            }
+            builder.filterInputsBy(filterBuilder);
+        } else {
+            builder.addUrls(ClasspathHelper.forClassLoader());
         }
-        URL[] urls = ClasspathUrlFinder.findClassPaths();
-        try {
-            annotationDB.scanArchives(urls);
-        } catch (IOException e) {
-            throw new IllegalStateException("The scanAnnotatedClasses (" + this
-                    + ") could not scan for annotated classes using urls (" + urls + ").", e);
-        }
-        Map<String, Set<String>> annotationIndex = annotationDB.getAnnotationIndex();
-        Class<? extends Solution> solutionClass = loadSolutionClass(annotationIndex);
-        List<Class<?>> entityClassList = loadEntityClassList(annotationIndex);
+        Reflections reflections = new Reflections(builder);
+        Class<? extends Solution> solutionClass = loadSolutionClass(reflections);
+        List<Class<?>> entityClassList = loadEntityClassList(reflections);
         return SolutionDescriptor.buildSolutionDescriptor(solutionClass, entityClassList);
     }
 
-    protected Class<? extends Solution> loadSolutionClass(Map<String, Set<String>> annotationIndex) {
-        Set<String> solutionClassNameSet = annotationIndex.get(PlanningSolution.class.getName());
-        if (ConfigUtils.isEmptyCollection(solutionClassNameSet)) {
+    protected Class<? extends Solution> loadSolutionClass(Reflections reflections) {
+        Set<Class<?>> solutionClassSet = reflections.getTypesAnnotatedWith(PlanningSolution.class);
+        if (ConfigUtils.isEmptyCollection(solutionClassSet)) {
             throw new IllegalStateException("The scanAnnotatedClasses (" + this
                     + ") did not find any classes with a " + PlanningSolution.class.getSimpleName()
                     + " annotation.");
-        } else if (solutionClassNameSet.size() > 1) {
+        } else if (solutionClassSet.size() > 1) {
             throw new IllegalStateException("The scanAnnotatedClasses (" + this
-                    + ") found multiple classes (" + solutionClassNameSet
+                    + ") found multiple classes (" + solutionClassSet
                     + ") with a " + PlanningSolution.class.getSimpleName() + " annotation.");
         }
-        Class<? extends Solution> solutionClass;
-        String solutionClassName = solutionClassNameSet.iterator().next();
-        try {
-            solutionClass = (Class<? extends Solution>) Class.forName(solutionClassName);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("The solution class (" + solutionClassName
-                    + ") with a " + PlanningSolution.class.getSimpleName()
-                    + " annotation could not be loaded by scanAnnotatedClasses (" + this + ").", e);
-        }
+        Class<? extends Solution> solutionClass = (Class<? extends Solution>) solutionClassSet.iterator().next();
         return solutionClass;
     }
 
-    protected List<Class<?>> loadEntityClassList(Map<String, Set<String>> annotationIndex) {
-        Set<String> entityClassNameSet = annotationIndex.get(PlanningEntity.class.getName());
-        if (ConfigUtils.isEmptyCollection(entityClassNameSet)) {
+    protected List<Class<?>> loadEntityClassList(Reflections reflections) {
+        Set<Class<?>> entityClassSet = reflections.getTypesAnnotatedWith(PlanningEntity.class);
+        if (ConfigUtils.isEmptyCollection(entityClassSet)) {
             throw new IllegalStateException("The scanAnnotatedClasses (" + this
                     + ") did not find any classes with a " + PlanningEntity.class.getSimpleName()
                     + " annotation.");
         }
-        List<Class<?>> entityClassList = new ArrayList<Class<?>>(entityClassNameSet.size());
-        for (String entityClassName : entityClassNameSet) {
-            Class<?> entityClass;
-            try {
-                entityClass = (Class<? extends Solution>) Class.forName(entityClassName);
-            } catch (ClassNotFoundException e) {
-                throw new IllegalStateException("The entity class (" + entityClassName
-                        + ") with a " + PlanningEntity.class.getSimpleName()
-                        + " annotation could not be loaded by scanAnnotatedClasses (" + this + ").", e);
-            }
-            entityClassList.add(entityClass);
-        }
-        return entityClassList;
+        return new ArrayList<Class<?>>(entityClassSet);
     }
 
     public void inherit(ScanAnnotatedClassesConfig inheritedConfig) {
