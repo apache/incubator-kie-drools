@@ -18,7 +18,6 @@ package org.jbpm.kie.services.impl;
 
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -39,7 +38,6 @@ import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.core.util.StringUtils;
-import org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceImpl;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.runtime.manager.impl.KModuleRegisterableItemsFactory;
@@ -69,7 +67,8 @@ import org.kie.internal.runtime.conf.ObjectModelResolver;
 import org.kie.internal.runtime.conf.ObjectModelResolverProvider;
 import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.scanner.MavenRepository;
-import org.scannotation.AnnotationDB;
+import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -341,31 +340,26 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 				if (urls == null || urls.length == 0) {
 					return;
 				}
+				ConfigurationBuilder builder = new ConfigurationBuilder();
+				builder.addUrls(urls);
+				builder.addClassLoader(kieContainer.getClassLoader());
 				
-				AnnotationDB db = new AnnotationDB();
-				try {
-					db.scanArchives(urls);
-					Set<String> jaxbClasses = db.getAnnotationIndex().get(XmlRootElement.class.getName());
-					Set<String> remoteClasses = db.getAnnotationIndex().get(Remotable.class.getName());
-					Set<String> allClasses = new HashSet<String>();
-					if (jaxbClasses != null) {
-						allClasses.addAll(jaxbClasses);
-					}
-					if (remoteClasses != null) {
-						allClasses.addAll(remoteClasses);
-					}
-					for (String className : allClasses) {
-						try {
-		                    deployedUnit.addClass(kieContainer.getClassLoader().loadClass(className));
-		                    logger.debug( "Loaded {} into the classpath from deployment {}", className, kieContainer.getReleaseId().toExternalForm());
-		                } catch (ClassNotFoundException cnfe) {
-		                    throw new IllegalArgumentException("Class " + className + " not found in the project");
-		                }
-					}
-				} catch (IOException e) {
-					logger.warn("Encountered error while scanning classes {}", e.getMessage());
+				Reflections reflections = new Reflections(builder);
+				
+				Set<Class<?>> jaxbClasses = reflections.getTypesAnnotatedWith(XmlRootElement.class);
+				Set<Class<?>> remoteClasses = reflections.getTypesAnnotatedWith(Remotable.class);
+				Set<Class<?>> allClasses = new HashSet<Class<?>>();
+				if (jaxbClasses != null) {
+					allClasses.addAll(jaxbClasses);
 				}
-				
+				if (remoteClasses != null) {
+					allClasses.addAll(remoteClasses);
+				}
+				for (Class<?> clazz : allClasses) {
+
+				    deployedUnit.addClass(clazz);
+                    logger.debug( "Loaded {} into the classpath from deployment {}", clazz.getName(), kieContainer.getReleaseId().toExternalForm());
+				}
 			}
 		}
 	}

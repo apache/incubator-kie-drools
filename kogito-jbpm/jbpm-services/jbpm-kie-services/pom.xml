@@ -141,8 +141,8 @@
     </dependency>
     
     <dependency>
-      <groupId>org.scannotation</groupId>
-      <artifactId>scannotation</artifactId>
+      <groupId>org.reflections</groupId>
+      <artifactId>reflections</artifactId>
     </dependency>
     
     <!-- test -->
