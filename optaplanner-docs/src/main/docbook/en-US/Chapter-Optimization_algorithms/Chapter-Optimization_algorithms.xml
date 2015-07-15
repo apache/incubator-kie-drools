@@ -694,11 +694,17 @@
     thread.</para>
 
     <para>Especially metaheuristic phases will need to be told when to stop solving. This can be because of a number of
-    reasons: the time is up, the perfect score has been reached, ... The only thing you can't depend on, is on finding
-    the optimal solution (unless you know the optimal score), because a metaheuristic algorithm generally doesn't know
-    it when it finds the optimal solution. For real-life problems this doesn't turn out to be much of a problem, because
-    finding the optimal solution could take years, so you'll want to terminate sooner anyway. The only thing that
-    matters is finding the best solution in the available time.</para>
+    reasons: the time is up, the perfect score has been reached, just before its solution is used, ... The only thing
+    you can't depend on, is on finding the optimal solution (unless you know the optimal score), because a metaheuristic
+    algorithm generally doesn't know it when it finds the optimal solution. For real-life problems this doesn't turn out
+    to be much of a problem, because finding the optimal solution could take years, so you'll want to terminate sooner
+    anyway. The only thing that matters is finding the best solution in the available time.</para>
+
+    <important>
+      <para>If no termination is configured (and a metaheursitic algorithm is used), the <literal>Solver</literal> will
+      run forever, untill <link linkend="asynchronousTermination">terminateEarly()</link> is called from another thread.
+      This is especially common during <link linkend="realTimePlanning">real-time planning</link>.</para>
+    </important>
 
     <para>For synchronous termination, configure a <literal>Termination</literal> on a <literal>Solver</literal> or a
     <literal>Phase</literal> when it needs to stop. You can implement your own <literal>Termination</literal>, but the

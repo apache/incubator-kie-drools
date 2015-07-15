@@ -144,6 +144,79 @@
       (of the package namespace <literal>org.optaplanner.core.impl</literal>) into an efficient
       <literal>Solver</literal>.</para>
     </section>
+
+    <section xml:id="solverConfigurationByJavaAPI">
+      <title>Annotations Configuration</title>
+
+      <section xml:id="automaticScanningForAnnotations">
+        <title>Automatic Scanning for Annotations</title>
+
+        <para>Instead of the declaring the classes that have a <literal>@PlanningSolution</literal> or
+        <literal>@PlanningEntity</literal> manually:</para>
+
+        <programlisting language="xml">&lt;solver&gt;
+  &lt;!-- Define the model --&gt;
+  &lt;solutionClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
+  &lt;entityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/entityClass&gt;
+
+  ...
+&lt;/solver&gt;</programlisting>
+
+        <para>Planner can find scan the classpath and find them automatically:</para>
+
+        <programlisting language="xml">&lt;solver&gt;
+  &lt;!-- Define the model --&gt;
+  &lt;scanAnnotatedClasses/&gt;
+
+  ...
+&lt;/solver&gt;</programlisting>
+
+        <para>If there are multiple models in your classpath (or just to speed up scanning), specify the packages to
+        scan:</para>
+
+        <programlisting language="xml">&lt;solver&gt;
+  &lt;!-- Define the model --&gt;
+  &lt;scanAnnotatedClasses&gt;
+    &lt;packageInclude&gt;org.optaplanner.examples.cloudbalancing&lt;/packageInclude&gt;
+  &lt;/scanAnnotatedClasses&gt;
+
+  ...
+&lt;/solver&gt;</programlisting>
+
+        <para>This will find all solution and entity classes in the package or subpackages.</para>
+
+        <note>
+          <para>If scanAnnotatedClasses is not specified, the <literal>org.reflections</literal> transitive maven
+          dependency can be excluded.</para>
+        </note>
+      </section>
+
+      <section xml:id="annotationAlternatives">
+        <title>Annotation Alternatives</title>
+
+        <para>Planner needs to be told which classes in your domain model are planning entities, which properties are
+        planning variables, etc. There are several ways to deliver this information:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Add class annotations and JavaBean property annotations on the domain model. The property annotations
+            must be the getter method, not on the setter method. This is the recommended manner.</para>
+          </listitem>
+
+          <listitem>
+            <para>Add class annotations and field annotations on the domain model.</para>
+          </listitem>
+
+          <listitem>
+            <para>No annotations: externalize the domain configuration in an XML file. This is <link
+            xlink:href="https://issues.jboss.org/browse/PLANNER-151">not yet supported</link>.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>This manual focusses on the first manner, but every features supports all 3 manners, even if it's not
+        explicilty mentioned.</para>
+      </section>
+    </section>
   </section>
 
   <section xml:id="modelAPlanningProblem">
@@ -257,32 +330,6 @@
       <link linkend="integration">Integration</link>).</para>
     </section>
 
-    <section xml:id="annotationAlternatives">
-      <title>Annotation alternatives</title>
-
-      <para>Planner needs to be told which classes in your domain model are planning entities, which properties are
-      planning variables, etc. There are several ways to deliver this information:</para>
-
-      <itemizedlist>
-        <listitem>
-          <para>Add class annotations and JavaBean property annotations on the domain model. The property annotations
-          must be the getter method, not on the setter method. This is the recommended manner.</para>
-        </listitem>
-
-        <listitem>
-          <para>Add class annotations and field annotations on the domain model.</para>
-        </listitem>
-
-        <listitem>
-          <para>No annotations: externalize the domain configuration in an XML file. This is <link
-          xlink:href="https://issues.jboss.org/browse/PLANNER-151">not yet supported</link>.</para>
-        </listitem>
-      </itemizedlist>
-
-      <para>This manual focusses on the first manner, but every features supports all 3 manners, even if it's not
-      explicilty mentioned.</para>
-    </section>
-
     <section xml:id="problemFact">
       <title>Problem Fact</title>
 
@@ -385,7 +432,8 @@ public class Lecture {
     // ...
 }</programlisting>
 
-        <para>The solver configuration also needs to be made aware of each planning entity class:</para>
+        <para>Without <link linkend="automaticScanningForAnnotations">automated scanning</link>, the solver
+        configuration also needs to declare each planning entity class:</para>
 
         <programlisting language="java">&lt;solver&gt;
   ...
@@ -500,6 +548,11 @@ public class Queen {
         this planning variable. It references one or more <literal>@ValueRangeProvider</literal>
         <literal>id</literal>'s.</para>
 
+        <note>
+          <para>A @PlanningVariable annotation needs to be on a member in a class with a @PlanningEntity annotation. It
+          is ignored on parent classes or subclasses without that annotation.</para>
+        </note>
+
         <para><link linkend="annotationAlternatives">Annotating the field</link> instead of the property works
         too:</para>
 
@@ -604,6 +657,11 @@ public class Queen {
               <para>On the planning entity: The value range differs per planning entity. This is less common.</para>
             </listitem>
           </itemizedlist>
+
+          <note>
+            <para>A @ValueRangeProvider annotation needs to be on a member in a class with a @PlanningSolution or a
+            @PlanningEntity annotation. It is ignored on parent classes or subclasses without those annotations.</para>
+          </note>
 
           <para>The return type of that method can be 2 types:</para>
 
@@ -1242,6 +1300,16 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
     // ...
 }</programlisting>
+
+        <para>A planning solution class also needs to be annotated with the <literal>@PlanningSolution</literal>
+        annotation. Without <link linkend="automaticScanningForAnnotations">automated scanning</link>, the solver
+        configuration also needs to declare the planning solution class:</para>
+
+        <programlisting language="java">&lt;solver&gt;
+  ...
+  &lt;solutionClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
+  ...
+&lt;/solver&gt;</programlisting>
       </section>
 
       <section xml:id="getScoreAndSetScoreMethods">
@@ -1388,6 +1456,11 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
         <para>There can be multiple <literal>@PlanningEntityCollectionProperty</literal> annotated members. Those can
         even return a <literal>Collection</literal> with the same entity class type.</para>
+
+        <note>
+          <para>A @PlanningEntityCollectionProperty annotation needs to be on a member in a class with a
+          @PlanningSolution annotation. It is ignored on parent classes or subclasses without that annotation.</para>
+        </note>
 
         <para>In rare cases, a planning entity might be a singleton: use <literal>@PlanningEntityProperty</literal> on
         its getter (or field) instead.</para>

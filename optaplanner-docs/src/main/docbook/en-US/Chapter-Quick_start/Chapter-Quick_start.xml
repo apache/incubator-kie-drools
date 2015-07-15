@@ -309,8 +309,7 @@
         <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;solver&gt;
   &lt;!-- Domain model configuration --&gt;
-  &lt;solutionClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudBalance&lt;/solutionClass&gt;
-  &lt;entityClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudProcess&lt;/entityClass&gt;
+  &lt;scanAnnotatedClasses/&gt;
 
   &lt;!-- Score configuration --&gt;
   &lt;scoreDirectorFactory&gt;
@@ -332,10 +331,11 @@
       <itemizedlist>
         <listitem>
           <para><emphasis role="bold">Domain model configuration</emphasis>: What can Planner change? We need to make
-          Planner aware of our domain classes:</para>
+          Planner aware of our domain classes. In this configuration, it will automatically scan all classes in your
+          classpath (for an <literal>@PlanningEntity</literal> or <literal>@PlanningSolution</literal>
+          annotation):</para>
 
-          <programlisting language="xml">  &lt;solutionClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudBalance&lt;/solutionClass&gt;
-  &lt;entityClass&gt;org.optaplanner.examples.cloudbalancing.domain.CloudProcess&lt;/entityClass&gt;</programlisting>
+          <programlisting language="xml">  &lt;scanAnnotatedClasses/&gt;</programlisting>
         </listitem>
 
         <listitem>
@@ -458,7 +458,8 @@ public class CloudProcess ... {
         <example>
           <title>CloudBalance.java</title>
 
-          <programlisting language="java">public class CloudBalance ... implements Solution&lt;HardSoftScore&gt; {
+          <programlisting language="java">@PlanningSolution
+public class CloudBalance ... implements Solution&lt;HardSoftScore&gt; {
 
     private List&lt;CloudComputer&gt; computerList;
 

@@ -268,8 +268,7 @@
       &lt;problemStatisticType&gt;BEST_SCORE&lt;/problemStatisticType&gt;
     &lt;/problemBenchmarks&gt;
     &lt;solver&gt;
-      &lt;solutionClass&gt;org.optaplanner.examples.nqueens.domain.NQueens&lt;/solutionClass&gt;
-      &lt;entityClass&gt;org.optaplanner.examples.nqueens.domain.Queen&lt;/entityClass&gt;
+      &lt;scanAnnotatedClasses/&gt;
       &lt;scoreDirectorFactory&gt;
         &lt;scoreDefinitionType&gt;SIMPLE&lt;/scoreDefinitionType&gt;
         &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
