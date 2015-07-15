@@ -186,8 +186,8 @@
         <para>This will find all solution and entity classes in the package or subpackages.</para>
 
         <note>
-          <para>If scanAnnotatedClasses is not specified, the <literal>org.reflections</literal> transitive maven
-          dependency can be excluded.</para>
+          <para>If <literal>scanAnnotatedClasses</literal> is not specified, the <literal>org.reflections</literal>
+          transitive maven dependency can be excluded.</para>
         </note>
       </section>
 
@@ -199,12 +199,14 @@
 
         <itemizedlist>
           <listitem>
-            <para>Add class annotations and JavaBean property annotations on the domain model. The property annotations
-            must be the getter method, not on the setter method. This is the recommended manner.</para>
+            <para>Add class annotations and JavaBean property annotations on the domain model (recommended). The
+            property annotations must be the getter method, not on the setter method. Such a getter does not need to be
+            public.</para>
           </listitem>
 
           <listitem>
-            <para>Add class annotations and field annotations on the domain model.</para>
+            <para>Add class annotations and field annotations on the domain model. Such a field does not need to be
+            public.</para>
           </listitem>
 
           <listitem>
