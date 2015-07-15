@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -433,6 +434,41 @@ public abstract class BasicExecutorBaseTest {
         // time difference between second and third should be at least 6 seconds
         diff = thirdError - secondError;
         assertTrue(diff > 6000);
+    }
+
+    @Test
+    public void testCustomIncrementingRequestRetrySpecialValues() throws InterruptedException {
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+        ctxCMD.setData("retryDelay", "-1ms, 1m 80s");
+        ctxCMD.setData("retries", 2);
+
+        executorService.scheduleRequest("org.jbpm.executor.ThrowExceptionCommand", ctxCMD);
+
+        Thread.sleep(10000);
+
+        List<ErrorInfo> errors = executorService.getAllErrors();
+        // 2 executions in total 1(regular) + 1(retry)
+        assertEquals(2, errors.size());
+
+        long firstError = errors.get(0).getTime().getTime();
+        long secondError = errors.get(1).getTime().getTime();
+
+        // Time difference between first and second shouldn't be bigger than 4 seconds as executor has 3 second interval and
+        // should start executing second command immediately.
+        long diff = secondError - firstError;
+        assertTrue(diff < 4000);
+
+        List<RequestInfo> allRequests = executorService.getAllRequests();
+        assertEquals(1, allRequests.size());
+
+        // Future execution is planned to be started 2 minutes and 20 seconds after last fail.
+        // Time difference vary because of test thread sleeping for 10 seconds.
+        diff = allRequests.get(0).getTime().getTime() - Calendar.getInstance().getTimeInMillis();
+        assertTrue(diff < 140000);
+        assertTrue(diff > 130000);
+
+        executorService.clearAllRequests();
     }
     
     public void FIXMEfutureRequestTest() throws InterruptedException {
