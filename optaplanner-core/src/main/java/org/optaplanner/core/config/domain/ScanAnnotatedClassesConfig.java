@@ -64,7 +64,7 @@ public class ScanAnnotatedClassesConfig {
             }
             builder.filterInputsBy(filterBuilder);
         } else {
-            builder.addUrls(ClasspathHelper.forClassLoader());
+            builder.addUrls(ClasspathHelper.forPackage(""));
         }
         Reflections reflections = new Reflections(builder);
         Class<? extends Solution> solutionClass = loadSolutionClass(reflections);
