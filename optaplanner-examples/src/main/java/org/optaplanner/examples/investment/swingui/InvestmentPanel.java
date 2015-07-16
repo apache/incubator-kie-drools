@@ -52,7 +52,7 @@ import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.H
 
 public class InvestmentPanel extends SolutionPanel {
 
-    public static final String LOGO_PATH = "/org/optaplanner/examples/investmentallocation/swingui/investmentLogo.png";
+    public static final String LOGO_PATH = "/org/optaplanner/examples/investment/swingui/investmentLogo.png";
 
     private final TimeTablePanel<AssetClass, AssetClass> assetClassPanel;
     private final TimeTablePanel<Void, Region> regionPanel;

@@ -51,6 +51,7 @@ import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.dinnerparty.app.DinnerPartyApp;
 import org.optaplanner.examples.examination.app.ExaminationApp;
+import org.optaplanner.examples.investment.app.InvestmentApp;
 import org.optaplanner.examples.machinereassignment.app.MachineReassignmentApp;
 import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nurserostering.app.NurseRosteringApp;
@@ -170,7 +171,7 @@ public class OptaPlannerExamplesApp extends JFrame {
         panel.add(createExampleButton(new NurseRosteringApp()));
         panel.add(createExampleButton(new TravelingTournamentApp()));
         panel.add(createExampleButton(new CheapTimeApp()));
-        panel.add(new JPanel());
+        panel.add(createExampleButton(new InvestmentApp()));
         return panel;
     }
 
