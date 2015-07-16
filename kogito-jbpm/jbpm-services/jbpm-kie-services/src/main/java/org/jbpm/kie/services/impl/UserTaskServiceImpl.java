@@ -770,7 +770,7 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	}
 
 	@Override
-	public Long addAttachment(Long taskId, String userId, Object attachment) {
+	public Long addAttachment(Long taskId, String userId, String name, Object attachment) {
 		UserTaskInstanceDesc task = dataService.getTaskById(taskId);
 		if (task == null) {
 			throw new TaskNotFoundException("Task with id " + taskId + " was not found");
@@ -789,6 +789,7 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 			TaskService taskService = engine.getTaskService();
 			// perform actual operation
 			InternalAttachment att = (InternalAttachment) TaskModelProvider.getFactory().newAttachment();
+			att.setName(name);
 			att.setAccessType(AccessType.Inline);
 			att.setAttachedAt(new Date());
 			att.setAttachedBy(TaskModelProvider.getFactory().newUser(userId));
@@ -799,6 +800,7 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	        ContentMarshallerContext ctx = TaskContentRegistry.get().getMarshallerContext(task.getDeploymentId());
 	        
 	        ((InternalContent)content).setContent(ContentMarshallerHelper.marshallContent(attachment, ctx.getEnvironment()));
+	        att.setSize(content.getContent().length);
 			return ((InternalTaskService)taskService).addAttachment(taskId, att, content);
 		} finally {
 			disposeRuntimeEngine(manager, engine);

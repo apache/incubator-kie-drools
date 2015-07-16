@@ -584,7 +584,7 @@ public class UserTaskServiceEJBIntegrationTest extends AbstractTestSupport {
     	assertNotNull(attachments);
     	assertEquals(0, attachments.size());
     	
-    	Long attId = userTaskService.addAttachment(taskId, "john", "String attachment");
+    	Long attId = userTaskService.addAttachment(taskId, "john", "my attachment", "String attachment");
     	assertNotNull(attId);
     	
     	attachments = userTaskService.getAttachmentsByTaskId(taskId);
@@ -598,6 +598,7 @@ public class UserTaskServiceEJBIntegrationTest extends AbstractTestSupport {
     	Attachment attachment = userTaskService.getAttachmentById(taskId, attId);
     	assertNotNull(attachment);
     	assertEquals("john", attachment.getAttachedBy().getId());
+    	assertEquals("my attachment", attachment.getName());
     	assertNotNull(attachment.getAttachmentContentId());
     	
     	userTaskService.deleteAttachment(taskId, attId);

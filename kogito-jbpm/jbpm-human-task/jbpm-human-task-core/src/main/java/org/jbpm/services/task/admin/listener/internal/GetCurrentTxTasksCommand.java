@@ -28,6 +28,10 @@ public class GetCurrentTxTasksCommand extends TaskCommand<List<TaskSummary>> {
 	private static final long serialVersionUID = 6474368266134150938L;
 	private Long processInstanceId;
 	
+	public GetCurrentTxTasksCommand() {
+	    
+	}
+	
 	public GetCurrentTxTasksCommand(Long processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}

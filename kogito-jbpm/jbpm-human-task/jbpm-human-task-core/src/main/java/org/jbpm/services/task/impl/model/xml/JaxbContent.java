@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
@@ -65,9 +64,14 @@ public class JaxbContent implements Content {
         }
         this.id = content.getId();
         this.content = content.getContent();
-        Object unmarshalledContent = ContentMarshallerHelper.unmarshall(content.getContent(), null);
-        if( unmarshalledContent != null && unmarshalledContent instanceof Map ) { 
-           contentMap = (Map<String, Object>) unmarshalledContent;
+        try {
+            Object unmarshalledContent = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+            if( unmarshalledContent != null && unmarshalledContent instanceof Map ) { 
+               contentMap = (Map<String, Object>) unmarshalledContent;
+            }
+        } catch (Exception e) {
+            // don't fail in case of unmarshalling problem as it might be content not handled via jaxb 
+            // Ļe.g. custom classes, non map based etc
         }
     }
     

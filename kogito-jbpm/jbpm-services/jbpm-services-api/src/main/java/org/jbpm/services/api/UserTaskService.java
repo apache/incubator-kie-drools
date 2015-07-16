@@ -303,7 +303,7 @@ public interface UserTaskService {
      * @return
      * @throws TaskNotFoundException in case task with given id was not found
      */
-    Long addAttachment(Long taskId, String userId, Object attachment);
+    Long addAttachment(Long taskId, String userId, String name, Object attachment);
     
     /**
      * Delete attachment from a task
