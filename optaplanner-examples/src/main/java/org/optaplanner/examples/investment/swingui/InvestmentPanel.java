@@ -20,6 +20,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Insets;
 import java.util.List;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -109,16 +110,16 @@ public class InvestmentPanel extends SolutionPanel {
     }
 
     public void resetPanel(Solution s) {
+        ignoreChangeEvents = true;
         assetClassPanel.reset();
         regionPanel.reset();
         sectorPanel.reset();
         InvestmentSolution solution = (InvestmentSolution) s;
         InvestmentParametrization parametrization = solution.getParametrization();
-        ignoreChangeEvents = true;
         standardDeviationMaximumField.setValue((double) parametrization.getStandardDeviationMillisMaximum() / 1000.0);
-        ignoreChangeEvents = false;
         defineGrid(solution);
         fillCells(solution);
+        ignoreChangeEvents = false;
         repaint(); // Hack to force a repaint of TimeTableLayout during "refresh screen while solving"
     }
 
@@ -146,6 +147,7 @@ public class InvestmentPanel extends SolutionPanel {
 
         regionPanel.defineColumnHeaderByKey(HEADER_COLUMN);
         regionPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_1);
+        regionPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_2);
         regionPanel.defineRowHeaderByKey(HEADER_ROW);
         for (Region region : solution.getRegionList()) {
             regionPanel.defineRowHeader(region);
@@ -153,6 +155,7 @@ public class InvestmentPanel extends SolutionPanel {
 
         sectorPanel.defineColumnHeaderByKey(HEADER_COLUMN);
         sectorPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_1);
+        sectorPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_2);
         sectorPanel.defineRowHeaderByKey(HEADER_ROW);
         for (Sector sector : solution.getSectorList()) {
             sectorPanel.defineRowHeader(sector);
@@ -229,19 +232,63 @@ public class InvestmentPanel extends SolutionPanel {
         assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_5, TRAILING_HEADER_ROW, quantityTotalLabel);
 
         regionPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Region"), null));
-        regionPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, HEADER_ROW, createTableHeader(new JLabel("Quantity maximum"), null));
-        for (Region region : solution.getRegionList()) {
+        regionPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, HEADER_ROW, createTableHeader(new JLabel("Quantity total"), null));
+        regionPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, HEADER_ROW, createTableHeader(new JLabel("Quantity maximum"), null));
+        Map<Region, Long> regionTotalMap = solution.calculateRegionQuantityMillisTotalMap();
+        for (final Region region : solution.getRegionList()) {
             regionPanel.addRowHeader(HEADER_COLUMN, region, new JLabel(region.getName()));
+            long total = regionTotalMap.get(region);
+            JLabel totalLabel = new JLabel(InvestmentNumericUtil.formatMillisAsPercentage(total), SwingConstants.RIGHT);
+            if (total > region.getQuantityMillisMaximum()) {
+                totalLabel.setForeground(TangoColorFactory.SCARLET_3);
+            }
             regionPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, region,
-                    new JLabel(region.getQuantityMaximumLabel(), SwingConstants.RIGHT));
+                    totalLabel);
+            final JSpinner maximumField = new JSpinner(new SpinnerNumberModel(
+                    (double) region.getQuantityMillisMaximum() / 1000.0, 0.0, 1.0, 0.010));
+            maximumField.setEditor(new JSpinner.NumberEditor(maximumField,
+                    InvestmentNumericUtil.MILLIS_PERCENT_PATTERN));
+            regionPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, region, maximumField);
+            maximumField.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    if (ignoreChangeEvents) {
+                        return;
+                    }
+                    long quantityMillisMaximum = (long) (((Number) maximumField.getValue()).doubleValue() * 1000.0);
+                    changeRegionQuantityMillisMaximum(region, quantityMillisMaximum);
+                }
+            });
         }
 
         sectorPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Sector"), null));
-        sectorPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, HEADER_ROW, createTableHeader(new JLabel("Quantity maximum"), null));
-        for (Sector sector : solution.getSectorList()) {
+        sectorPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, HEADER_ROW, createTableHeader(new JLabel("Quantity total"), null));
+        sectorPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, HEADER_ROW, createTableHeader(new JLabel("Quantity maximum"), null));
+        Map<Sector, Long> sectorTotalMap = solution.calculateSectorQuantityMillisTotalMap();
+        for (final Sector sector : solution.getSectorList()) {
             sectorPanel.addRowHeader(HEADER_COLUMN, sector, new JLabel(sector.getName()));
+            long total = sectorTotalMap.get(sector);
+            JLabel totalLabel = new JLabel(InvestmentNumericUtil.formatMillisAsPercentage(total), SwingConstants.RIGHT);
+            if (total > sector.getQuantityMillisMaximum()) {
+                totalLabel.setForeground(TangoColorFactory.SCARLET_3);
+            }
             sectorPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, sector,
-                    new JLabel(sector.getQuantityMaximumLabel(), SwingConstants.RIGHT));
+                    totalLabel);
+            final JSpinner maximumField = new JSpinner(new SpinnerNumberModel(
+                    (double) sector.getQuantityMillisMaximum() / 1000.0, 0.0, 1.0, 0.010));
+            maximumField.setEditor(new JSpinner.NumberEditor(maximumField,
+                    InvestmentNumericUtil.MILLIS_PERCENT_PATTERN));
+            sectorPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, sector, maximumField);
+            maximumField.addChangeListener(new ChangeListener() {
+                @Override
+                public void stateChanged(ChangeEvent e) {
+                    if (ignoreChangeEvents) {
+                        return;
+                    }
+                    long quantityMillisMaximum = (long) (((Number) maximumField.getValue()).doubleValue() * 1000.0);
+                    changeSectorQuantityMillisMaximum(sector, quantityMillisMaximum);
+                }
+            });
         }
     }
 
@@ -261,7 +308,42 @@ public class InvestmentPanel extends SolutionPanel {
         doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
                 InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
-                solution.getParametrization().setStandardDeviationMillisMaximum(standardDeviationMillisMaximum);
+                InvestmentParametrization parametrization = solution.getParametrization();
+                scoreDirector.beforeProblemFactChanged(parametrization);
+                parametrization.setStandardDeviationMillisMaximum(standardDeviationMillisMaximum);
+                scoreDirector.afterProblemFactChanged(parametrization);
+            }
+        }, true);
+    }
+
+    private void changeRegionQuantityMillisMaximum(final Region region, final long quantityMillisMaximum) {
+        doProblemFactChange(new ProblemFactChange() {
+            public void doChange(ScoreDirector scoreDirector) {
+                InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
+                for (Region workingRegion : solution.getRegionList()) {
+                    if (region.getId().equals(workingRegion.getId())) {
+                        scoreDirector.beforeProblemFactChanged(workingRegion);
+                        workingRegion.setQuantityMillisMaximum(quantityMillisMaximum);
+                        scoreDirector.afterProblemFactChanged(workingRegion);
+                        break;
+                    }
+                }
+            }
+        }, true);
+    }
+
+    private void changeSectorQuantityMillisMaximum(final Sector sector, final long quantityMillisMaximum) {
+        doProblemFactChange(new ProblemFactChange() {
+            public void doChange(ScoreDirector scoreDirector) {
+                InvestmentSolution solution = (InvestmentSolution) scoreDirector.getWorkingSolution();
+                for (Sector workingSector : solution.getSectorList()) {
+                    if (sector.getId().equals(workingSector.getId())) {
+                        scoreDirector.beforeProblemFactChanged(workingSector);
+                        workingSector.setQuantityMillisMaximum(quantityMillisMaximum);
+                        scoreDirector.afterProblemFactChanged(workingSector);
+                        break;
+                    }
+                }
             }
         }, true);
     }

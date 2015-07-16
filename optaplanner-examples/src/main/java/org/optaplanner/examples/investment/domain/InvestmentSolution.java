@@ -18,7 +18,9 @@ package org.optaplanner.examples.investment.domain;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
@@ -154,6 +156,36 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
             }
         }
         return totalFemtos;
+    }
+
+    public Map<Region, Long> calculateRegionQuantityMillisTotalMap() {
+        Map<Region, Long> totalMap = new HashMap<Region, Long>(regionList.size());
+        for (Region region : regionList) {
+            totalMap.put(region, 0L);
+        }
+        for (AssetClassAllocation allocation : assetClassAllocationList) {
+            Long quantityMillis = allocation.getQuantityMillis();
+            if (quantityMillis != null) {
+                totalMap.put(allocation.getRegion(),
+                        totalMap.get(allocation.getRegion()) + quantityMillis);
+            }
+        }
+        return totalMap;
+    }
+
+    public Map<Sector, Long> calculateSectorQuantityMillisTotalMap() {
+        Map<Sector, Long> totalMap = new HashMap<Sector, Long>(regionList.size());
+        for (Sector sector : sectorList) {
+            totalMap.put(sector, 0L);
+        }
+        for (AssetClassAllocation allocation : assetClassAllocationList) {
+            Long quantityMillis = allocation.getQuantityMillis();
+            if (quantityMillis != null) {
+                totalMap.put(allocation.getSector(),
+                        totalMap.get(allocation.getSector()) + quantityMillis);
+            }
+        }
+        return totalMap;
     }
 
 }

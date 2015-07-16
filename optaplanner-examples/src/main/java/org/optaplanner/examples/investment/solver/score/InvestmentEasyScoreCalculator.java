@@ -38,34 +38,17 @@ public class InvestmentEasyScoreCalculator implements EasyScoreCalculator<Invest
         if (squaredFemtos > squaredFemtosMaximum) {
             hardScore -= squaredFemtos - squaredFemtosMaximum;
         }
-        List<Region> regionList = solution.getRegionList();
-        Map<Region, Long> regionQuantityTotalMap = new HashMap<Region, Long>(regionList.size());
-        for (Region region : regionList) {
-            regionQuantityTotalMap.put(region, 0L);
-        }
-        List<Sector> sectorList = solution.getSectorList();
-        Map<Sector, Long> sectorQuantityTotalMap = new HashMap<Sector, Long>(sectorList.size());
-        for (Sector sector : sectorList) {
-            sectorQuantityTotalMap.put(sector, 0L);
-        }
-        for (AssetClassAllocation allocation : solution.getAssetClassAllocationList()) {
-            Long quantityMillis = allocation.getQuantityMillis();
-            if (quantityMillis != null) {
-                regionQuantityTotalMap.put(allocation.getRegion(),
-                        regionQuantityTotalMap.get(allocation.getRegion()) + quantityMillis);
-                sectorQuantityTotalMap.put(allocation.getSector(),
-                        sectorQuantityTotalMap.get(allocation.getSector()) + quantityMillis);
-            }
-        }
         // Region quantity maximum
-        for (Region region : regionList) {
+        Map<Region, Long> regionQuantityTotalMap = solution.calculateRegionQuantityMillisTotalMap();
+        for (Region region : solution.getRegionList()) {
             long available = region.getQuantityMillisMaximum() - regionQuantityTotalMap.get(region);
             if (available < 0) {
                 hardScore += available;
             }
         }
         // Sector quantity maximum
-        for (Sector sector : sectorList) {
+        Map<Sector, Long> sectorQuantityTotalMap = solution.calculateSectorQuantityMillisTotalMap();
+        for (Sector sector : solution.getSectorList()) {
             long available = sector.getQuantityMillisMaximum() - sectorQuantityTotalMap.get(sector);
             if (available < 0) {
                 hardScore += available;
