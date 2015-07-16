@@ -67,6 +67,10 @@ public class AssetClassAllocation extends AbstractPersistable {
         return assetClass.getRegion();
     }
 
+    public Sector getSector() {
+        return assetClass.getSector();
+    }
+
     public long getQuantifiedExpectedReturnMicros() {
         if (quantityMillis == null) {
             return 0L;

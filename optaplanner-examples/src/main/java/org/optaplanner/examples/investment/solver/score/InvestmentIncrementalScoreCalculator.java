@@ -16,11 +16,17 @@
 
 package org.optaplanner.examples.investment.solver.score;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
+import org.optaplanner.examples.investment.domain.Region;
+import org.optaplanner.examples.investment.domain.Sector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +38,9 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
 
     private long squaredStandardDeviationFemtosMaximum;
     private long squaredStandardDeviationFemtos;
+
+    private Map<Region, Long> regionQuantityTotalMap;
+    private Map<Sector, Long> sectorQuantityTotalMap;
 
     private long hardScore;
     private long softScore;
@@ -45,6 +54,16 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
         squaredStandardDeviationFemtosMaximum = solution.getParametrization()
                 .calculateSquaredStandardDeviationFemtosMaximum();
         squaredStandardDeviationFemtos = 0L;
+        List<Region> regionList = solution.getRegionList();
+        regionQuantityTotalMap = new HashMap<Region, Long>();
+        for (Region region : regionList) {
+            regionQuantityTotalMap.put(region, 0L);
+        }
+        List<Sector> sectorList = solution.getSectorList();
+        sectorQuantityTotalMap = new HashMap<Sector, Long>(sectorList.size());
+        for (Sector sector : sectorList) {
+            sectorQuantityTotalMap.put(sector, 0L);
+        }
         hardScore = 0L;
         softScore = 0L;
         for (AssetClassAllocation allocation : solution.getAssetClassAllocationList()) {
@@ -81,6 +100,7 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
     // ************************************************************************
 
     private void insertQuantityMillis(AssetClassAllocation allocation, boolean reset) {
+        // Standard deviation maximum
         if (squaredStandardDeviationFemtos > squaredStandardDeviationFemtosMaximum) {
             hardScore += squaredStandardDeviationFemtos - squaredStandardDeviationFemtosMaximum;
         }
@@ -88,10 +108,33 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
         if (squaredStandardDeviationFemtos > squaredStandardDeviationFemtosMaximum) {
             hardScore -= squaredStandardDeviationFemtos - squaredStandardDeviationFemtosMaximum;
         }
+        Long quantityMillis = allocation.getQuantityMillis();
+        if (quantityMillis != null) {
+            // Region quantity maximum
+            Region region = allocation.getRegion();
+            long regionQuantityMaximum = region.getQuantityMillisMaximum();
+            long oldRegionQuantity = regionQuantityTotalMap.get(region);
+            long oldRegionAvailable = regionQuantityMaximum - oldRegionQuantity;
+            long newRegionQuantity = oldRegionQuantity + quantityMillis;
+            long newRegionAvailable = regionQuantityMaximum - newRegionQuantity;
+            hardScore += Math.min(newRegionAvailable, 0L) - Math.min(oldRegionAvailable, 0L);
+            regionQuantityTotalMap.put(region, newRegionQuantity);
+            // Sector quantity maximum
+            Sector sector = allocation.getSector();
+            long sectorQuantityMaximum = sector.getQuantityMillisMaximum();
+            long oldSectorQuantity = sectorQuantityTotalMap.get(sector);
+            long oldSectorAvailable = sectorQuantityMaximum - oldSectorQuantity;
+            long newSectorQuantity = oldSectorQuantity + quantityMillis;
+            long newSectorAvailable = sectorQuantityMaximum - newSectorQuantity;
+            hardScore += Math.min(newSectorAvailable, 0L) - Math.min(oldSectorAvailable, 0L);
+            sectorQuantityTotalMap.put(sector, newSectorQuantity);
+        }
+        // Maximize expected return
         softScore += allocation.getQuantifiedExpectedReturnMicros();
     }
 
     private void retractQuantityMillis(AssetClassAllocation allocation) {
+        // Standard deviation maximum
         if (squaredStandardDeviationFemtos > squaredStandardDeviationFemtosMaximum) {
             hardScore += squaredStandardDeviationFemtos - squaredStandardDeviationFemtosMaximum;
         }
@@ -99,6 +142,28 @@ public class InvestmentIncrementalScoreCalculator extends AbstractIncrementalSco
         if (squaredStandardDeviationFemtos > squaredStandardDeviationFemtosMaximum) {
             hardScore -= squaredStandardDeviationFemtos - squaredStandardDeviationFemtosMaximum;
         }
+        Long quantityMillis = allocation.getQuantityMillis();
+        if (quantityMillis != null) {
+            // Region quantity maximum
+            Region region = allocation.getRegion();
+            long regionQuantityMaximum = region.getQuantityMillisMaximum();
+            long oldRegionQuantity = regionQuantityTotalMap.get(region);
+            long oldRegionAvailable = regionQuantityMaximum - oldRegionQuantity;
+            long newRegionQuantity = oldRegionQuantity - quantityMillis;
+            long newRegionAvailable = regionQuantityMaximum - newRegionQuantity;
+            hardScore += Math.min(newRegionAvailable, 0L) - Math.min(oldRegionAvailable, 0L);
+            regionQuantityTotalMap.put(region, newRegionQuantity);
+            // Sector quantity maximum
+            Sector sector = allocation.getSector();
+            long sectorQuantityMaximum = sector.getQuantityMillisMaximum();
+            long oldSectorQuantity = sectorQuantityTotalMap.get(sector);
+            long oldSectorAvailable = sectorQuantityMaximum - oldSectorQuantity;
+            long newSectorQuantity = oldSectorQuantity - quantityMillis;
+            long newSectorAvailable = sectorQuantityMaximum - newSectorQuantity;
+            hardScore += Math.min(newSectorAvailable, 0L) - Math.min(oldSectorAvailable, 0L);
+            sectorQuantityTotalMap.put(sector, newSectorQuantity);
+        }
+        // Maximize expected return
         softScore -= allocation.getQuantifiedExpectedReturnMicros();
     }
 

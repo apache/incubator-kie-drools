@@ -24,6 +24,7 @@ import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.InvestmentParametrization;
 import org.optaplanner.examples.investment.domain.Region;
+import org.optaplanner.examples.investment.domain.Sector;
 
 global HardSoftLongScoreHolder scoreHolder;
 
@@ -48,6 +49,18 @@ rule "Region quantity maximum"
         $region : Region($quantityMillisMaximum : quantityMillisMaximum)
         $quantityMillisTotal : Number(longValue > $quantityMillisMaximum) from accumulate(
             AssetClassAllocation(region == $region, quantityMillis != null, $quantityMillis : quantityMillis),
+            sum($quantityMillis)
+        )
+    then
+        scoreHolder.addHardConstraintMatch(kcontext,
+                $quantityMillisMaximum - $quantityMillisTotal.longValue());
+end
+
+rule "Sector quantity maximum"
+    when
+        $sector : Sector($quantityMillisMaximum : quantityMillisMaximum)
+        $quantityMillisTotal : Number(longValue > $quantityMillisMaximum) from accumulate(
+            AssetClassAllocation(sector == $sector, quantityMillis != null, $quantityMillis : quantityMillis),
             sum($quantityMillis)
         )
     then
