@@ -469,8 +469,7 @@ public class MemoryFileSystem
             while ( entries.hasMoreElements() ) {
                 ZipEntry entry = entries.nextElement();
                 int separator = entry.getName().lastIndexOf( '/' );
-                String path = entry.getName().substring( 0,
-                                                         separator );
+                String path = separator > 0 ? entry.getName().substring( 0, separator ) : "";
                 String name = entry.getName().substring( separator + 1 );
 
                 Folder folder = mfs.getFolder( path );
@@ -500,11 +499,11 @@ public class MemoryFileSystem
         JarInputStream zipFile = null;
         try {
             zipFile = new JarInputStream( jarFile );
-            ZipEntry entry = null;
+            ZipEntry entry;
             while ( (entry = zipFile.getNextEntry()) != null ) {
                 // entry.getSize() is not accurate according to documentation, so have to read bytes until -1 is found
                 ByteArrayOutputStream content = new ByteArrayOutputStream();
-                int b = -1;
+                int b;
                 while( (b = zipFile.read()) != -1 ) {
                     content.write( b );
                 }
