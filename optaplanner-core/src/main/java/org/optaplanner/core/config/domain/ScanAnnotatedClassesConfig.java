@@ -16,11 +16,10 @@
 
 package org.optaplanner.core.config.domain;
 
-import java.io.IOException;
-import java.net.URL;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -31,7 +30,6 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.reflections.Reflections;
-import org.reflections.scanners.TypeAnnotationsScanner;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
@@ -74,6 +72,7 @@ public class ScanAnnotatedClassesConfig {
 
     protected Class<? extends Solution> loadSolutionClass(Reflections reflections) {
         Set<Class<?>> solutionClassSet = reflections.getTypesAnnotatedWith(PlanningSolution.class);
+        retainOnlyClassesWithDeclaredAnnotation(solutionClassSet, PlanningSolution.class);
         if (ConfigUtils.isEmptyCollection(solutionClassSet)) {
             throw new IllegalStateException("The scanAnnotatedClasses (" + this
                     + ") did not find any classes with a " + PlanningSolution.class.getSimpleName()
@@ -89,12 +88,22 @@ public class ScanAnnotatedClassesConfig {
 
     protected List<Class<?>> loadEntityClassList(Reflections reflections) {
         Set<Class<?>> entityClassSet = reflections.getTypesAnnotatedWith(PlanningEntity.class);
+        retainOnlyClassesWithDeclaredAnnotation(entityClassSet, PlanningEntity.class);
         if (ConfigUtils.isEmptyCollection(entityClassSet)) {
             throw new IllegalStateException("The scanAnnotatedClasses (" + this
                     + ") did not find any classes with a " + PlanningEntity.class.getSimpleName()
                     + " annotation.");
         }
         return new ArrayList<Class<?>>(entityClassSet);
+    }
+
+    private void retainOnlyClassesWithDeclaredAnnotation(Set<Class<?>> classSet, Class<? extends Annotation> annotation) {
+        for (Iterator<Class<?>> it = classSet.iterator(); it.hasNext(); ) {
+            Class<?> clazz = it.next();
+            if (!clazz.isAnnotationPresent(annotation)) {
+                it.remove();
+            }
+        }
     }
 
     public void inherit(ScanAnnotatedClassesConfig inheritedConfig) {

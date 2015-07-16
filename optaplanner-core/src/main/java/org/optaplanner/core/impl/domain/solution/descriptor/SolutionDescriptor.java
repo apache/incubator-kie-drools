@@ -70,13 +70,32 @@ public class SolutionDescriptor {
         DescriptorPolicy descriptorPolicy = new DescriptorPolicy();
         SolutionDescriptor solutionDescriptor = new SolutionDescriptor(solutionClass);
         solutionDescriptor.processAnnotations(descriptorPolicy);
-        for (Class<?> entityClass : entityClassList) {
+        for (Class<?> entityClass : sortEntityClassList(entityClassList)) {
             EntityDescriptor entityDescriptor = new EntityDescriptor(solutionDescriptor, entityClass);
             solutionDescriptor.addEntityDescriptor(entityDescriptor);
             entityDescriptor.processAnnotations(descriptorPolicy);
         }
         solutionDescriptor.afterAnnotationsProcessed(descriptorPolicy);
         return solutionDescriptor;
+    }
+
+    private static List<Class<?>> sortEntityClassList(List<Class<?>> entityClassList) {
+        List<Class<?>> sortedEntityClassList = new ArrayList<Class<?>>(entityClassList.size());
+        for (Class<?> entityClass : entityClassList) {
+            boolean added = false;
+            for (int i = 0; i < sortedEntityClassList.size(); i++) {
+                Class<?> sortedEntityClass = sortedEntityClassList.get(i);
+                if (entityClass.isAssignableFrom(sortedEntityClass)) {
+                    sortedEntityClassList.add(i, entityClass);
+                    added = true;
+                    break;
+                }
+            }
+            if (!added) {
+                sortedEntityClassList.add(entityClass);
+            }
+        }
+        return sortedEntityClassList;
     }
 
     // ************************************************************************
