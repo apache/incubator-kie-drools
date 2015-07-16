@@ -43,6 +43,7 @@ import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.InvestmentParametrization;
 import org.optaplanner.examples.investment.domain.Region;
+import org.optaplanner.examples.investment.domain.Sector;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
@@ -54,6 +55,7 @@ public class InvestmentPanel extends SolutionPanel {
 
     private final TimeTablePanel<AssetClass, AssetClass> assetClassPanel;
     private final TimeTablePanel<Void, Region> regionPanel;
+    private final TimeTablePanel<Void, Sector> sectorPanel;
     private JSpinner standardDeviationMaximumField;
 
     private boolean ignoreChangeEvents = false;
@@ -66,6 +68,8 @@ public class InvestmentPanel extends SolutionPanel {
         tabbedPane.add("Asset classes", new JScrollPane(assetClassPanel));
         regionPanel = new TimeTablePanel<Void, Region>();
         tabbedPane.add("Regions", new JScrollPane(regionPanel));
+        sectorPanel = new TimeTablePanel<Void, Sector>();
+        tabbedPane.add("Sectors", new JScrollPane(sectorPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
     }
@@ -107,6 +111,7 @@ public class InvestmentPanel extends SolutionPanel {
     public void resetPanel(Solution s) {
         assetClassPanel.reset();
         regionPanel.reset();
+        sectorPanel.reset();
         InvestmentSolution solution = (InvestmentSolution) s;
         InvestmentParametrization parametrization = solution.getParametrization();
         ignoreChangeEvents = true;
@@ -127,6 +132,7 @@ public class InvestmentPanel extends SolutionPanel {
         assetClassPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_2);
         assetClassPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_3);
         assetClassPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_4);
+        assetClassPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_5);
         for (AssetClass assetClass : solution.getAssetClassList()) {
             assetClassPanel.defineColumnHeader(assetClass, footprintWidth);
         }
@@ -144,6 +150,13 @@ public class InvestmentPanel extends SolutionPanel {
         for (Region region : solution.getRegionList()) {
             regionPanel.defineRowHeader(region);
         }
+
+        sectorPanel.defineColumnHeaderByKey(HEADER_COLUMN);
+        sectorPanel.defineColumnHeaderByKey(HEADER_COLUMN_EXTRA_PROPERTY_1);
+        sectorPanel.defineRowHeaderByKey(HEADER_ROW);
+        for (Sector sector : solution.getSectorList()) {
+            sectorPanel.defineRowHeader(sector);
+        }
     }
 
     private void fillCells(InvestmentSolution solution) {
@@ -152,12 +165,14 @@ public class InvestmentPanel extends SolutionPanel {
         assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, HEADER_ROW,
                 createTableHeader(new JLabel("Region"), null));
         assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, HEADER_ROW,
-                createTableHeader(new JLabel("Expected return"), null));
+                createTableHeader(new JLabel("Sector"), null));
         assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, HEADER_ROW,
+                createTableHeader(new JLabel("Expected return"), null));
+        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_4, HEADER_ROW,
                 createTableHeader(new JLabel("Standard deviation risk"), null));
         JLabel quantityHeaderLabel = new JLabel("Quantity");
         quantityHeaderLabel.setForeground(TangoColorFactory.ORANGE_3);
-        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_4, HEADER_ROW,
+        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_5, HEADER_ROW,
                 createTableHeader(quantityHeaderLabel, null));
         assetClassPanel.addColumnHeader(assetClassList.get(0), HEADER_ROW_GROUP1,
                 assetClassList.get(assetClassList.size() - 1), HEADER_ROW_GROUP1,
@@ -189,35 +204,44 @@ public class InvestmentPanel extends SolutionPanel {
             assetClassPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, allocation.getAssetClass(),
                     new JLabel(allocation.getAssetClass().getRegion().getName()));
             assetClassPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, allocation.getAssetClass(),
-                    new JLabel(allocation.getAssetClass().getExpectedReturnLabel(), SwingConstants.RIGHT));
+                    new JLabel(allocation.getAssetClass().getSector().getName()));
             assetClassPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, allocation.getAssetClass(),
+                    new JLabel(allocation.getAssetClass().getExpectedReturnLabel(), SwingConstants.RIGHT));
+            assetClassPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_4, allocation.getAssetClass(),
                     new JLabel(allocation.getAssetClass().getStandardDeviationRiskLabel(), SwingConstants.RIGHT));
             JLabel quantityLabel = new JLabel(allocation.getQuantityLabel(), SwingConstants.RIGHT);
             quantityLabel.setForeground(TangoColorFactory.ORANGE_3);
-            assetClassPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_4, allocation.getAssetClass(),
+            assetClassPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_5, allocation.getAssetClass(),
                     quantityLabel);
         }
         JLabel expectedReturnLabel = new JLabel(InvestmentNumericUtil.formatMicrosAsPercentage(solution.calculateExpectedReturnMicros()), SwingConstants.RIGHT);
-        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_2, TRAILING_HEADER_ROW,
+        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, TRAILING_HEADER_ROW,
                 expectedReturnLabel);
         long standardDeviationMicros = solution.calculateStandardDeviationMicros();
         JLabel standardDeviationLabel = new JLabel(InvestmentNumericUtil.formatMicrosAsPercentage(standardDeviationMicros), SwingConstants.RIGHT);
         if (standardDeviationMicros > solution.getParametrization().getStandardDeviationMillisMaximum() * 1000L) {
             standardDeviationLabel.setForeground(TangoColorFactory.SCARLET_3);
         }
-        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_3, TRAILING_HEADER_ROW,
+        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_4, TRAILING_HEADER_ROW,
                 standardDeviationLabel);
         JLabel quantityTotalLabel = new JLabel(InvestmentNumericUtil.formatMillisAsPercentage(quantityTotalMillis), SwingConstants.RIGHT);
         quantityTotalLabel.setForeground(TangoColorFactory.ORANGE_3);
-        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_4, TRAILING_HEADER_ROW, quantityTotalLabel);
-
+        assetClassPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_5, TRAILING_HEADER_ROW, quantityTotalLabel);
 
         regionPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Region"), null));
         regionPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, HEADER_ROW, createTableHeader(new JLabel("Quantity maximum"), null));
         for (Region region : solution.getRegionList()) {
             regionPanel.addRowHeader(HEADER_COLUMN, region, new JLabel(region.getName()));
             regionPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, region,
-                    new JLabel(region.getquantityMaximumLabel(), SwingConstants.RIGHT));
+                    new JLabel(region.getQuantityMaximumLabel(), SwingConstants.RIGHT));
+        }
+
+        sectorPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Sector"), null));
+        sectorPanel.addCornerHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, HEADER_ROW, createTableHeader(new JLabel("Quantity maximum"), null));
+        for (Sector sector : solution.getSectorList()) {
+            sectorPanel.addRowHeader(HEADER_COLUMN, sector, new JLabel(sector.getName()));
+            sectorPanel.addRowHeader(HEADER_COLUMN_EXTRA_PROPERTY_1, sector,
+                    new JLabel(sector.getQuantityMaximumLabel(), SwingConstants.RIGHT));
         }
     }
 

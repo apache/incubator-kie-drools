@@ -170,6 +170,7 @@ public class TimeTablePanel<XObject, YObject> extends JPanel implements Scrollab
         HEADER_COLUMN_EXTRA_PROPERTY_2,
         HEADER_COLUMN_EXTRA_PROPERTY_3,
         HEADER_COLUMN_EXTRA_PROPERTY_4,
+        HEADER_COLUMN_EXTRA_PROPERTY_5,
         TRAILING_HEADER_COLUMN;
     }
 

@@ -40,6 +40,7 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
 
     private InvestmentParametrization parametrization;
     private List<Region> regionList;
+    private List<Sector> sectorList;
     private List<AssetClass> assetClassList;
 
     private List<AssetClassAllocation> assetClassAllocationList;
@@ -61,6 +62,14 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
 
     public void setRegionList(List<Region> regionList) {
         this.regionList = regionList;
+    }
+
+    public List<Sector> getSectorList() {
+        return sectorList;
+    }
+
+    public void setSectorList(List<Sector> sectorList) {
+        this.sectorList = sectorList;
     }
 
     public List<AssetClass> getAssetClassList() {
@@ -101,6 +110,7 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
         List<Object> facts = new ArrayList<Object>();
         facts.add(parametrization);
         facts.addAll(regionList);
+        facts.addAll(sectorList);
         facts.addAll(assetClassList);
         // Do not add the planning entity's (assetClassAllocationList) because that will be done automatically
         return facts;

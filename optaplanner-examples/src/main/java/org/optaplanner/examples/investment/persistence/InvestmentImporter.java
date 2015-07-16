@@ -33,12 +33,14 @@ import org.optaplanner.examples.investment.domain.AssetClassAllocation;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.InvestmentParametrization;
 import org.optaplanner.examples.investment.domain.Region;
+import org.optaplanner.examples.investment.domain.Sector;
 
 public class InvestmentImporter extends AbstractXlsxSolutionImporter {
 
     public static void main(String[] args) {
         InvestmentImporter importer = new InvestmentImporter();
         importer.convert("irrinki_1.xlsx", "irrinki_1.xml");
+        importer.convert("de_smet_1.xlsx", "de_smet_1.xml");
     }
 
     public InvestmentImporter() {
@@ -59,12 +61,14 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter {
         private InvestmentSolution solution;
 
         private Map<String, Region> regionMap;
+        private Map<String, Sector> sectorMap;
 
         public Solution readSolution() throws IOException {
             solution = new InvestmentSolution();
             solution.setId(0L);
             readParametrization();
             readRegionList();
+            readSectorList();
             readAssetClassList();
             createAssetClassAllocationList();
 
@@ -106,9 +110,32 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter {
             solution.setRegionList(regionList);
         }
 
+        private void readSectorList() throws IOException {
+            Sheet sheet = readSheet(2, "Sectors");
+            Row headerRow = sheet.getRow(0);
+            assertCellConstant(headerRow.getCell(0), "Name");
+            assertCellConstant(headerRow.getCell(1), "Quantity maximum");
+            List<Sector> sectorList = new ArrayList<Sector>();
+            sectorMap = new LinkedHashMap<String, Sector>();
+            long id = 0L;
+            for (Row row : sheet) {
+                if (row.getRowNum() < 1) {
+                    continue;
+                }
+                Sector sector = new Sector();
+                sector.setId(id);
+                id++;
+                sector.setName(readStringCell(row.getCell(0)));
+                sector.setQuantityMillisMaximum(parsePercentageMillis(readDoubleCell(row.getCell(1))));
+                sectorList.add(sector);
+                sectorMap.put(sector.getName(), sector);
+            }
+            solution.setSectorList(sectorList);
+        }
+
         private void readAssetClassList() throws IOException {
-            Sheet sheet = readSheet(2, "AssetClasses");
-            final int ASSET_CLASS_PROPERTIES_COUNT = 5;
+            Sheet sheet = readSheet(3, "AssetClasses");
+            final int ASSET_CLASS_PROPERTIES_COUNT = 6;
             Row groupHeaderRow = sheet.getRow(0);
             assertCellConstant(groupHeaderRow.getCell(0), "Asset class");
             assertCellConstant(groupHeaderRow.getCell(ASSET_CLASS_PROPERTIES_COUNT), "Correlation");
@@ -116,8 +143,9 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter {
             assertCellConstant(headerRow.getCell(0), "ID");
             assertCellConstant(headerRow.getCell(1), "Name");
             assertCellConstant(headerRow.getCell(2), "Region");
-            assertCellConstant(headerRow.getCell(3), "Expected return");
-            assertCellConstant(headerRow.getCell(4), "Standard deviation");
+            assertCellConstant(headerRow.getCell(3), "Sector");
+            assertCellConstant(headerRow.getCell(4), "Expected return");
+            assertCellConstant(headerRow.getCell(5), "Standard deviation");
 
             int assetClassListSize = headerRow.getPhysicalNumberOfCells() - ASSET_CLASS_PROPERTIES_COUNT;
             List<AssetClass> assetClassList = new ArrayList<AssetClass>(assetClassListSize);
@@ -154,8 +182,15 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter {
                             + ") has a region (" + regionName + ") that is not in the regions sheet.");
                 }
                 assetClass.setRegion(region);
-                assetClass.setExpectedReturnMillis(parsePercentageMillis(readDoubleCell(row.getCell(3))));
-                assetClass.setStandardDeviationRiskMillis(parsePercentageMillis(readDoubleCell(row.getCell(4))));
+                String sectorName = readStringCell(row.getCell(3));
+                Sector sector = sectorMap.get(sectorName);
+                if (sector == null) {
+                    throw new IllegalStateException("The row (" + row.getRowNum()
+                            + ") has a sector (" + sectorName + ") that is not in the sectors sheet.");
+                }
+                assetClass.setSector(sector);
+                assetClass.setExpectedReturnMillis(parsePercentageMillis(readDoubleCell(row.getCell(4))));
+                assetClass.setStandardDeviationRiskMillis(parsePercentageMillis(readDoubleCell(row.getCell(5))));
                 Map<AssetClass, Long> correlationMillisMap = new LinkedHashMap<AssetClass, Long>(assetClassListSize);
                 for (int i = 0; i < assetClassListSize; i++) {
                     AssetClass other = assetClassList.get(i);

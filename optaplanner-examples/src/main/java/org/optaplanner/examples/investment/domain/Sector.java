@@ -16,14 +16,12 @@
 
 package org.optaplanner.examples.investment.domain;
 
-import java.util.Map;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 
-@XStreamAlias("Region")
-public class Region extends AbstractPersistable {
+@XStreamAlias("Sector")
+public class Sector extends AbstractPersistable {
 
     private String name;
     private Long quantityMillisMaximum; // In milli's (so multiplied by 1000)
