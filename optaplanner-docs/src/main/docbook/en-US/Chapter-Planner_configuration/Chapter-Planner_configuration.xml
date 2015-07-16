@@ -145,7 +145,7 @@
       <literal>Solver</literal>.</para>
     </section>
 
-    <section xml:id="solverConfigurationByJavaAPI">
+    <section xml:id="annotationsConfiguration">
       <title>Annotations Configuration</title>
 
       <section xml:id="automaticScanningForAnnotations">
