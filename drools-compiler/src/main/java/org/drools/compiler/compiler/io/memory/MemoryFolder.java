@@ -15,13 +15,13 @@
 
 package org.drools.compiler.compiler.io.memory;
 
-import java.util.Collection;
-
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.Path;
 import org.drools.compiler.compiler.io.Resource;
 import org.drools.core.util.StringUtils;
+
+import java.util.Collection;
 
 public class MemoryFolder
         implements
@@ -87,7 +87,7 @@ public class MemoryFolder
                 for ( int i = 0; i < elements.length - 1; i++ ) {
                     if ( !StringUtils.isEmpty( elements[i] ) ) {
                         if ( !first ) {
-                            newPath = newPath + "/";;
+                            newPath = newPath + "/";
                         }
                         newPath = newPath + elements[i];
                         first = false;
@@ -125,16 +125,9 @@ public class MemoryFolder
     }
 
     public boolean create() {
-        createFolder( this );
+        path = trimLeadingAndTrailing( path );
+        mfs.createFolder( this );
         return true;
-
-    }
-
-    private void createFolder(MemoryFolder folder) {
-        // trim lead and trailing slashes
-        String p = trimLeadingAndTrailing( folder.path );
-        
-        mfs.createFolder( folder );
     }
 
     @Override
