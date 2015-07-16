@@ -1,0 +1,673 @@
+<InvestmentSolution id="1">
+  <id>0</id>
+  <parametrization id="2">
+    <id>0</id>
+    <standardDeviationMillisMaximum>150</standardDeviationMillisMaximum>
+  </parametrization>
+  <regionList id="3">
+    <Region id="4">
+      <id>0</id>
+      <name>Global</name>
+      <quantityMillisMaximum>1000</quantityMillisMaximum>
+    </Region>
+  </regionList>
+  <sectorList id="5">
+    <Sector id="6">
+      <id>0</id>
+      <name>Tech</name>
+      <quantityMillisMaximum>300</quantityMillisMaximum>
+    </Sector>
+    <Sector id="7">
+      <id>1</id>
+      <name>Cars</name>
+      <quantityMillisMaximum>1000</quantityMillisMaximum>
+    </Sector>
+    <Sector id="8">
+      <id>2</id>
+      <name>Food</name>
+      <quantityMillisMaximum>400</quantityMillisMaximum>
+    </Sector>
+  </sectorList>
+  <assetClassList id="9">
+    <AssetClass id="10">
+      <id>1</id>
+      <name>Red Hat, Inc.</name>
+      <region reference="4"/>
+      <sector reference="6"/>
+      <expectedReturnMillis>136</expectedReturnMillis>
+      <standardDeviationRiskMillis>291</standardDeviationRiskMillis>
+      <correlationMillisMap class="linked-hash-map" id="11">
+        <entry>
+          <AssetClass reference="10"/>
+          <long>0</long>
+        </entry>
+        <entry>
+          <AssetClass id="12">
+            <id>2</id>
+            <name>Google Inc.</name>
+            <region reference="4"/>
+            <sector reference="6"/>
+            <expectedReturnMillis>156</expectedReturnMillis>
+            <standardDeviationRiskMillis>215</standardDeviationRiskMillis>
+            <correlationMillisMap class="linked-hash-map" id="13">
+              <entry>
+                <AssetClass reference="10"/>
+                <long>50</long>
+              </entry>
+              <entry>
+                <AssetClass reference="12"/>
+                <long>0</long>
+              </entry>
+              <entry>
+                <AssetClass id="14">
+                  <id>3</id>
+                  <name>Oracle Corporation</name>
+                  <region reference="4"/>
+                  <sector reference="6"/>
+                  <expectedReturnMillis>123</expectedReturnMillis>
+                  <standardDeviationRiskMillis>217</standardDeviationRiskMillis>
+                  <correlationMillisMap class="linked-hash-map" id="15">
+                    <entry>
+                      <AssetClass reference="10"/>
+                      <long>600</long>
+                    </entry>
+                    <entry>
+                      <AssetClass reference="12"/>
+                      <long>50</long>
+                    </entry>
+                    <entry>
+                      <AssetClass reference="14"/>
+                      <long>0</long>
+                    </entry>
+                    <entry>
+                      <AssetClass id="16">
+                        <id>4</id>
+                        <name>Apple Inc.</name>
+                        <region reference="4"/>
+                        <sector reference="6"/>
+                        <expectedReturnMillis>288</expectedReturnMillis>
+                        <standardDeviationRiskMillis>241</standardDeviationRiskMillis>
+                        <correlationMillisMap class="linked-hash-map" id="17">
+                          <entry>
+                            <AssetClass reference="10"/>
+                            <long>130</long>
+                          </entry>
+                          <entry>
+                            <AssetClass reference="12"/>
+                            <long>260</long>
+                          </entry>
+                          <entry>
+                            <AssetClass reference="14"/>
+                            <long>190</long>
+                          </entry>
+                          <entry>
+                            <AssetClass reference="16"/>
+                            <long>0</long>
+                          </entry>
+                          <entry>
+                            <AssetClass id="18">
+                              <id>5</id>
+                              <name>Microsoft Corporation</name>
+                              <region reference="4"/>
+                              <sector reference="6"/>
+                              <expectedReturnMillis>179</expectedReturnMillis>
+                              <standardDeviationRiskMillis>207</standardDeviationRiskMillis>
+                              <correlationMillisMap class="linked-hash-map" id="19">
+                                <entry>
+                                  <AssetClass reference="10"/>
+                                  <long>140</long>
+                                </entry>
+                                <entry>
+                                  <AssetClass reference="12"/>
+                                  <long>180</long>
+                                </entry>
+                                <entry>
+                                  <AssetClass reference="14"/>
+                                  <long>330</long>
+                                </entry>
+                                <entry>
+                                  <AssetClass reference="16"/>
+                                  <long>270</long>
+                                </entry>
+                                <entry>
+                                  <AssetClass reference="18"/>
+                                  <long>0</long>
+                                </entry>
+                                <entry>
+                                  <AssetClass id="20">
+                                    <id>6</id>
+                                    <name>Tesla Motors, Inc.</name>
+                                    <region reference="4"/>
+                                    <sector reference="7"/>
+                                    <expectedReturnMillis>547</expectedReturnMillis>
+                                    <standardDeviationRiskMillis>539</standardDeviationRiskMillis>
+                                    <correlationMillisMap class="linked-hash-map" id="21">
+                                      <entry>
+                                        <AssetClass reference="10"/>
+                                        <long>230</long>
+                                      </entry>
+                                      <entry>
+                                        <AssetClass reference="12"/>
+                                        <long>100</long>
+                                      </entry>
+                                      <entry>
+                                        <AssetClass reference="14"/>
+                                        <long>140</long>
+                                      </entry>
+                                      <entry>
+                                        <AssetClass reference="16"/>
+                                        <long>10</long>
+                                      </entry>
+                                      <entry>
+                                        <AssetClass reference="18"/>
+                                        <long>180</long>
+                                      </entry>
+                                      <entry>
+                                        <AssetClass reference="20"/>
+                                        <long>0</long>
+                                      </entry>
+                                      <entry>
+                                        <AssetClass id="22">
+                                          <id>7</id>
+                                          <name>Ford Motor Company</name>
+                                          <region reference="4"/>
+                                          <sector reference="7"/>
+                                          <expectedReturnMillis>10</expectedReturnMillis>
+                                          <standardDeviationRiskMillis>259</standardDeviationRiskMillis>
+                                          <correlationMillisMap class="linked-hash-map" id="23">
+                                            <entry>
+                                              <AssetClass reference="10"/>
+                                              <long>210</long>
+                                            </entry>
+                                            <entry>
+                                              <AssetClass reference="12"/>
+                                              <long>80</long>
+                                            </entry>
+                                            <entry>
+                                              <AssetClass reference="14"/>
+                                              <long>420</long>
+                                            </entry>
+                                            <entry>
+                                              <AssetClass reference="16"/>
+                                              <long>150</long>
+                                            </entry>
+                                            <entry>
+                                              <AssetClass reference="18"/>
+                                              <long>290</long>
+                                            </entry>
+                                            <entry>
+                                              <AssetClass reference="20"/>
+                                              <long>320</long>
+                                            </entry>
+                                            <entry>
+                                              <AssetClass reference="22"/>
+                                              <long>0</long>
+                                            </entry>
+                                            <entry>
+                                              <AssetClass id="24">
+                                                <id>8</id>
+                                                <name>Toyota Motor Corp Ltd Ord</name>
+                                                <region reference="4"/>
+                                                <sector reference="7"/>
+                                                <expectedReturnMillis>136</expectedReturnMillis>
+                                                <standardDeviationRiskMillis>192</standardDeviationRiskMillis>
+                                                <correlationMillisMap class="linked-hash-map" id="25">
+                                                  <entry>
+                                                    <AssetClass reference="10"/>
+                                                    <long>80</long>
+                                                  </entry>
+                                                  <entry>
+                                                    <AssetClass reference="12"/>
+                                                    <long>200</long>
+                                                  </entry>
+                                                  <entry>
+                                                    <AssetClass reference="14"/>
+                                                    <long>190</long>
+                                                  </entry>
+                                                  <entry>
+                                                    <AssetClass reference="16"/>
+                                                    <long>180</long>
+                                                  </entry>
+                                                  <entry>
+                                                    <AssetClass reference="18"/>
+                                                    <long>250</long>
+                                                  </entry>
+                                                  <entry>
+                                                    <AssetClass reference="20"/>
+                                                    <long>160</long>
+                                                  </entry>
+                                                  <entry>
+                                                    <AssetClass reference="22"/>
+                                                    <long>240</long>
+                                                  </entry>
+                                                  <entry>
+                                                    <AssetClass reference="24"/>
+                                                    <long>0</long>
+                                                  </entry>
+                                                  <entry>
+                                                    <AssetClass id="26">
+                                                      <id>9</id>
+                                                      <name>General Motors Company</name>
+                                                      <region reference="4"/>
+                                                      <sector reference="7"/>
+                                                      <expectedReturnMillis>21</expectedReturnMillis>
+                                                      <standardDeviationRiskMillis>295</standardDeviationRiskMillis>
+                                                      <correlationMillisMap class="linked-hash-map" id="27">
+                                                        <entry>
+                                                          <AssetClass reference="10"/>
+                                                          <long>320</long>
+                                                        </entry>
+                                                        <entry>
+                                                          <AssetClass reference="12"/>
+                                                          <long>210</long>
+                                                        </entry>
+                                                        <entry>
+                                                          <AssetClass reference="14"/>
+                                                          <long>500</long>
+                                                        </entry>
+                                                        <entry>
+                                                          <AssetClass reference="16"/>
+                                                          <long>250</long>
+                                                        </entry>
+                                                        <entry>
+                                                          <AssetClass reference="18"/>
+                                                          <long>320</long>
+                                                        </entry>
+                                                        <entry>
+                                                          <AssetClass reference="20"/>
+                                                          <long>230</long>
+                                                        </entry>
+                                                        <entry>
+                                                          <AssetClass reference="22"/>
+                                                          <long>830</long>
+                                                        </entry>
+                                                        <entry>
+                                                          <AssetClass reference="24"/>
+                                                          <long>360</long>
+                                                        </entry>
+                                                        <entry>
+                                                          <AssetClass reference="26"/>
+                                                          <long>0</long>
+                                                        </entry>
+                                                        <entry>
+                                                          <AssetClass id="28">
+                                                            <id>10</id>
+                                                            <name>Starbucks Corporation</name>
+                                                            <region reference="4"/>
+                                                            <sector reference="8"/>
+                                                            <expectedReturnMillis>332</expectedReturnMillis>
+                                                            <standardDeviationRiskMillis>197</standardDeviationRiskMillis>
+                                                            <correlationMillisMap class="linked-hash-map" id="29">
+                                                              <entry>
+                                                                <AssetClass reference="10"/>
+                                                                <long>330</long>
+                                                              </entry>
+                                                              <entry>
+                                                                <AssetClass reference="12"/>
+                                                                <long>210</long>
+                                                              </entry>
+                                                              <entry>
+                                                                <AssetClass reference="14"/>
+                                                                <long>170</long>
+                                                              </entry>
+                                                              <entry>
+                                                                <AssetClass reference="16"/>
+                                                                <long>230</long>
+                                                              </entry>
+                                                              <entry>
+                                                                <AssetClass reference="18"/>
+                                                                <long>170</long>
+                                                              </entry>
+                                                              <entry>
+                                                                <AssetClass reference="20"/>
+                                                                <long>240</long>
+                                                              </entry>
+                                                              <entry>
+                                                                <AssetClass reference="22"/>
+                                                                <long>360</long>
+                                                              </entry>
+                                                              <entry>
+                                                                <AssetClass reference="24"/>
+                                                                <long>320</long>
+                                                              </entry>
+                                                              <entry>
+                                                                <AssetClass reference="26"/>
+                                                                <long>300</long>
+                                                              </entry>
+                                                              <entry>
+                                                                <AssetClass reference="28"/>
+                                                                <long>0</long>
+                                                              </entry>
+                                                              <entry>
+                                                                <AssetClass id="30">
+                                                                  <id>11</id>
+                                                                  <name>McDonald&apos;s Corporation</name>
+                                                                  <region reference="4"/>
+                                                                  <sector reference="8"/>
+                                                                  <expectedReturnMillis>80</expectedReturnMillis>
+                                                                  <standardDeviationRiskMillis>113</standardDeviationRiskMillis>
+                                                                  <correlationMillisMap class="linked-hash-map" id="31">
+                                                                    <entry>
+                                                                      <AssetClass reference="10"/>
+                                                                      <long>0</long>
+                                                                    </entry>
+                                                                    <entry>
+                                                                      <AssetClass reference="12"/>
+                                                                      <long>210</long>
+                                                                    </entry>
+                                                                    <entry>
+                                                                      <AssetClass reference="14"/>
+                                                                      <long>-10</long>
+                                                                    </entry>
+                                                                    <entry>
+                                                                      <AssetClass reference="16"/>
+                                                                      <long>30</long>
+                                                                    </entry>
+                                                                    <entry>
+                                                                      <AssetClass reference="18"/>
+                                                                      <long>160</long>
+                                                                    </entry>
+                                                                    <entry>
+                                                                      <AssetClass reference="20"/>
+                                                                      <long>-50</long>
+                                                                    </entry>
+                                                                    <entry>
+                                                                      <AssetClass reference="22"/>
+                                                                      <long>100</long>
+                                                                    </entry>
+                                                                    <entry>
+                                                                      <AssetClass reference="24"/>
+                                                                      <long>100</long>
+                                                                    </entry>
+                                                                    <entry>
+                                                                      <AssetClass reference="26"/>
+                                                                      <long>90</long>
+                                                                    </entry>
+                                                                    <entry>
+                                                                      <AssetClass reference="28"/>
+                                                                      <long>310</long>
+                                                                    </entry>
+                                                                    <entry>
+                                                                      <AssetClass reference="30"/>
+                                                                      <long>0</long>
+                                                                    </entry>
+                                                                  </correlationMillisMap>
+                                                                </AssetClass>
+                                                                <long>310</long>
+                                                              </entry>
+                                                            </correlationMillisMap>
+                                                          </AssetClass>
+                                                          <long>300</long>
+                                                        </entry>
+                                                        <entry>
+                                                          <AssetClass reference="30"/>
+                                                          <long>90</long>
+                                                        </entry>
+                                                      </correlationMillisMap>
+                                                    </AssetClass>
+                                                    <long>360</long>
+                                                  </entry>
+                                                  <entry>
+                                                    <AssetClass reference="28"/>
+                                                    <long>320</long>
+                                                  </entry>
+                                                  <entry>
+                                                    <AssetClass reference="30"/>
+                                                    <long>100</long>
+                                                  </entry>
+                                                </correlationMillisMap>
+                                              </AssetClass>
+                                              <long>240</long>
+                                            </entry>
+                                            <entry>
+                                              <AssetClass reference="26"/>
+                                              <long>830</long>
+                                            </entry>
+                                            <entry>
+                                              <AssetClass reference="28"/>
+                                              <long>360</long>
+                                            </entry>
+                                            <entry>
+                                              <AssetClass reference="30"/>
+                                              <long>100</long>
+                                            </entry>
+                                          </correlationMillisMap>
+                                        </AssetClass>
+                                        <long>320</long>
+                                      </entry>
+                                      <entry>
+                                        <AssetClass reference="24"/>
+                                        <long>160</long>
+                                      </entry>
+                                      <entry>
+                                        <AssetClass reference="26"/>
+                                        <long>230</long>
+                                      </entry>
+                                      <entry>
+                                        <AssetClass reference="28"/>
+                                        <long>240</long>
+                                      </entry>
+                                      <entry>
+                                        <AssetClass reference="30"/>
+                                        <long>-50</long>
+                                      </entry>
+                                    </correlationMillisMap>
+                                  </AssetClass>
+                                  <long>180</long>
+                                </entry>
+                                <entry>
+                                  <AssetClass reference="22"/>
+                                  <long>290</long>
+                                </entry>
+                                <entry>
+                                  <AssetClass reference="24"/>
+                                  <long>250</long>
+                                </entry>
+                                <entry>
+                                  <AssetClass reference="26"/>
+                                  <long>320</long>
+                                </entry>
+                                <entry>
+                                  <AssetClass reference="28"/>
+                                  <long>170</long>
+                                </entry>
+                                <entry>
+                                  <AssetClass reference="30"/>
+                                  <long>160</long>
+                                </entry>
+                              </correlationMillisMap>
+                            </AssetClass>
+                            <long>270</long>
+                          </entry>
+                          <entry>
+                            <AssetClass reference="20"/>
+                            <long>10</long>
+                          </entry>
+                          <entry>
+                            <AssetClass reference="22"/>
+                            <long>150</long>
+                          </entry>
+                          <entry>
+                            <AssetClass reference="24"/>
+                            <long>180</long>
+                          </entry>
+                          <entry>
+                            <AssetClass reference="26"/>
+                            <long>250</long>
+                          </entry>
+                          <entry>
+                            <AssetClass reference="28"/>
+                            <long>230</long>
+                          </entry>
+                          <entry>
+                            <AssetClass reference="30"/>
+                            <long>30</long>
+                          </entry>
+                        </correlationMillisMap>
+                      </AssetClass>
+                      <long>190</long>
+                    </entry>
+                    <entry>
+                      <AssetClass reference="18"/>
+                      <long>330</long>
+                    </entry>
+                    <entry>
+                      <AssetClass reference="20"/>
+                      <long>140</long>
+                    </entry>
+                    <entry>
+                      <AssetClass reference="22"/>
+                      <long>420</long>
+                    </entry>
+                    <entry>
+                      <AssetClass reference="24"/>
+                      <long>190</long>
+                    </entry>
+                    <entry>
+                      <AssetClass reference="26"/>
+                      <long>500</long>
+                    </entry>
+                    <entry>
+                      <AssetClass reference="28"/>
+                      <long>170</long>
+                    </entry>
+                    <entry>
+                      <AssetClass reference="30"/>
+                      <long>-10</long>
+                    </entry>
+                  </correlationMillisMap>
+                </AssetClass>
+                <long>50</long>
+              </entry>
+              <entry>
+                <AssetClass reference="16"/>
+                <long>260</long>
+              </entry>
+              <entry>
+                <AssetClass reference="18"/>
+                <long>180</long>
+              </entry>
+              <entry>
+                <AssetClass reference="20"/>
+                <long>100</long>
+              </entry>
+              <entry>
+                <AssetClass reference="22"/>
+                <long>80</long>
+              </entry>
+              <entry>
+                <AssetClass reference="24"/>
+                <long>200</long>
+              </entry>
+              <entry>
+                <AssetClass reference="26"/>
+                <long>210</long>
+              </entry>
+              <entry>
+                <AssetClass reference="28"/>
+                <long>210</long>
+              </entry>
+              <entry>
+                <AssetClass reference="30"/>
+                <long>210</long>
+              </entry>
+            </correlationMillisMap>
+          </AssetClass>
+          <long>50</long>
+        </entry>
+        <entry>
+          <AssetClass reference="14"/>
+          <long>600</long>
+        </entry>
+        <entry>
+          <AssetClass reference="16"/>
+          <long>130</long>
+        </entry>
+        <entry>
+          <AssetClass reference="18"/>
+          <long>140</long>
+        </entry>
+        <entry>
+          <AssetClass reference="20"/>
+          <long>230</long>
+        </entry>
+        <entry>
+          <AssetClass reference="22"/>
+          <long>210</long>
+        </entry>
+        <entry>
+          <AssetClass reference="24"/>
+          <long>80</long>
+        </entry>
+        <entry>
+          <AssetClass reference="26"/>
+          <long>320</long>
+        </entry>
+        <entry>
+          <AssetClass reference="28"/>
+          <long>330</long>
+        </entry>
+        <entry>
+          <AssetClass reference="30"/>
+          <long>0</long>
+        </entry>
+      </correlationMillisMap>
+    </AssetClass>
+    <AssetClass reference="12"/>
+    <AssetClass reference="14"/>
+    <AssetClass reference="16"/>
+    <AssetClass reference="18"/>
+    <AssetClass reference="20"/>
+    <AssetClass reference="22"/>
+    <AssetClass reference="24"/>
+    <AssetClass reference="26"/>
+    <AssetClass reference="28"/>
+    <AssetClass reference="30"/>
+  </assetClassList>
+  <assetClassAllocationList id="32">
+    <AssetClassAllocation id="33">
+      <id>1</id>
+      <assetClass reference="10"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="34">
+      <id>2</id>
+      <assetClass reference="12"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="35">
+      <id>3</id>
+      <assetClass reference="14"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="36">
+      <id>4</id>
+      <assetClass reference="16"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="37">
+      <id>5</id>
+      <assetClass reference="18"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="38">
+      <id>6</id>
+      <assetClass reference="20"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="39">
+      <id>7</id>
+      <assetClass reference="22"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="40">
+      <id>8</id>
+      <assetClass reference="24"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="41">
+      <id>9</id>
+      <assetClass reference="26"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="42">
+      <id>10</id>
+      <assetClass reference="28"/>
+    </AssetClassAllocation>
+    <AssetClassAllocation id="43">
+      <id>11</id>
+      <assetClass reference="30"/>
+    </AssetClassAllocation>
+  </assetClassAllocationList>
+</InvestmentSolution>

@@ -99,6 +99,9 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter {
                 if (row.getRowNum() < 1) {
                     continue;
                 }
+                if (row.getCell(0) == null && row.getCell(1) == null) {
+                    continue;
+                }
                 Region region = new Region();
                 region.setId(id);
                 id++;
@@ -120,6 +123,9 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter {
             long id = 0L;
             for (Row row : sheet) {
                 if (row.getRowNum() < 1) {
+                    continue;
+                }
+                if (row.getCell(0) == null && row.getCell(1) == null) {
                     continue;
                 }
                 Sector sector = new Sector();
@@ -161,6 +167,10 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter {
             }
             for (Row row : sheet) {
                 if (row.getRowNum() < 2) {
+                    continue;
+                }
+                if (row.getCell(0) == null && row.getCell(1) == null && row.getCell(2) == null
+                        && row.getCell(3) == null && row.getCell(4) == null && row.getCell(5) == null) {
                     continue;
                 }
                 if (row.getPhysicalNumberOfCells() != (ASSET_CLASS_PROPERTIES_COUNT + assetClassListSize)) {
