@@ -513,11 +513,12 @@ public class BenchmarkReport {
     private XYPlot createScalabilityPlot(List<XYSeries> seriesList,
             String xAxisLabel, NumberFormat xAxisNumberFormat,
             String yAxisLabel, NumberFormat yAxisNumberFormat) {
-        NumberAxis xAxis = new NumberAxis(xAxisLabel);
+        NumberAxis xAxis;
         if (useLogarithmicProblemScale(seriesList)) {
-            LogarithmicAxis xLogAxis = new LogarithmicAxis(xAxis.getLabel() + " (logarithmic)");
-            xLogAxis.setAllowNegativesFlag(true);
-            xAxis = xLogAxis;
+            xAxis = new LogarithmicAxis(xAxisLabel + " (logarithmic)");
+            ((LogarithmicAxis)xAxis).setAllowNegativesFlag(true);
+        } else {
+            xAxis = new NumberAxis(xAxisLabel);
         }
         xAxis.setNumberFormatOverride(xAxisNumberFormat);
         NumberAxis yAxis = new NumberAxis(yAxisLabel);
