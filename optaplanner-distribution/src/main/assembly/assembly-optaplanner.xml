@@ -80,16 +80,18 @@
 
   <dependencySets>
     <dependencySet>
+      <includes>
+        <include>org.optaplanner:*:jar</include>
+      </includes>
       <excludes>
         <exclude>org.optaplanner:optaplanner-examples</exclude>
         <exclude>org.optaplanner:optaplanner-webexamples</exclude>
-        <exclude>org.jdom:jdom</exclude>
-        <exclude>org.optaplanner:optaplanner-docs</exclude>
         <exclude>*:sources</exclude>
       </excludes>
       <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>binaries</outputDirectory>
       <useStrictFiltering>true</useStrictFiltering>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -103,19 +105,22 @@
       <outputDirectory>sources</outputDirectory>
       <unpack>false</unpack>
       <useStrictFiltering>true</useStrictFiltering>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
     </dependencySet>
     <!-- Examples -->
     <dependencySet>
       <includes>
-        <include>org.optaplanner:optaplanner-examples:jar</include>
-        <include>org.jdom:jdom:jar</include>
+        <include>org.optaplanner:optaplanner-examples</include>
       </includes>
       <excludes>
+        <exclude>org.optaplanner:optaplanner-core</exclude>
+        <exclude>org.optaplanner:optaplanner-benchmark</exclude>
         <exclude>*:sources</exclude>
       </excludes>
       <useProjectArtifact>false</useProjectArtifact>
       <outputDirectory>examples/binaries</outputDirectory>
-      <useStrictFiltering>true</useStrictFiltering>
+      <useStrictFiltering>false</useStrictFiltering><!-- false to workaround bug with useTransitiveFiltering true -->
+      <useTransitiveFiltering>true</useTransitiveFiltering>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -123,6 +128,7 @@
       </includes>
       <outputDirectory>webexamples/binaries</outputDirectory>
       <useStrictFiltering>true</useStrictFiltering>
+      <useTransitiveFiltering>false</useTransitiveFiltering><!-- Only include war -->
     </dependencySet>
     <!-- Reference manual -->
     <dependencySet>
@@ -141,6 +147,7 @@
         </excludes>
       </unpackOptions>
       <useStrictFiltering>true</useStrictFiltering>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
     </dependencySet>
   </dependencySets>
 
