@@ -515,8 +515,9 @@ public class BenchmarkReport {
             String yAxisLabel, NumberFormat yAxisNumberFormat) {
         NumberAxis xAxis;
         if (useLogarithmicProblemScale(seriesList)) {
-            xAxis = new LogarithmicAxis(xAxisLabel + " (logarithmic)");
-            ((LogarithmicAxis)xAxis).setAllowNegativesFlag(true);
+            LogarithmicAxis logarithmicAxis = new LogarithmicAxis(xAxisLabel + " (logarithmic)");
+            logarithmicAxis.setAllowNegativesFlag(true);
+            xAxis = logarithmicAxis;
         } else {
             xAxis = new NumberAxis(xAxisLabel);
         }
