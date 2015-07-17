@@ -70,6 +70,7 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 public class BenchmarkReport {
 
     public static final int CHARTED_SCORE_LEVEL_SIZE = 15;
+    public static final int LOG_SCALE_MIN_DATASETS_COUNT = 5;
 
     private final PlannerBenchmarkResult plannerBenchmarkResult;
 
@@ -512,9 +513,13 @@ public class BenchmarkReport {
     private XYPlot createScalabilityPlot(List<XYSeries> seriesList,
             String xAxisLabel, NumberFormat xAxisNumberFormat,
             String yAxisLabel, NumberFormat yAxisNumberFormat) {
-        NumberAxis xAxis = new NumberAxis(xAxisLabel);
+        NumberAxis xAxis;
         if (useLogarithmicProblemScale(seriesList)) {
-            xAxis = new LogarithmicAxis(xAxis.getLabel() + " (logarithmic)");
+            LogarithmicAxis logarithmicAxis = new LogarithmicAxis(xAxisLabel + " (logarithmic)");
+            logarithmicAxis.setAllowNegativesFlag(true);
+            xAxis = logarithmicAxis;
+        } else {
+            xAxis = new NumberAxis(xAxisLabel);
         }
         xAxis.setNumberFormatOverride(xAxisNumberFormat);
         NumberAxis yAxis = new NumberAxis(yAxisLabel);
@@ -542,7 +547,7 @@ public class BenchmarkReport {
                 xValueListSize++;
             }
         }
-        if (xValueListSize <= 4) {
+        if (xValueListSize < LOG_SCALE_MIN_DATASETS_COUNT) {
             return false;
         }
         // If 60% of the points are in 20% of the value space, use a logarithmic scale
