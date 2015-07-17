@@ -169,8 +169,6 @@ public interface InternalTaskService extends TaskService {
 
     OrganizationalEntity getOrganizationalEntityById(String entityId);
 
-    void setExpirationDate(long taskId, Date date);
-
     void setDescriptions(long taskId, List<I18NText> descriptions);
 
     void setSkipable(long taskId, boolean skipable);
@@ -195,15 +193,7 @@ public interface InternalTaskService extends TaskService {
     
     List<TaskSummary> getTasksAssignedByGroup(String groupId); 
     
-    List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds); 
-    
-    long addComment(long taskId, Comment comment);
-
-    void deleteComment(long taskId, long commentId);
-
-    List<Comment> getAllCommentsByTaskId(long taskId);
-
-    Comment getCommentById(long commentId);        
+    List<TaskSummary> getTasksAssignedByGroups(List<String> groupIds);       
     
     void addMarshallerContext(String ownerId, ContentMarshallerContext context);
     
