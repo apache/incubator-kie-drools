@@ -25,6 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -149,6 +150,39 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
 
         List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllAuditTasks(new QueryFilter(0, 0));
         assertEquals(2, allHistoryAuditTasks.size());
+    }
+    
+    @Test
+    public void testOnlyActiveTasks() {
+        Task task = new TaskFluent().setName("This is my task name")
+                .addPotentialUser("salaboy")
+
+                .setAdminUser("Administrator")
+                .getTask();
+        taskService.addTask(task, new HashMap<String, Object>());
+
+        List<TaskSummary> allActiveTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
+        assertEquals(1, allActiveTasks.size());
+        assertTrue(allActiveTasks.get(0).getStatusId().equals("Reserved"));
+        QueryFilter queryFilter = new QueryFilter(0, 0);
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<String> statuses = new ArrayList<String>();
+        statuses.add(Status.Reserved.toString());
+        params.put("statuses", statuses);
+        queryFilter.setParams(params);
+        List<AuditTask> allActiveAuditTasksByUser = taskAuditService.getAllAuditTasksByStatus("salaboy",
+                queryFilter);
+        assertEquals(1, allActiveAuditTasksByUser.size());
+        assertTrue(allActiveAuditTasksByUser.get(0).getStatus().equals("Reserved"));
+        
+        statuses = new ArrayList<String>();
+        statuses.add(Status.Completed.toString());
+        params.put("statuses", statuses);
+        queryFilter.setParams(params);
+        allActiveAuditTasksByUser = taskAuditService.getAllAuditTasksByStatus("salaboy",
+                queryFilter);
+        assertEquals(0, allActiveAuditTasksByUser.size());
+        
     }
 
     @Test

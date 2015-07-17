@@ -856,6 +856,18 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         List<AuditTask> auditTasks = commandService.execute(
     				new QueryNameCommand<List<AuditTask>>("getAllAuditTasksByUser", params));
         return auditTasks;
+    }   
+    
+       @Override
+    public List<AuditTask> getAllAuditTaskByStatus(String userId, QueryFilter filter){
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("owner", userId);
+        params.put("statuses", filter.getParams().get("statuses"));
+        applyQueryContext(params, filter);
+        applyQueryFilter(params, filter);
+        List<AuditTask> auditTasks = commandService.execute(
+    				new QueryNameCommand<List<AuditTask>>("getAllAuditTasksByStatus", params));
+        return auditTasks;
     }    
     
         @Override

@@ -11,7 +11,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
+
 package org.jbpm.services.task.audit.commands;
 
 import java.util.ArrayList;
@@ -29,17 +30,19 @@ import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
 
-@XmlRootElement(name = "get-all-group-audit-tasks-command")
+
+@XmlRootElement(name = "get-all-audit-tasks-by-status-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetAllGroupAuditTasksByUserCommand extends UserGroupCallbackTaskCommand<List<AuditTask>> {
+public class GetAllAuditTasksByStatusCommand extends UserGroupCallbackTaskCommand<List<AuditTask>> {
 
     private QueryFilter filter;
+    
 
-    public GetAllGroupAuditTasksByUserCommand() {
+    public GetAllAuditTasksByStatusCommand() {
         this.filter = new QueryFilter(0, 0);
     }
 
-    public GetAllGroupAuditTasksByUserCommand(String userId, QueryFilter filter) {
+    public GetAllAuditTasksByStatusCommand(String userId, QueryFilter filter) {
         super.userId = userId;
         this.filter = filter;
     }
@@ -48,14 +51,12 @@ public class GetAllGroupAuditTasksByUserCommand extends UserGroupCallbackTaskCom
     public List<AuditTask> execute(Context context) {
         TaskPersistenceContext persistenceContext = ((TaskContext) context).getPersistenceContext();
 
-        boolean userExists = doCallbackUserOperation(userId, (TaskContext) context);
-        List<String> groupIds = doUserGroupCallbackOperation(userId, null, (TaskContext) context);
-        groupIds.add(userId);
-        List<AuditTask> groupTasks = persistenceContext.queryWithParametersInTransaction("getAllGroupAuditTasksByUser",
-                persistenceContext.addParametersToMap("potentialOwners", groupIds, "firstResult", filter.getOffset(),
+        
+        List<AuditTask> groupTasks = persistenceContext.queryWithParametersInTransaction("getAllAuditTasksByStatus",
+                persistenceContext.addParametersToMap("owner", userId,"statuses", filter.getParams().get("statuses"),"firstResult", filter.getOffset(),
                         "maxResults", filter.getCount()),
                 ClassUtil.<List<AuditTask>>castClass(List.class));
-
+   
         return groupTasks;
     }
 

@@ -53,27 +53,14 @@ public class GetAllAdminAuditTasksByUserCommand extends UserGroupCallbackTaskCom
 
         boolean userExists = doCallbackUserOperation(userId, (TaskContext) context);
         List<String> groupIds = doUserGroupCallbackOperation(userId, null, (TaskContext) context);
+        //Adding the user to check for groups and user as Business Administrators
+        groupIds.add(userId);
         List<AuditTask> groupTasks = persistenceContext.queryWithParametersInTransaction("getAllAdminAuditTasksByUser",
-                persistenceContext.addParametersToMap("firstResult", filter.getOffset(),
+                persistenceContext.addParametersToMap("businessAdmins", groupIds,"firstResult", filter.getOffset(),
                         "maxResults", filter.getCount()),
                 ClassUtil.<List<AuditTask>>castClass(List.class));
-        
-        //We need an optimal way to do this
-        List<AuditTask> filteredTasks = new ArrayList<AuditTask>();
-        for(AuditTask at : groupTasks){
-            if(at.getBusinessAdministrators().contains(userId)){
-                filteredTasks.add(at);
-            }else{
-                for(String g : groupIds){
-                   if(at.getBusinessAdministrators().contains(g)){
-                       filteredTasks.add(at);
-                   }
-                }
-            }
-            
-        }
-        
-        return filteredTasks;
+   
+        return groupTasks;
     }
 
 }

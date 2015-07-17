@@ -31,6 +31,13 @@
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
+    <named-query name="getAllAuditTasksByStatus">
+        <query>
+            select t from AuditTaskImpl t where t.actualOwner = :owner and t.status in :statuses order by t.taskId DESC  
+        </query>
+        <!-- hint name="org.hibernate.timeout" value="200"/ -->
+    </named-query>
+    
     <named-query name="getAllAuditTasksByUser">
         <query>
             select t from AuditTaskImpl t where t.actualOwner = :owner order by t.taskId DESC  
@@ -39,13 +46,19 @@
     </named-query>
     <named-query name="getAllGroupAuditTasksByUser">
         <query>
-            select t from AuditTaskImpl t where (t.actualOwner = null or t.actualOwner = '') order by t.taskId DESC  
+            select distinct t from AuditTaskImpl t, TaskImpl ti join ti.peopleAssignments.potentialOwners pos  
+                where (t.actualOwner = null or t.actualOwner = '') and t.status = 'Ready'
+                    and ti.id = t.taskId and pos.id in :potentialOwners order by t.taskId DESC  
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>
     <named-query name="getAllAdminAuditTasksByUser">
         <query>
-            select t from AuditTaskImpl t order by t.taskId DESC  
+            select distinct t from AuditTaskImpl t, TaskImpl ti join ti.peopleAssignments.businessAdministrators bas
+                where 
+                        ti.id = t.taskId 
+                    and  
+                        bas.id in :businessAdmins order by t.taskId DESC  
         </query>
         <!-- hint name="org.hibernate.timeout" value="200"/ -->
     </named-query>

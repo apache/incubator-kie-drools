@@ -61,8 +61,7 @@ public class AuditTaskImpl implements Serializable, AuditTask {
     private long parentId;
     private String deploymentId;
     private Long workItemId;
-    private String potentialOwners;
-    private String businessAdministrators;
+   
 
     public AuditTaskImpl() {
     }
@@ -252,23 +251,5 @@ public class AuditTaskImpl implements Serializable, AuditTask {
     public void setWorkItemId(long workItemId) {
         this.workItemId = workItemId;
     }
-
-    public String getPotentialOwners() {
-        return potentialOwners;
-    }
-
-    public void setPotentialOwners(String potentialOwners) {
-        this.potentialOwners = potentialOwners;
-    }
-
-    public String getBusinessAdministrators() {
-        return businessAdministrators;
-    }
-
-    public void setBusinessAdministrators(String businessAdministrators) {
-        this.businessAdministrators = businessAdministrators;
-    }
-    
-    
 
 }

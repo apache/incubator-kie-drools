@@ -473,6 +473,16 @@ public interface RuntimeDataService {
     List<AuditTask> getAllAuditTask(String userId, QueryFilter filter);
     
     /**
+	 * Get a list of all active tasks audit logs for the user provides applying the query filter
+	 * listed statuses.
+	 * 
+	 * @param userId
+	 * @param filter
+	 * @return
+	 */
+    List<AuditTask> getAllAuditTaskByStatus(String userId, QueryFilter filter);
+    
+    /**
 	 * Get a list of group tasks (actualOwner == null) audit logs for the user provides applying the query filter
 	 * listed statuses.
 	 * 
