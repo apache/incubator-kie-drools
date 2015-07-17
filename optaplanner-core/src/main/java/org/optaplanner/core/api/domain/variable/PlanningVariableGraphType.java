@@ -18,7 +18,7 @@ package org.optaplanner.core.api.domain.variable;
 
 public enum PlanningVariableGraphType {
     /**
-     * This is de default.
+     * This is the default.
      */
     NONE,
     /**
@@ -36,10 +36,10 @@ public enum PlanningVariableGraphType {
      *     <li>divert the chain link at the new position to go through the modified planning entity</li>
      *     <li>close the missing chain link at the old position</li>
      * </ul>
-     * For example: Given A <- B <- C <- D <- X <- Y, when B moves between X and Y, pointing to X,
+     * For example: Given {@code A <- B <- C <- D <- X <- Y}, when B moves between X and Y, pointing to X,
      * then Y is also changed to point to B
      * and C is also changed to point to A,
-     * giving the result A <- C <- D <- X <- B <- Y.
+     * giving the result {@code A <- C <- D <- X <- B <- Y}.
      * <p>
      * {@link PlanningVariable#nullable()} true is not compatible with this.
      */

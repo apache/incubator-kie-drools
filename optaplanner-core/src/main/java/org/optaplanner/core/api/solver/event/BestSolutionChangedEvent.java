@@ -36,9 +36,9 @@ public class BestSolutionChangedEvent<SolutionG extends Solution> extends EventO
 
     /**
      * @param solver never null
-     * @param timeMillisSpent >= 0L
+     * @param timeMillisSpent {@code >= 0L}
      * @param newBestSolution never null
-     * @param newUninitializedVariableCount >= 0
+     * @param newUninitializedVariableCount {@code >= 0}
      */
     public BestSolutionChangedEvent(Solver solver, long timeMillisSpent, SolutionG newBestSolution,
             int newUninitializedVariableCount) {
@@ -50,7 +50,7 @@ public class BestSolutionChangedEvent<SolutionG extends Solution> extends EventO
     }
 
     /**
-     * @return >= 0, the amount of millis spent since the {@link Solver} started
+     * @return {@code >= 0}, the amount of millis spent since the {@link Solver} started
      * until {@link #getNewBestSolution()} was found
      */
     public long getTimeMillisSpent() {

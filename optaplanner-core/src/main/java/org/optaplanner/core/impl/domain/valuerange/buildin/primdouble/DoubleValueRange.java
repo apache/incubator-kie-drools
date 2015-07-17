@@ -29,7 +29,7 @@ public class DoubleValueRange extends AbstractUncountableValueRange<Double> {
 
     /**
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
+     * @param to exclusive maximum, {@code >= from}
      */
     public DoubleValueRange(double from, double to) {
         this.from = from;

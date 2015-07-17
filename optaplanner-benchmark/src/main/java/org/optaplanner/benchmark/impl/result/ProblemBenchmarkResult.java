@@ -354,9 +354,9 @@ public class ProblemBenchmarkResult {
      * HACK to avoid loading the planningProblem just to extract it's problemScale.
      * Called multiple times, for every {@link SingleBenchmarkResult} of this {@link ProblemBenchmarkResult}.
      *
-     * @param registeringEntityCount >= 0
-     * @param registeringVariableCount >= 0
-     * @param registeringProblemScale >= 0
+     * @param registeringEntityCount {@code >= 0}
+     * @param registeringVariableCount {@code >= 0}
+     * @param registeringProblemScale {@code >= 0}
      */
     public void registerScale(long registeringEntityCount, long registeringVariableCount,
             long registeringProblemScale) {

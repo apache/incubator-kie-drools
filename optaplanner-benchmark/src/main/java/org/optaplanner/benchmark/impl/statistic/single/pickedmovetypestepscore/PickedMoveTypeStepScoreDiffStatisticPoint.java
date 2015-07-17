@@ -25,7 +25,7 @@ public class PickedMoveTypeStepScoreDiffStatisticPoint extends StatisticPoint {
 
     private final long timeMillisSpent;
     /**
-     * Not a {@link Class}&lt;Move&gt; because {@link CompositeMove}'s need to be atomized
+     * Not a {@link Class}<Move> because {@link CompositeMove}'s need to be atomized
      * and because that {@link Class} might no longer exist when {@link BenchmarkAggregator} aggregates.
      */
     private final String moveType;

@@ -79,7 +79,7 @@ public final class BendableLongScore extends AbstractScore<BendableLongScore>
     }
 
     /**
-     * @param index 0 <= index < {@link #getHardLevelsSize()}
+     * @param index {@code 0 <= index <} {@link #getHardLevelsSize()}
      * @return higher is better
      */
     public long getHardScore(int index) {
@@ -91,7 +91,7 @@ public final class BendableLongScore extends AbstractScore<BendableLongScore>
     }
 
     /**
-     * @param index 0 <= index < {@link #getSoftLevelsSize()}
+     * @param index {@code 0 <= index <} {@link #getSoftLevelsSize()}
      * @return higher is better
      */
     public long getSoftScore(int index) {

@@ -32,7 +32,7 @@ public class IntValueRange extends AbstractCountableValueRange<Integer> {
 
     /**
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
+     * @param to exclusive maximum, {@code >= from}
      */
     public IntValueRange(int from, int to) {
         this(from, to, 1);
@@ -40,8 +40,8 @@ public class IntValueRange extends AbstractCountableValueRange<Integer> {
 
     /**
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
-     * @param incrementUnit > 0
+     * @param to exclusive maximum, {@code >= from}
+     * @param incrementUnit {@code > 0}
      */
     public IntValueRange(int from, int to, int incrementUnit) {
         this.from = from;

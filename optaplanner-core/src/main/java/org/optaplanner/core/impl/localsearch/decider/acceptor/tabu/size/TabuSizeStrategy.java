@@ -22,7 +22,7 @@ public interface TabuSizeStrategy {
 
     /**
      * @param stepScope never null
-     * @return >= 0
+     * @return {@code >= 0}
      */
     int determineTabuSize(LocalSearchStepScope stepScope);
 

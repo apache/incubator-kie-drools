@@ -190,8 +190,8 @@ public abstract class AbstractTabuAcceptor extends AbstractAcceptor {
     }
 
     /**
-     * @param fadingTabuStepCount 0 < fadingTabuStepCount <= fadingTabuSize
-     * @return 0.0 < acceptChance < 1.0
+     * @param fadingTabuStepCount {@code 0 < fadingTabuStepCount <= fadingTabuSize}
+     * @return {@code 0.0 < acceptChance < 1.0}
      */
     protected double calculateFadingTabuAcceptChance(int fadingTabuStepCount) {
         // The + 1's are because acceptChance should not be 0.0 or 1.0

@@ -36,7 +36,7 @@ public class BigDecimalValueRange extends AbstractCountableValueRange<BigDecimal
     /**
      * All parameters must have the same {@link BigDecimal#scale()}.
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
+     * @param to exclusive maximum, {@code >= from}
      */
     public BigDecimalValueRange(BigDecimal from, BigDecimal to) {
         this(from, to, BigDecimal.valueOf(1L, from.scale()));
@@ -45,8 +45,8 @@ public class BigDecimalValueRange extends AbstractCountableValueRange<BigDecimal
     /**
      * All parameters must have the same {@link BigDecimal#scale()}.
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
-     * @param incrementUnit > 0
+     * @param to exclusive maximum, {@code >= from}
+     * @param incrementUnit {@code > 0}
      */
     public BigDecimalValueRange(BigDecimal from, BigDecimal to, BigDecimal incrementUnit) {
         this.from = from;

@@ -512,7 +512,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
 
 //        /**
 //         * hack to make sure there are enough nights
-//         * @param lastNightIndex >= 0
+//         * @param lastNightIndex {@code >= 0}
 //         */
 //        private void ensureEnoughNights(int lastNightIndex) {
 //            List<Night> nightList = patientAdmissionSchedule.getNightList();

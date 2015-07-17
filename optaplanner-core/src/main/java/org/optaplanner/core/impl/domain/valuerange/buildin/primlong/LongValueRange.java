@@ -32,7 +32,7 @@ public class LongValueRange extends AbstractCountableValueRange<Long> {
 
     /**
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
+     * @param to exclusive maximum, {@code >= from}
      */
     public LongValueRange(long from, long to) {
         this(from, to, 1);
@@ -40,8 +40,8 @@ public class LongValueRange extends AbstractCountableValueRange<Long> {
 
     /**
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
-     * @param incrementUnit > 0
+     * @param to exclusive maximum, {@code >= from}
+     * @param incrementUnit {@code > 0}
      */
     public LongValueRange(long from, long to, long incrementUnit) {
         this.from = from;

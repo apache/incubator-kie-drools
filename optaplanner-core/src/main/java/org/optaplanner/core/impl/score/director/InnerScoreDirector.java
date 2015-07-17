@@ -66,7 +66,7 @@ public interface InnerScoreDirector extends ScoreDirector {
     Solution cloneSolution(Solution originalSolution);
 
     /**
-     * @return >= 0
+     * @return {@code >= 0}
      */
     int getWorkingEntityCount();
 
@@ -76,7 +76,7 @@ public interface InnerScoreDirector extends ScoreDirector {
     List<Object> getWorkingEntityList();
 
     /**
-     * @return >= 0
+     * @return {@code >= 0}
      */
     int getWorkingValueCount();
 
