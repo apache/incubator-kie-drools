@@ -15,11 +15,13 @@
  */
 package org.kie.api.task;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.task.model.Attachment;
+import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Status;
@@ -122,4 +124,14 @@ public interface TaskService extends CommandExecutor {
      */
     @Deprecated
     List<TaskSummary> getTasksByVariousFields( String userId, Map <String, List<?>> parameters, boolean union);
+    
+    long addComment(long taskId, Comment comment);
+
+    void deleteComment(long taskId, long commentId);
+
+    List<Comment> getAllCommentsByTaskId(long taskId);
+
+    Comment getCommentById(long commentId);        
+    
+    void setExpirationDate(long taskId, Date date);
 }
