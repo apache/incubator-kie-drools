@@ -60,7 +60,7 @@ public class XStreamXmlSolverFactory extends SolverFactory {
     }
 
     /**
-     * @see {@link XStream#processAnnotations(Class[])}
+     * @see XStream#processAnnotations(Class[])
      */
     public void addXStreamAnnotations(Class... xStreamAnnotations) {
         xStream.processAnnotations(xStreamAnnotations);

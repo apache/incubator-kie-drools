@@ -85,7 +85,7 @@ public interface Move {
     /**
      * Describes the move type for statistical purposes.
      * For example "ChangeMove(Process.computer)".
-     * </p>
+     * <p>
      * The format is not formalized. Never parse the {@link String} returned by this method.
      * @return never null
      */

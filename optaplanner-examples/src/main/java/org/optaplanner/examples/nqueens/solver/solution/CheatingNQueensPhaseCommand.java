@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * For this reason, N queens should not be used for benchmarking purposes.
  * <p>
  * This class solves any N Queens instance using a polynomial time algorithm
- * (<a href="http://en.wikipedia.org/wiki/Eight_queens_puzzle#Explicit_solutions">>explicit solutions algorithm</a>).
+ * (<a href="http://en.wikipedia.org/wiki/Eight_queens_puzzle#Explicit_solutions">explicit solutions algorithm</a>).
  */
 public class CheatingNQueensPhaseCommand implements CustomPhaseCommand {
 

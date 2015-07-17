@@ -47,10 +47,10 @@ public interface Termination extends PhaseLifecycleListener {
 
     /**
      * A timeGradient is a relative estimate of how long the search will continue.
-     * </p>
+     * <p>
      * Clients that use a timeGradient should cache it at the start of a single step
      * because some implementations are not time-stable.
-     * </p>
+     * <p>
      * If a timeGradient can not be calculated, it should return -1.0.
      * Several implementations (such a {@link SimulatedAnnealingAcceptor}) require a correctly implemented timeGradient.
      * <p>

@@ -37,7 +37,7 @@ public interface ScoreHolder {
 
     /**
      * Extracts the {@link Score}, calculated by the {@link KieSession} for {@link DroolsScoreDirector}.
-     * </p>
+     * <p>
      * Should not be called directly, use {@link ScoreDirector#calculateScore()} instead.
      * @return never null, the  {@link Score} of the working {@link Solution}
      */
