@@ -29,7 +29,7 @@ public enum StepCountingHillClimbingType {
     SELECTED_MOVE,
     /**
      * Every accepted move is counted.
-     * <p/>
+     * <p>
      * Note: If {@link LocalSearchForagerConfig#getAcceptedCountLimit()} = 1,
      * then this behaves exactly the same as {link #STEP}.
      */

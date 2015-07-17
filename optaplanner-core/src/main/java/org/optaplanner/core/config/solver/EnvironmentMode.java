@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * The environment mode also allows you to detect common bugs in your implementation.
- * <p/>
+ * <p>
  * Also, a {@link Solver} has a single {@link Random} instance.
  * Some optimization algorithms use the {@link Random} instance a lot more than others.
  * For example simulated annealing depends highly on random numbers,
@@ -36,12 +36,12 @@ public enum EnvironmentMode {
      * This mode turns on all assertions
      * to fail-fast on a bug in a {@link Move} implementation, a score rule, the rule engine itself or something else
      * at a horrible performance cost.
-     * <p/>
+     * <p>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
-     * <p/>
+     * <p>
      * This mode is intrusive because it calls the {@link ScoreDirector#calculateScore()} more frequently
      * than a non assert mode.
-     * <p/>
+     * <p>
      * This mode is horribly slow.
      */
     FULL_ASSERT,
@@ -49,11 +49,11 @@ public enum EnvironmentMode {
      * This mode turns on several assertions (but not all of them)
      * to fail-fast on a bug in a {@link Move} implementation, a score rule, the rule engine itself or something else
      * at a horrible performance cost.
-     * <p/>
+     * <p>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
-     * <p/>
+     * <p>
      * This mode is non-intrusive, unlike {@link #FULL_ASSERT} and {@link #FAST_ASSERT}.
-     * <p/>
+     * <p>
      * This mode is horribly slow.
      */
     NON_INTRUSIVE_FULL_ASSERT,
@@ -61,12 +61,12 @@ public enum EnvironmentMode {
      * This mode turns on several assertions (but not all of them)
      * to fail-fast on a bug in a {@link Move} implementation, a score rule, the rule engine itself or something else
      * at a reasonable performance cost (in development at least).
-     * <p/>
+     * <p>
      * This mode is reproducible (see {@link #REPRODUCIBLE} mode).
-     * <p/>
+     * <p>
      * This mode is intrusive because it calls the {@link ScoreDirector#calculateScore()} more frequently
      * than a non assert mode.
-     * <p/>
+     * <p>
      * This mode is slow.
      */
     FAST_ASSERT,
@@ -76,11 +76,11 @@ public enum EnvironmentMode {
      * They will also yield the same result, except if they use a time based termination
      * and they have a sufficiently large difference in allocated CPU time.
      * This allows you to benchmark new optimizations (such as a new Move implementation) fairly.
-     * <p/>
+     * <p>
      * Warning: some code can disrupt reproducibility regardless of this mode. See the reference manual for more info.
-     * <p/>
+     * <p>
      * The reproducible mode is slightly slower than the production mode.
-     * <p/>
+     * <p>
      * In practice, this mode uses the default random seed,
      * and it also disables certain concurrency optimizations (such as work stealing).
      * TODO: PLANNER-76 Multi-threaded support which implement those concurrency optimizations
@@ -89,7 +89,7 @@ public enum EnvironmentMode {
     /**
      * The production mode is the fastest, but not reproducible.
      * It is recommended for a production environment, unless reproducibility is required.
-     * <p/>
+     * <p>
      * The random seed is different on every run, which makes it more robust against an unlucky random seed.
      * An unlucky random seed gives a bad result on a certain data set with a certain solver configuration.
      * Note that in most use cases the impact of the random seed is relatively low on the result.

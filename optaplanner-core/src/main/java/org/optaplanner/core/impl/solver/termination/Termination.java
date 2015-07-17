@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * A Termination determines when a {@link Solver} or a {@link Phase} should stop.
- * <p/>
+ * <p>
  * An implementation must extend {@link AbstractTermination} to ensure backwards compatibility in future versions.
  * @see AbstractTermination
  */
@@ -53,7 +53,7 @@ public interface Termination extends PhaseLifecycleListener {
      * </p>
      * If a timeGradient can not be calculated, it should return -1.0.
      * Several implementations (such a {@link SimulatedAnnealingAcceptor}) require a correctly implemented timeGradient.
-     * <p/>
+     * <p>
      * A Termination's timeGradient can be requested after they are terminated, so implementations
      * should be careful not to return a timeGradient above 1.0.
      * @param solverScope never null

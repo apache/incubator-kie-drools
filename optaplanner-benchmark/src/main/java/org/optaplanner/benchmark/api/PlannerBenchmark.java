@@ -18,7 +18,7 @@ package org.optaplanner.benchmark.api;
 
 /**
  * A planner benchmark that runs a number of single benchmarks.
- * <p/>
+ * <p>
  * Build by a {@link PlannerBenchmarkFactory}.
  */
 public interface PlannerBenchmark {

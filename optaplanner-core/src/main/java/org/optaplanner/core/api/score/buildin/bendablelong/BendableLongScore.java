@@ -26,9 +26,9 @@ import java.util.Arrays;
 /**
  * This {@link Score} is based on n levels of long constraints.
  * The number of levels is bendable at configuration time.
- * <p/>
+ * <p>
  * This class is immutable.
- * <p/>
+ * <p>
  * The {@link #getHardLevelsSize()} and {@link #getSoftLevelsSize()} must be the same as in the
  * {@link BendableLongScoreDefinition} used.
  * @see Score

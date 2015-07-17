@@ -33,13 +33,13 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
  * These values might be stored in memory as a {@link Collection} (usually a {@link List} or {@link Set}),
  * but if the values are numbers, they can also be stored in memory by their bounds
  * to use less memory and provide more opportunities.
- * <p/>
+ * <p>
  * Prefer using {@link CountableValueRange} (which extends this interface) whenever possible.
- * <p/>
+ * <p>
  * A ValueRange is stateful (unlike a {@link ValueSelector} which is stateless).
- * <p/>
+ * <p>
  * Implementations must be immutable.
- * <p/>
+ * <p>
  * An implementation must extend {@link AbstractCountableValueRange} or {@link AbstractUncountableValueRange}
  * to ensure backwards compatibility in future versions.
  * @see ValueRangeFactory

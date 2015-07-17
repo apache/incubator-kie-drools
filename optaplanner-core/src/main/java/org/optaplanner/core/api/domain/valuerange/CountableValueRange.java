@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 
 /**
  * A {@link ValueRange} that is ending. Therefore, it has a discrete (as in non-continuous) range.
- * <p/>
+ * <p>
  * An implementation must extend {@link AbstractCountableValueRange}
  * to ensure backwards compatibility in future versions.
  * @see ValueRangeFactory

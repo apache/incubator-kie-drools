@@ -27,7 +27,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Specifies that a bean property (or a field) is a custom shadow of 1 or more {@link PlanningVariable}'s.
- * <p/>
+ * <p>
  * It is specified on a getter of a java bean property (or a field) of a {@link PlanningEntity} class.
  */
 @Target({METHOD, FIELD})
@@ -38,7 +38,7 @@ public @interface CustomShadowVariable {
      * A {@link VariableListener} gets notified after a source planning variable has changed.
      * That listener changes the shadow variable (often recursively on multiple planning entities) accordingly,
      * Those shadow variables should make the score calculation more natural to write.
-     * <p/>
+     * <p>
      * For example: VRP with time windows uses a {@link VariableListener} to update the arrival times
      * of all the trailing entities when an entity is changed.
      * @return never null

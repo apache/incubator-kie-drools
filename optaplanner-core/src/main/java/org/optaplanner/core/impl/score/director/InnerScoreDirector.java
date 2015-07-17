@@ -97,7 +97,7 @@ public interface InnerScoreDirector extends ScoreDirector {
     /**
      * Clones this {@link ScoreDirector} and its {@link Solution workingSolution}.
      * Use {@link #getWorkingSolution()} to retrieve the {@link Solution workingSolution} of that clone.
-     * <p/>
+     * <p>
      * This is heavy method, because it usually breaks incremental score calculation. Use it sparingly.
      * Therefore it's best to clone lazily by delaying the clone call as long as possible.
      * @return never null
@@ -122,7 +122,7 @@ public interface InnerScoreDirector extends ScoreDirector {
      * Asserts that if the {@link Score} is calculated for the current {@link Solution workingSolution}
      * in the current {@link ScoreDirector} (with possibly incremental calculation residue),
      * it is equal to the parameter {@link Score expectedWorkingScore}.
-     * <p/>
+     * <p>
      * Used to assert that skipping {@link #calculateScore()} (when the score is otherwise determined) is correct.
      * @param expectedWorkingScore never null
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
@@ -135,7 +135,7 @@ public interface InnerScoreDirector extends ScoreDirector {
      * and therefore all shadow variables are updated if needed,
      * that the {@link Score} calculated for the {@link Solution workingSolution} afterwards
      * is equal to the parameter {@link Score expectedWorkingScore}.
-     * <p/>
+     * <p>
      * Used to assert that the shadow variables' state is consistent with the genuine variables' state.
      * @param expectedWorkingScore never null
      */
@@ -145,7 +145,7 @@ public interface InnerScoreDirector extends ScoreDirector {
      * Asserts that if the {@link Score} is calculated for the current {@link Solution workingSolution}
      * in a fresh {@link ScoreDirector} (with no incremental calculation residue),
      * it is equal to the parameter {@link Score workingScore}.
-     * <p/>
+     * <p>
      * Furthermore, if the assert fails, a score corruption analysis might be included in the exception message.
      * @param workingScore never null
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}

@@ -28,7 +28,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Provides the planning values that can be used for a {@link PlanningVariable}.
- * <p/>
+ * <p>
  * This is specified on a getter of a java bean property (or directly on a field)
  * which returns a {@link Collection} or {@link ValueRange}.
  * A {@link Collection} is implicitly converted to a {@link ValueRange}.

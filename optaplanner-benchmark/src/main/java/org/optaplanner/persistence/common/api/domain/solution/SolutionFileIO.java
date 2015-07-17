@@ -22,7 +22,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 
 /**
  * Reads or writes a {@link Solution} from or to a {@link File}.
- * <p/>
+ * <p>
  * An implementation must be thread-safe.
  */
 public interface SolutionFileIO {
@@ -43,12 +43,12 @@ public interface SolutionFileIO {
      *     <li>If this {@link SolutionFileIO} implementation serializes to text, use file extension "txt".</li>
      *     <li>If this {@link SolutionFileIO} implementation serializes to binary, use file extension "dat".</li>
      * </ul>
-     * <p/>
+     * <p>
      * It's good practice that both the input and the output file have the same file extension,
      * because a good output file is able to function as an input file.
-     * <p/>
+     * <p>
      * The file extension does not include the dot that separates it from the base name.
-     * <p/>
+     * <p>
      * This method is thread-safe.
      * @return never null, for example "xml"
      */

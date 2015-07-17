@@ -32,13 +32,13 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * A Move represents a change of 1 or more planning variables of 1 or more planning entities
  * in the working {@link Solution}.
- * <p/>
+ * <p>
  * Usually the move holds a direct reference to each planning entity of the {@link Solution}
  * which it will change when {@link #doMove(ScoreDirector)} is called.
  * On that change it should also notify the {@link ScoreDirector} accordingly.
- * <p/>
+ * <p>
  * A Move should implement {@link Object#equals(Object)} and {@link Object#hashCode()}.
- * <p/>
+ * <p>
  * An implementation must extend {@link AbstractMove} to ensure backwards compatibility in future versions.
  * @see AbstractMove
  */
@@ -51,10 +51,10 @@ public interface Move {
      * <li>Either doing it would change nothing in the {@link Solution}.</li>
      * <li>Either it's simply not possible to do (for example due to build-in hard constraints).</li>
      * </ul>
-     * <p/>
+     * <p>
      * It is recommended to keep this method implementation simple: do not use it in an attempt to satisfy normal
      * hard and soft constraints.
-     * <p/>
+     * <p>
      * Although you could also filter out non-doable moves in for example the {@link MoveSelector}
      * or {@link MoveListFactory}, this is not needed as the {@link Solver} will do it for you.
      * @param scoreDirector the {@link ScoreDirector} not yet modified by the move.
@@ -94,7 +94,7 @@ public interface Move {
     /**
      * Returns all planning entities that are being changed by this move.
      * Required for {@link AcceptorType#ENTITY_TABU}.
-     * <p/>
+     * <p>
      * Duplicates entries in the returned {@link Collection} are best avoided.
      * The returned {@link Collection} is recommended to be in a stable order.
      * For example: use {@link List} or {@link LinkedHashSet}, but not {@link HashSet}.
@@ -105,7 +105,7 @@ public interface Move {
     /**
      * Returns all planning values that entities are being assigned to by this move.
      * Required for {@link AcceptorType#VALUE_TABU}.
-     * <p/>
+     * <p>
      * Duplicates entries in the returned {@link Collection} are best avoided.
      * The returned {@link Collection} is recommended to be in a stable order.
      * For example: use {@link List} or {@link LinkedHashSet}, but not {@link HashSet}.

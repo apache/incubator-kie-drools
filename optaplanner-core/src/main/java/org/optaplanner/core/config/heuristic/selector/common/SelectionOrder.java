@@ -25,7 +25,7 @@ public enum SelectionOrder {
     /**
      * Inherit the value from the parent {@link SelectorConfig}. If the parent is cached,
      * the value is changed to {@link #ORIGINAL}.
-     * <p/>
+     * <p>
      * This is the default. If there is no such parent, then it defaults to {@link #RANDOM}.
      */
     INHERIT,

@@ -27,9 +27,9 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 /**
  * This {@link Score} is based on n levels of {@link BigDecimal} constraints.
  * The number of levels is bendable at configuration time.
- * <p/>
+ * <p>
  * This class is immutable.
- * <p/>
+ * <p>
  * The {@link #getHardLevelsSize()} and {@link #getSoftLevelsSize()} must be the same as in the
  * {@link BendableScoreDefinition} used.
  * @see Score

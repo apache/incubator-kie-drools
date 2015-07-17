@@ -35,10 +35,10 @@ public enum InitializingScoreTrendLevel {
      * This means: given a non-fully initialized {@link Solution} with a {@link Score} A,
      * initializing 1 or more variables (without altering the already initialized variables)
      * will give a {@link Solution} for which the {@link Score} is better or equal to A.
-     * <p/>
+     * <p>
      * In practice, this means that the score constraints of this score level are all positive,
      * and initializing a variable cannot unmatch a already matched positive constraint.
-     * <p/>
+     * <p>
      * Also implies the perfect minimum score is 0.
      */
     ONLY_UP,
@@ -47,10 +47,10 @@ public enum InitializingScoreTrendLevel {
      * This means: given a non-fully initialized {@link Solution} with a {@link Score} A,
      * initializing 1 or more variables (without altering the already initialized variables)
      * will give a {@link Solution} for which the {@link Score} is worse or equal to A.
-     * <p/>
+     * <p>
      * In practice, this means that the score constraints of this score level are all negative,
      * and initializing a variable cannot unmatch a already matched negative constraint.
-     * <p/>
+     * <p>
      * Also implies the perfect maximum score is 0.
      */
     ONLY_DOWN;

@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValue
 
 /**
  * A {@link MoveSelector} that caches the result of its child {@link MoveSelector}.
- * <p/>
+ * <p>
  * Keep this code in sync with {@link CachingEntitySelector} and {@link CachingValueSelector}.
  */
 public class CachingMoveSelector extends AbstractCachingMoveSelector {

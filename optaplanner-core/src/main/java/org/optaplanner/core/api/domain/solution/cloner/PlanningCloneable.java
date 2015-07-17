@@ -21,7 +21,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 /**
  * Tagging interface for a {@link Solution} that implements its own planning cloning
  * instead of letting the default or a custom {@link SolutionCloner} do it.
- * <p/>
+ * <p>
  * Planning cloning is hard: avoid doing it yourself.
  */
 public interface PlanningCloneable<T> {

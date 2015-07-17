@@ -293,7 +293,7 @@ public class SolutionBusiness {
 
     /**
      * Can be called on any thread.
-     * <p/>
+     * <p>
      * Note: This method does not change the guiScoreDirector because that can only be changed on the event thread.
      * @param planningProblem never null
      * @return never null

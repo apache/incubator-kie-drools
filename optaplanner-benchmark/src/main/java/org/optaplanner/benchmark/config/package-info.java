@@ -16,7 +16,7 @@
 
 /**
  * Classes which represent the XML Benchmark configuration of OptaPlanner Benchmark.
- * <p/>
+ * <p>
  * The XML Benchmark configuration is backwards compatible for all elements,
  * except for elements that require the use of non public API classes.
  */

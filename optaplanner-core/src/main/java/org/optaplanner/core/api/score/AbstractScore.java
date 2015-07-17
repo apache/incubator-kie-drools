@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
 /**
  * Abstract superclass for {@link Score}.
- * <p/>
+ * <p>
  * Subclasses must be immutable.
  * @see Score
  * @see HardSoftScore

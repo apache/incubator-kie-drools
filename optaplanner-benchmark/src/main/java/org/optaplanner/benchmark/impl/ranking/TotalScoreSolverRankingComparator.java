@@ -27,7 +27,7 @@ import org.optaplanner.core.api.score.Score;
 /**
  * This ranking {@link Comparator} orders a {@link SolverBenchmarkResult} by its total {@link Score}.
  * It maximize the overall score, so it minimizes the overall cost if all {@link Solution}s would be executed.
- * <p/>
+ * <p>
  * When the inputSolutions differ greatly in size or difficulty, this often results in a big difference in
  * {@link Score} magnitude between each {@link Solution}. For example: score 10 for dataset A versus 1000 for dataset B.
  * In such cases, dataset B would marginalize dataset A.

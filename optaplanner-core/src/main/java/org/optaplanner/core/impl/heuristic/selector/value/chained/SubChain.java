@@ -23,7 +23,7 @@ import java.util.List;
 
 /**
  * A subList out of a single chain.
- * <p/>
+ * <p>
  * Never includes an anchor.
  */
 public class SubChain implements Serializable {

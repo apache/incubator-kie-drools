@@ -34,7 +34,7 @@ public interface ConstraintMatchAwareIncrementalScoreCalculator<Sol extends Solu
 
     /**
      * Allows for increased performance by tracking only if constraintMatchEnabled is true.
-     * <p/>
+     * <p>
      * Every implementation should call {@link #resetWorkingSolution(Solution)}
      * and only handle the constraintMatchEnabled parameter specifically (or ignore it).
      * @param workingSolution never null, to pass to {@link #resetWorkingSolution(Solution)}.

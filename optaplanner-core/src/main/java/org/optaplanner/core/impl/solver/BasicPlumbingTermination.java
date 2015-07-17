@@ -69,7 +69,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
 
     /**
      * If this returns true, then the problemFactChangeQueue is definitely not empty.
-     * <p/>
+     * <p>
      * Concurrency note: Blocks until {@link #problemFactChangeQueue} is not empty or {@link #terminatedEarly} is true.
      * @return true if the solver needs to be restarted
      */

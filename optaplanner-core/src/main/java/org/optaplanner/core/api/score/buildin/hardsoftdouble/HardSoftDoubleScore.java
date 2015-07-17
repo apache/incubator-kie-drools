@@ -24,11 +24,11 @@ import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDeci
 /**
  * This {@link Score} is based on 2 levels of double constraints: hard and soft.
  * Hard constraints have priority over soft constraints.
- * <p/>
+ * <p>
  * WARNING: NOT RECOMMENDED TO USE DUE TO ROUNDING ERRORS THAT CAUSE SCORE CORRUPTION.
  * For example, this prints false: <code>System.out.println((0.01 + 0.05) == (0.01 + 0.02 + 0.03));</code>
  * Use {@link HardSoftBigDecimalScore} instead.
- * <p/>
+ * <p>
  * This class is immutable.
  * @see Score
  */
@@ -75,7 +75,7 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
      * The total of the broken negative soft constraints and fulfilled positive soft constraints.
      * Their weight is included in the total.
      * The soft score is usually a negative number because most use cases only have negative constraints.
-     * <p/>
+     * <p>
      * In a normal score comparison, the soft score is irrelevant if the 2 scores don't have the same hard score.
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */

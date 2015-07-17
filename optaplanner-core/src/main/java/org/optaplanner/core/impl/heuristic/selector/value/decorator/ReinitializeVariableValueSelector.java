@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Prevents reassigning of already initialized variables during Construction Heuristics and Exhaustive Search.
- * <p/>
+ * <p>
  * Returns no values for an entity's variable if the variable is already initialized.
  */
 public class ReinitializeVariableValueSelector extends AbstractValueSelector {

@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * A CompositeMove is composed out of multiple other moves.
- * <p/>
+ * <p>
  * Warning: each of moves in the moveList must not rely on the effect of a previous move in the moveList
  * to create its undoMove correctly.
  * @see Move

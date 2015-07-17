@@ -24,7 +24,7 @@ import org.optaplanner.core.api.score.Score;
 
 /**
  * This {@link Score} is based on 1 level of {@link BigDecimal} constraints.
- * <p/>
+ * <p>
  * This class is immutable.
  * @see Score
  */

@@ -32,7 +32,7 @@ import org.optaplanner.core.config.util.ConfigUtils;
  * Runs an example solver.
  * All tests ending with the suffix <code>PerformanceTest</code> are reported on by hudson
  * in graphs which show the execution time over builds.
- * <p/>
+ * <p>
  * Recommended courtesy notes: Always use a timeout value on @Test.
  * The timeout should be the triple of the timeout on a normal 3 year old desktop computer,
  * because some of the hudson machines are old.

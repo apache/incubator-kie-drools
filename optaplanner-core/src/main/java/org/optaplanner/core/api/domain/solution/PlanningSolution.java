@@ -29,10 +29,10 @@ import static java.lang.annotation.RetentionPolicy.*;
  * Specifies that the class is a planning solution.
  * Each planning solution must have at least 1 {@link PlanningEntityCollectionProperty}
  * or {@link PlanningEntityProperty} property.
- * <p/>
+ * <p>
  * The class should have a public no-arg constructor, so it can be cloned
  * (unless the {@link #solutionCloner()} is specified).
- * <p/>
+ * <p>
  * This annotation describes declarative properties of the planning solution.
  * The planning solution class must also implement {@link Solution},
  * which is needed to get/set state.
@@ -43,7 +43,7 @@ public @interface PlanningSolution {
 
     /**
      * Overrides the default {@link SolutionCloner} to implement a custom {@link Solution} cloning implementation.
-     * <p/>
+     * <p>
      * If this is not specified and the {@link Solution} does not implements {@link PlanningCloneable},
      * the default reflection-based {@link SolutionCloner} is used, so you don't have to worry about it.
      * @return {@link NullSolutionCloner} when it is null (workaround for annotation limitation)

@@ -32,7 +32,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Specifies that a bean property (or a field) can be changed and should be optimized by the optimization algorithms.
- * <p/>
+ * <p>
  * It is specified on a getter of a java bean property (or directly on a field) of a {@link PlanningEntity} class.
  */
 @Target({METHOD, FIELD})
@@ -42,7 +42,7 @@ public @interface PlanningVariable {
     /**
      * Any {@link ValueRangeProvider} annotation on a {@link PlanningSolution} or {@link PlanningEntity}
      * will automatically be registered with it's {@link ValueRangeProvider#id()}.
-     * <p/>
+     * <p>
      * There should be at least 1 valueRangeRef.
      * @return 1 (or more) registered {@link ValueRangeProvider#id()}
      */
@@ -51,10 +51,10 @@ public @interface PlanningVariable {
     /**
      * A nullable planning variable will automatically add the planning value null
      * to the {@link ValueRangeProvider}'s range.
-     * <p/>
+     * <p>
      * In repeated planning use cases, it's recommended to specify a {@link #reinitializeVariableEntityFilter()}
      * for every nullable planning variable too.
-     * <p/>
+     * <p>
      * {@link #nullable()} true is not compatible with {@link PlanningVariableGraphType#CHAINED} true.
      * {@link #nullable()} true is not compatible with a primitive property type.
      * @return true if null is a valid value for this planning variable
@@ -66,11 +66,11 @@ public @interface PlanningVariable {
      * Non reinitializable planning variable is ignored by construction heuristics.
      * This is especially useful in repeated planning use cases,
      * in which starting from scratch would waste previous results and time.
-     * <p/>
+     * <p>
      * If no {@link #reinitializeVariableEntityFilter} is specified,
      * the default considers an entity uninitialized for a variable if its value is null
      * (even if {@link #nullable()} is true).
-     * <p/>
+     * <p>
      * The method {@link SelectionFilter#accept(ScoreDirector, Object)}
      * returns false if the selection entity should be reinitialized for this variable
      * and it returns true if the selection entity should not be reinitialized for this variable
@@ -93,11 +93,11 @@ public @interface PlanningVariable {
      * Allows a collection of planning values for this variable to be sorted by strength.
      * A strengthWeight estimates how strong a planning value is.
      * Some algorithms benefit from planning on weaker planning values first or from focusing on them.
-     * <p/>
+     * <p>
      * The {@link Comparator} should sort in ascending strength.
      * For example: sorting 3 computers on strength based on their RAM capacity:
      * Computer B (1GB RAM), Computer A (2GB RAM), Computer C (7GB RAM),
-     * <p/>
+     * <p>
      * Do not use together with {@link #strengthWeightFactoryClass()}.
      * @return {@link NullStrengthComparator} when it is null (workaround for annotation limitation)
      * @see #strengthWeightFactoryClass()
@@ -110,7 +110,7 @@ public @interface PlanningVariable {
 
     /**
      * The {@link SelectionSorterWeightFactory} alternative for {@link #strengthComparatorClass()}.
-     * <p/>
+     * <p>
      * Do not use together with {@link #strengthComparatorClass()}.
      * @return {@link NullStrengthWeightFactory} when it is null (workaround for annotation limitation)
      * @see #strengthComparatorClass()

@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 /**
  * Used for incremental java {@link Score} calculation.
  * This is much faster than {@link EasyScoreCalculator} but requires much more code to implement too.
- * <p/>
+ * <p>
  * Any implementation is naturally stateful.
  * @param <Sol>
  * @see IncrementalScoreDirector

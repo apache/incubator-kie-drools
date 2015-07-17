@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 /**
  * A {@link ValueSelector} that caches the result of its child {@link ValueSelector}.
- * <p/>
+ * <p>
  * Keep this code in sync with {@link CachingEntitySelector} and {@link CachingMoveSelector}.
  */
 public class CachingValueSelector extends AbstractCachingValueSelector implements EntityIndependentValueSelector {
