@@ -83,7 +83,5 @@ public interface AuditTask {
     
     void setWorkItemId(long workItemId);
         
-    String getPotentialOwners();
-
-    String getBusinessAdministrators();    
+    
 }
