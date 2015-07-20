@@ -15,6 +15,9 @@
 
 package org.jbpm.services.task.impl.model.xml;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -42,44 +45,51 @@ public class AbstractJaxbTaskObject<T> {
     
     protected AbstractJaxbTaskObject(T taskObject, Class<?> objectInterface) {
         this(objectInterface);
-        if (taskObject != null) {
-	        for (Method getIsMethod : objectInterface.getDeclaredMethods() ) { 
-	            String methodName = getIsMethod.getName();
-	            String fieldName;
-	            if( getIsMethod.getReturnType().equals(User.class) ) { 
-	                continue;
-	            }
-	            if (methodName.startsWith("get")) {
-	                fieldName = methodName.substring(3);
-	            } else if (methodName.startsWith("is")) {
-	                fieldName = methodName.substring(2);
-	            } 
-	            else {
-	                assert false : "Unknown method ´" + methodName + "' in "+ this.getClass().getSimpleName() + ".";
-	                continue;
-	            }
-	            // getField -> field (lowercase f)
-	            fieldName = fieldName.substring(0,1).toLowerCase() + fieldName.substring(1);
-	            try { 
-	                Field field = this.getClass().getDeclaredField(fieldName);
-	                boolean origAccessStatus = field.isAccessible();
-	                field.setAccessible(true);
-	                Object setObject = getIsMethod.invoke(taskObject, new Object[0]);
-	                field.set(this, setObject);
-	                field.setAccessible(origAccessStatus);
-	            } catch( Exception e ) { 
-	               throw new RuntimeException("Unable to initialize " + fieldName + " when creating " + this.getClass().getSimpleName() + ".", e ); 
-	            }
-	        }
-        }
+        initialize(taskObject, objectInterface);
     }
 
+    protected void initialize(T taskObject, Class<?> objectInterface) { 
+        if (taskObject != null) {
+            for (Method getIsMethod : objectInterface.getDeclaredMethods() ) { 
+                String methodName = getIsMethod.getName();
+                String fieldName;
+                if( getIsMethod.getReturnType().equals(User.class) ) { 
+                    continue;
+                }
+                if (methodName.startsWith("set")) {
+                    continue; 
+                }
+                if (methodName.startsWith("get")) {
+                    fieldName = methodName.substring(3);
+                } else if (methodName.startsWith("is")) {
+                    fieldName = methodName.substring(2);
+                } 
+                else {
+                    assert false : "Unknown method '" + methodName + "' in "+ this.getClass().getSimpleName() + ".";
+                    continue;
+                }
+                // getField -> field (lowercase f)
+                fieldName = fieldName.substring(0,1).toLowerCase() + fieldName.substring(1);
+                try { 
+                    Field field = this.getClass().getDeclaredField(fieldName);
+                    boolean origAccessStatus = field.isAccessible();
+                    field.setAccessible(true);
+                    Object setObject = getIsMethod.invoke(taskObject, new Object[0]);
+                    field.set(this, setObject);
+                    field.setAccessible(origAccessStatus);
+                } catch( Exception e ) { 
+                   throw new RuntimeException("Unable to initialize " + fieldName + " when creating " + this.getClass().getSimpleName() + ".", e ); 
+                }
+            }
+        } 
+    }
 
-    static Object unsupported(Class<?> realClass) { 
+    static <T> T unsupported(Class<?> realClass) { 
         String methodName = (new Throwable()).getStackTrace()[1].getMethodName();
         throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + realClass.getSimpleName() + " implementation.");
     }
 
+    @SuppressWarnings("unchecked")
     public static <I,J extends I> List<J> convertListFromInterfaceToJaxbImpl(List<I> interfacelList, Class<I> interfaceClass, Class<J> jaxbClass) { 
         List<J> jaxbList;
         if( interfacelList != null ) { 
@@ -114,5 +124,14 @@ public class AbstractJaxbTaskObject<T> {
         }
         
         return (T) value;
+    }
+    
+    public void writeExternal( ObjectOutput out ) throws IOException {
+        unsupported(realClass);
+        
+    }
+
+    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
+        unsupported(realClass);
     }
 }

@@ -28,11 +28,6 @@ import org.kie.internal.task.api.InternalTaskService;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 
-/**
- *
- *
- */
-
 public class LocalTaskAuditTest extends TaskAuditBaseTest {
 
 	private PoolingDataSource pds;

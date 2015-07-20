@@ -28,6 +28,7 @@ import javax.persistence.PersistenceUnit;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorManager;
 import org.jbpm.runtime.manager.impl.identity.UserDataServiceProvider;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
+import org.jbpm.services.api.UserTaskService;
 import org.jbpm.services.ejb.TaskServiceEJBLocal;
 import org.jbpm.services.task.HumanTaskConfigurator;
 import org.jbpm.services.task.HumanTaskServiceFactory;
@@ -297,406 +298,402 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 
 	@Override
 	public void activate(long taskId, String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void claim(long taskId, String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void claimNextAvailable(String userId, String language) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void complete(long taskId, String userId, Map<String, Object> data) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void delegate(long taskId, String userId, String targetUserId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void exit(long taskId, String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void fail(long taskId, String userId, Map<String, Object> faultData) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void forward(long taskId, String userId, String targetEntityId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public Task getTaskByWorkItemId(long workItemId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public Task getTaskById(long taskId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}	
 
 	@Override
 	public long addTask(Task task, Map<String, Object> params) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public void release(long taskId, String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void resume(long taskId, String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void skip(long taskId, String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void start(long taskId, String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void stop(long taskId, String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void suspend(long taskId, String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public Content getContentById(long contentId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public Attachment getAttachmentById(long attachId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public Map<String, Object> getTaskContent(long taskId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public <T> T execute(Command<T> command) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public void addGroup(Group group) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void addUser(User user) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public int archiveTasks(List<TaskSummary> tasks) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public void claim(long taskId, String userId, List<String> groupIds) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void claimNextAvailable(String userId, List<String> groupIds) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void deleteFault(long taskId, String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void deleteOutput(long taskId, String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void deployTaskDef(TaskDef def) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public List<TaskDef> getAllTaskDef(String filter) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public Group getGroupById(String groupId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public List<Group> getGroups() {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public TaskDef getTaskDefById(String id) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
-
 
 	@Override
 	public User getUserById(String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public List<User> getUsers() {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public long addTask(Task task, ContentData data) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public void remove(long taskId, String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void removeGroup(String groupId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public int removeTasks(List<TaskSummary> tasks) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public void removeUser(String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void setFault(long taskId, String userId, FaultData fault) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void setOutput(long taskId, String userId, Object outputContentData) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void setPriority(long taskId, int priority) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void setTaskNames(long taskId, List<I18NText> taskNames) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void undeployTaskDef(String id) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public List<TaskEvent> getTaskEventsById(long taskId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public UserInfo getUserInfo() {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public void setUserInfo(UserInfo userInfo) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
-	public void addUsersAndGroups(Map<String, User> users,
-			Map<String, Group> groups) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+	public void addUsersAndGroups(Map<String, User> users, Map<String, Group> groups) {
+		unsupported();
 	}
 
 	@Override
 	public int removeAllTasks() {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public long addContent(long taskId, Content content) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public long addContent(long taskId, Map<String, Object> params) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public void deleteContent(long taskId, long contentId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public List<Content> getAllContentByTaskId(long taskId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
-	public long addAttachment(long taskId, Attachment attachment,
-			Content content) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+	public long addAttachment(long taskId, Attachment attachment, Content content) {
+		return unsupported();
 	}
 
 	@Override
 	public void deleteAttachment(long taskId, long attachmentId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public List<Attachment> getAllAttachmentsByTaskId(long taskId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public void removeTaskEventsById(long taskId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public OrganizationalEntity getOrganizationalEntityById(String entityId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public void setExpirationDate(long taskId, Date date) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void setDescriptions(long taskId, List<I18NText> descriptions) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void setSkipable(long taskId, boolean skipable) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public int getPriority(long taskId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public Date getExpirationDate(long taskId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public List<I18NText> getDescriptions(long taskId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public boolean isSkipable(long taskId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public SubTasksStrategy getSubTaskStrategy(long taskId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public Task getTaskInstanceById(long taskId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public int getCompletedTaskByUserId(String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public int getPendingTaskByUserId(String userId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
-	public long addComment(long taskId, Comment comment) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+	public Long addComment(long taskId, Comment comment) {
+		return unsupported();
 	}
 
 	@Override
 	public void deleteComment(long taskId, long commentId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		unsupported();
 	}
 
 	@Override
 	public List<Comment> getAllCommentsByTaskId(long taskId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
 	public Comment getCommentById(long commentId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+		return unsupported();
 	}
 
 	@Override
-	public void addMarshallerContext(String ownerId,
-			ContentMarshallerContext context) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+	public void addMarshallerContext(String ownerId, ContentMarshallerContext context) {
+        unsupported();
 	}
 
 	@Override
 	public void removeMarshallerContext(String ownerId) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+        unsupported();
 	}
 
 	@Override
 	public ContentMarshallerContext getMarshallerContext(Task task) {
-		throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+        return unsupported();
 	}
 
     @Override
     public TaskQueryBuilder taskQuery(String userId) {
-        throw new UnsupportedOperationException("This method is not supported, use UserTaskService instead");
+        return unsupported();
     }
 
 	@Override
@@ -704,5 +701,14 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 		delegate.executeReminderForTask(taskId,initiator);
 	}
 
+    @Override
+    public Long addComment( long taskId, String addedByUserId, String commentText ) {
+        return unsupported();
+    }
 
+    private static <T> T unsupported() { 
+        String methodName = (new Throwable()).getStackTrace()[1].getMethodName();
+        throw new UnsupportedOperationException(methodName + " is not supported on the TaskService EJB implementation, " 
+                + "please use the " + UserTaskService.class + " implementation instead!");
+    }
 }

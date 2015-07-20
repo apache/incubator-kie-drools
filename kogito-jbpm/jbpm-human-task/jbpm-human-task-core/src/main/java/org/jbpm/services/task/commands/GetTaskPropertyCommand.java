@@ -58,19 +58,19 @@ public class GetTaskPropertyCommand extends UserGroupCallbackTaskCommand<Object>
         TaskInstanceService service = context.getTaskInstanceService();
         Object result = null;
         switch (property) {
-		case PRIORITY_PROPERTY:
+		case SetTaskPropertyCommand.PRIORITY_PROPERTY:
 			result = service.getPriority(taskId);
 			break;
-		case EXPIRATION_DATE_PROPERTY:
+		case SetTaskPropertyCommand.EXPIRATION_DATE_PROPERTY:
 			result = service.getExpirationDate(taskId);
 			break;
-		case DESCRIPTION_PROPERTY:
+		case SetTaskPropertyCommand.DESCRIPTION_PROPERTY:
 			result = service.getDescriptions(taskId);
 			break;
-		case SKIPPABLE_PROPERTY:
+		case SetTaskPropertyCommand.SKIPPABLE_PROPERTY:
 			result = service.isSkipable(taskId);
 			break;
-		case SUB_TASK_STRATEGY_PROPERTY:
+		case SetTaskPropertyCommand.SUB_TASK_STRATEGY_PROPERTY:
 			result = service.getSubTaskStrategy(taskId);
 			break;
 		default:

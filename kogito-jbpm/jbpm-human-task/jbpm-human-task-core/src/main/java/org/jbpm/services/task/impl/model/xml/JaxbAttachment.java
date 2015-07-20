@@ -15,9 +15,6 @@
 
 package org.jbpm.services.task.impl.model.xml;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -113,16 +110,6 @@ public class JaxbAttachment extends AbstractJaxbTaskObject<Attachment> implement
     @Override
     public long getAttachmentContentId() {
         return whenNull(attachmentContentId, -1l);
-    }
-
-    @Override
-    public void writeExternal( ObjectOutput out ) throws IOException {
-        unsupported(Attachment.class);
-    }
-
-    @Override
-    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        unsupported(Attachment.class);
     }
 
 }

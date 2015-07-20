@@ -19,6 +19,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.*;
+import static org.jbpm.services.task.commands.SetTaskPropertyCommand.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -26,9 +28,11 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -46,11 +50,25 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.jbpm.services.task.admin.listener.internal.GetCurrentTxTasksCommand;
 import org.jbpm.services.task.commands.CompositeCommand;
+import org.jbpm.services.task.commands.SetTaskPropertyCommand;
 import org.jbpm.services.task.commands.TaskCommand;
+import org.jbpm.services.task.commands.TaskContext;
 import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
+import org.jbpm.services.task.impl.model.FaultDataImpl;
+import org.jbpm.services.task.impl.model.I18NTextImpl;
 import org.jbpm.services.task.impl.model.xml.JaxbContent;
+import org.jbpm.services.task.impl.model.xml.JaxbFaultData;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
+import org.jbpm.services.task.jaxb.AbstractTaskSerializationTest.TestType;
+import org.junit.Assume;
 import org.junit.Test;
+import org.kie.api.task.model.I18NText;
+import org.kie.internal.task.api.TaskInstanceService;
+import org.kie.internal.task.api.UserGroupCallback;
+import org.kie.internal.task.api.model.AccessType;
+import org.kie.internal.task.api.model.SubTasksStrategy;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -72,13 +90,13 @@ public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
                             new TypeAnnotationsScanner(), new FieldAnnotationsScanner(), new MethodAnnotationsScanner(), new SubTypesScanner());
     
     @Override
-    public Object testRoundTrip(Object input) throws Exception {
+    public <T> T testRoundTrip(T input) throws Exception {
         String xmlStr = convertJaxbObjectToString(input);
         logger.debug(xmlStr);
         if( input instanceof JAXBElement ) { 
-            return convertStringToJaxbElement(xmlStr, ((JAXBElement) input).getValue().getClass());
+            return (T) convertStringToJaxbElement(xmlStr, ((JAXBElement) input).getValue().getClass());
         }
-        return convertStringToJaxbObject(xmlStr);
+        return (T) convertStringToJaxbObject(xmlStr);
     }
 
     @Test
@@ -216,5 +234,49 @@ public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
             String idName = id.replace("-", "");
             assertEquals( "XML root element name should match class name!", className.toLowerCase(), idName.toLowerCase());
         }
+    }
+    
+    @Test
+    public void setTaskPropertyCommandTest() throws Exception { 
+       SetTaskPropertyCommand cmd;
+      
+       int taskId = 1;
+       String userId = "user";
+      
+       FaultDataImpl faultData = new FaultDataImpl();
+       faultData.setAccessType(AccessType.Inline);
+       faultData.setContent("skinned shins".getBytes());
+       faultData.setFaultName("Whoops!");
+       faultData.setType("skates");
+      
+       List<I18NText> textList = new ArrayList<I18NText>();
+       I18NText text = new I18NTextImpl("nl-NL", "Stroopwafel!");
+       textList.add(text);
+       
+       Object [][] testData = { 
+               { FAULT_PROPERTY, faultData },
+               { OUTPUT_PROPERTY, new Object() },
+               { PRIORITY_PROPERTY, 23 },
+               { TASK_NAMES_PROPERTY, textList },
+               { EXPIRATION_DATE_PROPERTY, new Date() },
+               { DESCRIPTION_PROPERTY, new ArrayList<I18NText>() }, 
+               { SKIPPABLE_PROPERTY, false },
+               { SUB_TASK_STRATEGY_PROPERTY, SubTasksStrategy.EndParentOnAllSubTasksEnd }
+       };
+       
+       TaskContext mockContext = mock(TaskContext.class);
+       TaskInstanceService mockTaskService = mock(TaskInstanceService.class);
+       UserGroupCallback mockUserGroupCallback = mock(UserGroupCallback.class);
+       when(mockContext.getTaskInstanceService()).thenReturn(mockTaskService);
+       when(mockContext.getUserGroupCallback()).thenReturn(mockUserGroupCallback);
+       when(mockUserGroupCallback.existsUser(anyString())).thenReturn(false);
+       
+       for( Object [] data : testData ) {
+           int property = (Integer) data[0];
+           cmd = new SetTaskPropertyCommand(taskId, userId, property, data[1]);
+           cmd.execute(mockContext);
+       }
+       
+       
     }
 }

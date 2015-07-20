@@ -192,6 +192,7 @@ public class JaxbTask implements InternalTask {
             List<I18NText> names = new ArrayList<I18NText>();
             for (I18NText n: this.getNames()) {
                 I18NText text = TaskModelProvider.getFactory().newI18NText();
+                ((InternalI18NText) text).setId(n.getId());
                 ((InternalI18NText) text).setLanguage(n.getLanguage());
                 ((InternalI18NText) text).setText(n.getText());
                 names.add(text);
@@ -207,10 +208,11 @@ public class JaxbTask implements InternalTask {
 
         {
             List<I18NText> subjects = new ArrayList<I18NText>();
-            for (I18NText n: this.getSubjects()) {
+            for (I18NText s: this.getSubjects()) {
                 I18NText text = TaskModelProvider.getFactory().newI18NText();
-                ((InternalI18NText) text).setLanguage(n.getLanguage());
-                ((InternalI18NText) text).setText(n.getText());
+                ((InternalI18NText) text).setId(s.getId());
+                ((InternalI18NText) text).setLanguage(s.getLanguage());
+                ((InternalI18NText) text).setText(s.getText());
                 subjects.add(text);
             }
             taskImpl.setSubjects(subjects);
@@ -223,10 +225,11 @@ public class JaxbTask implements InternalTask {
 
         {
             List<I18NText> descriptions = new ArrayList<I18NText>();
-            for (I18NText n: this.getDescriptions()) {
+            for (I18NText d: this.getDescriptions()) {
                 I18NText text = TaskModelProvider.getFactory().newI18NText();
-                ((InternalI18NText) text).setLanguage(n.getLanguage());
-                ((InternalI18NText) text).setText(n.getText());
+                ((InternalI18NText) text).setId(d.getId());
+                ((InternalI18NText) text).setLanguage(d.getLanguage());
+                ((InternalI18NText) text).setText(d.getText());
                 descriptions.add(text);
             }
             taskImpl.setDescriptions(descriptions);
@@ -465,12 +468,12 @@ public class JaxbTask implements InternalTask {
 
     @Override
     public int getVersion() {
-        return (Integer) unsupported(Task.class);
+        return unsupported(Task.class);
     }
 
     @Override
     public Delegation getDelegation() {
-        return (Delegation) unsupported(Task.class);
+        return unsupported(Task.class);
     }
 
     @Override

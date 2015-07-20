@@ -99,7 +99,6 @@ import org.jbpm.services.task.commands.SkipTaskCommand;
 import org.jbpm.services.task.commands.StartTaskCommand;
 import org.jbpm.services.task.commands.StopTaskCommand;
 import org.jbpm.services.task.commands.SuspendTaskCommand;
-import org.jbpm.services.task.commands.TaskCommand;
 import org.jbpm.services.task.commands.UndeployTaskDefCommand;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.impl.TaskContentRegistry;
@@ -563,22 +562,22 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 
 	@Override
 	public void setFault(long taskId, String userId, FaultData fault) {
-		executor.execute(new SetTaskPropertyCommand(taskId, userId, TaskCommand.FAULT_PROPERTY, fault));
+		executor.execute(new SetTaskPropertyCommand(taskId, userId, SetTaskPropertyCommand.FAULT_PROPERTY, fault));
 	}
 
 	@Override
 	public void setOutput(long taskId, String userId, Object outputContentData) {
-		executor.execute(new SetTaskPropertyCommand(taskId, userId, TaskCommand.OUTPUT_PROPERTY, outputContentData));
+		executor.execute(new SetTaskPropertyCommand(taskId, userId, SetTaskPropertyCommand.OUTPUT_PROPERTY, outputContentData));
 	}
 
 	@Override
 	public void setPriority(long taskId, int priority) {
-		executor.execute(new SetTaskPropertyCommand(taskId, null, TaskCommand.PRIORITY_PROPERTY, priority));
+		executor.execute(new SetTaskPropertyCommand(taskId, null, SetTaskPropertyCommand.PRIORITY_PROPERTY, priority));
 	}
 
 	@Override
 	public void setTaskNames(long taskId, List<I18NText> taskNames) {
-		executor.execute(new SetTaskPropertyCommand(taskId, null, TaskCommand.TASK_NAMES_PROPERTY, taskNames));
+		executor.execute(new SetTaskPropertyCommand(taskId, null, SetTaskPropertyCommand.TASK_NAMES_PROPERTY, taskNames));
 	}
 
 	@Override
@@ -650,49 +649,49 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 
 	@Override
 	public void setExpirationDate(long taskId, Date date) {
-		executor.execute(new SetTaskPropertyCommand(taskId, null, TaskCommand.EXPIRATION_DATE_PROPERTY, date));
+		executor.execute(new SetTaskPropertyCommand(taskId, null, SetTaskPropertyCommand.EXPIRATION_DATE_PROPERTY, date));
 	}
 
 	@Override
 	public void setDescriptions(long taskId, List<I18NText> descriptions) {
-		executor.execute(new SetTaskPropertyCommand(taskId, null, TaskCommand.DESCRIPTION_PROPERTY, descriptions));
+		executor.execute(new SetTaskPropertyCommand(taskId, null, SetTaskPropertyCommand.DESCRIPTION_PROPERTY, descriptions));
 	}
 
 	@Override
 	public void setSkipable(long taskId, boolean skipable) {
-		executor.execute(new SetTaskPropertyCommand(taskId, null, TaskCommand.SKIPPABLE_PROPERTY, skipable));
+		executor.execute(new SetTaskPropertyCommand(taskId, null, SetTaskPropertyCommand.SKIPPABLE_PROPERTY, skipable));
 	}
 
 	@Override
 	public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
-		executor.execute(new SetTaskPropertyCommand(taskId, null, TaskCommand.SUB_TASK_STRATEGY_PROPERTY, strategy));
+		executor.execute(new SetTaskPropertyCommand(taskId, null, SetTaskPropertyCommand.SUB_TASK_STRATEGY_PROPERTY, strategy));
 	}
 
 	@Override
 	public int getPriority(long taskId) {
-		return (Integer) executor.execute(new GetTaskPropertyCommand(taskId, null, TaskCommand.PRIORITY_PROPERTY));
+		return (Integer) executor.execute(new GetTaskPropertyCommand(taskId, null, SetTaskPropertyCommand.PRIORITY_PROPERTY));
 	}
 
 	@Override
 	public Date getExpirationDate(long taskId) {
-		return (Date) executor.execute(new GetTaskPropertyCommand(taskId, null, TaskCommand.EXPIRATION_DATE_PROPERTY));
+		return (Date) executor.execute(new GetTaskPropertyCommand(taskId, null, SetTaskPropertyCommand.EXPIRATION_DATE_PROPERTY));
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<I18NText> getDescriptions(long taskId) {
-		return (List<I18NText>) executor.execute(new GetTaskPropertyCommand(taskId, null, TaskCommand.DESCRIPTION_PROPERTY));
+		return (List<I18NText>) executor.execute(new GetTaskPropertyCommand(taskId, null, SetTaskPropertyCommand.DESCRIPTION_PROPERTY));
 	}
 
 	@Override
 	public boolean isSkipable(long taskId) {
-		return (Boolean) executor.execute(new GetTaskPropertyCommand(taskId, null, TaskCommand.SKIPPABLE_PROPERTY));
+		return (Boolean) executor.execute(new GetTaskPropertyCommand(taskId, null, SetTaskPropertyCommand.SKIPPABLE_PROPERTY));
 	}
 
 	@Override
 	public SubTasksStrategy getSubTaskStrategy(long taskId) {
 		return (SubTasksStrategy) executor.execute(
-				new GetTaskPropertyCommand(taskId, null, TaskCommand.SUB_TASK_STRATEGY_PROPERTY));
+				new GetTaskPropertyCommand(taskId, null, SetTaskPropertyCommand.SUB_TASK_STRATEGY_PROPERTY));
 	}
 
 	@Override
@@ -721,11 +720,16 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
 
 	@Override
-	public long addComment(long taskId, Comment comment) {
+	public Long addComment(long taskId, Comment comment) {
 		return executor.execute(new AddCommentCommand(taskId, comment));
 	}
 
 	@Override
+    public Long addComment( long taskId, String addedByUserId, String commentText ) {
+		return executor.execute(new AddCommentCommand(taskId, addedByUserId, commentText));
+    }
+
+    @Override
 	public void deleteComment(long taskId, long commentId) {
 		executor.execute(new DeleteCommentCommand(taskId, commentId));
 	}

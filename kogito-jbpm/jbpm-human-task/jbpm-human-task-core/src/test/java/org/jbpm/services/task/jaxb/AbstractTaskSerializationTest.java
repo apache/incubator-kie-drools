@@ -21,21 +21,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
-
-import javax.xml.bind.annotation.XmlList;
 
 import org.jbpm.services.task.MvelFilePath;
 import org.jbpm.services.task.commands.CancelDeadlineCommand;
@@ -45,14 +44,20 @@ import org.jbpm.services.task.commands.ProcessSubTaskCommand;
 import org.jbpm.services.task.commands.SkipTaskCommand;
 import org.jbpm.services.task.commands.StartTaskCommand;
 import org.jbpm.services.task.impl.factories.TaskFactory;
+import org.jbpm.services.task.impl.model.CommentImpl;
 import org.jbpm.services.task.impl.model.ContentImpl;
+import org.jbpm.services.task.impl.model.I18NTextImpl;
+import org.jbpm.services.task.impl.model.UserImpl;
+import org.jbpm.services.task.impl.model.xml.JaxbComment;
 import org.jbpm.services.task.impl.model.xml.JaxbContent;
+import org.jbpm.services.task.impl.model.xml.JaxbI18NText;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.Assume;
 import org.junit.Test;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
+import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskData;
@@ -62,14 +67,13 @@ import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.InternalAttachment;
 import org.kie.internal.task.api.model.InternalComment;
+import org.kie.internal.task.api.model.InternalI18NText;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Enums;
 
 public abstract class AbstractTaskSerializationTest {
 
@@ -89,6 +93,8 @@ public abstract class AbstractTaskSerializationTest {
         JAXB, JSON, YAML;
     }
 
+    protected static Random random = new Random();
+    
     // TESTS ----------------------------------------------------------------------------------------------------------------------
 
     @Test
@@ -99,13 +105,25 @@ public abstract class AbstractTaskSerializationTest {
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
 
-        Reader reader = new InputStreamReader(getClass().getResourceAsStream(MvelFilePath.FullTask));
+        InputStream stream = getClass().getResourceAsStream(MvelFilePath.FullTask);
+        assertNotNull("Could not load file: " + MvelFilePath.FullTask, stream);
+        Reader reader = new InputStreamReader(stream);
         InternalTask task = (InternalTask) TaskFactory.evalTask(reader, vars);
         
         // fill task 
         task.setFormName("Bruno's Form");
         task.setId(23);
         task.setSubTaskStrategy(SubTasksStrategy.EndParentOnAllSubTasksEnd);
+        
+        for( I18NText text : task.getNames() ) { 
+            ((InternalI18NText) text).setId((long) random.nextInt(1000));
+        }
+        for( I18NText text : task.getSubjects() ) { 
+            ((InternalI18NText) text).setId((long) random.nextInt(1000));
+        }
+        for( I18NText text : task.getDescriptions() ) { 
+            ((InternalI18NText) text).setId((long) random.nextInt(1000));
+        }
        
         // fill task -> task data
         InternalTaskData taskData = (InternalTaskData) task.getTaskData();
@@ -192,6 +210,13 @@ public abstract class AbstractTaskSerializationTest {
                    } else if( xmlFieldValue.getClass().isArray() ) {
                        List xmlList = Arrays.asList(xmlFieldValue);
                        List realList = Arrays.asList(fieldValue);
+                       assertEquals( interfaze.getSimpleName() + "." + fieldName + " value has unequal list size",
+                               xmlList.size(), realList.size());
+                       for( int i = 0; i < xmlList.size(); ++i ) {
+                           Object xmlElem = xmlList.get(i);
+                           Object realElem = realList.get(i);
+                           verifyThatXmlFieldsAreFilled(realElem, xmlElem, xmlElem.getClass().getInterfaces()[0]);
+                       }
                    } else if( List.class.isAssignableFrom(xmlFieldValue.getClass()) ) { 
                        List xmlList = (List) xmlFieldValue; 
                        List realList = (List) fieldValue; 
@@ -326,5 +351,62 @@ public abstract class AbstractTaskSerializationTest {
         JaxbContent jaxbContent = new JaxbContent(content); 
         JaxbContent copyJaxbContent = testRoundTrip(jaxbContent);
         ComparePair.compareObjectsViaFields(jaxbContent, copyJaxbContent);
+    }
+    
+    @Test
+    public void jaxbCommentTest() throws Exception { 
+        Assume.assumeFalse(getType().equals(TestType.YAML));
+        CommentImpl comment = new CommentImpl();
+        comment.setAddedAt(new Date());
+        comment.setAddedBy(new UserImpl("user"));
+        comment.setId(23l);
+        comment.setText("ILLUMINATI!");
+
+        JaxbComment jaxbComment = new JaxbComment(comment); 
+       
+        assertEquals("added at", comment.getAddedAt(), jaxbComment.getAddedAt());
+        assertEquals("added by", comment.getAddedBy().getId(), jaxbComment.getAddedById());
+        assertEquals("added by", comment.getAddedBy().getId(), jaxbComment.getAddedBy().getId());
+        assertEquals("id", comment.getId(), jaxbComment.getId());
+        assertEquals("text", comment.getText(), jaxbComment.getText());
+        
+        JaxbComment copyJaxbComment = testRoundTrip(jaxbComment);
+        ComparePair.compareObjectsViaFields(jaxbComment, copyJaxbComment);
+    }
+    
+    @Test
+    public void jaxbI18NTextTest() throws Exception { 
+        Assume.assumeFalse(getType().equals(TestType.YAML));
+        
+        I18NTextImpl textImpl = new I18NTextImpl();
+        textImpl.setId(1605l);
+        textImpl.setLanguage("es-ES");
+        textImpl.setText("Quixote");
+
+        JaxbI18NText jaxbText = new JaxbI18NText(textImpl);
+       
+        assertEquals("id", textImpl.getId(), jaxbText.getId());
+        assertEquals("language", textImpl.getLanguage(), jaxbText.getLanguage());
+        assertEquals("text", textImpl.getText(), jaxbText.getText());
+       
+        JaxbI18NText copyJaxbText = testRoundTrip(jaxbText);
+        ComparePair.compareObjectsViaFields(jaxbText, copyJaxbText);
+        
+        List<I18NText> intList = new ArrayList<I18NText>();
+        intList.add(textImpl);
+        
+        List<JaxbI18NText> jaxbList = JaxbI18NText.convertListFromInterfaceToJaxbImpl(intList, I18NText.class, JaxbI18NText.class);
+       
+        jaxbText = jaxbList.get(0);
+        assertEquals("id", textImpl.getId(), jaxbText.getId());
+        assertEquals("language", textImpl.getLanguage(), jaxbText.getLanguage());
+        assertEquals("text", textImpl.getText(), jaxbText.getText());
+       
+        intList = JaxbI18NText.convertListFromJaxbImplToInterface(jaxbList);
+
+        I18NText text = intList.get(0);
+        assertEquals("id", text.getId(), jaxbText.getId());
+        assertEquals("language", text.getLanguage(), jaxbText.getLanguage());
+        assertEquals("text", text.getText(), jaxbText.getText());
     }
 }

@@ -15,9 +15,6 @@
 
 package org.jbpm.services.task.impl.model.xml;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -445,16 +442,6 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
 
     public void setDeploymentId(String deploymentId) {
         this.deploymentId = deploymentId;
-    }
-
-    @Override
-    public void writeExternal( ObjectOutput out ) throws IOException {
-        unsupported(TaskData.class);
-    }
-
-    @Override
-    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        unsupported(TaskData.class);
     }
 
 }

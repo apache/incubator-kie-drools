@@ -15,26 +15,23 @@
 
 package org.jbpm.services.task.impl.model.xml;
 
-import static org.jbpm.services.task.impl.model.xml.AbstractJaxbTaskObject.unsupported;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.jbpm.services.task.impl.model.xml.InternalJaxbWrapper.GetterI18NText;
 import org.kie.api.task.model.I18NText;
 
-@XmlType(name="i18n-text")
+@XmlRootElement(name="i18n-text")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class JaxbI18NText implements I18NText {
+@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE, setterVisibility=JsonAutoDetect.Visibility.NONE, fieldVisibility=JsonAutoDetect.Visibility.ANY)
+public class JaxbI18NText extends AbstractJaxbTaskObject<I18NText> implements I18NText {
 
     @XmlElement
     @XmlSchemaType(name="long")
@@ -49,13 +46,11 @@ public class JaxbI18NText implements I18NText {
     private String language;
  
     public JaxbI18NText() { 
-       // JAXB Default 
+       super(I18NText.class);
     }
     
     public JaxbI18NText(I18NText text) { 
-       this.id = text.getId();
-       this.language = text.getLanguage();
-       this.text = text.getText();
+       super(text, I18NText.class);
     }
     
     public Long getId() {
@@ -97,17 +92,6 @@ public class JaxbI18NText implements I18NText {
     
     private I18NText createImplInstance() { 
        return new GetterI18NText(this.id, this.language, this.text);
-    }
-
-    @Override
-    public void writeExternal( ObjectOutput out ) throws IOException {
-        unsupported(I18NText.class);
-        
-    }
-
-    @Override
-    public void readExternal( ObjectInput in ) throws IOException, ClassNotFoundException {
-        unsupported(I18NText.class);
     }
 
 }

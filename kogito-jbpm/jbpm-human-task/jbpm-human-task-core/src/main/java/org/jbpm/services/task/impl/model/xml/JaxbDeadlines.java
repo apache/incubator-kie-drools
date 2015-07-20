@@ -30,6 +30,9 @@ import javax.xml.bind.annotation.XmlType;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.Deadlines;
 
+/**
+ * This is a "dummy" object which does *NOT* contain any information
+ */
 @XmlType(name="deadlines")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class JaxbDeadlines implements Deadlines {

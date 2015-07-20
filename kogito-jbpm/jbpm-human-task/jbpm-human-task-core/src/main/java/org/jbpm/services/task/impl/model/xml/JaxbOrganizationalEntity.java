@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.jbpm.services.task.impl.model.xml.InternalJaxbWrapper.GetterGroup;
 import org.jbpm.services.task.impl.model.xml.InternalJaxbWrapper.GetterUser;
 import org.kie.api.task.model.Group;
@@ -38,6 +39,7 @@ import org.kie.api.task.model.User;
 
 @XmlType(name="organizational-entity")
 @XmlAccessorType(XmlAccessType.FIELD)
+@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE, setterVisibility=JsonAutoDetect.Visibility.NONE, fieldVisibility=JsonAutoDetect.Visibility.ANY)
 public class JaxbOrganizationalEntity implements OrganizationalEntity {
 
     @XmlElement

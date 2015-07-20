@@ -36,7 +36,7 @@ import org.kie.internal.jaxb.StringKeyObjectValueMapXmlAdapter;
 
 @XmlRootElement(name="content")
 @XmlAccessorType(XmlAccessType.FIELD)
-@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE, fieldVisibility=JsonAutoDetect.Visibility.ANY)
+@JsonAutoDetect(getterVisibility=JsonAutoDetect.Visibility.NONE, setterVisibility=JsonAutoDetect.Visibility.NONE, fieldVisibility=JsonAutoDetect.Visibility.ANY)
 public class JaxbContent implements Content {
 
     @XmlElement
@@ -58,7 +58,7 @@ public class JaxbContent implements Content {
     }
     
     @SuppressWarnings("unchecked")
-    public void initialize(Content content) { 
+    public void initialize(Content content) {
         if( content == null || content.getId() == -1) { 
             return; 
         }

@@ -776,9 +776,16 @@ public class SynchronizedTaskService
     }
 
     @Override
-    public long addComment(long taskId, Comment comment) {
+    public Long addComment(long taskId, Comment comment) {
         synchronized (ksession) {
             return  taskService.addComment(taskId, comment);
+        }
+    }
+
+    @Override
+    public Long addComment( long taskId, String addedByUserId, String commentText ) {
+        synchronized (ksession) {
+            return  taskService.addComment(taskId, addedByUserId, commentText);
         }
     }
 
@@ -939,25 +946,24 @@ public class SynchronizedTaskService
 	    return taskService.getTasksAssignedAsPotentialOwner(userId, groupIds, status, filter);
 	}
 
-	@Override
-	public TaskQueryBuilder taskQuery(String userId) {
-	    return taskService.taskQuery(userId);
-	}
+    @Override
+    public TaskQueryBuilder taskQuery( String userId ) {
+        return taskService.taskQuery(userId);
+    }
 
-        @Override
-        public List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, String language, List<Status> statuses) {
-            synchronized (ksession) {
-                return taskService.getTasksAssignedAsBusinessAdministratorByStatus(userId, language, statuses);
-            }
+    @Override
+    public List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus( String userId, String language, List<Status> statuses ) {
+        synchronized( ksession ) {
+            return taskService.getTasksAssignedAsBusinessAdministratorByStatus(userId, language, statuses);
+        }
+    }
+
+    @Override
+    public void executeReminderForTask( long taskId, String initiator ) {
+        synchronized( ksession ) {
+            taskService.executeReminderForTask(taskId, initiator);
         }
 
-
-		@Override
-		public void executeReminderForTask(long taskId,String initiator) {
-			synchronized (ksession) {
-                taskService.executeReminderForTask(taskId,initiator);
-            }
-			
-		}
+    }
 
 }

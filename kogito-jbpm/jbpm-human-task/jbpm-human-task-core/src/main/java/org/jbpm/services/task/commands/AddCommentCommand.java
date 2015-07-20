@@ -15,6 +15,8 @@
  */
 package org.jbpm.services.task.commands;
 
+import java.util.Date;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -23,7 +25,10 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.jbpm.services.task.impl.model.xml.JaxbComment;
 import org.kie.api.task.model.Comment;
+import org.kie.api.task.model.User;
 import org.kie.internal.command.Context;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalComment;
 
 
 @XmlRootElement(name="add-comment-command")
@@ -46,22 +51,13 @@ public class AddCommentCommand extends UserGroupCallbackTaskCommand<Long> {
     	setComment(comment);
     }
 
-
-    public Long execute(Context cntxt) {
-        TaskContext context = (TaskContext) cntxt;
-        
-        Comment comentImpl = comment;
-        if (comentImpl == null) {
-        	comentImpl = jaxbComment;
-    	}
-        
-        doCallbackOperationForComment(comentImpl, context);
-        
-        return context.getTaskCommentService().addComment(taskId, comentImpl);
-    	 
+    public AddCommentCommand(Long taskId, String userId, String text) {
+        this.taskId = taskId;
+        JaxbComment jaxbComment = new JaxbComment(userId, new Date(), text);
+        setComment(jaxbComment);
     }
-
-	public Comment getComment() {
+    
+    public Comment getComment() {
 		return comment;
 	}
 
@@ -81,4 +77,25 @@ public class AddCommentCommand extends UserGroupCallbackTaskCommand<Long> {
 	public void setJaxbComment(JaxbComment jaxbComment) {
 		this.jaxbComment = jaxbComment;
 	}
+
+    public Long execute(Context cntxt) {
+        TaskContext context = (TaskContext) cntxt;
+        
+        Comment cmdComent = comment;
+        if (cmdComent == null) {
+        	cmdComent = jaxbComment;
+        }
+       
+        InternalComment commentImpl = (InternalComment) TaskModelProvider.getFactory().newComment();
+        commentImpl.setAddedAt(cmdComent.getAddedAt());
+        User cmdAddedBy = cmdComent.getAddedBy();
+        User addedBy = TaskModelProvider.getFactory().newUser(cmdAddedBy.getId());
+        commentImpl.setAddedBy(addedBy);
+        commentImpl.setText(cmdComent.getText());
+        
+        doCallbackOperationForComment(commentImpl, context);
+        
+        return context.getTaskCommentService().addComment(taskId, commentImpl);
+    	 
+    }
 }

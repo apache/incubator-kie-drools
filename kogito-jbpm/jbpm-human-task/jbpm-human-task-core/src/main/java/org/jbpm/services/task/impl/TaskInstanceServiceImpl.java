@@ -49,6 +49,7 @@ import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.FaultData;
 import org.kie.internal.task.api.model.InternalContent;
+import org.kie.internal.task.api.model.InternalI18NText;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
@@ -269,11 +270,18 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         taskEventSupport.fireAfterTaskUpdated(task, context);
     }
 
-    public void setTaskNames(long taskId, List<I18NText> taskNames) {
+    public void setTaskNames(long taskId, List<I18NText> inputTaskNames) {
         Task task = persistenceContext.findTask(taskId);
         
         taskEventSupport.fireBeforeTaskUpdated(task, context);
-        
+       
+        List<I18NText> taskNames = new ArrayList<I18NText>(inputTaskNames.size());
+        for( I18NText inputText : inputTaskNames ) { 
+            I18NText text = TaskModelProvider.getFactory().newI18NText();
+            ((InternalI18NText) text).setLanguage(inputText.getLanguage()); 
+            ((InternalI18NText) text).setText(inputText.getText());
+            taskNames.add(text);
+        }
         ((InternalTask) task).setNames(taskNames);
         ((InternalTask) task).setName(taskNames.get(0).getText());
         
@@ -316,11 +324,18 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         taskEventSupport.fireAfterTaskUpdated(task, context);
     }
 
-    public void setDescriptions(long taskId, List<I18NText> descriptions) {
+    public void setDescriptions(long taskId, List<I18NText> inputDescriptions) {
         Task task = persistenceContext.findTask(taskId);
         
         taskEventSupport.fireBeforeTaskUpdated(task, context);
-        
+       
+        List<I18NText> descriptions = new ArrayList<I18NText>(inputDescriptions.size());
+        for( I18NText inputText : inputDescriptions ) { 
+            I18NText text = TaskModelProvider.getFactory().newI18NText();
+            ((InternalI18NText) text).setLanguage(inputText.getLanguage()); 
+            ((InternalI18NText) text).setText(inputText.getText());
+            descriptions.add(text);
+        }
         ((InternalTask) task).setDescriptions(descriptions);
         ((InternalTask) task).setDescription(descriptions.get(0).getText());
         
