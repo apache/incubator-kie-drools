@@ -1,31 +1,21 @@
 package org.optaplanner.examples.common.integration;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
-import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
-import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
-import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.DefaultSolver;
-import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.util.listeners.PhaseTestListener;
 import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
 import org.optaplanner.examples.cheaptime.persistence.CheapTimeDao;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingDao;
 
 import java.io.File;
-import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
 
@@ -56,7 +46,6 @@ public class SolverConfigCombinationsTest {
     }
 
     @Test
-    @Ignore("don't know how to make default move selector from code.")
     public void defaultMoveSelectorWithMultipleVariables() {
         SolverConfig config = SolverFactory.createFromXmlResource(CheapTimeApp.SOLVER_CONFIG).getSolverConfig();
         PhaseConfig phaseConfig = config.getPhaseConfigList().get(1);

@@ -41,7 +41,7 @@ public class NQueensStepTracker extends StepTestListener {
         for (int i = 0; i < queens.getQueenList().size(); i++) {
             Queen queen1 = queens.getQueenList().get(i);
             Queen queen2 = lastTrackedPlanningProblem.getQueenList().get(i);
-            if(queen1.getRowIndex() != queen2.getRowIndex()) {
+            if (queen1.getRowIndex() != queen2.getRowIndex()) {
                 trackingList.add(new NQueensStepTracking(queen1.getColumnIndex(), queen1.getRowIndex()));
                 break;
             }

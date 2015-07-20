@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PhaseTestListener extends AbstractPhaseTestListener {
 
-    List<AbstractPhaseScope> phaseList = new ArrayList<AbstractPhaseScope>();
+    private List<AbstractPhaseScope> phaseList = new ArrayList<AbstractPhaseScope>();
 
     @Override
     public void phaseStarted(AbstractPhaseScope phaseScope) {
