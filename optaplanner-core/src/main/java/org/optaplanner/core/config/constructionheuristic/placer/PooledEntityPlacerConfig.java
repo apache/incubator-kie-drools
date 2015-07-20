@@ -51,7 +51,7 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig {
     }
 
     public void setMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
-        this.moveSelectorConfigList = Collections.singletonList(moveSelectorConfig);
+        this.moveSelectorConfigList = moveSelectorConfig == null ? null : Collections.singletonList(moveSelectorConfig);
     }
 
     // ************************************************************************

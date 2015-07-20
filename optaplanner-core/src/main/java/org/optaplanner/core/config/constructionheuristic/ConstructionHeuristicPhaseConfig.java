@@ -85,7 +85,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
     }
 
     public void setEntityPlacerConfig(EntityPlacerConfig entityPlacerConfig) {
-        this.entityPlacerConfigList = Collections.singletonList(entityPlacerConfig);
+        this.entityPlacerConfigList = entityPlacerConfig == null ? null : Collections.singletonList(entityPlacerConfig);
     }
 
     public ConstructionHeuristicForagerConfig getForagerConfig() {

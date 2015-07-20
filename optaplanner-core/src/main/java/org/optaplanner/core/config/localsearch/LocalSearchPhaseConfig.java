@@ -83,11 +83,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig {
     }
 
     public void setMoveSelectorConfig(MoveSelectorConfig moveSelectorConfig) {
-        if (moveSelectorConfig == null) {
-            this.moveSelectorConfigList = null;
-        } else {
-            this.moveSelectorConfigList = Collections.singletonList(moveSelectorConfig);
-        }
+        this.moveSelectorConfigList = moveSelectorConfig == null ? null : Collections.singletonList(moveSelectorConfig);
     }
 
     public AcceptorConfig getAcceptorConfig() {
