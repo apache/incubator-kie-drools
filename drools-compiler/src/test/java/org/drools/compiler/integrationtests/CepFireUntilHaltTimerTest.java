@@ -145,8 +145,9 @@ public class CepFireUntilHaltTimerTest {
             // wait for the engine to finish and throw exception if any was thrown
             // in engine's thread
 
+            thread.shutdown();
             if (thread.awaitTermination(60, TimeUnit.SECONDS)) {
-              System.out.println("task completed");
+              System.out.println("FireUntilHalt thread stopped. ");
             } else {
               System.out.println("Forcing shutdown...");
               thread.shutdownNow();
