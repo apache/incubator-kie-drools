@@ -125,7 +125,7 @@ public interface TaskService extends CommandExecutor {
     @Deprecated
     List<TaskSummary> getTasksByVariousFields( String userId, Map <String, List<?>> parameters, boolean union);
     
-    long addComment(long taskId, Comment comment);
+    Long addComment(long taskId, Comment comment);
 
     void deleteComment(long taskId, long commentId);
 

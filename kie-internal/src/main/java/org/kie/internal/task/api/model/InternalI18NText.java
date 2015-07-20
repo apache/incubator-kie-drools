@@ -20,7 +20,7 @@ import org.kie.api.task.model.I18NText;
 
 public interface InternalI18NText extends I18NText {
     
-    void setId(long id);
+    void setId(Long id);
 
     void setLanguage(String language);
 
