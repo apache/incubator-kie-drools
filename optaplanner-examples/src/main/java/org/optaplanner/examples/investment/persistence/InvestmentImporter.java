@@ -18,6 +18,7 @@ package org.optaplanner.examples.investment.persistence;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -34,6 +35,7 @@ import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.domain.InvestmentParametrization;
 import org.optaplanner.examples.investment.domain.Region;
 import org.optaplanner.examples.investment.domain.Sector;
+import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 
 public class InvestmentImporter extends AbstractXlsxSolutionImporter {
 
@@ -72,8 +74,15 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter {
             readAssetClassList();
             createAssetClassAllocationList();
 
-            logger.info("InvestmentAllocation {} has {} asset classes.",
-                    getInputId(), solution.getAssetClassList().size());
+            BigInteger possibleSolutionSize = BigInteger.valueOf(solution.getAssetClassList().size()).multiply(
+                    BigInteger.valueOf(InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS));
+            logger.info("InvestmentAllocation {} has {} regions, {} sectors and {} asset classes"
+                            + " with a search space of {}.",
+                    getInputId(),
+                    solution.getRegionList().size(),
+                    solution.getSectorList().size(),
+                    solution.getAssetClassList().size(),
+                    getFlooredPossibleSolutionSize(possibleSolutionSize));
             return solution;
         }
 

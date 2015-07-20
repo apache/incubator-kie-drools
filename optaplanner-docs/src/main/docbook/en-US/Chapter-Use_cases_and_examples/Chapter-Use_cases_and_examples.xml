@@ -737,6 +737,50 @@
                 </listitem>
               </itemizedlist></entry>
           </row>
+
+          <row>
+            <entry><link linkend="investment">Investment</link></entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para>1 entity class</para>
+                </listitem>
+
+                <listitem>
+                  <para>1 variable</para>
+                </listitem>
+              </itemizedlist></entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>11</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para>Value = 1000</para>
+                </listitem>
+
+                <listitem>
+                  <para>Search space &lt;= <literal>10^4</literal></para>
+                </listitem>
+              </itemizedlist></entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para>No</para>
+                </listitem>
+
+                <listitem>
+                  <para>Defined by us</para>
+                </listitem>
+              </itemizedlist></entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="valueRangeFactory">ValueRangeFactory</link></para>
+                </listitem>
+              </itemizedlist></entry>
+          </row>
         </tbody>
       </tgroup>
     </table>
@@ -2319,6 +2363,58 @@ instance46 has 4 resources, 100 machines, 288 periods and 5000 tasks with a sear
 instance47 has 4 resources, 100 machines, 288 periods and 5000 tasks with a search space of 10^20126.
 instance48 has 4 resources, 100 machines, 288 periods and 5000 tasks with a search space of 10^20110.
 instance49 has 4 resources, 100 machines, 288 periods and 5000 tasks with a search space of 10^20078.</programlisting>
+      </section>
+    </section>
+
+    <section xml:id="investment">
+      <title>Investment asset classs allocation (portfolio optimization)</title>
+
+      <section xml:id="cheapTimeSchedulingProblemDescription">
+        <title>Problem Description</title>
+
+        <para>Decide the relative quantity to invest in each asset class.</para>
+
+        <para>Hard constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Risk maximum: the total standard deviation must not be higher than the standard deviation
+            maximum.</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>Total standard deviation calculation takes asset class correlations into account by applying <link
+                xlink:href="https://en.wikipedia.org/wiki/Modern_portfolio_theory">Markowitz Portfolio
+                Theory</link>.</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>Region maximum: Each region has a quantity maximum.</para>
+          </listitem>
+
+          <listitem>
+            <para>Sector maximum: Each sector has a quantity maximum.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Soft constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Maximize expected return.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section xml:id="cheapTimeSchedulingProblemSize">
+        <title>Problem Size</title>
+
+        <programlisting>de_smet_1 has 1 regions, 3 sectors and 11 asset classes with a search space of 10^4.
+irrinki_1 has 2 regions, 3 sectors and 6 asset classes with a search space of 10^3.</programlisting>
+
+        <para>Larger datasets have not been created or tested yet, but should not pose a problem.</para>
       </section>
     </section>
   </section>
