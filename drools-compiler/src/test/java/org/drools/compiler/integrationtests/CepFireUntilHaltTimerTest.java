@@ -131,7 +131,7 @@ public class CepFireUntilHaltTimerTest {
             // give time to fireUntilHalt to process the insertions
             Thread.sleep(1000);
 
-            Thread.sleep(60000);
+            Thread.sleep(30000);
 //            clock.advanceTime(30, TimeUnit.SECONDS);
             Thread.sleep(1000);
 
