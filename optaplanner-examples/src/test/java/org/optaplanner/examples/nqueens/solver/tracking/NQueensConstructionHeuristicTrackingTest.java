@@ -31,17 +31,12 @@ import org.optaplanner.examples.nqueens.app.NQueensApp;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.persistence.NQueensGenerator;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
-public class NQueensConstructionHeuristicTrackingTest {
+public class NQueensConstructionHeuristicTrackingTest extends NQueensTrackingTest {
 
     private final ConstructionHeuristicType constructionHeuristicType;
     private final EntitySorterManner entitySorterManner;
@@ -70,7 +65,7 @@ public class NQueensConstructionHeuristicTrackingTest {
         NQueensGenerator generator = new NQueensGenerator();
         NQueens planningProblem = generator.createNQueens(8);
 
-        NQueensStepTracker listener = new NQueensStepTracker();
+        NQueensStepTracker listener = new NQueensStepTracker(generator.createNQueens(8));
         DefaultSolver solver = (DefaultSolver) config.buildSolver();
         solver.addPhaseLifecycleListener(listener);
         solver.solve(planningProblem);
@@ -170,14 +165,6 @@ public class NQueensConstructionHeuristicTrackingTest {
                 new NQueensStepTracking(7, 2), new NQueensStepTracking(0, 1))
         });
         return params;
-    }
-
-    private void assertTrackingList(List<NQueensStepTracking> expected, List<NQueensStepTracking> recorded) {
-        assertEquals(expected.size(), recorded.size());
-        for (int i = 0; i < expected.size(); i++) {
-            assertEquals(expected.get(i).getColumnIndex(), recorded.get(i).getColumnIndex());
-            assertEquals(expected.get(i).getRowIndex(), recorded.get(i).getRowIndex());
-        }
     }
 
 }
