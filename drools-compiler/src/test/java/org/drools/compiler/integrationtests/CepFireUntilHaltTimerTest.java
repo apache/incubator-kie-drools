@@ -41,7 +41,6 @@ import org.kie.api.time.SessionClock;
 public class CepFireUntilHaltTimerTest {
 
     private KieContainer container;
-    private int runCounter = 0;
 
     @Before
     public void init() {
@@ -93,11 +92,10 @@ public class CepFireUntilHaltTimerTest {
 
     @Test
     public void testTimerAccumulateFireUntilHalt() throws Exception {
-        System.out.println("Run number: " + (++runCounter));
-        testInternal();
-
-        System.out.println("Run number: " + (++runCounter));
-        testInternal();
+        for (int i = 0; i < 2; i++) {
+            System.out.println("Run number: " + (i + 1));
+            testInternal();
+        }
     }
 
     private void testInternal() throws InterruptedException, TimeoutException, ExecutionException {
@@ -121,9 +119,11 @@ public class CepFireUntilHaltTimerTest {
         try {
 
             final Date eventTime = new Date(clock.getCurrentTime());
+            System.out.println("INSERTING EVENTS!!!!");
             for (int i = 0; i < 205; i++) {
                 ksession.insert(new MetadataEvent(eventTime, 0L));
             }
+            System.out.println("INSERTING EVENTS - DONE!!!!");
 
             // this triggers the rule on after all events had been inserted
             ksession.insert("events_inserted");
@@ -147,10 +147,10 @@ public class CepFireUntilHaltTimerTest {
 
             thread.shutdown();
             if (thread.awaitTermination(60, TimeUnit.SECONDS)) {
-              System.out.println("FireUntilHalt thread stopped. ");
+                System.out.println("FireUntilHalt thread stopped. ");
             } else {
-              System.out.println("Forcing shutdown...");
-              thread.shutdownNow();
+                System.out.println("Forcing shutdown...");
+                thread.shutdownNow();
             }
         }
     }
