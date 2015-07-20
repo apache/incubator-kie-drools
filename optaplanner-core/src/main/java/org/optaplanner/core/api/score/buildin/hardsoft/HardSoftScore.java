@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.Score;
 /**
  * This {@link Score} is based on 2 levels of int constraints: hard and soft.
  * Hard constraints have priority over soft constraints.
- * <p/>
+ * <p>
  * This class is immutable.
  * @see Score
  */
@@ -69,7 +69,7 @@ public final class HardSoftScore extends AbstractScore<HardSoftScore> implements
      * The total of the broken negative soft constraints and fulfilled positive soft constraints.
      * Their weight is included in the total.
      * The soft score is usually a negative number because most use cases only have negative constraints.
-     * <p/>
+     * <p>
      * In a normal score comparison, the soft score is irrelevant if the 2 scores don't have the same hard score.
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */

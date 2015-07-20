@@ -35,7 +35,7 @@ public class ScoreUtils {
      * @param scoreDiffNumbers never null
      * @param timeGradientWeightNumbers never null
      * @param levelDepth The number of levels of the diffNumbers that are included
-     * @return 0.0 <= value <= 1.0
+     * @return {@code 0.0 <= value <= 1.0}
      */
     public static double calculateTimeGradient(Number[] totalDiffNumbers, Number[] scoreDiffNumbers,
             double[] timeGradientWeightNumbers, int levelDepth) {

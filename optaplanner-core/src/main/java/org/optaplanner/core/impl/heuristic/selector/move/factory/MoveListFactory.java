@@ -25,14 +25,14 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 
 /**
  * A simple interface to generate a {@link List} of custom {@link Move}s.
- * <p/>
+ * <p>
  * For a more powerful version, see {@link MoveIteratorFactory}.
  */
 public interface MoveListFactory<SolutionG extends Solution> {
 
     /**
      * When it is called depends on the configured {@link SelectionCacheType}.
-     * <p/>
+     * <p>
      * It can never support {@link SelectionCacheType#JUST_IN_TIME},
      * because it returns a {@link List}, not an {@link Iterator}.
      * @param solution never null, the {@link Solution} of which the {@link Move}s need to be generated

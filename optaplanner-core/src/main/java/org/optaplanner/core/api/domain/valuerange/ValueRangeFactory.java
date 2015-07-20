@@ -31,7 +31,7 @@ public class ValueRangeFactory {
     /**
      * Build a {@link CountableValueRange} of all {@code int} values between 2 bounds.
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
+     * @param to exclusive maximum, {@code >= from}
      * @return never null
      */
     public static CountableValueRange<Integer> createIntValueRange(int from, int to) {
@@ -41,8 +41,8 @@ public class ValueRangeFactory {
     /**
      * Build a {@link CountableValueRange} of a subset of {@code int} values between 2 bounds.
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
-     * @param incrementUnit > 0
+     * @param to exclusive maximum, {@code >= from}
+     * @param incrementUnit {@code > 0}
      * @return never null
      */
     public static CountableValueRange<Integer> createIntValueRange(int from, int to, int incrementUnit) {
@@ -52,7 +52,7 @@ public class ValueRangeFactory {
     /**
      * Build a {@link CountableValueRange} of all {@code long} values between 2 bounds.
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
+     * @param to exclusive maximum, {@code >= from}
      * @return never null
      */
     public static CountableValueRange<Long> createLongValueRange(long from, long to) {
@@ -62,8 +62,8 @@ public class ValueRangeFactory {
     /**
      * Build a {@link CountableValueRange} of a subset of {@code long} values between 2 bounds.
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
-     * @param incrementUnit > 0
+     * @param to exclusive maximum, {@code >= from}
+     * @param incrementUnit {@code > 0}
      * @return never null
      */
     public static CountableValueRange<Long> createLongValueRange(long from, long to, long incrementUnit) {
@@ -74,7 +74,7 @@ public class ValueRangeFactory {
      * Build a {@link CountableValueRange} of all {@link BigDecimal} values (of a specific scale) between 2 bounds.
      * All parameters must have the same {@link BigDecimal#scale()}.
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
+     * @param to exclusive maximum, {@code >= from}
      */
     public static CountableValueRange<BigDecimal> createBigDecimalValueRange(BigDecimal from, BigDecimal to) {
         return new BigDecimalValueRange(from, to);
@@ -84,8 +84,8 @@ public class ValueRangeFactory {
      * Build a {@link CountableValueRange} of a subset of {@code BigDecimal} values (of a specific scale) between 2 bounds.
      * All parameters must have the same {@link BigDecimal#scale()}.
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
-     * @param incrementUnit > 0
+     * @param to exclusive maximum, {@code >= from}
+     * @param incrementUnit {@code > 0}
      */
     public static CountableValueRange<BigDecimal> createBigDecimalValueRange(BigDecimal from, BigDecimal to, BigDecimal incrementUnit) {
         return new BigDecimalValueRange(from, to, incrementUnit);
@@ -94,7 +94,7 @@ public class ValueRangeFactory {
     /**
      * Build an uncountable {@link ValueRange} of all {@code double} values between 2 bounds.
      * @param from inclusive minimum
-     * @param to exclusive maximum, >= {@code from}
+     * @param to exclusive maximum, {@code >= from}
      */
     public static ValueRange<Double> createDoubleValueRange(double from, double to) {
         return new DoubleValueRange(from, to);

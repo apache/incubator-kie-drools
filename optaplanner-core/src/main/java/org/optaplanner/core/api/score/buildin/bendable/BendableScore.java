@@ -24,9 +24,9 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 /**
  * This {@link Score} is based on n levels of int constraints.
  * The number of levels is bendable at configuration time.
- * <p/>
+ * <p>
  * This class is immutable.
- * <p/>
+ * <p>
  * The {@link #getHardLevelsSize()} and {@link #getSoftLevelsSize()} must be the same as in the
  * {@link BendableScoreDefinition} used.
  * @see Score
@@ -77,7 +77,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
     }
 
     /**
-     * @param index 0 <= index < {@link #getHardLevelsSize()}
+     * @param index {@code 0 <= index <} {@link #getHardLevelsSize()}
      * @return higher is better
      */
     public int getHardScore(int index) {
@@ -89,7 +89,7 @@ public final class BendableScore extends AbstractScore<BendableScore>
     }
 
     /**
-     * @param index 0 <= index < {@link #getSoftLevelsSize()}
+     * @param index {@code 0 <= index <} {@link #getSoftLevelsSize()}
      * @return higher is better
      */
     public int getSoftScore(int index) {

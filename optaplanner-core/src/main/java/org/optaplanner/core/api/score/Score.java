@@ -20,12 +20,12 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
 /**
  * A Score is result of the score function (AKA fitness function) on a single possible solution.
- * <p/>
+ * <p>
  * Implementations must be immutable.
- * <p/>
+ * <p>
  * Implementations are allowed to optionally implement Pareto comparison
  * and therefore slightly violate the transitive requirement of {@link Comparable#compareTo(Object)}.
- * <p/>
+ * <p>
  * An implementation must extend {@link AbstractScore} to ensure backwards compatibility in future versions.
  * @see AbstractScore
  * @see HardSoftScore
@@ -49,7 +49,7 @@ public interface Score<S extends Score> extends Comparable<S> {
     /**
      * Returns a Score whose value is (this * multiplicand).
      * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}.
-     * <p/>
+     * <p>
      * If the implementation has a scale/precision, then the unspecified scale/precision of the double multiplicand
      * should have no impact on the returned scale/precision.
      * @param multiplicand value to be multiplied by this Score.
@@ -60,7 +60,7 @@ public interface Score<S extends Score> extends Comparable<S> {
     /**
      * Returns a Score whose value is (this / divisor).
      * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}.
-     * <p/>
+     * <p>
      * If the implementation has a scale/precision, then the unspecified scale/precision of the double divisor
      * should have no impact on the returned scale/precision.
      * @param divisor value by which this Score is to be divided
@@ -71,7 +71,7 @@ public interface Score<S extends Score> extends Comparable<S> {
     /**
      * Returns a Score whose value is (this ^ exponent).
      * When rounding is needed, it should be floored (as defined by {@link Math#floor(double)}.
-     * <p/>
+     * <p>
      * If the implementation has a scale/precision, then the unspecified scale/precision of the double exponent
      * should have no impact on the returned scale/precision.
      * @param exponent value by which this Score is to be powered
@@ -88,10 +88,10 @@ public interface Score<S extends Score> extends Comparable<S> {
     /**
      * Returns an array of numbers representing the Score. Each number represents 1 score level.
      * A greater score level uses a lower array index than a lesser score level.
-     * <p/>
+     * <p>
      * When rounding is needed, each rounding should be floored (as defined by {@link Math#floor(double)}.
      * The length of the returned array must be stable for a specific {@link Score} implementation.
-     * <p/>
+     * <p>
      * For example: -0hard/-7soft returns new int{-0, -7}
      * @return never null
      */

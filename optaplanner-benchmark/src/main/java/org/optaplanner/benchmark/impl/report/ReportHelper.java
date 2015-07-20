@@ -20,7 +20,7 @@ public class ReportHelper {
 
     /**
      * Escape illegal HTML element id characters, such as a dot.
-     * <p/>
+     * <p>
      * This escape function guarantees that 2 distinct strings will result into 2 distinct escape strings
      * (presuming that both have been escaped by this method).
      * @param rawHtmlId never null

@@ -23,7 +23,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
  * Used to remember the state of a good {@link Solution} so it can be recalled at a later then
  * when the original {@link Solution} is already modified.
  * Also used in population based heuristics to increase or repopulate the population.
- * <p/>
+ * <p>
  * Planning cloning is hard: avoid doing it yourself.
  */
 public interface SolutionCloner<SolutionG extends Solution> {

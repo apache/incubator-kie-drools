@@ -32,10 +32,10 @@ public interface ScoreDirector {
 
     /**
      * The {@link Solution} that is used to calculate the {@link Score}.
-     * <p/>
+     * <p>
      * Because a {@link Score} is best calculated incrementally (by delta's),
      * the {@link ScoreDirector} needs to be notified when it's {@link Solution workingSolution} changes.
-     * <p/>
+     * <p>
      * If the {@link Solution} has been changed since {@link #calculateScore} has been called,
      * the {@link Solution#getScore()} of this {@link Solution} won't be correct.
      * @return never null
@@ -45,7 +45,7 @@ public interface ScoreDirector {
     /**
      * The {@link Solution workingSolution} must never be the same instance as the {@link Solution bestSolution},
      * it should be a (un)changed clone.
-     * <p/>
+     * <p>
      * Only call this method on a separate {@link ScoreDirector} instance,
      * build by {@link Solver#getScoreDirectorFactory()},
      * not on the one used inside the {@link Solver} itself.

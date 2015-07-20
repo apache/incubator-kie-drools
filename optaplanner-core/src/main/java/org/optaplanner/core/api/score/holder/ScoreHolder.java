@@ -29,7 +29,7 @@ import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 /**
  * This class is injected as a global by {@link DroolsScoreDirector} into the Drools DRL.
  * Other {@link ScoreDirector} implementations do not use this class.
- * <p/>
+ * <p>
  * An implementation must extend {@link AbstractScoreHolder} to ensure backwards compatibility in future versions.
  * @see AbstractScoreHolder
  */
@@ -37,7 +37,7 @@ public interface ScoreHolder {
 
     /**
      * Extracts the {@link Score}, calculated by the {@link KieSession} for {@link DroolsScoreDirector}.
-     * </p>
+     * <p>
      * Should not be called directly, use {@link ScoreDirector#calculateScore()} instead.
      * @return never null, the  {@link Score} of the working {@link Solution}
      */
@@ -46,7 +46,7 @@ public interface ScoreHolder {
     /**
      * Must be in sync with {@link ScoreDirector#isConstraintMatchEnabled()}
      * for the {@link ScoreDirector} which contains this {@link ScoreHolder}.
-     * <p/>
+     * <p>
      * Defaults to true.
      * @return false if the {@link ConstraintMatch}s and {@link ConstraintMatchTotal}s do not need to be collected
      * which is a performance boost

@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * A ProblemFactChange represents a change in 1 or more problem facts of a {@link Solution}.
  * Problem facts used by a {@link Solver} must not be changed while it is solving,
  * but by scheduling this command to the {@link Solver}, you can change them when the time is right.
- * <p/>
+ * <p>
  * Note that the {@link Solver} clones a {@link Solution} at will.
  * So any change must be done on the problem facts and planning entities referenced by the {@link Solution}
  * of the {@link ScoreDirector}. On each change it should also notify the {@link ScoreDirector} accordingly.

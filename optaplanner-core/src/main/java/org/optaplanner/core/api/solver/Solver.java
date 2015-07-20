@@ -30,12 +30,12 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 /**
  * A Solver solves a planning problem.
  * Clients usually call {@link #solve(Solution)} and then {@link #getBestSolution()}.
- * <p/>
+ * <p>
  * These methods are not thread-safe and should be called from the same thread,
  * except for the methods that are explicitly marked as thread-safe.
  * Note that despite that {@link #solve(Solution)} is not thread-safe for clients of this class,
  * that method is free to do multi-threading inside itself.
- * <p/>
+ * <p>
  * Build by a {@link SolverFactory}.
  */
 public interface Solver {
@@ -70,7 +70,7 @@ public interface Solver {
      * Notifies the solver that it should stop at its earliest convenience.
      * This method returns immediately, but it takes an undetermined time
      * for the {@link #solve(Solution)} to actually return.
-     * <p/>
+     * <p>
      * This method is thread-safe.
      * @return true if successful
      * @see #isTerminateEarly()
@@ -87,10 +87,10 @@ public interface Solver {
 
     /**
      * Schedules a {@link ProblemFactChange} to be processed.
-     * <p/>
+     * <p>
      * As a side-effect, this restarts the {@link Solver}, effectively resetting all {@link Termination}s,
      * but not {@link #terminateEarly()}.
-     * <p/>
+     * <p>
      * This method is thread-safe.
      * Follows specifications of {@link BlockingQueue#add(Object)} with by default
      * a capacity of {@link Integer#MAX_VALUE}.
@@ -101,7 +101,7 @@ public interface Solver {
 
     /**
      * Checks if all scheduled {@link ProblemFactChange}s have been processed.
-     * <p/>
+     * <p>
      * This method is thread-safe.
      * @return true if there are no {@link ProblemFactChange}s left to do
      */
@@ -118,7 +118,7 @@ public interface Solver {
     void removeEventListener(SolverEventListener eventListener);
 
     /**
-     * Useful to reuse the {@link Score} calculation in a UI (or even to explain the @link Score} in a UI).
+     * Useful to reuse the {@link Score} calculation in a UI (or even to explain the {@link Score} in a UI).
      *
      * @return never null
      */

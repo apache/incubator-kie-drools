@@ -29,7 +29,7 @@ public interface NearbyRandom {
      * @param nearbySize never negative. The number of available values to select from.
      *                   Normally this is the size of the value range for a non-chained variable
      *                   and the size of the value range (= size of the entity list) minus 1 for a chained variable.
-     * @return 0 < x < nearbySize
+     * @return {@code 0 < x < nearbySize}
      */
     int nextInt(Random random, int nearbySize);
 

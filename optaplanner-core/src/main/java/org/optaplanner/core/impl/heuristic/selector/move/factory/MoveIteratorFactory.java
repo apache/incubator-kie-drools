@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * An interface to generate an {@link Iterator} of custom {@link Move}s.
- * <p/>
+ * <p>
  * For a more simple version, see {@link MoveListFactory}.
  */
 public interface MoveIteratorFactory {

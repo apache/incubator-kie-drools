@@ -25,7 +25,7 @@ import org.optaplanner.core.api.score.Score;
  * This {@link Score} is based on 3 levels of long constraints: hard, medium and soft.
  * Hard constraints have priority over medium constraints.
  * Medium constraints have priority over soft constraints.
- * <p/>
+ * <p>
  * This class is immutable.
  * @see Score
  */
@@ -77,7 +77,7 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
      * The total of the broken negative medium constraints and fulfilled positive medium constraints.
      * Their weight is included in the total.
      * The medium score is usually a negative number because most use cases only have negative constraints.
-     * <p/>
+     * <p>
      * In a normal score comparison, the medium score is irrelevant if the 2 scores don't have the same hard score.
      * @return higher is better, usually negative, 0 if no hard constraints are broken/fulfilled
      */
@@ -89,7 +89,7 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
      * The total of the broken negative soft constraints and fulfilled positive soft constraints.
      * Their weight is included in the total.
      * The soft score is usually a negative number because most use cases only have negative constraints.
-     * <p/>
+     * <p>
      * In a normal score comparison, the soft score is irrelevant if the 2 scores don't have the same hard and medium score.
      * @return higher is better, usually negative, 0 if no soft constraints are broken/fulfilled
      */

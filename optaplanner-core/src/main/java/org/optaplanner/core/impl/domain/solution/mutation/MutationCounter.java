@@ -36,7 +36,7 @@ public class MutationCounter {
      *
      * @param a never null
      * @param b never null
-     * @return >= 0, the number of planning variables that have a different value in {@code a} and {@code b}.
+     * @return {@code >= 0}, the number of planning variables that have a different value in {@code a} and {@code b}.
      */
     public int countMutations(Solution a, Solution b) {
         int mutationCount = 0;

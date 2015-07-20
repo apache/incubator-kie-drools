@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract superclass for {@link ScoreDirector}.
- * <p/>
+ * <p>
  * Implementation note: Extending classes should follow these guidelines:
  * <ul>
  * <li>before* method: last statement should be a call to the super method</li>

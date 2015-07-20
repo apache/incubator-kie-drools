@@ -32,7 +32,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 /**
  * Specifies that the class is a planning entity.
  * Each planning entity must have at least 1 {@link PlanningVariable} property.
- * <p/>
+ * <p>
  * The class should have a public no-arg constructor, so it can be cloned
  * (unless the {@link PlanningSolution#solutionCloner()} is specified).
  */
@@ -43,10 +43,10 @@ public @interface PlanningEntity {
     /**
      * An immovable planning entity is never changed during planning,
      * this is useful in repeated planning use cases (such as continuous planning and real-time planning).
-     * <p/>
+     * <p>
      * This applies to all the planning variables of this planning entity.
      * To make individual variables immovable, see https://issues.jboss.org/browse/PLANNER-124
-     * <p/>
+     * <p>
      * The method {@link SelectionFilter#accept(ScoreDirector, Object)} returns false
      * if the selection entity is immovable and it returns true if the selection entity is movable
      * @return {@link NullMovableEntitySelectionFilter} when it is null (workaround for annotation limitation)
@@ -61,12 +61,12 @@ public @interface PlanningEntity {
      * Allows a collection of planning entities to be sorted by difficulty.
      * A difficultyWeight estimates how hard is to plan a certain PlanningEntity.
      * Some algorithms benefit from planning on more difficult planning entities first/last or from focusing on them.
-     * <p/>
+     * <p>
      * The {@link Comparator} should sort in ascending difficulty
      * (even though many optimization algorithms will reverse it).
      * For example: sorting 3 processes on difficultly based on their RAM usage requirement:
      * Process B (1GB RAM), Process A (2GB RAM), Process C (7GB RAM),
-     * <p/>
+     * <p>
      * Do not use together with {@link #difficultyWeightFactoryClass()}.
      * @return {@link NullDifficultyComparator} when it is null (workaround for annotation limitation)
      * @see #difficultyWeightFactoryClass()
@@ -78,7 +78,7 @@ public @interface PlanningEntity {
 
     /**
      * The {@link SelectionSorterWeightFactory} alternative for {@link #difficultyComparatorClass()}.
-     * <p/>
+     * <p>
      * Do not use together with {@link #difficultyComparatorClass()}.
      * @return {@link NullDifficultyWeightFactory} when it is null (workaround for annotation limitation)
      * @see #difficultyComparatorClass()

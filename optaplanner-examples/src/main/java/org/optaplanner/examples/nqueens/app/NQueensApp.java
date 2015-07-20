@@ -75,7 +75,7 @@ public class NQueensApp extends CommonApp {
 
     /**
      * Unused alternative. Abnormal way to create a {@link Solver}.
-     * <p/>
+     * <p>
      * Not recommended! It is recommended to use {@link #createSolverByXml()} instead.
      * @return never null
      */

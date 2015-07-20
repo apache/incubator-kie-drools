@@ -34,7 +34,7 @@ public interface SelectionProbabilityWeightFactory<T> {
      * which has the {@link ScoreDirector#getWorkingSolution()} to which the selection belongs or applies to
      * @param selection never null, a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}
      * to create the probabilityWeight for
-     * @return 0.0 <= returnValue < {@link Double#POSITIVE_INFINITY}
+     * @return {@code 0.0 <= returnValue <} {@link Double#POSITIVE_INFINITY}
      */
     double createProbabilityWeight(ScoreDirector scoreDirector, T selection);
 

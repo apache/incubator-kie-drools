@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Because N Queens is not NP-complete or NP-hard, it can be cheated.
  * For this reason, N queens should not be used for benchmarking purposes.
- * <p/>
+ * <p>
  * This class solves any N Queens instance using a polynomial time algorithm
- * (<a href="http://en.wikipedia.org/wiki/Eight_queens_puzzle#Explicit_solutions">>explicit solutions algorithm</a>).
+ * (<a href="http://en.wikipedia.org/wiki/Eight_queens_puzzle#Explicit_solutions">explicit solutions algorithm</a>).
  */
 public class CheatingNQueensPhaseCommand implements CustomPhaseCommand {
 

@@ -27,7 +27,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 /**
  * Investigate nodes layer by layer: investigate shallower nodes first.
  * This results in horrible memory scalability.
- * <p/>
+ * <p>
  * A typical {@link ScoreBounder}'s {@link ScoreBounder#calculateOptimisticBound(ScoreDirector, Score)}
  * will be weak, which results in horrible performance scalability too.
  */

@@ -435,7 +435,7 @@ public class SolutionDescriptor {
 
     /**
      * @param solution never null
-     * @return >= 0
+     * @return {@code >= 0}
      */
     public int getEntityCount(Solution solution) {
         int entityCount = 0;
@@ -491,7 +491,7 @@ public class SolutionDescriptor {
 
     /**
      * @param solution never null
-     * @return >= 0
+     * @return {@code >= 0}
      */
     public long getVariableCount(Solution solution) {
         long variableCount = 0L;
@@ -505,7 +505,7 @@ public class SolutionDescriptor {
 
     /**
      * @param solution never null
-     * @return >= 0
+     * @return {@code >= 0}
      */
     public int getValueCount(Solution solution) {
         int valueCount = 0;
@@ -519,7 +519,7 @@ public class SolutionDescriptor {
      * Calculates an indication on how big this problem instance is.
      * This is intentionally very loosely defined for now.
      * @param solution never null
-     * @return >= 0
+     * @return {@code >= 0}
      */
     public long getProblemScale(Solution solution) {
         long problemScale = 0L;

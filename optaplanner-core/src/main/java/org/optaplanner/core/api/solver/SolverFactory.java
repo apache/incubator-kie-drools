@@ -25,9 +25,9 @@ import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 
 /**
  * Builds {@link Solver} instances.
- * <p/>
+ * <p>
  * To build an instance, use {@link #createFromXmlResource(String)} or any of the other creation methods.
- * <p/>
+ * <p>
  * Supports tweaking the configuration programmatically before a {@link Solver} instance is build.
  */
 public abstract class SolverFactory {

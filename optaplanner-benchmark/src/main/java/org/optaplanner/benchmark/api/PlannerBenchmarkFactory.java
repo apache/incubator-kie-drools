@@ -26,7 +26,7 @@ import org.optaplanner.benchmark.impl.XStreamXmlPlannerBenchmarkFactory;
 
 /**
  * Builds {@link PlannerBenchmark} instances.
- * <p/>
+ * <p>
  * Supports tweaking the configuration programmatically before a {@link PlannerBenchmark} instance is build.
  */
 public abstract class PlannerBenchmarkFactory {

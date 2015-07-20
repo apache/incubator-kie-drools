@@ -22,11 +22,11 @@ import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalS
 
 /**
  * This {@link Score} is based on 1 level of double constraints.
- * <p/>
+ * <p>
  * WARNING: NOT RECOMMENDED TO USE DUE TO ROUNDING ERRORS THAT CAUSE SCORE CORRUPTION.
  * For example, this prints false: <code>System.out.println((0.01 + 0.05) == (0.01 + 0.02 + 0.03));</code>
  * Use {@link SimpleBigDecimalScore} instead.
- * <p/>
+ * <p>
  * This class is immutable.
  * @see Score
  */

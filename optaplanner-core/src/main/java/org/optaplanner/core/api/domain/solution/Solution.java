@@ -28,11 +28,11 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * A Solution represents a problem and a possible solution of that problem.
  * A possible solution does not need to be optimal or even feasible.
  * A Solution's variables do not even have to be initialized.
- * <p/>
+ * <p>
  * A Solution is mutable.
  * For scalability reasons, the same Solution instance, called the working solution, is continuously modified.
  * It's cloned to recall the best solution.
- * <p/>
+ * <p>
  * This annotation described declarative properties of the planning solution.
  * The planning solution class must implement this interface which is needed to get/set state.
  * But the planning solution class must also be annotated with {@link PlanningSolution}
@@ -58,7 +58,7 @@ public interface Solution<S extends Score> {
      * into an empty {@link KieSession}.
      * These facts can be used by the score rules.
      * They don't change during planning (except through {@link ProblemFactChange} events).
-     * <p/>
+     * <p>
      * Do not include the planning entities as problem facts:
      * they are automatically inserted into the {@link KieSession} if and only if they are initialized.
      * When they are initialized later, they are also automatically inserted.
