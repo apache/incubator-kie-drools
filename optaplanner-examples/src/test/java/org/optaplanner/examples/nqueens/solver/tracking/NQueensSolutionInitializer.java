@@ -10,4 +10,5 @@ public class NQueensSolutionInitializer {
         }
         return solution;
     }
+
 }

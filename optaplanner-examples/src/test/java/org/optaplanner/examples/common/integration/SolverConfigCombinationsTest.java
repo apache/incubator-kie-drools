@@ -30,7 +30,7 @@ public class SolverConfigCombinationsTest {
         solver.addPhaseLifecycleListener(listener);
         Solution planningProblem = new CloudBalancingDao().readSolution(new File("data/cloudbalancing/unsolved/3computers-9processes.xml"));
         solver.solve(planningProblem);
-        assertEquals(2, listener.getPhaseList().size());
+        assertEquals(2, listener.getPhaseScopeList().size());
     }
 
     @Test

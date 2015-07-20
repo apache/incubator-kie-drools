@@ -35,8 +35,8 @@ public class NQueensLocalSearchTrackingTest extends NQueensTrackingTest {
     private final List<NQueensStepTracking> expectedCoordinates;
 
     public NQueensLocalSearchTrackingTest(AcceptorConfig acceptorConfig,
-                                          LocalSearchForagerConfig localSearchForagerConfig,
-                                          List<NQueensStepTracking> expectedCoordinates) {
+            LocalSearchForagerConfig localSearchForagerConfig,
+            List<NQueensStepTracking> expectedCoordinates) {
         this.expectedCoordinates = expectedCoordinates;
         this.localSearchForagerConfig = localSearchForagerConfig;
         this.acceptorConfig = acceptorConfig;
@@ -109,6 +109,5 @@ public class NQueensLocalSearchTrackingTest extends NQueensTrackingTest {
         )});
         return params;
     }
-
 
 }

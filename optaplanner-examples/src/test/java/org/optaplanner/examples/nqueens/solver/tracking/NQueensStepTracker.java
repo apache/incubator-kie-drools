@@ -34,6 +34,10 @@ public class NQueensStepTracker extends StepTestListener {
         this.lastTrackedPlanningProblem = lastTrackedPlanningProblem;
     }
 
+    public List<NQueensStepTracking> getTrackingList() {
+        return trackingList;
+    }
+
     @Override
     public void stepEnded(AbstractStepScope stepScope) {
         NQueens queens = (NQueens) stepScope.getWorkingSolution();
@@ -47,10 +51,6 @@ public class NQueensStepTracker extends StepTestListener {
             }
         }
         lastTrackedPlanningProblem = (NQueens) stepScope.createOrGetClonedSolution();
-    }
-
-    public List<NQueensStepTracking> getTrackingList() {
-        return trackingList;
     }
 
 }

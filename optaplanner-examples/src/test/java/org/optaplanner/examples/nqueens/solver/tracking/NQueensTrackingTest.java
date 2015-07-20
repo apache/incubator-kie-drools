@@ -13,4 +13,5 @@ public class NQueensTrackingTest {
             assertEquals(expected.get(i).getRowIndex(), recorded.get(i).getRowIndex());
         }
     }
+
 }
