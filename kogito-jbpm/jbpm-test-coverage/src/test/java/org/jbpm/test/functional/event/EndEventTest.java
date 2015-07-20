@@ -53,11 +53,6 @@ public class EndEventTest extends JbpmTestCase {
     private static final String NONE = "org/jbpm/test/functional/event/EndEvent-none.bpmn2";
     private static final String NONE_ID = "org.jbpm.test.functional.event.EndEvent-none";
 
-    private static final String SIGNAL_THROW = "org/jbpm/test/functional/event/EndEvent-signal.bpmn2";
-    private static final String SIGNAL_THROW_ID = "org.jbpm.test.functional.event.EndEvent-signal";
-    private static final String SIGNAL_CATCH = "org/jbpm/test/functional/event/StartEvent-signal.bpmn2";
-    private static final String SIGNAL_CATCH_ID = "org.jbpm.test.functional.event.StartEvent-signal";
-
     private static final String TERMINATING = "org/jbpm/test/functional/event/EndEvent-terminating.bpmn2";
     private static final String TERMINATING_ID = "org.jbpm.test.functional.event.EndEvent-terminating";
 
@@ -199,38 +194,6 @@ public class EndEventTest extends JbpmTestCase {
         assertNextNode(events, "script");
         assertNextNode(events, "end");
         assertProcessCompleted(events, NONE_ID);
-
-        Assertions.assertThat(events.hasNext()).isFalse();
-    }
-
-    @Test(timeout = 30000)
-    public void testSignalEndEvent() {
-        KieSession ksession = createKSession(SIGNAL_THROW, SIGNAL_CATCH);
-
-        IterableProcessEventListener events = new IterableProcessEventListener();
-        TrackingProcessEventListener process = new TrackingProcessEventListener();
-        ksession.addEventListener(events);
-        ksession.addEventListener(process);
-
-        Command<?> cmd = getCommands().newStartProcess(SIGNAL_THROW_ID);
-        ksession.execute(cmd);
-
-        Assertions.assertThat(process.wasProcessStarted(SIGNAL_THROW_ID)).isTrue();
-        Assertions.assertThat(process.wasProcessCompleted(SIGNAL_THROW_ID)).isTrue();
-        Assertions.assertThat(process.wasProcessStarted(SIGNAL_CATCH_ID)).isTrue();
-        Assertions.assertThat(process.wasProcessCompleted(SIGNAL_CATCH_ID)).isTrue();
-
-        assertProcessStarted(events, SIGNAL_THROW_ID);
-        assertNextNode(events, "start");
-        assertNextNode(events, "script");
-        assertTriggered(events, "end");
-        assertProcessStarted(events, SIGNAL_CATCH_ID);
-        assertNextNode(events, "start");
-        assertNextNode(events, "script");
-        assertNextNode(events, "end");
-        assertProcessCompleted(events, SIGNAL_CATCH_ID);
-        assertLeft(events, "end");
-        assertProcessCompleted(events, SIGNAL_THROW_ID);
 
         Assertions.assertThat(events.hasNext()).isFalse();
     }

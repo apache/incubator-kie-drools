@@ -33,6 +33,7 @@ import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import qa.tools.ikeeper.client.BugzillaClient;
+import qa.tools.ikeeper.client.JiraClient;
 import qa.tools.ikeeper.test.IKeeperJUnitConnector;
 
 public abstract class JbpmTestCase extends JbpmJUnitBaseTestCase {
@@ -71,7 +72,10 @@ public abstract class JbpmTestCase extends JbpmJUnitBaseTestCase {
     };
 
     @Rule
-    public IKeeperJUnitConnector issueKeeper = new IKeeperJUnitConnector(new BugzillaClient("https://bugzilla.redhat.com"));
+    public IKeeperJUnitConnector issueKeeper = new IKeeperJUnitConnector(
+            new BugzillaClient("https://bugzilla.redhat.com"),
+            new JiraClient("https://issues.jboss.org")
+    );
 
     @Override
     protected PoolingDataSource setupPoolingDataSource() {
