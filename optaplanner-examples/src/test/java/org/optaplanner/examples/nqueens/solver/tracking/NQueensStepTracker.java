@@ -17,16 +17,16 @@
 package org.optaplanner.examples.nqueens.solver.tracking;
 
 
+import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
-import org.optaplanner.core.impl.testdata.util.listeners.StepTestListener;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class NQueensStepTracker extends StepTestListener {
+public class NQueensStepTracker extends PhaseLifecycleListenerAdapter {
 
     private NQueens lastStepSolution = null;
     private List<NQueensStepTracking> trackingList = new ArrayList<NQueensStepTracking>();
