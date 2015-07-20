@@ -17,6 +17,7 @@
 package org.optaplanner.examples.nqueens.solver.tracking;
 
 
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.testdata.util.listeners.StepTestListener;
 import org.optaplanner.examples.nqueens.domain.NQueens;
@@ -27,11 +28,10 @@ import java.util.List;
 
 public class NQueensStepTracker extends StepTestListener {
 
-    private NQueens lastTrackedPlanningProblem;
+    private NQueens lastStepSolution = null;
     private List<NQueensStepTracking> trackingList = new ArrayList<NQueensStepTracking>();
 
-    public NQueensStepTracker(NQueens lastTrackedPlanningProblem) {
-        this.lastTrackedPlanningProblem = lastTrackedPlanningProblem;
+    public NQueensStepTracker() {
     }
 
     public List<NQueensStepTracking> getTrackingList() {
@@ -39,18 +39,22 @@ public class NQueensStepTracker extends StepTestListener {
     }
 
     @Override
+    public void phaseStarted(AbstractPhaseScope phaseScope) {
+        lastStepSolution = (NQueens) phaseScope.getSolverScope().getBestSolution();
+    }
+
+    @Override
     public void stepEnded(AbstractStepScope stepScope) {
         NQueens queens = (NQueens) stepScope.getWorkingSolution();
-
         for (int i = 0; i < queens.getQueenList().size(); i++) {
-            Queen queen1 = queens.getQueenList().get(i);
-            Queen queen2 = lastTrackedPlanningProblem.getQueenList().get(i);
-            if (queen1.getRowIndex() != queen2.getRowIndex()) {
-                trackingList.add(new NQueensStepTracking(queen1.getColumnIndex(), queen1.getRowIndex()));
+            Queen queen = queens.getQueenList().get(i);
+            Queen lastStepQueen = lastStepSolution.getQueenList().get(i);
+            if (queen.getRowIndex() != lastStepQueen.getRowIndex()) {
+                trackingList.add(new NQueensStepTracking(queen.getColumnIndex(), queen.getRowIndex()));
                 break;
             }
         }
-        lastTrackedPlanningProblem = (NQueens) stepScope.createOrGetClonedSolution();
+        lastStepSolution = (NQueens) stepScope.createOrGetClonedSolution();
     }
 
 }

@@ -36,7 +36,7 @@ import java.util.*;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
-public class NQueensConstructionHeuristicTrackingTest extends NQueensTrackingTest {
+public class NQueensConstructionHeuristicTrackingTest extends NQueensAbstractTrackingTest {
 
     private final ConstructionHeuristicType constructionHeuristicType;
     private final EntitySorterManner entitySorterManner;
@@ -53,7 +53,7 @@ public class NQueensConstructionHeuristicTrackingTest extends NQueensTrackingTes
     }
 
     @Test
-    public void testConstructionHeuristics() {
+    public void trackConstructionHeuristics() {
         SolverConfig config = SolverFactory.createFromXmlResource(NQueensApp.SOLVER_CONFIG).getSolverConfig();
 
         ConstructionHeuristicPhaseConfig chConfig = new ConstructionHeuristicPhaseConfig();
@@ -65,7 +65,7 @@ public class NQueensConstructionHeuristicTrackingTest extends NQueensTrackingTes
         NQueensGenerator generator = new NQueensGenerator();
         NQueens planningProblem = generator.createNQueens(8);
 
-        NQueensStepTracker listener = new NQueensStepTracker(generator.createNQueens(8));
+        NQueensStepTracker listener = new NQueensStepTracker();
         DefaultSolver solver = (DefaultSolver) config.buildSolver();
         solver.addPhaseLifecycleListener(listener);
         solver.solve(planningProblem);

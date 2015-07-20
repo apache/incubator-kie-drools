@@ -7,7 +7,6 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.move.generic.ChangeMoveSelectorConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
-import org.optaplanner.core.config.localsearch.LocalSearchType;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorConfig;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
 import org.optaplanner.core.config.localsearch.decider.forager.LocalSearchForagerConfig;
@@ -26,7 +25,7 @@ import java.util.List;
 import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
-public class NQueensLocalSearchTrackingTest extends NQueensTrackingTest {
+public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest {
 
     private static final int N = 6;
 
@@ -43,7 +42,7 @@ public class NQueensLocalSearchTrackingTest extends NQueensTrackingTest {
     }
 
     @Test
-    public void testConstructionHeuristics() {
+    public void trackLocalSearch() {
         SolverConfig config = SolverFactory.createFromXmlResource(NQueensApp.SOLVER_CONFIG).getSolverConfig();
 
         NQueensGenerator generator = new NQueensGenerator();
@@ -59,7 +58,7 @@ public class NQueensLocalSearchTrackingTest extends NQueensTrackingTest {
         localSearchPhaseConfig.getTerminationConfig().setStepCountLimit(20);
         config.getPhaseConfigList().set(1, localSearchPhaseConfig);
 
-        NQueensStepTracker listener = new NQueensStepTracker(NQueensSolutionInitializer.initialize(generator.createNQueens(N)));
+        NQueensStepTracker listener = new NQueensStepTracker();
         DefaultSolver solver = (DefaultSolver) config.buildSolver();
         solver.addPhaseLifecycleListener(listener);
         solver.solve(planningProblem);

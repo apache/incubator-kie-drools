@@ -5,7 +5,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class NQueensTrackingTest {
+public abstract class NQueensAbstractTrackingTest {
 
     protected void assertTrackingList(List<NQueensStepTracking> expected, List<NQueensStepTracking> recorded) {
         for (int i = 0; i < expected.size(); i++) {
