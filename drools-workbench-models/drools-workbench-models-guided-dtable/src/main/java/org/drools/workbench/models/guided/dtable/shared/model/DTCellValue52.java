@@ -401,7 +401,7 @@ public class DTCellValue52 {
         return valueBoolean != null
                 || valueDate != null
                 || valueNumeric != null
-                || valueString != null
+                || (valueString != null && !valueString.isEmpty())
                 || isOtherwise;
     }
 
