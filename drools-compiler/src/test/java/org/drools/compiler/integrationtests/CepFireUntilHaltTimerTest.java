@@ -111,7 +111,7 @@ public class CepFireUntilHaltTimerTest {
         ksession.insert(clock);
 
         final ExecutorService thread = Executors.newSingleThreadExecutor();
-        final Future fireUntilHaltResult = thread.submit(new Runnable() {
+        thread.submit(new Runnable() {
             @Override
             public void run() {
                 ksession.fireUntilHalt();
@@ -144,10 +144,13 @@ public class CepFireUntilHaltTimerTest {
 //            ksession.destroy();
             // wait for the engine to finish and throw exception if any was thrown
             // in engine's thread
-            fireUntilHaltResult.get(60000, TimeUnit.SECONDS);
-            thread.shutdown();
-            // Wait for everything to properly shutdown.
-            Thread.sleep(10000);
+
+            if (thread.awaitTermination(60, TimeUnit.SECONDS)) {
+              System.out.println("task completed");
+            } else {
+              System.out.println("Forcing shutdown...");
+              thread.shutdownNow();
+            }
         }
     }
 
