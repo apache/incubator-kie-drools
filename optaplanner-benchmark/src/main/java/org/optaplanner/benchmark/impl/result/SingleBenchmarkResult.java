@@ -55,6 +55,7 @@ public class SingleBenchmarkResult {
     private Long usedMemoryAfterInputSolution = null;
 
     private Boolean succeeded = null;
+    private Boolean initialized = null;
     private Score score = null;
     private long timeMillisSpent = -1L;
     private long calculateCount = -1L;
@@ -134,6 +135,14 @@ public class SingleBenchmarkResult {
         this.succeeded = succeeded;
     }
 
+    public Boolean getInitialized() {
+        return initialized;
+    }
+
+    public void setInitialized(Boolean initialized) {
+        this.initialized = initialized;
+    }
+
     public Score getScore() {
         return score;
     }
@@ -199,6 +208,10 @@ public class SingleBenchmarkResult {
 
     public boolean isSuccess() {
         return succeeded != null && succeeded.booleanValue();
+    }
+
+    public boolean isInitialized() {
+        return initialized != null && initialized.booleanValue();
     }
 
     public boolean isFailure() {
