@@ -126,6 +126,8 @@ public interface TaskService extends CommandExecutor {
     List<TaskSummary> getTasksByVariousFields( String userId, Map <String, List<?>> parameters, boolean union);
     
     Long addComment(long taskId, Comment comment);
+    
+    Long addComment(long taskId, String addedByUserId, String commentText);
 
     void deleteComment(long taskId, long commentId);
 
