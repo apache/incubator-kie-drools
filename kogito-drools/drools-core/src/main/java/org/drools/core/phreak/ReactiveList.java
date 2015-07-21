@@ -157,6 +157,6 @@ public class ReactiveList<T> extends ReactiveObject implements List<T> {
 
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
-        return list.subList(fromIndex, toIndex);
+        return new ReactiveList(list.subList(fromIndex, toIndex));
     }
 }

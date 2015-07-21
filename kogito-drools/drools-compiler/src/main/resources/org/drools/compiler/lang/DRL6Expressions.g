@@ -556,7 +556,7 @@ xpathPrimary returns [BaseDescr result]
     ;
 
 xpathChunk returns [BaseDescr result]
-    : (DIV ID)=> DIV ID (DOT ID)* (LEFT_SQUARE xpathExpressionList RIGHT_SQUARE)?
+    : (DIV ID)=> DIV ID (DOT ID)* (LEFT_SQUARE DECIMAL RIGHT_SQUARE)? (LEFT_CURLY xpathExpressionList RIGHT_CURLY)?
     ;
 
 xpathExpressionList returns [java.util.List<String> exprs]

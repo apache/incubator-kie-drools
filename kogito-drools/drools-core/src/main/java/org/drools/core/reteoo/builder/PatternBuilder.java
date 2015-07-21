@@ -171,7 +171,7 @@ public class PatternBuilder
             for (XpathConstraint xpathConstraint : constraints.xpathConstraints) {
                 for (XpathConstraint.XpathChunk chunk : xpathConstraint.getChunks()) {
                     context.setAlphaConstraints(chunk.getAlphaConstraints());
-                    context.setBetaconstraints(chunk.getBetaaConstraints());
+                    context.setBetaconstraints(chunk.getBetaConstraints());
                     builder.build(context, utils, chunk.asFrom());
                     context.incrementCurrentPatternOffset();
                 }
