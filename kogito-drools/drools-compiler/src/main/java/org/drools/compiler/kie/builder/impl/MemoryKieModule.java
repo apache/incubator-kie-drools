@@ -103,6 +103,13 @@ public class MemoryKieModule extends AbstractKieModule
         for (KieBaseModel kBaseModel : getKieModuleModel().getKieBaseModels().values()) {
             clone.cacheKnowledgeBuilderForKieBase(kBaseModel.getName(), getKnowledgeBuilderForKieBase( kBaseModel.getName() ));
         }
+
+        clone.setPomModel( getPomModel() );
+        for ( InternalKieModule dependency : getKieDependencies().values() ) {
+            clone.addKieDependency( dependency );
+        }
+        clone.setUnresolvedDependencies( getUnresolvedDependencies() );
+        
         return clone;
     }
 
