@@ -128,6 +128,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
 			InternalTaskService internalTaskService = (InternalTaskService) taskServiceFactory.newTaskService();			
 			runtime = new RuntimeEngineImpl(ksession, internalTaskService);
 			((RuntimeEngineImpl) runtime).setManager(this);
+			((RuntimeEngineImpl) runtime).setContext(context);
 			configureRuntimeOnTaskService(internalTaskService, runtime);
 			registerDisposeCallback(runtime, new DisposeSessionTransactionSynchronization(this, runtime));
 			registerItems(runtime);
@@ -165,6 +166,19 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             runtimeEngine.getKieSession().signalEvent(type, event);        
             if (canDispose(runtimeEngine)) {
                 disposeRuntimeEngine(runtimeEngine);
+            }
+        }
+        
+        // process currently active runtime engines
+        Map<Object, RuntimeEngine> currentlyActive = local.get();
+        if (currentlyActive != null && !currentlyActive.isEmpty()) {
+            RuntimeEngine[] activeEngines = currentlyActive.values().toArray(new RuntimeEngine[currentlyActive.size()]);
+            for (RuntimeEngine engine : activeEngines) {
+                Context<?> context = ((RuntimeEngineImpl) engine).getContext();
+                if (context != null && context instanceof ProcessInstanceIdContext 
+                        && ((ProcessInstanceIdContext) context).getContextId() != null) {
+                    engine.getKieSession().signalEvent(type, event, ((ProcessInstanceIdContext) context).getContextId());
+                }
             }
         }
     }
@@ -263,6 +277,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             		event.getKieRuntime().getEnvironment(),
             		event.getProcessInstance().getId()), ksessionId, managerId);  
             saveLocalRuntime(event.getProcessInstance().getId(), runtime);
+            ((RuntimeEngineImpl)runtime).setContext(ProcessInstanceIdContext.get(event.getProcessInstance().getId()));
         }
         
     }

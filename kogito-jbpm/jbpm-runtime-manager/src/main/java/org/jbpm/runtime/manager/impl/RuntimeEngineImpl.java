@@ -39,7 +39,7 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
 
 	private RuntimeEngineInitlializer initializer;
 	private Context<?> context;
-	
+
     private KieSession ksession;
     private TaskService taskService;
     private AuditService auditService;
@@ -159,4 +159,12 @@ public class RuntimeEngineImpl implements RuntimeEngine, Disposable {
 	public void setAfterCompletion(boolean completing) {
 		this.afterCompletion = completing;
 	}
+		   
+    public Context<?> getContext() {
+        return context;
+    }
+    
+    public void setContext(Context<?> context) {
+        this.context = context;
+    }
 }
