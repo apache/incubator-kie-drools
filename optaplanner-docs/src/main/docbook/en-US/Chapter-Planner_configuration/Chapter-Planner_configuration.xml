@@ -823,6 +823,10 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
             </listitem>
 
             <listitem>
+              <para><literal>BigInteger</literal>: An arbitrary-precision integer range.</para>
+            </listitem>
+
+            <listitem>
               <para><literal>BigDecimal</literal>: A decimal point range. By default, the increment unit is the lowest
               non-zero value in the scale of the bounds.</para>
             </listitem>
