@@ -15,14 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import org.drools.compiler.commons.jci.readers.ResourceReader;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.compiler.kproject.models.KieModuleModelImpl;
-import org.drools.core.common.ResourceProvider;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieBaseModel;
-import org.kie.api.builder.model.KieModuleModel;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +23,14 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.util.Collection;
+
+import org.drools.compiler.commons.jci.readers.ResourceReader;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.core.common.ResourceProvider;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieModuleModel;
 
 public class MemoryKieModule extends AbstractKieModule
         implements
@@ -95,7 +95,10 @@ public class MemoryKieModule extends AbstractKieModule
         return "MemoryKieModule[releaseId=" + getReleaseId() + "]";
     }
 
-    MemoryKieModule cloneForIncrementalCompilation(ReleaseId releaseId, KieModuleModel kModuleModel, MemoryFileSystem newFs) {
+    MemoryKieModule cloneForIncrementalCompilation(ReleaseId releaseId,
+                                                KieModuleModel kModuleModel,
+                                                MemoryFileSystem newFs,
+                                                MemoryKieModule sourceKModule) {
         MemoryKieModule clone = new MemoryKieModule(releaseId, kModuleModel, newFs);
         for (InternalKieModule dep : getKieDependencies().values()) {
             clone.addKieDependency(dep);
@@ -103,6 +106,11 @@ public class MemoryKieModule extends AbstractKieModule
         for (KieBaseModel kBaseModel : getKieModuleModel().getKieBaseModels().values()) {
             clone.cacheKnowledgeBuilderForKieBase(kBaseModel.getName(), getKnowledgeBuilderForKieBase( kBaseModel.getName() ));
         }
+        clone.setPomModel( sourceKModule.getPomModel() );
+        for ( InternalKieModule dependency : sourceKModule.getKieDependencies().values() ) {
+            clone.addKieDependency( dependency );
+        }
+        clone.setUnresolvedDependencies( sourceKModule.getUnresolvedDependencies() );
         return clone;
     }
 
