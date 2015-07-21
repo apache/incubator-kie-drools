@@ -670,4 +670,22 @@ public class DescrBuilderTest extends CommonTestMethodBase {
 
     }
 
+    @Test
+    public void testBehaviorForSlidingWindow() throws InstantiationException, IllegalAccessException {
+        // DROOLS-852
+        List<String> myParams = new LinkedList<String>();
+        myParams.add("5s");
+
+        PackageDescr pkg = DescrFactory
+                .newPackage().name( "org.drools" )
+                .newRule().name( "from rule" )
+                .lhs()
+                .not().pattern().type( "StockTick" ).constraint( "price > 10" ).behavior().type( "window", "time" ).parameters( myParams ).end().end().end()
+                .end()
+                .rhs("//System.out.println(s);")
+                .end().getDescr();
+
+        String drl = new DrlDumper().dump( pkg );
+        assertTrue( drl.contains("window:time(5s)" ) );
+    }
 }
