@@ -20,10 +20,15 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.context.variable.VariableScopeInstance;
+import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.process.ProcessContext;
 
@@ -68,6 +73,19 @@ public class JavaScriptReturnValueEvaluator implements ReturnValueEvaluator, Ext
             throw new RuntimeException( "Constraints must return boolean values: " + 
         		expr + " returns " + value + 
         		(value == null? "" : " (type=" + value.getClass()));
+        }
+        
+        if (context.getProcessInstance() != null && context.getProcessInstance().getProcess() != null) {
+            // insert process variables
+            VariableScopeInstance variableScope = (VariableScopeInstance) ((WorkflowProcessInstance)context.getProcessInstance())
+                    .getContextInstance(VariableScope.VARIABLE_SCOPE);
+    
+            Map<String, Object> variables = variableScope.getVariables();
+            if (variables != null ) {
+                for (Entry<String, Object> variable : variables.entrySet()) {
+                    engine.put(variable.getKey(), variable.getValue());
+                }
+            }
         }
         return ((Boolean) value).booleanValue();
     }
