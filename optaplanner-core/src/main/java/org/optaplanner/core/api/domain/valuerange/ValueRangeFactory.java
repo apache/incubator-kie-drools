@@ -17,8 +17,10 @@
 package org.optaplanner.core.api.domain.valuerange;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.optaplanner.core.impl.domain.valuerange.buildin.bigdecimal.BigDecimalValueRange;
+import org.optaplanner.core.impl.domain.valuerange.buildin.biginteger.BigIntegerValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.primdouble.DoubleValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.primint.IntValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.primlong.LongValueRange;
@@ -80,7 +82,26 @@ public class ValueRangeFactory {
     }
 
     /**
-     * Build a {@link CountableValueRange} of all {@link BigDecimal} values between 2 bounds.
+     * Build a {@link CountableValueRange} of all {@link BigInteger} values between 2 bounds.
+     * @param from inclusive minimum
+     * @param to exclusive maximum, {@code >= from}
+     */
+    public static CountableValueRange<BigInteger> createBigIntegerValueRange(BigInteger from, BigInteger to) {
+        return new BigIntegerValueRange(from, to);
+    }
+
+    /**
+     * Build a {@link CountableValueRange} of a subset of {@link BigInteger} values between 2 bounds.
+     * @param from inclusive minimum
+     * @param to exclusive maximum, {@code >= from}
+     * @param incrementUnit {@code > 0}
+     */
+    public static CountableValueRange<BigInteger> createBigIntegerValueRange(BigInteger from, BigInteger to, BigInteger incrementUnit) {
+        return new BigIntegerValueRange(from, to, incrementUnit);
+    }
+
+    /**
+     * Build a {@link CountableValueRange} of all {@link BigDecimal} values (of a specific scale) between 2 bounds.
      * All parameters must have the same {@link BigDecimal#scale()}.
      * @param from inclusive minimum
      * @param to exclusive maximum, {@code >= from}
