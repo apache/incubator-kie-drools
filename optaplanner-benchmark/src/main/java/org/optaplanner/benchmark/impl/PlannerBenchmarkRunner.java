@@ -122,25 +122,26 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     }
 
     private void warmUp() {
-        if (plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit() > 0L) {
-            logger.info("================================================================================");
-            logger.info("Warm up started");
-            logger.info("================================================================================");
-            long startingTimeMillis = System.currentTimeMillis();
-            long timeLeft = plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit();
-            List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList();
-            Iterator<ProblemBenchmarkResult> it = unifiedProblemBenchmarkResultList.iterator();
-            while (timeLeft > 0L) {
-                if (!it.hasNext()) {
-                    it = unifiedProblemBenchmarkResultList.iterator();
-                }
-                ProblemBenchmarkResult problemBenchmarkResult = it.next();
-                timeLeft = warmUp(problemBenchmarkResult, startingTimeMillis, plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit(), timeLeft);
-            }
-            logger.info("================================================================================");
-            logger.info("Warm up ended");
-            logger.info("================================================================================");
+        if (plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit() <= 0L) {
+            return;
         }
+        logger.info("================================================================================");
+        logger.info("Warm up started");
+        logger.info("================================================================================");
+        long startingTimeMillis = System.currentTimeMillis();
+        long timeLeft = plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit();
+        List<ProblemBenchmarkResult> unifiedProblemBenchmarkResultList = plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList();
+        Iterator<ProblemBenchmarkResult> it = unifiedProblemBenchmarkResultList.iterator();
+        while (timeLeft > 0L) {
+            if (!it.hasNext()) {
+                it = unifiedProblemBenchmarkResultList.iterator();
+            }
+            ProblemBenchmarkResult problemBenchmarkResult = it.next();
+            timeLeft = warmUp(problemBenchmarkResult, startingTimeMillis, plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit(), timeLeft);
+        }
+        logger.info("================================================================================");
+        logger.info("Warm up ended");
+        logger.info("================================================================================");
     }
 
     protected long warmUp(ProblemBenchmarkResult problemBenchmarkResult,
@@ -182,7 +183,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 futureMap.put(singleBenchmarkRunner, future);
             }
         }
-        // wait for the benchmarks to complete
+        // Wait for the benchmarks to complete
         for (Map.Entry<SingleBenchmarkRunner, Future<SingleBenchmarkRunner>> futureEntry : futureMap.entrySet()) {
             SingleBenchmarkRunner singleBenchmarkRunner = futureEntry.getKey();
             Future<SingleBenchmarkRunner> future = futureEntry.getValue();
@@ -195,16 +196,18 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                     throw new IllegalStateException("Score is null. TODO fix PLANNER-46.");
                 }
             } catch (InterruptedException e) {
-                logger.error("The singleBenchmarkRunner (" + singleBenchmarkRunner.getName() + ") was interrupted.", e);
+                singleBenchmarkRunnerExceptionLogger.error("The singleBenchmarkRunner ({}) was interrupted.",
+                        singleBenchmarkRunner, e);
                 failureThrowable = e;
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
-                singleBenchmarkRunnerExceptionLogger.warn("The singleBenchmarkRunner ("
-                        + singleBenchmarkRunner.getName() + ") failed.", cause);
+                singleBenchmarkRunnerExceptionLogger.warn("The singleBenchmarkRunner ({}) failed.",
+                        singleBenchmarkRunner, cause);
                 failureThrowable = cause;
             } catch (IllegalStateException e) {
                 // TODO WORKAROUND Remove when PLANNER-46 is fixed.
-                singleBenchmarkRunnerExceptionLogger.warn("The singleBenchmarkRunner (" + singleBenchmarkRunner.getName() + ") failed.", e);
+                singleBenchmarkRunnerExceptionLogger.warn("The singleBenchmarkRunner ({}) failed.",
+                        singleBenchmarkRunner, e);
                 failureThrowable = e;
             }
             if (failureThrowable == null) {
