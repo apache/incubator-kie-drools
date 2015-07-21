@@ -38,6 +38,8 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
 
     private final SingleBenchmarkResult singleBenchmarkResult;
 
+    private Solver solver = null;
+
     private Throwable failureThrowable = null;
 
     public SingleBenchmarkRunner(SingleBenchmarkResult singleBenchmarkResult) {
@@ -73,7 +75,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
                 singleBenchmarkResult.getName());
 
         // Intentionally create a fresh solver for every SingleBenchmarkResult to reset Random, tabu lists, ...
-        Solver solver = singleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig().buildSolver();
+        solver = singleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig().buildSolver();
 
         for (SingleStatistic singleStatistic : singleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
             singleStatistic.open(solver);
@@ -100,6 +102,12 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
         problemBenchmarkResult.writeOutputSolution(singleBenchmarkResult, outputSolution);
         MDC.remove(NAME_MDC);
         return this;
+    }
+
+    public void terminateSolverEarly() {
+        if (solver != null) {
+            solver.terminateEarly();
+        }
     }
 
     public String getName() {
