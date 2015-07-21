@@ -15,6 +15,18 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
@@ -49,18 +61,6 @@ import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
 import org.kie.internal.io.ResourceTypeImpl;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class KieBuilderImpl
         implements
@@ -290,7 +290,7 @@ public class KieBuilderImpl
         }
         trgMfs = trgMfs.clone();
         init();
-        kModule = kModule.cloneForIncrementalCompilation( releaseId, kModuleModel, trgMfs );
+        kModule = kModule.cloneForIncrementalCompilation( releaseId, kModuleModel, trgMfs, kModule );
     }
 
     private void addMetaInfBuilder() {
