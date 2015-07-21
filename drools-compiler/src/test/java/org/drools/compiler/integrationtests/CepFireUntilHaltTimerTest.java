@@ -109,8 +109,10 @@ public class CepFireUntilHaltTimerTest {
 
         try {
 
+            final int ITEMS = 10;
+
             final Date eventTime = new Date(clock.getCurrentTime());
-            for (int i = 0; i < 205; i++) {
+            for (int i = 0; i < ITEMS; i++) {
                 ksession.insert(new MetadataEvent(eventTime, 0L));
             }
 
@@ -124,7 +126,7 @@ public class CepFireUntilHaltTimerTest {
             Thread.sleep(1000);
 
             assertFalse("The result is unexpectedly empty", result.isEmpty());
-            assertEquals(205, (long) result.get(0));
+            assertEquals(ITEMS, (long) result.get(0));
             assertEquals(0, (long) result.get(1));
         } finally {
             ksession.halt();
