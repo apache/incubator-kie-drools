@@ -78,8 +78,12 @@ public class SynchronizedPropagationList implements PropagationList {
     @Override
     public void flushOnFireUntilHalt( boolean fired, PropagationEntry currentHead ) {
         if ( !fired && currentHead == null) {
-            halt();
-            currentHead = takeAll();
+            synchronized (this) {
+                if (head == null) {
+                    halt();
+                }
+                currentHead = takeAll();
+            }
         }
         while ( currentHead != null ) {
             flush( workingMemory, currentHead );

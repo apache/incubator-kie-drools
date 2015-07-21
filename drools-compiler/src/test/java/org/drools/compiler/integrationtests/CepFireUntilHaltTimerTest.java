@@ -106,8 +106,6 @@ public class CepFireUntilHaltTimerTest {
         ksession.dispose();
     }
 
-    @Ignore("Fails intermittently due to race condition between the propagation queue and the default agenda " +
-            "(as described by Mario Fusco). Should be fixed within a few days.")
     @Test
     public void testTwoRunsTimerAccumulateFireUntilHalt() throws Exception {
         init();
@@ -129,8 +127,10 @@ public class CepFireUntilHaltTimerTest {
 
         try {
 
+            final int ITEMS = 10;
+
             final Date eventTime = new Date(clock.getCurrentTime());
-            for (int i = 0; i < 205; i++) {
+            for (int i = 0; i < ITEMS; i++) {
                 ksession.insert(new MetadataEvent(eventTime, 0L));
             }
 
@@ -146,7 +146,7 @@ public class CepFireUntilHaltTimerTest {
             TimerUtils.sleepMillis(500);
 
             assertTrue( "The result does not contain at least 2 elements", result.size() >= 2);
-            assertEquals(205, (long) result.get(0));
+            assertEquals(ITEMS, (long) result.get(0));
             assertEquals(0, (long) result.get(1));
         } finally {
             ksession.halt();
