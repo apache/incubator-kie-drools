@@ -505,10 +505,6 @@ public class PatternBuilder
 
     /**
      * Process all constraints and bindings on this pattern
-     * 
-     * @param context
-     * @param patternDescr
-     * @param pattern
      */
     protected void processConstraintsAndBinds( final RuleBuildContext context,
                                              final PatternDescr patternDescr,
@@ -739,7 +735,7 @@ public class PatternBuilder
         ObjectType originalType = pattern.getObjectType();
 
         for (XpathAnalysis.XpathPart part : xpathAnalysis) {
-            XpathConstraint.XpathChunk xpathChunk = xpathConstraint.addChunck(patternClass, part.getField(), part.isIterate());
+            XpathConstraint.XpathChunk xpathChunk = xpathConstraint.addChunck(patternClass, part.getField(), part.getIndex(), part.isIterate());
 
             if (xpathChunk == null) {
                 context.addError(new DescrBuildError(context.getParentDescr(),

@@ -210,7 +210,7 @@ public class XpathTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Man( $toys: /wife/children[age > 10].toys )\n" +
+                "  Man( $toys: /wife/children{age > 10}.toys )\n" +
                 "then\n" +
                 "  list.add( $toys.size() );\n" +
                 "end\n";
@@ -249,7 +249,7 @@ public class XpathTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Man( $toy: /wife/children[age > 10, name.length > 5]/toys )\n" +
+                "  Man( $toy: /wife/children{age > 10, name.length > 5}/toys )\n" +
                 "then\n" +
                 "  list.add( $toy.getName() );\n" +
                 "end\n";
@@ -293,7 +293,7 @@ public class XpathTest {
                 "\n" +
                 "rule R when\n" +
                 "  $i : Integer()\n" +
-                "  Man( $toy: /wife/children[age > 10, name.length > $i]/toys )\n" +
+                "  Man( $toy: /wife/children{age > 10, name.length > $i}/toys )\n" +
                 "then\n" +
                 "  list.add( $toy.getName() );\n" +
                 "end\n";
@@ -337,7 +337,7 @@ public class XpathTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Man( $toy: /wife/children[age > 10]/toys )\n" +
+                "  Man( $toy: /wife/children{age > 10}/toys )\n" +
                 "then\n" +
                 "  list.add( $toy.getName() );\n" +
                 "end\n";
@@ -385,7 +385,7 @@ public class XpathTest {
                 "\n" +
                 "rule R when\n" +
                 "  $i : Integer()\n" +
-                "  Man( $toy: /wife/children[age > $i]/toys )\n" +
+                "  Man( $toy: /wife/children{age > $i}/toys )\n" +
                 "then\n" +
                 "  list.add( $toy.getName() );\n" +
                 "end\n";
@@ -435,12 +435,12 @@ public class XpathTest {
                 "\n" +
                 "rule R1 when\n" +
                 "  $i : Integer()\n" +
-                "  Man( $toy: /wife/children[age >= $i]/toys )\n" +
+                "  Man( $toy: /wife/children{age >= $i}/toys )\n" +
                 "then\n" +
                 "  toyList.add( $toy.getName() );\n" +
                 "end\n" +
                 "rule R2 when\n" +
-                "  School( $child: /children[age >= 13] )\n" +
+                "  School( $child: /children{age >= 13} )\n" +
                 "then\n" +
                 "  teenagers.add( $child.getName() );\n" +
                 "end\n";
@@ -502,7 +502,7 @@ public class XpathTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Man( $toy: /wife/children[ #BabyGirl ]/toys )\n" +
+                "  Man( $toy: /wife/children{ #BabyGirl }/toys )\n" +
                 "then\n" +
                 "  list.add( $toy.getName() );\n" +
                 "end\n";
@@ -541,7 +541,7 @@ public class XpathTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Man( name == \"Bob\", $name: /wife/children[ #BabyGirl, favoriteDollName.startsWith(\"A\") ].name )\n" +
+                "  Man( name == \"Bob\", $name: /wife/children{ #BabyGirl, favoriteDollName.startsWith(\"A\") }.name )\n" +
                 "then\n" +
                 "  list.add( $name );\n" +
                 "end\n";
@@ -581,7 +581,7 @@ public class XpathTest {
                 "global java.util.List list\n" +
                 "\n" +
                 "rule R when\n" +
-                "  Man( $toy: /wife/children[age > 10]/toys )\n" +
+                "  Man( $toy: /wife/children{age > 10}/toys )\n" +
                 "then\n" +
                 "  list.add( $toy.getName() );\n" +
                 "end\n";
@@ -619,5 +619,44 @@ public class XpathTest {
 
         assertEquals(1, list.size());
         assertTrue(list.contains("gun"));
+    }
+
+    @Test
+    public void testIndexedAccess() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  Man( $toy: /wife/children[0]{age > 10}/toys[1] )\n" +
+                "then\n" +
+                "  list.add( $toy.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        Woman alice = new Woman("Alice", 38);
+        Man bob = new Man("Bob", 40);
+        bob.setWife(alice);
+
+        Child charlie = new Child("Charles", 12);
+        Child debbie = new Child("Debbie", 11);
+        alice.addChild(charlie);
+        alice.addChild(debbie);
+
+        charlie.addToy(new Toy("car"));
+        charlie.addToy(new Toy("ball"));
+        debbie.addToy(new Toy("doll"));
+
+        ksession.insert(bob);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertTrue(list.contains("ball"));
     }
 }
