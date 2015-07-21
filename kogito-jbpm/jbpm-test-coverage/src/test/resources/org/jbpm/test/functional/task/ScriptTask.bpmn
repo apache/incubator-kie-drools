@@ -32,9 +32,23 @@
                 kcontext.setVariable("output", temp);
             </script>
         </scriptTask>
+        <scriptTask id="scriptJavaScript" name="scriptJavaScript" scriptFormat="http://www.javascript.com/javascript">
+            <script>
+                temp = "JavaScript Node: " + kcontext.getVariable("person").name;
+                try {
+                    print(person.name);
+                } catch (err) {
+                    print(err);
+                    temp = err;
+                }
+
+                kcontext.setVariable("output", temp);
+            </script>
+        </scriptTask>
         <endEvent id="end" name="end"/>
         <sequenceFlow id="sf1" sourceRef="start" targetRef="scriptJava"/>
         <sequenceFlow id="sf2" sourceRef="scriptJava" targetRef="scriptMvel"/>
-        <sequenceFlow id="sf3" sourceRef="scriptMvel" targetRef="end"/>
+        <sequenceFlow id="sf3" sourceRef="scriptMvel" targetRef="scriptJavaScript"/>
+        <sequenceFlow id="sf4" sourceRef="scriptJavaScript" targetRef="end"/>
     </process>
 </definitions>

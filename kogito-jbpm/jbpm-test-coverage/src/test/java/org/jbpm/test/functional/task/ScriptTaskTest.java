@@ -74,6 +74,9 @@ public class ScriptTaskTest extends JbpmTestCase {
         assertTriggered(ipel, "scriptMvel");
         assertChangedVariable(ipel, "output", "BirskyKorcaskoVandrovec", "VandrovecBirskyKorcasko");
         assertLeft(ipel, "scriptMvel");
+        assertTriggered(ipel, "scriptJavaScript");
+        assertChangedVariable(ipel, "output", "VandrovecBirskyKorcasko", "JavaScript Node: Vandrovec");
+        assertLeft(ipel, "scriptJavaScript");
         assertNextNode(ipel, "end");
         assertProcessCompleted(ipel, SCRIPT_TASK_ID);
     }
