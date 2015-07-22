@@ -263,4 +263,20 @@ public class CommandFactoryServiceImpl implements KieCommands {
     public Command newAgendaGroupSetFocus(String name) {
         return new AgendaGroupSetFocusCommand(name);
     }
+
+    public Command newClearActivationGroup(String name) {
+        return new ClearActivationGroupCommand(name);
+    }
+
+    public Command newClearAgenda() {
+        return new ClearAgendaCommand();
+    }
+
+    public Command newClearAgendaGroup(String name) {
+        return new ClearAgendaGroupCommand(name);
+    }
+
+    public Command newClearRuleFlowGroup(String name) {
+        return new ClearRuleFlowGroupCommand(name);
+    }
 }
