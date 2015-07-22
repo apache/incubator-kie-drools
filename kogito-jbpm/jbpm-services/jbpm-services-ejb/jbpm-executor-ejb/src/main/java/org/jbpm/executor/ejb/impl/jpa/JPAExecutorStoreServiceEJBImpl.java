@@ -22,7 +22,7 @@ import javax.persistence.PersistenceUnit;
 
 import org.drools.core.command.CommandService;
 import org.jbpm.executor.impl.jpa.JPAExecutorStoreService;
-import org.kie.internal.executor.api.ExecutorStoreService;
+import org.kie.api.executor.ExecutorStoreService;
 
 @Stateless
 public class JPAExecutorStoreServiceEJBImpl extends JPAExecutorStoreService implements ExecutorStoreService {

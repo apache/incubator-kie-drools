@@ -20,7 +20,7 @@ import javax.ejb.Stateless;
 
 import org.drools.core.command.CommandService;
 import org.jbpm.executor.impl.jpa.ExecutorQueryServiceImpl;
-import org.kie.internal.executor.api.ExecutorQueryService;
+import org.kie.api.executor.ExecutorQueryService;
 
 
 @Stateless
