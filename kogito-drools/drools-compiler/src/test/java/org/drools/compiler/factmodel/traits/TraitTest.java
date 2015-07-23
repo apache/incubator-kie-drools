@@ -158,8 +158,8 @@ public class TraitTest extends CommonTestMethodBase {
 
     private KnowledgeBase getKieBaseFromString( String drl, RuleBaseConfiguration... conf ) {
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        knowledgeBuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ),
-                              ResourceType.DRL );
+        knowledgeBuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()),
+                ResourceType.DRL);
         if (knowledgeBuilder.hasErrors()) {
             throw new RuntimeException( knowledgeBuilder.getErrors().toString() );
         }
@@ -171,6 +171,36 @@ public class TraitTest extends CommonTestMethodBase {
     }
 
 
+    @Test
+    public void testRetract( ) {
+        String drl = "package org.drools.compiler.trait.test; \n" +
+                "import org.drools.core.factmodel.traits.Traitable; \n" +
+                "" +
+                "declare Foo @Traitable end\n" +
+                "declare trait Bar end \n" +
+                "" +
+                "rule Init when then\n" +
+                "  Foo foo = new Foo(); \n" +
+                "  don( foo, Bar.class ); \n" +
+                "end\n" +
+                "rule Retract \n" +
+                "when\n" +
+                " $bar : Bar()\n" +
+                "then\n" +
+                "  delete( $bar ); \n" +
+                "end\n";
+
+        StatefulKnowledgeSession ks = getSessionFromString( drl );
+        TraitFactory.setMode(mode, ks.getKieBase());
+
+        assertEquals(2, ks.fireAllRules());
+
+        for(Object o : ks.getObjects()) {
+            System.out.println(o);
+        }
+
+        assertEquals(0, ks.getObjects().size());
+    }
 
 
     @Test(timeout=10000)

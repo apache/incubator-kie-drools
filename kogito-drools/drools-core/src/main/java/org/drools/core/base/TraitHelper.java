@@ -604,7 +604,6 @@ public class TraitHelper implements Externalizable {
     }
 
     public void delete( final FactHandle handle, Activation activation ) {
-        Object o = ((InternalFactHandle) handle).getObject();
         ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).delete( handle,
                                                                                                   activation.getRule(),
                                                                                                   activation );
