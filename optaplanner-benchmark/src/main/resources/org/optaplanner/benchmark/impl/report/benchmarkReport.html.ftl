@@ -17,7 +17,7 @@
 </head>
 <#macro addSolverRankingBadge solverBenchmarkResult>
     <#if !solverBenchmarkResult.ranking??>
-    <span class="badge badge-important">F</span>
+    <span class="badge badge-important" data-toggle="tooltip" title="Failed benchmark">F</span>
     <#elseif solverBenchmarkResult.favorite>
     <span class="badge badge-success">${solverBenchmarkResult.ranking}</span>
     <#else>
@@ -26,7 +26,7 @@
 </#macro>
 <#macro addSingleRankingBadge singleBenchmarkResult>
     <#if !singleBenchmarkResult.ranking??>
-    <span class="badge badge-important">F</span>
+    <span class="badge badge-important" data-toggle="tooltip" title="Failed benchmark">F</span>
     <#elseif singleBenchmarkResult.winner>
     <span class="badge badge-success">${singleBenchmarkResult.ranking}</span>
     <#else>
@@ -34,9 +34,9 @@
     </#if>
 
     <#if !singleBenchmarkResult.initialized>
-    <span class="badge badge-important">!</span>
+    <span class="badge badge-important" data-toggle="tooltip" title="Uninitialized solution">!</span>
     <#elseif !singleBenchmarkResult.scoreFeasible>
-    <span class="badge badge-warning">!</span>
+    <span class="badge badge-warning" data-toggle="tooltip" title="Infeasible score">!</span>
     </#if>
 </#macro>
 <#macro addScoreLevelChartList chartFileList idPrefix>
@@ -651,5 +651,10 @@
 <script src="twitterbootstrap/js/jquery.js"></script>
 <script src="twitterbootstrap/js/bootstrap.js"></script>
 <script src="twitterbootstrap/js/prettify.js"></script>
+<script>
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
 </body>
 </html>
