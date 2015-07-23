@@ -15,58 +15,37 @@
 
 package org.jbpm.query.jpa.builder.impl;
 
-import org.kie.internal.query.data.QueryData;
 
-public abstract class AbstractDeleteBuilderImpl<T> {
+/**
+ * This is the abstract parent class for all delete (query) builder implementations.
+ *
+ * @param <T> The type of the interface that the delete builder implements. This is used for the fluent API.
+ */
+public abstract class AbstractDeleteBuilderImpl<T> extends AbstractQueryBuilderImpl<T> {
 
-    protected QueryData queryData = new QueryData();
-   
-    public QueryData getQueryData() { 
-        return queryData;
-    }
-    
-    protected <P> void addRangeParameter( String listId, String name, P parameter, boolean start) { 
-        if( parameter == null ) { 
-            throw new IllegalArgumentException("A null " + name + " criteria is invalid." );
-        }
-        this.queryData.addRangeParameter(listId, parameter, start);
-    }
-
-    private <P> void addParameter( String listId, P... parameter ) { 
-        this.queryData.addAppropriateParam(listId, parameter);
+    /**
+     * This operation is *NOT* supported on delete queries, 
+     * because String based query building would be way too much work,
+     * especially in comparison to the JPA Criteria infrastructure we have for normal queries.
+     */
+    @Override
+    public T newGroup() {
+        return unsupported();
     }
 
-    protected void addLongParameter( String listId, String name, long [] parameter) { 
-        if( parameter == null ) { 
-            throw new IllegalArgumentException("A null " + name + " criteria is invalid." );
-        }
-        Long [] wrapArr = new Long[parameter.length];
-        for( int i = 0; i < parameter.length; ++i ) { 
-            wrapArr[i] = parameter[i];
-        }
-        addParameter(listId, wrapArr);
-    }
-   
-    protected void addIntParameter( String listId, String name, int [] parameter) { 
-        if( parameter == null ) { 
-            throw new IllegalArgumentException("A null " + name + " criteria is invalid." );
-        }
-        Integer [] wrapArr = new Integer[parameter.length];
-        for( int i = 0; i < parameter.length; ++i ) { 
-            wrapArr[i] = parameter[i];
-        }
-        addParameter(listId, wrapArr);
-    }
-    
-    protected <P> void addObjectParameter(String listId, String name, P... parameter) { 
-        if( parameter == null ) { 
-            throw new IllegalArgumentException("A null " + name + " criteria is invalid." );
-        }
-        for( int i = 0; i < parameter.length; ++i ) { 
-           if( parameter[i] == null ) { 
-               throw new IllegalArgumentException("A null " + name + " criteria (argument " + i + ") is invalid." );
-           }
-        }
-        addParameter(listId, parameter);
+    /**
+     * This operation is *NOT* supported on delete queries, 
+     * because String based query building would be way too much work,
+     * especially in comparison to the JPA Criteria infrastructure we have for normal queries.
+     */
+    @Override
+    public T endGroup() {
+        return unsupported();
+    } 
+
+    static <T> T unsupported() { 
+        String methodName = (new Throwable()).getStackTrace()[1].getMethodName();
+        // in jBPM 7.x, this will be available, once we move to JPA 2.1
+        throw new UnsupportedOperationException(methodName + " is not supported on for delete queries!");
     }
 }

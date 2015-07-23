@@ -17,17 +17,18 @@ package org.jbpm.process.audit.query;
 
 import static org.kie.internal.query.QueryParameterIdentifiers.EXTERNAL_ID_LIST;
 
-import java.util.Date;
-
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.kie.api.runtime.CommandExecutor;
-import org.kie.internal.query.ParametrizedUpdate;
-import org.kie.internal.query.data.QueryData;
 import org.kie.internal.runtime.manager.audit.query.VariableInstanceLogDeleteBuilder;
 
 public class VarInstanceLogDeleteBuilderImpl extends AbstractAuditDeleteBuilderImpl<VariableInstanceLogDeleteBuilder> implements VariableInstanceLogDeleteBuilder {
 
+    private static String VARIABLE_INSTANCE_LOG_DELETE = 
+            "DELETE\n"
+            + "FROM VariableInstanceLog l\n";
+    
+    
     public VarInstanceLogDeleteBuilderImpl(CommandExecutor cmdExecutor ) {
         super(cmdExecutor);
         intersect();
@@ -39,65 +40,22 @@ public class VarInstanceLogDeleteBuilderImpl extends AbstractAuditDeleteBuilderI
     }
 
 	@Override
-	public VariableInstanceLogDeleteBuilder processInstanceId(long... processInstanceId) {
-		if (checkIfNotNull(processInstanceId)) {
-			return this;
-		}
-		return super.processInstanceId(processInstanceId);
-	}
-
-	@Override
-	public VariableInstanceLogDeleteBuilder processId(String... processId) {
-		if (checkIfNotNull(processId)) {
-			return this;
-		}
-		return super.processId(processId);
-	}
-
-	@Override
-	public VariableInstanceLogDeleteBuilder date(Date... date) {
-		if (checkIfNotNull(date)) {
-			return this;
-		}
-		return super.date(ensureDateNotTimestamp(date));
-	}
-
-	@Override
-	public VariableInstanceLogDeleteBuilder dateRangeStart(Date rangeStart) {
-		if (checkIfNotNull(rangeStart)) {
-			return this;
-		}
-		return super.dateRangeStart(ensureDateNotTimestamp(rangeStart)[0]);
-	}
-
-	@Override
-	public VariableInstanceLogDeleteBuilder dateRangeEnd(Date rangeStart) {
-		if (checkIfNotNull(rangeStart)) {
-			return this;
-		}
-		return super.dateRangeEnd(ensureDateNotTimestamp(rangeStart)[0]);
-	}
-
-	@Override
 	public VariableInstanceLogDeleteBuilder externalId(String... externalId) {
-		if (checkIfNotNull(externalId)) {
+		if (checkIfNull(externalId) ) { 
 			return this;
 		}
 		addObjectParameter(EXTERNAL_ID_LIST, "external id", externalId);
         return this;
 	}
 
-	@Override
-	public ParametrizedUpdate build() {
-		return new ParametrizedUpdate() {
-			private QueryData queryData = new QueryData(getQueryData());
-			@Override
-			public int execute() {
-				int result = getJpaAuditLogService().doDelete(queryData, VariableInstanceLog.class);
-				return result;
-			}
-		};
-	}
+    @Override
+    protected Class getQueryType() {
+        return VariableInstanceLog.class;
+    }
 
+    @Override
+    protected String getQueryBase() {
+        return VARIABLE_INSTANCE_LOG_DELETE;
+    }
 
 }

@@ -24,12 +24,14 @@ import java.util.Date;
 
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.command.AuditCommand;
-import org.jbpm.query.jpa.builder.impl.AbstractQueryBuilderImpl;
+import org.jbpm.query.jpa.builder.impl.AbstractDeleteBuilderImpl;
+import org.jbpm.query.jpa.data.QueryWhere;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.internal.command.Context;
-import org.kie.internal.runtime.manager.audit.query.AuditQueryBuilder;
+import org.kie.internal.query.ParametrizedUpdate;
+import org.kie.internal.runtime.manager.audit.query.AuditDeleteBuilder;
 
-public class AbstractAuditDeleteBuilderImpl<T> extends AbstractQueryBuilderImpl<T> implements AuditQueryBuilder<T> {
+public abstract class AbstractAuditDeleteBuilderImpl<T> extends AbstractDeleteBuilderImpl<T> implements AuditDeleteBuilder<T> {
 
     protected final CommandExecutor executor; 
     protected final JPAAuditLogService jpaAuditService; 
@@ -65,39 +67,58 @@ public class AbstractAuditDeleteBuilderImpl<T> extends AbstractQueryBuilderImpl<
 
     // query builder methods
     
-    @Override
-    @SuppressWarnings("unchecked")
-    public T processInstanceId( long... processInstanceId ) {
-        addLongParameter(PROCESS_INSTANCE_ID_LIST, "process instance id", processInstanceId);
-        return (T) this;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public T processId( String... processId ) {
-        addObjectParameter(PROCESS_ID_LIST, "process id", processId);
-        return (T) this;
-    }
-
     @SuppressWarnings("unchecked")
     public T date( Date... date ) {
+        if (checkIfNull(date)) {
+            return (T) this;
+        }
+        date = ensureDateNotTimestamp(date);
         addObjectParameter(DATE_LIST, "date", date);
         return (T) this;
     }
 
     @SuppressWarnings("unchecked")
     public T dateRangeStart( Date rangeStart ) {
+        if (checkIfNull(rangeStart)) {
+            return (T) this;
+        }
+        rangeStart = ensureDateNotTimestamp(rangeStart)[0];
         addRangeParameter(DATE_LIST, "date range start", rangeStart, true);
         return (T) this;
     }
 
     @SuppressWarnings("unchecked")
-    public T dateRangeEnd( Date rangeStart ) {
-        addRangeParameter(DATE_LIST, "date range end", rangeStart, false);
+    public T dateRangeEnd(Date rangeEnd) {
+        if (checkIfNull(rangeEnd)) {
+            return (T) this;
+        }
+        rangeEnd = ensureDateNotTimestamp(rangeEnd)[0];
+        addRangeParameter(DATE_LIST, "date range end", rangeEnd, false);
         return (T) this;
     }
 
-    protected boolean checkIfNotNull(Object...parameter) {
+    @Override
+    @SuppressWarnings("unchecked")
+    public T processInstanceId(long... processInstanceId) {
+        if (checkIfNull(processInstanceId)) {
+            return (T) this;
+        }
+        addLongParameter(PROCESS_INSTANCE_ID_LIST, "process instance id", processInstanceId);
+        return (T) this;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public T processId(String... processId) {
+        if (checkIfNull(processId)) {
+            return (T) this;
+        }
+        addObjectParameter(PROCESS_ID_LIST, "process id", processId);
+        return (T) this;
+    }
+
+    
+    protected <T> boolean checkIfNull(T...parameter) {
     	if( parameter == null ) { 
             return true;
         }
@@ -122,5 +143,19 @@ public class AbstractAuditDeleteBuilderImpl<T> extends AbstractQueryBuilderImpl<
 		
 		return validated;
     }
-  
+ 
+    abstract protected Class getQueryType();
+    
+    abstract protected String getQueryBase();
+    
+    public ParametrizedUpdate build() {
+        return new ParametrizedUpdate() {
+            private QueryWhere queryWhere = new QueryWhere(getQueryWhere());
+            @Override
+            public int execute() {
+                int result = getJpaAuditLogService().doDelete(getQueryBase(), queryWhere, getQueryType());
+                return result;
+            }
+        };
+    }
 }

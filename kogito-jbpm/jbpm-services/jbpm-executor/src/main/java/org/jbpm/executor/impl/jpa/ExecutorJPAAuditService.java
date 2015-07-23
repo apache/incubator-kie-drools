@@ -66,7 +66,7 @@ public class ExecutorJPAAuditService extends TaskJPAAuditService {
 	}
 
 	public RequestInfoLogDeleteBuilder requestInfoLogDeleteBuilder() {
-		return new RequestInfoLogDeleteBuilderImpl(this);
+		return new RequestInfoDeleteBuilderImpl(this);
 	}
 
 	// Query Query API -----------------------------------------------------------------------------------------------------------
