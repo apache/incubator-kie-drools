@@ -187,13 +187,18 @@ public class TraitTest extends CommonTestMethodBase {
                 "when\n" +
                 " $bar : Bar()\n" +
                 "then\n" +
-                "  retract( $bar ); \n" +
+                "  delete( $bar ); \n" +
                 "end\n";
 
         StatefulKnowledgeSession ks = getSessionFromString( drl );
         TraitFactory.setMode(mode, ks.getKieBase());
 
         assertEquals(2, ks.fireAllRules());
+
+        for(Object o : ks.getObjects()) {
+            System.out.println(o);
+        }
+
         assertEquals(0, ks.getObjects().size());
     }
 
