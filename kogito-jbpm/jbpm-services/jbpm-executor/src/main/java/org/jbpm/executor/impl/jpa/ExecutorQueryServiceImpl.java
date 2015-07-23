@@ -212,6 +212,14 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
         
         return request;
     }
+    
+    public RequestInfo getRequestForProcessing(Long requestId) {
+        
+        // need to do the lock here to avoid many executor services fetch the same element
+        RequestInfo request = commandService.execute(new LockAndUpdateRequestInfoByIdCommand(requestId));
+        
+        return request;
+    }
 
     private class LockAndUpdateRequestInfoCommand implements GenericCommand<RequestInfo> {
 
@@ -241,6 +249,39 @@ public class ExecutorQueryServiceImpl implements ExecutorQueryService {
 			return request;
 		}
     	
+    }
+    
+    private class LockAndUpdateRequestInfoByIdCommand implements GenericCommand<RequestInfo> {
+
+        private static final long serialVersionUID = 8670412133363766161L;
+        
+        private Long requestId;
+        
+        LockAndUpdateRequestInfoByIdCommand(Long requestId) {
+            this.requestId = requestId;
+        }
+
+        @Override
+        public RequestInfo execute(Context context) {
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("requestId", requestId);
+            RequestInfo request = null;
+            org.jbpm.shared.services.impl.JpaPersistenceContext ctx = (org.jbpm.shared.services.impl.JpaPersistenceContext) context;
+            List<RequestInfo> foundInstance = ctx.queryAndLockWithParametersInTransaction("PendingRequestByIdForProcessing",params, false, List.class);
+            if (foundInstance != null && !foundInstance.isEmpty()) {
+                request = foundInstance.get(0);
+                
+                if (request != null) {
+                    request.setStatus(STATUS.RUNNING);
+                    // update date on when it was started to be executed
+                        ((org.jbpm.executor.entities.RequestInfo)request).setTime(new Date());
+                        ctx.merge(request);
+                    }
+                }
+ 
+            return request;
+        }
+        
     }
 
     @Override

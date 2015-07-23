@@ -305,4 +305,9 @@ public class InMemoryExecutorQueryServiceImpl implements ExecutorQueryService {
         }
     }
 
+    @Override
+    public RequestInfo getRequestForProcessing(Long requestId) {        
+        return storeService.removeRequest(requestId);
+    }
+
 }

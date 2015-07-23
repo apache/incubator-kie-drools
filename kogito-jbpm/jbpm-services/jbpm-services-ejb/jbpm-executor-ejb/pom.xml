@@ -87,6 +87,13 @@
       <scope>provided</scope>
     </dependency>
 
+    <!-- support for JMS based executor -->
+    <dependency>
+      <groupId>org.jboss.spec.javax.jms</groupId>
+      <artifactId>jboss-jms-api_1.1_spec</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    
     <!-- test -->
     <dependency>
       <groupId>org.jboss.weld.se</groupId>

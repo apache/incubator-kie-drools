@@ -28,6 +28,15 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
+import javax.jms.TextMessage;
+import javax.naming.InitialContext;
+
 import org.drools.core.time.TimeUtils;
 import org.jbpm.executor.ExecutorNotStartedException;
 import org.jbpm.executor.entities.RequestInfo;
@@ -49,6 +58,16 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * Additionally executor can be disable to not start at all when system property org.kie.executor.disabled is 
  * set to true
+ * Executor can be used with JMS as the medium to notify about jobs to be executed instead of relying strictly 
+ * on poll mechanism that is available by default. JMS support is configurable and is enabled by default
+ * although it requires JMS resources (connection factory and destination) to properly operate. If any of
+ * these will not be found it will deactivate JMS support.
+ * Configuration parameters for JMS support:
+ * <ul>
+ *  <li>org.kie.executor.jms - allows to enable JMS support globally - default set to true</li>
+ *  <li>org.kie.executor.jms.cf - JNDI name of connection factory to be used for sending messages</li>
+ *  <li>org.kie.executor.jms.queue - JNDI name for destination (usually a queue) to be used to send messages to</li>
+ * </ul>
  */
 public class ExecutorImpl implements Executor {
 
@@ -56,12 +75,20 @@ public class ExecutorImpl implements Executor {
     
     private ExecutorStoreService executorStoreService;
 
-	private List<ScheduledFuture<?>> handle = new ArrayList<ScheduledFuture<?>>();
+    private List<ScheduledFuture<?>> handle = new ArrayList<ScheduledFuture<?>>();
     private int threadPoolSize = Integer.parseInt(System.getProperty("org.kie.executor.pool.size", "1"));
     private int retries = Integer.parseInt(System.getProperty("org.kie.executor.retry.count", "3"));
     private int interval = Integer.parseInt(System.getProperty("org.kie.executor.interval", "3"));
     private int initialDelay = Integer.parseInt(System.getProperty("org.kie.executor.initial.delay", "100"));
     private TimeUnit timeunit = TimeUnit.valueOf(System.getProperty("org.kie.executor.timeunit", "SECONDS"));
+    
+    
+    // jms related instances
+    private boolean useJMS = Boolean.parseBoolean(System.getProperty("org.kie.executor.jms", "true"));
+    private String connectionFactoryName = System.getProperty("org.kie.executor.jms.cf", "java:/JmsXA");
+    private String queueName = System.getProperty("org.kie.executor.jms.queue", "queue/KIE.EXECUTOR");
+    private ConnectionFactory connectionFactory;
+    private Queue queue;
 
 	private ScheduledExecutorService scheduler;
 
@@ -71,6 +98,50 @@ public class ExecutorImpl implements Executor {
     public void setExecutorStoreService(ExecutorStoreService executorStoreService) {
 		this.executorStoreService = executorStoreService;
 	}
+    
+    public ExecutorStoreService getExecutorStoreService() {
+        return executorStoreService;
+    }
+
+    
+    public String getConnectionFactoryName() {
+        return connectionFactoryName;
+    }
+
+    
+    public void setConnectionFactoryName(String connectionFactoryName) {
+        this.connectionFactoryName = connectionFactoryName;
+    }
+
+    
+    public String getQueueName() {
+        return queueName;
+    }
+
+    
+    public void setQueueName(String queueName) {
+        this.queueName = queueName;
+    }
+
+    
+    public ConnectionFactory getConnectionFactory() {
+        return connectionFactory;
+    }
+
+    
+    public void setConnectionFactory(ConnectionFactory connectionFactory) {
+        this.connectionFactory = connectionFactory;
+    }
+
+    
+    public Queue getQueue() {
+        return queue;
+    }
+
+    
+    public void setQueue(Queue queue) {
+        this.queue = queue;
+    }
 
     /**
      * {@inheritDoc}
@@ -148,6 +219,24 @@ public class ExecutorImpl implements Executor {
                                
                 delayIncremental += this.initialDelay;
                 
+            }
+            
+            if (useJMS) {
+                try {
+                    InitialContext ctx = new InitialContext();
+                    if (this.connectionFactory == null) {
+                        this.connectionFactory = (ConnectionFactory) ctx.lookup(connectionFactoryName);
+                    }
+                    if (this.queue == null) {
+                        this.queue = (Queue) ctx.lookup(queueName);
+                    }
+                    logger.info("Executor JMS based support successfully activated on queue {}", queue);
+                } catch (Exception e) {
+                    logger.warn("Disabling JMS support in executor because: unable to initialize JMS configuration for executor due to {}", e.getMessage());
+                    logger.debug("JMS support executor failed due to {}", e.getMessage(), e);
+                    // since it cannot be initialized disable jms
+                    useJMS = false;
+                }
             }
         } else {
         	throw new ExecutorNotStartedException();
@@ -248,7 +337,20 @@ public class ExecutorImpl implements Executor {
         
         executorStoreService.persistRequest(requestInfo);
 
-        logger.debug("Scheduling request for Command: {} - requestId: {} with {} retries", commandId, requestInfo.getId(), requestInfo.getRetries());
+        if (useJMS) {
+            // send JMS only for immediate job requests not for these that should be executed in future 
+            long currentTimestamp = System.currentTimeMillis();
+            
+            if (currentTimestamp >= date.getTime()) {
+                logger.debug("Sending JMS message to trigger job execution for job {}", requestInfo.getId());
+                // send JMS message to trigger processing
+                sendMessage(String.valueOf(requestInfo.getId()));
+            } else {
+                logger.debug("JMS message not sent for job {} as the job should not be executed immediately but at {}", requestInfo.getId(), date);
+            }
+        }
+        
+        logger.debug("Scheduled request for Command: {} - requestId: {} with {} retries", commandId, requestInfo.getId(), requestInfo.getRetries());
         return requestInfo.getId();
     }
 
@@ -264,6 +366,47 @@ public class ExecutorImpl implements Executor {
     }
 
     
-
+    protected void sendMessage(String messageBody) {
+        if (connectionFactory == null && queue == null) {
+            throw new IllegalStateException("ConnectionFactory and Queue cannot be null");
+        }
+        Connection queueConnection = null;
+        Session queueSession = null;
+        MessageProducer producer = null;
+        try {
+            queueConnection = connectionFactory.createConnection();
+            queueSession = queueConnection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+                      
+            TextMessage message = queueSession.createTextMessage(messageBody);
+            producer = queueSession.createProducer(queue);            
+            producer.send(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Error when sending JMS message with executor job request", e);
+        } finally {
+            if (producer != null) {
+                try {
+                    producer.close();
+                } catch (JMSException e) {
+                    logger.warn("Error when closing producer", e);
+                }
+            }
+            
+            if (queueSession != null) {
+                try {
+                    queueSession.close();
+                } catch (JMSException e) {
+                    logger.warn("Error when closing queue session", e);
+                }
+            }
+            
+            if (queueConnection != null) {
+                try {
+                    queueConnection.close();
+                } catch (JMSException e) {
+                    logger.warn("Error when closing queue connection", e);
+                }
+            }
+        }
+    }
 
 }

@@ -1,0 +1,196 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.jbpm.executor.impl.jms;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.Queue;
+import javax.jms.QueueSession;
+import javax.jms.Session;
+import javax.jms.XAConnectionFactory;
+import javax.naming.InitialContext;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.transaction.UserTransaction;
+
+import org.hornetq.jms.server.embedded.EmbeddedJMS;
+import org.jbpm.executor.ExecutorServiceFactory;
+import org.jbpm.executor.impl.ClassCacheManager;
+import org.jbpm.executor.impl.ExecutorImpl;
+import org.jbpm.executor.impl.ExecutorServiceImpl;
+import org.jbpm.test.util.ExecutorTestUtil;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.kie.api.executor.CommandContext;
+import org.kie.api.executor.ExecutorService;
+import org.kie.api.executor.RequestInfo;
+import org.kie.api.runtime.query.QueryContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import bitronix.tm.resource.jdbc.PoolingDataSource;
+import bitronix.tm.resource.jms.PoolingConnectionFactory;
+
+public class JmsAvaiableJobExecutorTest  {
+
+    private static final Logger logger = LoggerFactory.getLogger(JmsAvaiableJobExecutorTest.class);
+    
+    
+    private ConnectionFactory factory;
+    private Queue queue;
+    
+    private EmbeddedJMS jmsServer;   
+    
+    protected ExecutorService executorService;
+    protected PoolingDataSource pds;
+    protected EntityManagerFactory emf = null;
+    
+    @Before
+    public void setUp() throws Exception {        
+        startHornetQServer();
+        pds = ExecutorTestUtil.setupPoolingDataSource();
+        emf = Persistence.createEntityManagerFactory("org.jbpm.executor");
+
+        executorService = ExecutorServiceFactory.newExecutorService(emf);
+                
+        ((ExecutorImpl)((ExecutorServiceImpl)executorService).getExecutor()).setConnectionFactory(factory);
+        ((ExecutorImpl)((ExecutorServiceImpl)executorService).getExecutor()).setQueue(queue);
+        
+        executorService.setThreadPoolSize(0);
+        executorService.setInterval(10000);
+        executorService.init();
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        executorService.clearAllRequests();
+        executorService.clearAllErrors();
+        
+        executorService.destroy();
+        if (emf != null) {
+            emf.close();
+        }
+        pds.close();
+        
+        System.clearProperty("org.kie.executor.msg.length");
+        System.clearProperty("org.kie.executor.stacktrace.length");
+
+        stopHornetQServer();
+    }
+    
+    
+    @Test
+    public void testAsyncAuditProducer() throws Exception {
+        
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", ctxCMD);
+        ut.commit();
+        MessageReceiver receiver = new MessageReceiver();
+        receiver.receiveAndProcess(queue);
+
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
+        assertEquals(0, inErrorRequests.size());
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests(new QueryContext());
+        assertEquals(0, queuedRequests.size());
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
+        assertEquals(1, executedRequests.size());
+ 
+    }
+    
+   
+    
+    private void startHornetQServer() throws Exception {
+        jmsServer = new EmbeddedJMS();
+        jmsServer.start();
+        logger.debug("Started Embedded JMS Server");
+
+        BitronixHornetQXAConnectionFactory.connectionFactory = (XAConnectionFactory) jmsServer.lookup("ConnectionFactory");
+
+        PoolingConnectionFactory myConnectionFactory = new PoolingConnectionFactory ();                   
+        myConnectionFactory.setClassName("org.jbpm.executor.impl.jms.BitronixHornetQXAConnectionFactory");              
+        myConnectionFactory.setUniqueName("ConnectionFactory");                                                    
+        myConnectionFactory.setMaxPoolSize(5); 
+        myConnectionFactory.setAllowLocalTransactions(true);
+
+        myConnectionFactory.init(); 
+        
+        factory = myConnectionFactory;
+        
+        queue = (Queue) jmsServer.lookup("/queue/exampleQueue");
+        
+    }
+    
+    private void stopHornetQServer() throws Exception {
+        ((PoolingConnectionFactory) factory).close();
+        jmsServer.stop();
+        jmsServer = null;
+    }
+    
+    private class MessageReceiver {
+        
+        void receiveAndProcess(Queue queue) throws Exception {
+            
+            Connection qconnetion = factory.createConnection();
+            Session qsession = qconnetion.createSession(true, QueueSession.AUTO_ACKNOWLEDGE);
+            MessageConsumer consumer = qsession.createConsumer(queue);
+            qconnetion.start();
+            JmsAvailableJobsExecutor jmsExecutor = new JmsAvailableJobsExecutor();
+            jmsExecutor.setClassCacheManager(new ClassCacheManager());
+            jmsExecutor.setExecutorStoreService(((ExecutorImpl)((ExecutorServiceImpl)executorService).getExecutor()).getExecutorStoreService());
+            jmsExecutor.setQueryService(((ExecutorServiceImpl)executorService).getQueryService());
+            consumer.setMessageListener(jmsExecutor);
+            // since we use message listener allow it to complete the async processing
+            Thread.sleep(2000);
+            
+            consumer.close();            
+            qsession.close();            
+            qconnetion.close();
+
+        }
+        
+        public List<Message> receive(Queue queue) throws Exception {
+            List<Message> messages = new ArrayList<Message>();
+            
+            Connection qconnetion = factory.createConnection();
+            Session qsession = qconnetion.createSession(true, QueueSession.AUTO_ACKNOWLEDGE);
+            MessageConsumer consumer = qsession.createConsumer(queue);
+            qconnetion.start();
+            
+            Message m = null;
+            
+            while ((m = consumer.receiveNoWait()) != null) {
+                messages.add(m);
+            }
+            consumer.close();            
+            qsession.close();            
+            qconnetion.close();
+            
+            return messages;
+        }
+    }
+}

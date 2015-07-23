@@ -41,6 +41,7 @@ import org.slf4j.LoggerFactory;
  *  <li>Retries - number of retires for the command execution - optional</li>
  *  <li>RetryDelay - Comma separated list of time expressions (5s, 2m, 4h) to be used in case of errors and retry needed.</li>
  *  <li>Delay - optionally delay which job should be executed after given as time expression (5s, 2m, 4h) that will be calculated starting from current time</li>
+ *  <li>AutoComplete - allows to use "fire and forget" style so it will not wait for job completion and allow to move on (default false)</li>
  * </ul>
  * During execution it will set contextual data that will be available inside the command:
  * <ul>
@@ -77,6 +78,11 @@ public class AsyncWorkItemHandler implements WorkItemHandler {
         if (executorService == null || !executorService.isActive()) {
             throw new IllegalStateException("Executor is not set or is not active");
         }
+        boolean autoComplete = false;
+        if (workItem.getParameter("AutoComplete") != null) {
+            autoComplete = Boolean.parseBoolean(workItem.getParameter("AutoComplete").toString());
+        }
+        
         String businessKey = buildBusinessKey(workItem);
         logger.debug("Executing work item {} with built business key {}", workItem, businessKey);
         String cmdClass = (String) workItem.getParameter("CommandClass");
@@ -89,7 +95,11 @@ public class AsyncWorkItemHandler implements WorkItemHandler {
         ctxCMD.setData("workItem", workItem);
         ctxCMD.setData("processInstanceId", getProcessInstanceId(workItem));
         ctxCMD.setData("deploymentId", ((WorkItemImpl)workItem).getDeploymentId());
-        ctxCMD.setData("callbacks", AsyncWorkItemHandlerCmdCallback.class.getName());
+        // in case auto complete is selected skip callback
+        if (!autoComplete) {
+            ctxCMD.setData("callbacks", AsyncWorkItemHandlerCmdCallback.class.getName());
+        }
+        
         if (workItem.getParameter("Retries") != null) {
             ctxCMD.setData("retries", Integer.parseInt(workItem.getParameter("Retries").toString()));
         }
@@ -108,9 +118,15 @@ public class AsyncWorkItemHandler implements WorkItemHandler {
             scheduleDate = new Date(System.currentTimeMillis() + delayInMillis);
         }
         
+
         logger.trace("Command context {}", ctxCMD);
         Long requestId = executorService.scheduleRequest(cmdClass, scheduleDate, ctxCMD);
         logger.debug("Request scheduled successfully with id {}", requestId);
+        
+        if (autoComplete) {
+            logger.debug("Auto completing work item with id {}", workItem.getId());
+            manager.completeWorkItem(workItem.getId(), null);
+        }
     }
 
     @Override
