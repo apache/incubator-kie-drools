@@ -17,27 +17,28 @@
 </head>
 <#macro addSolverRankingBadge solverBenchmarkResult>
     <#if !solverBenchmarkResult.ranking??>
-    <span class="badge badge-important" data-toggle="tooltip" title="Failed benchmark">F</span>
+        <span class="badge badge-important" data-toggle="tooltip" title="Failed benchmark">F</span>
     <#elseif solverBenchmarkResult.favorite>
-    <span class="badge badge-success">${solverBenchmarkResult.ranking}</span>
+        <span class="badge badge-success">${solverBenchmarkResult.ranking}</span>
     <#else>
-    <span class="badge">${solverBenchmarkResult.ranking}</span>
+        <span class="badge">${solverBenchmarkResult.ranking}</span>
     </#if>
 </#macro>
 <#macro addSingleRankingBadge singleBenchmarkResult>
     <#if !singleBenchmarkResult.ranking??>
-    <span class="badge badge-important" data-toggle="tooltip" title="Failed benchmark">F</span>
+        <span class="badge badge-important" data-toggle="tooltip" title="Failed benchmark">F</span>
     <#else>
-    <#if singleBenchmarkResult.winner>
-    <span class="badge badge-success">${singleBenchmarkResult.ranking}</span>
-    <#else>
-    <span class="badge">${singleBenchmarkResult.ranking}</span>
-    </#if>
-    <#if !singleBenchmarkResult.initialized>
-    <span class="badge badge-important" data-toggle="tooltip" title="Uninitialized solution">!</span>
-    <#elseif !singleBenchmarkResult.scoreFeasible>
-    <span class="badge badge-warning" data-toggle="tooltip" title="Infeasible score">!</span>
-    </#if>
+        <#if singleBenchmarkResult.winner>
+            <span class="badge badge-success">${singleBenchmarkResult.ranking}</span>
+        <#else>
+            <span class="badge">${singleBenchmarkResult.ranking}</span>
+        </#if>
+
+        <#if !singleBenchmarkResult.initialized>
+            <span class="badge badge-important" data-toggle="tooltip" title="Uninitialized solution">!</span>
+        <#elseif !singleBenchmarkResult.scoreFeasible>
+            <span class="badge badge-warning" data-toggle="tooltip" title="Infeasible score">!</span>
+        </#if>
     </#if>
 </#macro>
 <#macro addScoreLevelChartList chartFileList idPrefix>
