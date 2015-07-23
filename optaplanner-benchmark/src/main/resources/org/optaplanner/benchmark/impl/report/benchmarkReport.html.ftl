@@ -27,15 +27,16 @@
 <#macro addSingleRankingBadge singleBenchmarkResult>
     <#if !singleBenchmarkResult.ranking??>
     <span class="badge badge-important">F</span>
+    <#elseif singleBenchmarkResult.winner>
+    <span class="badge badge-success">${singleBenchmarkResult.ranking}</span>
     <#else>
-        <#if singleBenchmarkResult.winner>
-        <span class="badge badge-success">${singleBenchmarkResult.ranking}</span>
-        <#else>
-        <span class="badge">${singleBenchmarkResult.ranking}</span>
-        </#if>
-        <#if !singleBenchmarkResult.scoreFeasible>
-        <span class="badge badge-warning">!</span>
-        </#if>
+    <span class="badge">${singleBenchmarkResult.ranking}</span>
+    </#if>
+
+    <#if !singleBenchmarkResult.initialized>
+    <span class="badge badge-important">!</span>
+    <#elseif !singleBenchmarkResult.scoreFeasible>
+    <span class="badge badge-warning">!</span>
     </#if>
 </#macro>
 <#macro addScoreLevelChartList chartFileList idPrefix>
