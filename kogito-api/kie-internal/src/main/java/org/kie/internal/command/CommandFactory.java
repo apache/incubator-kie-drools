@@ -167,7 +167,7 @@ public class CommandFactory {
     }
 
     public static Command newGetObjects(ObjectFilter filter, String outIdentifier ) {
-        return getCommandFactoryProvider().newGetObjects( filter );
+        return getCommandFactoryProvider().newGetObjects( filter, outIdentifier );
     }
 
     /**
