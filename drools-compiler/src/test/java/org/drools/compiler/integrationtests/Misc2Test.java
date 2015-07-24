@@ -7427,7 +7427,6 @@ public class Misc2Test extends CommonTestMethodBase {
      * For correct test, org.drools.core.rule.constraint.MvelConstraint.TEST_JITTING must be set to true
      * @throws InterruptedException
      */
-    @Ignore
     public void testJittedConstraintComparisonWithIncompatibleObjects() {
         String rule =
                 "package org.drools.compiler.integrationtests\n"
