@@ -190,39 +190,6 @@ public class XStreamJSon {
 
     }
 
-    //    public static class ModifyEntriesContainerConverter extends AbstractCollectionConverter {
-    //        public ModifyEntriesContainerConverter(Mapper mapper) {
-    //            super( mapper );
-    //        }
-    //
-    //        public boolean canConvert(Class type) {
-    //            return ModifyEntriesContainer.class.isAssignableFrom( type );
-    //
-    //        }
-    //
-    //        @Override
-    //        public void marshal(Object object,
-    //                            HierarchicalStreamWriter writer,
-    //                            MarshallingContext context) {
-    //            ModifyEntriesContainer container = (ModifyEntriesContainer) object;
-    //
-    //            writer.startNode( "accessor" );
-    //            writer.setValue( container.getAccessor() );
-    //            writer.endNode();
-    //            
-    //            writer.startNode( "value" );
-    //            writer.setValue( container.getValue() );
-    //            writer.endNode();
-    //        }
-    //
-    //        @Override
-    //        public Object unmarshal(HierarchicalStreamReader reader,
-    //                                UnmarshallingContext context) {
-    //            throw new UnsupportedOperationException();
-    //        }
-    //
-    //    }
-
     public static class JSonBatchExecutionCommandConverter extends AbstractCollectionConverter
         implements
         Converter {
@@ -414,7 +381,7 @@ public class XStreamJSon {
                 reader.moveUp();
             }
 
-            FireAllRulesCommand cmd = null;
+            FireAllRulesCommand cmd;
 
             if ( max != null ) {
                 cmd = new FireAllRulesCommand( Integer.parseInt( max ) );
@@ -464,7 +431,7 @@ public class XStreamJSon {
                 String name = reader.getNodeName();
                 if ( "fact-handle".equals( name ) ) {
                     factHandle = new DefaultFactHandle( reader.getValue() );
-                } else if ( "out-identifier".equals( "out-identifier" ) ) {
+                } else if ( "out-identifier".equals( name ) ) {
                     outIdentifier = reader.getValue();
                 }
                 reader.moveUp();
@@ -505,9 +472,7 @@ public class XStreamJSon {
             FactHandle factHandle = new DefaultFactHandle( reader.getValue() );
             reader.moveUp();
 
-            Command cmd = CommandFactory.newDelete(factHandle);
-
-            return cmd;
+            return CommandFactory.newDelete(factHandle);
         }
 
         public boolean canConvert(Class clazz) {
@@ -547,7 +512,7 @@ public class XStreamJSon {
             FactHandle factHandle = new DefaultFactHandle( reader.getValue() );
             reader.moveUp();
 
-            List<Setter> setters = new ArrayList();
+            List<Setter> setters = new ArrayList<Setter>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
 
@@ -566,9 +531,8 @@ public class XStreamJSon {
                 reader.moveUp();
             }
 
-            Command cmd = CommandFactory.newModify( factHandle,
-                                                    setters );
-            return cmd;
+            return CommandFactory.newModify( factHandle,
+                                             setters );
         }
 
         public boolean canConvert(Class clazz) {
@@ -615,7 +579,7 @@ public class XStreamJSon {
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
-            List objects = new ArrayList();
+            List<Object> objects = new ArrayList<Object>();
             String outIdentifier = null;
             String returnObjects = null;
             String entryPoint = null;
@@ -645,7 +609,7 @@ public class XStreamJSon {
             InsertElementsCommand cmd = new InsertElementsCommand( objects );
             if ( outIdentifier != null ) {
                 cmd.setOutIdentifier( outIdentifier );
-                if ( outIdentifier != null ) {
+                if ( returnObjects != null ) {
                     cmd.setReturnObject( Boolean.parseBoolean( returnObjects ) );
                 }
             }
@@ -756,8 +720,8 @@ public class XStreamJSon {
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
             ExecutionResultImpl result = new ExecutionResultImpl();
-            Map results = result.getResults();
-            Map facts = result.getFactHandles();
+            Map<String, Object> results = result.getResults();
+            Map<String, Object> facts = result.getFactHandles();
 
             reader.moveDown();
             if ( "results".equals( reader.getNodeName() ) ) {
@@ -790,7 +754,7 @@ public class XStreamJSon {
                         facts.put( identifier,
                                    new DefaultFactHandle( externalForm ) );
                     } else if ( reader.getNodeName().equals( "fact-handles" ) ) {
-                        List list = new ArrayList();
+                        List<FactHandle> list = new ArrayList<FactHandle>();
                         String identifier = null;
                         while ( reader.hasMoreChildren() ) {
                             reader.moveDown();
@@ -924,7 +888,6 @@ public class XStreamJSon {
             String identifier = null;
             boolean out = false;
             String outIdentifier = null;
-            Object object = null;
             SetGlobalCommand cmd = new SetGlobalCommand();
 
             while ( reader.hasMoreChildren() ) {
@@ -1093,8 +1056,6 @@ public class XStreamJSon {
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
-            List<String> outs = new ArrayList<String>();
-
             String outIdentifier = null;
             String name = null;
             List<Object> args = null;
@@ -1119,11 +1080,9 @@ public class XStreamJSon {
                 reader.moveUp();
             }
 
-            QueryCommand cmd = new QueryCommand( outIdentifier,
-                                                 name,
-                                                 (args != null) ? args.toArray( new Object[args.size()] ) : null );
-
-            return cmd;
+            return new QueryCommand( outIdentifier,
+                                     name,
+                                     (args != null) ? args.toArray( new Object[args.size()] ) : null );
         }
 
         public boolean canConvert(Class clazz) {
@@ -1148,8 +1107,8 @@ public class XStreamJSon {
             String[] identifiers = results.getIdentifiers();
 
             writer.startNode( "identifiers" );
-            for ( int i = 0; i < identifiers.length; i++ ) {
-                writeItem( identifiers[i],
+            for ( String identifier : identifiers ) {
+                writeItem( identifier,
                            context,
                            writer );
             }
@@ -1157,9 +1116,9 @@ public class XStreamJSon {
 
             for ( QueryResultsRow result : results ) {
                 writer.startNode( "row" );
-                for ( int i = 0; i < identifiers.length; i++ ) {
-                    Object value = result.get( identifiers[i] );
-                    FactHandle factHandle = result.getFactHandle( identifiers[i] );
+                for ( String identifier : identifiers ) {
+                    Object value = result.get( identifier );
+                    FactHandle factHandle = result.getFactHandle( identifier );
                     writeItem( new RowItemContainer( factHandle,
                                                      value ),
                                context,
@@ -1188,12 +1147,12 @@ public class XStreamJSon {
                                  i );
             }
 
-            ArrayList<ArrayList<Object>> results = new ArrayList();
-            ArrayList<ArrayList<FactHandle>> resultHandles = new ArrayList();
+            ArrayList<ArrayList<Object>> results = new ArrayList<ArrayList<Object>>();
+            ArrayList<ArrayList<FactHandle>> resultHandles = new ArrayList<ArrayList<FactHandle>>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
-                ArrayList objects = new ArrayList();
-                ArrayList<FactHandle> handles = new ArrayList();
+                ArrayList<Object> objects = new ArrayList<Object>();
+                ArrayList<FactHandle> handles = new ArrayList<FactHandle>();
                 while ( reader.hasMoreChildren() ) {
                     reader.moveDown();
                     RowItemContainer container = (RowItemContainer) readItem( reader,
@@ -1443,9 +1402,7 @@ public class XStreamJSon {
             String id = reader.getValue();
             reader.moveUp();
 
-            Command cmd = CommandFactory.newAbortWorkItem( Long.parseLong( id ) );
-
-            return cmd;
+            return CommandFactory.newAbortWorkItem( Long.parseLong( id ) );
         }
 
         public boolean canConvert(Class clazz) {
