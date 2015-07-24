@@ -15,6 +15,8 @@
  */
 package org.drools.compiler.lang.descr;
 
+import org.drools.core.rule.Declaration;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,6 +34,7 @@ public class PatternDescr extends AnnotatedBaseDescr
     private PatternSourceDescr      source;
     private List<BehaviorDescr>     behaviors;
     private boolean                 query;
+    private Declaration             xpathStartDeclaration;
 
     public PatternDescr() {
         this( null,
@@ -212,6 +215,14 @@ public class PatternDescr extends AnnotatedBaseDescr
         this.unification = unification;
     }
 
+    public Declaration getXpathStartDeclaration() {
+        return xpathStartDeclaration;
+    }
+
+    public void setXpathStartDeclaration( Declaration xpathStartDeclaration ) {
+        this.xpathStartDeclaration = xpathStartDeclaration;
+    }
+
     public Object clone() {
         PatternDescr clone = new PatternDescr( this.objectType,
                                                this.identifier );
@@ -235,8 +246,7 @@ public class PatternDescr extends AnnotatedBaseDescr
                 clone.addBehavior( behavior );
             }
         }
+        clone.setXpathStartDeclaration( xpathStartDeclaration );
         return clone;
     }
-
-
 }

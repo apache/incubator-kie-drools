@@ -16,11 +16,12 @@
 
 package org.drools.core.spi;
 
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.rule.Declaration;
+
 import java.io.Serializable;
 import java.util.Iterator;
-
-import org.drools.core.WorkingMemory;
-import org.drools.core.rule.Declaration;
 
 public interface DataProvider
     extends
@@ -31,8 +32,8 @@ public interface DataProvider
 
     public Object createContext();
 
-    public Iterator getResults(Tuple tuple,
-                               WorkingMemory wm,
+    public Iterator getResults(LeftTuple tuple,
+                               InternalWorkingMemory wm,
                                PropagationContext ctx,
                                Object providerContext);
 

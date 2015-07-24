@@ -16,9 +16,7 @@
 
 package org.drools.reteoo.nodes;
 
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassFieldReader;
@@ -27,19 +25,19 @@ import org.drools.core.base.FieldFactory;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.FromNode;
+import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.MockLeftTupleSink;
 import org.drools.core.reteoo.MockTupleSource;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.test.model.Cheese;
-import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.From;
@@ -50,9 +48,11 @@ import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
+import org.drools.core.test.model.Cheese;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBaseFactory;
 
 import java.util.ArrayList;
@@ -60,11 +60,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.*;
 
 @Ignore
 public class FromNodeTest {
@@ -473,8 +469,8 @@ public class FromNodeTest {
             this.collection = collection;
         }
 
-        public Iterator getResults(final Tuple tuple,
-                                   final WorkingMemory wm,
+        public Iterator getResults(final LeftTuple tuple,
+                                   final InternalWorkingMemory wm,
                                    final PropagationContext ctx,
                                    final Object providerContext) {
             return this.collection.iterator();
