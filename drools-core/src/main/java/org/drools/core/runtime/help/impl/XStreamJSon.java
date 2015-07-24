@@ -22,7 +22,6 @@ import com.thoughtworks.xstream.converters.MarshallingContext;
 import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter;
 import com.thoughtworks.xstream.converters.reflection.ReflectionProvider;
-import com.thoughtworks.xstream.core.util.HierarchicalStreams;
 import com.thoughtworks.xstream.io.ExtendedHierarchicalStreamWriterHelper;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -45,7 +44,6 @@ import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.util.StringUtils;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
@@ -60,7 +58,6 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -856,13 +853,40 @@ public class XStreamJSon {
                                    Object object,
                                    Object fieldName) {
             reader.moveDown();
-            Class type = HierarchicalStreams.readClassType( reader,
-                                                            this.mapper );
+            Class type = readClassType( reader,
+                                        this.mapper);
             Object o = context.convertAnother( null,
                                                type );
 
             reader.moveUp();
             return o;
+        }
+
+        // methods borrowed directly from com.thoughtworks.xstream.core.util.HierarchicalStreams to make sure we don't
+        // depend on that package (it is XStream internal package and using it causes issues in OSGi)
+        // see https://issues.jboss.org/browse/DROOLS-558 for more details
+        private Class readClassType( HierarchicalStreamReader reader, Mapper mapper ) {
+            String classAttribute = readClassAttribute( reader, mapper );
+            Class type;
+            if ( classAttribute == null ) {
+                type = mapper.realClass( reader.getNodeName() );
+            } else {
+                type = mapper.realClass( classAttribute );
+            }
+            return type;
+        }
+
+
+        private String readClassAttribute( HierarchicalStreamReader reader, Mapper mapper ) {
+            String attributeName = mapper.aliasForSystemAttribute( "resolves-to" );
+            String classAttribute = attributeName == null ? null : reader.getAttribute( attributeName );
+            if (classAttribute == null) {
+                attributeName = mapper.aliasForSystemAttribute( "class" );
+                if (attributeName != null) {
+                    classAttribute = reader.getAttribute( attributeName );
+                }
+            }
+            return classAttribute;
         }
     }
 
