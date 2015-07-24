@@ -7452,12 +7452,9 @@ public class Misc2Test extends CommonTestMethodBase {
         NonStringConstructorClass simpleTestObject = new NonStringConstructorClass();
         simpleTestObject.setSomething("simpleTestObject");
         
-        NonStringConstructorClass mapKeyTestObject = new NonStringConstructorClass();
-        mapKeyTestObject.setSomething("mapKeyTestObject");
-
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put(simpleTestObject, "someValue");
         map.put("someOtherValue", "someOtherValue");
+        map.put(simpleTestObject, "someValue");
         
         List<Object> list = new ArrayList<Object>();
         list.add(map);
@@ -7468,7 +7465,7 @@ public class Misc2Test extends CommonTestMethodBase {
         
         session.execute(list);
         
-        Assert.assertEquals(1, list.size());
+        Assert.assertEquals(1, globalList.size());
     }
 
     public static int parseInt(String s) {

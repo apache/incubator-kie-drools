@@ -557,10 +557,14 @@ public class ASMConditionEvaluatorJitter {
                         coerceByConstructor(fromType, toType);
                         store(regNr, toType);
                     } else {
-                        mv.visitJumpInsn(GOTO, nonInstanceOfLabel);
+                        mv.visitInsn(ACONST_NULL);
+                        mv.visitVarInsn(ASTORE, regNr);
+                        mv.visitJumpInsn(GOTO, nullLabel);
                     }
                 } catch (NoSuchMethodException nme) {
-                    mv.visitJumpInsn(GOTO, nonInstanceOfLabel);
+                    mv.visitInsn(ACONST_NULL);
+                    mv.visitVarInsn(ASTORE, regNr);
+                    mv.visitJumpInsn(GOTO, nullLabel);
                 }
             }
 
