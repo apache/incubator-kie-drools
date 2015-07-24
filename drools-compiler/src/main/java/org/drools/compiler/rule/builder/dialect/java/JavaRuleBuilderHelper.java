@@ -19,28 +19,32 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.util.StringUtils;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.KnowledgeHelper;
-import org.mvel2.ParserConfiguration;
-import org.mvel2.ParserContext;
+import org.drools.core.util.StringUtils;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
 import org.mvel2.templates.SimpleTemplateRegistry;
 import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public final class JavaRuleBuilderHelper {
+
+    private static final Logger logger = LoggerFactory.getLogger(JavaRuleBuilderHelper.class);
 
     protected static TemplateRegistry RULE_REGISTRY    = new SimpleTemplateRegistry();
     protected static TemplateRegistry INVOKER_REGISTRY = new SimpleTemplateRegistry();
@@ -51,6 +55,7 @@ public final class JavaRuleBuilderHelper {
     public static void setConsequenceTemplate( String name ) {
         JAVA_RULE_MVEL = name;
         RULE_REGISTRY = new SimpleTemplateRegistry();
+
     }
 
     public static void setInvokerTemplate( String name ) {
@@ -60,8 +65,14 @@ public final class JavaRuleBuilderHelper {
 
     public static synchronized TemplateRegistry getRuleTemplateRegistry(ClassLoader cl) {
         if ( !RULE_REGISTRY.contains( "rules" ) ) {
+            InputStream javaRuleMvelStream = JavaRuleBuilderHelper.class.getResourceAsStream( JAVA_RULE_MVEL );
             RULE_REGISTRY.addNamedTemplate( "rules",
-                                            TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( JAVA_RULE_MVEL ) ) );
+                                            TemplateCompiler.compileTemplate( javaRuleMvelStream ) );
+            try {
+                javaRuleMvelStream.close();
+            } catch ( IOException ex ) {
+                logger.debug( "Failed to close stream!", ex );
+            }
             TemplateRuntime.execute( RULE_REGISTRY.getNamedTemplate( "rules" ),
                                      null,
                                      RULE_REGISTRY );            
@@ -72,8 +83,14 @@ public final class JavaRuleBuilderHelper {
 
     public static synchronized TemplateRegistry getInvokerTemplateRegistry(ClassLoader cl) {
         if ( !INVOKER_REGISTRY.contains( "invokers" ) ) {
+            InputStream javaInvokersMvelStream = JavaRuleBuilderHelper.class.getResourceAsStream( JAVA_INVOKERS_MVEL );
             INVOKER_REGISTRY.addNamedTemplate( "invokers",
-                                               TemplateCompiler.compileTemplate( JavaRuleBuilderHelper.class.getResourceAsStream( JAVA_INVOKERS_MVEL ) ) );
+                                               TemplateCompiler.compileTemplate( javaInvokersMvelStream ) );
+            try {
+                javaInvokersMvelStream.close();
+            } catch ( IOException ex ) {
+                logger.debug( "Failed to close stream!", ex );
+            }
             TemplateRuntime.execute( INVOKER_REGISTRY.getNamedTemplate( "invokers" ),
                                      null,
                                      INVOKER_REGISTRY );            
