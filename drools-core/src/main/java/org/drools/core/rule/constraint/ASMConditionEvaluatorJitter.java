@@ -549,11 +549,19 @@ public class ASMConditionEvaluatorJitter {
             }
 
             if (!toType.isAssignableFrom(fromType)) {
-                mv.visitTypeInsn(NEW, internalName(toType));
-                mv.visitInsn(DUP);
-                load(regNr);
-                coerceByConstructor(fromType, toType);
-                store(regNr, toType);
+                try {
+                    if (toType == Character.class || toType.getConstructor(String.class) != null) {
+                        mv.visitTypeInsn(NEW, internalName(toType));
+                        mv.visitInsn(DUP);
+                        load(regNr);
+                        coerceByConstructor(fromType, toType);
+                        store(regNr, toType);
+                    } else {
+                        mv.visitJumpInsn(GOTO, nonInstanceOfLabel);
+                    }
+                } catch (NoSuchMethodException nme) {
+                    mv.visitJumpInsn(GOTO, nonInstanceOfLabel);
+                }
             }
 
             if (isNumber) {

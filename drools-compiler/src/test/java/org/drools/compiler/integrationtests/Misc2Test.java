@@ -7420,6 +7420,56 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
         assertEquals( "OK", list.get(0) );
     }
+    
+    @Test
+    /**
+     * Test to check correct jitting when comparing incompatible objects
+     * For correct test, org.drools.core.rule.constraint.MvelConstraint.TEST_JITTING must be set to true
+     * @throws InterruptedException
+     */
+    public void testJittedConstraintComparisonWithIncompatibleObjects() {
+        String rule =
+                "package org.drools.compiler.integrationtests\n"
+                + "import java.util.Map.Entry\n"
+                + "import java.util.Map\n"
+                + "import org.drools.compiler.integrationtests.NonStringConstructorClass\n"
+                + "global java.util.List list\n"
+                + "rule \"FailOnNonStringConstructor\"\n"
+                + "    when \n"
+                + "        $map : Map()\n"
+                + "        $simpleTestObject : NonStringConstructorClass (something==\"simpleTestObject\")\n"
+                + "        Entry (\n"
+                + "            getKey() == $simpleTestObject\n"
+                + "        ) from $map.entrySet()\n"
+                + "    then\n"
+                + "        list.add(\"Fired\");\n"
+                + "end";
+        
+        KieHelper helper = new KieHelper();
+        helper.addContent( rule, ResourceType.DRL );
+        StatelessKieSession session = helper.build().newStatelessKieSession();
+        
+        NonStringConstructorClass simpleTestObject = new NonStringConstructorClass();
+        simpleTestObject.setSomething("simpleTestObject");
+        
+        NonStringConstructorClass mapKeyTestObject = new NonStringConstructorClass();
+        mapKeyTestObject.setSomething("mapKeyTestObject");
+
+        Map<Object, Object> map = new HashMap<Object, Object>();
+        map.put(simpleTestObject, "someValue");
+        map.put("someOtherValue", "someOtherValue");
+        
+        List<Object> list = new ArrayList<Object>();
+        list.add(map);
+        list.add(simpleTestObject);
+
+        List<Object> globalList = new ArrayList<Object>();
+        session.setGlobal("list", globalList);
+        
+        session.execute(list);
+        
+        Assert.assertEquals(1, list.size());
+    }
 
     public static int parseInt(String s) {
         return 0;
