@@ -16,8 +16,6 @@
 
 package org.drools.compiler.rule.builder;
 
-import java.util.Iterator;
-
 import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
@@ -53,11 +51,10 @@ public class GroupElementBuilder
         }
 
         // iterate over child descriptors
-        for ( final Iterator it = cedescr.getDescrs().iterator(); it.hasNext(); ) {
+        for ( final BaseDescr child : cedescr.getDescrs() ) {
             // gets child to build
-            final BaseDescr child = (BaseDescr) it.next();
-            child.setResource(context.getRuleDescr().getResource());
-            child.setNamespace(context.getRuleDescr().getNamespace());
+            child.setResource( context.getRuleDescr().getResource() );
+            child.setNamespace( context.getRuleDescr().getNamespace() );
 
             // gets corresponding builder
             final RuleConditionBuilder builder = (RuleConditionBuilder) context.getDialect().getBuilder( child.getClass() );

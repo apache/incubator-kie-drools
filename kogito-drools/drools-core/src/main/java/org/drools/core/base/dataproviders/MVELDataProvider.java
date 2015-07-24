@@ -16,10 +16,8 @@
 
 package org.drools.core.base.dataproviders;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELCompileable;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
@@ -112,15 +110,14 @@ public class MVELDataProvider
         return null;
     }
 
-    public Iterator getResults(final Tuple tuple,
-                               final WorkingMemory wm,
+    public Iterator getResults(final LeftTuple tuple,
+                               final InternalWorkingMemory wm,
                                final PropagationContext ctx,
                                final Object executionContext) {
-        VariableResolverFactory factory = unit.getFactory( null, null, null, ( InternalFactHandle ) null, (LeftTuple) tuple, null, (InternalWorkingMemory) wm, wm.getGlobalResolver()  );
+        VariableResolverFactory factory = unit.getFactory( null, null, null, null, tuple, null, wm, wm.getGlobalResolver()  );
 
         //this.expression.
-        final Object result = MVELSafeHelper.getEvaluator().executeExpression( this.expr,
-                                                      factory );
+        final Object result = MVELSafeHelper.getEvaluator().executeExpression( this.expr, factory );
 
         if ( result == null ) {
             return Collections.EMPTY_LIST.iterator();

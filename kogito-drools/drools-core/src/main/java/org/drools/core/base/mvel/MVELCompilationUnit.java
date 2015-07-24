@@ -795,4 +795,8 @@ public class MVELCompilationUnit
         }
     }
 
+    @Override
+    public String toString() {
+        return expression;
+    }
 }
