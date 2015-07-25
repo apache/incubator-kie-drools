@@ -16,14 +16,17 @@
 package org.kie.internal.task.api;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.model.Deadline;
 
@@ -99,7 +102,7 @@ public interface TaskPersistenceContext {
 	
 	<T> T queryWithParametersInTransaction(String queryName, Map<String, Object> params, Class<T> clazz);
         
-        <T> T queryWithParametersInTransaction(String queryName, boolean singleResult, Map<String, Object> params, Class<T> clazz);
+    <T> T queryWithParametersInTransaction(String queryName, boolean singleResult, Map<String, Object> params, Class<T> clazz);
     
 	<T> T queryAndLockWithParametersInTransaction(String queryName, Map<String, Object> params, boolean singleResult, Class<T> clazz);
     
@@ -107,7 +110,7 @@ public interface TaskPersistenceContext {
     
 	<T> T queryStringInTransaction(String queryString, Class<T> clazz );
    
-        <T> T queryStringWithParametersInTransaction(String queryString, boolean singleResult, Map<String, Object> params, Class<T> clazz );
+    <T> T queryStringWithParametersInTransaction(String queryString, boolean singleResult, Map<String, Object> params, Class<T> clazz );
         
 	<T> T queryStringWithParametersInTransaction(String queryString,  Map<String, Object> params, Class<T> clazz );
     
@@ -116,7 +119,7 @@ public interface TaskPersistenceContext {
     int executeUpdateString(String updateString);
     
     HashMap<String, Object> addParametersToMap(Object ... parameterValues);
-    
+
     /*
      * Following are optional methods that are more like extension to 
      * default data model to allow flexible add-ons
@@ -137,4 +140,10 @@ public interface TaskPersistenceContext {
     void joinTransaction();
 
     void close();
+    
+    /*
+     * JPA Query methods
+     */
+    
+    List<TaskSummary> doTaskSummaryCriteriaQuery(String userId, UserGroupCallback userGroupCallback, Object queryWhere);
 }

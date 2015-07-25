@@ -18,12 +18,11 @@ package org.kie.internal.runtime.manager.audit.query;
 import java.util.Date;
 
 import org.kie.api.runtime.manager.audit.VariableInstanceLog;
-import org.kie.internal.query.ParametrizedQuery;
 
-public interface VariableInstanceLogQueryBuilder extends AuditQueryBuilder<VariableInstanceLogQueryBuilder>{
+public interface VariableInstanceLogQueryBuilder extends AuditLogQueryBuilder<VariableInstanceLogQueryBuilder, VariableInstanceLog> {
 
     /**
-     * Specify one or more dates as criteria in the query
+     * Specify one or more dates as criteria in the query.
      * @param date one or more dates
      * @return The current query builder instance
      */
@@ -32,7 +31,7 @@ public interface VariableInstanceLogQueryBuilder extends AuditQueryBuilder<Varia
     /**
      * Specify the begin of a date range to be used as a criteria on the date field.
      * The date range includes the date specified.
-     * @param date the start (early end) of the date range
+     * @param rangeStart the start (early end) of the date range
      * @return The current query builder instance
      */
     public VariableInstanceLogQueryBuilder dateRangeStart(Date rangeStart);
@@ -40,11 +39,11 @@ public interface VariableInstanceLogQueryBuilder extends AuditQueryBuilder<Varia
     /**
      * Specify the end of a date range to be used as a criteria on the date field.
      * The date range includes this date. 
-     * @param date the end (later end) of the date range
+     * @param rangeEnd the end (later end) of the date range
      * @return The current query builder instance
      */
-    public VariableInstanceLogQueryBuilder dateRangeEnd(Date rangeStart);
-   
+    public VariableInstanceLogQueryBuilder dateRangeEnd(Date rangeEnd);
+    
     /**
      * Specify one or more variable instance ids to use as a criteria.
      * @param variableInstanceId one or more string variable instance ids
@@ -91,35 +90,12 @@ public interface VariableInstanceLogQueryBuilder extends AuditQueryBuilder<Varia
     
     /**
      * Only retrieve the most recent ("last") variable instance logs per variable
+     * </p>
+     * When using this, please make sure that this criteria intersects other criteria. 
+     * </p>
+     * Otherwise, this criteria will have no effect at all. 
      * @return The current query builder instance
      */
     public VariableInstanceLogQueryBuilder last();
     
-    /**
-     * Specify how the results of the query should be ordered. 
-     * </p>
-     * If this method is not used, the results will be ordered by the
-     * id field.
-     * @param field the field by which the query results should be ordered
-     * @return The current instance of this query builder
-     */
-    public VariableInstanceLogQueryBuilder orderBy( OrderBy field );
-   
-    public static enum OrderBy { 
-        // order by process instance id
-        processInstanceId, 
-        // order by process id
-        processId,
-    }
-   
-    /**
-     * Create the {@link ParametrizedQuery} instance that can be used
-     * to retrieve the results, a {@link List<VariableInstanceLog>} instance.
-     * </p>
-     * Further modifications to the {@link VariableInstanceLogQueryBuilder} instance
-     * will <em>not</em> affect the query criteria used in the {@link ParametrizedQuery} 
-     * produced by this method.
-     * @return The results of the query
-     */
-    public ParametrizedQuery<VariableInstanceLog> buildQuery();
 }

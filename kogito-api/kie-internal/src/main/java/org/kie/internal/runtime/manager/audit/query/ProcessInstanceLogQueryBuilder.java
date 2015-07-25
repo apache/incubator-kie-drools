@@ -19,9 +19,8 @@ import java.util.Date;
 
 import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.internal.query.ParametrizedQuery;
 
-public interface ProcessInstanceLogQueryBuilder extends AuditQueryBuilder<ProcessInstanceLogQueryBuilder> {
+public interface ProcessInstanceLogQueryBuilder extends AuditLogQueryBuilder<ProcessInstanceLogQueryBuilder, ProcessInstanceLog> {
 
     /**
      * Specify one more statuses (in the form of an int) as criteria.
@@ -116,7 +115,7 @@ public interface ProcessInstanceLogQueryBuilder extends AuditQueryBuilder<Proces
     /**
      * Specify the begin of a date range to be used as a criteria on the end date field.
      * The date range includes this date. 
-     * @param date the begin (later end) of the date range
+     * @param rangeStart the begin (later end) of the date range
      * @return The current query builder instance
      */
     public ProcessInstanceLogQueryBuilder endDateRangeStart(Date rangeStart);
@@ -124,7 +123,7 @@ public interface ProcessInstanceLogQueryBuilder extends AuditQueryBuilder<Proces
     /**
      * Specify the end of a date range to be used as a criteria on the end date field.
      * The date range includes this date. 
-     * @param date the end (later end) of the date range
+     * @param rangeEnd the end (later end) of the date range
      * @return The current query builder instance
      */
     public ProcessInstanceLogQueryBuilder endDateRangeEnd(Date rangeEnd);
@@ -135,33 +134,5 @@ public interface ProcessInstanceLogQueryBuilder extends AuditQueryBuilder<Proces
      * @return The current instance of this query builder
      */
     public ProcessInstanceLogQueryBuilder correlationKey(CorrelationKey... correlationKeys);
-    
-    /**
-     * Specify how the results of the query should be ordered. 
-     * </p>
-     * If this method is not used, the results will be ordered by the
-     * id field.
-     * @param field the field by which the query results should be ordered
-     * @return The current instance of this query builder
-     */
-    public ProcessInstanceLogQueryBuilder orderBy( OrderBy field );
-   
-    public static enum OrderBy { 
-        // order by process instance id
-        processInstanceId, 
-        // order by process id
-        processId,
-    }
-    
-    /**
-     * Create the {@link ParametrizedQuery} instance that can be used
-     * to retrieve the results, a {@link List<ProcessInstanceLog>} instance.
-     * </p>
-     * Further modifications to the {@link ProcessInstanceLogQueryBuilder} instance
-     * will <em>not</em> affect the query criteria used in the {@link ParametrizedQuery} 
-     * produced by this method.
-     * @return The results of the query
-     */
-    public ParametrizedQuery<ProcessInstanceLog> buildQuery();
 
 }
