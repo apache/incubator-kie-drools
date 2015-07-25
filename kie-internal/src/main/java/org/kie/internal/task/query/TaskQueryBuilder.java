@@ -19,7 +19,6 @@ import java.util.Date;
 
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
-import org.kie.internal.runtime.manager.audit.query.AuditTaskQueryBuilder;
 import org.kie.internal.runtime.manager.audit.query.ProcessIdQueryBuilder;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 
