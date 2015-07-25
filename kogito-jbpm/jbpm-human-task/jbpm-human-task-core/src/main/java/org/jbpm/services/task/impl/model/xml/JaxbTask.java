@@ -463,17 +463,17 @@ public class JaxbTask implements InternalTask {
     }
 
     public void setVersion(Integer version) {
-        unsupported(Task.class);
+        unsupported(Void.class);
     }
 
     @Override
     public int getVersion() {
-        return unsupported(Task.class);
+        return unsupported(int.class);
     }
 
     @Override
     public Delegation getDelegation() {
-        return unsupported(Task.class);
+        return unsupported(Delegation.class);
     }
 
     @Override
