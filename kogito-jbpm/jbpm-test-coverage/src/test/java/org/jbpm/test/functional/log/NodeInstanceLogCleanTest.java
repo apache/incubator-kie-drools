@@ -79,7 +79,7 @@ public class NodeInstanceLogCleanTest extends JbpmTestCase {
         // Now check that all other node records are still present
         List<NodeInstanceLog> nodeList = auditService.nodeInstanceLogQuery()
                 .nodeName("Start", "End", "Hello world")
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(nodeList)
                 .hasSize(10)
@@ -104,7 +104,7 @@ public class NodeInstanceLogCleanTest extends JbpmTestCase {
         // Now check that all other node records are still present
         List<NodeInstanceLog> nodeList = auditService.nodeInstanceLogQuery()
                 .nodeId("_1", "_2", "_3")
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(nodeList)
                 .hasSize(8)
@@ -125,7 +125,7 @@ public class NodeInstanceLogCleanTest extends JbpmTestCase {
             // Let's see how the code will manage Japan characters.
             List<NodeInstanceLog> nodeInstanceList = auditService.nodeInstanceLogQuery()
                     .nodeName("空手")
-                    .buildQuery()
+                    .build()
                     .getResultList();
             // We are expecting only NodeInstanceLog.TYPE_ENTERED as execution will be paused on the human task
             Assertions.assertThat(nodeInstanceList).hasSize(1);

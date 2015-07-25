@@ -66,7 +66,14 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Test -->
+    <!-- TEST -->
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-flow-builder</artifactId>
+      <scope>test</scope>
+    </dependency>
+    
+    <!-- Test: persistence -->
     <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-persistence-jpa</artifactId>
@@ -99,6 +106,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-query-jpa</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+    
+    <!-- Test: jms -->
+    <dependency>
       <groupId>org.hornetq</groupId>
       <artifactId>hornetq-server</artifactId>
       <exclusions>
@@ -120,24 +135,26 @@
       </exclusions>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty</artifactId>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>org.hornetq</groupId>
       <artifactId>hornetq-jms-server</artifactId>
       <scope>test</scope>
     </dependency>
+    
+    <!-- Test: logging -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-  </dependencies><build>
+  </dependencies>
+  
+  <build>
     <testResources>
         <testResource>
             <directory>src/test/resources</directory>

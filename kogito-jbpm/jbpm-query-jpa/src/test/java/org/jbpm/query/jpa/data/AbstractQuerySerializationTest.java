@@ -17,15 +17,13 @@ package org.jbpm.query.jpa.data;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.Date;
 
-import org.jbpm.query.jpa.data.QueryCriteria;
-import org.jbpm.query.jpa.data.QueryWhere;
-import org.jbpm.query.jpa.data.QueryWhere.ParameterType;
+import org.jbpm.query.jpa.data.QueryWhere.QueryCriteriaType;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.task.model.Status;
+import org.kie.internal.query.QueryParameterIdentifiers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,11 +40,11 @@ public abstract class AbstractQuerySerializationTest {
     }
     
     @Test
-    public void queryParameterTest() throws Exception { 
+    public void queryCriteria() throws Exception { 
        QueryCriteria criteria = new QueryCriteria();
        criteria.setListId("one");
        criteria.setUnion(false);
-       criteria.setType(ParameterType.RANGE);
+       criteria.setType(QueryCriteriaType.RANGE);
 //       criteria.addParameter(new Date());
        Thread.sleep(1000);
 //       criteria.addParameter(new Date());
@@ -74,7 +72,7 @@ public abstract class AbstractQuerySerializationTest {
        }
        
        QueryWhere queryWhere = new QueryWhere();
-       queryWhere.addAppropriateParam("test", "asdf");
+       queryWhere.addParameter("test", "asdf");
        
        QueryWhere copyWhere = testRoundTrip(queryWhere);
        
@@ -90,11 +88,8 @@ public abstract class AbstractQuerySerializationTest {
     
     @Test
     public void nestedQueryParameterTest() throws Exception { 
-       QueryCriteria criteria = new QueryCriteria();
-       criteria.setListId("one");
-       criteria.setUnion(false);
-       criteria.setType(ParameterType.RANGE);
-//       criteria.addParameter(new Date());
+       QueryCriteria criteria = new QueryCriteria("one", false, QueryCriteriaType.RANGE, 1);
+       criteria.addParameter(new Date());
        
        QueryCriteria subCrit = new QueryCriteria();
        subCrit.addParameter(Status.Ready);
@@ -110,4 +105,26 @@ public abstract class AbstractQuerySerializationTest {
        
        QueryCriteria copyCrit = testRoundTrip(criteria);
     } 
+    
+    @Test
+    public void queryCriteriaGroupingTest() throws Exception { 
+       QueryWhere queryWhere = new QueryWhere();
+       queryWhere.addParameter(QueryParameterIdentifiers.ACTUAL_OWNER_ID_LIST, "asdf");
+      
+       // simple group
+       queryWhere.newGroup();
+       queryWhere.addParameter(QueryParameterIdentifiers.BUSINESS_ADMIN_ID_LIST, "afds");
+       queryWhere.endGroup();
+       
+       queryWhere.addParameter(QueryParameterIdentifiers.DEPLOYMENT_ID_LIST, "ofogaa");
+       
+       queryWhere.newGroup();
+       queryWhere.newGroup();
+       queryWhere.addParameter(QueryParameterIdentifiers.DEPLOYMENT_ID_LIST, "fusdf");
+       queryWhere.endGroup();
+       queryWhere.addParameter(QueryParameterIdentifiers.BUSINESS_ADMIN_ID_LIST, "afds");
+       queryWhere.endGroup();
+       
+       QueryWhere copyWhere = testRoundTrip(queryWhere);
+    }
 }

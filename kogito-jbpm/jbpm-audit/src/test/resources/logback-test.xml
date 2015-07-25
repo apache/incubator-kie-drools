@@ -11,15 +11,17 @@
 
   <logger name="bitronix.tm" level="error"/>
   <logger name="org.hibernate" level="warn"/>
-  <logger name="org.hibernate.tool.hbm2ddl.SchemaExport" level="off"/>
-  <logger name="org.hibernate.tool.hbm2ddl.DatabaseMetadata" level="off"/>
+  <logger name="org.hibernate.tool.hbm2ddl" level="error"/>
   <logger name="org.hibernate.ejb.internal" level="error"/>
-
+   
   <!-- set to debug to see queries --> 
   <logger name="org.jbpm.process.audit" level="info"/>
   <logger name="org.jbpm.query.jpa" level="info"/>
+ 
+  <!--  set to debug to see query coverage test output --> 
+  <logger name="org.jbpm.query" level="info" />  
   
-  <root level="warn">
+  <root level="info">
     <appender-ref ref="consoleAppender" />
   </root>
 

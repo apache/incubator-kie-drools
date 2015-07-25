@@ -35,8 +35,8 @@ import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.test.util.AbstractBaseTest;
-import org.jbpm.test.util.TestUtil;
+import org.jbpm.test.util.AbstractExecutorBaseTest;
+import org.jbpm.test.util.ExecutorTestUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +59,7 @@ import org.kie.internal.runtime.manager.context.EmptyContext;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-public class AsyncContinuationSupportTest extends AbstractBaseTest {
+public class AsyncContinuationSupportTest extends AbstractExecutorBaseTest {
 
     private PoolingDataSource pds;
     private UserGroupCallback userGroupCallback;  
@@ -70,8 +70,8 @@ public class AsyncContinuationSupportTest extends AbstractBaseTest {
     private long delay = 1000;
     @Before
     public void setup() {
-        TestUtil.cleanupSingletonSessionId();
-        pds = TestUtil.setupPoolingDataSource();
+        ExecutorTestUtil.cleanupSingletonSessionId();
+        pds = ExecutorTestUtil.setupPoolingDataSource();
         Properties properties= new Properties();
         properties.setProperty("mary", "HR");
         properties.setProperty("john", "HR");

@@ -19,13 +19,11 @@ package org.jbpm.process.audit;
 import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
 import static org.jbpm.process.audit.AbstractAuditLogServiceTest.createKieSession;
 
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.internal.KnowledgeBase;
 
 /**
  * This class tests the following classes: 

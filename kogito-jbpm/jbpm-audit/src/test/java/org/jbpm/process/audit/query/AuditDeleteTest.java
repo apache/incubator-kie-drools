@@ -335,7 +335,7 @@ public class AuditDeleteTest extends JPAAuditLogService {
         int p = 0;        
         Date endDate = pilTestData[p++].getEnd();
         
-        List<org.kie.api.runtime.manager.audit.ProcessInstanceLog> logs = this.processInstanceLogQuery().endDate(endDate).buildQuery().getResultList();
+        List<org.kie.api.runtime.manager.audit.ProcessInstanceLog> logs = this.processInstanceLogQuery().endDate(endDate).build().getResultList();
         assertEquals(1, logs.size());
         
         ProcessInstanceLogDeleteBuilder updateBuilder = this.processInstanceLogDelete().endDate(logs.get(0).getEnd());
@@ -427,7 +427,7 @@ public class AuditDeleteTest extends JPAAuditLogService {
         int p = 0;
         Date date = nilTestData[p++].getDate();   
         
-        List<org.kie.api.runtime.manager.audit.NodeInstanceLog> logs = this.nodeInstanceLogQuery().date(date).buildQuery().getResultList();
+        List<org.kie.api.runtime.manager.audit.NodeInstanceLog> logs = this.nodeInstanceLogQuery().date(date).build().getResultList();
         assertEquals(2, logs.size());
         
         
@@ -471,7 +471,7 @@ public class AuditDeleteTest extends JPAAuditLogService {
         int p = 0;
         Date date = vilTestData[p++].getDate();     
         
-        List<org.kie.api.runtime.manager.audit.VariableInstanceLog> vars = this.variableInstanceLogQuery().date(date).buildQuery().getResultList();
+        List<org.kie.api.runtime.manager.audit.VariableInstanceLog> vars = this.variableInstanceLogQuery().date(date).build().getResultList();
         assertEquals(2, vars.size());
         
         VariableInstanceLogDeleteBuilder updateBuilder = this.variableInstanceLogDelete().date(vars.get(0).getDate());

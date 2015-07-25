@@ -14,7 +14,7 @@
  * the License.
  */
 
-package org.jbpm.services.task.audit.test;
+package org.jbpm.services.task.audit.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

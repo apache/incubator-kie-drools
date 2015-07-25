@@ -10,7 +10,7 @@
   </appender>
 
   <!-- set to debug to see test output --> 
-  <logger name="org.jbpm.query.jpa" level="debug"/>
+  <logger name="org.jbpm.query.jpa" level="info"/>
   
   <root level="info">
     <appender-ref ref="consoleAppender" />

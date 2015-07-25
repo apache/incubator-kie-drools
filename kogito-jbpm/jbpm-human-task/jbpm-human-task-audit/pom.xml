@@ -52,12 +52,12 @@
             <scope>test</scope>
         </dependency>
 
+        <!--  Test: persistence -->
         <dependency>
             <groupId>org.jbpm</groupId>
             <artifactId>jbpm-persistence-jpa</artifactId>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
@@ -71,6 +71,12 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>jbpm-query-jpa</artifactId>
+            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
 

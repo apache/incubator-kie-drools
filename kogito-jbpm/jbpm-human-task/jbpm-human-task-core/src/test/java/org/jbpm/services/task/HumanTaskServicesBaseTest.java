@@ -170,7 +170,7 @@ public abstract class HumanTaskServicesBaseTest {
     protected static final String PASSWORD = "password";
     protected static final String JDBC_URL = "url";
     
-    protected PoolingDataSource setupPoolingDataSource() {
+    protected static PoolingDataSource setupPoolingDataSource() {
         Properties dsProps = getDatasourceProperties();
         PoolingDataSource pds = PersistenceUtil.setupPoolingDataSource(dsProps, "jdbc/jbpm-ds", false);
         pds.init();

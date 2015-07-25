@@ -224,15 +224,15 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
     private int getProcessLogSize(String processId) {
         return auditLogService.processInstanceLogQuery()
                 .processId(processId)
-                .buildQuery()
+                .build()
                 .getResultList()
                 .size();
     }
 
     private int getTaskLogSize(String processId) {
-        return taskAuditService.auditTaskInstanceLogQuery()
+        return taskAuditService.auditTaskQuery()
                 .processId(processId)
-                .buildQuery()
+                .build()
                 .getResultList()
                 .size();
     }
@@ -240,7 +240,7 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
     private int getNodeInstanceLogSize(String processId) {
         return auditLogService.nodeInstanceLogQuery()
                 .processId(processId)
-                .buildQuery()
+                .build()
                 .getResultList()
                 .size();
     }
@@ -248,7 +248,7 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
     private int getVariableLogSize(String processId) {
         return auditLogService.variableInstanceLogQuery()
                 .processId(processId)
-                .buildQuery()
+                .build()
                 .getResultList()
                 .size();
     }

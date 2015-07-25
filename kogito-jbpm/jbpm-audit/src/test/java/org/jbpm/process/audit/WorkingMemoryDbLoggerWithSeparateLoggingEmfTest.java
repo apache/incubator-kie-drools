@@ -22,7 +22,6 @@ import static org.jbpm.process.audit.AbstractAuditLogServiceTest.createKieSessio
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;
 import org.junit.Before;

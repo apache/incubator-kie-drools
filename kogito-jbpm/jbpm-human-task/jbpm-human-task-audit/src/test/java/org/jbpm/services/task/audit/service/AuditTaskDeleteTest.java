@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.jbpm.services.task.audit.test;
+package org.jbpm.services.task.audit.service;
 
 import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
 import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
@@ -43,7 +43,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.task.model.Task;
-import org.kie.internal.runtime.manager.audit.query.AuditTaskInstanceLogDeleteBuilder;
+import org.kie.internal.runtime.manager.audit.query.ProcessIdQueryBuilder;
+import org.kie.internal.runtime.manager.audit.query.AuditTaskDeleteBuilder;
+import org.kie.internal.runtime.manager.audit.query.AuditTaskQueryBuilder;
 import org.kie.internal.task.api.AuditTask;
 import org.kie.internal.task.api.InternalTaskService;
 
@@ -58,8 +60,6 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
     @BeforeClass
     public static void configure() { 
         LoggingPrintStream.interceptSysOutSysErr();
-        
-        
     }
     
     @AfterClass
@@ -125,7 +125,7 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
         String processId = taskTestData[p++].getTaskData().getProcessId();
         String processId2 = taskTestData[p++].getTaskData().getProcessId();
         
-        AuditTaskInstanceLogDeleteBuilder updateBuilder = this.auditTaskInstanceLogDelete().processId(processId, processId2);
+        AuditTaskDeleteBuilder updateBuilder = this.auditTaskDelete().processId(processId, processId2);
         int result = updateBuilder.build().execute();
         assertEquals(2, result);
     }
@@ -135,7 +135,7 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
         int p = 0;        
         Date endDate = taskTestData[p++].getTaskData().getCreatedOn();
         
-        AuditTaskInstanceLogDeleteBuilder updateBuilder = this.auditTaskInstanceLogDelete().date(endDate);
+        AuditTaskDeleteBuilder updateBuilder = this.auditTaskDelete().date(endDate);
         int result = updateBuilder.build().execute();
         assertEquals(1, result);
     }
@@ -146,7 +146,7 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
         String processId = taskTestData[p].getTaskData().getProcessId();
         Date endDate = taskTestData[p].getTaskData().getCreatedOn();
         
-        AuditTaskInstanceLogDeleteBuilder updateBuilder = this.auditTaskInstanceLogDelete().date(endDate).processId(processId);
+        AuditTaskDeleteBuilder updateBuilder = this.auditTaskDelete().date(endDate).processId(processId);
         int result = updateBuilder.build().execute();
         assertEquals(1, result);
     }
@@ -157,7 +157,7 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
         String processId = taskTestData[p++].getTaskData().getProcessId();
         Date endDate = taskTestData[p++].getTaskData().getCreatedOn();
         
-        AuditTaskInstanceLogDeleteBuilder updateBuilder = this.auditTaskInstanceLogDelete().date(endDate).processId(processId);
+        AuditTaskDeleteBuilder updateBuilder = this.auditTaskDelete().date(endDate).processId(processId);
         int result = updateBuilder.build().execute();
         assertEquals(0, result);
     }
@@ -167,7 +167,7 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
         
         Date endDate = taskTestData[4].getTaskData().getCreatedOn();
         
-        AuditTaskInstanceLogDeleteBuilder updateBuilder = this.auditTaskInstanceLogDelete().dateRangeEnd(endDate);
+        AuditTaskDeleteBuilder updateBuilder = this.auditTaskDelete().dateRangeEnd(endDate);
         int result = updateBuilder.build().execute();
         assertEquals(5, result);
     }
@@ -176,40 +176,43 @@ public class AuditTaskDeleteTest extends TaskJPAAuditService {
     public void testDeleteAuditTaskInfoLogByDateRangeStart() { 
         
         Date endDate = taskTestData[8].getTaskData().getCreatedOn();
-        AuditTaskInstanceLogDeleteBuilder updateBuilder = this.auditTaskInstanceLogDelete().dateRangeStart(endDate);
+        AuditTaskDeleteBuilder updateBuilder = this.auditTaskDelete().dateRangeStart(endDate);
         int result = updateBuilder.build().execute();
         assertEquals(2, result);
     }
     
     @Test
     public void testDeleteAuditTaskInfoLogByDateRange() { 
-        
     	Date startDate = taskTestData[4].getTaskData().getCreatedOn();
         Date endDate = taskTestData[8].getTaskData().getCreatedOn();
-        AuditTaskInstanceLogDeleteBuilder updateBuilder = this.auditTaskInstanceLogDelete().dateRangeStart(startDate).dateRangeEnd(endDate);
+        AuditTaskDeleteBuilder updateBuilder = this.auditTaskDelete().dateRangeStart(startDate).dateRangeEnd(endDate);
         int result = updateBuilder.build().execute();
         assertEquals(5, result);
     }
     
     @Test
     public void testTaskAuditServiceClear() { 
-               
-        List<AuditTask> data = this.auditTaskInstanceLogQuery().buildQuery().getResultList(); 
+        AuditTaskQueryBuilder queryBuilder = this.auditTaskQuery();
+        List<AuditTask> tasks = queryBuilder.taskId(taskTestData[4].getId()).build().getResultList();
+        assertEquals(1, tasks.size());
+
+        queryBuilder.clear();
+        
+        List<AuditTask> data = this.auditTaskQuery().build().getResultList(); 
         assertEquals(10, data.size());
         
         this.clear();
         
-        data = this.auditTaskInstanceLogQuery().buildQuery().getResultList();       
+        data = this.auditTaskQuery().build().getResultList();       
         assertEquals(0, data.size());
     }
     
     @Test
     public void testDeleteAuditTaskInfoLogByTimestamp() { 
-
-        List<AuditTask> tasks = this.auditTaskInstanceLogQuery().taskId(taskTestData[4].getId()).buildQuery().getResultList();
+        List<AuditTask> tasks = this.auditTaskQuery().taskId(taskTestData[4].getId()).build().getResultList();
         assertEquals(1, tasks.size());
         
-        AuditTaskInstanceLogDeleteBuilder updateBuilder = this.auditTaskInstanceLogDelete().date(tasks.get(0).getCreatedOn());
+        AuditTaskDeleteBuilder updateBuilder = this.auditTaskDelete().date(tasks.get(0).getCreatedOn());
         int result = updateBuilder.build().execute();
         assertEquals(1, result);
     }

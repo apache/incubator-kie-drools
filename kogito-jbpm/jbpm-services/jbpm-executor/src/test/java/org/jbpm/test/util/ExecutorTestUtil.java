@@ -29,9 +29,9 @@ import org.slf4j.LoggerFactory;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-public class TestUtil {
+public class ExecutorTestUtil {
     
-    private static final Logger logger = LoggerFactory.getLogger(TestUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExecutorTestUtil.class);
 
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
     
@@ -65,7 +65,7 @@ public class TestUtil {
         // Central place to set additional H2 properties
         System.setProperty("h2.lobInDatabase", "true");
         
-        InputStream propsInputStream = TestUtil.class.getResourceAsStream(DATASOURCE_PROPERTIES);
+        InputStream propsInputStream = ExecutorTestUtil.class.getResourceAsStream(DATASOURCE_PROPERTIES);
         Properties props = new Properties();
         if (propsInputStream != null) {
             try {

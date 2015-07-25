@@ -87,7 +87,7 @@ public class VariableInstanceLogCleanTest extends JbpmTestCase {
                 .dateRangeStart(mid)
                 .dateRangeEnd(end)
                 .variableId("person")
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(variableList.size()).isEqualTo(2);
         Assertions.assertThat(variableList.get(0).getDate()).isBefore(mid);
@@ -117,7 +117,7 @@ public class VariableInstanceLogCleanTest extends JbpmTestCase {
         List<VariableInstanceLog> variableList = auditService.variableInstanceLogQuery()
                 .processInstanceId(processInstanceList.get(1).getId(), processInstanceList.get(2).getId())
                 .variableId("person")
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(variableList).hasSize(2);
 
@@ -132,7 +132,7 @@ public class VariableInstanceLogCleanTest extends JbpmTestCase {
         // belonging to instance 1 as the others where deleted in the previous ste
         variableList = auditService.variableInstanceLogQuery()
                 .variableId("person")
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(variableList).hasSize(1);
         Assertions.assertThat(variableList.get(0).getValue()).contains("name='Homer'");

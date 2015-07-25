@@ -15,12 +15,21 @@
 
 package org.jbpm.services.task.jaxb;
 
+import static org.jbpm.services.task.commands.SetTaskPropertyCommand.DESCRIPTION_PROPERTY;
+import static org.jbpm.services.task.commands.SetTaskPropertyCommand.EXPIRATION_DATE_PROPERTY;
+import static org.jbpm.services.task.commands.SetTaskPropertyCommand.FAULT_PROPERTY;
+import static org.jbpm.services.task.commands.SetTaskPropertyCommand.OUTPUT_PROPERTY;
+import static org.jbpm.services.task.commands.SetTaskPropertyCommand.PRIORITY_PROPERTY;
+import static org.jbpm.services.task.commands.SetTaskPropertyCommand.SKIPPABLE_PROPERTY;
+import static org.jbpm.services.task.commands.SetTaskPropertyCommand.SUB_TASK_STRATEGY_PROPERTY;
+import static org.jbpm.services.task.commands.SetTaskPropertyCommand.TASK_NAMES_PROPERTY;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import static org.mockito.Mockito.*;
-import static org.jbpm.services.task.commands.SetTaskPropertyCommand.*;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
@@ -28,7 +37,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -57,18 +65,13 @@ import org.jbpm.services.task.commands.UserGroupCallbackTaskCommand;
 import org.jbpm.services.task.impl.model.FaultDataImpl;
 import org.jbpm.services.task.impl.model.I18NTextImpl;
 import org.jbpm.services.task.impl.model.xml.JaxbContent;
-import org.jbpm.services.task.impl.model.xml.JaxbFaultData;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
-import org.jbpm.services.task.jaxb.AbstractTaskSerializationTest.TestType;
-import org.junit.Assume;
 import org.junit.Test;
 import org.kie.api.task.model.I18NText;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.UserGroupCallback;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.SubTasksStrategy;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.reflections.Reflections;
 import org.reflections.scanners.FieldAnnotationsScanner;
 import org.reflections.scanners.MethodAnnotationsScanner;
@@ -84,7 +87,7 @@ public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
         return TestType.JAXB;
     }
    
-    protected Reflections reflections = 
+    protected static Reflections reflections = 
             new Reflections(ClasspathHelper.forPackage("org.jbpm.services.task"),
                             ClasspathHelper.forPackage("org.jbpm.services.task.commands"),
                             new TypeAnnotationsScanner(), new FieldAnnotationsScanner(), new MethodAnnotationsScanner(), new SubTypesScanner());
@@ -104,7 +107,7 @@ public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
         Set<String> uniqueRootElemSet = new HashSet<String>();
         for (Class<?> jaxbClass : reflections.getTypesAnnotatedWith(XmlRootElement.class) ) { 
             XmlRootElement xmlRootElemAnno = jaxbClass.getAnnotation(XmlRootElement.class);
-            assertTrue( xmlRootElemAnno.name(),  uniqueRootElemSet.add(xmlRootElemAnno.name()));
+            assertTrue( xmlRootElemAnno.name() + " is not a unique @XmlRootElement value!",  uniqueRootElemSet.add(xmlRootElemAnno.name()));
         }
     }
     
@@ -117,8 +120,8 @@ public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
             }
             addClassesToSerializationContext(jaxbClass);
             Constructor<?> construct = jaxbClass.getConstructor(new Class[] {});
-            Object jaxbInst = construct.newInstance(new Object[] {});
             try {
+                Object jaxbInst = construct.newInstance(new Object[] {});
                 testRoundTrip(jaxbInst);
             } catch (Exception e) {
                 logger.warn("Testing failed for" + jaxbClass.getName());

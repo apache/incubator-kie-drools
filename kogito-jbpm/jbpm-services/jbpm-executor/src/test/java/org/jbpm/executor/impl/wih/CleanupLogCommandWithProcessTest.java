@@ -34,8 +34,8 @@ import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.audit.service.TaskJPAAuditService;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
-import org.jbpm.test.util.AbstractBaseTest;
-import org.jbpm.test.util.TestUtil;
+import org.jbpm.test.util.AbstractExecutorBaseTest;
+import org.jbpm.test.util.ExecutorTestUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,7 +57,7 @@ import org.kie.internal.runtime.manager.context.EmptyContext;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-public class CleanupLogCommandWithProcessTest extends AbstractBaseTest {
+public class CleanupLogCommandWithProcessTest extends AbstractExecutorBaseTest {
 
     private PoolingDataSource pds;
     private UserGroupCallback userGroupCallback;  
@@ -66,8 +66,8 @@ public class CleanupLogCommandWithProcessTest extends AbstractBaseTest {
     private EntityManagerFactory emf = null;
     @Before
     public void setup() {
-        TestUtil.cleanupSingletonSessionId();
-        pds = TestUtil.setupPoolingDataSource();
+        ExecutorTestUtil.cleanupSingletonSessionId();
+        pds = ExecutorTestUtil.setupPoolingDataSource();
         Properties properties= new Properties();
         properties.setProperty("mary", "HR");
         properties.setProperty("john", "HR");
@@ -193,15 +193,15 @@ public class CleanupLogCommandWithProcessTest extends AbstractBaseTest {
 	private int getProcessLogSize(String processId) {
         return new JPAAuditLogService(emf).processInstanceLogQuery()
                 .processId(processId)
-                .buildQuery()
+                .build()
                 .getResultList()
                 .size();
     }
 
     private int getTaskLogSize(String processId) {
-        return new TaskJPAAuditService(emf).auditTaskInstanceLogQuery()
+        return new TaskJPAAuditService(emf).auditTaskQuery()
                 .processId(processId)
-                .buildQuery()
+                .build()
                 .getResultList()
                 .size();
     }
@@ -209,7 +209,7 @@ public class CleanupLogCommandWithProcessTest extends AbstractBaseTest {
     private int getNodeInstanceLogSize(String processId) {
         return new JPAAuditLogService(emf).nodeInstanceLogQuery()
                 .processId(processId)
-                .buildQuery()
+                .build()
                 .getResultList()
                 .size();
     }
@@ -217,7 +217,7 @@ public class CleanupLogCommandWithProcessTest extends AbstractBaseTest {
     private int getVariableLogSize(String processId) {
         return new JPAAuditLogService(emf).variableInstanceLogQuery()
                 .processId(processId)
-                .buildQuery()
+                .build()
                 .getResultList()
                 .size();
     }

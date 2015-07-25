@@ -85,7 +85,7 @@ public class TaskLogCleanTest extends JbpmTestCase {
 
         processInstanceList = startProcess(kieSession, HUMAN_TASK_ID, 2);
 
-        int deletedLogs = taskAuditService.auditTaskInstanceLogDelete()
+        int deletedLogs = taskAuditService.auditTaskDelete()
                 .processId(HUMAN_TASK_ID)
                 .build()
                 .execute();
@@ -99,7 +99,7 @@ public class TaskLogCleanTest extends JbpmTestCase {
 
         processInstanceList = startProcess(kieSession, HUMAN_TASK_ID, 3);
 
-        int resultCount = taskAuditService.auditTaskInstanceLogDelete()
+        int resultCount = taskAuditService.auditTaskDelete()
                 .processInstanceId(processInstanceList.get(0).getId(), processInstanceList.get(1).getId())
                 .build()
                 .execute();
@@ -127,7 +127,7 @@ public class TaskLogCleanTest extends JbpmTestCase {
             Task task = taskService.getTaskById(taskIdList.get(0));
             Assertions.assertThat(task).isNotNull();
 
-            int resultCount = taskAuditService.auditTaskInstanceLogDelete()
+            int resultCount = taskAuditService.auditTaskDelete()
                     .date(task.getTaskData().getCreatedOn())
                     .build()
                     .execute();
@@ -230,7 +230,7 @@ public class TaskLogCleanTest extends JbpmTestCase {
     }
 
     private int deleteAuditTaskInstanceLogs(Date startDate, Date endDate) {
-        return taskAuditService.auditTaskInstanceLogDelete()
+        return taskAuditService.auditTaskDelete()
                 .dateRangeStart(startDate)
                 .dateRangeEnd(endDate)
                 .build()
@@ -238,8 +238,8 @@ public class TaskLogCleanTest extends JbpmTestCase {
     }
 
     private List<AuditTask> getAllAuditTaskLogs() {
-        return taskAuditService.auditTaskInstanceLogQuery()
-                .buildQuery()
+        return taskAuditService.auditTaskQuery()
+                .build()
                 .getResultList();
     }
 

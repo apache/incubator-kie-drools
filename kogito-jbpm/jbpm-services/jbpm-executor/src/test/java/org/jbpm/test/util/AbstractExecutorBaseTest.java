@@ -22,7 +22,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-public abstract class AbstractBaseTest {
+public abstract class AbstractExecutorBaseTest {
     
     
     @After

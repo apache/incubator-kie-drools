@@ -14,32 +14,49 @@
  * the License.
  */
 
-package org.jbpm.services.task;
+package org.jbpm.services.task.query;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 
-import java.io.PrintStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.ListJoin;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
+import javax.persistence.metamodel.Attribute;
+import javax.persistence.metamodel.PluralAttribute;
 
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.internal.SessionImpl;
+import org.hibernate.persister.collection.CollectionPersister;
+import org.jbpm.services.task.HumanTaskServiceFactory;
+import org.jbpm.services.task.HumanTaskServicesBaseTest;
 import org.jbpm.services.task.commands.GetTasksByVariousFieldsCommand;
 import org.jbpm.services.task.impl.factories.TaskFactory;
+import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
+import org.jbpm.services.task.impl.model.OrganizationalEntityImpl_;
+import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl;
+import org.jbpm.services.task.impl.model.PeopleAssignmentsImpl_;
+import org.jbpm.services.task.impl.model.TaskDataImpl;
+import org.jbpm.services.task.impl.model.TaskDataImpl_;
 import org.jbpm.services.task.impl.model.TaskImpl;
-import org.jbpm.services.task.persistence.JPATaskPersistenceContext;
+import org.jbpm.services.task.impl.model.TaskImpl_;
+import org.jbpm.services.task.impl.model.UserImpl_;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,11 +68,8 @@ import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.query.TaskQueryBuilder;
 import org.kie.internal.task.query.TaskQueryBuilder.OrderBy;
-import org.mockito.ArgumentCaptor;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 
 @SuppressWarnings("deprecation")
 public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
@@ -102,6 +116,12 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         assertNotNull( "Null task id", taskImpl.getId());
         return (TaskImpl) taskImpl;
     }
+   
+    @Test
+    public void testTaskQueryBuilderSimply() {
+        TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder);
+        queryBuilder.build().getResultList();
+    }
     
     @Test
     public void testGetTasksByVariousFields() {
@@ -133,9 +153,12 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             busAdmins.add(busAdmin);
             potOwners.add(potOwner);
         }
-       
-        List<TaskSummary> results = taskService.getTasksByVariousFields(stakeHolder, workItemIds, null, null, null, null, null, null, null, false);
-        assertEquals("List of tasks", 1, results.size());
+      
+        List<TaskSummary> results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, null, null, null, false);
+        assertFalse("No tasks retrieved!", results.isEmpty());
+        
+        results = taskService.getTasksByVariousFields(stakeHolder, workItemIds, null, null, null, null, null, null, null, false);
+        assertEquals("List of tasks: work item id", 1, results.size());
 
         {
             long workItemId = 25;
@@ -174,7 +197,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
 
         // everything
         results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, null, null, null, false);
-        assertEquals("List of tasks", 3, results.size());
+        assertEquals("List of tasks: everything", 3, results.size());
         testOrderByTaskIdAscending(results);
         
         // max results
@@ -183,31 +206,31 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         queryCmd.setUnion(false);
         queryCmd.setMaxResults(2);
         results = ((InternalTaskService) taskService).execute(queryCmd);
-        assertEquals("List of tasks", 2, results.size());
+        assertEquals("List of tasks: max results", 2, results.size());
         testOrderByTaskIdAscending(results);
         assertEquals( "Did not order when returning tasks (first task id: " + results.get(0).getId(), firstTaskId.longValue(), results.get(0).getId().longValue());
         
         // single param tests
         results = taskService.getTasksByVariousFields(stakeHolder, workItemIds, null, null, null, null, null, null, null, false);
-        assertEquals("List of tasks", 2, results.size());
+        assertEquals("List of tasks: work item ids", 2, results.size());
         testOrderByTaskIdAscending(results);
         results = taskService.getTasksByVariousFields(stakeHolder, null, taskIds, null, null, null, null, null, null, false );
-        assertEquals("List of tasks", 2, results.size());
+        assertEquals("List of tasks: task ids", 2, results.size());
         testOrderByTaskIdAscending(results);
         results = taskService.getTasksByVariousFields(stakeHolder, null, null, procInstIds, null, null, null, null, null, false);
-        assertEquals("List of tasks", 2, results.size());
+        assertEquals("List of tasks: process instance ids", 2, results.size());
         testOrderByTaskIdAscending(results);
         results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, busAdmins, null, null, null, null, false);
-        assertEquals("List of tasks", 2, results.size());
+        assertEquals("List of tasks: bus admins", 2, results.size());
         testOrderByTaskIdAscending(results);
         results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, potOwners, null, null, null, false);
-        assertEquals("List of tasks", 2, results.size());
+        assertEquals("List of tasks: pot owners", 2, results.size());
         testOrderByTaskIdAscending(results);
         results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, potOwners, null, null, false);
-        assertEquals("List of tasks", 2, results.size());
+        assertEquals("List of tasks: task owners", 2, results.size());
         testOrderByTaskIdAscending(results);
         results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, null, statuses, null, false);
-        assertEquals("List of tasks", 2, results.size());
+        assertEquals("List of tasks: status", 2, results.size());
         testOrderByTaskIdAscending(results);
         
         // work item id and/or task id 
@@ -410,7 +433,11 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             workItemIds.add(workItemId);
             busAdmins.add(busAdmin);
             potOwners.add(potOwner);
-           
+         
+//            taskService.getTasksByStatusByProcessInstanceId(procInstId, statuses, "en-UK");
+            
+
+            
             // as much as possible
             TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder)
                     .intersect()
@@ -419,11 +446,11 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
                     .businessAdmin(busAdmin)
                     .potentialOwner(potOwner)
                     .taskId(taskImpl.getId());
-            List<TaskSummary> results = queryBuilder.buildQuery().getResultList();
+            List<TaskSummary> results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
             
             queryBuilder.clear();
-            results = queryBuilder.buildQuery().getResultList();
+            results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
         }
             
@@ -455,40 +482,40 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
                     .businessAdmin(busAdmin)
                     .potentialOwner(potOwner)
                     .taskId(taskImpl.getId());
-            List<TaskSummary> results = queryBuilder.buildQuery().getResultList();
+            List<TaskSummary> results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
             
             queryBuilder.clear();
-            results = queryBuilder.buildQuery().getResultList();
+            results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 2, results.size());
            
             queryBuilder.clear();
             queryBuilder.workItemId(workItemId);
-            results = queryBuilder.buildQuery().getResultList();
+            results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
             assertEquals("Incorrect task retrieved", tasks[1].getId(), results.get(0).getId() );
             
             queryBuilder.clear();
             queryBuilder.processInstanceId(procInstId);
-            results = queryBuilder.buildQuery().getResultList();
+            results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
             assertEquals("Incorrect task retrieved", tasks[1].getId(), results.get(0).getId() );
             
             queryBuilder.clear();
             queryBuilder.businessAdmin(busAdmin);
-            results = queryBuilder.buildQuery().getResultList();
+            results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
             assertEquals("Incorrect task retrieved", tasks[1].getId(), results.get(0).getId() );
             
             queryBuilder.clear();
             queryBuilder.potentialOwner(potOwner);
-            results = queryBuilder.buildQuery().getResultList();
+            results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
             assertEquals("Incorrect task retrieved", tasks[1].getId(), results.get(0).getId() );
             
             queryBuilder.clear();
             queryBuilder.taskId(taskImpl.getId());
-            results = queryBuilder.buildQuery().getResultList();
+            results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
             assertEquals("Incorrect task retrieved", tasks[1].getId(), results.get(0).getId() );
         }
@@ -514,18 +541,17 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
 
             TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder)
                     .maxResults(1);
-            List<TaskSummary> results = queryBuilder.buildQuery().getResultList();
+            List<TaskSummary> results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
 
             queryBuilder.clear();
-            results = queryBuilder.buildQuery().getResultList();
-            assertFalse("Empty List of tasks", results.isEmpty());
+            results = queryBuilder.build().getResultList();
+            assertFalse("Empty List of tasks", results.isEmpty() || results.size() == 1);
             testOrderByTaskIdAscending(results);
 
             queryBuilder.clear();
-            queryBuilder.descending();
-            queryBuilder.orderBy(OrderBy.processInstanceId);
-            results = queryBuilder.buildQuery().getResultList();
+            queryBuilder.descending(OrderBy.processInstanceId);
+            results = queryBuilder.build().getResultList();
             assertFalse("List of tasks too small", results.isEmpty() || results.size() == 1);
             for( int i = 1; i < results.size(); ++i ) { 
                 Long aVal = results.get(i-1).getProcessInstanceId();
@@ -533,8 +559,8 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
                 assertTrue("Tasks not correctly ordered: " + aVal + " ?>? " + bVal, aVal > bVal);
             }
 
-            queryBuilder.offset(results.size()-1).ascending();
-            results = queryBuilder.buildQuery().getResultList();
+            queryBuilder.offset(results.size()-1).ascending(OrderBy.taskId);
+            results = queryBuilder.build().getResultList();
             assertFalse("Empty List of tasks", results.isEmpty());
             assertEquals("List of tasks", 1, results.size());
             assertEquals("Task id", taskImpl.getId(), results.get(0).getId());
@@ -542,7 +568,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
        
         TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder);
                 
-        List<TaskSummary> results = queryBuilder.businessAdmin(busAdmins.toArray(new String[busAdmins.size()])).buildQuery().getResultList();
+        List<TaskSummary> results = queryBuilder.businessAdmin(busAdmins.toArray(new String[busAdmins.size()])).build().getResultList();
         assertEquals( 3, results.size() );
         
         // pagination
@@ -566,177 +592,16 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             taskImpl = addTask(workItemId, procInstId, busAdmin, potOwner, name, deploymentId);
         }
             
-        results = queryBuilder.clear().buildQuery().getResultList();
+        results = queryBuilder.clear().build().getResultList();
         assertTrue("Result list too small to test: " + results.size(), results.size() == 5 );
         
-        results = queryBuilder.clear().offset(1).buildQuery().getResultList();
+        results = queryBuilder.clear().offset(1).build().getResultList();
         assertTrue("Expected 4, not " + results.size() + " results", results.size() == 4 );
         
-        results = queryBuilder.clear().offset(1).maxResults(3).buildQuery().getResultList();
+        results = queryBuilder.clear().offset(1).maxResults(3).build().getResultList();
         assertTrue("Expected 3, not " + results.size() + " results", results.size() == 3 );
         
-        results = queryBuilder.clear().offset(3).maxResults(3).buildQuery().getResultList();
+        results = queryBuilder.clear().offset(3).maxResults(3).build().getResultList();
         assertTrue("Expected 2, not " + results.size() + " results", results.size() == 2 );
-    }
-
-    @Test
-    public void taskUserPermissionsEfficientQueryBuilderTest() throws Exception { 
-        Level origLevel = ((Logger) JPATaskPersistenceContext.logger).getEffectiveLevel();
-        ((Logger) JPATaskPersistenceContext.logger).setLevel(Level.DEBUG);
-        
-        PrintStream originalOut = System.out;
-        PrintStream spyPrintStream = spy(System.out);
-        System.setOut(spyPrintStream);
-        doNothing().when(spyPrintStream).write(any(byte[].class));
-        
-        // Add one more task, just to make sure things are working wel
-        long workItemId = 57;
-        long procInstId = 111;
-        String busAdmin = "Parzival";
-        String potOwner = "Aech";
-        String deploymentId = "OASIS";
-        String name = "Easter Egg";
-        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { "
-                + "taskStakeholders = [new User('" + stakeHolder + "')],"
-                + "businessAdministrators = [new User('" + busAdmin + "')],"
-                + "potentialOwners = [new User('" + potOwner + "'), new Group('Player')]"
-                + " }),";
-        str += "name =  '" + name + "' })";
-        Task taskImpl = TaskFactory.evalTask(new StringReader(str));
-        ((InternalTaskData) taskImpl.getTaskData()).setWorkItemId(workItemId);
-        ((InternalTaskData) taskImpl.getTaskData()).setProcessInstanceId(procInstId);
-        ((InternalTaskData) taskImpl.getTaskData()).setDeploymentId(deploymentId);
-        taskService.addTask(taskImpl, new HashMap<String, Object>());
-        assertNotNull( "Null task id", taskImpl.getId());
-
-        taskService.claim(taskImpl.getId(), potOwner);
-        taskService.start(taskImpl.getId(), potOwner);
-        taskService.fail(taskImpl.getId(), busAdmin, null);
-       
-        // 1. initiator
-        TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder).intersect().initiator(stakeHolder);
-        List<TaskSummary> results = queryBuilder.buildQuery().getResultList();
-        assertEquals("List of tasks", 0, results.size());
-
-        String whereClause = captureWhereClause(spyPrintStream);
-        int parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 2, parensCount ); 
-        
-        // 2. stake holder 
-        queryBuilder.clear().intersect().stakeHolder(stakeHolder);
-        results = queryBuilder.buildQuery().getResultList();
-        assertEquals("List of tasks", 1, results.size());
-
-        whereClause = captureWhereClause(spyPrintStream);
-        parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
-        
-        // 3. potential owner
-        queryBuilder.clear().intersect().potentialOwner(stakeHolder);
-        results = queryBuilder.buildQuery().getResultList();
-        assertEquals("List of tasks", 0, results.size());
-
-        whereClause = captureWhereClause(spyPrintStream);
-        parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
-        
-        // 4. actual owner
-        queryBuilder.clear().intersect().taskOwner(stakeHolder);
-        results = queryBuilder.buildQuery().getResultList();
-        assertEquals("List of tasks", 0, results.size());
-
-        whereClause = captureWhereClause(spyPrintStream);
-        parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 2, parensCount ); 
-        
-        // 5. business admin
-        queryBuilder.clear().intersect().businessAdmin(stakeHolder);
-        results = queryBuilder.buildQuery().getResultList();
-        assertEquals("List of tasks", 0, results.size());
-
-        whereClause = captureWhereClause(spyPrintStream);
-        parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
-        
-        // union with full query
-        queryBuilder.clear().union().businessAdmin(stakeHolder).workItemId(workItemId);
-        results = queryBuilder.buildQuery().getResultList();
-        assertEquals("List of tasks", 1, results.size());
-
-        whereClause = captureWhereClause(spyPrintStream);
-        parensCount = count(whereClause, "(");
-        assertTrue( "Expected parentheses in where clause", parensCount > 10); 
-        
-        // union with full query (full query group works)
-        String groupId = "Player";
-        queryBuilder = taskService.taskQuery("Art3mis").union().workItemId(workItemId);
-        results = queryBuilder.buildQuery().getResultList();
-        assertEquals("List of tasks", 1, results.size());
-
-        whereClause = captureWhereClause(spyPrintStream);
-        parensCount = count(whereClause, "(");
-        assertTrue( "Expected parentheses in where clause: " + parensCount, parensCount >= 10); 
-      
-        // 2. stake holder 
-        queryBuilder.clear().intersect().stakeHolder(groupId);
-        results = queryBuilder.buildQuery().getResultList();
-        assertEquals("List of tasks", 0, results.size());
-
-        whereClause = captureWhereClause(spyPrintStream);
-        parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
-        
-        // 3. potential owner
-        queryBuilder.clear().intersect().potentialOwner(groupId);
-        results = queryBuilder.buildQuery().getResultList();
-        assertEquals("List of tasks", 1, results.size());
-
-        whereClause = captureWhereClause(spyPrintStream);
-        parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
-        
-        // 5. business admin
-        queryBuilder.clear().intersect().businessAdmin(groupId);
-        results = queryBuilder.buildQuery().getResultList();
-        assertEquals("List of tasks", 0, results.size());
-
-        whereClause = captureWhereClause(spyPrintStream);
-        parensCount = count(whereClause, "(");
-        assertEquals( "Expected parentheses in where clause", 3, parensCount ); 
-        
-        System.setOut(originalOut);
-        ((Logger) JPATaskPersistenceContext.logger).setLevel(origLevel);
-    }
- 
-    private String captureWhereClause(PrintStream spyPrintStream) throws Exception { 
-        ArgumentCaptor<byte[]> output = ArgumentCaptor.forClass(byte[].class);
-        verify(spyPrintStream, atLeastOnce()).write(output.capture());
-        
-        assertFalse( output.getAllValues().isEmpty());
-        String query = null;
-        for( byte [] outValues : output.getAllValues() ) { 
-            String out = new String(outValues);
-            if( out.contains("QUERY:" ) ) { 
-                query = out.replaceFirst(".*QUERY:", "").trim();
-            }
-        }
-        assertNotNull( "Could not find query", query );
-        String whereClause = query.substring(query.indexOf("WHERE")); 
-        return whereClause;
-    }
-    
-    private int count(String whereClause, String string) { 
-       int count = 0;
-       int oldOffset = 0, offset = 0;
-      
-       offset = whereClause.indexOf(string, offset) + 1;
-       while( oldOffset < offset ) { 
-           ++count;
-           oldOffset = offset;
-           offset = whereClause.indexOf(string, offset) + 1;
-       }
-       
-       return count;
     }
 }

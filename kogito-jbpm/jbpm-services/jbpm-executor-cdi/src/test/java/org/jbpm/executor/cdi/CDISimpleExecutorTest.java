@@ -26,7 +26,7 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.executor.BasicExecutorBaseTest;
-import org.jbpm.test.util.TestUtil;
+import org.jbpm.test.util.ExecutorTestUtil;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -41,7 +41,7 @@ public class CDISimpleExecutorTest extends BasicExecutorBaseTest {
     @Deployment()
     public static Archive<?> createDeployment() {
     	// setup data source as part of the deployment as it requires to be already active while boostraping archive
-    	pds = TestUtil.setupPoolingDataSource();
+    	pds = ExecutorTestUtil.setupPoolingDataSource();
         return ShrinkWrap.create(JavaArchive.class, "executor-cdi-service.jar")
                 .addPackage("org.jbpm.shared.services.api")
                 .addPackage("org.jbpm.shared.services.impl")

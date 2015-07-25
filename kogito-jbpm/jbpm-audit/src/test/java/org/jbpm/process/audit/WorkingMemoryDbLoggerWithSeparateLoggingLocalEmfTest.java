@@ -24,7 +24,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.drools.core.SessionConfiguration;
-import org.drools.core.impl.KnowledgeBaseImpl;
 import org.jbpm.process.audit.strategy.PersistenceStrategyType;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.junit.After;

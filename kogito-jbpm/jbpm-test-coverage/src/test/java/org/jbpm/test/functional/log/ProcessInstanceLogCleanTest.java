@@ -96,7 +96,7 @@ public class ProcessInstanceLogCleanTest extends JbpmTestCase {
         List<ProcessInstanceLog> resultList = auditService.processInstanceLogQuery()
                 .processId(HELLO_WORLD_PROCESS_ID)
                 .processVersion("1.0")
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(resultList).hasSize(2);
         Assertions.assertThat(resultList)
@@ -114,7 +114,7 @@ public class ProcessInstanceLogCleanTest extends JbpmTestCase {
         resultList = auditService.processInstanceLogQuery()
                 .processId(HELLO_WORLD_PROCESS_ID)
                 .processVersion("1.0")
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(resultList).hasSize(0);
     }
@@ -129,7 +129,7 @@ public class ProcessInstanceLogCleanTest extends JbpmTestCase {
         List<ProcessInstanceLog> resultList = auditService.processInstanceLogQuery()
                 .processName(HELLO_WORLD_P1NAME)
                 .processVersion("1.0")
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(resultList).hasSize(3);
         Assertions.assertThat(resultList)
@@ -147,7 +147,7 @@ public class ProcessInstanceLogCleanTest extends JbpmTestCase {
         resultList = auditService.processInstanceLogQuery()
                 .processName(HELLO_WORLD_P1NAME)
                 .processVersion("1.0")
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(resultList).hasSize(0);
     }
@@ -171,7 +171,7 @@ public class ProcessInstanceLogCleanTest extends JbpmTestCase {
         List<ProcessInstanceLog> resultList = auditService
                 .processInstanceLogQuery()
                 .processVersion("1.0")
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(resultList).hasSize(0);
 
@@ -179,7 +179,7 @@ public class ProcessInstanceLogCleanTest extends JbpmTestCase {
         resultList = auditService
                 .processInstanceLogQuery()
                 .processVersion("1.1")
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(resultList).hasSize(2);
         Assertions.assertThat(resultList).extracting("processVersion").containsExactly("1.1", "1.1");
@@ -202,7 +202,7 @@ public class ProcessInstanceLogCleanTest extends JbpmTestCase {
             Assertions.assertThat(deleteResult).isEqualTo(5);
 
             ProcessInstanceLogQueryBuilder queryBuilder = auditService.processInstanceLogQuery().status(ProcessInstance.STATE_COMPLETED);
-            List<ProcessInstanceLog> queryList = queryBuilder.buildQuery().getResultList();
+            List<ProcessInstanceLog> queryList = queryBuilder.build().getResultList();
 
             Assertions.assertThat(queryList).hasSize(3);
             Assertions.assertThat(queryList).extracting("processId").containsExactly(HELLO_WORLD_PROCESS_ID, HELLO_WORLD_PROCESS_ID, HELLO_WORLD_PROCESS_ID);
@@ -229,7 +229,7 @@ public class ProcessInstanceLogCleanTest extends JbpmTestCase {
 
         List<ProcessInstanceLog> resultList = auditService.processInstanceLogQuery()
                 .startDateRangeStart(testStartDate)
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(resultList)
                 .hasSize(4)
@@ -256,7 +256,7 @@ public class ProcessInstanceLogCleanTest extends JbpmTestCase {
         // Check the last instance
         List<ProcessInstanceLog> resultList2 = auditService.processInstanceLogQuery()
                 .startDateRangeStart(testStartDate)
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(resultList).hasSize(1);
         Assertions.assertThat(resultList2.get(0)).isEqualTo(resultList.get(0));
@@ -287,7 +287,7 @@ public class ProcessInstanceLogCleanTest extends JbpmTestCase {
 
         List<ProcessInstanceLog> resultList = auditService.processInstanceLogQuery()
                 .startDateRangeEnd(date3)
-                .buildQuery()
+                .build()
                 .getResultList();
         Assertions.assertThat(resultList)
                 .hasSize(2)
@@ -340,7 +340,7 @@ public class ProcessInstanceLogCleanTest extends JbpmTestCase {
         return auditService.processInstanceLogQuery()
                 .startDateRangeStart(startDateRangeStart)
                 .startDateRangeEnd(startDateRangeEnd)
-                .buildQuery()
+                .build()
                 .getResultList()
                 .size();
     }
