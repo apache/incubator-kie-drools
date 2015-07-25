@@ -60,6 +60,7 @@
   </fileSets>
 
   <dependencySets>
+    <!-- Drools binaries (+ transitive dependencies) -->
     <dependencySet>
       <excludes>
         <exclude>org.kie:kie-ci-osgi</exclude>
@@ -68,26 +69,27 @@
         <!-- Examples dependency -->
         <exclude>commons-io:commons-io</exclude>
         <!-- Examples dependency -->
-        <exclude>ch.qos.logback:logback-core</exclude>
-        <!-- Examples dependency -->
-        <exclude>ch.qos.logback:logback-classic</exclude>
-        <!-- Examples dependency -->
+        <exclude>ch.qos.logback:logback-*</exclude>
         <exclude>*:*:jar:javadoc</exclude>
         <exclude>*:*:jar:sources</exclude>
       </excludes>
       <outputDirectory>binaries</outputDirectory>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
       <useStrictFiltering>true</useStrictFiltering>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+      <useProjectArtifact>false</useProjectArtifact>
     </dependencySet>
+    <!-- Binaries for OSGi -->
     <dependencySet>
       <includes>
         <include>org.kie:kie-ci-osgi:jar</include>
       </includes>
-      <!--excludes>
-          <exclude>*:sources</exclude>
-      </excludes-->
       <outputDirectory>osgi-binaries</outputDirectory>
       <useStrictFiltering>true</useStrictFiltering>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+      <useProjectArtifact>false</useProjectArtifact>
     </dependencySet>
+    <!-- Binaries for examples -->
     <dependencySet>
       <includes>
         <include>org.drools:drools-examples:jar</include>
@@ -95,16 +97,16 @@
         <!-- Examples dependency -->
         <include>commons-io:commons-io:jar</include>
         <!-- Examples dependency -->
-        <include>ch.qos.logback:logback-core</include>
-        <!-- Examples dependency -->
         <include>ch.qos.logback:logback-classic</include>
-        <!-- Examples dependency -->
       </includes>
       <excludes>
         <exclude>*:sources</exclude>
       </excludes>
       <outputDirectory>examples/binaries</outputDirectory>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
       <useStrictFiltering>true</useStrictFiltering>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+      <useProjectArtifact>false</useProjectArtifact>
     </dependencySet>
     <dependencySet>
       <includes>
@@ -113,20 +115,16 @@
       <outputDirectory>javadoc/public</outputDirectory>
       <unpack>true</unpack>
       <useStrictFiltering>true</useStrictFiltering>
+      <useProjectArtifact>false</useProjectArtifact>
     </dependencySet>
-    <!-- TODO internal api javadocs: note that they must be added as dependencies in the pom too -->
-    <!--<dependencySet>-->
-    <!--<includes>-->
-    <!--<include>org.drools:*:jar:javadoc</include>-->
-    <!--</includes>-->
-    <!--<excludes>-->
-    <!--<exclude>org.drools:knowledge-api:jar:javadoc</exclude>-->
-    <!--</excludes>-->
-    <!--<outputDirectory>javadoc/internal</outputDirectory>-->
-    <!--<unpack>true</unpack>-->
-    <!--<useStrictFiltering>true</useStrictFiltering>-->
-    <!--</dependencySet>-->
-    <!-- Reference manual -->
+    <dependencySet>
+      <includes>
+        <include>org.kie:kie-internal:jar:javadoc</include>
+      </includes>
+      <outputDirectory>javadoc/internal</outputDirectory>
+      <unpack>true</unpack>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
     <dependencySet>
       <includes>
         <include>org.kie:*:jar:sources</include>
@@ -138,6 +136,8 @@
       <outputDirectory>sources</outputDirectory>
       <unpack>false</unpack>
       <useStrictFiltering>true</useStrictFiltering>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+      <useProjectArtifact>false</useProjectArtifact>
     </dependencySet>
   </dependencySets>
 
