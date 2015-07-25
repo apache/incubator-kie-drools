@@ -6,6 +6,7 @@ set "jvmOptions=-Xms256m -Xmx1024m"
 set "mainClass=org.drools.examples.DroolsExamplesApp"
 set "mainClasspath="
 for %%i in (binaries\*.jar) do (set "mainClasspath=!mainClasspath!;%%i")
+for %%i in (..\binaries\*.jar) do (set "mainClasspath=!mainClasspath!;%%i")
 
 echo Usage: runExamples.bat
 echo Notes:
