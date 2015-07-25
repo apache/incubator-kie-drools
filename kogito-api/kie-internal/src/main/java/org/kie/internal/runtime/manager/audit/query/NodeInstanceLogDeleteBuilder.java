@@ -15,15 +15,12 @@
 
 package org.kie.internal.runtime.manager.audit.query;
 
-import java.util.Date;
 
-import org.kie.internal.query.ParametrizedUpdate;
-
-public interface NodeInstanceLogDeleteBuilder extends AuditDeleteBuilder<NodeInstanceLogDeleteBuilder> {
+public interface NodeInstanceLogDeleteBuilder extends AuditDateDeleteBuilder<NodeInstanceLogDeleteBuilder> {
 
     /**
      * Specify one or more work item ids associated with a node to use as a criteria.
-     * @param nodeInstanceId one or more long work item ids
+     * @param workItemId one or more long work item ids
      * @return The current query builder instance
      */
     public NodeInstanceLogDeleteBuilder workItemId(long... workItemId);
@@ -44,33 +41,10 @@ public interface NodeInstanceLogDeleteBuilder extends AuditDeleteBuilder<NodeIns
     
     /**
      * Specify one or more node names to use as a criteria.
-     * @param nodeInstanceId one or more string node names
+     * @param name one or more string node names
      * @return The current query builder instance
      */
     public NodeInstanceLogDeleteBuilder nodeName(String... name);
-    
-    /**
-     * Specify one or more dates as criteria in the query.
-     * @param date one or more dates
-     * @return The current query builder instance
-     */
-    public NodeInstanceLogDeleteBuilder date(Date... date);
-   
-    /**
-     * Specify the begin of a date range to be used as a criteria on the date field.
-     * The date range includes the date specified.
-     * @param date the start (early end) of the date range
-     * @return The current query builder instance
-     */
-    public NodeInstanceLogDeleteBuilder dateRangeStart(Date rangeStart);
-    
-    /**
-     * Specify the end of a date range to be used as a criteria on the date field.
-     * The date range includes this date. 
-     * @param date the end (later end) of the date range
-     * @return The current query builder instance
-     */
-    public NodeInstanceLogDeleteBuilder dateRangeEnd(Date rangeStart);
     
     /**
      * Specify externalId to be used as criteria on the externalId field.
@@ -79,14 +53,4 @@ public interface NodeInstanceLogDeleteBuilder extends AuditDeleteBuilder<NodeIns
      */
     public NodeInstanceLogDeleteBuilder externalId(String... externalId);
     
-    /**
-     * Create the {@link ParametrizedUpdate} instance that can be used
-     * to execute update/delete of {@link List<NodeInstanceLog>} instances.
-     * </p>
-     * Further modifications to the {@link NodeInstanceLogDeleteBuilder} instance
-     * will <em>not</em> affect the query criteria used in the {@link ParametrizedUpdate} 
-     * produced by this method.
-     * @return The results of the update/delete
-     */
-    public ParametrizedUpdate build();
 }
