@@ -84,7 +84,7 @@ public class AbstractJaxbTaskObject<T> {
         } 
     }
 
-    static <T> T unsupported(Class<?> realClass) { 
+    static <T> T unsupported(Class<T> realClass) { 
         String methodName = (new Throwable()).getStackTrace()[1].getMethodName();
         throw new UnsupportedOperationException(methodName + " is not supported on the JAXB " + realClass.getSimpleName() + " implementation.");
     }
