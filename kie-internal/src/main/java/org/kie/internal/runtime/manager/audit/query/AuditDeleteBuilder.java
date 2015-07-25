@@ -15,14 +15,15 @@
 
 package org.kie.internal.runtime.manager.audit.query;
 
-
-
+import org.kie.internal.query.ParametrizedQueryBuilder;
+import org.kie.internal.query.ParametrizedUpdate;
 
 /**
- * This interface defines methods that are used by all of the Audit implementations.
+ * This interface defines methods that are used by all of the Audit delete query builder implementations.
+ * @param <T> 
  *
  */
-public interface AuditDeleteBuilder<T> {
+public interface AuditDeleteBuilder<T> extends ParametrizedQueryBuilder<T> {
 
     /**
      * Specify one or more process instance ids as criteria in the query
@@ -37,5 +38,16 @@ public interface AuditDeleteBuilder<T> {
      * @return The current query builder instance
      */
     public T processId(String... processId);
-    
+   
+    /**
+     * Create the {@link ParametrizedUpdate} instance that can be used
+     * to execute an update or delete of the entities that this builder is for.
+     * </p>
+     * Further modifications to this builder instance
+     * will <em>not</em> affect the query criteria used in the {@link ParametrizedUpdate} 
+     * produced by this method.
+     * 
+     * @return a {@link ParametrizedUpdate} instance that can be executed.
+     */
+    public ParametrizedUpdate build();
 }

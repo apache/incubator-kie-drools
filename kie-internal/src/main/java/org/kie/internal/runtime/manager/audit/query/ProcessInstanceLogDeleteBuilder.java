@@ -17,8 +17,6 @@ package org.kie.internal.runtime.manager.audit.query;
 
 import java.util.Date;
 
-import org.kie.internal.query.ParametrizedUpdate;
-
 public interface ProcessInstanceLogDeleteBuilder extends AuditDeleteBuilder<ProcessInstanceLogDeleteBuilder> {
 
     /**
@@ -109,16 +107,6 @@ public interface ProcessInstanceLogDeleteBuilder extends AuditDeleteBuilder<Proc
      * @return The current query builder instance
      */
     public ProcessInstanceLogDeleteBuilder externalId(String... externalId);
-    
-    /**
-     * Create the {@link ParametrizedUpdate} instance that can be used
-     * to execute update/delete of {@link List<ProcessInstanceLog>} instances.
-     * </p>
-     * Further modifications to the {@link ProcessInstanceLogDeleteBuilder} instance
-     * will <em>not</em> affect the query criteria used in the {@link ParametrizedUpdate} 
-     * produced by this method.
-     * @return The results of the update/delete
-     */
-    public ParametrizedUpdate build();
+
 
 }
