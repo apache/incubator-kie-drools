@@ -3,142 +3,142 @@
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
 
-    <id>assembly-drools</id>
-    <formats>
-        <format>dir</format>
-        <format>zip</format>
-    </formats>
+  <id>assembly-drools</id>
+  <formats>
+    <format>dir</format>
+    <format>zip</format>
+  </formats>
 
-    <includeBaseDirectory>true</includeBaseDirectory>
+  <includeBaseDirectory>true</includeBaseDirectory>
 
-    <fileSets>
-        <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
-            <includes>
-                <include>../LICENSE-ASL-2.0.txt</include>
-            </includes>
-            <outputDirectory/>
-        </fileSet>
-        <fileSet>
-            <directory>src/main/assembly/scripts</directory>
-            <lineEnding>unix</lineEnding>
-            <filtered>true</filtered>
-            <outputDirectory>examples</outputDirectory>
-            <includes>
-                <include>**/*.sh</include>
-            </includes>
-            <fileMode>755</fileMode>
-        </fileSet>
-        <fileSet>
-            <directory>src/main/assembly/scripts</directory>
-            <lineEnding>dos</lineEnding>
-            <filtered>true</filtered>
-            <outputDirectory>examples</outputDirectory>
-            <includes>
-                <include>**/*.bat</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>src/main/assembly/filtered-resources</directory>
-            <filtered>true</filtered>
-            <outputDirectory/>
-        </fileSet>
-        <!-- Examples -->
-        <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
-            <directory>../drools-examples</directory>
-            <outputDirectory>examples/sources</outputDirectory>
-            <excludes>
-                <exclude>target/**</exclude>
-                <exclude>local/**</exclude>
-                <exclude>.*/**</exclude>
-                <exclude>nbproject/**</exclude>
-                <exclude>*.ipr</exclude>
-                <exclude>*.iws</exclude>
-                <exclude>*.iml</exclude>
-                <exclude>.git/**</exclude>
-            </excludes>
-        </fileSet>
-    </fileSets>
+  <fileSets>
+    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
+      <includes>
+        <include>../LICENSE-ASL-2.0.txt</include>
+      </includes>
+      <outputDirectory/>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/assembly/scripts</directory>
+      <lineEnding>unix</lineEnding>
+      <filtered>true</filtered>
+      <outputDirectory>examples</outputDirectory>
+      <includes>
+        <include>**/*.sh</include>
+      </includes>
+      <fileMode>755</fileMode>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/assembly/scripts</directory>
+      <lineEnding>dos</lineEnding>
+      <filtered>true</filtered>
+      <outputDirectory>examples</outputDirectory>
+      <includes>
+        <include>**/*.bat</include>
+      </includes>
+    </fileSet>
+    <fileSet>
+      <directory>src/main/assembly/filtered-resources</directory>
+      <filtered>true</filtered>
+      <outputDirectory/>
+    </fileSet>
+    <!-- Examples -->
+    <fileSet><!-- Note: going outside the module dir is bad, but it is not fetching generated files -->
+      <directory>../drools-examples</directory>
+      <outputDirectory>examples/sources</outputDirectory>
+      <excludes>
+        <exclude>target/**</exclude>
+        <exclude>local/**</exclude>
+        <exclude>.*/**</exclude>
+        <exclude>nbproject/**</exclude>
+        <exclude>*.ipr</exclude>
+        <exclude>*.iws</exclude>
+        <exclude>*.iml</exclude>
+        <exclude>.git/**</exclude>
+      </excludes>
+    </fileSet>
+  </fileSets>
 
-    <dependencySets>
-        <dependencySet>
-            <excludes>
-                <exclude>org.kie:kie-ci-osgi</exclude>
-                <exclude>org.drools:drools-examples</exclude>
-                <exclude>com.miglayout:miglayout</exclude>
-                <!-- Examples dependency -->
-                <exclude>commons-io:commons-io</exclude>
-                <!-- Examples dependency -->
-                <exclude>ch.qos.logback:logback-core</exclude>
-                <!-- Examples dependency -->
-                <exclude>ch.qos.logback:logback-classic</exclude>
-                <!-- Examples dependency -->
-                <exclude>*:*:jar:javadoc</exclude>
-                <exclude>*:*:jar:sources</exclude>
-            </excludes>
-            <outputDirectory>binaries</outputDirectory>
-            <useStrictFiltering>true</useStrictFiltering>
-        </dependencySet>
-        <dependencySet>
-            <includes>
-                <include>org.kie:kie-ci-osgi:jar</include>
-            </includes>
-            <!--excludes>
-                <exclude>*:sources</exclude>
-            </excludes-->
-            <outputDirectory>osgi-binaries</outputDirectory>
-            <useStrictFiltering>true</useStrictFiltering>
-        </dependencySet>
-        <dependencySet>
-            <includes>
-                <include>org.drools:drools-examples:jar</include>
-                <include>com.miglayout:miglayout:jar</include>
-                <!-- Examples dependency -->
-                <include>commons-io:commons-io:jar</include>
-                <!-- Examples dependency -->
-                <include>ch.qos.logback:logback-core</include>
-                <!-- Examples dependency -->
-                <include>ch.qos.logback:logback-classic</include>
-                <!-- Examples dependency -->
-            </includes>
-            <excludes>
-                <exclude>*:sources</exclude>
-            </excludes>
-            <outputDirectory>examples/binaries</outputDirectory>
-            <useStrictFiltering>true</useStrictFiltering>
-        </dependencySet>
-        <dependencySet>
-            <includes>
-                <include>org.kie:kie-api:jar:javadoc</include>
-            </includes>
-            <outputDirectory>javadoc/public</outputDirectory>
-            <unpack>true</unpack>
-            <useStrictFiltering>true</useStrictFiltering>
-        </dependencySet>
-        <!-- TODO internal api javadocs: note that they must be added as dependencies in the pom too -->
-        <!--<dependencySet>-->
-        <!--<includes>-->
-        <!--<include>org.drools:*:jar:javadoc</include>-->
-        <!--</includes>-->
-        <!--<excludes>-->
-        <!--<exclude>org.drools:knowledge-api:jar:javadoc</exclude>-->
-        <!--</excludes>-->
-        <!--<outputDirectory>javadoc/internal</outputDirectory>-->
-        <!--<unpack>true</unpack>-->
-        <!--<useStrictFiltering>true</useStrictFiltering>-->
-        <!--</dependencySet>-->
-        <!-- Reference manual -->
-        <dependencySet>
-            <includes>
-                <include>org.kie:*:jar:sources</include>
-                <include>org.drools:*:jar:sources</include>
-            </includes>
-            <excludes>
-                <exclude>org.drools:drools-examples:jar:sources</exclude>
-            </excludes>
-            <outputDirectory>sources</outputDirectory>
-            <unpack>false</unpack>
-            <useStrictFiltering>true</useStrictFiltering>
-        </dependencySet>
-    </dependencySets>
+  <dependencySets>
+    <dependencySet>
+      <excludes>
+        <exclude>org.kie:kie-ci-osgi</exclude>
+        <exclude>org.drools:drools-examples</exclude>
+        <exclude>com.miglayout:miglayout</exclude>
+        <!-- Examples dependency -->
+        <exclude>commons-io:commons-io</exclude>
+        <!-- Examples dependency -->
+        <exclude>ch.qos.logback:logback-core</exclude>
+        <!-- Examples dependency -->
+        <exclude>ch.qos.logback:logback-classic</exclude>
+        <!-- Examples dependency -->
+        <exclude>*:*:jar:javadoc</exclude>
+        <exclude>*:*:jar:sources</exclude>
+      </excludes>
+      <outputDirectory>binaries</outputDirectory>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.kie:kie-ci-osgi:jar</include>
+      </includes>
+      <!--excludes>
+          <exclude>*:sources</exclude>
+      </excludes-->
+      <outputDirectory>osgi-binaries</outputDirectory>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.drools:drools-examples:jar</include>
+        <include>com.miglayout:miglayout:jar</include>
+        <!-- Examples dependency -->
+        <include>commons-io:commons-io:jar</include>
+        <!-- Examples dependency -->
+        <include>ch.qos.logback:logback-core</include>
+        <!-- Examples dependency -->
+        <include>ch.qos.logback:logback-classic</include>
+        <!-- Examples dependency -->
+      </includes>
+      <excludes>
+        <exclude>*:sources</exclude>
+      </excludes>
+      <outputDirectory>examples/binaries</outputDirectory>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+    <dependencySet>
+      <includes>
+        <include>org.kie:kie-api:jar:javadoc</include>
+      </includes>
+      <outputDirectory>javadoc/public</outputDirectory>
+      <unpack>true</unpack>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+    <!-- TODO internal api javadocs: note that they must be added as dependencies in the pom too -->
+    <!--<dependencySet>-->
+    <!--<includes>-->
+    <!--<include>org.drools:*:jar:javadoc</include>-->
+    <!--</includes>-->
+    <!--<excludes>-->
+    <!--<exclude>org.drools:knowledge-api:jar:javadoc</exclude>-->
+    <!--</excludes>-->
+    <!--<outputDirectory>javadoc/internal</outputDirectory>-->
+    <!--<unpack>true</unpack>-->
+    <!--<useStrictFiltering>true</useStrictFiltering>-->
+    <!--</dependencySet>-->
+    <!-- Reference manual -->
+    <dependencySet>
+      <includes>
+        <include>org.kie:*:jar:sources</include>
+        <include>org.drools:*:jar:sources</include>
+      </includes>
+      <excludes>
+        <exclude>org.drools:drools-examples:jar:sources</exclude>
+      </excludes>
+      <outputDirectory>sources</outputDirectory>
+      <unpack>false</unpack>
+      <useStrictFiltering>true</useStrictFiltering>
+    </dependencySet>
+  </dependencySets>
 
 </assembly>
