@@ -15,7 +15,7 @@
 
 package org.jbpm.services.task.audit.service;
 
-import static org.kie.internal.query.QueryParameterIdentifiers.CREATED_ON_ID_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.CREATED_ON_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.DEPLOYMENT_ID_LIST;
 
 import java.util.Date;
@@ -24,7 +24,7 @@ import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.query.AbstractAuditDeleteBuilderImpl;
 import org.jbpm.services.task.audit.impl.model.AuditTaskImpl;
 import org.kie.api.runtime.CommandExecutor;
-import org.kie.internal.runtime.manager.audit.query.AuditTaskDeleteBuilder;
+import org.kie.internal.task.query.AuditTaskDeleteBuilder;
 
 public class AuditTaskDeleteBuilderImpl extends AbstractAuditDeleteBuilderImpl<AuditTaskDeleteBuilder> implements AuditTaskDeleteBuilder {
 
@@ -47,7 +47,7 @@ public class AuditTaskDeleteBuilderImpl extends AbstractAuditDeleteBuilderImpl<A
 		if (checkIfNull(date)) {
 			return this;
 		}
-		addObjectParameter(CREATED_ON_ID_LIST, "created on date", ensureDateNotTimestamp(date));
+		addObjectParameter(CREATED_ON_LIST, "created on date", ensureDateNotTimestamp(date));
 		return this;
 	}
 
@@ -56,7 +56,7 @@ public class AuditTaskDeleteBuilderImpl extends AbstractAuditDeleteBuilderImpl<A
 		if (checkIfNull(rangeStart)) {
 			return this;
 		}
-		addRangeParameter(CREATED_ON_ID_LIST, "created on date range end", ensureDateNotTimestamp(rangeStart)[0], true);
+		addRangeParameter(CREATED_ON_LIST, "created on date range end", ensureDateNotTimestamp(rangeStart)[0], true);
 		return this;
 	}
 
@@ -65,7 +65,7 @@ public class AuditTaskDeleteBuilderImpl extends AbstractAuditDeleteBuilderImpl<A
 		if (checkIfNull(rangeStart)) {
 			return this;
 		}
-		addRangeParameter(CREATED_ON_ID_LIST, "created on date range end", ensureDateNotTimestamp(rangeStart)[0], false);
+		addRangeParameter(CREATED_ON_LIST, "created on date range end", ensureDateNotTimestamp(rangeStart)[0], false);
         return this;
 	}
 

@@ -23,7 +23,7 @@ import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.query.AbstractAuditDeleteBuilderImpl;
 import org.jbpm.services.task.audit.impl.model.TaskEventImpl;
 import org.kie.api.runtime.CommandExecutor;
-import org.kie.internal.runtime.manager.audit.query.TaskEventDeleteBuilder;
+import org.kie.internal.task.query.TaskEventDeleteBuilder;
 
 public class TaskEventDeleteBuilderImpl extends AbstractAuditDeleteBuilderImpl<TaskEventDeleteBuilder> implements TaskEventDeleteBuilder {
 

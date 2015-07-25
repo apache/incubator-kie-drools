@@ -44,10 +44,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.api.task.model.Task;
 import org.kie.internal.runtime.manager.audit.query.ProcessIdQueryBuilder;
-import org.kie.internal.runtime.manager.audit.query.AuditTaskDeleteBuilder;
-import org.kie.internal.runtime.manager.audit.query.AuditTaskQueryBuilder;
 import org.kie.internal.task.api.AuditTask;
 import org.kie.internal.task.api.InternalTaskService;
+import org.kie.internal.task.query.AuditTaskDeleteBuilder;
+import org.kie.internal.task.query.AuditTaskQueryBuilder;
 
 public class AuditTaskDeleteTest extends TaskJPAAuditService {
     
