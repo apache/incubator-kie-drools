@@ -298,402 +298,404 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 
 	@Override
 	public void activate(long taskId, String userId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void claim(long taskId, String userId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void claimNextAvailable(String userId, String language) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void complete(long taskId, String userId, Map<String, Object> data) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void delegate(long taskId, String userId, String targetUserId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void exit(long taskId, String userId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void fail(long taskId, String userId, Map<String, Object> faultData) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void forward(long taskId, String userId, String targetEntityId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public Task getTaskByWorkItemId(long workItemId) {
-		return unsupported();
+		return unsupported(Task.class);
 	}
 
 	@Override
 	public Task getTaskById(long taskId) {
-		return unsupported();
+		return unsupported(Task.class);
 	}	
 
 	@Override
 	public long addTask(Task task, Map<String, Object> params) {
-		return unsupported();
+		return unsupported(long.class);
 	}
 
 	@Override
 	public void release(long taskId, String userId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void resume(long taskId, String userId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void skip(long taskId, String userId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void start(long taskId, String userId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void stop(long taskId, String userId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void suspend(long taskId, String userId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void nominate(long taskId, String userId, List<OrganizationalEntity> potentialOwners) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public Content getContentById(long contentId) {
-		return unsupported();
+		return unsupported(Content.class);
 	}
 
 	@Override
 	public Attachment getAttachmentById(long attachId) {
-		return unsupported();
+		return unsupported(Attachment.class);
 	}
 
 	@Override
 	public Map<String, Object> getTaskContent(long taskId) {
-		return unsupported();
+		return unsupported(Map.class);
 	}
 
 	@Override
 	public <T> T execute(Command<T> command) {
-		return unsupported();
-	}
+        String methodName = "execute";
+        throw new UnsupportedOperationException(methodName + " is not supported on the TaskService EJB implementation, " 
+                + "please use the " + UserTaskService.class + " implementation instead!");
+    }
 
 	@Override
 	public void addGroup(Group group) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void addUser(User user) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public int archiveTasks(List<TaskSummary> tasks) {
-		return unsupported();
+		return unsupported(int.class);
 	}
 
 	@Override
 	public void claim(long taskId, String userId, List<String> groupIds) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void claimNextAvailable(String userId, List<String> groupIds) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void deleteFault(long taskId, String userId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void deleteOutput(long taskId, String userId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void deployTaskDef(TaskDef def) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public List<TaskDef> getAllTaskDef(String filter) {
-		return unsupported();
+		return unsupported(List.class);
 	}
 
 	@Override
 	public Group getGroupById(String groupId) {
-		return unsupported();
+		return unsupported(Group.class);
 	}
 
 	@Override
 	public List<Group> getGroups() {
-		return unsupported();
+		return unsupported(List.class);
 	}
 
 	@Override
 	public TaskDef getTaskDefById(String id) {
-		return unsupported();
+		return unsupported(TaskDef.class);
 	}
 
 	@Override
 	public User getUserById(String userId) {
-		return unsupported();
+		return unsupported(User.class);
 	}
 
 	@Override
 	public List<User> getUsers() {
-		return unsupported();
+		return unsupported(List.class);
 	}
 
 	@Override
 	public long addTask(Task task, ContentData data) {
-		return unsupported();
+		return unsupported(long.class);
 	}
 
 	@Override
 	public void remove(long taskId, String userId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void removeGroup(String groupId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public int removeTasks(List<TaskSummary> tasks) {
-		return unsupported();
+		return unsupported(int.class);
 	}
 
 	@Override
 	public void removeUser(String userId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void setFault(long taskId, String userId, FaultData fault) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void setOutput(long taskId, String userId, Object outputContentData) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void setPriority(long taskId, int priority) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void setTaskNames(long taskId, List<I18NText> taskNames) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void undeployTaskDef(String id) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public List<TaskEvent> getTaskEventsById(long taskId) {
-		return unsupported();
+		return unsupported(List.class);
 	}
 
 	@Override
 	public UserInfo getUserInfo() {
-		return unsupported();
+		return unsupported(UserInfo.class);
 	}
 
 	@Override
 	public void setUserInfo(UserInfo userInfo) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void addUsersAndGroups(Map<String, User> users, Map<String, Group> groups) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public int removeAllTasks() {
-		return unsupported();
+		return unsupported(int.class);
 	}
 
 	@Override
 	public long addContent(long taskId, Content content) {
-		return unsupported();
+		return unsupported(long.class);
 	}
 
 	@Override
 	public long addContent(long taskId, Map<String, Object> params) {
-		return unsupported();
+		return unsupported(long.class);
 	}
 
 	@Override
 	public void deleteContent(long taskId, long contentId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public List<Content> getAllContentByTaskId(long taskId) {
-		return unsupported();
+		return unsupported(List.class);
 	}
 
 	@Override
 	public long addAttachment(long taskId, Attachment attachment, Content content) {
-		return unsupported();
+		return unsupported(long.class);
 	}
 
 	@Override
 	public void deleteAttachment(long taskId, long attachmentId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public List<Attachment> getAllAttachmentsByTaskId(long taskId) {
-		return unsupported();
+		return unsupported(List.class);
 	}
 
 	@Override
 	public void removeTaskEventsById(long taskId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public OrganizationalEntity getOrganizationalEntityById(String entityId) {
-		return unsupported();
+		return unsupported(OrganizationalEntity.class);
 	}
 
 	@Override
 	public void setExpirationDate(long taskId, Date date) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void setDescriptions(long taskId, List<I18NText> descriptions) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void setSkipable(long taskId, boolean skipable) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public void setSubTaskStrategy(long taskId, SubTasksStrategy strategy) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public int getPriority(long taskId) {
-		return unsupported();
+		return unsupported(int.class);
 	}
 
 	@Override
 	public Date getExpirationDate(long taskId) {
-		return unsupported();
+		return unsupported(Date.class);
 	}
 
 	@Override
 	public List<I18NText> getDescriptions(long taskId) {
-		return unsupported();
+		return unsupported(List.class);
 	}
 
 	@Override
 	public boolean isSkipable(long taskId) {
-		return unsupported();
+		return unsupported(boolean.class);
 	}
 
 	@Override
 	public SubTasksStrategy getSubTaskStrategy(long taskId) {
-		return unsupported();
+		return unsupported(SubTasksStrategy.class);
 	}
 
 	@Override
 	public Task getTaskInstanceById(long taskId) {
-		return unsupported();
+		return unsupported(Task.class);
 	}
 
 	@Override
 	public int getCompletedTaskByUserId(String userId) {
-		return unsupported();
+		return unsupported(int.class);
 	}
 
 	@Override
 	public int getPendingTaskByUserId(String userId) {
-		return unsupported();
+		return unsupported(int.class);
 	}
 
 	@Override
 	public Long addComment(long taskId, Comment comment) {
-		return unsupported();
+		return unsupported(Long.class);
 	}
 
 	@Override
 	public void deleteComment(long taskId, long commentId) {
-		unsupported();
+		unsupported(Void.class);
 	}
 
 	@Override
 	public List<Comment> getAllCommentsByTaskId(long taskId) {
-		return unsupported();
+		return unsupported(List.class);
 	}
 
 	@Override
 	public Comment getCommentById(long commentId) {
-		return unsupported();
+		return unsupported(Comment.class);
 	}
 
 	@Override
 	public void addMarshallerContext(String ownerId, ContentMarshallerContext context) {
-        unsupported();
+        unsupported(Void.class);
 	}
 
 	@Override
 	public void removeMarshallerContext(String ownerId) {
-        unsupported();
+        unsupported(Void.class);
 	}
 
 	@Override
 	public ContentMarshallerContext getMarshallerContext(Task task) {
-        return unsupported();
+        return unsupported(ContentMarshallerContext.class);
 	}
 
     @Override
     public TaskQueryBuilder taskQuery(String userId) {
-        return unsupported();
+        return unsupported(TaskQueryBuilder.class);
     }
 
 	@Override
@@ -703,10 +705,10 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 
     @Override
     public Long addComment( long taskId, String addedByUserId, String commentText ) {
-        return unsupported();
+        return unsupported(Long.class);
     }
 
-    private static <T> T unsupported() { 
+    private static <T> T unsupported(Class<T> returnType) { 
         String methodName = (new Throwable()).getStackTrace()[1].getMethodName();
         throw new UnsupportedOperationException(methodName + " is not supported on the TaskService EJB implementation, " 
                 + "please use the " + UserTaskService.class + " implementation instead!");
