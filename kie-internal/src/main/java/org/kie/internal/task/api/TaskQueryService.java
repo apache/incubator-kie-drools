@@ -123,8 +123,8 @@ public interface TaskQueryService {
     
     /**
      * 
-     * @param queryData
+     * @param queryWhere
      * @return
      */
-    List<TaskSummary> query( String userId, QueryData queryData );
+    List<TaskSummary> query( String userId, Object queryWhere );
 }

@@ -16,23 +16,16 @@
 package org.kie.internal.runtime.manager.audit.query;
 
 import org.kie.internal.query.ParametrizedQueryBuilder;
-
-
+import org.kie.internal.query.ProcessInstanceIdQueryBuilder;
 
 /**
  * This interface defines methods that are used by all of the Audit 
  * {@link ParametrizedQueryBuilder} implementations.
  *
  * @param <T> The {@link ParametrizedQueryBuilder} implementation type
+ * @param <R> The entity type on which is being queried
  */
-public interface AuditQueryBuilder<T> extends ParametrizedQueryBuilder<T> {
-
-    /**
-     * Specify one or more process instance ids as criteria in the query
-     * @param processInstanceId one or more a process instance ids
-     * @return The current query builder instance
-     */
-    public T processInstanceId(long... processInstanceId);
+public interface ProcessIdQueryBuilder<T,R> extends ProcessInstanceIdQueryBuilder<T,R> {
     
     /**
      * Specify one or more process (definition) id's as criteria in the query
@@ -40,5 +33,5 @@ public interface AuditQueryBuilder<T> extends ParametrizedQueryBuilder<T> {
      * @return The current query builder instance
      */
     public T processId(String... processId);
-    
+ 
 }

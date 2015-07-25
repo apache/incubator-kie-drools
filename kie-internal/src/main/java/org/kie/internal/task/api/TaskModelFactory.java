@@ -24,10 +24,12 @@ import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskData;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.model.BooleanExpression;
 import org.kie.internal.task.api.model.ContentData;
 import org.kie.internal.task.api.model.Deadline;
+import org.kie.internal.task.api.model.DeadlineSummary;
 import org.kie.internal.task.api.model.Deadlines;
 import org.kie.internal.task.api.model.Delegation;
 import org.kie.internal.task.api.model.EmailNotification;
@@ -53,6 +55,8 @@ public interface TaskModelFactory {
 	
 	Deadline newDeadline();
 	
+	DeadlineSummary newDeadlineSummary();
+	
 	Deadlines newDeadlines();
 	
 	Delegation newDelegation();
@@ -67,7 +71,7 @@ public interface TaskModelFactory {
 	
 	Group newGroup();
         
-        Group newGroup(String id);
+    Group newGroup(String id);
 	
 	I18NText newI18NText();
 	
@@ -87,7 +91,9 @@ public interface TaskModelFactory {
 	
 	Task newTask();
 	
+	TaskSummary newTaskSummary();
+	
 	User newUser();
         
-        User newUser(String id);
+	User newUser(String id);
 }

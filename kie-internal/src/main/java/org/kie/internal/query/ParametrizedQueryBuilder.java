@@ -28,9 +28,15 @@ public interface ParametrizedQueryBuilder<T> {
 
     /**
      * Query criteria which are added to the query after this method
-     * are "OR" or "union" criteria. In other words, the query will return 
-     * results which match any of the criteria added (as opposed to having 
-     * to match <i>all</i> of the criteria added).
+     * are "OR" or "union" criteria. 
+     * </p>
+     * Since this is based on SQL, please remember that intersection operands
+     * have precedence over union operands. 
+     * </p>
+     * In other words, <ul>
+     * <li><code>A or B and C == A or (B and C)</code></li>
+     * <li><code>A and B or C == (A and B) or C</code></li>
+     * </ul>
      * </p>
      * This is the default mode for all query builders. 
      * @return the current query builder instance
@@ -39,14 +45,21 @@ public interface ParametrizedQueryBuilder<T> {
     
     /**
      * Query criteria which are added to the query after this method
-     * are "AND" or "intersection" criteria. In other words, the query 
-     * will only return results which match all of the criteria added 
-     * (as opposed to returning results that match <i>any</i> of the 
-     * criteria added).
+     * are "AND" or "intersection" criteria. 
+     * </p>
+     * Since this is based on SQL, please remember that intersection operands
+     * have precedence over union operands. 
+     * </p>
+     * In other words, <ul>
+     * <li><code>A or B and C == A or (B and C)</code></li>
+     * <li><code>A and B or C == (A and B) or C</code></li>
+     * </ul>
+     * </p>
      * @return the current query builder instance
      */
     public T intersect();
- 
+
+    /**
     /**
      * Query criteria which are added to the query after this method
      * are regular expression (a.k.a "regex") criteria. In other words, 
@@ -89,27 +102,9 @@ public interface ParametrizedQueryBuilder<T> {
     public T clear();
     
     /**
-     * If the {@link ParametrizedQueryBuilder} implementations contains an orderBy( enum ) 
-     * method, this will set the ordering to ascending. 
-     * </p>
-     * Query results will be ascendingly ordered by default.
-     * </p>
-     * If there is no orderBy( enum ) method available, this method will not do anything. 
-     * @return the current query builder instance
-     */
-    public T ascending();
-    
-    /**
-     * If the {@link ParametrizedQueryBuilder} implementations contains an orderBy( enum ) 
-     * method, this will set the ordering to descending. 
-     * </p>
-     * If there is no orderBy( enum ) method available, this method will not do anything. 
-     * @return the current query builder instance
-     */
-    public T descending();
-   
-    /**
      * Limit the number of results returned by the query to the specified maximum.
+     * @param maxResults The maximum number of results to return
+     *
      * @return the current query builder instance
      */
     public T maxResults(int maxResults);
@@ -120,6 +115,7 @@ public interface ParametrizedQueryBuilder<T> {
      * </p>
      * Which results are excluded (offset) is dependent on the order of the results returned. 
      * See the orderBy(enum) methods as well as {@link #ascending()} and {@link #descending()}.
+     * @param offset The number of elements skipped before the first element in the result
      * @return the current query builder instance
      */
     public T offset(int offset);
