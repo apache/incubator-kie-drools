@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.api.TaskModelFactory;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.InternalTaskSummary;
 import org.kie.internal.task.api.model.SubTasksStrategy;
@@ -73,11 +74,13 @@ public class TaskSummaryImpl implements InternalTaskSummary {
             long parentId) {
         super();
         this.id = id;
-        this.processInstanceId = processInstanceId;
         this.name = name;
         this.subject = subject;
         this.description = description;
         this.status = status;
+        if (status != null) {
+            this.statusId = status.name();
+        }
         this.priority = priority;
         this.skipable = skipable;
         this.actualOwner = actualOwner;
@@ -91,14 +94,59 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.createdOn = createdOn;
         this.activationTime = activationTime;
         this.expirationTime = expirationTime;
+        this.processInstanceId = processInstanceId;
         this.processId = processId;
         this.processSessionId = processSessionId;
+        this.deploymentId = deploymentId;
         this.subTaskStrategy = subTaskStrategy;
         this.parentId = parentId;
-        this.deploymentId = deploymentId;
+        
         this.quickTaskSummary = false;
     }
 
+    // Query API constructor
+    public TaskSummaryImpl(long id,
+            String name, String subject, String description,
+            Status status, int priority, boolean skipable,
+            String actualOwnerId, String createdById,
+            Date createdOn, Date activationTime, Date expirationTime,
+            String processId, long processSessionId, long processInstanceId, String deploymentId,
+            SubTasksStrategy subTaskStrategy,
+            long parentId) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.subject = subject;
+        this.description = description;
+        this.status = status;
+        if (status != null) {
+            this.statusId = status.name();
+        }
+        this.priority = priority;
+        this.skipable = skipable;
+        
+        this.actualOwnerId = actualOwnerId;
+        if( this.actualOwnerId != null && ! this.actualOwnerId.isEmpty() ) { 
+            this.actualOwner = TaskModelProvider.getFactory().newUser(this.actualOwnerId);
+        }
+        this.createdById = createdById;
+        if( this.createdById != null && ! this.createdById.isEmpty() ) { 
+            this.createdBy = TaskModelProvider.getFactory().newUser(this.createdById);
+        }
+        
+        this.createdOn = createdOn;
+        this.activationTime = activationTime;
+        this.expirationTime = expirationTime;
+        this.processInstanceId = processInstanceId;
+        this.processId = processId;
+        this.processSessionId = processSessionId;
+        this.deploymentId = deploymentId;
+        this.subTaskStrategy = subTaskStrategy;
+        this.parentId = parentId;
+        
+        this.quickTaskSummary = false;
+    }
+    
     /*
      * Construct a QuickTaskSummary
      */
@@ -139,6 +187,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
     }
 
     public TaskSummaryImpl() {
+        // JAXB constructor
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

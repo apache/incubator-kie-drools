@@ -19,8 +19,6 @@ package org.jbpm.services.task.impl;
 import static org.kie.internal.query.QueryParameterIdentifiers.ACTUAL_OWNER_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.ASCENDING_VALUE;
 import static org.kie.internal.query.QueryParameterIdentifiers.BUSINESS_ADMIN_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.CREATED_BY_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.DEPLOYMENT_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.DESCENDING_VALUE;
 import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
 import static org.kie.internal.query.QueryParameterIdentifiers.FIRST_RESULT;
@@ -28,9 +26,7 @@ import static org.kie.internal.query.QueryParameterIdentifiers.MAX_RESULTS;
 import static org.kie.internal.query.QueryParameterIdentifiers.ORDER_BY;
 import static org.kie.internal.query.QueryParameterIdentifiers.ORDER_TYPE;
 import static org.kie.internal.query.QueryParameterIdentifiers.POTENTIAL_OWNER_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.STAKEHOLDER_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.TASK_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.TASK_STATUS_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST;
@@ -44,12 +40,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
-import org.jbpm.query.jpa.impl.QueryAndParameterAppender;
-import org.jbpm.query.jpa.service.QueryModificationService;
+import org.jbpm.query.jpa.data.QueryWhere;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -58,7 +51,6 @@ import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
-import org.kie.internal.query.data.QueryData;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.TaskQueryService;
 import org.kie.internal.task.api.model.InternalTaskSummary;
@@ -572,35 +564,29 @@ public class TaskQueryServiceImpl implements TaskQueryService {
     // This method should be deleted in jBPM 7.x+
     @Deprecated
     public List<TaskSummary> getTasksByVariousFields( String userId, Map<String, List<?>> parameters, boolean union ) { 
-        QueryData queryData = new QueryData();
-        QueryContext queryContext = queryData.getQueryContext();
-        if( queryContext.getOrderBy() == null || queryContext.getOrderBy().isEmpty() ) { 
-            queryContext.setOrderBy("Id");
-        }
-        if( queryContext.isAscending() == null ) { 
-            queryContext.setAscending(true);
-        }
+        QueryWhere queryWhere = new QueryWhere();
+        queryWhere.setAscending(TASK_ID_LIST);
         List<?> maxResultsList = parameters.remove(MAX_RESULTS);
         if( maxResultsList != null && ! maxResultsList.isEmpty() ) { 
             Object maxResults = maxResultsList.get(0);
             if( maxResults instanceof Integer ) {
-                queryContext.setCount((Integer) maxResults);
+                queryWhere.setCount((Integer) maxResults);
             }
         } 
         
         // convert parameters to query data
         if( union ) { 
-            queryData.setToUnion();
+            queryWhere.setToUnion();
         } else { 
-            queryData.setToIntersection(); 
+            queryWhere.setToIntersection(); 
         }
         for( Entry<String, List<?>> paramEntry: parameters.entrySet() ) { 
             List<?> paramList = paramEntry.getValue();
             if( paramList != null && ! paramList.isEmpty() ) { 
-                queryData.addAppropriateParam(paramEntry.getKey(), convertToTypedArray(paramList, paramList.get(0)));
+                queryWhere.addParameter(paramEntry.getKey(), convertToTypedArray(paramList, paramList.get(0)));
             }
         }
-        return query(userId, queryData);
+        return query(userId, queryWhere);
     }
   
     private <T> T [] convertToTypedArray(List<?> paramList, T... firstElem) { 
@@ -632,205 +618,6 @@ public class TaskQueryServiceImpl implements TaskQueryService {
                 ClassUtil.<List<TaskSummary>>castClass(List.class));
     }
 
-    /**
-     * The following fields and methods provide a lookup table for the information needed to create a query based on
-     * parameters in the {@link QueryData}. 
-     */
-    
-    public static Map<String, Class<?>> criteriaFieldClasses = new ConcurrentHashMap<String, Class<?>>();
-    public static Map<String, String> criteriaFields = new ConcurrentHashMap<String, String>();
-    public static Map<String, String> criteriaFieldJoinClauses = new ConcurrentHashMap<String, String>();
-   
-    static { 
-        addCriteria(PROCESS_ID_LIST, "t.taskData.processId", String.class);
-        addCriteria(PROCESS_INSTANCE_ID_LIST, "t.taskData.processInstanceId", Long.class);
-        addCriteria(WORK_ITEM_ID_LIST, "t.taskData.workItemId", Long.class);
-        
-        addCriteria(TASK_ID_LIST, "t.id", Long.class);
-        addCriteria(DEPLOYMENT_ID_LIST, "t.taskData.deploymentId.id", String.class);
-        addCriteria(TASK_STATUS_LIST, "t.taskData.status", Status.class);
-        
-        addCriteria(CREATED_BY_LIST, "t.taskData.createdBy.id", String.class);
-        addCriteria(ACTUAL_OWNER_ID_LIST, "t.taskData.actualOwner.id", String.class);
-        
-        // require the  OrganizationalEntityImpl table (where "stakeHolders" is the table alias)
-        addCriteria(STAKEHOLDER_ID_LIST, "stakeHolders.id", String.class, 
-                "stakeHolders in elements ( t.peopleAssignments.taskStakeholders )");
-        addCriteria(POTENTIAL_OWNER_ID_LIST, "potentialOwners.id", String.class, 
-                "potentialOwners in elements ( t.peopleAssignments.potentialOwners )");
-        addCriteria(BUSINESS_ADMIN_ID_LIST, "businessAdministrators.id", String.class, 
-                "businessAdministrators in elements ( t.peopleAssignments.businessAdministrators )");
-    }
-   
-    private static void addCriteria( String listId, String fieldName, Class type ) { 
-        addCriteria(listId, fieldName, type, null);
-    }
-    
-    private static void addCriteria( String listId, String fieldName, Class type, String joinClause ) { 
-        if( criteriaFields.put(listId, fieldName) != null ) { 
-            throw new IllegalStateException("Duplicate field added for " + listId );
-        }
-        if( criteriaFieldClasses.put(listId, type ) != null ) { 
-            throw new IllegalStateException("Duplicate field class added for " + listId );
-        }
-        if( joinClause != null ) { 
-            if( criteriaFieldJoinClauses.put(listId, joinClause ) != null ) { 
-                throw new IllegalStateException("Duplicate field join clause added for " + listId );
-            }
-        }
-    }
-   
-    public static String TASKSUMMARY_SELECT =
-                "SELECT distinct new org.jbpm.services.task.query.TaskSummaryImpl(\n" +
-                "       t.id,\n" +
-                "       t.name,\n" +
-                "       t.description,\n" +
-                "       t.taskData.status,\n" +
-                "       t.priority,\n" +
-                "       t.taskData.actualOwner.id,\n" +
-                "       t.taskData.createdBy.id,\n" +
-                "       t.taskData.createdOn,\n" +
-                "       t.taskData.activationTime,\n" +
-                "       t.taskData.expirationTime,\n" +
-                "       t.taskData.processId,\n" +
-                "       t.taskData.processInstanceId,\n" +
-                "       t.taskData.parentId,\n" +
-                "       t.taskData.deploymentId,\n" +
-                "       t.taskData.skipable )\n";
-
-    public static String TASKSUMMARY_FROM = 
-                "FROM TaskImpl t,\n"
-              + "     OrganizationalEntityImpl stakeHolders,\n"
-              + "     OrganizationalEntityImpl potentialOwners,\n"
-              + "     OrganizationalEntityImpl businessAdministrators\n";
-    
-    public static String TASKSUMMARY_WHERE = 
-                "WHERE t.archived = 0\n";
-
-    @Override
-    public List<TaskSummary> query( String userId, QueryData queryData ) {
-        // 1a. setup query
-        StringBuilder queryBuilder = new StringBuilder(TASKSUMMARY_SELECT).append(TASKSUMMARY_FROM);
-        
-        // 1b. add other tables (used in kie-remote-services to cross-query on variables, etc.. )
-        ServiceLoader<QueryModificationService> queryModServiceLdr = ServiceLoader.load(QueryModificationService.class);
-        for( QueryModificationService queryModService : queryModServiceLdr ) { 
-           queryModService.addTablesToQuery(queryBuilder, queryData);
-        }
-       
-        // 1c. finish setup
-        queryBuilder.append(TASKSUMMARY_WHERE);
-        
-        Map<String, Object> params = new HashMap<String, Object>();
-        QueryAndParameterAppender queryAppender = new QueryAndParameterAppender(queryBuilder, params);
-       
-        // 2. check to see if we can results if possible by manipulating existing parameters
-        GroupIdsCache groupIds = new GroupIdsCache(userId);
-        boolean existingParametersUsedToLimitToAllowedResults = useExistingUserGroupIdToLimitResults(userId, queryData, groupIds);
-        
-        // 3a. add extended criteria 
-        for( QueryModificationService queryModService : queryModServiceLdr ) { 
-           queryModService.addCriteriaToQuery(queryData, queryAppender);
-        }
-        
-        // 3a. apply normal query parameters
-        if( ! queryData.unionParametersAreEmpty() ) { 
-            for( Entry<String, List<? extends Object>> paramsEntry : queryData.getUnionParameters().entrySet() ) { 
-                String listId = paramsEntry.getKey();
-                Class<?> criteriaFieldClass = criteriaFieldClasses.get(listId);
-                assert criteriaFieldClass != null : listId + ": criteria field class not found";
-                String jpqlField = criteriaFields.get(listId);
-                assert jpqlField != null : listId + ": criteria field not found";
-                String joinClause = criteriaFieldJoinClauses.get(listId);
-                queryAppender.addQueryParameters( paramsEntry.getValue(), listId, criteriaFieldClass, jpqlField, joinClause, true);
-            }
-        }
-        if( ! queryData.intersectParametersAreEmpty() ) { 
-            for( Entry<String, List<? extends Object>> paramsEntry : queryData.getIntersectParameters().entrySet() ) { 
-                String listId = paramsEntry.getKey();
-                Class<?> criteriaFieldClass = criteriaFieldClasses.get(listId);
-                QueryAndParameterAppender.debugQueryParametersIdentifiers();
-                assert criteriaFieldClass != null : listId + ": criteria field class not found";
-                String jpqlField = criteriaFields.get(listId);
-                assert jpqlField != null : listId + ": criteria field not found";
-                String joinClause = criteriaFieldJoinClauses.get(listId);
-                queryAppender.addQueryParameters(paramsEntry.getValue(), listId, criteriaFieldClass, jpqlField, joinClause, false);
-            }
-        }
-        // 3b. apply range query parameters
-        if( ! queryData.unionRangeParametersAreEmpty() ) { 
-            for( Entry<String, List<? extends Object>> paramsEntry : queryData.getUnionRangeParameters().entrySet() ) { 
-                String listId = paramsEntry.getKey();
-                Class<?> criteriaFieldClass = criteriaFieldClasses.get(listId);
-                assert criteriaFieldClass != null : listId + ": criteria field class not found";
-                String jpqlField = criteriaFields.get(listId);
-                assert jpqlField != null : listId + ": criteria field not found";
-                String joinClause = criteriaFieldJoinClauses.get(listId);
-                queryAppender.addRangeQueryParameters(paramsEntry.getValue(), listId, criteriaFieldClass, jpqlField, joinClause, true);
-            }
-        }
-        if( ! queryData.intersectRangeParametersAreEmpty() ) { 
-            for( Entry<String, List<? extends Object>> paramsEntry : queryData.getIntersectRangeParameters().entrySet() ) { 
-                String listId = paramsEntry.getKey();
-                Class<?> criteriaFieldClass = criteriaFieldClasses.get(listId);
-                assert criteriaFieldClass != null : listId + ": criteria field class not found";
-                String jpqlField = criteriaFields.get(listId);
-                assert jpqlField != null : listId + ": criteria field not found";
-                String joinClause = criteriaFieldJoinClauses.get(listId);
-                queryAppender.addRangeQueryParameters(paramsEntry.getValue(), listId, criteriaFieldClass, jpqlField, joinClause, false);
-            }
-        }
-        // 3c. apply regex query parameters
-        if( ! queryData.unionRegexParametersAreEmpty() ) { 
-            for( Entry<String, List<String>> paramsEntry : queryData.getUnionRegexParameters().entrySet() ) { 
-                String listId = paramsEntry.getKey();
-                String jpqlField = criteriaFields.get(listId);
-                assert jpqlField != null : listId + ": criteria field not found";
-                String joinClause = criteriaFieldJoinClauses.get(listId);
-                queryAppender.addRegexQueryParameters(paramsEntry.getValue(), listId, jpqlField, joinClause, true);
-            }
-        }
-        if( ! queryData.intersectRegexParametersAreEmpty() ) { 
-            for( Entry<String, List<String>> paramsEntry : queryData.getIntersectRegexParameters().entrySet() ) { 
-                String listId = paramsEntry.getKey();
-                String jpqlField = criteriaFields.get(listId);
-                assert jpqlField != null : listId + ": criteria field not found";
-                String joinClause = criteriaFieldJoinClauses.get(listId);
-                queryAppender.addRegexQueryParameters(paramsEntry.getValue(), listId, jpqlField, joinClause, false);
-            }
-        }
-       
-        // 4. close query clause, if parameters have been applied
-        while( queryAppender.getParenthesesNesting() > 0 ) { 
-            queryAppender.closeParentheses();
-        }
-     
-        // 5. add "limit tasks to viewable tasks" query if step 2 didn't succeed
-        if( ! existingParametersUsedToLimitToAllowedResults ) { 
-            addPossibleUserRolesQueryClause( userId, groupIds, params, queryAppender );
-        }
-      
-        // 6. apply meta info: max results, offset, order by, etc 
-        String query = queryBuilder.toString();
-        applyQueryContext(params, queryData.getQueryContext());
-       
-        // 7. Run the query!
-        return persistenceContext.queryStringWithParametersInTransaction(query, params,
-                ClassUtil.<List<TaskSummary>>castClass(List.class));
-    }
-
-    // actual owner and created by (initiator) can only be users
-    private static String [] userParameterIds = { 
-        ACTUAL_OWNER_ID_LIST,
-        CREATED_BY_LIST
-    };
-    // ... but stakeholder, potential and bus. admin can be users orgroups
-    private static String [] groupParameterIds = { 
-        STAKEHOLDER_ID_LIST,
-        POTENTIAL_OWNER_ID_LIST,
-        BUSINESS_ADMIN_ID_LIST
-    };
-
     @Override
     public List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, List<Status> status) { 
         Map<String, Object> params = new HashMap<String, Object>();
@@ -839,167 +626,11 @@ public class TaskQueryServiceImpl implements TaskQueryService {
         return (List<TaskSummary>) persistenceContext.queryWithParametersInTransaction("TasksAssignedAsBusinessAdministratorByStatus",params,
                  ClassUtil.<List<TaskSummary>>castClass(List.class));
     }
-   
-    /**
-     * This is a small utility class which helps out 
-     * with the {@link #useExistingUserGroupIdAsParameter(String[], QueryData, String...)}
-     * and {@link #addPossibleUserRolesQueryClause(String, StringBuilder, GroupIdsCache, Map, QueryAndParameterAppender)}
-     * methods.
-     * </p>
-     * It does 2 things: 
-     * <ol>
-     *   <li>Retrieve the group information via the {@link UserGroupCallback} field in the {@link TaskQueryServiceImpl}.</li>
-     *   <li>Cache the group id information, because it may be retrieved in the first method mentioned above, and then 
-     *   needed again in the second needed (if the first method does not succeed).</li>
-     * </ol>
-     */
-    private class GroupIdsCache { 
-       
-        private final String userId; 
-        private boolean groupsRetrieved = false;
-        private List<String> groupIds;
-       
-        private GroupIdsCache(String userId ) {
-           this.userId = userId; 
-        }
-       
-        /**
-         * If not already done, retrieve the group information via the {@link UserGroupCallback} instance and store it.
-         */
-        private List<String> getGroupIds() { 
-            if( ! groupsRetrieved ) { 
-                this.groupsRetrieved = true;
-                this.groupIds = userGroupCallback.getGroupsForUser(userId, null, null);
-            }
-            return groupIds;
-        }
-        
-        public String [] toArray() { 
-            getGroupIds();
-            return this.groupIds.toArray(new String[this.groupIds.size()]);
-        }
-        
-        public int size() { 
-            getGroupIds();
-            return this.groupIds.size();
-        }
-        
+
+    @Override
+    public List<TaskSummary> query( String userId, Object queryObj ) {
+        QueryWhere queryWhere = (QueryWhere) queryObj;
+        return persistenceContext.doTaskSummaryCriteriaQuery(userId, userGroupCallback, (QueryWhere) queryWhere);
     }
 
-    /**
-     * This class deals with the following: 
-     * <ol>
-     *   <li>If we're using a <em>union</em> of parameters, then we have to add a clause at the end 
-     *       of the query saying the the user must be a intiator, stake holder, potential owner, etc.. 
-     *       of the tasks retrieved.</li>
-     *   <li>However, if the same user id is used in an intersection parameter, and the intersection parameter
-     *   is one of the roles that the user must have in order to view the task<ul>
-     *     <li><b>then</b>, there's no reason to also add a clause at the end of the query saying "only get tasks
-     *     where the user has a 'good' role" -- the intersection parameter has already checked that, so to speak</li>
-     *   </li>
-     * </ol>  
-     * 
-     * In situation 2, this function verifies that this is indeed the case, and returns true if that's so. 
-     * Furthermore, it also verifies the same thing for any of the groups that the user belongs to. See {@link GroupIdsCache} 
-     * for more info there. 
-     * 
-     * @param userId The id of the user requesting the information. 
-     * @param queryData The query data
-     * @param groupIds A {@link GroupIdsCache} instance, which provides the groupids for the user id
-     * @return whether or not a limiting query clause should be added to the end of the query
-     */
-    private boolean useExistingUserGroupIdToLimitResults(String userId, QueryData queryData, GroupIdsCache groupIds) { 
-        // for the GetTasksByVariousFields method, which is actually broken and needs to be gotten rid of ASAP
-        if( userId == null ) { 
-            return true;
-        }
-        
-        // if there are now intersect parameters used, we can not fortune tell (with only union parameters)
-        if( queryData.intersectParametersAreEmpty() ) { 
-            return false;
-        }
-        
-        // this boolean tracks whether we (can) use an existing parameter to limit the results 
-        // to tasks that the user is allowed to see
-        boolean usedExistingParameters = true;
-        
-        // check if userId is used as a parameter
-        usedExistingParameters = useExistingUserGroupIdAsParameter(userParameterIds, queryData, userId);
-        
-        if( ! usedExistingParameters ) { 
-            // add/check the userId first, since that will probably have the best chance 
-            //  of matching an owner type (initiator, actual, potential.. )
-            String [] userIdsArr = new String[groupIds.size()+1];
-            userIdsArr[0] = userId;
-            System.arraycopy(groupIds.toArray(), 0, userIdsArr, 1, groupIds.size());
-            // check if groupIds are used as parameters
-            usedExistingParameters = useExistingUserGroupIdAsParameter(groupParameterIds, queryData, userIdsArr );
-        }
-       
-        return usedExistingParameters;
-    }
-   
-    /**
-     * Determine whether or not we need to add a limiting clause 
-     * ({@see #addPossibleUserRolesQueryClause(String, StringBuilder, GroupIdsCache, Map, QueryAndParameterAppender)}
-     * at the end of the query
-     * 
-     * @param userGroupParamListIds The parameter list ids that we are looking for
-     * @param queryData The query data
-     * @param userGroupIds user and group ids from the user who called the query operation
-     * @return true if we don't need to add another clause, false if we do
-     */
-    private boolean useExistingUserGroupIdAsParameter(String [] userGroupParamListIds, QueryData queryData, String... userGroupIds) { 
-        for( String listId : userGroupParamListIds ) { 
-            List<String> intersectListUserIds = (List<String>) queryData.getIntersectParameters().get(listId);
-            if( intersectListUserIds != null ) { 
-                for( String groupId : userGroupIds ) { 
-                    if( intersectListUserIds.contains(groupId)) {
-                        // yes! one of groupIds == one of intersectListUserIds
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-   
-    /**
-     * Add a query clause to the end of the query limiting the result to the tasks that the user is allowed to see
-     * @param userId the user id
-     * @param queryBuilder The {@link StringBuilder} instance with the query string
-     * @param groupIdsCache A cache of the user's group ids
-     * @param params The params that will be set in the query
-     * @param queryAppender The {@link QueryAndParameterAppender} instance being used
-     */
-    private void addPossibleUserRolesQueryClause(String userId, GroupIdsCache groupIdsCache, Map<String, Object> params, 
-            QueryAndParameterAppender queryAppender) { 
-       
-        // start phrase
-        StringBuilder rolesQueryPhraseBuilder = new StringBuilder( "( " );
-       
-        // add criteria for catching tasks that refer to the user
-        String userIdParamName = queryAppender.generateParamName();
-        params.put(userIdParamName, userId);
-        String groupIdsParamName = queryAppender.generateParamName();
-        List<String> userAndGroupIds = new ArrayList<String>(1+groupIdsCache.size());
-        userAndGroupIds.add(userId);
-        userAndGroupIds.addAll(groupIdsCache.getGroupIds());
-        params.put(groupIdsParamName, userAndGroupIds);
-        
-        rolesQueryPhraseBuilder.append("( ")
-            .append("t.taskData.createdBy.id = :").append(userIdParamName).append("\n OR ")
-            .append("( stakeHolders.id in :").append(groupIdsParamName).append(" and\n")
-            .append("  stakeHolders in elements ( t.peopleAssignments.taskStakeholders ) )").append("\n OR " )
-            .append("( potentialOwners.id in :").append(groupIdsParamName).append(" and\n")
-            .append("  potentialOwners in elements ( t.peopleAssignments.potentialOwners ) )").append("\n OR " )
-            .append("t.taskData.actualOwner.id = :").append(userIdParamName).append("\n OR ")
-            .append("( businessAdministrators.id in :").append(groupIdsParamName).append(" and\n")
-            .append("  businessAdministrators in elements ( t.peopleAssignments.businessAdministrators ) )")
-            .append(" )\n");
-        
-        rolesQueryPhraseBuilder.append(") ");
-       
-        queryAppender.addToQueryBuilder(rolesQueryPhraseBuilder.toString(), false);
-    }
 }

@@ -15,28 +15,33 @@
 
 package org.jbpm.query.jpa.builder.impl;
 
+import org.jbpm.query.jpa.data.QueryWhere;
 import org.kie.internal.query.data.QueryData;
 
 public abstract class AbstractQueryBuilderImpl<T> {
 
-    protected QueryData queryData = new QueryData();
-    { 
-        queryData.getQueryContext().setCount(0);
-    }
+    protected QueryWhere queryWhere = new QueryWhere();
    
-    public QueryData getQueryData() { 
-        return queryData;
+    public QueryWhere getQueryWhere() { 
+        return queryWhere;
     }
     
     protected <P> void addRangeParameter( String listId, String name, P parameter, boolean start) { 
         if( parameter == null ) { 
             throw new IllegalArgumentException("A null " + name + " criteria is invalid." );
         }
-        this.queryData.addRangeParameter(listId, parameter, start);
+        this.queryWhere.addRangeParameter(listId, parameter, start);
     }
 
+    protected <P> void addRangeParameters( String listId, String name, P paramMin, P paramMax) { 
+        if( paramMin == null && paramMax == null ) { 
+            throw new IllegalArgumentException("At least one range parameter for " + name + " criteria is required." );
+        }
+        this.queryWhere.addRangeParameters(listId, paramMin, paramMax);
+    }
+    
     private <P> void addParameter( String listId, P... parameter ) { 
-        this.queryData.addAppropriateParam(listId, parameter);
+        this.queryWhere.addParameter(listId, parameter);
     }
 
     protected void addLongParameter( String listId, String name, long [] parameter) { 
@@ -74,45 +79,45 @@ public abstract class AbstractQueryBuilderImpl<T> {
     }
 
     public final T union() {
-        this.queryData.setToUnion();
+        this.queryWhere.setToUnion();
         return (T) this;
     }
 
     public final T intersect() {
-        this.queryData.setToIntersection();
+        this.queryWhere.setToIntersection();
+        return (T) this;
+    }
+
+    public T newGroup() {
+        this.queryWhere.newGroup();
+        return (T) this;
+    }
+    
+    public T endGroup() {
+        this.queryWhere.endGroup();
         return (T) this;
     }
     
     public final T like() {
-        this.queryData.setToLike();
+        this.queryWhere.setToLike();
         return (T) this;
     }
 
     public final T equals() {
-        this.queryData.setToEquals();
+        this.queryWhere.setToNormal();
         return (T) this;
     }
 
     public T clear() {
-        this.queryData.clear();
+        this.queryWhere.clear();
         return (T) this;
     }
 
-    public final T ascending() {
-        this.queryData.getQueryContext().setAscending(true);
-        return (T) this;
-    }
-
-    public final T descending() {
-        this.queryData.getQueryContext().setAscending(false);
-        return (T) this;
-    }
-    
     public final T maxResults( int maxResults ) {
         if( maxResults < 1 ) { 
             throw new IllegalArgumentException( "A max results criteria of less than 1 is invalid." );
         }
-        this.queryData.getQueryContext().setCount(maxResults);
+        this.queryWhere.setCount(maxResults);
         return (T) this;
     }
 
@@ -120,7 +125,7 @@ public abstract class AbstractQueryBuilderImpl<T> {
         if( offset < 1 ) { 
             throw new IllegalArgumentException( "An offset criteria of less than 1 is invalid." );
         }
-        this.queryData.getQueryContext().setOffset(offset);
+        this.queryWhere.setOffset(offset);
         return (T) this;
     }
 }

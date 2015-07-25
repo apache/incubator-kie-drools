@@ -7,7 +7,7 @@
     <version>6.4.0-SNAPSHOT</version>
   </parent>
   <artifactId>jbpm-services-ejb-timer</artifactId>
-  <name>jBPM :: Ejb Timer</name>
+  <name>jBPM :: EJB Timer</name>
   
    <!--  skip tests from maven build for now as they require server installation -->
   <properties>

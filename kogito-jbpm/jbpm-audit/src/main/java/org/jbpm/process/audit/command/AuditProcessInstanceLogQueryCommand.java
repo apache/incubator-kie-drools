@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.jbpm.query.jpa.data.QueryWhere;
 import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.internal.command.Context;
 import org.kie.internal.query.data.QueryData;
@@ -34,20 +35,20 @@ public class AuditProcessInstanceLogQueryCommand extends AuditCommand<List<Proce
     private static final long serialVersionUID = 7543632015198138915L;
     
     @XmlElement
-    private QueryData queryData;
+    private QueryWhere queryWhere;
    
     public AuditProcessInstanceLogQueryCommand() {
         // JAXB constructor
     }
     
-    public AuditProcessInstanceLogQueryCommand(QueryData queryData) {
-       this.queryData = queryData; 
+    public AuditProcessInstanceLogQueryCommand(QueryWhere queryWhere) {
+       this.queryWhere = queryWhere; 
     }
     
     @Override
     public List<ProcessInstanceLog> execute( Context context ) {
         setLogEnvironment(context);
-        return auditLogService.queryProcessInstanceLogs(queryData);
+        return auditLogService.queryLogs(queryWhere, org.jbpm.process.audit.ProcessInstanceLog.class, ProcessInstanceLog.class);
     }
 
 }

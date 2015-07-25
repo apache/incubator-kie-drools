@@ -22,9 +22,9 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.jbpm.query.jpa.data.QueryWhere;
 import org.kie.api.runtime.manager.audit.VariableInstanceLog;
 import org.kie.internal.command.Context;
-import org.kie.internal.query.data.QueryData;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -34,20 +34,20 @@ public class AuditVariableInstanceLogQueryCommand extends AuditCommand<List<Vari
     private static final long serialVersionUID = 403371489934741666L;
     
     @XmlElement
-    private QueryData queryData;
+    private QueryWhere queryWhere;
    
     public AuditVariableInstanceLogQueryCommand() {
         // JAXB constructor
     }
     
-    public AuditVariableInstanceLogQueryCommand(QueryData queryData) {
-       this.queryData = queryData; 
+    public AuditVariableInstanceLogQueryCommand(QueryWhere queryWhere) {
+       this.queryWhere = queryWhere; 
     }
     
     @Override
     public List<VariableInstanceLog> execute( Context context ) {
         setLogEnvironment(context);
-        return auditLogService.queryVariableInstanceLogs(queryData);
+        return auditLogService.queryLogs(queryWhere, org.jbpm.process.audit.VariableInstanceLog.class, VariableInstanceLog.class);
     }
 
 }

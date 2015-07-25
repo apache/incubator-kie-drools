@@ -22,40 +22,40 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.jbpm.query.jpa.data.QueryWhere;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
-import org.kie.internal.query.data.QueryData;
 
-@XmlRootElement(name="task-query-data-command")
+@XmlRootElement(name="task-query-where-command")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TaskQueryDataCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
+public class TaskQueryWhereCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
 
     /** generated serial version UID */
     private static final long serialVersionUID = -6879337395030142688L;
 
     @XmlElement
-    private QueryData queryData;
+    private QueryWhere queryWhere;
     
-    public TaskQueryDataCommand() { 
+    public TaskQueryWhereCommand() { 
         // JAXB constructor
     }
     
-    public TaskQueryDataCommand(QueryData data) { 
-        this.queryData = data;
+    public TaskQueryWhereCommand(QueryWhere queryWhere) { 
+        this.queryWhere = queryWhere;
     }
     
-    public QueryData getQueryData() {
-        return queryData;
+    public QueryWhere getQueryWhere() {
+        return queryWhere;
     }
 
-    public void setQueryData( QueryData queryData ) {
-        this.queryData = queryData;
+    public void setQueryWhere( QueryWhere queryWhere ) {
+        this.queryWhere = queryWhere;
     }
 
     @Override
     public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        return context.getTaskQueryService().query(userId, queryData);
+        return context.getTaskQueryService().query(userId, queryWhere);
     }
    
 }

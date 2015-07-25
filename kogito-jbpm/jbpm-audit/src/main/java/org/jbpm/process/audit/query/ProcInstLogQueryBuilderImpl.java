@@ -15,28 +15,28 @@
 
 package org.jbpm.process.audit.query;
 
+import static org.kie.internal.query.QueryParameterIdentifiers.CORRELATION_KEY_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.DURATION_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.END_DATE_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.IDENTITY_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.OUTCOME_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_STATUS_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_NAME_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_VERSION_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.START_DATE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_STATUS_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.CORRELATION_KEY_LIST;
 
 import java.util.Date;
 import java.util.List;
 
 import org.jbpm.process.audit.JPAAuditLogService;
+import org.jbpm.query.jpa.data.QueryWhere;
 import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.query.ParametrizedQuery;
-import org.kie.internal.query.data.QueryData;
 import org.kie.internal.runtime.manager.audit.query.ProcessInstanceLogQueryBuilder;
 
-public class ProcInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<ProcessInstanceLogQueryBuilder> implements ProcessInstanceLogQueryBuilder {
+public class ProcInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<ProcessInstanceLogQueryBuilder, ProcessInstanceLog> implements ProcessInstanceLogQueryBuilder {
 
     public ProcInstLogQueryBuilderImpl(CommandExecutor cmdExecutor ) {
         super(cmdExecutor);
@@ -143,22 +143,13 @@ public class ProcInstLogQueryBuilderImpl extends AbstractAuditQueryBuilderImpl<P
 	}
 
     @Override
-    public ProcessInstanceLogQueryBuilder orderBy( OrderBy field ) {
-        this.queryData.getQueryContext().setOrderBy(field.toString());
-        return this;
+    protected Class<ProcessInstanceLog> getResultType() {
+        return ProcessInstanceLog.class;
     }
 
     @Override
-    public ParametrizedQuery<ProcessInstanceLog> buildQuery() {
-        return new ParametrizedQuery<ProcessInstanceLog>() {
-            private QueryData queryData = new QueryData(getQueryData()); 
-            @Override
-            public List<ProcessInstanceLog> getResultList() {
-                return getJpaAuditLogService().queryProcessInstanceLogs(queryData);
-            }
-        };
+    protected Class getQueryType() {
+        return org.jbpm.process.audit.ProcessInstanceLog.class;
     }
-
-
 
 }

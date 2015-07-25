@@ -21,12 +21,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.jbpm.services.task.query.DeadlineSummaryImpl;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.internal.command.Context;
 import org.kie.internal.task.api.TaskDeadlinesService;
 import org.kie.internal.task.api.TaskDeadlinesService.DeadlineType;
 import org.kie.internal.task.api.TaskPersistenceContext;
+import org.kie.internal.task.api.model.DeadlineSummary;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,17 +49,17 @@ public class InitDeadlinesCommand extends TaskCommand<Void> {
 		
         try {
 	        long now = System.currentTimeMillis();
-	        List<DeadlineSummaryImpl> resultList = persistenceContext.queryInTransaction("UnescalatedStartDeadlines",
-	        										ClassUtil.<List<DeadlineSummaryImpl>>castClass(List.class));
-	        for (DeadlineSummaryImpl summary : resultList) {
+	        List<DeadlineSummary> resultList = persistenceContext.queryInTransaction("UnescalatedStartDeadlines",
+	        										ClassUtil.<List<DeadlineSummary>>castClass(List.class));
+	        for (DeadlineSummary summary : resultList) {
 	            long delay = summary.getDate().getTime() - now;
 	            deadlineService.schedule(summary.getTaskId(), summary.getDeadlineId(), delay, DeadlineType.START);
 	
 	        }
 	        
 	        resultList = persistenceContext.queryInTransaction("UnescalatedEndDeadlines",
-	        		ClassUtil.<List<DeadlineSummaryImpl>>castClass(List.class));
-	        for (DeadlineSummaryImpl summary : resultList) {
+	        		ClassUtil.<List<DeadlineSummary>>castClass(List.class));
+	        for (DeadlineSummary summary : resultList) {
 	            long delay = summary.getDate().getTime() - now;
 	            deadlineService.schedule(summary.getTaskId(), summary.getDeadlineId(), delay, DeadlineType.END);
 	        }

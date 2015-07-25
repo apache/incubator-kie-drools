@@ -158,7 +158,7 @@ public class LogCleanupCommand implements Command, Reoccurring {
 		if (!skipTaskLog) {
 			// task tables
 			long taLogsRemoved = 0l;
-			taLogsRemoved = auditLogService.auditTaskInstanceLogDelete()
+			taLogsRemoved = auditLogService.auditTaskDelete()
 			.processId(forProcess)		
 			.dateRangeEnd(olderThan==null?null:formatToUse.parse(olderThan))
 			.deploymentId(forDeployment)

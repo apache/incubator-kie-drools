@@ -1,5 +1,5 @@
 /**
- * Copyright 2010 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 
 package org.jbpm.process.audit;
 
-import static org.kie.internal.query.QueryParameterIdentifiers.ASCENDING_VALUE;
+import static org.jbpm.query.jpa.impl.QueryCriteriaUtil.convertListToInterfaceList;
 import static org.kie.internal.query.QueryParameterIdentifiers.CORRELATION_KEY_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.DATE_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.DESCENDING_VALUE;
 import static org.kie.internal.query.QueryParameterIdentifiers.DURATION_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.END_DATE_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.EXTERNAL_ID_LIST;
@@ -32,7 +31,6 @@ import static org.kie.internal.query.QueryParameterIdentifiers.MAX_RESULTS;
 import static org.kie.internal.query.QueryParameterIdentifiers.NODE_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.NODE_INSTANCE_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.NODE_NAME_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.NODE_TYPE_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.OLD_VALUE_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.ORDER_BY;
 import static org.kie.internal.query.QueryParameterIdentifiers.ORDER_TYPE;
@@ -43,6 +41,7 @@ import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_NAME_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_VERSION_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.START_DATE_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.TYPE_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.VALUE_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.VARIABLE_ID_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.VARIABLE_INSTANCE_ID_LIST;
@@ -54,19 +53,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.ServiceLoader;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.FlushModeType;
-import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import org.jbpm.process.audit.query.NodeInstLogQueryBuilderImpl;
@@ -75,11 +73,12 @@ import org.jbpm.process.audit.query.ProcInstLogQueryBuilderImpl;
 import org.jbpm.process.audit.query.ProcessInstanceLogDeleteBuilderImpl;
 import org.jbpm.process.audit.query.VarInstLogQueryBuilderImpl;
 import org.jbpm.process.audit.query.VarInstanceLogDeleteBuilderImpl;
-import org.jbpm.process.audit.strategy.PersistenceStrategy;
 import org.jbpm.process.audit.strategy.PersistenceStrategyType;
-import org.jbpm.process.audit.strategy.StandaloneJtaStrategy;
+import org.jbpm.query.jpa.data.QueryCriteria;
+import org.jbpm.query.jpa.data.QueryWhere;
+import org.jbpm.query.jpa.data.QueryWhere.QueryCriteriaType;
 import org.jbpm.query.jpa.impl.QueryAndParameterAppender;
-import org.jbpm.query.jpa.service.QueryModificationService;
+import org.jbpm.query.jpa.impl.QueryCriteriaUtil;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.query.data.QueryData;
@@ -92,77 +91,36 @@ import org.kie.internal.runtime.manager.audit.query.VariableInstanceLogQueryBuil
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * </p>
- * The idea here is that we have a entity manager factory (similar to a session factory) 
- * that we repeatedly use to generate an entity manager (which is a persistence context) 
- * for the specific service command. 
- * </p>
- * While ProcessInstanceLog (and other *Log) entities do not contain LOB's 
- * (which sometimes necessitate the use of tx's even in <i>read</i> situations), 
- * we use transactions here none-the-less, just to be safe. Obviously, if 
- * there is already a running transaction present, we don't do anything
- * to it. 
- * </p>
- * At the end of every command, we make sure to close the entity manager
- * we've been using -- which also means that we detach any entities that
- * might be associated with the entity manager/persistence context. 
- * After all, this is a <i>service</i> which means our philosophy here 
- * is to provide a real interface, and not a leaky one. 
- */
-public class JPAAuditLogService implements AuditLogService {
+public class JPAAuditLogService extends JPAService implements AuditLogService {
 
     private static final Logger logger = LoggerFactory.getLogger(JPAAuditLogService.class);
-    
-    protected PersistenceStrategy persistenceStrategy;
-    
-    private String persistenceUnitName = "org.jbpm.persistence.jpa";
+   
+    private static final String AUDIT_LOG_PERSISTENCE_UNIT_NAME = "org.jbpm.persistence.jpa";
     
     public JPAAuditLogService() {
-        EntityManagerFactory emf = null;
-        try { 
-           emf = Persistence.createEntityManagerFactory(persistenceUnitName); 
-        } catch( Exception e ) { 
-           logger.info("The '" + persistenceUnitName + "' peristence unit is not available, no persistence strategy set for " + this.getClass().getSimpleName());
-        }
-        if( emf != null ) { 
-            persistenceStrategy = new StandaloneJtaStrategy(emf);
-        }
+        super(AUDIT_LOG_PERSISTENCE_UNIT_NAME);
+    }
+   
+    public JPAAuditLogService(Environment env) {
+        super(env, AUDIT_LOG_PERSISTENCE_UNIT_NAME);
     }
     
     public JPAAuditLogService(Environment env, PersistenceStrategyType type) {
-        persistenceStrategy = PersistenceStrategyType.getPersistenceStrategy(type, env);
+        super(env, type);
+        this.persistenceUnitName = AUDIT_LOG_PERSISTENCE_UNIT_NAME;
     }
     
-    public JPAAuditLogService(Environment env) {
-        EntityManagerFactory emf = (EntityManagerFactory) env.get(EnvironmentName.ENTITY_MANAGER_FACTORY);
-        if( emf != null ) { 
-            persistenceStrategy = new StandaloneJtaStrategy(emf);
-        } else { 
-            persistenceStrategy = new StandaloneJtaStrategy(Persistence.createEntityManagerFactory(persistenceUnitName));
-        } 
-    }
-    
-    public JPAAuditLogService(EntityManagerFactory emf){
-        persistenceStrategy = new StandaloneJtaStrategy(emf);
+    public JPAAuditLogService(EntityManagerFactory emf) {
+        super(emf);
+        this.persistenceUnitName = AUDIT_LOG_PERSISTENCE_UNIT_NAME;
     }
     
     public JPAAuditLogService(EntityManagerFactory emf, PersistenceStrategyType type){
-        persistenceStrategy = PersistenceStrategyType.getPersistenceStrategy(type, emf);
+        super(emf, type);
+        this.persistenceUnitName = AUDIT_LOG_PERSISTENCE_UNIT_NAME;
     }
     
-    /* (non-Javadoc)
-     * @see org.jbpm.process.audit.AuditLogService#setPersistenceUnitName(java.lang.String)
-     */
-    public void setPersistenceUnitName(String persistenceUnitName) {
-        persistenceStrategy = new StandaloneJtaStrategy(Persistence.createEntityManagerFactory(persistenceUnitName));
-        this.persistenceUnitName = persistenceUnitName;
-    }
-
-    public String getPersistenceUnitName() {
-        return persistenceUnitName;
-    }
-
+    
     /* (non-Javadoc)
      * @see org.jbpm.process.audit.AuditLogService#findProcessInstances()
      */
@@ -354,37 +312,6 @@ public class JPAAuditLogService implements AuditLogService {
         	closeEntityManager(em, newTx);
         }
     }
-
-    /* (non-Javadoc)
-     * @see org.jbpm.process.audit.AuditLogService#dispose()
-     */
-    @Override
-    public void dispose() {
-        persistenceStrategy.dispose();
-    }
-
-    private EntityManager getEntityManager() {
-        return persistenceStrategy.getEntityManager();
-    }
-
-    private Object joinTransaction(EntityManager em) {
-        return persistenceStrategy.joinTransaction(em);
-    }
-
-    private void closeEntityManager(EntityManager em, Object transaction) {
-       persistenceStrategy.leaveTransaction(em, transaction);
-    }
-
-    private <T> List<T> executeQuery(Query query, EntityManager em, Class<T> type) { 
-        Object newTx = joinTransaction(em);
-        List<T> result;
-        try { 
-            result = query.getResultList();
-        } finally { 
-            closeEntityManager(em, newTx);
-        }
-        return result;
-    }
     
     // query methods
   
@@ -421,43 +348,26 @@ public class JPAAuditLogService implements AuditLogService {
     // internal query methods/logic
    
     @Override
-    public List<org.kie.api.runtime.manager.audit.NodeInstanceLog> queryNodeInstanceLogs(QueryData queryData) {
-        List<NodeInstanceLog> results = doQuery(queryData, NodeInstanceLog.class);
-        return convertListToInterfaceList(results, org.kie.api.runtime.manager.audit.NodeInstanceLog.class);
+    public <T,R> List<R> queryLogs(QueryWhere queryData, Class<T> queryClass, Class<R> resultClass ) {
+        List<T> results = doQuery(queryData, queryClass);
+        return convertListToInterfaceList(results, resultClass);
     }
 
-    @Override
-    public List<org.kie.api.runtime.manager.audit.VariableInstanceLog> queryVariableInstanceLogs(QueryData queryData) { 
-        List<VariableInstanceLog> results =  doQuery(queryData, VariableInstanceLog.class);
-        return convertListToInterfaceList(results, org.kie.api.runtime.manager.audit.VariableInstanceLog.class);
+    private final AuditQueryCriteriaUtil queryUtil = new AuditQueryCriteriaUtil(this);
+   
+    protected QueryCriteriaUtil getQueryCriteriaUtil(Class queryType) { 
+        return queryUtil;
     }
-
-    @Override
-    public List<org.kie.api.runtime.manager.audit.ProcessInstanceLog> queryProcessInstanceLogs(QueryData queryData) {
-        List<ProcessInstanceLog> results = doQuery(queryData, ProcessInstanceLog.class);
-        return convertListToInterfaceList(results, org.kie.api.runtime.manager.audit.ProcessInstanceLog.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    protected <C,I> List<I> convertListToInterfaceList( List<C>internalResult, Class<I> interfaceType ) {
-        List<I> result = new ArrayList<I>(internalResult.size());
-        for( C element : internalResult ) { 
-           result.add((I) element);
-        }
-        return result;
-    }
-
-    public static String NODE_INSTANCE_LOG_QUERY = 
-                    "SELECT l "
-                    + "FROM NodeInstanceLog l\n";
     
-    public static String VARIABLE_INSTANCE_LOG_QUERY = 
-                    "SELECT l "
-                    + "FROM VariableInstanceLog l\n";
-    
-    public static String PROCESS_INSTANCE_LOG_QUERY = 
-                    "SELECT l "
-                    + "FROM ProcessInstanceLog l\n";
+    /**
+     * 
+     * @param queryWhere
+     * @param queryType
+     * @return The result of the query, a list of type T
+     */
+    public <T> List<T> doQuery(QueryWhere queryWhere, Class<T> queryType) { 
+       return getQueryCriteriaUtil(queryType).doCriteriaQuery(queryWhere, queryType);
+    }
     
     public static String NODE_INSTANCE_LOG_DELETE = 
             "DELETE "
@@ -496,7 +406,7 @@ public class JPAAuditLogService implements AuditLogService {
         addCriteria(NODE_ID_LIST, "l.nodeId", String.class);
         addCriteria(NODE_INSTANCE_ID_LIST, "l.nodeInstanceId", String.class);
         addCriteria(NODE_NAME_LIST, "l.nodeName", String.class);
-        addCriteria(NODE_TYPE_LIST, "l.nodeType", String.class);
+        addCriteria(TYPE_LIST, "l.nodeType", String.class);
         
         // variable instance log
         addCriteria(DATE_LIST, "l.date", Date.class);

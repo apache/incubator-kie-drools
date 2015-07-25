@@ -15,58 +15,6 @@
 
   <name>jBPM :: Audit</name>
 
-  <build>
-    <testResources>
-        <testResource>
-            <directory>src/test/resources</directory>
-            <filtering>false</filtering>
-        </testResource>
-        <testResource>
-            <directory>src/test/filtered-resources</directory>
-            <filtering>true</filtering>
-        </testResource>
-    </testResources>
-    
-    <plugins>
-      <plugin>
-        <!--  ensure that db files are deleted before _any_ run 
-              otherwise we get tests failing because of leftover db's -->
-        <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-         <filesets>
-            <fileset>
-              <directory>${basedir}</directory>
-              <includes>
-                <include>btm*</include>
-                <include>JPADroolsFlow.*.db</include>
-              </includes>
-            </fileset>
-         </filesets>
-        </configuration>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>org.jbpm.process.audit</Bundle-SymbolicName>
-            <Import-Package>
-              !org.jbpm.process.audit,
-              javassist.util.proxy;resolution:=optional,
-              org.hibernate.proxy;resolution:=optional,
-              *
-            </Import-Package>
-            <Private-Package></Private-Package>
-            <Export-Package>
-              org.jbpm.process.audit*
-            </Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
- 
   <dependencies>
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -110,6 +58,14 @@
       <artifactId>xstream</artifactId>
     </dependency>
 
+    <dependency>
+      <!--  only needed for metadata generation -->
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-jpamodelgen</artifactId>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Test -->
     <dependency>
       <groupId>org.jbpm</groupId>
@@ -136,7 +92,7 @@
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
       <scope>test</scope>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>org.codehaus.btm</groupId>
       <artifactId>btm</artifactId>
@@ -181,8 +137,90 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-  </dependencies>
- 
+  </dependencies><build>
+    <testResources>
+        <testResource>
+            <directory>src/test/resources</directory>
+            <filtering>false</filtering>
+        </testResource>
+        <testResource>
+            <directory>src/test/filtered-resources</directory>
+            <filtering>true</filtering>
+        </testResource>
+    </testResources>
+
+    <plugins>
+      <plugin>
+        <!--  ensure that db files are deleted before _any_ run 
+              otherwise we get tests failing because of leftover db's -->
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+         <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>btm*</include>
+                <include>*.db</include>
+              </includes>
+            </fileset>
+         </filesets>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.jbpm.process.audit</Bundle-SymbolicName>
+            <Import-Package>
+              !org.jbpm.process.audit,
+              javassist.util.proxy;resolution:=optional,
+              org.hibernate.proxy;resolution:=optional,
+              *
+            </Import-Package>
+            <Private-Package></Private-Package>
+            <Export-Package>
+              org.jbpm.process.audit*
+            </Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.target}</target>
+          <compilerArgs>
+            <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-generated-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${basedir}/generated-sources/annotations/</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  
+
   <properties>
     <maven.jdbc.url>jdbc:h2:mem:bamTest;MVCC=TRUE</maven.jdbc.url>
   </properties>

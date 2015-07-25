@@ -30,7 +30,6 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.jbpm.services.task.deadlines.NotificationListener;
 import org.jbpm.services.task.deadlines.notifications.impl.email.EmailNotificationListener;
-import org.jbpm.services.task.query.DeadlineSummaryImpl;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.runtime.EnvironmentName;
@@ -46,6 +45,7 @@ import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.UserInfo;
 import org.kie.internal.task.api.model.Deadline;
+import org.kie.internal.task.api.model.DeadlineSummary;
 import org.kie.internal.task.api.model.EmailNotification;
 import org.kie.internal.task.api.model.EmailNotificationHeader;
 import org.kie.internal.task.api.model.Escalation;
@@ -108,7 +108,7 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
 			Task task = persistenceContext.findTask(taskId);
 			TaskData taskData = task.getTaskData();
 			
-			List<DeadlineSummaryImpl> resultList =null;
+			List<DeadlineSummary> resultList =null;
 			resultList = getAlldeadlines(persistenceContext, taskData);
 			
 			if( resultList == null || resultList.size() == 0 ){
@@ -125,8 +125,8 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
         		    }
         		}
         	}else{
-				for(DeadlineSummaryImpl deadlineSummaryImpl : resultList){
-					executedeadLine(ctx, persistenceContext, task, deadlineSummaryImpl, taskData);
+				for(DeadlineSummary deadlineSummary : resultList){
+					executedeadLine(ctx, persistenceContext, task, deadlineSummary, taskData);
 				}
         	}
         } catch (Exception e) {
@@ -136,26 +136,29 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
 		return null;
 	}
 
-	private List<DeadlineSummaryImpl> getAlldeadlines(TaskPersistenceContext persistenceContext, TaskData taskData) {
-		List<DeadlineSummaryImpl> resultList;
+	private List<DeadlineSummary> getAlldeadlines(TaskPersistenceContext persistenceContext, TaskData taskData) {
+		List<DeadlineSummary> resultList;
 		// get no-completed notification 
 		if(Status.InProgress == taskData.getStatus() || Status.Suspended == taskData.getStatus()){
 			resultList = persistenceContext.queryWithParametersInTransaction("UnescalatedEndDeadlinesByTaskIdForReminder", 
 		            persistenceContext.addParametersToMap("taskId", taskId),
-		            ClassUtil.<List<DeadlineSummaryImpl>>castClass(List.class));
+		            ClassUtil.<List<DeadlineSummary>>castClass(List.class));
 		}else{
 			// get no-started notification 
 			 resultList =persistenceContext.queryWithParametersInTransaction("UnescalatedStartDeadlinesByTaskIdForReminder", 
 		                persistenceContext.addParametersToMap("taskId", taskId),
-		                ClassUtil.<List<DeadlineSummaryImpl>>castClass(List.class));
+		                ClassUtil.<List<DeadlineSummary>>castClass(List.class));
 		}
 		return resultList;
 	}
 
-	private Void executedeadLine(TaskContext ctx,
-			TaskPersistenceContext persistenceContext, Task task,
-			DeadlineSummaryImpl deadlineSummaryImpl,TaskData taskData) {
-		Deadline deadline = persistenceContext.findDeadline(deadlineSummaryImpl.getDeadlineId());
+	private Void executedeadLine(
+	        TaskContext ctx,
+			TaskPersistenceContext persistenceContext, 
+			Task task,
+			DeadlineSummary deadlineSummary,
+			TaskData taskData) {
+		Deadline deadline = persistenceContext.findDeadline(deadlineSummary.getDeadlineId());
 		if (task == null || deadline == null) {
 			return null;
 		}

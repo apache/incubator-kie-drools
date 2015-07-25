@@ -13,8 +13,8 @@
   <artifactId>jbpm-query-jpa</artifactId>
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
-  <name>jBPM :: Query</name>
-  <description>jBPM Query</description>
+  <name>jBPM :: JPA Query</name>
+  <description>jBPM JPA Query</description>
 
   <build>
     <testResources>
@@ -81,8 +81,13 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
-     </dependency>
-   
+    </dependency>
+  
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.0-api</artifactId>
+    </dependency>
+      
     <!-- osgi -->    
     <dependency>
       <groupId>org.osgi</groupId>

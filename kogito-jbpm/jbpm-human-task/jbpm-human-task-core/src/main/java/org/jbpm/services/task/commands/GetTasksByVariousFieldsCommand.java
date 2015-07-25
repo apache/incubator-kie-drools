@@ -16,14 +16,6 @@
 package org.jbpm.services.task.commands;
 
 import static org.kie.internal.query.QueryParameterIdentifiers.*;
-import static org.kie.internal.query.QueryParameterIdentifiers.BUSINESS_ADMIN_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.MAX_RESULTS;
-import static org.kie.internal.query.QueryParameterIdentifiers.POTENTIAL_OWNER_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.STAKEHOLDER_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.PROCESS_INSTANCE_STATUS_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.TASK_ID_LIST;
-import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -141,35 +133,7 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
 	}
 
     
-	public List<TaskSummary> execute(Context cntxt) {
-	    TaskContext context = (TaskContext) cntxt;
-        
-        potentialOwners = populateOrganizationalEntityWithGroupInfo(potentialOwners, context);
-    	businessAdmins = populateOrganizationalEntityWithGroupInfo(businessAdmins, context);
-    	List<String> stakeHolders = new ArrayList<String>();
-    	stakeHolders = populateOrganizationalEntityWithGroupInfo(stakeHolders, context);
-    	
-        Map<String, List<?>> params = new HashMap<String, List<?>>();
-        params.put(WORK_ITEM_ID_LIST, workItemIds);
-        params.put(TASK_ID_LIST, taskIds);
-        params.put(PROCESS_INSTANCE_ID_LIST, processInstanceIds);
-        params.put(BUSINESS_ADMIN_ID_LIST, businessAdmins);
-        params.put(POTENTIAL_OWNER_ID_LIST, potentialOwners);
-        params.put(STAKEHOLDER_ID_LIST, stakeHolders);
-        params.put(ACTUAL_OWNER_ID_LIST, taskOwners);
-        params.put(TASK_STATUS_LIST, statuses);
-        if( maxResults != null && maxResults.intValue() > 0 ) {
-            Integer [] maxResultsArr = { maxResults };
-            params.put(MAX_RESULTS, Arrays.asList(maxResultsArr));
-        }
-       
-        if( userId == null || userId.isEmpty() ) { 
-           throw new IllegalStateException("A user id is required for this operation: " + GetTasksByVariousFieldsCommand.class.getSimpleName() );
-        }
-        return context.getTaskQueryService().getTasksByVariousFields(userId, params, union);
-    }
-
-    public List<Long> getWorkItemIds() {
+	public List<Long> getWorkItemIds() {
         return workItemIds;
     }
 
@@ -247,6 +211,34 @@ public class GetTasksByVariousFieldsCommand extends UserGroupCallbackTaskCommand
 
     public void setMaxResults(Integer maxResults) {
         this.maxResults = maxResults;
+    }
+
+    public List<TaskSummary> execute(Context cntxt) {
+        TaskContext context = (TaskContext) cntxt;
+        
+        potentialOwners = populateOrganizationalEntityWithGroupInfo(potentialOwners, context);
+    	businessAdmins = populateOrganizationalEntityWithGroupInfo(businessAdmins, context);
+    	List<String> stakeHolders = new ArrayList<String>();
+    	stakeHolders = populateOrganizationalEntityWithGroupInfo(stakeHolders, context);
+    	
+        Map<String, List<?>> params = new HashMap<String, List<?>>();
+        params.put(WORK_ITEM_ID_LIST, workItemIds);
+        params.put(TASK_ID_LIST, taskIds);
+        params.put(PROCESS_INSTANCE_ID_LIST, processInstanceIds);
+        params.put(BUSINESS_ADMIN_ID_LIST, businessAdmins);
+        params.put(POTENTIAL_OWNER_ID_LIST, potentialOwners);
+        params.put(STAKEHOLDER_ID_LIST, stakeHolders);
+        params.put(ACTUAL_OWNER_ID_LIST, taskOwners);
+        params.put(TASK_STATUS_LIST, statuses);
+        if( maxResults != null && maxResults.intValue() > 0 ) {
+            Integer [] maxResultsArr = { maxResults };
+            params.put(MAX_RESULTS, Arrays.asList(maxResultsArr));
+        }
+    
+        if( userId == null || userId.isEmpty() ) { 
+           throw new IllegalStateException("A user id is required for this operation: " + GetTasksByVariousFieldsCommand.class.getSimpleName() );
+        }
+        return context.getTaskQueryService().getTasksByVariousFields(userId, params, union);
     }
 
     /**

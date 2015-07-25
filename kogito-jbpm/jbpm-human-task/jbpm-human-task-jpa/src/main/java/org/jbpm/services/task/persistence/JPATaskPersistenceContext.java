@@ -15,9 +15,14 @@
 
 package org.jbpm.services.task.persistence;
 
-
-import static org.kie.internal.query.QueryParameterIdentifiers.*;
-import static org.jbpm.services.task.persistence.TaskQueryManager.*;
+import static org.jbpm.query.jpa.impl.QueryCriteriaUtil.convertListToInterfaceList;
+import static org.jbpm.services.task.persistence.TaskQueryManager.adaptQueryString;
+import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
+import static org.kie.internal.query.QueryParameterIdentifiers.FIRST_RESULT;
+import static org.kie.internal.query.QueryParameterIdentifiers.FLUSH_MODE;
+import static org.kie.internal.query.QueryParameterIdentifiers.MAX_RESULTS;
+import static org.kie.internal.query.QueryParameterIdentifiers.ORDER_BY;
+import static org.kie.internal.query.QueryParameterIdentifiers.ORDER_TYPE;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -35,6 +40,7 @@ import javax.persistence.LockModeType;
 import javax.persistence.Query;
 
 import org.drools.core.util.StringUtils;
+import org.jbpm.query.jpa.data.QueryWhere;
 import org.jbpm.services.task.impl.model.AttachmentImpl;
 import org.jbpm.services.task.impl.model.CommentImpl;
 import org.jbpm.services.task.impl.model.ContentImpl;
@@ -43,14 +49,16 @@ import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
+import org.jbpm.services.task.query.TaskSummaryImpl;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
-import org.kie.internal.query.QueryParameterIdentifiers;
 import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.Deadline;
 import org.slf4j.Logger;
@@ -82,7 +90,15 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
         
         logger.debug("TaskPersistenceManager configured with em {}, isJTA {}, pessimistic locking {}", em, isJTA, locking);
     }	
-	
+
+    // Package level getters ------------------------------------------------------------------------------------------------------
+   
+    EntityManager getEntityManager() { 
+        return this.em;
+    }
+    
+    // Interface methods ----------------------------------------------------------------------------------------------------------
+    
 	@Override
 	public Task findTask(Long taskId) {
 		check();
@@ -458,6 +474,15 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		return query.executeUpdate();
 	}
 
+	private TaskQueryCriteriaUtil queryUtil = new TaskQueryCriteriaUtil(this);
+	
+    @Override   
+    public List<TaskSummary> doTaskSummaryCriteriaQuery(String userId, UserGroupCallback userGroupCallback, Object queryWhere) { 
+        List<TaskSummaryImpl> result = queryUtil.doCriteriaQuery(userId, userGroupCallback, (QueryWhere) queryWhere);
+        return convertListToInterfaceList(result, TaskSummary.class);
+    } 
+    
+	
 	@Override
 	public HashMap<String, Object> addParametersToMap(Object... parameterValues) {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();

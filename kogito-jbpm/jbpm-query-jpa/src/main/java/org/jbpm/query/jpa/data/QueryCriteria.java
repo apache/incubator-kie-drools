@@ -15,9 +15,9 @@
 
 package org.jbpm.query.jpa.data;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,15 +26,13 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.codehaus.jackson.annotate.JsonTypeInfo.As;
 import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
-import org.jbpm.query.jpa.data.QueryWhere.ParameterType;
+import org.jbpm.query.jpa.data.QueryWhere.QueryCriteriaType;
 import org.kie.internal.query.QueryParameterIdentifiers;
 
 /**
@@ -74,34 +72,52 @@ public class QueryCriteria {
     private String listId;
     
     @XmlAttribute
-    private Boolean union = null;
+    private boolean union = true;
+   
+    @XmlAttribute
+    private boolean first = false;
     
     @XmlAttribute
-    private ParameterType type = ParameterType.NORMAL;
+    private QueryCriteriaType type = QueryCriteriaType.NORMAL;
     
     @XmlElement(name="parameter")
     @JsonTypeInfo(use=Id.CLASS, include=As.PROPERTY, property="class")
-    // @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private List<Object> values;
    
+    @XmlElement(name="date-parameter")
+    private List<Date> dateValues;
+    
     @XmlElement
     private List<QueryCriteria> criteria;
     
     public QueryCriteria() { 
-        // default constructor
+        // default (JAXB/JSON) constructor
     }
-    public QueryCriteria(String listId, ParameterType type) { 
+   
+    /**
+     * Used when creating a group criteria
+     * @param union Whether or not the group is part of an intersection or disjunction
+     */
+    public QueryCriteria(boolean union) { 
+        this.union = union;
+        this.type = QueryCriteriaType.GROUP;
+    }
+    
+    private QueryCriteria(String listId, QueryCriteriaType type) { 
         this.listId = listId;
         this.type = type;
     }
-
-    public QueryCriteria(String listId, boolean union, ParameterType type) { 
+   
+    /**
+     * Used for all other criteria
+     * @param listId The {@link QueryParameterIdentifiers} list id
+     * @param union Whether or not the criteria is part of an intersection or disjunction
+     * @param type The type: {@link QueryCriteriaType#NORMAL}, {@link QueryCriteriaType#REGEXP}, or {@link QueryCriteriaType#RANGE}, 
+     * @param valueListSize The size of the value list
+     */
+    public QueryCriteria(String listId, boolean union, QueryCriteriaType type, int valueListSize) { 
         this(listId, type);
         this.union = union;
-    }
-
-    public QueryCriteria(String listId, boolean union, ParameterType type, int valueListSize) { 
-        this(listId, union, type);
         this.values = new ArrayList<Object>(valueListSize);
     }
     
@@ -113,19 +129,28 @@ public class QueryCriteria {
         this.listId = listId;
     }
 
-    public Boolean isUnion() {
+    public boolean isUnion() {
         return union;
     }
 
-    public void setUnion( Boolean union ) {
+    public void setUnion( boolean union ) {
         this.union = union;
     }
 
-    public ParameterType getType() {
+    public boolean isFirst() {
+        return first;
+    }
+
+    public void setFirst( boolean first ) {
+        this.first = first;
+    }
+
+    
+    public QueryCriteriaType getType() {
         return type;
     }
 
-    public void setType( ParameterType type ) {
+    public void setType( QueryCriteriaType type ) {
         this.type = type;
     }
 
@@ -139,109 +164,175 @@ public class QueryCriteria {
     public void setValues( List<Object> values ) {
         this.values = values;
     }
+   
+    public List<Date> getDateValues() {
+        if( this.dateValues == null ) { 
+            this.dateValues = new ArrayList<Date>();
+        }
+        return dateValues;
+    }
+    
+    public void setDateValues( List<Date> dateValues ) {
+        this.dateValues = dateValues;
+    }
+    
     
     // other methods
-  
+
+    @JsonIgnore
+    public boolean isGroupCriteria() { 
+        return this.type.equals(QueryCriteriaType.GROUP);
+    }
+    
+    @JsonIgnore
+    public boolean hasValues() { 
+        return ( this.values != null && ! this.values.isEmpty() );
+    }
+    
+    @JsonIgnore
+    public boolean hasDateValues() { 
+        return ( this.dateValues != null && ! this.dateValues.isEmpty() );
+    }
+   
+    @JsonIgnore
+    public boolean hasCriteria() {
+        return ( this.criteria != null && ! this.criteria.isEmpty() );
+    }
+    
     public List<QueryCriteria> getCriteria() {
         if( this.criteria == null ) { 
             this.criteria = new ArrayList<QueryCriteria>();
         }
         return criteria;
     }
+    
     public void setCriteria( List<QueryCriteria> criteria ) {
         this.criteria = criteria;
     }
 
-    private static DatatypeFactory datatypeFactory;;
-    static { 
-        try {
-            datatypeFactory = DatatypeFactory.newInstance();
-        } catch( DatatypeConfigurationException e ) {
-            System.out.println("Unable to instantiate a " + DatatypeFactory.class.getName() );
-        }
-    }
-    
     /**
      * This method returns a list that should only be read
+     * @return 
      */
     public List<Object> getParameters() {
-        List<Object> values = getValues();
-        if( values.isEmpty() ) { 
-            return values;
+        List<Object> parameters = new ArrayList<Object>(getValues());
+        if( this.dateValues != null && ! this.dateValues.isEmpty() ) { 
+           parameters.addAll(this.dateValues);
         }
-        List<Object> parameters = new ArrayList<Object>(values.size());
-        for( Object obj : this.values ) { 
-           parameters.add(convertSerializableVariantToObject(obj));
+        if( parameters.isEmpty() ) { 
+            return parameters;
         }
         return parameters;
     }
     
     void addParameter( Object value ) { 
-        Object xmlValue = convertObjectToSerializableVariant(value);
-        getValues().add(xmlValue);
-    }
-
-    void setParameter( int index, Object value ) { 
-        Object xmlValue = convertObjectToSerializableVariant(value);
-        List<Object> values = getValues();
-        while( values.size() <= index ) { 
-           values.add(null); 
+        if( value instanceof Date ) { 
+            getDateValues().add((Date) value);
+        } else { 
+            getValues().add(value);
         }
-        getValues().set(index, xmlValue);
     }
 
-    void addCriteria( QueryCriteria criteria ) { 
+    @SuppressWarnings("unchecked")
+    void setParameter( int index, Object value, int listSize ) { 
+        List addValues;
+        if( value instanceof Date ) { 
+           addValues = getDateValues(); 
+        } else { 
+            addValues = getValues();
+        }
+        while( addValues.size() <= index ) { 
+           addValues.add(null); 
+        }
+        addValues.set(index, value); // throws NPE for (index > 1) if (list < index)
+        while( addValues.size() < listSize ) { 
+           addValues.add(null); 
+        }
+    }
+
+    public void addCriteria( QueryCriteria criteria ) { 
        getCriteria().add(criteria);
     }
 
-    private static Object convertObjectToSerializableVariant(Object obj) { 
-        if( obj instanceof Date ) { 
-            GregorianCalendar cal = new GregorianCalendar();
-            cal.setTime((Date) obj);
-            return datatypeFactory.newXMLGregorianCalendar(cal);
-         } 
-        return obj;
-    }
-  
-    private static Object convertSerializableVariantToObject(Object obj) { 
-       if( obj instanceof XMLGregorianCalendar ) { 
-          return ((XMLGregorianCalendar) obj).toGregorianCalendar().getTime();
-       }
-       return obj;
-    }
-    
     public QueryCriteria(QueryCriteria queryCriteria) { 
         this.listId = queryCriteria.listId;
         this.union = queryCriteria.union;
+        this.first = queryCriteria.first;
         this.type = queryCriteria.type;
-        this.values = new ArrayList<Object>(queryCriteria.getValues());
+        if( queryCriteria.values != null ) { 
+            this.values = new ArrayList<Object>(queryCriteria.values);
+        }
+        if( queryCriteria.dateValues != null ) { 
+            this.dateValues = new ArrayList<Date>(queryCriteria.dateValues);
+        }
+        if( queryCriteria.criteria != null ) { 
+            this.criteria = new ArrayList<QueryCriteria>(queryCriteria.criteria);
+        }
     }
-   
+  
+    private static SimpleDateFormat toStringSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    
     @Override
     public String toString() { 
        StringBuilder out = new StringBuilder();
-       if( union != null ) { 
-           out.append(union ? "OR" : "AND");
-           out.append(" ");
+       if( ! first ) { 
+           out.append(union ? "OR" : "AND").append(" ");
        }
-       out.append(listId);
+       if( listId != null ) { 
+           out.append(listId);
+       }
        if( this.values != null && ! this.values.isEmpty() ) { 
            out.append(" =");
-           if( type.equals(ParameterType.REGEXP) ) { 
+           if( type.equals(QueryCriteriaType.REGEXP) ) { 
                out.append("~");
            } 
            out.append(" ");
-           if ( type.equals(ParameterType.RANGE) ) { 
+           if ( type.equals(QueryCriteriaType.RANGE) ) { 
                out.append("[");
            }
            out.append(this.values.get(0));
            for( int i = 1; i < this.values.size(); ++i ) { 
                out.append(", ") .append(this.values.get(i));
            }
-           if ( type.equals(ParameterType.RANGE) ) { 
+           if ( type.equals(QueryCriteriaType.RANGE) ) { 
+               out.append("]");
+           }
+       } else if( this.dateValues != null && ! this.dateValues.isEmpty() ) { 
+           out.append(" =");
+           if( type.equals(QueryCriteriaType.REGEXP) ) { 
+               out.append("~");
+           } 
+           out.append(" ");
+           if ( type.equals(QueryCriteriaType.RANGE) ) { 
+               out.append("[");
+           }
+           Date date = this.dateValues.get(0);
+           String dateStr = date != null ? toStringSdf.format(date) : "null";
+           out.append(dateStr);
+           for( int i = 1; i < this.dateValues.size(); ++i ) { 
+               date = this.dateValues.get(i);
+               dateStr = date != null ? toStringSdf.format(date) : "null";
+               out.append(", ") .append(dateStr);
+           }
+           if ( type.equals(QueryCriteriaType.RANGE) ) { 
                out.append("]");
            }
        } 
+       if( criteria != null ) { 
+           if( out.length() > 0 ) { 
+               out.append(" ");
+           }
+           out.append("(");
+           int size = criteria.size();
+           if( size > 0 ) { 
+               out.append(criteria.get(0).toString());
+           }
+           for( int i = 1; i < size; ++i ) { 
+               out.append(", ");
+               out.append(criteria.get(i).toString());
+           }
+           out.append(")");
+       }
        return out.toString();
     }
 }

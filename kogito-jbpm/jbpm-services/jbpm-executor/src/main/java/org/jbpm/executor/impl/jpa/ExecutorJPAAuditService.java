@@ -15,35 +15,80 @@
 
 package org.jbpm.executor.impl.jpa;
 
-import static org.kie.internal.query.QueryParameterIdentifiers.EXECUTOR_STATUS_ID;
-import static org.kie.internal.query.QueryParameterIdentifiers.EXECUTOR_TIME_ID;
+import static org.kie.internal.query.QueryParameterIdentifiers.EXECUTOR_STATUS_LIST;
+import static org.kie.internal.query.QueryParameterIdentifiers.EXECUTOR_TIME_LIST;
 
 import java.util.Date;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
+import org.jbpm.executor.entities.ErrorInfo;
+import org.jbpm.executor.entities.RequestInfo;
+import org.jbpm.query.jpa.impl.QueryCriteriaUtil;
 import org.jbpm.services.task.audit.service.TaskJPAAuditService;
 import org.kie.api.executor.STATUS;
-import org.kie.internal.runtime.manager.audit.query.ErrorInfoLogDeleteBuilder;
+import org.kie.internal.runtime.manager.audit.query.ErrorInfoDeleteBuilder;
+import org.kie.internal.runtime.manager.audit.query.ErrorInfoQueryBuilder;
 import org.kie.internal.runtime.manager.audit.query.RequestInfoLogDeleteBuilder;
+import org.kie.internal.runtime.manager.audit.query.RequestInfoQueryBuilder;
 
 public class ExecutorJPAAuditService extends TaskJPAAuditService {
 	
-	static { 
-
-        addCriteria(EXECUTOR_TIME_ID, "l.time", Date.class);
-        addCriteria(EXECUTOR_STATUS_ID, "l.status", STATUS.class);
-	}
-
 	public ExecutorJPAAuditService(EntityManagerFactory emf) {
 		super(emf);
 	}
+
+	@Override
+    protected EntityManager getEntityManager() {
+        return super.getEntityManager();
+    }
+
+    @Override
+    protected Object joinTransaction( EntityManager em ) {
+        return super.joinTransaction(em);
+    }
+
+    @Override
+    protected void closeEntityManager( EntityManager em, Object transaction ) {
+        super.closeEntityManager(em, transaction);
+    }
+
+    // Delete Query API -----------------------------------------------------------------------------------------------------------
+    
+    static { 
+        addCriteria(EXECUTOR_TIME_LIST, "l.time", Date.class);
+        addCriteria(EXECUTOR_STATUS_LIST, "l.status", STATUS.class);
+    }
 	
-	public ErrorInfoLogDeleteBuilder errorInfoLogDeleteBuilder() {
-		return new ErrorInfoLogDeleteBuilderImpl(this);
+	public ErrorInfoDeleteBuilder errorInfoLogDeleteBuilder() {
+		return new ErrorInfoDeleteBuilderImpl(this);
 	}
 
 	public RequestInfoLogDeleteBuilder requestInfoLogDeleteBuilder() {
 		return new RequestInfoLogDeleteBuilderImpl(this);
 	}
+
+	// Query Query API -----------------------------------------------------------------------------------------------------------
+	
+	private final ExecutorQueryCriteriaUtil queryUtil = new ExecutorQueryCriteriaUtil(this);
+	
+    @Override
+    protected QueryCriteriaUtil getQueryCriteriaUtil( Class queryType ) {
+        if( ErrorInfo.class.equals(queryType)
+                || RequestInfo.class.equals(queryType) ) { 
+            return queryUtil;
+        } else { 
+            return super.getQueryCriteriaUtil(queryType);
+        }
+    }
+	
+	public ErrorInfoQueryBuilder errorInfoQueryBuilder() {
+		return new ErrorInfoQueryBuilderImpl(this);
+	}
+
+	public RequestInfoQueryBuilder requestInfoQueryBuilder() {
+		return new RequestInfoQueryBuilderImpl(this);
+	}
+
 }
