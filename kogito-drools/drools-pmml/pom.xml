@@ -32,6 +32,10 @@
   <name>Drools :: PMML - Compiler </name>
   <description>Support for PMML-Encoded Predictive Models</description>
 
+  <properties>
+    <surefire.forkCount>2</surefire.forkCount>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.drools</groupId>

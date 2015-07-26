@@ -14,6 +14,10 @@
 
   <name>Drools :: Core</name>
 
+  <properties>
+    <surefire.forkCount>2</surefire.forkCount>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.osgi</groupId>
