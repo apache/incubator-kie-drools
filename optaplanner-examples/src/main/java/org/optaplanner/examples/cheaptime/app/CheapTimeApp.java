@@ -65,8 +65,10 @@ public class CheapTimeApp extends CommonApp {
     }
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new CheapTimeImporter();
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{
+                new CheapTimeImporter()
+        };
     }
 
     @Override

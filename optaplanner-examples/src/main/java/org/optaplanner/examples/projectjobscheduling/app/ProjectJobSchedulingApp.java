@@ -62,8 +62,10 @@ public class ProjectJobSchedulingApp extends CommonApp {
     }
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new ProjectJobSchedulingImporter();
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{
+                new ProjectJobSchedulingImporter()
+        };
     }
 
 }

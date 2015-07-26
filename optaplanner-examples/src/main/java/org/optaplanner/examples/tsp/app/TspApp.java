@@ -25,6 +25,7 @@ import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.tsp.persistence.TspDao;
 import org.optaplanner.examples.tsp.persistence.TspExporter;
+import org.optaplanner.examples.tsp.persistence.TspImageStipplerImporter;
 import org.optaplanner.examples.tsp.persistence.TspImporter;
 import org.optaplanner.examples.tsp.swingui.TspPanel;
 
@@ -63,8 +64,11 @@ public class TspApp extends CommonApp {
     }
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new TspImporter();
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{
+                new TspImporter(),
+                new TspImageStipplerImporter()
+        };
     }
 
     @Override

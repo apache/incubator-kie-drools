@@ -62,8 +62,10 @@ public class PatientAdmissionScheduleApp extends CommonApp {
     }
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new PatientAdmissionScheduleImporter();
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{
+                new PatientAdmissionScheduleImporter()
+        };
     }
 
     @Override

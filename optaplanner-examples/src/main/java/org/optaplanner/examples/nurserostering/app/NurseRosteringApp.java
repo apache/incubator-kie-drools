@@ -62,8 +62,10 @@ public class NurseRosteringApp extends CommonApp {
     }
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new NurseRosteringImporter();
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{
+                new NurseRosteringImporter()
+        };
     }
 
     @Override

@@ -60,8 +60,10 @@ public class DinnerPartyApp extends CommonApp {
     }
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new DinnerPartyImporter();
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{
+                new DinnerPartyImporter()
+        };
     }
 
 }

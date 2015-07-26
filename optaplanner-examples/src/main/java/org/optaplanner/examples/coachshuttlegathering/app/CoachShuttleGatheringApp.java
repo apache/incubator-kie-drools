@@ -61,8 +61,10 @@ public class CoachShuttleGatheringApp extends CommonApp {
     }
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new CoachShuttleGatheringImporter();
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{
+                new CoachShuttleGatheringImporter()
+        };
     }
 
     @Override

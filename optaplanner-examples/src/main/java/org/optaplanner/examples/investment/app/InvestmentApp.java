@@ -59,8 +59,10 @@ public class InvestmentApp extends CommonApp {
     }
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new InvestmentImporter();
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{
+                new InvestmentImporter()
+        };
     }
 
 }

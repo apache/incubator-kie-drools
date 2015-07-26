@@ -59,7 +59,7 @@ public class SolutionBusiness {
     private final CommonApp app;
     private SolutionDao solutionDao;
 
-    private AbstractSolutionImporter importer;
+    private AbstractSolutionImporter[] importers;
     private AbstractSolutionExporter exporter;
 
     private File importDataDir;
@@ -92,8 +92,12 @@ public class SolutionBusiness {
         this.solutionDao = solutionDao;
     }
 
-    public void setImporter(AbstractSolutionImporter importer) {
-        this.importer = importer;
+    public AbstractSolutionImporter[] getImporters() {
+        return importers;
+    }
+
+    public void setImporters(AbstractSolutionImporter[] importers) {
+        this.importers = importers;
     }
 
     public void setExporter(AbstractSolutionExporter exporter) {
@@ -105,7 +109,7 @@ public class SolutionBusiness {
     }
 
     public boolean hasImporter() {
-        return importer != null;
+        return importers.length > 0;
     }
 
     public boolean hasExporter() {
@@ -142,18 +146,6 @@ public class SolutionBusiness {
 
     public File getImportDataDir() {
         return importDataDir;
-    }
-
-    public boolean acceptImportFile(File file) {
-        return importer.acceptInputFile(file);
-    }
-
-    public boolean isImportFileDirectory() {
-        return importer.isInputFileDirectory();
-    }
-
-    public String getImportFileSuffix() {
-        return importer.getInputFileSuffix();
     }
 
     public File getUnsolvedDataDir() {
@@ -247,9 +239,19 @@ public class SolutionBusiness {
     }
 
     public void importSolution(File file) {
+        AbstractSolutionImporter importer = determineImporter(file);
         Solution solution = importer.readSolution(file);
         solutionFileName = file.getName();
         guiScoreDirector.setWorkingSolution(solution);
+    }
+
+    private AbstractSolutionImporter determineImporter(File file) {
+        for (AbstractSolutionImporter importer : importers) {
+            if (importer.acceptInputFile(file)) {
+                return importer;
+            }
+        }
+        return importers[0];
     }
 
     public void openSolution(File file) {

@@ -62,8 +62,10 @@ public class MachineReassignmentApp extends CommonApp {
     }
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new MachineReassignmentImporter();
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{
+                new MachineReassignmentImporter()
+        };
     }
 
     @Override

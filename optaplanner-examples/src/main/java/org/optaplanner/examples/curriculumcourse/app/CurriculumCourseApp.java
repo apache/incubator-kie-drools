@@ -62,8 +62,10 @@ public class CurriculumCourseApp extends CommonApp {
     }
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new CurriculumCourseImporter();
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{
+                new CurriculumCourseImporter()
+        };
     }
 
     @Override

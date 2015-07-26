@@ -103,6 +103,9 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
     }
 
     public boolean acceptInputFile(File inputFile) {
+        if (isInputFileDirectory()) {
+            return inputFile.isDirectory();
+        }
         return inputFile.getName().endsWith("." + getInputFileSuffix());
     }
 

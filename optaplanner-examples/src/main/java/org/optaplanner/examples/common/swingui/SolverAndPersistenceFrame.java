@@ -57,6 +57,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.examples.common.business.SolutionBusiness;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -407,39 +408,47 @@ public class SolverAndPersistenceFrame extends JFrame {
                 return;
             }
             fileChooser = new JFileChooser(solutionBusiness.getImportDataDir());
-            FileFilter filter;
-            if (solutionBusiness.isImportFileDirectory()) {
-                filter = new FileFilter() {
-                    public boolean accept(File file) {
-                        return file.isDirectory();
-                    }
+            boolean firstFilter = true;
+            for (final AbstractSolutionImporter importer : solutionBusiness.getImporters()) {
+                FileFilter filter;
+                if (importer.isInputFileDirectory()) {
+                    filter = new FileFilter() {
+                        public boolean accept(File file) {
+                            return file.isDirectory();
+                        }
 
-                    public String getDescription() {
-                        return "Import directory";
-                    }
-                };
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            } else {
-                filter = new FileFilter() {
-                    public boolean accept(File file) {
-                        return file.isDirectory() || solutionBusiness.acceptImportFile(file);
-                    }
+                        public String getDescription() {
+                            return "Import directory";
+                        }
+                    };
+                    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                } else {
+                    filter = new FileFilter() {
+                        public boolean accept(File file) {
+                            return file.isDirectory() || importer.acceptInputFile(file);
+                        }
 
-                    public String getDescription() {
-                        return "Import files (*." + solutionBusiness.getImportFileSuffix() + ")";
-                    }
-                };
+                        public String getDescription() {
+                            return "Import files (*." + importer.getInputFileSuffix() + ")";
+                        }
+                    };
+                }
+                fileChooser.addChoosableFileFilter(filter);
+                if (firstFilter) {
+                    fileChooser.setFileFilter(filter);
+                    firstFilter = false;
+                }
             }
-            fileChooser.setFileFilter(filter);
             fileChooser.setDialogTitle(NAME);
         }
 
         public void actionPerformed(ActionEvent e) {
             int approved = fileChooser.showOpenDialog(SolverAndPersistenceFrame.this);
             if (approved == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
                 setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
                 try {
-                    solutionBusiness.importSolution(fileChooser.getSelectedFile());
+                    solutionBusiness.importSolution(file);
                     setSolutionLoaded();
                 } finally {
                     setCursor(Cursor.getDefaultCursor());

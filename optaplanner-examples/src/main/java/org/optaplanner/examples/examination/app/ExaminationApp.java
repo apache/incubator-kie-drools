@@ -67,8 +67,10 @@ public class ExaminationApp extends CommonApp {
     }
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new ExaminationImporter();
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{
+                new ExaminationImporter()
+        };
     }
 
     @Override

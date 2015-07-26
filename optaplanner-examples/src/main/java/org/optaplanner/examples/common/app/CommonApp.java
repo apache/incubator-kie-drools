@@ -84,7 +84,7 @@ public abstract class CommonApp extends LoggingMain {
     public SolutionBusiness createSolutionBusiness() {
         SolutionBusiness solutionBusiness = new SolutionBusiness(this);
         solutionBusiness.setSolutionDao(createSolutionDao());
-        solutionBusiness.setImporter(createSolutionImporter());
+        solutionBusiness.setImporters(createSolutionImporters());
         solutionBusiness.setExporter(createSolutionExporter());
         solutionBusiness.updateDataDirs();
         solutionBusiness.setSolver(createSolver());
@@ -97,8 +97,8 @@ public abstract class CommonApp extends LoggingMain {
 
     protected abstract SolutionDao createSolutionDao();
 
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return null;
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{};
     }
 
     protected AbstractSolutionExporter createSolutionExporter() {

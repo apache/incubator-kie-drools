@@ -64,8 +64,10 @@ public class VehicleRoutingApp extends CommonApp {
     }
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new VehicleRoutingImporter();
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{
+                new VehicleRoutingImporter()
+        };
     }
 
 }

@@ -62,8 +62,10 @@ public class TravelingTournamentApp extends CommonApp {
     }
 
     @Override
-    protected AbstractSolutionImporter createSolutionImporter() {
-        return new TravelingTournamentImporter();
+    protected AbstractSolutionImporter[] createSolutionImporters() {
+        return new AbstractSolutionImporter[]{
+                new TravelingTournamentImporter()
+        };
     }
 
     @Override
