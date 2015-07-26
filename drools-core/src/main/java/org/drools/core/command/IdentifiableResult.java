@@ -17,7 +17,6 @@ package org.drools.core.command;
 
 /**
  *
- * @author salaboy
  */
 public interface IdentifiableResult {
     public String getOutIdentifier();

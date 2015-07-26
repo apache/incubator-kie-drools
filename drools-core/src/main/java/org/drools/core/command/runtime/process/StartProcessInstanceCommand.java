@@ -23,13 +23,17 @@ import javax.xml.bind.annotation.XmlAttribute;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.internal.command.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class StartProcessInstanceCommand implements GenericCommand<ProcessInstance> {
+public class StartProcessInstanceCommand implements GenericCommand<ProcessInstance>, ProcessInstanceIdCommand {
 
-	@XmlAttribute(required = true)
+    /** Generated serial version UID */
+    private static final long serialVersionUID = -270933342071833447L;
+    
+    @XmlAttribute(required = true)
     private Long processInstanceId;
 
     public StartProcessInstanceCommand() {
