@@ -76,9 +76,6 @@
     </dependency>
   </dependencies>
 
-  <profiles>
-  </profiles>
-
   <build>
     <plugins>
       <plugin>
@@ -98,14 +95,6 @@
           </instructions>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <configuration>
-          <excludePackageNames></excludePackageNames>
-        </configuration>
-      </plugin>
-
     </plugins>
   </build>
 </project>
