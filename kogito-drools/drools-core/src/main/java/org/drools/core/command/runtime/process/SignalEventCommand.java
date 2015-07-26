@@ -26,13 +26,17 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
-import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.command.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SignalEventCommand implements GenericCommand<Void> {
+public class SignalEventCommand implements GenericCommand<Void>, ProcessInstanceIdCommand {
+
+    /** Generated serial version UID */
+    private static final long serialVersionUID = 2134028686669740220L;
 
     @XmlAttribute(name="process-instance-id")
     private long processInstanceId = -1;
@@ -62,11 +66,13 @@ public class SignalEventCommand implements GenericCommand<Void> {
     }
 
 
-    public long getProcessInstanceId() {
+    @Override
+    public Long getProcessInstanceId() {
         return processInstanceId;
     }
 
-    public void setProcessInstanceId(long processInstanceId) {
+    @Override
+    public void setProcessInstanceId(Long processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 
