@@ -41,6 +41,7 @@ import org.jbpm.process.workitem.webservice.WebServiceWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -142,7 +143,7 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
         assertTrue(error instanceof WorkItemHandlerRuntimeException);
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testServiceInvocationProcessWith2WSImports() throws Exception {
         KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
         KnowledgeBase kbase = readKnowledgeBase();
@@ -158,7 +159,7 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testServiceInvocationProcessWith2WSImportsWSHandler() throws Exception {
         KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
         KnowledgeBase kbase = readKnowledgeBase();
