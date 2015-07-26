@@ -23,20 +23,26 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
+import org.kie.internal.command.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class AbortProcessInstanceCommand implements GenericCommand<Void> {
+public class AbortProcessInstanceCommand implements GenericCommand<Void>, ProcessInstanceIdCommand {
 
+    /** Generated serial version UID */
+    private static final long serialVersionUID = 2482483392339538998L;
+    
     @XmlAttribute
     private Long processInstanceId;
 
+    @Override
     public Long getProcessInstanceId() {
         return processInstanceId;
     }
 
+    @Override
     public void setProcessInstanceId(Long processInstanceId) {
         this.processInstanceId = processInstanceId;
     }

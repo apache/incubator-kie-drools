@@ -33,12 +33,16 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.command.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class SetProcessInstanceVariablesCommand implements GenericCommand<Void> {
+public class SetProcessInstanceVariablesCommand implements GenericCommand<Void>, ProcessInstanceIdCommand {
 
-	@XmlAttribute(required = true)
+	/** Generated serial version UID */
+    private static final long serialVersionUID = 7802415761845739379L;
+
+    @XmlAttribute(required = true)
     private Long processInstanceId;
 
     @XmlJavaTypeAdapter(JaxbMapAdapter.class)
@@ -54,11 +58,13 @@ public class SetProcessInstanceVariablesCommand implements GenericCommand<Void> 
         this.variables = variables;
     }
 
-    public long getProcessInstanceId() {
+    @Override
+    public Long getProcessInstanceId() {
         return processInstanceId;
     }
 
-    public void setProcessInstanceId(long processInstanceId) {
+    @Override
+    public void setProcessInstanceId(Long processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
 
