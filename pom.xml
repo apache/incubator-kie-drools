@@ -20,6 +20,10 @@
     Drools Expert is the rule engine and Drools Fusion does complex event processing (CEP).
   </description>
 
+  <properties>
+    <surefire.forkCount>1</surefire.forkCount>
+  </properties>
+
   <repositories>
     <!-- Bootstrap repository to locate the parent pom when the parent pom has not been build locally. -->
     <repository>
@@ -65,6 +69,21 @@
     <module>drools-workbench-models</module>
     <module>knowledge-api-legacy5-adapter</module>
   </modules>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <configuration>
+            <forkCount>${surefire.forkCount}</forkCount>
+            <reuseForks>true</reuseForks>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
   <profiles>
     <profile>
