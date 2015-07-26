@@ -16,56 +16,28 @@
 
 package org.jbpm.kie.services.impl;
 
-import java.lang.reflect.Field;
-
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-
-import org.jbpm.process.audit.command.AuditCommand;
 import org.kie.api.command.Command;
 import org.kie.internal.command.ProcessInstanceIdCommand;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+/**
+ * This class is also used in the kie-remote-client module
+ * 
+ *
+ */
 public class CommonUtils {
 	
-	private static final Logger logger = LoggerFactory.getLogger(CommonUtils.class);
-
-	// TODO: https://issues.jboss.org/browse/JBPM-4296
+	/**
+	 * Returns the process instance id field in a command, if available
+	 * </p>
+	 * See the CommonUtils.testProcessInstanceIdCommands test in this module 
+	 * 
+	 * @param command The {@link Command} instance
+	 * @return the process instance id, if it's available in this command
+	 */
 	public static Long getProcessInstanceId(Command<?> command) {
-		if (command instanceof ProcessInstanceIdCommand<?>) {
-			return ((ProcessInstanceIdCommand<?>) command).getProcessInstanceId();
-		} else if( command instanceof AuditCommand<?> ) { 
-            return null;
-        }
-        try {
-            Field[] fields = command.getClass().getDeclaredFields();
-
-            for (Field field : fields) {
-                field.setAccessible(true);
-                if (field.isAnnotationPresent(XmlAttribute.class)) {
-                    String attributeName = field.getAnnotation(XmlAttribute.class).name();
-
-                    if ("process-instance-id".equalsIgnoreCase(attributeName)) {
-                        return (Long) field.get(command);
-                    } else if ("processInstanceId".equals(field.getName())) {
-                    	return (Long) field.get(command);
-                    }
-                } else if (field.isAnnotationPresent(XmlElement.class)) {
-                    String elementName = field.getAnnotation(XmlElement.class).name();
-
-                    if ("process-instance-id".equalsIgnoreCase(elementName)) {
-                        return (Long) field.get(command);
-                    } else if ("processInstanceId".equals(field.getName())) {
-                    	return (Long) field.get(command);
-                    }
-                } else if ("processInstanceId".equals(field.getName())) {
-                	return (Long) field.get(command);
-                }
-            }
-        } catch (Exception e) {
-            logger.debug("Unable to find process instance id on command {} due to {}", command, e.getMessage());
-        }
+		if (command instanceof ProcessInstanceIdCommand) {
+			return ((ProcessInstanceIdCommand) command).getProcessInstanceId();
+		} 
 
         return null;
 		

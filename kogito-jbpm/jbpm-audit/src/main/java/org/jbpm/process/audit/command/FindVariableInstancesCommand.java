@@ -26,10 +26,11 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.kie.internal.command.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class FindVariableInstancesCommand extends AuditCommand<List<VariableInstanceLog>> {
+public class FindVariableInstancesCommand extends AuditCommand<List<VariableInstanceLog>> implements ProcessInstanceIdCommand {
 
     /** generated serial version UID */
     private static final long serialVersionUID = 7087452375594067164L;
@@ -67,11 +68,13 @@ public class FindVariableInstancesCommand extends AuditCommand<List<VariableInst
             return this.auditLogService.findVariableInstances(processInstanceId, variableId);
         }
     }
-    
+   
+    @Override
     public Long getProcessInstanceId() {
         return processInstanceId;
     }
 
+   @Override
     public void setProcessInstanceId(Long processInstanceId) {
         this.processInstanceId = processInstanceId;
     }

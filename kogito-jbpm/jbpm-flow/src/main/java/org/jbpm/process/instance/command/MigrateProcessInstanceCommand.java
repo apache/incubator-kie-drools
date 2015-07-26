@@ -18,6 +18,12 @@ package org.jbpm.process.instance.command;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
@@ -29,13 +35,23 @@ import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.command.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 
-public class MigrateProcessInstanceCommand implements GenericCommand<Void> {
+@XmlRootElement(name="get-completed-tasks-command")
+@XmlAccessorType(XmlAccessType.NONE)
+public class MigrateProcessInstanceCommand implements GenericCommand<Void>, ProcessInstanceIdCommand  {
 	
     private static final long serialVersionUID = 6L;
-	
+
+    @XmlElement
+    @XmlSchemaType(name="long")
 	private Long processInstanceId;
+	
+    @XmlElement
+    @XmlSchemaType(name="string")
     private String processId;
+   
+    @XmlElement
     private Map<String, Long> nodeMapping;
 
     public MigrateProcessInstanceCommand(Long processInstanceId, String processId) {
@@ -48,11 +64,13 @@ public class MigrateProcessInstanceCommand implements GenericCommand<Void> {
     	this.processId = processId;
     	this.nodeMapping = nodeMapping;
     }
-    
+   
+    @Override
     public Long getProcessInstanceId() {
 		return processInstanceId;
 	}
 
+    @Override
 	public void setProcessInstanceId(Long processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}

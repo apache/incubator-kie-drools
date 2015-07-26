@@ -27,10 +27,11 @@ import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.kie.internal.command.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class FindNodeInstancesCommand extends AuditCommand<List<NodeInstanceLog>> {
+public class FindNodeInstancesCommand extends AuditCommand<List<NodeInstanceLog>> implements ProcessInstanceIdCommand {
 
     /** generated serial version UID */
     private static final long serialVersionUID = 5374910016873481604L;
@@ -68,11 +69,13 @@ public class FindNodeInstancesCommand extends AuditCommand<List<NodeInstanceLog>
             return this.auditLogService.findNodeInstances(processInstanceId, nodeId);
         }
     }
-    
+   
+    @Override
     public Long getProcessInstanceId() {
         return processInstanceId;
     }
 
+    @Override
     public void setProcessInstanceId(Long processInstanceId) {
         this.processInstanceId = processInstanceId;
     }

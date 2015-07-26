@@ -19,25 +19,33 @@ package org.jbpm.process.instance.command;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 
+@XmlRootElement(name="suspend-process-instance-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class SuspendProcessInstanceCommand implements GenericCommand<Object> {
+public class SuspendProcessInstanceCommand implements GenericCommand<Object>, ProcessInstanceIdCommand {
 
-    private static final long serialVersionUID = 6L;
-	
+    /** Generated serial version UID */
+    private static final long serialVersionUID = 5824052805419980114L;
+    
     @XmlAttribute
+    @XmlSchemaType(name="long")
     private Long processInstanceId;
 
+    @Override
     public Long getProcessInstanceId() {
         return processInstanceId;
     }
 
+    @Override
     public void setProcessInstanceId(Long processInstanceId) {
         this.processInstanceId = processInstanceId;
     }

@@ -24,10 +24,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.kie.internal.command.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 
 @XmlRootElement(name="get-tasks-by-process-instance-id-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetTasksByProcessInstanceIdCommand extends TaskCommand<List<Long>> {
+public class GetTasksByProcessInstanceIdCommand extends TaskCommand<List<Long>> implements ProcessInstanceIdCommand {
 
 	private static final long serialVersionUID = -2328845811017055632L;
 
@@ -42,10 +43,12 @@ public class GetTasksByProcessInstanceIdCommand extends TaskCommand<List<Long>> 
 		this.processInstanceId = processInstanceId;
     }
 
+	@Override
     public Long getProcessInstanceId() {
 		return processInstanceId;
 	}
 
+	@Override
 	public void setProcessInstanceId(Long processInstanceId) {
 		this.processInstanceId = processInstanceId;
 	}

@@ -22,53 +22,64 @@ import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class StartProcessInstanceWithParentCommand  implements GenericCommand<ProcessInstance> {
-    @XmlAttribute(
-            required = true
-    )
+@XmlRootElement(name="start-process-instance-with-parent-command")
+public class StartProcessInstanceWithParentCommand implements GenericCommand<ProcessInstance>, ProcessInstanceIdCommand {
+    
+    /** Generated serial version UID */
+    private static final long serialVersionUID = 7634752111656248015L;
+   
+    @XmlAttribute(required = true)
+    @XmlSchemaType(name="long")
     private Long processInstanceId;
-    @XmlAttribute(
-            required = true
-    )
+    
+    @XmlAttribute(required = true)
+    @XmlSchemaType(name="long")
     private Long parentProcessInstanceId;
 
-    public StartProcessInstanceWithParentCommand(){}
+    public StartProcessInstanceWithParentCommand() {
+        // JAXB constructor
+    }
 
     public StartProcessInstanceWithParentCommand(Long processInstanceId, Long parentProcessInstanceId) {
         this.processInstanceId = processInstanceId;
         this.parentProcessInstanceId = parentProcessInstanceId;
     }
 
-    @Override
-    public ProcessInstance execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext)context).getKieSession();
-        ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId.longValue());
-        if(parentProcessInstanceId > 0){
-            ((ProcessInstanceImpl)processInstance).setMetaData("ParentProcessInstanceId", parentProcessInstanceId);
-        }
-
-        return ksession.startProcessInstance(processInstanceId.longValue());
-    }
-
     public Long getParentProcessInstanceId() {
         return parentProcessInstanceId;
     }
 
-    public void setParentProcessInstanceId(Long parentProcessInstanceId) {
+    public void setParentProcessInstanceId( Long parentProcessInstanceId ) {
         this.parentProcessInstanceId = parentProcessInstanceId;
     }
 
+    @Override
     public Long getProcessInstanceId() {
         return processInstanceId;
     }
 
-    public void setProcessInstanceId(Long processInstanceId) {
+    @Override
+    public void setProcessInstanceId( Long processInstanceId ) {
         this.processInstanceId = processInstanceId;
+    }
+
+    @Override
+    public ProcessInstance execute( Context context ) {
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        ProcessInstance processInstance = ksession.getProcessInstance(processInstanceId.longValue());
+        if( parentProcessInstanceId > 0 ) {
+            ((ProcessInstanceImpl) processInstance).setMetaData("ParentProcessInstanceId", parentProcessInstanceId);
+        }
+    
+        return ksession.startProcessInstance(processInstanceId.longValue());
     }
 }

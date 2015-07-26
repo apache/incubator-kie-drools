@@ -27,12 +27,13 @@ import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.command.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
 
 @XmlRootElement(name="get-tasks-for-process-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetTasksForProcessCommand extends TaskCommand<List<TaskSummary>> {
+public class GetTasksForProcessCommand extends TaskCommand<List<TaskSummary>> implements ProcessInstanceIdCommand {
 
 	private static final long serialVersionUID = -3784821014329573243L;
 	
@@ -58,6 +59,32 @@ public class GetTasksForProcessCommand extends TaskCommand<List<TaskSummary>> {
 	}
 
 	@Override
+	public Long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+	@Override
+    public void setProcessInstanceId( Long processInstanceId ) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public List<Status> getStatuses() {
+        return statuses;
+    }
+
+    public void setStatuses( List<Status> statuses ) {
+        this.statuses = statuses;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage( String language ) {
+        this.language = language;
+    }
+
+    @Override
 	public List<TaskSummary> execute(Context context) {
 		TaskContext ctx = (TaskContext) context;
 		
