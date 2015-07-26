@@ -27,13 +27,19 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.Context;
+import org.kie.internal.command.CorrelationKeyCommand;
+import org.kie.internal.command.ProcessInstanceIdCommand;
+import org.kie.internal.jaxb.CorrelationKeyXmlAdapter;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetProcessInstanceByCorrelationKeyCommand implements GenericCommand<ProcessInstance> {
+public class GetProcessInstanceByCorrelationKeyCommand implements GenericCommand<ProcessInstance>, CorrelationKeyCommand {
 
+    /** Generated serial version UID */
+    private static final long serialVersionUID = -211522165088235065L;
+    
     @XmlElement(name = "correlation-key", required = true)
     @XmlJavaTypeAdapter(value = CorrelationKeyXmlAdapter.class)
     private CorrelationKey correlationKey;
@@ -44,10 +50,12 @@ public class GetProcessInstanceByCorrelationKeyCommand implements GenericCommand
         this.correlationKey = correlationKey;
     }
 
+    @Override
     public CorrelationKey getCorrelationKey() {
         return correlationKey;
     }
 
+    @Override
     public void setCorrelationKey(CorrelationKey correlationKey) {
         this.correlationKey = correlationKey;
     }
