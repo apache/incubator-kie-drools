@@ -1054,6 +1054,13 @@
       </warning>
 
       <para>In the GUI, select the interesting benchmarks and click the button to generate the report.</para>
+
+      <note>
+        <para>All the input reports which are being merged should have been generated with the same Planner version
+        (excluding hotfix differences) as the <literal>BenchmarkAggregator</literal>. Using reports from different
+        Planner major or minor versions are not guaranteed to succeed and deliver correct information, because the
+        benchmark report data structure often changes.</para>
+      </note>
     </section>
   </section>
 </chapter>
