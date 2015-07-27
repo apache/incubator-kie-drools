@@ -327,13 +327,16 @@ public class KieBuilderImpl
             return true;
         } else {
             String pkgNameForFile = lastSep > 0 ? fileName.substring( 0, lastSep ) : "";
+            if (pkgNameForFile.startsWith( RESOURCES_ROOT )) {
+                pkgNameForFile = pkgNameForFile.substring( RESOURCES_ROOT.length() );
+            }
             pkgNameForFile = pkgNameForFile.replace( '/', '.' );
             for ( String pkgName : kieBase.getPackages() ) {
                 boolean isNegative = pkgName.startsWith( "!" );
                 if ( isNegative ) {
                     pkgName = pkgName.substring( 1 );
                 }
-                if ( pkgName.equals( "*" ) || pkgNameForFile.endsWith( pkgName ) ) {
+                if ( pkgName.equals( "*" ) || pkgNameForFile.equals( pkgName ) || pkgNameForFile.endsWith( "." + pkgName ) ) {
                     return !isNegative;
                 }
                 if (pkgName.endsWith( ".*" )) {
@@ -489,7 +492,7 @@ public class KieBuilderImpl
     }
 
     public static String generatePomXml(ReleaseId releaseId) {
-        StringBuilder sBuilder = new StringBuilder();
+        StringBuilder   sBuilder = new StringBuilder();
         sBuilder.append( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" );
         sBuilder.append( "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\"> \n" );
         sBuilder.append( "    <modelVersion>4.0.0</modelVersion> \n" );
