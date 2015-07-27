@@ -29,6 +29,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Version;
 
+import org.kie.internal.jaxb.CorrelationKeyXmlAdapter;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.process.CorrelationProperty;
 
@@ -138,14 +139,7 @@ public class CorrelationKeyInfo implements CorrelationKey, Serializable {
 
 	@Override
 	public String toExternalForm() {
-		StringBuilder builder = new StringBuilder();
-		for (CorrelationPropertyInfo property : properties) {
-			builder.append(property.getValue());
-			builder.append(":");
-		}
-		builder.deleteCharAt(builder.length() - 1);
-		
-		return builder.toString();
+		return CorrelationKeyXmlAdapter.marshalCorrelationKey(this);
 	}
 
 }

@@ -185,6 +185,7 @@
               org.kie.api.runtime.manager,
               org.kie.api.runtime.process,
               org.kie.internal.command,
+              org.kie.internal.jaxb,
               org.kie.internal.process,              
               org.kie.internal.runtime.manager,
               org.kie.internal.runtime.manager.context,
