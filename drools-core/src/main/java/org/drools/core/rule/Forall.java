@@ -22,7 +22,6 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +35,7 @@ public class Forall extends ConditionalElement {
     // forall base pattern
     private Pattern            basePattern;
     // foral remaining patterns
-    private List              remainingPatterns;
+    private List<Pattern>      remainingPatterns;
     
     private boolean           emptyBetaConstraints;
 
@@ -51,7 +50,7 @@ public class Forall extends ConditionalElement {
     }
 
     public Forall(final Pattern basePattern,
-                  final List remainingPatterns) {
+                  final List<Pattern> remainingPatterns) {
         this.basePattern = basePattern;
         this.remainingPatterns = remainingPatterns;
         this.emptyBetaConstraints = false;
@@ -59,7 +58,7 @@ public class Forall extends ConditionalElement {
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         basePattern = (Pattern)in.readObject();
-        remainingPatterns = (List)in.readObject();
+        remainingPatterns = (List<Pattern>)in.readObject();
         emptyBetaConstraints = in.readBoolean();
     }
 
@@ -73,17 +72,17 @@ public class Forall extends ConditionalElement {
      */
     public Forall clone() {
         return new Forall( this.basePattern,
-                           new ArrayList( this.remainingPatterns ) );
+                           new ArrayList<Pattern>( this.remainingPatterns ) );
     }
 
     /**
      * Forall inner declarations are only provided by the base patterns
      * since it negates the remaining patterns
      */
-    public Map getInnerDeclarations() {
+    public Map<String, Declaration> getInnerDeclarations() {
         final Map inner = new HashMap( this.basePattern.getOuterDeclarations() );
-        for ( final Iterator it = this.remainingPatterns.iterator(); it.hasNext(); ) {
-            inner.putAll( ((Pattern) it.next()).getOuterDeclarations() );
+        for ( Pattern pattern : remainingPatterns ) {
+            inner.putAll( pattern.getOuterDeclarations() );
         }
         return inner;
     }
@@ -91,7 +90,7 @@ public class Forall extends ConditionalElement {
     /**
      * Forall does not export any declarations
      */
-    public Map getOuterDeclarations() {
+    public Map<String, Declaration> getOuterDeclarations() {
         return Collections.EMPTY_MAP;
     }
 
@@ -99,7 +98,7 @@ public class Forall extends ConditionalElement {
      * Forall can only resolve declarations from its base pattern
      */
     public Declaration resolveDeclaration(final String identifier) {
-        return (Declaration) this.getInnerDeclarations().get( identifier );
+        return this.getInnerDeclarations().get( identifier );
     }
 
     /**
@@ -119,27 +118,26 @@ public class Forall extends ConditionalElement {
     /**
      * @return the remainingPatterns
      */
-    public List getRemainingPatterns() {
+    public List<Pattern> getRemainingPatterns() {
         return this.remainingPatterns;
     }
 
     /**
      * @param remainingPatterns the remainingPatterns to set
      */
-    public void setRemainingPatterns(final List remainingPatterns) {
+    public void setRemainingPatterns(final List<Pattern> remainingPatterns) {
         this.remainingPatterns = remainingPatterns;
     }
 
     /**
      * Adds one more pattern to the list of remaining patterns
-     * @param pattern
      */
     public void addRemainingPattern(final Pattern pattern) {
         this.remainingPatterns.add( pattern );
     }
 
-    public List getNestedElements() {
-        List elements = new ArrayList( 1 + this.remainingPatterns.size() );
+    public List<Pattern> getNestedElements() {
+        List<Pattern> elements = new ArrayList<Pattern>( 1 + this.remainingPatterns.size() );
         elements.add( this.basePattern );
         elements.addAll( this.remainingPatterns );
         return elements;
