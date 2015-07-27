@@ -16,10 +16,36 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.fail;
+import org.drools.compiler.CommonTestMethodBase;
+import org.drools.compiler.Person;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.factmodel.AnnotationDefinition;
+import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.RuleConditionElement;
+import org.junit.Assert;
+import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.builder.Message;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.MBeansOption;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.Key;
+import org.kie.api.definition.type.Position;
+import org.kie.api.definition.type.Role;
+import org.kie.api.io.ResourceType;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.utils.KieHelper;
 
 import java.io.StringReader;
 import java.lang.annotation.Annotation;
@@ -29,45 +55,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import org.drools.compiler.CommonTestMethodBase;
-import org.drools.compiler.Person;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.DrlParser;
-import org.drools.compiler.lang.api.impl.AnnotationDescrBuilderImpl;
-import org.drools.compiler.lang.descr.AnnotationDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.AnnotationDefinition;
-import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.core.rule.Pattern;
-import org.drools.core.rule.RuleConditionElement;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.experimental.theories.suppliers.TestedOn;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.builder.Message;
-import org.kie.api.builder.Results;
-import org.kie.api.definition.type.FactType;
-import org.kie.api.definition.type.Key;
-import org.kie.api.definition.type.Role;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.LanguageLevelOption;
-import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.conf.MBeansOption;
-import org.kie.api.definition.rule.Rule;
-import org.kie.api.definition.type.Position;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.utils.KieHelper;
 
 public class AnnotationsTest  extends CommonTestMethodBase {
 
@@ -615,7 +604,7 @@ public class AnnotationsTest  extends CommonTestMethodBase {
 
         final RuleImpl rule = kBuilder.getPackage().getRule("test collect with annotation");
 
-        List<RuleConditionElement> nested = ((Pattern) rule.getLhs().getChildren().get( 0 )).getSource().getNestedElements();
+        List<? extends RuleConditionElement> nested = ((Pattern) rule.getLhs().getChildren().get( 0 )).getSource().getNestedElements();
 
         assertEquals(1, nested.size());
 

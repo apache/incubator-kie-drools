@@ -16,6 +16,8 @@
 
 package org.drools.core.rule;
 
+import org.kie.api.runtime.rule.Variable;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -24,8 +26,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import org.kie.api.runtime.rule.Variable;
 
 public class QueryElement extends ConditionalElement
     implements
@@ -113,15 +113,15 @@ public class QueryElement extends ConditionalElement
         return variableIndexes;
     }
 
-    public Map getInnerDeclarations() {
+    public Map<String,Declaration> getInnerDeclarations() {
         return this.resultPattern.getInnerDeclarations();
     }
 
-    public Map getOuterDeclarations() {
+    public Map<String,Declaration> getOuterDeclarations() {
         return this.resultPattern.getOuterDeclarations();
     }
 
-    public List getNestedElements() {
+    public List<? extends RuleConditionElement> getNestedElements() {
         return Collections.EMPTY_LIST;
     }
     

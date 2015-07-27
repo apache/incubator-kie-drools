@@ -18,6 +18,7 @@ package org.drools.core.time.impl;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.RuleConditionElement;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,11 +28,11 @@ import java.util.Map;
 
 public abstract class BaseTimer extends ConditionalElement{
 
-    public Map getInnerDeclarations() {
+    public Map<String, Declaration> getInnerDeclarations() {
         return Collections.EMPTY_MAP;
     }
 
-    public Map getOuterDeclarations() {
+    public Map<String, Declaration> getOuterDeclarations() {
         return Collections.EMPTY_MAP;
     }
 
@@ -42,7 +43,7 @@ public abstract class BaseTimer extends ConditionalElement{
         return null;
     }
 
-    public List getNestedElements() {
+    public List<? extends RuleConditionElement> getNestedElements() {
         return Collections.EMPTY_LIST;
     }
 

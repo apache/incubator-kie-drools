@@ -16,6 +16,9 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.spi.ObjectType;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -26,9 +29,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.spi.ObjectType;
 
 public class GroupElement extends ConditionalElement
     implements
@@ -370,11 +370,7 @@ public class GroupElement extends ConditionalElement
     private static boolean containesNode(Type node, GroupElement groupElement) {
         for( RuleConditionElement rce : groupElement.getChildren() ) {
             if ( rce instanceof GroupElement ) {
-                if ( ((GroupElement) rce).getType() == node) {
-                    return true;
-                } else {
-                    return containesNode(node, (GroupElement) rce);
-                }
+                return ( (GroupElement) rce ).getType() == node || containesNode( node, (GroupElement) rce );
             }
         }
         return false;
@@ -490,7 +486,6 @@ public class GroupElement extends ConditionalElement
          *
          * For instance, AND CE is not a scope delimiter, while
          * NOT CE is a scope delimiter
-         * @return
          */
         public boolean isPatternScopeDelimiter() {
             return this.scopeDelimiter == ScopeDelimiter.ALWAYS;

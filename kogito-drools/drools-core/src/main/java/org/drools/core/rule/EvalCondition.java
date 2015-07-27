@@ -16,6 +16,13 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.WorkingMemory;
+import org.drools.core.spi.CompiledInvoker;
+import org.drools.core.spi.EvalExpression;
+import org.drools.core.spi.Tuple;
+import org.drools.core.spi.Wireable;
+import org.kie.internal.security.KiePolicyHelper;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -28,13 +35,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import org.drools.core.WorkingMemory;
-import org.drools.core.spi.CompiledInvoker;
-import org.drools.core.spi.EvalExpression;
-import org.drools.core.spi.Tuple;
-import org.drools.core.spi.Wireable;
-import org.kie.internal.security.KiePolicyHelper;
 
 public class EvalCondition extends ConditionalElement
     implements
@@ -170,16 +170,16 @@ public class EvalCondition extends ConditionalElement
         return this.expression.equals( other.expression );
     }
 
-    public Map getInnerDeclarations() {
+    public Map<String, Declaration> getInnerDeclarations() {
         return Collections.EMPTY_MAP;
     }
 
-    public Map getOuterDeclarations() {
+    public Map<String, Declaration> getOuterDeclarations() {
         return Collections.EMPTY_MAP;
     }
     
 
-    public List getNestedElements() {
+    public List<? extends RuleConditionElement> getNestedElements() {
         return Collections.EMPTY_LIST;
     }
     
