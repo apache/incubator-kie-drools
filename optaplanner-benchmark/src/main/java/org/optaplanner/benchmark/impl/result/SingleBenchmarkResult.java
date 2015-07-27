@@ -285,6 +285,7 @@ public class SingleBenchmarkResult {
         // Skip oldResult.reportDirectory
         // Skip oldResult.usedMemoryAfterInputSolution
         newResult.succeeded = oldResult.succeeded;
+        newResult.initialized = oldResult.initialized;
         newResult.score = oldResult.score;
         newResult.timeMillisSpent = oldResult.timeMillisSpent;
         newResult.calculateCount = oldResult.calculateCount;
