@@ -4,9 +4,7 @@ setLocal enableExtensions enableDelayedExpansion
 rem You can use -Xmx128m or less too for most examples, but it might be slower
 set "jvmOptions=-Xms256m -Xmx1024m"
 set "mainClass=org.drools.examples.DroolsExamplesApp"
-set "mainClasspath="
-for %%i in (binaries\*.jar) do (set "mainClasspath=!mainClasspath!;%%i")
-for %%i in (..\binaries\*.jar) do (set "mainClasspath=!mainClasspath!;%%i")
+set "mainClasspath=binaries/*;../binaries/*"
 
 echo Usage: runExamples.bat
 echo Notes:
