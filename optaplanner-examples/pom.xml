@@ -43,19 +43,6 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <configuration>
-            <archive>
-              <manifest>
-                <!-- Needed for runExamples.sh and runExamples.bat -->
-                <addClasspath>true</addClasspath>
-                <classpathPrefix>../../binaries/</classpathPrefix>
-              </manifest>
-            </archive>
-          </configuration>
-        </plugin>
-        <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>exec-maven-plugin</artifactId>
           <!-- WARNING: This configuration must be run with "mvn exec:java" not "mvn exec:exec". -->

@@ -4,8 +4,7 @@ setLocal enableExtensions enableDelayedExpansion
 rem Most examples run (potentially slower) with max heap of 128 MB (so -Xmx128m), but 1 example's dataset requires 1.5 GB
 set "jvmOptions=-Xms256m -Xmx1536m -Dorg.optaplanner.examples.dataDir=sources/data/"
 set "mainClass=org.optaplanner.examples.app.OptaPlannerExamplesApp"
-set "mainClasspath="
-for %%i in (binaries\*.jar) do (set "mainClasspath=!mainClasspath!;%%i")
+set "mainClasspath=binaries/*;../binaries/*"
 
 echo Usage: runExamples.bat
 echo Notes:

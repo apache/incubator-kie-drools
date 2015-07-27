@@ -6,10 +6,7 @@ cd `dirname $0`
 # Most examples run (potentially slower) with max heap of 128 MB (so -Xmx128m), but 1 example's dataset requires 1.5 GB
 jvmOptions="-Xms256m -Xmx1536m -Dorg.optaplanner.examples.dataDir=sources/data/"
 mainClass=org.optaplanner.examples.app.OptaPlannerExamplesApp
-mainClasspath=
-for i in binaries/*.jar; do
-  mainClasspath=${mainClasspath}:$i
-done
+mainClasspath="binaries/*:../binaries/*"
 
 echo "Usage: ./runExamples.sh"
 echo "Notes:"
