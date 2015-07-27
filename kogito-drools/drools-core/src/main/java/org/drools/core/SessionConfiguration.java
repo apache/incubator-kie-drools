@@ -123,7 +123,16 @@ public class SessionConfiguration
         keepReference = in.readBoolean();
         clockType = (ClockType) in.readObject();
         queryListener = (QueryListenerOption) in.readObject();
-        timerJobFactoryType = (TimerJobFactoryType) in.readObject();
+        try {
+            timerJobFactoryType = (TimerJobFactoryType) in.readObject();
+        } catch (java.io.InvalidObjectException e) {
+            // workaround for old typo in TimerJobFactoryType
+            if (e.getMessage().contains( "DEFUALT" )) {
+                timerJobFactoryType = TimerJobFactoryType.DEFAULT;
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**
