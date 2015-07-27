@@ -3,10 +3,8 @@
 # Change directory to the directory of the script
 cd `dirname $0`
 
-mainClasspath=
-for i in binaries/*.jar; do mainClasspath=${mainClasspath}:$i; done
-for i in ../binaries/*.jar; do mainClasspath=${mainClasspath}:$i; done
 mainClass=org.drools.examples.DroolsExamplesApp
+mainClasspath="binaries/*:../binaries/*"
 
 echo "Usage: ./runExamples.sh"
 echo "For example: ./runExamples.sh"
