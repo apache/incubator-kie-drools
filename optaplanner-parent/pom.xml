@@ -76,4 +76,100 @@
     </profile>
   </profiles>
 
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <!-- TODO: Upgrade to newest version of checkstyle once we move to Java 7+ -->
+          <!-- https://maven.apache.org/components/plugins/maven-checkstyle-plugin/examples/upgrading-checkstyle.html -->
+          <!--<dependencies>-->
+            <!--<dependency>-->
+              <!--<groupId>com.puppycrawl.tools</groupId>-->
+              <!--<artifactId>checkstyle</artifactId>-->
+              <!--<version>6.9</version>-->
+            <!--</dependency>-->
+          <!--</dependencies>-->
+          <executions>
+            <execution>
+              <id>validate</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+              <configuration>
+                <checkstyleRules>
+                  <module name="Checker">
+                    <property name="severity" value="warning" default="warning"/>
+                    <!-- Checks whether files end with a new line. -->
+                    <module name="NewlineAtEndOfFile">
+                      <property name="lineSeparator" value="lf"/>
+                    </module>
+                    <!-- Checks for whitespace. -->
+                    <module name="FileTabCharacter">
+                      <property name="severity" value="error"/>
+                      <property name="eachLine" value="true"/>
+                    </module>
+                    <module name="TreeWalker">
+                      <property name="cacheFile" value="target/cachefile"/>
+                      <property name="tabWidth" value="4"/>
+                      <!-- Checks for Javadoc comments. -->
+                      <module name="JavadocStyle"/>
+                      <!-- TODO: Enable NonEmptyAtclauseDescription after https://github.com/checkstyle/checkstyle/issues/1064 is fixed -->
+                      <!--<module name="NonEmptyAtclauseDescription"/>-->
+                      <!-- Checks for imports. -->
+                      <!--<module name="UnusedImports"/>-->
+                      <module name="RedundantImport"/>
+                      <!-- defaults to sun.* packages -->
+                      <module name="IllegalImport"/>
+                      <!-- Checks for size violations. -->
+                      <!--<module name="LineLength">-->
+                      <!--<property name="max" value="120"/>-->
+                      <!--</module>-->
+                      <module name="ParameterNumber"/>
+                      <!-- Checks for whitespace. -->
+                      <module name="GenericWhitespace"/>
+                      <module name="MethodParamPad"/>
+                      <module name="NoWhitespaceBefore"/>
+                      <module name="ParenPad"/>
+                      <module name="TypecastParenPad"/>
+                      <module name="WhitespaceAfter"/>
+                      <!-- TODO: Enable the WhitespaceAround once checkstyle supports allowEmptyBlocks -->
+                      <!--<module name="WhitespaceAround">-->
+                        <!--<property name="allowEmptyConstructors" value="true"/>-->
+                        <!--<property name="allowEmptyTypes" value="true"/>-->
+                        <!--<property name="allowEmptyBlocks" value="true"/>-->
+                      <!--</module>-->
+                      <!-- Checks for blocks. -->
+                      <module name="LeftCurly"/>
+                      <module name="NeedBraces"/>
+                      <module name="RightCurly"/>
+                      <!-- Checks for common coding problems. -->
+                      <module name="EmptyStatement"/>
+                      <module name="EqualsHashCode"/>
+                      <module name="IllegalInstantiation"/>
+                      <module name="InnerAssignment"/>
+                      <module name="OneStatementPerLine"/>
+                      <!-- Checks for class design. -->
+                      <!--<module name="HideUtilityClassConstructor"/>-->
+                      <module name="InterfaceIsType"/>
+                      <!-- Miscellaneous other checks. -->
+                      <module name="ArrayTypeStyle"/>
+                      <module name="UpperEll"/>
+                    </module>
+                  </module>
+                </checkstyleRules>
+                <consoleOutput>true</consoleOutput>
+                <logViolationsToConsole>true</logViolationsToConsole>
+                <failOnViolation>true</failOnViolation>
+                <failsOnError>true</failsOnError>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
 </project>
