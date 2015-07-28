@@ -22,6 +22,8 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListenerAdapter;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
@@ -98,5 +100,66 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    // ************************************************************************
+    // Static inner classes
+    // ************************************************************************
+
+    public static class RockShadowUpdatingVariableListener extends VariableListenerAdapter<TestdataCyclicShadowedEntity> {
+
+        @Override
+        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
+            updateShadow(entity);
+        }
+
+        @Override
+        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
+            updateShadow(entity);
+        }
+
+        private void updateShadow(TestdataCyclicShadowedEntity entity) {
+            String scissors = entity.getScissorsShadow();
+            entity.setRockShadow("Rock beats (" + scissors + ")");
+        }
+
+    }
+
+    public static class PaperShadowUpdatingVariableListener extends VariableListenerAdapter<TestdataCyclicShadowedEntity> {
+
+        @Override
+        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
+            updateShadow(entity);
+        }
+
+        @Override
+        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
+            updateShadow(entity);
+        }
+
+        private void updateShadow(TestdataCyclicShadowedEntity entity) {
+            String rock = entity.getRockShadow();
+            entity.setPaperShadow("Paper beats (" + rock + ")");
+        }
+
+    }
+
+    public static class ScissorsShadowUpdatingVariableListener extends VariableListenerAdapter<TestdataCyclicShadowedEntity> {
+
+        @Override
+        public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
+            updateShadow(entity);
+        }
+
+        @Override
+        public void afterVariableChanged(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
+            updateShadow(entity);
+        }
+
+        private void updateShadow(TestdataCyclicShadowedEntity entity) {
+            String paper = entity.getPaperShadow();
+            entity.setScissorsShadow("Scissors beats (" + paper + ")");
+        }
+
+    }
 
 }
