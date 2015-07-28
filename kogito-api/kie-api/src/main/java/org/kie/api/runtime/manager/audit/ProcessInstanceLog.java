@@ -26,25 +26,25 @@ public interface ProcessInstanceLog {
 
 	/**
 	 * Process instance identifier
-	 * @return
+     * @return the {@link Long} value
 	 */
 	Long getProcessInstanceId();
 
 	/**
 	 * Process id of the definition
-	 * @return
+     * @return the {@link String} value
 	 */
 	String getProcessId();
 
 	/**
 	 * Start date of this process instance
-	 * @return
+     * @return the {@link Date} value
 	 */
 	Date getStart();
 
 	/**
 	 * End date of this process instance, null if process instance is still active
-	 * @return
+     * @return the {@link Date} value
 	 */
 	Date getEnd();
 
@@ -56,52 +56,58 @@ public interface ProcessInstanceLog {
 	 * 	<li>ProcessInstance.STATE_ABORTED</li>
 	 * 	<li>ProcessInstance.STATE_SUSPENDED</li>
 	 * </ul>
-	 * @return
+     * @return the {@link Integer} value
 	 */
 	Integer getStatus();
 
 	/**
 	 * Parent process instance id, will be null for top level process instance
-	 * @return
+     * @return the {@link Long} value
 	 */
 	Long getParentProcessInstanceId();
 
 	/**
 	 * Outcome of the process instance that is providing error information in case process 
 	 * instance completed with an error
-	 * @return
+     * @return the {@link String} value
 	 */
 	String getOutcome();
 
 	/**
 	 * Amount of time (in milliseconds) that process instance took to complete.
 	 * Available only when process instance is completed.
-	 * @return
+     * @return the {@link String} value
 	 */
 	Long getDuration();
 
 	/**
 	 * Identifier of a entity (user) who initiated this process instance.
-	 * @return
+     * @return the {@link String} value
 	 */
 	String getIdentity();
 
 	/**
 	 * External (optional) identifier associated with this process instance
-	 * @return
+     * @return the {@link String} value
 	 */
 	String getExternalId();
 
 	/**
 	 * Version of the process definition
-	 * @return
+     * @return the {@link String} value
 	 */
 	String getProcessVersion();
 
 	/**
 	 * Name of the process definition
-	 * @return
+     * @return the {@link String} value
 	 */
 	String getProcessName();
+	
+	/**
+     * Description of the process instance
+     * @return the {@link String} value
+     */
+    String getProcessInstanceDescription();
 
 }
