@@ -1329,7 +1329,9 @@ public class DefaultAgenda
                 executable.enqueue();
                 return;
             }
-            waitAndEnterExecutionState( ExecutionState.EXECUTING_TASK );
+            if (currentState != ExecutionState.EXECUTING_TASK) {
+                waitAndEnterExecutionState( ExecutionState.EXECUTING_TASK );
+            }
         }
 
         try {
@@ -1350,8 +1352,7 @@ public class DefaultAgenda
     private void immediateHalt() {
         synchronized (this) {
             if (currentState != ExecutionState.INACTIVE) {
-                currentState = ExecutionState.INACTIVE;
-                notify();
+                setEngineInactive();
             }
         }
     }
@@ -1360,13 +1361,18 @@ public class DefaultAgenda
         synchronized (this) {
             PropagationEntry head = workingMemory.takeAllPropagations();
             if (head == null) {
-                currentState = ExecutionState.INACTIVE;
-                notify();
+                setEngineInactive();
             } else if (currentState != ExecutionState.FORCE_HALTING) {
                 currentState = ExecutionState.REST_HALTING;
             }
             return head;
         }
+    }
+
+    private void setEngineInactive() {
+        currentState = ExecutionState.INACTIVE;
+        notify();
+        workingMemory.notifyEngineInactive();
     }
 
     public ConsequenceExceptionHandler getConsequenceExceptionHandler() {

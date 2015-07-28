@@ -21,10 +21,10 @@ import java.util.Iterator;
 
 public class SynchronizedPropagationList implements PropagationList {
 
-    private final InternalWorkingMemory workingMemory;
+    protected final InternalWorkingMemory workingMemory;
 
-    private volatile PropagationEntry head;
-    private volatile PropagationEntry tail;
+    protected volatile PropagationEntry head;
+    protected volatile PropagationEntry tail;
 
     public SynchronizedPropagationList(InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
@@ -49,7 +49,7 @@ public class SynchronizedPropagationList implements PropagationList {
         }
     }
 
-    private synchronized void internalAddEntry( PropagationEntry entry ) {
+    protected synchronized void internalAddEntry( PropagationEntry entry ) {
         boolean wasEmpty = head == null;
         if ( wasEmpty ) {
             head = entry;
@@ -149,9 +149,13 @@ public class SynchronizedPropagationList implements PropagationList {
         notifyAll();
     }
 
+    @Override
     public synchronized Iterator<PropagationEntry> iterator() {
         return new PropagationEntryIterator(head);
     }
+
+    @Override
+    public void onEngineInactive() { }
 
     public static class PropagationEntryIterator implements Iterator<PropagationEntry> {
 
