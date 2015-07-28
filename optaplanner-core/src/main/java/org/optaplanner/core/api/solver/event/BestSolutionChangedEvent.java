@@ -72,6 +72,7 @@ public class BestSolutionChangedEvent<SolutionG extends Solution> extends EventO
     }
 
     /**
+     * @return As defined by {@link Solver#isEveryProblemFactChangeProcessed()}
      * @see Solver#isEveryProblemFactChangeProcessed()
      */
     public boolean isEveryProblemFactChangeProcessed() {
