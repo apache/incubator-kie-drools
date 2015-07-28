@@ -2143,6 +2143,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         executeQueuedActionsForRete();
     }
 
+    public void notifyEngineInactive() {
+        propagationList.onEngineInactive();
+    }
+
     public boolean hasPendingPropagations() {
         return !propagationList.isEmpty();
     }

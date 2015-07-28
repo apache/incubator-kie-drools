@@ -87,6 +87,7 @@ import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.FactHandle;
@@ -104,6 +105,7 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,6 +131,8 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
@@ -7482,6 +7486,81 @@ public class Misc2Test extends CommonTestMethodBase {
         @Override
         public String toString() {
             return "NonStringConstructorClass [something=" + something + "]";
+        }
+    }
+
+    @Test(timeout = 10000L)
+    public void testFireUntilHaltWithForceEagerActivation() throws InterruptedException {
+        String drl = "global java.util.List list\n" +
+                     "rule \"String detector\"\n" +
+                     "    when\n" +
+                     "        $s : String( )\n" +
+                     "    then\n" +
+                     "        list.add($s);\n" +
+                     "end";
+
+        KieSessionConfiguration config = KieServices.Factory.get().newKieSessionConfiguration();
+        config.setOption( ForceEagerActivationOption.YES);
+
+        final KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession(config, null);
+
+        final Integer monitor = 42;
+        int factsNr = 5;
+
+        List<String> list = new NotifyingList<String>( factsNr, new Runnable() {
+            @Override
+            public void run() {
+                synchronized (monitor) {
+                    monitor.notifyAll();
+                }
+            }
+        } );
+
+        ksession.setGlobal( "list", list );
+
+        // thread for firing until halt
+        ExecutorService thread = Executors.newSingleThreadExecutor();
+        thread.submit(new Runnable() {
+
+            @Override
+            public void run() {
+                ksession.fireUntilHalt();
+            }
+        });
+
+        for (int i = 0; i < factsNr; i++) {
+            ksession.insert("" + i);
+        }
+
+        // wait for rule to fire
+        synchronized (monitor) {
+            if (list.size() < factsNr) {
+                monitor.wait();
+            }
+        }
+
+        assertEquals( factsNr, list.size() );
+        ksession.halt();
+    }
+
+    public static class NotifyingList<T> extends ArrayList<T> {
+        private final int limit;
+        private final Runnable listener;
+
+        public NotifyingList( int limit, Runnable listener ) {
+            this.limit = limit;
+            this.listener = listener;
+        }
+
+        @Override
+        public boolean add( T t ) {
+            boolean result = super.add( t );
+            if (size() == limit) {
+                listener.run();
+            }
+            return result;
         }
     }
 }

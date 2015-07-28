@@ -209,6 +209,8 @@ public interface InternalWorkingMemory
     void flushPropagationsOnFireUntilHalt( boolean fired, PropagationEntry propagationEntry );
     void flushNonMarshallablePropagations();
 
+    void notifyEngineInactive();
+
     boolean hasPendingPropagations();
     PropagationEntry takeAllPropagations();
 

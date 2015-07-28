@@ -29,6 +29,8 @@ public interface PropagationList {
     void flushOnFireUntilHalt( boolean fired );
     void flushOnFireUntilHalt( boolean fired, PropagationEntry currentHead );
 
+    void onEngineInactive();
+
     void reset();
 
     boolean isEmpty();

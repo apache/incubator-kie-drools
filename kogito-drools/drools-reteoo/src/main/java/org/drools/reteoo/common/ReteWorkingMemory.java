@@ -29,7 +29,6 @@ import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.PropagationEntry;
-import org.drools.core.phreak.SynchronizedBypassPropagationList;
 import org.drools.core.reteoo.LIANodePropagation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.PropagationContext;
@@ -74,7 +73,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
     @Override
     protected void init() {
         this.actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
-        this.propagationList = new SynchronizedBypassPropagationList(this);
+        this.propagationList = new RetePropagationList(this);
     }
 
     @Override
