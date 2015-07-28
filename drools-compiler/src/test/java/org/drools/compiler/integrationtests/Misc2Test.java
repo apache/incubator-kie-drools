@@ -7424,4 +7424,64 @@ public class Misc2Test extends CommonTestMethodBase {
     public static int parseInt(String s) {
         return 0;
     }
+
+    @Test
+    public void testJittedConstraintComparisonWithIncompatibleObjects() {
+        // DROOLS-858
+        String drl =
+                "package org.drools.compiler.integrationtests\n"
+                + "import java.util.Map.Entry\n"
+                + "import java.util.Map\n"
+                + "import " + NonStringConstructorClass.class.getCanonicalName() + "\n"
+                + "global java.util.List list\n"
+                + "rule \"FailOnNonStringConstructor\"\n"
+                + "    when \n"
+                + "        $map : Map()\n"
+                + "        $simpleTestObject : NonStringConstructorClass (something==\"simpleTestObject\")\n"
+                + "        Entry (\n"
+                + "            getKey() == $simpleTestObject\n"
+                + "        ) from $map.entrySet()\n"
+                + "    then\n"
+                + "        list.add(\"Fired\");\n"
+                + "end";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<Object> globalList = new ArrayList<Object>();
+        ksession.setGlobal("list", globalList);
+
+        NonStringConstructorClass simpleTestObject = new NonStringConstructorClass();
+        simpleTestObject.setSomething("simpleTestObject");
+
+        Map<Object, Object> map = new HashMap<Object, Object>();
+        map.put("someOtherValue", "someOtherValue");
+        map.put(simpleTestObject, "someValue");
+
+        List<Object> list = new ArrayList<Object>();
+        ksession.insert( map );
+        ksession.insert( simpleTestObject );
+
+        ksession.fireAllRules();
+
+        Assert.assertEquals(1, globalList.size());
+    }
+
+    public static class NonStringConstructorClass {
+        private String something;
+
+        public String getSomething() {
+            return something;
+        }
+
+        public void setSomething(String something) {
+            this.something = something;
+        }
+
+        @Override
+        public String toString() {
+            return "NonStringConstructorClass [something=" + something + "]";
+        }
+    }
 }
