@@ -315,7 +315,7 @@ public class ASMConditionEvaluatorJitter {
 
         private void ensureNotNullArgs(Expression exp, Label nullArg) {
             if (exp instanceof FixedExpression) {
-                if (((FixedExpression) exp).canBeNull()) {
+                if (exp.canBeNull()) {
                     mv.visitJumpInsn(GOTO, nullArg);
                 }
             } else if (exp instanceof EvaluatedExpression) {
@@ -549,11 +549,17 @@ public class ASMConditionEvaluatorJitter {
             }
 
             if (!toType.isAssignableFrom(fromType)) {
-                mv.visitTypeInsn(NEW, internalName(toType));
-                mv.visitInsn(DUP);
-                load(regNr);
-                coerceByConstructor(fromType, toType);
-                store(regNr, toType);
+                if (canBeCoercedByStringConstructor(toType)) {
+                    mv.visitTypeInsn( NEW, internalName( toType ) );
+                    mv.visitInsn( DUP );
+                    load( regNr );
+                    coerceByConstructor( fromType, toType );
+                    store( regNr, toType );
+                } else {
+                    mv.visitInsn(ACONST_NULL);
+                    mv.visitVarInsn(ASTORE, regNr);
+                    mv.visitJumpInsn(GOTO, nullLabel);
+                }
             }
 
             if (isNumber) {
@@ -569,6 +575,17 @@ public class ASMConditionEvaluatorJitter {
             }
 
             mv.visitLabel(endOfCoercionLabel);
+        }
+
+        private boolean canBeCoercedByStringConstructor(Class<?> type) {
+            if (type == Character.class) {
+                return true;
+            }
+            try {
+                return type.getConstructor(String.class) != null;
+            } catch (NoSuchMethodException nme) {
+                return false;
+            }
         }
 
         private void coerceByConstructor(Class<?> fromType, Class<?> toType) {
