@@ -50,6 +50,7 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
     // ************************************************************************
 
     /**
+     * @param xStreamAnnotations never null
      * @see XStream#processAnnotations(Class[])
      */
     public void addXStreamAnnotations(Class... xStreamAnnotations) {

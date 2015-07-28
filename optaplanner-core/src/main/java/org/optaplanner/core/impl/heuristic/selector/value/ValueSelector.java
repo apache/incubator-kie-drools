@@ -56,6 +56,7 @@ public interface ValueSelector extends Selector {
      * This returns an ending {@link Iterator}, that tries to match {@link #iterator(Object)} as much as possible,
      * but return each distinct element only once
      * and therefore it might not respect the configuration of this {@link ValueSelector} entirely.
+     * @param entity never null
      * @return never null
      * @see #iterator(Object)
      */

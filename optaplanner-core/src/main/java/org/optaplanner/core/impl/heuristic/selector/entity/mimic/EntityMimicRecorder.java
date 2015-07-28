@@ -29,26 +29,31 @@ public interface EntityMimicRecorder {
     void addMimicReplayingEntitySelector(MimicReplayingEntitySelector replayingEntitySelector);
 
     /**
+     * @return As defined by {@link EntitySelector#getEntityDescriptor()}
      * @see EntitySelector#getEntityDescriptor()
      */
     EntityDescriptor getEntityDescriptor();
 
     /**
+     * @return As defined by {@link EntitySelector#isCountable()}
      * @see EntitySelector#isCountable()
      */
     boolean isCountable();
 
     /**
+     * @return As defined by {@link EntitySelector#isNeverEnding()}
      * @see EntitySelector#isNeverEnding()
      */
     boolean isNeverEnding();
 
     /**
+     * @return As defined by {@link EntitySelector#getSize()}
      * @see EntitySelector#getSize()
      */
     long getSize();
 
     /**
+     * @return As defined by {@link EntitySelector#endingIterator()}
      * @see EntitySelector#endingIterator()
      */
     Iterator<Object> endingIterator();

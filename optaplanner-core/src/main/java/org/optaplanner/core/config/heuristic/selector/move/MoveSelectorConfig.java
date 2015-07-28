@@ -204,6 +204,7 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
     }
 
     /**
+     * @param configPolicy never null
      * @return null if no unfolding is needed
      */
     protected MoveSelectorConfig buildUnfoldedMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {

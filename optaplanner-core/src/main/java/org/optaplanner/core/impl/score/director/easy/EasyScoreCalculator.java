@@ -24,7 +24,7 @@ import org.optaplanner.core.impl.heuristic.move.Move;
  * Used for easy java {@link Score} calculation. This is non-incremental calculation, which is slow.
  * <p>
  * An implementation must be stateless.
- * @param <Sol>
+ * @param <Sol> Subclass of {@link Solution}
  * @see EasyScoreDirector
  */
 public interface EasyScoreCalculator<Sol extends Solution> {

@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * Allows a {@link IncrementalScoreCalculator} to report {@link ConstraintMatchTotal}s
  * for explaining a score (= which score constraints match for how much)
  * and also for score corruption analysis.
- * @param <Sol>
+ * @param <Sol> Subclass of {@link Solution}
  * @see IncrementalScoreCalculator
  */
 public interface ConstraintMatchAwareIncrementalScoreCalculator<Sol extends Solution>

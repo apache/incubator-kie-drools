@@ -36,6 +36,7 @@ public class CompositeMove extends AbstractMove {
 
     /**
      * @param moves never null, sometimes empty. Do not modify this argument afterwards or the CompositeMove corrupts.
+     * @return never null
      */
     public static Move buildMove(Move... moves) {
         int size = moves.length;
@@ -50,6 +51,7 @@ public class CompositeMove extends AbstractMove {
 
     /**
      * @param moveList never null, sometimes empty
+     * @return never null
      */
     public static Move buildMove(List<Move> moveList) {
         int size = moveList.size();

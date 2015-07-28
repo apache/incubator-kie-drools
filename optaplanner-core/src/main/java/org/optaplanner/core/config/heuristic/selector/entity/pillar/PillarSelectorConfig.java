@@ -86,6 +86,7 @@ public class PillarSelectorConfig extends SelectorConfig {
      * then it should be at least this {@link SelectionCacheType} because an ancestor already uses such caching
      * and less would be pointless.
      * @param inheritedSelectionOrder never null
+     * @param variableNameIncludeList sometimes null
      * @return never null
      */
     public PillarSelector buildPillarSelector(HeuristicConfigPolicy configPolicy,

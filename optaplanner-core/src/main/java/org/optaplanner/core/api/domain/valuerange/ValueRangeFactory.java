@@ -76,6 +76,7 @@ public class ValueRangeFactory {
      * Build an uncountable {@link ValueRange} of all {@code double} values between 2 bounds.
      * @param from inclusive minimum
      * @param to exclusive maximum, {@code >= from}
+     * @return never null
      */
     public static ValueRange<Double> createDoubleValueRange(double from, double to) {
         return new DoubleValueRange(from, to);
@@ -85,6 +86,7 @@ public class ValueRangeFactory {
      * Build a {@link CountableValueRange} of all {@link BigInteger} values between 2 bounds.
      * @param from inclusive minimum
      * @param to exclusive maximum, {@code >= from}
+     * @return never null
      */
     public static CountableValueRange<BigInteger> createBigIntegerValueRange(BigInteger from, BigInteger to) {
         return new BigIntegerValueRange(from, to);
@@ -95,6 +97,7 @@ public class ValueRangeFactory {
      * @param from inclusive minimum
      * @param to exclusive maximum, {@code >= from}
      * @param incrementUnit {@code > 0}
+     * @return never null
      */
     public static CountableValueRange<BigInteger> createBigIntegerValueRange(BigInteger from, BigInteger to, BigInteger incrementUnit) {
         return new BigIntegerValueRange(from, to, incrementUnit);
@@ -105,6 +108,7 @@ public class ValueRangeFactory {
      * All parameters must have the same {@link BigDecimal#scale()}.
      * @param from inclusive minimum
      * @param to exclusive maximum, {@code >= from}
+     * @return never null
      */
     public static CountableValueRange<BigDecimal> createBigDecimalValueRange(BigDecimal from, BigDecimal to) {
         return new BigDecimalValueRange(from, to);
@@ -116,6 +120,7 @@ public class ValueRangeFactory {
      * @param from inclusive minimum
      * @param to exclusive maximum, {@code >= from}
      * @param incrementUnit {@code > 0}
+     * @return never null
      */
     public static CountableValueRange<BigDecimal> createBigDecimalValueRange(BigDecimal from, BigDecimal to, BigDecimal incrementUnit) {
         return new BigDecimalValueRange(from, to, incrementUnit);

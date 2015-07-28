@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
  * This is much faster than {@link EasyScoreCalculator} but requires much more code to implement too.
  * <p>
  * Any implementation is naturally stateful.
- * @param <Sol>
+ * @param <Sol> Subclass of {@link Solution}
  * @see IncrementalScoreDirector
  */
 public interface IncrementalScoreCalculator<Sol extends Solution> {
