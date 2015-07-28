@@ -27,7 +27,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -53,6 +55,7 @@ import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.cloner.FieldAccessingSolutionCloner;
 import org.optaplanner.core.impl.domain.solution.cloner.PlanningCloneableSolutionCloner;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.slf4j.Logger;
@@ -275,6 +278,7 @@ public class SolutionDescriptor {
         for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
             entityDescriptor.linkShadowSources(descriptorPolicy);
         }
+        determineGlobalShadowOrder();
         if (logger.isTraceEnabled()) {
             logger.trace("    Model annotations parsed for Solution {}:", solutionClass.getSimpleName());
             for (Map.Entry<Class<?>, EntityDescriptor> entry : entityDescriptorMap.entrySet()) {
@@ -285,6 +289,43 @@ public class SolutionDescriptor {
                             variableDescriptor instanceof GenuineVariableDescriptor ? "genuine" : "shadow");
                 }
             }
+        }
+    }
+
+    private void determineGlobalShadowOrder() {
+        List<ShadowVariableDescriptor> orderedShadowList = new LinkedList<ShadowVariableDescriptor>();
+        for (EntityDescriptor entityDescriptor : entityDescriptorMap.values()) {
+            for (ShadowVariableDescriptor shadow : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
+                Integer insertionIndex = null;
+                for (ListIterator<ShadowVariableDescriptor> it = orderedShadowList.listIterator(); it.hasNext(); ) {
+                    int index = it.nextIndex();
+                    ShadowVariableDescriptor orderedShadow = it.next();
+                    if (insertionIndex == null) {
+                        if (orderedShadow.getSourceVariableDescriptorList().contains(shadow)) {
+                            insertionIndex = index;
+                        }
+                    }
+                    if (insertionIndex != null) {
+                        if (shadow.getSourceVariableDescriptorList().contains(orderedShadow)) {
+                            ShadowVariableDescriptor otherOrderedShadow = orderedShadowList.get(insertionIndex);
+                            throw new IllegalStateException("There is a cyclic shadow variable path"
+                                    + " because the shadowVariable (" + shadow.getSimpleEntityAndVariableName()
+                                    + ") must be earlier than (" + otherOrderedShadow.getSimpleEntityAndVariableName()
+                                    + ") but later than (" + orderedShadow.getSimpleEntityAndVariableName() + ").");
+                        }
+                    }
+                }
+                if (insertionIndex != null) {
+                    orderedShadowList.add(insertionIndex, shadow);
+                } else {
+                    orderedShadowList.add(shadow);
+                }
+            }
+        }
+        for (ListIterator<ShadowVariableDescriptor> it = orderedShadowList.listIterator(); it.hasNext(); ) {
+            int index = it.nextIndex();
+            ShadowVariableDescriptor orderedShadow = it.next();
+            orderedShadow.setGlobalShadowOrder(index);
         }
     }
 

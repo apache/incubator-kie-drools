@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.anchor;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -68,6 +71,11 @@ public class AnchorShadowVariableDescriptor extends ShadowVariableDescriptor {
                     + ") which is not chained.");
         }
         sourceVariableDescriptor.registerShadowVariableDescriptor(this);
+    }
+
+    @Override
+    public List<VariableDescriptor> getSourceVariableDescriptorList() {
+        return Collections.singletonList(sourceVariableDescriptor);
     }
 
     // ************************************************************************

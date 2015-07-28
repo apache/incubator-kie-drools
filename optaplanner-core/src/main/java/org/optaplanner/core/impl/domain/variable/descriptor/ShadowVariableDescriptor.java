@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
+import java.util.List;
+
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
@@ -25,6 +27,8 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public abstract class ShadowVariableDescriptor extends VariableDescriptor {
 
+    private int globalShadowOrder = Integer.MAX_VALUE;
+
     public ShadowVariableDescriptor(EntityDescriptor entityDescriptor,
             MemberAccessor variableMemberAccessor) {
         super(entityDescriptor, variableMemberAccessor);
@@ -33,6 +37,16 @@ public abstract class ShadowVariableDescriptor extends VariableDescriptor {
     public abstract void processAnnotations(DescriptorPolicy descriptorPolicy);
 
     public abstract void linkShadowSources(DescriptorPolicy descriptorPolicy);
+
+    public abstract List<VariableDescriptor> getSourceVariableDescriptorList();
+
+    public int getGlobalShadowOrder() {
+        return globalShadowOrder;
+    }
+
+    public void setGlobalShadowOrder(int globalShadowOrder) {
+        this.globalShadowOrder = globalShadowOrder;
+    }
 
     // ************************************************************************
     // Worker methods

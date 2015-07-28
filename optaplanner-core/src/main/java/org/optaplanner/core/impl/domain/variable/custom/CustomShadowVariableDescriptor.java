@@ -98,6 +98,11 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
         }
     }
 
+    @Override
+    public List<VariableDescriptor> getSourceVariableDescriptorList() {
+        return sourceVariableDescriptorList;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

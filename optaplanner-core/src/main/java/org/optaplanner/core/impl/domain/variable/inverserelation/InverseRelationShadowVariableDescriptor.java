@@ -19,6 +19,8 @@ package org.optaplanner.core.impl.domain.variable.inverserelation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
@@ -130,6 +132,11 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
             }
         }
         sourceVariableDescriptor.registerShadowVariableDescriptor(this);
+    }
+
+    @Override
+    public List<VariableDescriptor> getSourceVariableDescriptorList() {
+        return Collections.singletonList(sourceVariableDescriptor);
     }
 
     // ************************************************************************

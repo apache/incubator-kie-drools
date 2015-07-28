@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.domain.variable.custom;
 
 import java.util.Arrays;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -34,7 +33,7 @@ import static org.junit.Assert.*;
 
 public class CustomVariableListenerTest {
 
-    @Test(expected = IllegalStateException.class) @Ignore // TODO Fix PLANNER-400
+    @Test(expected = IllegalStateException.class)
     public void cyclic() {
         SolutionDescriptor solutionDescriptor = TestdataCyclicShadowedSolution.buildSolutionDescriptor();
     }
