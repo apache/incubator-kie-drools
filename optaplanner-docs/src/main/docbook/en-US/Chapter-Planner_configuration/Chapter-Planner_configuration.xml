@@ -457,7 +457,7 @@ public class Lecture {
           time in the score constraints and put the result per teacher into a logically inserted score object.</para>
 
           <para>If historic data needs to be considered too, then create problem fact to hold the total of the historic
-          assignments up to, but <emphasis>not including</emphasis>, the planning window (so it doesn't change when a
+          assignments up to, but <emphasis>not including</emphasis>, the planning window (so that it does not change when a
           planning entity changes) and let the score constraints take it into account.</para>
         </note>
       </section>
@@ -467,7 +467,7 @@ public class Lecture {
 
         <para>Some optimization algorithms work more efficiently if they have an estimation of which planning entities
         are more difficult to plan. For example: in bin packing bigger items are harder to fit, in course scheduling
-        lectures with more students are more difficult to schedule and in n queens the middle queens are more difficult
+        lectures with more students are more difficult to schedule, and in n queens the middle queens are more difficult
         to fit on the board.</para>
 
         <para>Therefore, you can set a <literal>difficultyComparatorClass</literal> to the
@@ -490,7 +490,7 @@ public class CloudProcess {
 }</programlisting>
 
         <para>Alternatively, you can also set a <literal>difficultyWeightFactoryClass</literal> to the
-        <literal>@PlanningEntity</literal> annotation, so you have access to the rest of the problem facts from the
+        <literal>@PlanningEntity</literal> annotation, so that you have access to the rest of the problem facts from the
         <literal>Solution</literal> too:</para>
 
         <programlisting language="java">@PlanningEntity(difficultyWeightFactoryClass = QueenDifficultyWeightFactory.class)
@@ -502,14 +502,14 @@ public class Queen {
 
         <important>
           <para>Difficulty should be implemented ascending: easy entities are lower, difficult entities are higher. For
-          example in bin packing: small item &lt; medium item &lt; big item.</para>
+          example, in bin packing: small item &lt; medium item &lt; big item.</para>
 
           <para>Even though some algorithms start with the more difficult entities first, they just reverse the
           ordering.</para>
         </important>
 
         <para><emphasis>None of the current planning variable states should be used to compare planning entity
-        difficult.</emphasis> During Construction Heuristics, those variables are likely to be <literal>null</literal>
+        difficulty.</emphasis> During Construction Heuristics, those variables are likely to be <literal>null</literal>
         anyway. For example, a <literal>Queen</literal>'s <literal>row</literal> variable should not be used.</para>
       </section>
     </section>
@@ -595,7 +595,7 @@ public class Queen {
         </note>
 
         <para><link linkend="repeatedPlanning">Repeated planning</link> (especially <link
-        linkend="realTimePlanning">real-time planning</link>) does not mix well with a nullable planning variable: every
+        linkend="realTimePlanning">real-time planning</link>) does not mix well with a nullable planning variable. Every
         time the Solver starts or a problem fact change is made, the <link linkend="constructionHeuristics">Construction
         Heuristics</link> will try to initialize all the <literal>null</literal> variables again, which can be a huge
         waste of time. One way to deal with this, is to change when a planning entity should be reinitialized with an
@@ -670,7 +670,7 @@ public class Queen {
           <itemizedlist>
             <listitem>
               <para><literal>Collection</literal>: The value range is defined by a <literal>Collection</literal>
-              (usually a <literal>List</literal>) of it's possible values.</para>
+              (usually a <literal>List</literal>) of its possible values.</para>
             </listitem>
 
             <listitem>
@@ -685,7 +685,7 @@ public class Queen {
           <para>All instances of the same planning entity class share the same set of possible planning values for that
           planning variable. This is the most common way to configure a value range.</para>
 
-          <para>The <literal>Solution</literal> implementation has method which returns a <literal>Collection</literal>
+          <para>The <literal>Solution</literal> implementation has method that returns a <literal>Collection</literal>
           (or a <literal>ValueRange</literal>). Any value from that <literal>Collection</literal> is a possible planning
           value for this planning variable.</para>
 
@@ -749,17 +749,16 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           limited in his room value range (because sometimes there is no other way).</para>
 
           <note>
-            <para>By limiting the value range specifically of 1 planning entity, you are effectively creating a
-            <emphasis>built-in hard constraint</emphasis>. This can be a very good thing, as the number of possible
-            solutions is severely lowered. But this can also be a bad thing because it takes away the freedom of the
+            <para>By limiting the value range specifically of one planning entity, you are effectively creating a
+            <emphasis>built-in hard constraint</emphasis>. This can have the benefit of severely lowering the number of possible solutions; however, it can also away the freedom of the
             optimization algorithms to temporarily break that constraint in order to escape from a local optimum.</para>
           </note>
 
           <para>A planning entity should <emphasis>not</emphasis> use other planning entities to determinate its value
-          range. That would only try to make it solve the planning problem itself and interfere with the optimization
+          range. That would only try to make the planning entity solve the planning problem itself and interfere with the optimization
           algorithms.</para>
 
-          <para>Every entity has its own <literal>List</literal> instance, except if multiple entity have the same value
+          <para>Every entity has its own <literal>List</literal> instance, unless multiple entities have the same value
           range. For example, if teacher A and B belong to the same department, they use the same
           <literal>List&lt;Room&gt;</literal> instance. Furthermore, each <literal>List</literal> contains a subset of
           the same set of planning value instances. For example, if department A and B can both use room X, then their
@@ -772,7 +771,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           </note>
 
           <warning>
-            <para>A <literal>ValueRangeProvider</literal> on the planning entity is not (yet) compatible with a <link
+            <para>A <literal>ValueRangeProvider</literal> on the planning entity is not currently compatible with a <link
             linkend="chainedPlanningVariable">chained</link> variable.</para>
           </warning>
         </section>
@@ -790,7 +789,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
           <para>A <literal>ValueRange</literal> uses far less memory, because it only holds the bounds. In the example
           above, a <literal>Collection</literal> would need to hold all <literal>5000</literal> ints, instead of just
-          the 2 bounds.</para>
+          the two bounds.</para>
 
           <para>Furthermore, an <literal>incrementUnit</literal> can be specified, for example if you have to buy stocks
           in units of 200 pieces:</para>
@@ -803,7 +802,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
           <note>
             <para>Return <literal>CountableValueRange</literal> instead of <literal>ValueRange</literal> whenever
-            possible (so Planner knows it's countable).</para>
+            possible (so Planner knows that it's countable).</para>
           </note>
 
           <para>The <literal>ValueRangeFactory</literal> has creation methods for several value class types:</para>
@@ -908,7 +907,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
         <para><emphasis>None of the current planning variable state in any of the planning entities should be used to
         compare planning values.</emphasis> During construction heuristics, those variables are likely to be
-        <literal>null</literal> anyway. For example, none of the <literal>row</literal> variables of any
+        <literal>null</literal>. For example, none of the <literal>row</literal> variables of any
         <literal>Queen</literal> may be used to determine the strength of a <literal>Row</literal>.</para>
       </section>
 
@@ -950,11 +949,11 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           </listitem>
 
           <listitem>
-            <para>Every chain always has exactly 1 anchor. The anchor is a problem fact, never a planning entity.</para>
+            <para>Every chain always has exactly one anchor. The anchor is a problem fact, never a planning entity.</para>
           </listitem>
 
           <listitem>
-            <para>A chain is never a tree, it is always a line. Every anchor or planning entity has at most 1 trailing
+            <para>A chain is never a tree, it is always a line. Every anchor or planning entity has at most one trailing
             planning entity.</para>
           </listitem>
 
@@ -976,7 +975,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           in a database) and implement a score constraint for the last entity back to the anchor.</para>
         </note>
 
-        <para>The optimization algorithms and built-in <literal>Move</literal>'s do chain correction to guarantee that
+        <para>The optimization algorithms and built-in <literal>Move</literal>s do chain correction to guarantee that
         the model stays valid:</para>
 
         <mediaobject>
@@ -1030,15 +1029,15 @@ public class Visit ... implements Standstill {
 
 }</programlisting>
 
-        <para>Notice how 2 value range providers are usually combined:</para>
+        <para>Notice how two value range providers are usually combined:</para>
 
         <itemizedlist>
           <listitem>
-            <para>The value range provider which holds the anchors, for example <literal>domicileList</literal>.</para>
+            <para>The value range provider that holds the anchors, for example <literal>domicileList</literal>.</para>
           </listitem>
 
           <listitem>
-            <para>The value range provider which holds the initialized planning entities, for example
+            <para>The value range provider that holds the initialized planning entities, for example
             <literal>visitList</literal>.</para>
           </listitem>
         </itemizedlist>
@@ -1055,7 +1054,7 @@ public class Visit ... implements Standstill {
         variables. Even though such a variable violates the principle of normalization by definition, in some use cases
         it can be very practical to use a shadow variable, especially to express the constraints more naturally. For
         example in vehicle routing with time windows: the arrival time at a customer for a vehicle can be calculated
-        based on the previously visited customers of that vehicle (and the known travel times between 2
+        based on the previously visited customers of that vehicle (and the known travel times between two
         locations).</para>
 
         <mediaobject>
@@ -1078,8 +1077,8 @@ public class Visit ... implements Standstill {
       <section xml:id="bidirectionalVariable">
         <title>Bi-directional Variable (Inverse Relation Shadow Variable)</title>
 
-        <para>2 variables are bi-directional if their instances always point to each other (unless one side points to
-        <literal>null</literal> and the other side doesn't exist). So if A references B, then B references A.</para>
+        <para>Two variables are bi-directional if their instances always point to each other (unless one side points to
+        <literal>null</literal> and the other side does not exist). So if A references B, then B references A.</para>
 
         <mediaobject>
           <imageobject>
@@ -1088,7 +1087,7 @@ public class Visit ... implements Standstill {
         </mediaobject>
 
         <para>For a non-chained planning variable, the bi-directional relationship must be a many to one relationship.
-        To map a bi-directional relationship between 2 planning variables, annotate the master side (which is the
+        To map a bi-directional relationship between two planning variables, annotate the master side (which is the
         genuine side) as a normal planning variable:</para>
 
         <programlisting language="java">@PlanningEntity
@@ -1122,7 +1121,7 @@ public class CloudComputer {
 
         <note>
           <para>The shadow property, which is a <literal>Collection</literal>, can never be <literal>null</literal>. If
-          no genuine variable is referencing that shadow entity, then it's an empty <literal>Collection</literal>.
+          no genuine variable is referencing that shadow entity, then it is an empty <literal>Collection</literal>.
           Furthermore it must be a mutable <literal>Collection</literal> because once the Solver starts initializing or
           changing genuine planning variables, it will add and remove to the <literal>Collection</literal>s of those
           shadow variables accordingly.</para>
@@ -1210,7 +1209,7 @@ public class Customer {
           that that <literal>entityClass</literal> is also properly configured as a planning entity class in the solver
           config, or the <literal>VariableListener</literal> will simply never trigger.</para>
 
-          <para>Any class that has at least 1 shadow variable, is a planning entity class, even it has no genuine
+          <para>Any class that has at least one shadow variable, is a planning entity class, even it has no genuine
           planning variables.</para>
         </note>
 
@@ -1262,8 +1261,8 @@ public class Customer {
         <title>Planning Problem Instance</title>
 
         <para>A dataset for a planning problem needs to be wrapped in a class for the <literal>Solver</literal> to
-        solve. You must implement this class. For example in n queens, this in the <literal>NQueens</literal> class
-        which contains a <literal>Column</literal> list, a <literal>Row</literal> list and a <literal>Queen</literal>
+        solve. You must implement this class. For example in n queens, this in the <literal>NQueens</literal> class,
+        which contains a <literal>Column</literal> list, a <literal>Row</literal> list, and a <literal>Queen</literal>
         list.</para>
 
         <para>A planning problem is actually a unsolved planning solution or - stated differently - an uninitialized
@@ -1271,7 +1270,7 @@ public class Customer {
         interface. For example in n queens, that <literal>NQueens</literal> class implements
         <literal>Solution</literal>, yet every <literal>Queen</literal> in a fresh <literal>NQueens</literal> class is
         not yet assigned to a <literal>Row</literal> (their <literal>row</literal> property is <literal>null</literal>).
-        So it's not a feasible solution. It's not even a possible solution. It's an uninitialized solution.</para>
+        This is not a feasible solution. It's not even a possible solution. It's an uninitialized solution.</para>
       </section>
 
       <section xml:id="solutionInterface">
@@ -1388,22 +1387,22 @@ public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
         <note>
           <para>A common mistake is to use <literal>facts.add(...)</literal> instead of
           <literal>fact.addAll(...)</literal> for a <literal>Collection</literal>, which leads to score rules failing to
-          match because the elements of that <literal>Collection</literal> aren't in the Drools working memory.</para>
+          match because the elements of that <literal>Collection</literal> are not in the Drools working memory.</para>
         </note>
 
-        <para>The <literal>getProblemFacts()</literal> method is not called much: at most only once per solver phase per
+        <para>The <literal>getProblemFacts()</literal> method is not called often: at most only once per solver phase per
         solver thread.</para>
 
         <section xml:id="cachedProblemFact">
           <title>Cached Problem Fact</title>
 
-          <para>A cached problem fact is a problem fact that doesn't exist in the real domain model, but is calculated
-          before the <literal>Solver</literal> really starts solving. The <literal>getProblemFacts()</literal> method
-          has the chance to enrich the domain model with such cached problem facts, which can lead to simpler and faster
-          score constraints.</para>
+          <para>A cached problem fact is a problem fact that does not exist in the real domain model, but is calculated
+          before the <literal>Solver</literal> really starts solving. The <literal>getProblemFacts()</literal> method has
+          the chance to enrich the domain model with such cached problem facts, which can lead to simpler and faster score
+          constraints.</para>
 
-          <para>For example in examination, a cached problem fact <literal>TopicConflict</literal> is created for every
-          2 <literal>Topic</literal>'s which share at least 1 <literal>Student</literal>.</para>
+          <para>For example in examination, a cached problem fact <literal>TopicConflict</literal> is created for every two
+          <literal>Topic</literal>s which share at least one <literal>Student</literal>.</para>
 
           <programlisting language="java">    public Collection&lt;? extends Object&gt; getProblemFacts() {
         List&lt;Object&gt; facts = new ArrayList&lt;Object&gt;();
@@ -1433,10 +1432,10 @@ public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
         return topicConflictList;
     }</programlisting>
 
-          <para>Any score constraint that needs to check if no 2 exams have a topic which share a student are being
-          scheduled close together (depending on the constraint: at the same time, in a row or in the same day), can
-          simply use the <literal>TopicConflict</literal> instance as a problem fact, instead of having to combine every
-          2 <literal>Student</literal> instances.</para>
+          <para>Where a score constraint needs to check that no two exams with a topic that shares a student are scheduled close 
+          together (depending on the constraint: at the same time, in a row, or in the same day), the <literal>TopicConflict</literal>
+          instance can be used as a problem fact, rather than having to combine every two <literal>Student</literal> instances.
+          </para>
         </section>
       </section>
 
@@ -1493,7 +1492,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
           <listitem>
             <para>The clone must use different, cloned instances of the entities and entity collections. Changes to an
-            original <literal>Solution</literal>'s entity's variables must not effect its clone.</para>
+            original <literal>Solution</literal> entity's variables must not effect its clone.</para>
           </listitem>
         </itemizedlist>
 
@@ -1503,7 +1502,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           </imageobject>
         </mediaobject>
 
-        <para><emphasis role="bold">Implementing a planning clone method is hard, therefore you don't need to implement
+        <para><emphasis role="bold">Implementing a planning clone method is hard, therefore you do not need to implement
         it.</emphasis></para>
 
         <section xml:id="fieldAccessingSolutionCloner">
@@ -1512,7 +1511,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           <para>This <literal>SolutionCloner</literal> is used by default. It works well for most use cases.</para>
 
           <warning>
-            <para>When the <literal>FieldAccessingSolutionCloner</literal> clones your entity collection, it might not
+            <para>When the <literal>FieldAccessingSolutionCloner</literal> clones your entity collection, it may not
             recognize the implementation and replace it with <literal>ArrayList</literal>,
             <literal>LinkedHashSet</literal> or <literal>TreeSet</literal> (whichever is more applicable). It recognizes
             most of the common JDK <literal>Collection</literal> implementations.</para>
@@ -1531,8 +1530,7 @@ public class SeatDesignationDependency {
 }</programlisting>
 
           <para>In the example above, because <literal>SeatDesignation</literal> is a planning entity (which is deep
-          planning cloned automatically), <literal>SeatDesignationDependency</literal> must be deep planning cloned
-          too.</para>
+          planning cloned automatically), <literal>SeatDesignationDependency</literal> must also be deep planning cloned.</para>
 
           <para>Alternatively, the <literal>@DeepPlanningClone</literal> annotation can also be used on a getter
           method.</para>
@@ -1578,16 +1576,16 @@ public class SeatDesignationDependency {
 
           <para><emphasis>The <literal>planningClone()</literal> method should only deep clone the planning
           entities.</emphasis> Notice that the problem facts, such as <literal>Column</literal> and
-          <literal>Row</literal> are normally <emphasis>not</emphasis> cloned: even their <literal>List</literal>
-          instances are <emphasis>not</emphasis> cloned. If you were to clone the problem facts too, then you'd have to
+          <literal>Row</literal> are <emphasis>not</emphasis> normally cloned: even their <literal>List</literal>
+          instances are <emphasis>not</emphasis> cloned. If you were to clone the problem facts too, then you would have to
           make sure that the new planning entity clones also refer to the new problem facts clones used by the solution.
-          For example, if you would clone all <literal>Row</literal> instances, then each <literal>Queen</literal> clone
+          For example, if you were to clone all <literal>Row</literal> instances, then each <literal>Queen</literal> clone
           and the <literal>NQueens</literal> clone itself should refer to those new <literal>Row</literal>
           clones.</para>
 
           <warning>
             <para>Cloning an entity with a <link linkend="chainedPlanningVariable">chained</link> variable is devious: a
-            variable of an entity A might point to another entity B. If A is cloned, then it's variable must point to
+            variable of an entity A might point to another entity B. If A is cloned, then its variable must point to
             the clone of B, not the original B.</para>
           </warning>
         </section>
@@ -1679,9 +1677,9 @@ public class SeatDesignationDependency {
 
 }</programlisting>
 
-      <para>A <literal>Solver</literal> can only solve 1 planning problem instance at a time. A
+      <para>A <literal>Solver</literal> can only solve one planning problem instance at a time. A
       <literal>Solver</literal> should only be accessed from a single thread, except for the methods that are
-      specifically javadocced as being thread-safe. It's built with a <literal>SolverFactory</literal>, do not implement
+      specifically javadocced as being thread-safe. It is built with a <literal>SolverFactory</literal>, do not implement
       or build it yourself.</para>
     </section>
 
@@ -1730,7 +1728,7 @@ public class SeatDesignationDependency {
         changed by the <literal>Solver</literal>, but do not mistake it for the best solution.</para>
 
         <para>The <literal>Solution</literal> instance returned by the <literal>getBestSolution()</literal> method will
-        most likely be a clone of the instance given to the method <literal>solve(Solution)</literal>, which means it's
+        most likely be a clone of the instance given to the method <literal>solve(Solution)</literal>, which means it is
         a different instance.</para>
       </note>
 
@@ -1769,9 +1767,9 @@ public class SeatDesignationDependency {
         ...</para>
 
         <para>This mode is reproducible (see the reproducible mode). It is also intrusive because it calls the method
-        <literal>calculateScore()</literal> more frequently than a non assert mode.</para>
+        <literal>calculateScore()</literal> more frequently than a non-assert mode.</para>
 
-        <para>The FULL_ASSERT mode is horribly slow (because it doesn't rely on incremental score calculation).</para>
+        <para>The FULL_ASSERT mode is horribly slow (because it does not rely on incremental score calculation).</para>
       </section>
 
       <section xml:id="environmentModeNonIntrusiveFullAssert">
@@ -1783,7 +1781,7 @@ public class SeatDesignationDependency {
         <para>This mode is reproducible (see the reproducible mode). It is non-intrusive because it does not call the
         method <literal>calculateScore()</literal> more frequently than a non assert mode.</para>
 
-        <para>The NON_INTRUSIVE_FULL_ASSERT mode is horribly slow (because it doesn't rely on incremental score
+        <para>The NON_INTRUSIVE_FULL_ASSERT mode is horribly slow (because it does not rely on incremental score
         calculation).</para>
       </section>
 
@@ -1799,15 +1797,15 @@ public class SeatDesignationDependency {
 
         <para>The FAST_ASSERT mode is slow.</para>
 
-        <para>It's recommended to write a test case which does a short run of your planning problem with the FAST_ASSERT
+        <para>It is recommended to write a test case that does a short run of your planning problem with the FAST_ASSERT
         mode on.</para>
       </section>
 
       <section xml:id="environmentModeReproducible">
         <title>REPRODUCIBLE (default)</title>
 
-        <para>The reproducible mode is the default mode because it is recommended during development. In this mode, 2
-        runs in the same Planner version will execute the same code in the same order. <emphasis role="bold">Those 2
+        <para>The reproducible mode is the default mode because it is recommended during development. In this mode, two
+        runs in the same Planner version will execute the same code in the same order. <emphasis role="bold">Those two
         runs will have the same result at every step</emphasis>, except if the note below applies. This enables you to
         reproduce bugs consistently. It also allows you to benchmark certain refactorings (such as a score constraint
         performance optimization) fairly across runs.</para>
@@ -1890,8 +1888,8 @@ public class SeatDesignationDependency {
           linkend="scopeOverview">scope overview</link>.</para>
 
           <note>
-            <para>Turning on <literal>trace</literal> logging, will slow down performance considerably: it's often 4
-            times slower. However, it's invaluable during development to discover a bottleneck.</para>
+            <para>Turning on <literal>trace</literal> logging, will slow down performance considerably: it is often four
+            times slower. However, it is invaluable during development to discover a bottleneck.</para>
 
             <para>Even debug logging can slow down performance considerably for fast stepping algorithms (such as Late
             Acceptance and Simulated Annealing), but not for slow stepping algorithms (such as Tabu Search).</para>
@@ -1919,7 +1917,7 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
       facade which delegates every log message to Logback, Apache Commons Logging, Log4j or java.util.logging. Add a
       dependency to the logging adaptor for your logging framework of choice.</para>
 
-      <para>If you're not using any logging framework yet, use Logback by adding this Maven dependency (there is no need
+      <para>If you are not using any logging framework yet, use Logback by adding this Maven dependency (there is no need
       to add an extra bridge dependency):</para>
 
       <programlisting language="xml">    &lt;dependency&gt;
@@ -1939,7 +1937,7 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
 
 &lt;configuration&gt;</programlisting>
 
-      <para>If instead, you're still using Log4J 1.x (and you don't want to switch to its faster successor, Logback),
+      <para>If instead, you are still using Log4J 1.x (and you do not want to switch to its faster successor, Logback),
       add the bridge dependency:</para>
 
       <programlisting language="xml">    &lt;dependency&gt;
