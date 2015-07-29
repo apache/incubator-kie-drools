@@ -314,15 +314,11 @@ public class TerminationConfig implements Cloneable {
     public void shortenTimeMillisSpentLimit(long timeMillisSpentLimit) {
         Long oldLimit = calculateTimeMillisSpentLimit();
         if (oldLimit == null || timeMillisSpentLimit < oldLimit) {
-            overwriteTimeMillisSpentLimit(timeMillisSpentLimit);
+            millisecondsSpentLimit = timeMillisSpentLimit;
+            secondsSpentLimit = null;
+            minutesSpentLimit = null;
+            hoursSpentLimit = null;
         }
-    }
-
-    public void overwriteTimeMillisSpentLimit(long timeMillisSpentLimit) {
-        millisecondsSpentLimit = timeMillisSpentLimit;
-        secondsSpentLimit = null;
-        minutesSpentLimit = null;
-        hoursSpentLimit = null;
     }
 
     public Long calculateUnimprovedTimeMillisSpentLimit() {

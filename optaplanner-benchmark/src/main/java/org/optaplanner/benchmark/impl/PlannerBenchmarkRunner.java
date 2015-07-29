@@ -53,9 +53,9 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     private File benchmarkDirectory = null;
     private BenchmarkReport benchmarkReport = null;
 
-    private ExecutorService executorService;
     private ExecutorService warmUpExecutorService;
     private ExecutorCompletionService<SingleBenchmarkRunner> warmUpExecutorCompletionService;
+    private ExecutorService executorService;
     private BenchmarkResultIO benchmarkResultIO;
 
     private long startingSystemTimeMillis = -1L;
@@ -109,9 +109,9 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         }
         initBenchmarkDirectoryAndSubdirs();
         plannerBenchmarkResult.initSystemProperties();
-        executorService = Executors.newFixedThreadPool(plannerBenchmarkResult.getParallelBenchmarkCount());
         warmUpExecutorService = Executors.newFixedThreadPool(plannerBenchmarkResult.getParallelBenchmarkCount());
         warmUpExecutorCompletionService = new ExecutorCompletionService<SingleBenchmarkRunner>(warmUpExecutorService);
+        executorService = Executors.newFixedThreadPool(plannerBenchmarkResult.getParallelBenchmarkCount());
         benchmarkResultIO = new BenchmarkResultIO();
         logger.info("Benchmarking started: solverBenchmarkResultList size ({}), parallelBenchmarkCount ({}).",
                 solverBenchmarkResultList.size(), plannerBenchmarkResult.getParallelBenchmarkCount());
@@ -138,39 +138,38 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         int solverBenchmarkResultCount = plannerBenchmarkResult.getSolverBenchmarkResultList().size();
         long cyclesCount = Math.round(Math.ceil(solverBenchmarkResultCount / (double) parallelBenchmarkCount));
         long timeLeftPerCycle = Math.round(Math.floor((timeLeftTotal / (double) cyclesCount)));
-        ConcurrentMap<Future<SingleBenchmarkRunner>, SingleBenchmarkRunner> futureMap
-                = new ConcurrentHashMap<Future<SingleBenchmarkRunner>, SingleBenchmarkRunner>(parallelBenchmarkCount);
         Map<SolverBenchmarkResult, TerminationConfig> originalTerminationConfigMap
                 = new HashMap<SolverBenchmarkResult, TerminationConfig>(solverBenchmarkResultCount);
         ConcurrentMap<SolverBenchmarkResult, Integer> singleBenchmarkResultIndexMap
                 = new ConcurrentHashMap<SolverBenchmarkResult, Integer>(solverBenchmarkResultCount);
 
-        warmUpStarted(originalTerminationConfigMap);
-        SolverBenchmarkResult[] solverBenchmarkResultCycleArray = new SolverBenchmarkResult[parallelBenchmarkCount];
+        backupTerminationConfigs(originalTerminationConfigMap);
+        SolverBenchmarkResult[] solverBenchmarkResultCycle = new SolverBenchmarkResult[parallelBenchmarkCount];
         int solverBenchmarkResultIndex = 0;
         for (int i = 0; i < cyclesCount; i++) {
             long timeCycleEnd = System.currentTimeMillis() + timeLeftPerCycle;
             for (int j = 0; j < parallelBenchmarkCount; j++) {
-                solverBenchmarkResultCycleArray[j] = plannerBenchmarkResult.
+                solverBenchmarkResultCycle[j] = plannerBenchmarkResult.
                         getSolverBenchmarkResultList().get(solverBenchmarkResultIndex % solverBenchmarkResultCount);
                 solverBenchmarkResultIndex++;
             }
-            warmUpPopulate(futureMap, singleBenchmarkResultIndexMap, solverBenchmarkResultCycleArray, timeLeftPerCycle);
+            ConcurrentMap<Future<SingleBenchmarkRunner>, SingleBenchmarkRunner> futureMap
+                    = new ConcurrentHashMap<Future<SingleBenchmarkRunner>, SingleBenchmarkRunner>(parallelBenchmarkCount);
+            warmUpPopulate(futureMap, singleBenchmarkResultIndexMap, solverBenchmarkResultCycle, timeLeftPerCycle);
             warmUp(futureMap, singleBenchmarkResultIndexMap, timeCycleEnd);
-            futureMap.clear();
         }
-        warmUpEnded(originalTerminationConfigMap);
+        restoreTerminationConfigs(originalTerminationConfigMap);
         List<Runnable> notFinishedWarmUpList = warmUpExecutorService.shutdownNow();
         if (!notFinishedWarmUpList.isEmpty()) {
-            throw new IllegalStateException("Impossible state: notFinishedWarmUpList is non-empty ("
-                    + notFinishedWarmUpList + ").");
+            throw new IllegalStateException("Impossible state: notFinishedWarmUpList (" + notFinishedWarmUpList
+                    + ") is not empty.");
         }
         logger.info("================================================================================");
         logger.info("Warm up ended");
         logger.info("================================================================================");
     }
 
-    private void warmUpStarted(Map<SolverBenchmarkResult, TerminationConfig> originalTerminationConfigMap) {
+    private void backupTerminationConfigs(Map<SolverBenchmarkResult, TerminationConfig> originalTerminationConfigMap) {
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
             if (!originalTerminationConfigMap.containsKey(solverBenchmarkResult)) {
@@ -187,22 +186,17 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
             TerminationConfig tmpTerminationConfig = originalTerminationConfig == null
                     ? new TerminationConfig() : originalTerminationConfig.clone();
-            tmpTerminationConfig.overwriteTimeMillisSpentLimit(timeLeftPerSolverConfig);
+            tmpTerminationConfig.shortenTimeMillisSpentLimit(timeLeftPerSolverConfig);
             solverBenchmarkResult.getSolverConfig().setTerminationConfig(tmpTerminationConfig);
 
             Integer singleBenchmarkResultIndex = singleBenchmarkResultIndexMap.get(solverBenchmarkResult);
-            if (singleBenchmarkResultIndex == null ||
-                    singleBenchmarkResultIndex >= solverBenchmarkResult.getSingleBenchmarkResultList().size()) {
-                singleBenchmarkResultIndex = 0;
-            }
+            singleBenchmarkResultIndex = (singleBenchmarkResultIndex == null) ? 0 : singleBenchmarkResultIndex % solverBenchmarkResult.getSingleBenchmarkResultList().size();
             SingleBenchmarkResult singleBenchmarkResult
                     = solverBenchmarkResult.getSingleBenchmarkResultList().get(singleBenchmarkResultIndex);
-            if (singleBenchmarkResult != null) {
-                SingleBenchmarkRunner singleBenchmarkRunner = new SingleBenchmarkRunner(singleBenchmarkResult);
-                Future<SingleBenchmarkRunner> future = warmUpExecutorCompletionService.submit(singleBenchmarkRunner);
-                futureMap.put(future, singleBenchmarkRunner);
-                singleBenchmarkResultIndexMap.put(solverBenchmarkResult, singleBenchmarkResultIndex + 1);
-            }
+            SingleBenchmarkRunner singleBenchmarkRunner = new SingleBenchmarkRunner(singleBenchmarkResult);
+            Future<SingleBenchmarkRunner> future = warmUpExecutorCompletionService.submit(singleBenchmarkRunner);
+            futureMap.put(future, singleBenchmarkRunner);
+            singleBenchmarkResultIndexMap.put(solverBenchmarkResult, singleBenchmarkResultIndex + 1);
         }
     }
 
@@ -210,26 +204,29 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                         ConcurrentMap<SolverBenchmarkResult, Integer> singleBenchmarkResultIndexMap, long timePhaseEnd) {
         // Wait for the warm up benchmarks to complete
         int tasksCount = futureMap.size();
+        // Use a counter because completion order of futures is different from input order
         for (int i = 0; i < tasksCount; i++) {
             Future<SingleBenchmarkRunner> future;
             try {
                 future = warmUpExecutorCompletionService.take();
             } catch (InterruptedException e) {
-                singleBenchmarkRunnerExceptionLogger.error("Waiting for a warm up singleBenchmarkRunner was interrupted.", e);
-                continue;
+                // TODO reconsider this approach when resolving https://issues.jboss.org/browse/PLANNER-402
+                throw new IllegalStateException("Waiting for a warm up singleBenchmarkRunner was interrupted.", e);
             }
 
             Throwable failureThrowable = null;
-            SingleBenchmarkRunner singleBenchmarkRunner = futureMap.get(future);
+            SingleBenchmarkRunner singleBenchmarkRunner;
             try {
                 // Explicitly returning it in the Callable guarantees memory visibility
                 singleBenchmarkRunner = future.get();
             } catch (InterruptedException e) {
+                singleBenchmarkRunner = futureMap.get(future);
                 singleBenchmarkRunnerExceptionLogger.error("The warm up singleBenchmarkRunner ({}) was interrupted.",
                         singleBenchmarkRunner, e);
                 failureThrowable = e;
             } catch (ExecutionException e) {
                 Throwable cause = e.getCause();
+                singleBenchmarkRunner = futureMap.get(future);
                 singleBenchmarkRunnerExceptionLogger.warn("The warm up singleBenchmarkRunner ({}) failed.",
                         singleBenchmarkRunner, cause);
                 failureThrowable = cause;
@@ -244,13 +241,14 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             SolverBenchmarkResult solverBenchmarkResult = singleBenchmarkRunner.getSingleBenchmarkResult().getSolverBenchmarkResult();
             long timeLeftInCycle = timePhaseEnd - System.currentTimeMillis();
             if (timeLeftInCycle > 0L) {
-                warmUpPopulate(futureMap, singleBenchmarkResultIndexMap, new SolverBenchmarkResult[]{solverBenchmarkResult}, timeLeftInCycle);
+                SolverBenchmarkResult[] solverBenchmarkResultSingleton = new SolverBenchmarkResult[]{solverBenchmarkResult};
+                warmUpPopulate(futureMap, singleBenchmarkResultIndexMap, solverBenchmarkResultSingleton, timeLeftInCycle);
                 tasksCount++;
             }
         }
     }
 
-    private void warmUpEnded(Map<SolverBenchmarkResult, TerminationConfig> originalTerminationConfigMap) {
+    private void restoreTerminationConfigs(Map<SolverBenchmarkResult, TerminationConfig> originalTerminationConfigMap) {
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             TerminationConfig originalTerminationConfig = originalTerminationConfigMap.get(solverBenchmarkResult);
             solverBenchmarkResult.getSolverConfig().setTerminationConfig(originalTerminationConfig);
