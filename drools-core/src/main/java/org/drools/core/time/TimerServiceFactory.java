@@ -30,6 +30,7 @@ public class TimerServiceFactory {
                 service = (TimerService) config.getClockType().createInstance();
                 break;
         }
+        service.setTimerJobFactoryManager( config.getTimerJobFactoryManager() );
         return service;
     }
 }

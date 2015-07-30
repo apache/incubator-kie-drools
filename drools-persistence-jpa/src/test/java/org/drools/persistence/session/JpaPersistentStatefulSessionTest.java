@@ -15,10 +15,6 @@
  */
 package org.drools.persistence.session;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -26,21 +22,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.Callable;
-import java.util.concurrent.CompletionService;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
 import org.drools.compiler.Address;
 import org.drools.compiler.Person;
-import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
+import org.drools.core.command.CommandService;
+import org.drools.core.command.Interceptor;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.FireAllRulesInterceptor;
 import org.drools.core.command.impl.LoggingInterceptor;
@@ -52,14 +42,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -71,6 +57,9 @@ import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class JpaPersistentStatefulSessionTest {
@@ -339,6 +328,64 @@ public class JpaPersistentStatefulSessionTest {
         ksession.insert( 3 );
         ksession.getWorkItemManager().completeWorkItem(0, null);
         assertEquals( 3, list.size() );
+    }
+
+    @Test
+    public void testInterceptorOnRollback() throws Exception{
+        String str = "";
+        str += "package org.kie.test\n";
+        str += "global java.util.List list\n";
+        str += "rule rule1\n";
+        str += "when\n";
+        str += "  Integer(intValue > 0)\n";
+        str += "then\n";
+        str += "  list.add( 1 );\n";
+        str += "end\n";
+        str += "\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        SingleSessionCommandService sscs = (SingleSessionCommandService)
+                ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
+        sscs.addInterceptor(new LoggingInterceptor());
+        sscs.addInterceptor(new FireAllRulesInterceptor());
+        sscs.addInterceptor(new LoggingInterceptor());
+
+        CommandService internalCommandService = sscs.getCommandService();
+
+        assertEquals(LoggingInterceptor.class, internalCommandService.getClass());
+        internalCommandService = ((Interceptor) internalCommandService).getNext();
+        assertEquals(FireAllRulesInterceptor.class, internalCommandService.getClass());
+        internalCommandService = ((Interceptor) internalCommandService).getNext();
+        assertEquals(LoggingInterceptor.class, internalCommandService.getClass());
+
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        List<?> list = new ArrayList<Object>();
+        ksession.setGlobal( "list", list );
+        ksession.insert( 1 );
+        ut.rollback();
+
+        ksession.insert( 3 );
+
+        internalCommandService = sscs.getCommandService();
+
+        assertEquals(LoggingInterceptor.class, internalCommandService.getClass());
+        internalCommandService = ((Interceptor) internalCommandService).getNext();
+        assertEquals(FireAllRulesInterceptor.class, internalCommandService.getClass());
+        internalCommandService = ((Interceptor) internalCommandService).getNext();
+        assertEquals(LoggingInterceptor.class, internalCommandService.getClass());
+
     }
     
     @Test

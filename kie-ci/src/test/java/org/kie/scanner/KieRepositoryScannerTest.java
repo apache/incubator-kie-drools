@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
 package org.kie.scanner;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -7,6 +22,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -16,24 +33,43 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.kie.scanner.embedder.MavenEmbedderUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
+@RunWith(Parameterized.class)
 public class KieRepositoryScannerTest extends AbstractKieCiTest {
+
+    private final boolean uesWiredComponentProvider;
 
     private FileManager fileManager;
     private File kPom;
 
+    @Parameterized.Parameters
+    public static Collection modes() {
+        Object[][] locking = new Object[][] {
+                { true },
+                { false }
+        };
+        return Arrays.asList(locking);
+    }
+
+    public KieRepositoryScannerTest( boolean uesWiredComponentProvider ) {
+        this.uesWiredComponentProvider = uesWiredComponentProvider;
+    }
+
     @Before
     public void setUp() throws Exception {
+        MavenEmbedderUtils.enforceWiredComponentProvider = uesWiredComponentProvider;
         this.fileManager = new FileManager();
         this.fileManager.setUp();
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
@@ -43,6 +79,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
     @After
     public void tearDown() throws Exception {
         this.fileManager.tearDown();
+        MavenEmbedderUtils.enforceWiredComponentProvider = false;
     }
 
     private void resetFileManager() {
@@ -164,6 +201,9 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         // create a ksesion and check it works as expected
         KieSession ksession2 = kieContainer.newKieSession("KSession1");
         checkKSession(ksession2, "rule2", "rule3");
+
+        ks.getRepository().removeKieModule(releaseId1);
+        ks.getRepository().removeKieModule(releaseId2);
     }
 
     @Test

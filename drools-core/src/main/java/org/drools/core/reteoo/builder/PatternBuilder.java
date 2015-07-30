@@ -163,15 +163,18 @@ public class PatternBuilder
         if (!constraints.xpathConstraints.isEmpty()) {
             buildTupleSource(context, utils);
 
-            List<BetaNodeFieldConstraint> xpathConstraints = context.getBetaconstraints();
-            buildJoinNode(context, utils);
-            context.setBetaconstraints(xpathConstraints);
+            if (constraints.xpathConstraints.size() == 1 && constraints.xpathConstraints.get(0).getXpathStartDeclaration() != null) {
+                context.setObjectSource( null );
+                context.decrementCurrentPatternOffset();
+            } else {
+                buildJoinNode( context, utils );
+            }
 
             ReteooComponentBuilder builder = utils.getBuilderFor(XpathConstraint.class);
             for (XpathConstraint xpathConstraint : constraints.xpathConstraints) {
                 for (XpathConstraint.XpathChunk chunk : xpathConstraint.getChunks()) {
                     context.setAlphaConstraints(chunk.getAlphaConstraints());
-                    context.setBetaconstraints(chunk.getBetaaConstraints());
+                    context.setBetaconstraints(chunk.getBetaConstraints());
                     builder.build(context, utils, chunk.asFrom());
                     context.incrementCurrentPatternOffset();
                 }

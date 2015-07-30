@@ -40,7 +40,7 @@ public class AdapterTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testCustomInputAdapter() {
-        String source = PMML4Helper.pmmlDefaultPackageName().replace( ".", File.separator ) + File.separator + "mock_cold_adapter.xml";
+        String source = PMML4Helper.pmmlDefaultPackageName().replace( ".", "/" ) + "/" + "mock_cold_adapter.xml";
 
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();

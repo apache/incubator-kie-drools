@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
 package org.drools.compiler.kie.builder.impl;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -76,6 +91,8 @@ public class KieBuilderImpl
 
     private ClassLoader           classLoader;
 
+    private PomModel              pomModel;
+
     public KieBuilderImpl(File file) {
         this.srcMfs = new DiskResourceReader( file );
     }
@@ -112,7 +129,7 @@ public class KieBuilderImpl
 
         // if pomXML is null it will generate a default, using default ReleaseId
         // if pomXml is invalid, it assign pomModel to null
-        PomModel pomModel = buildPomModel();
+        PomModel pomModel = getPomModel();
 
         // if kModuleModelXML is null it will generate a default kModule, with a default kbase name
         // if kModuleModelXML is  invalid, it will kModule to null
@@ -268,6 +285,9 @@ public class KieBuilderImpl
     }
 
     void cloneKieModuleForIncrementalCompilation() {
+        if (!Arrays.equals( pomXml, getOrGeneratePomXml( srcMfs ) )) {
+            pomModel = null;
+        }
         trgMfs = trgMfs.clone();
         init();
         kModule = kModule.cloneForIncrementalCompilation( releaseId, kModuleModel, trgMfs );
@@ -307,13 +327,16 @@ public class KieBuilderImpl
             return true;
         } else {
             String pkgNameForFile = lastSep > 0 ? fileName.substring( 0, lastSep ) : "";
+            if (pkgNameForFile.startsWith( RESOURCES_ROOT )) {
+                pkgNameForFile = pkgNameForFile.substring( RESOURCES_ROOT.length() );
+            }
             pkgNameForFile = pkgNameForFile.replace( '/', '.' );
             for ( String pkgName : kieBase.getPackages() ) {
                 boolean isNegative = pkgName.startsWith( "!" );
                 if ( isNegative ) {
                     pkgName = pkgName.substring( 1 );
                 }
-                if ( pkgName.equals( "*" ) || pkgNameForFile.endsWith( pkgName ) ) {
+                if ( pkgName.equals( "*" ) || pkgNameForFile.equals( pkgName ) || pkgNameForFile.endsWith( "." + pkgName ) ) {
                     return !isNegative;
                 }
                 if (pkgName.endsWith( ".*" )) {
@@ -397,6 +420,20 @@ public class KieBuilderImpl
         return false;
     }
 
+    public PomModel getPomModel() {
+        if (pomModel == null) {
+            pomModel = buildPomModel();
+        }
+        return pomModel;
+    }
+
+    /**
+     * This can be used for performance reason to avoid the recomputation of the pomModel when it is already available
+     */
+    public void setPomModel( PomModel pomModel ) {
+        this.pomModel = pomModel;
+    }
+
     private PomModel buildPomModel() {
         pomXml = getOrGeneratePomXml( srcMfs );
         if ( pomXml == null ) {
@@ -455,7 +492,7 @@ public class KieBuilderImpl
     }
 
     public static String generatePomXml(ReleaseId releaseId) {
-        StringBuilder sBuilder = new StringBuilder();
+        StringBuilder   sBuilder = new StringBuilder();
         sBuilder.append( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" );
         sBuilder.append( "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\"> \n" );
         sBuilder.append( "    <modelVersion>4.0.0</modelVersion> \n" );

@@ -68,9 +68,9 @@ public class CompositeMaxDurationTimer extends BaseTimer
 
 
     public Trigger createTrigger( Activation item, InternalWorkingMemory wm ) {
-        long timestamp = ((InternalWorkingMemory) wm).getTimerService().getCurrentTime();
+        long timestamp = wm.getTimerService().getCurrentTime();
         String[] calendarNames = item.getRule().getCalendars();
-        Calendars calendars = ((InternalWorkingMemory) wm).getCalendars();
+        Calendars calendars = wm.getCalendars();
         return createTrigger( getMaxTimestamp(item.getTuple(), timestamp), calendarNames, calendars );
     }
 
@@ -96,9 +96,7 @@ public class CompositeMaxDurationTimer extends BaseTimer
         return new CompositeMaxDurationTrigger( maxDurationDate,
                                                 timer != null ? timer.createTrigger( timestamp,
                                                                                      calendarNames,
-                                                                                     calendars ) : null,
-                                                calendarNames,
-                                                calendars );
+                                                                                     calendars ) : null );
     }
 
     private long getMaxTimestamp(LeftTuple leftTuple, long timestamp) {

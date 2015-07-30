@@ -35,14 +35,20 @@ import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.command.Context;
+import org.kie.internal.command.CorrelationKeyCommand;
+import org.kie.internal.jaxb.CorrelationKeyXmlAdapter;
 import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.process.CorrelationKey;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class CreateCorrelatedProcessInstanceCommand implements GenericCommand<ProcessInstance>, IdentifiableResult {
+public class CreateCorrelatedProcessInstanceCommand implements GenericCommand<ProcessInstance>, IdentifiableResult, CorrelationKeyCommand {
+
+    /** Generated serial version UID */
+    private static final long serialVersionUID = -7810538827527530319L;
 
     @XmlAttribute(required = true)
     private String processId;
+    
     @XmlElement(name = "correlation-key", required = true)
     @XmlJavaTypeAdapter(value = CorrelationKeyXmlAdapter.class)
     private CorrelationKey correlationKey;
@@ -121,10 +127,12 @@ public class CreateCorrelatedProcessInstanceCommand implements GenericCommand<Pr
         return outIdentifier;
     }
 
+    @Override
     public CorrelationKey getCorrelationKey() {
         return correlationKey;
     }
 
+    @Override
     public void setCorrelationKey(CorrelationKey correlationKey) {
         this.correlationKey = correlationKey;
     }

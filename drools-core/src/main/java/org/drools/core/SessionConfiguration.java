@@ -96,7 +96,6 @@ public class SessionConfiguration
 
     private transient ClassLoader          classLoader;
     
-    private transient TimerJobFactoryManager timerJobFactoryManager;
     private TimerJobFactoryType              timerJobFactoryType;
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -124,21 +123,16 @@ public class SessionConfiguration
         keepReference = in.readBoolean();
         clockType = (ClockType) in.readObject();
         queryListener = (QueryListenerOption) in.readObject();
-        timerJobFactoryType = (TimerJobFactoryType) in.readObject();
-    }
-
-    /**
-     * Creates a new session configuration using the provided properties
-     * as configuration options. 
-     *
-     * @param properties
-     */
-    public SessionConfiguration(Properties properties) {
-        init( properties, null );
-    }
-
-    public SessionConfiguration(Properties properties, ClassLoader classLoader) {
-        init( properties, classLoader );
+        try {
+            timerJobFactoryType = (TimerJobFactoryType) in.readObject();
+        } catch (java.io.InvalidObjectException e) {
+            // workaround for old typo in TimerJobFactoryType
+            if (e.getMessage().contains( "DEFUALT" )) {
+                timerJobFactoryType = TimerJobFactoryType.DEFAULT;
+            } else {
+                throw e;
+            }
+        }
     }
 
     /**
@@ -148,15 +142,24 @@ public class SessionConfiguration
         init(null, null);
     }
 
-    public SessionConfiguration(ClassLoader... classLoader) {
+    /**
+     * Creates a new session configuration using the provided properties
+     * as configuration options. 
+     */
+    public SessionConfiguration(Properties properties) {
+        init( properties, null );
+    }
+
+    public SessionConfiguration(ClassLoader classLoader) {
         init(null, classLoader);
     }
 
-    private void init(Properties properties, ClassLoader... classLoaders) {
-        if (classLoaders != null && classLoaders.length > 1) {
-            throw new RuntimeException("Multiple classloaders are no longer supported");
-        }
-        this.classLoader = ProjectClassLoader.getClassLoader(classLoaders == null || classLoaders.length == 0 ? null : classLoaders[0], getClass(), false);
+    public SessionConfiguration(Properties properties, ClassLoader classLoader) {
+        init( properties, classLoader );
+    }
+
+    private void init(Properties properties, ClassLoader classLoader) {
+        this.classLoader = ProjectClassLoader.getClassLoader(classLoader == null ? null : classLoader, getClass(), false);
 
         this.immutable = false;
         this.chainedProperties = new ChainedProperties( "session.conf",
@@ -166,8 +169,7 @@ public class SessionConfiguration
             this.chainedProperties.addProperties( properties );
         }
 
-        setKeepReference(Boolean.valueOf(this.chainedProperties.getProperty(KeepReferenceOption.PROPERTY_NAME,
-                                                                            "true")).booleanValue());
+        setKeepReference(Boolean.valueOf(this.chainedProperties.getProperty(KeepReferenceOption.PROPERTY_NAME, "true")));
 
         setForceEagerActivationFilter(ForceEagerActivationOption.resolve(this.chainedProperties.getProperty(ForceEagerActivationOption.PROPERTY_NAME,
                                                                                                             "false")).getFilter());
@@ -185,7 +187,7 @@ public class SessionConfiguration
                                                                    QueryListenerOption.STANDARD.getAsString() ) );
 
         setTimerJobFactoryType(TimerJobFactoryType.resolveTimerJobFactoryType(this.chainedProperties.getProperty(TimerJobFactoryOption.PROPERTY_NAME,
-                                                                                                                 TimerJobFactoryType.DEFUALT.getId())));
+                                                                                                                 TimerJobFactoryType.TRACKABLE.getId())));
     }
 
     public void addDefaultProperties(Properties properties) {
@@ -254,7 +256,6 @@ public class SessionConfiguration
 
     /**
      * Returns true if this configuration object is immutable or false otherwise.
-     * @return
      */
     public boolean isImmutable() {
         return this.immutable;
@@ -320,10 +321,7 @@ public class SessionConfiguration
     }
 
     public TimerJobFactoryManager getTimerJobFactoryManager() {
-        if (timerJobFactoryManager == null) {
-            timerJobFactoryManager = getTimerJobFactoryType().createInstance();
-        }
-        return timerJobFactoryManager;
+        return getTimerJobFactoryType().createInstance();
     }
 
     public TimerJobFactoryType getTimerJobFactoryType() {
@@ -570,12 +568,10 @@ public class SessionConfiguration
 
         SessionConfiguration that = (SessionConfiguration) o;
 
-        if (keepReference != that.keepReference) return false;
-        if (beliefSystemType != that.beliefSystemType) return false;
-        if (clockType != that.clockType) return false;
-        if (timerJobFactoryType != that.timerJobFactoryType) return false;
-
-        return true;
+        return keepReference == that.keepReference &&
+               beliefSystemType == that.beliefSystemType &&
+               clockType == that.clockType &&
+               timerJobFactoryType == that.timerJobFactoryType;
     }
 
     @Override

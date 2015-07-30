@@ -443,6 +443,10 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     public void delete(FactHandle handle) {
         Object o = ((InternalFactHandle) handle).getObject();
+        if ( ((InternalFactHandle) handle).isTraiting() ) {
+            delete( ((Thing) o).getCore() );
+            return;
+        }
         EqualityKey key = workingMemory.getTruthMaintenanceSystem().get( o );
 
         if ( key == null || key.getStatus() == EqualityKey.STATED ) {

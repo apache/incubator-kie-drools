@@ -20,6 +20,7 @@ import io.takari.maven.testing.executor.MavenExecutionResult;
 import io.takari.maven.testing.executor.MavenRuntime;
 import io.takari.maven.testing.executor.MavenVersions;
 import io.takari.maven.testing.executor.junit.MavenJUnitTestRunner;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +32,7 @@ import java.io.File;
  */
 @RunWith(MavenJUnitTestRunner.class)
 @MavenVersions({"3.2.3"})
+@Ignore
 public class BuildMojoIntegrationTest {
 
     @Rule

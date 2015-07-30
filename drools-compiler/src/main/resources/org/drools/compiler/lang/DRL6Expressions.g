@@ -502,6 +502,7 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
     :   TILDE unaryExpression
     | 	NEGATION unaryExpression
     |   (castExpression)=>castExpression
+    |   (backReferenceExpression)=>backReferenceExpression
     |   { isLeft = helper.getLeftMostExpr() == null;}
         ( ({inMap == 0 && ternOp == 0 && input.LA(2) == DRL6Lexer.COLON}? (var=ID COLON
                 { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($COLON, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var ); } } ))
@@ -540,6 +541,10 @@ castExpression
     |  (LEFT_PAREN type) => LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus
     ;
 
+backReferenceExpression
+    :  (DOT DOT DIV) => (DOT DOT DIV)+ unaryExpressionNotPlusMinus
+    ;
+
 primitiveType
     :   boolean_key
     |	char_key
@@ -556,7 +561,7 @@ xpathPrimary returns [BaseDescr result]
     ;
 
 xpathChunk returns [BaseDescr result]
-    : (DIV ID)=> DIV ID (DOT ID)* (LEFT_SQUARE xpathExpressionList RIGHT_SQUARE)?
+    : (DIV ID)=> DIV ID (DOT ID)* (LEFT_SQUARE DECIMAL RIGHT_SQUARE)? (LEFT_CURLY xpathExpressionList RIGHT_CURLY)?
     ;
 
 xpathExpressionList returns [java.util.List<String> exprs]

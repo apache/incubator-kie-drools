@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
 package org.drools.compiler.rule.builder;
 
 import org.drools.compiler.lang.descr.AnnotationDescr;
@@ -26,7 +41,7 @@ public class QueryBuilder implements EngineElementBuilder {
                                              queryObjectType,
                                              null );
         
-        final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor(context, queryDescr, queryObjectType, "name", null, true);
+        final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor(context, queryDescr, pattern, "name", null, true);
         final QueryNameConstraint constraint = new QueryNameConstraint(extractor, queryDescr.getName());
 
         PatternBuilder.registerReadAccessor( context, queryObjectType, "name", constraint );
@@ -36,7 +51,7 @@ public class QueryBuilder implements EngineElementBuilder {
 
         ObjectType argsObjectType = ClassObjectType.DroolsQuery_ObjectType;
         
-        InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, argsObjectType, "elements", null, true );
+        InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, null, argsObjectType, "elements", null, true );
 
         QueryImpl query = ((QueryImpl) context.getRule());
 

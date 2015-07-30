@@ -1,5 +1,3 @@
-package org.drools.persistence.marshalling.util;
-
 /*
  * Copyright 2011 Red Hat Inc.
  *
@@ -15,6 +13,9 @@ package org.drools.persistence.marshalling.util;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package org.drools.persistence.marshalling.util;
+
 import static org.drools.persistence.util.PersistenceUtil.DATASOURCE;
 import static org.drools.persistence.util.PersistenceUtil.getDatasourceProperties;
 import static org.drools.persistence.util.PersistenceUtil.setupPoolingDataSource;

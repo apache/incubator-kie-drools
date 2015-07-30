@@ -17,7 +17,6 @@
 package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -232,31 +231,17 @@ public class DefaultAgenda
         return lazyAgendaItem;
     }
 
-    @Override
-    public long getNextActivationCounter() {
-        return  activationCounter++;
-    }
-
-    public AgendaItem createAgendaItem(final LeftTuple tuple,
+    public AgendaItem createAgendaItem(RuleTerminalNodeLeftTuple rtnLeftTuple,
                                        final int salience,
                                        final PropagationContext context,
-                                       final TerminalNode rtn,
                                        RuleAgendaItem ruleAgendaItem,
                                        InternalAgendaGroup agendaGroup) {
-        RuleTerminalNodeLeftTuple rtnLeftTuple = (RuleTerminalNodeLeftTuple) tuple;
         rtnLeftTuple.init(activationCounter++,
                           salience,
                           context,
                           ruleAgendaItem, agendaGroup);
         rtnLeftTuple.setObject(rtnLeftTuple);
         return rtnLeftTuple;
-    }
-
-    public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
-                                                         final PropagationContext context,
-                                                         final TerminalNode rtn,
-                                                         InternalAgendaGroup agendaGroup) {
-        throw new UnsupportedOperationException("rete only");
     }
 
     public void setWorkingMemory(final InternalWorkingMemory workingMemory) {
@@ -274,7 +259,7 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#getWorkingMemory()
      */
-    public WorkingMemory getWorkingMemory() {
+    public InternalWorkingMemory getWorkingMemory() {
         return this.workingMemory;
     }
 
@@ -626,7 +611,7 @@ public class DefaultAgenda
             addAgendaGroup( agendaGroup );
         }
 
-        agendaGroup.setWorkingMemory( (InternalWorkingMemory) getWorkingMemory() );
+        agendaGroup.setWorkingMemory( getWorkingMemory() );
 
         return agendaGroup;
     }
@@ -856,7 +841,7 @@ public class DefaultAgenda
      * @see org.kie.common.AgendaI#clearAgendaGroup(java.lang.String)
      */
     public void clearAndCancelAgendaGroup(final String name) {
-        final AgendaGroup agendaGroup = this.agendaGroups.get( name );
+        InternalAgendaGroup agendaGroup = this.agendaGroups.get( name );
         if ( agendaGroup != null ) {
             clearAndCancelAgendaGroup( agendaGroup );
         }
@@ -867,20 +852,16 @@ public class DefaultAgenda
      *
      * @see org.kie.common.AgendaI#clearAgendaGroup(org.kie.common.AgendaGroupImpl)
      */
-    public void clearAndCancelAgendaGroup(final AgendaGroup agendaGroup) {
+    public void clearAndCancelAgendaGroup(InternalAgendaGroup agendaGroup) {
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
-        ((InternalAgendaGroup) agendaGroup).setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
+        agendaGroup.setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
 
         // this is thread safe for BinaryHeapQueue
         // Binary Heap locks while it returns the array and reset's it's own internal array. Lock is released afer getAndClear()
         List<RuleAgendaItem> lazyItems = new ArrayList<RuleAgendaItem>();
-        for ( Activation aQueueable : ((InternalAgendaGroup) agendaGroup).getAndClear() ) {
+        for ( Activation aQueueable : agendaGroup.getAndClear() ) {
             final AgendaItem item = (AgendaItem) aQueueable;
-            if ( item == null ) {
-                continue;
-            }
-
             if ( item.isRuleAgendaItem() ) {
                 lazyItems.add( (RuleAgendaItem) item );
                 ((RuleAgendaItem) item).getRuleExecutor().cancel(workingMemory, eventsupport);

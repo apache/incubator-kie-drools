@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
 package org.drools.compiler.integrationtests.marshalling;
 
 import org.drools.compiler.Address;
@@ -37,6 +52,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MapBackedClassLoader;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.time.SessionPseudoClock;
 import org.drools.core.time.impl.DurationTimer;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.KeyStoreHelper;
@@ -45,6 +61,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
+import org.kie.api.conf.DeclarativeAgendaOption;
+import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
@@ -2734,5 +2753,130 @@ public class MarshallingTest extends CommonTestMethodBase {
             e.printStackTrace();
             fail("unexpected exception :" + e.getMessage());
         }
+    }
+
+    @Test
+    public void testMarshallWithTimedRule() {
+        // DROOLS-795
+        String drl = "rule \"Rule A Timeout\"\n" +
+                     "when\n" +
+                     "    String( this == \"ATrigger\" )\n" +
+                     "then\n" +
+                     "   insert (new String( \"A-Timer\") );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Timer For rule A Timeout\"\n" +
+                     "    timer ( int: 5s )\n" +
+                     "when\n" +
+                     "   String( this == \"A-Timer\")\n" +
+                     "then\n" +
+                     "   delete ( \"A-Timer\" );\n" +
+                     "   delete ( \"ATrigger\" );\n" +
+                     "end\n";
+
+        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL )
+                                       .build( EqualityBehaviorOption.EQUALITY,
+                                               DeclarativeAgendaOption.ENABLED,
+                                               EventProcessingOption.STREAM );
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( "pseudo" ) );
+        KieSession ksession = kbase.newKieSession(sessionConfig, null);
+
+        ksession.insert( "ATrigger" );
+
+        assertEquals( 1, ksession.getFactCount() );
+        ksession.fireAllRules();
+        assertEquals( 2, ksession.getFactCount() );
+
+        SessionPseudoClock clock = ksession.getSessionClock();
+        clock.advanceTime( 4, TimeUnit.SECONDS );
+
+        assertEquals( 2, ksession.getFactCount() );
+        ksession.fireAllRules();
+        assertEquals( 2, ksession.getFactCount() );
+
+        ksession = marshallAndUnmarshall( kbase, ksession, sessionConfig);
+        clock = ksession.getSessionClock();
+
+        clock.advanceTime( 4, TimeUnit.SECONDS );
+
+        assertEquals( 2, ksession.getFactCount() );
+        ksession.fireAllRules();
+        assertEquals( 0, ksession.getFactCount() );
+    }
+
+    @Test
+    @Ignore("Reproduces with pseudoclock. It takes too long with system clock")
+    public void testMarshallWithTimedRuleRealClock() {
+        // DROOLS-795
+        String drl = "rule \"Rule A Timeout\"\n" +
+                     "when\n" +
+                     "    String( this == \"ATrigger\" )\n" +
+                     "then\n" +
+                     "   insert (new String( \"A-Timer\") );\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Timer For rule A Timeout\"\n" +
+                     "    timer ( int: 5s )\n" +
+                     "when\n" +
+                     "   String( this == \"A-Timer\")\n" +
+                     "then\n" +
+                     "   delete ( \"A-Timer\" );\n" +
+                     "   delete ( \"ATrigger\" );\n" +
+                     "end\n";
+
+        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL )
+                                       .build( EqualityBehaviorOption.EQUALITY,
+                                               DeclarativeAgendaOption.ENABLED,
+                                               EventProcessingOption.STREAM );
+
+        KieSession ksession = kbase.newKieSession();
+
+        ksession.insert( "ATrigger" );
+
+        assertEquals( 1, ksession.getFactCount() );
+        ksession.fireAllRules();
+        assertEquals( 2, ksession.getFactCount() );
+
+        try {
+            Thread.sleep( 4000L );
+        } catch (InterruptedException e) {
+            throw new RuntimeException( e );
+        }
+
+        assertEquals( 2, ksession.getFactCount() );
+        ksession.fireAllRules();
+        assertEquals( 2, ksession.getFactCount() );
+
+        ksession = marshallAndUnmarshall( kbase, ksession, null);
+
+        try {
+            Thread.sleep( 4000L );
+        } catch (InterruptedException e) {
+            throw new RuntimeException( e );
+        }
+
+        assertEquals( 2, ksession.getFactCount() );
+        ksession.fireAllRules();
+        assertEquals( 0, ksession.getFactCount() );
+    }
+
+    public static KieSession marshallAndUnmarshall(KieBase kbase, KieSession ksession, KieSessionConfiguration sessionConfig) {
+        // Serialize and Deserialize
+        try {
+            Marshaller marshaller = KieServices.Factory.get().getMarshallers().newMarshaller(kbase);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            marshaller.marshall(baos, ksession);
+            marshaller = MarshallerFactory.newMarshaller( kbase );
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            baos.close();
+            ksession = marshaller.unmarshall(bais, sessionConfig, null);
+            bais.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("unexpected exception :" + e.getMessage());
+        }
+        return ksession;
     }
 }

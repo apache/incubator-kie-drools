@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2005 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package org.drools.workbench.models.guided.dtable.shared.model;
+package org.drools.core.time.impl;
 
-/**
- * This is a rule index column (i.e. just displays row's number)
- */
-public class AnalysisCol52 extends DTColumnConfig52 {
+import org.drools.core.command.CommandService;
 
-    private static final long serialVersionUID = -2272148755430209968L;
-
+public interface CommandServiceTimerJobFactoryManager extends TimerJobFactoryManager {
+    void setCommandService(CommandService commandService);
+    CommandService getCommandService();
 }

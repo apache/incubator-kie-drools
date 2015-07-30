@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
 package org.drools.compiler.compiler.io.memory;
 
 import org.drools.compiler.commons.jci.readers.ResourceReader;
@@ -454,8 +469,7 @@ public class MemoryFileSystem
             while ( entries.hasMoreElements() ) {
                 ZipEntry entry = entries.nextElement();
                 int separator = entry.getName().lastIndexOf( '/' );
-                String path = entry.getName().substring( 0,
-                                                         separator );
+                String path = separator > 0 ? entry.getName().substring( 0, separator ) : "";
                 String name = entry.getName().substring( separator + 1 );
 
                 Folder folder = mfs.getFolder( path );
@@ -485,11 +499,11 @@ public class MemoryFileSystem
         JarInputStream zipFile = null;
         try {
             zipFile = new JarInputStream( jarFile );
-            ZipEntry entry = null;
+            ZipEntry entry;
             while ( (entry = zipFile.getNextEntry()) != null ) {
                 // entry.getSize() is not accurate according to documentation, so have to read bytes until -1 is found
                 ByteArrayOutputStream content = new ByteArrayOutputStream();
-                int b = -1;
+                int b;
                 while( (b = zipFile.read()) != -1 ) {
                     content.write( b );
                 }

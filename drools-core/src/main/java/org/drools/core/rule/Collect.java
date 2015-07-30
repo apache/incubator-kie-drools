@@ -16,6 +16,9 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.InternalWorkingMemory;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -26,9 +29,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.InternalWorkingMemory;
 
 public class Collect extends ConditionalElement
     implements
@@ -67,9 +67,9 @@ public class Collect extends ConditionalElement
         if ( source == this ) {
             this.resultPattern.setSource( null );
         }
-        Pattern clonedResultPattern = (Pattern) this.resultPattern.clone();
+        Pattern clonedResultPattern = this.resultPattern.clone();
 
-        Collect collect = new Collect( (Pattern) this.sourcePattern.clone(),
+        Collect collect = new Collect( this.sourcePattern.clone(),
                                        clonedResultPattern );
         collect.getResultPattern().setSource( collect );
         
@@ -122,9 +122,6 @@ public class Collect extends ConditionalElement
      * List -> ArrayList
      * Collection -> ArrayList
      * Set -> HashSet
-     * 
-     * @param objType
-     * @return
      */
     private String determineResultClassName(ClassObjectType objType) {
         String className = objType.getClassName();
@@ -138,11 +135,11 @@ public class Collect extends ConditionalElement
         return className;
     }
 
-    public Map getInnerDeclarations() {
+    public Map<String, Declaration> getInnerDeclarations() {
         return this.sourcePattern.getInnerDeclarations();
     }
 
-    public Map getOuterDeclarations() {
+    public Map<String, Declaration> getOuterDeclarations() {
         return Collections.EMPTY_MAP;
     }
 
@@ -150,10 +147,10 @@ public class Collect extends ConditionalElement
      * @inheritDoc
      */
     public Declaration resolveDeclaration(final String identifier) {
-        return (Declaration) this.sourcePattern.getInnerDeclarations().get( identifier );
+        return this.sourcePattern.getInnerDeclarations().get( identifier );
     }
 
-    public List getNestedElements() {
+    public List<Pattern> getNestedElements() {
         return Collections.singletonList( this.sourcePattern );
     }
 

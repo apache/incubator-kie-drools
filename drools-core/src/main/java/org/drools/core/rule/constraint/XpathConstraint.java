@@ -1,7 +1,22 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
 package org.drools.core.rule.constraint;
 
-import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.ReactiveObject;
@@ -17,7 +32,6 @@ import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -38,6 +52,7 @@ public class XpathConstraint extends MutableTypeConstraint {
     private final LinkedList<XpathChunk> chunks;
 
     private Declaration declaration;
+    private Declaration xpathStartDeclaration;
 
     public XpathConstraint() {
         this(new LinkedList<XpathChunk>());
@@ -48,8 +63,8 @@ public class XpathConstraint extends MutableTypeConstraint {
         setType(ConstraintType.XPATH);
     }
 
-    public XpathChunk addChunck(Class<?> clazz, String field, boolean iterate) {
-        XpathChunk chunk = XpathChunk.get(clazz, field, iterate);
+    public XpathChunk addChunck(Class<?> clazz, String field, int index, boolean iterate) {
+        XpathChunk chunk = XpathChunk.get(clazz, field, index, iterate);
         if (chunk != null) {
             chunks.add(chunk);
         }
@@ -64,13 +79,18 @@ public class XpathConstraint extends MutableTypeConstraint {
 
     @Override
     public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
-        throw new UnsupportedOperationException("org.drools.core.rule.constraint.XpathConstraint.replaceDeclaration -> TODO");
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public XpathConstraint clone() {
         XpathConstraint clone = new XpathConstraint(this.chunks);
-        clone.setDeclaration( declaration.clone() );
+        if (declaration != null) {
+            clone.setDeclaration( declaration.clone() );
+        }
+        if (xpathStartDeclaration != null) {
+            clone.setXpathStartDeclaration( xpathStartDeclaration.clone() );
+        }
         return clone;
     }
 
@@ -82,36 +102,36 @@ public class XpathConstraint extends MutableTypeConstraint {
 
     @Override
     public boolean isAllowedCachedLeft(ContextEntry context, InternalFactHandle handle) {
-        throw new UnsupportedOperationException("org.drools.core.rule.constraint.XpathConstraint.isAllowedCachedLeft -> TODO");
+        throw new UnsupportedOperationException();
 
     }
 
     @Override
     public boolean isAllowedCachedRight(LeftTuple tuple, ContextEntry context) {
-        throw new UnsupportedOperationException("org.drools.core.rule.constraint.XpathConstraint.isAllowedCachedRight -> TODO");
+        throw new UnsupportedOperationException();
 
     }
 
     @Override
     public ContextEntry createContextEntry() {
-        throw new UnsupportedOperationException("org.drools.core.rule.constraint.XpathConstraint.createContextEntry -> TODO");
+        throw new UnsupportedOperationException();
 
     }
 
     @Override
     public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
-        throw new UnsupportedOperationException("org.drools.core.rule.constraint.XpathConstraint.isAllowed -> TODO");
+        throw new UnsupportedOperationException();
 
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        throw new UnsupportedOperationException("org.drools.core.rule.constraint.XpathConstraint.readExternal -> TODO");
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        throw new UnsupportedOperationException("org.drools.core.rule.constraint.XpathConstraint.writeExternal -> TODO");
+        throw new UnsupportedOperationException();
     }
 
     public LinkedList<XpathChunk> getChunks() {
@@ -133,6 +153,15 @@ public class XpathConstraint extends MutableTypeConstraint {
 
     public InternalReadAccessor getReadAccessor() {
         return new PatternExtractor( new ClassObjectType( getResultClass() ) );
+    }
+
+    public Declaration getXpathStartDeclaration() {
+        return xpathStartDeclaration;
+    }
+
+    public void setXpathStartDeclaration( Declaration xpathStartDeclaration ) {
+        this.xpathStartDeclaration = xpathStartDeclaration;
+        chunks.get(0).declaration = xpathStartDeclaration;
     }
 
     private interface XpathEvaluator {
@@ -175,13 +204,16 @@ public class XpathConstraint extends MutableTypeConstraint {
         
         private final Class<?> clazz;
         private final String field;
+        private final int index;
         private final boolean iterate;
         private final Method accessor;
         private List<Constraint> constraints;
+        private Declaration declaration;
 
-        private XpathChunk(Class<?> clazz, String field, boolean iterate, Method accessor) {
+        private XpathChunk(Class<?> clazz, String field, int index, boolean iterate, Method accessor) {
             this.clazz = clazz;
             this.field = field;
+            this.index = index;
             this.iterate = iterate;
             this.accessor = accessor;
             this.accessor.setAccessible(true);
@@ -211,18 +243,22 @@ public class XpathConstraint extends MutableTypeConstraint {
 
         public <T> T evaluate(Object obj) {
             try {
-                return (T)accessor.invoke(obj);
+                T result = (T) accessor.invoke(obj);
+                if (index >= 0) {
+                    result = (T) ((List)result).subList( index, index+1 );
+                }
+                return result;
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
 
-        public static XpathChunk get(Class<?> clazz, String field, boolean iterate) {
+        private static XpathChunk get(Class<?> clazz, String field, int index, boolean iterate) {
             Method accessor = getAccessor(clazz, field);
             if (accessor == null) {
                 return null;
             }
-            return new XpathChunk(clazz, field, iterate, accessor);
+            return new XpathChunk(clazz, field, index, iterate, accessor);
         }
 
         public Class<?> getReturnedClass() {
@@ -244,12 +280,12 @@ public class XpathConstraint extends MutableTypeConstraint {
         }
 
         public From asFrom() {
-            From from = new From( new XpathDataProvider(new SingleChunkXpathEvaluator(this)) );
+            From from = new From( new XpathDataProvider(new SingleChunkXpathEvaluator(this), declaration ) );
             from.setResultClass(getReturnedClass());
             return from;
         }
 
-        public List<BetaNodeFieldConstraint> getBetaaConstraints() {
+        public List<BetaNodeFieldConstraint> getBetaConstraints() {
             if (constraints == null) {
                 return Collections.emptyList();
             }
@@ -277,16 +313,36 @@ public class XpathConstraint extends MutableTypeConstraint {
 
         @Override
         public String toString() {
-            return clazz.getSimpleName() + (iterate ? " / " : " . ") + field + (constraints != null ? " " + constraints : "");
+            StringBuilder sb = new StringBuilder( clazz.getSimpleName() );
+            if (iterate) {
+                sb.append( "/" );
+            } else {
+                sb.append( "." );
+            }
+            sb.append( field );
+            if (index >= 0) {
+                sb.append( "[" ).append( index ).append( "]" );
+            }
+            if (constraints != null && !constraints.isEmpty()) {
+                sb.append( "{" );
+                sb.append( constraints.get(0) );
+                for (int i = 1; i < constraints.size(); i++) {
+                    sb.append( ", " ).append( constraints.get( i ) );
+                }
+                sb.append( "}" );
+            }
+            return sb.toString();
         }
     }
 
     public static class XpathDataProvider implements DataProvider {
 
         private final XpathEvaluator xpathEvaluator;
+        private final Declaration declaration;
 
-        public XpathDataProvider(XpathEvaluator xpathEvaluator) {
+        public XpathDataProvider( XpathEvaluator xpathEvaluator, Declaration declaration ) {
             this.xpathEvaluator = xpathEvaluator;
+            this.declaration = declaration;
         }
 
         @Override
@@ -300,11 +356,15 @@ public class XpathConstraint extends MutableTypeConstraint {
         }
 
         @Override
-        public Iterator getResults(Tuple tuple, WorkingMemory wm, PropagationContext ctx, Object providerContext) {
-            LeftTuple leftTuple = (LeftTuple) tuple;
+        public Iterator getResults(LeftTuple leftTuple, InternalWorkingMemory wm, PropagationContext ctx, Object providerContext) {
             InternalFactHandle fh = leftTuple.getHandle();
             Object obj = fh.getObject();
-            return xpathEvaluator.evaluate((InternalWorkingMemory)wm, leftTuple, obj).iterator();
+
+            if (obj instanceof DroolsQuery) {
+                obj = ((DroolsQuery)obj).getElements()[declaration.getPattern().getOffset()];
+            }
+
+            return xpathEvaluator.evaluate(wm, leftTuple, obj).iterator();
         }
 
         @Override
@@ -314,7 +374,7 @@ public class XpathConstraint extends MutableTypeConstraint {
 
         @Override
         public void replaceDeclaration(Declaration declaration, Declaration resolved) {
-            throw new UnsupportedOperationException("org.drools.core.rule.constraint.XpathConstraint.XpathDataProvider.replaceDeclaration -> TODO");
+            throw new UnsupportedOperationException();
         }
     }
 }

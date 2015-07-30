@@ -227,7 +227,10 @@ public class AlphaNode extends ObjectSource
 
         final AlphaNode other = (AlphaNode) object;
 
-        return this.source.equals( other.source ) && this.constraint.equals( other.constraint );
+        return this.source.equals( other.source ) &&
+               constraint instanceof MvelConstraint ?
+               ((MvelConstraint)constraint).equals( other.constraint, getKnowledgeBase() ) :
+               constraint.equals( other.constraint );
     }
 
     /**

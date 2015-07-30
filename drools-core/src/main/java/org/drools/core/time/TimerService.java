@@ -16,9 +16,10 @@
 
 package org.drools.core.time;
 
-import java.util.Collection;
-
+import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.core.time.impl.TimerJobInstance;
+
+import java.util.Collection;
 
 /**
  * An interface for all timer service implementations used in a drools session.
@@ -30,12 +31,12 @@ public interface TimerService extends SchedulerService {
      * 
      * @return the current timestamp
      */
-    public long getCurrentTime();
+    long getCurrentTime();
 
     /**
      * Shuts the service down
      */
-    public void shutdown();
+    void shutdown();
     
     /**
      * Returns the number of time units (usually ms) to
@@ -44,12 +45,15 @@ public interface TimerService extends SchedulerService {
      * @return the number of time units until the next scheduled job or -1 if
      *         there is no job scheduled
      */
-    public long getTimeToNextJob();
+    long getTimeToNextJob();
     
     /**
      * This method may return null for some TimerService implementations that do not want the overhead of maintain this.
      * @return
      */
-    public Collection<TimerJobInstance> getTimerJobInstances(long id);
-    
+    Collection<TimerJobInstance> getTimerJobInstances(long id);
+
+    void setTimerJobFactoryManager(TimerJobFactoryManager timerJobFactoryManager);
+
+    TimerJobFactoryManager getTimerJobFactoryManager();
 }

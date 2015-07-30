@@ -7308,4 +7308,180 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals( 1, list.size() );
     }
+
+    @Test
+    public void testClearActivationGroupCommand() {
+        // DROOLS-828
+        String drl =
+                "package org.kie.test\n" +
+                "global java.util.List list\n" +
+                "rule \"Rule in first agenda group\" @Propagation(IMMEDIATE)\n" +
+                "agenda-group \"first-agenda\"\n" +
+                "salience 10\n" +
+                "when\n" +
+                "then\n" +
+                "list.add(\"Rule in first agenda group executed\");\n" +
+                "end\n" +
+                "rule \"Rule without agenda group\" @Propagation(IMMEDIATE)\n" +
+                "salience 100\n" +
+                "when\n" +
+                "then\n" +
+                "list.add(\"Rule without agenda group executed\");\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        ksession.setGlobal("list", new ArrayList<String>());
+        ksession.getAgenda().getAgendaGroup("first-agenda").setFocus();
+        ksession.getAgenda().getAgendaGroup("first-agenda").clear();
+        ksession.fireAllRules();
+
+        ArrayList<String> list = (ArrayList<String>)ksession.getGlobal("list");
+        assertEquals(1, list.size());
+        assertEquals("Rule without agenda group executed", list.get(0));
+    }
+
+    public static class $X {
+        public static class $Y {
+            private final int value;
+
+            public $Y( int value ) {
+                this.value = value;
+            }
+
+            public int getValue() {
+                return value;
+            }
+        }
+    }
+
+    @Test
+    public void testDoubleNestedClass() {
+        // DROOLS-815
+        String drl =
+                "import " + $X.$Y.class.getCanonicalName() + ";\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "    $X.$Y($v : value)\n" +
+                "then\n" +
+                "    list.add($v);\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new $X.$Y(42) );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( 42, list.get(0) );
+    }
+
+    @Test
+    public void testWrongNodeSharing() {
+        // DROOLS-588
+        String drl1 =
+                "package test1\n" +
+                "import static " + Misc2Test.class.getCanonicalName() + ".parseInt;\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    String( parseInt(this) == 0 )\n" +
+                "then\n" +
+                "    list.add(\"OK\");\n" +
+                "end";
+
+        String drl2 =
+                "package test2\n" +
+                "import static java.lang.Integer.parseInt;\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    String( parseInt(this) == 0 )\n" +
+                "then\n" +
+                "    list.add(\"NOT OK\");\n" +
+                "end";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl1, ResourceType.DRL );
+        helper.addContent( drl2, ResourceType.DRL );
+        KieSession kieSession = helper.build().newKieSession();
+
+        List list = new ArrayList();
+        kieSession.setGlobal( "list", list );
+
+        kieSession.insert( "3" );
+        kieSession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "OK", list.get(0) );
+    }
+
+    public static int parseInt(String s) {
+        return 0;
+    }
+
+    @Test
+    public void testJittedConstraintComparisonWithIncompatibleObjects() {
+        // DROOLS-858
+        String drl =
+                "package org.drools.compiler.integrationtests\n"
+                + "import java.util.Map.Entry\n"
+                + "import java.util.Map\n"
+                + "import " + NonStringConstructorClass.class.getCanonicalName() + "\n"
+                + "global java.util.List list\n"
+                + "rule \"FailOnNonStringConstructor\"\n"
+                + "    when \n"
+                + "        $map : Map()\n"
+                + "        $simpleTestObject : NonStringConstructorClass (something==\"simpleTestObject\")\n"
+                + "        Entry (\n"
+                + "            getKey() == $simpleTestObject\n"
+                + "        ) from $map.entrySet()\n"
+                + "    then\n"
+                + "        list.add(\"Fired\");\n"
+                + "end";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<Object> globalList = new ArrayList<Object>();
+        ksession.setGlobal("list", globalList);
+
+        NonStringConstructorClass simpleTestObject = new NonStringConstructorClass();
+        simpleTestObject.setSomething("simpleTestObject");
+
+        Map<Object, Object> map = new HashMap<Object, Object>();
+        map.put("someOtherValue", "someOtherValue");
+        map.put(simpleTestObject, "someValue");
+
+        List<Object> list = new ArrayList<Object>();
+        ksession.insert( map );
+        ksession.insert( simpleTestObject );
+
+        ksession.fireAllRules();
+
+        Assert.assertEquals(1, globalList.size());
+    }
+
+    public static class NonStringConstructorClass {
+        private String something;
+
+        public String getSomething() {
+            return something;
+        }
+
+        public void setSomething(String something) {
+            this.something = something;
+        }
+
+        @Override
+        public String toString() {
+            return "NonStringConstructorClass [something=" + something + "]";
+        }
+    }
 }

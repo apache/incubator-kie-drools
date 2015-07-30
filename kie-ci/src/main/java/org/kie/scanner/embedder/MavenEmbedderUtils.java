@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
 package org.kie.scanner.embedder;
 
 import org.apache.maven.execution.MavenExecutionRequestPopulator;
@@ -10,6 +25,8 @@ import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.classworlds.ClassWorld;
 import org.codehaus.plexus.classworlds.realm.ClassRealm;
 import org.eclipse.aether.RepositorySystem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sonatype.plexus.components.cipher.PlexusCipher;
 
 import java.io.File;
@@ -22,10 +39,23 @@ import java.util.Set;
 
 public class MavenEmbedderUtils {
 
+    private static final Logger log = LoggerFactory.getLogger( MavenEmbedderUtils.class );
+
     private static boolean isIBM_JVM = System.getProperty("java.vendor").toLowerCase().contains("ibm");
     
     private MavenEmbedderUtils() { }
-    
+
+    public static boolean enforceWiredComponentProvider = false; // for test purposes only
+
+    public static ComponentProvider buildComponentProvider(ClassLoader mavenClassLoader, ClassLoader parent, MavenRequest mavenRequest) throws MavenEmbedderException {
+        if (enforceWiredComponentProvider || MavenEmbedderUtils.class.getClassLoader().getClass().toString().contains( "Bundle" )) {
+            log.info( "In OSGi: using programmatically wired maven parser" );
+            return new WiredComponentProvider();
+        }
+        log.info( "Not in OSGi: using plexus based maven parser" );
+        return new PlexusComponentProvider( mavenClassLoader, parent, mavenRequest );
+    }
+
     public static ClassRealm buildClassRealm(File mavenHome, ClassWorld world, ClassLoader parentClassLoader )
         throws MavenEmbedderException {
         

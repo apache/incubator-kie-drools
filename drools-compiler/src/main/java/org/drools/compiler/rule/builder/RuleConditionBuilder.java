@@ -24,13 +24,13 @@ import org.drools.core.rule.RuleConditionElement;
  * An interface to define classes capable of building
  * specific conditional elements.
  */
-public interface RuleConditionBuilder extends EngineElementBuilder {
+public interface RuleConditionBuilder<T extends BaseDescr> extends EngineElementBuilder {
 
     public RuleConditionElement build(final RuleBuildContext context,
-                                    final BaseDescr descr);
+                                      final T descr);
     
     public RuleConditionElement build(final RuleBuildContext context,
-                                    final BaseDescr descr,
-                                    final Pattern prefixPattern);
+                                      final T descr,
+                                      final Pattern prefixPattern);
 
 }

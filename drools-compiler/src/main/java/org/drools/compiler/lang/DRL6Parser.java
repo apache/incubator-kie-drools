@@ -2576,7 +2576,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @return
      * @throws org.antlr.runtime.RecognitionException
      */
-    private BaseDescr lhsExists(CEDescrBuilder<?, ?> ce,
+    protected BaseDescr lhsExists(CEDescrBuilder<?, ?> ce,
             boolean allowOr) throws RecognitionException {
         CEDescrBuilder<?, ExistsDescr> exists = null;
 
@@ -2655,7 +2655,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @return
      * @throws org.antlr.runtime.RecognitionException
      */
-    private BaseDescr lhsNot(CEDescrBuilder<?, ?> ce,
+    protected BaseDescr lhsNot(CEDescrBuilder<?, ?> ce,
             boolean allowOr) throws RecognitionException {
         CEDescrBuilder<?, NotDescr> not = null;
 
@@ -2734,7 +2734,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
      * @return
      * @throws org.antlr.runtime.RecognitionException
      */
-    private BaseDescr lhsForall(CEDescrBuilder<?, ?> ce) throws RecognitionException {
+    protected BaseDescr lhsForall(CEDescrBuilder<?, ?> ce) throws RecognitionException {
         ForallDescrBuilder<?> forall = helper.start(ce,
                 ForallDescrBuilder.class,
                 null);
@@ -3233,18 +3233,30 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     }
 
     /**
-     * lhsPattern := QUESTION? qualifiedIdentifier
-     * LEFT_PAREN positionalConstraints? constraints? RIGHT_PAREN
-     *     (OVER patternFilter)? (FROM patternSource)?
+     * lhsPattern := xpathPrimary |
+     *               ( QUESTION? qualifiedIdentifier
+     *                 LEFT_PAREN positionalConstraints? constraints? RIGHT_PAREN
+     *                 (OVER patternFilter)? (FROM patternSource)? )
      *
      * @param pattern
      * @param label
      * @param isUnification
      * @throws org.antlr.runtime.RecognitionException
      */
-     void lhsPattern(PatternDescrBuilder<?> pattern,
+    void lhsPattern( PatternDescrBuilder<?> pattern,
                      String label,
-            boolean isUnification) throws RecognitionException {
+                     boolean isUnification ) throws RecognitionException {
+
+        if (label != null && input.LA(1) == DRL6Lexer.DIV) {
+            int first = input.index();
+            exprParser.xpathPrimary();
+            if (state.failed) return;
+            int last = input.LT(-1).getTokenIndex();
+            String expr = toExpression("", first, last);
+            pattern.id( label, isUnification ).constraint( expr );
+            return;
+        }
+
         boolean query = false;
         if (input.LA(1) == DRL6Lexer.QUESTION) {
             match(input,
@@ -3265,8 +3277,7 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             pattern.type(type);
             pattern.isQuery(query);
             if (label != null) {
-                pattern.id(label,
-                        isUnification);
+                pattern.id(label, isUnification);
             }
         }
 

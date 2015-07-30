@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
 package org.drools.template.parser;
 
 import org.junit.Test;
@@ -238,4 +253,17 @@ public class DefaultTemplateContainerTest {
         assertTrue( contents.endsWith( "then\nend\n" ) );
     }
 
+    @Test
+    public void testParseTemplateWithComments() {
+        // BZ-1242010
+        InputStream is = DefaultTemplateContainerTest.class.getResourceAsStream( "/templates/test_template_with_comment.drl" );
+        DefaultTemplateContainer t = new DefaultTemplateContainer( is );
+        Map<String, RuleTemplate> templates = t.getTemplates();
+        RuleTemplate template = (RuleTemplate) templates.get( "template1" );
+        List<TemplateColumn> columns = template.getColumns();
+        TemplateColumn templateColumn = (TemplateColumn) columns.get( 0 );
+        String contents = template.getContents();
+        assertTrue( contents.contains( "@{name}" ) );
+        assertFalse( contents.contains( "@{invalidName}" ) );
+    }
 }

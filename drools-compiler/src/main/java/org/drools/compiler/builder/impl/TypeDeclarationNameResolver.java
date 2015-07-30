@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
 package org.drools.compiler.builder.impl;
 
 import org.drools.compiler.compiler.PackageRegistry;
@@ -14,7 +29,6 @@ import org.drools.core.util.ClassUtils;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class TypeDeclarationNameResolver {
 
@@ -27,15 +41,12 @@ public class TypeDeclarationNameResolver {
 
 
     public void resolveTypes( Collection<? extends PackageDescr> packageDescrs,
-                              Collection<AbstractClassTypeDeclarationDescr> unsortedDescrs,
-                              List<TypeDefinition> unresolvedTypes,
-                              Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
-        ensureQualifiedNames( packageDescrs, unresolvedTypes, unprocesseableDescrs );
+                              List<TypeDefinition> unresolvedTypes ) {
+        ensureQualifiedNames( packageDescrs, unresolvedTypes );
     }
 
     protected void ensureQualifiedNames( Collection<? extends PackageDescr> packageDescrs,
-                                         List<TypeDefinition> unresolvedTypes,
-                                         Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
+                                         List<TypeDefinition> unresolvedTypes ) {
         for ( PackageDescr packageDescr : packageDescrs ) {
             for ( AbstractClassTypeDeclarationDescr descr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
                 ensureQualifiedDeclarationName( descr,
@@ -47,19 +58,18 @@ public class TypeDeclarationNameResolver {
 
         for ( PackageDescr packageDescr : packageDescrs ) {
             for ( TypeDeclarationDescr declarationDescr : packageDescr.getTypeDeclarations() ) {
-                qualifyNames( declarationDescr, packageDescr, unresolvedTypes, unprocesseableDescrs );
+                qualifyNames( declarationDescr, packageDescr, unresolvedTypes );
                 discoverHierarchyForRedeclarations( declarationDescr, packageDescr );
             }
             for ( EnumDeclarationDescr enumDeclarationDescr : packageDescr.getEnumDeclarations() ) {
-                qualifyNames( enumDeclarationDescr, packageDescr, unresolvedTypes, unprocesseableDescrs );
+                qualifyNames( enumDeclarationDescr, packageDescr, unresolvedTypes );
             }
         }
     }
 
     private void qualifyNames( AbstractClassTypeDeclarationDescr declarationDescr,
                                PackageDescr packageDescr,
-                               List<TypeDefinition> unresolvedTypes,
-                               Map<String,AbstractClassTypeDeclarationDescr> unprocesseableDescrs ) {
+                               List<TypeDefinition> unresolvedTypes ) {
         ensureQualifiedSuperType( declarationDescr,
                                   packageDescr,
                                   kbuilder.getPackageRegistry( packageDescr.getName() ).getTypeResolver(),
@@ -89,16 +99,16 @@ public class TypeDeclarationNameResolver {
                                                  PackageDescr packageDescr,
                                                  TypeResolver typeResolver,
                                                  List<TypeDefinition> unresolvedTypes ) {
-        if ( ! declarationDescr.getType().isFullyQualified() ) {
-            String resolved = resolveName( declarationDescr.getType().getFullName(),
+        String resolvedName = resolveName( declarationDescr.getType().getFullName(),
                                            declarationDescr,
                                            packageDescr,
                                            typeResolver,
                                            unresolvedTypes,
                                            false );
 
-            if ( resolved != null && ! alreadyDefinedInPackage( resolved, declarationDescr, packageDescr ) ) {
-                declarationDescr.setTypeName( resolved );
+        if ( !declarationDescr.getType().getFullName().equals( resolvedName ) || !declarationDescr.getType().isFullyQualified() ) {
+            if ( resolvedName != null && ! alreadyDefinedInPackage( resolvedName, declarationDescr, packageDescr ) ) {
+                declarationDescr.setTypeName( resolvedName );
             } else {
                 // fall back to declaring package name - this should actually be the default in general
                 declarationDescr.setNamespace( packageDescr.getNamespace() );

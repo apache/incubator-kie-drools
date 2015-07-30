@@ -78,7 +78,7 @@ public class Rete extends ObjectSource
     // ------------------------------------------------------------
 
     public Rete(InternalKnowledgeBase kBase) {
-        super( 0, RuleBasePartitionId.MAIN_PARTITION, kBase != null ? kBase.getConfiguration().isMultithreadEvaluation() : false );
+        super( 0, RuleBasePartitionId.MAIN_PARTITION, kBase != null && kBase.getConfiguration().isMultithreadEvaluation() );
         this.entryPoints = Collections.synchronizedMap( new HashMap<EntryPointId, EntryPointNode>() );
         this.kBase = kBase;
     }
@@ -192,6 +192,7 @@ public class Rete extends ObjectSource
         return this.entryPoints.get( entryPoint ).getObjectTypeNodes();
     }
 
+    @Override
     public InternalKnowledgeBase getKnowledgeBase() {
         return this.kBase;
     }
@@ -217,14 +218,6 @@ public class Rete extends ObjectSource
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
         // nothing to do, since Rete object itself holds no facts to propagate.
-    }
-
-    public boolean isObjectMemoryEnabled() {
-        throw new UnsupportedOperationException( "Rete has no Object memory" );
-    }
-
-    public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
-        throw new UnsupportedOperationException( "ORete has no Object memory" );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {

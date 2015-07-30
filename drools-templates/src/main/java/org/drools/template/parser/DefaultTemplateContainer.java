@@ -75,14 +75,40 @@ public class DefaultTemplateContainer implements TemplateContainer {
             final ColumnFactory cf = new ColumnFactory();
             final BufferedReader templateReader = new BufferedReader(
                     new InputStreamReader(templateStream, IoUtils.UTF8_CHARSET));
-            String line = null;
-            StringBuffer header = new StringBuffer();
+            String line;
+
             boolean inTemplate = false;
             boolean inHeader = false;
             boolean inContents = false;
+            boolean inMultiLineComment = false;
+
             RuleTemplate template = null;
-            StringBuffer contents = new StringBuffer();
+            StringBuilder header = new StringBuilder();
+            StringBuilder contents = new StringBuilder();
+
             while ((line = templateReader.readLine()) != null) {
+
+                if (inMultiLineComment) {
+                    int commentEnd = line.indexOf( "*/" );
+                    if (commentEnd >= 0) {
+                        line = line.substring( commentEnd+2 );
+                        inMultiLineComment = false;
+                    } else {
+                        line = "";
+                    }
+                } else {
+                    int commentStart = line.indexOf( "/*" );
+                    if (commentStart >= 0) {
+                        int commentEnd = line.indexOf( "*/" );
+                        if (commentEnd > commentStart) {
+                            line = line.substring( 0, commentStart ) + line.substring( commentEnd+2 );
+                        } else {
+                            line = line.substring( 0, commentStart );
+                            inMultiLineComment = true;
+                        }
+                    }
+                }
+
                 String trimmed = line.trim();
                 if (trimmed.length() > 0) {
                     if (trimmed.startsWith("template header")) {
@@ -97,7 +123,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
                         addTemplate(template);
 
                     } else if (trimmed.startsWith("package")) {
-                        if (inHeader == false) {
+                        if ( !inHeader ) {
                             throw new DecisionTableParseException(
                                     "Missing header");
                         }
@@ -111,7 +137,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
                     } else if (inHeader) {
                         addColumn(cf.getColumn(trimmed));
 
-                    } else if (!inTemplate && !inHeader) {
+                    } else if (!inTemplate) {
                         header.append(line).append("\n");
 
                     } else if (!inContents && trimmed.startsWith("rule")) {
@@ -125,9 +151,9 @@ public class DefaultTemplateContainer implements TemplateContainer {
                         inContents = false;
 
                     } else if (inContents) {
-                        contents.append(line).append("\n");
+                        contents.append(removeSingleLineComment(line)).append( "\n");
 
-                    } else if (inTemplate) {
+                    } else {
                         template.addColumn(trimmed);
                     }
                 }
@@ -143,6 +169,11 @@ public class DefaultTemplateContainer implements TemplateContainer {
         } finally {
             if (templateStream != null) { closeStream(templateStream); }
         }
+    }
+
+    private String removeSingleLineComment(String line) {
+        int commentStart = line.indexOf( "//" );
+        return commentStart < 0 ? line : line.substring( 0, commentStart );
     }
 
     private void addTemplate(RuleTemplate template) {
@@ -169,7 +200,7 @@ public class DefaultTemplateContainer implements TemplateContainer {
      * @see org.kie.decisiontable.parser.TemplateContainer#getColumns()
      */
     public Column[] getColumns() {
-        return (Column[]) columns.toArray(new Column[columns.size()]);
+        return columns.toArray(new Column[columns.size()]);
     }
 
     /*
@@ -192,6 +223,6 @@ public class DefaultTemplateContainer implements TemplateContainer {
     }
 
     public Column getColumn(final String name) {
-        return (Column) columnMap.get(name);
+        return columnMap.get(name);
     }
 }

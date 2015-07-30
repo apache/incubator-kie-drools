@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
 package org.drools.core.rule;
 
 import java.io.Externalizable;
@@ -40,8 +55,6 @@ public class ConditionalBranch extends ConditionalElement implements Externaliza
     /**
      * There is not reason to clone this object since it is stateless.
      * So a clone() call will return the instance itself.
-     *
-     * @see org.kie.rule.ConditionalElement#clone()
      */
     @Override
     public ConditionalBranch clone() {
@@ -51,8 +64,6 @@ public class ConditionalBranch extends ConditionalElement implements Externaliza
     /**
      * It is not possible to declare any new variables, so always
      * return an Empty Map
-     *
-     * @see org.kie.rule.RuleConditionElement#getInnerDeclarations()
      */
     public Map<String,Declaration> getInnerDeclarations() {
         return Collections.emptyMap();
@@ -61,8 +72,6 @@ public class ConditionalBranch extends ConditionalElement implements Externaliza
     /**
      * It is not possible to nest elements inside a conditional branch, so
      * always return an empty list.
-     *
-     * @see org.kie.rule.RuleConditionElement#getNestedElements()
      */
     public List<RuleConditionElement> getNestedElements() {
         return Collections.emptyList();
@@ -71,8 +80,6 @@ public class ConditionalBranch extends ConditionalElement implements Externaliza
     /**
      * It is not possible to declare and export any variables,
      * so always return an empty map
-     *
-     * @see org.kie.rule.RuleConditionElement#getOuterDeclarations()
      */
     public Map<String,Declaration> getOuterDeclarations() {
         return Collections.emptyMap();
@@ -80,8 +87,6 @@ public class ConditionalBranch extends ConditionalElement implements Externaliza
 
     /**
      * Not possible to resolve any declaration, so always return null.
-     *
-     * @see org.kie.rule.RuleConditionElement#resolveDeclaration(java.lang.String)
      */
     public Declaration resolveDeclaration(String identifier) {
         return null;

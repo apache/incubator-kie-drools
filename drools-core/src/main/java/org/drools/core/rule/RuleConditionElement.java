@@ -16,11 +16,11 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.spi.RuleComponent;
+
 import java.io.Externalizable;
 import java.util.List;
 import java.util.Map;
-
-import org.drools.core.spi.RuleComponent;
 
 public interface RuleConditionElement
     extends
@@ -65,7 +65,7 @@ public interface RuleConditionElement
      * inside the current element
      * @return
      */
-    public List<RuleConditionElement> getNestedElements();
+    public List<? extends RuleConditionElement> getNestedElements();
     
     /**
      * Returns true in case this RuleConditionElement delimits

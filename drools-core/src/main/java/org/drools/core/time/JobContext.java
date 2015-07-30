@@ -16,13 +16,17 @@
 
 package org.drools.core.time;
 
+import org.drools.core.common.InternalWorkingMemory;
+
 import java.io.Serializable;
 
 public interface JobContext extends Serializable {
     /**
      * This method should only be called by the scheduler
      */    
-    public void setJobHandle(JobHandle jobHandle);
+    void setJobHandle(JobHandle jobHandle);
     
-    public JobHandle getJobHandle();
+    JobHandle getJobHandle();
+
+    InternalWorkingMemory getWorkingMemory();
 }

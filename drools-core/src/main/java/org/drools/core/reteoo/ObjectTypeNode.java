@@ -41,10 +41,7 @@ import org.drools.core.marshalling.impl.TimersOutputMarshaller;
 import org.drools.core.reteoo.RuleRemovalContext.CleanupAdapter;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.compiled.CompiledNetwork;
-import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
-import org.drools.core.rule.EvalCondition;
-import org.drools.core.spi.Constraint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.Job;
@@ -60,7 +57,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -290,14 +286,10 @@ public class ObjectTypeNode extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        checkDirty();
-
-        if ( context.getReaderContext() == null && this.objectType.isEvent() && this.expirationOffset >= 0 && this.expirationOffset != Long.MAX_VALUE ) {
-            scheduleExpiration(context, workingMemory, factHandle, expirationOffset, new WorkingMemoryReteExpireAction((EventFactHandle) factHandle, this));
-        }
     }
 
     public void propagateAssert(InternalFactHandle factHandle, PropagationContext context, InternalWorkingMemory workingMemory) {
+        checkDirty();
         if (compiledNetwork != null) {
             compiledNetwork.assertObject(factHandle,
                                          context,
@@ -307,24 +299,6 @@ public class ObjectTypeNode extends ObjectSource
                                             context,
                                             workingMemory);
         }
-    }
-
-    public static void scheduleExpiration(PropagationContext context, InternalWorkingMemory workingMemory, InternalFactHandle handle, long expirationOffset, WorkingMemoryReteExpireAction expireAction) {
-        // schedule expiration
-        TimerService clock = workingMemory.getTimerService();
-
-        // DROOLS-455 the calculation of the effectiveEnd may overflow and become negative
-        EventFactHandle eventFactHandle = (EventFactHandle) handle;
-        long effectiveEnd = eventFactHandle.getEndTimestamp() + expirationOffset;
-        long nextTimestamp = Math.max( clock.getCurrentTime(),
-                                       effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
-        JobContext jobctx = new ExpireJobContext( expireAction,
-                                                  workingMemory );
-        JobHandle jobHandle = clock.scheduleJob( job,
-                                                 jobctx,
-                                                 new PointInTimeTrigger( nextTimestamp, null, null ) );
-        jobctx.setJobHandle( jobHandle );
-        eventFactHandle.addJob(jobHandle);
     }
 
     /**
@@ -340,7 +314,7 @@ public class ObjectTypeNode extends ObjectSource
                               final InternalWorkingMemory workingMemory) {
         checkDirty();
 
-        doRetractObject(factHandle, context, workingMemory);
+        doRetractObject( factHandle, context, workingMemory);
     }
 
     public static void doRetractObject(final InternalFactHandle factHandle,
@@ -529,32 +503,6 @@ public class ObjectTypeNode extends ObjectSource
         return this.objectType.equals(other.objectType) && this.source.equals(other.source);
     }
 
-    private boolean usesDeclaration(final Constraint[] constraints) {
-        boolean usesDecl = false;
-        for (int i = 0; !usesDecl && i < constraints.length; i++) {
-            usesDecl = this.usesDeclaration(constraints[i]);
-        }
-        return usesDecl;
-    }
-
-    private boolean usesDeclaration(final Constraint constraint) {
-        boolean usesDecl = false;
-        final Declaration[] declarations = constraint.getRequiredDeclarations();
-        for (int j = 0; !usesDecl && j < declarations.length; j++) {
-            usesDecl = (declarations[j].getPattern().getObjectType() == this.objectType);
-        }
-        return usesDecl;
-    }
-
-    private boolean usesDeclaration(final EvalCondition condition) {
-        boolean usesDecl = false;
-        final Declaration[] declarations = condition.getRequiredDeclarations();
-        for (int j = 0; !usesDecl && j < declarations.length; j++) {
-            usesDecl = (declarations[j].getPattern().getObjectType() == this.objectType);
-        }
-        return usesDecl;
-    }
-
     /**
      * @return the entryPoint
      */
@@ -586,7 +534,7 @@ public class ObjectTypeNode extends ObjectSource
         public void execute(JobContext ctx) {
             ExpireJobContext context = (ExpireJobContext) ctx;
             context.workingMemory.queueWorkingMemoryAction(context.expireAction);
-            ((EventFactHandle)context.getExpireAction().getFactHandle()).removeJob(context.getJobHandle());
+            context.getExpireAction().getFactHandle().removeJob( context.getJobHandle());
         }
     }
 
@@ -594,8 +542,8 @@ public class ObjectTypeNode extends ObjectSource
             implements
             JobContext,
             Externalizable {
-        public WorkingMemoryReteExpireAction expireAction;
-        public InternalWorkingMemory         workingMemory;
+        public final WorkingMemoryReteExpireAction expireAction;
+        public final InternalWorkingMemory         workingMemory;
         public JobHandle                     handle;
 
         public ExpireJobContext(WorkingMemoryReteExpireAction expireAction,
@@ -617,16 +565,8 @@ public class ObjectTypeNode extends ObjectSource
             return expireAction;
         }
 
-        public void setExpireAction(WorkingMemoryReteExpireAction expireAction) {
-            this.expireAction = expireAction;
-        }
-
         public InternalWorkingMemory getWorkingMemory() {
             return workingMemory;
-        }
-
-        public void setWorkingMemory(InternalWorkingMemory workingMemory) {
-            this.workingMemory = workingMemory;
         }
 
         public JobHandle getHandle() {
@@ -659,9 +599,6 @@ public class ObjectTypeNode extends ObjectSource
             ExpireJobContext ejobCtx = (ExpireJobContext) jobCtx;
             WorkingMemoryReteExpireAction expireAction = ejobCtx.getExpireAction();
             outputCtx.writeInt( expireAction.getFactHandle().getId() );
-            outputCtx.writeUTF( expireAction.getNode().getEntryPoint().getEntryPointId() );
-
-            outputCtx.writeUTF( ((ClassObjectType) expireAction.getNode().getObjectType()).getClassType().getName() );
 
             DefaultJobHandle jobHandle = (DefaultJobHandle) ejobCtx.getJobHandle();
             PointInTimeTrigger trigger = (PointInTimeTrigger) jobHandle.getTimerJobInstance().getTrigger();
@@ -681,8 +618,6 @@ public class ObjectTypeNode extends ObjectSource
                                                 .setType( ProtobufMessages.Timers.TimerType.EXPIRE )
                                                 .setExpire( ProtobufMessages.Timers.ExpireTimer.newBuilder()
                                                                                                .setHandleId( expireAction.getFactHandle().getId() )
-                                                                                               .setEntryPointId( expireAction.getNode().getEntryPoint().getEntryPointId() )
-                                                                                               .setClassName( ((ClassObjectType)expireAction.getNode().getObjectType()).getClassType().getName() )
                                                                                                .setNextFireTimestamp( trigger.hasNextFireTime().getTime() )
                                                                                                .build() )
                                                 .build();
@@ -697,18 +632,11 @@ public class ObjectTypeNode extends ObjectSource
 
             InternalFactHandle factHandle = inCtx.handles.get( inCtx.readInt() );
 
-            String entryPointId = inCtx.readUTF();
-            EntryPointNode epn = inCtx.wm.getKnowledgeBase().getRete().getEntryPointNode( new EntryPointId( entryPointId ) );
-
-            String className = inCtx.readUTF();
-            Class< ? > cls = inCtx.wm.getKnowledgeBase().getRootClassLoader().loadClass( className );
-            ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( cls ) );
-
             long nextTimeStamp = inCtx.readLong();
 
             TimerService clock = inCtx.wm.getTimerService();
 
-            JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction( (EventFactHandle) factHandle, otn ),
+            JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction( (EventFactHandle) factHandle ),
                                                       inCtx.wm );
             JobHandle handle = clock.scheduleJob( job,
                                                   jobctx,
@@ -723,13 +651,10 @@ public class ObjectTypeNode extends ObjectSource
                                 Timer _timer) throws ClassNotFoundException {
             ExpireTimer _expire = _timer.getExpire();
             InternalFactHandle factHandle = inCtx.handles.get( _expire.getHandleId() );
-            EntryPointNode epn = inCtx.wm.getKnowledgeBase().getRete().getEntryPointNode( new EntryPointId( _expire.getEntryPointId() ) );
-            Class<?> cls = inCtx.wm.getKnowledgeBase().getRootClassLoader().loadClass( _expire.getClassName() );
-            ObjectTypeNode otn = epn.getObjectTypeNodes().get( new ClassObjectType( cls ) );
 
             TimerService clock = inCtx.wm.getTimerService();
 
-            JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction((EventFactHandle)factHandle, otn),
+            JobContext jobctx = new ExpireJobContext( new WorkingMemoryReteExpireAction((EventFactHandle)factHandle),
                                                       inCtx.wm );
             JobHandle jobHandle = clock.scheduleJob( job,
                                                      jobctx,
@@ -811,7 +736,7 @@ public class ObjectTypeNode extends ObjectSource
         }
 
         public void add(InternalFactHandle factHandle) {
-            list = Arrays.asList(factHandle);
+            list = Collections.singletonList( factHandle );
         }
 
         @Override
