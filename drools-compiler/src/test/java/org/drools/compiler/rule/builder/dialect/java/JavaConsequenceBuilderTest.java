@@ -93,7 +93,7 @@ public class JavaConsequenceBuilderTest {
 
         final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor(context,
                                                                                    new BindingDescr("age", "age"),
-                                                                                   p.getObjectType(),
+                                                                                   p,
                                                                                    "age",
                                                                                    declr,
                                                                                    true);

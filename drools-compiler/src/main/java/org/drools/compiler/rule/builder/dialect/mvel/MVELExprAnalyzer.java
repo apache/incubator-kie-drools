@@ -16,22 +16,14 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 import org.antlr.runtime.RecognitionException;
-import org.drools.core.base.EvaluatorWrapper;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
+import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.kie.api.definition.rule.Rule;
 import org.mvel2.MVEL;
@@ -39,6 +31,14 @@ import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.optimizers.OptimizerFactory;
 import org.mvel2.util.PropertyTools;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Expression analyzer.
@@ -77,178 +77,167 @@ public class MVELExprAnalyzer {
                                                 final Map<String, Class< ? >> localTypes,
                                                 String contextIndeifier,
                                                 Class kcontextClass) {
-        MVELAnalysisResult result;
-        if ( expr.trim().length() > 0 ) {
-            MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
-            MVEL.COMPILER_OPT_ALLOW_OVERRIDE_ALL_PROPHANDLING = true;
-            MVEL.COMPILER_OPT_ALLOW_RESOLVE_INNERCLASSES_WITH_DOTNOTATION = true;
-            MVEL.COMPILER_OPT_SUPPORT_JAVA_STYLE_CLASS_LITERALS = true;   
-            
-            MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
-            
-            MVELDialectRuntimeData data = ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
-            ParserConfiguration conf = data.getParserConfiguration();
+        if ( expr.trim().length() <= 0 ) {
+            MVELAnalysisResult result = analyze( (Set<String>) Collections.EMPTY_SET, availableIdentifiers );
+            result.setMvelVariables( new HashMap<String, Class< ? >>() );
+            result.setTypesafe( true );
+            return result;
+        }
 
-            conf.setClassLoader( context.getKnowledgeBuilder().getRootClassLoader() );
+        MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
+        MVEL.COMPILER_OPT_ALLOW_OVERRIDE_ALL_PROPHANDLING = true;
+        MVEL.COMPILER_OPT_ALLOW_RESOLVE_INNERCLASSES_WITH_DOTNOTATION = true;
+        MVEL.COMPILER_OPT_SUPPORT_JAVA_STYLE_CLASS_LITERALS = true;
 
-            // first compilation is for verification only
-            // @todo proper source file name
-            final ParserContext parserContext1 = new ParserContext( conf );
+        MVELDialect dialect = (MVELDialect) context.getDialect( "mvel" );
+
+        MVELDialectRuntimeData data = ( MVELDialectRuntimeData) context.getPkg().getDialectRuntimeRegistry().getDialectData( "mvel" );
+        ParserConfiguration conf = data.getParserConfiguration();
+
+        conf.setClassLoader( context.getKnowledgeBuilder().getRootClassLoader() );
+
+        // first compilation is for verification only
+        // @todo proper source file name
+        final ParserContext parserContext1 = new ParserContext( conf );
+        if ( localTypes != null ) {
+            for ( Entry entry : localTypes.entrySet() ) {
+                parserContext1.addInput( (String) entry.getKey(),
+                                         (Class) entry.getValue() );
+            }
+        }
+        if ( availableIdentifiers.getThisClass() != null ) {
+            parserContext1.addInput( "this",
+                                     availableIdentifiers.getThisClass() );
+        }
+
+        if ( availableIdentifiers.getOperators() != null ) {
+            for ( Entry<String, EvaluatorWrapper> opEntry : availableIdentifiers.getOperators().entrySet() ) {
+                parserContext1.addInput( opEntry.getKey(), opEntry.getValue().getClass() );
+            }
+        }
+
+        parserContext1.setStrictTypeEnforcement( false );
+        parserContext1.setStrongTyping( false );
+        parserContext1.setInterceptors( dialect.getInterceptors() );
+        Class< ? > returnType;
+
+        try {
+            returnType = MVEL.analyze( expr,
+                                       parserContext1 );
+        } catch ( Exception e ) {
+            BaseDescr base = (context instanceof RuleBuildContext) ? ((RuleBuildContext)context).getRuleDescr() : context.getParentDescr();
+            DialectUtil.copyErrorLocation(e, context.getParentDescr());
+            context.addError( new DescrBuildError( base,
+                                                   context.getParentDescr(),
+                                                   null,
+                                                   "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
+            return null;
+        }
+
+        Set<String> requiredInputs = new HashSet<String>();
+        requiredInputs.addAll( parserContext1.getInputs().keySet() );
+        HashMap<String, Class< ? >> variables = (HashMap<String, Class< ? >>) ((Map) parserContext1.getVariables());
+        if ( localTypes != null ) {
+            for ( String str : localTypes.keySet() ) {
+                // we have to do this due to mvel regressions on detecting true local vars
+                variables.remove( str );
+            }
+        }
+
+        // MVEL includes direct fields of context object in non-strict mode. so we need to strip those
+        if ( availableIdentifiers.getThisClass() != null ) {
+            for ( Iterator<String> it = requiredInputs.iterator(); it.hasNext(); ) {
+                if ( PropertyTools.getFieldOrAccessor( availableIdentifiers.getThisClass(),
+                                                       it.next() ) != null ) {
+                    it.remove();
+                }
+            }
+        }
+
+        // now, set the required input types and compile again
+        final ParserContext parserContext2 = new ParserContext( conf );
+        parserContext2.setStrictTypeEnforcement( true );
+        parserContext2.setStrongTyping( true );
+        parserContext2.setInterceptors( dialect.getInterceptors() );
+
+        for ( String str : requiredInputs ) {
+            Class< ? > cls = availableIdentifiers.getDeclrClasses().get( str );
+            if ( cls != null ) {
+                parserContext2.addInput( str, cls );
+                continue;
+            }
+
+            cls = availableIdentifiers.getGlobals().get( str );
+            if ( cls != null ) {
+                parserContext2.addInput( str, cls );
+                continue;
+            }
+
+            cls = availableIdentifiers.getOperators().keySet().contains( str ) ?
+                  context.getConfiguration().getComponentFactory().getExpressionProcessor().getEvaluatorWrapperClass() :
+                  null;
+
+            if ( cls != null ) {
+                parserContext2.addInput( str, cls );
+                continue;
+            }
+
+            if ( str.equals( contextIndeifier ) ) {
+                parserContext2.addInput( contextIndeifier, kcontextClass );
+            } else if ( str.equals( "kcontext" ) ) {
+                parserContext2.addInput( "kcontext", kcontextClass );
+            } else if ( str.equals( "rule" ) ) {
+                parserContext2.addInput( "rule", Rule.class );
+            }
+
             if ( localTypes != null ) {
-                for ( Entry entry : localTypes.entrySet() ) {
-                    parserContext1.addInput( (String) entry.getKey(),
-                                             (Class) entry.getValue() );
+                cls = localTypes.get( str );
+                if ( cls != null ) {
+                    parserContext2.addInput( str, cls );
                 }
             }
-            if ( availableIdentifiers.getThisClass() != null ) {
-                parserContext1.addInput( "this",
-                                         availableIdentifiers.getThisClass() );
-            }
+        }
 
-            if ( availableIdentifiers.getOperators() != null ) {
-                for ( Entry<String, EvaluatorWrapper> opEntry : availableIdentifiers.getOperators().entrySet() ) {
-                    parserContext1.addInput( opEntry.getKey(), opEntry.getValue().getClass() );
-                }
-            }
+        if ( availableIdentifiers.getThisClass() != null ) {
+            parserContext2.addInput( "this", availableIdentifiers.getThisClass() );
+        }
 
-            parserContext1.setStrictTypeEnforcement( false );
-            parserContext1.setStrongTyping( false );
-            parserContext1.setInterceptors( dialect.getInterceptors() );
-            Class< ? > returnType;
+        boolean typesafe = context.isTypesafe();
 
-            try {
-                returnType = MVEL.analyze( expr,
-                                           parserContext1 );
-            } catch ( Exception e ) {
+        try {
+            returnType = MVEL.analyze( expr,
+                                       parserContext2 );
+            typesafe = true;
+        } catch ( Exception e ) {
+            // is this an error, or can we fall back to non-typesafe mode?
+            if ( typesafe ) {
                 BaseDescr base = (context instanceof RuleBuildContext) ? ((RuleBuildContext)context).getRuleDescr() : context.getParentDescr();
                 DialectUtil.copyErrorLocation(e, context.getParentDescr());
                 context.addError( new DescrBuildError( base,
-                                                              context.getParentDescr(),
-                                                              null,
-                                                              "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
+                                                       context.getParentDescr(),
+                                                       null,
+                                                       "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
                 return null;
             }
+        }
 
-            Set<String> requiredInputs = new HashSet<String>();
-            requiredInputs.addAll( parserContext1.getInputs().keySet() );
-            HashMap<String, Class< ? >> variables = (HashMap<String, Class< ? >>) ((Map) parserContext1.getVariables());
+        if ( typesafe ) {
+            requiredInputs = new HashSet<String>();
+            requiredInputs.addAll( parserContext2.getInputs().keySet() );
+            requiredInputs.addAll( variables.keySet() );
+            variables = (HashMap<String, Class< ? >>) ((Map) parserContext2.getVariables());
             if ( localTypes != null ) {
                 for ( String str : localTypes.keySet() ) {
                     // we have to do this due to mvel regressions on detecting true local vars
                     variables.remove( str );
                 }
             }
-
-            // MVEL includes direct fields of context object in non-strict mode. so we need to strip those
-            if ( availableIdentifiers.getThisClass() != null ) {
-                for ( Iterator<String> it = requiredInputs.iterator(); it.hasNext(); ) {
-                    if ( PropertyTools.getFieldOrAccessor( availableIdentifiers.getThisClass(),
-                                                           it.next() ) != null ) {
-                        it.remove();
-                    }
-                }
-            }
-
-            // now, set the required input types and compile again
-            final ParserContext parserContext2 = new ParserContext( conf );
-            parserContext2.setStrictTypeEnforcement( true );
-            parserContext2.setStrongTyping( true );
-            parserContext2.setInterceptors( dialect.getInterceptors() );
-
-            for ( String str : requiredInputs ) {
-                Class< ? > cls = availableIdentifiers.getDeclrClasses().get( str );
-                if ( cls != null ) {
-                    parserContext2.addInput( str,
-                                             cls );
-                    continue;
-                }
-
-                cls = availableIdentifiers.getGlobals().get( str );
-                if ( cls != null ) {
-                    parserContext2.addInput( str,
-                                             cls );
-                    continue;
-                }
-
-                cls = availableIdentifiers.getOperators().keySet().contains( str ) ? context.getConfiguration().getComponentFactory().getExpressionProcessor().getEvaluatorWrapperClass() : null;
-                if ( cls != null ) {
-                    parserContext2.addInput( str,
-                                             cls );
-                    continue;
-                }
-
-                if ( str.equals( contextIndeifier ) ) {
-                    parserContext2.addInput( contextIndeifier,
-                                             kcontextClass );
-                } else if ( str.equals( "kcontext" ) ) {
-                    parserContext2.addInput( "kcontext",
-                                             kcontextClass );
-                }
-                if ( str.equals( "rule" ) ) {
-                    parserContext2.addInput( "rule",
-                                             Rule.class );
-                }
-
-                if ( localTypes != null ) {
-                    cls = localTypes.get( str );
-                    if ( cls != null ) {  
-                        parserContext2.addInput( str,
-                                                 cls );
-                    }
-                }
-            }   
-            
-            if ( availableIdentifiers.getThisClass() != null ) {
-                parserContext2.addInput( "this",
-                                         availableIdentifiers.getThisClass() );
-            }
-
-            boolean typesafe = context.isTypesafe();
-            
-            try {
-                returnType = MVEL.analyze( expr,
-                                           parserContext2 );
-                typesafe = true;
-            } catch ( Exception e ) {
-                // is this an error, or can we fall back to non-typesafe mode?
-                if ( typesafe ) {
-                    BaseDescr base = (context instanceof RuleBuildContext) ? ((RuleBuildContext)context).getRuleDescr() : context.getParentDescr();
-                    DialectUtil.copyErrorLocation(e, context.getParentDescr());
-                    context.addError( new DescrBuildError( base,
-                                                           context.getParentDescr(),
-                                                           null,
-                                                           "Unable to Analyse Expression " + expr + ":\n" + e.getMessage() ) );
-                    return null;                    
-                }
-            }
-
-            if ( typesafe ) {
-                requiredInputs = new HashSet<String>();
-                requiredInputs.addAll( parserContext2.getInputs().keySet() );
-                requiredInputs.addAll( variables.keySet() );
-                variables = (HashMap<String, Class< ? >>) ((Map) parserContext2.getVariables());
-                if ( localTypes != null ) { 
-                    for ( String str : localTypes.keySet() ) {
-                        // we have to do this due to mvel regressions on detecting true local vars
-                        variables.remove( str );
-                    }                
-                }    
-            }
-
-            result = analyze( requiredInputs,
-                              availableIdentifiers );
-
-            result.setReturnType( returnType );
-
-            result.setMvelVariables( variables );
-            result.setTypesafe( typesafe );
-        } else {
-            result = analyze( (Set<String>) Collections.EMPTY_SET,
-                              availableIdentifiers );
-            result.setMvelVariables( new HashMap<String, Class< ? >>() );
-            result.setTypesafe( true );
-
         }
+
+        MVELAnalysisResult result = analyze( requiredInputs, availableIdentifiers );
+        result.setReturnType( returnType );
+        result.setMvelVariables( variables );
+        result.setTypesafe( typesafe );
         return result;
     }
 
