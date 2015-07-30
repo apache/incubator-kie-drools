@@ -104,9 +104,9 @@ public interface Dialect {
                      TypeResolver typeResolver,
                      Resource resource);
 
-    public void addImport(ImportDescr importDescr);
+    void addImport(ImportDescr importDescr);
 
-    public void addStaticImport(ImportDescr importDescr);
+    void addStaticImport(ImportDescr importDescr);
 
     List<KnowledgeBuilderResult> getResults();
 

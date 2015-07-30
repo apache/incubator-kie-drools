@@ -79,6 +79,7 @@ import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SlidingLengthWindow;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.rule.XpathBackReference;
 import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.rule.constraint.NegConstraint;
@@ -767,50 +768,62 @@ public class PatternBuilder
         ObjectType objectType = pattern.getObjectType();
         Class<?> patternClass = ((ClassObjectType) objectType).getClassType();
 
+        List<Class<?>> backReferenceClasses = new ArrayList<Class<?>>();
+        backReferenceClasses.add(patternClass);
+        XpathBackReference backRef = new XpathBackReference( pattern, backReferenceClasses );
+        pattern.setBackRefDeclarations( backRef );
+
         ObjectType originalType = pattern.getObjectType();
+        mvelCtx.setInXpath( true );
 
-        for (XpathAnalysis.XpathPart part : xpathAnalysis) {
-            XpathConstraint.XpathChunk xpathChunk = xpathConstraint.addChunck(patternClass, part.getField(), part.getIndex(), part.isIterate());
+        try {
+            for ( XpathAnalysis.XpathPart part : xpathAnalysis ) {
+                XpathConstraint.XpathChunk xpathChunk = xpathConstraint.addChunck( patternClass, part.getField(), part.getIndex(), part.isIterate() );
 
-            if (xpathChunk == null) {
-                context.addError(new DescrBuildError(context.getParentDescr(),
-                                                     descr,
-                                                     null,
-                                                     "Invalid xpath expression '" + expression + "': cannot access " + part.getField() + " on " + patternClass));
-                pattern.setObjectType(originalType);
-                return null;
-            }
-
-
-            if (part.getInlineCast() != null) {
-                try {
-                    patternClass = context.getDialect().getTypeResolver().resolveType(part.getInlineCast());
-                } catch (ClassNotFoundException e) {
-                    context.addError(new DescrBuildError(context.getParentDescr(),
-                                                         descr,
-                                                         null,
-                                                         "Unknown class " + part.getInlineCast() + " in xpath expression '" + expression + "'"));
+                if ( xpathChunk == null ) {
+                    context.addError( new DescrBuildError( context.getParentDescr(),
+                                                           descr,
+                                                           null,
+                                                           "Invalid xpath expression '" + expression + "': cannot access " + part.getField() + " on " + patternClass ) );
+                    pattern.setObjectType( originalType );
                     return null;
                 }
-                part.addInlineCastConstraint(patternClass);
-            } else {
-                patternClass = xpathChunk.getReturnedClass();
-            }
-            pattern.setObjectType(new ClassObjectType(patternClass));
 
-            for (String constraint : part.getConstraints()) {
-                ConstraintConnectiveDescr result = parseExpression(context, patternDescr, new ExprConstraintDescr(constraint), constraint );
-                if (result == null) {
-                    continue;
+                if ( part.getInlineCast() != null ) {
+                    try {
+                        patternClass = context.getDialect().getTypeResolver().resolveType( part.getInlineCast() );
+                    } catch (ClassNotFoundException e) {
+                        context.addError( new DescrBuildError( context.getParentDescr(),
+                                                               descr,
+                                                               null,
+                                                               "Unknown class " + part.getInlineCast() + " in xpath expression '" + expression + "'" ) );
+                        return null;
+                    }
+                    part.addInlineCastConstraint( patternClass );
+                } else {
+                    patternClass = xpathChunk.getReturnedClass();
                 }
 
-                for (Constraint c : build(context, patternDescr, pattern, result, mvelCtx)) {
-                    xpathChunk.addConstraint(c);
+                pattern.setObjectType( new ClassObjectType( patternClass ) );
+                backReferenceClasses.add( 0, patternClass );
+                backRef.reset();
+
+                for ( String constraint : part.getConstraints() ) {
+                    ConstraintConnectiveDescr result = parseExpression( context, patternDescr, new ExprConstraintDescr( constraint ), constraint );
+                    if ( result == null ) {
+                        continue;
+                    }
+
+                    for ( Constraint c : build( context, patternDescr, pattern, result, mvelCtx ) ) {
+                        xpathChunk.addConstraint( c );
+                    }
                 }
             }
+        } finally {
+            mvelCtx.setInXpath( false );
+            pattern.setBackRefDeclarations( null );
+            pattern.setObjectType( originalType );
         }
-
-        pattern.setObjectType(originalType);
 
         xpathConstraint.setXpathStartDeclaration( patternDescr.getXpathStartDeclaration() );
         if (descr instanceof BindingDescr) {
@@ -901,7 +914,7 @@ public class PatternBuilder
             if (!getExprBindings(context, pattern, values[1]).isConstant()) {
                 normalizedExpr = subExprs[i++];
             } else {
-                InternalReadAccessor extractor = getFieldReadAccessor( context, relDescr, pattern.getObjectType(), values[0], null, true );
+                InternalReadAccessor extractor = getFieldReadAccessor( context, relDescr, pattern, values[0], null, true );
                 if (extractor == null) {
                     normalizedExpr = subExprs[i++];
                 } else {
@@ -991,7 +1004,7 @@ public class PatternBuilder
                                                     String value2,
                                                     boolean isConstant) {
 
-        InternalReadAccessor extractor = getFieldReadAccessor( context, relDescr, pattern.getObjectType(), value1, null, true );
+        InternalReadAccessor extractor = getFieldReadAccessor( context, relDescr, pattern, value1, null, true );
         if (extractor == null) {
             return null;
         }
@@ -1079,7 +1092,7 @@ public class PatternBuilder
                                                                                                    relDescr.getParametersText(),
                                                                                                    value2 );
 
-        Map<String, Class< ? >> declarationsMap = getDeclarationsMap( returnValueRestrictionDescr, context, true );
+        Map<String, Class< ? >> declarationsMap = getDeclarationsMap( pattern, returnValueRestrictionDescr, context, true );
         Class< ? > thisClass = pattern.getObjectType() instanceof ClassObjectType ?
                                ((ClassObjectType) pattern.getObjectType()).getClassType() :
                                null;
@@ -1101,7 +1114,7 @@ public class PatternBuilder
         final List<Declaration> tupleDeclarations = new ArrayList<Declaration>();
         final List<Declaration> factDeclarations = new ArrayList<Declaration>();
         for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
-            final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(), id );
+            Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(), id );
             if ( decl.getPattern() == pattern ) {
                 factDeclarations.add( decl );
             } else {
@@ -1318,7 +1331,7 @@ public class PatternBuilder
 
         final InternalReadAccessor extractor = getFieldReadAccessor( context,
                                                                      fieldBindingDescr,
-                                                                     pattern.getObjectType(),
+                                                                     pattern,
                                                                      fieldBindingDescr.getBindingField(),
                                                                      declr,
                                                                      true );
@@ -1444,7 +1457,7 @@ public class PatternBuilder
     }
 
     public static AnalysisResult buildAnalysis(RuleBuildContext context, Pattern pattern, PredicateDescr predicateDescr, Map<String, OperatorDescr> aliases ) {
-        Map<String, Class< ? >> declarations = getDeclarationsMap( predicateDescr, context, true );
+        Map<String, Class< ? >> declarations = getDeclarationsMap( pattern, predicateDescr, context, true );
         Map<String, Class< ? >> globals = context.getKnowledgeBuilder().getGlobals();
         Map<String, EvaluatorWrapper> operators = aliases == null ? new HashMap<String, EvaluatorWrapper>() : buildOperators(context, pattern, predicateDescr, aliases);
 
@@ -1535,9 +1548,10 @@ public class PatternBuilder
         return declaration;
     }
 
-    public static Map<String, Class< ? >> getDeclarationsMap( final BaseDescr baseDescr,
-                                                                 final RuleBuildContext context,
-                                                                 final boolean reportError ) {
+    public static Map<String, Class< ? >> getDeclarationsMap( final Pattern pattern,
+                                                              final BaseDescr baseDescr,
+                                                              final RuleBuildContext context,
+                                                              final boolean reportError ) {
         Map<String, Class< ? >> declarations = new HashMap<String, Class< ? >>();
         for ( Map.Entry<String, Declaration> entry : context.getDeclarationResolver().getDeclarations( context.getRule() ).entrySet() ) {
             if ( entry.getValue().getExtractor() == null ) {
@@ -1552,6 +1566,14 @@ public class PatternBuilder
             declarations.put( entry.getKey(),
                               entry.getValue().getExtractor().getExtractToClass() );
         }
+
+        if (pattern != null) {
+            List<Class<?>> xpathBackReferenceClasses = pattern.getXpathBackReferenceClasses();
+            for ( int i = 0; i <xpathBackReferenceClasses.size(); i++ ) {
+                declarations.put( XpathBackReference.BACK_REFERENCE_HEAD + i, xpathBackReferenceClasses.get( i ) );
+            }
+        }
+
         return declarations;
     }
 
@@ -1611,7 +1633,7 @@ public class PatternBuilder
 
         InternalReadAccessor extractor = getFieldReadAccessor( context,
                                                                implicitBinding,
-                                                               pattern.getObjectType(),
+                                                               pattern,
                                                                implicitBinding.getExpression(),
                                                                declaration,
                                                                false );
@@ -1666,6 +1688,16 @@ public class PatternBuilder
 
     public static InternalReadAccessor getFieldReadAccessor( final RuleBuildContext context,
                                                              final BaseDescr descr,
+                                                             final Pattern pattern,
+                                                             String fieldName,
+                                                             final AcceptsReadAccessor target,
+                                                             final boolean reportError ) {
+        return getFieldReadAccessor( context, descr, pattern, pattern.getObjectType(), fieldName, target, reportError );
+    }
+
+    public static InternalReadAccessor getFieldReadAccessor( final RuleBuildContext context,
+                                                             final BaseDescr descr,
+                                                             final Pattern pattern,
                                                              final ObjectType objectType,
                                                              String fieldName,
                                                              final AcceptsReadAccessor target,
@@ -1697,7 +1729,7 @@ public class PatternBuilder
 
             boolean alternatives = false;
             try {
-                Map<String, Class< ? >> declarations = getDeclarationsMap( descr, context, false );
+                Map<String, Class< ? >> declarations = getDeclarationsMap( pattern, descr, context, false );
                 Map<String, Class< ? >> globals = context.getKnowledgeBuilder().getGlobals();
                 alternatives = declarations.containsKey( fieldName ) || globals.containsKey( fieldName );
 
@@ -1718,7 +1750,8 @@ public class PatternBuilder
             } finally {
 
                 if (reportError && !alternatives) {
-                    Collection<KnowledgeBuilderResult> results = context.getPkg().getClassFieldAccessorStore().getWiringResults(((ClassObjectType) objectType).getClassType(), fieldName);
+                    Collection<KnowledgeBuilderResult> results = context.getPkg().getClassFieldAccessorStore()
+                                                                        .getWiringResults( ( (ClassObjectType) objectType ).getClassType(), fieldName );
                     if (!results.isEmpty()) {
                         for (KnowledgeBuilderResult res : results) {
                             if (res.getSeverity() == ResultSeverity.ERROR) {
@@ -1739,9 +1772,7 @@ public class PatternBuilder
                 MVELDialect mvelDialect = (MVELDialect) context.getDialect( "mvel" );
                 context.setDialect( mvelDialect );
 
-                Map<String, Class< ? >> declarations = getDeclarationsMap( descr,
-                                                                           context,
-                                                                           false );
+                Map<String, Class< ? >> declarations = getDeclarationsMap( pattern, descr, context, false );
 
                 final AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                                         descr,
