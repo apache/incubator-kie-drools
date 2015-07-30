@@ -502,6 +502,7 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
     :   TILDE unaryExpression
     | 	NEGATION unaryExpression
     |   (castExpression)=>castExpression
+    |   (backReferenceExpression)=>backReferenceExpression
     |   { isLeft = helper.getLeftMostExpr() == null;}
         ( ({inMap == 0 && ternOp == 0 && input.LA(2) == DRL6Lexer.COLON}? (var=ID COLON
                 { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($COLON, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, false); helper.setStart( bind, $var ); } } ))
@@ -538,6 +539,10 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
 castExpression
     :  (LEFT_PAREN primitiveType) => LEFT_PAREN primitiveType RIGHT_PAREN expr=unaryExpression
     |  (LEFT_PAREN type) => LEFT_PAREN type RIGHT_PAREN unaryExpressionNotPlusMinus
+    ;
+
+backReferenceExpression
+    :  (DOT DOT DIV) => (DOT DOT DIV)+ unaryExpressionNotPlusMinus
     ;
 
 primitiveType

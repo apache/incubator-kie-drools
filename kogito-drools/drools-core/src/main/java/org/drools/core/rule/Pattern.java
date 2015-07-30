@@ -52,12 +52,14 @@ public class Pattern
     private ObjectType objectType;
     private List<Constraint> constraints = Collections.EMPTY_LIST;
     private Declaration              declaration;
-    private Map<String, Declaration> declarations;
+    private Map<String, Declaration> declarations = Collections.EMPTY_MAP;
     private int                      index;
     private PatternSource            source;
     private List<Behavior>           behaviors;
     private List<String>             listenedProperties;
     private boolean                  hasNegativeConstraint;
+
+    private transient XpathBackReference backRefDeclarations;
 
     private Map<String, AnnotationDefinition> annotations;
 
@@ -113,7 +115,7 @@ public class Pattern
                                                getReadAcessor(objectType),
                                                this,
                                                isInternalFact);
-            this.declarations = new HashMap<String, Declaration>(2); // default to avoid immediate resize
+            this.declarations = new HashMap<String, Declaration>();
             this.declarations.put(this.declaration.getIdentifier(),
                                   this.declaration );
         } else {
@@ -211,12 +213,10 @@ public class Pattern
             }
         }
 
-        if( this.declarations != null ) {
-            for ( Declaration decl : this.declarations.values() ) {
-                Declaration addedDeclaration = clone.addDeclaration( decl.getIdentifier() );
-                addedDeclaration.setReadAccessor( decl.getExtractor() );
-                addedDeclaration.setBindingName( decl.getBindingName() );
-            }
+        for ( Declaration decl : this.declarations.values() ) {
+            Declaration addedDeclaration = clone.addDeclaration( decl.getIdentifier() );
+            addedDeclaration.setReadAccessor( decl.getExtractor() );
+            addedDeclaration.setBindingName( decl.getBindingName() );
         }
 
         for ( Constraint oldConstr : this.constraints ) {
@@ -329,7 +329,7 @@ public class Pattern
     }
 
     public Declaration addDeclaration(final String identifier) {
-        Declaration declaration = this.declarations != null ? this.declarations.get( identifier ) : null;
+        Declaration declaration = resolveDeclaration( identifier );
         if ( declaration == null ) {
             declaration = new Declaration( identifier,
                                            null,
@@ -341,11 +341,10 @@ public class Pattern
     }
     
     public void addDeclaration(final Declaration decl) {
-        if ( this.declarations == null ) {
-            this.declarations = new HashMap<String, Declaration>( 2 ); // default to avoid immediate resize
+        if ( this.declarations == Collections.EMPTY_MAP ) {
+            this.declarations = new HashMap<String, Declaration>();
         }        
-        this.declarations.put( decl.getIdentifier(),
-                               decl );        
+        this.declarations.put( decl.getIdentifier(), decl );
     }
 
     public boolean isBound() {
@@ -354,10 +353,6 @@ public class Pattern
 
     public Declaration getDeclaration() {
         return this.declaration;
-    }
-
-    public Declaration getDeclaration(String identifier) {
-        return this.declarations != null ? this.declarations.get(identifier) : null;
     }
 
     public int getIndex() {
@@ -378,16 +373,20 @@ public class Pattern
         this.offset = offset;
     }
 
+    public Map<String, Declaration> getDeclarations() {
+        return declarations;
+    }
+
     public Map<String, Declaration> getInnerDeclarations() {
-        return (this.declarations != null) ? this.declarations : Collections.EMPTY_MAP;
+        return backRefDeclarations != null ? backRefDeclarations.getDeclarationMap() : this.declarations;
     }
 
     public Map<String, Declaration>  getOuterDeclarations() {
-        return (this.declarations != null) ? this.declarations : Collections.EMPTY_MAP;
+        return getInnerDeclarations();
     }
 
     public Declaration resolveDeclaration(final String identifier) {
-        return (this.declarations != null) ? this.declarations.get( identifier ) : null;
+        return this.declarations.get( identifier );
     }
 
     public String toString() {
@@ -507,5 +506,17 @@ public class Pattern
             annotations = new HashMap<String, AnnotationDefinition>();
         }
         return annotations;
+    }
+
+    public XpathBackReference getBackRefDeclarations() {
+        return backRefDeclarations;
+    }
+
+    public void setBackRefDeclarations( XpathBackReference backRefDeclarations ) {
+        this.backRefDeclarations = backRefDeclarations;
+    }
+
+    public List<Class<?>> getXpathBackReferenceClasses() {
+        return backRefDeclarations != null ? backRefDeclarations.getBackReferenceClasses() : Collections.EMPTY_LIST;
     }
 }

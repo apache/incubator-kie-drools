@@ -15,11 +15,11 @@
 
 package org.drools.compiler.compiler;
 
-import java.util.Collections;
-import java.util.Map;
-
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.rule.Declaration;
+
+import java.util.Collections;
+import java.util.Map;
 
 public class BoundIdentifiers {
     private Map<String, Declaration>      declarations;
@@ -73,12 +73,7 @@ public class BoundIdentifiers {
     }
 
     public String toString() {
-        StringBuilder sbuilder = new StringBuilder();
-        sbuilder.append( "thisClass: " + thisClass + "\n" );
-        sbuilder.append( "declarations:" + declrClasses + "\n" );
-        sbuilder.append( "globals:" + globals + "\n" );
-        sbuilder.append( "operators:" + operators + "\n" );
-        return sbuilder.toString();
+        return ( "thisClass: " + thisClass + "\n" ) + "declarations:" + declrClasses + "\n" + "globals:" + globals + "\n" + "operators:" + operators + "\n";
     }
 
     public void setDeclarations(Map<String, Declaration> declarations) {

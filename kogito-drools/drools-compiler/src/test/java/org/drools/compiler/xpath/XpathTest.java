@@ -726,4 +726,45 @@ public class XpathTest {
         assertEquals( 5, list.size() );
         assertTrue( list.containsAll( asList( "desk", "chair", "key", "draw", "computer" ) ) );
     }
+
+    @Test
+    public void testBackReferenceConstraint() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  Man( $toy: /wife/children/toys{ name.length == ../name.length } )\n" +
+                "then\n" +
+                "  list.add( $toy.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        Woman alice = new Woman( "Alice", 38 );
+        Man bob = new Man( "Bob", 40 );
+        bob.setWife( alice );
+
+        Child charlie = new Child( "Carl", 12 );
+        Child debbie = new Child( "Debbie", 8 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        charlie.addToy( new Toy( "car" ) );
+        charlie.addToy( new Toy( "ball" ) );
+        debbie.addToy( new Toy( "doll" ) );
+        debbie.addToy( new Toy( "guitar" ) );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "ball" ) );
+        assertTrue( list.contains( "guitar" ) );
+    }
 }

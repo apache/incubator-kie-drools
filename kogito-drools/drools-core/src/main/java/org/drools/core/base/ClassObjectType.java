@@ -180,11 +180,7 @@ public class ClassObjectType
     //    }
 
     public boolean isAssignableFrom(ObjectType objectType) {
-        if ( !(objectType instanceof ClassObjectType) ) {
-            return false;
-        } else {
-            return this.cls.isAssignableFrom( ((ClassObjectType) objectType).getClassType() );
-        }
+        return objectType instanceof ClassObjectType && this.cls.isAssignableFrom( ( (ClassObjectType) objectType ).getClassType() );
     }
 
     public ValueType getValueType() {

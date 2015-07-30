@@ -41,7 +41,7 @@ public class QueryBuilder implements EngineElementBuilder {
                                              queryObjectType,
                                              null );
         
-        final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor(context, queryDescr, queryObjectType, "name", null, true);
+        final InternalReadAccessor extractor = PatternBuilder.getFieldReadAccessor(context, queryDescr, pattern, "name", null, true);
         final QueryNameConstraint constraint = new QueryNameConstraint(extractor, queryDescr.getName());
 
         PatternBuilder.registerReadAccessor( context, queryObjectType, "name", constraint );
@@ -51,7 +51,7 @@ public class QueryBuilder implements EngineElementBuilder {
 
         ObjectType argsObjectType = ClassObjectType.DroolsQuery_ObjectType;
         
-        InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, argsObjectType, "elements", null, true );
+        InternalReadAccessor arrayExtractor = PatternBuilder.getFieldReadAccessor( context, queryDescr, null, argsObjectType, "elements", null, true );
 
         QueryImpl query = ((QueryImpl) context.getRule());
 
