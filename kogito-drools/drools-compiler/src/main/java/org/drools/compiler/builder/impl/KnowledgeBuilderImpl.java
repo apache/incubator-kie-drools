@@ -32,6 +32,8 @@ import org.drools.compiler.compiler.DroolsWarningWrapper;
 import org.drools.compiler.compiler.DuplicateFunction;
 import org.drools.compiler.compiler.DuplicateRule;
 import org.drools.compiler.compiler.GlobalError;
+import org.drools.compiler.compiler.GuidedRuleTemplateConverter;
+import org.drools.compiler.compiler.GuidedRuleTemplateConverterFactory;
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLCompilerFactory;
 import org.drools.compiler.compiler.PackageBuilderErrors;
@@ -49,12 +51,10 @@ import org.drools.compiler.compiler.xml.XmlPackageReader;
 import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
-import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.CollectDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
@@ -65,7 +65,6 @@ import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.PatternDestinationDescr;
-import org.drools.compiler.lang.descr.PatternSourceDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
@@ -130,6 +129,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -153,6 +153,7 @@ import java.util.Stack;
 import java.util.UUID;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.drools.core.util.StringUtils.isEmpty;
 import static org.drools.core.util.StringUtils.ucFirst;
 
@@ -453,6 +454,34 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return parser.hasErrors() ? null : pkg;
     }
 
+    public void addPackageFromTemplate(Resource resource) throws DroolsParserException,
+                                                                 IOException {
+        this.resource = resource;
+        addPackage(templateToPackageDescr(resource));
+        this.resource = null;
+    }
+
+    PackageDescr templateToPackageDescr(Resource resource) throws DroolsParserException,
+                                                                  IOException {
+        GuidedRuleTemplateConverter converter = GuidedRuleTemplateConverterFactory.getGuidedRuleTemplateConverter();
+        if (converter == null) {
+            return null;
+        }
+
+        byte[] template = readBytesFromInputStream(resource.getInputStream());
+        byte[] drl = converter.convert( template );
+
+        final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
+        PackageDescr pkg = parser.parse(resource, new ByteArrayInputStream( drl ));
+        this.results.addAll(parser.getErrors());
+        if (pkg == null) {
+            addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
+        } else {
+            pkg.setResource(resource);
+        }
+        return parser.hasErrors() ? null : pkg;
+    }
+
     public void addPackageFromDrl(Resource resource) throws DroolsParserException,
                                                             IOException {
         this.resource = resource;
@@ -620,7 +649,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             }
             this.resource = null;
         }
-
     }
 
     /**
@@ -710,6 +738,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 addPackageFromScoreCard(resource, configuration);
             } else if (ResourceType.TDRL.equals(type)) {
                 addPackageFromDrl(resource);
+            } else if (ResourceType.TEMPLATE.equals(type)) {
+                addPackageFromTemplate(resource);
             } else {
                 addPackageForExternalType(resource, type, configuration);
             }
@@ -1560,7 +1590,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     private void processGlobals(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         InternalKnowledgePackage pkg = pkgRegistry.getPackage();
-        Set<String> existingGlobals = new HashSet(pkg.getGlobals().keySet());
+        Set<String> existingGlobals = new HashSet<String>(pkg.getGlobals().keySet());
 
         for (final GlobalDescr global : packageDescr.getGlobals()) {
             final String identifier = global.getIdentifier();
@@ -1650,9 +1680,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return typeBuilder.getAndRegisterTypeDeclaration(cls, packageName);
     }
 
-    /**
-     * @param packageDescr
-     */
     void processEntryPointDeclarations(PackageRegistry pkgRegistry,
                                        PackageDescr packageDescr) {
         for (EntryPointDeclarationDescr epDescr : packageDescr.getEntryPointDeclarations()) {

@@ -100,7 +100,6 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     public void build() {
         buildException = null;
         kBuilder.registerBuildResources(getResources());
-        registerDSL();
         buildResources();
         buildPackages();
         buildOthers();
@@ -139,135 +138,23 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         }
     }
 
-    private void registerDSL() {
-        List<ResourceDescr> resourcesByType = this.resourcesByType.remove(ResourceType.DSL);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    kBuilder.setAssetFilter(resourceDescr.getFilter());
-                    kBuilder.addDsl( resourceDescr.resource );
-                    kBuilder.setAssetFilter( null );
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                }
-            }
-        }
-    }
-
     private void buildResources() {
-        List<ResourceDescr> resourcesByType = this.resourcesByType.remove(ResourceType.DRF);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    kBuilder.setAssetFilter(resourceDescr.getFilter());
-                    kBuilder.addProcessFromXml(resourceDescr.resource);
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                } finally{
-                    kBuilder.setAssetFilter(null);
-                }
-            }
-        }
+        buildResourceType(DSL_RESOURCE_BUILDER, ResourceType.DSL);
+        buildResourceType(DRF_RESOURCE_BUILDER, ResourceType.DRF);
+        buildResourceType(BPMN2_RESOURCE_BUILDER, ResourceType.BPMN2);
+        buildResourceType(PKG_RESOURCE_BUILDER, ResourceType.PKG);
+        buildResourceType(CHANGE_SET_RESOURCE_BUILDER, ResourceType.CHANGE_SET);
+        buildResourceType(XSD_RESOURCE_BUILDER, ResourceType.XSD);
+        buildResourceType(PMML_RESOURCE_BUILDER, ResourceType.PMML);
+    }
 
-        resourcesByType = this.resourcesByType.remove(ResourceType.BPMN2);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    BPMN2ProcessFactory.configurePackageBuilder(kBuilder);
-                    kBuilder.setAssetFilter(resourceDescr.getFilter());
-                    kBuilder.addProcessFromXml(resourceDescr.resource);
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                } finally{
-                    kBuilder.setAssetFilter(null);
-                }
-            }
-        }
-
-        resourcesByType = this.resourcesByType.remove(ResourceType.PKG);
+    private void buildResourceType(ResourceBuilder resourceBuilder, ResourceType resourceType) {
+        List<ResourceDescr> resourcesByType = this.resourcesByType.remove(resourceType);
         if (resourcesByType != null) {
             for (ResourceDescr resourceDescr : resourcesByType) {
                 try {
                     kBuilder.setAssetFilter(resourceDescr.getFilter());
-                    kBuilder.addPackageFromInputStream(resourceDescr.resource);
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                } finally{
-                    kBuilder.setAssetFilter(null);
-                }
-            }
-        }
-
-        resourcesByType = this.resourcesByType.remove(ResourceType.CHANGE_SET);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    kBuilder.setAssetFilter(resourceDescr.getFilter());
-                    kBuilder.addPackageFromChangeSet(resourceDescr.resource);
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                } finally{
-                    kBuilder.setAssetFilter(null);
-                }
-            }
-        }
-
-        resourcesByType = this.resourcesByType.remove(ResourceType.XSD);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    kBuilder.setAssetFilter(resourceDescr.getFilter());
-                    kBuilder.addPackageFromXSD(resourceDescr.resource, (JaxbConfigurationImpl) resourceDescr.configuration);
-                } catch (RuntimeException e) {
-                    if (buildException == null) {
-                        buildException = e;
-                    }
-                } catch (Exception e) {
-                    if (buildException == null) {
-                        buildException = new RuntimeException( e );
-                    }
-                } finally{
-                    kBuilder.setAssetFilter(null);
-                }
-            }
-        }
-
-        resourcesByType = this.resourcesByType.remove(ResourceType.PMML);
-        if (resourcesByType != null) {
-            for (ResourceDescr resourceDescr : resourcesByType) {
-                try {
-                    kBuilder.setAssetFilter(resourceDescr.getFilter());
-                    kBuilder.addPackageFromPMML(resourceDescr.resource, ResourceType.PMML, resourceDescr.configuration);
+                    resourceBuilder.build( kBuilder, resourceDescr );
                 } catch (RuntimeException e) {
                     if (buildException == null) {
                         buildException = e;
@@ -282,6 +169,60 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
             }
         }
     }
+
+    private interface ResourceBuilder {
+        void build(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception;
+    }
+
+    private static final ResourceBuilder DSL_RESOURCE_BUILDER = new ResourceBuilder() {
+        @Override
+        public void build( KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr ) throws Exception {
+            kBuilder.addDsl( resourceDescr.resource );
+        }
+    };
+
+    private static final ResourceBuilder PMML_RESOURCE_BUILDER = new ResourceBuilder() {
+        @Override
+        public void build( KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr ) throws Exception {
+            kBuilder.addPackageFromPMML(resourceDescr.resource, ResourceType.PMML, resourceDescr.configuration);
+        }
+    };
+
+    private static final ResourceBuilder XSD_RESOURCE_BUILDER = new ResourceBuilder() {
+        @Override
+        public void build( KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr ) throws Exception {
+            kBuilder.addPackageFromXSD( resourceDescr.resource, (JaxbConfigurationImpl) resourceDescr.configuration );
+        }
+    };
+
+    private static final ResourceBuilder CHANGE_SET_RESOURCE_BUILDER = new ResourceBuilder() {
+        @Override
+        public void build( KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr ) throws Exception {
+            kBuilder.addPackageFromChangeSet( resourceDescr.resource);
+        }
+    };
+
+    private static final ResourceBuilder PKG_RESOURCE_BUILDER = new ResourceBuilder() {
+        @Override
+        public void build( KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr ) throws Exception {
+            kBuilder.addPackageFromInputStream(resourceDescr.resource );
+        }
+    };
+
+    private static final ResourceBuilder BPMN2_RESOURCE_BUILDER = new ResourceBuilder() {
+        @Override
+        public void build( KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr ) throws Exception {
+            BPMN2ProcessFactory.configurePackageBuilder( kBuilder );
+            kBuilder.addProcessFromXml( resourceDescr.resource );
+        }
+    };
+
+    private static final ResourceBuilder DRF_RESOURCE_BUILDER = new ResourceBuilder() {
+        @Override
+        public void build( KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr ) throws Exception {
+            kBuilder.addProcessFromXml(resourceDescr.resource);
+        }
+    };
 
     private void buildOthers() {
         try {
@@ -362,6 +303,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResource(packages, ResourceType.DTABLE, DTABLE_TO_PKG_DESCR);
         buildResource(packages, ResourceType.SCARD, SCARD_TO_PKG_DESCR);
         buildResource(packages, ResourceType.TDRL, DRL_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.TEMPLATE, TEMPLATE_TO_PKG_DESCR);
         return packages.values();
     }
 
@@ -448,6 +390,12 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private static final ResourceToPkgDescrMapper DRL_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
         public PackageDescr map(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception {
             return kBuilder.drlToPackageDescr(resourceDescr.resource);
+        }
+    };
+
+    private static final ResourceToPkgDescrMapper TEMPLATE_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
+        public PackageDescr map(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception {
+            return kBuilder.templateToPackageDescr( resourceDescr.resource);
         }
     };
 
