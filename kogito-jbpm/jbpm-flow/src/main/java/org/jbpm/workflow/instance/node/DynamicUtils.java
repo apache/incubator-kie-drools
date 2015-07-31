@@ -64,6 +64,7 @@ public class DynamicUtils {
 		final WorkItemImpl workItem = new WorkItemImpl();
 		workItem.setState(WorkItem.ACTIVE);
 		workItem.setProcessInstanceId(processInstance.getId());
+		workItem.setDeploymentId( (String) ksession.getEnvironment().get("deploymentId"));
 		workItem.setName(workItemName);
 		workItem.setParameters(parameters);
 		final WorkItemNodeInstance workItemNodeInstance = new WorkItemNodeInstance();
@@ -71,6 +72,7 @@ public class DynamicUtils {
 		workItemNodeInstance.setProcessInstance(processInstance);
 		workItemNodeInstance.internalSetWorkItem(workItem);
     	workItemNodeInstance.addEventListeners();
+        workItem.setNodeInstanceId(workItemNodeInstance.getId());
     	if (ksession instanceof StatefulKnowledgeSessionImpl) {
     		executeWorkItem((StatefulKnowledgeSessionImpl) ksession, workItem, workItemNodeInstance);
 		} else if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
