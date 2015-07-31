@@ -193,6 +193,11 @@ public class ResourceType
                                                                       "src/main/resources",
                                                                       "tdrl");
 
+    public static final ResourceType TEMPLATE = addResourceTypeToRegistry("TEMPLATE",
+                                                                          "Drools Rule Template",
+                                                                          "src/main/resources",
+                                                                          "template");
+
     public static ResourceType getResourceType(final String resourceType) {
         ResourceType resource = CACHE.get(resourceType);
         if (resource == null) {
