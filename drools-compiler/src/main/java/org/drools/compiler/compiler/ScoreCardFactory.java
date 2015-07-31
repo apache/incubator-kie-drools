@@ -15,11 +15,10 @@
 
 package org.drools.compiler.compiler;
 
-import java.io.InputStream;
-
-import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.ScoreCardConfiguration;
 import org.kie.internal.utils.ServiceRegistryImpl;
+
+import java.io.InputStream;
 
 public class ScoreCardFactory {
     private static ScoreCardProvider provider;
