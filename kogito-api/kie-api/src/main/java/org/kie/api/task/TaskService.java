@@ -69,6 +69,8 @@ public interface TaskService extends CommandExecutor {
     List<TaskSummary> getTasksOwnedByStatus(String userId, List<Status> status, String language);
 
     List<TaskSummary> getTasksByStatusByProcessInstanceId(long processInstanceId, List<Status> status, String language);
+    
+    List<TaskSummary> getTasksAssignedAsPotentialOwnerByProcessId(String userId, String processId);
 
     List<Long> getTasksByProcessInstanceId(long processInstanceId);
     
