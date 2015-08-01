@@ -434,10 +434,6 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             busAdmins.add(busAdmin);
             potOwners.add(potOwner);
          
-//            taskService.getTasksByStatusByProcessInstanceId(procInstId, statuses, "en-UK");
-            
-
-            
             // as much as possible
             TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder)
                     .intersect()
@@ -603,5 +599,24 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         
         results = queryBuilder.clear().offset(3).maxResults(3).build().getResultList();
         assertTrue("Expected 2, not " + results.size() + " results", results.size() == 2 );
+       
+        // pot owner (and no "user-group limiting" clause)
+        {
+            // Add two more tasks, in order to have a quorum
+            long workItemId = 104;
+            long procInstId = 1766;
+            String busAdmin = stakeHolder;
+            String potOwner = stakeHolder;
+            String deploymentId = "Louis de Ponte du Lac";
+            String name = "Interview";
+            taskImpl = addTask(workItemId, procInstId, busAdmin, potOwner, name, deploymentId);
+        }
+        
+        queryBuilder.clear();
+        queryBuilder = taskService.taskQuery(stakeHolder)
+                .intersect()
+                .potentialOwner(stakeHolder);
+        results = queryBuilder.build().getResultList();
+        assertEquals("List of tasks", 1, results.size());
     }
 }

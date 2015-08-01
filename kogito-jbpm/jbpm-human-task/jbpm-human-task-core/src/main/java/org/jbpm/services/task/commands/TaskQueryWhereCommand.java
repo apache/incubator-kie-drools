@@ -28,7 +28,7 @@ import org.kie.internal.command.Context;
 
 @XmlRootElement(name="task-query-where-command")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TaskQueryWhereCommand extends UserGroupCallbackTaskCommand<List<TaskSummary>> {
+public class TaskQueryWhereCommand extends TaskCommand<List<TaskSummary>> {
 
     /** generated serial version UID */
     private static final long serialVersionUID = -6879337395030142688L;

@@ -423,6 +423,13 @@ public class SynchronizedTaskService
     }
 
     @Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByProcessId( String userId, String processId ) {
+        synchronized (ksession) {
+            return  taskService.getTasksAssignedAsPotentialOwnerByProcessId(userId, processId);
+        }
+    }
+    
+    @Override
     public User getUserById(String userId) {
         synchronized (ksession) {
             return  taskService.getUserById(userId);
@@ -965,5 +972,6 @@ public class SynchronizedTaskService
         }
 
     }
+
 
 }

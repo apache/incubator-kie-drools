@@ -31,6 +31,8 @@ import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
 import org.jbpm.services.task.impl.factories.TaskFactory;
+import org.jbpm.services.task.impl.model.TaskDataImpl;
+import org.jbpm.services.task.impl.model.TaskImpl;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.task.model.I18NText;
@@ -728,18 +730,34 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
         str += "name =  'This is my task name' })";
         Task task = TaskFactory.evalTask(new StringReader(str));
+        String otherProcessId = "org.process.task.other";
+        ((TaskDataImpl) task.getTaskData()).setProcessId(otherProcessId);;
         taskService.addTask(task, new HashMap<String, Object>());
         
         str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) {processInstanceId = 100 } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet')],businessAdministrators = [ new User('Administrator') ], }),";
         str += "name =  'Another name' })";
         task = TaskFactory.evalTask(new StringReader(str));
+        String processId = "org.process.task.test";
+        ((TaskDataImpl) task.getTaskData()).setProcessId(processId);
         taskService.addTask(task, new HashMap<String, Object>());
         
         List<Status> statuses = new ArrayList<Status>();      
         statuses.add(Status.Reserved);
         List<TaskSummary> tasks = taskService.getTasksByStatusByProcessInstanceIdByTaskName(99L, statuses, "This is my task name");
         assertEquals(1, tasks.size());
+        
+        tasks = taskService.getTasksAssignedAsPotentialOwnerByProcessId("Bobba Fet", processId);
+        assertEquals(1, tasks.size());
+        
+        tasks = taskService.getTasksAssignedAsPotentialOwnerByProcessId("Administrator", processId);
+        assertEquals(0, tasks.size());
+        
+        tasks = taskService.getTasksAssignedAsPotentialOwnerByProcessId("Bobba Fet", otherProcessId);
+        assertEquals(1, tasks.size());
+        
+        tasks = taskService.getTasksAssignedAsPotentialOwnerByProcessId("Bobba Fet", "bad.process.id");
+        assertEquals(0, tasks.size());
     }
     
     @Test

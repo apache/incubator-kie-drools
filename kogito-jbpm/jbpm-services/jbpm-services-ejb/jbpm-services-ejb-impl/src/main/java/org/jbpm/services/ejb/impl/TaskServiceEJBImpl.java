@@ -239,6 +239,11 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 	}
 
 	@Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByProcessId( String userId, String processId ) {
+		return delegate.getTasksAssignedAsPotentialOwnerByProcessId(userId, processId);
+    }
+
+    @Override
 	public List<TaskSummary> getTasksAssignedAsRecipient(String userId) {
 		return delegate.getTasksAssignedAsRecipient(userId);
 	}

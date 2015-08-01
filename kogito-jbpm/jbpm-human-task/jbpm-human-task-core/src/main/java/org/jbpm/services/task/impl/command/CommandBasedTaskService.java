@@ -206,6 +206,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 		return executor.execute(new GetTaskAssignedAsBusinessAdminCommand(userId));
 	}
     
+	// TODO: does not filter on language
 	public List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, String language ,List<Status> statuses) {
         return executor.execute(new GetTaskAssignedAsBusinessAdminCommand(userId,statuses));
     }
@@ -248,7 +249,8 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
                         new QueryFilter( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "t.id", false));
 	}
         
-        @Override
+	@Override
+	// TODO: does not filter on language
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResults) {
 		return getTasksAssignedAsPotentialOwner(userId, groupIds, null, new QueryFilter(firstResult, maxResults));
 	}
@@ -521,6 +523,12 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
 
 	@Override
+    public List<TaskSummary> getTasksAssignedAsPotentialOwnerByProcessId( String userId, String processId ) {
+	    return this.taskQuery(userId).intersect().potentialOwner(userId).processId(processId)
+	            .build().getResultList();
+    }
+
+    @Override
 	public Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds) {
 		return executor.execute(new GetPotentialOwnersForTaskCommand(taskIds));
 	}

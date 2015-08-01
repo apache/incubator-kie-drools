@@ -74,8 +74,12 @@ import org.jbpm.services.task.impl.model.UserImpl_;
 import org.jbpm.services.task.query.TaskSummaryImpl;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.query.QueryParameterIdentifiers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
+   
+    public final static Logger logger = LoggerFactory.getLogger(TaskQueryCriteriaUtil.class);
     
     // Query Field Info -----------------------------------------------------------------------------------------------------------
     
@@ -420,19 +424,19 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
     @SuppressWarnings("unchecked")
     public static <F,T> Expression getJoinedEntityField(From<?, F> grandparentJoin, Attribute<?, T> parentJoinAttr, SingularAttribute fieldAttr) { 
         // task -> * -> origJoin -> (fieldParentAttr field in) tojoinType ->  fieldAttr  
+       
+        Class toAttrJoinType;
+        if( parentJoinAttr instanceof SingularAttribute ) { 
+            toAttrJoinType = parentJoinAttr.getJavaType();
+        } else if( parentJoinAttr instanceof PluralAttribute ) { 
+            toAttrJoinType = ((PluralAttribute) parentJoinAttr).getElementType().getJavaType();
+        } else { 
+            String joinName = parentJoinAttr.getDeclaringType().getJavaType().getSimpleName() + "." + parentJoinAttr.getName();
+            throw new IllegalStateException("Unknown attribute type encountered when trying to join " + joinName );
+        }
         
         Join<F, T> fieldParentJoin = null; 
         for( Join<F, ?> join : grandparentJoin.getJoins() ) { 
-            Class toAttrJoinType;
-            if( parentJoinAttr instanceof SingularAttribute ) { 
-                toAttrJoinType = parentJoinAttr.getJavaType();
-            } else if( parentJoinAttr instanceof PluralAttribute ) { 
-                toAttrJoinType = ((PluralAttribute) parentJoinAttr).getElementType().getJavaType();
-            } else { 
-                String joinName = parentJoinAttr.getDeclaringType().getJavaType().getSimpleName() + "." + parentJoinAttr.getName();
-                throw new IllegalStateException("Unknown attribute type encountered when trying to join " + joinName );
-            }
-            
            if( join.getJavaType().equals(toAttrJoinType) ) { 
               if( join.getAttribute().equals(parentJoinAttr) )  { 
                   fieldParentJoin = (Join<F, T>) join;
