@@ -264,34 +264,34 @@ public class ClassDefinitionFactory {
                 fieldDef.addMetaData("key", null);
             }
 
-            if (typeResolver != null) {
-                for (AnnotationDescr annotationDescr : field.getAnnotations()) {
-                    if (annotationDescr.getFullyQualifiedName() == null) {
-                        if (annotationDescr.isStrict()) {
-                            kbuilder.addBuilderResult( new TypeDeclarationError( field,
-                                                                                 "Unknown annotation @" + annotationDescr.getName() + " on field " + field.getFieldName() ) );
-                        } else {
-                            continue;
-                        }
-                    }
-                    Annotation annotation = AnnotationFactory.buildAnnotation(typeResolver, annotationDescr);
-                    if (annotation != null) {
-                        try {
-                            AnnotationDefinition annotationDefinition = AnnotationDefinition.build( annotation.annotationType(),
-                                                                                                    field.getAnnotation(annotationDescr.getFullyQualifiedName()).getValueMap(),
-                                                                                                    typeResolver );
-                            fieldDef.addAnnotation( annotationDefinition );
-                        } catch ( Exception e ) {
-                            kbuilder.addBuilderResult( new TypeDeclarationError( field,
-                                                                                 "Annotated field " + field.getFieldName() +
-                                                                                 "  - undefined property in @annotation " +
-                                                                                 annotationDescr.getName() + ": " + e.getMessage() + ";" ) );
-                        }
+            for (AnnotationDescr annotationDescr : field.getAnnotations()) {
+                if (annotationDescr.getFullyQualifiedName() == null) {
+                    if (annotationDescr.isStrict()) {
+                        kbuilder.addBuilderResult( new TypeDeclarationError( field,
+                                                                             "Unknown annotation @" + annotationDescr.getName() + " on field " + field.getFieldName() ) );
                     } else {
-                        if (annotationDescr.isStrict()) {
-                            kbuilder.addBuilderResult(new TypeDeclarationError(field,
-                                                                               "Unknown annotation @" + annotationDescr.getName() + " on field " + field.getFieldName()));
-                        }
+                        // Annotation is custom metadata
+                        fieldDef.addMetaData(annotationDescr.getName(), annotationDescr.getSingleValue());
+                        continue;
+                    }
+                }
+                Annotation annotation = AnnotationFactory.buildAnnotation(typeResolver, annotationDescr);
+                if (annotation != null) {
+                    try {
+                        AnnotationDefinition annotationDefinition = AnnotationDefinition.build( annotation.annotationType(),
+                                                                                                field.getAnnotation(annotationDescr.getFullyQualifiedName()).getValueMap(),
+                                                                                                typeResolver );
+                        fieldDef.addAnnotation( annotationDefinition );
+                    } catch ( Exception e ) {
+                        kbuilder.addBuilderResult( new TypeDeclarationError( field,
+                                                                             "Annotated field " + field.getFieldName() +
+                                                                             "  - undefined property in @annotation " +
+                                                                             annotationDescr.getName() + ": " + e.getMessage() + ";" ) );
+                    }
+                } else {
+                    if (annotationDescr.isStrict()) {
+                        kbuilder.addBuilderResult(new TypeDeclarationError(field,
+                                                                           "Unknown annotation @" + annotationDescr.getName() + " on field " + field.getFieldName()));
                     }
                 }
             }
