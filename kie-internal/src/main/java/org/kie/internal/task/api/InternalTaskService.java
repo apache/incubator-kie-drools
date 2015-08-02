@@ -153,7 +153,15 @@ public interface InternalTaskService extends TaskService {
 
     long addContent(long taskId, Content content);
     
+    long setDocumentContentFromUser(long taskId, String userId, byte [] byteContent);
+    
     long addContent(long taskId, Map<String, Object> params);
+    
+    long addOutputContentFromUser(long taskId, String userId, Map<String, Object> params);
+
+    Content getContentByIdForUser(long contentId, String userId );
+    
+    Map<String, Object> getOutputContentMapForUser(long taskId, String userId);
 
     void deleteContent(long taskId, long contentId);
 
@@ -206,4 +214,5 @@ public interface InternalTaskService extends TaskService {
     List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, String language ,List<Status> statuses);
     
     void executeReminderForTask(long taskId,String fromUser);
+
 }

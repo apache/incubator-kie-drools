@@ -32,5 +32,7 @@ public enum Operation {
     Remove,
     Activate,
     Exit,
-    Nominate
+    Nominate,
+    Modify,
+    View;
 }

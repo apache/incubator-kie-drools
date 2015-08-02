@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.kie.api.runtime.CommandExecutor;
+import org.kie.api.task.model.Content;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
@@ -114,5 +115,11 @@ public interface TaskInstanceService extends CommandExecutor {
     void setDescription(long taskId, String description);
     
     void setSubject(long taskId, String subject);
+
+    long addOutputContentFromUser(long taskId, String userId, Map<String, Object> params);
+    
+    Content getContentByIdForUser( long contentId, String userId );
+
+    Map<String, Object> getContentMapForUser( Long taskId, String userId );
     
 }

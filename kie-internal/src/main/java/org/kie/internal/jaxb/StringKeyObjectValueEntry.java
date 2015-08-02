@@ -15,6 +15,8 @@
 
 package org.kie.internal.jaxb;
 
+import java.util.Map.Entry;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -39,6 +41,15 @@ public class StringKeyObjectValueEntry {
 
     public StringKeyObjectValueEntry() {
         // default
+    }
+    
+    public StringKeyObjectValueEntry(Entry<String, Object> entry) { 
+       this.key = entry.getKey();
+       Object object = entry.getValue();
+       if( object != null ) { 
+           this.value = StringKeyObjectValueMapXmlAdapter.serializeObject(object, key);
+           this.className = object.getClass().getName();
+       }
     }
 
     public StringKeyObjectValueEntry(String key, String className, byte [] bytes) { 
