@@ -55,7 +55,7 @@ public interface TaskData extends Externalizable {
 
     String getOutputType();
 
-    long getOutputContentId();
+    Long getOutputContentId();
 
     String getFaultName();
 

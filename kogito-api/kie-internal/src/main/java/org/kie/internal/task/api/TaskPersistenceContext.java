@@ -72,6 +72,8 @@ public interface TaskPersistenceContext {
 	
 	Content removeContent(Content content);
 	
+	Long findTaskIdByContentId(Long contentId);
+	
 	Attachment findAttachment(Long attachmentId);
 	
 	Attachment persistAttachment(Attachment attachment);

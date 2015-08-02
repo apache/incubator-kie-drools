@@ -35,11 +35,11 @@ import org.kie.api.task.model.Task;
 
 public interface TaskContentService {
 
-    long addContent(long taskId, Content content);
+    long setDocumentContent(long taskId, Content content);
     
-    long addContent(long taskId, Map<String, Object> params);
-
-    void deleteContent(long taskId, long contentId);
+    long addOutputContent(long taskId, Map<String, Object> params);
+    
+    void deleteDocumentContent(long taskId, long contentId);
 
     List<Content> getAllContentByTaskId(long taskId);
 

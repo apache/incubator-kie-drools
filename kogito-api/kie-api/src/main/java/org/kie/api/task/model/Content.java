@@ -20,7 +20,7 @@ import java.io.Externalizable;
 
 public interface Content extends Externalizable {
     
-    long getId();
+    Long getId();
 
     byte[] getContent();
 
