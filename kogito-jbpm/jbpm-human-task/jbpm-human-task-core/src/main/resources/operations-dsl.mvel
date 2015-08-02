@@ -135,6 +135,17 @@
                 status = [ Status.Created, Status.Ready, Status.Reserved, Status.InProgress, Status.Suspended ],
                 allowed = [ Allowed.BusinessAdministrator ],
                 newStatus = Status.Exited
+            } ],
+    Operation.Modify
+        : [ new OperationCommand().{
+                status = [ Status.Created, Status.Ready, Status.Reserved, Status.InProgress, Status.Suspended ],
+                allowed = [ Allowed.Owner, Allowed.Initiator, Allowed.PotentialOwner, Allowed.BusinessAdministrator, Allowed.TaskStakeholders ]
+            } ],
+    Operation.View
+        : [ new OperationCommand().{
+                status = [ Status.Created, Status.Ready, Status.Reserved, Status.InProgress, Status.Suspended, 
+                           Status.Completed, Status.Failed, Status.Error, Status.Exited, Status.Obsolete ],
+                allowed = [ Allowed.Owner, Allowed.Initiator, Allowed.PotentialOwner, Allowed.BusinessAdministrator, Allowed.TaskStakeholders ]
             } ]
 ]          
   

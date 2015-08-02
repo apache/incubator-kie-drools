@@ -339,7 +339,7 @@ public class JaxbTaskData extends AbstractJaxbTaskObject<TaskData> implements Ta
     }
 
     @Override
-    public long getOutputContentId() {
+    public Long getOutputContentId() {
         return whenNull(outputContentId, -1l);
     }
 

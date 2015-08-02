@@ -25,6 +25,7 @@ import org.jbpm.services.task.impl.TaskDefServiceImpl;
 import org.jbpm.services.task.impl.TaskIdentityServiceImpl;
 import org.jbpm.services.task.impl.TaskInstanceServiceImpl;
 import org.jbpm.services.task.impl.TaskQueryServiceImpl;
+import org.jbpm.services.task.internals.lifecycle.LifeCycleManager;
 import org.jbpm.services.task.internals.lifecycle.MVELLifeCycleManager;
 import org.jbpm.services.task.rule.TaskRuleService;
 import org.jbpm.services.task.rule.impl.RuleContextProviderImpl;
@@ -69,9 +70,7 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
     }  
     
     public TaskInstanceService getTaskInstanceService() {
-        return new TaskInstanceServiceImpl(this, persistenceContext,
-        		new MVELLifeCycleManager(this, persistenceContext, getTaskContentService(), taskEventSupport),
-        		taskEventSupport, environment);
+        return new TaskInstanceServiceImpl(this, persistenceContext, getMvelLifeCycleManager(), taskEventSupport, environment);
     }
     
     public TaskDefService getTaskDefService() {
@@ -145,7 +144,10 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
 	public UserGroupCallback getUserGroupCallback() {
 		return (UserGroupCallback) get(EnvironmentName.TASK_USER_GROUP_CALLBACK);
 	}
-	
+
+	private LifeCycleManager getMvelLifeCycleManager() { 
+        return new MVELLifeCycleManager(this, persistenceContext, getTaskContentService(), taskEventSupport);
+	}
 	/*
 	 * currently not used methods 
 	 */

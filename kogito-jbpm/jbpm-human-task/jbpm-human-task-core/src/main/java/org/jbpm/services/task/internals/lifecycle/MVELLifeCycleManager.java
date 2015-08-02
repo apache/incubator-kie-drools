@@ -165,9 +165,10 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                     break;
                 }
                 case Initiator: {
-                    operationAllowed = (task.getTaskData().getCreatedBy() != null
-                            && (task.getTaskData().getCreatedBy().equals(user))
-                            || (groupIds != null && groupIds.contains(task.getTaskData().getCreatedBy().getId())));
+                    operationAllowed = (
+                            task.getTaskData().getCreatedBy() != null
+                            && (task.getTaskData().getCreatedBy().equals(user)
+                            || groupIds != null && groupIds.contains(task.getTaskData().getCreatedBy().getId())));
                     break;
                 }
                 case PotentialOwner: {
@@ -176,6 +177,10 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                 }
                 case BusinessAdministrator: {
                     operationAllowed = isAllowed(user, groupIds, (List<OrganizationalEntity>) task.getPeopleAssignments().getBusinessAdministrators());
+                    break;
+                }
+                case TaskStakeholders: {
+                    operationAllowed = isAllowed(user, groupIds, (List<OrganizationalEntity>) ((InternalPeopleAssignments) task.getPeopleAssignments()).getTaskStakeholders());
                     break;
                 }
                 case Anyone: {
@@ -367,7 +372,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                 case Complete: {
                     if (data != null) {
                         
-                        taskContentService.addContent(taskId, data);
+                        taskContentService.addOutputContent(taskId, data);
                         
                     }
 

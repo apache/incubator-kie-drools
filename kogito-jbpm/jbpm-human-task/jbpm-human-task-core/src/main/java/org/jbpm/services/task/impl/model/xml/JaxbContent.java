@@ -97,7 +97,7 @@ public class JaxbContent implements Content {
     }
 
     @Override
-    public long getId() {
+    public Long getId() {
         return this.id;
     } 
     

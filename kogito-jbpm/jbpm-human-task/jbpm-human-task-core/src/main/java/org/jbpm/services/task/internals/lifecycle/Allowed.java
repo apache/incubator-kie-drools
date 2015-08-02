@@ -21,5 +21,6 @@ public enum Allowed {
     Initiator,
     PotentialOwner,
     BusinessAdministrator,
+    TaskStakeholders,
     Anyone
 }

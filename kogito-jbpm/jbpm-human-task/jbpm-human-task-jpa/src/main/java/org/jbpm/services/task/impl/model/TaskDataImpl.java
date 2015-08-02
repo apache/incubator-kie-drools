@@ -558,7 +558,7 @@ public class TaskDataImpl implements InternalTaskData {
         this.outputType = outputType;
     }
 
-    public long getOutputContentId() {
+    public Long getOutputContentId() {
         return outputContentId;
     }
 

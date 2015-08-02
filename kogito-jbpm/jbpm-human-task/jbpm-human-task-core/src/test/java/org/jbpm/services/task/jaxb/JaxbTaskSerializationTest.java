@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -57,6 +58,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.transform.stream.StreamSource;
 
 import org.jbpm.services.task.admin.listener.internal.GetCurrentTxTasksCommand;
+import org.jbpm.services.task.commands.AddContentFromUserCommand;
 import org.jbpm.services.task.commands.CompositeCommand;
 import org.jbpm.services.task.commands.SetTaskPropertyCommand;
 import org.jbpm.services.task.commands.TaskCommand;
@@ -66,6 +68,8 @@ import org.jbpm.services.task.impl.model.FaultDataImpl;
 import org.jbpm.services.task.impl.model.I18NTextImpl;
 import org.jbpm.services.task.impl.model.xml.JaxbContent;
 import org.jbpm.services.task.impl.model.xml.JaxbTask;
+import org.jbpm.services.task.jaxb.AbstractTaskSerializationTest.TestType;
+import org.junit.Assume;
 import org.junit.Test;
 import org.kie.api.task.model.I18NText;
 import org.kie.internal.task.api.TaskInstanceService;
@@ -279,7 +283,23 @@ public class JaxbTaskSerializationTest extends AbstractTaskSerializationTest {
            cmd = new SetTaskPropertyCommand(taskId, userId, property, data[1]);
            cmd.execute(mockContext);
        }
+    }
+    
+    @Test
+    public void contentCommandTest() throws Exception { 
+        addClassesToSerializationContext(AddContentFromUserCommand.class);
+        
+       AddContentFromUserCommand cmd = new AddContentFromUserCommand(23l, "user");
+       cmd.getOutputContentMap().put("one", "two");
+       cmd.getOutputContentMap().put("thr", new Integer(4));
        
-       
+       AddContentFromUserCommand copyCmd = testRoundTrip(cmd);
+       assertEquals( "task id", cmd.getTaskId(), copyCmd.getTaskId());
+       assertEquals( "user id", cmd.getUserId(), copyCmd.getUserId());
+       for( Entry<String, Object> entry : cmd.getOutputContentMap().entrySet() ) { 
+           String key = entry.getKey();
+           Object copyVal = copyCmd.getOutputContentMap().get(key);
+           assertEquals( "entry: " + key, entry.getValue(), copyVal );
+       }
     }
 }

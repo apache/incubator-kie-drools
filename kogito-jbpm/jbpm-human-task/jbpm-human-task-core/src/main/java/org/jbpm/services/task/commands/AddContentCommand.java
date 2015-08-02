@@ -63,14 +63,14 @@ public class AddContentCommand extends TaskCommand<Long> {
         TaskContext context = (TaskContext) cntxt;
         
         if (params != null) {
-        	return context.getTaskContentService().addContent(taskId, params);
+        	return context.getTaskContentService().addOutputContent(taskId, params);
         } else {        
 	        Content comentImpl = content;
 	        if (comentImpl == null) {
 	        	comentImpl = jaxbContent;
 	    	}
 	        
-	        return context.getTaskContentService().addContent(taskId, comentImpl);
+	        return context.getTaskContentService().setDocumentContent(taskId, comentImpl);
         }
     }
 
@@ -80,11 +80,6 @@ public class AddContentCommand extends TaskCommand<Long> {
 
 	public void setContent(Content content) {
 		this.content = content;
-//		if (content instanceof JaxbContent) {
-//        	this.jaxbContent = (JaxbContent) content;
-//        } else {
-//        	this.jaxbContent = new JaxbContent(content);
-//        }
 	}
     
     public JaxbContent getJaxbContent() {

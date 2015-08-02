@@ -49,7 +49,7 @@ public class TaskContentServiceImpl implements TaskContentService {
     }
     
     @SuppressWarnings("unchecked")
-	public long addContent(long taskId, Map<String, Object> params) {
+	public long addOutputContent(long taskId, Map<String, Object> params) {
         Task task = persistenceContext.findTask(taskId);
         long outputContentId = task.getTaskData().getOutputContentId();
         Content outputContent = persistenceContext.findContent(outputContentId);
@@ -79,14 +79,15 @@ public class TaskContentServiceImpl implements TaskContentService {
         return contentId;
     }
 
-    public long addContent(long taskId, Content content) {
+    // TODO: if there's an existing document content entity, we lose all link to that through this!
+    public long setDocumentContent(long taskId, Content content) {
         Task task = persistenceContext.findTask(taskId);
         persistenceContext.persistContent(content);
         ((InternalTaskData) task.getTaskData()).setDocumentContentId(content.getId());
         return content.getId();
     }
 
-    public void deleteContent(long taskId, long contentId) {
+    public void deleteDocumentContent(long taskId, long contentId) {
         Task task = persistenceContext.findTask(taskId);
         ((InternalTaskData) task.getTaskData()).setDocumentContentId(-1);
         Content content = persistenceContext.findContent(contentId);

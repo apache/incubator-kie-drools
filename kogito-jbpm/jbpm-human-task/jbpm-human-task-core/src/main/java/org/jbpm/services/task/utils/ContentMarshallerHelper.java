@@ -108,7 +108,7 @@ public class ContentMarshallerHelper {
 	            VariableContainer parseFrom = JBPMMessages.VariableContainer.parseFrom(_header.getPayload(), registry);
 	            Map<String, Object> value = ProtobufProcessMarshaller.unmarshallVariableContainerValue(context, parseFrom);
 	            // in case there was single variable stored return only that variable and not map
-	            if (value.containsKey(SINGLE_VAR_KEY)) {
+	            if (value.containsKey(SINGLE_VAR_KEY) && value.size() == 1) {
 	            	return value.get(SINGLE_VAR_KEY);
 	            }
 	

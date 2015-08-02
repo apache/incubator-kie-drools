@@ -43,6 +43,7 @@ import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.api.task.model.User;
+import org.kie.internal.task.api.ContentMarshallerContext;
 import org.kie.internal.task.api.TaskInstanceService;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.TaskPersistenceContext;
@@ -394,6 +395,39 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         Task task = persistenceContext.findTask(taskId);
         ((InternalTask) task).setSubject(subject);
     }
+   
+    @Override
+    public long addOutputContentFromUser( long taskId, String userId, Map<String, Object> params ) {
+        // check permissions
+        this.lifeCycleManager.taskOperation(Operation.Modify, taskId, userId, null, null, toGroups(null));
+        return new TaskContentServiceImpl(this.persistenceContext).addOutputContent(taskId, params);
+    }
+   
+    @Override
+    public Content getContentByIdForUser( long contentId, String userId ) {
+        long taskId = persistenceContext.findTaskIdByContentId(contentId);
+        // check permissions
+        this.lifeCycleManager.taskOperation(Operation.View, taskId, userId, null, null, toGroups(null));
+        return this.persistenceContext.findContent(contentId);
+    }
+    
+    @Override
+    public Map<String, Object> getContentMapForUser( Long taskId, String userId ) {
+        // check permissions
+        this.lifeCycleManager.taskOperation(Operation.View, taskId, userId, null, null, toGroups(null));
+        Task task = this.persistenceContext.findTask(taskId);
+        if( task.getTaskData() != null && task.getTaskData().getOutputContentId() != null ) { 
+            Content content = this.persistenceContext.findContent(task.getTaskData().getOutputContentId());
+            ContentMarshallerContext mContext = TaskContentRegistry.get().getMarshallerContext(task);
+            Object outputContent = ContentMarshallerHelper.unmarshall(content.getContent(), mContext.getEnvironment(), mContext.getClassloader());
+            if( outputContent instanceof Map ) { 
+               return (Map<String, Object>) outputContent;
+            } else { 
+                throw new IllegalStateException("Output content for task " + taskId + " is not a Map<String, Object>!");
+            }
+        }
+        return null;
+    }
     
     @SuppressWarnings("unchecked")
 	protected List<String> toGroups(List<String> groups) {
@@ -447,4 +481,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         ((InternalTask)task).setSubject((String) replacements.get("subject"));
         ((InternalTask)task).setFormName((String) replacements.get("formName"));
     }
+
+
+
 }

@@ -54,8 +54,8 @@ public class ExternalTaskEventListener implements TaskLifeCycleEventListener {
             String userId = task.getTaskData().getActualOwner().getId();
             Map<String, Object> results = new HashMap<String, Object>();
             
-            long contentId = task.getTaskData().getOutputContentId();
-            if (contentId != -1) {
+            Long contentId = task.getTaskData().getOutputContentId();
+            if ( contentId != null && contentId != -1) {
                 Content content = runtime.getTaskService().getContentById(contentId);
                 ClassLoader cl = null;
                 if (manager instanceof InternalRuntimeManager) {

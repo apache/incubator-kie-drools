@@ -33,10 +33,12 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
 import org.jbpm.services.task.MvelFilePath;
+import org.jbpm.services.task.commands.AddContentFromUserCommand;
 import org.jbpm.services.task.commands.CancelDeadlineCommand;
 import org.jbpm.services.task.commands.CompositeCommand;
 import org.jbpm.services.task.commands.GetTaskAssignedAsPotentialOwnerCommand;

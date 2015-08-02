@@ -38,16 +38,23 @@ import javax.persistence.FlushModeType;
 import javax.persistence.Id;
 import javax.persistence.LockModeType;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import org.drools.core.util.StringUtils;
 import org.jbpm.query.jpa.data.QueryWhere;
 import org.jbpm.services.task.impl.model.AttachmentImpl;
 import org.jbpm.services.task.impl.model.CommentImpl;
 import org.jbpm.services.task.impl.model.ContentImpl;
+import org.jbpm.services.task.impl.model.ContentImpl_;
 import org.jbpm.services.task.impl.model.DeadlineImpl;
 import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
+import org.jbpm.services.task.impl.model.TaskDataImpl_;
 import org.jbpm.services.task.impl.model.TaskImpl;
+import org.jbpm.services.task.impl.model.TaskImpl_;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.query.TaskSummaryImpl;
 import org.kie.api.task.UserGroupCallback;
@@ -478,6 +485,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	
     @Override   
     public List<TaskSummary> doTaskSummaryCriteriaQuery(String userId, UserGroupCallback userGroupCallback, Object queryWhere) { 
+        check();
         List<TaskSummaryImpl> result = queryUtil.doCriteriaQuery(userId, userGroupCallback, (QueryWhere) queryWhere);
         return convertListToInterfaceList(result, TaskSummary.class);
     } 
@@ -634,5 +642,28 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		}
 		return null;
 	}
+
+    @Override
+    public Long findTaskIdByContentId( Long contentId ) {
+        check();
+        CriteriaBuilder builder = this.em.getCriteriaBuilder();
+        CriteriaQuery<Long> query = builder.createQuery(Long.class);
+       
+        Root<TaskImpl> taskRoot = query.from(TaskImpl.class);
+        Root<ContentImpl> contentRoot = query.from(ContentImpl.class);
+        query.select(taskRoot.get(TaskImpl_.id));
+       
+        Predicate taskContentJoinPred = builder.equal(
+                contentRoot.get(ContentImpl_.id), 
+                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.outputContentId));
+      
+        Predicate contentIdPred = builder.equal(
+                contentRoot.get(ContentImpl_.id), 
+                contentId);
+        query.where(builder.and(taskContentJoinPred, contentIdPred));
+        
+        Query choppedLiver = em.createQuery(query);
+        return (Long) choppedLiver.getSingleResult();
+    }
 
 }

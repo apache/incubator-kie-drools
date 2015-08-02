@@ -24,9 +24,9 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import org.kie.api.task.model.Content;
 import org.kie.internal.command.Context;
 
-@XmlRootElement(name="get-content-command")
+@XmlRootElement(name="get-content-by-id-for-user-command")
 @XmlAccessorType(XmlAccessType.NONE)
-public class GetContentCommand extends TaskCommand<Content> {
+public class GetContentByIdForUserCommand extends UserGroupCallbackTaskCommand<Content> {
 
 	private static final long serialVersionUID = 5911387213149078240L;
 
@@ -34,10 +34,10 @@ public class GetContentCommand extends TaskCommand<Content> {
     @XmlSchemaType(name="long")
 	private Long contentId;
 	
-	public GetContentCommand() {
+	public GetContentByIdForUserCommand() {
 	}
 	
-	public GetContentCommand(Long contentId) {
+	public GetContentByIdForUserCommand(Long contentId) {
 		this.contentId = contentId;
     }
 
@@ -51,7 +51,11 @@ public class GetContentCommand extends TaskCommand<Content> {
 
 	public Content execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        return context.getTaskContentService().getContentById(contentId);
+        doCallbackUserOperation(userId, context);
+        groupIds = doUserGroupCallbackOperation(userId, null, context);
+        context.set("local:groups", groupIds);
+        
+        return context.getTaskInstanceService().getContentByIdForUser(contentId, userId);
     }
 
 }

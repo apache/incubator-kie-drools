@@ -15,6 +15,7 @@
  */
 package org.jbpm.runtime.manager.impl.task;
 
+import java.lang.reflect.InvocationHandler;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,9 @@ import org.kie.internal.task.query.TaskQueryBuilder;
  * Synchronization is done on <code>CommandService</code> of the <code>KieSession</code> to ensure correctness 
  * until transaction completion.
  *
+ * TODO: use the java {@link InvocationHandler}/proxy mechanism to make this class *much* shorter..
  */
+// TODO: use the Ink
 public class SynchronizedTaskService 
             implements InternalTaskService, EventService<TaskLifeCycleEventListener> {
 	
@@ -326,9 +329,9 @@ public class SynchronizedTaskService
 
     @Override
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(
-            String salaboy, List<Status> status, String language) {
+            String userId, List<Status> status, String language) {
         synchronized (ksession) {
-            return  taskService.getTasksAssignedAsPotentialOwnerByStatus(salaboy, status, language);
+            return  taskService.getTasksAssignedAsPotentialOwnerByStatus(userId, status, language);
         }
     }
 
@@ -971,6 +974,34 @@ public class SynchronizedTaskService
             taskService.executeReminderForTask(taskId, initiator);
         }
 
+    }
+
+    @Override
+    public long setDocumentContentFromUser( long taskId, String userId, byte[] byteContent ) {
+        synchronized( ksession ) {
+            return taskService.setDocumentContentFromUser(taskId, userId, byteContent);
+        }
+    }
+
+    @Override
+    public long addOutputContentFromUser( long taskId, String userId, Map<String, Object> params ) {
+        synchronized( ksession ) {
+            return taskService.addOutputContentFromUser(taskId, userId, params);
+        }
+    }
+
+    @Override
+    public Content getContentByIdForUser( long contentId, String userId ) {
+        synchronized( ksession ) {
+            return taskService.getContentByIdForUser(contentId, userId);
+        }
+    }
+
+    @Override
+    public Map<String, Object> getOutputContentMapForUser( long taskId, String userId ) {
+        synchronized( ksession ) {
+            return taskService.getOutputContentMapForUser(taskId, userId);
+        }
     }
 
 

@@ -38,10 +38,13 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.jbpm.persistence.util.PersistenceUtil;
+import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.jbpm.services.task.impl.model.xml.JaxbContent;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.services.task.utils.MVELUtils;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.kie.api.task.model.Content;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
@@ -54,6 +57,16 @@ public abstract class HumanTaskServicesBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(HumanTaskServicesBaseTest.class);
     
     protected InternalTaskService taskService;
+
+    @BeforeClass
+    public static void configure() { 
+        LoggingPrintStream.interceptSysOutSysErr();
+    }
+    
+    @AfterClass
+    public static void reset() { 
+        LoggingPrintStream.resetInterceptSysOutSysErr();
+    }
 
     public void tearDown() {
         if( taskService != null ) { 

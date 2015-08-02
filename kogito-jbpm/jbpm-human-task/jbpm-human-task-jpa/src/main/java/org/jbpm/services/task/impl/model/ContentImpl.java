@@ -66,7 +66,7 @@ public class ContentImpl implements InternalContent {
         in.readFully( content );
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 

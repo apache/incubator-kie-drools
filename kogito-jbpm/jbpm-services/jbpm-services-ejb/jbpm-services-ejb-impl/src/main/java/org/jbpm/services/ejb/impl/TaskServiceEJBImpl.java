@@ -718,4 +718,24 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
         throw new UnsupportedOperationException(methodName + " is not supported on the TaskService EJB implementation, " 
                 + "please use the " + UserTaskService.class + " implementation instead!");
     }
+
+    @Override
+    public long setDocumentContentFromUser( long taskId, String userId, byte[] byteContent ) {
+        return unsupported(long.class);
+    }
+
+    @Override
+    public long addOutputContentFromUser( long taskId, String userId, Map<String, Object> params ) {
+        return unsupported(long.class);
+    }
+
+    @Override
+    public Content getContentByIdForUser( long contentId, String userId ) {
+        return unsupported(Content.class);
+    }
+
+    @Override
+    public Map<String, Object> getOutputContentMapForUser( long taskId, String userId ) {
+        return unsupported(Map.class);
+    }
 }

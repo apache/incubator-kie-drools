@@ -26,6 +26,7 @@ import org.jbpm.services.task.commands.ActivateTaskCommand;
 import org.jbpm.services.task.commands.AddAttachmentCommand;
 import org.jbpm.services.task.commands.AddCommentCommand;
 import org.jbpm.services.task.commands.AddContentCommand;
+import org.jbpm.services.task.commands.AddContentFromUserCommand;
 import org.jbpm.services.task.commands.AddGroupCommand;
 import org.jbpm.services.task.commands.AddTaskCommand;
 import org.jbpm.services.task.commands.AddUserCommand;
@@ -57,7 +58,9 @@ import org.jbpm.services.task.commands.GetAttachmentCommand;
 import org.jbpm.services.task.commands.GetCommentCommand;
 import org.jbpm.services.task.commands.GetCompletedTasksByUserCommand;
 import org.jbpm.services.task.commands.GetCompletedTasksCommand;
-import org.jbpm.services.task.commands.GetContentCommand;
+import org.jbpm.services.task.commands.GetContentByIdForUserCommand;
+import org.jbpm.services.task.commands.GetContentByIdCommand;
+import org.jbpm.services.task.commands.GetContentMapForUserCommand;
 import org.jbpm.services.task.commands.GetGroupCommand;
 import org.jbpm.services.task.commands.GetGroupsCommand;
 import org.jbpm.services.task.commands.GetOrgEntityCommand;
@@ -360,7 +363,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
 
 	public Content getContentById(long contentId) {
-		return executor.execute(new GetContentCommand(contentId));
+		return executor.execute(new GetContentByIdCommand(contentId));
 	}
 
 	public Attachment getAttachmentById(long attachId) {
@@ -383,11 +386,13 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
 
 	@Override
+	// TODO: groupIds argument is not processed!
 	public void claim(long taskId, String userId, List<String> groupIds) {
 		executor.execute(new ClaimTaskCommand(taskId, userId));
 	}
 
 	@Override
+	// TODO: groupIds argument is not processed!
 	public void claimNextAvailable(String userId, List<String> groupIds) {
 		executor.execute(new ClaimNextAvailableTaskCommand(userId));
 	}
@@ -624,6 +629,20 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 		return executor.execute(new AddContentCommand(taskId, params));
 	}
 
+    @Override
+    public long setDocumentContentFromUser( long taskId, String userId, byte [] content ) {
+        AddContentFromUserCommand cmd = new AddContentFromUserCommand(taskId, userId);
+        cmd.setDocumentContentBytes(content);
+		return executor.execute(cmd);
+    }
+
+    @Override
+    public long addOutputContentFromUser( long taskId, String userId, Map<String, Object> params ) {
+        AddContentFromUserCommand cmd = new AddContentFromUserCommand(taskId, userId);
+        cmd.setOutputContentMap(params);
+		return executor.execute(cmd);
+    }
+    
 	@Override
 	public void deleteContent(long taskId, long contentId) {
 		executor.execute(new DeleteContentCommand(taskId, contentId));
@@ -634,6 +653,19 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 		return executor.execute(new GetAllContentCommand(taskId));
 	}
 
+    @Override
+    public Content getContentByIdForUser( long contentId, String userId ) {
+        GetContentByIdForUserCommand cmd = new GetContentByIdForUserCommand(contentId);
+        cmd.setContentId(contentId);
+        cmd.setUserId(userId);
+        return executor.execute(cmd);
+    }
+    
+    @Override
+    public Map<String, Object> getOutputContentMapForUser( long taskId, String userId ) {
+        return executor.execute(new GetContentMapForUserCommand(taskId, userId));
+    }
+    
 	@Override
 	public long addAttachment(long taskId, Attachment attachment, Content content) {
 		return executor.execute(new AddAttachmentCommand(taskId, attachment, content));
@@ -811,5 +843,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	public void executeReminderForTask(long taskId,String fromUser){
 		executor.execute(new ExecuteReminderCommand(taskId,fromUser));
 	}
+
+
 }
 
