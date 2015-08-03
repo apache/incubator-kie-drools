@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -193,6 +194,49 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment);
 
+    }
+    
+    @Test
+    public void testRunProcessWithAsyncHandlerDelayed() throws Exception {
+
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTaskWithParams.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("async", new AsyncWorkItemHandler(executorService, "org.jbpm.executor.commands.PrintOutCommand"));
+                        return handlers;
+                    }
+                    
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession); 
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("delayAsync", "4s");
+        
+        ProcessInstance processInstance = ksession.startProcess("ScriptTask", params);
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        Thread.sleep(3000);
+        
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNotNull(processInstance);
+        
+        Thread.sleep(3000);
+        
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNull(processInstance);
     }
     
     private ExecutorService buildExecutorService() {        
