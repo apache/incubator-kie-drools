@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.domain.variable.custom;
 import java.util.Arrays;
 
 import org.junit.Test;
+import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
@@ -27,6 +28,8 @@ import org.optaplanner.core.impl.testdata.domain.shadow.cyclic.TestdataCyclicSha
 import org.optaplanner.core.impl.testdata.domain.shadow.extended.TestdataExtendedShadowedChildEntity;
 import org.optaplanner.core.impl.testdata.domain.shadow.extended.TestdataExtendedShadowedParentEntity;
 import org.optaplanner.core.impl.testdata.domain.shadow.extended.TestdataExtendedShadowedSolution;
+import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyToManyShadowedEntity;
+import org.optaplanner.core.impl.testdata.domain.shadow.manytomany.TestdataManyToManyShadowedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
@@ -81,6 +84,69 @@ public class CustomVariableListenerTest {
         assertEquals("3/firstShadow", c.getFirstShadow());
         assertEquals("3/firstShadow/secondShadow", c.getSecondShadow());
         assertEquals("3/firstShadow/secondShadow/thirdShadow", c.getThirdShadow());
+    }
+
+    @Test
+    public void manyToMany() {
+        EntityDescriptor entityDescriptor = TestdataManyToManyShadowedEntity.buildEntityDescriptor();
+        GenuineVariableDescriptor primaryVariableDescriptor = entityDescriptor
+                .getGenuineVariableDescriptor("primaryValue");
+        GenuineVariableDescriptor secondaryVariableDescriptor = entityDescriptor
+                .getGenuineVariableDescriptor("secondaryValue");
+        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
+                primaryVariableDescriptor.getEntityDescriptor().getSolutionDescriptor());
+
+        TestdataValue val1 = new TestdataValue("1");
+        TestdataValue val2 = new TestdataValue("2");
+        TestdataValue val3 = new TestdataValue("3");
+        TestdataValue val4 = new TestdataValue("4");
+        TestdataManyToManyShadowedEntity a = new TestdataManyToManyShadowedEntity("a", null, null);
+        TestdataManyToManyShadowedEntity b = new TestdataManyToManyShadowedEntity("b", null, null);
+        TestdataManyToManyShadowedEntity c = new TestdataManyToManyShadowedEntity("c", null, null);
+
+        TestdataManyToManyShadowedSolution solution = new TestdataManyToManyShadowedSolution("solution");
+        solution.setEntityList(Arrays.asList(a, b, c));
+        solution.setValueList(Arrays.asList(val1, val2, val3, val4));
+        scoreDirector.setWorkingSolution(solution);
+
+        scoreDirector.beforeVariableChanged(primaryVariableDescriptor, a);
+        a.setPrimaryValue(val1);
+        scoreDirector.afterVariableChanged(primaryVariableDescriptor, a);
+        assertEquals(null, a.getComposedCode());
+        assertEquals(null, a.getReverseComposedCode());
+
+        scoreDirector.beforeVariableChanged(secondaryVariableDescriptor, a);
+        a.setSecondaryValue(val3);
+        scoreDirector.afterVariableChanged(secondaryVariableDescriptor, a);
+        assertEquals("1-3", a.getComposedCode());
+        assertEquals("3-1", a.getReverseComposedCode());
+
+        scoreDirector.beforeVariableChanged(secondaryVariableDescriptor, a);
+        a.setSecondaryValue(val4);
+        scoreDirector.afterVariableChanged(secondaryVariableDescriptor, a);
+        assertEquals("1-4", a.getComposedCode());
+        assertEquals("4-1", a.getReverseComposedCode());
+
+        scoreDirector.beforeVariableChanged(primaryVariableDescriptor, a);
+        a.setPrimaryValue(val2);
+        scoreDirector.afterVariableChanged(primaryVariableDescriptor, a);
+        assertEquals("2-4", a.getComposedCode());
+        assertEquals("4-2", a.getReverseComposedCode());
+
+        scoreDirector.beforeVariableChanged(primaryVariableDescriptor, a);
+        a.setPrimaryValue(null);
+        scoreDirector.afterVariableChanged(primaryVariableDescriptor, a);
+        assertEquals(null, a.getComposedCode());
+        assertEquals(null, a.getReverseComposedCode());
+
+        scoreDirector.beforeVariableChanged(primaryVariableDescriptor, c);
+        c.setPrimaryValue(val1);
+        scoreDirector.afterVariableChanged(primaryVariableDescriptor, c);
+        scoreDirector.beforeVariableChanged(secondaryVariableDescriptor, c);
+        c.setSecondaryValue(val3);
+        scoreDirector.afterVariableChanged(secondaryVariableDescriptor, c);
+        assertEquals("1-3", c.getComposedCode());
+        assertEquals("3-1", c.getReverseComposedCode());
     }
 
 }

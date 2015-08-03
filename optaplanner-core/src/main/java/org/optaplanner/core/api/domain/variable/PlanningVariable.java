@@ -43,7 +43,7 @@ public @interface PlanningVariable {
      * Any {@link ValueRangeProvider} annotation on a {@link PlanningSolution} or {@link PlanningEntity}
      * will automatically be registered with it's {@link ValueRangeProvider#id()}.
      * <p>
-     * There should be at least 1 valueRangeRef.
+     * There should be at least 1 element in this array.
      * @return 1 (or more) registered {@link ValueRangeProvider#id()}
      */
     String[] valueRangeProviderRefs() default {};

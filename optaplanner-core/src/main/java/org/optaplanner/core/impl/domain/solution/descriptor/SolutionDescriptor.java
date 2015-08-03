@@ -41,7 +41,6 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.common.AlphabeticMemberComparator;

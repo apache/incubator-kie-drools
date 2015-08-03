@@ -65,6 +65,9 @@ public abstract class VariableDescriptor {
         shadowVariableDescriptorList.add(shadowVariableDescriptor);
     }
 
+    /**
+     * @return never null, only direct, non-referencing shadow variables
+     */
     public List<ShadowVariableDescriptor> getShadowVariableDescriptorList() {
         return shadowVariableDescriptorList;
     }

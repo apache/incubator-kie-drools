@@ -2540,3 +2540,33 @@ After in *SolverConfig.xml and *BenchmarkConfig.xml:
 From 6.3.0.Beta2 to 6.3.0.CR1
 -----------------------------
 
+[MINOR] If a custom VariableListener changes 2 shadow variables, use the new variableListenerRef property accordingly
+to indicate that the VariableListener class of another shadow variable also updates this shadow variable:
+Before in *.java:
+    @PlanningVariable(...)
+    public Standstill getPreviousStandstill() {
+        return previousStandstill;
+    }
+    @CustomShadowVariable(variableListenerClass = TransportTimeAndCapacityUpdatingVariableListener.class,
+            sources = {@CustomShadowVariable.Source(variableName = "previousStandstill")})
+    public Integer getTransportTime() {
+        return transportTime;
+    }
+    @CustomShadowVariable(variableListenerClass = DummyListener.class, sources = ...)
+    public Integer getCapacity() {
+        return capacity;
+    }
+After in *.java:
+    @PlanningVariable(...)
+    public Standstill getPreviousStandstill() {
+        return previousStandstill;
+    }
+    @CustomShadowVariable(variableListenerClass = TransportTimeAndCapacityUpdatingVariableListener.class,
+            sources = {@CustomShadowVariable.Source(variableName = "previousStandstill")})
+    public Integer getTransportTime() {
+        return transportTime;
+    }
+    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "transportTime"))
+    public Integer getCapacity() {
+        return capacity;
+    }

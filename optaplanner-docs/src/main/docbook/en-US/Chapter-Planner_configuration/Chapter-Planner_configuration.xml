@@ -1251,6 +1251,27 @@ public class Customer {
         <warning>
           <para>Any change of a shadow variable must be told to the <literal>ScoreDirector</literal>.</para>
         </warning>
+
+        <para>If one <literal>VariableListener</literal> changes two shadow variables (because having two separate
+        <literal>VariableListener</literal>s would be inefficient), then annotate only the first shadow variable with
+        the <literal>variableListenerClass</literal> and let the other shadow variable(s) reference the first shadow
+        variable:</para>
+
+        <programlisting language="java">    @PlanningVariable(...)
+    public Standstill getPreviousStandstill() {
+        return previousStandstill;
+    }
+
+    @CustomShadowVariable(variableListenerClass = TransportTimeAndCapacityUpdatingVariableListener.class,
+            sources = {@CustomShadowVariable.Source(variableName = "previousStandstill")})
+    public Integer getTransportTime() {
+        return transportTime;
+    }
+
+    @CustomShadowVariable(variableListenerRef = @PlanningVariableReference(variableName = "transportTime"))
+    public Integer getCapacity() {
+        return capacity;
+    }</programlisting>
       </section>
     </section>
 

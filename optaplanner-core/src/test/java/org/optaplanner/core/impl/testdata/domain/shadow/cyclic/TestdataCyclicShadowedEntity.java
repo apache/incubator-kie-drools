@@ -109,17 +109,19 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
 
         @Override
         public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
-            updateShadow(entity);
+            updateShadow(entity, scoreDirector);
         }
 
         @Override
         public void afterVariableChanged(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
-            updateShadow(entity);
+            updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataCyclicShadowedEntity entity) {
+        private void updateShadow(TestdataCyclicShadowedEntity entity, ScoreDirector scoreDirector) {
             String scissors = entity.getScissorsShadow();
+            scoreDirector.beforeVariableChanged(entity, "rockShadow");
             entity.setRockShadow("Rock beats (" + scissors + ")");
+            scoreDirector.afterVariableChanged(entity, "rockShadow");
         }
 
     }
@@ -128,17 +130,19 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
 
         @Override
         public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
-            updateShadow(entity);
+            updateShadow(entity, scoreDirector);
         }
 
         @Override
         public void afterVariableChanged(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
-            updateShadow(entity);
+            updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataCyclicShadowedEntity entity) {
+        private void updateShadow(TestdataCyclicShadowedEntity entity, ScoreDirector scoreDirector) {
             String rock = entity.getRockShadow();
+            scoreDirector.beforeVariableChanged(entity, "paperShadow");
             entity.setPaperShadow("Paper beats (" + rock + ")");
+            scoreDirector.afterVariableChanged(entity, "paperShadow");
         }
 
     }
@@ -147,17 +151,19 @@ public class TestdataCyclicShadowedEntity extends TestdataObject {
 
         @Override
         public void afterEntityAdded(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
-            updateShadow(entity);
+            updateShadow(entity, scoreDirector);
         }
 
         @Override
         public void afterVariableChanged(ScoreDirector scoreDirector, TestdataCyclicShadowedEntity entity) {
-            updateShadow(entity);
+            updateShadow(entity, scoreDirector);
         }
 
-        private void updateShadow(TestdataCyclicShadowedEntity entity) {
+        private void updateShadow(TestdataCyclicShadowedEntity entity, ScoreDirector scoreDirector) {
             String paper = entity.getPaperShadow();
+            scoreDirector.beforeVariableChanged(entity, "scissorsShadow");
             entity.setScissorsShadow("Scissors beats (" + paper + ")");
+            scoreDirector.afterVariableChanged(entity, "scissorsShadow");
         }
 
     }
