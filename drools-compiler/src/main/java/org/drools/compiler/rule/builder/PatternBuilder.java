@@ -800,6 +800,7 @@ public class PatternBuilder
                         return null;
                     }
                     part.addInlineCastConstraint( patternClass );
+                    xpathChunk.setReturnedClass( patternClass );
                 } else {
                     patternClass = xpathChunk.getReturnedClass();
                 }

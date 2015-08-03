@@ -209,6 +209,7 @@ public class XpathConstraint extends MutableTypeConstraint {
         private final Method accessor;
         private List<Constraint> constraints;
         private Declaration declaration;
+        private Class<?> returnedClass;
 
         private XpathChunk(Class<?> clazz, String field, int index, boolean iterate, Method accessor) {
             this.clazz = clazz;
@@ -217,6 +218,11 @@ public class XpathConstraint extends MutableTypeConstraint {
             this.iterate = iterate;
             this.accessor = accessor;
             this.accessor.setAccessible(true);
+
+            Class<?> lastReturnedClass = accessor.getReturnType();
+            this.returnedClass = iterate && Iterable.class.isAssignableFrom(lastReturnedClass) ?
+                                 getParametricType() :
+                                 lastReturnedClass;
         }
 
         public void addConstraint(Constraint constraint) {
@@ -262,10 +268,11 @@ public class XpathConstraint extends MutableTypeConstraint {
         }
 
         public Class<?> getReturnedClass() {
-            Class<?> lastReturnedClass = accessor.getReturnType();
-            return iterate && Iterable.class.isAssignableFrom(lastReturnedClass) ?
-                   getParametricType() :
-                   lastReturnedClass;
+            return returnedClass;
+        }
+
+        public void setReturnedClass( Class<?> returnedClass ) {
+            this.returnedClass = returnedClass;
         }
 
         public Class<?> getParametricType() {
@@ -273,7 +280,9 @@ public class XpathConstraint extends MutableTypeConstraint {
             if (returnedType instanceof ParameterizedType) {
                 Type[] parametricType = ((ParameterizedType) returnedType).getActualTypeArguments();
                 if (parametricType.length > 0) {
-                    return (Class<?>)parametricType[0];
+                    return parametricType[0] instanceof Class ?
+                           (Class<?>) parametricType[0] :
+                           (Class<?>) ( (ParameterizedType) parametricType[0] ).getRawType();
                 }
             }
             return Object.class;
