@@ -116,7 +116,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 if ( indexableConstraint.isIndexable(NodeTypeEnums.AlphaNode) && indexableConstraint.getField() != null &&
                         indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
                         // our current implementation does not support hashing of deeply nested properties
-                        !( indexableConstraint.getFieldExtractor() instanceof MVELObjectClassFieldReader )) {
+                        indexableConstraint.getFieldExtractor().getIndex() >= 0) {
                     final InternalReadAccessor readAccessor = indexableConstraint.getFieldExtractor();
                     final int index = readAccessor.getIndex();
                     final FieldIndex fieldIndex = registerFieldIndex( index,
@@ -285,10 +285,6 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     /**
      * Returns a FieldIndex which Keeps a count on how many times a particular field is used with an equality check
      * in the sinks.
-     *
-     * @param index
-     * @param fieldExtractor
-     * @return
      */
     private FieldIndex registerFieldIndex(final int index,
                                           final InternalReadAccessor fieldExtractor) {
@@ -454,7 +450,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         // We need to iterate in the same order as the assert
         if ( this.hashedFieldIndexes != null ) {
             // Iterate the FieldIndexes to see if any are hashed
-            for ( FieldIndex fieldIndex = (FieldIndex) this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = fieldIndex.getNext() ) {
+            for ( FieldIndex fieldIndex = this.hashedFieldIndexes.getFirst(); fieldIndex != null; fieldIndex = fieldIndex.getNext() ) {
                 if ( !fieldIndex.isHashed() ) {
                     continue;
                 }
@@ -491,11 +487,6 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     /**
      * This is a Hook method for subclasses to override. Please keep it protected unless you know
      * what you are doing.
-     *
-     * @param factHandle
-     * @param context
-     * @param workingMemory
-     * @param sink
      */
     protected void doPropagateAssertObject(InternalFactHandle factHandle,
                                            PropagationContext context,
@@ -785,9 +776,9 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                     if ( this.ovalue == null ) {
                         return false;
                     } else if ( this.ovalue instanceof Boolean ) {
-                        return ((Boolean) this.ovalue).booleanValue();
+                        return (Boolean) this.ovalue;
                     } else if ( this.ovalue instanceof String ) {
-                        return Boolean.valueOf((String) this.ovalue).booleanValue();
+                        return Boolean.valueOf( (String) this.ovalue );
                     } else {
                         throw new ClassCastException( "Can't convert " + this.ovalue.getClass() + " to a boolean value." );
                     }
@@ -852,9 +843,9 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 case OBJECT :
                     return this.ovalue;
                 case LONG :
-                    return new Long( this.lvalue );
+                    return this.lvalue;
                 case DOUBLE :
-                    return new Double( this.dvalue );
+                    return this.dvalue;
             }
             return null;
         }
