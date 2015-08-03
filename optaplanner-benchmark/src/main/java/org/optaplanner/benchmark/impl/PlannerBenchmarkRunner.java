@@ -179,9 +179,8 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     }
 
     private void warmUpPopulate(Map<Future<SingleBenchmarkRunner>, SingleBenchmarkRunner> futureMap,
-                                ConcurrentMap<SolverBenchmarkResult, Integer> singleBenchmarkResultIndexMap,
-                                SolverBenchmarkResult[] solverBenchmarkResultArray,
-                                long timeLeftPerSolverConfig) {
+            ConcurrentMap<SolverBenchmarkResult, Integer> singleBenchmarkResultIndexMap,
+            SolverBenchmarkResult[] solverBenchmarkResultArray, long timeLeftPerSolverConfig) {
         for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultArray) {
             TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
             TerminationConfig tmpTerminationConfig = originalTerminationConfig == null
@@ -201,7 +200,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     }
 
     private void warmUp(Map<Future<SingleBenchmarkRunner>, SingleBenchmarkRunner> futureMap,
-                        ConcurrentMap<SolverBenchmarkResult, Integer> singleBenchmarkResultIndexMap, long timePhaseEnd) {
+            ConcurrentMap<SolverBenchmarkResult, Integer> singleBenchmarkResultIndexMap, long timePhaseEnd) {
         // Wait for the warm up benchmarks to complete
         int tasksCount = futureMap.size();
         // Use a counter because completion order of futures is different from input order
