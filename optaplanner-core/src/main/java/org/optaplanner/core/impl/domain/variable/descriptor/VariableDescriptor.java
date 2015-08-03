@@ -66,7 +66,7 @@ public abstract class VariableDescriptor {
     }
 
     /**
-     * Primary shadow variables are direct as well as non-referencing
+     * Primary shadow variables are direct as well as non-referencing.
      * @return never null, only direct, non-referencing shadow variables
      */
     public List<ShadowVariableDescriptor> getPrimaryShadowVariableDescriptorList() {

@@ -50,7 +50,7 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
                     + ") has a subChainSelector (" + subChainSelector
                     + ") with variableDescriptor (" + subChainSelector.getVariableDescriptor()
                     + ") which is not the same as the valueSelector (" + valueSelector
-                    +")'s variableDescriptor(" + valueSelector.getVariableDescriptor() + ").");
+                    + ")'s variableDescriptor(" + valueSelector.getVariableDescriptor() + ").");
         }
         if (!randomSelection) {
             if (subChainSelector.isNeverEnding()) {

@@ -120,7 +120,7 @@ public class LateSimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void negativeLateSimulatedAnnealingSize() {
-        LateSimulatedAnnealingAcceptor acceptor= new LateSimulatedAnnealingAcceptor();
+        LateSimulatedAnnealingAcceptor acceptor = new LateSimulatedAnnealingAcceptor();
         acceptor.setLateSimulatedAnnealingSize(-1);
         acceptor.phaseStarted(null);
     }

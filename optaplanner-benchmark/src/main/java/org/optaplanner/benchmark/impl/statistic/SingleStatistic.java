@@ -42,7 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 1 statistic of {@link SingleBenchmarkResult}
+ * 1 statistic of {@link SingleBenchmarkResult}.
  */
 @XStreamInclude({
         PureSingleStatistic.class

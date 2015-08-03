@@ -43,7 +43,7 @@ public class MutationCounter {
         for (EntityDescriptor entityDescriptor : solutionDescriptor.getGenuineEntityDescriptors()) {
             List<Object> aEntities = entityDescriptor.extractEntities(a);
             List<Object> bEntities = entityDescriptor.extractEntities(b);
-            for (Iterator aIt = aEntities.iterator(), bIt = bEntities.iterator() ; aIt.hasNext() && bIt.hasNext(); ) {
+            for (Iterator aIt = aEntities.iterator(), bIt = bEntities.iterator(); aIt.hasNext() && bIt.hasNext(); ) {
                 Object aEntity =  aIt.next();
                 Object bEntity =  bIt.next();
                 for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {

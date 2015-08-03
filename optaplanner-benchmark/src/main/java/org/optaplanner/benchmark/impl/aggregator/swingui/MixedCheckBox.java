@@ -81,7 +81,7 @@ public class MixedCheckBox extends JCheckBox {
     private static class MixedCheckBoxModel extends ToggleButtonModel {
 
         private MixedCheckBoxStatus getStatus() {
-            return isSelected() ? (isArmed() ? MixedCheckBoxStatus.MIXED : MixedCheckBoxStatus.CHECKED) : MixedCheckBoxStatus.UNCHECKED; 
+            return isSelected() ? (isArmed() ? MixedCheckBoxStatus.MIXED : MixedCheckBoxStatus.CHECKED) : MixedCheckBoxStatus.UNCHECKED;
         }
 
         private void setStatus(MixedCheckBoxStatus status) {
@@ -98,7 +98,7 @@ public class MixedCheckBox extends JCheckBox {
                 setArmed(true);
                 setPressed(true);
             } else {
-                throw new IllegalArgumentException("Invalid argument (" 
+                throw new IllegalArgumentException("Invalid argument ("
                         + status + ") supplied.");
             }
         }

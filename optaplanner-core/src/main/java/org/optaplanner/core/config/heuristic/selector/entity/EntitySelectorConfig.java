@@ -545,8 +545,8 @@ public class EntitySelectorConfig extends SelectorConfig {
         }
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
-        filterClassList = ConfigUtils.inheritOverwritableProperty
-                (filterClassList, inheritedConfig.getFilterClassList());
+        filterClassList = ConfigUtils.inheritOverwritableProperty(
+                filterClassList, inheritedConfig.getFilterClassList());
         sorterManner = ConfigUtils.inheritOverwritableProperty(
                 sorterManner, inheritedConfig.getSorterManner());
         sorterComparatorClass = ConfigUtils.inheritOverwritableProperty(

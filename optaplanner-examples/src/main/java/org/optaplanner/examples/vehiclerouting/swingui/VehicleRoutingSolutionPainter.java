@@ -101,7 +101,7 @@ public class VehicleRoutingSolutionPainter {
             g.setColor(TangoColorFactory.ALUMINIUM_4);
             g.fillRect(x - 1, y - 1, 3, 3);
             String demandString = Integer.toString(customer.getDemand());
-            g.drawString(demandString, x - (g.getFontMetrics().stringWidth(demandString) / 2), y - TEXT_SIZE/2);
+            g.drawString(demandString, x - (g.getFontMetrics().stringWidth(demandString) / 2), y - TEXT_SIZE / 2);
             if (customer instanceof TimeWindowedCustomer) {
                 TimeWindowedCustomer timeWindowedCustomer = (TimeWindowedCustomer) customer;
                 g.setColor(TangoColorFactory.ALUMINIUM_3);

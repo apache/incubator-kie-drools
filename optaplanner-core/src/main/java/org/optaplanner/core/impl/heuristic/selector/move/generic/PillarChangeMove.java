@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
- * Non-cacheable
+ * Non-cacheable.
  */
 public class PillarChangeMove extends AbstractMove {
 

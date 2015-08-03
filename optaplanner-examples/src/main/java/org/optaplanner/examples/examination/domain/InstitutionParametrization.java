@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 /**
- * Institutional weightings
+ * Institutional weightings.
  */
 @XStreamAlias("InstitutionParametrization")
 public class InstitutionParametrization extends AbstractPersistable {

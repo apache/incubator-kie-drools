@@ -79,7 +79,7 @@ public class TangoColorFactory {
 
     public static final Stroke LIGHT_DASHED_STROKE = new BasicStroke(
             1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {3.0f, 7.0f}, 0.0f);
-    
+
     private Map<Object, Color> colorMap;
     private int nextColorCount;
 
@@ -87,7 +87,7 @@ public class TangoColorFactory {
         colorMap = new HashMap<Object, Color>();
         nextColorCount = 0;
     }
-    
+
     public Color pickColor(Object o) {
         Color color = colorMap.get(o);
         if (color == null) {

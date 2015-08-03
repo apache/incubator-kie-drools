@@ -59,7 +59,7 @@ public class ExhaustiveSearchLayer {
 
     @Override
     public String toString() {
-        return depth + (isLastLayer() ? " last layer": " (" + entity + ")");
+        return depth + (isLastLayer() ? " last layer" : " (" + entity + ")");
     }
 
 }

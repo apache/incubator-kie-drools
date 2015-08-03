@@ -31,7 +31,7 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
     private Map<CloudComputer, Integer> memoryUsageMap;
     private Map<CloudComputer, Integer> networkBandwidthUsageMap;
     private Map<CloudComputer, Integer> processCountMap;
-    
+
     private int hardScore;
     private int softScore;
 
@@ -90,7 +90,7 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
             int newCpuPowerAvailable = cpuPower - newCpuPowerUsage;
             hardScore += Math.min(newCpuPowerAvailable, 0) - Math.min(oldCpuPowerAvailable, 0);
             cpuPowerUsageMap.put(computer, newCpuPowerUsage);
-            
+
             int memory = computer.getMemory();
             int oldMemoryUsage = memoryUsageMap.get(computer);
             int oldMemoryAvailable = memory - oldMemoryUsage;
@@ -98,7 +98,7 @@ public class CloudBalancingIncrementalScoreCalculator extends AbstractIncrementa
             int newMemoryAvailable = memory - newMemoryUsage;
             hardScore += Math.min(newMemoryAvailable, 0) - Math.min(oldMemoryAvailable, 0);
             memoryUsageMap.put(computer, newMemoryUsage);
-            
+
             int networkBandwidth = computer.getNetworkBandwidth();
             int oldNetworkBandwidthUsage = networkBandwidthUsageMap.get(computer);
             int oldNetworkBandwidthAvailable = networkBandwidth - oldNetworkBandwidthUsage;

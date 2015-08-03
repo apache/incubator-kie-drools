@@ -75,7 +75,7 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter {
         }
 
         /**
-         * As described by https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering
+         * As described by <a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering">Floyd-Steinberg dithering</a>.
          */
         private void floydSteinbergDithering() {
             travelingSalesmanTour.setDistanceType(DistanceType.AIR_DISTANCE);

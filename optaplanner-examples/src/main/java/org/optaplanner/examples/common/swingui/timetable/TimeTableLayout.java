@@ -105,11 +105,11 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         TimeTableLayoutConstraints c = (TimeTableLayoutConstraints) o;
         if (c.getXEnd() > columns.size()) {
             throw new IllegalArgumentException("The xEnd (" + c.getXEnd()
-                    + ") is > columnsSize (" +  columns.size() +").");
+                    + ") is > columnsSize (" +  columns.size() + ").");
         }
         if (c.getYEnd() > rows.size()) {
             throw new IllegalArgumentException("The yEnd (" + c.getYEnd()
-                    + ") is > rowsSize (" +  rows.size() +").");
+                    + ") is > rowsSize (" +  rows.size() + ").");
         }
         stale = true;
         ComponentSpan span = new ComponentSpan(component);

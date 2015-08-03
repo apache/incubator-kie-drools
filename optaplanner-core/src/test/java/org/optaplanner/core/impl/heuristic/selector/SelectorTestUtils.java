@@ -241,7 +241,7 @@ public class SelectorTestUtils {
             if (!ObjectUtils.equals(chainedObject, chainedEntity.getChainedObject())) {
                 fail("Chain assertion failed for chainedEntity (" + chainedEntity + ").\n"
                         + "Expected: " + chainedObject + "\n"
-                        + "Actual:   "  +chainedEntity.getChainedObject() + "\n"
+                        + "Actual:   "  + chainedEntity.getChainedObject() + "\n"
                         + "Expected chain: " + Arrays.toString(chainedObjects) + "\n"
                         + "Actual chain:   " + Arrays.toString(ArrayUtils.subarray(chainedObjects, 0, i)) + " ... [" + chainedEntity.getChainedObject() + ", " + chainedEntity + "] ...");
             }

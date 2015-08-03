@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 1 statistic of {@link ProblemBenchmarkResult}
+ * 1 statistic of {@link ProblemBenchmarkResult}.
  */
 @XStreamInclude({
         BestScoreProblemStatistic.class,

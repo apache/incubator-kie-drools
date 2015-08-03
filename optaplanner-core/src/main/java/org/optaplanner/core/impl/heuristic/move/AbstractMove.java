@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.heuristic.move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
- * Abstract superclass for {@link Move}
+ * Abstract superclass for {@link Move}.
  * @see Move
  */
 public abstract class AbstractMove implements Move {

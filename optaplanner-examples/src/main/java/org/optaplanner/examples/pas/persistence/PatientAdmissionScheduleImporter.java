@@ -487,7 +487,7 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
                     if (hasEquipment == 1) {
                         boolean alreadyRequired = (Integer.parseInt(requiredPatientEquipmentTokens[j]) == 1);
                         // Official spec: if equipment is required
-                        // then a duplicate preffered constraint should be ignored 
+                        // then a duplicate preffered constraint should be ignored
                         if (!alreadyRequired) {
                             PreferredPatientEquipment preferredPatientEquipment = new PreferredPatientEquipment();
                             preferredPatientEquipment.setId(preferredPatientEquipmentId);

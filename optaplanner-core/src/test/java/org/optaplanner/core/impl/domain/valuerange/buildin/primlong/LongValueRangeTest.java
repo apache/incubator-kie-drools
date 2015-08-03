@@ -57,7 +57,7 @@ public class LongValueRangeTest {
         assertEquals(true, new LongValueRange(0L, 10L).contains(3L));
         assertEquals(false, new LongValueRange(0L, 10L).contains(10L));
         assertEquals(false, new LongValueRange(0L, 10L).contains(null));
-        assertEquals(true, new LongValueRange(100L, 120l).contains(100L));
+        assertEquals(true, new LongValueRange(100L, 120L).contains(100L));
         assertEquals(false, new LongValueRange(100L, 120L).contains(99L));
         assertEquals(true, new LongValueRange(-5L, 25L).contains(-4L));
         assertEquals(false, new LongValueRange(-5L, 25L).contains(-20L));

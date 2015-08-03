@@ -19,9 +19,11 @@ package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 import java.util.Random;
 
 /**
- * P(x) = 2/m - 2x/m²
- * Cumulative probability F(x) = x(2m - x)/m²
- * Inverse cumulative probability F(p) = m(1 - (1 - p)^(1/2))
+ * {@code P(x) = 2/m - 2x/m²}.
+ * <p>
+ * Cumulative probability: {@code F(x) = x(2m - x)/m²}.
+ * <p>
+ * Inverse cumulative probability: {@code F(p) = m(1 - (1 - p)^(1/2))}.
  */
 public class LinearDistributionNearbyRandom implements NearbyRandom {
 

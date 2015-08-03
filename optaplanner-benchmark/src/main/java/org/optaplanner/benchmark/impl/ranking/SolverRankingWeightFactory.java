@@ -21,7 +21,7 @@ import java.util.List;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 
 /**
- * Defines an interface for classes that will be used to rank solver benchmarks 
+ * Defines an interface for classes that will be used to rank solver benchmarks
  * in order of their respective performance.
  */
 public interface SolverRankingWeightFactory {

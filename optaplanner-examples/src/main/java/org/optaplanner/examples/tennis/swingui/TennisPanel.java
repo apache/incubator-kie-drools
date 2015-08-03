@@ -100,7 +100,7 @@ public class TennisPanel extends SolutionPanel {
         int footprintWidth = footprint.getPreferredSize().width;
 
         datesPanel.defineColumnHeaderByKey(HEADER_COLUMN);
-        for (Day day : tennisSolution.getDayList() ) {
+        for (Day day : tennisSolution.getDayList()) {
             datesPanel.defineColumnHeader(day, footprintWidth);
         }
         datesPanel.defineColumnHeaderByKey(TRAILING_HEADER_COLUMN); // Assignment count

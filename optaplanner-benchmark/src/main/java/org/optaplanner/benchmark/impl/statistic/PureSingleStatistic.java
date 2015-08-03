@@ -30,7 +30,7 @@ import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypebestscore.P
 import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSingleStatistic;
 
 /**
- * 1 statistic of {@link SingleBenchmarkResult}
+ * 1 statistic of {@link SingleBenchmarkResult}.
  */
 @XStreamInclude({
         ConstraintMatchTotalBestScoreSingleStatistic.class,

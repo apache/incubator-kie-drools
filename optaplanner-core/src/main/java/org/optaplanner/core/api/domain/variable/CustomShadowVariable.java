@@ -36,7 +36,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 public @interface CustomShadowVariable {
 
     /**
-     * Use this when this shadow variable is updated by the {@link VariableListener} of another {@link @CustomShadowVariable}.
+     * Use this when this shadow variable is updated by the {@link VariableListener} of another {@link CustomShadowVariable}.
      * @return null if (and only if) any of the other fields is non null.
      */
     PlanningVariableReference variableListenerRef() default @PlanningVariableReference(variableName = "");

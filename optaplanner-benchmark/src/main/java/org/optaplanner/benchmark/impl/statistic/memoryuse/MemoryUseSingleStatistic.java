@@ -58,7 +58,7 @@ public class MemoryUseSingleStatistic extends ProblemBasedSingleStatistic<Memory
     public void close(Solver solver) {
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
-    
+
     private class MemoryUseSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         private long nextTimeMillisThreshold = timeMillisThresholdInterval;

@@ -118,7 +118,7 @@ public class ShiftAssignmentSequenceSwitchLength3MoveFactory implements MoveList
     }
 
     /**
-     * TODO DRY with {@link EmployeeWorkSequence}
+     * TODO DRY with {@link EmployeeWorkSequence}.
      */
     private static class AssignmentSequence {
 

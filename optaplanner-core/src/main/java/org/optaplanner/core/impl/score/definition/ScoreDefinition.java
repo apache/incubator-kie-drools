@@ -36,7 +36,7 @@ public interface ScoreDefinition<S extends Score> {
     int getLevelsSize();
 
     /**
-     * Returns the {@link Class} of the actual {@link Score} implementation
+     * Returns the {@link Class} of the actual {@link Score} implementation.
      * @return never null
      */
     Class<S> getScoreClass();

@@ -113,7 +113,7 @@ public class CartesianProductMoveSelectorTest {
     public void emptyOriginSelection(boolean ignoreEmptyChildIterators, boolean emptyFirst, boolean emptySecond) {
         assertTrue(emptyFirst || emptySecond);
         MoveSelector nonEmptyChildMoveSelector = SelectorTestUtils.mockMoveSelector(DummyMove.class,
-                new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3"));// One side is not empty
+                new DummyMove("a1"), new DummyMove("a2"), new DummyMove("a3")); // One side is not empty
         ArrayList<MoveSelector> childMoveSelectorList = new ArrayList<MoveSelector>();
         childMoveSelectorList.add(emptyFirst
                 ? SelectorTestUtils.mockMoveSelector(DummyMove.class) : nonEmptyChildMoveSelector);

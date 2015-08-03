@@ -192,7 +192,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
                         }
                     }
                 }
-                empty = ignoreEmptyChildIterators ? emptyCount == moveIteratorList.size(): emptyCount > 0;
+                empty = ignoreEmptyChildIterators ? emptyCount == moveIteratorList.size() : emptyCount > 0;
             }
             return !empty;
         }

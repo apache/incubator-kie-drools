@@ -99,7 +99,7 @@ public class InvestmentQuantityTransferMoveIteratorFactory implements MoveIterat
             AssetClassAllocation toAllocation = allocationList.get(workingRandom.nextInt(allocationList.size() - 1));
             if (toAllocation == fromAllocation) {
                 toAllocation = allocationList.get(allocationList.size() - 1);
-            };
+            }
             return new InvestmentQuantityTransferMove(fromAllocation, toAllocation, transferMillis);
         }
 

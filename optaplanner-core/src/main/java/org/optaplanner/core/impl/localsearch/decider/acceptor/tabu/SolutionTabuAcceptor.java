@@ -44,7 +44,7 @@ public class SolutionTabuAcceptor extends AbstractTabuAcceptor {
         // TODO this should be better done in stepEnded
         return Collections.singletonList(stepScope.createOrGetClonedSolution());
     }
-    
+
     @Override
     public void phaseStarted(LocalSearchPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);

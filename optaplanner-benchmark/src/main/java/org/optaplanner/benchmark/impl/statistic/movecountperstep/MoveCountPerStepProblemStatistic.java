@@ -76,7 +76,7 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         DrawingSupplier drawingSupplier = new DefaultDrawingSupplier();
         plot.setOrientation(PlotOrientation.VERTICAL);
-        
+
         int seriesIndex = 0;
         for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
             XYSeries acceptedSeries = new XYSeries(

@@ -157,7 +157,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
             List<HubSegmentLocation> hubLocationList = null;
             locationMap = new LinkedHashMap<Long, Location>(customerListSize);
             if (distanceType == DistanceType.SEGMENTED_ROAD_DISTANCE) {
-                int hubListSize= readIntegerValue("HUBS *:");
+                int hubListSize = readIntegerValue("HUBS *:");
                 hubLocationList = new ArrayList<HubSegmentLocation>(hubListSize);
                 readConstantLine("HUB_COORD_SECTION");
                 for (int i = 0; i < hubListSize; i++) {

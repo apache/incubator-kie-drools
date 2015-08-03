@@ -29,7 +29,7 @@ import org.optaplanner.examples.tsp.domain.solver.DomicileAngleVisitDifficultyWe
 public class Visit extends AbstractPersistable implements Standstill {
 
     private Location location;
-    
+
     // Planning variables: changes during planning, between score calculations.
     private Standstill previousStandstill;
 

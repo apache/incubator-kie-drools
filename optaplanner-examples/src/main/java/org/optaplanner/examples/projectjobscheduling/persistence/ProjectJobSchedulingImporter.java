@@ -246,7 +246,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
                 }
                 if (Integer.parseInt(tokens[1]) != jobListSize - 2) {
                     throw new IllegalArgumentException("The project information tokens (" + Arrays.toString(tokens)
-                            + ") index 1 should be " + (jobListSize - 2) +".");
+                            + ") index 1 should be " + (jobListSize - 2) + ".");
                 }
                 // Ignore releaseDate, dueDate, tardinessCost and mpmTime
                 readConstantLine("\\*+");
@@ -281,7 +281,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
                     }
                     if (Integer.parseInt(tokens[0]) != i + 1) {
                         throw new IllegalArgumentException("The tokens (" + Arrays.toString(tokens)
-                                + ") index 0 should be " + (i + 1) +".");
+                                + ") index 0 should be " + (i + 1) + ".");
                     }
                     int executionModeListSize = Integer.parseInt(tokens[1]);
                     List<ExecutionMode> executionModeList = new ArrayList<ExecutionMode>(executionModeListSize);
@@ -324,11 +324,11 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
                         String[] tokens = splitBySpacesOrTabs(readStringValue(), (first ? 3 : 2) + resourceSize);
                         if (first && Integer.parseInt(tokens[0]) != i + 1) {
                             throw new IllegalArgumentException("The tokens (" + Arrays.toString(tokens)
-                                    + ") index 0 should be " + (i + 1) +".");
+                                    + ") index 0 should be " + (i + 1) + ".");
                         }
                         if (Integer.parseInt(tokens[first ? 1 : 0]) != j + 1) {
                             throw new IllegalArgumentException("The tokens (" + Arrays.toString(tokens)
-                                    + ") index " + (first ? 1 : 0) + " should be " + (j + 1) +".");
+                                    + ") index " + (first ? 1 : 0) + " should be " + (j + 1) + ".");
                         }
                         int duration = Integer.parseInt(tokens[first ? 2 : 1]);
                         executionMode.setDuration(duration);

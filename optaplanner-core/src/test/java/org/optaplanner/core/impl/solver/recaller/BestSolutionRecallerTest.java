@@ -117,7 +117,7 @@ public class BestSolutionRecallerTest {
         when(phaseScope.getSolverScope()).thenReturn(solverScope);
         ConstructionHeuristicStepScope stepScope = mock(ConstructionHeuristicStepScope.class);
         when(stepScope.getPhaseScope()).thenReturn(phaseScope);
-        
+
         Solution solution = mock(Solution.class);
         Score score = SimpleScore.parseScore("-1");
         when(solution.getScore()).thenReturn(score);
@@ -201,7 +201,7 @@ public class BestSolutionRecallerTest {
 
         recaller.processWorkingSolutionDuringMove(0, score, stepScope);
         assertEquals(helpSolution, solverScope.getBestSolution());
-        assertEquals(-2, ((SimpleScore)solverScope.getBestScore()).getScore());
+        assertEquals(-2, ((SimpleScore) solverScope.getBestScore()).getScore());
         assertEquals(0, solverScope.getBestUninitializedVariableCount());
     }
 
@@ -231,7 +231,7 @@ public class BestSolutionRecallerTest {
         solverScope.setBestUninitializedVariableCount(0);
         recaller.processWorkingSolutionDuringMove(0, score2, stepScope);
         assertEquals(helpSolution, solverScope.getBestSolution());
-        assertEquals(0, ((SimpleScore)solverScope.getBestScore()).getScore());
+        assertEquals(0, ((SimpleScore) solverScope.getBestScore()).getScore());
         assertEquals(0, solverScope.getBestUninitializedVariableCount());
     }
 
