@@ -7563,4 +7563,52 @@ public class Misc2Test extends CommonTestMethodBase {
             return result;
         }
     }
+
+    public class A1 {
+        public B1 b = new B1();
+    }
+
+    public class B1 {
+        public int b1 = 1;
+        public int b2 = 2;
+        public int b3 = 3;
+    }
+
+    @Test
+    public void testSkipHashingOfNestedProperties() {
+        // DROOLS-870
+        String drl =
+                "import " + A1.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule One when\n" +
+                "  A1(b.b1 == 1)\n" +
+                "then\n" +
+                "  list.add(\"1\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Two\" when\n" +
+                "  A1(b.b2 == 2)\n" +
+                "then\n" +
+                "  list.add(\"2\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"Three\" when\n" +
+                "  A1(b.b3 == 3)\n" +
+                "then\n" +
+                "  list.add(\"3\");\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new A1() );
+        ksession.fireAllRules();
+
+        assertEquals( 3, list.size() );
+        assertTrue( list.containsAll( asList("1", "2", "3") ) );
+    }
 }
