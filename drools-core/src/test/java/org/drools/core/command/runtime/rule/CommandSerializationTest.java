@@ -18,14 +18,22 @@ package org.drools.core.command.runtime.rule;
 import java.io.ByteArrayInputStream;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 
+import static org.hamcrest.core.Is.*;
+import static org.hamcrest.core.IsInstanceOf.*;
 import static org.junit.Assert.*;
 import org.drools.core.common.DisconnectedFactHandle;
+import org.drools.core.xml.jaxb.util.JaxbListWrapper;
 import org.junit.Test;
 
 public class CommandSerializationTest {
+
+    private Class<?>[] annotatedJaxbClasses = { JaxbListWrapper.class };
 
     @Test
     public void updateCommandTest() throws Exception {
@@ -56,7 +64,32 @@ public class CommandSerializationTest {
         assertEquals( "entry point", cmd.getEntryPoint(), copyCmd.getEntryPoint() );
         assertEquals( "disconnected", cmd.isDisconnected(), copyCmd.isDisconnected() );
     }
-    
+
+    @Test
+    public void insertObjectCommandListTest() throws Exception {
+        List<String> objectList = new ArrayList<String>();
+        objectList.add("obj");
+        InsertObjectCommand cmd = new InsertObjectCommand(objectList, "out-id");
+
+        InsertObjectCommand copyCmd = roundTrip(cmd, InsertObjectCommand.class);
+
+        assertNotNull(copyCmd);
+        assertThat(copyCmd.getObject(), is(instanceOf(List.class)));
+        assertEquals( "object", cmd.getObject(), copyCmd.getObject());
+    }
+
+    @Test
+    public void insertObjectCommandEmptyListTest() throws Exception {
+        List<String> objectList = new ArrayList<String>();
+        InsertObjectCommand cmd = new InsertObjectCommand(objectList, "out-id");
+
+        InsertObjectCommand copyCmd = roundTrip(cmd, InsertObjectCommand.class);
+
+        assertNotNull(copyCmd);
+        assertThat(copyCmd.getObject(), is(instanceOf(List.class)));
+        assertEquals( "object", cmd.getObject(), copyCmd.getObject());
+    }
+
     private void verifyDisconnectedFactHandle( DisconnectedFactHandle orig, DisconnectedFactHandle copy ) {
         assertNotNull("copy disconnected fact handle is null", copy);
         assertEquals("id", orig.getId(), copy.getId());
@@ -87,7 +120,11 @@ public class CommandSerializationTest {
         return writer.getBuffer().toString();
     }
 
-    private JAXBContext getJaxbContext( Class... classes ) throws Exception {
-        return JAXBContext.newInstance(classes);
+    private JAXBContext getJaxbContext( Class<?>... classes ) throws Exception {
+        List<Class<?>> jaxbClassList = new ArrayList<Class<?>>();
+        jaxbClassList.addAll(Arrays.asList(classes));
+        jaxbClassList.addAll(Arrays.asList(annotatedJaxbClasses));
+        Class<?>[] jaxbClasses = jaxbClassList.toArray(new Class[jaxbClassList.size()]);
+        return JAXBContext.newInstance(jaxbClasses);
     }
 }
