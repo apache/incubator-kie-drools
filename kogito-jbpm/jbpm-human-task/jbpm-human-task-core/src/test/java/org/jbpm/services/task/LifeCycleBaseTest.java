@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.StringReader;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -2417,23 +2418,22 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Bobba Fet'), new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
         str += "name = 'This is my task name' })";
 
-        Date creationTime = new Date();
-        
+        Date beforeCreationTime = new Date(System.currentTimeMillis()-1000);
+ 
         Task task = TaskFactory.evalTask(new StringReader(str));
         taskService.addTask(task, new HashMap<String, Object>());
 
-
         long taskId = task.getId();
         assertNotNull(task.getTaskData().getActivationTime());
-
-        // Go straight from Ready to Inprogress
+        
+        
+        // Go straight from Ready to Inprogress@@@@@@ 2015-08-04 17:13:24.755
         taskService.start(taskId, "Darth Vader");
         
         List<TaskSummary> activeTasks = taskService.getActiveTasks();
         assertNotNull(activeTasks);
         assertEquals(1,  activeTasks.size());
-        
-        activeTasks = taskService.getActiveTasks(creationTime);
+        activeTasks = taskService.getActiveTasks(beforeCreationTime);
         assertNotNull(activeTasks);
         assertEquals(1,  activeTasks.size());
 
@@ -2454,7 +2454,7 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertNotNull(completedTasks);
         assertEquals(1,  completedTasks.size());
         
-        completedTasks = taskService.getCompletedTasks(creationTime);
+        completedTasks = taskService.getCompletedTasks(beforeCreationTime);
         assertNotNull(completedTasks);
         assertEquals(1,  completedTasks.size());
         
