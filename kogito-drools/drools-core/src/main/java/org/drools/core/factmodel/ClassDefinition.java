@@ -88,9 +88,7 @@ public class ClassDefinition
     public ClassDefinition( Class<?> cls ) {
         this.definedClass = cls;
         this.setClassName( cls.getCanonicalName() );
-        if (cls.getSuperclass() != null) {
-            this.setSuperClass( cls.getSuperclass().getCanonicalName() );
-        }
+        this.setSuperClass( cls.getSuperclass() != null ? cls.getSuperclass().getCanonicalName() : null );
         String[] interfaces = new String[cls.getInterfaces().length];
         int i = 0;
         for (Class<?> interfaze : cls.getInterfaces()) {
