@@ -43,8 +43,10 @@ public abstract class AbstractFormProvider implements FormProvider {
             if ( formName.endsWith( getFormExtension() ) ) return formName;
             return formName + getFormSuffix();
         } else {
-            formName = task.getNames().get(0).getText();
-            if (formName != null) return formName.replace(" ", "") + getFormSuffix();
+            if (task.getNames() != null && !task.getNames().isEmpty()) {
+                formName = task.getNames().get(0).getText();
+                if (formName != null) return formName.replace(" ", "") + getFormSuffix();
+            }
         }
         return null;
     }
