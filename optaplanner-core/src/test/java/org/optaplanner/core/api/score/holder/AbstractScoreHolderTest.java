@@ -50,4 +50,10 @@ public abstract class AbstractScoreHolderTest {
         agendaItem.getActivationUnMatchListener().unMatch(mock(RuleRuntime.class), agendaItem);
     }
 
+    protected void callUnMatch(RuleContext ruleContext, int scoreLevel) {
+        AgendaItem agendaItem = (AgendaItem) ruleContext.getMatch();
+        AbstractScoreHolder.MultiLevelConstraintUndoListener multiLevelConstraintUndoListener = (AbstractScoreHolder.MultiLevelConstraintUndoListener) agendaItem.getActivationUnMatchListener();
+        multiLevelConstraintUndoListener.unMatch(scoreLevel);
+    }
+
 }

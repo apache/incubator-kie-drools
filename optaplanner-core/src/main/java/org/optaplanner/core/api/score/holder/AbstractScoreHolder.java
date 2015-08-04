@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,16 +68,44 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
     // Worker methods
     // ************************************************************************
 
+    protected class MultiLevelConstraintUndoListener implements ActivationUnMatchListener {
+
+        private Map<Integer, ActivationUnMatchListener> activationUnMatchListenerMap;
+
+        public MultiLevelConstraintUndoListener(int scoreLevel, ActivationUnMatchListener activationUnMatchListener) {
+            this.activationUnMatchListenerMap = new HashMap<Integer, ActivationUnMatchListener>();
+            match(scoreLevel, activationUnMatchListener);
+        }
+
+        @Override
+        public final void unMatch(RuleRuntime ruleRuntime, Match match) {
+            for (Integer scoreLevel : activationUnMatchListenerMap.keySet()) {
+                unMatch(scoreLevel);
+            }
+        }
+
+        public void unMatch(int scoreLevel) {
+            if (activationUnMatchListenerMap.containsKey(scoreLevel)) {
+                // Both parameters null because they are not used by the ActivationUnMatchListener created anyway
+                activationUnMatchListenerMap.get(scoreLevel).unMatch(null, null);
+                activationUnMatchListenerMap.remove(scoreLevel);
+            }
+        }
+
+        public void match(int scoreLevel, ActivationUnMatchListener activationUnMatchListener) {
+            this.activationUnMatchListenerMap.put(scoreLevel, activationUnMatchListener);
+        }
+    }
+
     protected void registerIntConstraintMatch(RuleContext kcontext, int scoreLevel, int weight,
             final IntConstraintUndoListener constraintUndoListener) {
-        AgendaItem agendaItem = prepareAgendaItemForUnMatchListener(kcontext);
         if (constraintMatchEnabled) {
             // Not needed in fast code: Add ConstraintMatch
             constraintUndoListener.constraintMatchTotal = findIntConstraintMatchTotal(kcontext, scoreLevel);
             constraintUndoListener.constraintMatch = constraintUndoListener
                     .constraintMatchTotal.addConstraintMatch(kcontext, weight);
         }
-        agendaItem.setActivationUnMatchListener(constraintUndoListener);
+        putUnMatchListener(kcontext, scoreLevel, constraintUndoListener);
     }
 
     protected abstract class IntConstraintUndoListener implements ActivationUnMatchListener {
@@ -111,14 +140,13 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
     protected void registerLongConstraintMatch(RuleContext kcontext, int scoreLevel, long weight,
             final LongConstraintUndoListener constraintUndoListener) {
-        AgendaItem agendaItem = prepareAgendaItemForUnMatchListener(kcontext);
         if (constraintMatchEnabled) {
             // Not needed in fast code: Add ConstraintMatch
             constraintUndoListener.constraintMatchTotal = findLongConstraintMatchTotal(kcontext, scoreLevel);
             constraintUndoListener.constraintMatch = constraintUndoListener
                     .constraintMatchTotal.addConstraintMatch(kcontext, weight);
         }
-        agendaItem.setActivationUnMatchListener(constraintUndoListener);
+        putUnMatchListener(kcontext, scoreLevel, constraintUndoListener);
     }
 
     protected abstract class LongConstraintUndoListener implements ActivationUnMatchListener {
@@ -153,14 +181,13 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
     protected void registerDoubleConstraintMatch(RuleContext kcontext, int scoreLevel, double weight,
             final DoubleConstraintUndoListener constraintUndoListener) {
-        AgendaItem agendaItem = prepareAgendaItemForUnMatchListener(kcontext);
         if (constraintMatchEnabled) {
             // Not needed in fast code: Add ConstraintMatch
             constraintUndoListener.constraintMatchTotal = findDoubleConstraintMatchTotal(kcontext, scoreLevel);
             constraintUndoListener.constraintMatch = constraintUndoListener
                     .constraintMatchTotal.addConstraintMatch(kcontext, weight);
         }
-        agendaItem.setActivationUnMatchListener(constraintUndoListener);
+        putUnMatchListener(kcontext, scoreLevel, constraintUndoListener);
     }
 
     protected abstract class DoubleConstraintUndoListener implements ActivationUnMatchListener {
@@ -195,14 +222,13 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
     protected void registerBigDecimalConstraintMatch(RuleContext kcontext, int scoreLevel, BigDecimal weight,
             final BigDecimalConstraintUndoListener constraintUndoListener) {
-        AgendaItem agendaItem = prepareAgendaItemForUnMatchListener(kcontext);
         if (constraintMatchEnabled) {
             // Not needed in fast code: Add ConstraintMatch
             constraintUndoListener.constraintMatchTotal = findBigDecimalConstraintMatchTotal(kcontext, scoreLevel);
             constraintUndoListener.constraintMatch = constraintUndoListener
                     .constraintMatchTotal.addConstraintMatch(kcontext, weight);
         }
-        agendaItem.setActivationUnMatchListener(constraintUndoListener);
+        putUnMatchListener(kcontext, scoreLevel, constraintUndoListener);
     }
 
     protected abstract class BigDecimalConstraintUndoListener implements ActivationUnMatchListener {
@@ -235,13 +261,17 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         return matchTotal;
     }
 
-    private AgendaItem prepareAgendaItemForUnMatchListener(RuleContext kcontext) {
+    private void putUnMatchListener(RuleContext kcontext, int scoreLevel, ActivationUnMatchListener abstractConstraintUndoListener) {
         AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
+        MultiLevelConstraintUndoListener multiLevelConstraintUndoListener;
         if (agendaItem.getActivationUnMatchListener() != null) {
-            // Both parameters null because they are not used by the ActivationUnMatchListener created anyway
-            agendaItem.getActivationUnMatchListener().unMatch(null, null);
+            multiLevelConstraintUndoListener = (MultiLevelConstraintUndoListener) agendaItem.getActivationUnMatchListener();
+            multiLevelConstraintUndoListener.unMatch(scoreLevel);
+            multiLevelConstraintUndoListener.match(scoreLevel, abstractConstraintUndoListener);
+        } else {
+            multiLevelConstraintUndoListener = new MultiLevelConstraintUndoListener(scoreLevel, abstractConstraintUndoListener);
+            agendaItem.setActivationUnMatchListener(multiLevelConstraintUndoListener);
         }
-        return agendaItem;
     }
 
 }
