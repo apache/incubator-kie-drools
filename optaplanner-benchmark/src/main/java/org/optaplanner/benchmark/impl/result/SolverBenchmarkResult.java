@@ -57,6 +57,8 @@ public class SolverBenchmarkResult {
     // ************************************************************************
 
     private Integer failureCount = null;
+    private Integer uninitializedSolutionCount = null;
+    private Integer infeasibleScoreCount = null;
     private Score totalScore = null;
     private Score averageScore = null;
     // Not a Score because
@@ -113,6 +115,14 @@ public class SolverBenchmarkResult {
 
     public Integer getFailureCount() {
         return failureCount;
+    }
+
+    public Integer getUninitializedSolutionCount() {
+        return uninitializedSolutionCount;
+    }
+
+    public Integer getInfeasibleScoreCount() {
+        return infeasibleScoreCount;
     }
 
     public Score getTotalScore() {
@@ -172,6 +182,14 @@ public class SolverBenchmarkResult {
 
     public boolean hasAnyFailure() {
         return failureCount > 0;
+    }
+
+    public boolean hasAnyUninitializedSolution() {
+        return uninitializedSolutionCount > 0;
+    }
+
+    public boolean hasAnyInfeasibleScore() {
+        return infeasibleScoreCount > 0;
     }
 
     public boolean isFavorite() {
@@ -262,10 +280,17 @@ public class SolverBenchmarkResult {
         ScoreDifferencePercentage totalWorstScoreDifferencePercentage = null;
         long totalAverageCalculateCountPerSecond = 0L;
         long totalTimeMillisSpent = 0L;
+        uninitializedSolutionCount = 0;
+        infeasibleScoreCount = 0;
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             if (singleBenchmarkResult.isFailure()) {
                 failureCount++;
             } else {
+                if (!singleBenchmarkResult.isInitialized()) {
+                    uninitializedSolutionCount++;
+                } else if (!singleBenchmarkResult.isScoreFeasible()) {
+                    infeasibleScoreCount++;
+                }
                 if (firstNonFailure) {
                     totalScore = singleBenchmarkResult.getScore();
                     totalWinningScoreDifference = singleBenchmarkResult.getWinningScoreDifference();
