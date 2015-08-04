@@ -7347,6 +7347,40 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals("Rule without agenda group executed", list.get(0));
     }
 
+    @Test
+    public void testClearActivationGroupCommandNoImmediatePropagation() {
+        // DROOLS-865
+        String drl =
+                "package org.kie.test\n" +
+                "global java.util.List list\n" +
+                "rule \"Rule in first agenda group\"\n" +
+                "agenda-group \"first-agenda\"\n" +
+                "salience 10\n" +
+                "when\n" +
+                "then\n" +
+                "list.add(\"Rule in first agenda group executed\");\n" +
+                "end\n" +
+                "rule \"Rule without agenda group\"\n" +
+                "salience 100\n" +
+                "when\n" +
+                "then\n" +
+                "list.add(\"Rule without agenda group executed\");\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        ksession.setGlobal("list", new ArrayList<String>());
+        ksession.getAgenda().getAgendaGroup("first-agenda").setFocus();
+        ksession.getAgenda().getAgendaGroup("first-agenda").clear();
+        ksession.fireAllRules();
+
+        ArrayList<String> list = (ArrayList<String>)ksession.getGlobal("list");
+        assertEquals(1, list.size());
+        assertEquals("Rule without agenda group executed", list.get(0));
+    }
+
     public static class $X {
         public static class $Y {
             private final int value;

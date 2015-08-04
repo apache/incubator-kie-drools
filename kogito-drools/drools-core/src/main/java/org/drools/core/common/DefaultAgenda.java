@@ -853,6 +853,11 @@ public class DefaultAgenda
      * @see org.kie.common.AgendaI#clearAgendaGroup(org.kie.common.AgendaGroupImpl)
      */
     public void clearAndCancelAgendaGroup(InternalAgendaGroup agendaGroup) {
+        // enforce materialization of all activations of this group before removing them
+        for (Activation activation : agendaGroup.getActivations()) {
+            ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( workingMemory );
+        }
+
         final EventSupport eventsupport = (EventSupport) this.workingMemory;
 
         agendaGroup.setClearedForRecency( this.workingMemory.getFactHandleFactory().getRecency() );
