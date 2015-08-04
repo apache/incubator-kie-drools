@@ -26,6 +26,7 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
+import org.kie.api.Service;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
@@ -1654,5 +1655,36 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         ReleaseId releaseId3 = ks.newReleaseId( "org.kie", "test-upgrade", "1.2.0" );
         createAndDeployJar( ks, releaseId3 );
         kc.updateToVersion( releaseId3 );
+    }
+
+    @Test
+    public void testIncrementalTypeDeclarationOnInterface() {
+        // DROOLS-861
+        String drl1 =
+                "import " + Service.class.getCanonicalName() + "\n" +
+                "rule A when\n" +
+                "    Service( )\n" +
+                "then\n" +
+                "end";
+
+        String drl2 =
+                "import " + Service.class.getCanonicalName() + "\n" +
+                "declare Service @role( event ) end\n" +
+                "rule A when\n" +
+                "    Service( )\n" +
+                "then\n" +
+                "end";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        createAndDeployJar( ks, releaseId2, drl2 );
+        kc.updateToVersion( releaseId2 );
     }
 }
