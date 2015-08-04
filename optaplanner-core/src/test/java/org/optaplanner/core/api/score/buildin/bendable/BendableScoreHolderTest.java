@@ -46,12 +46,19 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
         RuleContext ruleContext3 = createRuleContext("scoreRule3");
         scoreHolder.addSoftConstraintMatch(ruleContext3, 0, -30); // Rule match added
         scoreHolder.addSoftConstraintMatch(ruleContext3, 0, -3); // Rule match modified
+        scoreHolder.addHardConstraintMatch(ruleContext3, 0, -300); // Rule of different level added
+        scoreHolder.addHardConstraintMatch(ruleContext3, 0, -400); // Rule of different level modified
 
         scoreHolder.addSoftConstraintMatch(createRuleContext("scoreRule4"), 1, -4); // Rule match added
 
-        assertEquals(BendableScore.valueOf(new int[]{-1000}, new int[]{-3, -4}), scoreHolder.extractScore());
+        RuleContext ruleContext5 = createRuleContext("scoreRule5");
+        scoreHolder.addHardConstraintMatch(ruleContext5, 0, -1);
+        scoreHolder.addSoftConstraintMatch(ruleContext5, 0, -1);
+        callUnMatch(ruleContext5, 1); // Rule match removed - 1st score level (soft)
+
+        assertEquals(BendableScore.valueOf(new int[]{-1401}, new int[]{-3, -4}), scoreHolder.extractScore());
         if (constraintMatchEnabled) {
-            assertEquals(4, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(7, scoreHolder.getConstraintMatchTotals().size());
         }
     }
 

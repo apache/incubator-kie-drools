@@ -46,12 +46,19 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
         RuleContext ruleContext3 = createRuleContext("scoreRule3");
         scoreHolder.addMediumConstraintMatch(ruleContext3, -30); // Rule match added
         scoreHolder.addMediumConstraintMatch(ruleContext3, -3); // Rule match modified
+        scoreHolder.addHardConstraintMatch(ruleContext3, -300); // Rule of different level added
+        scoreHolder.addHardConstraintMatch(ruleContext3, -400); // Rule of different level modified
 
         scoreHolder.addSoftConstraintMatch(createRuleContext("scoreRule4"), -4); // Rule match added
 
-        assertEquals(HardMediumSoftScore.valueOf(-1000, -3, -4), scoreHolder.extractScore());
+        RuleContext ruleContext5 = createRuleContext("scoreRule5");
+        scoreHolder.addHardConstraintMatch(ruleContext5, -1);
+        scoreHolder.addSoftConstraintMatch(ruleContext5, -1);
+        callUnMatch(ruleContext5, 2); // Rule match removed - 2nd score level (soft)
+
+        assertEquals(HardMediumSoftScore.valueOf(-1401, -3, -4), scoreHolder.extractScore());
         if (constraintMatchEnabled) {
-            assertEquals(4, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(7, scoreHolder.getConstraintMatchTotals().size());
         }
     }
 

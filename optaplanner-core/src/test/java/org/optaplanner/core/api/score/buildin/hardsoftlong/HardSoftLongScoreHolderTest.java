@@ -46,10 +46,17 @@ public class HardSoftLongScoreHolderTest extends AbstractScoreHolderTest {
         RuleContext ruleContext3 = createRuleContext("scoreRule3");
         scoreHolder.addSoftConstraintMatch(ruleContext3, -30L); // Rule match added
         scoreHolder.addSoftConstraintMatch(ruleContext3, -3L); // Rule match modified
+        scoreHolder.addHardConstraintMatch(ruleContext3, -300L); // Rule of different level added
+        scoreHolder.addHardConstraintMatch(ruleContext3, -400L); // Rule of different level modified
 
-        assertEquals(HardSoftLongScore.valueOf(-1000L, -3L), scoreHolder.extractScore());
+        RuleContext ruleContext4 = createRuleContext("scoreRule4");
+        scoreHolder.addHardConstraintMatch(ruleContext4, -1);
+        scoreHolder.addSoftConstraintMatch(ruleContext4, -1);
+        callUnMatch(ruleContext4, 1); // Rule match removed - 1st score level (soft)
+
+        assertEquals(HardSoftLongScore.valueOf(-1401L, -3L), scoreHolder.extractScore());
         if (constraintMatchEnabled) {
-            assertEquals(3, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(6, scoreHolder.getConstraintMatchTotals().size());
         }
     }
 

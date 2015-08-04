@@ -49,11 +49,18 @@ public class HardSoftBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         RuleContext ruleContext3 = createRuleContext("scoreRule3");
         scoreHolder.addSoftConstraintMatch(ruleContext3, new BigDecimal("-0.30")); // Rule match added
         scoreHolder.addSoftConstraintMatch(ruleContext3, new BigDecimal("-0.03")); // Rule match modified
+        scoreHolder.addHardConstraintMatch(ruleContext3, new BigDecimal("-3.00")); // Rule of different level added
+        scoreHolder.addHardConstraintMatch(ruleContext3, new BigDecimal("-4.00")); // Rule of different level modified
 
-        assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-10.00"), new BigDecimal("-0.03")),
+        RuleContext ruleContext4 = createRuleContext("scoreRule4");
+        scoreHolder.addHardConstraintMatch(ruleContext4, new BigDecimal("-1.00"));
+        scoreHolder.addSoftConstraintMatch(ruleContext4, new BigDecimal("-1.00"));
+        callUnMatch(ruleContext4, 1); // Rule match removed - 1st score level (soft)
+
+        assertEquals(HardSoftBigDecimalScore.valueOf(new BigDecimal("-15.00"), new BigDecimal("-0.03")),
                 scoreHolder.extractScore());
         if (constraintMatchEnabled) {
-            assertEquals(3, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(6, scoreHolder.getConstraintMatchTotals().size());
         }
     }
 

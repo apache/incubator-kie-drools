@@ -49,13 +49,20 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
         RuleContext ruleContext3 = createRuleContext("scoreRule3");
         scoreHolder.addSoftConstraintMatch(ruleContext3, 0, BigDecimal.valueOf(-30)); // Rule match added
         scoreHolder.addSoftConstraintMatch(ruleContext3, 0, BigDecimal.valueOf(-3)); // Rule match modified
+        scoreHolder.addHardConstraintMatch(ruleContext3, 0, BigDecimal.valueOf(-300)); // Rule of different level added
+        scoreHolder.addHardConstraintMatch(ruleContext3, 0, BigDecimal.valueOf(-400)); // Rule of different level modified
 
         scoreHolder.addSoftConstraintMatch(createRuleContext("scoreRule4"), 1, BigDecimal.valueOf(-4)); // Rule match added
 
-        assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[]{BigDecimal.valueOf(-1000)}, 
+        RuleContext ruleContext5 = createRuleContext("scoreRule5");
+        scoreHolder.addHardConstraintMatch(ruleContext5, 0, BigDecimal.valueOf(-1));
+        scoreHolder.addSoftConstraintMatch(ruleContext5, 0, BigDecimal.valueOf(-1));
+        callUnMatch(ruleContext5, 1); // Rule match removed - 1st score level (soft)
+
+        assertEquals(BendableBigDecimalScore.valueOf(new BigDecimal[]{BigDecimal.valueOf(-1401)},
                 new BigDecimal[]{BigDecimal.valueOf(-3), BigDecimal.valueOf(-4)}), scoreHolder.extractScore());
         if (constraintMatchEnabled) {
-            assertEquals(4, scoreHolder.getConstraintMatchTotals().size());
+            assertEquals(7, scoreHolder.getConstraintMatchTotals().size());
         }
     }
 
