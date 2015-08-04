@@ -34,7 +34,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
 public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
 
-    protected ShadowVariableDescriptor refVariableDescriptor;
+    protected CustomShadowVariableDescriptor refVariableDescriptor;
 
     protected Class<? extends VariableListener> variableListenerClass;
     protected List<VariableDescriptor> sourceVariableDescriptorList;
@@ -86,6 +86,11 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
         }
     }
 
+    public boolean isRef() {
+        // refVariableDescriptor might not be initialized yet, but variableListenerClass will
+        return variableListenerClass == null;
+    }
+
     @Override
     public void linkShadowSources(DescriptorPolicy descriptorPolicy) {
         CustomShadowVariable shadowVariableAnnotation = variableMemberAccessor
@@ -110,8 +115,8 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
                 }
             }
             String refVariableName = variableListenerRef.variableName();
-            refVariableDescriptor = refEntityDescriptor.getShadowVariableDescriptor(refVariableName);
-            if (refVariableDescriptor == null) {
+            VariableDescriptor uncastRefVariableDescriptor = refEntityDescriptor.getVariableDescriptor(refVariableName);
+            if (uncastRefVariableDescriptor == null) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
                         + ") has a " + CustomShadowVariable.class.getSimpleName()
                         + " annotated property (" + variableMemberAccessor.getName()
@@ -119,6 +124,20 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
                         + ") which is not a valid planning variable on entityClass ("
                         + refEntityDescriptor.getEntityClass() + ").\n"
                         + entityDescriptor.buildInvalidVariableNameExceptionMessage(refVariableName));
+            }
+            if (!(uncastRefVariableDescriptor instanceof CustomShadowVariableDescriptor)) {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a " + CustomShadowVariable.class.getSimpleName()
+                        + " annotated property (" + variableMemberAccessor.getName()
+                        + ") with refVariable (" + uncastRefVariableDescriptor.getSimpleEntityAndVariableName()
+                        + ") that lacks a " + CustomShadowVariable.class.getSimpleName() + " annotation.");
+            }
+            refVariableDescriptor = (CustomShadowVariableDescriptor) uncastRefVariableDescriptor;
+            if (refVariableDescriptor.isRef()) {
+                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                        + ") has a " + CustomShadowVariable.class.getSimpleName()
+                        + " annotated property (" + variableMemberAccessor.getName()
+                        + ") with refVariable (" + refVariableDescriptor + ") that must not be a reference too.");
             }
         } else {
             CustomShadowVariable.Source[] sources = shadowVariableAnnotation.sources();
