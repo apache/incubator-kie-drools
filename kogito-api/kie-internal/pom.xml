@@ -49,6 +49,7 @@
               org.drools.core.impl,
               org.drools.core.io.impl,
               org.drools.core.marshalling.impl;resolution:=optional,
+              org.drools.core.util,
               org.drools.decisiontable;resolution:=optional,
               org.drools.persistence.jpa;resolution:=optional,
               org.jbpm.bpmn2;resolution:=optional,
@@ -82,7 +83,6 @@
               org.kie.api.task,
               org.kie.api.task.model,
               =org.kie.scanner.*;resolution:=optional,
-              org.mvel2,
               org.slf4j
             </Import-Package>
             <Export-Package>
@@ -123,11 +123,7 @@
       <artifactId>jaxb-impl</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.mvel</groupId>
-      <artifactId>mvel2</artifactId>
-    </dependency>
-     
+
       <!-- test --> 
 
       <dependency>

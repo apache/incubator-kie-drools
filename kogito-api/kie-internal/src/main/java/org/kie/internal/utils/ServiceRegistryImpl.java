@@ -19,7 +19,6 @@ package org.kie.internal.utils;
 
 import org.kie.api.KieServices;
 import org.kie.api.Service;
-import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.KieScannerFactoryService;
 import org.kie.api.concurrent.KieExecutors;
 import org.kie.api.marshalling.KieMarshallers;
@@ -36,6 +35,8 @@ import org.kie.internal.weaver.KieWeaversImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -200,6 +201,8 @@ public class ServiceRegistryImpl
                     "org.jbpm.persistence.correlation.JPACorrelationKeyFactory");
         addDefault( ClassLoaderResolver.class,
                     "org.kie.scanner.MavenClassLoaderResolver" );
+        addDefault( ServiceDiscovery.class,
+                    "org.drools.core.util.ServiceDiscoveryImpl" );
 
 
         defaultServices.put( KieAssemblers.class.getName(),
@@ -211,7 +214,18 @@ public class ServiceRegistryImpl
         defaultServices.put( KieBeliefs.class.getName(),
                              new ReturnInstance( new KieBeliefsImpl()) );
 
-        ServiceDiscovery.discoverFactories(path, this);
+        initServiceDiscovery();
+    }
+
+    private void initServiceDiscovery() {
+        try {
+            Enumeration<URL> confResources = getClassLoader().getResources( path );
+            if (confResources.hasMoreElements()) {
+                get( ServiceDiscovery.class ).discoverFactories( confResources, this );
+            }
+        } catch ( Exception e ) {
+            // no conf file or no ServiceDiscovery - ignore
+        }
     }
 
     public synchronized void addDefault(Class cls,
@@ -238,7 +252,7 @@ public class ServiceRegistryImpl
                             resourceRi);
     }
 
-    static class ReflectionInstantiator<V>
+    public static class ReflectionInstantiator<V>
             implements
             Callable<V> {
         private final String name;
@@ -262,7 +276,7 @@ public class ServiceRegistryImpl
         }
     }
 
-    static class FactoryInstantiator<V>
+    public static class FactoryInstantiator<V>
             implements
             Callable<V> {
         private final String name;
@@ -286,7 +300,7 @@ public class ServiceRegistryImpl
         }
     }
 
-    static class ReturnInstance<V>
+    public static class ReturnInstance<V>
             implements
             Callable<V> {
         private final Service service;
@@ -300,4 +314,14 @@ public class ServiceRegistryImpl
         }
     }
 
+    private static ClassLoader getClassLoader() {
+        ClassLoader cl = Thread.currentThread().getContextClassLoader();
+        if (cl == null) {
+            cl = ClassLoader.getSystemClassLoader();
+        }
+        if (cl == null) {
+            cl = ClassLoaderUtil.class.getClassLoader();
+        }
+        return cl;
+    }
 }
