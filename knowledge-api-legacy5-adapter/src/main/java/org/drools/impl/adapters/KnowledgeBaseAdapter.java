@@ -54,6 +54,10 @@ public class KnowledgeBaseAdapter implements org.drools.KnowledgeBase, Externali
         this.delegate = delegate;
     }
 
+    public KnowledgeBase getDelegate() {
+        return delegate;
+    }
+
     public void addKnowledgePackages(Collection<KnowledgePackage> kpackages) {
         delegate.addKnowledgePackages(fromKiePackages(kpackages));
     }
