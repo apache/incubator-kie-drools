@@ -57,7 +57,7 @@
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-core-asl</artifactId>
     </dependency>
-    
+
     <dependency>
       <!--  only needed for metadata generation -->
       <groupId>org.hibernate</groupId>
@@ -65,7 +65,7 @@
       <optional>true</optional>
       <scope>provided</scope>
     </dependency>
-    
+
     <!-- TEST -->
    <dependency>
       <groupId>org.jbpm</groupId>
@@ -98,7 +98,7 @@
       <artifactId>btm</artifactId>
       <scope>test</scope>
     </dependency>
-    
+
   </dependencies>
 
   <build>
@@ -108,7 +108,7 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
-    
+
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -129,13 +129,14 @@
             </Import-Package>
             <Export-Package>
               org.jbpm.services.task.impl*,
+              org.jbpm.services.task.query*,
               org.jbpm.services.task.persistence*
             </Export-Package>
             <Bundle-Activator>org.jbpm.osgi.services.task.Activator</Bundle-Activator>
           </instructions>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
@@ -146,7 +147,7 @@
           </compilerArgs>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>
