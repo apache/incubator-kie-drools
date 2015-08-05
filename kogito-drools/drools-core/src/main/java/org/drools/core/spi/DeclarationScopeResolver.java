@@ -16,11 +16,6 @@
 
 package org.drools.core.spi;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
-
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -28,6 +23,11 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * A class capable of resolving a declaration in the current build context
@@ -60,7 +60,7 @@ public class DeclarationScopeResolver {
     private Declaration getExtendedDeclaration(RuleImpl rule,
                                                String identifier) {
         if ( rule.getLhs().getInnerDeclarations().containsKey( identifier ) ) {
-            return (Declaration) rule.getLhs().getInnerDeclarations().get( identifier );
+            return rule.getLhs().getInnerDeclarations().get( identifier );
         } else if ( null != rule.getParent() ) {
             return getExtendedDeclaration( rule.getParent(),
                                            identifier );
@@ -71,7 +71,7 @@ public class DeclarationScopeResolver {
 
     private HashMap<String, Declaration> getAllExtendedDeclaration(RuleImpl rule,
                                                                    HashMap<String, Declaration> dec) {
-        dec.putAll( ((RuleConditionElement) rule.getLhs()).getInnerDeclarations() );
+        dec.putAll( rule.getLhs().getInnerDeclarations() );
         if ( null != rule.getParent() ) {
             return getAllExtendedDeclaration( rule.getParent(),
                                               dec );
@@ -215,8 +215,6 @@ public class DeclarationScopeResolver {
     /**
      * Return all declarations scoped to the current
      * RuleConditionElement in the build stack
-     *
-     * @return
      */
     public Map<String, Declaration> getDeclarations(RuleImpl rule, String consequenceName) {
         final Map<String, Declaration> declarations = new HashMap<String, Declaration>();
