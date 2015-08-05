@@ -16,12 +16,21 @@
 package org.jbpm.kie.services.impl.bpmn2;
 
 import org.jbpm.bpmn2.xml.BPMNSemanticModule;
-import org.jbpm.bpmn2.xml.BusinessRuleTaskHandler;
 
 public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
 
     // also used by the BPMN2DataServiceExtensionSemanticModule
-	static ThreadLocal<ProcessDescRepoHelper> helper = new ThreadLocal<ProcessDescRepoHelper>();
+	static ThreadLocal<ProcessDescRepoHelper> helper = new ThreadLocal<ProcessDescRepoHelper>() {
+        @Override
+        public ProcessDescRepoHelper get() {
+            ProcessDescRepoHelper localHelper = super.get();
+            if( localHelper == null ) { 
+                localHelper = new ProcessDescRepoHelper();
+                super.set(localHelper);
+            }
+            return localHelper;
+        } 
+	};
 	
 	private ProcessDescriptionRepository repo = new ProcessDescriptionRepository();
     
@@ -78,14 +87,10 @@ public class BPMN2DataServiceSemanticModule extends BPMNSemanticModule {
         addHandler("businessRuleTask", businessRuleTaskHandler);
     }
 
-	public ProcessDescRepoHelper getRepoHelper() {
-		return helper.get();
-	}
-
-	public static void setRepoHelper(ProcessDescRepoHelper repoHelper) {
-		helper.set(repoHelper);
-	}
-
+    public static ProcessDescRepoHelper getRepoHelper() {
+        return helper.get();
+    }
+    
 	public ProcessDescriptionRepository getRepo() {
 		return repo;
 	}

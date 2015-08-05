@@ -44,6 +44,7 @@ public class DataServiceItemDefinitionHandler extends ItemDefinitionHandler {
         ItemDefinition item = (ItemDefinition) super.start(uri, localName, attrs, parser);
         String id = item.getId();
         String structureRef = item.getStructureRef();
+        // NPE!
         String itemDefinitionId = module.getRepoHelper().getGlobalItemDefinitions().get(id);
         
         if(itemDefinitionId == null) {

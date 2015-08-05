@@ -1,0 +1,46 @@
+# Byteman Rule for 
+# org.jbpm.kie.services.test.BPMN2DataServiceImplMultiThreadBytemanTest
+# .testBuildProcessDefinitionConcurrentWithKieBuilder()
+
+# DataService: build process thread
+
+# 1. signal KieBuilder thread before reseting the BPMN2ProcessProvider 
+# > we have to choose a method after the "setBPMN2ProcessProvider" method
+#   because it's a static *synchronized* method and if we wait *in* the
+#   method, then the *g*etBPMN2ProcessProvider method will also block, 
+#   which is a method that the KieBuilder uses
+#
+# 2. wait for KieBuilder thread to finish
+
+RULE setBPMN2ProcessProvider wait
+CLASS org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceExtensionSemanticModule
+METHOD setRepoHelper
+AT EXIT
+IF TRUE
+DO 
+# traceStack();  # commented out 
+signalWake("Add Resource to KieBuilder");
+waitFor("After KieBuilder.add(..)");
+ENDRULE
+
+# KieBuilder: add resource thread
+
+# 1. wait for signal from DataService thread
+
+RULE createKBuilder signal
+CLASS  org.jbpm.kie.services.test.BPMN2DataServiceImplMultiThreadBytemanTest
+METHOD createKBuilder
+AT ENTRY
+IF true
+DO waitFor("Add Resource to KieBuilder");
+ENDRULE
+
+# 2. let DataService finish 
+
+RULE setBPMN2ProcessProvider signal
+CLASS  org.jbpm.kie.services.test.BPMN2DataServiceImplMultiThreadBytemanTest
+METHOD letDataServiceThreadFinish
+AT ENTRY
+IF true
+DO signalWake("After KieBuilder.add(..)");
+ENDRULE

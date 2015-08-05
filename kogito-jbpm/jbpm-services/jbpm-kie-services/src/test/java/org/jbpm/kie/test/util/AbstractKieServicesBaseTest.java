@@ -16,10 +16,14 @@
 
 package org.jbpm.kie.test.util;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -287,4 +291,14 @@ public abstract class AbstractKieServicesBaseTest {
 		this.userTaskService = userTaskService;
 	}
 
+    
+    protected static void waitForTheOtherThreads(CyclicBarrier barrier) { 
+        try {
+            barrier.await();
+        } catch( InterruptedException e ) {
+            fail( "Thread 1 was interrupted while waiting for the other threads!");
+        } catch( BrokenBarrierException e ) {
+            fail( "Thread 1's barrier was broken while waiting for the other threads!");
+        } 
+    }
 }

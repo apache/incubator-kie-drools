@@ -147,8 +147,7 @@ public class BPMN2DataServiceImpl implements DefinitionService, DeploymentEventL
             BPMN2ProcessFactory.setBPMN2ProcessProvider(provider);
         }
         try {
-            ProcessDescRepoHelper threadLocalHelper = new ProcessDescRepoHelper();
-	        BPMN2DataServiceSemanticModule.setRepoHelper(threadLocalHelper);
+            ProcessDescRepoHelper threadLocalHelper = BPMN2DataServiceSemanticModule.getRepoHelper();
 	        BPMN2DataServiceExtensionSemanticModule.setRepoHelper(threadLocalHelper);
 	      
 	        KnowledgeBuilder kbuilder = null;
