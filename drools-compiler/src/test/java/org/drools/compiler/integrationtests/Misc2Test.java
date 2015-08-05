@@ -7179,7 +7179,9 @@ public class Misc2Test extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(errorNr, results.getMessages().size());
+        if (errorNr > 0) {
+            assertEquals( errorNr, results.getMessages().size() );
+        }
     }
 
     @Test
@@ -7644,5 +7646,21 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals( 3, list.size() );
         assertTrue( list.containsAll( asList("1", "2", "3") ) );
+    }
+
+    @Test
+    public void testErrorReportWithWrongAccumulateFunction() {
+        // DROOLS-872
+        String drl =
+                "import " + Cheese.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "  Cheese( $type : typo )\n" +
+                "  accumulate(\n" +
+                "    $c : Cheese( type == $type ),\n" +
+                "    $cheeses : collectList( $c ) );\n" +
+                "then\n" +
+                "end\n";
+
+        assertDrlHasCompilationError(drl, -1);
     }
 }

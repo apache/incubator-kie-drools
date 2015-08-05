@@ -48,6 +48,7 @@ import org.drools.core.util.index.IndexUtil;
 import org.kie.api.runtime.rule.AccumulateFunction;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -132,7 +133,7 @@ public class JavaAccumulateBuilder
         // list of functions to build
         final List<AccumulateFunctionCallDescr> funcCalls = accumDescr.getFunctions();
         // list of available source declarations
-        final Declaration[] sourceDeclArr = source.getOuterDeclarations().values().toArray( new Declaration[0] );
+        final Declaration[] sourceDeclArr = source.getOuterDeclarations().values().toArray( new Declaration[source.getOuterDeclarations().size()] );
         Arrays.sort( sourceDeclArr, RuleTerminalNode.SortDeclarations.instance );
 
         // set of required previous declarations
@@ -187,7 +188,7 @@ public class JavaAccumulateBuilder
                                                            "Duplicate declaration for variable '" + fc.getBind() + "' in the rule '" + context.getRule().getName() + "'" ) );
                 } else {
                     Declaration inner = context.getDeclarationResolver().getDeclaration( context.getRule(), fc.getBind() );
-                    Constraint c = new MvelConstraint( Arrays.asList( context.getPkg().getName() ),
+                    Constraint c = new MvelConstraint( Collections.singletonList( context.getPkg().getName() ),
                                                        index >= 0
                                                             ? "this[ " + index + " ] == " + fc.getBind()
                                                             : "this == " + fc.getBind(),
@@ -201,7 +202,6 @@ public class JavaAccumulateBuilder
                                                        true);
                     (( MutableTypeConstraint) c).setType( Constraint.ConstraintType.BETA );
                     pattern.addConstraint( c );
-                    index++;
                 }
             } else {
                 Declaration declr = pattern.addDeclaration( fc.getBind() );
@@ -234,6 +234,11 @@ public class JavaAccumulateBuilder
                                                                                                     new BoundIdentifiers( declCls,
                                                                                                                           context.getKnowledgeBuilder().getGlobals() ) );
 
+        if ( analysis == null ) {
+            // not possible to get the analysis results - compilation error has been already logged
+            return null;
+        }
+
         final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
 
         // create the array of used declarations
@@ -243,13 +248,13 @@ public class JavaAccumulateBuilder
 
         // generate the code template
         return generateFunctionCallCodeTemplate( context,
-                                                                  accumDescr,
-                                                                  sourceDeclArr,
-                                                                  fc,
-                                                                  function,
-                                                                  usedIdentifiers,
-                                                                  previousDeclarations,
-                                                                  readLocalsFromTuple );
+                                                 accumDescr,
+                                                 sourceDeclArr,
+                                                 fc,
+                                                 function,
+                                                 usedIdentifiers,
+                                                 previousDeclarations,
+                                                 readLocalsFromTuple );
     }
 
     private Declaration[] collectRequiredDeclarations( Map<String, Declaration> declsInScope,
@@ -319,9 +324,14 @@ public class JavaAccumulateBuilder
                                                                                      available );
 
         final AnalysisResult resultCodeAnalysis = context.getDialect().analyzeExpression( context,
-                                                                                                  accumDescr,
-                                                                                                  accumDescr.getResultCode(),
-                                                                                                  available );
+                                                                                          accumDescr,
+                                                                                          accumDescr.getResultCode(),
+                                                                                          available );
+
+        if ( initCodeAnalysis == null || actionCodeAnalysis == null || resultCodeAnalysis == null ) {
+            // not possible to get the analysis results - compilation error has been already logged
+            return null;
+        }
 
         final Set<String> requiredDeclarations = new HashSet<String>( initCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
         requiredDeclarations.addAll( actionCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
@@ -333,9 +343,9 @@ public class JavaAccumulateBuilder
 
         if ( accumDescr.getReverseCode() != null ) {
             final AnalysisResult reverseCodeAnalysis = context.getDialect().analyzeBlock( context,
-                                                                                                  accumDescr,
-                                                                                                  accumDescr.getActionCode(),
-                                                                                                  available );
+                                                                                          accumDescr,
+                                                                                          accumDescr.getActionCode(),
+                                                                                          available );
             requiredDeclarations.addAll( reverseCodeAnalysis.getBoundIdentifiers().getDeclrClasses().keySet() );
             requiredGlobals.putAll( reverseCodeAnalysis.getBoundIdentifiers().getGlobals() );
         }
@@ -345,7 +355,7 @@ public class JavaAccumulateBuilder
         for ( Iterator<String> it = requiredDeclarations.iterator(); it.hasNext(); i++ ) {
             declarations[i] = decls.get( it.next() );
         }
-        final Declaration[] sourceDeclArr = source.getOuterDeclarations().values().toArray( new Declaration[0] );
+        final Declaration[] sourceDeclArr = source.getOuterDeclarations().values().toArray( new Declaration[source.getOuterDeclarations().size()] );
         Arrays.sort( sourceDeclArr, RuleTerminalNode.SortDeclarations.instance );
 
         final Map<String, Object> map = createVariableContext( className,
