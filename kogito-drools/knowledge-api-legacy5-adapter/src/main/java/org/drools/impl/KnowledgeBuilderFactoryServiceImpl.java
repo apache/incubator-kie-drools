@@ -24,6 +24,7 @@ import org.drools.builder.KnowledgeBuilderConfiguration;
 import org.drools.builder.KnowledgeBuilderFactoryService;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.impl.adapters.KnowledgeBaseAdapter;
 import org.drools.impl.adapters.KnowledgeBuilderConfigurationAdapter;
 
 import java.util.Properties;
@@ -51,7 +52,9 @@ public class KnowledgeBuilderFactoryServiceImpl implements KnowledgeBuilderFacto
     }
 
     public KnowledgeBuilder newKnowledgeBuilder(KnowledgeBase kbase) {
-        if ( kbase != null ) {
+        if (kbase instanceof KnowledgeBaseAdapter ) {
+            return new KnowledgeBuilderImpl( (InternalKnowledgeBase) ( (KnowledgeBaseAdapter) kbase ).getDelegate() );
+        } else if ( kbase != null ) {
             return new KnowledgeBuilderImpl( (InternalKnowledgeBase) kbase );
         } else {
             return new KnowledgeBuilderImpl( );
