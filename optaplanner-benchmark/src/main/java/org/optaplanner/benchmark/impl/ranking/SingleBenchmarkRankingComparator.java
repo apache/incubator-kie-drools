@@ -21,13 +21,18 @@ import java.util.Comparator;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.core.api.score.Score;
 
 public class SingleBenchmarkRankingComparator implements Comparator<SingleBenchmarkResult>, Serializable {
 
+    private final Comparator<Score> resilientScoreComparator = new ResilientScoreComparator();
+
+    @Override
     public int compare(SingleBenchmarkResult a, SingleBenchmarkResult b) {
         return new CompareToBuilder()
-                .append(a.isFailure(), b.isFailure())
-                .append(a.getScore(), b.getScore())
+                .append(b.isFailure(), a.isFailure()) // Reverse, less is better (redundant: failed benchmarks don't get ranked at all)
+                .append(b.getUninitializedVariableCount(), a.getUninitializedVariableCount()) // Reverse, less is better
+                .append(a.getScore(), b.getScore(), resilientScoreComparator)
                 .toComparison();
     }
 

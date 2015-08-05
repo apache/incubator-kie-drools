@@ -23,6 +23,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.slf4j.Logger;
@@ -198,7 +199,7 @@ public class DefaultSolverScope {
     }
 
     public String getBestScoreWithUninitializedPrefix() {
-        return isBestSolutionInitialized() ? bestScore.toString() : "uninitialized/" + bestScore;
+        return ScoreUtils.getScoreWithUninitializedPrefix(bestUninitializedVariableCount, bestScore);
     }
 
 }

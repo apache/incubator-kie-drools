@@ -58,6 +58,7 @@ public class SolverBenchmarkResult {
 
     private Integer failureCount = null;
     private Integer uninitializedSolutionCount = null;
+    private Integer uninitializedVariableCountSum = null;
     private Integer infeasibleScoreCount = null;
     private Score totalScore = null;
     private Score averageScore = null;
@@ -119,6 +120,10 @@ public class SolverBenchmarkResult {
 
     public Integer getUninitializedSolutionCount() {
         return uninitializedSolutionCount;
+    }
+
+    public Integer getUninitializedVariableCountSum() {
+        return uninitializedVariableCountSum;
     }
 
     public Integer getInfeasibleScoreCount() {
@@ -257,6 +262,14 @@ public class SolverBenchmarkResult {
         return StringEscapeUtils.ESCAPE_HTML4.translate(xml);
     }
 
+    public String getTotalScoreWithUninitializedPrefix() {
+        return ScoreUtils.getScoreWithUninitializedPrefix(uninitializedVariableCountSum, totalScore);
+    }
+
+    public String getAverageScoreWithUninitializedPrefix() {
+        return ScoreUtils.getScoreWithUninitializedPrefix(uninitializedVariableCountSum / getSingleBenchmarkResultList().size(), averageScore);
+    }
+
     // ************************************************************************
     // Accumulate methods
     // ************************************************************************
@@ -281,6 +294,7 @@ public class SolverBenchmarkResult {
         long totalAverageCalculateCountPerSecond = 0L;
         long totalTimeMillisSpent = 0L;
         uninitializedSolutionCount = 0;
+        uninitializedVariableCountSum = 0;
         infeasibleScoreCount = 0;
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             if (singleBenchmarkResult.isFailure()) {
@@ -288,6 +302,7 @@ public class SolverBenchmarkResult {
             } else {
                 if (!singleBenchmarkResult.isInitialized()) {
                     uninitializedSolutionCount++;
+                    uninitializedVariableCountSum += singleBenchmarkResult.getUninitializedVariableCount();
                 } else if (!singleBenchmarkResult.isScoreFeasible()) {
                     infeasibleScoreCount++;
                 }

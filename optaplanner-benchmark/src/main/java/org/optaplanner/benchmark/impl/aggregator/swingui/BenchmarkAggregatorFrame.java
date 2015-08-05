@@ -484,8 +484,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 + "Total score: %s%n"
                 + "Average time spent: %s%n"
                 + "Total winning score difference: %s",
-                solverBenchmarkResult.getAverageScore(),
-                solverBenchmarkResult.getTotalScore(),
+                solverBenchmarkResult.getAverageScoreWithUninitializedPrefix(),
+                solverBenchmarkResult.getTotalScoreWithUninitializedPrefix(),
                 solverBenchmarkResult.getAverageTimeMillisSpent() == null
                         ? "" : millisecondsSpentNumberFormat.format(solverBenchmarkResult.getAverageTimeMillisSpent()),
                 solverBenchmarkResult.getTotalWinningScoreDifference());
