@@ -44,19 +44,29 @@ import javax.naming.NamingException;
 public class SendHtml {
 	
 	private static final String MAIL_JNDI_KEY = System.getProperty("org.kie.mail.session", "mail/jbpmMailSession");
+	
+	private static boolean debug = Boolean.parseBoolean(System.getProperty("org.kie.mail.debug", "false"));
     
     public static void sendHtml(Email email) {
         sendHtml(email, email.getConnection());
     } 
     
+    public static void sendHtml(Email email, boolean debug) {
+        sendHtml(email, email.getConnection(), debug);
+    }
+    
     public static void sendHtml(Email email, Connection connection) {
+        sendHtml(email, connection, debug);
+    }
+    
+    public static void sendHtml(Email email, Connection connection, boolean debug) {
         int port = Integer.parseInt(connection.getPort());
         String mailhost = connection.getHost();
         String username = connection.getUserName();
         String password = connection.getPassword();
        
         Session session = getSession(connection);
-        boolean debug = false;
+        
         session.setDebug( debug );
         
         try {
