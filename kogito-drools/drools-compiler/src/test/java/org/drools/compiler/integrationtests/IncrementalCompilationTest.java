@@ -19,10 +19,12 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
 import org.drools.compiler.Message;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.core.ClockType;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -34,6 +36,7 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 import org.kie.api.conf.EventProcessingOption;
@@ -45,6 +48,7 @@ import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
@@ -57,6 +61,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 
@@ -1686,5 +1692,100 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
         createAndDeployJar( ks, releaseId2, drl2 );
         kc.updateToVersion( releaseId2 );
+    }
+
+    public static class MyEvent {
+        private final int id;
+
+        public MyEvent( int id ) {
+            this.id = id;
+        }
+
+        @Override
+        public String toString() {
+            return "MyEvent: " + id;
+        }
+    }
+
+    @Test
+    public void testChangeWindowTime() {
+        // DROOLS-853
+        String drl1 =
+                "import " + MyEvent.class.getCanonicalName() + "\n" +
+                "global java.util.concurrent.atomic.AtomicInteger result\n" +
+                "declare MyEvent @expires(5m) @role( event ) end\n" +
+                "rule A when\n" +
+                "    accumulate( $e : MyEvent() over window:time(10s), $result : count($e) )\n" +
+                "then" +
+                "    System.out.println(\"Result-1: \" + $result);\n" +
+                "    result.set( $result.intValue() );\n" +
+                "end";
+
+        String drl2 =
+                "import " + MyEvent.class.getCanonicalName() + "\n" +
+                "global java.util.concurrent.atomic.AtomicInteger result\n" +
+                "declare MyEvent @expires(5m) @role( event ) end\n" +
+                "rule A when\n" +
+                "    accumulate( $e : MyEvent() over window:time(5s), $result : count($e) )\n" +
+                "then" +
+                "    System.out.println(\"Result-2: \" + $result);\n" +
+                "    result.set( $result.intValue() );\n" +
+                "end";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "KBase1" ).setDefault( true )
+                                          .setEventProcessingMode(EventProcessingOption.STREAM);
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1").setDefault(true)
+                                                 .setType(KieSessionModel.KieSessionType.STATEFUL)
+                                                 .setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ));
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId1, null, drl1 ) );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        AtomicInteger result = new AtomicInteger( 0 );
+        ksession.setGlobal( "result", result );
+
+        ksession.insert( new MyEvent( 1 ) );
+        clock.advanceTime(4, TimeUnit.SECONDS);
+        ksession.insert( new MyEvent( 2 ) );
+        clock.advanceTime(4, TimeUnit.SECONDS);
+        ksession.insert( new MyEvent( 3 ) );
+        ksession.fireAllRules();
+        assertEquals( 3, result.get() );
+
+        // expires 1
+        clock.advanceTime(3, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals( 2, result.get() );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId2, null, drl2 ) );
+        kc.updateToVersion( releaseId2 );
+
+        // shorter window: 2 is out
+        ksession.fireAllRules();
+        assertEquals( 1, result.get() );
+
+        ksession.insert( new MyEvent( 4 ) );
+        ksession.insert( new MyEvent( 5 ) );
+        ksession.fireAllRules();
+        assertEquals( 3, result.get() );
+
+        // expires 3
+        clock.advanceTime(3, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals( 2, result.get() );
+
+        // expires 4 & 5
+        clock.advanceTime(3, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals( 0, result.get() );
     }
 }
