@@ -137,8 +137,6 @@ public class WindowNode extends ObjectSource
 
     /**
      * Returns the list of behaviors for this window node
-     *
-     * @return
      */
     public Behavior[] getBehaviors() {
         return behavior.getBehaviors();
@@ -262,22 +260,17 @@ public class WindowNode extends ObjectSource
                                        ModifyPreviousTuples modifyPreviousTuples,
                                        PropagationContext context,
                                        InternalWorkingMemory workingMemory) {
-        final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
         sink.byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, workingMemory);
     }
 
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory wm) {
-        final WindowMemory memory = (WindowMemory) wm.getNodeMemory(this);
-
         final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) wm.getNodeMemory( getObjectTypeNode());
         Iterator<InternalFactHandle> it = omem.iterator();
 
         while (it.hasNext()) {
-            sink.assertObject(it.next(),
-                              context,
-                              wm);
+            assertObject( it.next(), context, wm );
         }
     }
 
