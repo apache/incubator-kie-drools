@@ -258,7 +258,7 @@ public class ProcessInstanceLogCleanTest extends JbpmTestCase {
                 .startDateRangeStart(testStartDate)
                 .build()
                 .getResultList();
-        Assertions.assertThat(resultList).hasSize(1);
+        Assertions.assertThat(resultList2).hasSize(1);
         Assertions.assertThat(resultList2.get(0)).isEqualTo(resultList.get(0));
     }
 
