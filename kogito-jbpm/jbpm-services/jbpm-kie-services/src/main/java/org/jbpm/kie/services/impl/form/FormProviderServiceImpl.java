@@ -145,7 +145,7 @@ public class FormProviderServiceImpl implements FormProviderService {
 
             // I need to replace the value that comes from the
             //process mappings with the value that can be stored in the output Content
-            for (String key : taskOutputMappings.values()) {
+            for (String key : taskOutputMappings.keySet()) {
                 Object value = ((Map<String, Object>) output).get(key);
                 if (value == null) {
                     value = "";
