@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-examples-api</artifactId>
-    <version>6.3.0-SNAPSHOT</version>
+    <version>6.3.0.CR1</version>
   </parent>
 
   <artifactId>kiemodulemodel-example</artifactId>
