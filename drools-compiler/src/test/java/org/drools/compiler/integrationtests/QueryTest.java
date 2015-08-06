@@ -1029,4 +1029,39 @@ public class QueryTest extends CommonTestMethodBase {
 
         assertEquals( Arrays.asList( "aa", "bb" ), list );
     }
+
+    @Test
+    public void testPassGlobalToNestedQuery() {
+        // DROOLS-851
+        String drl = "global java.util.List list;\n" +
+                     "global Integer number;\n" +
+                     "\n" +
+                     "query findString( String $out )\n" +
+                     "    findStringWithLength( number, $out; )\n" +
+                     "end\n" +
+                     "query findStringWithLength( int $in, String $out )\n" +
+                     "    $out := String( $in := length )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     "    findString( $s; )\n" +
+                     "then\n" +
+                     "    list.add( $s );\n" +
+                     "end\n";
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession ks = helper.build(  ).newKieSession();
+
+        ArrayList list = new ArrayList();
+        ks.setGlobal( "list", list );
+        ks.setGlobal( "number", 3 );
+
+        ks.insert( "Hi" );
+        ks.insert( "Bye" );
+        ks.insert( "Hello" );
+        ks.fireAllRules();
+
+        assertEquals( Arrays.asList( "Bye" ), list );
+    }
 }
