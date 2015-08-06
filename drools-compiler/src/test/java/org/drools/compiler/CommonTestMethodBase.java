@@ -29,6 +29,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.Marshaller;
@@ -342,11 +343,22 @@ public class CommonTestMethodBase extends Assert {
         return jar;
     }
 
+	public static byte[] createKJar(KieServices ks,
+									ReleaseId releaseId,
+									String pom,
+									String... drls) {
+		return createKJar( ks, null, releaseId, pom, drls );
+	}
+
     public static byte[] createKJar(KieServices ks,
-                                    ReleaseId releaseId,
+									KieModuleModel kproj,
+									ReleaseId releaseId,
                                     String pom,
                                     String... drls) {
         KieFileSystem kfs = ks.newKieFileSystem();
+		if (kproj != null) {
+			kfs.writeKModuleXML(kproj.toXML());
+		}
         if( pom != null ) {
             kfs.write("pom.xml", pom);
         } else {
