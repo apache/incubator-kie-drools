@@ -22,7 +22,6 @@ import org.drools.core.base.InternalViewChangedEventListener;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
-import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
@@ -30,7 +29,6 @@ import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.common.UpdateContext;
@@ -43,8 +41,8 @@ import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.AbductiveQuery;
 import org.drools.core.rule.Declaration;
-import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.QueryElement;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.kie.api.runtime.rule.Variable;
@@ -52,7 +50,6 @@ import org.kie.api.runtime.rule.Variable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -160,7 +157,6 @@ public class QueryElementNode extends LeftTupleSource
     public InternalFactHandle createFactHandle(final PropagationContext context,
                                                final InternalWorkingMemory workingMemory,
                                                final LeftTuple leftTuple ) {
-        InternalFactHandle handle = null;
         ProtobufMessages.FactHandle _handle = null;
         if( context.getReaderContext() != null ) {
             Map<TupleKey, QueryElementContext> map = (Map<TupleKey, QueryElementContext>) context.getReaderContext().nodeMemories.get( getId() );
@@ -168,21 +164,17 @@ public class QueryElementNode extends LeftTupleSource
                 _handle = map.get( PersisterHelper.createTupleKey( leftTuple ) ).handle;
             }
         }
-        if( _handle != null ) {
-            // create a handle with the given id
-            handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
-                                                                         null,
-                                                                         _handle.getRecency(),
-                                                                         null,
-                                                                         workingMemory,
-                                                                         workingMemory ); 
-        } else {
-            handle = workingMemory.getFactHandleFactory().newFactHandle( null,
-                                                                         null,
-                                                                         workingMemory,
-                                                                         workingMemory ); 
-        }
-        return handle;
+        return _handle != null ?
+                workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
+                                                                    null,
+                                                                    _handle.getRecency(),
+                                                                    null,
+                                                                    workingMemory,
+                                                                    workingMemory ) :
+                workingMemory.getFactHandleFactory().newFactHandle( null,
+                                                                    null,
+                                                                    workingMemory,
+                                                                    workingMemory );
     }
     
     public DroolsQuery createDroolsQuery(LeftTuple leftTuple,
@@ -204,28 +196,27 @@ public class QueryElementNode extends LeftTupleSource
 
         int[] declIndexes = this.queryElement.getDeclIndexes();
 
-        for ( int i = 0, length = declIndexes.length; i < length; i++ ) {
-            Declaration declr = (Declaration) argsTemplate[declIndexes[i]];
+        for ( int declIndexe : declIndexes ) {
+            Declaration declr = (Declaration) argsTemplate[declIndexe];
 
             Object tupleObject = leftTuple.get( declr ).getObject();
 
             Object o;
 
-            if ( tupleObject instanceof DroolsQuery ) {
+            if ( tupleObject instanceof DroolsQuery && declr.getExtractor() instanceof ArrayElementReader &&
+                 ( (DroolsQuery) tupleObject ).getVariables()[declr.getExtractor().getIndex()] != null ) {
                 // If the query passed in a Variable, we need to use it
-                ArrayElementReader arrayReader = (ArrayElementReader) declr.getExtractor();
-                if ( ((DroolsQuery) tupleObject).getVariables()[arrayReader.getIndex()] != null ) {
-                    o = Variable.v;
-                } else {
-                    o = declr.getValue( workingMemory,
-                                        tupleObject );
-                }
+                o = Variable.v;
             } else {
                 o = declr.getValue( workingMemory,
                                     tupleObject );
             }
 
-            args[declIndexes[i]] = o;
+            if ( o == null ) {
+                o = declr.getValue( workingMemory, tupleObject );
+            }
+
+            args[declIndexe] = o;
         }
 
         int[] varIndexes = this.queryElement.getVariableIndexes();
@@ -419,8 +410,6 @@ public class QueryElementNode extends LeftTupleSource
                             }
                         }
                     }
-                } else {
-                    // query was successful, but nothing could be abduced.
                 }
                 objects[ objects.length - 1 ] = abduced;
             }
@@ -438,15 +427,11 @@ public class QueryElementNode extends LeftTupleSource
         }
 
         private int determineResultSize( QueryImpl query, DroolsQuery dquery ) {
-            if ( ! query.isAbductive() ) {
-                return dquery.getElements().length;
-            } else {
-                if ( (( AbductiveQuery ) query ).isReturnBound() ) {
-                    return dquery.getElements().length + 1;
-                } else {
-                    return dquery.getElements().length;
-                }
+            int size = dquery.getElements().length;
+            if (query.isAbductive() && (( AbductiveQuery ) query ).isReturnBound()) {
+                size++;
             }
+            return size;
         }
 
         protected RightTuple createResultRightTuple( QueryElementFactHandle resultHandle, LeftTuple resultLeftTuple, boolean open ) {
@@ -464,7 +449,6 @@ public class QueryElementNode extends LeftTupleSource
         protected QueryElementFactHandle createQueryResultHandle(PropagationContext context,
                                                                InternalWorkingMemory workingMemory,
                                                                Object[] objects) {
-            QueryElementFactHandle handle;
             ProtobufMessages.FactHandle _handle = null;
             if( context.getReaderContext() != null ) {
                 Map<TupleKey, QueryElementContext> map = (Map<TupleKey, QueryElementContext>) context.getReaderContext().nodeMemories.get( node.getId() );
@@ -475,17 +459,14 @@ public class QueryElementNode extends LeftTupleSource
                     }
                 }
             }
-            if( _handle != null ) {
-                // create a handle with the given id
-                handle = new QueryElementFactHandle( objects,
-                                                     _handle.getId(),
-                                                     _handle.getRecency() );
-            } else {
-                handle = new QueryElementFactHandle( objects,
-                                                     workingMemory.getFactHandleFactory().getAtomicId().incrementAndGet(),
-                                                     workingMemory.getFactHandleFactory().getAtomicRecency().incrementAndGet() );
-            }
-            return handle;
+
+            return _handle != null ?
+                   new QueryElementFactHandle( objects,
+                                               _handle.getId(),
+                                               _handle.getRecency() ) :
+                   new QueryElementFactHandle( objects,
+                                               workingMemory.getFactHandleFactory().getAtomicId().incrementAndGet(),
+                                               workingMemory.getFactHandleFactory().getAtomicRecency().incrementAndGet() );
         }
 
         public void rowRemoved(final RuleImpl rule,
