@@ -1788,4 +1788,48 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 0, result.get() );
     }
+
+    @Test
+    public void testNonHashablePropertyWithIncrementalCompilation() {
+        // DROOLS-870
+        String drl1 =
+                "rule \"HelloGreetingService\"\n" +
+                "    when\n" +
+                "        $name : String(this == \"first\")\n" +
+                "    then\n" +
+                "        System.out.println(String.format(\"Hello %s!\", $name));\n" +
+                "end\n" +
+                "rule \"CiaoGreetingService\"\n" +
+                "    when\n" +
+                "        $name : String(this == \"second\")\n" +
+                "    then\n" +
+                "        System.out.println(String.format(\"Ciao %s!\", $name));\n" +
+                "end\n";
+
+        String drl2 =
+                "rule \"HelloGreetingService\"\n" +
+                "    when\n" +
+                "        $name : String(this == \"first\")\n" +
+                "    then\n" +
+                "        System.out.println(String.format(\"Modified Hello %s!\", $name));\n" +
+                "end\n" +
+                "rule \"CiaoGreetingService\"\n" +
+                "    when\n" +
+                "        $name : String(this == \"second\")\n" +
+                "    then\n" +
+                "        System.out.println(String.format(\"Modified Ciao %s!\", $name));\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        createAndDeployJar( ks, releaseId2, drl2 );
+        kc.updateToVersion( releaseId2 );
+    }
 }

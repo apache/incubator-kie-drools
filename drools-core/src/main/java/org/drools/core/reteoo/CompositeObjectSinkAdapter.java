@@ -17,22 +17,21 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.base.ValueType;
-import org.drools.core.base.extractors.MVELObjectClassFieldReader;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListNode;
-import org.drools.core.util.ObjectHashMap;
-import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.ReadAccessor;
+import org.drools.core.util.Iterator;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListNode;
+import org.drools.core.util.ObjectHashMap;
+import org.drools.core.util.ObjectHashMap.ObjectEntry;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -113,10 +112,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             if ( fieldConstraint instanceof IndexableConstraint) {
                 final IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
 
-                if ( indexableConstraint.isIndexable(NodeTypeEnums.AlphaNode) && indexableConstraint.getField() != null &&
-                        indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
-                        // our current implementation does not support hashing of deeply nested properties
-                        indexableConstraint.getFieldExtractor().getIndex() >= 0) {
+                if ( isHashable( indexableConstraint ) ) {
                     final InternalReadAccessor readAccessor = indexableConstraint.getFieldExtractor();
                     final int index = readAccessor.getIndex();
                     final FieldIndex fieldIndex = registerFieldIndex( index,
@@ -152,8 +148,14 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
         this.otherSinks.add( (ObjectSinkNode) sink );
     }
-    
-    
+
+    private boolean isHashable( IndexableConstraint indexableConstraint ) {
+        return indexableConstraint.isIndexable( NodeTypeEnums.AlphaNode) && indexableConstraint.getField() != null &&
+                indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
+                // our current implementation does not support hashing of deeply nested properties
+                indexableConstraint.getFieldExtractor().getIndex() >= 0;
+    }
+
 
     public void removeObjectSink(final ObjectSink sink) {
         this.sinks = null; // dirty it, so it'll rebuild on next get
@@ -165,10 +167,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 final IndexableConstraint indexableConstraint = (IndexableConstraint) fieldConstraint;
                 final FieldValue value = indexableConstraint.getField();
 
-                if ( indexableConstraint.isIndexable(NodeTypeEnums.AlphaNode) && indexableConstraint.getField() != null &&
-                        indexableConstraint.getFieldExtractor().getValueType() != ValueType.OBJECT_TYPE &&
-                        // our current implementation does not support hashing of deeply nested properties
-                        !( indexableConstraint.getFieldExtractor() instanceof MVELObjectClassFieldReader )) {
+                if ( isHashable( indexableConstraint ) ) {
                     final InternalReadAccessor fieldAccessor = indexableConstraint.getFieldExtractor();
                     final int index = fieldAccessor.getIndex();
                     final FieldIndex fieldIndex = unregisterFieldIndex( index );
