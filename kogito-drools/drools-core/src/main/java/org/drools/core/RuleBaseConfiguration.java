@@ -45,6 +45,7 @@ import org.kie.internal.builder.conf.SessionCacheOption;
 import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.internal.conf.CompositeKeyDepthOption;
 import org.kie.internal.conf.ConsequenceExceptionHandlerOption;
+import org.kie.internal.conf.ConstraintJittingThresholdOption;
 import org.kie.internal.conf.IndexLeftBetaMemoryOption;
 import org.kie.internal.conf.IndexPrecedenceOption;
 import org.kie.internal.conf.IndexRightBetaMemoryOption;
@@ -68,6 +69,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+
+import static org.drools.core.util.MemoryUtil.hasPermGen;
 
 /**
  * RuleBaseConfiguration
@@ -94,7 +97,7 @@ import java.util.Properties;
  * drools.shareAlphaNodes  = &lt;true|false&gt;
  * drools.shareBetaNodes = &lt;true|false&gt;
  * drools.alphaNodeHashingThreshold = &lt;1...n&gt;
- * drools.compositeKeyDepth  =&lt;1..3&gt;
+ * drools.compositeKeyDepth = &lt;1..3&gt;
  * drools.indexLeftBetaMemory = &lt;true/false&gt;
  * drools.indexRightBetaMemory = &lt;true/false&gt;
  * drools.equalityBehavior = &lt;identity|equality&gt;
@@ -107,6 +110,8 @@ import java.util.Properties;
  * drools.classLoaderCacheEnabled = &lt;true|false&gt;
  * drools.phreakEnabled = &lt;true|false&gt;
  * drools.declarativeAgendaEnabled =  &lt;true|false&gt; 
+ * drools.permgenThreshold = &lt;1...n&gt;
+ * drools.jittingThreshold = &lt;1...n&gt;
  * </pre>
  */
 public class RuleBaseConfiguration
@@ -134,6 +139,7 @@ public class RuleBaseConfiguration
     private boolean         shareAlphaNodes;
     private boolean         shareBetaNodes;
     private int             permGenThreshold;
+    private int             jittingThreshold;
     private int             alphaNodeHashingThreshold;
     private int             compositeKeyDepth;
     private boolean         indexLeftBetaMemory;
@@ -191,6 +197,7 @@ public class RuleBaseConfiguration
         out.writeBoolean(shareAlphaNodes);
         out.writeBoolean(shareBetaNodes);
         out.writeInt(permGenThreshold);
+        out.writeInt(jittingThreshold);
         out.writeInt(alphaNodeHashingThreshold);
         out.writeInt(compositeKeyDepth);
         out.writeBoolean(indexLeftBetaMemory);
@@ -223,6 +230,7 @@ public class RuleBaseConfiguration
         shareAlphaNodes = in.readBoolean();
         shareBetaNodes = in.readBoolean();
         permGenThreshold = in.readInt();
+        jittingThreshold = in.readInt();
         alphaNodeHashingThreshold = in.readInt();
         compositeKeyDepth = in.readInt();
         indexLeftBetaMemory = in.readBoolean();
@@ -301,38 +309,40 @@ public class RuleBaseConfiguration
             setShareBetaNodes(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
         } else if ( name.equals( PermGenThresholdOption.PROPERTY_NAME ) ) {
             setPermGenThreshold(StringUtils.isEmpty(value) ? PermGenThresholdOption.DEFAULT_VALUE : Integer.parseInt(value));
+        } else if ( name.equals( ConstraintJittingThresholdOption.PROPERTY_NAME ) ) {
+            setJittingThreshold( StringUtils.isEmpty( value ) ? ConstraintJittingThresholdOption.DEFAULT_VALUE : Integer.parseInt( value ) );
         } else if ( name.equals( AlphaThresholdOption.PROPERTY_NAME ) ) {
-            setAlphaNodeHashingThreshold(StringUtils.isEmpty(value) ? 3 : Integer.parseInt(value));
+            setAlphaNodeHashingThreshold( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt(value));
         } else if ( name.equals( CompositeKeyDepthOption.PROPERTY_NAME ) ) {
-            setCompositeKeyDepth(StringUtils.isEmpty(value) ? 3 : Integer.parseInt(value));
+            setCompositeKeyDepth( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt(value));
         } else if ( name.equals( IndexLeftBetaMemoryOption.PROPERTY_NAME ) ) {
-            setIndexLeftBetaMemory(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
+            setIndexLeftBetaMemory( StringUtils.isEmpty( value ) ? true : Boolean.valueOf(value));
         } else if ( name.equals( IndexRightBetaMemoryOption.PROPERTY_NAME ) ) {
-            setIndexRightBetaMemory(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
+            setIndexRightBetaMemory( StringUtils.isEmpty( value ) ? true : Boolean.valueOf(value));
         } else if ( name.equals( IndexPrecedenceOption.PROPERTY_NAME ) ) {
-            setIndexPrecedenceOption(StringUtils.isEmpty(value) ? IndexPrecedenceOption.EQUALITY_PRIORITY : IndexPrecedenceOption.determineIndexPrecedence(value));
+            setIndexPrecedenceOption( StringUtils.isEmpty( value ) ? IndexPrecedenceOption.EQUALITY_PRIORITY : IndexPrecedenceOption.determineIndexPrecedence(value));
         } else if ( name.equals( EqualityBehaviorOption.PROPERTY_NAME ) ) {
-            setAssertBehaviour(AssertBehaviour.determineAssertBehaviour(StringUtils.isEmpty(value) ? "identity" : value));
+            setAssertBehaviour( AssertBehaviour.determineAssertBehaviour( StringUtils.isEmpty( value ) ? "identity" : value));
         } else if ( name.equals( ConsequenceExceptionHandlerOption.PROPERTY_NAME ) ) {
-            setConsequenceExceptionHandler(StringUtils.isEmpty(value) ? DefaultConsequenceExceptionHandler.class.getName() : value);
+            setConsequenceExceptionHandler( StringUtils.isEmpty( value ) ? DefaultConsequenceExceptionHandler.class.getName() : value);
         } else if ( name.equals( "drools.ruleBaseUpdateHandler" ) ) {
-            setRuleBaseUpdateHandler(StringUtils.isEmpty(value) ? "" : value);
+            setRuleBaseUpdateHandler( StringUtils.isEmpty( value ) ? "" : value);
         } else if ( name.equals( "drools.conflictResolver" ) ) {
-            setConflictResolver(determineConflictResolver(StringUtils.isEmpty(value) ? DepthConflictResolver.class.getName() : value));
+            setConflictResolver( determineConflictResolver( StringUtils.isEmpty( value ) ? DepthConflictResolver.class.getName() : value));
         } else if ( name.equals( "drools.advancedProcessRuleIntegration" ) ) {
-            setAdvancedProcessRuleIntegration(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
+            setAdvancedProcessRuleIntegration( StringUtils.isEmpty( value ) ? false : Boolean.valueOf(value));
         } else if ( name.equals( MultithreadEvaluationOption.PROPERTY_NAME ) ) {
-            setMultithreadEvaluation(StringUtils.isEmpty(value) ? false : Boolean.valueOf(value));
+            setMultithreadEvaluation( StringUtils.isEmpty( value ) ? false : Boolean.valueOf(value));
         } else if ( name.equals( MaxThreadsOption.PROPERTY_NAME ) ) {
-            setMaxThreads(StringUtils.isEmpty(value) ? 3 : Integer.parseInt(value));
+            setMaxThreads( StringUtils.isEmpty( value ) ? 3 : Integer.parseInt(value));
         } else if ( name.equals( EventProcessingOption.PROPERTY_NAME ) ) {
-            setEventProcessingMode(EventProcessingOption.determineEventProcessingMode(StringUtils.isEmpty(value) ? "cloud" : value));
+            setEventProcessingMode( EventProcessingOption.determineEventProcessingMode( StringUtils.isEmpty( value ) ? "cloud" : value));
         } else if ( name.equals( MBeansOption.PROPERTY_NAME ) ) {
-            setMBeansEnabled(MBeansOption.isEnabled(value));
+            setMBeansEnabled( MBeansOption.isEnabled(value));
         } else if ( name.equals( ClassLoaderCacheOption.PROPERTY_NAME ) ) {
-            setClassLoaderCacheEnabled(StringUtils.isEmpty(value) ? true : Boolean.valueOf(value));
+            setClassLoaderCacheEnabled( StringUtils.isEmpty( value ) ? true : Boolean.valueOf(value));
         } else if ( name.equals( RuleEngineOption.PROPERTY_NAME ) ) {
-            setPhreakEnabled(StringUtils.isEmpty(value) ? DEFAULT_PHREAK : value.equalsIgnoreCase(RuleEngineOption.PHREAK.toString()));
+            setPhreakEnabled( StringUtils.isEmpty( value ) ? DEFAULT_PHREAK : value.equalsIgnoreCase( RuleEngineOption.PHREAK.toString()));
         } else if ( name.equals( SessionCacheOption.PROPERTY_NAME ) ) {
             setSessionCacheOption(SessionCacheOption.determineOption(StringUtils.isEmpty(value) ? "none" : value));
         }
@@ -356,6 +366,8 @@ public class RuleBaseConfiguration
             return Boolean.toString( isShareBetaNodes() );
         } else if ( name.equals( PermGenThresholdOption.PROPERTY_NAME ) ) {
             return Integer.toString( getPermGenThreshold() );
+        } else if ( name.equals( ConstraintJittingThresholdOption.PROPERTY_NAME ) ) {
+            return Integer.toString( getJittingThreshold() );
         } else if ( name.equals( AlphaThresholdOption.PROPERTY_NAME ) ) {
             return Integer.toString( getAlphaNodeHashingThreshold() );
         } else if ( name.equals( CompositeKeyDepthOption.PROPERTY_NAME ) ) {
@@ -363,7 +375,7 @@ public class RuleBaseConfiguration
         } else if ( name.equals( IndexLeftBetaMemoryOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isIndexLeftBetaMemory() );
         } else if ( name.equals( IndexRightBetaMemoryOption.PROPERTY_NAME ) ) {
-            return Boolean.toString(isIndexRightBetaMemory());
+            return Boolean.toString( isIndexRightBetaMemory());
         } else if ( name.equals( IndexPrecedenceOption.PROPERTY_NAME ) ) {
             return getIndexPrecedenceOption().getValue();
         } else if ( name.equals( EqualityBehaviorOption.PROPERTY_NAME ) ) {
@@ -381,7 +393,7 @@ public class RuleBaseConfiguration
         } else if ( name.equals( MultithreadEvaluationOption.PROPERTY_NAME ) ) {
             return Boolean.toString( isMultithreadEvaluation() );
         } else if ( name.equals( MaxThreadsOption.PROPERTY_NAME ) ) {
-            return Integer.toString(getMaxThreads());
+            return Integer.toString( getMaxThreads());
         } else if ( name.equals( EventProcessingOption.PROPERTY_NAME ) ) {
             return getEventProcessingMode().getMode();
         } else if ( name.equals( MBeansOption.PROPERTY_NAME ) ) {
@@ -435,6 +447,8 @@ public class RuleBaseConfiguration
         setShareBetaNodes(Boolean.valueOf(this.chainedProperties.getProperty(ShareBetaNodesOption.PROPERTY_NAME, "true")).booleanValue());
 
         setPermGenThreshold(Integer.parseInt(this.chainedProperties.getProperty(PermGenThresholdOption.PROPERTY_NAME, "" + PermGenThresholdOption.DEFAULT_VALUE)));
+
+        setJittingThreshold( Integer.parseInt( this.chainedProperties.getProperty( ConstraintJittingThresholdOption.PROPERTY_NAME, "" + ConstraintJittingThresholdOption.DEFAULT_VALUE)));
 
         setAlphaNodeHashingThreshold(Integer.parseInt(this.chainedProperties.getProperty(AlphaThresholdOption.PROPERTY_NAME, "3")));
 
@@ -567,7 +581,24 @@ public class RuleBaseConfiguration
         if (permGenThreshold < 0 || permGenThreshold > 100) {
             throw new UnsupportedOperationException( "The PermGen threshold should be a number between 0 and 100" );
         }
+        if (!hasPermGen()) {
+            if (permGenThreshold != PermGenThresholdOption.DEFAULT_VALUE) {
+                logger.warn( "JVM version " + System.getProperty("java.version") + " has no PermGen space. " +
+                             "Attempt to set the permgenThreshold to " + permGenThreshold + " will be ignored");
+            }
+            this.permGenThreshold = 100;
+            return;
+        }
         this.permGenThreshold = permGenThreshold;
+    }
+
+    public int getJittingThreshold() {
+        return jittingThreshold;
+    }
+
+    public void setJittingThreshold( int jittingThreshold ) {
+        checkCanChange(); // throws an exception if a change isn't possible;
+        this.jittingThreshold = jittingThreshold;
     }
 
     public int getAlphaNodeHashingThreshold() {
@@ -1189,6 +1220,8 @@ public class RuleBaseConfiguration
             return (T) ((this.sequentialAgenda == SequentialAgenda.SEQUENTIAL) ? SequentialAgendaOption.SEQUENTIAL : SequentialAgendaOption.DYNAMIC);
         } else if (PermGenThresholdOption.class.equals(option)) {
             return (T) PermGenThresholdOption.get(permGenThreshold);
+        } else if (ConstraintJittingThresholdOption.class.equals(option)) {
+            return (T) ConstraintJittingThresholdOption.get(jittingThreshold);
         } else if (AlphaThresholdOption.class.equals(option)) {
             return (T) AlphaThresholdOption.get(alphaNodeHashingThreshold);
         } else if (CompositeKeyDepthOption.class.equals(option)) {
@@ -1242,26 +1275,28 @@ public class RuleBaseConfiguration
             setSequentialAgenda((option == SequentialAgendaOption.SEQUENTIAL) ? SequentialAgenda.SEQUENTIAL : SequentialAgenda.DYNAMIC);
         } else if (option instanceof PermGenThresholdOption) {
             setPermGenThreshold(((PermGenThresholdOption) option).getThreshold());
+        } else if (option instanceof ConstraintJittingThresholdOption) {
+            setJittingThreshold( ( (ConstraintJittingThresholdOption) option ).getThreshold());
         } else if (option instanceof AlphaThresholdOption) {
-            setAlphaNodeHashingThreshold(((AlphaThresholdOption) option).getThreshold());
+            setAlphaNodeHashingThreshold( ( (AlphaThresholdOption) option ).getThreshold());
         } else if (option instanceof CompositeKeyDepthOption) {
-            setCompositeKeyDepth(((CompositeKeyDepthOption) option).getDepth());
+            setCompositeKeyDepth( ( (CompositeKeyDepthOption) option ).getDepth());
         } else if (option instanceof ConsequenceExceptionHandlerOption) {
-            setConsequenceExceptionHandler(((ConsequenceExceptionHandlerOption) option).getHandler().getName());
+            setConsequenceExceptionHandler( ( (ConsequenceExceptionHandlerOption) option ).getHandler().getName());
         } else if (option instanceof EventProcessingOption) {
-            setEventProcessingMode((EventProcessingOption) option);
+            setEventProcessingMode( (EventProcessingOption) option);
         } else if (option instanceof MaxThreadsOption) {
-            setMaxThreads(((MaxThreadsOption) option).getMaxThreads());
+            setMaxThreads( ( (MaxThreadsOption) option ).getMaxThreads());
         } else if (option instanceof MultithreadEvaluationOption) {
-            setMultithreadEvaluation(((MultithreadEvaluationOption) option).isMultithreadEvaluation());
+            setMultithreadEvaluation( ( (MultithreadEvaluationOption) option ).isMultithreadEvaluation());
         } else if (option instanceof MBeansOption) {
-            setMBeansEnabled(((MBeansOption) option).isEnabled());
+            setMBeansEnabled( ( (MBeansOption) option ).isEnabled());
         } else if (option instanceof ClassLoaderCacheOption) {
-            setClassLoaderCacheEnabled(((ClassLoaderCacheOption) option).isClassLoaderCacheEnabled());
+            setClassLoaderCacheEnabled( ( (ClassLoaderCacheOption) option ).isClassLoaderCacheEnabled());
         } else if (option instanceof RuleEngineOption) {
-            setPhreakEnabled(((RuleEngineOption) option).isLRUnlinkingEnabled());
+            setPhreakEnabled( ( (RuleEngineOption) option ).isLRUnlinkingEnabled());
         } else if (option instanceof SessionCacheOption) {
-            setSessionCacheOption((SessionCacheOption) option);
+            setSessionCacheOption( (SessionCacheOption) option);
         } else if (option instanceof DeclarativeAgendaOption) {
             setDeclarativeAgendaEnabled(((DeclarativeAgendaOption) option).isDeclarativeAgendaEnabled());
         }

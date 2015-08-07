@@ -78,7 +78,6 @@ import static org.drools.core.util.StringUtils.skipBlanks;
 
 public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint, AcceptsReadAccessor {
     protected static final boolean TEST_JITTING = false;
-    protected static final int JIT_THRESOLD = 20; // Integer.MAX_VALUE;
 
     private static final Logger logger = LoggerFactory.getLogger(MvelConstraint.class);
 
@@ -234,14 +233,15 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     protected boolean evaluate(InternalFactHandle handle, InternalWorkingMemory workingMemory, LeftTuple leftTuple) {
         if (!jitted) {
+            int jittingThreshold = TEST_JITTING ? 0 : workingMemory.getKnowledgeBase().getConfiguration().getJittingThreshold();
             if (conditionEvaluator == null) {
                 createMvelConditionEvaluator(workingMemory);
-                if (TEST_JITTING && !isDynamic) { // Only for test purposes
-                    boolean mvelValue = forceJitEvaluator(handle, workingMemory, leftTuple);
+                if (jittingThreshold == 0 && !isDynamic) { // Only for test purposes
+                    forceJitEvaluator(handle, workingMemory, leftTuple);
                 }
             }
 
-            if (!TEST_JITTING && !isDynamic && invocationCounter.getAndIncrement() == JIT_THRESOLD) {
+            if (!TEST_JITTING && !isDynamic && invocationCounter.getAndIncrement() == jittingThreshold) {
                 jitEvaluator(handle, workingMemory, leftTuple);
             }
         }
@@ -314,11 +314,10 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         }
 
         try {
-            ClassLoader classLoader = kBase.getRootClassLoader();
             if (analyzedCondition == null) {
                 analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(handle, workingMemory, leftTuple);
             }
-            conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(expression, analyzedCondition, declarations, classLoader, leftTuple);
+            conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(expression, analyzedCondition, declarations, kBase.getRootClassLoader(), leftTuple);
         } catch (Throwable t) {
             if (TEST_JITTING) {
                 if (analyzedCondition == null) {
