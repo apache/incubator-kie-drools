@@ -26,7 +26,9 @@ public class MemoryUtil {
     private MemoryUtil() { }
 
     static {
-        if(!ClassUtils.isAndroid()) {
+        if (!hasPermGen() || ClassUtils.isAndroid()) {
+            permGenStats = new DummyMemoryStats();
+        } else {
             MemoryPoolMXBean permGenBean = null;
             for (MemoryPoolMXBean mx : ManagementFactory.getMemoryPoolMXBeans()) {
                 if (mx.getName() != null && mx.getName().contains("Perm")) {
@@ -34,34 +36,41 @@ public class MemoryUtil {
                     break;
                 }
             }
-            permGenStats = new MemoryStats(permGenBean);
-        } else {
-            permGenStats = new MemoryStats();
+            permGenStats = new MBeanMemoryStats(permGenBean);
         }
     }
 
-    public static class MemoryStats {
+    public interface MemoryStats {
+        boolean isUsageThresholdExceeded(int threshold);
+    }
+
+    public static class DummyMemoryStats implements MemoryStats {
+        @Override
+        public boolean isUsageThresholdExceeded( int threshold ) {
+            return false;
+        }
+    }
+
+    public static class MBeanMemoryStats implements MemoryStats {
         private final MemoryPoolMXBean memoryBean;
 
-        public MemoryStats() {
-            memoryBean = null;
-        }
-
-        public MemoryStats(MemoryPoolMXBean memoryBean) {
+        public MBeanMemoryStats(MemoryPoolMXBean memoryBean) {
             this.memoryBean = memoryBean;
         }
 
+        @Override
         public boolean isUsageThresholdExceeded(int threshold) {
-            if (!ClassUtils.isAndroid()) {
-                MemoryUsage memoryUsage = getMemoryUsage();
-                return memoryUsage != null && memoryUsage.getUsed() * 100 / memoryUsage.getMax() >= threshold;
-            } else {
-                return false;
-            }
+            MemoryUsage memoryUsage = getMemoryUsage();
+            return memoryUsage != null && memoryUsage.getUsed() * 100 / memoryUsage.getMax() >= threshold;
         }
 
         public MemoryUsage getMemoryUsage() {
             return memoryBean != null ? memoryBean.getUsage() : ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
         }
+    }
+
+    public static boolean hasPermGen() {
+        String javaVersion = System.getProperty("java.version");
+        return javaVersion.startsWith( "1.7" ) || javaVersion.startsWith( "1.6" ) || javaVersion.startsWith( "1.5" );
     }
 }
