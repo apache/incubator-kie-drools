@@ -72,7 +72,8 @@ import java.util.Properties;
 public class SessionConfiguration
     implements
     KieSessionConfiguration,
-    Externalizable {
+    Externalizable,
+    Cloneable {
     private static final long              serialVersionUID = 510l;
 
     private ChainedProperties              chainedProperties;
@@ -97,6 +98,25 @@ public class SessionConfiguration
     private transient ClassLoader          classLoader;
     
     private TimerJobFactoryType              timerJobFactoryType;
+
+    @Override
+    public SessionConfiguration clone() {
+        SessionConfiguration clone = new SessionConfiguration(false);
+        clone.chainedProperties = chainedProperties;
+        clone.immutable = immutable;
+        clone.keepReference = keepReference;
+        clone.forceEagerActivationFilter = forceEagerActivationFilter;
+        clone.timedRuleExecutionFilter = timedRuleExecutionFilter;
+        clone.clockType = clockType;
+        clone.beliefSystemType = beliefSystemType;
+        clone.queryListener = queryListener;
+        clone.workItemHandlers = workItemHandlers;
+        clone.workItemManagerFactory = workItemManagerFactory;
+        clone.commandService = commandService;
+        clone.classLoader = classLoader;
+        clone.timerJobFactoryType = timerJobFactoryType;
+        return clone;
+    }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( chainedProperties );
@@ -140,6 +160,12 @@ public class SessionConfiguration
      */
     public SessionConfiguration() {
         init(null, null);
+    }
+
+    private SessionConfiguration(boolean init) {
+        if (init) {
+            init(null, null);
+        }
     }
 
     /**

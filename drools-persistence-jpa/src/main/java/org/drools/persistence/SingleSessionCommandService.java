@@ -15,11 +15,6 @@
  */
 package org.drools.persistence;
 
-import java.lang.reflect.Constructor;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.LinkedList;
-
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.CommandService;
 import org.drools.core.command.Interceptor;
@@ -32,6 +27,7 @@ import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.command.runtime.UnpersistableCommand;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.marshalling.impl.MarshallingConfigurationImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
@@ -51,6 +47,11 @@ import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.command.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.lang.reflect.Constructor;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
 
 public class SingleSessionCommandService
     implements
@@ -465,7 +466,7 @@ public class SingleSessionCommandService
             KieSession ksession = this.service.ksession;
             // clean up cached process and work item instances
             if ( ksession != null ) {
-                InternalProcessRuntime internalProcessRuntime = ((InternalKnowledgeRuntime) ksession).getProcessRuntime();
+                InternalProcessRuntime internalProcessRuntime = ((InternalWorkingMemory) ksession).internalGetProcessRuntime();
                 if ( internalProcessRuntime != null ) {
                     if (this.service.doRollback) {
                         internalProcessRuntime.clearProcessInstancesState();
