@@ -22,5 +22,5 @@ public interface CorrelationKeyFactory {
 
     CorrelationKey newCorrelationKey(String businessKey);
     
-    CorrelationKey newCorrelationKey(List<String> properties);
+    CorrelationKey newCorrelationKey(List<String> businessKeys);
 }
