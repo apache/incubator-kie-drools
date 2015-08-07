@@ -199,6 +199,7 @@ public interface InternalWorkingMemory
     DateFormats getDateFormats();
     
     InternalProcessRuntime getProcessRuntime();
+    InternalProcessRuntime internalGetProcessRuntime();
 
     void closeLiveQuery(InternalFactHandle factHandle);
 
