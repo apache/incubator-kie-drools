@@ -141,7 +141,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
 
             ksessionImpl.setAgendaEventSupport( this.agendaEventSupport );
             ksessionImpl.setRuleRuntimeEventSupport(this.ruleRuntimeEventSupport);
-            InternalProcessRuntime processRuntime = ksessionImpl.getProcessRuntime();
+            InternalProcessRuntime processRuntime = ksessionImpl.internalGetProcessRuntime();
             if ( processRuntime != null ) {
                 processRuntime.setProcessEventSupport( this.processEventSupport );
             }
@@ -175,7 +175,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         for (RuleRuntimeEventListener listener : wm.getRuleRuntimeEventSupport().getEventListeners()) {
             this.ruleRuntimeEventSupport.addEventListener(listener);
         }
-        InternalProcessRuntime processRuntime = wm.getProcessRuntime();
+        InternalProcessRuntime processRuntime = wm.internalGetProcessRuntime();
         if ( processRuntime != null ) {
             for ( ProcessEventListener listener : processRuntime.getProcessEventListeners() ) {
                 this.processEventSupport.addEventListener( listener );
@@ -391,7 +391,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
         for ( RuleRuntimeEventListener listener: wm.getRuleRuntimeEventSupport().getEventListeners() ) {
             this.ruleRuntimeEventSupport.removeEventListener(listener);
         }
-        InternalProcessRuntime processRuntime = wm.getProcessRuntime();
+        InternalProcessRuntime processRuntime = wm.internalGetProcessRuntime();
         if ( processRuntime != null ) {
             for ( ProcessEventListener listener: processRuntime.getProcessEventListeners() ) {
                 this.processEventSupport.removeEventListener( listener );

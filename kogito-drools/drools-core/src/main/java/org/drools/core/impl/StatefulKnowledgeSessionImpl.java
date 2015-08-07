@@ -63,7 +63,6 @@ import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.management.DroolsManagementAgent;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
-import org.drools.core.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
 import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.phreak.PropagationEntry;
@@ -83,7 +82,6 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
-import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
@@ -103,7 +101,6 @@ import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.type.DateFormats;
 import org.drools.core.type.DateFormatsImpl;
 import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.command.Command;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.kiebase.KieBaseEventListener;
@@ -113,7 +110,6 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
@@ -155,7 +151,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -250,10 +245,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private AtomicLong lastIdleTimestamp;
 
     private InternalProcessRuntime processRuntime;
+    private volatile boolean processRuntimeInitialized = false;
 
     private Map<String, Object> runtimeServices;
-
-    private transient ObjectMarshallingStrategyStore marshallingStore;
 
     private boolean alive = true;
 
@@ -387,8 +381,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.opCounter = new AtomicLong(0);
         this.lastIdleTimestamp = new AtomicLong(-1);
 
-        this.processRuntime = createProcessRuntime();
-
         initManagementBeans();
 
         if (initInitFactHandle) {
@@ -467,23 +459,38 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return Collections.unmodifiableCollection(this.agendaEventSupport.getEventListeners());
     }
 
-    private InternalProcessRuntime getInternalProcessRuntime() {
-        InternalProcessRuntime processRuntime = this.getProcessRuntime();
-        if (processRuntime == null)
+    private InternalProcessRuntime createProcessRuntime() {
+        return ProcessRuntimeFactory.newProcessRuntime(this);
+    }
+
+    public InternalProcessRuntime getProcessRuntime() {
+        if (!processRuntimeInitialized) {
+            synchronized(this) {
+                if (!processRuntimeInitialized) {
+                    processRuntimeInitialized = true;
+                    this.processRuntime = createProcessRuntime();
+                }
+            }
+        }
+        if (this.processRuntime == null)
             throw new RuntimeException("There is no ProcessRuntime available: are jBPM libraries missing on classpath?");
-        return processRuntime;
+        return this.processRuntime;
+    }
+
+    public InternalProcessRuntime internalGetProcessRuntime() {
+        return this.processRuntime;
     }
 
     public void addEventListener(ProcessEventListener listener) {
-        getInternalProcessRuntime().addEventListener(listener);
+        getProcessRuntime().addEventListener(listener);
     }
 
     public Collection<ProcessEventListener> getProcessEventListeners() {
-        return getInternalProcessRuntime().getProcessEventListeners();
+        return getProcessRuntime().getProcessEventListeners();
     }
 
     public void removeEventListener(ProcessEventListener listener) {
-        getInternalProcessRuntime().removeEventListener(listener);
+        getProcessRuntime().removeEventListener(listener);
     }
 
     public KnowledgeBase getKieBase() {
@@ -771,10 +778,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    private InternalProcessRuntime createProcessRuntime() {
-        return ProcessRuntimeFactory.newProcessRuntime(this);
-    }
-
     public String getEntryPointId() {
         return EntryPointId.DEFAULT.getEntryPointId();
     }
@@ -900,12 +903,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, this, lmem, false, queryObject.isOpen() );
 
-        List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
-        for ( int i = 0, length = pmems.size(); i < length; i++ ) {
-            PathMemory rm = pmems.get( i );
-            RuleAgendaItem evaluator = agenda.createRuleAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
-            evaluator.getRuleExecutor().setDirty(true);
-            evaluator.getRuleExecutor().evaluateNetworkAndFire(this, null, 0, -1);
+        for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
+            RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode() );
+            evaluator.getRuleExecutor().setDirty( true );
+            evaluator.getRuleExecutor().evaluateNetworkAndFire( this, null, 0, -1 );
         }
 
         return tnodes;
@@ -918,9 +919,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.kBase.readLock();
             this.lock.lock();
 
-            final PropagationContext pCtx = pctxFactory.createPropagationContext(getNextPropagationIdCounter(), PropagationContext.INSERTION,
-                                                                                 null, null, factHandle, getEntryPoint());
-
             LeftInputAdapterNode lian = ( LeftInputAdapterNode ) factHandle.getFirstLeftTuple().getLeftTupleSink().getLeftTupleSource();
             LeftInputAdapterNode.LiaNodeMemory lmem = (LeftInputAdapterNode.LiaNodeMemory) getNodeMemory(lian);
             SegmentMemory lsmem = lmem.getSegmentMemory();
@@ -928,13 +926,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             LeftTuple childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
             LeftInputAdapterNode.doDeleteObject( childLeftTuple, childLeftTuple.getPropagationContext(),  lsmem, this, lian, false, lmem );
 
-            List<PathMemory> pmems =  lmem.getSegmentMemory().getPathMemories();
-            for ( int i = 0, length = pmems.size(); i < length; i++ ) {
-                PathMemory rm = pmems.get( i );
-
-                RuleAgendaItem evaluator = agenda.createRuleAgendaItem(Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode());
-                evaluator.getRuleExecutor().setDirty(true);
-                evaluator.getRuleExecutor().evaluateNetworkAndFire(this, null, 0, -1);
+            for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
+                RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode() );
+                evaluator.getRuleExecutor().setDirty( true );
+                evaluator.getRuleExecutor().evaluateNetworkAndFire( this, null, 0, -1 );
             }
 
             getFactHandleFactory().destroyFactHandle( factHandle );
@@ -1066,9 +1061,8 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         timerService = TimerServiceFactory.getTimerService(this.config);
 
-        if (this.processRuntime != null) {
-            this.processRuntime = createProcessRuntime();
-        }
+        this.processRuntimeInitialized = false;
+        this.processRuntime = null;
 
         initInitialFact(kBase, null);
 
@@ -1153,10 +1147,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public void removeEventListener(final RuleEventListener listener) {
         this.ruleEventListenerSupport.removeEventListener(listener);
-    }
-
-    public List getRuleEventListeners() {
-        return this.ruleEventListenerSupport.getEventListeners();
     }
 
     public FactHandleFactory getFactHandleFactory() {
@@ -1627,27 +1617,15 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public static class WorkingMemoryReteAssertAction
             extends PropagationEntry.AbstractPropagationEntry
             implements WorkingMemoryAction {
-        private InternalFactHandle factHandle;
+        private final InternalFactHandle factHandle;
 
-        private boolean            removeLogical;
+        private final boolean            removeLogical;
 
-        private boolean            updateEqualsMap;
+        private final boolean            updateEqualsMap;
 
         private RuleImpl               ruleOrigin;
 
         private LeftTuple          leftTuple;
-
-        public WorkingMemoryReteAssertAction(final InternalFactHandle factHandle,
-                                             final boolean removeLogical,
-                                             final boolean updateEqualsMap,
-                                             final RuleImpl ruleOrigin,
-                                             final LeftTuple leftTuple) {
-            this.factHandle = factHandle;
-            this.removeLogical = removeLogical;
-            this.updateEqualsMap = updateEqualsMap;
-            this.ruleOrigin = ruleOrigin;
-            this.leftTuple = leftTuple;
-        }
 
         public WorkingMemoryReteAssertAction(MarshallerReaderContext context) throws IOException {
             this.factHandle = context.handles.get( context.readInt() );
@@ -1810,58 +1788,54 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    public InternalProcessRuntime getProcessRuntime() {
-        return processRuntime;
-    }
-
     public ProcessInstance startProcess(final String processId) {
-        return processRuntime.startProcess(processId);
+        return getProcessRuntime().startProcess( processId );
     }
 
     public ProcessInstance startProcess(String processId,
                                         Map<String, Object> parameters) {
-        return processRuntime.startProcess( processId,
-                                            parameters );
+        return getProcessRuntime().startProcess( processId,
+                                                 parameters );
     }
 
     public ProcessInstance createProcessInstance(String processId,
                                                  Map<String, Object> parameters) {
-        return processRuntime.createProcessInstance( processId, parameters );
+        return getProcessRuntime().createProcessInstance( processId, parameters );
     }
 
     public ProcessInstance startProcessInstance(long processInstanceId) {
-        return processRuntime.startProcessInstance( processInstanceId );
+        return getProcessRuntime().startProcessInstance( processInstanceId );
     }
 
     public Collection<ProcessInstance> getProcessInstances() {
-        return processRuntime.getProcessInstances();
+        return getProcessRuntime().getProcessInstances();
     }
 
     public ProcessInstance getProcessInstance(long processInstanceId) {
-        return processRuntime.getProcessInstance( processInstanceId );
+        return getProcessRuntime().getProcessInstance( processInstanceId );
     }
 
     @Override
     public ProcessInstance startProcess(String processId,
                                         CorrelationKey correlationKey, Map<String, Object> parameters) {
 
-        return processRuntime.startProcess( processId, correlationKey, parameters );
+        return getProcessRuntime().startProcess( processId, correlationKey, parameters );
     }
 
     @Override
     public ProcessInstance createProcessInstance(String processId,
                                                  CorrelationKey correlationKey, Map<String, Object> parameters) {
 
-        return processRuntime.createProcessInstance( processId, correlationKey, parameters );
+        return getProcessRuntime().createProcessInstance( processId, correlationKey, parameters );
     }
 
     @Override
     public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
-        return processRuntime.getProcessInstance(correlationKey);
+        return getProcessRuntime().getProcessInstance( correlationKey );
     }
 
     public ProcessInstance getProcessInstance(long processInstanceId, boolean readOnly) {
-        return processRuntime.getProcessInstance(processInstanceId, readOnly);
+        return getProcessRuntime().getProcessInstance( processInstanceId, readOnly);
     }
 
     public WorkItemManager getWorkItemManager() {
@@ -1880,83 +1854,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return workItemManager;
     }
 
-    public List iterateObjectsToList() {
-        List result = new ArrayList();
-        Iterator iterator = iterateObjects();
-        for (; iterator.hasNext(); ) {
-            result.add(iterator.next());
-        }
-        return result;
-    }
-
-    public List iterateNonDefaultEntryPointObjectsToList() {
-        List result = new ArrayList();
-        for (Map.Entry<String, WorkingMemoryEntryPoint> entry : entryPoints.entrySet()) {
-            WorkingMemoryEntryPoint entryPoint = entry.getValue();
-            if (entryPoint instanceof NamedEntryPoint) {
-                result.add(new EntryPointObjects(entry.getKey(),
-                                                 new ArrayList(entry.getValue().getObjects())));
-            }
-        }
-        return result;
-    }
-
-    private class EntryPointObjects {
-        private String name;
-        private List   objects;
-
-        public EntryPointObjects(String name,
-                                 List objects) {
-            this.name = name;
-            this.objects = objects;
-        }
-    }
-
-    public Map.Entry[] getActivationParameters(long activationId) {
-        Activation[] activations = agenda.getActivations();
-        for (int i = 0; i < activations.length; i++) {
-            if (activations[i].getActivationNumber() == activationId) {
-                Map params = getActivationParameters(activations[i]);
-                return (Map.Entry[]) params.entrySet().toArray(new Map.Entry[params.size()]);
-            }
-        }
-        return new Map.Entry[0];
-    }
-
-    /**
-     * Helper method
-     */
-    public Map getActivationParameters(Activation activation) {
-        if (activation instanceof RuleAgendaItem) {
-            RuleAgendaItem ruleAgendaItem = (RuleAgendaItem)activation;
-            LeftTupleList tupleList = ruleAgendaItem.getRuleExecutor().getLeftTupleList();
-            Map result = new TreeMap();
-            int i = 0;
-            for (LeftTuple tuple = tupleList.getFirst(); tuple != null; tuple = (LeftTuple) tuple.getNext()) {
-                Map params = getActivationParameters(tuple);
-                result.put("Parameters set [" + i++ + "]", (Map.Entry[]) params.entrySet().toArray(new Map.Entry[params.size()]));
-            }
-            return result;
-        } else {
-            return getActivationParameters(activation.getTuple());
-        }
-    }
-
-    private Map getActivationParameters(LeftTuple tuple) {
-        Map result = new HashMap();
-        Declaration[] declarations = ((RuleTerminalNode) tuple.getLeftTupleSink()).getDeclarations();
-
-        for (int i = 0; i < declarations.length; i++) {
-            FactHandle handle = tuple.get(declarations[i]);
-            if (handle instanceof InternalFactHandle) {
-                result.put(declarations[i].getIdentifier(),
-                           declarations[i].getValue(this,
-                                                    ((InternalFactHandle) handle).getObject()));
-            }
-        }
-        return result;
-    }
-
     public WorkingMemoryEntryPoint getWorkingMemoryEntryPoint(String name) {
         return this.entryPoints.get(name);
     }
@@ -1971,10 +1868,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     public InternalFactHandle getInitialFactHandle() {
         return this.initialFactHandle;
-    }
-
-    public void setInitialFactHandle(InternalFactHandle initialFactHandle) {
-        this.initialFactHandle = initialFactHandle;
     }
 
     public TimerService getTimerService() {
@@ -2075,8 +1968,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * according to the session clock or -1 if it is not idle.
      *
      * This method is not synchronised and might return an approximate value.
-     *
-     * @return
      */
     public long getIdleTime() {
         long lastIdle = this.lastIdleTimestamp.get();
@@ -2102,13 +1993,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      */
     public long getTimeToNextJob() {
         return this.timerService.getTimeToNextJob();
-    }
-
-    public ObjectMarshallingStrategyStore getObjectMarshallingStrategyStore() {
-        if (this.marshallingStore == null) {
-            this.marshallingStore = new ObjectMarshallingStrategyStoreImpl((ObjectMarshallingStrategy[]) this.environment.get(EnvironmentName.OBJECT_MARSHALLING_STRATEGIES));
-        }
-        return this.marshallingStore;
     }
 
     public void addPropagation(PropagationEntry propagationEntry) {

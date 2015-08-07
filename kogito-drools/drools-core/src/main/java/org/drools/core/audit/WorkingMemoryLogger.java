@@ -122,13 +122,21 @@ public abstract class WorkingMemoryLogger
     public WorkingMemoryLogger(final WorkingMemory workingMemory) {
         workingMemory.addEventListener( (RuleRuntimeEventListener) this );
         workingMemory.addEventListener( (AgendaEventListener) this );
-        InternalProcessRuntime processRuntime = ((InternalWorkingMemory) workingMemory).getProcessRuntime();
-        if (processRuntime != null) {
-            processRuntime.addEventListener( this );
-        }
+        setProcessRuntimeEventListener( (InternalWorkingMemory) workingMemory );
         workingMemory.addEventListener( (KieBaseEventListener) this );
     }
-    
+
+    private void setProcessRuntimeEventListener( InternalWorkingMemory workingMemory ) {
+        try {
+            InternalProcessRuntime processRuntime = workingMemory.getProcessRuntime();
+            if ( processRuntime != null ) {
+                processRuntime.addEventListener( this );
+            }
+        } catch (Exception e) {
+            /* ignore */
+        }
+    }
+
     public WorkingMemoryLogger(final KnowledgeRuntimeEventManager session) {
         if (session instanceof StatefulKnowledgeSessionImpl) {
             StatefulKnowledgeSessionImpl statefulSession = ((StatefulKnowledgeSessionImpl) session);
@@ -137,10 +145,7 @@ public abstract class WorkingMemoryLogger
             eventManager.addEventListener( (RuleRuntimeEventListener) this );
             eventManager.addEventListener( (AgendaEventListener) this );
             eventManager.addEventListener( (KieBaseEventListener) this );
-            InternalProcessRuntime processRuntime = ((StatefulKnowledgeSessionImpl) session).getProcessRuntime();
-            if (processRuntime != null) {
-                processRuntime.addEventListener( this );
-            }
+            setProcessRuntimeEventListener( (InternalWorkingMemory) session );
         } else if (session instanceof StatelessKnowledgeSessionImpl) {
             StatelessKnowledgeSessionImpl statelessSession = ((StatelessKnowledgeSessionImpl) session);
             isPhreak = statelessSession.getKnowledgeBase().getConfiguration().isPhreakEnabled();
