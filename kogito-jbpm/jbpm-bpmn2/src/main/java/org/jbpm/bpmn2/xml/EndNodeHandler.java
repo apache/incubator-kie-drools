@@ -40,6 +40,12 @@ public class EndNodeHandler extends AbstractNodeHandler {
 
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		EndNode endNode = (EndNode) node;
+		
+		String eventType = (String) endNode.getMetaData("EventType");
+        String ref = (String) endNode.getMetaData("Ref");
+        String variableRef = (String) endNode.getMetaData("Variable");
+        
+		
 		writeNode("endEvent", endNode, xmlDump, metaDataType);
 		if (endNode.isTerminate()) {
     		xmlDump.append(">" + EOL);
@@ -70,6 +76,24 @@ public class EndNodeHandler extends AbstractNodeHandler {
                         }
                         xmlDump.append("      <messageEventDefinition messageRef=\"" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Message\"/>" + EOL);
                         endNode("endEvent", xmlDump);
+		            } else if ("signal".equals(eventType)) {
+		                xmlDump.append(">" + EOL);
+		                writeExtensionElements(endNode, xmlDump);
+		   
+		                if (!s.startsWith("null")) {
+		                    
+		                    xmlDump.append(
+		                        "      <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input\" />" + EOL + 
+		                        "      <dataInputAssociation>" + EOL + 
+		                        "        <sourceRef>" + XmlDumper.replaceIllegalChars(variableRef) + "</sourceRef>" + EOL + 
+		                        "        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</targetRef>" + EOL + 
+		                        "      </dataInputAssociation>" + EOL + 
+		                        "      <inputSet>" + EOL + 
+		                        "        <dataInputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(endNode) + "_Input</dataInputRefs>" + EOL + 
+		                        "      </inputSet>" + EOL);
+		                }
+		                xmlDump.append("      <signalEventDefinition signalRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(ref) + "\"/>" + EOL);
+		                endNode("endEvent", xmlDump);
 		            } else if (s.startsWith(RUNTIME_SIGNAL_EVENT)) {
                         xmlDump.append(">" + EOL);
                         writeExtensionElements(endNode, xmlDump);

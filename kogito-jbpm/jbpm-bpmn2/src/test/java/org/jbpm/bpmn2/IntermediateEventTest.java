@@ -34,6 +34,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.process.instance.WorkItemHandler;
 import org.drools.persistence.SingleSessionCommandService;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
@@ -2326,6 +2327,97 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         wi = items.get(1);
         ksession.getWorkItemManager().completeWorkItem(wi.getId(), result);
         assertProcessInstanceCompleted(processInstance2);
+
+    }
+    
+    
+    
+    @Test
+    public void testThrowIntermediateSignalWithExternalScope() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventExternalScope.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        
+        TestWorkItemHandler handler = new TestWorkItemHandler();
+        WorkItemHandler externalHandler = new WorkItemHandler() {
+            
+            @Override
+            public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+                String signal = (String) workItem.getParameter("Signal");
+                ksession.signalEvent(signal, null);
+                
+                manager.completeWorkItem(workItem.getId(), null);
+                
+            }
+            
+            @Override
+            public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {                
+            }
+        };
+        
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
+        ksession.getWorkItemManager().registerWorkItemHandler("External Send Task", externalHandler);
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        ProcessInstance processInstance = ksession.startProcess("intermediate-event-scope", params);
+                
+        assertProcessInstanceActive(processInstance);
+        
+        ksession.execute(new AssertNodeActiveCommand(processInstance.getId(), "Complete work", "Wait"));
+        
+        List<WorkItem> items = handler.getWorkItems();
+        assertEquals(1, items.size());
+        WorkItem wi = items.get(0);
+
+        Map<String, Object> result = new HashMap<String, Object>();
+        result.put("_output", "sending event");
+        
+        ksession.getWorkItemManager().completeWorkItem(wi.getId(), result);
+
+        assertProcessInstanceCompleted(processInstance);
+
+    }
+    
+    @Test
+    public void testIntermediateCatchEventSignalWithVariable() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventSignalWithVariable.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
+        
+        String signalVar = "myVarSignal";
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("signalName", signalVar);
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent", parameters);
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        // now signal process instance
+        ksession.signalEvent(signalVar, "SomeValue", processInstance.getId());
+        assertProcessInstanceFinished(processInstance, ksession);
+        assertNodeTriggered(processInstance.getId(), "StartProcess", "UserTask", "EndProcess", "event");
+
+    }
+    
+    @Test
+    public void testSignalIntermediateThrowWithVariable() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateThrowEventSignalWithVariable.bpmn2", "BPMN2-IntermediateCatchEventSignalWithVariable.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new SystemOutWorkItemHandler());
+        // create catch process instance
+        String signalVar = "myVarSignal";
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("signalName", signalVar);
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent", parameters);
+        assertProcessInstanceActive(processInstance);
+        
+        ksession = restoreSession(ksession, true);        
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", "MyValue");
+        params.put("signalName", signalVar);
+        ProcessInstance processInstanceThrow = ksession.startProcess("SignalIntermediateEvent", params);
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstanceThrow.getState());
+        
+        // catch process instance should now be completed
+        assertProcessInstanceFinished(processInstance, ksession);
 
     }
     

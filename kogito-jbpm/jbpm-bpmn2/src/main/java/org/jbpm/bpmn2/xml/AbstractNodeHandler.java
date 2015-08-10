@@ -16,9 +16,6 @@
 
 package org.jbpm.bpmn2.xml;
 
-import static org.jbpm.bpmn2.xml.ProcessHandler.PROCESS_INSTANCE_SIGNAL_EVENT;
-import static org.jbpm.bpmn2.xml.ProcessHandler.RUNTIME_MANAGER_SIGNAL_EVENT;
-import static org.jbpm.bpmn2.xml.ProcessHandler.RUNTIME_SIGNAL_EVENT;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,6 +65,10 @@ import org.xml.sax.SAXParseException;
 public abstract class AbstractNodeHandler extends BaseAbstractHandler implements Handler {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractNodeHandler.class);
+    
+    static final String PROCESS_INSTANCE_SIGNAL_EVENT = "kcontext.getProcessInstance().signalEvent(";
+    static final String RUNTIME_SIGNAL_EVENT = "kcontext.getKnowledgeRuntime().signalEvent(";
+    static final String RUNTIME_MANAGER_SIGNAL_EVENT = "((org.kie.api.runtime.manager.RuntimeManager)kcontext.getKnowledgeRuntime().getEnvironment().get(\"RuntimeManager\")).signalEvent(";
     
     protected final static String EOL = System.getProperty( "line.separator" );
     protected Map<String, String> dataInputs = new HashMap<String, String>();
@@ -544,13 +545,28 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 		}
 	}
 	
-    protected String getSignalExpression(NodeImpl node) {
+    protected String getSignalExpression(NodeImpl node, String signalName, String variable) {
         String signalExpression = RUNTIME_SIGNAL_EVENT;
         String scope = (String) node.getMetaData("customScope");
         if ("processInstance".equalsIgnoreCase(scope)) {
-            signalExpression = PROCESS_INSTANCE_SIGNAL_EVENT;
+            signalExpression = PROCESS_INSTANCE_SIGNAL_EVENT +  "org.jbpm.process.instance.impl.util.VariableUtil.resolveVariable(\""+ signalName + "\", kcontext.getNodeInstance()), " + (variable == null ? "null" : variable) + ");";
         } else if ("runtimeManager".equalsIgnoreCase(scope) || "project".equalsIgnoreCase(scope)) {
-            signalExpression = RUNTIME_MANAGER_SIGNAL_EVENT;
+            signalExpression = RUNTIME_MANAGER_SIGNAL_EVENT + "org.jbpm.process.instance.impl.util.VariableUtil.resolveVariable(\""+ signalName + "\", kcontext.getNodeInstance()), " + (variable == null ? "null" : variable) + ");";
+        } else if ("external".equalsIgnoreCase(scope)) {
+            signalExpression = "org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();" + EOL +
+            "workItem.setName(\"External Send Task\");" + EOL + 
+            "workItem.setNodeInstanceId(kcontext.getNodeInstance().getId());" + EOL +
+            "workItem.setProcessInstanceId(kcontext.getProcessInstance().getId());" + EOL + 
+            "workItem.setNodeId(kcontext.getNodeInstance().getNodeId());" + EOL +
+            "workItem.setDeploymentId((String) kcontext.getKnowledgeRuntime().getEnvironment().get(\"deploymentId\"));" + EOL +
+            "workItem.setParameter(\"Signal\", org.jbpm.process.instance.impl.util.VariableUtil.resolveVariable(\""+ signalName + "\", kcontext.getNodeInstance()));" + EOL +
+            "workItem.setParameter(\"SignalProcessInstanceId\", kcontext.getVariable(\"SignalProcessInstanceId\"));" + EOL +
+            "workItem.setParameter(\"SignalWorkItemId\", kcontext.getVariable(\"SignalWorkItemId\"));" + EOL +
+            "workItem.setParameter(\"SignalDeploymentId\", kcontext.getVariable(\"SignalDeploymentId\"));" + EOL +
+            (variable == null ? "" : "workItem.setParameter(\"Data\", " + variable + ");" + EOL) +            
+            "((org.drools.core.process.instance.WorkItemManager) kcontext.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);";
+        } else {
+            signalExpression = signalExpression +  "org.jbpm.process.instance.impl.util.VariableUtil.resolveVariable(\""+ signalName + "\", kcontext.getNodeInstance()), " + (variable == null ? "null" : variable) + ");";
         }
         
         return signalExpression;

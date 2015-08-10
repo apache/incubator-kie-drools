@@ -74,7 +74,8 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                 .setState( workFlow.getState() )
                 .setNodeInstanceCounter( workFlow.getNodeInstanceCounter() )
                 .setProcessType( workFlow.getProcess().getType() )
-                .setParentProcessInstanceId(workFlow.getParentProcessInstanceId());
+                .setParentProcessInstanceId(workFlow.getParentProcessInstanceId())
+                .setSignalCompletion(workFlow.isSignalCompletion());;
         if (workFlow.getProcessXml() != null) {
             _instance.setProcessXml( workFlow.getProcessXml());
         }
@@ -487,6 +488,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
         processInstance.setDescription(_instance.getDescription());
         processInstance.setState( _instance.getState() );
         processInstance.setParentProcessInstanceId(_instance.getParentProcessInstanceId());
+        processInstance.setSignalCompletion(_instance.getSignalCompletion());
         long nodeInstanceCounter = _instance.getNodeInstanceCounter();
         processInstance.setKnowledgeRuntime( wm.getKnowledgeRuntime() );
         for( String completedNodeId : _instance.getCompletedNodeIdsList() ) { 

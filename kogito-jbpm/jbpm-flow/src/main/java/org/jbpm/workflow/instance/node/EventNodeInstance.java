@@ -17,14 +17,20 @@
 package org.jbpm.workflow.instance.node;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.NodeInstance;
+import org.drools.core.util.MVELSafeHelper;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
+import org.jbpm.workflow.instance.impl.NodeInstanceResolverFactory;
 
 /**
  * Runtime counterpart of an event node.
@@ -33,8 +39,11 @@ import org.jbpm.workflow.instance.impl.ExtendedNodeInstanceImpl;
  */
 public class EventNodeInstance extends ExtendedNodeInstanceImpl implements EventNodeInstanceInterface, EventBasedNodeInstanceInterface {
 
+    protected static final Pattern PARAMETER_MATCHER = Pattern.compile("#\\{([\\S&&[^\\}]]+)\\}", Pattern.DOTALL);
+    
     private static final long serialVersionUID = 510l;
     private EventListener listener = new ExternalEventListener();
+    
 
     public void signalEvent(String type, Object event) {
     	String variableName = getEventNode().getVariableName();
@@ -88,10 +97,32 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
 				Object event) {
 		}		
 	}
+	
+   private class VariableExternalEventListener implements EventListener, Serializable {
+        private static final long serialVersionUID = 5L;
+        
+        private String eventType;
+        
+        VariableExternalEventListener(String eventType) {
+            this.eventType = eventType;
+        }
+        
+        public String[] getEventTypes() {
+            return new String[] {eventType};
+        }
+        public void signalEvent(String type, Object event) {
+            callSignal(type, event);
+        }       
+    }
     
 	@Override
 	public void addEventListeners() {
-		getProcessInstance().addEventListener(getEventType(), getEventListener(), true);
+	    String eventType = getEventType();
+	    if (isVariableExpression(getEventNode().getType())) {
+	        getProcessInstance().addEventListener(eventType, new VariableExternalEventListener(eventType), true);
+	    } else {
+	        getProcessInstance().addEventListener(eventType, getEventListener(), true);
+	    }
 	}
 
 	@Override
@@ -101,10 +132,52 @@ public class EventNodeInstance extends ExtendedNodeInstanceImpl implements Event
 	}
 	
 	public String getEventType() {
-	    return getEventNode().getType();
+	    return resolveVariable(getEventNode().getType());
 	}
 	
 	protected EventListener getEventListener() {
 	    return listener;
+	}
+	
+	private boolean isVariableExpression(String eventType) {
+	    if (eventType == null ){
+	        return false;
+	    }
+	    Matcher matcher = PARAMETER_MATCHER.matcher(eventType);
+	    if (matcher.find()) {
+	        return true;
+	    }
+	    
+	    return false;
+	}
+	
+	private String resolveVariable(String s) {
+        if (s == null) {
+            return null;
+        }
+        
+        Map<String, String> replacements = new HashMap<String, String>();
+        Matcher matcher = PARAMETER_MATCHER.matcher(s);
+        while (matcher.find()) {
+            String paramName = matcher.group(1);
+            if (replacements.get(paramName) == null) {
+                VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
+                    resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
+                if (variableScopeInstance != null) {
+                    Object variableValue = variableScopeInstance.getVariable(paramName);
+                    String variableValueString = variableValue == null ? "" : variableValue.toString(); 
+                    replacements.put(paramName, variableValueString);
+                }
+            }
+        }
+        for (Map.Entry<String, String> replacement: replacements.entrySet()) {
+            s = s.replace("#{" + replacement.getKey() + "}", replacement.getValue());
+        }
+        
+        return s;
+    }
+	
+	private void callSignal(String type, Object event) {
+	    signalEvent(type, event);
 	}
 }

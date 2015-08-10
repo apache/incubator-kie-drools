@@ -41,6 +41,11 @@ public class ActionNodeHandler extends AbstractNodeHandler {
 	public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
 		ActionNode actionNode = (ActionNode) node;
 		DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
+	      
+        String eventType = (String) actionNode.getMetaData("EventType");
+        String ref = (String) actionNode.getMetaData("Ref");
+        String variableRef = (String) actionNode.getMetaData("Variable");
+
 		if (action != null) {
 		    String s = action.getConsequence();
 		    if (s.startsWith("org.drools.core.process.instance.impl.WorkItemImpl workItem = new org.drools.core.process.instance.impl.WorkItemImpl();")) {
@@ -60,6 +65,25 @@ public class ActionNodeHandler extends AbstractNodeHandler {
                         "      </inputSet>" + EOL);
                 }
                 xmlDump.append("      <messageEventDefinition messageRef=\"" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Message\"/>" + EOL);
+                endNode("intermediateThrowEvent", xmlDump);
+            }  else if ("signal".equals(eventType)) { 
+                writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);
+                xmlDump.append(">" + EOL);
+                writeExtensionElements(actionNode, xmlDump);
+
+                if (!s.startsWith("null")) {
+                    
+                    xmlDump.append(
+                        "      <dataInput id=\"" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Input\" />" + EOL + 
+                        "      <dataInputAssociation>" + EOL + 
+                        "        <sourceRef>" + XmlDumper.replaceIllegalChars(variableRef) + "</sourceRef>" + EOL + 
+                        "        <targetRef>" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Input</targetRef>" + EOL + 
+                        "      </dataInputAssociation>" + EOL + 
+                        "      <inputSet>" + EOL + 
+                        "        <dataInputRefs>" + XmlBPMNProcessDumper.getUniqueNodeId(actionNode) + "_Input</dataInputRefs>" + EOL + 
+                        "      </inputSet>" + EOL);
+                }
+                xmlDump.append("      <signalEventDefinition signalRef=\"" + XmlBPMNProcessDumper.replaceIllegalCharsAttribute(ref) + "\"/>" + EOL);
                 endNode("intermediateThrowEvent", xmlDump);
             } else if (s.startsWith(RUNTIME_SIGNAL_EVENT)) { 
                 writeNode("intermediateThrowEvent", actionNode, xmlDump, metaDataType);

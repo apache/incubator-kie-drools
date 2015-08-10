@@ -51,11 +51,18 @@ public class VariableScopeInstance extends AbstractContextInstance {
         if (value != null) {
             return value;
         }
-        
-        if (getProcessInstance() != null && getProcessInstance().getKnowledgeRuntime() != null) {
-            return getProcessInstance().getKnowledgeRuntime().getGlobal(name);
+
+        // support for processInstanceId and parentProcessInstanceId
+        if ("processInstanceId".equals(name) && getProcessInstance() != null) {
+            return getProcessInstance().getId();
+        } else if ("parentProcessInstanceId".equals(name) && getProcessInstance() != null) {
+            return getProcessInstance().getParentProcessInstanceId();
         }
         
+        // support for globals
+        if (getProcessInstance() != null && getProcessInstance().getKnowledgeRuntime() != null) {
+            return getProcessInstance().getKnowledgeRuntime().getGlobal(name);
+        }        
         return null;
     }
 

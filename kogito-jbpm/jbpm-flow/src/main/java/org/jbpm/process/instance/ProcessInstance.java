@@ -57,5 +57,9 @@ public interface ProcessInstance extends org.kie.api.runtime.process.ProcessInst
     Map<String, Object> getMetaData();
 
 	Object getFaultData();
+	
+	void setSignalCompletion(boolean signalCompletion);
+	
+	boolean isSignalCompletion();
     
 }

@@ -42,7 +42,6 @@ import org.jbpm.workflow.core.node.AsyncEventNode;
 import org.jbpm.workflow.core.node.EventNode;
 import org.jbpm.workflow.core.node.EventNodeInterface;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
-import org.jbpm.workflow.core.node.ForEachNode;
 import org.jbpm.workflow.instance.NodeInstance;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.CompositeNodeInstance;
@@ -51,7 +50,6 @@ import org.jbpm.workflow.instance.node.EventBasedNodeInstanceInterface;
 import org.jbpm.workflow.instance.node.EventNodeInstance;
 import org.jbpm.workflow.instance.node.EventNodeInstanceInterface;
 import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
-import org.jbpm.workflow.instance.node.ForEachNodeInstance;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.WorkflowProcess;
@@ -90,8 +88,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	private int currentLevel;
 	private boolean persisted = false;
 	private Object faultData;
+	
+	private boolean signalCompletion = true;
 
-	public NodeContainer getNodeContainer() {
+    public NodeContainer getNodeContainer() {
 		return getWorkflowProcess();
 	}
 
@@ -363,18 +363,19 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
             processRuntime.getProcessInstanceManager().removeProcessInstance(this);
             processRuntime.getProcessEventSupport().fireAfterProcessCompleted(this, kruntime);
 
-            
-            RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
-            if (getParentProcessInstanceId() > 0 && manager != null) {
-            	try {
-	                RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(getParentProcessInstanceId()));
-	                KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
-	                managedkruntime.signalEvent("processInstanceCompleted:" + getId(), this);
-            	} catch (SessionNotFoundException e) {
-            		// in case no session is found for parent process let's skip signal for process instance completion
-            	}
-            } else {
-                processRuntime.getSignalManager().signalEvent("processInstanceCompleted:" + getId(), this);    
+            if (isSignalCompletion()) {
+                RuntimeManager manager = (RuntimeManager) kruntime.getEnvironment().get("RuntimeManager");
+                if (getParentProcessInstanceId() > 0 && manager != null) {
+                	try {
+    	                RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(getParentProcessInstanceId()));
+    	                KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
+    	                managedkruntime.signalEvent("processInstanceCompleted:" + getId(), this);
+                	} catch (SessionNotFoundException e) {
+                		// in case no session is found for parent process let's skip signal for process instance completion
+                	}
+                } else {
+                    processRuntime.getSignalManager().signalEvent("processInstanceCompleted:" + getId(), this);    
+                }
             }
         }
 	}
@@ -525,7 +526,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 				}
 			}
 		}
-	}
+	}	
 
 	public void addEventListener(String type, EventListener listener,
 			boolean external) {
@@ -671,5 +672,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	public Object getFaultData() {
 		return faultData;
 	}
+	
+    public boolean isSignalCompletion() {
+        return signalCompletion;
+    }
+    
+    public void setSignalCompletion(boolean signalCompletion) {
+        this.signalCompletion = signalCompletion;
+    }
     
 }

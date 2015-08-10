@@ -20,7 +20,7 @@
     </operation>
   </interface>
 
-  <signal id="exception-signal" structureRef="_exceptionItem" />
+  <signal id="exception-signal" name="exception-signal" structureRef="_exceptionItem" />
   <itemDefinition id="_exceptionItem" structureRef="org.kie.api.runtime.process.WorkItem"/>
   <message id="_exceptionMessage" itemRef="_exceptionItem" />
   
