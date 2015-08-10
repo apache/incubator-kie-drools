@@ -196,6 +196,7 @@
         ProcessInstanceLog log
       where
         log.correlationKey like :correlationKey
+        order by log.id
     </query>
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>

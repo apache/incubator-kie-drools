@@ -141,7 +141,7 @@ public interface RuntimeDataService {
      * @return A list of {@link ProcessInstanceDesc} instances representing the process instances that match
      *         the given correlation key
      */
-    Collection<ProcessInstanceDesc> getProcessInstancesByCorrelationKey(CorrelationKey correlationKey);
+    Collection<ProcessInstanceDesc> getProcessInstancesByCorrelationKey(CorrelationKey correlationKey, QueryContext queryContext);
     
     /**
      * Returns list of process instance descriptions found for given process definition id

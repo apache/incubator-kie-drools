@@ -496,7 +496,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", key);
         assertNotNull(processInstanceId);
         
-        Collection<ProcessInstanceDesc> keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key);
+        Collection<ProcessInstanceDesc> keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key, new QueryContext());
         assertNotNull(keyedInstances);
         assertEquals(1, keyedInstances.size());
         
@@ -516,7 +516,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
         processInstanceId = null;
         assertNull(instance);
         
-        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key);
+        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key, new QueryContext());
         assertNotNull(keyedInstances);
         assertEquals(1, keyedInstances.size());
         

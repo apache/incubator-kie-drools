@@ -523,7 +523,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", key);
         assertNotNull(processInstanceId);
         
-        Collection<ProcessInstanceDesc> keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key);
+        Collection<ProcessInstanceDesc> keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key, new QueryContext());
         assertNotNull(keyedInstances);
         assertEquals(1, keyedInstances.size());
         
@@ -543,7 +543,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         processInstanceId = null;
         assertNull(instance);
         
-        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key);
+        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key, new QueryContext());
         assertNotNull(keyedInstances);
         assertEquals(1, keyedInstances.size());
         
@@ -580,7 +580,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", key);
         assertNotNull(processInstanceId);
         
-        Collection<ProcessInstanceDesc> keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key);
+        Collection<ProcessInstanceDesc> keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key, new QueryContext());
         assertNotNull(keyedInstances);
         assertEquals(1, keyedInstances.size());
         
@@ -594,7 +594,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         List<UserTaskInstanceDesc> tasks = instance.getActiveTasks();
         assertNull(tasks);
         // search by partial key 1
-        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(partialKey1);
+        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(partialKey1, new QueryContext());
         assertNotNull(keyedInstances);
         assertEquals(1, keyedInstances.size());
         
@@ -606,7 +606,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         assertEquals("first:second:third", instance.getCorrelationKey());
         
         // search by partial key 2
-        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(partialKey2);
+        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(partialKey2, new QueryContext());
         assertNotNull(keyedInstances);
         assertEquals(1, keyedInstances.size());
         

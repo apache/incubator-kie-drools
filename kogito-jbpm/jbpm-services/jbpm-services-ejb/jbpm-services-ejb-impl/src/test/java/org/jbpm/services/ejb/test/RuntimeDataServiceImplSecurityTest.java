@@ -631,6 +631,10 @@ public class RuntimeDataServiceImplSecurityTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessInstancesByCorrelationKey() {
+        // let's grant managers role so process can be started
+        List<String> roles = new ArrayList<String>();
+        roles.add("managers");
+        identityProvider.setRoles(roles);
         Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
         assertNotNull(instances);
         assertEquals(0, instances.size());
@@ -640,7 +644,7 @@ public class RuntimeDataServiceImplSecurityTest extends AbstractTestSupport {
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", key);
         assertNotNull(processInstanceId);
         
-        Collection<ProcessInstanceDesc> keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key);
+        Collection<ProcessInstanceDesc> keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key, new QueryContext());
         assertNotNull(keyedInstances);
         assertEquals(1, keyedInstances.size());
         
@@ -660,7 +664,7 @@ public class RuntimeDataServiceImplSecurityTest extends AbstractTestSupport {
         processInstanceId = null;
         assertNull(instance);
         
-        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key);
+        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key, new QueryContext());
         assertNotNull(keyedInstances);
         assertEquals(1, keyedInstances.size());
         
@@ -673,6 +677,10 @@ public class RuntimeDataServiceImplSecurityTest extends AbstractTestSupport {
     
     @Test
     public void testGetProcessInstancesByPartialCorrelationKey() {
+        // let's grant managers role so process can be started
+        List<String> roles = new ArrayList<String>();
+        roles.add("managers");
+        identityProvider.setRoles(roles);
         Collection<ProcessInstanceDesc> instances = runtimeDataService.getProcessInstances(new QueryContext());
         assertNotNull(instances);
         assertEquals(0, instances.size());
@@ -697,7 +705,7 @@ public class RuntimeDataServiceImplSecurityTest extends AbstractTestSupport {
         processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", key);
         assertNotNull(processInstanceId);
         
-        Collection<ProcessInstanceDesc> keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key);
+        Collection<ProcessInstanceDesc> keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(key, new QueryContext());
         assertNotNull(keyedInstances);
         assertEquals(1, keyedInstances.size());
         
@@ -711,7 +719,7 @@ public class RuntimeDataServiceImplSecurityTest extends AbstractTestSupport {
         List<UserTaskInstanceDesc> tasks = instance.getActiveTasks();
         assertNull(tasks);
         // search by partial key 1
-        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(partialKey1);
+        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(partialKey1, new QueryContext());
         assertNotNull(keyedInstances);
         assertEquals(1, keyedInstances.size());
         
@@ -723,7 +731,7 @@ public class RuntimeDataServiceImplSecurityTest extends AbstractTestSupport {
         assertEquals("first:second:third", instance.getCorrelationKey());
         
         // search by partial key 2
-        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(partialKey2);
+        keyedInstances = runtimeDataService.getProcessInstancesByCorrelationKey(partialKey2, new QueryContext());
         assertNotNull(keyedInstances);
         assertEquals(1, keyedInstances.size());
         
