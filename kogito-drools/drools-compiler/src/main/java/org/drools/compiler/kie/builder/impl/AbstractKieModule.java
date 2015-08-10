@@ -327,10 +327,12 @@ public abstract class AbstractKieModule
             }
             conf = ResourceTypeImpl.fromProperties(prop);
         } else if (ResourceType.DTABLE.matchesExtension(fileName)) {
-            if (fileName.endsWith(".csv")) {
+            int lastDot = fileName.lastIndexOf( '.' );
+            if (lastDot >= 0 && fileName.length() > lastDot+1) {
+                String extension = fileName.substring( lastDot+1 );
                 Properties prop = new Properties();
                 prop.setProperty(ResourceTypeImpl.KIE_RESOURCE_CONF_CLASS, DecisionTableConfigurationImpl.class.getName());
-                prop.setProperty(DecisionTableConfigurationImpl.DROOLS_DT_TYPE, DecisionTableInputType.CSV.toString());
+                prop.setProperty(DecisionTableConfigurationImpl.DROOLS_DT_TYPE, DecisionTableInputType.valueOf( extension.toUpperCase() ).toString());
                 conf = ResourceTypeImpl.fromProperties(prop);
             }
         }

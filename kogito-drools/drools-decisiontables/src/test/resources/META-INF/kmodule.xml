@@ -3,5 +3,6 @@
 
     <kbase name="kbaseCSV" packages="org.drools.decisiontable.integrationtests.csv" />
     <kbase name="kbaseXLS" packages="org.drools.decisiontable.integrationtests.xls" />
-    
+    <kbase name="kbaseXLSX" packages="org.drools.decisiontable.integrationtests.xlsx" />
+
 </kmodule>

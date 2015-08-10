@@ -15,15 +15,15 @@
 
 package org.drools.decisiontable;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-
 import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.core.util.StringUtils;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 
 public class DecisionTableProviderImpl
     implements
@@ -47,7 +47,8 @@ public class DecisionTableProviderImpl
         }
 
         switch ( configuration.getInputType() ) {
-            case XLS : {
+            case XLS :
+            case XLSX :
                 if ( StringUtils.isEmpty( configuration.getWorksheetName() ) ) {
                     return compiler.compile( is,
                                              InputType.XLS );
@@ -55,7 +56,6 @@ public class DecisionTableProviderImpl
                     return compiler.compile( is,
                                              configuration.getWorksheetName() );
                 }
-            }
             case CSV : {
                 return compiler.compile( is,
                                          InputType.CSV );
