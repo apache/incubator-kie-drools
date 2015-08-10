@@ -1297,6 +1297,44 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
+    public void testJitComparableNoGeneric() {
+        // DROOLS-37 BZ-1233976
+        String str =
+                "import " + ComparableInteger.class.getCanonicalName() + "\n" +
+                "\n" +
+                "rule \"minCost\"\n" +
+                "when\n" +
+                "    $a : ComparableInteger()\n" +
+                "    ComparableInteger( this < $a )\n" +
+                "then\n" +
+                "end";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        ksession.insert(new ComparableInteger(2));
+        ksession.insert(new ComparableInteger(3));
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    public static class ComparableInteger implements Comparable {
+
+        private final int i;
+
+        public ComparableInteger(int i) {
+            this.i = i;
+        }
+
+        public int compareTo(Object o) {
+            return getInt() - ((ComparableInteger)o).getInt();
+        }
+
+        public int getInt() {
+            return i;
+        }
+    }
+
+    @Test
     public void testJitComparable2() {
         // DROOLS-469
         String str =
