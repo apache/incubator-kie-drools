@@ -37,6 +37,11 @@ public class KModuleWithDecisionTablesTest {
     }
     
     @Test
+    public void testNonEmptyKieBaseWithXLSX() throws Exception {
+       testNonEmptyKieBase("kbaseXLSX");
+    }
+
+    @Test
     public void testNonEmptyKieBaseWithCSV() throws Exception {
        testNonEmptyKieBase("kbaseCSV");
     }
