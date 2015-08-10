@@ -247,6 +247,11 @@
   &lt;warmUpSecondsSpentLimit&gt;30&lt;/warmUpSecondsSpentLimit&gt;
   ...
 &lt;/plannerBenchmark&gt;</programlisting>
+
+      <note>
+        <para>The warm up time budget does not include the time it takes to load the datasets. With large datasets,
+        this can cause the warm up to run considerably longer than specified in the configuration.</para>
+      </note>
     </section>
 
     <section xml:id="benchmarkBlueprint">
