@@ -41,6 +41,9 @@ public class InMemoryExecutorAdminServiceImpl implements ExecutorAdminService {
 		Map<Long, RequestInfo> requests = storeService.getRequests();
 		int size = requests.size();
 		requests.clear();
+		Map<Long, RequestInfo> processedRequests = storeService.getProcessedRequests();
+		size += processedRequests.size();
+		processedRequests.clear();
 		return size;
 	}
 

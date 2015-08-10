@@ -17,6 +17,7 @@
 package org.jbpm.executor;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -492,6 +493,85 @@ public abstract class BasicExecutorBaseTest {
         List<RequestInfo> cancelledRequests = executorService.getCancelledRequests(new QueryContext());
         assertEquals(1, cancelledRequests.size());
 
+    }
+
+    @Test
+    public void executorPagingTest() throws InterruptedException {
+        CommandContext ctxCMD = new CommandContext();
+        String businessKey = UUID.randomUUID().toString();
+        ctxCMD.setData("businessKey", businessKey);
+
+        Long requestId1 = executorService.scheduleRequest("org.jbpm.executor.test.CustomCommand", ctxCMD);
+        Long requestId2 = executorService.scheduleRequest("org.jbpm.executor.test.CustomCommand", ctxCMD);
+
+        QueryContext queryContextFirstPage = new QueryContext(0, 1);
+        QueryContext queryContextSecondPage = new QueryContext(1, 1);
+
+        List<RequestInfo> firstRequests = executorService.getRequestsByCommand("org.jbpm.executor.test.CustomCommand", queryContextFirstPage);
+        List<RequestInfo> secondRequests = executorService.getRequestsByCommand("org.jbpm.executor.test.CustomCommand", queryContextSecondPage);
+        compareRequestsAreNotSame(firstRequests.get(0), secondRequests.get(0));
+
+        firstRequests = executorService.getRequestsByBusinessKey(businessKey, queryContextFirstPage);
+        secondRequests = executorService.getRequestsByBusinessKey(businessKey, queryContextSecondPage);
+        compareRequestsAreNotSame(firstRequests.get(0), secondRequests.get(0));
+
+        firstRequests = executorService.getQueuedRequests(queryContextFirstPage);
+        secondRequests = executorService.getQueuedRequests(queryContextSecondPage);
+        compareRequestsAreNotSame(firstRequests.get(0), secondRequests.get(0));
+
+        // cancel the task immediately
+        executorService.cancelRequest(requestId1);
+        executorService.cancelRequest(requestId2);
+
+        firstRequests = executorService.getCancelledRequests(queryContextFirstPage);
+        secondRequests = executorService.getCancelledRequests(queryContextSecondPage);
+        compareRequestsAreNotSame(firstRequests.get(0), secondRequests.get(0));
+
+        firstRequests = executorService.getAllRequests(queryContextFirstPage);
+        secondRequests = executorService.getAllRequests(queryContextSecondPage);
+        compareRequestsAreNotSame(firstRequests.get(0), secondRequests.get(0));
+
+        // Setting too far page
+        QueryContext queryContextBigOffset = new QueryContext(10, 1);
+        List<RequestInfo> offsetRequests = executorService.getCancelledRequests(queryContextBigOffset);
+        assertNotNull(offsetRequests);
+        assertEquals(0, offsetRequests.size());
+    }
+
+    @Test
+    public void clearAllRequestsTest() throws InterruptedException {
+        CommandContext ctxCMD = new CommandContext();
+        String businessKey = UUID.randomUUID().toString();
+        ctxCMD.setData("businessKey", businessKey);
+
+        // Testing clearing of active request.
+        Long requestId = executorService.scheduleRequest("org.jbpm.executor.test.CustomCommand", ctxCMD);
+
+        List<RequestInfo> allRequests = executorService.getAllRequests(new QueryContext());
+        assertEquals(1, allRequests.size());
+
+        executorService.clearAllRequests();
+
+        allRequests = executorService.getAllRequests(new QueryContext());
+        assertEquals(0, allRequests.size());
+
+        // Testing clearing of cancelled request.
+        requestId = executorService.scheduleRequest("org.jbpm.executor.test.CustomCommand", ctxCMD);
+
+        allRequests = executorService.getAllRequests(new QueryContext());
+        assertEquals(1, allRequests.size());
+
+        executorService.cancelRequest(requestId);
+        executorService.clearAllRequests();
+
+        allRequests = executorService.getAllRequests(new QueryContext());
+        assertEquals(0, allRequests.size());
+    }
+
+    private void compareRequestsAreNotSame(RequestInfo firstRequest, RequestInfo secondRequest) {
+        assertNotNull(firstRequest);
+        assertNotNull(secondRequest);
+        assertNotEquals("Requests are same!", firstRequest.getId(), secondRequest.getId());
     }
     
     public void FIXMEfutureRequestTest() throws InterruptedException {

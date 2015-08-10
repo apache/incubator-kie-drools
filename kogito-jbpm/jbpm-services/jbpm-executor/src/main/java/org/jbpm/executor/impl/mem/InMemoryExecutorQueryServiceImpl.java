@@ -67,17 +67,18 @@ public class InMemoryExecutorQueryServiceImpl implements ExecutorQueryService {
 		return storeService.findRequest(id);
 	}
 
-	
-	@Override
-	public List<RequestInfo> getRequestByBusinessKey(String businessKey, QueryContext queryContext) {
-		Map<Long, RequestInfo> requests = storeService.getRequests();
-		return (List<RequestInfo>) CollectionUtils.select(requests.values(), new GetRequestsByKey(businessKey));
-	}
-	
-	@Override
+    @Override
+    public List<RequestInfo> getRequestByBusinessKey(String businessKey, QueryContext queryContext) {
+        Map<Long, RequestInfo> requests = storeService.getRequests();
+        List<RequestInfo> requestsByBusinessKey = (List<RequestInfo>) CollectionUtils.select(requests.values(), new GetRequestsByKey(businessKey));
+        return applyPaginition(requestsByBusinessKey, queryContext);
+    }
+
+    @Override
     public List<RequestInfo> getRequestByCommand(String command, QueryContext queryContext) {
         Map<Long, RequestInfo> requests = storeService.getRequests();
-        return (List<RequestInfo>) CollectionUtils.select(requests.values(), new GetRequestsByCommand(command));
+        List<RequestInfo> requestsByCommand = (List<RequestInfo>) CollectionUtils.select(requests.values(), new GetRequestsByCommand(command));
+        return applyPaginition(requestsByCommand, queryContext);
     }
 
 	@Override
