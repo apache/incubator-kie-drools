@@ -438,7 +438,12 @@
         </listitem>
       </itemizedlist>
 
-      <para>You can also use a custom ranking, by implementing a <literal>Comparator</literal>:</para>
+      <para>All of the supported rankings do not rank solvers which have at least one failed single benchmark.</para>
+
+      <para>If <literal>Solver</literal>s have single benchmarks with uninitialized solutions,
+      they are by default ranked last - the bigger the sum of uninitialized variables in single benchmarks
+      for a given <literal>Solver</literal> is, the worse its ranking will be.
+      Note that this behavior is overridable by implementing your own <literal>Comparator</literal>:</para>
 
       <programlisting language="xml">  &lt;benchmarkReport&gt;
     &lt;solverRankingComparatorClass&gt;...TotalScoreSolverRankingComparator&lt;/solverRankingComparatorClass&gt;
