@@ -124,7 +124,7 @@ public class ResourceType
     public static final ResourceType DTABLE = addResourceTypeToRegistry("DTABLE",
                                                                         "Decision Table",
                                                                         "src/main/resources",
-                                                                        "xls", "csv");
+                                                                        "xls", "xlsx", "csv");
 
     /** Binary Package */
     public static final ResourceType PKG = addResourceTypeToRegistry("PKG",
