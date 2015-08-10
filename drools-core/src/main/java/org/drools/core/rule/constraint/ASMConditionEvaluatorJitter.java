@@ -433,6 +433,9 @@ public class ASMConditionEvaluatorJitter {
                 }
             }
             if (interfaze instanceof Class) {
+                if (interfaze == Comparable.class) {
+                    return Object.class;
+                }
                 for (Type superInterfaze : ((Class) interfaze).getGenericInterfaces()) {
                     Class<?> comparingClass = findComparingParameterClass(superInterfaze);
                     if (comparingClass != null) {
