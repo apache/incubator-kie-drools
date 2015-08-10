@@ -23,5 +23,5 @@ package org.kie.internal.builder;
  * </p>
  */
 public enum DecisionTableInputType {
-    XLS, CSV;
+    XLS, XLSX, CSV;
 }
