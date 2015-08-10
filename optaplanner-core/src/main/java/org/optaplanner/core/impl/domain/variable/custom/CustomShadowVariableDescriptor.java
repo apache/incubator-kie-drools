@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.domain.variable.custom;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
@@ -179,7 +180,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
     @Override
     public List<VariableDescriptor> getSourceVariableDescriptorList() {
         if (refVariableDescriptor != null) {
-            return refVariableDescriptor.getSourceVariableDescriptorList();
+            return Collections.<VariableDescriptor>singletonList(refVariableDescriptor);
         }
         return sourceVariableDescriptorList;
     }

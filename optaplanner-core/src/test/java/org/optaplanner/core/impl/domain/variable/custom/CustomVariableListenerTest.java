@@ -25,6 +25,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.shadow.cyclic.TestdataCyclicShadowedSolution;
+import org.optaplanner.core.impl.testdata.domain.shadow.cyclic.reference.TestdataCyclicReferencedShadowedSolution;
 import org.optaplanner.core.impl.testdata.domain.shadow.extended.TestdataExtendedShadowedChildEntity;
 import org.optaplanner.core.impl.testdata.domain.shadow.extended.TestdataExtendedShadowedParentEntity;
 import org.optaplanner.core.impl.testdata.domain.shadow.extended.TestdataExtendedShadowedSolution;
@@ -39,6 +40,11 @@ public class CustomVariableListenerTest {
     @Test(expected = IllegalStateException.class)
     public void cyclic() {
         SolutionDescriptor solutionDescriptor = TestdataCyclicShadowedSolution.buildSolutionDescriptor();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void cyclicReferenced() {
+        SolutionDescriptor solutionDescriptor = TestdataCyclicReferencedShadowedSolution.buildSolutionDescriptor();
     }
 
     @Test

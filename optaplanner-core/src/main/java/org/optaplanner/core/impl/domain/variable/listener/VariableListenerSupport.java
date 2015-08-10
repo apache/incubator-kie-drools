@@ -63,7 +63,7 @@ public class VariableListenerSupport implements SupplyManager {
 
     public void buildVariableListeners(List<VariableListener> entityVariableListenerList,
             VariableDescriptor variableDescriptor) {
-        List<ShadowVariableDescriptor> shadowVariableDescriptorList = variableDescriptor.getShadowVariableDescriptorList();
+        List<ShadowVariableDescriptor> shadowVariableDescriptorList = variableDescriptor.getPrimaryShadowVariableDescriptorList();
         List<VariableListener> variableListenerList = new ArrayList<VariableListener>(shadowVariableDescriptorList.size());
         // Trigger the build-in shadow variables first: they were registered first
         for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorList) {
