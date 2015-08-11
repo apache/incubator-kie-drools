@@ -16,30 +16,29 @@
 
 package org.drools.compiler.integrationtests;
 
-import java.io.FileWriter;
-import java.util.HashMap;
-
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.SessionConfiguration;
-import org.drools.core.WorkingMemory;
 import org.drools.core.util.debug.SessionInspector;
 import org.drools.core.util.debug.SessionReporter;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.rule.FactHandle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.FileWriter;
+import java.util.HashMap;
 
 /** Run all the tests with the ReteOO engine implementation */
 public class OutOfMemoryTest extends CommonTestMethodBase {
@@ -57,7 +56,7 @@ public class OutOfMemoryTest extends CommonTestMethodBase {
 
         int i = 0;
 
-        SessionConfiguration conf = new SessionConfiguration();
+        SessionConfiguration conf = SessionConfiguration.newInstance();
         conf.setKeepReference( true ); // this is just for documentation purposes, since the default value is "true"
         try {
             for ( i = 0; i < 300000; i++ ) {

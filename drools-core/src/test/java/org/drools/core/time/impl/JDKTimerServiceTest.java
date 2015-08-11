@@ -45,7 +45,7 @@ public class JDKTimerServiceTest {
     
     @Test
     public void testSingleExecutionJob() throws Exception {
-        SessionConfiguration config = new SessionConfiguration();
+        SessionConfiguration config = SessionConfiguration.newInstance();
         config.setClockType(ClockType.REALTIME_CLOCK);
         TimerService timeService = TimerServiceFactory.getTimerService( config );
         Trigger trigger = new DelayedTrigger( 100 );
@@ -58,7 +58,7 @@ public class JDKTimerServiceTest {
     
     @Test
     public void testRepeatedExecutionJob() throws Exception {
-        SessionConfiguration config = new SessionConfiguration();
+        SessionConfiguration config = SessionConfiguration.newInstance();
         config.setClockType(ClockType.REALTIME_CLOCK);
         TimerService timeService = TimerServiceFactory.getTimerService( config );
         Trigger trigger = new DelayedTrigger(  new long[] { 100, 100, 100} );
@@ -72,7 +72,7 @@ public class JDKTimerServiceTest {
     
     @Test
     public void testRepeatedExecutionJobWithRemove() throws Exception {
-        SessionConfiguration config = new SessionConfiguration();
+        SessionConfiguration config = SessionConfiguration.newInstance();
         config.setClockType(ClockType.REALTIME_CLOCK);
         TimerService timeService = TimerServiceFactory.getTimerService( config );
         Trigger trigger = new DelayedTrigger(  new long[] {100, 100, 100, 100, 100, 100, 100, 100} ); 

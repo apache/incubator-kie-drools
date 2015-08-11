@@ -19,6 +19,7 @@ package org.drools.core.impl;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
+import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.base.CalendarsImpl;
 import org.drools.core.base.DroolsQuery;
@@ -56,6 +57,7 @@ import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
+import org.drools.core.event.ProcessEventSupport;
 import org.drools.core.event.RuleEventListenerSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.factmodel.traits.Thing;
@@ -245,7 +247,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     private AtomicLong lastIdleTimestamp;
 
     private InternalProcessRuntime processRuntime;
-    private volatile boolean processRuntimeInitialized = false;
 
     private Map<String, Object> runtimeServices;
 
@@ -267,7 +268,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this(id,
              kBase,
              true,
-             SessionConfiguration.getDefaultInstance(),
+             SessionConfigurationImpl.getDefaultInstance(),
              EnvironmentFactory.newEnvironment());
     }
 
@@ -354,15 +355,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             }
         } else {
             this.globalResolver = new MapGlobalResolver();
-        }
-
-        this.calendars = new CalendarsImpl();
-
-        this.dateFormats = (DateFormats) this.environment.get(EnvironmentName.DATE_FORMATS);
-        if (this.dateFormats == null) {
-            this.dateFormats = new DateFormatsImpl();
-            this.environment.set(EnvironmentName.DATE_FORMATS,
-                                 this.dateFormats);
         }
 
         final RuleBaseConfiguration conf = kBase.getConfiguration();
@@ -460,20 +452,22 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     private InternalProcessRuntime createProcessRuntime() {
-        return ProcessRuntimeFactory.newProcessRuntime(this);
+        InternalProcessRuntime processRuntime = ProcessRuntimeFactory.newProcessRuntime(this);
+        if (processRuntime == null) {
+            processRuntime = DUMMY_PROCESS_RUNTIME;
+            throw new RuntimeException( "There is no ProcessRuntime available: are jBPM libraries missing on classpath?" );
+        }
+        return processRuntime;
     }
 
     public InternalProcessRuntime getProcessRuntime() {
-        if (!processRuntimeInitialized) {
+        if (processRuntime == null) {
             synchronized(this) {
-                if (!processRuntimeInitialized) {
-                    processRuntimeInitialized = true;
+                if (processRuntime == null) {
                     this.processRuntime = createProcessRuntime();
                 }
             }
         }
-        if (this.processRuntime == null)
-            throw new RuntimeException("There is no ProcessRuntime available: are jBPM libraries missing on classpath?");
         return this.processRuntime;
     }
 
@@ -1061,7 +1055,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         timerService = TimerServiceFactory.getTimerService(this.config);
 
-        this.processRuntimeInitialized = false;
         this.processRuntime = null;
 
         initInitialFact(kBase, null);
@@ -1199,10 +1192,21 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public Calendars getCalendars() {
+        if (this.calendars == null) {
+            this.calendars = new CalendarsImpl();
+        }
         return this.calendars;
     }
 
     public DateFormats getDateFormats() {
+        if (this.dateFormats == null) {
+            this.dateFormats = (DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
+            if ( this.dateFormats == null ) {
+                this.dateFormats = new DateFormatsImpl();
+                this.environment.set( EnvironmentName.DATE_FORMATS,
+                                      this.dateFormats );
+            }
+        }
         return this.dateFormats;
     }
 
@@ -2038,4 +2042,112 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public Iterator<? extends PropagationEntry> getActionsIterator() {
         return propagationList.iterator();
     }
+
+    public static final DummyInternalProcessRuntime DUMMY_PROCESS_RUNTIME = new DummyInternalProcessRuntime();
+
+    public static class DummyInternalProcessRuntime implements InternalProcessRuntime {
+        @Override
+        public void dispose() { }
+
+        @Override
+        public void setProcessEventSupport( ProcessEventSupport processEventSupport ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public void clearProcessInstances() {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public void clearProcessInstancesState() {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public ProcessInstance startProcess( String processId, CorrelationKey correlationKey, Map<String, Object> parameters ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public ProcessInstance createProcessInstance( String processId, CorrelationKey correlationKey, Map<String, Object> parameters ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public ProcessInstance getProcessInstance( CorrelationKey correlationKey ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public void addEventListener( ProcessEventListener listener ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public void removeEventListener( ProcessEventListener listener ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public Collection<ProcessEventListener> getProcessEventListeners() {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public ProcessInstance startProcess( String processId ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public ProcessInstance startProcess( String processId, Map<String, Object> parameters ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public ProcessInstance createProcessInstance( String processId, Map<String, Object> parameters ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public ProcessInstance startProcessInstance( long processInstanceId ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public void signalEvent( String type, Object event ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public void signalEvent( String type, Object event, long processInstanceId ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public Collection<ProcessInstance> getProcessInstances() {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public ProcessInstance getProcessInstance( long processInstanceId ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public ProcessInstance getProcessInstance( long processInstanceId, boolean readonly ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public void abortProcessInstance( long processInstanceId ) {
+            throw new UnsupportedOperationException( );
+        }
+
+        @Override
+        public WorkItemManager getWorkItemManager() {
+            throw new UnsupportedOperationException( );
+        }
+    }
+
 }

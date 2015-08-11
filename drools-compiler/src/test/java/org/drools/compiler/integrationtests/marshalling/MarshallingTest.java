@@ -2303,7 +2303,7 @@ public class MarshallingTest extends CommonTestMethodBase {
         impl.addRule( rule );
 
         knowledgeBase.addKnowledgePackages( Collections.singleton( (KnowledgePackage) impl ) );
-        SessionConfiguration config = new SessionConfiguration();
+        SessionConfiguration config = SessionConfiguration.newInstance();
         config.setClockType( ClockType.PSEUDO_CLOCK );
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession( config, KnowledgeBaseFactory.newEnvironment() );
         PseudoClockScheduler scheduler = (PseudoClockScheduler) ksession.<SessionClock> getSessionClock();

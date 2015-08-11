@@ -22,7 +22,6 @@ import org.drools.compiler.kie.util.KieJarChangeSet;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.core.RuleBaseConfiguration;
-import org.drools.core.SessionConfiguration;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -49,8 +48,6 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.api.runtime.conf.BeliefSystemTypeOption;
-import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.ChangeType;
@@ -648,13 +645,9 @@ public class KieContainerImpl
     }
 
     private KieSessionConfiguration getKnowledgeSessionConfiguration(KieSessionModelImpl kSessionModel) {
-        KieSessionConfiguration ksConf = SessionConfiguration.getDefaultInstance();
-        if (!kSessionModel.getClockType().equals( ksConf.getOption( ClockTypeOption.class ) ) ||
-            !kSessionModel.getBeliefSystem().equals( ksConf.getOption( BeliefSystemTypeOption.class ) )) {
-            ksConf = ((SessionConfiguration)ksConf).clone();
-            ksConf.setOption( kSessionModel.getClockType() );
-            ksConf.setOption( kSessionModel.getBeliefSystem() );
-        }
+        KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        ksConf.setOption( kSessionModel.getClockType() );
+        ksConf.setOption( kSessionModel.getBeliefSystem() );
         return ksConf;
     }
 

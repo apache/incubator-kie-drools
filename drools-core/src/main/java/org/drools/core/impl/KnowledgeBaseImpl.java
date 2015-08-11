@@ -1279,7 +1279,7 @@ public class KnowledgeBaseImpl
     }
 
     public StatefulKnowledgeSessionImpl newStatefulSession(boolean keepReference) {
-        SessionConfiguration config = new SessionConfiguration();
+        SessionConfiguration config = SessionConfiguration.newInstance();
         config.setKeepReference( keepReference );
 
         return newStatefulSession( config,
