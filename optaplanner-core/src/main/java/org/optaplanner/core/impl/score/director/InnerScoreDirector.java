@@ -22,6 +22,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -109,7 +110,9 @@ public interface InnerScoreDirector extends ScoreDirector {
      * and known to the {@link SolutionDescriptor}
      * @param planningValue sometimes null
      * @return never null
+     * @deprecated Use a {@link SingletonInverseVariableSupply} instead
      */
+    @Deprecated
     Object getTrailingEntity(GenuineVariableDescriptor chainedVariableDescriptor, Object planningValue);
 
     /**
