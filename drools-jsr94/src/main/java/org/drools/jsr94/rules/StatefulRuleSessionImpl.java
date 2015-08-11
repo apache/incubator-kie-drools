@@ -16,10 +16,13 @@
 
 package org.drools.jsr94.rules;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
+import org.drools.jsr94.rules.repository.RuleExecutionSetRepository;
+import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.FactHandle;
 
 import javax.rules.Handle;
 import javax.rules.InvalidHandleException;
@@ -29,14 +32,10 @@ import javax.rules.RuleExecutionSetNotFoundException;
 import javax.rules.RuleRuntime;
 import javax.rules.RuleSessionCreateException;
 import javax.rules.StatefulRuleSession;
-
-import org.kie.api.runtime.rule.FactHandle;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.jsr94.rules.admin.RuleExecutionSetImpl;
-import org.drools.jsr94.rules.repository.RuleExecutionSetRepository;
-import org.drools.jsr94.rules.repository.RuleExecutionSetRepositoryException;
-import org.kie.api.runtime.KieSession;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * The Drools implementation of the <code>StatefulRuleSession</code> interface
@@ -105,7 +104,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
 
         this.setRuleExecutionSet( ruleSet );
 
-        SessionConfiguration conf = new SessionConfiguration();
+        SessionConfiguration conf = SessionConfiguration.newInstance();
         conf.setKeepReference( true );
         initSession( conf );
     }
@@ -352,7 +351,7 @@ public class StatefulRuleSessionImpl extends AbstractRuleSessionImpl
      */
     public void reset() {
         // stateful rule sessions should not be high load, thus safe to keep references
-        initSession( new SessionConfiguration() );
+        initSession( SessionConfiguration.newInstance() );
     }
 
     public int getType() throws InvalidRuleSessionException {

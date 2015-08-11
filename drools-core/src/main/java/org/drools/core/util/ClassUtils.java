@@ -54,6 +54,12 @@ public final class ClassUtils {
 
     public static final boolean IS_ANDROID;
 
+    private static final Map<String, Class<?>> classes = Collections.synchronizedMap( new HashMap() );
+
+    private static final Map<String, Constructor<?>> constructors = Collections.synchronizedMap( new HashMap() );
+
+    private static final String STAR    = "*";
+
     static {
         PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
 
@@ -74,12 +80,6 @@ public final class ClassUtils {
         IS_ANDROID = isAndroid;
     }
     
-    private static Map<String, Class<?>> classes = Collections.synchronizedMap( new HashMap() );
-
-    private static Map<String, Constructor<?>> constructors = Collections.synchronizedMap( new HashMap() );
-
-    private static final String STAR    = "*";
-
     public static boolean areNullSafeEquals(Object obj1, Object obj2) {
         return obj1 == null ? obj2 == null : obj1.equals(obj2);
     }
@@ -156,8 +156,6 @@ public final class ClassUtils {
     /**
      * This method will attempt to load the specified Class. It uses
      * a syncrhonized HashMap to cache the reflection Class lookup.
-     * @param className
-     * @return
      */
     public static Class<?> loadClass(String className,
                                      ClassLoader classLoader) {
@@ -219,8 +217,6 @@ public final class ClassUtils {
     /**
      * This method will attempt to create an instance of the specified Class. It uses
      * a syncrhonized HashMap to cache the reflection Class lookup.
-     * @param className
-     * @return
      */
     public static Object instantiateObject(String className,
                                            ClassLoader classLoader) {
@@ -238,9 +234,8 @@ public final class ClassUtils {
      * This method will attempt to create an instance of the specified Class. It uses
      * a synchronized HashMap to cache the reflection Class lookup.  It will execute the default
      * constructor with the passed in arguments
-     * @param className
+     * @param className the name of the class
      * @param args  arguments to default constructor
-     * @return
      */
     public static Object instantiateObject(String className,
                                            ClassLoader classLoader, Object...args) {
@@ -264,9 +259,8 @@ public final class ClassUtils {
      * This method will attempt to create an instance of the specified Class. It uses
      * a synchronized HashMap to cache the reflection Class lookup.  It will execute the default
      * constructor with the passed in arguments
-     * @param className
+     * @param className teh name of the class
      * @param args  arguments to default constructor
-     * @return
      */
     public static Object instantiateObject(String className, Object...args) {
         return instantiateObject(className, null, args);
@@ -274,8 +268,6 @@ public final class ClassUtils {
 
     /**
      * Populates the import style pattern map from give comma delimited string
-     * @param patterns
-     * @param str
      */
     public static void addImportStylePatterns(Map<String, Object> patterns,
                                               String str) {
@@ -304,7 +296,7 @@ public final class ClassUtils {
                 patterns.put(qualifiedNamespace, STAR);
             } else {
                 // its a list so add it if it doesn't already exist
-                List<String> list = (List<String>) object;
+                List list = (List) object;
                 if (!list.contains(name)) {
                     list.add(name);
                 }
@@ -314,9 +306,6 @@ public final class ClassUtils {
 
     /**
      * Determines if a given full qualified class name matches any import style patterns.
-     * @param patterns
-     * @param className
-     * @return
      */
     public static boolean isMatched(Map<String, Object> patterns,
                                     String className) {
@@ -348,8 +337,6 @@ public final class ClassUtils {
 
     /**
      * Extracts the package name from the given class object
-     * @param cls
-     * @return
      */
     public static String getPackage(Class<?> cls) {
         // cls.getPackage() sometimes returns null, in which case fall back to string massaging.
@@ -473,7 +460,7 @@ public final class ClassUtils {
         }
     }
 
-    public static boolean isTypeCompatibleWithArgumentType( Class actual, Class formal ) {
+    public static boolean isTypeCompatibleWithArgumentType( Class<?> actual, Class<?> formal ) {
         if ( actual.isPrimitive() && formal.isPrimitive() ) {
             return isConvertible( actual, formal );
         } else if ( actual.isPrimitive() ) {
@@ -485,7 +472,7 @@ public final class ClassUtils {
         }
     }
 
-    public static boolean isConvertible( Class srcPrimitive, Class tgtPrimitive ) {
+    public static boolean isConvertible( Class<?> srcPrimitive, Class<?> tgtPrimitive ) {
         if ( Boolean.TYPE.equals( srcPrimitive ) ) {
             return Boolean.TYPE.equals( tgtPrimitive );
         } else if ( Byte.TYPE.equals( tgtPrimitive ) ) {

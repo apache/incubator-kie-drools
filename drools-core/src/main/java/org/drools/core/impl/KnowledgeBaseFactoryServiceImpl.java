@@ -18,11 +18,12 @@ package org.drools.core.impl;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
+import org.drools.core.SessionConfigurationImpl;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactoryService;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactoryService;
 
 import java.util.Properties;
 import java.util.UUID;
@@ -38,11 +39,11 @@ public class KnowledgeBaseFactoryServiceImpl implements KnowledgeBaseFactoryServ
     }
     
     public KieSessionConfiguration newKnowledgeSessionConfiguration() {
-        return new SessionConfiguration();
+        return SessionConfiguration.newInstance();
     }
         
     public KieSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
-        return new SessionConfiguration(properties);
+        return new SessionConfigurationImpl(properties);
     }
     
     public KnowledgeBase newKnowledgeBase() {

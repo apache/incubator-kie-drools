@@ -20,6 +20,7 @@ import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
+import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.audit.KnowledgeRuntimeLoggerProviderImpl;
 import org.drools.core.command.impl.CommandFactoryServiceImpl;
 import org.drools.core.concurrent.ExecutorProviderImpl;
@@ -193,15 +194,15 @@ public class KieServicesImpl implements InternalKieServices {
     }
 
     public KieSessionConfiguration newKieSessionConfiguration() {
-        return new SessionConfiguration();
+        return SessionConfiguration.newInstance();
     }
 
     public KieSessionConfiguration newKieSessionConfiguration(Properties properties) {
-        return new SessionConfiguration(properties);
+        return new SessionConfigurationImpl(properties);
     }
 
     public KieSessionConfiguration newKieSessionConfiguration(Properties properties, ClassLoader classLoader) {
-        return new SessionConfiguration(properties, classLoader);
+        return new SessionConfigurationImpl(properties, classLoader);
     }
 
     public Environment newEnvironment() {

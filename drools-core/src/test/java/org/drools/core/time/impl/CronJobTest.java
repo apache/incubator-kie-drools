@@ -16,10 +16,6 @@
 
 package org.drools.core.time.impl;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.concurrent.TimeUnit;
-
 import org.drools.core.ClockType;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.time.TimerServiceFactory;
@@ -27,10 +23,14 @@ import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJob;
 import org.drools.core.time.impl.JDKTimerServiceTest.HelloWorldJobContext;
 import org.junit.Test;
 
+import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertEquals;
+
 public class CronJobTest {
     @Test
     public void testCronTriggerJob() throws Exception {
-        SessionConfiguration config = new SessionConfiguration();
+        SessionConfiguration config = SessionConfiguration.newInstance();
         config.setClockType( ClockType.PSEUDO_CLOCK );
         PseudoClockScheduler timeService = (PseudoClockScheduler) TimerServiceFactory.getTimerService( config );
 
