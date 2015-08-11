@@ -195,6 +195,11 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
     }
 
     @Override
+    public boolean hasVariableListener(InnerScoreDirector scoreDirector) {
+        return refVariableDescriptor == null;
+    }
+
+    @Override
     public VariableListener buildVariableListener(InnerScoreDirector scoreDirector) {
         if (refVariableDescriptor != null) {
             throw new IllegalStateException("The shadowVariableDescriptor (" + this

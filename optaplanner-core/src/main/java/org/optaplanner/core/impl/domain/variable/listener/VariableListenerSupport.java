@@ -17,9 +17,14 @@
 package org.optaplanner.core.impl.domain.variable.listener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -35,44 +40,53 @@ public class VariableListenerSupport implements SupplyManager {
 
     protected final InnerScoreDirector scoreDirector;
 
-    protected final Map<VariableDescriptor, List<VariableListener>> variableListenerMap;
-    protected final Map<EntityDescriptor, List<VariableListener>> entityVariableListenerMap;
-
+    protected final Map<VariableDescriptor, List<VariableListenerNotifiable>> sourceVariableToNotifiableMap;
+    protected final Map<EntityDescriptor, List<VariableListenerNotifiable>> sourceEntityToNotifiableMap;
     protected final Map<Demand, Supply> supplyMap;
+    protected int nextGlobalOrder = 0;
+
+    protected SortedMap<VariableListenerNotifiable, Set<VariableListenerNotification>> notificationQueueMap;
 
     public VariableListenerSupport(InnerScoreDirector scoreDirector) {
         this.scoreDirector = scoreDirector;
-        // Order is important, hence LinkedHashMap
-        variableListenerMap = new LinkedHashMap<VariableDescriptor, List<VariableListener>>();
-        entityVariableListenerMap = new LinkedHashMap<EntityDescriptor, List<VariableListener>>();
-        supplyMap = new LinkedHashMap<Demand, Supply>(variableListenerMap.size());
+        sourceVariableToNotifiableMap = new LinkedHashMap<VariableDescriptor, List<VariableListenerNotifiable>>();
+        sourceEntityToNotifiableMap = new LinkedHashMap<EntityDescriptor, List<VariableListenerNotifiable>>();
+        supplyMap = new LinkedHashMap<Demand, Supply>();
     }
 
     public void linkVariableListeners() {
+        notificationQueueMap = new TreeMap<VariableListenerNotifiable, Set<VariableListenerNotification>>();
         for (EntityDescriptor entityDescriptor : scoreDirector.getSolutionDescriptor().getEntityDescriptors()) {
-            List<VariableListener> entityVariableListenerList = new ArrayList<VariableListener>();
-            for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getDeclaredGenuineVariableDescriptors()) {
-                buildVariableListeners(entityVariableListenerList, variableDescriptor);
+            for (VariableDescriptor variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
+                List<VariableListenerNotifiable> variableNotifiableList = new ArrayList<VariableListenerNotifiable>();
+                sourceVariableToNotifiableMap.put(variableDescriptor, variableNotifiableList);
             }
-            for (ShadowVariableDescriptor variableDescriptor : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
-                buildVariableListeners(entityVariableListenerList, variableDescriptor);
+            List<VariableListenerNotifiable> entityNotifiableList = new ArrayList<VariableListenerNotifiable>();
+            sourceEntityToNotifiableMap.put(entityDescriptor, entityNotifiableList);
+        }
+        for (EntityDescriptor entityDescriptor : scoreDirector.getSolutionDescriptor().getEntityDescriptors()) {
+            for (ShadowVariableDescriptor shadowVariableDescriptor : entityDescriptor.getDeclaredShadowVariableDescriptors()) {
+                if (shadowVariableDescriptor.hasVariableListener(scoreDirector)) {
+                    VariableListener variableListener = shadowVariableDescriptor.buildVariableListener(scoreDirector);
+                    supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), variableListener);
+                    int globalOrder = shadowVariableDescriptor.getGlobalShadowOrder();
+                    if (nextGlobalOrder <= globalOrder) {
+                        nextGlobalOrder = globalOrder + 1;
+                    }
+                    VariableListenerNotifiable notifiable = new VariableListenerNotifiable(variableListener, globalOrder);
+                    for (VariableDescriptor source : shadowVariableDescriptor.getSourceVariableDescriptorList()) {
+                        List<VariableListenerNotifiable> variableNotifiableList = sourceVariableToNotifiableMap.get(source);
+                        variableNotifiableList.add(notifiable);
+                        List<VariableListenerNotifiable> entityNotifiableList = sourceEntityToNotifiableMap.get(source.getEntityDescriptor());
+                        if (!entityNotifiableList.contains(notifiable)) {
+                            entityNotifiableList.add(notifiable);
+                        }
+                    }
+                    Set<VariableListenerNotification> notificationQueue = new LinkedHashSet<VariableListenerNotification>();
+                    notificationQueueMap.put(notifiable, notificationQueue);
+                }
             }
-            entityVariableListenerMap.put(entityDescriptor, entityVariableListenerList);
         }
-    }
-
-    public void buildVariableListeners(List<VariableListener> entityVariableListenerList,
-            VariableDescriptor variableDescriptor) {
-        List<ShadowVariableDescriptor> shadowVariableDescriptorList = variableDescriptor.getPrimaryShadowVariableDescriptorList();
-        List<VariableListener> variableListenerList = new ArrayList<VariableListener>(shadowVariableDescriptorList.size());
-        // Trigger the build-in shadow variables first: they were registered first
-        for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptorList) {
-            VariableListener variableListener = shadowVariableDescriptor.buildVariableListener(scoreDirector);
-            variableListenerList.add(variableListener);
-            supplyMap.put(shadowVariableDescriptor.getProvidedDemand(), variableListener);
-        }
-        variableListenerMap.put(variableDescriptor, variableListenerList);
-        entityVariableListenerList.addAll(variableListenerList);
     }
 
     public <S extends Supply> S demand(Demand<S> demand) {
@@ -80,22 +94,19 @@ public class VariableListenerSupport implements SupplyManager {
         if (supply == null) {
             supply = demand.createExternalizedSupply(scoreDirector);
             if (supply instanceof StatefulVariableListener) {
-                StatefulVariableListener statefulVariableListener = (StatefulVariableListener) supply;
-                statefulVariableListener.resetWorkingSolution(scoreDirector);
-                VariableDescriptor sourceVariableDescriptor = statefulVariableListener.getSourceVariableDescriptor();
-                List<VariableListener> variableListenerList = variableListenerMap.get(sourceVariableDescriptor);
-                if (variableListenerList == null) {
-                    variableListenerList = new ArrayList<VariableListener>();
-                    variableListenerMap.put(sourceVariableDescriptor, variableListenerList);
+                StatefulVariableListener variableListener = (StatefulVariableListener) supply;
+                variableListener.resetWorkingSolution(scoreDirector);
+                VariableDescriptor source = variableListener.getSourceVariableDescriptor();
+                VariableListenerNotifiable notifiable = new VariableListenerNotifiable(variableListener, nextGlobalOrder);
+                nextGlobalOrder++;
+                List<VariableListenerNotifiable> variableNotifiableList = sourceVariableToNotifiableMap.get(source);
+                variableNotifiableList.add(notifiable);
+                List<VariableListenerNotifiable> entityNotifiableList = sourceEntityToNotifiableMap.get(source.getEntityDescriptor());
+                if (!entityNotifiableList.contains(notifiable)) {
+                    entityNotifiableList.add(notifiable);
                 }
-                variableListenerList.add(statefulVariableListener);
-                EntityDescriptor entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
-                List<VariableListener> entityVariableListenerList = entityVariableListenerMap.get(entityDescriptor);
-                if (entityVariableListenerList == null) {
-                    entityVariableListenerList = new ArrayList<VariableListener>();
-                    entityVariableListenerMap.put(entityDescriptor, entityVariableListenerList);
-                }
-                entityVariableListenerList.add(statefulVariableListener);
+                Set<VariableListenerNotification> notificationQueue = new LinkedHashSet<VariableListenerNotification>();
+                notificationQueueMap.put(notifiable, notificationQueue);
             }
             supplyMap.put(demand, supply);
         }
@@ -106,77 +117,108 @@ public class VariableListenerSupport implements SupplyManager {
     // Lifecycle methods
     // ************************************************************************
 
-    public void resetWorkingSolution(InnerScoreDirector scoreDirector) {
-        for (List<VariableListener> variableListenerList : variableListenerMap.values()) {
-            for (VariableListener variableListener : variableListenerList) {
-                if (variableListener instanceof StatefulVariableListener) {
-                    ((StatefulVariableListener) variableListener).resetWorkingSolution(scoreDirector);
-                }
+    public void resetWorkingSolution() {
+        for (VariableListenerNotifiable notifiable : notificationQueueMap.keySet()) {
+            VariableListener variableListener = notifiable.getVariableListener();
+            if (variableListener instanceof StatefulVariableListener) {
+                ((StatefulVariableListener) variableListener).resetWorkingSolution(scoreDirector);
             }
         }
     }
 
-    public void clearWorkingSolution(InnerScoreDirector scoreDirector) {
-        for (List<VariableListener> variableListenerList : variableListenerMap.values()) {
-            for (VariableListener variableListener : variableListenerList) {
-                if (variableListener instanceof StatefulVariableListener) {
-                    ((StatefulVariableListener) variableListener).clearWorkingSolution(scoreDirector);
-                }
+    public void clearWorkingSolution() {
+        for (VariableListenerNotifiable notifiable : notificationQueueMap.keySet()) {
+            VariableListener variableListener = notifiable.getVariableListener();
+            if (variableListener instanceof StatefulVariableListener) {
+                ((StatefulVariableListener) variableListener).clearWorkingSolution(scoreDirector);
             }
         }
     }
 
-    public void beforeEntityAdded(InnerScoreDirector scoreDirector, EntityDescriptor entityDescriptor,
-            Object entity) {
-        for (VariableListener variableListener : entityVariableListenerMap.get(entityDescriptor)) {
-            variableListener.beforeEntityAdded(scoreDirector, entity);
+    public void beforeEntityAdded(EntityDescriptor entityDescriptor, Object entity) {
+        List<VariableListenerNotifiable> notifiableList = sourceEntityToNotifiableMap.get(entityDescriptor);
+        for (VariableListenerNotifiable notifiable : notifiableList) {
+            Set<VariableListenerNotification> notificationQueue = notificationQueueMap.get(notifiable);
+            boolean added = notificationQueue.add(
+                    new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_ADDED));
+            if (added) {
+                notifiable.getVariableListener().beforeEntityAdded(scoreDirector, entity);
+            }
         }
     }
 
-    public void afterEntityAdded(InnerScoreDirector scoreDirector, EntityDescriptor entityDescriptor,
-            Object entity) {
-        for (VariableListener variableListener : entityVariableListenerMap.get(entityDescriptor)) {
-            variableListener.afterEntityAdded(scoreDirector, entity);
+    public void afterEntityAdded(EntityDescriptor entityDescriptor, Object entity) {
+        // beforeEntityAdded() has already added  it to the notificationQueue
+    }
+
+    public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
+        List<VariableListenerNotifiable> notifiableList = sourceVariableToNotifiableMap.get(variableDescriptor);
+        for (VariableListenerNotifiable notifiable : notifiableList) {
+            Set<VariableListenerNotification> notificationQueue = notificationQueueMap.get(notifiable);
+            boolean added = notificationQueue.add(
+                    new VariableListenerNotification(entity, VariableListenerNotificationType.VARIABLE_CHANGED));
+            if (added) {
+                notifiable.getVariableListener().beforeVariableChanged(scoreDirector, entity);
+            }
         }
     }
 
-    public void beforeVariableChanged(InnerScoreDirector scoreDirector, VariableDescriptor variableDescriptor,
-            Object entity) {
-        for (VariableListener variableListener : variableListenerMap.get(variableDescriptor)) {
-            variableListener.beforeVariableChanged(scoreDirector, entity);
+    public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
+        // beforeVariableChanged() has already added  it to the notificationQueue
+    }
+
+    public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
+        List<VariableListenerNotifiable> notifiableList = sourceEntityToNotifiableMap.get(entityDescriptor);
+        for (VariableListenerNotifiable notifiable : notifiableList) {
+            Set<VariableListenerNotification> notificationQueue = notificationQueueMap.get(notifiable);
+            boolean added = notificationQueue.add(
+                    new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_REMOVED));
+            if (added) {
+                notifiable.getVariableListener().beforeEntityRemoved(scoreDirector, entity);
+            }
         }
     }
 
-    public void afterVariableChanged(InnerScoreDirector scoreDirector, VariableDescriptor variableDescriptor,
-            Object entity) {
-        for (VariableListener variableListener : variableListenerMap.get(variableDescriptor)) {
-            variableListener.afterVariableChanged(scoreDirector, entity);
+    public void afterEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
+        // beforeEntityRemoved() has already added  it to the notificationQueue
+    }
+
+    public void triggerVariableListenersInNotificationQueues() {
+        for (Map.Entry<VariableListenerNotifiable, Set<VariableListenerNotification>> entry : notificationQueueMap.entrySet()) {
+            VariableListenerNotifiable notifiable = entry.getKey();
+            Set<VariableListenerNotification> notificationQueue = entry.getValue();
+            VariableListener variableListener = notifiable.getVariableListener();
+            for (Iterator<VariableListenerNotification> it = notificationQueue.iterator(); it.hasNext(); ) {
+                VariableListenerNotification notification = it.next();
+                Object entity = notification.getEntity();
+                switch (notification.getType()) {
+                    case ENTITY_ADDED:
+                        variableListener.afterEntityAdded(scoreDirector, entity);
+                        break;
+                    case VARIABLE_CHANGED:
+                        variableListener.afterVariableChanged(scoreDirector, entity);
+                        break;
+                    case ENTITY_REMOVED:
+                        variableListener.afterEntityRemoved(scoreDirector, entity);
+                        break;
+                    default:
+                        throw new IllegalStateException("The variableListenerNotificationType ("
+                                + notification.getType() + ") is not implemented.");
+                }
+                it.remove();
+            }
         }
     }
 
-    public void beforeEntityRemoved(InnerScoreDirector scoreDirector, EntityDescriptor entityDescriptor,
-            Object entity) {
-        for (VariableListener variableListener : entityVariableListenerMap.get(entityDescriptor)) {
-            variableListener.beforeEntityRemoved(scoreDirector, entity);
-        }
-    }
-
-    public void afterEntityRemoved(InnerScoreDirector scoreDirector, EntityDescriptor entityDescriptor,
-            Object entity) {
-        for (VariableListener variableListener : entityVariableListenerMap.get(entityDescriptor)) {
-            variableListener.afterEntityRemoved(scoreDirector, entity);
-        }
-    }
-
-    public void triggerAllVariableListeners(InnerScoreDirector scoreDirector) {
+    public void triggerAllVariableListeners() {
         SolutionDescriptor solutionDescriptor = scoreDirector.getSolutionDescriptor();
         List<Object> entityList = scoreDirector.getWorkingEntityList();
         for (Object entity : entityList) {
             EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
             for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
-                beforeVariableChanged(scoreDirector, variableDescriptor, entity);
+                beforeVariableChanged(variableDescriptor, entity);
                 // No change
-                afterVariableChanged(scoreDirector, variableDescriptor, entity);
+                afterVariableChanged(variableDescriptor, entity);
             }
         }
     }

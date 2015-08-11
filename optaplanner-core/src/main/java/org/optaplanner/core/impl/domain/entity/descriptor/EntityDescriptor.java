@@ -81,6 +81,7 @@ public class EntityDescriptor {
     // Caches the inherited and declared variable descriptors
     private Map<String, GenuineVariableDescriptor> effectiveGenuineVariableDescriptorMap;
     private Map<String, ShadowVariableDescriptor> effectiveShadowVariableDescriptorMap;
+    private Map<String, VariableDescriptor> effectiveVariableDescriptorMap;
 
     public EntityDescriptor(SolutionDescriptor solutionDescriptor, Class<?> entityClass) {
         this.solutionDescriptor = solutionDescriptor;
@@ -304,6 +305,10 @@ public class EntityDescriptor {
         }
         effectiveGenuineVariableDescriptorMap.putAll(declaredGenuineVariableDescriptorMap);
         effectiveShadowVariableDescriptorMap.putAll(declaredShadowVariableDescriptorMap);
+        effectiveVariableDescriptorMap = new LinkedHashMap<String, VariableDescriptor>(
+                effectiveGenuineVariableDescriptorMap.size() + effectiveShadowVariableDescriptorMap.size());
+        effectiveVariableDescriptorMap.putAll(effectiveGenuineVariableDescriptorMap);
+        effectiveVariableDescriptorMap.putAll(effectiveShadowVariableDescriptorMap);
     }
 
     // ************************************************************************
@@ -346,10 +351,6 @@ public class EntityDescriptor {
         return effectiveGenuineVariableDescriptorMap;
     }
 
-    public Map<String, ShadowVariableDescriptor> getShadowVariableDescriptorMap() {
-        return effectiveShadowVariableDescriptorMap;
-    }
-
     public Collection<GenuineVariableDescriptor> getGenuineVariableDescriptors() {
         return effectiveGenuineVariableDescriptorMap.values();
     }
@@ -362,12 +363,32 @@ public class EntityDescriptor {
         return effectiveGenuineVariableDescriptorMap.get(variableName);
     }
 
+    public Map<String, ShadowVariableDescriptor> getShadowVariableDescriptorMap() {
+        return effectiveShadowVariableDescriptorMap;
+    }
+
     public boolean hasShadowVariableDescriptor(String variableName) {
         return effectiveShadowVariableDescriptorMap.containsKey(variableName);
     }
 
     public ShadowVariableDescriptor getShadowVariableDescriptor(String variableName) {
         return effectiveShadowVariableDescriptorMap.get(variableName);
+    }
+
+    public Map<String, VariableDescriptor> getVariableDescriptorMap() {
+        return effectiveVariableDescriptorMap;
+    }
+
+    public Collection<VariableDescriptor> getVariableDescriptors() {
+        return effectiveVariableDescriptorMap.values();
+    }
+
+    public boolean hasVariableDescriptor(String variableName) {
+        return effectiveVariableDescriptorMap.containsKey(variableName);
+    }
+
+    public VariableDescriptor getVariableDescriptor(String variableName) {
+        return effectiveVariableDescriptorMap.get(variableName);
     }
 
     public Collection<GenuineVariableDescriptor> getDeclaredGenuineVariableDescriptors() {
@@ -384,14 +405,6 @@ public class EntityDescriptor {
         variableDescriptors.addAll(declaredGenuineVariableDescriptorMap.values());
         variableDescriptors.addAll(declaredShadowVariableDescriptorMap.values());
         return variableDescriptors;
-    }
-
-    public VariableDescriptor getVariableDescriptor(String variableName) {
-        VariableDescriptor variableDescriptor = effectiveGenuineVariableDescriptorMap.get(variableName);
-        if (variableDescriptor == null) {
-            variableDescriptor = effectiveShadowVariableDescriptorMap.get(variableName);
-        }
-        return variableDescriptor;
     }
 
     public String buildInvalidVariableNameExceptionMessage(String variableName) {
@@ -436,7 +449,7 @@ public class EntityDescriptor {
         return solutionDescriptor.getEntityListByEntityClass(solution, entityClass);
     }
 
-    public long getVariableCount() {
+    public long getGenuineVariableCount() {
         return effectiveGenuineVariableDescriptorMap.size();
     }
 

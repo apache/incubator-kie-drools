@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInvers
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListenerSupport;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
+import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -122,7 +123,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     public void setWorkingSolution(Solution workingSolution) {
         this.workingSolution = workingSolution;
-        variableListenerSupport.resetWorkingSolution(this);
+        variableListenerSupport.resetWorkingSolution();
         setWorkingEntityListDirty();
     }
 
@@ -183,6 +184,20 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         return getSolutionDescriptor().countUninitializedVariables(workingSolution);
     }
 
+    @Override
+    public void doMove(Move move) {
+        move.doMove(this);
+        variableListenerSupport.triggerVariableListenersInNotificationQueues();
+    }
+
+    @Override
+    public void doMoves(Collection<Move> moves) {
+        for (Move move : moves) {
+            move.doMove(this);
+        }
+        variableListenerSupport.triggerVariableListenersInNotificationQueues();
+    }
+
     protected void setCalculatedScore(Score score) {
         workingSolution.setScore(score);
         calculateCount++;
@@ -198,7 +213,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void dispose() {
-        variableListenerSupport.clearWorkingSolution(this);
+        variableListenerSupport.clearWorkingSolution();
     }
 
     // TODO remove this method and use the SingletonInverseVariableSupply directly
@@ -240,22 +255,22 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void beforeEntityAdded(EntityDescriptor entityDescriptor, Object entity) {
-        variableListenerSupport.beforeEntityAdded(this, entityDescriptor, entity);
+        variableListenerSupport.beforeEntityAdded(entityDescriptor, entity);
     }
 
     public void afterEntityAdded(EntityDescriptor entityDescriptor, Object entity) {
-        variableListenerSupport.afterEntityAdded(this, entityDescriptor, entity);
+        variableListenerSupport.afterEntityAdded(entityDescriptor, entity);
         if (!allChangesWillBeUndoneBeforeStepEnds) {
             setWorkingEntityListDirty();
         }
     }
 
     public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
-        variableListenerSupport.beforeVariableChanged(this, variableDescriptor, entity);
+        variableListenerSupport.beforeVariableChanged(variableDescriptor, entity);
     }
 
     public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
-        variableListenerSupport.afterVariableChanged(this, variableDescriptor, entity);
+        variableListenerSupport.afterVariableChanged(variableDescriptor, entity);
     }
 
     public void changeVariableFacade(VariableDescriptor variableDescriptor, Object entity, Object newValue) {
@@ -265,11 +280,11 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
-        variableListenerSupport.beforeEntityRemoved(this, entityDescriptor, entity);
+        variableListenerSupport.beforeEntityRemoved(entityDescriptor, entity);
     }
 
     public void afterEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
-        variableListenerSupport.afterEntityRemoved(this, entityDescriptor, entity);
+        variableListenerSupport.afterEntityRemoved(entityDescriptor, entity);
         if (!allChangesWillBeUndoneBeforeStepEnds) {
             setWorkingEntityListDirty();
         }
@@ -284,7 +299,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void afterProblemFactAdded(Object problemFact) {
-        variableListenerSupport.resetWorkingSolution(this); // TODO do not nuke it
+        variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
     }
 
     public void beforeProblemFactChanged(Object problemFact) {
@@ -292,7 +307,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void afterProblemFactChanged(Object problemFact) {
-        variableListenerSupport.resetWorkingSolution(this); // TODO do not nuke it
+        variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
     }
 
     public void beforeProblemFactRemoved(Object problemFact) {
@@ -300,7 +315,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void afterProblemFactRemoved(Object problemFact) {
-        variableListenerSupport.resetWorkingSolution(this); // TODO do not nuke it
+        variableListenerSupport.resetWorkingSolution(); // TODO do not nuke it
     }
 
     // ************************************************************************
@@ -318,7 +333,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     public void assertVariableListenersDoNotAffectWorkingScore(Score expectedWorkingScore) {
-        variableListenerSupport.triggerAllVariableListeners(this);
+        variableListenerSupport.triggerAllVariableListeners();
         Score workingScore = calculateScore();
         if (!expectedWorkingScore.equals(workingScore)) {
             throw new IllegalStateException(

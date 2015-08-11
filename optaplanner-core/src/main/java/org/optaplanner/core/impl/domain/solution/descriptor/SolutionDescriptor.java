@@ -533,12 +533,12 @@ public class SolutionDescriptor {
      * @param solution never null
      * @return {@code >= 0}
      */
-    public long getVariableCount(Solution solution) {
+    public long getGenuineVariableCount(Solution solution) {
         long variableCount = 0L;
         for (Iterator<Object> it = extractAllEntitiesIterator(solution); it.hasNext();) {
             Object entity = it.next();
             EntityDescriptor entityDescriptor = findEntityDescriptorOrFail(entity.getClass());
-            variableCount += entityDescriptor.getVariableCount();
+            variableCount += entityDescriptor.getGenuineVariableCount();
         }
         return variableCount;
     }

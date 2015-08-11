@@ -280,7 +280,7 @@ public class SolutionBusiness {
             return;
         }
         logger.info("Doing user move ({}).", move);
-        move.doMove(guiScoreDirector);
+        guiScoreDirector.doMove(move);
         guiScoreDirector.calculateScore();
     }
 

@@ -57,6 +57,10 @@ public abstract class ShadowVariableDescriptor extends VariableDescriptor {
      */
     public abstract Demand getProvidedDemand();
 
+    public boolean hasVariableListener(InnerScoreDirector scoreDirector) {
+        return true;
+    }
+
     /**
      * @param scoreDirector never null
      * @return never null

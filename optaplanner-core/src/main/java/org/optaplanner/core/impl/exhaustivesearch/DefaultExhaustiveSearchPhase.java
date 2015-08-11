@@ -207,9 +207,7 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
         Collections.reverse(newMoveList);
         restoreMoveList.addAll(newMoveList);
         ScoreDirector scoreDirector = phaseScope.getScoreDirector();
-        for (Move restoreMove : restoreMoveList) {
-            restoreMove.doMove(scoreDirector);
-        }
+        scoreDirector.doMoves(restoreMoveList);
         // there is no need to recalculate the score, but we still need to set it
         phaseScope.getWorkingSolution().setScore(stepScope.getStartingStepScore());
         if (assertWorkingSolutionScoreFromScratch) {

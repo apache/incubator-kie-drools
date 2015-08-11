@@ -23,6 +23,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
+import org.optaplanner.core.impl.heuristic.move.Move;
 
 /**
  * The ScoreDirector holds the {@link Solution workingSolution}
@@ -52,6 +53,10 @@ public interface ScoreDirector {
      * @param workingSolution never null
      */
     void setWorkingSolution(Solution workingSolution);
+
+    void doMove(Move move);
+
+    void doMoves(Collection<Move> moves);
 
     /**
      * Calculates the {@link Score} and updates the {@link Solution workingSolution} accordingly.

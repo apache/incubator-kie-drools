@@ -137,9 +137,9 @@ public class ExhaustiveSearchDecider implements ExhaustiveSearchPhaseLifecycleLi
         Move move = moveNode.getMove();
         Move undoMove = move.createUndoMove(scoreDirector);
         moveNode.setUndoMove(undoMove);
-        move.doMove(scoreDirector);
+        scoreDirector.doMove(move);
         processMove(stepScope, moveNode);
-        undoMove.doMove(scoreDirector);
+        scoreDirector.doMove(undoMove);
         if (assertExpectedUndoMoveScore) {
             ExhaustiveSearchPhaseScope phaseScope = stepScope.getPhaseScope();
             // In BRUTE_FORCE a stepScore can be null because it was not calculated
