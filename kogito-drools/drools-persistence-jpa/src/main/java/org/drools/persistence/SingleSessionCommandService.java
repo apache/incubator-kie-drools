@@ -86,7 +86,7 @@ public class SingleSessionCommandService
                                        KieSessionConfiguration conf,
                                        Environment env) {
         if ( conf == null ) {
-            conf = new SessionConfiguration();
+            conf = SessionConfiguration.newInstance();
         }
         this.env = env;
 
@@ -159,7 +159,7 @@ public class SingleSessionCommandService
                                        KieSessionConfiguration conf,
                                        Environment env) {
         if ( conf == null ) {
-            conf = new SessionConfiguration();
+            conf = SessionConfiguration.newInstance();
         }
 
         this.env = env;

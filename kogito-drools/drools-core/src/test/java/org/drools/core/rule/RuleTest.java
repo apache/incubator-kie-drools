@@ -16,20 +16,21 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.ClockType;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.WorkingMemory;
+import org.drools.core.base.EnabledBoolean;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.time.impl.PseudoClockScheduler;
+import org.junit.Test;
+
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.core.SessionConfiguration;
-import org.drools.core.WorkingMemory;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.core.ClockType;
-import org.drools.core.base.EnabledBoolean;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.time.impl.PseudoClockScheduler;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class RuleTest {
 
@@ -130,7 +131,7 @@ public class RuleTest {
 
     @Test
     public void testTimeMachine() {
-        SessionConfiguration conf = new SessionConfiguration();
+        SessionConfiguration conf = SessionConfiguration.newInstance();
         conf.setClockType( ClockType.PSEUDO_CLOCK );
         WorkingMemory wm = new KnowledgeBaseImpl("x", null).newStatefulSession(conf, null);
         

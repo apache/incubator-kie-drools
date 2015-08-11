@@ -60,7 +60,7 @@ public class KnowledgeStoreServiceImpl
                                                   KieSessionConfiguration configuration,
                                                   Environment environment) {
         if ( configuration == null ) {
-            configuration = new SessionConfiguration();
+            configuration = SessionConfiguration.newInstance();
         }
 
         if ( environment == null ) {
@@ -80,7 +80,7 @@ public class KnowledgeStoreServiceImpl
                                                    KieSessionConfiguration configuration,
                                                    Environment environment) {
         if ( configuration == null ) {
-            configuration = new SessionConfiguration();
+            configuration = SessionConfiguration.newInstance();
         }
 
         if ( environment == null ) {
@@ -101,7 +101,7 @@ public class KnowledgeStoreServiceImpl
             KieSessionConfiguration configuration,
             Environment environment) {
         if ( configuration == null ) {
-            configuration = new SessionConfiguration();
+            configuration = SessionConfiguration.newInstance();
         }
 
         if ( environment == null ) {
@@ -187,9 +187,9 @@ public class KnowledgeStoreServiceImpl
     }
 
     private KieSessionConfiguration mergeConfig(KieSessionConfiguration configuration) {
-        ((SessionConfiguration) configuration).addDefaultProperties(configProps);
-        configuration.setOption(TimerJobFactoryOption.get("jpa"));
-        return configuration;
+        KieSessionConfiguration merged = ((SessionConfiguration) configuration).addDefaultProperties( configProps );
+        merged.setOption(TimerJobFactoryOption.get("jpa"));
+        return merged;
     }
 
     public long getStatefulKnowledgeSessionId(StatefulKnowledgeSession ksession) {

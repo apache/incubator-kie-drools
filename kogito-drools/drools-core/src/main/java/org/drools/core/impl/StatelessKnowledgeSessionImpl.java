@@ -17,6 +17,7 @@
 package org.drools.core.impl;
 
 import org.drools.core.SessionConfiguration;
+import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.base.MapGlobalResolver;
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.FixedKnowledgeCommandContext;
@@ -33,18 +34,7 @@ import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.kie.api.KieBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
-import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.AgendaGroupPoppedEvent;
-import org.kie.api.event.rule.AgendaGroupPushedEvent;
-import org.kie.api.event.rule.BeforeMatchFiredEvent;
-import org.kie.api.event.rule.MatchCancelledEvent;
-import org.kie.api.event.rule.MatchCreatedEvent;
-import org.kie.api.event.rule.ObjectDeletedEvent;
-import org.kie.api.event.rule.ObjectInsertedEvent;
-import org.kie.api.event.rule.ObjectUpdatedEvent;
-import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
-import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
@@ -100,7 +90,7 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
                                          final KieSessionConfiguration conf) {
         this.kBase = kBase;
         this.kagent = kagent;
-        this.conf = (conf != null) ? conf : SessionConfiguration.getDefaultInstance();
+        this.conf = (conf != null) ? conf : SessionConfigurationImpl.getDefaultInstance();
         this.environment = EnvironmentFactory.newEnvironment();
         this.wmFactory = kBase.getConfiguration().getComponentFactory().getWorkingMemoryFactory();
     }
@@ -149,18 +139,6 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
             for( Map.Entry<String, Channel> entry : this.channels.entrySet() ) {
                 ksession.registerChannel( entry.getKey(), entry.getValue() );
             }
-
-//            final InternalFactHandle handle = wm.getFactHandleFactory().newFactHandle( InitialFactImpl.getInstance(),
-//                                                                                       wm.getObjectTypeConfigurationRegistry().getObjectTypeConf( EntryPointId.DEFAULT,
-//                                                                                                                                                  InitialFactImpl.getInstance() ),
-//                                                                                       wm,
-//                                                                                       wm );
-//
-//            wm.queueWorkingMemoryAction( new WorkingMemoryReteAssertAction( handle,
-//                                                                            false,
-//                                                                            true,
-//                                                                            null,
-//                                                                            null ) );
 
             return ksession;
         } finally {
@@ -398,50 +376,5 @@ public class StatelessKnowledgeSessionImpl extends AbstractRuntime
             }
         }
         ksession.dispose();
-    }
-
-    private static class AgendaEventListenerPlaceholder implements AgendaEventListener {
-
-        @Override
-        public void matchCreated(MatchCreatedEvent event) { }
-
-        @Override
-        public void matchCancelled(MatchCancelledEvent event) { }
-
-        @Override
-        public void beforeMatchFired(BeforeMatchFiredEvent event) { }
-
-        @Override
-        public void afterMatchFired(AfterMatchFiredEvent event) { }
-
-        @Override
-        public void agendaGroupPopped(AgendaGroupPoppedEvent event) { }
-
-        @Override
-        public void agendaGroupPushed(AgendaGroupPushedEvent event) { }
-
-        @Override
-        public void beforeRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) { }
-
-        @Override
-        public void afterRuleFlowGroupActivated(RuleFlowGroupActivatedEvent event) { }
-
-        @Override
-        public void beforeRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) { }
-
-        @Override
-        public void afterRuleFlowGroupDeactivated(RuleFlowGroupDeactivatedEvent event) { }
-    }
-
-    private static class RuleRuntimeEventListenerPlaceholder implements RuleRuntimeEventListener {
-
-        @Override
-        public void objectInserted(ObjectInsertedEvent event) { }
-
-        @Override
-        public void objectUpdated(ObjectUpdatedEvent event) { }
-
-        @Override
-        public void objectDeleted(ObjectDeletedEvent event) { }
     }
 }

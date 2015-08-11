@@ -100,7 +100,7 @@ public class StreamsTest extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBase("test_EntryPoint.drl");
         //final RuleBase ruleBase = loadRuleBase( reader );
 
-        KieSessionConfiguration conf = new SessionConfiguration();
+        KieSessionConfiguration conf = SessionConfiguration.newInstance();
         ( (SessionConfiguration) conf ).setClockType( ClockType.PSEUDO_CLOCK );
         StatefulKnowledgeSession session = kbase.newStatefulKnowledgeSession( conf,
                                                                               null );
