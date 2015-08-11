@@ -595,7 +595,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
 		    KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 		    kbase.addKnowledgePackages((Collection) Arrays.asList(builder.getPackages()));
 		    
-		    SessionConfiguration conf = new SessionConfiguration();
+		    SessionConfiguration conf = SessionConfiguration.newInstance();
 		    conf.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );  
         
 		    session = kbase.newStatefulKnowledgeSession(conf, null);

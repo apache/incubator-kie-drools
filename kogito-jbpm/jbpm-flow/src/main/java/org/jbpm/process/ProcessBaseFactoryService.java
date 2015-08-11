@@ -16,17 +16,17 @@
 
 package org.jbpm.process;
 
-import java.util.Properties;
-
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.impl.EnvironmentFactory;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactoryService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.KieSessionConfiguration;
+
+import java.util.Properties;
 
 public class ProcessBaseFactoryService implements KnowledgeBaseFactoryService {
 
@@ -39,11 +39,11 @@ public class ProcessBaseFactoryService implements KnowledgeBaseFactoryService {
     }        
     
     public KieSessionConfiguration newKnowledgeSessionConfiguration() {
-        return new SessionConfiguration();
+        return SessionConfiguration.newInstance();
     }
         
     public KieSessionConfiguration newKnowledgeSessionConfiguration(Properties properties) {
-        return new SessionConfiguration(properties);
+        return SessionConfiguration.newInstance(properties);
     }        
     
     public KnowledgeBase newKnowledgeBase() {       

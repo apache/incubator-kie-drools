@@ -16,15 +16,15 @@
 
 package org.jbpm.process.audit;
 
-import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
-
-import java.util.Properties;
-
 import org.drools.core.SessionConfiguration;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.util.Properties;
+
+import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
 
 /**
  * This class tests the following classes:
@@ -45,7 +45,7 @@ public class WorkingMemoryDbLoggerWithStatefulSessionTest extends AbstractWorkin
             Properties properties = new Properties();
             properties.put("drools.processInstanceManagerFactory", "org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory");
             properties.put("drools.processSignalManagerFactory", "org.jbpm.process.instance.event.DefaultSignalManagerFactory");
-            SessionConfiguration config = new SessionConfiguration(properties);
+            SessionConfiguration config = SessionConfiguration.newInstance(properties);
             session = kbase.newStatefulKnowledgeSession(config, createEnvironment(context));
             
             new JPAWorkingMemoryDbLogger(session);

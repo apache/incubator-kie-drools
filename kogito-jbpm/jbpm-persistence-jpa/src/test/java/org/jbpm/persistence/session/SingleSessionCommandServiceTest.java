@@ -15,19 +15,6 @@
 
 package org.jbpm.persistence.session;
 
-import static org.jbpm.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
-
-import javax.naming.InitialContext;
-import javax.transaction.UserTransaction;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.TimerJobFactoryType;
@@ -73,6 +60,18 @@ import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.naming.InitialContext;
+import javax.transaction.UserTransaction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
+
+import static org.jbpm.persistence.util.PersistenceUtil.*;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class SingleSessionCommandServiceTest extends AbstractBaseTest {
@@ -122,7 +121,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
                                 JPASignalManagerFactory.class.getName() );
         properties.setProperty( "drools.timerService",
                                 JpaJDKTimerService.class.getName() );
-        SessionConfiguration config = new SessionConfiguration( properties );
+        SessionConfiguration config = SessionConfiguration.newInstance( properties );
 
         SingleSessionCommandService service = new SingleSessionCommandService( kbase,
                                                                                config,
@@ -236,7 +235,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
                                 JPASignalManagerFactory.class.getName() );
         properties.setProperty( "drools.timerService",
                                 JpaJDKTimerService.class.getName() );
-        SessionConfiguration config = new SessionConfiguration( properties );
+        SessionConfiguration config = SessionConfiguration.newInstance( properties );
 
         SingleSessionCommandService service = new SingleSessionCommandService( kbase,
                                                                                config,
@@ -434,7 +433,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
                                 JPASignalManagerFactory.class.getName() );
         properties.setProperty( "drools.timerService",
                                 JpaJDKTimerService.class.getName() );
-        SessionConfiguration config = new SessionConfiguration( properties );
+        SessionConfiguration config = SessionConfiguration.newInstance( properties );
 
         KnowledgeBase ruleBase = KnowledgeBaseFactory.newKnowledgeBase();
         KnowledgePackage pkg = getProcessSubProcess();
@@ -620,7 +619,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         properties.setProperty( "drools.processSignalManagerFactory",
                                 JPASignalManagerFactory.class.getName() );
         
-        SessionConfiguration config = new SessionConfiguration( properties );
+        SessionConfiguration config = SessionConfiguration.newInstance( properties );
         config.setOption( TimerJobFactoryOption.get(TimerJobFactoryType.JPA.getId()) );
 
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
@@ -725,7 +724,7 @@ public class SingleSessionCommandServiceTest extends AbstractBaseTest {
         properties.setProperty( "drools.processSignalManagerFactory",
                                 JPASignalManagerFactory.class.getName() );
 
-        SessionConfiguration config = new SessionConfiguration( properties );
+        SessionConfiguration config = SessionConfiguration.newInstance( properties );
         config.setOption( TimerJobFactoryOption.get(TimerJobFactoryType.JPA.getId()) );
         
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();

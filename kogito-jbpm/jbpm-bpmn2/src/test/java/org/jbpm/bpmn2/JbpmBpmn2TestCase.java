@@ -15,30 +15,8 @@ limitations under the License.*/
 
 package org.jbpm.bpmn2;
 
-import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
-import static org.kie.api.runtime.EnvironmentName.OBJECT_MARSHALLING_STRATEGIES;
-import static org.kie.api.runtime.EnvironmentName.TRANSACTION_MANAGER;
-import static org.kie.api.runtime.EnvironmentName.USE_PESSIMISTIC_LOCKING;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
-import java.lang.reflect.Method;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.transaction.Status;
-import javax.transaction.Transaction;
-
+import bitronix.tm.TransactionManagerServices;
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
@@ -112,8 +90,25 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import bitronix.tm.TransactionManagerServices;
-import bitronix.tm.resource.jdbc.PoolingDataSource;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.transaction.Status;
+import javax.transaction.Transaction;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.StringReader;
+import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import static org.kie.api.runtime.EnvironmentName.*;
 
 /**
  * Base test case for the jbpm-bpmn2 module.
@@ -466,7 +461,7 @@ public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
                     DefaultSignalManagerFactory.class.getName());
             defaultProps.setProperty("drools.processInstanceManagerFactory",
                     DefaultProcessInstanceManagerFactory.class.getName());
-            conf = new SessionConfiguration(defaultProps);
+            conf = SessionConfiguration.newInstance(defaultProps);
             conf.setOption(ForceEagerActivationOption.YES);
             result = (StatefulKnowledgeSession) kbase.newKieSession(conf, env);
             logger = new WorkingMemoryInMemoryLogger(result);

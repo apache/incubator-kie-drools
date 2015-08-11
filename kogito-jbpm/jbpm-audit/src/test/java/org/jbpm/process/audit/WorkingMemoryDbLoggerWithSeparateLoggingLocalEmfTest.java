@@ -16,13 +16,6 @@
 
 package org.jbpm.process.audit;
 
-import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
-
-import java.util.Properties;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import org.drools.core.SessionConfiguration;
 import org.jbpm.process.audit.strategy.PersistenceStrategyType;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
@@ -35,6 +28,12 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
+
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import java.util.Properties;
+
+import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
 
 /**
  * This class tests the following classes: 
@@ -72,7 +71,7 @@ public class WorkingMemoryDbLoggerWithSeparateLoggingLocalEmfTest extends Abstra
             properties.put("drools.processInstanceManagerFactory", "org.jbpm.persistence.processinstance.JPAProcessInstanceManagerFactory");
             properties.put("drools.processSignalManagerFactory", "org.jbpm.persistence.processinstance.JPASignalManagerFactory");
 
-            KieSessionConfiguration conf = (KieSessionConfiguration) new SessionConfiguration(properties);
+            KieSessionConfiguration conf = SessionConfiguration.newInstance(properties);
             Environment env = createEnvironment(context);
             env.set("IS_JTA_TRANSACTION", false);
             ksession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, conf, env);
