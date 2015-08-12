@@ -22,6 +22,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Map;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -64,14 +65,18 @@ public class JaxbContent implements Content {
         }
         this.id = content.getId();
         this.content = content.getContent();
-        try {
-            Object unmarshalledContent = ContentMarshallerHelper.unmarshall(content.getContent(), null);
-            if( unmarshalledContent != null && unmarshalledContent instanceof Map ) { 
-               contentMap = (Map<String, Object>) unmarshalledContent;
+        if( content instanceof JaxbContent ) { 
+            this.contentMap = ((JaxbContent) content).getContentMap();
+        } else { 
+            try {
+                Object unmarshalledContent = ContentMarshallerHelper.unmarshall(content.getContent(), null);
+                if( unmarshalledContent != null && unmarshalledContent instanceof Map ) { 
+                    contentMap = (Map<String, Object>) unmarshalledContent;
+                }
+            } catch (Exception e) {
+                // don't fail in case of unmarshalling problem as it might be content not handled via jaxb 
+                // Ļe.g. custom classes, non map based etc
             }
-        } catch (Exception e) {
-            // don't fail in case of unmarshalling problem as it might be content not handled via jaxb 
-            // Ļe.g. custom classes, non map based etc
         }
     }
     
