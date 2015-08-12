@@ -36,6 +36,7 @@
   <xsd:element name="kbase">
     <xsd:complexType>
       <xsd:sequence>
+        <xsd:element ref="ruleTemplate" minOccurs="0" maxOccurs="unbounded"/>
         <xsd:element ref="ksession" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
       <xsd:attribute name="name" use="required" type="xsd:ID"/>
@@ -46,6 +47,15 @@
       <xsd:attribute name="equalsBehavior" type="insertBehaviorEnum"/>
       <xsd:attribute name="eventProcessingMode" type="eventModeEnum"/>
       <xsd:attribute name="declarativeAgenda" type="declarativeAgendaEnum"/>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="ruleTemplate">
+    <xsd:complexType>
+      <xsd:attribute name="dtable" use="required" type="xsd:string"/>
+      <xsd:attribute name="template" use="required" type="xsd:string"/>
+      <xsd:attribute name="row" use="required" type="xsd:int"/>
+      <xsd:attribute name="col" use="required" type="xsd:int"/>
     </xsd:complexType>
   </xsd:element>
 
@@ -67,7 +77,6 @@
       <xsd:attribute name="beliefSystem" type="beliefSystemEnum"/>
     </xsd:complexType>
   </xsd:element>
-
 
   <xsd:element name="consoleLogger">
     <xsd:complexType>
