@@ -16,17 +16,6 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
@@ -75,8 +64,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class RuleModelDRLPersistenceUnmarshallingTest {
 
@@ -1039,6 +1040,26 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( 1, m.lhs.length );
         assertTrue( m.lhs[ 0 ] instanceof FreeFormLine );
         assertEquals( "eval( true )", ( (FreeFormLine) m.lhs[ 0 ] ).getText() );
+    }
+
+    @Test
+    public void testEval2() {
+        String drl = "rule rule1\n"
+                + "when\n"
+                + "Double( eval( functionTrue() && functionFalse()  ) )\n"
+                + "then\n"
+                + "end";
+
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
+                Collections.EMPTY_LIST,
+                dmo);
+
+        assertNotNull(m);
+        assertEquals(1, m.lhs.length);
+        assertTrue(m.lhs[0] instanceof FactPattern);
+        SingleFieldConstraint constraint = (SingleFieldConstraint) ((FactPattern) m.lhs[0]).getConstraint(0);
+        assertEquals("functionTrue() && functionFalse()", constraint.getValue());
+        assertEquals(BaseSingleFieldConstraint.TYPE_PREDICATE, constraint.getConstraintValueType());
     }
 
     @Test
