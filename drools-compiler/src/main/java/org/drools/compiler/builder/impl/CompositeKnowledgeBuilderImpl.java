@@ -304,6 +304,7 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResource(packages, ResourceType.SCARD, SCARD_TO_PKG_DESCR);
         buildResource(packages, ResourceType.TDRL, DRL_TO_PKG_DESCR);
         buildResource(packages, ResourceType.TEMPLATE, TEMPLATE_TO_PKG_DESCR);
+        this.resourcesByType.remove(ResourceType.DRT); // drt is a template for dtables but doesn't have to be built on its own
         return packages.values();
     }
 
@@ -330,7 +331,9 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         if (packageDescr != null) {
             CompositePackageDescr compositePackageDescr = packages.get(packageDescr.getNamespace());
             if (compositePackageDescr == null) {
-                compositePackageDescr = new CompositePackageDescr(resource, packageDescr);
+                compositePackageDescr = packageDescr instanceof CompositePackageDescr ?
+                                        ( (CompositePackageDescr) packageDescr ) :
+                                        new CompositePackageDescr(resource, packageDescr);
                 packages.put(packageDescr.getNamespace(), compositePackageDescr);
             } else {
                 compositePackageDescr.addPackageDescr(resource, packageDescr);

@@ -16,13 +16,17 @@
 
 package org.drools.core.builder.conf.impl;
 
-import java.util.Properties;
-
+import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
+import org.kie.internal.builder.RuleTemplateConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl implements DecisionTableConfiguration {
     public static final String DROOLS_DT_TYPE = "drools.dt.type";
@@ -33,6 +37,8 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
     private DecisionTableInputType inputType = DecisionTableInputType.XLS;
     
     private String worksheetName;
+
+    private List<RuleTemplateConfiguration> templates = new ArrayList<RuleTemplateConfiguration>();
     
     public DecisionTableConfigurationImpl() {
     }
@@ -52,7 +58,15 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
     public String getWorksheetName() {
         return this.worksheetName;
     }
-    
+
+    public void addRuleTemplateConfiguration(Resource template, int row, int col) {
+        templates.add(new RuleTemplateInfo( template, row, col ));
+    }
+
+    public List<RuleTemplateConfiguration> getRuleTemplateConfigurations() {
+        return templates;
+    }
+
     public Properties toProperties() {
         Properties prop = super.toProperties();
         prop.setProperty( DROOLS_DT_TYPE, inputType.toString() );
@@ -68,5 +82,28 @@ public class DecisionTableConfigurationImpl extends ResourceConfigurationImpl im
         worksheetName = prop.getProperty( DROOLS_DT_WORKSHEET, null );
         return this;
     }
-  
+
+    public static class RuleTemplateInfo implements RuleTemplateConfiguration {
+        private final Resource template;
+        private final int row;
+        private final int col;
+
+        public RuleTemplateInfo( Resource template, int row, int col ) {
+            this.template = template;
+            this.row = row;
+            this.col = col;
+        }
+
+        public Resource getTemplate() {
+            return template;
+        }
+
+        public int getRow() {
+            return row;
+        }
+
+        public int getCol() {
+            return col;
+        }
+    }
 }

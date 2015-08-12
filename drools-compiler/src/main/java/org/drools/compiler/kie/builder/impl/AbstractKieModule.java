@@ -38,10 +38,12 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.builder.model.RuleTemplateModel;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
+import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
@@ -231,7 +233,7 @@ public abstract class AbstractKieModule
             }
         } else {
             for (Map.Entry<String, InternalKieModule> entry : assets.entrySet()) {
-                entry.getValue().addResourceToCompiler(ckbuilder, entry.getKey());
+                entry.getValue().addResourceToCompiler(ckbuilder, kBaseModel, entry.getKey());
             }
         }
 
@@ -279,20 +281,29 @@ public abstract class AbstractKieModule
         }
     }
 
-    public boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, String fileName) {
+    public final boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName) {
         ResourceConfiguration conf = getResourceConfiguration(fileName);
         Resource resource = getResource(fileName);
         if (resource != null) {
-            if (conf == null) {
-                ckbuilder.add(resource,
-                              ResourceType.determineResourceType(fileName));
-            } else {
-                ResourceType confType = conf instanceof ResourceConfigurationImpl ?
+            ResourceType resourceType = conf instanceof ResourceConfigurationImpl && ((ResourceConfigurationImpl)conf).getResourceType() != null ?
                                         ((ResourceConfigurationImpl)conf).getResourceType() :
-                                        null;
-                ckbuilder.add(resource,
-                              confType != null ? confType : ResourceType.determineResourceType(fileName),
-                              conf);
+                                        ResourceType.determineResourceType(fileName);
+
+            if (resourceType == ResourceType.DTABLE && conf instanceof DecisionTableConfiguration) {
+                for (RuleTemplateModel template : kieBaseModel.getRuleTemplates()) {
+                    if (template.getDtable().equals( fileName )) {
+                        Resource templateResource = getResource( template.getTemplate() );
+                        if ( templateResource != null ) {
+                            ( (DecisionTableConfiguration) conf ).addRuleTemplateConfiguration( templateResource, template.getRow(), template.getCol() );
+                        }
+                    }
+                }
+            }
+
+            if (conf == null) {
+                ckbuilder.add(resource, resourceType);
+            } else {
+                ckbuilder.add(resource, resourceType, conf);
             }
             return true;
         }

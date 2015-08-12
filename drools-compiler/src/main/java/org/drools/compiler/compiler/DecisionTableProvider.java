@@ -15,15 +15,20 @@
 
 package org.drools.compiler.compiler;
 
-import java.io.InputStream;
-
 import org.kie.api.Service;
+import org.kie.api.io.Resource;
 import org.kie.internal.builder.DecisionTableConfiguration;
+
+import java.io.InputStream;
+import java.util.List;
 
 public interface DecisionTableProvider extends Service {
 
     String loadFromInputStream(InputStream is,
                                DecisionTableConfiguration configuration);
+
+    List<String> loadFromInputStreamWithTemplates(Resource resource,
+                                                  DecisionTableConfiguration configuration);
 
 
 }

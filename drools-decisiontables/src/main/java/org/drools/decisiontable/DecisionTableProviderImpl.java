@@ -17,23 +17,45 @@ package org.drools.decisiontable;
 
 import org.drools.compiler.compiler.DecisionTableProvider;
 import org.drools.core.util.StringUtils;
+import org.kie.api.io.Resource;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.kie.internal.builder.RuleTemplateConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DecisionTableProviderImpl
     implements
     DecisionTableProvider {
+
+    private static final transient Logger logger = LoggerFactory.getLogger( DecisionTableProviderImpl.class );
 
     public String loadFromInputStream(InputStream is,
                                       DecisionTableConfiguration configuration) {
 
         return compileStream( is,
                               configuration );
+    }
+
+    public List<String> loadFromInputStreamWithTemplates(Resource resource,
+                                                         DecisionTableConfiguration configuration) {
+        List<String> drls = new ArrayList<String>( configuration.getRuleTemplateConfigurations().size() );
+        ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
+        for ( RuleTemplateConfiguration template : configuration.getRuleTemplateConfigurations() ) {
+            try {
+                drls.add(converter.compile(resource.getInputStream(), template.getTemplate().getInputStream(), template.getRow(), template.getCol()));
+            } catch (IOException e) {
+                logger.error( "Cannot open " + template.getTemplate(), e );
+            }
+        }
+        return drls;
     }
 
     private String compileStream(InputStream is,

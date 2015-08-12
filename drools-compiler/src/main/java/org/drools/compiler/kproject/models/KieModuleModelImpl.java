@@ -170,6 +170,7 @@ public class KieModuleModelImpl implements KieModuleModel {
             xStream.registerConverter(new ListenerModelImpl.ListenerConverter());
             xStream.registerConverter(new QualifierModelImpl.QualifierConverter());
             xStream.registerConverter(new WorkItemHandlerModelImpl.WorkItemHandelerConverter());
+            xStream.registerConverter(new RuleTemplateModelImpl.RuleTemplateConverter());
             xStream.alias("kmodule", KieModuleModelImpl.class);
             xStream.alias("kbase", KieBaseModelImpl.class);
             xStream.alias("ksession", KieSessionModelImpl.class);
@@ -177,6 +178,7 @@ public class KieModuleModelImpl implements KieModuleModel {
             xStream.alias("qualifier", QualifierModelImpl.class);
             xStream.alias("workItemHandler", WorkItemHandlerModelImpl.class);
             xStream.alias("fileLogger", FileLoggerModelImpl.class);
+            xStream.alias("ruleTemplate", RuleTemplateModelImpl.class);
             xStream.setClassLoader(KieModuleModelImpl.class.getClassLoader());
         }
 
