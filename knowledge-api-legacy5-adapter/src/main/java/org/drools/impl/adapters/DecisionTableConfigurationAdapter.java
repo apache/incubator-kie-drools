@@ -15,6 +15,7 @@
 
 package org.drools.impl.adapters;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
@@ -78,12 +79,13 @@ public class DecisionTableConfigurationAdapter extends ResourceConfigurationImpl
 
     @Override
     public void addRuleTemplateConfiguration(Resource template, int row, int col) {
-        throw new UnsupportedOperationException("Operation not supported for legacy Drools 5.x API!");
+        // no-op, the delegate does not have this method/feature
     }
 
     @Override
     public List<RuleTemplateConfiguration> getRuleTemplateConfigurations() {
-        throw new UnsupportedOperationException("Operation not supported for legacy Drools 5.x API!");
+        // no-op, the delegate does not have this method/feature
+        return Collections.emptyList();
     }
 
     @Override
