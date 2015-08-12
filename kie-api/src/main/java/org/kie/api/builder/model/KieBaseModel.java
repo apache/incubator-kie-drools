@@ -132,6 +132,16 @@ public interface KieBaseModel {
     String getScope();
 
     /**
+     * Returns the list of all RuleTemplateModels defined for this KieBaseModel
+     */
+    List<RuleTemplateModel> getRuleTemplates();
+
+    /**
+     * Defines a new RuleTemplateModel for this KieBaseModel
+     */
+    KieBaseModel addRuleTemplate(String dtable, String template, int row, int col);
+
+    /**
      * Returns true if this KieBaseModel is the default one
      */
     boolean isDefault();
