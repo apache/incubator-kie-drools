@@ -248,7 +248,7 @@ public class PlannerBenchmarkResult {
     }
 
     private String resolveLoggingLevel() {
-        Logger logger = LoggerFactory.getLogger("org.optaplanner");
+        Logger logger = LoggerFactory.getLogger("org.optaplanner.core");
         if (logger.isTraceEnabled()) {
             return "trace";
         } else if (logger.isDebugEnabled()) {
@@ -260,7 +260,7 @@ public class PlannerBenchmarkResult {
         } else if (logger.isErrorEnabled()) {
             return "error";
         } else {
-            throw new IllegalStateException("Logging level for category (org.optaplanner) cannot be determined.");
+            throw new IllegalStateException("Logging level for category (org.optaplanner.core) cannot be determined.");
         }
     }
 
