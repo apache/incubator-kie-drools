@@ -16,22 +16,11 @@
 
 package org.drools.examples.templates;
 
-import org.drools.core.util.IoUtils;
-import org.drools.decisiontable.ExternalSpreadsheetCompiler;
-import org.drools.core.io.impl.ByteArrayResource;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -46,11 +35,8 @@ public class SimpleRuleTemplateExample {
 
     private void executeExample() {
 
-        //BUILD THE KBASE
-        final KnowledgeBase kbase = this.buildKBase();
-
-        //GET A KSESSION
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        KieSession ksession = kc.newKieSession( "TemplatesKS" );
 
         //now create some test data
         ksession.insert( new Cheese( "stilton",
@@ -59,8 +45,7 @@ public class SimpleRuleTemplateExample {
                                "stilton",
                                42 ) );
         final List<String> list = new ArrayList<String>();
-        ksession.setGlobal( "list",
-                      list );
+        ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
 
@@ -68,56 +53,4 @@ public class SimpleRuleTemplateExample {
 
         ksession.dispose();
     }
-
-     /**
-     * Creates a new kbase containing the rules generated from the xls file and
-     * the template.
-     * @return
-     * @throws IOException
-     */
-    private KnowledgeBase buildKBase() {
-        //first we compile the decision table into a whole lot of rules.
-        final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-
-        //the data we are interested in starts at row 2, column 2 (e.g. B2)
-        String drl = null;
-        try {
-            drl = converter.compile(getSpreadsheetStream(), getRulesStream(), 2, 2);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Could not read spreadsheet or rules stream." ,e);
-        }
-
-        //compile the drl
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(drl.getBytes(IoUtils.UTF8_CHARSET)), ResourceType.DRL);
-
-        //compilation errors?
-        if (kbuilder.hasErrors()) {
-            System.out.println("Error compiling resources:");
-            Iterator<KnowledgeBuilderError> errors = kbuilder.getErrors().iterator();
-            while (errors.hasNext()) {
-                System.out.println("\t" + errors.next().getMessage());
-            }
-            throw new IllegalStateException("Error compiling resources");
-        }
-
-        //Uncomment to see the rules
-        //System.out.println(drl);
-
-        //BUILD KBASE
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        return kbase;
-
-    }
-
-    private InputStream getSpreadsheetStream() throws IOException {
-        return ResourceFactory.newClassPathResource("org/drools/examples/templates/ExampleCheese.xls").getInputStream();
-    }
-
-    private InputStream getRulesStream() throws IOException {
-        return ResourceFactory.newClassPathResource("org/drools/examples/templates/Cheese.drt").getInputStream();
-    }
-
 }

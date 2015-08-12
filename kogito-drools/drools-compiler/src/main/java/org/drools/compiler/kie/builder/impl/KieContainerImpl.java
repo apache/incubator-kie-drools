@@ -201,7 +201,7 @@ public class KieContainerImpl
                         // readd unchanged dsl files to the kbuilder
                         for (String dslFile : dslFiles) {
                             if (isFileInKBase(newKM, kieBaseModel, dslFile)) {
-                                newKM.addResourceToCompiler(ckbuilder, dslFile);
+                                newKM.addResourceToCompiler(ckbuilder, kieBaseModel, dslFile);
                             }
                         }
                         rebuildAll(newReleaseId, results, newKM, modifiedClasses, kieBaseModel, pkgbuilder, ckbuilder);
@@ -292,7 +292,7 @@ public class KieContainerImpl
         }
         for (String resourceName : newKM.getFileNames()) {
             if ( !resourceName.endsWith( ".properties" ) && isFileInKBase(newKM, kieBaseModel, resourceName) ) {
-                newKM.addResourceToCompiler(ckbuilder, resourceName);
+                newKM.addResourceToCompiler(ckbuilder, kieBaseModel, resourceName);
             }
         }
     }
@@ -323,7 +323,7 @@ public class KieContainerImpl
                             Resource resource = currentKM.getResource(resourceName);
                             kbuilder.removeObjectsGeneratedFromResource(resource);
                         }
-                        fileCount += newKM.addResourceToCompiler(ckbuilder, resourceName) ? 1 : 0;
+                        fileCount += newKM.addResourceToCompiler(ckbuilder, kieBaseModel, resourceName) ? 1 : 0;
                     }
                 }
             }

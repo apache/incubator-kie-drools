@@ -15,21 +15,9 @@
  */
 package org.drools.examples.decisiontable;
 
-import org.drools.core.util.IoUtils;
-import org.drools.decisiontable.ExternalSpreadsheetCompiler;
-import org.drools.core.io.impl.ByteArrayResource;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 
 /**
  * This shows off a rule template where the data provider is a spreadsheet.
@@ -48,11 +36,8 @@ public class PricingRuleTemplateExample {
 
     private int executeExample() {
 
-        //BUILD THE KBASE
-        KnowledgeBase kbase = this.buildKBase();
-
-        //GET A KSESSION
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        KieSession ksession = kc.newKieSession( "DTableWithTemplateKS" );
 
         //now create some test data
         Driver driver = new Driver();
@@ -66,72 +51,9 @@ public class PricingRuleTemplateExample {
         System.out.println("BASE PRICE IS: " + policy.getBasePrice());
         System.out.println("DISCOUNT IS: " + policy.getDiscountPercent());
 
-
         ksession.dispose();
 
         return policy.getBasePrice();
 
-    }
-
-    /**
-     * Creates a new kbase containing the rules generated from the xls file and
-     * the templates.
-     * @return
-     * @throws IOException
-     */
-    private KnowledgeBase buildKBase() {
-        //first we compile the decision table into a whole lot of rules.
-        final ExternalSpreadsheetCompiler converter = new ExternalSpreadsheetCompiler();
-
-        String basePricingDRL = null;
-        String promotionalPricingDRL = null;
-        try {
-            //the data we are interested in starts at row 10, column 3
-            basePricingDRL = converter.compile(getSpreadsheetStream(), getBasePricingRulesStream(), 10, 3);
-            //the data we are interested in starts at row 30, column 3
-            promotionalPricingDRL = converter.compile(getSpreadsheetStream(), getPromotionalPricingRulesStream(), 30, 3);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Invalid spreadsheet stream.", e);
-        }
-
-        //compile the drls
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(basePricingDRL.getBytes(IoUtils.UTF8_CHARSET)), ResourceType.DRL);
-        kbuilder.add(new ByteArrayResource(promotionalPricingDRL.getBytes(IoUtils.UTF8_CHARSET)), ResourceType.DRL);
-
-        //compilation errors?
-        if (kbuilder.hasErrors()) {
-            System.out.println("Error compiling resources:");
-            Iterator<KnowledgeBuilderError> errors = kbuilder.getErrors().iterator();
-            while (errors.hasNext()) {
-                System.out.println("\t" + errors.next().getMessage());
-            }
-            throw new IllegalStateException("Error compiling resources");
-        }
-
-
-        //Uncomment to see the base pricing rules
-        //System.out.println(basePricingDRL);
-        //Uncomment to see the promotional pricing rules
-        //System.out.println(promotionalPricingDRL);
-
-        //BUILD KBASE
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        return kbase;
-
-    }
-
-    private InputStream getSpreadsheetStream() throws IOException {
-        return ResourceFactory.newClassPathResource("org/drools/examples/decisiontable/ExamplePolicyPricing.xls").getInputStream();
-    }
-
-    private InputStream getBasePricingRulesStream() throws IOException {
-        return ResourceFactory.newClassPathResource("org/drools/examples/decisiontable/BasePricing.drt").getInputStream();
-    }
-
-    private InputStream getPromotionalPricingRulesStream() throws IOException {
-        return ResourceFactory.newClassPathResource("org/drools/examples/decisiontable/PromotionalPricing.drt").getInputStream();
     }
 }

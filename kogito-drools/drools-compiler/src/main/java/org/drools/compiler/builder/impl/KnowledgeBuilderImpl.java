@@ -55,6 +55,7 @@ import org.drools.compiler.lang.descr.AnnotatedBaseDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.EntryPointDeclarationDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
@@ -394,17 +395,43 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         DecisionTableConfiguration dtableConfiguration = configuration instanceof DecisionTableConfiguration ?
                                                          (DecisionTableConfiguration) configuration :
                                                          null;
+
+        if ( dtableConfiguration != null && !dtableConfiguration.getRuleTemplateConfigurations().isEmpty() ) {
+            List<String> generatedDrls = DecisionTableFactory.loadFromInputStreamWithTemplates( resource, dtableConfiguration );
+            if ( generatedDrls.size() == 1 ) {
+                return generatedDrlToPackageDescr( resource, generatedDrls.get(0) );
+            }
+            CompositePackageDescr compositePackageDescr = null;
+            for ( String generatedDrl : generatedDrls ) {
+                PackageDescr packageDescr = generatedDrlToPackageDescr( resource, generatedDrl );
+                if ( packageDescr != null ) {
+                    if ( compositePackageDescr == null ) {
+                        compositePackageDescr = new CompositePackageDescr( resource, packageDescr );
+                    } else {
+                        compositePackageDescr.addPackageDescr( resource, packageDescr );
+                    }
+                }
+            }
+            return compositePackageDescr;
+        }
+
         String generatedDrl = DecisionTableFactory.loadFromInputStream(resource.getInputStream(), dtableConfiguration);
+        return generatedDrlToPackageDescr( resource, generatedDrl );
+    }
+
+    private PackageDescr generatedDrlToPackageDescr( Resource resource, String generatedDrl ) throws DroolsParserException {
         // dump the generated DRL if the dump dir was configured
         if (this.configuration.getDumpDir() != null) {
             dumpDrlGeneratedFromDTable(this.configuration.getDumpDir(), generatedDrl, resource.getSourcePath());
         }
 
-        DrlParser parser = new DrlParser(this.configuration.getLanguageLevel());
+        DrlParser parser = new DrlParser(configuration.getLanguageLevel());
         PackageDescr pkg = parser.parse(resource, new StringReader(generatedDrl));
         this.results.addAll(parser.getErrors());
         if (pkg == null) {
             addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
+        } else {
+            pkg.setResource(resource);
         }
         return parser.hasErrors() ? null : pkg;
     }
@@ -444,14 +471,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                                                     (ScoreCardConfiguration) configuration :
                                                     null;
         String string = ScoreCardFactory.loadFromInputStream(resource.getInputStream(), scardConfiguration);
-
-        DrlParser parser = new DrlParser(this.configuration.getLanguageLevel());
-        PackageDescr pkg = parser.parse(resource, new StringReader(string));
-        this.results.addAll( parser.getErrors() );
-        if (pkg == null) {
-            addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
-        }
-        return parser.hasErrors() ? null : pkg;
+        return generatedDrlToPackageDescr( resource, string );
     }
 
     public void addPackageFromTemplate(Resource resource) throws DroolsParserException,
@@ -800,15 +820,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             return null;
         }
 
-        DrlParser parser = new DrlParser(configuration.getLanguageLevel());
-        PackageDescr pkg = parser.parse(resource, new StringReader(theory));
-        this.results.addAll(parser.getErrors());
-        if (pkg == null) {
-            addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
-            return pkg;
-        } else {
-            return parser.hasErrors() ? null : pkg;
-        }
+        return generatedDrlToPackageDescr( resource, theory );
     }
 
     void addPackageFromXSD(Resource resource,

@@ -15,10 +15,12 @@
 
 package org.drools.compiler.compiler;
 
-import java.io.InputStream;
-
+import org.kie.api.io.Resource;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.utils.ServiceRegistryImpl;
+
+import java.io.InputStream;
+import java.util.List;
 
 public class DecisionTableFactory {
 
@@ -29,7 +31,11 @@ public class DecisionTableFactory {
     public static String loadFromInputStream(InputStream is, DecisionTableConfiguration configuration) {
         return getDecisionTableProvider().loadFromInputStream( is, configuration );
     }
-    
+
+    public static List<String> loadFromInputStreamWithTemplates(Resource resource, DecisionTableConfiguration configuration) {
+        return getDecisionTableProvider().loadFromInputStreamWithTemplates( resource, configuration );
+    }
+
     public static synchronized void setDecisionTableProvider(DecisionTableProvider provider) {
         DecisionTableFactory.provider = provider;
     }
