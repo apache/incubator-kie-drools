@@ -21,8 +21,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
-import org.optaplanner.core.api.score.Score;
 
 /**
  * This ranking {@link Comparator} orders a {@link SolverBenchmarkResult} by its worst {@link Score}.
@@ -30,18 +30,20 @@ import org.optaplanner.core.api.score.Score;
  */
 public class WorstScoreSolverRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
 
-    private final ResilientScoreComparator resilientScoreComparator
-            = new ResilientScoreComparator();
+    private final Comparator<SingleBenchmarkResult> singleBenchmarkComparator = new SingleBenchmarkRankingComparator();
 
+    @Override
     public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {
-        List<Score> aScoreList = a.getScoreList();
-        Collections.sort(aScoreList); // Worst scores become first in the list
-        List<Score> bScoreList = b.getScoreList();
-        Collections.sort(bScoreList); // Worst scores become first in the list
-        int aSize = aScoreList.size();
-        int bSize = bScoreList.size();
+        List<SingleBenchmarkResult> aSingleBenchmarkResultList = a.getSingleBenchmarkResultList();
+        List<SingleBenchmarkResult> bSingleBenchmarkResultList = b.getSingleBenchmarkResultList();
+        // Order scores from worst to best
+        Collections.sort(aSingleBenchmarkResultList, singleBenchmarkComparator);
+        Collections.sort(bSingleBenchmarkResultList, singleBenchmarkComparator);
+        int aSize = aSingleBenchmarkResultList.size();
+        int bSize = bSingleBenchmarkResultList.size();
         for (int i = 0; i < aSize && i < bSize; i++) {
-            int comparison = resilientScoreComparator.compare(aScoreList.get(i), bScoreList.get(i));
+            int comparison = singleBenchmarkComparator.compare(aSingleBenchmarkResultList.get(i),
+                    bSingleBenchmarkResultList.get(i));
             if (comparison != 0) {
                 return comparison;
             }

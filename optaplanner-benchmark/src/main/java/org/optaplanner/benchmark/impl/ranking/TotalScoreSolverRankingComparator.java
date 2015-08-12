@@ -35,15 +35,17 @@ import org.optaplanner.core.api.score.Score;
  */
 public class TotalScoreSolverRankingComparator implements Comparator<SolverBenchmarkResult>, Serializable {
 
-    private final ResilientScoreComparator resilientScoreComparator
-            = new ResilientScoreComparator();
-    private final WorstScoreSolverRankingComparator worstScoreSolverRankingComparator
+    private final Comparator<Score> resilientScoreComparator = new ResilientScoreComparator();
+    private final Comparator<SolverBenchmarkResult> worstScoreSolverRankingComparator
             = new WorstScoreSolverRankingComparator();
 
+    @Override
     public int compare(SolverBenchmarkResult a, SolverBenchmarkResult b) {
         return new CompareToBuilder()
+                .append(b.getFailureCount(), a.getFailureCount()) // Reverse, less is better (redundant: failed benchmarks don't get ranked at all)
+                .append(b.getUninitializedVariableCountSum(), a.getUninitializedVariableCountSum()) // Reverse, less is better
                 .append(a.getTotalScore(), b.getTotalScore(), resilientScoreComparator)
-                .append(a, b, worstScoreSolverRankingComparator)
+                .append(a, b, worstScoreSolverRankingComparator) // Tie breaker
                 .toComparison();
     }
 

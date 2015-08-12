@@ -174,8 +174,8 @@
                                 <#list benchmarkReport.plannerBenchmarkResult.solverBenchmarkResultList as solverBenchmarkResult>
                                     <tr<#if solverBenchmarkResult.favorite> class="favoriteSolverBenchmark"</#if>>
                                         <th>${solverBenchmarkResult.name}&nbsp;<@addSolverBenchmarkBadges solverBenchmarkResult=solverBenchmarkResult/></th>
-                                        <td>${solverBenchmarkResult.totalScore!""}</td>
-                                        <td>${solverBenchmarkResult.averageScore!""}</td>
+                                        <td>${solverBenchmarkResult.totalScoreWithUninitializedPrefix!""}</td>
+                                        <td>${solverBenchmarkResult.averageScoreWithUninitializedPrefix!""}</td>
                                         <td>${solverBenchmarkResult.standardDeviationString!""}</td>
                                         <#list benchmarkReport.plannerBenchmarkResult.unifiedProblemBenchmarkResultList as problemBenchmarkResult>
                                             <#if !solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)??>
@@ -185,7 +185,7 @@
                                                 <#if !singleBenchmarkResult.success>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
-                                                    <td>${singleBenchmarkResult.score}&nbsp;<@addSingleBenchmarkBadges singleBenchmarkResult=singleBenchmarkResult/></td>
+                                                    <td>${singleBenchmarkResult.scoreWithUninitializedPrefix}&nbsp;<@addSingleBenchmarkBadges singleBenchmarkResult=singleBenchmarkResult/></td>
                                                 </#if>
                                             </#if>
                                         </#list>

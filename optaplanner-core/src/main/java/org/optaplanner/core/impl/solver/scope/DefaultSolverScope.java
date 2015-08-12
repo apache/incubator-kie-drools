@@ -23,6 +23,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.slf4j.Logger;
@@ -42,8 +43,8 @@ public class DefaultSolverScope {
     protected Score startingInitializedScore; // TODO after initialization => ambiguous with solve()'s planningProblem
 
     protected Solution bestSolution;
-    protected int bestUninitializedVariableCount; // TODO remove me by folding me into bestSolution.getScore()
-    protected Score bestScore; // TODO remove me by folding me into bestSolution.getScore()
+    protected int bestUninitializedVariableCount; // TODO remove me by folding me into bestSolution.getScore(): https://issues.jboss.org/browse/PLANNER-405
+    protected Score bestScore; // TODO remove me by folding me into bestSolution.getScore(): https://issues.jboss.org/browse/PLANNER-405
     protected Long bestSolutionTimeMillis;
 
 
@@ -198,7 +199,7 @@ public class DefaultSolverScope {
     }
 
     public String getBestScoreWithUninitializedPrefix() {
-        return isBestSolutionInitialized() ? bestScore.toString() : "uninitialized/" + bestScore;
+        return ScoreUtils.getScoreWithUninitializedPrefix(bestUninitializedVariableCount, bestScore);
     }
 
 }

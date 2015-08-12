@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.impl.ranking;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -29,19 +30,32 @@ import static org.mockito.Mockito.*;
 
 public class TotalScoreSolverRankingComparatorTest extends AbstractSolverRankingComparatorTest {
 
+    private BenchmarkReport benchmarkReport;
+    private TotalScoreSolverRankingComparator comparator;
+    private List<SolverBenchmarkResult> solverBenchmarkResultList;
+    private SolverBenchmarkResult a;
+    private SolverBenchmarkResult b;
+    private List<SingleBenchmarkResult> aSingleBenchmarkResultList;
+    private List<SingleBenchmarkResult> bSingleBenchmarkResultList;
+
+    @Before
+    public void setUp() {
+        benchmarkReport = mock(BenchmarkReport.class);
+        comparator = new TotalScoreSolverRankingComparator();
+        solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
+        a = new SolverBenchmarkResult(null);
+        b = new SolverBenchmarkResult(null);
+        aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
+        bSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
+    }
+
     @Test
     public void normal() {
-        BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
-        TotalScoreSolverRankingComparator comparator = new TotalScoreSolverRankingComparator();
-        SolverBenchmarkResult a = new SolverBenchmarkResult(null);
-        List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(aSingleBenchmarkResultList, -1000, -30, -1000);
         addSingleBenchmark(aSingleBenchmarkResultList, -400, -30, -1000);
         addSingleBenchmark(aSingleBenchmarkResultList, -30, -30, -1000);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
         a.accumulateResults(benchmarkReport);
-        SolverBenchmarkResult b = new SolverBenchmarkResult(null);
-        List<SingleBenchmarkResult> bSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(bSingleBenchmarkResultList, -1000, -50, -1000);
         addSingleBenchmark(bSingleBenchmarkResultList, -200, -50, -1000);
         addSingleBenchmark(bSingleBenchmarkResultList, -50, -50, -1000);
@@ -53,17 +67,11 @@ public class TotalScoreSolverRankingComparatorTest extends AbstractSolverRanking
 
     @Test
     public void totalIsEqual() {
-        BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
-        TotalScoreSolverRankingComparator comparator = new TotalScoreSolverRankingComparator();
-        SolverBenchmarkResult a = new SolverBenchmarkResult(null);
-        List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(aSingleBenchmarkResultList, -1005, -30, -1005);
         addSingleBenchmark(aSingleBenchmarkResultList, -200, -30, -1005);
         addSingleBenchmark(aSingleBenchmarkResultList, -30, -30, -1005);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
         a.accumulateResults(benchmarkReport);
-        SolverBenchmarkResult b = new SolverBenchmarkResult(null);
-        List<SingleBenchmarkResult> bSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(bSingleBenchmarkResultList, -1000, -35, -1000);
         addSingleBenchmark(bSingleBenchmarkResultList, -200, -35, -1000);
         addSingleBenchmark(bSingleBenchmarkResultList, -35, -35, -1000);
@@ -75,22 +83,53 @@ public class TotalScoreSolverRankingComparatorTest extends AbstractSolverRanking
 
     @Test
     public void differentScoreDefinitions() {
-        BenchmarkReport benchmarkReport = mock(BenchmarkReport.class);
-        TotalScoreSolverRankingComparator comparator = new TotalScoreSolverRankingComparator();
-        SolverBenchmarkResult a = new SolverBenchmarkResult(null);
-        List<SingleBenchmarkResult> aSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmark(aSingleBenchmarkResultList, -1000, -30, -1000);
         addSingleBenchmark(aSingleBenchmarkResultList, -400, -30, -1000);
         addSingleBenchmark(aSingleBenchmarkResultList, -30, -30, -1000);
         a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
         a.accumulateResults(benchmarkReport);
-        SolverBenchmarkResult b = new SolverBenchmarkResult(null);
-        List<SingleBenchmarkResult> bSingleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>();
         addSingleBenchmarkWithHardSoftLongScore(bSingleBenchmarkResultList, 0, -1000, 0, -50, -10, -1000);
         addSingleBenchmarkWithHardSoftLongScore(bSingleBenchmarkResultList, 0, -200, 0, -50, -10, -1000);
         addSingleBenchmarkWithHardSoftLongScore(bSingleBenchmarkResultList, -7, -50, 0, -50, -10, -1000);
         b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
         b.accumulateResults(benchmarkReport);
+        assertEquals(-1, comparator.compare(a, b));
+        assertEquals(1, comparator.compare(b, a));
+    }
+
+    @Test
+    public void uninitializedSingleBenchmarks() {
+        SingleBenchmarkResult a0 = addSingleBenchmark(aSingleBenchmarkResultList, -1000, -30, -1000);
+        addSingleBenchmark(aSingleBenchmarkResultList, -400, -30, -1000);
+        addSingleBenchmark(aSingleBenchmarkResultList, -30, -30, -1000);
+        a.setSingleBenchmarkResultList(aSingleBenchmarkResultList);
+        a.accumulateResults(benchmarkReport);
+        SingleBenchmarkResult b0 = addSingleBenchmark(bSingleBenchmarkResultList, -1000, -30, -1000);
+        SingleBenchmarkResult b1 = addSingleBenchmark(bSingleBenchmarkResultList, -400, -30, -1000);
+        addSingleBenchmark(bSingleBenchmarkResultList, -30, -30, -1000);
+        b.setSingleBenchmarkResultList(bSingleBenchmarkResultList);
+        b.accumulateResults(benchmarkReport);
+        assertEquals(0, comparator.compare(a, b));
+        assertEquals(0, comparator.compare(b, a));
+
+        a0.setUninitializedVariableCount(100);
+        b1.setUninitializedVariableCount(100);
+        a.accumulateResults(benchmarkReport);
+        b.accumulateResults(benchmarkReport);
+        // uninitialized variable count and total score are equal, A is worse on worst score (tie-breaker)
+        assertEquals(-1, comparator.compare(a, b));
+        assertEquals(1, comparator.compare(b, a));
+
+        b0.setUninitializedVariableCount(100);
+        b.accumulateResults(benchmarkReport);
+        // uninitialized variable count is bigger in B
+        assertEquals(1, comparator.compare(a, b));
+        assertEquals(-1, comparator.compare(b, a));
+
+        b0.setUninitializedVariableCount(0);
+        b1.setUninitializedVariableCount(99);
+        b.accumulateResults(benchmarkReport);
+        // uninitialized variable count is bigger in A
         assertEquals(-1, comparator.compare(a, b));
         assertEquals(1, comparator.compare(b, a));
     }

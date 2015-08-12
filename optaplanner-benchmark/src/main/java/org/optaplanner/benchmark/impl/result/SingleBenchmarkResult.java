@@ -34,6 +34,7 @@ import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.impl.score.ScoreUtils;
 
 /**
  * Represents 1 benchmark for 1 {@link Solver} configuration for 1 problem instance (data set).
@@ -55,8 +56,8 @@ public class SingleBenchmarkResult {
     private Long usedMemoryAfterInputSolution = null;
 
     private Boolean succeeded = null;
-    private Boolean initialized = null;
     private Score score = null;
+    private Integer uninitializedVariableCount = null;
     private long timeMillisSpent = -1L;
     private long calculateCount = -1L;
 
@@ -135,20 +136,20 @@ public class SingleBenchmarkResult {
         this.succeeded = succeeded;
     }
 
-    public Boolean getInitialized() {
-        return initialized;
-    }
-
-    public void setInitialized(Boolean initialized) {
-        this.initialized = initialized;
-    }
-
     public Score getScore() {
         return score;
     }
 
     public void setScore(Score score) {
         this.score = score;
+    }
+
+    public Integer getUninitializedVariableCount() {
+        return uninitializedVariableCount;
+    }
+
+    public void setUninitializedVariableCount(Integer uninitializedVariableCount) {
+        this.uninitializedVariableCount = uninitializedVariableCount;
     }
 
     public long getTimeMillisSpent() {
@@ -211,7 +212,7 @@ public class SingleBenchmarkResult {
     }
 
     public boolean isInitialized() {
-        return initialized != null && initialized.booleanValue();
+        return uninitializedVariableCount != null && uninitializedVariableCount == 0;
     }
 
     public boolean isFailure() {
@@ -241,6 +242,10 @@ public class SingleBenchmarkResult {
 
     public SingleStatistic getSingleStatistic(StatisticType statisticType) {
         return effectiveSingleStatisticMap.get(statisticType);
+    }
+
+    public String getScoreWithUninitializedPrefix() {
+        return ScoreUtils.getScoreWithUninitializedPrefix(uninitializedVariableCount, score);
     }
 
     // ************************************************************************
@@ -285,8 +290,8 @@ public class SingleBenchmarkResult {
         // Skip oldResult.reportDirectory
         // Skip oldResult.usedMemoryAfterInputSolution
         newResult.succeeded = oldResult.succeeded;
-        newResult.initialized = oldResult.initialized;
         newResult.score = oldResult.score;
+        newResult.uninitializedVariableCount = oldResult.uninitializedVariableCount;
         newResult.timeMillisSpent = oldResult.timeMillisSpent;
         newResult.calculateCount = oldResult.calculateCount;
 
