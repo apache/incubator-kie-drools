@@ -448,7 +448,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	
     	ProcessInstanceDesc instance = runtimeDataService.getProcessInstanceById(processInstanceId);
     	assertNotNull(instance);
-    	assertEquals(1, (int)instance.getState());
+    	assertEquals(1, (int) instance.getState());
     	assertEquals("org.jbpm.writedocument", instance.getProcessId());
     	
     	List<UserTaskInstanceDesc> tasks = instance.getActiveTasks();
@@ -469,7 +469,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	instance = runtimeDataService.getProcessInstanceById(processInstanceId);
     	processInstanceId = null;
     	assertNotNull(instance);
-    	assertEquals(3, (int)instance.getState());
+    	assertEquals(3, (int) instance.getState());
     	assertEquals("org.jbpm.writedocument", instance.getProcessId());
     	
     }
@@ -1212,5 +1212,41 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;
         
+    }
+
+    @Test
+    public void testGetAuditTaskByStatus() throws Exception {
+	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+	assertNotNull(processInstanceId);
+	ProcessInstance instance = processService.getProcessInstance(processInstanceId);
+	assertNotNull(instance);
+
+	Collection<NodeInstance> activeNodes = ((WorkflowProcessInstanceImpl) instance).getNodeInstances();
+	assertNotNull(activeNodes);
+	assertEquals(1, activeNodes.size());
+
+	NodeInstance node = activeNodes.iterator().next();
+	assertNotNull(node);
+	assertTrue(node instanceof WorkItemNodeInstance);
+
+	Long workItemId = ((WorkItemNodeInstance) node).getWorkItemId();
+	assertNotNull(workItemId);
+
+	List<String> statuses = new ArrayList();
+	statuses.add(Status.Reserved.toString());
+
+	Map<String, Object> params = new HashMap<String, Object>();
+	params.put("statuses", statuses);
+
+	QueryFilter queryFilter = new QueryFilter();
+	queryFilter.setParams(params);
+	List<AuditTask> auditTasks = runtimeDataService.getAllAuditTaskByStatus("salaboy", queryFilter);
+	assertNotNull(auditTasks);
+	assertEquals(1, auditTasks.size());
+	assertEquals("Write a Document", auditTasks.get(0).getName());
+
+	processService.abortProcessInstance(processInstanceId);
+	processInstanceId = null;
+    	
     }
 }
