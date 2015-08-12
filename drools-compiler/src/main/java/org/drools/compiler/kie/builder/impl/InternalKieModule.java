@@ -20,6 +20,7 @@ import org.drools.core.common.ResourceProvider;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
+import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
@@ -74,7 +75,7 @@ public interface InternalKieModule extends KieModule {
 
     Map<String, byte[]> getClassesMap(boolean includeTypeDeclarations);
 
-    boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, String fileName);
+    boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName);
 
     long getCreationTimestamp();
 
