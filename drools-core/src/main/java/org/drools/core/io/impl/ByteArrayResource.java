@@ -44,8 +44,10 @@ public class ByteArrayResource extends BaseResource
     public ByteArrayResource() { }
 
     public ByteArrayResource(byte[] bytes) {
-        if ( bytes == null || bytes.length == 0 ) {
-            throw new IllegalArgumentException( "bytes cannot be null" );
+        if ( bytes == null ) {
+            throw new IllegalArgumentException( "Provided byte array can not be null" );
+        } else if ( bytes.length == 0 ) {
+            throw new IllegalArgumentException( "Provided byte array can not be empty" );
         }
         this.bytes = bytes;
     }
@@ -125,8 +127,14 @@ public class ByteArrayResource extends BaseResource
     }
     
     public String toString() {
-        return "ByteArrayResource[resource=" + Arrays.toString(this.bytes) + "]";
+        return "ByteArrayResource[bytes=" + firstNBytesToString(10) + ", encoding=" + this.encoding + "]";
     }
 
+    private String firstNBytesToString(int nrOfBytes) {
+        // this.bytes cannot be empty or null (enforced by constructors)
+        String str = Arrays.toString(Arrays.copyOf(this.bytes, Math.min(this.bytes.length, nrOfBytes)));
+        // append the dots ("...") only if the resource has more bytes than requested
+        return this.bytes.length > nrOfBytes ? str.substring(0, str.length() - 1) + ", ...]" : str;
+    }
 
 }
