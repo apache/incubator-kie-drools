@@ -190,6 +190,16 @@ public class BenchmarkReport {
         return relativePath;
     }
 
+    public String getSolverRankingClassSimpleName() {
+        Class solverRankingClass = getSolverRankingClass();
+        return solverRankingClass == null ? null : solverRankingClass.getSimpleName();
+    }
+
+    public String getSolverRankingClassFullName() {
+        Class solverRankingClass = getSolverRankingClass();
+        return solverRankingClass == null ? null : solverRankingClass.getName();
+    }
+
     // ************************************************************************
     // Write methods
     // ************************************************************************
@@ -642,6 +652,16 @@ public class BenchmarkReport {
                     + ") to htmlOverviewFile (" + htmlOverviewFile + ").", e);
         } finally {
             IOUtils.closeQuietly(writer);
+        }
+    }
+
+    private Class getSolverRankingClass() {
+        if (solverRankingComparator != null) {
+            return solverRankingComparator.getClass();
+        } else if (solverRankingWeightFactory != null) {
+            return solverRankingWeightFactory.getClass();
+        } else {
+            return null;
         }
     }
 

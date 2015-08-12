@@ -629,6 +629,10 @@
                         <td>${benchmarkReport.plannerBenchmarkResult.loggingLevel!"Differs"}</td>
                     </tr>
                     <tr>
+                        <th>Solver ranking class</th>
+                        <td><span data-toggle="tooltip" title="${benchmarkReport.solverRankingClassFullName!"Unknown"}">${benchmarkReport.solverRankingClassSimpleName!"Unknown"}</span></td>
+                    </tr>
+                    <tr>
                         <th>VM max memory (as in -Xmx but lower)</th>
                         <td>${(benchmarkReport.plannerBenchmarkResult.maxMemory?string.number)!"Differs"} bytes</td>
                     </tr>
