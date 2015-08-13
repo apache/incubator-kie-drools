@@ -355,6 +355,11 @@ public class EntityDescriptor {
         return effectiveGenuineVariableDescriptorMap.values();
     }
 
+    public List<GenuineVariableDescriptor> getGenuineVariableDescriptorList() {
+        // TODO We might want to cache that list
+        return new ArrayList<GenuineVariableDescriptor>(effectiveGenuineVariableDescriptorMap.values());
+    }
+
     public boolean hasGenuineVariableDescriptor(String variableName) {
         return effectiveGenuineVariableDescriptorMap.containsKey(variableName);
     }

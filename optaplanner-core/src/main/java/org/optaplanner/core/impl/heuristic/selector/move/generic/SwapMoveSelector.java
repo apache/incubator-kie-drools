@@ -16,8 +16,9 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -35,16 +36,17 @@ public class SwapMoveSelector extends GenericMoveSelector {
 
     protected final EntitySelector leftEntitySelector;
     protected final EntitySelector rightEntitySelector;
-    protected final Collection<GenuineVariableDescriptor> variableDescriptors;
+    protected final List<GenuineVariableDescriptor> variableDescriptorList;
     protected final boolean randomSelection;
 
     protected final boolean anyChained;
+    protected List<SingletonInverseVariableSupply> inverseVariableSupplyList = null;
 
     public SwapMoveSelector(EntitySelector leftEntitySelector, EntitySelector rightEntitySelector,
-            Collection<GenuineVariableDescriptor> variableDescriptors, boolean randomSelection) {
+            List<GenuineVariableDescriptor> variableDescriptorList, boolean randomSelection) {
         this.leftEntitySelector = leftEntitySelector;
         this.rightEntitySelector = rightEntitySelector;
-        this.variableDescriptors = variableDescriptors;
+        this.variableDescriptorList = variableDescriptorList;
         this.randomSelection = randomSelection;
         EntityDescriptor leftEntityDescriptor = leftEntitySelector.getEntityDescriptor();
         EntityDescriptor rightEntityDescriptor = rightEntitySelector.getEntityDescriptor();
@@ -55,11 +57,11 @@ public class SwapMoveSelector extends GenericMoveSelector {
                     + rightEntityDescriptor.getEntityClass() + ").");
         }
         boolean anyChained = false;
-        if (variableDescriptors.isEmpty()) {
+        if (variableDescriptorList.isEmpty()) {
             throw new IllegalStateException("The selector (" + this
-                    + ")'s variableDescriptors (" + variableDescriptors + ") is empty.");
+                    + ")'s variableDescriptors (" + variableDescriptorList + ") is empty.");
         }
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
             if (!variableDescriptor.getEntityDescriptor().getEntityClass().isAssignableFrom(
                     leftEntityDescriptor.getEntityClass())) {
                 throw new IllegalStateException("The selector (" + this
@@ -83,14 +85,17 @@ public class SwapMoveSelector extends GenericMoveSelector {
     public void solvingStarted(DefaultSolverScope solverScope) {
         super.solvingStarted(solverScope);
         if (anyChained) {
+            inverseVariableSupplyList = new ArrayList<SingletonInverseVariableSupply>(variableDescriptorList.size());
             SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-            for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+            for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
+                SingletonInverseVariableSupply inverseVariableSupply;
                 if (variableDescriptor.isChained()) {
-                    // TODO supply is demanded just to make sure it's there when it's demand again later.
-                    // Instead it should be remembered for later
-                    SingletonInverseVariableSupply inverseVariableSupply = supplyManager.demand(
+                    inverseVariableSupply = supplyManager.demand(
                             new SingletonInverseVariableDemand(variableDescriptor));
+                } else {
+                    inverseVariableSupply = null;
                 }
+                inverseVariableSupplyList.add(inverseVariableSupply);
             }
         }
     }
@@ -117,8 +122,8 @@ public class SwapMoveSelector extends GenericMoveSelector {
                 @Override
                 protected Move newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
                     return anyChained
-                            ? new ChainedSwapMove(variableDescriptors, leftSubSelection, rightSubSelection)
-                            : new SwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
+                            ? new ChainedSwapMove(variableDescriptorList, inverseVariableSupplyList, leftSubSelection, rightSubSelection)
+                            : new SwapMove(variableDescriptorList, leftSubSelection, rightSubSelection);
                 }
             };
         } else {
@@ -126,8 +131,8 @@ public class SwapMoveSelector extends GenericMoveSelector {
                 @Override
                 protected Move newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
                     return anyChained
-                            ? new ChainedSwapMove(variableDescriptors, leftSubSelection, rightSubSelection)
-                            : new SwapMove(variableDescriptors, leftSubSelection, rightSubSelection);
+                            ? new ChainedSwapMove(variableDescriptorList, inverseVariableSupplyList, leftSubSelection, rightSubSelection)
+                            : new SwapMove(variableDescriptorList, leftSubSelection, rightSubSelection);
                 }
             };
         }

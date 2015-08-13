@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 import java.util.Collections;
 
 import org.junit.Test;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -31,7 +30,7 @@ import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.mockito.Mockito.*;
 
-public class ChainedChangeMoveTest {
+public class ChainedSwapMoveTest {
 
     @Test
     public void noTrailing() {
@@ -50,14 +49,17 @@ public class ChainedChangeMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, b1});
 
-        ChainedChangeMove move = new ChainedChangeMove(a3, variableDescriptor, inverseVariableSupply, b1);
+        ChainedSwapMove move = new ChainedSwapMove(
+                Collections.singletonList(variableDescriptor), Collections.singletonList(inverseVariableSupply),
+                a3, b1);
         Move undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
-        SelectorTestUtils.assertChain(a0, a1, a2);
-        SelectorTestUtils.assertChain(b0, b1, a3);
+        SelectorTestUtils.assertChain(a0, a1, a2, b1);
+        SelectorTestUtils.assertChain(b0, a3);
 
-        verify(scoreDirector).changeVariableFacade(variableDescriptor, a3, b1);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a3, b0);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, b1, a2);
 
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3);
@@ -77,24 +79,28 @@ public class ChainedChangeMoveTest {
 
         TestdataChainedAnchor b0 = new TestdataChainedAnchor("b0");
         TestdataChainedEntity b1 = new TestdataChainedEntity("b1", b0);
+        TestdataChainedEntity b2 = new TestdataChainedEntity("b2", b1);
 
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
-                new TestdataChainedEntity[]{a1, a2, a3, b1});
+                new TestdataChainedEntity[]{a1, a2, a3, b1, b2});
 
-        ChainedChangeMove move = new ChainedChangeMove(a2, variableDescriptor, inverseVariableSupply, b0);
+        ChainedSwapMove move = new ChainedSwapMove(
+                Collections.singletonList(variableDescriptor), Collections.singletonList(inverseVariableSupply),
+                a2, b1);
         Move undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
-        SelectorTestUtils.assertChain(a0, a1, a3);
-        SelectorTestUtils.assertChain(b0, a2, b1);
+        SelectorTestUtils.assertChain(a0, a1, b1, a3);
+        SelectorTestUtils.assertChain(b0, a2, b2);
 
         verify(scoreDirector).changeVariableFacade(variableDescriptor, a2, b0);
-        verify(scoreDirector).changeVariableFacade(variableDescriptor, a3, a1);
-        verify(scoreDirector).changeVariableFacade(variableDescriptor, b1, a2);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a3, b1);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, b1, a1);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, b2, a2);
 
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3);
-        SelectorTestUtils.assertChain(b0, b1);
+        SelectorTestUtils.assertChain(b0, b1, b2);
     }
 
     @Test
@@ -112,7 +118,9 @@ public class ChainedChangeMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, a4});
 
-        ChainedChangeMove move = new ChainedChangeMove(a2, variableDescriptor, inverseVariableSupply, a3);
+        ChainedSwapMove move = new ChainedSwapMove(
+                Collections.singletonList(variableDescriptor), Collections.singletonList(inverseVariableSupply),
+                a2, a3);
         Move undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
 
@@ -121,6 +129,21 @@ public class ChainedChangeMoveTest {
         verify(scoreDirector).changeVariableFacade(variableDescriptor, a2, a3);
         verify(scoreDirector).changeVariableFacade(variableDescriptor, a3, a1);
         verify(scoreDirector).changeVariableFacade(variableDescriptor, a4, a2);
+
+        undoMove.doMove(scoreDirector);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4);
+
+        move = new ChainedSwapMove(
+                Collections.singletonList(variableDescriptor), Collections.singletonList(inverseVariableSupply),
+                a3, a2);
+        undoMove = move.createUndoMove(scoreDirector);
+        move.doMove(scoreDirector);
+
+        SelectorTestUtils.assertChain(a0, a1, a3, a2, a4);
+
+        verify(scoreDirector, times(2)).changeVariableFacade(variableDescriptor, a2, a3);
+        verify(scoreDirector, times(2)).changeVariableFacade(variableDescriptor, a3, a1);
+        verify(scoreDirector, times(2)).changeVariableFacade(variableDescriptor, a4, a2);
 
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4);

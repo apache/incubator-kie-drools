@@ -18,14 +18,19 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class ChainedChangeMove extends ChangeMove {
 
-    public ChainedChangeMove(Object entity, GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
+    protected final SingletonInverseVariableSupply inverseVariableSupply;
+
+    public ChainedChangeMove(Object entity, GenuineVariableDescriptor variableDescriptor,
+            SingletonInverseVariableSupply inverseVariableSupply, Object toPlanningValue) {
         super(entity, variableDescriptor, toPlanningValue);
+        this.inverseVariableSupply = inverseVariableSupply;
     }
 
     // ************************************************************************
@@ -41,12 +46,25 @@ public class ChainedChangeMove extends ChangeMove {
     @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldValue = variableDescriptor.getValue(entity);
-        return new ChainedChangeMove(entity, variableDescriptor, oldValue);
+        return new ChainedChangeMove(entity, variableDescriptor, inverseVariableSupply, oldValue);
     }
 
     @Override
     public void doMove(ScoreDirector scoreDirector) {
-        ChainedMoveUtils.doChainedChange(scoreDirector, entity, variableDescriptor, toPlanningValue);
+        Object oldValue = variableDescriptor.getValue(entity);
+        Object oldTrailingEntity = inverseVariableSupply.getInverseSingleton(entity);
+        Object newTrailingEntity = toPlanningValue == null ? null
+                : inverseVariableSupply.getInverseSingleton(toPlanningValue);
+        // Close the old chain
+        if (oldTrailingEntity != null) {
+            scoreDirector.changeVariableFacade(variableDescriptor, oldTrailingEntity, oldValue);
+        }
+        // Change the entity
+        scoreDirector.changeVariableFacade(variableDescriptor, entity, toPlanningValue);
+        // Reroute the new chain
+        if (newTrailingEntity != null) {
+            scoreDirector.changeVariableFacade(variableDescriptor, newTrailingEntity, entity);
+        }
     }
 
 }

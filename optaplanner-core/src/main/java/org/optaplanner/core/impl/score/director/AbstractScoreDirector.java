@@ -58,10 +58,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected final F scoreDirectorFactory;
-
     protected final boolean constraintMatchEnabledPreference;
-
-    protected VariableListenerSupport variableListenerSupport;
+    protected final VariableListenerSupport variableListenerSupport;
 
     protected Solution workingSolution;
     protected long workingEntityListRevision = 0L;

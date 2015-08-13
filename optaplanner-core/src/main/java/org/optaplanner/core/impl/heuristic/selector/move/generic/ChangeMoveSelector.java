@@ -38,6 +38,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
     protected final boolean randomSelection;
 
     protected final boolean chained;
+    protected SingletonInverseVariableSupply inverseVariableSupply = null;
 
     public ChangeMoveSelector(EntitySelector entitySelector, ValueSelector valueSelector,
             boolean randomSelection) {
@@ -55,9 +56,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         super.solvingStarted(solverScope);
         if (chained) {
             SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-            // TODO supply is demanded just to make sure it's there when it's demand again later.
-            // Instead it should be remembered for later
-            SingletonInverseVariableSupply inverseVariableSupply = supplyManager.demand(
+            inverseVariableSupply = supplyManager.demand(
                     new SingletonInverseVariableDemand(valueSelector.getVariableDescriptor()));
         }
     }
@@ -94,7 +93,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                 return new AbstractOriginalChangeIterator<Move>(entitySelector, valueSelector) {
                     @Override
                     protected Move newChangeSelection(Object entity, Object toValue) {
-                        return new ChainedChangeMove(entity, variableDescriptor, toValue);
+                        return new ChainedChangeMove(entity, variableDescriptor, inverseVariableSupply, toValue);
                     }
                 };
             } else {
@@ -110,7 +109,7 @@ public class ChangeMoveSelector extends GenericMoveSelector {
                 return new AbstractRandomChangeIterator<Move>(entitySelector, valueSelector) {
                     @Override
                     protected Move newChangeSelection(Object entity, Object toValue) {
-                        return new ChainedChangeMove(entity, variableDescriptor, toValue);
+                        return new ChainedChangeMove(entity, variableDescriptor, inverseVariableSupply, toValue);
                     }
                 };
             } else {

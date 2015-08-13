@@ -34,13 +34,13 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class SwapMove extends AbstractMove {
 
-    protected final Collection<GenuineVariableDescriptor> variableDescriptors;
+    protected final List<GenuineVariableDescriptor> variableDescriptorList;
 
     protected final Object leftEntity;
     protected final Object rightEntity;
 
-    public SwapMove(Collection<GenuineVariableDescriptor> variableDescriptors, Object leftEntity, Object rightEntity) {
-        this.variableDescriptors = variableDescriptors;
+    public SwapMove(List<GenuineVariableDescriptor> variableDescriptorList, Object leftEntity, Object rightEntity) {
+        this.variableDescriptorList = variableDescriptorList;
         this.leftEntity = leftEntity;
         this.rightEntity = rightEntity;
     }
@@ -59,7 +59,7 @@ public class SwapMove extends AbstractMove {
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         boolean movable = false;
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
             Object leftValue = variableDescriptor.getValue(leftEntity);
             Object rightValue = variableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(leftValue, rightValue)) {
@@ -82,11 +82,11 @@ public class SwapMove extends AbstractMove {
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new SwapMove(variableDescriptors, rightEntity, leftEntity);
+        return new SwapMove(variableDescriptorList, rightEntity, leftEntity);
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);
             Object oldRightValue = variableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
@@ -106,10 +106,10 @@ public class SwapMove extends AbstractMove {
 
     @Override
     public String getSimpleMoveTypeDescription() {
-        StringBuilder moveTypeDescription = new StringBuilder(20 * (variableDescriptors.size() + 1));
+        StringBuilder moveTypeDescription = new StringBuilder(20 * (variableDescriptorList.size() + 1));
         moveTypeDescription.append(getClass().getSimpleName()).append("(");
         String delimiter = "";
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
             moveTypeDescription.append(delimiter).append(variableDescriptor.getSimpleEntityAndVariableName());
             delimiter = ", ";
         }
@@ -122,8 +122,8 @@ public class SwapMove extends AbstractMove {
     }
 
     public Collection<? extends Object> getPlanningValues() {
-        List<Object> values = new ArrayList<Object>(variableDescriptors.size() * 2);
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+        List<Object> values = new ArrayList<Object>(variableDescriptorList.size() * 2);
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
             values.add(variableDescriptor.getValue(leftEntity));
             values.add(variableDescriptor.getValue(rightEntity));
         }
@@ -152,7 +152,7 @@ public class SwapMove extends AbstractMove {
     }
 
     public String toString() {
-        StringBuilder s = new StringBuilder(variableDescriptors.size() * 16);
+        StringBuilder s = new StringBuilder(variableDescriptorList.size() * 16);
         s.append(leftEntity).append(" {");
         appendVariablesToString(s, leftEntity);
         s.append("} <-> ");
@@ -164,7 +164,7 @@ public class SwapMove extends AbstractMove {
 
     protected void appendVariablesToString(StringBuilder s, Object entity) {
         boolean first = true;
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
             if (!first) {
                 s.append(", ");
             }

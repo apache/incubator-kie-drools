@@ -45,7 +45,7 @@ public class TailChainSwapMoveSelector extends GenericMoveSelector {
     protected final ValueSelector valueSelector;
     protected final boolean randomSelection;
 
-    protected SingletonInverseVariableSupply inverseVariableSupply;;
+    protected SingletonInverseVariableSupply inverseVariableSupply;
     protected AnchorVariableSupply anchorVariableSupply;
 
     public TailChainSwapMoveSelector(EntitySelector entitySelector, ValueSelector valueSelector,

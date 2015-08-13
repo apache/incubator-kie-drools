@@ -119,19 +119,19 @@ public abstract class SelectorConfig {
         return variableDescriptor;
     }
 
-    protected Collection<GenuineVariableDescriptor> deduceVariableDescriptors(
+    protected List<GenuineVariableDescriptor> deduceVariableDescriptorList(
             EntityDescriptor entityDescriptor, List<String> variableNameIncludeList) {
-        Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
+        List<GenuineVariableDescriptor> variableDescriptorList = entityDescriptor.getGenuineVariableDescriptorList();
         if (variableNameIncludeList == null) {
-            return variableDescriptors;
+            return variableDescriptorList;
         }
-        List<GenuineVariableDescriptor> resolvedVariableDescriptors
-                = new ArrayList<GenuineVariableDescriptor>(variableDescriptors.size());
+        List<GenuineVariableDescriptor> resolvedVariableDescriptorList
+                = new ArrayList<GenuineVariableDescriptor>(variableDescriptorList.size());
         for (String variableNameInclude : variableNameIncludeList) {
             boolean found = false;
-            for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+            for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
                 if (variableDescriptor.getVariableName().equals(variableNameInclude)) {
-                    resolvedVariableDescriptors.add(variableDescriptor);
+                    resolvedVariableDescriptorList.add(variableDescriptor);
                     found = true;
                     break;
                 }
@@ -140,10 +140,10 @@ public abstract class SelectorConfig {
                 throw new IllegalArgumentException("The selectorConfig (" + this
                         + ") has a variableNameInclude (" + variableNameInclude
                         + ") which does not exist in the entity (" + entityDescriptor.getEntityClass()
-                        + ")'s variableDescriptors (" + variableDescriptors + ").");
+                        + ")'s variableDescriptorList (" + variableDescriptorList + ").");
             }
         }
-        return resolvedVariableDescriptors;
+        return resolvedVariableDescriptorList;
     }
 
     // ************************************************************************

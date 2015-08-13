@@ -17,18 +17,23 @@
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class ChainedSwapMove extends SwapMove {
 
-    public ChainedSwapMove(Collection<GenuineVariableDescriptor> variableDescriptors,
-            Object leftEntity, Object rightEntity) {
-        super(variableDescriptors, leftEntity, rightEntity);
+    protected final List<SingletonInverseVariableSupply> inverseVariableSupplyList;
+
+    public ChainedSwapMove(List<GenuineVariableDescriptor> variableDescriptorList,
+            List<SingletonInverseVariableSupply> inverseVariableSupplyList, Object leftEntity, Object rightEntity) {
+        super(variableDescriptorList, leftEntity, rightEntity);
+        this.inverseVariableSupplyList = inverseVariableSupplyList;
     }
 
     // ************************************************************************
@@ -37,28 +42,53 @@ public class ChainedSwapMove extends SwapMove {
 
     @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new ChainedSwapMove(variableDescriptors, rightEntity, leftEntity);
+        return new ChainedSwapMove(variableDescriptorList, inverseVariableSupplyList, rightEntity, leftEntity);
     }
 
     public void doMove(ScoreDirector scoreDirector) {
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
+        for (int i = 0; i < variableDescriptorList.size(); i++) {
+            GenuineVariableDescriptor variableDescriptor = variableDescriptorList.get(i);
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);
             Object oldRightValue = variableDescriptor.getValue(rightEntity);
             if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
                 if (!variableDescriptor.isChained()) {
-                    scoreDirector.beforeVariableChanged(variableDescriptor, leftEntity);
-                    variableDescriptor.setValue(leftEntity, oldRightValue);
-                    scoreDirector.afterVariableChanged(variableDescriptor, leftEntity);
-
-                    scoreDirector.beforeVariableChanged(variableDescriptor, rightEntity);
-                    variableDescriptor.setValue(rightEntity, oldLeftValue);
-                    scoreDirector.afterVariableChanged(variableDescriptor, rightEntity);
+                    scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
+                    scoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);
                 } else {
-                    if (oldRightValue != leftEntity) {
-                        ChainedMoveUtils.doChainedChange(scoreDirector, leftEntity, variableDescriptor, oldRightValue);
-                    }
-                    if (oldLeftValue != rightEntity) {
-                        ChainedMoveUtils.doChainedChange(scoreDirector, rightEntity, variableDescriptor, oldLeftValue);
+                    SingletonInverseVariableSupply inverseVariableSupply = inverseVariableSupplyList.get(i);
+                    Object oldLeftTrailingEntity = inverseVariableSupply.getInverseSingleton(leftEntity);
+                    Object oldRightTrailingEntity = inverseVariableSupply.getInverseSingleton(rightEntity);
+                    if (oldRightValue == leftEntity) {
+                        // Change the right entity
+                        scoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);
+                        // Change the left entity
+                        scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, rightEntity);
+                        // Reroute the new left chain
+                        if (oldRightTrailingEntity != null) {
+                            scoreDirector.changeVariableFacade(variableDescriptor, oldRightTrailingEntity, leftEntity);
+                        }
+                    } else if (oldLeftValue == rightEntity) {
+                        // Change the right entity
+                        scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
+                        // Change the left entity
+                        scoreDirector.changeVariableFacade(variableDescriptor, rightEntity, leftEntity);
+                        // Reroute the new left chain
+                        if (oldLeftTrailingEntity != null) {
+                            scoreDirector.changeVariableFacade(variableDescriptor, oldLeftTrailingEntity, rightEntity);
+                        }
+                    } else {
+                        // Change the left entity
+                        scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
+                        // Change the right entity
+                        scoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);
+                        // Reroute the new left chain
+                        if (oldRightTrailingEntity != null) {
+                            scoreDirector.changeVariableFacade(variableDescriptor, oldRightTrailingEntity, leftEntity);
+                        }
+                        // Reroute the new right chain
+                        if (oldLeftTrailingEntity != null) {
+                            scoreDirector.changeVariableFacade(variableDescriptor, oldLeftTrailingEntity, rightEntity);
+                        }
                     }
                 }
             }

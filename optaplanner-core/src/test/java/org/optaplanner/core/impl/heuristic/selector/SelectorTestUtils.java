@@ -21,12 +21,15 @@ import java.util.*;
 import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.ListMultimap;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
@@ -216,6 +219,7 @@ public class SelectorTestUtils {
         return moveSelector;
     }
 
+    @Deprecated
     public static void mockMethodGetTrailingEntity(InnerScoreDirector scoreDirector,
             GenuineVariableDescriptor variableDescriptor, final TestdataChainedEntity[] allEntities) {
         when(scoreDirector.getTrailingEntity(eq(variableDescriptor), anyObject())).thenAnswer(new Answer<Object>() {
@@ -231,13 +235,32 @@ public class SelectorTestUtils {
         });
     }
 
+    public static SingletonInverseVariableSupply mockSingletonInverseVariableSupply(
+            final TestdataChainedEntity[] allEntities) {
+        return new SingletonInverseVariableSupply() {
+            @Override
+            public Object getInverseSingleton(Object planningValue) {
+                for (TestdataChainedEntity entity : allEntities) {
+                    if (entity.getChainedObject().equals(planningValue)) {
+                        return entity;
+                    }
+                }
+                return null;
+            }
+        };
+    }
+
     public static void assertChain(TestdataChainedObject... chainedObjects) {
         TestdataChainedObject chainedObject = chainedObjects[0];
         for (int i = 1; i < chainedObjects.length; i++) {
             TestdataChainedEntity chainedEntity = (TestdataChainedEntity) chainedObjects[i];
-            assertEquals("In expected chain (" + Arrays.toString(chainedObjects)
-                            + "), the entity (" + chainedEntity + ")'s chainedObject's value is",
-                    chainedObject, chainedEntity.getChainedObject());
+            if (!ObjectUtils.equals(chainedObject, chainedEntity.getChainedObject())) {
+                fail("Chain assertion failed for chainedEntity (" + chainedEntity + ").\n"
+                        + "Expected: " + chainedObject + "\n"
+                        + "Actual:   "  +chainedEntity.getChainedObject() + "\n"
+                        + "Expected chain: " + Arrays.toString(chainedObjects) + "\n"
+                        + "Actual chain:   " + Arrays.toString(ArrayUtils.subarray(chainedObjects, 0, i)) + " ... [" + chainedEntity.getChainedObject() + ", " + chainedEntity + "] ...");
+            }
             chainedObject = chainedEntity;
         }
     }

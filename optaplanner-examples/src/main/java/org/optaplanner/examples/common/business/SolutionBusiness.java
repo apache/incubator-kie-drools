@@ -33,6 +33,9 @@ import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
@@ -310,11 +313,16 @@ public class SolutionBusiness {
     }
 
     public ChangeMove createChangeMove(Object entity, String variableName, Object toPlanningValue) {
-        SolutionDescriptor solutionDescriptor = ((InnerScoreDirector) guiScoreDirector).getSolutionDescriptor();
+        // TODO Solver should support building a ChangeMove
+        InnerScoreDirector guiInnerScoreDirector = (InnerScoreDirector) this.guiScoreDirector;
+        SolutionDescriptor solutionDescriptor = guiInnerScoreDirector.getSolutionDescriptor();
         GenuineVariableDescriptor variableDescriptor = solutionDescriptor.findGenuineVariableDescriptorOrFail(
                 entity, variableName);
         if (variableDescriptor.isChained()) {
-            return new ChainedChangeMove(entity, variableDescriptor, toPlanningValue);
+            SupplyManager supplyManager = guiInnerScoreDirector.getSupplyManager();
+            SingletonInverseVariableSupply inverseVariableSupply = supplyManager.demand(
+                    new SingletonInverseVariableDemand(variableDescriptor));
+            return new ChainedChangeMove(entity, variableDescriptor, inverseVariableSupply, toPlanningValue);
         } else {
             return new ChangeMove(entity, variableDescriptor, toPlanningValue);
         }
@@ -326,13 +334,28 @@ public class SolutionBusiness {
     }
 
     public SwapMove createSwapMove(Object leftEntity, Object rightEntity) {
-        SolutionDescriptor solutionDescriptor = ((InnerScoreDirector) guiScoreDirector).getSolutionDescriptor();
+        // TODO Solver should support building a SwapMove
+        InnerScoreDirector guiInnerScoreDirector = (InnerScoreDirector) this.guiScoreDirector;
+        SolutionDescriptor solutionDescriptor = guiInnerScoreDirector.getSolutionDescriptor();
         EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptor(leftEntity.getClass());
-        Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
+        List<GenuineVariableDescriptor> variableDescriptorList = entityDescriptor.getGenuineVariableDescriptorList();
         if (entityDescriptor.hasAnyChainedGenuineVariables()) {
-            return new ChainedSwapMove(variableDescriptors, leftEntity, rightEntity);
+            List<SingletonInverseVariableSupply> inverseVariableSupplyList
+                    = new ArrayList<SingletonInverseVariableSupply>(variableDescriptorList.size());
+            SupplyManager supplyManager = guiInnerScoreDirector.getSupplyManager();
+            for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
+                SingletonInverseVariableSupply inverseVariableSupply;
+                if (variableDescriptor.isChained()) {
+                    inverseVariableSupply = supplyManager.demand(
+                            new SingletonInverseVariableDemand(variableDescriptor));
+                } else {
+                    inverseVariableSupply = null;
+                }
+                inverseVariableSupplyList.add(inverseVariableSupply);
+            }
+            return new ChainedSwapMove(variableDescriptorList, inverseVariableSupplyList, leftEntity, rightEntity);
         } else {
-            return new SwapMove(variableDescriptors, leftEntity, rightEntity);
+            return new SwapMove(variableDescriptorList, leftEntity, rightEntity);
         }
     }
 
