@@ -130,4 +130,12 @@ public interface ExecutorQueryService {
      * @return
      */
     RequestInfo getRequestForProcessing();
+    
+    /**
+     * Dedicated method for handling special case that is get the request for processing by id.
+     * To ensure its efficient use it shall perform necessary operation to minimize risk of 
+     * race conditions and deadlock.
+     * @return
+     */
+    RequestInfo getRequestForProcessing(Long requestId);
 }
