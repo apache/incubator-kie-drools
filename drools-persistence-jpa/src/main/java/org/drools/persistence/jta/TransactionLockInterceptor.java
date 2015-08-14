@@ -16,7 +16,11 @@
 
 package org.drools.persistence.jta;
 
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.ReentrantLock;
+
+import javax.transaction.Status;
 
 import org.drools.core.command.impl.AbstractInterceptor;
 import org.drools.persistence.OrderedTransactionSynchronization;
@@ -47,6 +51,8 @@ public class TransactionLockInterceptor extends AbstractInterceptor {
 
     private String releaseTxKey;
 
+    private Set<Long> forceUnlock = new CopyOnWriteArraySet<Long>();
+
     public TransactionLockInterceptor(Environment environment) {
         this(environment, "tx-unlock");
     }
@@ -66,7 +72,8 @@ public class TransactionLockInterceptor extends AbstractInterceptor {
         if (!active) {
             return executeNext(command);
         }
-
+        // release before entering in case it failed previously to avoid deadlock
+        releaseAfterFailure();
         // proceed only when explicitly activated
         boolean locked = false;
         if (!lock.isHeldByCurrentThread()) {
@@ -82,27 +89,65 @@ public class TransactionLockInterceptor extends AbstractInterceptor {
                 logger.debug("About to register lock release handler by {}", Thread.currentThread().getName());
                 release((TransactionManager) environment.get(EnvironmentName.TRANSACTION_MANAGER));
             }
+            releaseAfterFailure();
         }
     }
 
     protected void release(TransactionManager txm) {
         try {
-            TransactionManagerHelper.registerTransactionSyncInContainer(txm, new OrderedTransactionSynchronization(100, releaseTxKey) {
-
-                @Override
-                public void beforeCompletion() {
-                }
-
-                @Override
-                public void afterCompletion(int status) {
-                    logger.debug("Releasing on transaction completion by {}", Thread.currentThread().getName());
-                    lock.unlock();
-                    logger.debug("Successfully released lock by {}", Thread.currentThread().getName());
-                }
-            });
+            TransactionManagerHelper.registerTransactionSyncInContainer(txm, new ReleaseLockTransactionSynchronization(Thread.currentThread().getId(), 100, releaseTxKey));
         } catch (Throwable e) {
             logger.debug("Error happened releasing directly by {} due to {}", Thread.currentThread().getName(), e.getMessage());
-            lock.unlock();
+            doRelease();
+        }
+    }
+
+    protected void releaseAfterFailure() {
+        if (forceUnlock.remove(Thread.currentThread().getId())) {
+            logger.debug("Forcibly unlocking as it was requested by a reaper thread (transaction timeout)");
+            doRelease();
+        }
+    }
+
+    protected void doRelease() {
+        logger.debug("Releasing on transaction completion by {}", Thread.currentThread().getName());
+        lock.unlock();
+        logger.debug("Successfully released lock by {}", Thread.currentThread().getName());
+    }
+
+    private class ReleaseLockTransactionSynchronization extends OrderedTransactionSynchronization {
+
+        private volatile long registrationThreadId;
+
+        public ReleaseLockTransactionSynchronization(long threadId, Integer order, String identifier) {
+            super(order, identifier);
+            this.registrationThreadId = threadId;
+        }
+
+        @Override
+        public void beforeCompletion() {
+
+        }
+
+        @Override
+        public void afterCompletion(int status) {
+
+            if (isRollback(status)) {
+                final long currentThreadId = Thread.currentThread().getId();
+                final boolean isRegistrationThread = currentThreadId == registrationThreadId;
+                if ( ! isRegistrationThread ) {
+                    logger.debug("Attempt to unlock from different thread {} while owner is {}, requesting force unlock", currentThreadId, registrationThreadId );
+                    forceUnlock.add(registrationThreadId);
+                    return;
+                }
+            }
+            doRelease();
+        }
+
+        boolean isRollback(int status) {
+            return status == Status.STATUS_MARKED_ROLLBACK ||
+                    status == Status.STATUS_ROLLING_BACK ||
+                    status == Status.STATUS_ROLLEDBACK;
         }
     }
 
