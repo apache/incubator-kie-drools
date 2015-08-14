@@ -135,7 +135,7 @@ public class ReteSlidingTimeWindow extends SlidingTimeWindow
     @Override
     protected void updateNextExpiration(final InternalFactHandle fact,
                                         final InternalWorkingMemory workingMemory,
-                                        final Object context,
+                                        final Behavior.Context context,
                                         final int nodeId) {
         TimerService clock = workingMemory.getTimerService();
         if ( fact != null ) {

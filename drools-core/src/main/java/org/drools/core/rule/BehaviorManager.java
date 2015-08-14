@@ -41,17 +41,11 @@ public class BehaviorManager
         this( NO_BEHAVIORS );
     }
 
-    /**
-     * @param behaviors
-     */
     public BehaviorManager(List<Behavior> behaviors) {
         super();
         this.behaviors = behaviors.toArray( new Behavior[behaviors.size()] );
     }
 
-    /**
-     * @param behaviors
-     */
     public BehaviorManager(Behavior[] behaviors) {
         super();
         this.behaviors = behaviors;
@@ -68,11 +62,9 @@ public class BehaviorManager
 
     /**
      * Creates the behaviors' context 
-     * 
-     * @return
      */
-    public Object createBehaviorContext() {
-        Object[] behaviorCtx = new Object[behaviors.length];
+    public Behavior.Context[] createBehaviorContext() {
+        Behavior.Context[] behaviorCtx = new Behavior.Context[behaviors.length];
         for ( int i = 0; i < behaviors.length; i++ ) {
             behaviorCtx[i] = behaviors[i].createContext();
         }

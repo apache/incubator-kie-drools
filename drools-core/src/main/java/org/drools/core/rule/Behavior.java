@@ -16,25 +16,30 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
 
+import java.util.Collection;
+
 /**
  * An interface for all behavior implementations
  */
 public interface Behavior extends RuleComponent, Cloneable {
+
+    interface Context {
+        Collection<EventFactHandle> getFactHandles();
+    }
     
-    public static final Behavior[] EMPTY_BEHAVIOR_LIST = new Behavior[0];
-    
-    public enum BehaviorType {
+    enum BehaviorType {
         TIME_WINDOW( "time" ),
         LENGTH_WINDOW( "length" );
         
         private final String id;
         
-        private BehaviorType( String id ) {
+        BehaviorType( String id ) {
             this.id = id;
         }
         
@@ -45,18 +50,14 @@ public interface Behavior extends RuleComponent, Cloneable {
     
     /**
      * Returns the type of the behavior
-     * 
-     * @return
      */
-    public BehaviorType getType();
+    BehaviorType getType();
 
     /**
      * Creates the context object associated with this behavior.
      * The object is given as a parameter in all behavior call backs.
-     * 
-     * @return
      */
-    public Object createContext();
+    Context createContext();
 
     /**
      * Makes the behavior aware of the new fact entering behavior's scope
@@ -69,7 +70,7 @@ public interface Behavior extends RuleComponent, Cloneable {
      *         the behaviour has veto power over the fact propagation, and prevents
      *         the propagation to continue if returns false on this method. 
      */
-    public boolean assertFact(Object context,
+    boolean assertFact(Object context,
                               InternalFactHandle fact,
                               PropagationContext pctx,
                               InternalWorkingMemory workingMemory);
@@ -81,7 +82,7 @@ public interface Behavior extends RuleComponent, Cloneable {
      * @param fact The fact leaving the behavior's scope
      * @param workingMemory The working memory session reference
      */
-    public void retractFact(Object context,
+    void retractFact(Object context,
                             InternalFactHandle fact,
                             PropagationContext pctx,
                             InternalWorkingMemory workingMemory);
@@ -89,7 +90,7 @@ public interface Behavior extends RuleComponent, Cloneable {
     /**
      * A callback method that allows behaviors to expire facts
      */
-    public void expireFacts(Object context,
+    void expireFacts(Object context,
                             PropagationContext pctx,
                             InternalWorkingMemory workingMemory);
 
@@ -103,6 +104,6 @@ public interface Behavior extends RuleComponent, Cloneable {
      * @return the expiration offset for this behavior or -1 if 
      *         they don't have a time based expiration offset.
      */
-    public long getExpirationOffset();
+    long getExpirationOffset();
     
 }

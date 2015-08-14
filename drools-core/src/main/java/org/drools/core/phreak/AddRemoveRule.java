@@ -16,6 +16,7 @@
 package org.drools.core.phreak;
 
 
+import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
@@ -51,6 +52,7 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleMemory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
@@ -551,6 +553,8 @@ public class AddRemoveRule {
                     unlinkRightTuples(srcRightTuples.getInsertFirst());
                     unlinkRightTuples(srcRightTuples.getUpdateFirst());
                     unlinkRightTuples(srcRightTuples.getDeleteFirst());
+
+                    deleteFactsFromRightInput(bn, wm);
                 } else {
                     deleteSubnetworkFacts(bn, wm);
                 }
@@ -559,6 +563,22 @@ public class AddRemoveRule {
                 return;
             }
             lts = ((LeftTupleSource) lts).getSinkPropagator().getFirstLeftTupleSink();
+        }
+    }
+
+    private static void deleteFactsFromRightInput(BetaNode bn, InternalWorkingMemory wm) {
+        ObjectSource source = bn.getRightInput();
+        if (source instanceof WindowNode) {
+            WindowNode.WindowMemory memory = (WindowNode.WindowMemory) wm.getNodeMemory( ( (WindowNode) source ));
+            for (EventFactHandle factHandle : memory.getFactHandles()) {
+                for (RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; ) {
+                    RightTuple nextRightTuple = rightTuple.getHandleNext();
+                    if (source.equals( rightTuple.getRightTupleSink() )) {
+                        rightTuple.unlinkFromRightParent();
+                    }
+                    rightTuple = nextRightTuple;
+                }
+            }
         }
     }
 

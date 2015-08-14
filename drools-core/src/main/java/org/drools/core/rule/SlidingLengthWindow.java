@@ -27,6 +27,8 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * A length window behavior implementation
@@ -88,7 +90,7 @@ public class SlidingLengthWindow
         this.size = size;
     }
 
-    public Object createContext() {
+    public Behavior.Context createContext() {
         return new SlidingLengthWindowContext( this.size );
     }
 
@@ -154,6 +156,7 @@ public class SlidingLengthWindow
      */
     public static class SlidingLengthWindowContext
         implements
+        Behavior.Context,
         Externalizable {
 
         public EventFactHandle[] handles;
@@ -173,6 +176,10 @@ public class SlidingLengthWindow
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeInt( this.pos );
             out.writeObject( this.handles );
+        }
+
+        public Collection<EventFactHandle> getFactHandles() {
+            return Collections.emptyList();
         }
     }
 
