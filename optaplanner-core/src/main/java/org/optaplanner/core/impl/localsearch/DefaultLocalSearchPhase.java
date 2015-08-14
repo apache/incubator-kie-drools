@@ -99,7 +99,7 @@ public class DefaultLocalSearchPhase extends AbstractPhase implements LocalSearc
     private void doStep(LocalSearchStepScope stepScope) {
         LocalSearchPhaseScope phaseScope = stepScope.getPhaseScope();
         Move nextStep = stepScope.getStep();
-        stepScope.getScoreDirector().doMove(nextStep);
+        nextStep.doMove(stepScope.getScoreDirector());
         // there is no need to recalculate the score, but we still need to set it
         phaseScope.getWorkingSolution().setScore(stepScope.getScore());
         if (assertStepScoreFromScratch) {

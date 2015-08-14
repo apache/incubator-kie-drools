@@ -46,7 +46,8 @@ public class BedChangeMove extends AbstractMove {
         return new BedChangeMove(bedDesignation, bedDesignation.getBed());
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         PatientAdmissionMoveHelper.moveBed(scoreDirector, bedDesignation, toBed);
     }
 

@@ -46,7 +46,8 @@ public class CloudProcessSwapMove extends AbstractMove {
         return new CloudProcessSwapMove(rightCloudProcess, leftCloudProcess);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         CloudComputer oldLeftCloudComputer = leftCloudProcess.getComputer();
         CloudComputer oldRightCloudComputer = rightCloudProcess.getComputer();
         CloudBalancingMoveHelper.moveCloudComputer(scoreDirector, leftCloudProcess, oldRightCloudComputer);

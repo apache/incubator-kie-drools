@@ -38,9 +38,9 @@ public class VariableListenerNotifiable implements Comparable<VariableListenerNo
     public int compareTo(VariableListenerNotifiable other) {
         int otherGlobalOrder = other.getGlobalOrder();
         if (globalOrder < otherGlobalOrder) {
-            return 1;
-        } else if (globalOrder > otherGlobalOrder) {
             return -1;
+        } else if (globalOrder > otherGlobalOrder) {
+            return 1;
         } else {
             return 0;
         }

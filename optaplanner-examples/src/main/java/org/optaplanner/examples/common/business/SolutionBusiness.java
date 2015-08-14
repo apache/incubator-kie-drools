@@ -283,7 +283,7 @@ public class SolutionBusiness {
             return;
         }
         logger.info("Doing user move ({}).", move);
-        guiScoreDirector.doMove(move);
+        move.doMove(guiScoreDirector);
         guiScoreDirector.calculateScore();
     }
 

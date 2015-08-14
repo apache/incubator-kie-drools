@@ -145,9 +145,9 @@ public class LocalSearchDecider {
         Move move = moveScope.getMove();
         Move undoMove = move.createUndoMove(scoreDirector);
         moveScope.setUndoMove(undoMove);
-        scoreDirector.doMove(move);
+        move.doMove(scoreDirector);
         processMove(moveScope);
-        scoreDirector.doMove(undoMove);
+        undoMove.doMove(scoreDirector);
         if (assertExpectedUndoMoveScore) {
             LocalSearchPhaseScope phaseScope = moveScope.getStepScope().getPhaseScope();
             phaseScope.assertExpectedUndoMoveScore(move, undoMove, phaseScope.getLastCompletedStepScope().getScore());

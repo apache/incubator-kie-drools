@@ -46,7 +46,8 @@ public class RowChangeMove extends AbstractMove {
         return new RowChangeMove(queen, queen.getRow());
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         scoreDirector.beforeVariableChanged(queen, "row"); // before changes are made
         queen.setRow(toRow);
         scoreDirector.afterVariableChanged(queen, "row"); // after changes are made

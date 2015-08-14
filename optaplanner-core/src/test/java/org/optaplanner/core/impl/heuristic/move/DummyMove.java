@@ -49,7 +49,8 @@ public class DummyMove extends AbstractMove implements CodeAssertable {
         return new DummyMove("undo " + code);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         // do nothing
     }
 

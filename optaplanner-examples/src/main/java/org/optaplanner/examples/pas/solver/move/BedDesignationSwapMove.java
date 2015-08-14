@@ -46,7 +46,8 @@ public class BedDesignationSwapMove extends AbstractMove {
         return new BedDesignationSwapMove(rightBedDesignation, leftBedDesignation);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         Bed oldLeftBed = leftBedDesignation.getBed();
         Bed oldRightBed = rightBedDesignation.getBed();
         PatientAdmissionMoveHelper.moveBed(scoreDirector, leftBedDesignation, oldRightBed);

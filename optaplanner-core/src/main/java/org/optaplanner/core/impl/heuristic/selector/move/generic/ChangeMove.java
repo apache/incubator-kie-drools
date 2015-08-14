@@ -62,7 +62,8 @@ public class ChangeMove extends AbstractMove {
         return new ChangeMove(entity, variableDescriptor, oldValue);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         scoreDirector.beforeVariableChanged(variableDescriptor, entity);
         variableDescriptor.setValue(entity, toPlanningValue);
         scoreDirector.afterVariableChanged(variableDescriptor, entity);

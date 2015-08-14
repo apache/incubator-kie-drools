@@ -72,7 +72,8 @@ public class SubChainSwapMove extends AbstractMove {
                 rightSubChain, leftSubChain);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         Object oldLeftValue = variableDescriptor.getValue(leftSubChain.getFirstEntity());
         Object oldRightValue = variableDescriptor.getValue(rightSubChain.getFirstEntity());
         if (oldRightValue != leftSubChain.getLastEntity()) {

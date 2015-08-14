@@ -183,16 +183,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
     }
 
     @Override
-    public void doMove(Move move) {
-        move.doMove(this);
-        variableListenerSupport.triggerVariableListenersInNotificationQueues();
-    }
-
-    @Override
-    public void doMoves(Collection<Move> moves) {
-        for (Move move : moves) {
-            move.doMove(this);
-        }
+    public void commitMove() {
         variableListenerSupport.triggerVariableListenersInNotificationQueues();
     }
 

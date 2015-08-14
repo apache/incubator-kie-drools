@@ -54,9 +54,7 @@ public interface ScoreDirector {
      */
     void setWorkingSolution(Solution workingSolution);
 
-    void doMove(Move move);
-
-    void doMoves(Collection<Move> moves);
+    void commitMove();
 
     /**
      * Calculates the {@link Score} and updates the {@link Solution workingSolution} accordingly.

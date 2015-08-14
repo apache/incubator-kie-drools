@@ -58,7 +58,8 @@ public class SubChainReversingChangeMove extends AbstractMove {
         return new SubChainReversingChangeMove(subChain.reverse(), variableDescriptor, oldFirstValue);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         ChainedMoveUtils.doReverseSubChainChange(scoreDirector, subChain, variableDescriptor, toPlanningValue);
     }
 

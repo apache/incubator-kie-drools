@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * to create its undoMove correctly.
  * @see Move
  */
-public class CompositeMove extends AbstractMove {
+public class CompositeMove implements Move {
 
     /**
      * @param moves never null, sometimes empty. Do not modify this argument afterwards or the CompositeMove corrupts.
@@ -104,6 +104,7 @@ public class CompositeMove extends AbstractMove {
         for (Move move : moves) {
             move.doMove(scoreDirector);
         }
+        // No need to call scoreDirector.commitMove() because Move.doMove() already does it for every move.
     }
 
     // ************************************************************************

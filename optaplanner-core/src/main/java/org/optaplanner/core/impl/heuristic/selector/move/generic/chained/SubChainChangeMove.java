@@ -58,7 +58,8 @@ public class SubChainChangeMove extends AbstractMove {
         return new SubChainChangeMove(subChain, variableDescriptor, oldFirstValue);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         ChainedMoveUtils.doSubChainChange(scoreDirector, subChain, variableDescriptor, toPlanningValue);
     }
 

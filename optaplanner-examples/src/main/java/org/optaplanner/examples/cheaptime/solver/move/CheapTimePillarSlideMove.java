@@ -44,7 +44,8 @@ public class CheapTimePillarSlideMove extends AbstractMove {
         return new CheapTimePillarSlideMove(pillar, - startPeriodDiff);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         for (TaskAssignment taskAssignment : pillar) {
             scoreDirector.beforeVariableChanged(taskAssignment, "startPeriod");
             taskAssignment.setStartPeriod(taskAssignment.getStartPeriod() + startPeriodDiff);

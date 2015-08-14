@@ -93,7 +93,8 @@ public class PillarSwapMove extends AbstractMove {
                 rightPillar, leftPillar);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             Object oldLeftValue = variableDescriptor.getValue(leftPillar.get(0));
             Object oldRightValue = variableDescriptor.getValue(rightPillar.get(0));

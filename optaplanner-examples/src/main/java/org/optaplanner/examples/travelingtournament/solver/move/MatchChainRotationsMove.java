@@ -52,7 +52,8 @@ public class MatchChainRotationsMove extends AbstractMove {
         return new MatchChainRotationsMove(inverseFirstMatchList, inverseSecondMatchList);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         rotateList(scoreDirector, firstMatchList);
         if (!secondMatchList.isEmpty()) { // TODO create SingleMatchListRotateMove
             rotateList(scoreDirector, secondMatchList);

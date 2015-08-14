@@ -50,7 +50,7 @@ public class ChainedChangeMove extends ChangeMove {
     }
 
     @Override
-    public void doMove(ScoreDirector scoreDirector) {
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         Object oldValue = variableDescriptor.getValue(entity);
         Object oldTrailingEntity = inverseVariableSupply.getInverseSingleton(entity);
         Object newTrailingEntity = toPlanningValue == null ? null

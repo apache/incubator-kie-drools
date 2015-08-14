@@ -46,7 +46,8 @@ public class EmployeeChangeMove extends AbstractMove {
         return new EmployeeChangeMove(shiftAssignment, shiftAssignment.getEmployee());
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         NurseRosteringMoveHelper.moveEmployee(scoreDirector, shiftAssignment, toEmployee);
     }
 

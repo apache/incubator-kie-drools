@@ -82,7 +82,8 @@ public class PillarChangeMove extends AbstractMove {
         return new PillarChangeMove(pillar, variableDescriptor, oldValue);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         for (Object entity : pillar) {
             scoreDirector.beforeVariableChanged(variableDescriptor, entity);
             variableDescriptor.setValue(entity, toPlanningValue);

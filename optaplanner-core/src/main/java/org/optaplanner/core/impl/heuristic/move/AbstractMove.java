@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.move;
 
+import org.optaplanner.core.impl.score.director.ScoreDirector;
+
 /**
  * Abstract superclass for {@link Move}
  * @see Move
@@ -26,5 +28,18 @@ public abstract class AbstractMove implements Move {
     public String getSimpleMoveTypeDescription() {
         return getClass().getSimpleName();
     }
+
+    @Override
+    public final void doMove(ScoreDirector scoreDirector) {
+        doMoveOnGenuineVariables(scoreDirector);
+        scoreDirector.commitMove();
+    }
+
+    /**
+     * Like {@link #doMove(ScoreDirector)} but without the {@link ScoreDirector#commitMove()} call
+     * (because {@link #doMove(ScoreDirector)} already does that).
+     * @param scoreDirector never null
+     */
+    protected abstract void doMoveOnGenuineVariables(ScoreDirector scoreDirector);
 
 }

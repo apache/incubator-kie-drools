@@ -21,7 +21,9 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
@@ -30,10 +32,10 @@ import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
- * A Move represents a change of 1 or more planning variables of 1 or more planning entities
+ * A Move represents a change of 1 or more  {@link PlanningVariable}s of 1 or more  {@link PlanningEntity}s
  * in the working {@link Solution}.
  * <p>
- * Usually the move holds a direct reference to each planning entity of the {@link Solution}
+ * Usually the move holds a direct reference to each {@link PlanningEntity} of the {@link Solution}
  * which it will change when {@link #doMove(ScoreDirector)} is called.
  * On that change it should also notify the {@link ScoreDirector} accordingly.
  * <p>
@@ -74,6 +76,8 @@ public interface Move {
      * Does the Move and updates the {@link Solution} and its {@link ScoreDirector} accordingly.
      * When the {@link Solution} is modified, the {@link ScoreDirector} should be correctly notified,
      * otherwise later calculated {@link Score}s can be corrupted.
+     * <p>
+     * This method must end with calling {@link ScoreDirector#commitMove()} to ensure all shadow variables are updated.
      * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes.
      */
     void doMove(ScoreDirector scoreDirector);

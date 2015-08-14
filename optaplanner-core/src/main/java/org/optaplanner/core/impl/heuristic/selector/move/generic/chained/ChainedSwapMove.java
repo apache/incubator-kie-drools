@@ -45,7 +45,8 @@ public class ChainedSwapMove extends SwapMove {
         return new ChainedSwapMove(variableDescriptorList, inverseVariableSupplyList, rightEntity, leftEntity);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         for (int i = 0; i < variableDescriptorList.size(); i++) {
             GenuineVariableDescriptor variableDescriptor = variableDescriptorList.get(i);
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);

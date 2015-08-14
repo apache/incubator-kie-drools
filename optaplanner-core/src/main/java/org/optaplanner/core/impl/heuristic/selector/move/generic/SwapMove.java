@@ -85,7 +85,8 @@ public class SwapMove extends AbstractMove {
         return new SwapMove(variableDescriptorList, rightEntity, leftEntity);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);
             Object oldRightValue = variableDescriptor.getValue(rightEntity);

@@ -45,7 +45,8 @@ public class InvestmentQuantityTransferMove extends AbstractMove {
         return new InvestmentQuantityTransferMove(toAssetClassAllocation, fromAssetClassAllocation, transferMillis);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         scoreDirector.beforeVariableChanged(fromAssetClassAllocation, "quantityMillis");
         fromAssetClassAllocation.setQuantityMillis(fromAssetClassAllocation.getQuantityMillis() - transferMillis);
         scoreDirector.afterVariableChanged(fromAssetClassAllocation, "quantityMillis");

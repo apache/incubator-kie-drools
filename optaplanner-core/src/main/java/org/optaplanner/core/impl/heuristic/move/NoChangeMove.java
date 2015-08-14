@@ -34,7 +34,8 @@ public class NoChangeMove extends AbstractMove {
         return new NoChangeMove();
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         // do nothing
     }
 

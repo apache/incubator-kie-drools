@@ -50,7 +50,8 @@ public class EmployeeMultipleChangeMove extends AbstractMove {
         return new EmployeeMultipleChangeMove(toEmployee, shiftAssignmentList, fromEmployee);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         for (ShiftAssignment shiftAssignment : shiftAssignmentList) {
             if (!shiftAssignment.getEmployee().equals(fromEmployee)) {
                 throw new IllegalStateException("The shiftAssignment (" + shiftAssignment + ") should have the same employee ("

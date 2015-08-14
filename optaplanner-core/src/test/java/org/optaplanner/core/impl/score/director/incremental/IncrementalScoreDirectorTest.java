@@ -71,6 +71,7 @@ public class IncrementalScoreDirectorTest {
         scoreDirector.beforeVariableChanged(a3, "chainedObject");
         a3.setChainedObject(b1);
         scoreDirector.afterVariableChanged(a3, "chainedObject");
+        scoreDirector.commitMove();
         assertEquals(a3, b1.getNextEntity());
 
         InOrder inOrder = inOrder(incrementalScoreCalculator);

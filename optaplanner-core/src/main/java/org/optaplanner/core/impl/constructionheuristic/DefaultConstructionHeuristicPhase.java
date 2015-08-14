@@ -101,7 +101,7 @@ public class DefaultConstructionHeuristicPhase extends AbstractPhase implements 
     private void doStep(ConstructionHeuristicStepScope stepScope) {
         ConstructionHeuristicPhaseScope phaseScope = stepScope.getPhaseScope();
         Move nextStep = stepScope.getStep();
-        stepScope.getScoreDirector().doMove(nextStep);
+        nextStep.doMove(stepScope.getScoreDirector());
         // there is no need to recalculate the score, but we still need to set it
         phaseScope.getWorkingSolution().setScore(stepScope.getScore());
         if (assertStepScoreFromScratch) {

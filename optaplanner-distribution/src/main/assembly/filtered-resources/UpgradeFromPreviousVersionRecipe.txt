@@ -2571,6 +2571,34 @@ After in *.java:
         return capacity;
     }
 
+
+From 6.3.0.CR1 to 6.3.0.CR2
+---------------------------
+
+[MAJOR] If you have a custom Move, its doMove() method must now call scoreDirector.commitMove() at the end.
+In practice, you should have extended AbstractMove - which does the commitMove() call for you -
+but you'll need to rename your doMove() method to doMoveOnGenuineVariables().
+Before in *.java:
+    public class CloudComputerChangeMove extends AbstractMove {
+
+        ...
+
+        public void doMove(ScoreDirector scoreDirector) {
+            CloudBalancingMoveHelper.moveCloudComputer(scoreDirector, cloudProcess, toCloudComputer);
+        }
+
+    }
+After in *.java:
+    public class CloudComputerChangeMove extends AbstractMove {
+
+        ...
+
+        protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
+            CloudBalancingMoveHelper.moveCloudComputer(scoreDirector, cloudProcess, toCloudComputer);
+        }
+
+    }
+
 [IMPL_DETAIL] ChainedChangeMove and ChainedSwapMove's constructors now require the SingletonInverseVariableSupply parameter.
 Before in *.java:
     return new ChainedChangeMove(entity, variableDescriptor, toValue);

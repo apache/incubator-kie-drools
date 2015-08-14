@@ -46,7 +46,8 @@ public class ShiftAssignmentSwapMove extends AbstractMove {
         return new ShiftAssignmentSwapMove(rightShiftAssignment, leftShiftAssignment);
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         Employee oldLeftEmployee = leftShiftAssignment.getEmployee();
         Employee oldRightEmployee = rightShiftAssignment.getEmployee();
         NurseRosteringMoveHelper.moveEmployee(scoreDirector, leftShiftAssignment, oldRightEmployee);

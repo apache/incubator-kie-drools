@@ -46,7 +46,8 @@ public class CloudComputerChangeMove extends AbstractMove {
         return new CloudComputerChangeMove(cloudProcess, cloudProcess.getComputer());
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         CloudBalancingMoveHelper.moveCloudComputer(scoreDirector, cloudProcess, toCloudComputer);
     }
 

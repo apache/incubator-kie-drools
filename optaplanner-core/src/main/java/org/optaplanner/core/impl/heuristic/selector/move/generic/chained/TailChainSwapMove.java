@@ -119,7 +119,8 @@ public class TailChainSwapMove extends AbstractMove {
         }
     }
 
-    public void doMove(ScoreDirector scoreDirector) {
+    @Override
+    protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         Object leftAnchor = anchorVariableSupply.getAnchor(leftEntity);
         Object rightAnchor = !variableDescriptor.isValueNoPotentialAnchor(rightValue) ? rightValue
                 : anchorVariableSupply.getAnchor(rightValue);
