@@ -44,6 +44,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.PriorityQueue;
 
 public class SlidingTimeWindow
@@ -109,7 +110,7 @@ public class SlidingTimeWindow
         this.size = size;
     }
 
-    public Object createContext() {
+    public Behavior.Context createContext() {
         return new SlidingTimeWindowContext();
     }
 
@@ -195,7 +196,7 @@ public class SlidingTimeWindow
 
     protected void updateNextExpiration(final InternalFactHandle fact,
                                         final InternalWorkingMemory workingMemory,
-                                        final Object context,
+                                        final Behavior.Context context,
                                         final int nodeId) {
         TimerService clock = workingMemory.getTimerService();
         if ( fact != null ) {
@@ -224,6 +225,7 @@ public class SlidingTimeWindow
 
     public static class SlidingTimeWindowContext
             implements
+            Behavior.Context,
             Externalizable {
 
         private PriorityQueue<EventFactHandle> queue;
@@ -243,14 +245,6 @@ public class SlidingTimeWindow
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( this.queue );
             out.writeObject( this.expiringHandle );
-        }
-
-        public PriorityQueue<EventFactHandle> getQueue() {
-            return queue;
-        }
-
-        public void setQueue(PriorityQueue<EventFactHandle> queue) {
-            this.queue = queue;
         }
 
         public EventFactHandle getExpiringHandle() {
@@ -284,6 +278,10 @@ public class SlidingTimeWindow
         public EventFactHandle remove() {
             return queue.remove( );
         }
+
+        public Collection<EventFactHandle> getFactHandles() {
+            return queue;
+        }
     }
 
     public static class BehaviorJobContextTimerOutputMarshaller implements TimersOutputMarshaller {
@@ -296,7 +294,7 @@ public class SlidingTimeWindow
             // write out SlidingTimeWindowContext
             SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
 
-            EventFactHandle handle = slCtx.getQueue().peek();
+            EventFactHandle handle = slCtx.peek();
             outputCtx.writeInt( handle.getId() );
 
 //            BetaNode node = (BetaNode) handle.getRightTupleSink();
@@ -319,7 +317,7 @@ public class SlidingTimeWindow
             // write out SlidingTimeWindowContext
             SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) bjobCtx.behaviorContext;
 
-            EventFactHandle handle = slCtx.getQueue().peek();
+            EventFactHandle handle = slCtx.peek();
 
             return ProtobufMessages.Timers.Timer.newBuilder()
                                                 .setType( ProtobufMessages.Timers.TimerType.BEHAVIOR )
@@ -369,13 +367,13 @@ public class SlidingTimeWindow
         public InternalWorkingMemory workingMemory;
         public int                   nodeId;
         public Behavior              behavior;
-        public Object                behaviorContext;
+        public Behavior.Context      behaviorContext;
         public JobHandle             handle;
 
         public BehaviorJobContext(int                   nodeId,
                                   InternalWorkingMemory workingMemory,
                                   Behavior behavior,
-                                  Object behaviorContext) {
+                                  Behavior.Context behaviorContext) {
             super();
             this.nodeId = nodeId;
             this.workingMemory = workingMemory;
@@ -423,12 +421,12 @@ public class SlidingTimeWindow
             extends PropagationEntry.AbstractPropagationEntry
             implements WorkingMemoryAction {
         private final Behavior behavior;
-        private final Object   context;
+        private final Behavior.Context context;
         private final int nodeId;
 
         public BehaviorExpireWMAction(final int nodeId,
                                       Behavior behavior,
-                                      Object context) {
+                                      Behavior.Context context) {
             super();
             this.nodeId = nodeId;
             this.behavior = behavior;
@@ -441,7 +439,7 @@ public class SlidingTimeWindow
 
             WindowMemory memory = (WindowMemory) inCtx.wm.getNodeMemory( windowNode );
 
-            Object[] behaviorContext = ( Object[]  ) memory.behaviorContext;
+            Behavior.Context[] behaviorContext = memory.behaviorContext;
 
             int i = inCtx.readInt();
 
@@ -456,7 +454,7 @@ public class SlidingTimeWindow
 
             WindowMemory memory = (WindowMemory) context.wm.getNodeMemory( windowNode );
 
-            Object[] behaviorContext = ( Object[]  ) memory.behaviorContext;
+            Behavior.Context[] behaviorContext = memory.behaviorContext;
 
             int i = 0; //  <==== this needs fixing
 
@@ -471,8 +469,6 @@ public class SlidingTimeWindow
         }
 
         public ProtobufMessages.ActionQueue.Action serialize(MarshallerWriteContext outputCtx) {
-            SlidingTimeWindowContext slCtx = ( SlidingTimeWindowContext ) context;
-
             ProtobufMessages.ActionQueue.BehaviorExpire _be = ProtobufMessages.ActionQueue.BehaviorExpire.newBuilder()
                                                                                                          .setNodeId( nodeId )
                                                                                                          .build();

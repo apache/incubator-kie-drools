@@ -38,6 +38,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -369,8 +370,8 @@ public class WindowNode extends ObjectSource
     }
 
     public static class WindowMemory implements Memory {
-        public           ContextEntry[] context;
-        public           Object         behaviorContext;
+        public ContextEntry[] context;
+        public Behavior.Context[] behaviorContext;
 
         public short getNodeType() {
             return NodeTypeEnums.WindowNode;
@@ -380,7 +381,7 @@ public class WindowNode extends ObjectSource
             return null;
         }
 
-        public void setSegmentMemory(SegmentMemory segmentMemory) {
+        public void setSegmentMemory( SegmentMemory segmentMemory ) {
             throw new UnsupportedOperationException();
         }
 
@@ -388,7 +389,7 @@ public class WindowNode extends ObjectSource
             throw new UnsupportedOperationException();
         }
 
-        public void setPrevious(Memory previous) {
+        public void setPrevious( Memory previous ) {
             throw new UnsupportedOperationException();
         }
 
@@ -396,7 +397,7 @@ public class WindowNode extends ObjectSource
             throw new UnsupportedOperationException();
         }
 
-        public void setNext(Memory next) {
+        public void setNext( Memory next ) {
             throw new UnsupportedOperationException();
         }
 
@@ -404,6 +405,17 @@ public class WindowNode extends ObjectSource
             throw new UnsupportedOperationException();
         }
 
-        public void reset() { }
+        public void reset() {
+        }
+
+        public Collection<EventFactHandle> getFactHandles() {
+            List<EventFactHandle> eventFactHandles = new ArrayList<EventFactHandle>(  );
+            for (Behavior.Context ctx : behaviorContext) {
+                for (EventFactHandle efh : ctx.getFactHandles()) {
+                    eventFactHandles.add(efh.getLinkedFactHandle());
+                }
+            }
+            return eventFactHandles;
+        }
     }
 }

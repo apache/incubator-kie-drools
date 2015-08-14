@@ -126,6 +126,10 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         return this.startTimestamp + this.duration;
     }
 
+    public EventFactHandle getLinkedFactHandle() {
+        return linkedFactHandle;
+    }
+
     public boolean isExpired() {
         if ( linkedFactHandle != null ) {
             return linkedFactHandle.isExpired();
