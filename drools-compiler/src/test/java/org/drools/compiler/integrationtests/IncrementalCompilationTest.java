@@ -1701,6 +1701,10 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
             this.id = id;
         }
 
+        public int getId() {
+            return id;
+        }
+
         @Override
         public String toString() {
             return "MyEvent: " + id;
@@ -1831,5 +1835,75 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
         createAndDeployJar( ks, releaseId2, drl2 );
         kc.updateToVersion( releaseId2 );
+    }
+
+    @Test
+    public void testIncrementalCompilationWithSlidingWindow() {
+        // DROOLS-881
+        String drl1 =
+                "import " + MyEvent.class.getCanonicalName() + "\n" +
+                "declare MyEvent @role( event ) end\n" +
+                "rule A when\n" +
+                "    Number($number : intValue)\n" +
+                "              from accumulate( MyEvent($id : id) over window:time(10s), sum($id) )\n" +
+                "then\n" +
+                "    System.out.println(\"1. SUM : \" + $number);\n" +
+                "end\n" +
+                "\n" +
+                "rule B when\n" +
+                "    Number($number : intValue)\n" +
+                "              from accumulate( MyEvent($id : id) over window:time(10s), count($id) )\n" +
+                "then\n" +
+                "    System.out.println(\"1. CNT : \" + $number);\n" +
+                "end";
+
+        String drl2 =
+                "import " + MyEvent.class.getCanonicalName() + "\n" +
+                "declare MyEvent @role( event ) end\n" +
+                "rule A when\n" +
+                "    Number($number : intValue)\n" +
+                "              from accumulate( MyEvent($id : id) over window:time(10s), sum($id) )\n" +
+                "then\n" +
+                "    System.out.println(\"2. SUM : \" + $number);\n" +
+                "end\n" +
+                "\n" +
+                "rule B when\n" +
+                "    Number($number : intValue)\n" +
+                "              from accumulate( MyEvent($id : id) over window:time(10s), count($id) )\n" +
+                "then\n" +
+                "    System.out.println(\"2. CNT : \" + $number);\n" +
+                "end";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "KBase1" ).setDefault( true )
+                                          .setEventProcessingMode(EventProcessingOption.STREAM);
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1").setDefault(true)
+                                                 .setType(KieSessionModel.KieSessionType.STATEFUL)
+                                                 .setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ));
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId1, null, drl1 ) );
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        deployJar( ks, createKJar( ks, kproj, releaseId2, null, drl2 ) );
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+        KieSession ksession = kc.newKieSession();
+
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        ksession.insert( new MyEvent( 1 ) );
+        ksession.fireAllRules();
+
+        clock.advanceTime(7, TimeUnit.SECONDS);
+        kc.updateToVersion( releaseId2 );
+
+        ksession.fireAllRules();
+
+        clock.advanceTime(7, TimeUnit.SECONDS);
+        kc.updateToVersion( releaseId1 );
+
+        ksession.fireAllRules();
     }
 }
