@@ -136,50 +136,61 @@ public class TailChainSwapMoveTest {
         TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
         TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
         TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
+        TestdataChainedEntity a6 = new TestdataChainedEntity("a6", a5);
+        TestdataChainedEntity a7 = new TestdataChainedEntity("a7", a6);
 
         TestdataChainedSolution solution = new TestdataChainedSolution("solution");
         solution.setChainedAnchorList(Arrays.asList(a0));
-        solution.setChainedEntityList(Arrays.asList(a1, a2, a3, a4, a5));
+        solution.setChainedEntityList(Arrays.asList(a1, a2, a3, a4, a5, a6, a7));
 
         scoreDirector.setWorkingSolution(solution);
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
                 .demand(new SingletonInverseVariableDemand(variableDescriptor));
         AnchorVariableSupply anchorVariableSupply = scoreDirector.getSupplyManager()
                 .demand(new AnchorVariableDemand(variableDescriptor));
-
-        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
 
         TailChainSwapMove move = new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a4, a1);
         Move undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
-        SelectorTestUtils.assertChain(a0, a1, a4, a3, a2, a5);
-
+        SelectorTestUtils.assertChain(a0, a1, a4, a3, a2, a5, a6, a7);
         undoMove.doMove(scoreDirector);
-        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
 
         move = new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a3, a1);
         undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
-        SelectorTestUtils.assertChain(a0, a1, a3, a2, a4, a5);
-
+        SelectorTestUtils.assertChain(a0, a1, a3, a2, a4, a5, a6, a7);
         undoMove.doMove(scoreDirector);
-        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
 
-        move = new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a5, a1);
+        move = new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a7, a1);
         undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
-        SelectorTestUtils.assertChain(a0, a1, a5, a4, a3, a2);
-
+        SelectorTestUtils.assertChain(a0, a1, a7, a6, a5, a4, a3, a2);
         undoMove.doMove(scoreDirector);
-        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
 
         move = new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, a4);
         undoMove = move.createUndoMove(scoreDirector);
         move.doMove(scoreDirector);
-        SelectorTestUtils.assertChain(a0, a5, a2, a3, a4, a1);
-
+        SelectorTestUtils.assertChain(a0, a7, a6, a5, a2, a3, a4, a1);
         undoMove.doMove(scoreDirector);
-        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
+
+        move = new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a3, a4);
+        undoMove = move.createUndoMove(scoreDirector);
+        move.doMove(scoreDirector);
+        SelectorTestUtils.assertChain(a0, a7, a6, a5, a4, a3, a2, a1);
+        undoMove.doMove(scoreDirector);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
+
+//        move = new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, a6);
+//        undoMove = move.createUndoMove(scoreDirector);
+//        move.doMove(scoreDirector);
+//        SelectorTestUtils.assertChain(a0, a7, a6, a2, a3, a4, a5, a1);
+//        undoMove.doMove(scoreDirector);
+//        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
 
         // TODO Currently unsupported because we fail to create a valid undoMove... even though doMove supports it
 //        // To tail value

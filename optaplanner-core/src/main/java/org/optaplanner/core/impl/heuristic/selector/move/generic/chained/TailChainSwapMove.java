@@ -66,6 +66,11 @@ public class TailChainSwapMove extends AbstractMove {
     // Worker methods
     // ************************************************************************
 
+    protected Object determineRightAnchor() {
+        return !variableDescriptor.isValueNoPotentialAnchor(rightValue) ? rightValue
+                : anchorVariableSupply.getAnchor(rightValue);
+    }
+
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         Object leftValue = variableDescriptor.getValue(leftEntity);
         Object rightEntity = inverseVariableSupply.getInverseSingleton(rightValue);
@@ -75,8 +80,7 @@ public class TailChainSwapMove extends AbstractMove {
         }
         if (rightEntity == null) {
             Object leftAnchor = anchorVariableSupply.getAnchor(leftEntity);
-            Object rightAnchor = !variableDescriptor.isValueNoPotentialAnchor(rightValue) ? rightValue
-                    : anchorVariableSupply.getAnchor(rightValue);
+            Object rightAnchor = determineRightAnchor();
             // TODO Currently unsupported because we fail to create a valid undoMove... even though doMove supports it
             if (leftAnchor == rightAnchor) {
                 return false;
@@ -101,8 +105,7 @@ public class TailChainSwapMove extends AbstractMove {
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
         Object leftAnchor = anchorVariableSupply.getAnchor(leftEntity);
-        Object rightAnchor = !variableDescriptor.isValueNoPotentialAnchor(rightValue) ? rightValue
-                : anchorVariableSupply.getAnchor(rightValue);
+        Object rightAnchor = determineRightAnchor();
         Object leftValue = variableDescriptor.getValue(leftEntity);
         if (leftAnchor != rightAnchor) {
             return new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
@@ -122,107 +125,63 @@ public class TailChainSwapMove extends AbstractMove {
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         Object leftAnchor = anchorVariableSupply.getAnchor(leftEntity);
-        Object rightAnchor = !variableDescriptor.isValueNoPotentialAnchor(rightValue) ? rightValue
-                : anchorVariableSupply.getAnchor(rightValue);
+        Object rightAnchor = determineRightAnchor();
         Object leftValue = variableDescriptor.getValue(leftEntity);
         Object rightEntity = inverseVariableSupply.getInverseSingleton(rightValue); // Sometimes null
         if (leftAnchor != rightAnchor) {
-            // HACK mixed order to avoid VariableListener trouble - requires predicable VariableListener firing to fix
-            scoreDirector.beforeVariableChanged(variableDescriptor, leftEntity);
+            // Change the left entity
+            scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, rightValue);
+            // Change the right entity
             if (rightEntity != null) {
-                scoreDirector.beforeVariableChanged(variableDescriptor, rightEntity);
-            }
-            variableDescriptor.setValue(leftEntity, rightValue);
-            if (rightEntity != null) {
-                variableDescriptor.setValue(rightEntity, leftValue);
-            }
-            scoreDirector.afterVariableChanged(variableDescriptor, leftEntity);
-            if (rightEntity != null) {
-                scoreDirector.afterVariableChanged(variableDescriptor, rightEntity);
+                scoreDirector.changeVariableFacade(variableDescriptor, rightEntity, leftValue);
             }
         } else {
-            boolean rightValueIsLater = isRightValueLaterThanLeftEntity(leftAnchor);
-            if (!rightValueIsLater) {
-                // Reverses loop on the side that doesn't include anchor
+            Object lastEntityInChainOrLeftEntity = findLastEntityInChainOrLeftEntity();
+            if (lastEntityInChainOrLeftEntity == leftEntity) {
+                // Reverses loop on the side that doesn't include the anchor, because rightValue is earlier than leftEntity
                 Object leftNextEntity = inverseVariableSupply.getInverseSingleton(leftEntity);
-                // HACK mixed order to avoid VariableListener trouble - requires predicable VariableListener firing to fix
-                scoreDirector.beforeVariableChanged(variableDescriptor, leftEntity);
-                variableDescriptor.setValue(leftEntity, rightValue);
-                // Unhook the leftNextEntity before the loop
+                scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, rightValue);
+                reverseChain(scoreDirector, leftValue, leftEntity, rightEntity);
                 if (leftNextEntity != null) {
-                    scoreDirector.beforeVariableChanged(variableDescriptor, leftNextEntity);
-                }
-                Object entity = leftValue;
-                Object previousEntity = leftEntity;
-                while (previousEntity != rightEntity) {
-                    Object value = variableDescriptor.getValue(entity);
-                    scoreDirector.changeVariableFacade(variableDescriptor, entity, previousEntity);
-                    previousEntity = entity;
-                    entity = value;
-                }
-                // Remainder of the laterEntity handling
-                scoreDirector.afterVariableChanged(variableDescriptor, leftEntity);
-                // Remainder of the leftNextEntity handling
-                if (leftNextEntity != null) {
-                    variableDescriptor.setValue(leftNextEntity, previousEntity);
-                    scoreDirector.afterVariableChanged(variableDescriptor, leftNextEntity);
+                    scoreDirector.changeVariableFacade(variableDescriptor, leftNextEntity, rightEntity);
                 }
             } else {
-                // Reverses loop on the side that does include anchor
+                // Reverses loop on the side that does include the anchor, because rightValue is later than leftEntity
+                Object lastEntityInChain = lastEntityInChainOrLeftEntity;
                 Object leftNextEntity = inverseVariableSupply.getInverseSingleton(leftEntity);
-                // HACK mixed order to avoid VariableListener trouble - requires predicable VariableListener firing to fix
-                scoreDirector.beforeVariableChanged(variableDescriptor, inverseVariableSupply.getInverseSingleton(leftAnchor));
-                // Change the tail of the chain
-                Object lastEntity = rightValue;
-                while (true) {
-                    Object next = inverseVariableSupply.getInverseSingleton(lastEntity);
-                    if (next == null) {
-                        break;
-                    }
-                    lastEntity = next;
-                }
-                Object entity = lastEntity;
-                Object previousEntity = leftAnchor;
-                while (entity != rightValue) {
-                    Object value = variableDescriptor.getValue(entity);
-                    scoreDirector.changeVariableFacade(variableDescriptor, entity, previousEntity);
-                    previousEntity = entity;
-                    entity = value;
-                }
-                // Change the non-anchor loop
-                if (leftNextEntity != null) {
-                    scoreDirector.changeVariableFacade(variableDescriptor, leftNextEntity, previousEntity);
-                }
+                Object entityAfterAnchor = inverseVariableSupply.getInverseSingleton(leftAnchor);
                 // Change the head of the chain
-                entity = leftEntity;
-                previousEntity = rightValue;
-                while (entity != leftAnchor) {
-                    Object value = variableDescriptor.getValue(entity);
-                    if (value == leftAnchor) {
-                        // HACK mixed order to avoid VariableListener trouble - requires predicable VariableListener firing to fix
-                        // Remainder of the inverseVariableSupply.getInverseSingleton(leftAnchor) handling
-                        variableDescriptor.setValue(entity, previousEntity);
-                        scoreDirector.afterVariableChanged(variableDescriptor, entity);
-                    } else {
-                        scoreDirector.changeVariableFacade(variableDescriptor, entity, previousEntity);
-                    }
-                    previousEntity = entity;
-                    entity = value;
-                }
+                reverseChain(scoreDirector, leftValue, leftEntity, entityAfterAnchor);
+                // Change leftEntity
+                scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, rightValue);
+                // Change the tail of the chain
+                reverseChain(scoreDirector, lastEntityInChain, leftAnchor, rightEntity);
+                scoreDirector.changeVariableFacade(variableDescriptor, leftNextEntity, rightEntity);
             }
         }
     }
 
-    protected boolean isRightValueLaterThanLeftEntity(Object anchor) {
-        // (leftEntity != rightValue) is always true because isMoveDoable() check that
-        Object value = rightValue;
-        while (value != anchor) {
-            if (value == leftEntity) {
-                return true;
+    protected Object findLastEntityInChainOrLeftEntity() {
+        Object entity = rightValue;
+        while (entity != leftEntity) {
+            Object nextEntity = inverseVariableSupply.getInverseSingleton(entity);
+            if (nextEntity == null) {
+                return entity;
             }
-            value = variableDescriptor.getValue(value);
+            entity = nextEntity;
         }
-        return false;
+        return leftEntity;
+    }
+
+    protected void reverseChain(ScoreDirector scoreDirector, Object fromValue, Object fromEntity, Object toEntity) {
+        Object entity = fromValue;
+        Object newValue = fromEntity;
+        while (newValue != toEntity) {
+            Object oldValue = variableDescriptor.getValue(entity);
+            scoreDirector.changeVariableFacade(variableDescriptor, entity, newValue);
+            newValue = entity;
+            entity = oldValue;
+        }
     }
 
     // ************************************************************************
