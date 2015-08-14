@@ -7701,4 +7701,36 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertDrlHasCompilationError(drl, -1);
     }
+
+    @Test @Ignore("Requires mvel 2.2.7.Final")
+    public void testVariableMatchesField() throws Exception {
+        // DROOLS-882
+        String drl =
+                "declare RegEx\n" +
+                "    pattern : String\n" +
+                "end\n" +
+                "declare Fact\n" +
+                "    field : String\n" +
+                "end\n" +
+                "rule \"Variable matches field\"\n" +
+                "    when\n" +
+                "        Fact( $field : field )\n" +
+                "        RegEx( $field matches pattern )\n" +
+                "    then\n" +
+                "        insert(\"Matched \" + $field);\n" +
+                "end\n" +
+                "rule \"Boot\"\n" +
+                "    when\n" +
+                "    then\n" +
+                "        insert( new RegEx(\"foo.*\") );\n" +
+                "        insert( new Fact(\"foobar\") );\n" +
+                "        insert( new Fact(\"bar\") );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        assertEquals(2, ksession.fireAllRules());
+    }
 }

@@ -308,8 +308,6 @@ public class MVELConsequenceBuilderTest {
     public void testDebugSymbolCount() {
         String expr = "System.out.println( \"a1\" );\n" + "System.out.println( \"a2\" );\n" + "System.out.println( \"a3\" );\n" + "System.out.println( \"a4\" );\n";
 
-        ExpressionCompiler compiler = new ExpressionCompiler( expr );
-
         ParserContext context = new ParserContext();
         context.setDebugSymbols( true );
         context.addImport( "System",
@@ -318,8 +316,8 @@ public class MVELConsequenceBuilderTest {
         //context.setDebugSymbols( true );
         context.setSourceFile( "mysource" );
 
-
-        Serializable compiledExpression = compiler.compile( context );
+        ExpressionCompiler compiler = new ExpressionCompiler( expr, context );
+        Serializable compiledExpression = compiler.compile();
 
         String s = DebugTools.decompile( compiledExpression );
 

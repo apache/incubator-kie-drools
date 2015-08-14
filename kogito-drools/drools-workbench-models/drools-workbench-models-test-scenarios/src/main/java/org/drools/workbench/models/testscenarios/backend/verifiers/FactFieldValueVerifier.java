@@ -16,13 +16,6 @@
 
 package org.drools.workbench.models.testscenarios.backend.verifiers;
 
-import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.base.TypeResolver;
 import org.drools.core.util.MVELSafeHelper;
 import org.drools.workbench.models.testscenarios.backend.util.DateObjectFactory;
@@ -33,6 +26,13 @@ import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExpressionCompiler;
+
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class FactFieldValueVerifier {
 
@@ -165,14 +165,14 @@ class ResultVerifier {
 
     protected Boolean isSuccess(VerifyField currentField) {
         String s = "__fact__." + currentField.getFieldName() + " " + currentField.getOperator() + " __expected__";
-        CompiledExpression expression = new ExpressionCompiler(s).compile(parserContext);
+        CompiledExpression expression = new ExpressionCompiler(s, parserContext).compile();
 
         return (Boolean) MVELSafeHelper.getEvaluator().executeExpression(expression,
                 variables);
     }
 
     protected String getActual(VerifyField currentField) {
-        Object actualValue = MVELSafeHelper.getEvaluator().executeExpression(new ExpressionCompiler("__fact__." + currentField.getFieldName()).compile(parserContext),
+        Object actualValue = MVELSafeHelper.getEvaluator().executeExpression(new ExpressionCompiler("__fact__." + currentField.getFieldName(), parserContext).compile(),
                 variables);
 
         return (actualValue != null) ? actualValue.toString() : "";
