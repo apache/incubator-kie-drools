@@ -185,22 +185,21 @@ public class TailChainSwapMoveTest {
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
 
-//        move = new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, a6);
-//        undoMove = move.createUndoMove(scoreDirector);
-//        move.doMove(scoreDirector);
-//        SelectorTestUtils.assertChain(a0, a7, a6, a2, a3, a4, a5, a1);
-//        undoMove.doMove(scoreDirector);
-//        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
+        move = new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, a6);
+        undoMove = move.createUndoMove(scoreDirector);
+        move.doMove(scoreDirector);
+        SelectorTestUtils.assertChain(a0, a7, a3, a4, a5, a6, a2, a1);
+        undoMove.doMove(scoreDirector);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
 
         // TODO Currently unsupported because we fail to create a valid undoMove... even though doMove supports it
 //        // To tail value
-//        move = new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a2, a5);
+//        move = new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a3, a7);
 //        undoMove = move.createUndoMove(scoreDirector);
 //        move.doMove(scoreDirector);
-//        SelectorTestUtils.assertChain(a0, a3, a4, a5, a2, a1);
-//
+//        SelectorTestUtils.assertChain(a0, a4, a5, a6, a7, a3, a2, a1);
 //        undoMove.doMove(scoreDirector);
-//        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
+//        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
     }
 
     @Test
