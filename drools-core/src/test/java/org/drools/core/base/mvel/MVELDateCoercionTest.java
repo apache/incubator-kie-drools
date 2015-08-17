@@ -16,14 +16,14 @@
 
 package org.drools.core.base.mvel;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
-
-import org.junit.Test;
-import static org.junit.Assert.*;
-
 import org.drools.core.util.DateUtils;
-import org.drools.core.type.DateFormatsImpl;
+import org.junit.Test;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import static org.junit.Assert.*;
 
 public class MVELDateCoercionTest {
 
@@ -44,8 +44,7 @@ public class MVELDateCoercionTest {
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.UK);
 
         String dt = df.format(df.parse("10-Jul-1974"));
-        Date dt_ = DateUtils.parseDate(dt,
-                new DateFormatsImpl());
+        Date dt_ = DateUtils.parseDate(dt);
         assertEquals(dt_, co.convertFrom( dt ));
     }
 

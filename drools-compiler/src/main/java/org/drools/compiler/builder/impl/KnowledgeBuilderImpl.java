@@ -97,8 +97,6 @@ import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.rule.WindowDeclaration;
-import org.drools.core.type.DateFormats;
-import org.drools.core.type.DateFormatsImpl;
 import org.drools.core.util.DroolsStreamUtils;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
@@ -188,8 +186,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     private List<DSLTokenizedMappingFile>                  dslFiles;
 
-    protected DateFormats dateFormats;
-
     private final org.drools.compiler.compiler.ProcessBuilder processBuilder;
 
     private IllegalArgumentException                          processBuilderCreationFailure;
@@ -256,12 +252,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             this.configuration = configuration;
         }
 
-        this.dateFormats = null;//(DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
-        if (this.dateFormats == null) {
-            this.dateFormats = new DateFormatsImpl();
-            //this.environment.set( EnvironmentName.DATE_FORMATS , this.dateFormats );
-        }
-
         this.rootClassLoader = this.configuration.getClassLoader();
 
         this.defaultDialect = this.configuration.getDefaultDialect();
@@ -295,12 +285,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             this.rootClassLoader = kBase.getRootClassLoader();
         } else {
             this.rootClassLoader = this.configuration.getClassLoader();
-        }
-
-        this.dateFormats = null;//(DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
-        if (this.dateFormats == null) {
-            this.dateFormats = new DateFormatsImpl();
-            //this.environment.set( EnvironmentName.DATE_FORMATS , this.dateFormats );
         }
 
         // FIXME, we need to get drools to support "default" namespace.
@@ -1866,10 +1850,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     public Map<String, PackageRegistry> getPackageRegistry() {
         return this.pkgRegistryMap;
-    }
-
-    public DateFormats getDateFormats() {
-        return this.dateFormats;
     }
 
     public Collection<String> getPackageNames() {

@@ -34,7 +34,6 @@ import org.drools.core.base.evaluators.Operator;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.ReturnValueRestriction;
 import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.Constraint;
@@ -42,7 +41,6 @@ import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.KnowledgeHelper;
-import org.drools.core.spi.Restriction;
 import org.drools.core.util.index.IndexUtil;
 import org.mvel2.ConversionHandler;
 import org.mvel2.DataConversion;
@@ -50,8 +48,8 @@ import org.mvel2.util.CompatibilityStrategy;
 import org.mvel2.util.NullType;
 
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Map;
@@ -140,14 +138,10 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         expression = normalizeMVELVariableExpression(expression, leftValue, rightValue, relDescr);
         IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operatorDescr.getOperator());
         MVELCompilationUnit compilationUnit = isUnification ? null : buildCompilationUnit(context, pattern, expression, null);
-        return new MvelConstraint(Arrays.asList(context.getPkg().getName()), expression, declarations, compilationUnit, constraintType, requiredDeclaration, extractor, isUnification);
+        return new MvelConstraint( Collections.singletonList( context.getPkg().getName() ), expression, declarations, compilationUnit, constraintType, requiredDeclaration, extractor, isUnification);
     }
 
     public Constraint buildMvelConstraint(String packageName, String expression, Declaration[] declarations, MVELCompilationUnit compilationUnit, boolean isDynamic) {
-        return new MvelConstraint( packageName, expression, declarations, compilationUnit, isDynamic );
-    }
-
-    public Constraint buildMvelConstraint(String packageName, String expression, Declaration[] declarations, MVELCompilationUnit compilationUnit, boolean isDynamic, PredicateDescr base ) {
         return new MvelConstraint( packageName, expression, declarations, compilationUnit, isDynamic );
     }
 
@@ -170,8 +164,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             if (evaluator != null && evaluator.isTemporal()) {
                 try {
                     field = context.getCompilerFactory().getFieldFactory().getFieldValue(field.getValue(),
-                                                                                         ValueType.DATE_TYPE,
-                                                                                         context.getKnowledgeBuilder().getDateFormats());
+                                                                                         ValueType.DATE_TYPE);
                 } catch (Exception e) {
                     context.addError( new DescrBuildError( context.getParentDescr(),
                                                            restrictionDescr,
@@ -242,13 +235,6 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         }
         return expr;
     }
-
-    protected static Declaration getIndexingDeclaration(Restriction restriction) {
-        if (restriction instanceof ReturnValueRestriction) return null;
-        Declaration[] declarations = restriction.getRequiredDeclarations();
-        return declarations != null && declarations.length > 0 ? declarations[0] : null;
-    }
-
 
     public Evaluator buildLiteralEvaluator( RuleBuildContext context,
                                                    InternalReadAccessor extractor,

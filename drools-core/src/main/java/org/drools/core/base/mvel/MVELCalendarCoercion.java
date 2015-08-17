@@ -16,26 +16,21 @@
 
 package org.drools.core.base.mvel;
 
-import java.util.Calendar;
-
 import org.drools.core.util.DateUtils;
-import org.drools.core.type.DateFormatsImpl;
 import org.mvel2.ConversionHandler;
+
+import java.util.Calendar;
 
 public class MVELCalendarCoercion implements ConversionHandler {
 
     public boolean canConvertFrom(Class cls) {
-        if (cls == String.class || cls.isAssignableFrom( Calendar.class )) {
-            return true;
-        } else {
-            return false;
-        }
+        return cls == String.class || cls.isAssignableFrom( Calendar.class );
     }
 
     public Object convertFrom(Object o) {
         if (o instanceof String) {
             Calendar cal = Calendar.getInstance();
-            cal.setTime( DateUtils.parseDate( (String) o, DateFormatsImpl.DATE_FORMATS.get() ) );
+            cal.setTime( DateUtils.parseDate( (String) o ) );
             return cal;
         } else {
             return o;

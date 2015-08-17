@@ -31,7 +31,6 @@ import org.drools.core.rule.MapBackedClassLoader;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.FieldValue;
-import org.drools.core.type.DateFormatsImpl;
 import org.drools.core.util.DateUtils;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -97,8 +96,7 @@ public class MVELTest extends CommonTestMethodBase {
         assertEquals( "hello world",
                       list2.get( 0 ) );
 
-        Date dt = DateUtils.parseDate( "10-Jul-1974",
-                                       new DateFormatsImpl() );
+        Date dt = DateUtils.parseDate( "10-Jul-1974" );
         assertEquals( dt,
                       c.getUsedBy() );
     }

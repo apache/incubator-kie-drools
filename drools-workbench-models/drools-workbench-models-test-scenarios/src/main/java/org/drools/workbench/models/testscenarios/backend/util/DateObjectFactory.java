@@ -35,7 +35,7 @@ public class DateObjectFactory {
     }
 
     private static long getTimeAsLong(String value) {
-        return DateUtils.parseDate(value, null).getTime();
+        return DateUtils.parseDate(value).getTime();
     }
 
 }
