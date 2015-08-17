@@ -114,6 +114,40 @@ public class SubChainSwapMoveTest {
     }
 
     @Test
+    public void sameChainWithNoneBetween() {
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
+
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
+        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
+        TestdataChainedEntity a6 = new TestdataChainedEntity("a6", a5);
+        TestdataChainedEntity a7 = new TestdataChainedEntity("a7", a6);
+
+        SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
+                new TestdataChainedEntity[]{a1, a2, a3, a4, a5, a6, a7});
+
+        SubChainSwapMove move = new SubChainSwapMove(variableDescriptor, inverseVariableSupply,
+                new SubChain(Arrays.<Object>asList(a2, a3, a4)),
+                new SubChain(Arrays.<Object>asList(a5, a6)));
+        Move undoMove = move.createUndoMove(scoreDirector);
+        move.doMove(scoreDirector);
+
+        SelectorTestUtils.assertChain(a0, a1, a5, a6, a2, a3, a4, a7);
+
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a5, a1);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a2, a6);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a7, a4);
+
+        undoMove.doMove(scoreDirector);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
+    }
+
+    @Test
     public void toStringTest() {
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);

@@ -86,14 +86,26 @@ public class SubChainSwapMove extends AbstractMove {
         Object rightLastEntity = rightSubChain.getLastEntity();
         Object rightTrailingLastEntity = inverseVariableSupply.getInverseSingleton(rightLastEntity);
         // Change the entities
-        scoreDirector.changeVariableFacade(variableDescriptor, leftFirstEntity, rightFirstValue);
-        scoreDirector.changeVariableFacade(variableDescriptor, rightFirstEntity, leftFirstValue);
+        if (leftLastEntity != rightFirstValue) {
+            scoreDirector.changeVariableFacade(variableDescriptor, leftFirstEntity, rightFirstValue);
+        }
+        if (rightLastEntity != leftFirstValue) {
+            scoreDirector.changeVariableFacade(variableDescriptor, rightFirstEntity, leftFirstValue);
+        }
         // Reroute the new chains
         if (leftTrailingLastEntity != null) {
-            scoreDirector.changeVariableFacade(variableDescriptor, leftTrailingLastEntity, rightLastEntity);
+            if (leftTrailingLastEntity != rightFirstEntity) {
+                scoreDirector.changeVariableFacade(variableDescriptor, leftTrailingLastEntity, rightLastEntity);
+            } else {
+                scoreDirector.changeVariableFacade(variableDescriptor, leftFirstEntity, rightLastEntity);
+            }
         }
         if (rightTrailingLastEntity != null) {
-            scoreDirector.changeVariableFacade(variableDescriptor, rightTrailingLastEntity, leftLastEntity);
+            if (rightTrailingLastEntity != leftFirstEntity) {
+                scoreDirector.changeVariableFacade(variableDescriptor, rightTrailingLastEntity, leftLastEntity);
+            } else {
+                scoreDirector.changeVariableFacade(variableDescriptor, rightFirstEntity, leftLastEntity);
+            }
         }
     }
 
