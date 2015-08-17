@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.domain.variable.listener;
+package org.optaplanner.core.impl.domain.variable.listener.support;
+
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 
 public class VariableListenerNotifiable implements Comparable<VariableListenerNotifiable> {
 
