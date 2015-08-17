@@ -16,20 +16,19 @@
 
 package org.drools.core.base;
 
-import java.io.Serializable;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.Date;
-
 import org.drools.core.base.field.BooleanFieldImpl;
 import org.drools.core.base.field.ClassFieldImpl;
 import org.drools.core.base.field.DoubleFieldImpl;
 import org.drools.core.base.field.LongFieldImpl;
 import org.drools.core.base.field.ObjectFieldImpl;
+import org.drools.core.spi.FieldValue;
 import org.drools.core.util.DateUtils;
 import org.drools.core.util.MathUtils;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.type.DateFormats;
+
+import java.io.Serializable;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.Date;
 
 public class FieldFactory implements FieldDataFactory, Serializable {
     private static final FieldFactory INSTANCE = new FieldFactory();
@@ -43,8 +42,7 @@ public class FieldFactory implements FieldDataFactory, Serializable {
     }
 
     public FieldValue getFieldValue( String value,
-                                     ValueType valueType,
-                                     DateFormats dateFormats) {
+                                     ValueType valueType) {
         FieldValue field = null;
         if ( value == null || "null".equals( value )) {
             valueType = ValueType.NULL_TYPE;
@@ -75,7 +73,7 @@ public class FieldFactory implements FieldDataFactory, Serializable {
         } else if ( valueType == ValueType.PBOOLEAN_TYPE ) {
             field = new BooleanFieldImpl( Boolean.valueOf( value ).booleanValue() );
         } else if ( valueType == ValueType.CHAR_TYPE ) {
-            field = new ObjectFieldImpl( new Character( value.charAt( 0 ) ) );
+            field = new ObjectFieldImpl( value.charAt( 0 ) );
         } else if ( valueType == ValueType.BYTE_TYPE ) {
             field = new ObjectFieldImpl( new Byte( value ) );
         } else if ( valueType == ValueType.SHORT_TYPE ) {
@@ -93,7 +91,7 @@ public class FieldFactory implements FieldDataFactory, Serializable {
         } else if ( valueType == ValueType.STRING_TYPE ) {
             field = new ObjectFieldImpl( value.intern() );
         } else if ( valueType == ValueType.DATE_TYPE ) {
-            Date date = DateUtils.parseDate( value, dateFormats );
+            Date date = DateUtils.parseDate( value );
             field = new ObjectFieldImpl( date );
         } else if ( valueType == ValueType.ARRAY_TYPE ) {
             //MN: I think its fine like this.
@@ -112,8 +110,7 @@ public class FieldFactory implements FieldDataFactory, Serializable {
     }
 
     public FieldValue getFieldValue(Object value,
-                                           ValueType valueType,
-                                           DateFormats dateFormats) {
+                                    ValueType valueType) {
         FieldValue field = null;
         if ( value == null ) {
             valueType = ValueType.NULL_TYPE;
@@ -194,7 +191,7 @@ public class FieldFactory implements FieldDataFactory, Serializable {
         } else if ( valueType == ValueType.DATE_TYPE ) {
             //MN: I think its fine like this, seems to work !
             if( value instanceof String ) {
-                Date date = DateUtils.parseDate( (String) value, dateFormats );
+                Date date = DateUtils.parseDate( (String) value );
                 field = new ObjectFieldImpl( date );
             } else {
                 field = new ObjectFieldImpl( value );
