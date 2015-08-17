@@ -23,6 +23,7 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
@@ -32,12 +33,14 @@ public class SubChainChangeMove extends AbstractMove {
 
     private final SubChain subChain;
     private final GenuineVariableDescriptor variableDescriptor;
+    protected final SingletonInverseVariableSupply inverseVariableSupply;
     private final Object toPlanningValue;
 
-    public SubChainChangeMove(SubChain subChain,
-            GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
+    public SubChainChangeMove(SubChain subChain,GenuineVariableDescriptor variableDescriptor,
+            SingletonInverseVariableSupply inverseVariableSupply, Object toPlanningValue) {
         this.subChain = subChain;
         this.variableDescriptor = variableDescriptor;
+        this.inverseVariableSupply = inverseVariableSupply;
         this.toPlanningValue = toPlanningValue;
     }
 
@@ -55,12 +58,27 @@ public class SubChainChangeMove extends AbstractMove {
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
-        return new SubChainChangeMove(subChain, variableDescriptor, oldFirstValue);
+        return new SubChainChangeMove(subChain, variableDescriptor, inverseVariableSupply, oldFirstValue);
     }
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
-        ChainedMoveUtils.doSubChainChange(scoreDirector, subChain, variableDescriptor, toPlanningValue);
+        Object firstEntity = subChain.getFirstEntity();
+        Object lastEntity = subChain.getLastEntity();
+        Object oldFirstValue = variableDescriptor.getValue(firstEntity);
+        Object oldTrailingLastEntity = inverseVariableSupply.getInverseSingleton(lastEntity);
+        Object newTrailingEntity = toPlanningValue == null ? null
+                : inverseVariableSupply.getInverseSingleton(toPlanningValue);
+        // Close the old chain
+        if (oldTrailingLastEntity != null) {
+            scoreDirector.changeVariableFacade(variableDescriptor, oldTrailingLastEntity, oldFirstValue);
+        }
+        // Change the entity
+        scoreDirector.changeVariableFacade(variableDescriptor, firstEntity, toPlanningValue);
+        // Reroute the new chain
+        if (newTrailingEntity != null) {
+            scoreDirector.changeVariableFacade(variableDescriptor, newTrailingEntity, lastEntity);
+        }
     }
 
     // ************************************************************************

@@ -98,7 +98,7 @@ public class ChainedChangeMoveTest {
     }
 
     @Test
-    public void sameChain() {
+    public void sameChainWithOneBetween() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
         InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
                 variableDescriptor.getEntityDescriptor().getSolutionDescriptor());

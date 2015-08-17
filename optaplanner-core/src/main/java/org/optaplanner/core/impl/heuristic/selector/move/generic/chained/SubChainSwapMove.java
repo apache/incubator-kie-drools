@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
@@ -34,13 +35,15 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 public class SubChainSwapMove extends AbstractMove {
 
     private final GenuineVariableDescriptor variableDescriptor;
+    protected final SingletonInverseVariableSupply inverseVariableSupply;
 
     private final SubChain leftSubChain;
     private final SubChain rightSubChain;
 
-    public SubChainSwapMove(GenuineVariableDescriptor variableDescriptor,
+    public SubChainSwapMove(GenuineVariableDescriptor variableDescriptor, SingletonInverseVariableSupply inverseVariableSupply,
             SubChain leftSubChain, SubChain rightSubChain) {
         this.variableDescriptor = variableDescriptor;
+        this.inverseVariableSupply = inverseVariableSupply;
         this.leftSubChain = leftSubChain;
         this.rightSubChain = rightSubChain;
     }
@@ -68,19 +71,29 @@ public class SubChainSwapMove extends AbstractMove {
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new SubChainSwapMove(variableDescriptor,
+        return new SubChainSwapMove(variableDescriptor, inverseVariableSupply,
                 rightSubChain, leftSubChain);
     }
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
-        Object oldLeftValue = variableDescriptor.getValue(leftSubChain.getFirstEntity());
-        Object oldRightValue = variableDescriptor.getValue(rightSubChain.getFirstEntity());
-        if (oldRightValue != leftSubChain.getLastEntity()) {
-            ChainedMoveUtils.doSubChainChange(scoreDirector, leftSubChain, variableDescriptor, oldRightValue);
+        Object leftFirstEntity = leftSubChain.getFirstEntity();
+        Object leftFirstValue = variableDescriptor.getValue(leftFirstEntity);
+        Object leftLastEntity = leftSubChain.getLastEntity();
+        Object leftTrailingLastEntity = inverseVariableSupply.getInverseSingleton(leftLastEntity);
+        Object rightFirstEntity = rightSubChain.getFirstEntity();
+        Object rightFirstValue = variableDescriptor.getValue(rightFirstEntity);
+        Object rightLastEntity = rightSubChain.getLastEntity();
+        Object rightTrailingLastEntity = inverseVariableSupply.getInverseSingleton(rightLastEntity);
+        // Change the entities
+        scoreDirector.changeVariableFacade(variableDescriptor, leftFirstEntity, rightFirstValue);
+        scoreDirector.changeVariableFacade(variableDescriptor, rightFirstEntity, leftFirstValue);
+        // Reroute the new chains
+        if (leftTrailingLastEntity != null) {
+            scoreDirector.changeVariableFacade(variableDescriptor, leftTrailingLastEntity, rightLastEntity);
         }
-        if (oldLeftValue != rightSubChain.getLastEntity()) {
-            ChainedMoveUtils.doSubChainChange(scoreDirector, rightSubChain, variableDescriptor, oldLeftValue);
+        if (rightTrailingLastEntity != null) {
+            scoreDirector.changeVariableFacade(variableDescriptor, rightTrailingLastEntity, leftLastEntity);
         }
     }
 

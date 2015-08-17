@@ -38,6 +38,8 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
     protected final boolean randomSelection;
     protected final boolean selectReversingMoveToo;
 
+    protected SingletonInverseVariableSupply inverseVariableSupply = null;
+
     public SubChainSwapMoveSelector(SubChainSelector leftSubChainSelector, SubChainSelector rightSubChainSelector,
             boolean randomSelection, boolean selectReversingMoveToo) {
         this.leftSubChainSelector = leftSubChainSelector;
@@ -62,10 +64,7 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
     public void solvingStarted(DefaultSolverScope solverScope) {
         super.solvingStarted(solverScope);
         SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
-        // TODO supply is demanded just to make sure it's there when it's demand again later.
-        // Instead it should be remembered for later
-        SingletonInverseVariableSupply inverseVariableSupply = supplyManager.demand(
-                new SingletonInverseVariableDemand(variableDescriptor));
+        inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand(variableDescriptor));
     }
 
     // ************************************************************************
@@ -103,9 +102,9 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
                 protected Move newSwapSelection(SubChain leftSubSelection, SubChain rightSubSelection) {
                     if (selectReversingMoveToo) {
                         nextReversingSelection = new SubChainReversingSwapMove(
-                                variableDescriptor, leftSubSelection, rightSubSelection);
+                                variableDescriptor, inverseVariableSupply, leftSubSelection, rightSubSelection);
                     }
-                    return new SubChainSwapMove(variableDescriptor, leftSubSelection, rightSubSelection);
+                    return new SubChainSwapMove(variableDescriptor, inverseVariableSupply, leftSubSelection, rightSubSelection);
                 }
             };
         } else {
@@ -114,8 +113,8 @@ public class SubChainSwapMoveSelector extends GenericMoveSelector {
                 protected Move newSwapSelection(SubChain leftSubSelection, SubChain rightSubSelection) {
                     boolean reversing = selectReversingMoveToo ? workingRandom.nextBoolean() : false;
                     return reversing
-                            ? new SubChainReversingSwapMove(variableDescriptor, leftSubSelection, rightSubSelection)
-                            : new SubChainSwapMove(variableDescriptor, leftSubSelection, rightSubSelection);
+                            ? new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply, leftSubSelection, rightSubSelection)
+                            : new SubChainSwapMove(variableDescriptor, inverseVariableSupply, leftSubSelection, rightSubSelection);
                 }
             };
         }

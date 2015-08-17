@@ -21,12 +21,14 @@ import java.util.Arrays;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChain;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedAnchor;
 import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedEntity;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
@@ -36,7 +38,8 @@ public class SubChainReversingSwapMoveTest {
     @Test
     public void noTrailing() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
+        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -50,10 +53,10 @@ public class SubChainReversingSwapMoveTest {
         TestdataChainedEntity b2 = new TestdataChainedEntity("b2", b1);
         TestdataChainedEntity b3 = new TestdataChainedEntity("b3", b2);
 
-        SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
+        SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, a4, a5, b1, b2, b3});
 
-        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor,
+        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
                 new SubChain(Arrays.<Object>asList(a3, a4, a5)),
                 new SubChain(Arrays.<Object>asList(b2, b3)));
         Move undoMove = move.createUndoMove(scoreDirector);
@@ -62,16 +65,11 @@ public class SubChainReversingSwapMoveTest {
         SelectorTestUtils.assertChain(a0, a1, a2, b3, b2);
         SelectorTestUtils.assertChain(b0, b1, a5, a4, a3);
 
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a3);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a3);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a4);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a4);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a5);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a5);
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, b2);
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, b2);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, b3);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, b3);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a5, b1);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a4, a5);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a3, a4);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, b3, a2);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, b2, b3);
 
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
@@ -79,49 +77,10 @@ public class SubChainReversingSwapMoveTest {
     }
 
     @Test
-    public void noTrailingInPlace() {
-        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
-
-        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
-        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
-        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
-        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
-        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
-        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
-        TestdataChainedEntity a6 = new TestdataChainedEntity("a6", a5);
-        TestdataChainedEntity a7 = new TestdataChainedEntity("a7", a6);
-
-        SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
-                new TestdataChainedEntity[]{a1, a2, a3, a4, a5, a6, a7});
-
-        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor,
-                new SubChain(Arrays.<Object>asList(a3, a4, a5)),
-                new SubChain(Arrays.<Object>asList(a6, a7)));
-        Move undoMove = move.createUndoMove(scoreDirector);
-        move.doMove(scoreDirector);
-
-        SelectorTestUtils.assertChain(a0, a1, a2, a7, a6, a5, a4, a3);
-
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a3);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a3);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a4);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a4);
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a5);
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a5);
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a6);
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a6);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a7);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a7);
-
-        undoMove.doMove(scoreDirector);
-        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
-    }
-
-    @Test
     public void oldAndNewTrailing() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
+        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -135,10 +94,10 @@ public class SubChainReversingSwapMoveTest {
         TestdataChainedEntity b2 = new TestdataChainedEntity("b2", b1);
         TestdataChainedEntity b3 = new TestdataChainedEntity("b3", b2);
 
-        SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
+        SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, a4, a5, b1, b2, b3});
 
-        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor,
+        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
                 new SubChain(Arrays.<Object>asList(a2, a3, a4)),
                 new SubChain(Arrays.<Object>asList(b1, b2)));
         Move undoMove = move.createUndoMove(scoreDirector);
@@ -147,20 +106,13 @@ public class SubChainReversingSwapMoveTest {
         SelectorTestUtils.assertChain(a0, a1, b2, b1, a5);
         SelectorTestUtils.assertChain(b0, a4, a3, a2, b3);
 
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a2);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a2);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a3);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a3);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a4);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a4);
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a5);
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a5);
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, b1);
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, b1);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, b2);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, b2);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, b3);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, b3);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a4, b0);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a3, a4);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a2, a3);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, b3, a2);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, b2, a1);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, b1, b2);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a5, b1);
 
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5);
@@ -168,9 +120,10 @@ public class SubChainReversingSwapMoveTest {
     }
 
     @Test
-    public void oldAndNewTrailingInPlace() {
+    public void sameChainInPlaceNoTrailing() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
+        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -181,10 +134,46 @@ public class SubChainReversingSwapMoveTest {
         TestdataChainedEntity a6 = new TestdataChainedEntity("a6", a5);
         TestdataChainedEntity a7 = new TestdataChainedEntity("a7", a6);
 
-        SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
+        SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, a4, a5, a6, a7});
 
-        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor,
+        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
+                new SubChain(Arrays.<Object>asList(a3, a4, a5)),
+                new SubChain(Arrays.<Object>asList(a6, a7)));
+        Move undoMove = move.createUndoMove(scoreDirector);
+        move.doMove(scoreDirector);
+
+        SelectorTestUtils.assertChain(a0, a1, a2, a7, a6, a5, a4, a3);
+
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a7, a2);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a6, a7);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a5, a6);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a4, a5);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a3, a4);
+
+        undoMove.doMove(scoreDirector);
+        SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
+    }
+
+    @Test
+    public void sameChainInPlaceOldAndNewTrailing() {
+        GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
+
+        TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
+        TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
+        TestdataChainedEntity a2 = new TestdataChainedEntity("a2", a1);
+        TestdataChainedEntity a3 = new TestdataChainedEntity("a3", a2);
+        TestdataChainedEntity a4 = new TestdataChainedEntity("a4", a3);
+        TestdataChainedEntity a5 = new TestdataChainedEntity("a5", a4);
+        TestdataChainedEntity a6 = new TestdataChainedEntity("a6", a5);
+        TestdataChainedEntity a7 = new TestdataChainedEntity("a7", a6);
+
+        SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
+                new TestdataChainedEntity[]{a1, a2, a3, a4, a5, a6, a7});
+
+        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
                 new SubChain(Arrays.<Object>asList(a2, a3, a4)),
                 new SubChain(Arrays.<Object>asList(a5, a6)));
         Move undoMove = move.createUndoMove(scoreDirector);
@@ -192,27 +181,22 @@ public class SubChainReversingSwapMoveTest {
 
         SelectorTestUtils.assertChain(a0, a1, a6, a5, a4, a3, a2, a7);
 
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a2);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a2);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a3);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a3);
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a4);
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a4);
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a5);
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a5);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a6);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a6);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a7);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a7);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a6, a1);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a5, a6);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a4, a5);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a3, a4);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a2, a3);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a7, a2);
 
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
     }
 
     @Test
-    public void oldAndNewTrailingInPlaceOppositeParameterOrder() {
+    public void sameChainInPlaceOldAndNewTrailingOppositeParameterOrder() {
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
+        InnerScoreDirector scoreDirector = PlannerTestUtils.mockScoreDirector(
+                variableDescriptor.getEntityDescriptor().getSolutionDescriptor());
 
         TestdataChainedAnchor a0 = new TestdataChainedAnchor("a0");
         TestdataChainedEntity a1 = new TestdataChainedEntity("a1", a0);
@@ -223,10 +207,10 @@ public class SubChainReversingSwapMoveTest {
         TestdataChainedEntity a6 = new TestdataChainedEntity("a6", a5);
         TestdataChainedEntity a7 = new TestdataChainedEntity("a7", a6);
 
-        SelectorTestUtils.mockMethodGetTrailingEntity(scoreDirector, variableDescriptor,
+        SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
                 new TestdataChainedEntity[]{a1, a2, a3, a4, a5, a6, a7});
 
-        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor,
+        SubChainReversingSwapMove move = new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
                 new SubChain(Arrays.<Object>asList(a5, a6)), // Opposite parameter order
                 new SubChain(Arrays.<Object>asList(a2, a3, a4)));
         Move undoMove = move.createUndoMove(scoreDirector);
@@ -234,18 +218,12 @@ public class SubChainReversingSwapMoveTest {
 
         SelectorTestUtils.assertChain(a0, a1, a6, a5, a4, a3, a2, a7);
 
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a2);
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a2);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a3);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a3);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a4);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a4);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a5);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a5);
-        verify(scoreDirector).beforeVariableChanged(variableDescriptor, a6);
-        verify(scoreDirector).afterVariableChanged(variableDescriptor, a6);
-        verify(scoreDirector, atLeastOnce()).beforeVariableChanged(variableDescriptor, a7);
-        verify(scoreDirector, atLeastOnce()).afterVariableChanged(variableDescriptor, a7);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a6, a1);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a5, a6);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a4, a5);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a3, a4);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a2, a3);
+        verify(scoreDirector).changeVariableFacade(variableDescriptor, a7, a2);
 
         undoMove.doMove(scoreDirector);
         SelectorTestUtils.assertChain(a0, a1, a2, a3, a4, a5, a6, a7);
@@ -266,12 +244,14 @@ public class SubChainReversingSwapMoveTest {
         TestdataChainedEntity b3 = new TestdataChainedEntity("b3", b2);
 
         GenuineVariableDescriptor variableDescriptor = TestdataChainedEntity.buildVariableDescriptorForChainedObject();
+        SingletonInverseVariableSupply inverseVariableSupply = SelectorTestUtils.mockSingletonInverseVariableSupply(
+                new TestdataChainedEntity[]{a1, a2, a3, a4, a5, b1, b2, b3});
 
-        assertEquals("[a2..a4] {a1} <-reversing-> [b1..b3] {b0}", new SubChainReversingSwapMove(variableDescriptor,
+        assertEquals("[a2..a4] {a1} <-reversing-> [b1..b3] {b0}", new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
                 new SubChain(Arrays.<Object>asList(a2, a3, a4)), new SubChain(Arrays.<Object>asList(b1, b2, b3))).toString());
-        assertEquals("[a1..a2] {a0} <-reversing-> [a4..a5] {a3}", new SubChainReversingSwapMove(variableDescriptor,
+        assertEquals("[a1..a2] {a0} <-reversing-> [a4..a5] {a3}", new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
                 new SubChain(Arrays.<Object>asList(a1, a2)), new SubChain(Arrays.<Object>asList(a4, a5))).toString());
-        assertEquals("[a3..a3] {a2} <-reversing-> [b2..b2] {b1}", new SubChainReversingSwapMove(variableDescriptor,
+        assertEquals("[a3..a3] {a2} <-reversing-> [b2..b2] {b1}", new SubChainReversingSwapMove(variableDescriptor, inverseVariableSupply,
                 new SubChain(Arrays.<Object>asList(a3)), new SubChain(Arrays.<Object>asList(b2))).toString());
     }
 

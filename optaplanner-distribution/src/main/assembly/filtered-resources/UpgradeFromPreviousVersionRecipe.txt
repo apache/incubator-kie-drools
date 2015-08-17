@@ -2575,6 +2575,13 @@ After in *.java:
 From 6.3.0.CR1 to 6.3.0.CR2
 ---------------------------
 
+[README] VariableListeners no longer trigger chaotically. This applies to both out of the box shadow variables and custom shadow variables.
+Planner now guarantees that the first VariableListener's after*() method triggers AFTER the last genuine variable has been modified.
+This means a VariableListener is no longer exposed to intermediate state.
+The before*() methods still trigger immediately (otherwise they would not be before the source variable changes).
+Furthermore, Planner guarantees this triggering in stages also for VariableListener for a shadow variable that depend on earlier shadow variables.
+The order of the calls to the same VariableListener (so for the same shadow variable) for different entity instances is still arbitrary.
+
 [MAJOR] If you have a custom Move, its doMove() method must now call scoreDirector.commitMove() at the end.
 In practice, you should have extended AbstractMove - which does the commitMove() call for you -
 but you'll need to rename your doMove() method to doMoveOnGenuineVariables().
@@ -2599,7 +2606,12 @@ After in *.java:
 
     }
 
-[IMPL_DETAIL] ChainedChangeMove and ChainedSwapMove's constructors now require the SingletonInverseVariableSupply parameter.
+[MINOR] A custom Move must now read any shadow variables it needs before its first beforeVariableChanged() call.
+It no longer needs to assign genuine variables to intermediate values to avoid errors in the VariableListeners that update shadow variables.
+
+[IMPL_DETAIL] All build-in moves that affect chained variables have been greatly simplified due to the new VariableListener guarantee.
+
+[IMPL_DETAIL] The constructor of ChainedChangeMove, ChainedSwapMove, SubChainChangeMove and SubChainSwapMove now require the SingletonInverseVariableSupply parameter.
 Before in *.java:
     return new ChainedChangeMove(entity, variableDescriptor, toValue);
 After in *.java:
