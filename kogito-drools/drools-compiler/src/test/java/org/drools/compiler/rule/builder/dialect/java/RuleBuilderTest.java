@@ -16,12 +16,27 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.DrlParser;
+import org.drools.compiler.lang.descr.AndDescr;
+import org.drools.compiler.lang.descr.AttributeDescr;
+import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.compiler.rule.builder.RuleBuilder;
+import org.drools.core.base.EnabledBoolean;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.rule.GroupElement;
+import org.drools.core.rule.Pattern;
+import org.drools.core.rule.constraint.MvelConstraint;
+import org.drools.core.time.TimeUtils;
+import org.drools.core.time.impl.IntervalTimer;
+import org.drools.core.util.DateUtils;
+import org.junit.Test;
+import org.kie.internal.builder.conf.LanguageLevelOption;
 
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
@@ -29,28 +44,8 @@ import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.List;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.core.base.EnabledBoolean;
-import org.drools.compiler.compiler.DrlParser;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.util.DateUtils;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.AttributeDescr;
-import org.drools.compiler.lang.descr.ExprConstraintDescr;
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
-import org.drools.core.rule.GroupElement;
-import org.drools.core.rule.Pattern;
-import org.drools.compiler.rule.builder.RuleBuildContext;
-import org.drools.compiler.rule.builder.RuleBuilder;
-import org.drools.core.rule.constraint.MvelConstraint;
-import org.drools.core.time.TimeUtils;
-import org.drools.core.time.impl.IntervalTimer;
-import org.drools.core.type.DateFormatsImpl;
-import org.junit.Test;
-import org.kie.internal.builder.conf.LanguageLevelOption;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class RuleBuilderTest {
 
@@ -137,11 +132,9 @@ public class RuleBuilderTest {
 
         // creates expected results
         final Calendar effective = Calendar.getInstance();
-        effective.setTime( DateUtils.parseDate( "10-Jul-1974",
-                                                new DateFormatsImpl() ) );
+        effective.setTime( DateUtils.parseDate( "10-Jul-1974" ) );
         final Calendar expires = Calendar.getInstance();
-        expires.setTime( DateUtils.parseDate( "10-Jul-2040",
-                                              new DateFormatsImpl() ) );
+        expires.setTime( DateUtils.parseDate( "10-Jul-2040" ) );
 
         // defining expectations on the mock object
         when( context.getRule() ).thenReturn( rule );

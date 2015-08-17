@@ -18,14 +18,13 @@
 package org.drools.core.base;
 
 import org.drools.core.spi.FieldValue;
-import org.drools.core.type.DateFormats;
 
 
 public interface FieldDataFactory {
 
-    public FieldValue getFieldValue( String value, ValueType valueType, DateFormats dateFormats );
+    public FieldValue getFieldValue( String value, ValueType valueType );
 
-    public FieldValue getFieldValue( Object value, ValueType valueType, DateFormats dateFormats );
+    public FieldValue getFieldValue( Object value, ValueType valueType );
 
     public FieldValue getFieldValue(final Object value);
 

@@ -1670,8 +1670,7 @@ public class PatternBuilder
             }
 
             field = context.getCompilerFactory().getFieldFactory().getFieldValue(o,
-                                                                                 vtype,
-                                                                                 context.getKnowledgeBuilder().getDateFormats());
+                                                                                 vtype);
         } catch ( final Exception e ) {
             // we will fallback to regular preducates, so don't raise an error
         }

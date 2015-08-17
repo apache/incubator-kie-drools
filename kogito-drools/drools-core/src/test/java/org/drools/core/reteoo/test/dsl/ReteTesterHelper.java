@@ -94,9 +94,7 @@ public class ReteTesterHelper {
                                                                 fieldName,
                                                                 getClass().getClassLoader() );
 
-        FieldValue fieldValue = FieldFactory.getInstance().getFieldValue( value,
-                                                            extractor.getValueType(), 
-                                                            null );
+        FieldValue fieldValue = FieldFactory.getInstance().getFieldValue( value, extractor.getValueType() );
 
         return new MvelConstraintTestUtil( fieldName + evaluatorString + value,
                                            fieldValue,

@@ -100,8 +100,6 @@ import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
-import org.drools.core.type.DateFormats;
-import org.drools.core.type.DateFormatsImpl;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.command.Command;
 import org.kie.api.event.KieRuntimeEventManager;
@@ -189,7 +187,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     protected GlobalResolver globalResolver;
 
     protected Calendars   calendars;
-    protected DateFormats dateFormats;
 
     /** The eventSupport */
     protected RuleRuntimeEventSupport ruleRuntimeEventSupport;
@@ -1196,18 +1193,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.calendars = new CalendarsImpl();
         }
         return this.calendars;
-    }
-
-    public DateFormats getDateFormats() {
-        if (this.dateFormats == null) {
-            this.dateFormats = (DateFormats) this.environment.get( EnvironmentName.DATE_FORMATS );
-            if ( this.dateFormats == null ) {
-                this.dateFormats = new DateFormatsImpl();
-                this.environment.set( EnvironmentName.DATE_FORMATS,
-                                      this.dateFormats );
-            }
-        }
-        return this.dateFormats;
     }
 
     public int getId() {
