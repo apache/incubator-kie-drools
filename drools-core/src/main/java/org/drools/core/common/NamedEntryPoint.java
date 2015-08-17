@@ -187,8 +187,8 @@ public class NamedEntryPoint
 
             
             try {
-                this.lock.lock();
                 this.kBase.readLock();
+                this.lock.lock();
                 // check if the object already exists in the WM
                 handle = this.objectStore.getHandleForObject( object );
 
@@ -243,8 +243,8 @@ public class NamedEntryPoint
                         propagationContext );
 
             } finally {
-                this.kBase.readUnlock();
                 this.lock.unlock();
+                this.kBase.readUnlock();
             }
             return handle;
         } finally {
@@ -291,7 +291,7 @@ public class NamedEntryPoint
 
         if ( rule == null ) {
             // This is not needed for internal WM actions as the firing rule will unstage
-            ((InternalAgenda)this.wm.getAgenda()).unstageActivations();
+            wm.getAgenda().unstageActivations();
         }
     }
 
@@ -324,8 +324,8 @@ public class NamedEntryPoint
                                      final Class<?> modifiedClass,
                                      final Activation activation) {
         try {
-            this.lock.lock();
             this.kBase.readLock();
+            this.lock.lock();
             this.wm.startOperation();
             this.kBase.executeQueuedActions();
 
@@ -388,31 +388,6 @@ public class NamedEntryPoint
                     oldKey.removeFactHandle( handle );
                     handle.setEqualityKey( newKey );
                     newKey.addFactHandle( handle );
-
-//
-//                    if ( newKey.getStatus() == EqualityKey.JUSTIFIED ) {
-//                        final InternalFactHandle justifiedHandle = newKey.getFactHandle();
-//
-//                        // The justified set needs to be staged, before we can continue with the stated as an insert
-//                        // it's an insert, instead of an update, as we had to unstage the logical
-//                        BeliefSet bs = justifiedHandle.getEqualityKey().getBeliefSet();
-//                        bs.getBeliefSystem().stage( propagationContext, bs );
-//
-//                        // new target key is JUSTIFIED, updates are always STATED
-//                        newKey.setStatus( EqualityKey.STATED );
-//                        newKey.addFactHandle( handle );
-//
-//                        propagationContext.setFactHandle(handle);
-//
-//                        insert( handle,
-//                                object,
-//                                rule,
-//                                activation,
-//                                typeConf,
-//                                propagationContext );
-//
-//                        return handle;
-//                    }
                 }
 
                 // If the old equality key is now empty, and no justified entries, remove it
@@ -430,8 +405,8 @@ public class NamedEntryPoint
 
         } finally {
             this.wm.endOperation();
-            this.kBase.readUnlock();
             this.lock.unlock();
+            this.kBase.readUnlock();
         }
         return handle;
     }
@@ -454,18 +429,18 @@ public class NamedEntryPoint
 
         if ( rule == null ) {
             // This is not needed for internal WM actions as the firing rule will unstage
-            ((InternalAgenda)this.wm.getAgenda()).unstageActivations();
+            wm.getAgenda().unstageActivations();
         }
     }
 
     public void retract(final FactHandle handle) {
-        delete( (FactHandle) handle,
+        delete( handle,
                  null,
                  null );
     }
 
     public void delete(final FactHandle handle) {
-        delete( (FactHandle) handle,
+        delete( handle,
                  null,
                  null );
     }
@@ -478,8 +453,8 @@ public class NamedEntryPoint
         }
 
         try {
-            this.lock.lock();
             this.kBase.readLock();
+            this.lock.lock();
             this.wm.startOperation();
             this.kBase.executeQueuedActions();
 
@@ -550,8 +525,8 @@ public class NamedEntryPoint
 
         } finally {
             this.wm.endOperation();
-            this.kBase.readUnlock();
             this.lock.unlock();
+            this.kBase.readUnlock();
         }
     }
 
@@ -586,7 +561,7 @@ public class NamedEntryPoint
 
         if ( rule == null ) {
             // This is not needed for internal WM actions as the firing rule will unstage
-            ((InternalAgenda)this.wm.getAgenda()).unstageActivations();
+            wm.getAgenda().unstageActivations();
         }
 
         return propagationContext;
