@@ -46,9 +46,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
         CoachShuttleGatheringImporter importer = new CoachShuttleGatheringImporter();
-        importer.convert("example", "example.xml");
-        importer.convert("public_preselection_1", "public_preselection_1.xml");
-        importer.convert("public_preselection_2", "public_preselection_2.xml");
+        importer.convert("example", "demo01.xml");
     }
 
     public CoachShuttleGatheringImporter() {
