@@ -890,58 +890,66 @@ public class PatternBuilder
     }
 
     private String rewriteOrExpressions(RuleBuildContext context, Pattern pattern, BaseDescr d, String expr) {
-        if (!(d instanceof ConstraintConnectiveDescr) || ((ConstraintConnectiveDescr) d).getConnective() != ConnectiveType.OR) {
+        if ( !( d instanceof ConstraintConnectiveDescr ) || ( (ConstraintConnectiveDescr) d ).getConnective() != ConnectiveType.OR ) {
             return expr;
         }
-        List<BaseDescr> subDescrs = ((ConstraintConnectiveDescr) d).getDescrs();
-        for (BaseDescr subDescr : subDescrs) {
-            if (!(subDescr instanceof RelationalExprDescr && isSimpleExpr( (RelationalExprDescr)subDescr ))) {
-                return expr;
-            }
-        }
-        String[] subExprs = expr.split("\\Q||\\E");
-        if (subExprs.length != subDescrs.size()) {
+        return rewriteCompositeExpressions( context, pattern, (ConstraintConnectiveDescr)d, expr );
+    }
+
+    private String rewriteCompositeExpressions(RuleBuildContext context, Pattern pattern, ConstraintConnectiveDescr d, String expr) {
+        String[] subExprs = expr.split("\\Q" + d.getConnective().getConnective() + "\\E");
+        if (subExprs.length != d.getDescrs().size()) {
             return expr;
         }
 
         int i = 0;
         StringBuilder sb = new StringBuilder();
-        for (BaseDescr subDescr : subDescrs) {
-            RelationalExprDescr relDescr = (RelationalExprDescr)subDescr;
-            String[] values = new String[2];
-            findExpressionValues(relDescr, values);
+        for (BaseDescr subDescr : d.getDescrs()) {
+            if (i > 0) {
+                sb.append(" " + d.getConnective().getConnective() + " ");
+            }
             String normalizedExpr;
-
-            if (!getExprBindings(context, pattern, values[1]).isConstant()) {
-                normalizedExpr = subExprs[i++];
+            if (subDescr instanceof RelationalExprDescr && isSimpleExpr( (RelationalExprDescr)subDescr )) {
+                normalizedExpr = normalizeExpression( context, pattern, (RelationalExprDescr) subDescr, subExprs[i++] );
+            } else if (subDescr instanceof ConstraintConnectiveDescr) {
+                normalizedExpr = "(" + rewriteCompositeExpressions(context, pattern, (ConstraintConnectiveDescr)subDescr, subExprs[i++]) + ")";
             } else {
-                InternalReadAccessor extractor = getFieldReadAccessor( context, relDescr, pattern, values[0], null, true );
-                if (extractor == null) {
-                    normalizedExpr = subExprs[i++];
-                } else {
-                    ValueType vtype = extractor.getValueType();
-                    LiteralRestrictionDescr restrictionDescr = new LiteralRestrictionDescr( relDescr.getOperator(),
-                                                                                            relDescr.isNegated(),
-                                                                                            relDescr.getParameters(),
-                                                                                            values[1],
-                                                                                            LiteralRestrictionDescr.TYPE_STRING );
-                    normalizedExpr = normalizeMVELLiteralExpression( vtype,
-                                                                     getFieldValue(context, vtype, restrictionDescr),
-                                                                     subExprs[i++],
-                                                                     values[0],
-                                                                     relDescr.getOperator(),
-                                                                     values[1],
-                                                                     restrictionDescr );
-                }
+                normalizedExpr = subExprs[i++];
             }
-
             sb.append(normalizedExpr);
-            if (i < subExprs.length) {
-                sb.append(" || ");
-            }
         }
 
         return sb.toString();
+    }
+
+    private String normalizeExpression( RuleBuildContext context, Pattern pattern, RelationalExprDescr subDescr, String subExpr ) {
+        String[] values = new String[2];
+        findExpressionValues( subDescr, values);
+        String normalizedExpr;
+
+        if (!getExprBindings(context, pattern, values[1]).isConstant()) {
+            normalizedExpr = subExpr;
+        } else {
+            InternalReadAccessor extractor = getFieldReadAccessor( context, subDescr, pattern, values[0], null, true );
+            if (extractor == null) {
+                normalizedExpr = subExpr;
+            } else {
+                ValueType vtype = extractor.getValueType();
+                LiteralRestrictionDescr restrictionDescr = new LiteralRestrictionDescr( subDescr.getOperator(),
+                                                                                        subDescr.isNegated(),
+                                                                                        subDescr.getParameters(),
+                                                                                        values[1],
+                                                                                        LiteralRestrictionDescr.TYPE_STRING );
+                normalizedExpr = normalizeMVELLiteralExpression( vtype,
+                                                                 getFieldValue(context, vtype, restrictionDescr),
+                                                                 subExpr,
+                                                                 values[0],
+                                                                 subDescr.getOperator(),
+                                                                 values[1],
+                                                                 restrictionDescr );
+            }
+        }
+        return normalizedExpr;
     }
 
     protected Constraint buildRelationalExpression( final RuleBuildContext context,
