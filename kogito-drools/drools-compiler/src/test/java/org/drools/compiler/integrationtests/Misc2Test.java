@@ -4719,6 +4719,37 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
+    public void testDateCoercionWithNestedOr() {
+        // BZ-1253575
+        String drl = "import java.util.Date\n" +
+                     "global java.util.List list\n" +
+                     "declare DateContainer\n" +
+                     "     date: Date\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule Init when\n" +
+                     "then\n" +
+                     "    insert(new DateContainer(new Date( 1439882189744L )));" +
+                     "end\n" +
+                     "\n" +
+                     "rule \"Test rule\"\n" +
+                     "when\n" +
+                     "    $container: DateContainer( (date >= \"19-Jan-2014\" && date <= \"03-Dec-2015\" ) || (date >= \"17-Dec-2016\" && date <= \"02-Jan-2017\" ) )\n" +
+                     "then\n" +
+                     "    list.add(\"working\");\n" +
+                     "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("working", list.get(0));
+    }
+
+    @Test
     public void testMatchingEventsInStreamMode() {
         // DROOLS-338
         String drl =
