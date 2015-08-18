@@ -16,7 +16,9 @@
 
 package org.drools.core.concurrent;
 
-import java.util.concurrent.Executor;
+import static org.junit.Assert.assertEquals;
+
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -24,24 +26,26 @@ import org.junit.Test;
 import org.kie.api.concurrent.KieExecutors.Pool;
 import org.kie.internal.concurrent.ExecutorProviderFactory;
 
-import static org.junit.Assert.*;
-
 
 public class ExecutorProviderImplTest {
     @Test
-    public void testMaxThread() {
+    public void testActiveCount() {
 
         System.out.println("org.kie.api.concurrent.KieExecutors$Pool.SIZE = " + Pool.SIZE); // Runtime.getRuntime().availableProcessors()
 
         ThreadPoolExecutor executor = (ThreadPoolExecutor)ExecutorProviderFactory.getExecutorProvider().getExecutor();
+
+        final CountDownLatch startLatch = new CountDownLatch(Pool.SIZE);
+        final CountDownLatch releaseLatch = new CountDownLatch(1);
 
         for (int i = 0; i < Pool.SIZE; i++) {
             executor.execute(new Runnable() {
 
                 @Override
                 public void run() {
+                    startLatch.countDown();
                     try {
-                        Thread.sleep(1000);
+                        releaseLatch.await();
                     } catch (InterruptedException e) {
                     }
                 }
@@ -49,11 +53,13 @@ public class ExecutorProviderImplTest {
         }
 
         try {
-            Thread.sleep(5);
+            startLatch.await(3, TimeUnit.SECONDS); // wait until all tasks hit startLatch.countDown()
         } catch (InterruptedException e) {
         }
 
         assertEquals(Pool.SIZE, executor.getActiveCount());
+
+        releaseLatch.countDown(); // to release tasks
 
         executor.shutdown();
         try {
