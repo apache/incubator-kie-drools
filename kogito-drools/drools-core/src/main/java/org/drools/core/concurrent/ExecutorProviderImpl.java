@@ -33,7 +33,7 @@ public class ExecutorProviderImpl implements KieExecutors {
         private static final java.util.concurrent.ExecutorService executor;
 
         static {
-            executor = new ThreadPoolExecutor(0, Pool.SIZE,
+            executor = new ThreadPoolExecutor(Pool.SIZE, Pool.SIZE,
                                               60L, TimeUnit.SECONDS,
                                               new LinkedBlockingQueue<Runnable>(),
                                               new DaemonThreadFactory());
