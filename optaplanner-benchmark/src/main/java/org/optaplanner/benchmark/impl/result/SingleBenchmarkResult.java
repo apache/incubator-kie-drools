@@ -56,8 +56,8 @@ public class SingleBenchmarkResult {
     private Long usedMemoryAfterInputSolution = null;
 
     private Boolean succeeded = null;
-    private Score score = null;
     private Integer uninitializedVariableCount = null;
+    private Score score = null;
     private long timeMillisSpent = -1L;
     private long calculateCount = -1L;
 
@@ -136,20 +136,20 @@ public class SingleBenchmarkResult {
         this.succeeded = succeeded;
     }
 
-    public Score getScore() {
-        return score;
-    }
-
-    public void setScore(Score score) {
-        this.score = score;
-    }
-
     public Integer getUninitializedVariableCount() {
         return uninitializedVariableCount;
     }
 
     public void setUninitializedVariableCount(Integer uninitializedVariableCount) {
         this.uninitializedVariableCount = uninitializedVariableCount;
+    }
+
+    public Score getScore() {
+        return score;
+    }
+
+    public void setScore(Score score) {
+        this.score = score;
     }
 
     public long getTimeMillisSpent() {
