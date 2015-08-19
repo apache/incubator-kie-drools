@@ -16,12 +16,6 @@
 
 package org.drools.decisiontable;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.drools.decisiontable.parser.DefaultRuleSheetListener;
 import org.drools.decisiontable.parser.RuleMatrixSheetListener;
 import org.drools.decisiontable.parser.RuleSheetParserUtil;
@@ -41,6 +35,12 @@ import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -710,4 +710,14 @@ public class SpreadsheetCompilerUnitTest {
         assertTrue( drl.contains( EXPECTED_ACTION ) );
     }
 
+    @Test
+    public void testDtableUsingExcelFunction() throws Exception {
+        // DROOLS-887
+        final SpreadsheetCompiler converter = new SpreadsheetCompiler();
+        String drl = converter.compile( "/data/RuleNameUsingExcelFunction.xls",
+                                        InputType.XLS );
+
+        final String EXPECTED_RULE_NAME = "rule \"RULE_500\"";
+        assertTrue( drl.contains( EXPECTED_RULE_NAME ) );
+    }
 }
