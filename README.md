@@ -1,3 +1,4 @@
+[![Build Status](https://jenkins-kieci.rhcloud.com/buildStatus/icon?job=optaplanner)](https://jenkins-kieci.rhcloud.com/job/optaplanner)
 Developing Drools and jBPM
 ==========================
 
