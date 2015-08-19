@@ -72,7 +72,6 @@ public class SolverBenchmarkResult {
     // The average of the average is not just the overall average if the SingleBenchmarkResult's timeMillisSpent differ
     private Long averageAverageCalculateCountPerSecond = null;
     private Long averageTimeMillisSpent = null;
-    private EnvironmentMode environmentMode = null;
 
     // Ranking starts from 0
     private Integer ranking = null;
@@ -154,10 +153,6 @@ public class SolverBenchmarkResult {
 
     public Long getAverageTimeMillisSpent() {
         return averageTimeMillisSpent;
-    }
-
-    public EnvironmentMode getEnvironmentMode() {
-        return environmentMode;
     }
 
     public Integer getRanking() {
@@ -276,6 +271,10 @@ public class SolverBenchmarkResult {
         return ScoreUtils.getScoreWithUninitializedPrefix(totalUninitializedVariableCount / getSingleBenchmarkResultList().size(), averageScore);
     }
 
+    public EnvironmentMode getEnvironmentMode() {
+        return solverConfig.determineEnvironmentMode();
+    }
+
     // ************************************************************************
     // Accumulate methods
     // ************************************************************************
@@ -294,7 +293,6 @@ public class SolverBenchmarkResult {
     protected void determineTotalsAndAverages() {
         failureCount = 0;
         boolean firstNonFailure = true;
-        boolean environmentModeSet = false;
         totalScore = null;
         totalWinningScoreDifference = null;
         ScoreDifferencePercentage totalWorstScoreDifferencePercentage = null;
@@ -304,14 +302,6 @@ public class SolverBenchmarkResult {
         totalUninitializedVariableCount = 0;
         infeasibleScoreCount = 0;
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            EnvironmentMode singleEnvironmentMode = singleBenchmarkResult.getEnvironmentMode();
-            if (!environmentModeSet && singleEnvironmentMode != null) {
-                environmentMode = singleEnvironmentMode;
-                environmentModeSet = true;
-            } else if (environmentModeSet && singleEnvironmentMode != environmentMode) {
-                environmentMode = null;
-            }
-
             if (singleBenchmarkResult.isFailure()) {
                 failureCount++;
             } else {

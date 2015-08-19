@@ -164,12 +164,20 @@ public class SolverConfig {
     }
 
     // ************************************************************************
+    // Smart getters
+    // ************************************************************************
+
+    public EnvironmentMode determineEnvironmentMode() {
+        return defaultIfNull(environmentMode, EnvironmentMode.REPRODUCIBLE);
+    }
+
+    // ************************************************************************
     // Builder methods
     // ************************************************************************
 
     public Solver buildSolver() {
         DefaultSolver solver = new DefaultSolver();
-        EnvironmentMode environmentMode_ = defaultIfNull(environmentMode, EnvironmentMode.REPRODUCIBLE);
+        EnvironmentMode environmentMode_ = determineEnvironmentMode();
         solver.setEnvironmentMode(environmentMode_);
         boolean daemon_ = defaultIfNull(daemon, false);
         BasicPlumbingTermination basicPlumbingTermination = new BasicPlumbingTermination(daemon_);

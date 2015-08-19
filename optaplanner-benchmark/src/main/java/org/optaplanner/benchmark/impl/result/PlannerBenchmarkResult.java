@@ -283,7 +283,6 @@ public class PlannerBenchmarkResult {
 
     private void determineTotalsAndAverages() {
         failureCount = 0;
-        boolean environmentModeSet = false;
         long totalProblemScale = 0L;
         int problemScaleCount = 0;
         for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
@@ -297,12 +296,13 @@ public class PlannerBenchmarkResult {
         averageProblemScale = problemScaleCount == 0 ? null : totalProblemScale / (long) problemScaleCount;
         Score totalScore = null;
         int solverBenchmarkCount = 0;
+        boolean firstSolverBenchmarkResult = true;
         for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultList) {
             EnvironmentMode solverEnvironmentMode = solverBenchmarkResult.getEnvironmentMode();
-            if (!environmentModeSet && solverEnvironmentMode != null) {
+            if (firstSolverBenchmarkResult && solverEnvironmentMode != null) {
                 environmentMode = solverEnvironmentMode;
-                environmentModeSet = true;
-            } else if (environmentModeSet && solverEnvironmentMode != environmentMode) {
+                firstSolverBenchmarkResult = false;
+            } else if (!firstSolverBenchmarkResult && solverEnvironmentMode != environmentMode) {
                 environmentMode = null;
             }
 

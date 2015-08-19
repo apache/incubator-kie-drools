@@ -92,7 +92,6 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
         singleBenchmarkResult.setUninitializedVariableCount(solverScope.getBestUninitializedVariableCount());
         singleBenchmarkResult.setTimeMillisSpent(timeMillisSpent);
         singleBenchmarkResult.setCalculateCount(solverScope.getCalculateCount());
-        singleBenchmarkResult.setEnvironmentMode(((DefaultSolver) solver).getEnvironmentMode());
 
         for (SingleStatistic singleStatistic : singleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
             singleStatistic.close(solver);
