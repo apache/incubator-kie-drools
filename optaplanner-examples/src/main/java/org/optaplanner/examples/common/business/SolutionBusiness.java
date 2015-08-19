@@ -44,6 +44,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.chained.Chained
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
+import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
@@ -199,8 +200,24 @@ public class SolutionBusiness {
         return solutionFileName;
     }
 
+    public int getUninitializedVariableCount() {
+        // TODO Remove after fixing https://issues.jboss.org/browse/PLANNER-405
+        if (solver instanceof DefaultSolver) {
+            return ((DefaultSolver) solver).getSolverScope().getBestUninitializedVariableCount();
+        }
+        return 0;
+    }
+
     public Score getScore() {
         return guiScoreDirector.calculateScore();
+    }
+
+    public String getScoreWithUninitializedPrefix() {
+        // TODO Remove after fixing https://issues.jboss.org/browse/PLANNER-405
+        if (solver instanceof DefaultSolver) {
+            return ((DefaultSolver) solver).getSolverScope().getBestScoreWithUninitializedPrefix();
+        }
+        return getScore().toString();
     }
 
     public boolean isSolving() {

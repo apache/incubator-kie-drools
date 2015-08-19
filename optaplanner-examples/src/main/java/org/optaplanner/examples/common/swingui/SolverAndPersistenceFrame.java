@@ -599,16 +599,20 @@ public class SolverAndPersistenceFrame extends JFrame {
     }
 
     public void refreshScoreField(Solution solution) {
-        scoreField.setForeground(determineScoreFieldForeground(solution.getScore()));
-        scoreField.setText("Latest best score: " + solution.getScore());
+        // TODO Fix after https://issues.jboss.org/browse/PLANNER-405
+        scoreField.setForeground(determineScoreFieldForeground(solutionBusiness.getUninitializedVariableCount(), solution.getScore()));
+        scoreField.setText("Latest best score: " + solutionBusiness.getScoreWithUninitializedPrefix());
     }
 
-    private Color determineScoreFieldForeground(Score<?> score) {
-        if (!(score instanceof FeasibilityScore)) {
+    private Color determineScoreFieldForeground(int uninitializedVariableCount, Score<?> score) {
+        if (uninitializedVariableCount > 0) {
+            return TangoColorFactory.SCARLET_3;
+        }
+        else if (!(score instanceof FeasibilityScore)) {
             return Color.BLACK;
         } else {
             FeasibilityScore<?> feasibilityScore = (FeasibilityScore<?>) score;
-            return feasibilityScore.isFeasible() ? TangoColorFactory.CHAMELEON_3 : TangoColorFactory.SCARLET_3;
+            return feasibilityScore.isFeasible() ? TangoColorFactory.CHAMELEON_3 : TangoColorFactory.ORANGE_3;
         }
     }
 
