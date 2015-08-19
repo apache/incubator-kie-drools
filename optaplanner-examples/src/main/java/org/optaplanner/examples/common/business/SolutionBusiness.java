@@ -201,6 +201,7 @@ public class SolutionBusiness {
     }
 
     public int getUninitializedVariableCount() {
+        // TODO Remove after fixing https://issues.jboss.org/browse/PLANNER-405
         if (solver instanceof DefaultSolver) {
             return ((DefaultSolver) solver).getSolverScope().getBestUninitializedVariableCount();
         }
@@ -212,6 +213,7 @@ public class SolutionBusiness {
     }
 
     public String getScoreWithUninitializedPrefix() {
+        // TODO Remove after fixing https://issues.jboss.org/browse/PLANNER-405
         if (solver instanceof DefaultSolver) {
             return ((DefaultSolver) solver).getSolverScope().getBestScoreWithUninitializedPrefix();
         }

@@ -599,6 +599,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     }
 
     public void refreshScoreField(Solution solution) {
+        // TODO Fix after https://issues.jboss.org/browse/PLANNER-405
         scoreField.setForeground(determineScoreFieldForeground(solutionBusiness.getUninitializedVariableCount(), solution.getScore()));
         scoreField.setText("Latest best score: " + solutionBusiness.getScoreWithUninitializedPrefix());
     }
