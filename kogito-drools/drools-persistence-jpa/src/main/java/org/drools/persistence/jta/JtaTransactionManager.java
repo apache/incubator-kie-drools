@@ -137,7 +137,7 @@ public class JtaTransactionManager
             try {
                 return InitialContext.doLookup(System.getProperty("jbpm.ut.jndi.lookup", "java:jboss/UserTransaction"));
             } catch (Exception e1) {
-                logger.warn("Unable to find transaction: {}. Might be running in CMT environment" + ex.getMessage());
+                logger.debug("Unable to find transaction: {}. Might be running in CMT environment" + ex.getMessage());
                 return null;
             }
 
