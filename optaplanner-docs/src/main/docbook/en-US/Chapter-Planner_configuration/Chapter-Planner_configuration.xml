@@ -457,8 +457,8 @@ public class Lecture {
           time in the score constraints and put the result per teacher into a logically inserted score object.</para>
 
           <para>If historic data needs to be considered too, then create problem fact to hold the total of the historic
-          assignments up to, but <emphasis>not including</emphasis>, the planning window (so that it does not change when a
-          planning entity changes) and let the score constraints take it into account.</para>
+          assignments up to, but <emphasis>not including</emphasis>, the planning window (so that it does not change
+          when a planning entity changes) and let the score constraints take it into account.</para>
         </note>
       </section>
 
@@ -750,13 +750,14 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
           <note>
             <para>By limiting the value range specifically of one planning entity, you are effectively creating a
-            <emphasis>built-in hard constraint</emphasis>. This can have the benefit of severely lowering the number of possible solutions; however, it can also away the freedom of the
-            optimization algorithms to temporarily break that constraint in order to escape from a local optimum.</para>
+            <emphasis>built-in hard constraint</emphasis>. This can have the benefit of severely lowering the number of
+            possible solutions; however, it can also away the freedom of the optimization algorithms to temporarily
+            break that constraint in order to escape from a local optimum.</para>
           </note>
 
           <para>A planning entity should <emphasis>not</emphasis> use other planning entities to determinate its value
-          range. That would only try to make the planning entity solve the planning problem itself and interfere with the optimization
-          algorithms.</para>
+          range. That would only try to make the planning entity solve the planning problem itself and interfere with
+          the optimization algorithms.</para>
 
           <para>Every entity has its own <literal>List</literal> instance, unless multiple entities have the same value
           range. For example, if teacher A and B belong to the same department, they use the same
@@ -771,8 +772,8 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           </note>
 
           <warning>
-            <para>A <literal>ValueRangeProvider</literal> on the planning entity is not currently compatible with a <link
-            linkend="chainedPlanningVariable">chained</link> variable.</para>
+            <para>A <literal>ValueRangeProvider</literal> on the planning entity is not currently compatible with a
+            <link linkend="chainedPlanningVariable">chained</link> variable.</para>
           </warning>
         </section>
 
@@ -949,7 +950,8 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
           </listitem>
 
           <listitem>
-            <para>Every chain always has exactly one anchor. The anchor is a problem fact, never a planning entity.</para>
+            <para>Every chain always has exactly one anchor. The anchor is a problem fact, never a planning
+            entity.</para>
           </listitem>
 
           <listitem>
@@ -1273,6 +1275,52 @@ public class Customer {
         return capacity;
     }</programlisting>
       </section>
+
+      <section xml:id="variableListenerTriggeringOrder">
+        <title>VariableListener triggering order</title>
+
+        <para>All shadow variables are triggered by a <literal>VariableListener</literal>, regardless if it's a build-in
+        or a custom shadow variable. The genuine and shadow variables form a graph, that determines the order in which
+        the <literal>afterEntityAdded()</literal>, <literal>afterVariableChanged()</literal> and
+        <literal>afterEntityRemoved()</literal> methods are called:</para>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Planner_configuration/shadowVariableOrder.png"/>
+          </imageobject>
+        </mediaobject>
+
+        <note>
+          <para>In the example above, D could have also been ordered after E (or F) because there is no direct or
+          indirect dependency between D and E (or F).</para>
+        </note>
+
+        <para>Planner guarantees that:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>The first <literal>VariableListener</literal>'s <literal>after*()</literal> methods trigger
+            <emphasis>after</emphasis> the last genuine variable has changed. Therefore the genuine variables (A and B
+            in the example above) are guaranteed to be in a consistent state across all its instances (with values A1,
+            A2 and B1 in the example above) because the entire <literal>Move</literal> has been applied.</para>
+          </listitem>
+
+          <listitem>
+            <para>The second <literal>VariableListener</literal>'s <literal>after*()</literal> methods trigger
+            <emphasis>after</emphasis> the last first shadow variable has changed. Therefore the first shadow variable
+            (C in the example above) are guaranteed to be in consistent state across all its instances (with values C1
+            and C2 in the example above). And of course the genuine variables too.</para>
+          </listitem>
+
+          <listitem>
+            <para>And so forth.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Planner does not guarantee the order in which the <literal>after*()</literal> methods are called for the
+        <emphasis>same</emphasis> <literal>VariableListener</literal> with different parameters (such as A1 and A2 in
+        the example above), although they are likely to be in the order in which they were affected.</para>
+      </section>
     </section>
 
     <section xml:id="planningProblemAndPlanningSolution">
@@ -1411,19 +1459,19 @@ public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
           match because the elements of that <literal>Collection</literal> are not in the Drools working memory.</para>
         </note>
 
-        <para>The <literal>getProblemFacts()</literal> method is not called often: at most only once per solver phase per
-        solver thread.</para>
+        <para>The <literal>getProblemFacts()</literal> method is not called often: at most only once per solver phase
+        per solver thread.</para>
 
         <section xml:id="cachedProblemFact">
           <title>Cached Problem Fact</title>
 
           <para>A cached problem fact is a problem fact that does not exist in the real domain model, but is calculated
-          before the <literal>Solver</literal> really starts solving. The <literal>getProblemFacts()</literal> method has
-          the chance to enrich the domain model with such cached problem facts, which can lead to simpler and faster score
-          constraints.</para>
+          before the <literal>Solver</literal> really starts solving. The <literal>getProblemFacts()</literal> method
+          has the chance to enrich the domain model with such cached problem facts, which can lead to simpler and faster
+          score constraints.</para>
 
-          <para>For example in examination, a cached problem fact <literal>TopicConflict</literal> is created for every two
-          <literal>Topic</literal>s which share at least one <literal>Student</literal>.</para>
+          <para>For example in examination, a cached problem fact <literal>TopicConflict</literal> is created for every
+          two <literal>Topic</literal>s which share at least one <literal>Student</literal>.</para>
 
           <programlisting language="java">    public Collection&lt;? extends Object&gt; getProblemFacts() {
         List&lt;Object&gt; facts = new ArrayList&lt;Object&gt;();
@@ -1453,10 +1501,10 @@ public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
         return topicConflictList;
     }</programlisting>
 
-          <para>Where a score constraint needs to check that no two exams with a topic that shares a student are scheduled close 
-          together (depending on the constraint: at the same time, in a row, or in the same day), the <literal>TopicConflict</literal>
-          instance can be used as a problem fact, rather than having to combine every two <literal>Student</literal> instances.
-          </para>
+          <para>Where a score constraint needs to check that no two exams with a topic that shares a student are
+          scheduled close together (depending on the constraint: at the same time, in a row, or in the same day), the
+          <literal>TopicConflict</literal> instance can be used as a problem fact, rather than having to combine every
+          two <literal>Student</literal> instances.</para>
         </section>
       </section>
 
@@ -1551,7 +1599,8 @@ public class SeatDesignationDependency {
 }</programlisting>
 
           <para>In the example above, because <literal>SeatDesignation</literal> is a planning entity (which is deep
-          planning cloned automatically), <literal>SeatDesignationDependency</literal> must also be deep planning cloned.</para>
+          planning cloned automatically), <literal>SeatDesignationDependency</literal> must also be deep planning
+          cloned.</para>
 
           <para>Alternatively, the <literal>@DeepPlanningClone</literal> annotation can also be used on a getter
           method.</para>
@@ -1598,16 +1647,16 @@ public class SeatDesignationDependency {
           <para><emphasis>The <literal>planningClone()</literal> method should only deep clone the planning
           entities.</emphasis> Notice that the problem facts, such as <literal>Column</literal> and
           <literal>Row</literal> are <emphasis>not</emphasis> normally cloned: even their <literal>List</literal>
-          instances are <emphasis>not</emphasis> cloned. If you were to clone the problem facts too, then you would have to
-          make sure that the new planning entity clones also refer to the new problem facts clones used by the solution.
-          For example, if you were to clone all <literal>Row</literal> instances, then each <literal>Queen</literal> clone
-          and the <literal>NQueens</literal> clone itself should refer to those new <literal>Row</literal>
-          clones.</para>
+          instances are <emphasis>not</emphasis> cloned. If you were to clone the problem facts too, then you would have
+          to make sure that the new planning entity clones also refer to the new problem facts clones used by the
+          solution. For example, if you were to clone all <literal>Row</literal> instances, then each
+          <literal>Queen</literal> clone and the <literal>NQueens</literal> clone itself should refer to those new
+          <literal>Row</literal> clones.</para>
 
           <warning>
             <para>Cloning an entity with a <link linkend="chainedPlanningVariable">chained</link> variable is devious: a
-            variable of an entity A might point to another entity B. If A is cloned, then its variable must point to
-            the clone of B, not the original B.</para>
+            variable of an entity A might point to another entity B. If A is cloned, then its variable must point to the
+            clone of B, not the original B.</para>
           </warning>
         </section>
       </section>
@@ -1700,8 +1749,8 @@ public class SeatDesignationDependency {
 
       <para>A <literal>Solver</literal> can only solve one planning problem instance at a time. A
       <literal>Solver</literal> should only be accessed from a single thread, except for the methods that are
-      specifically javadocced as being thread-safe. It is built with a <literal>SolverFactory</literal>, do not implement
-      or build it yourself.</para>
+      specifically javadocced as being thread-safe. It is built with a <literal>SolverFactory</literal>, do not
+      implement or build it yourself.</para>
     </section>
 
     <section xml:id="solvingAProblem">
@@ -1938,8 +1987,8 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
       facade which delegates every log message to Logback, Apache Commons Logging, Log4j or java.util.logging. Add a
       dependency to the logging adaptor for your logging framework of choice.</para>
 
-      <para>If you are not using any logging framework yet, use Logback by adding this Maven dependency (there is no need
-      to add an extra bridge dependency):</para>
+      <para>If you are not using any logging framework yet, use Logback by adding this Maven dependency (there is no
+      need to add an extra bridge dependency):</para>
 
       <programlisting language="xml">    &lt;dependency&gt;
       &lt;groupId&gt;ch.qos.logback&lt;/groupId&gt;
