@@ -38,6 +38,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,7 @@ public class PlannerBenchmarkResult {
 
     private Integer parallelBenchmarkCount = null;
     private Long warmUpTimeMillisSpentLimit = null;
+    private EnvironmentMode environmentMode = null;
 
     @XStreamImplicit(itemFieldName = "solverBenchmarkResult")
     private List<SolverBenchmarkResult> solverBenchmarkResultList = null;
@@ -149,6 +151,10 @@ public class PlannerBenchmarkResult {
 
     public void setWarmUpTimeMillisSpentLimit(Long warmUpTimeMillisSpentLimit) {
         this.warmUpTimeMillisSpentLimit = warmUpTimeMillisSpentLimit;
+    }
+
+    public EnvironmentMode getEnvironmentMode() {
+        return environmentMode;
     }
 
     public List<SolverBenchmarkResult> getSolverBenchmarkResultList() {
@@ -277,6 +283,7 @@ public class PlannerBenchmarkResult {
 
     private void determineTotalsAndAverages() {
         failureCount = 0;
+        boolean environmentModeSet = false;
         long totalProblemScale = 0L;
         int problemScaleCount = 0;
         for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
@@ -291,6 +298,14 @@ public class PlannerBenchmarkResult {
         Score totalScore = null;
         int solverBenchmarkCount = 0;
         for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultList) {
+            EnvironmentMode solverEnvironmentMode = solverBenchmarkResult.getEnvironmentMode();
+            if (!environmentModeSet && solverEnvironmentMode != null) {
+                environmentMode = solverEnvironmentMode;
+                environmentModeSet = true;
+            } else if (environmentModeSet && solverEnvironmentMode != environmentMode) {
+                environmentMode = null;
+            }
+
             Score score = solverBenchmarkResult.getAverageScore();
             if (score != null) {
                 if (totalScore != null && !totalScore.isCompatibleArithmeticArgument(score)) {
@@ -413,6 +428,7 @@ public class PlannerBenchmarkResult {
 
                     newResult.parallelBenchmarkCount = oldResult.parallelBenchmarkCount;
                     newResult.warmUpTimeMillisSpentLimit = oldResult.warmUpTimeMillisSpentLimit;
+                    newResult.environmentMode = oldResult.environmentMode;
                     newResult.solverBenchmarkResultList = new ArrayList<SolverBenchmarkResult>();
                     newResult.unifiedProblemBenchmarkResultList = new ArrayList<ProblemBenchmarkResult>();
                     newResult.startingTimestamp = null;
@@ -437,6 +453,8 @@ public class PlannerBenchmarkResult {
                             newResult.parallelBenchmarkCount, oldResult.parallelBenchmarkCount);
                     newResult.warmUpTimeMillisSpentLimit = ConfigUtils.mergeProperty(
                             newResult.warmUpTimeMillisSpentLimit, oldResult.warmUpTimeMillisSpentLimit);
+                    newResult.environmentMode = ConfigUtils.mergeProperty(
+                            newResult.environmentMode, oldResult.environmentMode);
                 }
                 mergeMap.put(oldResult, newResult);
             }

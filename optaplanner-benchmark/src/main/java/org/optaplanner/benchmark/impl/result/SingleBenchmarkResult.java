@@ -34,6 +34,7 @@ import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
 /**
@@ -60,6 +61,7 @@ public class SingleBenchmarkResult {
     private Score score = null;
     private long timeMillisSpent = -1L;
     private long calculateCount = -1L;
+    private EnvironmentMode environmentMode = null;
 
     // ************************************************************************
     // Report accumulates
@@ -166,6 +168,14 @@ public class SingleBenchmarkResult {
 
     public void setCalculateCount(long calculateCount) {
         this.calculateCount = calculateCount;
+    }
+
+    public EnvironmentMode getEnvironmentMode() {
+        return environmentMode;
+    }
+
+    public void setEnvironmentMode(EnvironmentMode environmentMode) {
+        this.environmentMode = environmentMode;
     }
 
     public Score getWinningScoreDifference() {
@@ -294,6 +304,7 @@ public class SingleBenchmarkResult {
         newResult.uninitializedVariableCount = oldResult.uninitializedVariableCount;
         newResult.timeMillisSpent = oldResult.timeMillisSpent;
         newResult.calculateCount = oldResult.calculateCount;
+        newResult.environmentMode = oldResult.environmentMode;
 
         solverBenchmarkResult.getSingleBenchmarkResultList().add(newResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(newResult);
