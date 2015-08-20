@@ -105,7 +105,7 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
 
     protected abstract String getCsvHeader();
 
-    public void writeCsvStatisticFile() {
+    private void writeCsvStatisticFile() {
         File csvFile = getCsvFile();
         Writer writer = null;
         try {
@@ -124,7 +124,7 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
         }
     }
 
-    public void readCsvStatisticFile() {
+    private void readCsvStatisticFile() {
         File csvFile = getCsvFile();
         ScoreDefinition scoreDefinition = singleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig()
                 .getScoreDirectorFactoryConfig().buildScoreDefinition();
@@ -183,6 +183,18 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
         } finally {
             IOUtils.closeQuietly(reader);
         }
+    }
+
+    public void retrievePointList() {
+        if (getCsvFile().exists() && pointList == null) {
+            initPointList();
+            readCsvStatisticFile();
+        }
+    }
+
+    public void persistPointList() {
+        writeCsvStatisticFile();
+        pointList = null;
     }
 
     protected abstract P createPointFromCsvLine(ScoreDefinition scoreDefinition, List<String> csvLine);

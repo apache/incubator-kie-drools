@@ -64,6 +64,7 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
@@ -220,11 +221,15 @@ public class BenchmarkReport {
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
             if (problemBenchmarkResult.hasAnySuccess()) {
                 for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
+                    for (SingleStatistic singleStatistic : problemStatistic.getSingleStatisticList()) {
+                        singleStatistic.retrievePointList();
+                    }
                     problemStatistic.writeGraphFiles(this);
                 }
                 for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                     if (singleBenchmarkResult.isSuccess()) {
                         for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
+                            pureSingleStatistic.retrievePointList();
                             pureSingleStatistic.writeGraphFiles(this);
                         }
                     }
