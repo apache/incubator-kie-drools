@@ -20,6 +20,9 @@ package org.drools.pmml.pmml_4_2;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
 import org.junit.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -95,8 +98,9 @@ public class PMMLGenerationTest {
                 hiddenSize,
                 weights);
         assertNotNull( net );
-        
-        assertTrue( PMMLGeneratorUtils.streamPMML( net, System.out ) );        
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        assertTrue( PMMLGeneratorUtils.streamPMML( net, baos ) );
     }
 
 }
