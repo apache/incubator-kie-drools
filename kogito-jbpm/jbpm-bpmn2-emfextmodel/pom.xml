@@ -17,6 +17,33 @@
   <description>jBPM BPMN2 EMF Extension Model</description>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <configuration>
+            <tags>
+              <tag>
+                <name>generated</name>
+                <placement>a</placement>
+                <head>Generated code</head>
+              </tag>
+              <tag>
+                <name>model</name>
+                <placement>a</placement>
+                <head>Model</head>
+              </tag>
+              <tag>
+                <name>ordered</name>
+                <placement>a</placement>
+                <head>Ordered</head>
+              </tag>
+            </tags>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.felix</groupId>
