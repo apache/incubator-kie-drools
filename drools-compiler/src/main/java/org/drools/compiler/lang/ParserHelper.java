@@ -253,24 +253,25 @@ public class ParserHelper {
     }
 
     public boolean validateAttribute( int index ) {
-        return validateLT( index,
-                           DroolsSoftKeywords.SALIENCE ) ||
-               validateLT( index,
-                           DroolsSoftKeywords.ENABLED ) ||
-               (validateLT( index,
-                            DroolsSoftKeywords.NO ) &&
+        String text2Validate = retrieveLT( index );
+        return validateText( text2Validate,
+                             DroolsSoftKeywords.SALIENCE ) ||
+               validateText( text2Validate,
+                             DroolsSoftKeywords.ENABLED ) ||
+               (validateText( text2Validate,
+                              DroolsSoftKeywords.NO ) &&
                  validateLT( index + 1,
                              "-" ) &&
                  validateLT( index + 2,
                              DroolsSoftKeywords.LOOP )) ||
-               (validateLT( index,
-                            DroolsSoftKeywords.AUTO ) &&
+               (validateText( text2Validate,
+                              DroolsSoftKeywords.AUTO ) &&
                  validateLT( index + 1,
                              "-" ) &&
                  validateLT( index + 2,
                              DroolsSoftKeywords.FOCUS )) ||
-               (validateLT( index,
-                            DroolsSoftKeywords.LOCK ) &&
+               (validateText( text2Validate,
+                              DroolsSoftKeywords.LOCK ) &&
                  validateLT( index + 1,
                              "-" ) &&
                  validateLT( index + 2,
@@ -279,48 +280,48 @@ public class ParserHelper {
                              "-" ) &&
                  validateLT( index + 4,
                              DroolsSoftKeywords.ACTIVE )) ||
-               (validateLT( index,
-                            DroolsSoftKeywords.AGENDA ) &&
+               (validateText( text2Validate,
+                              DroolsSoftKeywords.AGENDA ) &&
                  validateLT( index + 1,
                              "-" ) &&
                  validateLT( index + 2,
                              DroolsSoftKeywords.GROUP )) ||
-               (validateLT( index,
-                            DroolsSoftKeywords.ACTIVATION ) &&
+               (validateText( text2Validate,
+                              DroolsSoftKeywords.ACTIVATION ) &&
                  validateLT( index + 1,
                              "-" ) &&
                  validateLT( index + 2,
                              DroolsSoftKeywords.GROUP )) ||
-               (validateLT( index,
-                            DroolsSoftKeywords.RULEFLOW ) &&
+               (validateText( text2Validate,
+                              DroolsSoftKeywords.RULEFLOW ) &&
                  validateLT( index + 1,
                              "-" ) &&
                  validateLT( index + 2,
                              DroolsSoftKeywords.GROUP )) ||
-               (validateLT( index,
-                            DroolsSoftKeywords.DATE ) &&
+               (validateText( text2Validate,
+                              DroolsSoftKeywords.DATE ) &&
                  validateLT( index + 1,
                              "-" ) &&
                  validateLT( index + 2,
                              DroolsSoftKeywords.EFFECTIVE )) ||
-               (validateLT( index,
-                            DroolsSoftKeywords.DATE ) &&
+               (validateText( text2Validate,
+                              DroolsSoftKeywords.DATE ) &&
                  validateLT( index + 1,
                              "-" ) &&
                  validateLT( index + 2,
                              DroolsSoftKeywords.EXPIRES )) ||
-               validateLT( index,
-                           DroolsSoftKeywords.DIALECT ) ||
-               validateLT( index,
-                           DroolsSoftKeywords.CALENDARS ) ||
-               validateLT( index,
-                           DroolsSoftKeywords.TIMER ) ||
-               validateLT( index,
-                           DroolsSoftKeywords.DURATION ) ||
-               validateLT( index,
-                           DroolsSoftKeywords.REFRACT ) ||
-               validateLT( index,
-                           DroolsSoftKeywords.DIRECT );
+               validateText( text2Validate,
+                             DroolsSoftKeywords.DIALECT ) ||
+               validateText( text2Validate,
+                             DroolsSoftKeywords.CALENDARS ) ||
+               validateText( text2Validate,
+                             DroolsSoftKeywords.TIMER ) ||
+               validateText( text2Validate,
+                             DroolsSoftKeywords.DURATION ) ||
+               validateText( text2Validate,
+                             DroolsSoftKeywords.REFRACT ) ||
+               validateText( text2Validate,
+                             DroolsSoftKeywords.DIRECT );
     }
 
     public void reportError( RecognitionException ex ) {
