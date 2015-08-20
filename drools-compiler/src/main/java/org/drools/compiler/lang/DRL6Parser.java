@@ -4340,6 +4340,22 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
     }
 
     protected String getConsequenceCode( int first ) {
+        while (input.LA(1) != DRL6Lexer.EOF) {
+            if (helper.validateIdentifierKey(DroolsSoftKeywords.END)) {
+                int next = input.LA(2) == DRL6Lexer.SEMICOLON ? 3 : 2;
+                if (input.LA(next) == DRL6Lexer.EOF || helper.validateStatement(next)) {
+                    break;
+                }
+            } else if (helper.validateIdentifierKey(DroolsSoftKeywords.THEN)) {
+                if (isNextTokenThenCompatible( input.LA( 2 ) ) ) {
+                    break;
+                }
+            }
+
+            helper.emit( input.LT( 1 ), DroolsEditorType.CODE_CHUNK );
+            input.consume();
+        }
+
         while (input.LA(1) != DRL6Lexer.EOF &&
                 !helper.validateIdentifierKey(DroolsSoftKeywords.END) &&
                 !helper.validateIdentifierKey(DroolsSoftKeywords.THEN)) {
@@ -4362,6 +4378,14 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
                     chunk.length() - DroolsSoftKeywords.THEN.length());
         }
         return chunk;
+    }
+
+    private boolean isNextTokenThenCompatible(int next) {
+        return next != DRL6Lexer.LEFT_PAREN &&
+               next != DRL6Lexer.RIGHT_PAREN &&
+               next != DRL6Lexer.RIGHT_SQUARE &&
+               next != DRL6Lexer.COMMA &&
+               next != DRL6Lexer.SEMICOLON;
     }
 
     /* ------------------------------------------------------------------------------------------------
