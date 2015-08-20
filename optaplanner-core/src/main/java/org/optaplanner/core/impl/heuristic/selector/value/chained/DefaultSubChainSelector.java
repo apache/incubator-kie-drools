@@ -101,7 +101,6 @@ public class DefaultSubChainSelector extends AbstractSelector
     public void constructCache(DefaultSolverScope solverScope) {
         InnerScoreDirector scoreDirector = solverScope.getScoreDirector();
         GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
-        Class<?> entityClass = variableDescriptor.getEntityDescriptor().getEntityClass();
         long valueSize = valueSelector.getSize();
         // Fail-fast when anchorTrailingChainList.size() could ever be too big
         if (valueSize > (long) Integer.MAX_VALUE) {
@@ -113,7 +112,7 @@ public class DefaultSubChainSelector extends AbstractSelector
         // Temporary LinkedList to avoid using a bad initialCapacity
         List<Object> anchorList = new LinkedList<Object>();
         for (Object value : valueSelector) {
-            if (!entityClass.isAssignableFrom(value.getClass())) {
+            if (variableDescriptor.isValuePotentialAnchor(value)) {
                 anchorList.add(value);
             }
         }

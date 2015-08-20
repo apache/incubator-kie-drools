@@ -67,7 +67,7 @@ public class TailChainSwapMove extends AbstractMove {
     // ************************************************************************
 
     protected Object determineRightAnchor() {
-        return !variableDescriptor.isValueNoPotentialAnchor(rightValue) ? rightValue
+        return variableDescriptor.isValuePotentialAnchor(rightValue) ? rightValue
                 : anchorVariableSupply.getAnchor(rightValue);
     }
 

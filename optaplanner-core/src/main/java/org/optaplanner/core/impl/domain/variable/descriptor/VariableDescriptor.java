@@ -73,8 +73,12 @@ public abstract class VariableDescriptor {
         return shadowVariableDescriptorList;
     }
 
-    public boolean isValueNoPotentialAnchor(Object value) {
-        return entityDescriptor.getEntityClass().isAssignableFrom(value.getClass());
+    /**
+     * @param value never null
+     * @return true if it might be an anchor, false if it is definitely not an anchor
+     */
+    public boolean isValuePotentialAnchor(Object value) {
+        return !entityDescriptor.getEntityClass().isAssignableFrom(value.getClass());
     }
 
     // ************************************************************************
