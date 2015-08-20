@@ -204,12 +204,6 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         variableListenerSupport.clearWorkingSolution();
     }
 
-    // TODO remove this method and use the SingletonInverseVariableSupply directly
-    public Object getTrailingEntity(GenuineVariableDescriptor chainedVariableDescriptor, Object planningValue) {
-        SingletonInverseVariableSupply supply = variableListenerSupport.demand(new SingletonInverseVariableDemand(chainedVariableDescriptor));
-        return supply.getInverseSingleton(planningValue);
-    }
-
     // ************************************************************************
     // Entity/variable add/change/remove methods
     // ************************************************************************

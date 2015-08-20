@@ -219,22 +219,6 @@ public class SelectorTestUtils {
         return moveSelector;
     }
 
-    @Deprecated
-    public static void mockMethodGetTrailingEntity(InnerScoreDirector scoreDirector,
-            GenuineVariableDescriptor variableDescriptor, final TestdataChainedEntity[] allEntities) {
-        when(scoreDirector.getTrailingEntity(eq(variableDescriptor), anyObject())).thenAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Object planningValue = invocation.getArguments()[1];
-                for (TestdataChainedEntity entity : allEntities) {
-                    if (entity.getChainedObject().equals(planningValue)) {
-                        return entity;
-                    }
-                }
-                return null;
-            }
-        });
-    }
-
     public static SingletonInverseVariableSupply mockSingletonInverseVariableSupply(
             final TestdataChainedEntity[] allEntities) {
         return new SingletonInverseVariableSupply() {

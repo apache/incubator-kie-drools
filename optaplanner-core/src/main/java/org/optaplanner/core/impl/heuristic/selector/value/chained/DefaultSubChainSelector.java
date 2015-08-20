@@ -25,12 +25,16 @@ import java.util.ListIterator;
 
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
+import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
+import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.heuristic.selector.AbstractSelector;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleBridge;
 import org.optaplanner.core.impl.heuristic.selector.common.SelectionCacheLifecycleListener;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.DefaultPillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.random.RandomUtils;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
@@ -45,6 +49,8 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     protected final EntityIndependentValueSelector valueSelector;
     protected final boolean randomSelection;
+
+    protected SingletonInverseVariableSupply inverseVariableSupply;
 
     /**
      * Unlike {@link DefaultPillarSelector#minimumSubPillarSize} and {@link DefaultPillarSelector#maximumSubPillarSize},
@@ -94,6 +100,20 @@ public class DefaultSubChainSelector extends AbstractSelector
         return CACHE_TYPE;
     }
 
+    @Override
+    public void solvingStarted(DefaultSolverScope solverScope) {
+        super.solvingStarted(solverScope);
+        SupplyManager supplyManager = solverScope.getScoreDirector().getSupplyManager();
+        GenuineVariableDescriptor variableDescriptor = valueSelector.getVariableDescriptor();
+        inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand(variableDescriptor));
+    }
+
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        super.solvingEnded(solverScope);
+        inverseVariableSupply = null;
+    }
+
     // ************************************************************************
     // Cache lifecycle methods
     // ************************************************************************
@@ -120,10 +140,10 @@ public class DefaultSubChainSelector extends AbstractSelector
         int anchorChainInitialCapacity = ((int) valueSize / anchorList.size()) + 1;
         for (Object anchor : anchorList) {
             List<Object> anchorChain = new ArrayList<Object>(anchorChainInitialCapacity);
-            Object trailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, anchor);
+            Object trailingEntity = inverseVariableSupply.getInverseSingleton(anchor);
             while (trailingEntity != null) {
                 anchorChain.add(trailingEntity);
-                trailingEntity = scoreDirector.getTrailingEntity(variableDescriptor, trailingEntity);
+                trailingEntity = inverseVariableSupply.getInverseSingleton(trailingEntity);
             }
             if (anchorChain.size() >= minimumSubChainSize) {
                 anchorTrailingChainList.add(new SubChain(anchorChain));

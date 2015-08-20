@@ -100,6 +100,14 @@ public class SwapMoveSelector extends GenericMoveSelector {
         }
     }
 
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        super.solvingEnded(solverScope);
+        if (anyChained) {
+            inverseVariableSupplyList = null;
+        }
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

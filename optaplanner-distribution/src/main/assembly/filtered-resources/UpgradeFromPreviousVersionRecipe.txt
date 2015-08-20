@@ -2620,3 +2620,5 @@ After in *.java:
     return new ChainedChangeMove(entity, variableDescriptor, inverseVariableSupply, toValue);
 
 [IMPL_DETAIL] ChainedSwapMove's constructor now requires a List instead of Collection of VariableDescriptors.
+
+[IMPL_DETAIL] The method InnerScoreDirector.getTrailingEntity() has been removed. Use SingletonInverseVariableSupply instead.

@@ -61,6 +61,14 @@ public class ChangeMoveSelector extends GenericMoveSelector {
         }
     }
 
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        super.solvingEnded(solverScope);
+        if (chained) {
+            inverseVariableSupply = null;
+        }
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

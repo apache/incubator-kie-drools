@@ -106,16 +106,6 @@ public interface InnerScoreDirector extends ScoreDirector {
     ScoreDirector clone();
 
     /**
-     * @param chainedVariableDescriptor never null, must be {@link GenuineVariableDescriptor#isChained()} true
-     * and known to the {@link SolutionDescriptor}
-     * @param planningValue sometimes null
-     * @return never null
-     * @deprecated Use a {@link SingletonInverseVariableSupply} instead
-     */
-    @Deprecated
-    Object getTrailingEntity(GenuineVariableDescriptor chainedVariableDescriptor, Object planningValue);
-
-    /**
      * Do not waste performance by propagating changes to step (or higher) mechanisms.
      * @param allChangesWillBeUndoneBeforeStepEnds true if all changes will be undone
      */

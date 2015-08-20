@@ -75,6 +75,12 @@ public class SubChainChangeMoveSelector extends GenericMoveSelector {
         inverseVariableSupply = supplyManager.demand(new SingletonInverseVariableDemand(valueSelector.getVariableDescriptor()));
     }
 
+    @Override
+    public void solvingEnded(DefaultSolverScope solverScope) {
+        super.solvingEnded(solverScope);
+        inverseVariableSupply = null;
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
