@@ -953,6 +953,16 @@
         </note>
 
         <note>
+          <para>If you have a computer with slow or unreliable cooling, increasing the
+          <literal>parallelBenchmarkCount</literal> above 1 (even on <literal>AUTO</literal>) may overheat your
+          CPU.</para>
+
+          <para>The <literal>sensors</literal> command can help you detect if this is the case. It is available in the
+          package <literal>lm_sensors</literal> or <literal>lm-sensors</literal> in most Linux distributions. There are
+          several freeware tools available for Windows too.</para>
+        </note>
+
+        <note>
           <para>In the future, we will also support multi-JVM benchmarking. This feature is independent of <link
           xlink:href="https://issues.jboss.org/browse/PLANNER-76">multi-threaded solving</link> or multi-JVM
           solving.</para>
