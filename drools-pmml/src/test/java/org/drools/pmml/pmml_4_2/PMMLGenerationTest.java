@@ -17,11 +17,28 @@
 package org.drools.pmml.pmml_4_2;
 
 
+import org.dmg.pmml.pmml_4_2.descr.NeuralLayer;
+import org.dmg.pmml.pmml_4_2.descr.NeuralNetwork;
 import org.dmg.pmml.pmml_4_2.descr.PMML;
+import org.drools.compiler.compiler.PMMLCompiler;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class PMMLGenerationTest {
 
@@ -88,15 +105,53 @@ public class PMMLGenerationTest {
 
     @Test
     public void testNNGenration() {
-        PMML net = PMMLGeneratorUtils.generateSimpleNeuralNetwork(modelName,
-                inputfieldNames, outputfieldNames,
-                inputMeans, inputStds,
-                outputMeans, outputStds,
-                hiddenSize,
-                weights);
+        PMML net = PMMLGeneratorUtils.generateSimpleNeuralNetwork( modelName,
+                                                                   inputfieldNames, outputfieldNames,
+                                                                   inputMeans, inputStds,
+                                                                   outputMeans, outputStds,
+                                                                   hiddenSize,
+                                                                   weights );
         assertNotNull( net );
-        
-        assertTrue( PMMLGeneratorUtils.streamPMML( net, System.out ) );        
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        assertTrue( PMMLGeneratorUtils.streamPMML( net, baos ) );
+        ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
+        PMML4Compiler compiler = new PMML4Compiler();
+
+        SchemaFactory sf = SchemaFactory.newInstance( XMLConstants.W3C_XML_SCHEMA_NS_URI );
+        try {
+            Schema schema = sf.newSchema( Thread.currentThread().getContextClassLoader().getResource( compiler.SCHEMA_PATH ) );
+            schema.newValidator().validate( new StreamSource( bais ) );
+        } catch ( SAXException e ) {
+            fail( e.getMessage() );
+        } catch ( IOException e ) {
+            fail( e.getMessage() );
+        }
+
+        PMML net2 = null;
+        try {
+            bais.reset();
+            JAXBContext ctx = JAXBContext.newInstance( PMML.class.getPackage().getName() );
+            net2 = (PMML) ctx.createUnmarshaller().unmarshal( bais );
+        } catch ( JAXBException e ) {
+            e.printStackTrace();
+        }
+
+        assertNotNull( net2 );
+        assertEquals( inputfieldNames.length + outputfieldNames.length, net2.getDataDictionary().getDataFields().size() );
+        assertEquals( net.getDataDictionary().getDataFields().size(), net2.getDataDictionary().getDataFields().size() );
+
+        NeuralNetwork n1 = (NeuralNetwork) net.getAssociationModelsAndBaselineModelsAndClusteringModels().get( 0 );
+        NeuralNetwork n2 = (NeuralNetwork) net2.getAssociationModelsAndBaselineModelsAndClusteringModels().get( 0 );
+
+        assertEquals( n1.getExtensionsAndNeuralLayersAndNeuralInputs().size(), n2.getExtensionsAndNeuralLayersAndNeuralInputs().size() );
+        assertEquals( 6, n2.getExtensionsAndNeuralLayersAndNeuralInputs().size() );
+
+        NeuralLayer l1 = (NeuralLayer) n1.getExtensionsAndNeuralLayersAndNeuralInputs().get( 3 );
+        NeuralLayer l2 = (NeuralLayer) n2.getExtensionsAndNeuralLayersAndNeuralInputs().get( 3 );
+
+        assertEquals( l1.getNeurons().get( 4 ).getCons().get( 2 ).getWeight(), l2.getNeurons().get( 4 ).getCons().get( 2 ).getWeight(), 1e-9 );
+        assertEquals( weights[ ( inputfieldNames.length + 1 ) * 4 + 3 ], l2.getNeurons().get( 4 ).getCons().get( 2 ).getWeight(), 1e-9 );
     }
 
 }
