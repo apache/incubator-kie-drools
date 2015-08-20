@@ -2028,6 +2028,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return propagationList.iterator();
     }
 
+    @Override
+    public String toString() {
+        return "KieSession[" + id + "]";
+    }
+
     public static final DummyInternalProcessRuntime DUMMY_PROCESS_RUNTIME = new DummyInternalProcessRuntime();
 
     public static class DummyInternalProcessRuntime implements InternalProcessRuntime {
