@@ -92,7 +92,8 @@
                 allowed = [ Allowed.PotentialOwner, Allowed.BusinessAdministrator  ],
                 userIsExplicitPotentialOwner = true,                
                 addTargetUserToPotentialOwners = true,     
-                removeUserFromPotentialOwners = true,   
+                removeUserFromPotentialOwners = true,
+                groupTargetEntityAllowed = false,   
                 setNewOwnerToNull = true,         
                 newStatus = Status.Ready
             },
@@ -101,7 +102,8 @@
                 allowed = [ Allowed.Owner, Allowed.BusinessAdministrator ],
                 userIsExplicitPotentialOwner = true,
                 addTargetUserToPotentialOwners = true,     
-                removeUserFromPotentialOwners = true, 
+                removeUserFromPotentialOwners = true,
+                groupTargetEntityAllowed = false, 
                 setNewOwnerToNull = true,                             
                 newStatus = Status.Ready
             }],            

@@ -143,11 +143,19 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                     }
                 }
             }
+            
+
+            if (!command.isGroupTargetEntityAllowed() && targetEntity instanceof Group) {
+                String errorMessage = "User '" + user + "' was unable to execute operation '" + operation + "' on task id " + task.getId() + " due to 'target entity cannot be group'";
+                throw new PermissionDeniedException(errorMessage); 
+            }
         }
         if (!statusMatched) {
             String errorMessage = "User '" + user + "' was unable to execute operation '" + operation + "' on task id " + task.getId() + " due to a no 'current status' match";
             throw new PermissionDeniedException(errorMessage);
         }
+        
+
     }
 
     private boolean isAllowed(final OperationCommand command, final Task task, final User user,
@@ -221,7 +229,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
 
         final PeopleAssignments people = task.getPeopleAssignments();
         final InternalTaskData taskData = (InternalTaskData) task.getTaskData();
-
+        
         if (command.getNewStatus() != null) {
             taskData.setStatus(command.getNewStatus());
         } else if (command.isSetToPreviousStatus()) {

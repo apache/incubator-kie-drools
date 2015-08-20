@@ -33,6 +33,7 @@ public class OperationCommand {
     private boolean       userIsExplicitPotentialOwner;
     private boolean       addTargetUserToPotentialOwners;
     private boolean       removeUserFromPotentialOwners;
+    private boolean       groupTargetEntityAllowed = true;
     private boolean       skipable;
     private Operation     exec;
     
@@ -115,6 +116,12 @@ public class OperationCommand {
     }
     public void setExec(Operation exec) {
         this.exec = exec;
+    }
+    public boolean isGroupTargetEntityAllowed() {
+        return groupTargetEntityAllowed;
+    }    
+    public void setGroupTargetEntityAllowed(boolean groupTargetEntityAllowed) {
+        this.groupTargetEntityAllowed = groupTargetEntityAllowed;
     }
     
     

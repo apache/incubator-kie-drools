@@ -390,111 +390,6 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
     }
     
-    
-     @Test
-    public void testForwardGroupClaimQueryAssignee() throws Exception {
-        
-
-        // One potential owner, should go straight to state Reserved
-        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy' )], businessAdministrators = [ new User('Administrator') ], }),";
-        str += "name =  'This is my task name' })";
-        
-        // One potential owner, should go straight to state Reserved
-        String str2 = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str2 += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('salaboy')], businessAdministrators = [ new User('Administrator') ], }),";
-        str2 += "name = 'This is my second task name' })";
-
-         // One potential owner, should go straight to state Reserved
-        String str3 = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
-        str3 += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new Group('Crusaders'), new Group('Knights Templer')], businessAdministrators = [ new User('Administrator') ], }),";
-        str3 += "name = 'This is my third task name' })";
-        
-        
-        List<String> groupIds = new ArrayList<String>();
-        
-        groupIds.add("Knights Templer");
-        groupIds.add("non existing group");
-        groupIds.add("non existing group 2");
-        groupIds.add("Crusaders");
-        
-        List<Status> statuses = new ArrayList<Status>();
-        statuses.add(Status.Ready);
-        statuses.add(Status.Created);
-        statuses.add(Status.InProgress);
-        statuses.add(Status.Reserved);
-        
-
-        Task task = TaskFactory.evalTask(new StringReader(str));
-        taskService.addTask(task, new HashMap<String, Object>());
-
-        long taskId = task.getId();
-        
-        
-        Task task3 = TaskFactory.evalTask(new StringReader(str2));
-        taskService.addTask(task3, new HashMap<String, Object>());
-        
-        Task task4 = TaskFactory.evalTask(new StringReader(str3));
-        taskService.addTask(task4, new HashMap<String, Object>());
-        
-        List<TaskSummary> tasksAssignedByGroups = taskService.getTasksAssignedByGroups(groupIds);
-        assertEquals(1, tasksAssignedByGroups.size());
-
-        // A Task with multiple potential owners moves to "Ready" state until someone claims it.
-
-          List<TaskSummary> allTasks = taskService.getTasksAssignedByGroups(groupIds);
-        assertEquals(1, allTasks.size());
-        List<TaskSummary> personalTasks = taskService.getTasksOwnedByStatus("salaboy", statuses, "en-UK");
-        assertEquals(2, personalTasks.size());
-        allTasks.addAll(personalTasks);
-        assertEquals(3, allTasks.size());
-
-        Task task1 = taskService.getTaskById(taskId);
-        assertEquals(Status.Reserved, task1.getTaskData().getStatus());
-        List<TaskSummary> tasksAssignedAsPotentialOwner = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
-        assertEquals(3, tasksAssignedAsPotentialOwner.size());
-        
-        taskService.forward(taskId, "salaboy", "Crusaders");
-
-        
-        allTasks = taskService.getTasksAssignedByGroups(groupIds);
-        assertEquals(2, allTasks.size());
-        personalTasks = taskService.getTasksOwnedByStatus("salaboy", statuses, "en-UK");
-        assertEquals(1, personalTasks.size());
-        allTasks.addAll(personalTasks);
-        assertEquals(3, allTasks.size());
-        
-        Task task2 = taskService.getTaskById(taskId);
-        assertEquals(Status.Ready, task2.getTaskData().getStatus());
-        assertNull(task2.getTaskData().getActualOwner());
-        assertEquals(1, task2.getPeopleAssignments().getPotentialOwners().size());
-        List<TaskSummary> tasksAssignedByGroup = taskService.getTasksAssignedByGroup("Crusaders");
-        
-        assertEquals(2, tasksAssignedByGroup.size());
-       
-        
-        tasksAssignedByGroups = taskService.getTasksAssignedByGroups(groupIds);
-        assertEquals(2, tasksAssignedByGroups.size());
-        
-        taskService.claim(taskId, "salaboy");
-        
-        task2 = taskService.getTaskById(taskId);
-        assertEquals(Status.Reserved, task2.getTaskData().getStatus());
-        assertEquals("salaboy", task2.getTaskData().getActualOwner().getId());
-        assertEquals(1, task2.getPeopleAssignments().getPotentialOwners().size());
-        
-        List<TaskSummary> tasksOwned = taskService.getTasksOwned("salaboy", "en-UK");
-        assertEquals(2, tasksOwned.size());
-  
-        allTasks = taskService.getTasksAssignedByGroups(groupIds);
-        assertEquals(1, allTasks.size());
-        personalTasks = taskService.getTasksOwnedByStatus("salaboy", statuses, "en-UK");
-        assertEquals(2, personalTasks.size());
-        allTasks.addAll(personalTasks);
-        assertEquals(3, allTasks.size());
-        
-        
-    }
 
     @Test
     public void testStartFromReadyStateWithPotentialOwner() throws Exception {
@@ -1334,6 +1229,31 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
         assertFalse(task2.getPeopleAssignments().getPotentialOwners().contains(user));
         assertEquals("Darth Vader", task2.getTaskData().getActualOwner().getId());
         assertEquals(Status.Reserved, task2.getTaskData().getStatus());
+    }
+    
+    @Test
+    public void testForwardFromReadyToGroup() throws Exception {
+        
+
+        // One potential owner, should go straight to state Reserved
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { potentialOwners = [new User('Darth Vader') ],businessAdministrators = [ new User('Administrator') ], }),";
+        str += "name = 'This is my task name' })";
+
+
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+
+        long taskId = task.getId();
+
+        // Check is Forwarded
+        PermissionDeniedException denied = null;
+        try {
+            taskService.forward(taskId, "Darth Vader", "Knights Templer");
+        } catch (PermissionDeniedException e) {
+            denied = e;
+        }
+        assertNotNull("Should get permissed denied exception", denied);
     }
 
     @Test
@@ -2471,5 +2391,9 @@ public abstract class LifeCycleBaseTest extends HumanTaskServicesBaseTest {
 
     private User createUser(String id) {
         return TaskModelProvider.getFactory().newUser(id);
+    }
+    
+    private Group createGroup(String id) {
+        return TaskModelProvider.getFactory().newGroup(id);
     }
 }
