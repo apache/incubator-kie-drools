@@ -187,9 +187,12 @@ public class WindowNode extends ObjectSource
 
     @Override
     public void retractRightTuple(RightTuple rightTuple, PropagationContext pctx, InternalWorkingMemory wm) {
-        final WindowMemory memory = (WindowMemory) wm.getNodeMemory(this);
-
-        behavior.retractFact(memory.behaviorContext, rightTuple.getFactHandle(), pctx, wm);
+        if (isInUse()) {
+            // This retraction could be the effect of an event expiration, but this node could be no
+            // longer in use since an incremental update could have concurrently removed it
+            WindowMemory memory = (WindowMemory) wm.getNodeMemory( this );
+            behavior.retractFact( memory.behaviorContext, rightTuple.getFactHandle(), pctx, wm );
+        }
 
         InternalFactHandle clonedFh = ( InternalFactHandle ) rightTuple.getObject();
         ObjectTypeNode.doRetractObject(clonedFh, pctx, wm);

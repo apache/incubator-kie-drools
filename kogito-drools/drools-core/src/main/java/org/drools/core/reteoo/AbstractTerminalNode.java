@@ -43,7 +43,7 @@ import java.util.List;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
-public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode, MemoryFactory, Externalizable {
+public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode, Externalizable {
 
     private LeftTupleSource tupleSource;
 

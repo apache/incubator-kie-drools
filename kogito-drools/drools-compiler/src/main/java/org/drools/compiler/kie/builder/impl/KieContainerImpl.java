@@ -183,9 +183,9 @@ public class KieContainerImpl
                 KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
                 CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
+                pkgbuilder.startPackageUpdate();
                 boolean shouldRebuild = applyResourceChanges(currentKM, newKM, cs, modifiedClasses,
                                                              kBaseEntry, kieBaseModel, pkgbuilder, ckbuilder);
-                pkgbuilder.startPackageUpdate();
                 try {
                     // remove resources first
                     for ( ResourceChangeSet rcs : cs.getChanges().values() ) {
