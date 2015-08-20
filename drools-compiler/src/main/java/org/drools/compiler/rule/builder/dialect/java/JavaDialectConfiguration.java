@@ -40,7 +40,7 @@ import static org.mvel2.asm.Opcodes.V1_8;
  * The valid values are "ECLIPSE" and "JANINO" only. 
  * 
  * drools.dialect.java.compiler = <ECLIPSE|JANINO>
- * drools.dialect.java.lngLevel = <1.5|1.6>
+ * drools.dialect.java.compiler.lnglevel = <1.5|1.6>
  * 
  * The default compiler is Eclipse and the default lngLevel is 1.5.
  * The lngLevel will attempt to autodiscover your system using the 
