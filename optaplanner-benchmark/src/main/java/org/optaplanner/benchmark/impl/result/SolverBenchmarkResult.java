@@ -32,6 +32,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
@@ -268,6 +269,10 @@ public class SolverBenchmarkResult {
 
     public String getAverageScoreWithUninitializedPrefix() {
         return ScoreUtils.getScoreWithUninitializedPrefix(totalUninitializedVariableCount / getSingleBenchmarkResultList().size(), averageScore);
+    }
+
+    public EnvironmentMode getEnvironmentMode() {
+        return solverConfig.determineEnvironmentMode();
     }
 
     // ************************************************************************

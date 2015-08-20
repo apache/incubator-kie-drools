@@ -625,8 +625,16 @@
                         <td>${benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpent!"Differs"} ms</td>
                     </tr>
                     <tr>
+                        <th>Environment mode</th>
+                        <td>${benchmarkReport.plannerBenchmarkResult.environmentMode!"Differs"}</td>
+                    </tr>
+                    <tr>
                         <th>Logging level</th>
                         <td>${benchmarkReport.plannerBenchmarkResult.loggingLevel!"Differs"}</td>
+                    </tr>
+                    <tr>
+                        <th>Solver ranking class</th>
+                        <td><span data-toggle="tooltip" title="${benchmarkReport.solverRankingClassFullName!"Unknown"}">${benchmarkReport.solverRankingClassSimpleName!"Unknown"}</span></td>
                     </tr>
                     <tr>
                         <th>VM max memory (as in -Xmx but lower)</th>

@@ -60,3 +60,7 @@
 .showSolverConfiguration {
     margin: 10px;
 }
+
+.tooltip-inner {
+    max-width: none;
+}
