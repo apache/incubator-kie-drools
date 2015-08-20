@@ -134,6 +134,8 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
 
@@ -7763,5 +7765,36 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .newKieSession();
 
         assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testEndMethod() throws Exception {
+        // DROOLS-889
+        String drl =
+                "import " + Pattern.class.getCanonicalName() + "\n" +
+                "import " + Matcher.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule \"Variable matches field\" when\n" +
+                "    $emailAddress :String(this matches \"^.*[_A-Za-z0-9-\\\\+]+(\\\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\\\.[A-Za-z0-9]+)*(\\\\.[A-Za-z]{2,}).*$\")\n" +
+                "then\n" +
+                "    Pattern pattern=Pattern.compile(\"[_A-Za-z0-9-\\\\+]+(\\\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\\\.[A-Za-z0-9]+)*(\\\\.[A-Za-z]{2,})\");\n" +
+                "    Matcher matcher=pattern.matcher($emailAddress);\n" +
+                "    while(matcher.find()){\n" +
+                "        list.add($emailAddress.substring(matcher.start(),matcher.end()));\n" +
+                "    }\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( "mario.fusco@test.org" );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "mario.fusco@test.org", list.get(0) );
     }
 }

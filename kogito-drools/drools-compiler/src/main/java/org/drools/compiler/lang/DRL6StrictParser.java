@@ -3258,9 +3258,10 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
     }
 
     /**
-     * lhsPattern := QUESTION? qualifiedIdentifier
-     * LEFT_PAREN positionalConstraints? constraints? RIGHT_PAREN
-     *     (OVER patternFilter)? (FROM patternSource)?
+     * lhsPattern := xpathPrimary |
+     *               ( QUESTION? qualifiedIdentifier
+     *                 LEFT_PAREN positionalConstraints? constraints? RIGHT_PAREN
+     *                 (OVER patternFilter)? (FROM patternSource)? )
      *
      * @param pattern
      * @param label
@@ -3269,7 +3270,18 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
      */
      void lhsPattern(PatternDescrBuilder<?> pattern,
                      String label,
-            boolean isUnification) throws RecognitionException {
+                     boolean isUnification) throws RecognitionException {
+
+         if (label != null && input.LA(1) == DRL6Lexer.DIV) {
+             int first = input.index();
+             exprParser.xpathPrimary();
+             if (state.failed) return;
+             int last = input.LT(-1).getTokenIndex();
+             String expr = toExpression("", first, last);
+             pattern.id( label, isUnification ).constraint( expr );
+             return;
+         }
+
         boolean query = false;
         if (input.LA(1) == DRL6Lexer.QUESTION) {
             match(input,
@@ -4347,13 +4359,21 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
     }
 
     protected String getConsequenceCode( int first ) {
-        while (input.LA(1) != DRL6Lexer.EOF &&
-                !helper.validateIdentifierKey(DroolsSoftKeywords.END) &&
-                !helper.validateIdentifierKey(DroolsSoftKeywords.THEN)) {
-            helper.emit(input.LT(1), DroolsEditorType.CODE_CHUNK);
+        while (input.LA(1) != DRL6Lexer.EOF) {
+            if (helper.validateIdentifierKey(DroolsSoftKeywords.END)) {
+                int next = input.LA(2) == DRL6Lexer.SEMICOLON ? 3 : 2;
+                if (input.LA(next) == DRL6Lexer.EOF || input.LA(next) == DRL6Lexer.AT || helper.validateStatement(next)) {
+                    break;
+                }
+            } else if (helper.validateIdentifierKey(DroolsSoftKeywords.THEN)) {
+                if (isNextTokenThenCompatible( input.LA( 2 ) ) ) {
+                    break;
+                }
+            }
+
+            helper.emit( input.LT( 1 ), DroolsEditorType.CODE_CHUNK );
             input.consume();
         }
-
         int last = input.LT(1).getTokenIndex();
         if (last <= first) {
             return "";
@@ -4369,6 +4389,14 @@ public class DRL6StrictParser extends AbstractDRLParser implements DRLParser {
                     chunk.length() - DroolsSoftKeywords.THEN.length());
         }
         return chunk;
+    }
+
+    private boolean isNextTokenThenCompatible(int next) {
+        return next != DRL6Lexer.LEFT_PAREN &&
+               next != DRL6Lexer.RIGHT_PAREN &&
+               next != DRL6Lexer.RIGHT_SQUARE &&
+               next != DRL6Lexer.COMMA &&
+               next != DRL6Lexer.SEMICOLON;
     }
 
     /* ------------------------------------------------------------------------------------------------
