@@ -124,7 +124,7 @@ public class AddRemoveRule {
 
             if (NodeTypeEnums.LeftInputAdapterNode == splitStartLeftTupleSource.getType() && splitStartLeftTupleSource.getAssociations().size() == 1) {
                 // rule added with no sharing
-                insertLiaFacts(splitStartLeftTupleSource, wm);
+                insertLiaFacts( splitStartLeftTupleSource, wm );
             }
 
             insertFacts( splitStartLeftTupleSource.getSinkPropagator().getLastLeftTupleSink(), wm);
@@ -142,7 +142,7 @@ public class AddRemoveRule {
 
          for ( InternalWorkingMemory wm : wms ) {
 
-             PathMemory removedPmem = (PathMemory) wm.getNodeMemory( (MemoryFactory) tn);
+             PathMemory removedPmem = (PathMemory) wm.getNodeMemory( tn );
              int s = getSegmentPos(splitStartNode, null);
 
              // if a segment is going to be merged it is necessary to flush all its staged left tuples before doing any change to the network
