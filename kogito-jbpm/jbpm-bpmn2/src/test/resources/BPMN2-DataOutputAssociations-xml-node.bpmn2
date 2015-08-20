@@ -42,10 +42,12 @@
     <userTask id="_3" name="Task">
       <ioSpecification>
         <dataInput id='coId' name='coId'/>
+        <dataOutput id='output2' name='output'/>
         <inputSet>
           <dataInputRefs>coId</dataInputRefs>
         </inputSet>
         <outputSet>
+          <dataOutputRefs>output2</dataOutputRefs>
         </outputSet>
       </ioSpecification>
       <dataInputAssociation>
@@ -56,6 +58,10 @@
           <to>.</to>
         </assignment>
       </dataInputAssociation>
+      <dataOutputAssociation>
+        <sourceRef>output2</sourceRef>
+        <targetRef>instanceMetadata</targetRef>
+      </dataOutputAssociation>
     </userTask>
     <endEvent id="_4" name="" />
 

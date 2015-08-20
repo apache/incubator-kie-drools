@@ -17,6 +17,7 @@
 package org.jbpm.workflow.instance.node;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -69,6 +70,10 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(WorkItemNodeInstance.class);
+    
+    private static boolean variableStrictEnabled = Boolean.parseBoolean(System.getProperty("org.jbpm.variable.strict", "false"));
+    private static List<String> defaultOutputVariables = Arrays.asList(new String[]{"ActorId"});
+    
     // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
     private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
@@ -245,8 +250,10 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
 
     public void triggerCompleted(WorkItem workItem) {
         this.workItem = workItem;
-        WorkItemNode workItemNode = getWorkItemNode();
+        WorkItemNode workItemNode = getWorkItemNode();       
+        
         if (workItemNode != null && workItem.getState() == WorkItem.COMPLETED) {
+            validateWorkItemResultVariable(getProcessInstance().getProcessName(), workItemNode.getOutAssociations(), workItem);
             for (Iterator<DataAssociation> iterator = getWorkItemNode().getOutAssociations().iterator(); iterator.hasNext(); ) {
                 DataAssociation association = iterator.next();
                 if (association.getTransformation() != null) {
@@ -273,9 +280,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
                 } else if (association.getAssignments() == null || association.getAssignments().isEmpty()) {
                     VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                     resolveContextInstance(VariableScope.VARIABLE_SCOPE, association.getTarget());
-                    if (variableScopeInstance != null) {
-                    	variableScopeInstance.getVariableScope().validateWorkItemResultVariable(getProcessInstance().getProcessName(), 
-                    																association.getSources().get(0), workItem);
+                    if (variableScopeInstance != null) {                    	
                         Object value = workItem.getResult(association.getSources().get(0));
                         if (value == null) {
                             try {
@@ -469,6 +474,33 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
     	}
     	
     	return parameters;
+    }
+    
+    
+    public void validateWorkItemResultVariable(String processName, List<DataAssociation> outputs, WorkItem workItem) {
+        // in case work item results are skip validation as there is no notion of mandatory data outputs 
+        if (!variableStrictEnabled || workItem.getResults().isEmpty()) {
+            return;
+        }
+        
+        List<String> outputNames = new ArrayList<String>();
+        for (DataAssociation association : outputs) {
+            if (association.getSources() != null) {
+                outputNames.add(association.getSources().get(0));
+            }
+            if (association.getAssignments() != null) {
+                for (Iterator<Assignment> it = association.getAssignments().iterator(); it.hasNext(); ) {
+                    outputNames.add(it.next().getFrom());
+                }
+            }
+        }
+        
+        for (String outputName : workItem.getResults().keySet()) {
+            if (!outputNames.contains(outputName) && !defaultOutputVariables.contains(outputName)) {
+                throw new IllegalArgumentException("Data output '" + outputName +"' is not defined in process '" 
+                                                    + processName + "' for task '" + workItem.getParameter("NodeName") +"'");
+            }
+        }
     }
     
 }

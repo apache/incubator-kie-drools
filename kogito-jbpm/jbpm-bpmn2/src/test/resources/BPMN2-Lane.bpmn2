@@ -23,11 +23,17 @@
     <startEvent id="_1" name="StartProcess" />
     <userTask id="_2" name="Hello" >
       <ioSpecification>
+        <dataOutput id="_3_result" name="ActorId" />
         <inputSet>
         </inputSet>
         <outputSet>
+          <dataOutputRefs>_3_result</dataOutputRefs>
         </outputSet>
       </ioSpecification>
+      <dataOutputAssociation>
+        <sourceRef>_3_result</sourceRef>
+        <targetRef>completingActorId</targetRef>
+      </dataOutputAssociation>
       <potentialOwner>
         <resourceAssignmentExpression>
           <formalExpression>john</formalExpression>

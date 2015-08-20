@@ -18,11 +18,9 @@ package org.jbpm.process.core.context.variable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.jbpm.process.core.Context;
 import org.jbpm.process.core.context.AbstractContext;
-import org.kie.api.runtime.process.WorkItem;
 
 /**
  * 
@@ -99,18 +97,6 @@ public class VariableScope extends AbstractContext {
 	    						+ var.getType().getStringType() + " actual:" + value.getClass().getName());
 	    	}
     	}
-	}
-	
-	public void validateWorkItemResultVariable(String processName, String name, WorkItem workItem) {
-		// in case work item results are skip validation as there is no notion of mandatory data outputs 
-		if (!variableStrictEnabled || workItem.getResults().isEmpty()) {
-			return;
-		}
-		
-		if (workItem.getResult(name) == null) {
-			throw new IllegalArgumentException("Variable '" + name +"' is not defined in process '" 
-												+ processName + "' for task '" + workItem.getName() +"'");
-		}
 	}
 	
 	/*

@@ -284,14 +284,17 @@ public class StructureRefTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess("StructureRef");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
 
+        String wrongDataOutput = "not existing";
+        
         Map<String, Object> res = new HashMap<String, Object>();
-        res.put("not existing", true);
+        res.put(wrongDataOutput, true);
 
         try {
             ksession.getWorkItemManager().completeWorkItem(workItemHandler.getWorkItem().getId(), res);
             fail();
         }  catch (IllegalArgumentException iae) {
             System.out.println("Expected IllegalArgumentException catched: " + iae);
+            assertEquals("Data output '"+ wrongDataOutput +"' is not defined in process 'StructureRef' for task 'User Task'", iae.getMessage());
         } catch (Exception e) {
             fail();
         }

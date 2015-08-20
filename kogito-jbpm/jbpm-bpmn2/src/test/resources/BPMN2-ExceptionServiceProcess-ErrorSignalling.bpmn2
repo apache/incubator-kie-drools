@@ -92,15 +92,22 @@
       <serviceTask id="_X-2" name="Handle Exception" operationRef="_handlingServiceOperation" implementation="Other" >
         <ioSpecification>
           <dataInput id="_X-2_input" name="Parameter" />
+          <dataOutput id="_X-_2_result" name="Result" />
           <inputSet>
             <dataInputRefs>_X-2_input</dataInputRefs>
           </inputSet>
-          <outputSet/>
+          <outputSet>
+            <dataOutputRefs>_X-_2_result</dataOutputRefs>
+          </outputSet>
         </ioSpecification>
         <dataInputAssociation>
           <sourceRef>exceptionInputItem</sourceRef>
           <targetRef>_X-2_input</targetRef>
         </dataInputAssociation>
+        <dataOutputAssociation>
+          <sourceRef>_X-_2_result</sourceRef>
+          <targetRef>exceptionInputItem</targetRef>
+        </dataOutputAssociation>
       </serviceTask>
       <endEvent id="_X-3" name="subEnd" />
 

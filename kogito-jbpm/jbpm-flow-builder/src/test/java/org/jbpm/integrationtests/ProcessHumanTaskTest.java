@@ -121,6 +121,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
+            "      <mapping type=\"out\" from=\"ActorId\" to=\"ActorId\" />" +
             "    </humanTask>\n" +
             "    <humanTask id=\"3\" name=\"HumanTask\" swimlane=\"actor1\" >\n" +
             "      <work name=\"Human Task\" >\n" +
@@ -138,6 +139,7 @@ public class ProcessHumanTaskTest extends AbstractBaseTest {
             "          <type name=\"org.drools.core.process.core.datatype.impl.type.StringDataType\" />\n" +
             "        </parameter>\n" +
             "      </work>\n" +
+            "      <mapping type=\"out\" from=\"ActorId\" to=\"ActorId\" />" +
             "    </humanTask>\n" +
             "    <end id=\"4\" name=\"End\" />\n" +
             "  </nodes>\n" +
