@@ -58,7 +58,7 @@ import org.drools.builder.conf.KnowledgeBuilderOptionsConfiguration;
  * The Java dialect supports the following configurations:
  * <ul>
  * <li>drools.dialect.java.compiler = &lt;ECLIPSE|JANINO&gt;</li>
- * <li>drools.dialect.java.lngLevel = &lt;1.5|1.6&gt;</li>
+ * <li>drools.dialect.java.compiler.lnglevel = &lt;1.5|1.6&gt;</li>
  * </ul>
  * 
  * And MVEL supports the following configurations:
