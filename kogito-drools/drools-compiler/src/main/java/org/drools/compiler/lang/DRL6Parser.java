@@ -4356,13 +4356,6 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             input.consume();
         }
 
-        while (input.LA(1) != DRL6Lexer.EOF &&
-                !helper.validateIdentifierKey(DroolsSoftKeywords.END) &&
-                !helper.validateIdentifierKey(DroolsSoftKeywords.THEN)) {
-            helper.emit(input.LT(1), DroolsEditorType.CODE_CHUNK);
-            input.consume();
-        }
-
         int last = input.LT(1).getTokenIndex();
         if (last <= first) {
             return "";
