@@ -19,6 +19,7 @@ package org.jbpm.test;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.nio.channels.ClosedChannelException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +39,7 @@ import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.LogEvent;
 import org.drools.core.audit.event.RuleFlowNodeLogEvent;
 import org.drools.persistence.jta.JtaTransactionManager;
+import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.instance.event.DefaultSignalManagerFactory;
 import org.jbpm.process.instance.impl.DefaultProcessInstanceManagerFactory;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
@@ -77,6 +79,10 @@ import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bitronix.tm.TransactionManagerServices;
+import bitronix.tm.internal.BitronixSystemException;
+import bitronix.tm.resource.ResourceRegistrar;
+import bitronix.tm.resource.common.XAResourceProducer;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 /**
@@ -463,39 +469,45 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         if (manager != null) {
             throw new IllegalStateException("There is already one RuntimeManager active");
         }
-
-        switch (strategy) {
-        case SINGLETON:
-            if (identifier == null) {
-                manager = managerFactory.newSingletonRuntimeManager(environment);
-            } else {
-                manager = managerFactory.newSingletonRuntimeManager(environment, identifier);
+        try {
+            switch (strategy) {
+            case SINGLETON:
+                if (identifier == null) {
+                    manager = managerFactory.newSingletonRuntimeManager(environment);
+                } else {
+                    manager = managerFactory.newSingletonRuntimeManager(environment, identifier);
+                }
+                break;
+            case REQUEST:
+                if (identifier == null) {
+                    manager = managerFactory.newPerRequestRuntimeManager(environment);
+                } else {
+                    manager = managerFactory.newPerRequestRuntimeManager(environment, identifier);
+                }
+                break;
+            case PROCESS_INSTANCE:
+                if (identifier == null) {
+                    manager = managerFactory.newPerProcessInstanceRuntimeManager(environment);
+                } else {
+                    manager = managerFactory.newPerProcessInstanceRuntimeManager(environment, identifier);
+                }
+                break;
+            default:
+                if (identifier == null) {
+                    manager = managerFactory.newSingletonRuntimeManager(environment);
+                } else {
+                    manager = managerFactory.newSingletonRuntimeManager(environment, identifier);
+                }
+                break;
             }
-            break;
-        case REQUEST:
-            if (identifier == null) {
-                manager = managerFactory.newPerRequestRuntimeManager(environment);
-            } else {
-                manager = managerFactory.newPerRequestRuntimeManager(environment, identifier);
+    
+            return manager;
+        } catch (Exception e) {
+            if (e instanceof BitronixSystemException || e instanceof ClosedChannelException) {
+                TransactionManagerServices.getTransactionManager().shutdown();
             }
-            break;
-        case PROCESS_INSTANCE:
-            if (identifier == null) {
-                manager = managerFactory.newPerProcessInstanceRuntimeManager(environment);
-            } else {
-                manager = managerFactory.newPerProcessInstanceRuntimeManager(environment, identifier);
-            }
-            break;
-        default:
-            if (identifier == null) {
-                manager = managerFactory.newSingletonRuntimeManager(environment);
-            } else {
-                manager = managerFactory.newSingletonRuntimeManager(environment, identifier);
-            }
-            break;
+            throw new RuntimeException(e);
         }
-
-        return manager;
     }
 
     /**
@@ -839,17 +851,43 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         pds.getDriverProperties().put("password", "");
         pds.getDriverProperties().put("url", "jdbc:h2:mem:jbpm-db;MVCC=true");
         pds.getDriverProperties().put("driverClassName", "org.h2.Driver");
-        pds.init();
+        try {
+            pds.init();
+        } catch (Exception e) {
+            logger.warn("DBPOOL_MGR:Looks like there is an issue with creating db pool because of " + e.getMessage() + " cleaing up...");
+            Set<String> resources = ResourceRegistrar.getResourcesUniqueNames();
+            for (String resource : resources) {
+                XAResourceProducer producer = ResourceRegistrar.get(resource);
+                producer.close();
+                ResourceRegistrar.unregister(producer);
+                logger.info("DBPOOL_MGR:Removed resource " + resource);
+            }
+            logger.info("DBPOOL_MGR: attempting to create db pool again...");
+            pds = new PoolingDataSource();
+            pds.setUniqueName("jdbc/jbpm-ds");
+            pds.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
+            pds.setMaxPoolSize(5);
+            pds.setAllowLocalTransactions(true);
+            pds.getDriverProperties().put("user", "sa");
+            pds.getDriverProperties().put("password", "");
+            pds.getDriverProperties().put("url", "jdbc:h2:mem:jbpm-db;MVCC=true");
+            pds.getDriverProperties().put("driverClassName", "org.h2.Driver");
+            pds.init();         
+            logger.info("DBPOOL_MGR:Pool created after cleanup of leftover resources");
+        }
         return pds;
     }
 
     protected void clearHistory() {
         if (sessionPersistence && logService != null) {
-        	RuntimeManager manager = createRuntimeManager();
-        	RuntimeEngine engine = manager.getRuntimeEngine(null);
-        	engine.getAuditService().clear();
-        	manager.disposeRuntimeEngine(engine);
-        	manager.close();
+//        	RuntimeManager manager = createRuntimeManager();
+//        	RuntimeEngine engine = manager.getRuntimeEngine(null);
+//        	engine.getAuditService().clear();
+//        	manager.disposeRuntimeEngine(engine);
+//        	manager.close();
+            JPAAuditLogService service = new JPAAuditLogService(emf);
+            service.clear();
+            service.dispose();
         } else if (inMemoryLogger != null) {
             inMemoryLogger.clear();
         }
