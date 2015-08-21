@@ -133,7 +133,7 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
                 if (childSecondaryEntitySelectorConfig.getMimicSelectorRef() == null) {
                     childSecondaryEntitySelectorConfig.setEntityClass(entityDescriptor.getEntityClass());
                 }
-                childMoveSelectorConfig.setEntitySelectorConfig(childSecondaryEntitySelectorConfig);
+                childMoveSelectorConfig.setSecondaryEntitySelectorConfig(childSecondaryEntitySelectorConfig);
             }
             childMoveSelectorConfig.setVariableNameIncludeList(variableNameIncludeList);
             moveSelectorConfigList.add(childMoveSelectorConfig);
