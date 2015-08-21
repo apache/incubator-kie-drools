@@ -226,13 +226,23 @@ public class PlannerBenchmarkResult {
         if (StringUtils.isEmpty(name)) {
             name = timestamp;
         }
-        benchmarkReportDirectory = new File(benchmarkDirectory,
-                BooleanUtils.isFalse(aggregation) ? timestamp : timestamp + "_aggregation");
-        boolean benchmarkReportDirectoryAdded = benchmarkReportDirectory.mkdirs();
-        if (!benchmarkReportDirectoryAdded) {
-            throw new IllegalArgumentException("The benchmarkReportDirectory (" + benchmarkReportDirectory
-                    + ") creation failed. It probably already exists.");
+        if (!benchmarkDirectory.mkdirs()) {
+            if (!benchmarkDirectory.isDirectory()) {
+                throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory
+                        + ") already exists, but is not a directory.");
+            }
+            if (!benchmarkDirectory.canWrite()) {
+                throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory
+                        + ") already exists, but is not writable.");
+            }
         }
+        int duplicationIndex = 0;
+        do {
+            String directoryName = timestamp + (duplicationIndex == 0 ? "" : "_" + duplicationIndex);
+            duplicationIndex++;
+            benchmarkReportDirectory = new File(benchmarkDirectory,
+                    BooleanUtils.isFalse(aggregation) ? directoryName : directoryName + "_aggregation");
+        } while (!benchmarkReportDirectory.mkdir());
         for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
             problemBenchmarkResult.makeDirs(benchmarkReportDirectory);
         }
