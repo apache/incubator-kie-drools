@@ -25,6 +25,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
+import org.optaplanner.benchmark.impl.PlannerBenchmarkRunner;
+import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.core.config.solver.SolverConfig;
 
 import static org.junit.Assert.*;
 
@@ -49,7 +53,15 @@ public abstract class AbstractBenchmarkConfigTest {
     public void buildPlannerBenchmark() {
         PlannerBenchmarkFactory plannerBenchmarkFactory = argOption.buildPlannerBenchmarkFactory();
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertNotNull(plannerBenchmark);
+        buildEverySolver(plannerBenchmark);
+    }
+
+    protected void buildEverySolver(PlannerBenchmark plannerBenchmark) {
+        PlannerBenchmarkResult plannerBenchmarkResult = ((PlannerBenchmarkRunner) plannerBenchmark).getPlannerBenchmarkResult();
+        for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
+            SolverConfig solverConfig = solverBenchmarkResult.getSolverConfig();
+            solverConfig.buildSolver();
+        }
     }
 
 }
