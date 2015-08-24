@@ -16,10 +16,12 @@
 package org.drools.compiler.integrationtests;
 
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -29,6 +31,7 @@ import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -634,5 +637,123 @@ public class AddRemoveRulesTest {
         kbase.removeKnowledgePackage(packageName);
         StatelessKnowledgeSession session = kbase.newStatelessKnowledgeSession();
         session.execute(new HashMap());
+    }
+
+    @Test
+    public void testFireAfterRemoveWithSameCondition() {
+        // DROOLS-893
+        String packageName = "pk1";
+        String packageName2 = "pk2";
+        String rule1 = "package " + packageName + ";" +
+                       "import java.util.Map; \n" +
+                       "rule 'rule1' \n" +
+                       "when \n" +
+                       " Map(this['type'] == 'Goods' ) \n" +
+                       " Map(this['x'] == 'y'  ) \n" +
+                       " Map(this['type'] == 'Juice'  ) \n" +
+                       " Map(this['kind'] == 'Stuff'  ) \n" +
+                       "then \n" +
+                       "System.out.println('test rule 1'); \n"+
+                       "end";
+
+        String rule2 = "package " + packageName2 + ";" +
+                       "import java.util.Map; \n" +
+                       "rule 'rule2' \n" +
+                       "when \n" +
+                       " Map(this['type'] == 'Goods' ) \n" +
+                       " Map(this['x'] == 'y'  ) \n" +
+                       " Map(this['type'] == 'Juice'  ) \n" +
+                       "then \n" +
+                       "System.out.println('test  rule 2'); \n"+
+                       "end";
+
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("type", "Goods");
+        map.put("kind", "Stuff");
+        map.put("x", "y");
+
+        KieBase kbase = new KieHelper()
+                .addContent(rule1, ResourceType.DRL)
+                .addContent(rule2, ResourceType.DRL)
+                .build();
+
+        KieSession ksession = kbase.newKieSession();
+        ksession.insert( map );
+        ksession.fireAllRules();
+
+        kbase.removeKiePackage( packageName2);
+
+        ksession = kbase.newKieSession();
+        ksession.insert(map);
+        ksession.fireAllRules();
+    }
+
+    @Test
+    public void testSameEval() {
+        // DROOLS-893
+        String rule1Name = "rule1";
+        String rule2Name = "rule2";
+
+        String rule1 = "rule " + rule1Name + " \n " +
+                       "when \n" +
+                       " eval(true) \n" +
+                       "then \n" +
+                       "System.out.println('test rule 1'); \n"+
+                       "end";
+
+        String rule2 = "rule " + rule2Name + " \n " +
+                       "when \n" +
+                       "  eval(true) \n" +
+                       "then \n" +
+                       "System.out.println('test rule 2'); \n"+
+                       "end";
+
+        StatelessKnowledgeSession statelessSession = base.newStatelessKnowledgeSession();
+
+        this.addRuleToEngine(rule1);
+        statelessSession.execute(new Object());
+
+        this.addRuleToEngine(rule2);
+        statelessSession.execute(new Object());
+    }
+
+    @Test
+    public void testFireAfterRemoveRule() {
+        // DROOLS-893
+        String rule1Name = "rule1";
+        String rule2Name = "rule2";
+
+        String rule1 =  "rule " + rule1Name + " \n" +
+                        "when \n" +
+                        " Map(  this['type'] == 'Goods'  )" +
+                        " and " +
+                        " Map(  this['type'] == 'Cinema'  )" +
+                        "then \n" +
+                        " System.out.println('test in rule1'); \n"+
+                        "end";
+
+        String rule2 =  "rule " + rule2Name + " \n" +
+                        "when \n" +
+                        " Map(  this['type'] == 'Goods'  )" +
+                        " and " +
+                        " Map(  this['type'] == 'Cinema'  )" +
+                        "then \n" +
+                        " System.out.println('test in rule2'); \n"+
+                        "end";
+
+        Map<String, Object> fact = new HashMap<String, Object>();
+        fact.put("type", "Cinema");
+
+        StatelessKieSession session = base.newStatelessKieSession();
+
+        this.addRuleToEngine(rule1);
+        session.execute(fact);
+
+        this.addRuleToEngine(rule2);
+        session.execute(fact);
+
+        this.deleteRule(rule1Name);
+
+        session.execute(fact);
     }
 }
