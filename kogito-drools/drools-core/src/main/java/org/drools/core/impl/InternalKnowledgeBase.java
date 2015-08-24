@@ -115,7 +115,7 @@ public interface InternalKnowledgeBase extends KnowledgeBase {
 
     InternalWorkingMemory[] getWorkingMemories();
 
-    void invalidateSegmentPrototype(LeftTupleSource tupleSource);
+    void invalidateSegmentPrototype(LeftTupleSource tupleSource, boolean ruleRemoved);
     SegmentMemory createSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource tupleSource);
     SegmentMemory.Prototype getSegmentPrototype(SegmentMemory segment);
 

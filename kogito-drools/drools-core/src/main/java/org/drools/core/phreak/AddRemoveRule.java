@@ -73,7 +73,7 @@ public class AddRemoveRule {
         }
         LeftTupleSource splitStartLeftTupleSource = getNetworkSplitPoint(tn);
 
-        kBase.invalidateSegmentPrototype(splitStartLeftTupleSource);
+        kBase.invalidateSegmentPrototype( splitStartLeftTupleSource, false );
 
         for (InternalWorkingMemory wm : wms) {
 
@@ -138,7 +138,7 @@ public class AddRemoveRule {
 
          LeftTupleSource splitStartNode = getNetworkSplitPoint(tn);
 
-         kBase.invalidateSegmentPrototype(splitStartNode);
+         kBase.invalidateSegmentPrototype( splitStartNode, true );
 
          for ( InternalWorkingMemory wm : wms ) {
 
@@ -923,7 +923,7 @@ public class AddRemoveRule {
         return null;
     }
 
-     public static LeftTupleSource getNetworkSplitPoint(TerminalNode tn) {
+     private static LeftTupleSource getNetworkSplitPoint(TerminalNode tn) {
          LeftTupleSource lt = tn.getLeftTupleSource();
 
          // iterate to find split point, or to the root

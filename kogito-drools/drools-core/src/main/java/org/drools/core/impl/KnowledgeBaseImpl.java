@@ -1396,12 +1396,22 @@ public class KnowledgeBaseImpl
         segmentProtos.put(tupleSource.getId(), smem.asPrototype());
     }
 
-    public void invalidateSegmentPrototype(LeftTupleSource tupleSource) {
+    public void invalidateSegmentPrototype(LeftTupleSource tupleSource, boolean ruleRemoved) {
+        if (ruleRemoved && tupleSource.getAssociations().size() < 2) {
+            return;
+        }
+        while ( tupleSource.getLeftTupleSource() != null ) {
+            tupleSource = tupleSource.getLeftTupleSource();
+        }
+        internalInvalidateSegmentPrototype(tupleSource);
+    }
+
+    private void internalInvalidateSegmentPrototype(LeftTupleSource tupleSource) {
         segmentProtos.remove(tupleSource.getId());
         LeftTupleSinkPropagator sinkProp = tupleSource.getSinkPropagator();
         for (LeftTupleSinkNode sink = (LeftTupleSinkNode) sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode()) {
             if (sink instanceof LeftTupleSource) {
-                invalidateSegmentPrototype((LeftTupleSource)sink);
+                internalInvalidateSegmentPrototype( (LeftTupleSource) sink );
             }
         }
     }

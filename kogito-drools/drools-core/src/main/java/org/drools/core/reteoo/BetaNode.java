@@ -680,14 +680,10 @@ public abstract class BetaNode extends LeftTupleSource
     }
     
     public static Object getBetaMemoryFromRightInput( final BetaNode betaNode, final InternalWorkingMemory workingMemory ) {        
-        BetaMemory memory;
-        if ( NodeTypeEnums.AccumulateNode == betaNode.getType()) {
-            memory = ((AccumulateMemory)workingMemory.getNodeMemory( betaNode )).getBetaMemory();
-        } else {
-            memory = (BetaMemory) workingMemory.getNodeMemory( betaNode );
-        }
-        
-        
+        BetaMemory memory = NodeTypeEnums.AccumulateNode == betaNode.getType() ?
+                            ((AccumulateMemory)workingMemory.getNodeMemory( betaNode )).getBetaMemory() :
+                            (BetaMemory) workingMemory.getNodeMemory( betaNode );
+
         if ( memory.getSegmentMemory() == null ) {
             SegmentUtilities.createSegmentMemory( betaNode, workingMemory ); // initialises for all nodes in segment, including this one
         }
