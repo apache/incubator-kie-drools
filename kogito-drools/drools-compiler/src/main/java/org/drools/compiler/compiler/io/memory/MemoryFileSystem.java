@@ -24,6 +24,8 @@ import org.drools.compiler.compiler.io.Path;
 import org.drools.compiler.compiler.io.Resource;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -52,6 +54,8 @@ public class MemoryFileSystem
     FileSystem,
     ResourceReader,
     ResourceStore {
+
+    private static final Logger log = LoggerFactory.getLogger( MemoryFileSystem.class );
 
     private MemoryFolder               folder;
 
@@ -410,6 +414,7 @@ public class MemoryFileSystem
                     out.close();
                 }
             } catch ( IOException e ) {
+                log.error(e.getMessage(), e);
             }
         }
     }
@@ -454,6 +459,11 @@ public class MemoryFileSystem
                 out.putNextEntry( entry );
 
                 byte[] contents = getFileContents( (MemoryFile) rs );
+                if (contents == null) {
+                    IOException e = new IOException("No content found for: " + rs);
+                    log.error(e.getMessage(), e);
+                    throw e;
+                }
                 out.write( contents );
                 out.closeEntry();
             }
@@ -484,7 +494,9 @@ public class MemoryFileSystem
             if ( zipFile != null ) {
                 try {
                     zipFile.close();
-                } catch ( IOException e ) { }
+                } catch ( IOException e ) {
+                    log.error(e.getMessage(), e);
+                }
             }
         }
         return mfs;
@@ -515,7 +527,9 @@ public class MemoryFileSystem
             if ( zipFile != null ) {
                 try {
                     zipFile.close();
-                } catch ( IOException e ) { }
+                } catch ( IOException e ) {
+                    log.error(e.getMessage(), e);
+                }
             }
         }
         return mfs;
