@@ -34,7 +34,6 @@ import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashMap.ObjectEntry;
 
 public class ReteRightInputAdapterNode extends RightInputAdapterNode {
 
@@ -48,16 +47,16 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
     public void assertLeftTuple(final LeftTuple leftTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        Memory memory = workingMemory.getNodeMemory( this ); // while we don't do anything with this, it's needed to serialization has a hook point
-                                                             // It will still keep the LT's in the serialization, but sucked form the child
-
+        // while we don't do anything with this, it's needed to serialization has a hook point
+        // It will still keep the LT's in the serialization, but sucked form the child
+        workingMemory.getNodeMemory( this );
 
         // creating a dummy fact handle to wrap the tuple
         final InternalFactHandle handle = createFactHandle( leftTuple, context, workingMemory );
         boolean useLeftMemory = true;
         if ( !isLeftTupleMemoryEnabled() ) {
             // This is a hack, to not add closed DroolsQuery objects
-            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
+            Object object = leftTuple.get( 0 ).getObject();
             if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
                 useLeftMemory = false;
             }
@@ -88,14 +87,14 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
         // retrieve handle from memory
         final InternalFactHandle factHandle = (InternalFactHandle) tuple.getObject();
 
-        for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
+        for ( RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; rightTuple = rightTuple.getHandleNext() ) {
             rightTuple.getRightTupleSink().retractRightTuple( rightTuple,
                                                               context,
                                                               workingMemory );
         }
         factHandle.clearRightTuples();
 
-        for ( LeftTuple leftTuple = factHandle.getLastLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+        for ( LeftTuple leftTuple = factHandle.getLastLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
             leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
                                                            context,
                                                            workingMemory );
@@ -111,7 +110,7 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
         InternalFactHandle handle = (InternalFactHandle) leftTuple.getObject();
 
         // propagate it
-        for ( RightTuple rightTuple = handle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
+        for ( RightTuple rightTuple = handle.getFirstRightTuple(); rightTuple != null; rightTuple = rightTuple.getHandleNext() ) {
             rightTuple.getRightTupleSink().modifyRightTuple( rightTuple,
                                                              context,
                                                              workingMemory );
@@ -138,23 +137,25 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
             for ( RightTuple entry = (RightTuple) it.next(); entry != null; entry = (RightTuple) it.next() ) {
                 LeftTuple leftTuple = (LeftTuple) entry.getFactHandle().getObject();
                 InternalFactHandle handle = (InternalFactHandle) leftTuple.getObject();
-                sink.assertObject( (InternalFactHandle) handle,
+                sink.assertObject( handle,
                                    context,
                                    workingMemory );
             }
         }
     }
 
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(final RuleRemovalContext context,
+                               final ReteooBuilder builder,
+                               final InternalWorkingMemory[] workingMemories) {
         // this is now done by the child beta node, as it needs the child beta memory
         // if ( !this.isInUse() ) {
         //     removeMemory(workingMemories);
         // }
         if ( !isInUse() ) {
             getLeftTupleSource().removeTupleSink(this);
+            return true;
         }
+        return false;
     }
 
     public void removeMemory(InternalWorkingMemory workingMemory) {
@@ -180,9 +181,7 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
     }
 
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
-        RiaNodeMemory rianMem = new RiaNodeMemory();
-
-        return rianMem;
+        return new RiaNodeMemory();
     }
 
 }

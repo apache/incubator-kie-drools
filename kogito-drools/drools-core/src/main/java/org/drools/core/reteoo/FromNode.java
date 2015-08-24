@@ -169,13 +169,12 @@ public class FromNode extends LeftTupleSource
                                                                          null );
         }
 
-        return newRightTuple( handle, null );
+        return newRightTuple( handle );
     }
 
 
-    protected RightTuple newRightTuple(InternalFactHandle handle, Object o) {
-        return new RightTuple( handle,
-                               null );
+    protected RightTuple newRightTuple(InternalFactHandle handle) {
+        return new RightTuple( handle );
 
     }
 
@@ -387,13 +386,15 @@ public class FromNode extends LeftTupleSource
         this.leftInput.addTupleSink( this, context );
     }
 
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(final RuleRemovalContext context,
+                               final ReteooBuilder builder,
+                               final InternalWorkingMemory[] workingMemories) {
 
         if ( !this.isInUse() ) {
             getLeftTupleSource().removeTupleSink( this );
+            return true;
         }
+        return false;
     }
 
 }

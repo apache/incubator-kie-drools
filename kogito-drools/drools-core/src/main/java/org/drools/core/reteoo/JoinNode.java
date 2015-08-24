@@ -140,10 +140,12 @@ public class JoinNode extends BetaNode {
     }
 
     @Override
-    public void doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
+    public boolean doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
         if ( !isInUse() ) {
             getLeftTupleSource().removeTupleSink( this );
             getRightInput().removeObjectSink( this );
+            return true;
         }
+        return false;
     }
 }

@@ -174,12 +174,14 @@ public class TimerNode extends LeftTupleSource
         return peer;
     }
 
-    protected void doRemove(final RuleRemovalContext context,
+    protected boolean doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
         if (!this.isInUse()) {
             getLeftTupleSource().removeTupleSink(this);
+            return true;
         }
+        return false;
     }
 
     public boolean isLeftTupleMemoryEnabled() {

@@ -28,6 +28,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatelessKnowledgeSession;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -606,5 +607,32 @@ public class AddRemoveRulesTest {
         fact.put("name", "Michael");
         session.insert(fact);
         session.fireAllRules();
+    }
+
+    @Test
+    public void testRemoveHasSameConElement() {
+        // DROOLS-891
+        String packageName = "test";
+        String rule1 = "package " + packageName + ";" +
+                       "import java.util.Map; \n" +
+                       "rule 'rule1' \n" +
+                       "when \n" +
+                       " Map(this['type'] == 'Goods' && this['brand'] == 'a') \n" +
+                       " Map(this['type'] == 'Goods' && this['category'] == 'b') \n" +
+                       "then \n" +
+                       "System.out.println('test rule 1'); \n"+
+                       "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.removeKnowledgePackage(packageName);
+        StatelessKnowledgeSession session = kbase.newStatelessKnowledgeSession();
+        session.execute(new HashMap());
     }
 }

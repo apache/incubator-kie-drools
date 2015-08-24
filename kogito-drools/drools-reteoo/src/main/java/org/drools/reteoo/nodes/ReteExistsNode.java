@@ -66,8 +66,8 @@ public class ReteExistsNode extends ExistsNode {
         ReteBetaNodeUtils.attach(this, context);
     }
 
-    public void doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
-        ReteBetaNodeUtils.doRemove(this, context, builder, workingMemories);
+    public boolean doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
+        return ReteBetaNodeUtils.doRemove(this, context, builder, workingMemories);
     }
 
     public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
@@ -79,7 +79,7 @@ public class ReteExistsNode extends ExistsNode {
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         LeftTupleSourceUtils.doModifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory,
-                                               (LeftTupleSink) this, getLeftInputOtnId(), getLeftInferredMask());
+                                               this, getLeftInputOtnId(), getLeftInferredMask());
     }
 
     public void assertLeftTuple(final LeftTuple leftTuple,
@@ -262,8 +262,6 @@ public class ReteExistsNode extends ExistsNode {
                 blocker.removeBlocked( leftTuple );
             }
 
-            FastIterator it = memory.getRightTupleMemory().fastIterator();
-
             // find first blocker, because it's a modify, we need to start from the beginning again
             for ( RightTuple newBlocker = firstRightTuple; newBlocker != null; newBlocker = (RightTuple) rightIt.next(newBlocker) ) {
                 if ( this.constraints.isAllowedCachedLeft( memory.getContext(),
@@ -379,7 +377,7 @@ public class ReteExistsNode extends ExistsNode {
     private void updateLeftTupleToNewBlocker(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory, BetaMemory memory, LeftTupleMemory leftMemory, LeftTuple firstBlocked, RightTupleMemory rightTupleMemory, boolean removeAdd) {// will attempt to resume from the last blocker, if it's not a comparison or unification index.
         boolean resumeFromCurrent =  !(indexedUnificationJoin || rightTupleMemory.getIndexType().isComparison());
 
-        FastIterator rightIt = null;
+        FastIterator rightIt;
         RightTuple rootBlocker = null;
         if ( resumeFromCurrent ) {
             RightTupleList currentRtm = rightTuple.getMemory();
@@ -408,7 +406,7 @@ public class ReteExistsNode extends ExistsNode {
         }
 
         // iterate all the existing previous blocked LeftTuples
-        for ( LeftTuple leftTuple = (LeftTuple) firstBlocked; leftTuple != null; ) {
+        for ( LeftTuple leftTuple = firstBlocked; leftTuple != null; ) {
             LeftTuple temp = leftTuple.getBlockedNext();
 
             leftTuple.clearBlocker();

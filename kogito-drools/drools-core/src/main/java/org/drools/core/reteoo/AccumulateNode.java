@@ -125,7 +125,7 @@ public class AccumulateNode extends BetaNode {
                                                      final InternalWorkingMemory workingMemory,
                                                      final LeftTuple leftTuple,
                                                      final Object result) {
-        InternalFactHandle handle = null;
+        InternalFactHandle handle;
         ProtobufMessages.FactHandle _handle = null;
         if( context.getReaderContext() != null ) {
             Map<TupleKey, FactHandle> map = (Map<ProtobufInputMarshaller.TupleKey, ProtobufMessages.FactHandle>) context.getReaderContext().nodeMemories.get( getId() );
@@ -203,10 +203,6 @@ public class AccumulateNode extends BetaNode {
             memory.alphaContexts[i] = this.resultConstraints[i].createContextEntry();
         }
         return memory;
-    }
-
-    public void doRemove(InternalWorkingMemory workingMemory, AccumulateMemory object) {
-
     }
 
     public static abstract class AccumulateMemory extends AbstractBaseLinkedListNode<Memory>
@@ -369,10 +365,9 @@ public class AccumulateNode extends BetaNode {
         return peer;
     }
 
-    public static enum ActivitySource {
+    public enum ActivitySource {
         LEFT, RIGHT
     }
-
 
     @Override
     public void assertRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
@@ -426,12 +421,13 @@ public class AccumulateNode extends BetaNode {
         throw new UnsupportedOperationException();
     }
 
-
     @Override
-    public void doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
+    public boolean doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
         if ( !isInUse() ) {
             getLeftTupleSource().removeTupleSink( this );
             getRightInput().removeObjectSink( this );
+            return true;
         }
+        return false;
     }
 }

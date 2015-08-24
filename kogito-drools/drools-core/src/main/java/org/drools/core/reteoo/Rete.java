@@ -156,10 +156,11 @@ public class Rete extends ObjectSource
         kBase.registerAddedEntryNodeCache(node);
     }
 
-    public void removeObjectSink(final ObjectSink objectSink) {
+    public boolean removeObjectSink(final ObjectSink objectSink) {
         final EntryPointNode node = (EntryPointNode) objectSink;
         entryPoints.remove(node.getEntryPoint());
         kBase.registeRremovedEntryNodeCache(node);
+        return false;
     }
 
     public void attach( BuildContext context ) {
@@ -170,10 +171,11 @@ public class Rete extends ObjectSource
         // nothing to do
     }
 
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(final RuleRemovalContext context,
+                               final ReteooBuilder builder,
+                               final InternalWorkingMemory[] workingMemories) {
         // for now, we don't remove EntryPointNodes because they might be referenced by external sources
+        return false;
     }
 
     public EntryPointNode getEntryPointNode(final EntryPointId entryPoint) {

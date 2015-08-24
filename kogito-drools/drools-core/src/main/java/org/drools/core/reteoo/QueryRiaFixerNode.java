@@ -89,7 +89,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         LeftTupleSourceUtils.doModifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory,
-                                               (LeftTupleSink) this, getLeftInputOtnId(), getLeftInferredMask());
+                                               this, getLeftInputOtnId(), getLeftInferredMask());
     }
 
     public BetaNode getBetaNode() {
@@ -153,10 +153,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
 
     public boolean equals(final Object object) {
         // we never node share, so only return true if we are instance equal
-        if ( this == object ) {
-            return true;
-        }
-        return false; 
+        return this == object;
     }
 
     public void updateSink(final LeftTupleSink sink,
@@ -180,12 +177,14 @@ public class QueryRiaFixerNode extends LeftTupleSource
         }
     }
 
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(final RuleRemovalContext context,
+                               final ReteooBuilder builder,
+                               final InternalWorkingMemory[] workingMemories) {
         if (!isInUse()) {
             getLeftTupleSource().removeTupleSink(this);
+            return true;
         }
+        return false;
     }
 
     public boolean isLeftTupleMemoryEnabled() {
@@ -364,9 +363,8 @@ public class QueryRiaFixerNode extends LeftTupleSource
                 contextEntry.updateFromTuple(workingMemory, leftTuple);
 
                 FastIterator rightIt = rightMemory.fastIterator();
-                RightTuple temp = null;
                 for (RightTuple rightTuple = rightMemory.getFirst(leftTuple, (InternalFactHandle) context.getFactHandle(), rightIt); rightTuple != null; ) {
-                    temp = (RightTuple) rightIt.next(rightTuple);
+                    RightTuple temp = (RightTuple) rightIt.next(rightTuple);
 
                     if (constraint.isAllowedCachedLeft(contextEntry, rightTuple.getFactHandle())) {
                         rightMemory.remove(rightTuple);

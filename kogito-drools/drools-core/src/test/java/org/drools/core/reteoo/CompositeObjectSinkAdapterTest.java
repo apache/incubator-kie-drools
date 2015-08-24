@@ -670,7 +670,8 @@ public class CompositeObjectSinkAdapterTest {
         }
 
         @Override
-        protected void doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
+        protected boolean doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
+            return true;
         }
 
         MockBetaNode(final int id,

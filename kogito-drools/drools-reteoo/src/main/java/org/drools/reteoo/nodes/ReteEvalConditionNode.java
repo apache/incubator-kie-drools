@@ -52,7 +52,7 @@ public class ReteEvalConditionNode extends EvalConditionNode {
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         LeftTupleSourceUtils.doModifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory,
-                                               (LeftTupleSink) this, getLeftInputOtnId(), getLeftInferredMask());
+                                               this, getLeftInputOtnId(), getLeftInferredMask());
     }
 
     public void assertLeftTuple(final LeftTuple leftTuple,
@@ -168,19 +168,21 @@ public class ReteEvalConditionNode extends EvalConditionNode {
         }
     }
 
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(final RuleRemovalContext context,
+                               final ReteooBuilder builder,
+                               final InternalWorkingMemory[] workingMemories) {
         if ( !this.isInUse() ) {
             for( InternalWorkingMemory workingMemory : workingMemories ) {
                 workingMemory.clearNodeMemory( this );
             }
             getLeftTupleSource().removeTupleSink( this );
+            return true;
         } else {
             // need to re-wire eval expression to the same one from another rule
             // that is sharing this node
             Entry<Rule, RuleComponent> next = this.getAssociations().entrySet().iterator().next();
             this.condition = (EvalCondition) next.getValue();
+            return false;
         }
     }
 }

@@ -182,18 +182,13 @@ public class ReteooBuilder
             removeNode(node, removedSources, alphaStack, betaStack, stillInUse, processRian, workingMemories, context);
             if ( !betaStack.isEmpty() ) {
                 node = betaStack.removeLast();
-                if ( node.getType() == NodeTypeEnums.RightInputAdaterNode ) {
-                    processRian = true;
-                } else {
-                    processRian = false;
-                }
-
+                processRian = node.getType() == NodeTypeEnums.RightInputAdaterNode;
             } else if ( !alphaStack.isEmpty() ) {
                 node = alphaStack.removeLast();
             } else {
                 node = null;
             }
-        };
+        }
 
         resetMasks(stillInUse);
     }
@@ -243,9 +238,11 @@ public class ReteooBuilder
             node.remove(context, this, workingMemories);
             removeNode( parent , removedSources, alphaStack, betaStack, stillInUse, true, workingMemories, context );
         } else if ( NodeTypeEnums.isObjectSource( node ) ) {
-            if ( removedSources.add(node) ) {
+            if ( !removedSources.contains(node) ) {
                 BaseNode parent = ((ObjectSource) node).getParentObjectSource();
-                node.remove(context, this, workingMemories);
+                if (node.remove(context, this, workingMemories)) {
+                    removedSources.add( node );
+                }
                 removeNode(parent, removedSources, alphaStack, betaStack, stillInUse, true, workingMemories, context);
             }
         } else {
@@ -304,7 +301,7 @@ public class ReteooBuilder
                 }
             }
         } else if ( NodeTypeEnums.isBetaNode( baseNode ) ) {
-            if ( ((BaseNode)baseNode).isInUse() ) {
+            if ( baseNode.isInUse() ) {
                 leafSet.add( baseNode );
             }
         }

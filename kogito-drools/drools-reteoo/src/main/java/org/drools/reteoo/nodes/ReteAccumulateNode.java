@@ -64,7 +64,7 @@ public class ReteAccumulateNode extends AccumulateNode {
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         LeftTupleSourceUtils.doModifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory,
-                                               (LeftTupleSink) this, getLeftInputOtnId(), getLeftInferredMask());
+                                               this, getLeftInputOtnId(), getLeftInferredMask());
     }
 
     public void assertObject( final InternalFactHandle factHandle,
@@ -77,8 +77,10 @@ public class ReteAccumulateNode extends AccumulateNode {
         ReteBetaNodeUtils.attach(this, context);
     }
 
-    public void doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
-        ReteBetaNodeUtils.doRemove(this, context, builder, workingMemories);
+    public void doRemove(InternalWorkingMemory workingMemory, AccumulateMemory object) { }
+
+    public boolean doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
+        return ReteBetaNodeUtils.doRemove(this, context, builder, workingMemories);
     }
 
     public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
@@ -114,7 +116,7 @@ public class ReteAccumulateNode extends AccumulateNode {
         boolean useLeftMemory = true;
         if ( !this.tupleMemoryEnabled ) {
             // This is a hack, to not add closed DroolsQuery objects
-            Object object = ((InternalFactHandle) leftTuple.get( 0 )).getObject();
+            Object object = leftTuple.get( 0 ).getObject();
             if ( !(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen() ) {
                 useLeftMemory = false;
             }
@@ -185,7 +187,7 @@ public class ReteAccumulateNode extends AccumulateNode {
         final AccumulateMemory memory = (AccumulateMemory) workingMemory.getNodeMemory( this );
 
 
-        ((BetaMemory) memory.getBetaMemory()).getLeftTupleMemory().remove( leftTuple );
+        memory.getBetaMemory().getLeftTupleMemory().remove( leftTuple );
 
         final AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
         if ( accctx.getAction() != null ) {
@@ -622,7 +624,7 @@ public class ReteAccumulateNode extends AccumulateNode {
         }
 
         // First alpha node filters
-        boolean isAllowed = result != null;
+        boolean isAllowed = true;
         for ( int i = 0, length = this.resultConstraints.length; isAllowed && i < length; i++ ) {
             if ( !this.resultConstraints[i].isAllowed( accctx.result.getFactHandle(),
                                                        workingMemory,
@@ -641,7 +643,7 @@ public class ReteAccumulateNode extends AccumulateNode {
             this.resultBinder.resetTuple( memory.resultsContext );
         }
 
-        if ( accctx.propagated == true ) {
+        if ( accctx.propagated ) {
             // temporarily break the linked list to avoid wrong interactions
             LeftTuple[] matchings = splitList( leftTuple,
                                                accctx,
@@ -769,11 +771,9 @@ public class ReteAccumulateNode extends AccumulateNode {
         // save the matching tuple
         LeftTuple leftTuple = match.getLeftParent();
 
-        if ( match != null ) {
-            // removing link between left and right
-            match.unlinkFromLeftParent();
-            match.unlinkFromRightParent();
-        }
+        // removing link between left and right
+        match.unlinkFromLeftParent();
+        match.unlinkFromRightParent();
 
         // if there is a subnetwork, we need to unwrap the object from inside the tuple
         InternalFactHandle handle = rightTuple.getFactHandle();
@@ -922,10 +922,6 @@ public class ReteAccumulateNode extends AccumulateNode {
     /**
      * Skips the propagated tuple handles and return the first handle
      * in the list that correspond to a match
-     *
-     * @param leftTuple
-     * @param accctx
-     * @return
      */
     public LeftTuple getFirstMatch( final LeftTuple leftTuple,
                                     final AccumulateContext accctx,

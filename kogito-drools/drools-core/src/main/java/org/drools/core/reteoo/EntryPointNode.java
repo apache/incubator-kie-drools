@@ -270,7 +270,7 @@ public class EntryPointNode extends ObjectSource
                     if (leftTuple != null) {
                         LeftTupleSink leftTupleSink = leftTuple.getLeftTupleSink();
                         if (leftTupleSink instanceof LeftTupleSource) {
-                            otn = ((LeftTupleSource)leftTupleSink).getLeftTupleSource().getObjectTypeNode();
+                            otn = leftTupleSink.getLeftTupleSource().getObjectTypeNode();
                         } else if (leftTupleSink instanceof RuleTerminalNode) {
                             otn = ((RuleTerminalNode)leftTupleSink).getObjectTypeNode();
                         }
@@ -354,10 +354,10 @@ public class EntryPointNode extends ObjectSource
             return;
         }
 
-        for ( int i = 0; i < cachedNodes.length; i++ ) {
-            cachedNodes[i].retractObject( handle,
-                                          context,
-                                          workingMemory );
+        for ( ObjectTypeNode cachedNode : cachedNodes ) {
+            cachedNode.retractObject( handle,
+                                      context,
+                                      workingMemory );
         }
 
         if (handle instanceof EventFactHandle) {
@@ -380,9 +380,10 @@ public class EntryPointNode extends ObjectSource
                                  node);
     }
 
-    public void removeObjectSink(final ObjectSink objectSink) {
+    public boolean removeObjectSink(final ObjectSink objectSink) {
         final ObjectTypeNode node = (ObjectTypeNode) objectSink;
         this.objectTypeNodes.remove( node.getObjectType() );
+        return false;
     }
 
     public void attach( BuildContext context ) {
@@ -407,9 +408,10 @@ public class EntryPointNode extends ObjectSource
         }
     }
 
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(final RuleRemovalContext context,
+                               final ReteooBuilder builder,
+                               final InternalWorkingMemory[] workingMemories) {
+        return false;
     }
 
     public Map<ObjectType, ObjectTypeNode> getObjectTypeNodes() {
@@ -456,14 +458,6 @@ public class EntryPointNode extends ObjectSource
                 }
             }
         }
-    }
-
-    public boolean isObjectMemoryEnabled() {
-        return false;
-    }
-
-    public void setObjectMemoryEnabled(boolean objectMemoryEnabled) {
-        throw new UnsupportedOperationException( "Entry Point Node has no Object memory" );
     }
 
     public String toString() {

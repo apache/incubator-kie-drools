@@ -308,16 +308,18 @@ public class EvalConditionNode extends LeftTupleSource
         throw new UnsupportedOperationException();
     }
 
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(final RuleRemovalContext context,
+                               final ReteooBuilder builder,
+                               final InternalWorkingMemory[] workingMemories) {
         if ( !this.isInUse() ) {
             getLeftTupleSource().removeTupleSink( this );
+            return true;
         } else {
             // need to re-wire eval expression to the same one from another rule
             // that is sharing this node
             Entry<Rule, RuleComponent> next = this.getAssociations().entrySet().iterator().next();
             this.condition = (EvalCondition) next.getValue();
+            return false;
         }
     }
 

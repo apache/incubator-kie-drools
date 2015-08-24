@@ -155,7 +155,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         // @TODO optimization would be to split path's into two, to avoid wasted rule evaluation for segments after the first branch CE
 
         boolean updateBitInNewSegment = true; // Avoids more than one isBetaNode check per segment
-        boolean updateAllLinkedTest = ( cen == null ) ? true : false; // if there is a CEN, do not set bit until it's reached
+        boolean updateAllLinkedTest = cen == null; // if there is a CEN, do not set bit until it's reached
         boolean subnetworkBoundaryCrossed = false;
         while (  tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
             if ( !subnetworkBoundaryCrossed &&  tupleSource.getType() == NodeTypeEnums.ConditionalBranchNode ) {
@@ -225,11 +225,12 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         return peer;
     }
 
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(final RuleRemovalContext context,
+                               final ReteooBuilder builder,
+                               final InternalWorkingMemory[] workingMemories) {
         getLeftTupleSource().removeTupleSink(this);
         this.tupleSource = null;
+        return true;
     }
 
     public LeftTupleSource getLeftTupleSource() {

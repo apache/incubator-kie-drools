@@ -105,9 +105,6 @@ public class RightInputAdapterNode extends ObjectSource
         return startTupleSource;
     }
 
-    public void setStartTupleSource(LeftTupleSource startTupleSource) {
-        this.startTupleSource = startTupleSource;
-    }
     /**
      * Creates and return the node memory
      */    
@@ -133,7 +130,7 @@ public class RightInputAdapterNode extends ObjectSource
     public InternalFactHandle createFactHandle(final LeftTuple leftTuple,
                                                 final PropagationContext context,
                                                 final InternalWorkingMemory workingMemory) {
-        InternalFactHandle handle = null;
+        InternalFactHandle handle;
         ProtobufMessages.FactHandle _handle = null;
         if( context.getReaderContext() != null ) {
             Map<ProtobufInputMarshaller.TupleKey, ProtobufMessages.FactHandle> map = (Map<ProtobufInputMarshaller.TupleKey, ProtobufMessages.FactHandle>) context.getReaderContext().nodeMemories.get( getId() );
@@ -180,12 +177,14 @@ public class RightInputAdapterNode extends ObjectSource
     }
 
 
-    protected void doRemove(final RuleRemovalContext context,
+    protected boolean doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
         if ( !isInUse() ) {
             tupleSource.removeTupleSink(this);
+            return true;
         }
+        return false;
     }
 
     public boolean isLeftTupleMemoryEnabled() {

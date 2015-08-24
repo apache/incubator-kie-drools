@@ -69,7 +69,7 @@ public class ReteQueryElementNode extends QueryElementNode {
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         LeftTupleSourceUtils.doModifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory,
-                                               (LeftTupleSink) this, getLeftInputOtnId(), getLeftInferredMask());
+                                               this, getLeftInputOtnId(), getLeftInferredMask());
     }
 
     public void assertLeftTuple(LeftTuple leftTuple,
@@ -101,7 +101,7 @@ public class ReteQueryElementNode extends QueryElementNode {
         boolean executeAsOpenQuery = openQuery;
         if (executeAsOpenQuery) {
             // There is no point in doing an open query if the caller is a non-open query.
-            Object object = ((InternalFactHandle) leftTuple.get(0)).getObject();
+            Object object = leftTuple.get(0).getObject();
             if (object instanceof DroolsQuery && !((DroolsQuery) object).isOpen()) {
                 executeAsOpenQuery = false;
             }
@@ -140,35 +140,35 @@ public class ReteQueryElementNode extends QueryElementNode {
 
         int[] declIndexes = this.queryElement.getDeclIndexes();
 
-        for (int i = 0, length = declIndexes.length; i < length; i++) {
-            Declaration declr = (Declaration) argTemplate[declIndexes[i]];
+        for ( int declIndexe : declIndexes ) {
+            Declaration declr = (Declaration) argTemplate[declIndexe];
 
-            Object tupleObject = leftTuple.get(declr).getObject();
+            Object tupleObject = leftTuple.get( declr ).getObject();
 
             Object o;
 
-            if (tupleObject instanceof DroolsQuery) {
+            if ( tupleObject instanceof DroolsQuery ) {
                 // If the query passed in a Variable, we need to use it
                 ArrayElementReader arrayReader = (ArrayElementReader) declr.getExtractor();
-                if (((DroolsQuery) tupleObject).getVariables()[arrayReader.getIndex()] != null) {
+                if ( ( (DroolsQuery) tupleObject ).getVariables()[arrayReader.getIndex()] != null ) {
                     o = Variable.v;
                 } else {
-                    o = declr.getValue(workingMemory,
-                                       tupleObject);
+                    o = declr.getValue( workingMemory,
+                                        tupleObject );
                 }
             } else {
-                o = declr.getValue(workingMemory,
-                                   tupleObject);
+                o = declr.getValue( workingMemory,
+                                    tupleObject );
             }
 
-            args[declIndexes[i]] = o;
+            args[declIndexe] = o;
         }
 
         int[] varIndexes = this.queryElement.getVariableIndexes();
-        for (int i = 0, length = varIndexes.length; i < length; i++) {
-            if (argTemplate[varIndexes[i]] == Variable.v) {
+        for ( int varIndexe : varIndexes ) {
+            if ( argTemplate[varIndexe] == Variable.v ) {
                 // Need to check against the arg template, as the varIndexes also includes re-declared declarations
-                args[varIndexes[i]] = Variable.v;
+                args[varIndexe] = Variable.v;
             }
         }
 
@@ -207,15 +207,17 @@ public class ReteQueryElementNode extends QueryElementNode {
         }
     }
 
-    protected void doRemove(RuleRemovalContext context,
-                            ReteooBuilder builder,
-                            InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(RuleRemovalContext context,
+                               ReteooBuilder builder,
+                               InternalWorkingMemory[] workingMemories) {
         if (!isInUse()) {
             for (InternalWorkingMemory workingMemory : workingMemories) {
                 workingMemory.clearNodeMemory(this);
             }
             getLeftTupleSource().removeTupleSink(this);
+            return true;
         }
+        return false;
     }
 
     public void updateSink(final LeftTupleSink sink,
@@ -268,10 +270,10 @@ public class ReteQueryElementNode extends QueryElementNode {
             Object[] objects = new Object[dquery.getElements().length];
 
             Declaration decl;
-            for (int i = 0, length = this.variables.length; i < length; i++) {
-                decl = decls[this.variables[i]];
-                objects[this.variables[i]] = decl.getValue(workingMemory,
-                                                           resultLeftTuple.get(decl).getObject());
+            for ( int variable : this.variables ) {
+                decl = decls[variable];
+                objects[variable] = decl.getValue( workingMemory,
+                                                   resultLeftTuple.get( decl ).getObject() );
             }
 
             QueryElementFactHandle resultHandle = createQueryResultHandle(context,
@@ -361,10 +363,10 @@ public class ReteQueryElementNode extends QueryElementNode {
             Object[] objects = new Object[dquery.getElements().length];
 
             Declaration decl;
-            for (int i = 0, length = this.variables.length; i < length; i++) {
-                decl = decls[this.variables[i]];
-                objects[this.variables[i]] = decl.getValue(workingMemory,
-                                                           resultLeftTuple.get(decl).getObject());
+            for ( int variable : this.variables ) {
+                decl = decls[variable];
+                objects[variable] = decl.getValue( workingMemory,
+                                                   resultLeftTuple.get( decl ).getObject() );
             }
 
             QueryElementFactHandle handle = (QueryElementFactHandle) rightTuple.getFactHandle();

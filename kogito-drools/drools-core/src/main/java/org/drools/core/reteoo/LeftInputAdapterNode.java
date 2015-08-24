@@ -197,7 +197,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink();
         LeftTuple leftTuple = sink.createLeftTuple( factHandle, sink, useLeftMemory );
         leftTuple.setPropagationContext( context );
-        doInsertSegmentMemory(context, wm, notifySegment, lm, sm, leftTuple);
+        doInsertSegmentMemory( wm, notifySegment, lm, sm, leftTuple);
 
         if ( sm.getRootNode() != liaNode ) {
             // sm points to lia child sm, so iterate for all remaining children
@@ -205,7 +205,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             for ( sm = sm.getNext(); sm != null; sm = sm.getNext() ) {
                 sink =  sm.getSinkFactory();
                 leftTuple = sink.createPeer( leftTuple ); // pctx is set during peer cloning
-                doInsertSegmentMemory(context, wm, notifySegment, lm, sm, leftTuple);
+                doInsertSegmentMemory( wm, notifySegment, lm, sm, leftTuple);
             }
         }
 
@@ -228,8 +228,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
     }
 
-    private static void doInsertSegmentMemory(PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify, final LiaNodeMemory lm,
-                                              SegmentMemory sm, LeftTuple leftTuple) {
+    private static void doInsertSegmentMemory( InternalWorkingMemory wm, boolean linkOrNotify, final LiaNodeMemory lm,
+                                               SegmentMemory sm, LeftTuple leftTuple ) {
         PathMemory pmem = sm.getFirstDataDrivenPathMemory();
         if (pmem != null) {
             forceFlushLeftTuple(pmem, sm, wm, leftTuple);
@@ -318,9 +318,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         LeftTupleSets leftTuples = sm.getStagedLeftTuples();
 
-        LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink() ;
-
-        doUpdateSegmentMemory(leftTuple, context, wm, linkOrNotify, lm, sm, leftTuples, sink);
+        doUpdateSegmentMemory(leftTuple, context, wm, linkOrNotify, lm, leftTuples );
 
         if (  sm.getNext() != null ) {
             // sm points to lia child sm, so iterate for all remaining children
@@ -329,13 +327,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 leftTuple = leftTuple.getPeer();
                 leftTuples = sm.getStagedLeftTuples();
 
-                doUpdateSegmentMemory(leftTuple, context, wm, linkOrNotify, lm, sm, leftTuples, ((LeftTupleSink) sm.getRootNode()));
+                doUpdateSegmentMemory(leftTuple, context, wm, linkOrNotify, lm, leftTuples );
             }
         }
     }
 
-    private static void doUpdateSegmentMemory(LeftTuple leftTuple, PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify,
-                                              final LiaNodeMemory lm, SegmentMemory sm, LeftTupleSets leftTuples, LeftTupleSink sink) {
+    private static void doUpdateSegmentMemory( LeftTuple leftTuple, PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify,
+                                               final LiaNodeMemory lm, LeftTupleSets leftTuples ) {
         if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
             // if LeftTuple is already staged, leave it there
             leftTuple.setPropagationContext( pctx );
@@ -440,12 +438,14 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
 
 
-    protected void doRemove(final RuleRemovalContext context,
+    protected boolean doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
         if (!isInUse()) {
             objectSource.removeObjectSink(this);
+            return true;
         }
+        return false;
     }
 
 

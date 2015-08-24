@@ -26,7 +26,6 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.LeftTupleSourceUtils;
 import org.drools.core.reteoo.ModifyPreviousTuples;
-import org.drools.core.reteoo.NodeSet;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleRemovalContext;
@@ -261,9 +260,9 @@ public class ReteFromNode extends FromNode {
                               leftTuple );
     }
 
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(final RuleRemovalContext context,
+                               final ReteooBuilder builder,
+                               final InternalWorkingMemory[] workingMemories) {
 
         if ( !this.isInUse() ) {
             for ( InternalWorkingMemory workingMemory : workingMemories ) {
@@ -279,7 +278,9 @@ public class ReteFromNode extends FromNode {
                 workingMemory.clearNodeMemory( this );
             }
             getLeftTupleSource().removeTupleSink( this );
+            return true;
         }
+        return false;
     }
 
     @SuppressWarnings("unchecked")
