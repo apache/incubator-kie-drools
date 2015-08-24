@@ -756,4 +756,34 @@ public class AddRemoveRulesTest {
 
         session.execute(fact);
     }
+
+    @Test
+    public void testRemoveWithSameRuleNameInDiffPackage() {
+        String packageName = "pk1";
+        String packageName2 = "pk2";
+        String rule1Name = "rule1";
+        String rule2Name = rule1Name;
+
+        String rule1 = "package " + packageName + ";" +
+                       "rule " + rule1Name + " \n" +
+                       "when \n" +
+                       " String( ) \n" +
+                       "then \n" +
+                       " System.out.println('test in rule1'); \n"+
+                       "end";
+
+        String rule2 = "package " + packageName2 + ";" +
+                       "rule " + rule2Name + " \n" +
+                       "when \n" +
+                       " Long( ) \n" +
+                       "then \n" +
+                       " System.out.println('test in rule2'); \n"+
+                       "end";
+
+        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
+        session.getKieBase().removeKnowledgePackage(packageName);
+        session.getKieBase().removeKnowledgePackage(packageName2);
+        session.insert(new String());
+        session.fireAllRules();
+    }
 }

@@ -82,7 +82,7 @@ public class AddRemoveRule {
 
                 collectRtnPathMemories(splitStartLeftTupleSource, wm, pathMems, tn); // get all PathMemories, except current
 
-                PathMemory newPmem = (PathMemory) wm.getNodeMemory((MemoryFactory) tn);
+                PathMemory newPmem = (PathMemory) wm.getNodeMemory( tn );
 
                 int s = getSegmentPos(splitStartLeftTupleSource, null);
 
