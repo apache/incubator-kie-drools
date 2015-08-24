@@ -14,7 +14,13 @@
   <process processType="Private" isExecutable="true" id="UserTask" name="User Task" >
 
     <laneSet>
-      <lane id="_5" name="MyLane" >
+      <lane id="_5" name="My Lane" >
+        <extensionElements>
+          <tns:metaData name="elementname">
+            <tns:metaValue><![CDATA[My
+                 Lane]]></tns:metaValue>
+            </tns:metaData>
+        </extensionElements>
         <flowNodeRef>_2</flowNodeRef>
         <flowNodeRef>_3</flowNodeRef>
       </lane>

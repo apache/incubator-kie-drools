@@ -18,7 +18,9 @@ package org.jbpm.bpmn2.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Lane implements Serializable {
     
@@ -27,6 +29,7 @@ public class Lane implements Serializable {
     private String id;
     private String name;
     private List<String> flowElementIds = new ArrayList<String>();
+    private Map<String, Object> metaData = new HashMap<String, Object>();
     
     public Lane(String id) {
         this.id = id;
@@ -50,6 +53,14 @@ public class Lane implements Serializable {
     
     public void addFlowElement(String id) {
         flowElementIds.add(id);
+    }
+
+    public Map<String, Object> getMetaData() {
+        return this.metaData;
+    }
+
+    public void setMetaData(String name, Object data) {
+        this.metaData.put(name, data);
     }
     
 }
