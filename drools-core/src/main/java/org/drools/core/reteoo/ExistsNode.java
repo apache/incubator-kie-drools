@@ -38,12 +38,7 @@ public class ExistsNode extends BetaNode {
 
     private static final long serialVersionUID = 510l;
 
-    static int                notAssertObject  = 0;
-    static int                notAssertTuple   = 0;
-
-    public ExistsNode() {
-    }
-
+    public ExistsNode() { }
 
     public ExistsNode(final int id,
                       final LeftTupleSource leftInput,
@@ -159,11 +154,13 @@ public class ExistsNode extends BetaNode {
     }
 
     @Override
-    public void doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
+    public boolean doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
         if ( !isInUse() ) {
             getLeftTupleSource().removeTupleSink( this );
             getRightInput().removeObjectSink( this );
+            return true;
         }
+        return false;
     }
 
     public boolean isLeftUpdateOptimizationAllowed() {

@@ -745,11 +745,13 @@ public class QueryElementNode extends LeftTupleSource
         this.leftInput.addTupleSink( this, context );
     }
 
-    protected void doRemove(RuleRemovalContext context,
-                            ReteooBuilder builder,
-                            InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(RuleRemovalContext context,
+                               ReteooBuilder builder,
+                               InternalWorkingMemory[] workingMemories) {
         if (!isInUse()) {
             getLeftTupleSource().removeTupleSink(this);
+            return true;
         }
+        return false;
     }
 }

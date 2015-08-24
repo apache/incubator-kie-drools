@@ -60,9 +60,10 @@ public class BaseNodeTest {
                                   final PropagationContext context) {
         }
 
-        protected void doRemove(final RuleRemovalContext context,
-                                final ReteooBuilder builder,
-                                final InternalWorkingMemory[] workingMemories) {
+        protected boolean doRemove(final RuleRemovalContext context,
+                                   final ReteooBuilder builder,
+                                   final InternalWorkingMemory[] workingMemories) {
+            return true;
         }
 
         public boolean isInUse() {

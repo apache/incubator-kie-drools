@@ -18,7 +18,6 @@ package org.drools.reteoo.nodes;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.MemoryFactory;
 import org.drools.core.reteoo.LIANodePropagation;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
@@ -107,15 +106,17 @@ public class ReteLeftInputAdapterNode extends LeftInputAdapterNode {
                                      workingMemory);
     }
 
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(final RuleRemovalContext context,
+                               final ReteooBuilder builder,
+                               final InternalWorkingMemory[] workingMemories) {
         if (!isInUse()) {
             getObjectSource().removeObjectSink(this);
             for ( InternalWorkingMemory wm : workingMemories ) {
-                wm.clearNodeMemory( (MemoryFactory) this);
+                wm.clearNodeMemory( this );
             }
+            return true;
         }
+        return false;
     }
 
 }

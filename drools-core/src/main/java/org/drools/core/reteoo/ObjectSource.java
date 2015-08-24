@@ -202,7 +202,7 @@ public abstract class ObjectSource extends BaseNode
      * @param objectSink
      *            The <code>ObjectSink</code> to remove
      */
-    public void removeObjectSink(final ObjectSink objectSink) {
+    public boolean removeObjectSink(final ObjectSink objectSink) {
         if ( this.sink instanceof EmptyObjectSinkAdapter ) {
             throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
         }
@@ -216,6 +216,7 @@ public abstract class ObjectSource extends BaseNode
                 this.sink = new SingleObjectSinkAdapter( this.getPartitionId(), sinkAdapter.getSinks()[0] );
             }
         }
+        return true;
     }
 
     public abstract void updateSink(ObjectSink sink,
@@ -234,7 +235,7 @@ public abstract class ObjectSource extends BaseNode
         return this.sink.size() > 0;
     }
     
-    protected void doRemove(final RuleRemovalContext context,
+    protected boolean doRemove(final RuleRemovalContext context,
                             final ReteooBuilder builder,
                             final InternalWorkingMemory[] workingMemories) {
         if ( !context.getKnowledgeBase().getConfiguration().isPhreakEnabled()  && !this.isInUse() && this instanceof MemoryFactory ) {
@@ -244,7 +245,9 @@ public abstract class ObjectSource extends BaseNode
         }
         if ( !isInUse() && this instanceof ObjectSink ) {
             this.source.removeObjectSink((ObjectSink) this);
+            return true;
         }
+        return false;
     }
 
     protected ObjectTypeNode getObjectTypeNode() {

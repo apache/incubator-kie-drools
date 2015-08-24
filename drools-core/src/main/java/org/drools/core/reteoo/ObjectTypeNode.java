@@ -425,21 +425,21 @@ public class ObjectTypeNode extends ObjectSource
      * OTN needs to override remove to avoid releasing the node ID, since OTN are
      * never removed from the rulebase in the current implementation
      */
-    public void remove(RuleRemovalContext context,
+    public boolean remove(RuleRemovalContext context,
                        ReteooBuilder builder,
                        InternalWorkingMemory[] workingMemories) {
-        doRemove(context,
-                 builder,
-                 workingMemories);
+        return doRemove(context,
+                        builder,
+                        workingMemories);
     }
 
     /**
      * OTN needs to override remove to avoid releasing the node ID, since OTN are
      * never removed from the rulebase in the current implementation
      */
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(final RuleRemovalContext context,
+                               final ReteooBuilder builder,
+                               final InternalWorkingMemory[] workingMemories) {
         if (!context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && context.getCleanupAdapter() != null) {
             for (InternalWorkingMemory workingMemory : workingMemories) {
                 CleanupAdapter adapter = context.getCleanupAdapter();
@@ -455,6 +455,7 @@ public class ObjectTypeNode extends ObjectSource
             }
             context.setCleanupAdapter(null);
         }
+        return false;
     }
 
     /**

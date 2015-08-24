@@ -49,7 +49,7 @@ public class ReteConditionalBranchNode extends ConditionalBranchNode {
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         LeftTupleSourceUtils.doModifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory,
-                                               (LeftTupleSink) this, getLeftInputOtnId(), getLeftInferredMask());
+                                               this, getLeftInputOtnId(), getLeftInferredMask());
     }
 
     public void attach( BuildContext context ) {
@@ -229,14 +229,15 @@ public class ReteConditionalBranchNode extends ConditionalBranchNode {
         }
     }
 
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(final RuleRemovalContext context,
+                               final ReteooBuilder builder,
+                               final InternalWorkingMemory[] workingMemories) {
         if ( !this.isInUse() ) {
             for( InternalWorkingMemory workingMemory : workingMemories ) {
                 workingMemory.clearNodeMemory( this );
             }
             getLeftTupleSource().removeTupleSink(this);
+            return true;
         } else {
             throw new RuntimeException("ConditionalBranchNode cannot be shared");
         }
