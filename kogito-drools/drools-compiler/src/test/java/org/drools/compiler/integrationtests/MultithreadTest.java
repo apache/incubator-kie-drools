@@ -249,7 +249,6 @@ public class MultithreadTest extends CommonTestMethodBase {
         assertTrue( errors.isEmpty() );
         assertTrue( success );
 
-        assertTrue( ! list.isEmpty() && ( (Number) list.get( list.size() - 1 ) ).intValue() > 400 );
         ksession.dispose();
     }
 
