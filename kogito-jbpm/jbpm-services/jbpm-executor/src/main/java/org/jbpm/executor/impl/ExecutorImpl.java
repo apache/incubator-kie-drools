@@ -274,7 +274,7 @@ public class ExecutorImpl implements Executor {
         logger.info(" >>>>> Destroying Executor !!!");
         if (handle != null) {
         	for (ScheduledFuture<?> h : handle) {
-        		h.cancel(true);
+        		h.cancel(false);
         	}
         }
         if (scheduler != null) {
