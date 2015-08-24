@@ -362,6 +362,10 @@ public class RuleImpl implements Externalizable,
         return this.name;
     }
 
+    public String getFullyQualifiedName() {
+        return getPackageName() + "." + getName();
+    }
+
     /**
      * Retrieve the <code>Rule</code> salience.
      *

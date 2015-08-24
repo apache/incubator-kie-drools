@@ -421,8 +421,8 @@ public class RemoveRuleTest {
         assertEquals( 8, countNodeMemories(wm.getNodeMemories()));
         assertEquals(4, list.size() );
 
-        RuleTerminalNode rtn1 = getRtn("r1", kbase1);
-        RuleTerminalNode rtn2 = getRtn("r2", kbase1);
+        RuleTerminalNode rtn1 = getRtn("org.kie.r1", kbase1);
+        RuleTerminalNode rtn2 = getRtn("org.kie.r2", kbase1);
         PathMemory pmem1 = ( PathMemory ) wm.getNodeMemory(rtn1);
         PathMemory pmem2 = ( PathMemory ) wm.getNodeMemory(rtn2);
 
@@ -613,10 +613,10 @@ public class RemoveRuleTest {
         wm.insert(new E(2));
         wm.flushPropagations();
 
-        RuleTerminalNode rtn1 = getRtn( "r1", kbase1 );
-        RuleTerminalNode rtn2 = getRtn( "r2", kbase1 );
-        RuleTerminalNode rtn3 = getRtn( "r3", kbase1 );
-        RuleTerminalNode rtn4 = getRtn( "r4", kbase1 );
+        RuleTerminalNode rtn1 = getRtn( "org.kie.r1", kbase1 );
+        RuleTerminalNode rtn2 = getRtn( "org.kie.r2", kbase1 );
+        RuleTerminalNode rtn3 = getRtn( "org.kie.r3", kbase1 );
+        RuleTerminalNode rtn4 = getRtn( "org.kie.r4", kbase1 );
 
         PathMemory pm1 = (PathMemory) wm.getNodeMemory(rtn1);
         SegmentMemory[] smems = pm1.getSegmentMemories();
@@ -642,7 +642,7 @@ public class RemoveRuleTest {
         assertEquals( 8, sm.getSegmentPosMaskBit() );
         assertEquals( 8, pm1.getLinkedSegmentMask() );
 
-        RuleTerminalNode rtn5 = getRtn( "r5", kbase1 );
+        RuleTerminalNode rtn5 = getRtn( "org.kie.r5", kbase1 );
         PathMemory pm5 = (PathMemory) wm.getNodeMemory(rtn5);
         smems = pm5.getSegmentMemories();
         assertEquals(2, smems.length);

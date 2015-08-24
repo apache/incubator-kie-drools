@@ -98,11 +98,11 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
     }
 
     public void addLIANodePropagation(LIANodePropagation liaNodePropagation) {
-        if (liaPropagations == null) liaPropagations = new ArrayList();
+        if (liaPropagations == null) liaPropagations = new ArrayList<LIANodePropagation>();
         liaPropagations.add( liaNodePropagation );
     }
 
-    private Integer syncLock = 42;
+    private final Integer syncLock = 42;
     public void initInitialFact() {
         if ( initialFactHandle == null ) {
             synchronized ( syncLock ) {
@@ -148,8 +148,8 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
             // If we're already firing a rule, then it'll pick up the firing for any other assertObject(..) that get
             // nested inside, avoiding concurrent-modification exceptions, depending on code paths of the actions.
             if ( liaPropagations != null && isSequential() ) {
-                for ( Iterator it = liaPropagations.iterator(); it.hasNext(); ) {
-                    ((LIANodePropagation) it.next()).doPropagation( this );
+                for ( LIANodePropagation liaPropagation : liaPropagations ) {
+                    ( liaPropagation ).doPropagation( this );
                 }
             }
 
@@ -197,7 +197,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
     protected BaseNode[] evalQuery(String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx) {
         initInitialFact();
 
-        BaseNode[] tnodes = ( BaseNode[] ) kBase.getReteooBuilder().getTerminalNodes(queryName);
+        BaseNode[] tnodes = kBase.getReteooBuilder().getTerminalNodesForQuery( queryName );
         // no need to call retract, as no leftmemory used.
         getEntryPointNode().assertQuery( handle,
                                          pCtx,
@@ -238,7 +238,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
                                                       true ) ) {
                 try {
                     if ( actionQueue!= null && !actionQueue.isEmpty() ) {
-                        WorkingMemoryAction action = null;
+                        WorkingMemoryAction action;
 
                         while ( (action = actionQueue.poll()) != null ) {
                             try {

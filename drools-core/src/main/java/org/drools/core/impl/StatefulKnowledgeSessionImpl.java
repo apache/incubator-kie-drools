@@ -876,7 +876,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     protected BaseNode[] evalQuery(String queryName, DroolsQuery queryObject, InternalFactHandle handle, PropagationContext pCtx) {
-        BaseNode[] tnodes = kBase.getReteooBuilder().getTerminalNodes(queryName);
+        BaseNode[] tnodes = kBase.getReteooBuilder().getTerminalNodesForQuery( queryName);
         if ( tnodes == null ) {
             throw new RuntimeException( "Query '" + queryName + "' does not exist");
         }
@@ -1578,8 +1578,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     /**
      * Sets the AsyncExceptionHandler to handle exceptions thrown by the Agenda
      * Scheduler used for duration rules.
-     *
-     * @param handler
      */
     public void setAsyncExceptionHandler(final AsyncExceptionHandler handler) {
         // this.agenda.setAsyncExceptionHandler( handler );
