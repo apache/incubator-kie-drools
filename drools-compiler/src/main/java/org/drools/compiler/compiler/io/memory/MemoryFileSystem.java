@@ -61,6 +61,9 @@ public class MemoryFileSystem
 
     private Set<String>                modifiedFilesSinceLastMark;
 
+    private final org.slf4j.Logger log =
+    		org.slf4j.LoggerFactory.getLogger(MemoryFileSystem.class);
+
     public MemoryFileSystem() {
         folders = new HashMap<String, Set<Resource>>();
         fileContents = new HashMap<String, byte[]>();
@@ -410,6 +413,7 @@ public class MemoryFileSystem
                     out.close();
                 }
             } catch ( IOException e ) {
+				log.error(e.getMessage(), e);
             }
         }
     }
@@ -454,6 +458,11 @@ public class MemoryFileSystem
                 out.putNextEntry( entry );
 
                 byte[] contents = getFileContents( (MemoryFile) rs );
+                if (contents == null) {
+                	IOException e = new IOException("No content found for: " + rs); 
+					log.error(e.getMessage(), e);
+					throw e;
+				}
                 out.write( contents );
                 out.closeEntry();
             }
