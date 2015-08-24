@@ -83,10 +83,10 @@ public class ReteBetaNodeUtils {
         }
     }
 
-    public static void doRemove(BetaNode betaNode,
-                                final RuleRemovalContext context,
-                                final ReteooBuilder builder,
-                                final InternalWorkingMemory[] workingMemories) {
+    public static boolean doRemove(BetaNode betaNode,
+                                   final RuleRemovalContext context,
+                                   final ReteooBuilder builder,
+                                   final InternalWorkingMemory[] workingMemories) {
 
 
         if (!betaNode.isInUse() || context.getCleanupAdapter() != null) {
@@ -136,7 +136,7 @@ public class ReteBetaNodeUtils {
                 // handle special cases for Accumulate to make sure they tidy up their specific data
                 // like destroying the local FactHandles
                 if (object instanceof AccumulateMemory) {
-                    ((AccumulateNode) betaNode).doRemove(workingMemory, (AccumulateMemory) object);
+                    ((ReteAccumulateNode) betaNode).doRemove(workingMemory, (AccumulateMemory) object);
                 }
 
                 if (!betaNode.isInUse()) {
@@ -168,7 +168,9 @@ public class ReteBetaNodeUtils {
         if (!betaNode.isInUse()) {
             betaNode.getLeftTupleSource().removeTupleSink(betaNode);
             betaNode.getRightInput().removeObjectSink(betaNode);
+            return true;
         }
+        return false;
     }
 
     public static void modifyObject(BetaNode betaNode,

@@ -57,8 +57,8 @@ public class ReteJoinNode extends JoinNode {
         ReteBetaNodeUtils.attach(this, context);
     }
 
-    public void doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
-        ReteBetaNodeUtils.doRemove(this, context, builder, workingMemories);
+    public boolean doRemove(RuleRemovalContext context, ReteooBuilder builder, InternalWorkingMemory[] workingMemories) {
+        return ReteBetaNodeUtils.doRemove(this, context, builder, workingMemories);
     }
 
     public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {

@@ -51,9 +51,10 @@ public class MockTupleSource extends LeftTupleSource {
         this.updated++;
     }
 
-    protected void doRemove(final RuleRemovalContext context,
-                            final ReteooBuilder builder,
-                            final InternalWorkingMemory[] workingMemories) {
+    protected boolean doRemove(final RuleRemovalContext context,
+                               final ReteooBuilder builder,
+                               final InternalWorkingMemory[] workingMemories) {
+        return true;
     }
 
     public void attach( BuildContext context ) {
