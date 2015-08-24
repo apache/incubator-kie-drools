@@ -84,6 +84,7 @@ import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.QueryTerminalNode;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.Declaration;
@@ -101,6 +102,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
+import org.drools.core.util.index.LeftTupleList;
 import org.kie.api.command.Command;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.kiebase.KieBaseEventListener;
@@ -151,6 +153,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
@@ -2137,5 +2140,87 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             throw new UnsupportedOperationException( );
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Start of utility methods used by droolsjbpm-tools
+    ///////////////////////////////////////////////////////////////////////////
+
+    public List iterateObjectsToList() {
+        List result = new ArrayList();
+        Iterator iterator = iterateObjects();
+        for (; iterator.hasNext(); ) {
+            result.add(iterator.next());
+        }
+        return result;
+    }
+
+    public List iterateNonDefaultEntryPointObjectsToList() {
+        List result = new ArrayList();
+        for (Map.Entry<String, WorkingMemoryEntryPoint> entry : entryPoints.entrySet()) {
+            WorkingMemoryEntryPoint entryPoint = entry.getValue();
+            if (entryPoint instanceof NamedEntryPoint) {
+                result.add(new EntryPointObjects(entry.getKey(),
+                                                 new ArrayList(entry.getValue().getObjects())));
+            }
+        }
+        return result;
+    }
+
+    private class EntryPointObjects {
+        private String name;
+        private List   objects;
+
+        public EntryPointObjects(String name,
+                                 List objects) {
+            this.name = name;
+            this.objects = objects;
+        }
+    }
+
+    public Map.Entry[] getActivationParameters(long activationId) {
+        Activation[] activations = agenda.getActivations();
+        for (int i = 0; i < activations.length; i++) {
+            if (activations[i].getActivationNumber() == activationId) {
+                Map params = getActivationParameters(activations[i]);
+                return (Map.Entry[]) params.entrySet().toArray(new Map.Entry[params.size()]);
+            }
+        }
+        return new Map.Entry[0];
+    }
+
+    public Map getActivationParameters(Activation activation) {
+        if (activation instanceof RuleAgendaItem) {
+            RuleAgendaItem ruleAgendaItem = (RuleAgendaItem)activation;
+            LeftTupleList tupleList = ruleAgendaItem.getRuleExecutor().getLeftTupleList();
+            Map result = new TreeMap();
+            int i = 0;
+            for (LeftTuple tuple = tupleList.getFirst(); tuple != null; tuple = (LeftTuple) tuple.getNext()) {
+                Map params = getActivationParameters(tuple);
+                result.put("Parameters set [" + i++ + "]", (Map.Entry[]) params.entrySet().toArray(new Map.Entry[params.size()]));
+            }
+            return result;
+        } else {
+            return getActivationParameters(activation.getTuple());
+        }
+    }
+
+    private Map getActivationParameters(LeftTuple tuple) {
+        Map result = new HashMap();
+        Declaration[] declarations = ((RuleTerminalNode) tuple.getLeftTupleSink()).getDeclarations();
+
+        for (int i = 0; i < declarations.length; i++) {
+            FactHandle handle = tuple.get(declarations[i]);
+            if (handle instanceof InternalFactHandle) {
+                result.put(declarations[i].getIdentifier(),
+                           declarations[i].getValue(this,
+                                                    ((InternalFactHandle) handle).getObject()));
+            }
+        }
+        return result;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // End of utility methods used by droolsjbpm-tools
+    ///////////////////////////////////////////////////////////////////////////
 
 }
