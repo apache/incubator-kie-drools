@@ -16,10 +16,12 @@
 package org.drools.compiler.integrationtests;
 
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -28,6 +30,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.runtime.StatelessKnowledgeSession;
 
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -606,5 +609,166 @@ public class AddRemoveRulesTest {
         fact.put("name", "Michael");
         session.insert(fact);
         session.fireAllRules();
+    }
+
+    @Test
+    public void testRemoveHasSameConElement() {
+        String packageName = "test";
+        String rule1 = "package " + packageName + ";" +
+                        "import java.util.Map; \n" +
+                        "rule 'rule1' \n" +
+                        "when \n" +
+                        " Map(this['type'] == 'Goods' && this['brand'] == 'a') \n" +
+                        " Map(this['type'] == 'Goods' && this['category'] == 'b') \n" +
+                        "then \n" +
+                        "System.out.println('test rule 1'); \n"+
+                        "end";
+         
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ), ResourceType.DRL );
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        kbase.removeKnowledgePackage(packageName);
+        StatelessKnowledgeSession session = kbase.newStatelessKnowledgeSession();
+        session.execute(new HashMap());        
+    }
+    
+    @Test
+    public void testFireAfterRemoveWithSameCondition() {
+        String packageName = "pk1";
+        String packageName2 = "pk2";
+        String rule1 = "package " + packageName + ";" +
+                        "import java.util.Map; \n" +
+                        "rule 'rule1' \n" +
+                        "when \n" +
+                        " Map(this['type'] == 'Goods' ) \n" +
+                        " Map(this['type'] == 'Juice'  ) \n" +
+                        " Map(this['type'] == 'Goods'  ) \n" +
+                        "then \n" +
+                        "System.out.println('test rule 1'); \n"+
+                        "end";
+         
+        String rule2 = "package " + packageName2 + ";" +
+                "import java.util.Map; \n" +
+                "rule 'rule2' \n" +
+                "when \n" +
+                " Map(this['type'] == 'Goods' ) \n" +
+                " Map(this['type'] == 'Juice'  ) \n" +
+                "then \n" +
+                "System.out.println('test  rule 2'); \n"+
+                "end";
+        
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("type", "Goods");
+        
+        StatefulKnowledgeSession fsession = buildSessionInTwoSteps( rule1, rule2 );
+        KieBase base = fsession.getKieBase();
+        StatelessKieSession session = base.newStatelessKieSession();
+        session.execute(map);
+        
+        base.removeKiePackage(packageName2);
+        
+        session.execute(map);
+    }
+    
+    @Test
+    public void testRemoveWithSameRuleNameInDiffPackage() {
+        String packageName = "pk1";
+        String packageName2 = "pk2";
+        String rule1Name = "rule1"; 
+        String rule2Name = rule1Name;
+                
+        String rule1 = "package " + packageName + ";" +
+                        "rule " + rule1Name + " \n" +
+                        "when \n" +
+                        " String( ) \n" +
+                        "then \n" +
+                        " System.out.println('test in rule1'); \n"+
+                        "end";
+        
+        String rule2 = "package " + packageName2 + ";" +
+                        "rule " + rule2Name + " \n" +
+                        "when \n" +
+                        " String( ) \n" +
+                        "then \n" +
+                        " System.out.println('test in rule2'); \n"+
+                        "end";
+         
+        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
+        session.getKieBase().removeKnowledgePackage(packageName);
+        session.getKieBase().removeKnowledgePackage(packageName2);
+        session.insert(new String());
+        session.fireAllRules();
+    }
+    
+    @Test
+    public void testSameEval() {
+        String rule1Name = "rule1";
+        String rule2Name = "rule2";
+        
+        String rule1 = "rule " + rule1Name + " \n " +
+                       "when \n" +
+                       " eval(true) \n" +
+                       "then \n" +
+                       "System.out.println('test rule 1'); \n"+
+                       "end";
+        
+        String rule2 = "rule " + rule2Name + " \n " +
+                       "when \n" +
+                       "  eval(true) \n" +
+                       "then \n" +
+                       "System.out.println('test rule 2'); \n"+
+                       "end";
+        
+        StatelessKnowledgeSession statelessSession = base.newStatelessKnowledgeSession();
+        
+        this.addRuleToEngine(rule1);
+        statelessSession.execute(new Object());
+        
+        this.addRuleToEngine(rule2);
+        statelessSession.execute(new Object());
+    }
+    
+    @Test
+    public void testFireAfterRemoveRule() {
+        String rule1Name = "rule1"; 
+        String rule2Name = "rule2";
+                
+        String rule1 =  "rule " + rule1Name + " \n" +
+                        "when \n" +
+                        " Map(  this['type'] == 'Goods'  )" +
+                        " and " + 
+                        " Map(  this['type'] == 'Cinema'  )" +
+                        "then \n" +
+                        " System.out.println('test in rule1'); \n"+
+                        "end";
+        
+        String rule2 =  "rule " + rule2Name + " \n" +
+                        "when \n" +
+                        " Map(  this['type'] == 'Goods'  )" +
+                        " and " + 
+                        " Map(  this['type'] == 'Cinema'  )" +
+                        "then \n" +
+                        " System.out.println('test in rule2'); \n"+
+                        "end";
+        
+        Map<String, Object> fact = new HashMap<String, Object>();
+        fact.put("type", "Cinema");
+        
+        StatelessKieSession session = base.newStatelessKieSession();
+        
+        this.addRuleToEngine(rule1);
+        session.execute(fact);
+        
+        this.addRuleToEngine(rule2);
+        session.execute(fact);
+        
+        this.deleteRule(rule1Name);
+        
+        session.execute(fact);
     }
 }
