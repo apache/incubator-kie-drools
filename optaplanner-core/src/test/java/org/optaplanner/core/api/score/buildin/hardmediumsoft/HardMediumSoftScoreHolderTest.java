@@ -37,26 +37,26 @@ public class HardMediumSoftScoreHolderTest extends AbstractScoreHolderTest {
     public void addConstraintMatch(boolean constraintMatchEnabled) {
         HardMediumSoftScoreHolder scoreHolder = new HardMediumSoftScoreHolder(constraintMatchEnabled);
 
-        scoreHolder.addHardConstraintMatch(createRuleContext("scoreRule1"), -1000); // Rule match added
+        scoreHolder.addHardConstraintMatch(mockRuleContext("scoreRule1"), -1000);
 
-        RuleContext ruleContext2 = createRuleContext("scoreRule2");
-        scoreHolder.addHardConstraintMatch(ruleContext2, -200); // Rule match added
-        callUnMatch(ruleContext2); // Rule match removed
+        RuleContext ruleContext2 = mockRuleContext("scoreRule2");
+        scoreHolder.addHardConstraintMatch(ruleContext2, -200);
+        callUnMatch(ruleContext2);
 
-        RuleContext ruleContext3 = createRuleContext("scoreRule3");
-        scoreHolder.addMediumConstraintMatch(ruleContext3, -30); // Rule match added
-        scoreHolder.addMediumConstraintMatch(ruleContext3, -3); // Rule match modified
-        scoreHolder.addHardConstraintMatch(ruleContext3, -300); // Rule of different level added
-        scoreHolder.addHardConstraintMatch(ruleContext3, -400); // Rule of different level modified
+        RuleContext ruleContext3 = mockRuleContext("scoreRule3");
+        scoreHolder.addMediumConstraintMatch(ruleContext3, -30);
+        scoreHolder.addMediumConstraintMatch(ruleContext3, -3); // Overwrite existing
+        scoreHolder.addHardConstraintMatch(ruleContext3, -300); // Different score level
+        scoreHolder.addHardConstraintMatch(ruleContext3, -400); // Overwrite existing
 
-        scoreHolder.addSoftConstraintMatch(createRuleContext("scoreRule4"), -4); // Rule match added
+        scoreHolder.addSoftConstraintMatch(mockRuleContext("scoreRule4"), -4);
 
-        RuleContext ruleContext5 = createRuleContext("scoreRule5");
+        RuleContext ruleContext5 = mockRuleContext("scoreRule5");
         scoreHolder.addHardConstraintMatch(ruleContext5, -1);
-        scoreHolder.addSoftConstraintMatch(ruleContext5, -1);
-        callUnMatch(ruleContext5, 2); // Rule match removed - 2nd score level (soft)
+        scoreHolder.addSoftConstraintMatch(ruleContext5, -1); // Different score level
+        callUnMatch(ruleContext5);
 
-        assertEquals(HardMediumSoftScore.valueOf(-1401, -3, -4), scoreHolder.extractScore());
+        assertEquals(HardMediumSoftScore.valueOf(-1400, -3, -4), scoreHolder.extractScore());
         if (constraintMatchEnabled) {
             assertEquals(7, scoreHolder.getConstraintMatchTotals().size());
         }

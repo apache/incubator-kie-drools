@@ -37,26 +37,32 @@ public class BendableScoreHolderTest extends AbstractScoreHolderTest {
     public void addConstraintMatch(boolean constraintMatchEnabled) {
         BendableScoreHolder scoreHolder = new BendableScoreHolder(constraintMatchEnabled, 1, 2);
 
-        scoreHolder.addHardConstraintMatch(createRuleContext("scoreRule1"), 0, -1000); // Rule match added
+        scoreHolder.addHardConstraintMatch(mockRuleContext("scoreRule1"), 0, -10000);
+        assertEquals(BendableScore.valueOf(new int[]{-10000}, new int[]{0, 0}), scoreHolder.extractScore());
 
-        RuleContext ruleContext2 = createRuleContext("scoreRule2");
-        scoreHolder.addHardConstraintMatch(ruleContext2, 0, -200); // Rule match added
-        callUnMatch(ruleContext2); // Rule match removed
+        RuleContext ruleContext2 = mockRuleContext("scoreRule2");
+        scoreHolder.addHardConstraintMatch(ruleContext2, 0, -2000);
+        assertEquals(BendableScore.valueOf(new int[]{-12000}, new int[]{0, 0}), scoreHolder.extractScore());
+        callUnMatch(ruleContext2);
+        assertEquals(BendableScore.valueOf(new int[]{-10000}, new int[]{0, 0}), scoreHolder.extractScore());
 
-        RuleContext ruleContext3 = createRuleContext("scoreRule3");
-        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, -30); // Rule match added
-        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, -3); // Rule match modified
-        scoreHolder.addHardConstraintMatch(ruleContext3, 0, -300); // Rule of different level added
-        scoreHolder.addHardConstraintMatch(ruleContext3, 0, -400); // Rule of different level modified
+        RuleContext ruleContext3 = mockRuleContext("scoreRule3");
+        scoreHolder.addHardConstraintMatch(ruleContext3, 0, -900);
+        scoreHolder.addHardConstraintMatch(ruleContext3, 0, -300); // Overwrite existing
+        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, -90); // Different score level
+        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, -40); // Overwrite existing
+        assertEquals(BendableScore.valueOf(new int[]{-10300}, new int[]{-40, 0}), scoreHolder.extractScore());
 
-        scoreHolder.addSoftConstraintMatch(createRuleContext("scoreRule4"), 1, -4); // Rule match added
+        scoreHolder.addSoftConstraintMatch(mockRuleContext("scoreRule4"), 1, -5);
+        assertEquals(BendableScore.valueOf(new int[]{-10300}, new int[]{-40, -5}), scoreHolder.extractScore());
 
-        RuleContext ruleContext5 = createRuleContext("scoreRule5");
-        scoreHolder.addHardConstraintMatch(ruleContext5, 0, -1);
-        scoreHolder.addSoftConstraintMatch(ruleContext5, 0, -1);
-        callUnMatch(ruleContext5, 1); // Rule match removed - 1st score level (soft)
+        RuleContext ruleContext5 = mockRuleContext("scoreRule5");
+        scoreHolder.addHardConstraintMatch(ruleContext5, 0, -2000);
+        scoreHolder.addSoftConstraintMatch(ruleContext5, 0, -2000); // Different score level
+        assertEquals(BendableScore.valueOf(new int[]{-12300}, new int[]{-2040, -5}), scoreHolder.extractScore());
+        callUnMatch(ruleContext5);
+        assertEquals(BendableScore.valueOf(new int[]{-10300}, new int[]{-40, -5}), scoreHolder.extractScore());
 
-        assertEquals(BendableScore.valueOf(new int[]{-1401}, new int[]{-3, -4}), scoreHolder.extractScore());
         if (constraintMatchEnabled) {
             assertEquals(7, scoreHolder.getConstraintMatchTotals().size());
         }

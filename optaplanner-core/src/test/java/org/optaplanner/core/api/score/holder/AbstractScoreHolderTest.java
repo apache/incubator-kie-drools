@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
 
 public abstract class AbstractScoreHolderTest {
 
-    protected RuleContext createRuleContext(String ruleName) {
+    protected RuleContext mockRuleContext(String ruleName) {
         RuleContext kcontext = mock(RuleContext.class);
         AgendaItem agendaItem = new AgendaItemImpl() {
             @Override
@@ -48,12 +48,6 @@ public abstract class AbstractScoreHolderTest {
     protected void callUnMatch(RuleContext ruleContext) {
         AgendaItem agendaItem = (AgendaItem) ruleContext.getMatch();
         agendaItem.getActivationUnMatchListener().unMatch(mock(RuleRuntime.class), agendaItem);
-    }
-
-    protected void callUnMatch(RuleContext ruleContext, int scoreLevel) {
-        AgendaItem agendaItem = (AgendaItem) ruleContext.getMatch();
-        AbstractScoreHolder.MultiLevelConstraintUndoListener multiLevelConstraintUndoListener = (AbstractScoreHolder.MultiLevelConstraintUndoListener) agendaItem.getActivationUnMatchListener();
-        multiLevelConstraintUndoListener.unMatch(scoreLevel);
     }
 
 }

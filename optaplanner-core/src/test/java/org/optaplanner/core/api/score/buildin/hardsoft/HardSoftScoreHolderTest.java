@@ -37,24 +37,24 @@ public class HardSoftScoreHolderTest extends AbstractScoreHolderTest {
     public void addConstraintMatch(boolean constraintMatchEnabled) {
         HardSoftScoreHolder scoreHolder = new HardSoftScoreHolder(constraintMatchEnabled);
 
-        scoreHolder.addHardConstraintMatch(createRuleContext("scoreRule1"), -1000); // Rule match added
+        scoreHolder.addHardConstraintMatch(mockRuleContext("scoreRule1"), -1000);
 
-        RuleContext ruleContext2 = createRuleContext("scoreRule2");
-        scoreHolder.addHardConstraintMatch(ruleContext2, -200); // Rule match added
-        callUnMatch(ruleContext2); // Rule match removed
+        RuleContext ruleContext2 = mockRuleContext("scoreRule2");
+        scoreHolder.addHardConstraintMatch(ruleContext2, -200);
+        callUnMatch(ruleContext2);
 
-        RuleContext ruleContext3 = createRuleContext("scoreRule3");
-        scoreHolder.addSoftConstraintMatch(ruleContext3, -30); // Rule match added
-        scoreHolder.addSoftConstraintMatch(ruleContext3, -3); // Rule match modified
-        scoreHolder.addHardConstraintMatch(ruleContext3, -300); // Rule of different level added
-        scoreHolder.addHardConstraintMatch(ruleContext3, -400); // Rule of different level modified
+        RuleContext ruleContext3 = mockRuleContext("scoreRule3");
+        scoreHolder.addSoftConstraintMatch(ruleContext3, -30);
+        scoreHolder.addSoftConstraintMatch(ruleContext3, -3); // Overwrite existing
+        scoreHolder.addHardConstraintMatch(ruleContext3, -300); // Different score level
+        scoreHolder.addHardConstraintMatch(ruleContext3, -400); // Overwrite existing
 
-        RuleContext ruleContext4 = createRuleContext("scoreRule4");
+        RuleContext ruleContext4 = mockRuleContext("scoreRule4");
         scoreHolder.addHardConstraintMatch(ruleContext4, -1);
         scoreHolder.addSoftConstraintMatch(ruleContext4, -1);
-        callUnMatch(ruleContext4, 1); // Rule match removed - 1st score level (soft)
+        callUnMatch(ruleContext4);
 
-        assertEquals(HardSoftScore.valueOf(-1401, -3), scoreHolder.extractScore());
+        assertEquals(HardSoftScore.valueOf(-1400, -3), scoreHolder.extractScore());
         if (constraintMatchEnabled) {
             assertEquals(6, scoreHolder.getConstraintMatchTotals().size());
         }

@@ -18,8 +18,6 @@ package org.optaplanner.core.api.score.buildin.bendablelong;
 
 import org.junit.Test;
 import org.kie.api.runtime.rule.RuleContext;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
 import org.optaplanner.core.api.score.holder.AbstractScoreHolderTest;
 
 import static org.junit.Assert.assertEquals;
@@ -39,26 +37,26 @@ public class BendableLongScoreHolderTest extends AbstractScoreHolderTest {
     public void addConstraintMatch(boolean constraintMatchEnabled) {
         BendableLongScoreHolder scoreHolder = new BendableLongScoreHolder(constraintMatchEnabled, 1, 2);
 
-        scoreHolder.addHardConstraintMatch(createRuleContext("scoreRule1"), 0, 1000000000001L); // Rule match added
+        scoreHolder.addHardConstraintMatch(mockRuleContext("scoreRule1"), 0, 1000000000001L);
 
-        RuleContext ruleContext2 = createRuleContext("scoreRule2");
-        scoreHolder.addHardConstraintMatch(ruleContext2, 0, 1000000000020L); // Rule match added
-        callUnMatch(ruleContext2); // Rule match removed
+        RuleContext ruleContext2 = mockRuleContext("scoreRule2");
+        scoreHolder.addHardConstraintMatch(ruleContext2, 0, 1000000000020L);
+        callUnMatch(ruleContext2);
 
-        RuleContext ruleContext3 = createRuleContext("scoreRule3");
-        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, 1000000000300L); // Rule match added
-        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, 1000000040000L); // Rule match modified
-        scoreHolder.addHardConstraintMatch(ruleContext3, 0, 1000000000300L); // Rule of different level added
-        scoreHolder.addHardConstraintMatch(ruleContext3, 0, 1000000000400L); // Rule of different level modified
+        RuleContext ruleContext3 = mockRuleContext("scoreRule3");
+        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, 1000000000300L);
+        scoreHolder.addSoftConstraintMatch(ruleContext3, 0, 1000000040000L); // Overwrite existing
+        scoreHolder.addHardConstraintMatch(ruleContext3, 0, 1000000000300L); // Different score level
+        scoreHolder.addHardConstraintMatch(ruleContext3, 0, 1000000000400L); // Overwrite existing
 
-        scoreHolder.addSoftConstraintMatch(createRuleContext("scoreRule4"), 1, -1000000500000L); // Rule match added
+        scoreHolder.addSoftConstraintMatch(mockRuleContext("scoreRule4"), 1, -1000000500000L);
 
-        RuleContext ruleContext5 = createRuleContext("scoreRule5");
+        RuleContext ruleContext5 = mockRuleContext("scoreRule5");
         scoreHolder.addHardConstraintMatch(ruleContext5, 0, 1000000000001L);
-        scoreHolder.addSoftConstraintMatch(ruleContext5, 0, 1000000000001L);
-        callUnMatch(ruleContext5, 1); // Rule match removed - 1st score level (soft)
+        scoreHolder.addSoftConstraintMatch(ruleContext5, 0, 1000000000001L); // Different score level
+        callUnMatch(ruleContext5);
 
-        assertEquals(BendableLongScore.valueOf(new long[]{3000000000402L},
+        assertEquals(BendableLongScore.valueOf(new long[]{2000000000401L},
                 new long[]{1000000040000L, -1000000500000L}), scoreHolder.extractScore());
         if (constraintMatchEnabled) {
             assertEquals(7, scoreHolder.getConstraintMatchTotals().size());

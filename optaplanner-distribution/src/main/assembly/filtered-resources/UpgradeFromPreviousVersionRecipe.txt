@@ -2622,3 +2622,26 @@ After in *.java:
 [IMPL_DETAIL] ChainedSwapMove's constructor now requires a List instead of Collection of VariableDescriptors.
 
 [IMPL_DETAIL] The method InnerScoreDirector.getTrailingEntity() has been removed. Use SingletonInverseVariableSupply instead.
+
+[MINOR] One score rule can now change 2 score levels in its RHS
+Before in *.drl:
+    rule "Costly and unfair: part 1"
+    when
+        // Complex pattern
+    then
+        scoreHolder.addMediumConstraintMatch(kcontext, -1); // Financial cost
+    end
+    rule "Costly and unfair: part 2"
+    when
+        // Complex pattern (duplication)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, -1); // Employee happiness cost
+    end
+Before in *.drl:
+    rule "Costly and unfair"
+    when
+        // Complex pattern
+    then
+        scoreHolder.addMediumConstraintMatch(kcontext, -1); // Financial cost
+        scoreHolder.addSoftConstraintMatch(kcontext, -1); // Employee happiness cost
+    end
