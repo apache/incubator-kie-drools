@@ -59,25 +59,8 @@ import org.drools.core.util.ObjectHashMap.ObjectEntry;
 
 public class SegmentUtilities {
 
-    //    public static RightInputAdapterNode getOuterMostRiaNode(RightInputAdapterNode riaNode, LeftTupleSource startLTs) {
-    //        if ( riaNode.getStartTupleSource() != startLTs ) {
-    //            // This is a nested subnetwork, so we know there must be atleast one outer subnetwork
-    //            LeftTupleSource lts = riaNode.getLeftTupleSource();
-    //            while ( true ) {
-    //                if ( NodeTypeEnums.isBetaNode(lts) && (( BetaNode )lts).isRightInputIsRiaNode() ) {
-    //                    return getOuterMostRiaNode( ( RightInputAdapterNode ) ((BetaNode)lts).getRightInput(), startLTs );
-    //                }
-    //                lts = lts.getLeftTupleSource();
-    //            }
-    //        } else {
-    //            return riaNode;
-    //        }
-    //    }
-
     /**
      * Initialises the NodeSegment memory for all nodes in the segment.
-     *
-     * @param wm
      */
     public static SegmentMemory createSegmentMemory(LeftTupleSource tupleSource,
                                                     final InternalWorkingMemory wm) {
@@ -114,7 +97,7 @@ public class SegmentUtilities {
             while (true) {
                 nodeTypesInSegment = updateNodeTypesMask(tupleSource, nodeTypesInSegment);
                 if (NodeTypeEnums.isBetaNode(tupleSource)) {
-                    allLinkedTestMask = processBetaNode(tupleSource, wm, smem, nodePosMask, allLinkedTestMask, updateNodeBit);
+                    allLinkedTestMask = processBetaNode((BetaNode)tupleSource, wm, smem, nodePosMask, allLinkedTestMask, updateNodeBit);
                 } else {
                     switch (tupleSource.getType()) {
                         case NodeTypeEnums.LeftInputAdapterNode:
@@ -268,15 +251,11 @@ public class SegmentUtilities {
         return allLinkedTestMask;
     }
 
-    private static long processBetaNode(LeftTupleSource tupleSource, InternalWorkingMemory wm, SegmentMemory smem, long nodePosMask, long allLinkedTestMask, boolean updateNodeBit) {
-        BetaMemory bm;
-        BetaNode betaNode = (BetaNode) tupleSource;
-        if (NodeTypeEnums.AccumulateNode == tupleSource.getType()) {
-            bm = ((AccumulateMemory) smem.createNodeMemory((AccumulateNode) tupleSource, wm)).getBetaMemory();
-        } else {
-            bm = (BetaMemory) smem.createNodeMemory(betaNode, wm);
+    private static long processBetaNode(BetaNode betaNode, InternalWorkingMemory wm, SegmentMemory smem, long nodePosMask, long allLinkedTestMask, boolean updateNodeBit) {
+        BetaMemory bm = NodeTypeEnums.AccumulateNode == betaNode.getType() ?
+                        ((AccumulateMemory) smem.createNodeMemory((AccumulateNode) betaNode, wm)).getBetaMemory() :
+                        (BetaMemory) smem.createNodeMemory(betaNode, wm);
 
-        }
         // this must be set first, to avoid recursion as sub networks can be initialised multiple ways
         // and bm.getSegmentMemory == null check can be used to avoid recursion.
         bm.setSegmentMemory(smem);
@@ -310,7 +289,7 @@ public class SegmentUtilities {
 
         }
         bm.setNodePosMaskBit(nodePosMask);
-        if (NodeTypeEnums.NotNode == tupleSource.getType()) {
+        if (NodeTypeEnums.NotNode == betaNode.getType()) {
             // not nodes start up linked in
             smem.linkNodeWithoutRuleNotify(bm.getNodePosMaskBit());
         }
@@ -368,10 +347,6 @@ public class SegmentUtilities {
      * Is the LeftTupleSource a node in the sub network for the RightInputAdapterNode
      * To be in the same network, it must be a node is after the two output of the parent
      * and before the rianode.
-     *
-     * @param riaNode
-     * @param leftTupleSource
-     * @return
      */
     public static boolean inSubNetwork(RightInputAdapterNode riaNode, LeftTupleSource leftTupleSource) {
         LeftTupleSource startTupleSource = riaNode.getStartTupleSource();
@@ -394,11 +369,6 @@ public class SegmentUtilities {
      * In the case of the ria node its all the segments up to the start of the subnetwork.
      * This is because the rianode only cares if all of it's segments are linked, then
      * it sets the bit of node it is the right input for.
-     *
-     * @param lt
-     * @param originalLt
-     * @param smem
-     * @param wm
      */
     private static int updateRiaAndTerminalMemory( LeftTupleSource lt,
                                                     LeftTupleSource originalLt,
