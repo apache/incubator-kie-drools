@@ -75,7 +75,7 @@ public class Person implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("%s[id='%s', name='%s']", getClass().getName(), id, name);
+        return "Person [id=" + id + ", name=" + name + ", age=" + age + "]";
     }
 
     @Override

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -35,6 +34,10 @@
       <artifactId>assertj-core</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jbpm</groupId>
       <artifactId>jbpm-executor</artifactId>
     </dependency>
@@ -55,6 +58,14 @@
       <artifactId>jbpm-test</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-flow</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-case-mgmt</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
@@ -72,14 +83,15 @@
     <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
     <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
     <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
-    <maven.jdbc.db.name/>
-    <maven.jdbc.db.port/>
-    <maven.jdbc.db.server/>
+    <maven.jdbc.db.name />
+    <maven.jdbc.db.port />
+    <maven.jdbc.db.server />
     <maven.jdbc.url>jdbc:h2:mem:test;MVCC=true</maven.jdbc.url>
 
-    <!-- Don't run the tests by default as they take considerable amount of time to complete.
-         The tests can be re-enabled by activation of profile "integration-tests" (see below).
-         (e.g. used -Pintegration-tests or -Dintegration-tests when executing the maven build) -->
+    <!-- Don't run the tests by default as they take considerable amount 
+      of time to complete. The tests can be re-enabled by activation of profile 
+      "integration-tests" (see below). (e.g. used -Pintegration-tests or -Dintegration-tests 
+      when executing the maven build) -->
     <skipTests>true</skipTests>
   </properties>
 
@@ -109,7 +121,7 @@
 
     <plugins>
       <plugin>
-        <!--  ensure that db/tx log files are deleted before runs -->
+        <!-- ensure that db/tx log files are deleted before runs -->
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
           <filesets>

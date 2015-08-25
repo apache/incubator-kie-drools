@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definition" targetNamespace="http://www.example.org/MinimalExample"
+  typeLanguage="http://www.java.com/javaTypes" expressionLanguage="http://www.mvel.org/2.0"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+  xmlns:g="http://www.jboss.org/drools/flow/gpd" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:tns="http://www.jboss.org/drools" xmlns:color="http://www.omg.org/spec/BPMN/non-normative/color">
+
+  <itemDefinition id="_sItem" structureRef="String" />
+
+  <process processType="Private" isExecutable="true" id="EmptyCase"
+    name="New Case" tns:adHoc="true">
+
+    <extensionElements>
+      <tns:metaData name="customDescription">
+        <tns:metaValue>#{name}</tns:metaValue>
+      </tns:metaData>
+      <tns:metaData name="customCaseRoles">
+        <tns:metaValue>
+          customRole
+        </tns:metaValue>
+      </tns:metaData>
+      <tns:metaData name="customDescription">
+        <tns:metaValue>
+          #{name}
+        </tns:metaValue>
+      </tns:metaData>
+    </extensionElements>
+    <!-- process variables -->
+    <property id="name" itemSubjectRef="_sItem" />
+
+    <!-- nodes -->
+    <startEvent id="_1" name="StartProcess" isInterrupting="true">
+    </startEvent>
+    <task id="_2" name="Terminate" tns:taskName="Milestone">
+      <ioSpecification>
+        <inputSet>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+    </task>
+    <userTask id="_4" name="Optional Human Task">
+      <ioSpecification>
+        <dataInput
+          id="_B66E2E64-5B32-4D60-9DBB-08ABC587F776_SkippableInput"
+          name="Skippable" />
+        <dataInput id="_B66E2E64-5B32-4D60-9DBB-08ABC587F776_TaskNameInput"
+          name="TaskName" />
+        <dataInput id="_B66E2E64-5B32-4D60-9DBB-08ABC587F776_GroupIdInput"
+          name="GroupId" />
+        <dataInput id="_B66E2E64-5B32-4D60-9DBB-08ABC587F776_NodeNameInput"
+          name="NodeName" />
+        <inputSet>
+          <dataInputRefs>_B66E2E64-5B32-4D60-9DBB-08ABC587F776_SkippableInput
+          </dataInputRefs>
+          <dataInputRefs>_B66E2E64-5B32-4D60-9DBB-08ABC587F776_TaskNameInput
+          </dataInputRefs>
+          <dataInputRefs>_B66E2E64-5B32-4D60-9DBB-08ABC587F776_GroupIdInput
+          </dataInputRefs>
+          <dataInputRefs>_B66E2E64-5B32-4D60-9DBB-08ABC587F776_NodeNameInput
+          </dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_B66E2E64-5B32-4D60-9DBB-08ABC587F776_SkippableInput
+        </targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">true</from>
+          <to xsi:type="tFormalExpression">_B66E2E64-5B32-4D60-9DBB-08ABC587F776_SkippableInput
+          </to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_B66E2E64-5B32-4D60-9DBB-08ABC587F776_TaskNameInput
+        </targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Optional Human Task</from>
+          <to xsi:type="tFormalExpression">_B66E2E64-5B32-4D60-9DBB-08ABC587F776_TaskNameInput
+          </to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_B66E2E64-5B32-4D60-9DBB-08ABC587F776_GroupIdInput
+        </targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">customRole</from>
+          <to xsi:type="tFormalExpression">_B66E2E64-5B32-4D60-9DBB-08ABC587F776_GroupIdInput
+          </to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_B66E2E64-5B32-4D60-9DBB-08ABC587F776_NodeNameInput
+        </targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Optional Human Task</from>
+          <to xsi:type="tFormalExpression">_B66E2E64-5B32-4D60-9DBB-08ABC587F776_NodeNameInput
+          </to>
+        </assignment>
+      </dataInputAssociation>
+    </userTask>
+    <endEvent id="_3" name="EndProcess">
+      <terminateEventDefinition />
+    </endEvent>
+    <endEvent id="_jbpm-unique-0" name="End" />
+
+    <!-- connections -->
+    <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
+    <sequenceFlow id="_1-_jbpm-unique-0" sourceRef="_1"
+      targetRef="_jbpm-unique-0" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="EmptyCase">
+      <bpmndi:BPMNShape bpmnElement="_1">
+        <dc:Bounds x="131" y="203" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_2">
+        <dc:Bounds x="414" y="206" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_3">
+        <dc:Bounds x="591" y="209" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_jbpm-unique-0">
+        <dc:Bounds x="221" y="204" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_jbpm-unique-2">
+        <dc:Bounds x="482" y="338" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_2-_3">
+        <di:waypoint x="464" y="230" />
+        <di:waypoint x="615" y="233" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_1-_jbpm-unique-0">
+        <di:waypoint x="155" y="227" />
+        <di:waypoint x="245" y="228" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+
+</definitions>
