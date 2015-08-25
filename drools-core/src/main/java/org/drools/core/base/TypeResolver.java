@@ -30,6 +30,8 @@ public interface TypeResolver {
 
     Class<?> resolveType(String className, ClassFilter classFilter) throws ClassNotFoundException;
 
+    void registerClass( String className, Class<?> clazz );
+
     /**
      * This will return the fully qualified type name (including the namespace).
      * Eg, if it was a pojo org.drools.core.test.model.Cheese, then if you passed in "Cheese" you should get back
