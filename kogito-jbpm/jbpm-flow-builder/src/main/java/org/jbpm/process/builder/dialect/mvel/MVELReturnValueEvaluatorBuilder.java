@@ -15,10 +15,6 @@
 
 package org.jbpm.process.builder.dialect.mvel;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.ReturnValueDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
@@ -31,6 +27,10 @@ import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.impl.MVELReturnValueEvaluator;
 import org.jbpm.process.instance.impl.ReturnValueConstraintEvaluator;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class MVELReturnValueEvaluatorBuilder extends AbstractMVELBuilder 
     implements
@@ -112,7 +112,9 @@ public class MVELReturnValueEvaluatorBuilder extends AbstractMVELBuilder
                                                                    variables,
                                                                    context,
                                                                    "context",
-                                                                   org.kie.api.runtime.process.ProcessContext.class);
+                                                                   org.kie.api.runtime.process.ProcessContext.class,
+                                                                   false,
+                                                                   MVELCompilationUnit.Scope.EXPRESSION);
         // MVELReturnValueExpression expr = new MVELReturnValueExpression( unit, context.getDialect().getId() );
 
         MVELReturnValueEvaluator expr = new MVELReturnValueEvaluator( unit,

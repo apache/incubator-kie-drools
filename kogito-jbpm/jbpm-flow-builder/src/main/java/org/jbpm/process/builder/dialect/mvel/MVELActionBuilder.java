@@ -15,10 +15,6 @@
 
 package org.jbpm.process.builder.dialect.mvel;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
@@ -33,6 +29,10 @@ import org.jbpm.process.instance.impl.MVELAction;
 import org.jbpm.workflow.core.DroolsAction;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class MVELActionBuilder extends AbstractMVELBuilder implements ActionBuilder {
 
@@ -154,7 +154,9 @@ public class MVELActionBuilder extends AbstractMVELBuilder implements ActionBuil
                                                                    variables,
                                                                    context,
                                                                    "context",
-                                                                   org.kie.api.runtime.process.ProcessContext.class);
+                                                                   org.kie.api.runtime.process.ProcessContext.class,
+                                                                   false,
+                                                                   MVELCompilationUnit.Scope.EXPRESSION);
         MVELAction expr = new MVELAction( unit, context.getDialect().getId() );
         action.setMetaData("Action",  expr );
 

@@ -15,14 +15,13 @@
 
 package org.jbpm.process.builder.dialect.mvel;
 
-import java.util.Map;
-
 import org.drools.compiler.compiler.BoundIdentifiers;
-import org.drools.compiler.lang.descr.ActionDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
+
+import java.util.Map;
 
 public class AbstractMVELBuilder {
 
@@ -96,13 +95,11 @@ public class AbstractMVELBuilder {
             BoundIdentifiers boundIdentifiers 
                 = new BoundIdentifiers(variables, context.getKnowledgeBuilder().getGlobals());
             analysis = ( MVELAnalysisResult ) dialect.analyzeBlock( context,
-                                                                    descr,
-                                                                    dialect.getInterceptors(),
                                                                     text,
                                                                     boundIdentifiers,
                                                                     null,
                                                                     "context",
-                                                                    org.kie.api.runtime.process.ProcessContext.class ); 
+                                                                    org.kie.api.runtime.process.ProcessContext.class );
         } finally { 
             context.setTypesafe( typeSafe );
         }
