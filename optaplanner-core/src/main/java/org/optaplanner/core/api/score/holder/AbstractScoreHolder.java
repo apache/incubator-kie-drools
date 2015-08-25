@@ -79,20 +79,19 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         putConstraintUndoListener(kcontext, scoreLevel, constraintUndoListener);
     }
 
-    protected abstract class IntConstraintUndoListener implements ActivationUnMatchListener {
+    protected abstract class IntConstraintUndoListener implements ConstraintUndoListener {
 
         private IntConstraintMatchTotal constraintMatchTotal;
         private IntConstraintMatch constraintMatch;
 
-        public final void unMatch(RuleRuntime wm, Match activation) {
+        @Override
+        public final void unMatch() {
             undo();
             if (constraintMatchEnabled) {
                 // Not needed in fast code: Remove ConstraintMatch
                 constraintMatchTotal.removeConstraintMatch(constraintMatch);
             }
         }
-
-        public abstract void undo();
 
     }
 
@@ -120,20 +119,19 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         putConstraintUndoListener(kcontext, scoreLevel, constraintUndoListener);
     }
 
-    protected abstract class LongConstraintUndoListener implements ActivationUnMatchListener {
+    protected abstract class LongConstraintUndoListener implements ConstraintUndoListener {
 
         private LongConstraintMatchTotal constraintMatchTotal;
         private LongConstraintMatch constraintMatch;
 
-        public final void unMatch(RuleRuntime wm, Match activation) {
+        @Override
+        public final void unMatch() {
             undo();
             if (constraintMatchEnabled) {
                 // Not needed in fast code: Remove ConstraintMatch
                 constraintMatchTotal.removeConstraintMatch(constraintMatch);
             }
         }
-
-        public abstract void undo();
 
     }
 
@@ -161,20 +159,19 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         putConstraintUndoListener(kcontext, scoreLevel, constraintUndoListener);
     }
 
-    protected abstract class DoubleConstraintUndoListener implements ActivationUnMatchListener {
+    protected abstract class DoubleConstraintUndoListener implements ConstraintUndoListener {
 
         private DoubleConstraintMatchTotal constraintMatchTotal;
         private DoubleConstraintMatch constraintMatch;
 
-        public final void unMatch(RuleRuntime wm, Match activation) {
+        @Override
+        public final void unMatch() {
             undo();
             if (constraintMatchEnabled) {
                 // Not needed in fast code: Remove ConstraintMatch
                 constraintMatchTotal.removeConstraintMatch(constraintMatch);
             }
         }
-
-        public abstract void undo();
 
     }
 
@@ -202,20 +199,19 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         putConstraintUndoListener(kcontext, scoreLevel, constraintUndoListener);
     }
 
-    protected abstract class BigDecimalConstraintUndoListener implements ActivationUnMatchListener {
+    protected abstract class BigDecimalConstraintUndoListener implements ConstraintUndoListener {
 
         private BigDecimalConstraintMatchTotal constraintMatchTotal;
         private BigDecimalConstraintMatch constraintMatch;
 
-        public final void unMatch(RuleRuntime wm, Match activation) {
+        @Override
+        public final void unMatch() {
             undo();
             if (constraintMatchEnabled) {
                 // Not needed in fast code: Remove ConstraintMatch
                 constraintMatchTotal.removeConstraintMatch(constraintMatch);
             }
         }
-
-        public abstract void undo();
 
     }
 
@@ -232,43 +228,58 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         return matchTotal;
     }
 
-    private void putConstraintUndoListener(RuleContext kcontext, int scoreLevel, ActivationUnMatchListener constraintUndoListener) {
+    private void putConstraintUndoListener(RuleContext kcontext, int scoreLevel, ConstraintUndoListener constraintUndoListener) {
         AgendaItem agendaItem = (AgendaItem) kcontext.getMatch();
         ActivationUnMatchListener activationUnMatchListener = agendaItem.getActivationUnMatchListener();
         if (activationUnMatchListener != null) {
-            MultiLevelConstraintUndoListener multiLevelConstraintUndoListener = (MultiLevelConstraintUndoListener) activationUnMatchListener;
-            multiLevelConstraintUndoListener.overwriteMatch(scoreLevel, constraintUndoListener);
+            MultiLevelActivationUnMatchListener multiLevelActivationUnMatchListener = (MultiLevelActivationUnMatchListener) activationUnMatchListener;
+            multiLevelActivationUnMatchListener.overwriteMatch(scoreLevel, constraintUndoListener);
         } else {
-            MultiLevelConstraintUndoListener multiLevelConstraintUndoListener = new MultiLevelConstraintUndoListener(scoreLevel, constraintUndoListener);
-            agendaItem.setActivationUnMatchListener(multiLevelConstraintUndoListener);
+            MultiLevelActivationUnMatchListener multiLevelActivationUnMatchListener = new MultiLevelActivationUnMatchListener(scoreLevel, constraintUndoListener);
+            agendaItem.setActivationUnMatchListener(multiLevelActivationUnMatchListener);
         }
     }
 
-    private static class MultiLevelConstraintUndoListener implements ActivationUnMatchListener {
+    protected interface ConstraintUndoListener {
 
-        private Map<Integer, ActivationUnMatchListener> scoreLevelToConstraintUndoListenerMap;
+        /**
+         * Calls {@link #undo()}
+         * and if constraint matches are enabled, also removes them from {@link ConstraintMatchTotal}.
+         */
+        void unMatch();
 
-        public MultiLevelConstraintUndoListener(int scoreLevel, ActivationUnMatchListener constraintUndoListener) {
+        /**
+         * Undo the adding of a score weight for a specific score level.
+         */
+        void undo();
+
+    }
+
+    private static class MultiLevelActivationUnMatchListener implements ActivationUnMatchListener {
+
+        private final Map<Integer, ConstraintUndoListener> scoreLevelToConstraintUndoListenerMap;
+
+        public MultiLevelActivationUnMatchListener(int scoreLevel, ConstraintUndoListener constraintUndoListener) {
             // Most use cases use only 1 scoreLevel per score rule and there are likely many instances of this class,
             // so the initialCapacity is very memory conservative
-            scoreLevelToConstraintUndoListenerMap = new HashMap<Integer, ActivationUnMatchListener>(2);
+            scoreLevelToConstraintUndoListenerMap = new HashMap<Integer, ConstraintUndoListener>(2);
             scoreLevelToConstraintUndoListenerMap.put(scoreLevel, constraintUndoListener);
         }
 
         @Override
         public final void unMatch(RuleRuntime ruleRuntime, Match match) {
-            for (ActivationUnMatchListener constraintUndoListener : scoreLevelToConstraintUndoListenerMap.values()) {
+            for (ConstraintUndoListener constraintUndoListener : scoreLevelToConstraintUndoListenerMap.values()) {
                 // Both parameters can be null because they are not used by our constraintUndoListeners anyway
-                constraintUndoListener.unMatch(null, null);
+                constraintUndoListener.unMatch();
             }
             scoreLevelToConstraintUndoListenerMap.clear();
         }
 
-        public void overwriteMatch(int scoreLevel, ActivationUnMatchListener constraintUndoListener) {
-            ActivationUnMatchListener oldConstraintUndoListener = scoreLevelToConstraintUndoListenerMap.put(scoreLevel, constraintUndoListener);
+        public void overwriteMatch(int scoreLevel, ConstraintUndoListener constraintUndoListener) {
+            ConstraintUndoListener oldConstraintUndoListener = scoreLevelToConstraintUndoListenerMap.put(scoreLevel, constraintUndoListener);
             if (oldConstraintUndoListener != null) {
                 // Both parameters can be null because they are not used by our constraintUndoListeners anyway
-                oldConstraintUndoListener.unMatch(null, null);
+                oldConstraintUndoListener.unMatch();
             }
         }
 
