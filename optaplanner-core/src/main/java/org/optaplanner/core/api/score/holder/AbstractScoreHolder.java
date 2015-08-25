@@ -257,12 +257,14 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
     private static class MultiLevelActivationUnMatchListener implements ActivationUnMatchListener {
 
-        private final Map<Integer, ConstraintUndoListener> scoreLevelToConstraintUndoListenerMap;
+        private static final int INITIAL_MAP_CAPACITY = 2;
+
+        private Map<Integer, ConstraintUndoListener> scoreLevelToConstraintUndoListenerMap;
 
         public MultiLevelActivationUnMatchListener(int scoreLevel, ConstraintUndoListener constraintUndoListener) {
             // Most use cases use only 1 scoreLevel per score rule and there are likely many instances of this class,
             // so the initialCapacity is very memory conservative
-            scoreLevelToConstraintUndoListenerMap = new HashMap<Integer, ConstraintUndoListener>(2);
+            scoreLevelToConstraintUndoListenerMap = new HashMap<Integer, ConstraintUndoListener>(INITIAL_MAP_CAPACITY);
             scoreLevelToConstraintUndoListenerMap.put(scoreLevel, constraintUndoListener);
         }
 
@@ -271,7 +273,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             for (ConstraintUndoListener constraintUndoListener : scoreLevelToConstraintUndoListenerMap.values()) {
                 constraintUndoListener.unMatch();
             }
-            scoreLevelToConstraintUndoListenerMap.clear();
+            scoreLevelToConstraintUndoListenerMap = new HashMap<Integer, ConstraintUndoListener>(INITIAL_MAP_CAPACITY);
         }
 
         public void overwriteMatch(int scoreLevel, ConstraintUndoListener constraintUndoListener) {
