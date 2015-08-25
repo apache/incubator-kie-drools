@@ -269,7 +269,6 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         @Override
         public final void unMatch(RuleRuntime ruleRuntime, Match match) {
             for (ConstraintUndoListener constraintUndoListener : scoreLevelToConstraintUndoListenerMap.values()) {
-                // Both parameters can be null because they are not used by our constraintUndoListeners anyway
                 constraintUndoListener.unMatch();
             }
             scoreLevelToConstraintUndoListenerMap.clear();
@@ -278,7 +277,6 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
         public void overwriteMatch(int scoreLevel, ConstraintUndoListener constraintUndoListener) {
             ConstraintUndoListener oldConstraintUndoListener = scoreLevelToConstraintUndoListenerMap.put(scoreLevel, constraintUndoListener);
             if (oldConstraintUndoListener != null) {
-                // Both parameters can be null because they are not used by our constraintUndoListeners anyway
                 oldConstraintUndoListener.unMatch();
             }
         }

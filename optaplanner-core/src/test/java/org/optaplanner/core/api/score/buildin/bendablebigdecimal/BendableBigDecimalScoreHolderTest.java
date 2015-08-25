@@ -39,7 +39,6 @@ public class BendableBigDecimalScoreHolderTest extends AbstractScoreHolderTest {
     public void addConstraintMatch(boolean constraintMatchEnabled) {
         BendableBigDecimalScoreHolder scoreHolder = new BendableBigDecimalScoreHolder(constraintMatchEnabled, 1, 2);
 
-
         scoreHolder.addHardConstraintMatch(mockRuleContext("scoreRule1"), 0, BigDecimal.valueOf(-10000));
 
         RuleContext ruleContext2 = mockRuleContext("scoreRule2");
