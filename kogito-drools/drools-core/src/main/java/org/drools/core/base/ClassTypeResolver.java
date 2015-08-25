@@ -114,8 +114,16 @@ public class ClassTypeResolver
         this.implicitImports.add(importEntry);
     }
 
-    public Class<?> lookupFromCache( final String className ) {
-        return this.cachedImports.get( className );
+    private Class<?> lookupFromCache( final String className ) throws ClassNotFoundException {
+        Class<?> clazz = this.cachedImports.get( className );
+        if (clazz == Void.class) {
+            throw new ClassNotFoundException( "Unable to find class '" + className + "'" );
+        }
+        return clazz;
+    }
+
+    public void registerClass( String className, Class<?> clazz ) {
+        this.cachedImports.put( className, clazz );
     }
 
     public Class<?> resolveType(String className) throws ClassNotFoundException {
@@ -132,18 +140,17 @@ public class ClassTypeResolver
      * @see org.kie.semantics.java.TypeResolver#resolveType(java.lang.String)
      */
     public Class< ? > resolveType( String className, ClassFilter classFilter ) throws ClassNotFoundException {
-        Class< ? > clazz = null;
-        boolean isArray = false;
-        boolean isPrimitive = false;
-        final StringBuilder arrayClassName = new StringBuilder();
-
-        clazz = lookupFromCache( className );
+        Class< ? > clazz = lookupFromCache( className );
 
         if (clazz != null && !classFilter.accept(clazz)) {
             clazz = null;
         }
 
+        boolean isArray = false;
+        StringBuilder arrayClassName = null;
+
         if ( clazz == null && className.indexOf( '[' ) > 0 ) {
+            arrayClassName = new StringBuilder();
             // is an array?
             isArray = true;
             int bracketIndex = className.indexOf( '[' );
@@ -156,6 +163,8 @@ public class ClassTypeResolver
             }
             className = componentName;
         }
+
+        boolean isPrimitive = false;
 
         //is the class a primitive type ?
         if ( clazz == null && internalNamesMap.containsKey( className ) ) {
@@ -228,6 +237,7 @@ public class ClassTypeResolver
 
         // We still can't find the class so throw an exception
         if ( clazz == null ) {
+            this.cachedImports.put( className, Void.class );
             throw new ClassNotFoundException( "Unable to find class '" + className + "'" );
         }
 
@@ -260,12 +270,11 @@ public class ClassTypeResolver
         // the ambiguity
         if ( validClazzCandidates.size() > 1 ) {
             final StringBuilder sb = new StringBuilder();
-            final Iterator<Class<?>> clazzCandIter = validClazzCandidates.iterator();
-            while ( clazzCandIter.hasNext() ) {
+            for ( Class<?> validClazzCandidate : validClazzCandidates ) {
                 if ( 0 != sb.length() ) {
                     sb.append( ", " );
                 }
-                sb.append( clazzCandIter.next().getName() );
+                sb.append( validClazzCandidate.getName() );
             }
             throw new Error( "Unable to find ambiguously defined class '" + className + "', candidates are: [" + sb.toString() + "]" );
         }

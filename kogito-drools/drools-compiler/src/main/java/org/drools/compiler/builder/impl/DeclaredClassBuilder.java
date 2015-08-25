@@ -49,7 +49,7 @@ public class DeclaredClassBuilder {
                 switch ( type.getKind() ) {
                     case TRAIT:
                         try {
-                            buildClass( def, fullName, dialect, this.kbuilder.getBuilderConfiguration().getClassBuilderFactory().getTraitBuilder() );
+                            buildClass( def, fullName, dialect, this.kbuilder.getBuilderConfiguration().getClassBuilderFactory().getTraitBuilder(), pkgRegistry );
                         } catch ( Exception e ) {
                             e.printStackTrace();
                             this.kbuilder.addBuilderResult( new TypeDeclarationError( typeDescr,
@@ -59,7 +59,7 @@ public class DeclaredClassBuilder {
                         break;
                     case ENUM:
                         try {
-                            buildClass( def, fullName, dialect, this.kbuilder.getBuilderConfiguration().getClassBuilderFactory().getEnumClassBuilder() );
+                            buildClass( def, fullName, dialect, this.kbuilder.getBuilderConfiguration().getClassBuilderFactory().getEnumClassBuilder(), pkgRegistry );
                         } catch ( Exception e ) {
                             e.printStackTrace();
                             this.kbuilder.addBuilderResult( new TypeDeclarationError( typeDescr,
@@ -70,7 +70,7 @@ public class DeclaredClassBuilder {
                     case CLASS:
                     default:
                         try {
-                            buildClass( def, fullName, dialect, this.kbuilder.getBuilderConfiguration().getClassBuilderFactory().getBeanClassBuilder() );
+                            buildClass( def, fullName, dialect, this.kbuilder.getBuilderConfiguration().getClassBuilderFactory().getBeanClassBuilder(), pkgRegistry );
                         } catch ( Exception e ) {
                             e.printStackTrace();
                             this.kbuilder.addBuilderResult( new TypeDeclarationError( typeDescr,
@@ -103,20 +103,20 @@ public class DeclaredClassBuilder {
         return true;
     }
 
-    protected void buildClass( ClassDefinition def, String fullName, JavaDialectRuntimeData dialect, ClassBuilder cb ) throws Exception {
+    protected void buildClass( ClassDefinition def, String fullName, JavaDialectRuntimeData dialect, ClassBuilder cb, PackageRegistry pkgRegistry ) throws Exception {
         byte[] bytecode = cb.buildClass(def, kbuilder.getRootClassLoader());
         String resourceName = convertClassToResourcePath(fullName);
         dialect.putClassDefinition( resourceName, bytecode );
         if (kbuilder.getKnowledgeBase() != null) {
-            kbuilder.getKnowledgeBase().registerAndLoadTypeDefinition(fullName, bytecode);
+            Class<?> clazz = kbuilder.getKnowledgeBase().registerAndLoadTypeDefinition(fullName, bytecode);
+            pkgRegistry.getTypeResolver().registerClass( fullName, clazz );
         } else {
             if (kbuilder.getRootClassLoader() instanceof ProjectClassLoader ) {
-                ((ProjectClassLoader) kbuilder.getRootClassLoader()).defineClass(fullName, resourceName, bytecode);
+                Class<?> clazz = ((ProjectClassLoader) kbuilder.getRootClassLoader()).defineClass(fullName, resourceName, bytecode);
+                pkgRegistry.getTypeResolver().registerClass( fullName, clazz );
             } else {
                 dialect.write(resourceName, bytecode);
             }
         }
     }
-
-
 }

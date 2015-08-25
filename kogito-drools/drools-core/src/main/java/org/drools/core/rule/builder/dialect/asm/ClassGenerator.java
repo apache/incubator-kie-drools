@@ -15,7 +15,6 @@
 
 package org.drools.core.rule.builder.dialect.asm;
 
-import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.TypeResolver;
 import org.drools.core.util.ByteArrayClassLoader;
 import org.drools.core.util.ClassUtils;
@@ -38,57 +37,8 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.lang.reflect.Modifier.isAbstract;
-import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
-import static org.drools.core.util.ClassUtils.convertPrimitiveNameToType;
-import static org.drools.core.util.ClassUtils.convertToPrimitiveType;
-import static org.mvel2.asm.Opcodes.AASTORE;
-import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
-import static org.mvel2.asm.Opcodes.ACC_STATIC;
-import static org.mvel2.asm.Opcodes.ACC_SUPER;
-import static org.mvel2.asm.Opcodes.ACONST_NULL;
-import static org.mvel2.asm.Opcodes.ALOAD;
-import static org.mvel2.asm.Opcodes.ANEWARRAY;
-import static org.mvel2.asm.Opcodes.ARETURN;
-import static org.mvel2.asm.Opcodes.BIPUSH;
-import static org.mvel2.asm.Opcodes.CHECKCAST;
-import static org.mvel2.asm.Opcodes.D2F;
-import static org.mvel2.asm.Opcodes.D2I;
-import static org.mvel2.asm.Opcodes.D2L;
-import static org.mvel2.asm.Opcodes.DUP;
-import static org.mvel2.asm.Opcodes.F2D;
-import static org.mvel2.asm.Opcodes.F2I;
-import static org.mvel2.asm.Opcodes.F2L;
-import static org.mvel2.asm.Opcodes.GETFIELD;
-import static org.mvel2.asm.Opcodes.GETSTATIC;
-import static org.mvel2.asm.Opcodes.I2B;
-import static org.mvel2.asm.Opcodes.I2C;
-import static org.mvel2.asm.Opcodes.I2D;
-import static org.mvel2.asm.Opcodes.I2F;
-import static org.mvel2.asm.Opcodes.I2L;
-import static org.mvel2.asm.Opcodes.I2S;
-import static org.mvel2.asm.Opcodes.ILOAD;
-import static org.mvel2.asm.Opcodes.INSTANCEOF;
-import static org.mvel2.asm.Opcodes.INVOKEINTERFACE;
-import static org.mvel2.asm.Opcodes.INVOKESPECIAL;
-import static org.mvel2.asm.Opcodes.INVOKESTATIC;
-import static org.mvel2.asm.Opcodes.INVOKEVIRTUAL;
-import static org.mvel2.asm.Opcodes.ISTORE;
-import static org.mvel2.asm.Opcodes.L2D;
-import static org.mvel2.asm.Opcodes.L2F;
-import static org.mvel2.asm.Opcodes.L2I;
-import static org.mvel2.asm.Opcodes.NEW;
-import static org.mvel2.asm.Opcodes.NEWARRAY;
-import static org.mvel2.asm.Opcodes.PUTFIELD;
-import static org.mvel2.asm.Opcodes.PUTSTATIC;
-import static org.mvel2.asm.Opcodes.RETURN;
-import static org.mvel2.asm.Opcodes.T_BOOLEAN;
-import static org.mvel2.asm.Opcodes.T_BYTE;
-import static org.mvel2.asm.Opcodes.T_CHAR;
-import static org.mvel2.asm.Opcodes.T_DOUBLE;
-import static org.mvel2.asm.Opcodes.T_FLOAT;
-import static org.mvel2.asm.Opcodes.T_INT;
-import static org.mvel2.asm.Opcodes.T_LONG;
-import static org.mvel2.asm.Opcodes.T_SHORT;
+import static org.drools.core.util.ClassUtils.*;
+import static org.mvel2.asm.Opcodes.*;
 
 public class ClassGenerator {
 
@@ -957,6 +907,10 @@ public class ClassGenerator {
         }
 
         public String getFullTypeName(String shortName) throws ClassNotFoundException {
+            throw new RuntimeException("Not Implemented");
+        }
+
+        public void registerClass( String className, Class<?> clazz ) {
             throw new RuntimeException("Not Implemented");
         }
 

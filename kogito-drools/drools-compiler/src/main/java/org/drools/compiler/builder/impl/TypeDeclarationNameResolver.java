@@ -48,10 +48,11 @@ public class TypeDeclarationNameResolver {
     protected void ensureQualifiedNames( Collection<? extends PackageDescr> packageDescrs,
                                          List<TypeDefinition> unresolvedTypes ) {
         for ( PackageDescr packageDescr : packageDescrs ) {
+            TypeResolver typeResolver = kbuilder.getPackageRegistry( packageDescr.getName() ).getTypeResolver();
             for ( AbstractClassTypeDeclarationDescr descr : packageDescr.getClassAndEnumDeclarationDescrs() ) {
                 ensureQualifiedDeclarationName( descr,
                                                 packageDescr,
-                                                kbuilder.getPackageRegistry( packageDescr.getName() ).getTypeResolver(),
+                                                typeResolver,
                                                 unresolvedTypes );
             }
         }
@@ -82,9 +83,9 @@ public class TypeDeclarationNameResolver {
 
     private void discoverHierarchyForRedeclarations( TypeDeclarationDescr typeDescr, PackageDescr packageDescr ) {
         PackageRegistry pkReg = kbuilder.getPackageRegistry( packageDescr.getName() );
-        if ( ! TypeDeclarationUtils.isNovelClass( typeDescr, pkReg ) ) {
-            Class typeClass = TypeDeclarationUtils.getExistingDeclarationClass( typeDescr, pkReg );
-            if ( typeClass != null && typeDescr.isTrait() ) {
+        Class typeClass = TypeDeclarationUtils.getExistingDeclarationClass( typeDescr, pkReg );
+        if ( typeClass != null ) {
+            if ( typeDescr.isTrait() ) {
                 fillStaticInterfaces( typeDescr, typeClass );
             } else {
                 typeDescr.getSuperTypes().clear();
@@ -92,6 +93,10 @@ public class TypeDeclarationNameResolver {
                                         Object.class.getName() :
                                         typeClass.getSuperclass().getName() );
             }
+        } else {
+            // avoid to cache in the type resolver that this class doesn't exist
+            // since we may still look for it in the wrong package
+            pkReg.getTypeResolver().registerClass( typeDescr.getFullTypeName(), null );
         }
     }
 
