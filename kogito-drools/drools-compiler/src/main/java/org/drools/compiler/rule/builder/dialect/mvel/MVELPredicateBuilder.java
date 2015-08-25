@@ -77,7 +77,8 @@ public class MVELPredicateBuilder
                                                                       context,
                                                                       "drools",
                                                                       KnowledgeHelper.class,
-                                                                      false );
+                                                                      false,
+                                                                      MVELCompilationUnit.Scope.EXPRESSION );
 
             MVELPredicateExpression expr = new MVELPredicateExpression( unit,
                                                                         context.getDialect().getId() );

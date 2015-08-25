@@ -87,6 +87,14 @@ public class MVELCompilationUnit
 
     public static final Map<String, Interceptor> INTERCEPTORS = new InterceptorMap();
 
+    public enum Scope {
+        CONSTRAINT, CONSEQUENCE, EXPRESSION;
+
+        public boolean hasRule() {
+            return this != CONSTRAINT;
+        }
+    }
+
     static {
         //for handling dates as string literals
         DataConversion.addConversionHandler( Date.class,
@@ -319,8 +327,9 @@ public class MVELCompilationUnit
         }
         factory.getIndexedVariableResolver( i++ ).setValue( knowledgeHelper );
         factory.getIndexedVariableResolver( i++ ).setValue( knowledgeHelper );
-        factory.getIndexedVariableResolver( i++ ).setValue( rule );
-
+        if (inputIdentifiers.length > i && "rule".equals( inputIdentifiers[i] )) {
+            factory.getIndexedVariableResolver( i++ ).setValue( rule );
+        }
 
         if ( globalIdentifiers != null ) {
             for (String globalIdentifier : globalIdentifiers) {
@@ -541,34 +550,6 @@ public class MVELCompilationUnit
         private int             otherVarsPos;
         private int             otherVarsLength;
         
-//        private Object[]        values;
-    
-//        public DroolsMVELIndexedFactory(String[] varNames,
-//                                         Object[] values) {
-//            this.indexedVariableNames = varNames;
-//            this.values = values;
-//            this.indexedVariableResolvers = createResolvers( values );
-//        }
-//    
-//        public DroolsMVELIndexedFactory(String[] varNames,
-//                                        Object[] values,
-//                                        VariableResolverFactory factory) {
-//            this.indexedVariableNames = varNames;
-//            this.values = values;
-//            this.nextFactory = new MapVariableResolverFactory();
-//            this.nextFactory.setNextFactory( factory );
-//            this.indexedVariableResolvers = createResolvers( values );
-//        }
-//    
-//        private static VariableResolver[] createResolvers( Object[] values ) {
-//            VariableResolver[] vr = new VariableResolver[values.length];
-//            for ( int i = 0; i < values.length; i++ ) {
-//                vr[i] = new IndexVariableResolver( i,
-//                                                   values );
-//            }
-//            return vr;
-//        }
-    
         public KnowledgeHelper getKnowledgeHelper() {
             return this.knowledgeHelper ;
         }
@@ -597,47 +578,21 @@ public class MVELCompilationUnit
                                                        String name,
                                                        Object value ) {
             throw new UnsupportedOperationException(); 
-//            indexedVariableResolvers[index].setValue( value );
-//            return indexedVariableResolvers[index];
         }
     
         public VariableResolver getIndexedVariableResolver( int index ) {
             throw new UnsupportedOperationException(); 
-            //return indexedVariableResolvers[index];
         }
     
         public VariableResolver createVariable( String name,
                                                 Object value ) {
             throw new UnsupportedOperationException();            
-//            VariableResolver vr = getResolver( name );
-//            if ( vr != null ) {
-//                vr.setValue( value );
-//                return vr;
-//            } else {
-//                if ( nextFactory == null ) nextFactory = new MapVariableResolverFactory( new HashMap() );
-//                return nextFactory.createVariable( name,
-//                                                   value );
-//            }
         }
     
         public VariableResolver createVariable( String name,
                                                 Object value,
                                                 Class< ? > type ) {
             throw new UnsupportedOperationException();            
-//            VariableResolver vr = getResolver( name );
-//            if ( vr != null ) {
-//                if ( vr.getType() != null ) {
-//                    throw new RuntimeException( "variable already defined within scope: " + vr.getType() + " " + name );
-//                } else {
-//                    vr.setValue( value );
-//                    return vr;
-//                }
-//            } else {
-//                if ( nextFactory == null ) nextFactory = new MapVariableResolverFactory( new HashMap() );
-//                return nextFactory.createVariable( name,
-//                                                   value,
-//                                                   type );
-//            }
         }
     
         public VariableResolver getVariableResolver( String name ) {
@@ -645,39 +600,18 @@ public class MVELCompilationUnit
         }
     
         public boolean isResolveable( String name ) {
-            //return isTarget( name ) || (nextFactory != null && nextFactory.isResolveable( name ));
             return false;
         }
     
-        protected VariableResolver addResolver( String name,
-                                                VariableResolver vr ) {
-            throw new UnsupportedOperationException();
-//            variableResolvers.put( name,
-//                                   vr );
-//            return vr;
-        }
-    
         public boolean isTarget( String name ) {
-//            for ( String indexedVariableName : indexedVariableNames ) {
-//                if ( indexedVariableName.equals( name ) ) {
-//                    return true;
-//                }
-//            }
             return false;
         }
     
         public Set<String> getKnownVariables() {
-//            Set<String> vars = new HashSet<String>();
-//            for ( int i = 0; i < indexedVariableNames.length; i++ ) {
-//                vars.add( indexedVariableNames[i] );
-//            }
             return Collections.emptySet();
         }
     
-        public void clear() {
-            // variableResolvers.clear();
-    
-        }
+        public void clear() { }
     
         public boolean isIndexedFactory() {
             return false;
@@ -719,7 +653,6 @@ public class MVELCompilationUnit
 
         public void setTiltFlag(boolean tilt) {
             // TODO Auto-generated method stub
-            
         }
     }
     

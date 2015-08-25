@@ -344,14 +344,15 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             }
 
             unit = dialect.getMVELCompilationUnit( (String) predicateDescr.getContent(),
-                                                    analysis,
-                                                    previousDeclarations,
-                                                    localDeclarations,
-                                                    null,
-                                                    context,
-                                                    "drools",
-                                                    KnowledgeHelper.class,
-                                                    false );
+                                                   analysis,
+                                                   previousDeclarations,
+                                                   localDeclarations,
+                                                   null,
+                                                   context,
+                                                   "drools",
+                                                   KnowledgeHelper.class,
+                                                   false,
+                                                   MVELCompilationUnit.Scope.CONSTRAINT );
         } catch ( final Exception e ) {
             copyErrorLocation(e, predicateDescr);
             context.addError( new DescrBuildError( context.getParentDescr(),
@@ -395,8 +396,8 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
             if (c1 == String.class || c2 == String.class) {
                 return true;
             }
-            Class boxed1 = convertFromPrimitiveType(c1);
-            Class boxed2 = convertFromPrimitiveType(c2);
+            Class<?> boxed1 = convertFromPrimitiveType(c1);
+            Class<?> boxed2 = convertFromPrimitiveType(c2);
             if (boxed1.isAssignableFrom(boxed2) || boxed2.isAssignableFrom(boxed1)) {
                 return true;
             }
@@ -404,14 +405,6 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                 return true;
             }
             return !Modifier.isFinal(c1.getModifiers()) && !Modifier.isFinal(c2.getModifiers());
-        }
-
-        private boolean arePrimitiveCompatible(Class<?> primitive, Class<?> boxed) {
-            return primitive == Boolean.TYPE ? boxed == Boolean.class : isBoxedNumber(boxed);
-        }
-
-        private boolean isBoxedNumber(Class<?> c) {
-            return Number.class.isAssignableFrom(c) || c == Character.class;
         }
 
         @Override

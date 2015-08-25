@@ -6491,7 +6491,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertTrue(list.contains("group by hi count is 1"));
     }
 
-    @Test @Ignore
+    @Test
     public void testKeywordAsAttribute() throws Exception {
         // DROOLS-577
         String drl =
@@ -6519,7 +6519,7 @@ public class Misc2Test extends CommonTestMethodBase {
                         "rule \"F060c\"  //doesn't work\n" +
                         "    dialect \"mvel\"\n" +
                         "when\n" +
-                        "        $rule: Fired( rule==\"F060c\" )\n" +
+                        "        $rule: Fired( rule==\"F060\" )\n" +
                         "then\n" +
                         "    list.add( drools.getRule().getName() )\n" +
                         "end\n" +
