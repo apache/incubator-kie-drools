@@ -80,7 +80,8 @@ public class MVELEnabledBuilder
                                                                        context,
                                                                        "drools",
                                                                        KnowledgeHelper.class,
-                                                                       false );
+                                                                       false,
+                                                                       MVELCompilationUnit.Scope.EXPRESSION );
 
             MVELEnabledExpression expr = new MVELEnabledExpression( unit,
                                                                     dialect.getId() );

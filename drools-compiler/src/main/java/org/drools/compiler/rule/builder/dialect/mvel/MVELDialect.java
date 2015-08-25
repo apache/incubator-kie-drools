@@ -534,8 +534,6 @@ public class MVELDialect
                                        final String text,
                                        final BoundIdentifiers availableIdentifiers) {
         return analyzeBlock( context,
-                             descr,
-                             null,
                              text,
                              availableIdentifiers,
                              null,
@@ -544,8 +542,6 @@ public class MVELDialect
     }
 
     public AnalysisResult analyzeBlock(final PackageBuildContext context,
-                                       final BaseDescr descr,
-                                       final Map interceptors,
                                        final String text,
                                        final BoundIdentifiers availableIdentifiers,
                                        final Map<String, Class< ? >> localTypes,
@@ -567,28 +563,9 @@ public class MVELDialect
                                                       final Map<String, Class< ? >> otherInputVariables,
                                                       final PackageBuildContext context,
                                                       String contextIndeifier,
-                                                      Class kcontextClass) {
-
-        return getMVELCompilationUnit( expression,
-                                       analysis,
-                                       previousDeclarations,
-                                       localDeclarations,
-                                       otherInputVariables,
-                                       context,
-                                       contextIndeifier,
-                                       kcontextClass,
-                                       false );
-    }
-
-    public MVELCompilationUnit getMVELCompilationUnit(final String expression,
-                                                      final AnalysisResult analysis,
-                                                      Declaration[] previousDeclarations,
-                                                      Declaration[] localDeclarations,
-                                                      final Map<String, Class< ? >> otherInputVariables,
-                                                      final PackageBuildContext context,
-                                                      String contextIndeifier,
                                                       Class kcontextClass,
-                                                      boolean readLocalsFromTuple) {
+                                                      boolean readLocalsFromTuple,
+                                                      MVELCompilationUnit.Scope scope) {
         Map<String, Class> resolvedInputs = new LinkedHashMap<String, Class>();
         List<String> ids = new ArrayList<String>();
 
@@ -604,9 +581,12 @@ public class MVELDialect
         ids.add( "kcontext" );
         resolvedInputs.put( "kcontext",
                             kcontextClass );
-        ids.add( "rule" );
-        resolvedInputs.put( "rule",
-                            Rule.class );
+
+        if (scope.hasRule()) {
+            ids.add( "rule" );
+            resolvedInputs.put( "rule",
+                                Rule.class );
+        }
 
         List<String> strList = new ArrayList<String>();
         for ( Entry<String, Class< ? >> e : analysis.getBoundIdentifiers().getGlobals().entrySet() ) {

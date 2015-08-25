@@ -222,7 +222,8 @@ public class MVELAccumulateBuilder
                                                                        context,
                                                                        "drools",
                                                                        KnowledgeHelper.class,
-                                                                       readLocalsFromTuple );
+                                                                       readLocalsFromTuple,
+                                                                       MVELCompilationUnit.Scope.CONSTRAINT );
 
             accumulators[index] = new MVELAccumulatorFunctionExecutor( unit,
                                                                          function );
@@ -282,8 +283,6 @@ public class MVELAccumulateBuilder
 
         // need to copy boundIds, as this as a "this" object.
         final MVELAnalysisResult actionCodeAnalysis = (MVELAnalysisResult) dialect.analyzeBlock( context,
-                                                                                                 accumDescr,
-                                                                                                 null,
                                                                                                  accumDescr.getActionCode(),
                                                                                                  boundIds,
                                                                                                  initCodeAnalysis.getMvelVariables(),
@@ -307,7 +306,8 @@ public class MVELAccumulateBuilder
                                                                        context,
                                                                        "drools",
                                                                        KnowledgeHelper.class,
-                                                                       readLocalsFromTuple );
+                                                                       readLocalsFromTuple,
+                                                                       MVELCompilationUnit.Scope.CONSTRAINT );
 
         context.setTypesafe( actionCodeAnalysis.isTypesafe() );
         MVELCompilationUnit actionUnit = dialect.getMVELCompilationUnit( accumDescr.getActionCode(),
@@ -320,7 +320,8 @@ public class MVELAccumulateBuilder
                                                                          context,
                                                                          "drools",
                                                                          KnowledgeHelper.class,
-                                                                         readLocalsFromTuple );
+                                                                         readLocalsFromTuple,
+                                                                         MVELCompilationUnit.Scope.CONSTRAINT );
 
         MVELCompilationUnit reverseUnit = null;
         if ( accumDescr.getReverseCode() != null ) {
@@ -335,7 +336,8 @@ public class MVELAccumulateBuilder
                                                           context,
                                                           "drools",
                                                           KnowledgeHelper.class,
-                                                          readLocalsFromTuple );
+                                                          readLocalsFromTuple,
+                                                          MVELCompilationUnit.Scope.CONSTRAINT );
         }
 
         context.setTypesafe( resultCodeAnalysis.isTypesafe() );
@@ -349,7 +351,8 @@ public class MVELAccumulateBuilder
                                                                          context,
                                                                          "drools",
                                                                          KnowledgeHelper.class,
-                                                                         readLocalsFromTuple );
+                                                                         readLocalsFromTuple,
+                                                                         MVELCompilationUnit.Scope.CONSTRAINT );
 
         accumulators = new Accumulator[]{new MVELAccumulator( initUnit,
                                                               actionUnit,

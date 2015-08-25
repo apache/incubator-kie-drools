@@ -98,7 +98,8 @@ public class MVELFromBuilder
                                                                        context,
                                                                        "drools",
                                                                        KnowledgeHelper.class,
-                                                                       false );
+                                                                       false,
+                                                                       MVELCompilationUnit.Scope.CONSEQUENCE );
 
             MVELDataProvider dataProvider = new MVELDataProvider( unit,
                                                                   context.getDialect().getId() );
