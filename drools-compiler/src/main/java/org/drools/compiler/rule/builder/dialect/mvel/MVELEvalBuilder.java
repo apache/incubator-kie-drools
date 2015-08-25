@@ -16,11 +16,6 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
-
-import java.util.Arrays;
-import java.util.Map;
-
 import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
@@ -37,8 +32,14 @@ import org.drools.core.rule.EvalCondition.SafeEvalExpression;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
+import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.internal.security.KiePolicyHelper;
+
+import java.util.Arrays;
+import java.util.Map;
+
+import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
 
 public class MVELEvalBuilder
     implements
@@ -55,8 +56,6 @@ public class MVELEvalBuilder
      * Builds and returns an Eval Conditional Element
      * 
      * @param context The current build context
-     * @param utils The current build utils instance
-     * @param patternBuilder not used by EvalBuilder
      * @param descr The Eval Descriptor to build the eval conditional element from
      * 
      * @return the Eval Conditional Element
@@ -76,8 +75,8 @@ public class MVELEvalBuilder
             AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                               evalDescr,
                                                                               evalDescr.getContent(),
-                                                                              new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ),
-                                                                                                   context.getKnowledgeBuilder().getGlobals() ) );
+                                                                              new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( decls ),
+                                                                                                    context.getKnowledgeBuilder().getGlobals() ) );
 
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
             int i = usedIdentifiers.getDeclrClasses().keySet().size();
@@ -96,7 +95,8 @@ public class MVELEvalBuilder
                                                                        context,
                                                                        "drools",
                                                                        KnowledgeHelper.class,
-                                                                       false );
+                                                                       false,
+                                                                       MVELCompilationUnit.Scope.EXPRESSION );
             final EvalCondition eval = new EvalCondition( previousDeclarations );
 
             MVELEvalExpression expr = new MVELEvalExpression( unit,

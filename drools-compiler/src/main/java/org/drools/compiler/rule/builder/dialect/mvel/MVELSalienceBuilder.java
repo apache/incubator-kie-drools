@@ -72,7 +72,8 @@ public class MVELSalienceBuilder
                                                                        context,
                                                                        "drools",
                                                                        KnowledgeHelper.class,
-                                                                       false );
+                                                                       false,
+                                                                       MVELCompilationUnit.Scope.EXPRESSION );
 
             MVELSalienceExpression expr = new MVELSalienceExpression( unit,
                                                                       dialect.getId() );

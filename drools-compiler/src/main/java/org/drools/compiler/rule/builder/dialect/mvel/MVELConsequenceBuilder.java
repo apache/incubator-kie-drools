@@ -136,8 +136,6 @@ public class MVELConsequenceBuilder
             Map<String, Declaration> decls = context.getDeclarationResolver().getDeclarations(context.getRule());
             
             AnalysisResult analysis = dialect.analyzeBlock( context,
-                                                            context.getRuleDescr(),
-                                                            dialect.getInterceptors(),
                                                             text,
                                                             new BoundIdentifiers(DeclarationScopeResolver.getDeclarationClasses(decls),
                                                                                  context.getKnowledgeBuilder().getGlobals(),
@@ -174,7 +172,8 @@ public class MVELConsequenceBuilder
                                                                        context,
                                                                        "drools",
                                                                        KnowledgeHelper.class,
-                                                                       false );
+                                                                       false,
+                                                                       MVELCompilationUnit.Scope.CONSEQUENCE );
 
             MVELConsequence expr = new MVELConsequence( unit,
                                                         dialect.getId(),
