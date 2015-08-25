@@ -66,17 +66,13 @@ public class TypeDeclarationUtils {
                 }
             }
         }
-        String className = typeClass != null ? typeClass.getName() : name;
-        return className;
+
+        return typeClass != null ? typeClass.getName() : name;
     }
 
     public static Class<?> getExistingDeclarationClass( AbstractClassTypeDeclarationDescr typeDescr, PackageRegistry reg ) {
-        if (reg == null) {
-            return null;
-        }
-        String availableName = typeDescr.getFullTypeName();
         try {
-            return reg.getTypeResolver().resolveType(availableName);
+            return reg == null ? null : reg.getTypeResolver().resolveType(typeDescr.getFullTypeName());
         } catch (ClassNotFoundException e) {
             return null;
         }
