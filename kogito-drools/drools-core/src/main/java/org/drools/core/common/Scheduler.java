@@ -47,30 +47,6 @@ public final class Scheduler {
     private Scheduler() {
     }
 
-    /**
-     * Schedule an agenda item.
-     * 
-     * @param item
-     *            The item to schedule.
-     * @param agenda
-     * @param wm
-     *            The working memory session.
-     */
-    public static void scheduleAgendaItem(final ScheduledAgendaItem item, InternalAgenda agenda, InternalWorkingMemory wm) {
-
-        Trigger trigger = item.getRule().getTimer().createTrigger( item, wm );
-        
-        ActivationTimerJob job = new ActivationTimerJob();
-        ActivationTimerJobContext ctx = new ActivationTimerJobContext( trigger, item, agenda );
-                
-        JobHandle jobHandle = agenda.getWorkingMemory().getTimerService().scheduleJob( job, ctx, trigger );
-        item.setJobHandle( jobHandle );
-    }
-    
-    public static void removeAgendaItem(final ScheduledAgendaItem item, final InternalAgenda agenda) {
-        agenda.getWorkingMemory().getTimerService().removeJob( item.getJobHandle() );
-    }
-    
     public static class ActivationTimerJob<T extends ModedAssertion<T>> implements Job {
         public void execute(JobContext ctx) {
             InternalAgenda agenda = ( InternalAgenda ) ((ActivationTimerJobContext)ctx).getAgenda();
@@ -114,15 +90,8 @@ public final class Scheduler {
                     // eval nodes have no right parent
                     postponedTuple = item.getTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), item.getTuple().getPropagationContext(), true);
                 }
-//              
-//                postponedTuple = item.getRuleTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), false );
-//
-//                item.getTuple().getLeftParent().setLastChild( postponedTuple );
-//                item.getTuple().getRightParent().getFactHandle().addLastLeftTuple( postponedTuple );
-
             } else {
                 postponedTuple = item.getTerminalNode().createLeftTuple( item.getTuple().getHandle(), item.getTuple().getSink(), true );
-//                item.getTuple().getHandle().addLastLeftTuple( postponedTuple );
             }
 
             agenda.createPostponedActivation( postponedTuple,
