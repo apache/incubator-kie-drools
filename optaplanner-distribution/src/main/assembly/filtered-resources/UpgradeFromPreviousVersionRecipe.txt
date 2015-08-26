@@ -2637,7 +2637,7 @@ Before in *.drl:
     then
         scoreHolder.addSoftConstraintMatch(kcontext, -1); // Employee happiness cost
     end
-Before in *.drl:
+After in *.drl:
     rule "Costly and unfair"
     when
         // Complex pattern

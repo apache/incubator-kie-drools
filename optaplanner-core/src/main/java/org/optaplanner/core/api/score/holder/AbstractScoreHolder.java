@@ -257,28 +257,28 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
 
     private static class MultiLevelActivationUnMatchListener implements ActivationUnMatchListener {
 
-        private final Map<Integer, ConstraintUndoListener> scoreLevelToConstraintUndoListenerMap;
+        private static final int INITIAL_MAP_CAPACITY = 2;
+
+        private Map<Integer, ConstraintUndoListener> scoreLevelToConstraintUndoListenerMap;
 
         public MultiLevelActivationUnMatchListener(int scoreLevel, ConstraintUndoListener constraintUndoListener) {
             // Most use cases use only 1 scoreLevel per score rule and there are likely many instances of this class,
             // so the initialCapacity is very memory conservative
-            scoreLevelToConstraintUndoListenerMap = new HashMap<Integer, ConstraintUndoListener>(2);
+            scoreLevelToConstraintUndoListenerMap = new HashMap<Integer, ConstraintUndoListener>(INITIAL_MAP_CAPACITY);
             scoreLevelToConstraintUndoListenerMap.put(scoreLevel, constraintUndoListener);
         }
 
         @Override
         public final void unMatch(RuleRuntime ruleRuntime, Match match) {
             for (ConstraintUndoListener constraintUndoListener : scoreLevelToConstraintUndoListenerMap.values()) {
-                // Both parameters can be null because they are not used by our constraintUndoListeners anyway
                 constraintUndoListener.unMatch();
             }
-            scoreLevelToConstraintUndoListenerMap.clear();
+            scoreLevelToConstraintUndoListenerMap = new HashMap<Integer, ConstraintUndoListener>(INITIAL_MAP_CAPACITY);
         }
 
         public void overwriteMatch(int scoreLevel, ConstraintUndoListener constraintUndoListener) {
             ConstraintUndoListener oldConstraintUndoListener = scoreLevelToConstraintUndoListenerMap.put(scoreLevel, constraintUndoListener);
             if (oldConstraintUndoListener != null) {
-                // Both parameters can be null because they are not used by our constraintUndoListeners anyway
                 oldConstraintUndoListener.unMatch();
             }
         }
