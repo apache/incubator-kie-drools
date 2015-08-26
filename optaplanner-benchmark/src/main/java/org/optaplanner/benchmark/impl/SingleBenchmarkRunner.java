@@ -77,7 +77,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
 
         for (SingleStatistic singleStatistic : singleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
             singleStatistic.open(solver);
-            singleStatistic.unhibernatePointList();
+            singleStatistic.initPointList();
         }
 
         solver.solve(inputSolution);

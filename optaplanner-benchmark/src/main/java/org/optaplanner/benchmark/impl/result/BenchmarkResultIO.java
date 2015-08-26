@@ -123,19 +123,6 @@ public class BenchmarkResultIO {
     }
 
     private void restoreOmittedBidirectionalFields(PlannerBenchmarkResult plannerBenchmarkResult) {
-        for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
-            solverBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
-            for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
-                singleBenchmarkResult.setSolverBenchmarkResult(solverBenchmarkResult);
-                if (singleBenchmarkResult.getPureSingleStatisticList() == null) {
-                    singleBenchmarkResult.setPureSingleStatisticList(new ArrayList<PureSingleStatistic>(0));
-                }
-                for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
-                    pureSingleStatistic.setSingleBenchmarkResult(singleBenchmarkResult);
-                    pureSingleStatistic.initPointList();
-                }
-            }
-        }
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
             problemBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
             if (problemBenchmarkResult.getProblemStatisticList() == null) {
@@ -146,6 +133,18 @@ public class BenchmarkResultIO {
             }
             for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                 singleBenchmarkResult.setProblemBenchmarkResult(problemBenchmarkResult);
+            }
+        }
+        for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
+            solverBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
+            for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
+                singleBenchmarkResult.setSolverBenchmarkResult(solverBenchmarkResult);
+                if (singleBenchmarkResult.getPureSingleStatisticList() == null) {
+                    singleBenchmarkResult.setPureSingleStatisticList(new ArrayList<PureSingleStatistic>(0));
+                }
+                for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
+                    pureSingleStatistic.setSingleBenchmarkResult(singleBenchmarkResult);
+                }
             }
         }
     }

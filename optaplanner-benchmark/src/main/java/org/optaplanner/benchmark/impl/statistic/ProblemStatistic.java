@@ -136,4 +136,9 @@ public abstract class ProblemStatistic {
 
     public abstract List<File> getGraphFileList();
 
+    @Override
+    public String toString() {
+        return problemBenchmarkResult.toString() + "_" + problemStatisticType.toString();
+    }
+
 }

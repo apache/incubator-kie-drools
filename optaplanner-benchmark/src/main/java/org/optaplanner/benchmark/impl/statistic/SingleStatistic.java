@@ -59,7 +59,6 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
 
     protected SingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         this.singleBenchmarkResult = singleBenchmarkResult;
-        initPointList();
     }
 
     public SingleBenchmarkResult getSingleBenchmarkResult() {
@@ -186,10 +185,15 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     }
 
     public void unhibernatePointList() {
-        if (getCsvFile().exists() && pointList == null) {
-            initPointList();
-            readCsvStatisticFile();
+        if (!getCsvFile().exists()) {
+            throw new IllegalStateException("The csvFile ( " + getCsvFile() + " ) of the statistic ( " + getStatisticType()
+                    + " ) of the single benchmark ( " + singleBenchmarkResult + " ) doesn't exist.");
+        } else if (pointList != null) {
+            throw new IllegalStateException("The pointList ( " + pointList + " ) of the statistic ( " + getStatisticType()
+                    + " ) of the single benchmark ( " + singleBenchmarkResult + " ) should be null when unhibernating.");
         }
+        initPointList();
+        readCsvStatisticFile();
     }
 
     public void hibernatePointList() {

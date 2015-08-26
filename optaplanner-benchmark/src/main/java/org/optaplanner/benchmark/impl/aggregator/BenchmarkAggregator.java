@@ -81,9 +81,6 @@ public class BenchmarkAggregator {
         Date startingTimestamp = new Date();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             singleBenchmarkResult.initSingleStatisticMap();
-            for (SingleStatistic singleStatistic : singleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
-                singleStatistic.unhibernatePointList();
-            }
         }
         // Handle renamed solver benchmarks after statistics have been read (they're resolved by
         // original solver benchmarks' names)

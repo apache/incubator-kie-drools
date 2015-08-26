@@ -67,8 +67,12 @@ import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.impl.score.ScoreUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BenchmarkReport {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     public static final int CHARTED_SCORE_LEVEL_SIZE = 15;
     public static final int LOG_SCALE_MIN_DATASETS_COUNT = 5;
@@ -222,14 +226,30 @@ public class BenchmarkReport {
             if (problemBenchmarkResult.hasAnySuccess()) {
                 for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
                     for (SingleStatistic singleStatistic : problemStatistic.getSingleStatisticList()) {
-                        singleStatistic.unhibernatePointList();
+                        try {
+                            singleStatistic.unhibernatePointList();
+                        } catch (IllegalStateException ise) {
+                            if (!plannerBenchmarkResult.getAggregation()) {
+                                throw ise;
+                            }
+                            logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
+                                    + "( {} ) of single statistic ( {} ).", singleStatistic.getCsvFile().getAbsolutePath(), singleStatistic);
+                        }
                     }
                     problemStatistic.writeGraphFiles(this);
                 }
                 for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                     if (singleBenchmarkResult.isSuccess()) {
                         for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
-                            pureSingleStatistic.unhibernatePointList();
+                            try {
+                                pureSingleStatistic.unhibernatePointList();
+                            } catch (IllegalStateException ise) {
+                                if (!plannerBenchmarkResult.getAggregation()) {
+                                    throw ise;
+                                }
+                                logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
+                                        + "( {} ) of pure single statistic ( {} ).", pureSingleStatistic.getCsvFile().getAbsolutePath(), pureSingleStatistic);
+                            }
                             pureSingleStatistic.writeGraphFiles(this);
                         }
                     }

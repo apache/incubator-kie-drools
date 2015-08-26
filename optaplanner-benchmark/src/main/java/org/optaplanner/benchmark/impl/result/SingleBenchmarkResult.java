@@ -35,12 +35,16 @@ import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.ScoreUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Represents 1 benchmark for 1 {@link Solver} configuration for 1 problem instance (data set).
  */
 @XStreamAlias("singleBenchmarkResult")
 public class SingleBenchmarkResult {
+
+    protected static final transient Logger logger = LoggerFactory.getLogger(SingleBenchmarkResult.class);
 
     @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
     private SolverBenchmarkResult solverBenchmarkResult;
@@ -285,7 +289,21 @@ public class SingleBenchmarkResult {
 
         newResult.initSingleStatisticMap();
         for (SingleStatistic singleStatistic : newResult.effectiveSingleStatisticMap.values()) {
-            singleStatistic.setPointList(oldResult.getSingleStatistic(singleStatistic.getStatisticType()).getPointList());
+            SingleStatistic oldSingleStatistic = oldResult.getSingleStatistic(singleStatistic.getStatisticType());
+            if (!oldSingleStatistic.getCsvFile().exists()) {
+                if (oldResult.isFailure()) {
+                    singleStatistic.initPointList();
+                    logger.debug("Old result ( {} ) is a failure, skipping merge of it's single statistic ( {} ).",
+                            oldResult, oldSingleStatistic);
+                    continue;
+                } else {
+                    throw new IllegalStateException("Could not find old result's ( " + oldResult
+                            + " ) single statistic's ( " + oldSingleStatistic + " ) CSV file.");
+                }
+            }
+            oldSingleStatistic.unhibernatePointList();
+            singleStatistic.setPointList(oldSingleStatistic.getPointList());
+            oldSingleStatistic.hibernatePointList();
         }
         // Skip oldResult.reportDirectory
         // Skip oldResult.usedMemoryAfterInputSolution
