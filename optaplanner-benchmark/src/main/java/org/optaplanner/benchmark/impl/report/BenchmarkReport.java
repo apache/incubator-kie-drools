@@ -222,14 +222,14 @@ public class BenchmarkReport {
             if (problemBenchmarkResult.hasAnySuccess()) {
                 for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
                     for (SingleStatistic singleStatistic : problemStatistic.getSingleStatisticList()) {
-                        singleStatistic.retrievePointList();
+                        singleStatistic.unhibernatePointList();
                     }
                     problemStatistic.writeGraphFiles(this);
                 }
                 for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                     if (singleBenchmarkResult.isSuccess()) {
                         for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
-                            pureSingleStatistic.retrievePointList();
+                            pureSingleStatistic.unhibernatePointList();
                             pureSingleStatistic.writeGraphFiles(this);
                         }
                     }

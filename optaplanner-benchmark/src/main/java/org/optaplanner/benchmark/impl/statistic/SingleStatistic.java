@@ -185,14 +185,14 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
         }
     }
 
-    public void retrievePointList() {
+    public void unhibernatePointList() {
         if (getCsvFile().exists() && pointList == null) {
             initPointList();
             readCsvStatisticFile();
         }
     }
 
-    public void persistPointList() {
+    public void hibernatePointList() {
         writeCsvStatisticFile();
         pointList = null;
     }
