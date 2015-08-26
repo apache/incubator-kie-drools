@@ -69,10 +69,6 @@ public class ClassFieldAccessorFactory {
     private static final String                        SELF_REFERENCE_FIELD = "this";
 
     private static final ProtectionDomain              PROTECTION_DOMAIN;
-//
-//    private final Map<Class< ? >, ClassFieldInspector> inspectors           = new HashMap<Class< ? >, ClassFieldInspector>();
-//
-//    private ByteArrayClassLoader                       byteArrayClassLoader;
 
     static {
         PROTECTION_DOMAIN = AccessController.doPrivileged( new PrivilegedAction<ProtectionDomain>() {
@@ -107,17 +103,17 @@ public class ClassFieldAccessorFactory {
                     inspectors.put( clazz,
                                     inspector );
                 }
-                Class< ? > fieldType = (Class< ? >) inspector.getFieldTypes().get( fieldName );
-                Method getterMethod = (Method) inspector.getGetterMethods().get( fieldName );
-                Integer index = (Integer) inspector.getFieldNames().get( fieldName );
+                Class< ? > fieldType = inspector.getFieldTypes().get( fieldName );
+                Method getterMethod = inspector.getGetterMethods().get( fieldName );
+                Integer index = inspector.getFieldNames().get( fieldName );
                 if ( fieldType == null && fieldName.length() > 1 && Character.isLowerCase( fieldName.charAt( 0 ) ) && Character.isUpperCase( fieldName.charAt(1) ) ) {
                     // it might be that odd case of javabeans naming conventions that does not use lower case first letters if the second is uppercase
                     String altFieldName = Character.toUpperCase( fieldName.charAt( 0 ) ) + fieldName.substring( 1 );
-                    fieldType = (Class< ? >) inspector.getFieldTypes().get( altFieldName );
+                    fieldType = inspector.getFieldTypes().get( altFieldName );
                     if( fieldType != null ) {
                         // it seems it is the corner case indeed.
-                        getterMethod = (Method) inspector.getGetterMethods().get( altFieldName );
-                        index = (Integer) inspector.getFieldNames().get( altFieldName );
+                        getterMethod = inspector.getGetterMethods().get( altFieldName );
+                        index = inspector.getFieldNames().get( altFieldName );
                     }
                 }
                 if ( fieldType != null && getterMethod != null ) {
@@ -165,13 +161,13 @@ public class ClassFieldAccessorFactory {
                 inspectors.put( clazz,
                                 inspector );
             }
-            Method setterMethod = (Method) inspector.getSetterMethods().get( fieldName );
-            Integer index = (Integer) inspector.getFieldNames().get( fieldName );
+            Method setterMethod = inspector.getSetterMethods().get( fieldName );
+            Integer index = inspector.getFieldNames().get( fieldName );
             if ( setterMethod == null && fieldName.length() > 1 && Character.isLowerCase( fieldName.charAt( 0 ) ) && Character.isUpperCase( fieldName.charAt(1) ) ) {
                 // it might be that odd case of javabeans naming conventions that does not use lower case first letters if the second is uppercase
                 String altFieldName = Character.toUpperCase( fieldName.charAt( 0 ) ) + fieldName.substring( 1 );
-                setterMethod = (Method) inspector.getSetterMethods().get( altFieldName );
-                index = (Integer) inspector.getFieldNames().get( altFieldName );
+                setterMethod = inspector.getSetterMethods().get( altFieldName );
+                index = inspector.getFieldNames().get( altFieldName );
             }
             if ( setterMethod != null ) {
                 final Class< ? > fieldType = setterMethod.getParameterTypes()[0];
@@ -298,7 +294,7 @@ public class ClassFieldAccessorFactory {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
                                  "<init>",
                                  Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                           new Type[]{Type.getType( int.class ), Type.getType( Class.class ), Type.getType( ValueType.class )} ),
+                                                           Type.getType( int.class ), Type.getType( Class.class ), Type.getType( ValueType.class ) ),
                                  null,
                                  null );
             mv.visitCode();
@@ -316,7 +312,7 @@ public class ClassFieldAccessorFactory {
                                 Type.getInternalName( superClazz ),
                                 "<init>",
                                 Type.getMethodDescriptor( Type.VOID_TYPE,
-                                                          new Type[]{Type.getType( int.class ), Type.getType( Class.class ), Type.getType( ValueType.class )} ) );
+                                                          Type.getType( int.class ), Type.getType( Class.class ), Type.getType( ValueType.class ) ) );
             final Label l1 = new Label();
             mv.visitLabel( l1 );
             mv.visitInsn( Opcodes.RETURN );
@@ -365,7 +361,7 @@ public class ClassFieldAccessorFactory {
         Method overridingMethod;
         try {
             overridingMethod = superClass.getMethod( getOverridingGetMethodName( fieldType ),
-                                                     new Class[]{InternalWorkingMemory.class, Object.class} );
+                                                     InternalWorkingMemory.class, Object.class );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report back to JBoss Rules team.",
                                         e );
@@ -437,7 +433,7 @@ public class ClassFieldAccessorFactory {
             Method overridingMethod;
             try {
                 overridingMethod = superClass.getMethod( getOverridingSetMethodName( fieldType ),
-                                                         new Class[]{Object.class, fieldType.isPrimitive() ? fieldType : Object.class} );
+                                                         Object.class, fieldType.isPrimitive() ? fieldType : Object.class );
             } catch ( final Exception e ) {
                 throw new RuntimeException( "This is a bug. Please report back to JBoss Rules team.",
                                             e );
@@ -562,9 +558,6 @@ public class ClassFieldAccessorFactory {
     /**
      * Returns the appropriate Base class field extractor class
      * for the given fieldType
-     * 
-     * @param fieldType
-     * @return
      */
     private Class< ? > getReaderSuperClassFor(final Class< ? > fieldType) {
         Class< ? > ret = null;
@@ -599,9 +592,6 @@ public class ClassFieldAccessorFactory {
     /**
      * Returns the appropriate Base class field extractor class
      * for the given fieldType
-     * 
-     * @param fieldType
-     * @return
      */
     private Class< ? > getWriterSuperClassFor(final Class< ? > fieldType) {
         Class< ? > ret = null;

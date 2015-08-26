@@ -37,8 +37,7 @@ public class DoubleClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
         this.reader = store.getReader( TestBean.class,
-                                          "doubleAttr",
-                                          getClass().getClassLoader() );
+                                          "doubleAttr" );
     }
 
     @Test

@@ -93,8 +93,7 @@ public class KnowledgeBaseEventSupportTest {
         store.setEagerWire( true );
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
-                "type",
-                getClass().getClassLoader());
+                "type");
 
         final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
 

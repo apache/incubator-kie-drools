@@ -37,8 +37,7 @@ public class IntClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
         this.reader = store.getReader( TestBean.class,
-                                       "intAttr",
-                                       getClass().getClassLoader() );
+                                       "intAttr" );
     }
 
     @Test

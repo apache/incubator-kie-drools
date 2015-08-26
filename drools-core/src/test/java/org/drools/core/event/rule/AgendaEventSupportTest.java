@@ -16,17 +16,6 @@
 
 package org.drools.core.event.rule;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldReader;
@@ -38,18 +27,15 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.test.model.Cheese;
 import org.drools.core.rule.MvelConstraintTestUtil;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.KnowledgeHelper;
+import org.drools.core.test.model.Cheese;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
@@ -60,8 +46,19 @@ import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupActivatedEvent;
 import org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.definition.KnowledgePackage;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class AgendaEventSupportTest {
 
@@ -87,8 +84,7 @@ public class AgendaEventSupportTest {
         pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg.getClassFieldAccessorStore().setEagerWire( true );
         final ClassFieldReader extractor = pkg.getClassFieldAccessorStore().getReader(Cheese.class,
-                "type",
-                getClass().getClassLoader());
+                "type");
 
         final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
 
