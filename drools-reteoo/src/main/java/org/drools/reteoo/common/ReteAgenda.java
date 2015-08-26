@@ -54,6 +54,8 @@ import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
+import org.drools.core.time.JobHandle;
+import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
 import org.drools.core.time.impl.Timer;
 import org.drools.core.util.ClassUtils;
@@ -338,9 +340,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             // this is not a serialization propagation, so schedule it
             // otherwise the timer will be correlated with this activation later during the
             // deserialization of timers
-            Scheduler.scheduleAgendaItem( item,
-                                          this,
-                                          wm );
+            scheduleAgendaItem( item, wm );
         }
     }
 
@@ -535,8 +535,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         if ( item.isEnqueued() ) {
             this.scheduledActivations.remove( item );
             item.setEnqueued( false );
-            Scheduler.removeAgendaItem( item,
-                                        this );
+            removeAgendaItem( item );
         }
     }
 
@@ -1029,8 +1028,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         if ( !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = this.scheduledActivations.removeFirst(); item != null; item = this.scheduledActivations.removeFirst() ) {
                 item.setEnqueued( false );
-                Scheduler.removeAgendaItem( item,
-                                            this );
+                removeAgendaItem( item );
             }
         }
 
@@ -1060,8 +1058,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         if ( !this.scheduledActivations.isEmpty() ) {
             for ( ScheduledAgendaItem item = this.scheduledActivations.removeFirst(); item != null; item = this.scheduledActivations.removeFirst() ) {
                 item.setEnqueued( false );
-                Scheduler.removeAgendaItem( item,
-                                            this );
+                removeAgendaItem( item );
                 eventsupport.getAgendaEventSupport().fireActivationCancelled( item,
                                                                               this.workingMemory,
                                                                               MatchCancelledCause.CLEAR );
@@ -1076,6 +1073,20 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             clearAndCancelActivationGroup( group );
         }
 
+    }
+
+    private void scheduleAgendaItem(final ScheduledAgendaItem item, InternalWorkingMemory wm) {
+        Trigger trigger = item.getRule().getTimer().createTrigger( item, wm );
+
+        Scheduler.ActivationTimerJob job = new Scheduler.ActivationTimerJob();
+        Scheduler.ActivationTimerJobContext ctx = new Scheduler.ActivationTimerJobContext( trigger, item, this );
+
+        JobHandle jobHandle = getWorkingMemory().getTimerService().scheduleJob( job, ctx, trigger );
+        item.setJobHandle( jobHandle );
+    }
+
+    private void removeAgendaItem(final ScheduledAgendaItem item) {
+        getWorkingMemory().getTimerService().removeJob( item.getJobHandle() );
     }
 
     /*
