@@ -16,15 +16,15 @@
 
 package org.drools.core.base.extractors;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.TestBean;
 import org.drools.core.spi.InternalReadAccessor;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -39,8 +39,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
         this.reader = store.getReader( TestBean.class,
-                                       "listAttr",
-                                       getClass().getClassLoader() );
+                                       "listAttr" );
     }
 
     @Test
@@ -150,8 +149,7 @@ public class ObjectClassFieldExtractorTest extends BaseClassFieldExtractorsTest 
         store.setEagerWire( true );
 
         InternalReadAccessor nullExtractor = store.getReader( TestBean.class,
-                                                              "nullAttr",
-                                                              getClass().getClassLoader() );
+                                                              "nullAttr" );
         assertTrue( nullExtractor.isNullValue( null,
                                                       this.bean ) );
 

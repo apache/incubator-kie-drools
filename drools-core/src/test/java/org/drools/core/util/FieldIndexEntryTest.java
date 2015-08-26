@@ -47,8 +47,7 @@ public class FieldIndexEntryTest {
     @Test
     public void testSingleEntry() {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
-                                                                  "type",
-                                                                  getClass().getClassLoader() );
+                                                                  "type" );
 
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
@@ -93,8 +92,7 @@ public class FieldIndexEntryTest {
     @Test
     public void testTwoEntries() {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
-                                                                  "type",
-                                                                  getClass().getClassLoader() );
+                                                                  "type" );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
                                                       MvelConstraint.INDEX_EVALUATOR );
@@ -149,8 +147,7 @@ public class FieldIndexEntryTest {
     @Test
     public void testThreeEntries() {
         final ClassFieldReader extractor = store.getReader( Cheese.class,
-                                                                  "type",
-                                                                  getClass().getClassLoader() );
+                                                                  "type" );
         final FieldIndex fieldIndex = new FieldIndex( extractor,
                                                       null,
                                                       MvelConstraint.INDEX_EVALUATOR );

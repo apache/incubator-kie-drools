@@ -35,8 +35,7 @@ public class BooleanClassFieldExtractorTest extends BaseClassFieldExtractorsTest
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
         this.reader = store.getReader( TestBean.class,
-                                              "booleanAttr",
-                                              getClass().getClassLoader() );
+                                              "booleanAttr" );
     }
 
     @Test

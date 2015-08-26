@@ -16,6 +16,14 @@
 
 package org.drools.core.factmodel;
 
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.common.ProjectClassLoader;
+import org.drools.core.rule.JavaDialectRuntimeData;
+import org.drools.core.rule.JavaDialectRuntimeData.PackageClassLoader;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -26,18 +34,8 @@ import java.util.Date;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
-import org.drools.core.common.ProjectClassLoader;
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.internal.utils.ClassLoaderUtil;
-
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
 import static org.junit.Assert.*;
-
-import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.rule.JavaDialectRuntimeData;
-import org.drools.core.rule.JavaDialectRuntimeData.PackageClassLoader;
 
 public class ClassBuilderTest {
 
@@ -92,11 +90,9 @@ public class ClassBuilderTest {
             
             
             intDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            intDef.getName(),
-                                                            classLoader ) );
+                                                            intDef.getName() ) );
             stringDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                               stringDef.getName(),
-                                                               classLoader ) );
+                                                               stringDef.getName() ) );
 
             byte[] d = builder.buildClass( classDef, classLoader );
 
@@ -187,26 +183,19 @@ public class ClassBuilderTest {
 
             Class clazz = build(builder, classDef);
             long1Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                              long1Def.getName(),
-                                                              classLoader ) );
+                                                              long1Def.getName() ) );
             long2Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                              long2Def.getName(),
-                                                              classLoader ) );
+                                                              long2Def.getName() ) );
             doubleDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                               doubleDef.getName(),
-                                                               classLoader ) );
+                                                               doubleDef.getName() ) );
             intDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            intDef.getName(),
-                                                            classLoader ) );
+                                                            intDef.getName() ) );
             strDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            strDef.getName(),
-                                                            classLoader ) );
+                                                            strDef.getName( ) ) );
             dateDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                             dateDef.getName(),
-                                                             classLoader ) );
+                                                             dateDef.getName() ) );
             str2Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                             str2Def.getName(),
-                                                             classLoader ) );
+                                                             str2Def.getName() ) );
 
             Object x = clazz.newInstance();
             Object y = clazz.newInstance();
@@ -298,11 +287,9 @@ public class ClassBuilderTest {
 
             Class clazz = build(builder, classDef);
             intDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            intDef.getName(),
-                                                            classLoader ) );
+                                                            intDef.getName() ) );
             strDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            strDef.getName(),
-                                                            classLoader ) );
+                                                            strDef.getName() ) );
 
             Object x = clazz.newInstance();
 
@@ -362,26 +349,19 @@ public class ClassBuilderTest {
 
             Class clazz = build(builder, classDef);
             long1Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                              long1Def.getName(),
-                                                              classLoader ) );
+                                                              long1Def.getName() ) );
             long2Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                              long2Def.getName(),
-                                                              classLoader ) );
+                                                              long2Def.getName() ) );
             doubleDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                               doubleDef.getName(),
-                                                               classLoader ) );
+                                                               doubleDef.getName() ) );
             intDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            intDef.getName(),
-                                                            classLoader ) );
+                                                            intDef.getName() ) );
             strDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                            strDef.getName(),
-                                                            classLoader ) );
+                                                            strDef.getName() ) );
             dateDef.setReadWriteAccessor( store.getAccessor( clazz,
-                                                             dateDef.getName(),
-                                                             classLoader ) );
+                                                             dateDef.getName() ) );
             str2Def.setReadWriteAccessor( store.getAccessor( clazz,
-                                                             str2Def.getName(),
-                                                             classLoader ) );
+                                                             str2Def.getName() ) );
 
             Object x = clazz.newInstance();
 
@@ -442,8 +422,7 @@ public class ClassBuilderTest {
 
             for ( FieldDefinition field : fields ) {
                 field.setReadWriteAccessor( store.getAccessor( clazz,
-                                                               field.getName(),
-                                                               classLoader ) );
+                                                               field.getName() ) );
             }
 
             Constructor< ? >[] cons = clazz.getConstructors();

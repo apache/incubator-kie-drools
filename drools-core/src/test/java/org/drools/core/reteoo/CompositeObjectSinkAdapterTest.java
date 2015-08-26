@@ -218,8 +218,7 @@ public class CompositeObjectSinkAdapterTest {
     public void testTripleAlpha() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                          "type",
-                                                          this.getClass().getClassLoader() );
+                                                          "type" );
 
         final MvelConstraint lit = new MvelConstraintTestUtil( "type == \"stilton\"",
                                                                 new ObjectFieldImpl( "stilton" ),
@@ -281,8 +280,7 @@ public class CompositeObjectSinkAdapterTest {
     public void testTripleAlphaCharacterConstraint() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                          "charType",
-                                                          this.getClass().getClassLoader() );
+                                                          "charType" );
 
         final MvelConstraint lit = new MvelConstraintTestUtil( "charType == 65",
                                                                new LongFieldImpl( 65 ),
@@ -364,8 +362,7 @@ public class CompositeObjectSinkAdapterTest {
     public void testTripleAlphaObjectCharacterConstraint() {
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                          "charObjectType",
-                                                          this.getClass().getClassLoader() );
+                                                          "charObjectType" );
 
         final MvelConstraint lit = new MvelConstraintTestUtil( "charObjectType == 65",
                                                                new LongFieldImpl( 65 ),
@@ -448,8 +445,7 @@ public class CompositeObjectSinkAdapterTest {
 
         final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
         InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                          "type",
-                                                          this.getClass().getClassLoader() );
+                                                          "type" );
 
         final MvelConstraint lit1 = new MvelConstraintTestUtil( "type == \"stilton\"",
                                                                 new ObjectFieldImpl( "stilton" ),

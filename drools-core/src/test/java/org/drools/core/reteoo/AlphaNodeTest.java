@@ -69,8 +69,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
-                "type",
-                getClass().getClassLoader());
+                "type");
 
         final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
 
@@ -145,8 +144,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                                "type",
-                                                                getClass().getClassLoader() );
+                                                                "type" );
 
         final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
 
@@ -210,8 +208,7 @@ public class AlphaNodeTest extends DroolsTestCase {
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                                "type",
-                                                                getClass().getClassLoader() );
+                                                                "type" );
 
         final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
 

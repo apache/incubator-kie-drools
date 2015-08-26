@@ -16,16 +16,16 @@
 
 package org.drools.core.reteoo.test.dsl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.base.ArrayElements;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.InternalReadAccessor;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 public class BindingStep
     implements
@@ -77,16 +77,14 @@ public class BindingStep
             InternalReadAccessor extractor = null;
             if ( field.startsWith( "[" ) ) {
                 extractor = store.getReader( ArrayElements.class,
-                                             "elements",
-                                             getClass().getClassLoader() );
+                                             "elements" );
                 
                 extractor = new ArrayElementReader( extractor,
                                                     Integer.parseInt( field.substring( 1, field.length() -1 ) ),
                                                     reteTesterHelper.getTypeResolver().resolveType( cast ) );                
             } else {
                 extractor = store.getReader( reteTesterHelper.getTypeResolver().resolveType( type ),
-                                             field,
-                                             getClass().getClassLoader() );
+                                             field );
             }            
 
             Declaration declr = new Declaration( name,

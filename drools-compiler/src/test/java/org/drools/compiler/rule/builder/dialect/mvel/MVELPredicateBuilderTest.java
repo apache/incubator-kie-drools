@@ -15,41 +15,42 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.compiler.Cheese;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.core.definitions.InternalKnowledgePackage;
-import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
+import org.drools.compiler.lang.descr.PredicateDescr;
+import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.reteoo.MockLeftTupleSink;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.mvel.MVELPredicateExpression;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.compiler.compiler.AnalysisResult;
-import org.drools.compiler.lang.descr.PredicateDescr;
-import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.definitions.InternalKnowledgePackage;
+import org.drools.core.definitions.impl.KnowledgePackageImpl;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
-import org.drools.compiler.reteoo.MockLeftTupleSink;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.PredicateConstraint;
 import org.drools.core.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.core.spi.InternalReadAccessor;
+import org.junit.Before;
+import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MVELPredicateBuilderTest {
 
@@ -80,8 +81,7 @@ public class MVELPredicateBuilderTest {
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                             "price",
-                                                             getClass().getClassLoader() );
+                                                             "price" );
 
         final Pattern patternA = new Pattern( 0,
                                               new ClassObjectType( Cheese.class ) );

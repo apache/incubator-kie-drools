@@ -32,8 +32,6 @@ public class AccessorKey
     private int               hashCode;
     private AccessorType      type;
     
-    //private 
-
     public AccessorKey() {
     }
 
@@ -109,7 +107,7 @@ public class AccessorKey
         return this.className + "-" + this.fieldName;
     }
     
-    public static enum AccessorType {
-        FieldAccessor, ClassObjectType; //ObjectAccessor, GlobalAccessor;
+    public enum AccessorType {
+        FieldAccessor, ClassObjectType
     }
 }

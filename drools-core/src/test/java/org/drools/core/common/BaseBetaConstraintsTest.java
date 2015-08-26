@@ -60,8 +60,7 @@ public abstract class BaseBetaConstraintsTest {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
         InternalReadAccessor extractor = store.getReader( clazz,
-                                                          fieldName,
-                                                          getClass().getClassLoader() );
+                                                          fieldName );
         Declaration declaration = new Declaration( identifier,
                                                    extractor,
                                                    new Pattern( 0,
