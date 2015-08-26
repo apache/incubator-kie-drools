@@ -377,7 +377,7 @@ public class FromSolutionEntitySelectorTest {
     @Test(expected = IllegalStateException.class)
     public void listIteratorWithRandomSelection() {
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
-        when(entityDescriptor.getEntityClass()).thenReturn((Class)TestdataEntity.class);
+        when(entityDescriptor.getEntityClass()).thenReturn((Class) TestdataEntity.class);
         FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, SelectionCacheType.JUST_IN_TIME, true);
         entitySelector.listIterator();
     }
@@ -385,7 +385,7 @@ public class FromSolutionEntitySelectorTest {
     @Test(expected = IllegalStateException.class)
     public void indexedListIteratorWithRandomSelection() {
         EntityDescriptor entityDescriptor = mock(EntityDescriptor.class);
-        when(entityDescriptor.getEntityClass()).thenReturn((Class)TestdataEntity.class);
+        when(entityDescriptor.getEntityClass()).thenReturn((Class) TestdataEntity.class);
         FromSolutionEntitySelector entitySelector = new FromSolutionEntitySelector(entityDescriptor, SelectionCacheType.JUST_IN_TIME, true);
         entitySelector.listIterator(0);
     }

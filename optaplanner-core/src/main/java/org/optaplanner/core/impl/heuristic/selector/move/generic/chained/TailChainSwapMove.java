@@ -75,7 +75,7 @@ public class TailChainSwapMove extends AbstractMove {
         Object leftValue = variableDescriptor.getValue(leftEntity);
         Object rightEntity = inverseVariableSupply.getInverseSingleton(rightValue);
         if (ObjectUtils.equals(leftValue, rightValue)
-                || ObjectUtils.equals(leftEntity, rightValue) || ObjectUtils.equals(rightEntity, leftValue) ) {
+                || ObjectUtils.equals(leftEntity, rightValue) || ObjectUtils.equals(rightEntity, leftValue)) {
             return false;
         }
         if (rightEntity == null) {

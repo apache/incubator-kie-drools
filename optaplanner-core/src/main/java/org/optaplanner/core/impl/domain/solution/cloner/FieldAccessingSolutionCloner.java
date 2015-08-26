@@ -192,7 +192,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
 
     protected class FieldAccessingSolutionClonerRun {
 
-        protected Map<Object,Object> originalToCloneMap;
+        protected Map<Object, Object> originalToCloneMap;
         protected Queue<Unprocessed> unprocessedQueue;
 
         protected SolutionG cloneSolution(SolutionG originalSolution) {
@@ -276,7 +276,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             if (unprocessed.originalValue instanceof Collection) {
                 cloneValue = cloneCollection(unprocessed.field.getType(), (Collection<?>) unprocessed.originalValue);
             } else if (unprocessed.originalValue instanceof Map) {
-                cloneValue = cloneMap(unprocessed.field.getType(), (Map<?,?>) unprocessed.originalValue);
+                cloneValue = cloneMap(unprocessed.field.getType(), (Map<?, ?>) unprocessed.originalValue);
             } else {
                 cloneValue = clone(unprocessed.originalValue);
             }
@@ -307,7 +307,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
                 } else { // Default List
                     return new ArrayList<E>(originalCollection.size());
                 }
-            } if (originalCollection instanceof Set) {
+            } else if (originalCollection instanceof Set) {
                 if (originalCollection instanceof SortedSet) {
                     Comparator<E> setComparator = ((SortedSet) originalCollection).comparator();
                     return new TreeSet<E>(setComparator);
@@ -324,15 +324,15 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             }
         }
 
-        protected <K,V> Map<K,V> cloneMap(Class<?> expectedType, Map<K,V> originalMap) {
-            Map<K,V> cloneMap = constructCloneMap(originalMap);
+        protected <K, V> Map<K, V> cloneMap(Class<?> expectedType, Map<K, V> originalMap) {
+            Map<K, V> cloneMap = constructCloneMap(originalMap);
             if (!expectedType.isInstance(cloneMap)) {
                 throw new IllegalStateException("The cloneMapClass (" + cloneMap.getClass()
                         + ") created for originalMapClass (" + originalMap.getClass()
                         + ") is not assignable to the field's type (" + expectedType + ")."
                         + " Consider replacing the default " + SolutionCloner.class.getSimpleName() + ".");
             }
-            for (Map.Entry<K,V> originalEntry : originalMap.entrySet()) {
+            for (Map.Entry<K, V> originalEntry : originalMap.entrySet()) {
                 K cloneKey = cloneCollectionsElementIfNeeded(originalEntry.getKey());
                 V cloneValue = cloneCollectionsElementIfNeeded(originalEntry.getValue());
                 cloneMap.put(cloneKey, cloneValue);
@@ -340,18 +340,18 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             return cloneMap;
         }
 
-        protected <K,V> Map<K,V> constructCloneMap(Map<K,V> originalMap) {
+        protected <K, V> Map<K, V> constructCloneMap(Map<K, V> originalMap) {
             // Normally a Map will never be selected for cloning, but extending implementations might anyway
             if (originalMap instanceof SortedMap) {
                 Comparator setComparator = ((SortedMap) originalMap).comparator();
-                return new TreeMap<K,V>(setComparator);
+                return new TreeMap<K, V>(setComparator);
             } else if (originalMap instanceof LinkedHashMap) {
-                return new LinkedHashMap<K,V>(originalMap.size());
+                return new LinkedHashMap<K, V>(originalMap.size());
             } else if (originalMap instanceof HashMap) {
-                return new HashMap<K,V>(originalMap.size());
+                return new HashMap<K, V>(originalMap.size());
             } else { // Default Map
                 // Default to a LinkedHashMap to respect order
-                return new LinkedHashMap<K,V>(originalMap.size());
+                return new LinkedHashMap<K, V>(originalMap.size());
             }
         }
 

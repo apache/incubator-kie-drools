@@ -38,7 +38,7 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
     protected final NearbyDistanceMeter nearbyDistanceMeter;
     protected final NearbyRandom nearbyRandom;
     protected final boolean randomSelection;
-    protected final boolean discardNearbyIndexZero = true;// TODO deactivate me when appropriate
+    protected final boolean discardNearbyIndexZero = true; // TODO deactivate me when appropriate
 
     protected Map<Object, Object[]> originToDestinationsMap = null;
 

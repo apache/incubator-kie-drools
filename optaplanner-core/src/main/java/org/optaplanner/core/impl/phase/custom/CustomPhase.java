@@ -20,7 +20,7 @@ import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.Phase;
 
 /**
- * A {@link CustomPhase} is a {@link Phase} which uses the brute force algorithm
+ * A {@link CustomPhase} is a {@link Phase} which uses the brute force algorithm.
  * @see Phase
  * @see AbstractPhase
  * @see DefaultCustomPhase

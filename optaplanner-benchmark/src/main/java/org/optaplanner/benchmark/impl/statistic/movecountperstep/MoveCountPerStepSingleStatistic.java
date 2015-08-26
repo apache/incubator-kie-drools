@@ -48,7 +48,7 @@ public class MoveCountPerStepSingleStatistic extends ProblemBasedSingleStatistic
     public void close(Solver solver) {
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
-    
+
     private class MoveCountPerStepSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         @Override
@@ -56,8 +56,8 @@ public class MoveCountPerStepSingleStatistic extends ProblemBasedSingleStatistic
             if (stepScope instanceof LocalSearchStepScope) {
                 localSearchStepEnded((LocalSearchStepScope) stepScope);
             }
-        }        
-        
+        }
+
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
             long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
             pointList.add(new MoveCountPerStepStatisticPoint(timeMillisSpent,

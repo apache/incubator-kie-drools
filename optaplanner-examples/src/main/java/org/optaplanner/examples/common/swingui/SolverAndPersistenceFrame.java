@@ -607,8 +607,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     private Color determineScoreFieldForeground(int uninitializedVariableCount, Score<?> score) {
         if (uninitializedVariableCount > 0) {
             return TangoColorFactory.SCARLET_3;
-        }
-        else if (!(score instanceof FeasibilityScore)) {
+        } else if (!(score instanceof FeasibilityScore)) {
             return Color.BLACK;
         } else {
             FeasibilityScore<?> feasibilityScore = (FeasibilityScore<?>) score;

@@ -181,7 +181,7 @@ public class TerminationConfig implements Cloneable {
     public void setTerminationConfigList(List<TerminationConfig> terminationConfigList) {
         this.terminationConfigList = terminationConfigList;
     }
-    
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************

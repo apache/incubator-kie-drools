@@ -139,7 +139,7 @@ public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory
     }
 
     /**
-     * TODO DRY with {@link EmployeeWorkSequence}
+     * TODO DRY with {@link EmployeeWorkSequence}.
      */
     private static class AssignmentSequence {
 

@@ -386,7 +386,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
             final Object benchmarkResult = mixedCheckBox.getBenchmarkResult();
 
             JPanel mainPanel = new JPanel(new BorderLayout());
-            String benchmarkResultTextFieldText = null; 
+            String benchmarkResultTextFieldText = null;
             if (benchmarkResult instanceof SolverBenchmarkResult) {
                 benchmarkResultTextFieldText = solverBenchmarkResultNameMapping.get(benchmarkResult);
             }

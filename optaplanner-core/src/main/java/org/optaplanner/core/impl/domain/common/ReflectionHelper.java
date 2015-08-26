@@ -114,7 +114,9 @@ public final class ReflectionHelper {
                 + (propertyName.isEmpty() ? "" : propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1));
         try {
             return containingClass.getMethod(getterName);
-        } catch (NoSuchMethodException e) {}
+        } catch (NoSuchMethodException e) {
+            // intentionally empty
+        }
         String isserName = PROPERTY_ACCESSOR_PREFIX_IS
                 + (propertyName.isEmpty() ? "" : propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1));
         try {
@@ -122,7 +124,9 @@ public final class ReflectionHelper {
             if (method.getReturnType() == boolean.class) {
                 return method;
             }
-        } catch (NoSuchMethodException e) {}
+        } catch (NoSuchMethodException e) {
+            // intentionally empty
+        }
         return null;
     }
 

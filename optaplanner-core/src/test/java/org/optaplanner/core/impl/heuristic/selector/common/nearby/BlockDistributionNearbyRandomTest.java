@@ -41,7 +41,7 @@ public class BlockDistributionNearbyRandomTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void sizeRatioTooHigh(){
+    public void sizeRatioTooHigh() {
         NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 300, 1.2, 0.0);
     }
 

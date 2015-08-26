@@ -58,11 +58,11 @@ public class EmployeePanel extends JPanel {
     private JLabel employeeLabel;
     private JButton deleteButton;
     private JPanel shiftDateListPanel = null;
-    private Map<ShiftDate,JPanel> shiftDatePanelMap;
+    private Map<ShiftDate, JPanel> shiftDatePanelMap;
     private Map<Shift, JPanel> shiftPanelMap;
     private JLabel numberOfShiftAssignmentsLabel;
 
-    private Map<ShiftAssignment, JButton> shiftAssignmentButtonMap = new HashMap<ShiftAssignment, JButton> ();
+    private Map<ShiftAssignment, JButton> shiftAssignmentButtonMap = new HashMap<ShiftAssignment, JButton>();
 
     public EmployeePanel(NurseRosteringPanel nurseRosteringPanel, List<ShiftDate> shiftDateList, List<Shift> shiftList,
             Employee employee) {
@@ -258,5 +258,5 @@ public class EmployeePanel extends JPanel {
         }
 
     }
-    
+
 }

@@ -360,5 +360,5 @@ public class CloudComputerPanel extends JPanel {
         }
 
     }
-    
+
 }

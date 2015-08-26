@@ -196,7 +196,7 @@ public class NurseRosteringPanel extends SolutionPanel {
                 if (windowStartIndex < 0) {
                     throw new IllegalStateException("The planningWindowStart ("
                             + planningWindowStart + ") must be in the shiftDateList ("
-                            + shiftDateList +").");
+                            + shiftDateList + ").");
                 }
                 ShiftDate oldLastShiftDate = shiftDateList.get(shiftDateList.size() - 1);
                 ShiftDate newShiftDate = new ShiftDate();

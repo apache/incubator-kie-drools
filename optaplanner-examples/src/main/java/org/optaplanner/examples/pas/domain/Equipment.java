@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 /**
- * AKA RoomProperty
+ * AKA RoomProperty.
  */
 @XStreamAlias("Equipment")
 public class Equipment extends AbstractPersistable {

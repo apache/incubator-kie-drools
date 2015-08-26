@@ -108,7 +108,7 @@ public class SolutionDescriptor {
 
     private final Class<? extends Solution> solutionClass;
     private SolutionCloner solutionCloner;
-    
+
     private final Map<String, MemberAccessor> entityPropertyAccessorMap;
     private final Map<String, MemberAccessor> entityCollectionPropertyAccessorMap;
 

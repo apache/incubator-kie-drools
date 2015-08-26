@@ -106,7 +106,7 @@ public class ConstraintMatchTotalStepScoreSingleStatistic extends PureSingleStat
         }
 
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
-            if (constraintMatchEnabled ) {
+            if (constraintMatchEnabled) {
                 long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
                 for (ConstraintMatchTotal constraintMatchTotal
                         : stepScope.getScoreDirector().getConstraintMatchTotals()) {

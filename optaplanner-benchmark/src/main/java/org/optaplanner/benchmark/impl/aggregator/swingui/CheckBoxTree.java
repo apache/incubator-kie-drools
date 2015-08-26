@@ -96,7 +96,7 @@ public class CheckBoxTree extends JTree {
         checkBox.setStatus(newStatus);
         selectChildren(currentNode, newStatus);
         TreeNode[] ancestorNodes = currentNode.getPath();
-        // examine ancestors, don't lose track of most recent changes - bottom-up approach 
+        // examine ancestors, don't lose track of most recent changes - bottom-up approach
         for (int i = ancestorNodes.length - 2; i >= 0; i--) {
             DefaultMutableTreeNode ancestorNode = (DefaultMutableTreeNode) ancestorNodes[i];
             MixedCheckBox ancestorCheckbox = (MixedCheckBox) ancestorNode.getUserObject();

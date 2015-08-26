@@ -23,11 +23,11 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
  */
 public enum SelectionSorterOrder {
     /**
-     * For example: 0, 1, 2, 3
+     * For example: 0, 1, 2, 3.
      */
     ASCENDING,
     /**
-     * For example: 3, 2, 1, 0
+     * For example: 3, 2, 1, 0.
      */
     DESCENDING;
 

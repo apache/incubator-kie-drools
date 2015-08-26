@@ -66,7 +66,7 @@ public class TaskAssignment extends AbstractPersistable {
     // ************************************************************************
 
     /**
-     * Exclusive
+     * Exclusive.
      * @return null if {@link #getStartPeriod()} is null
      */
     public Integer getEndPeriod() {

@@ -36,7 +36,7 @@ public class ComparatorSelectionSorterTest {
         ComparatorSelectionSorter selectionSorter = new ComparatorSelectionSorter(new TestComparator(), SelectionSorterOrder.ASCENDING);
         selectionSorter.sort(null, arrayToSort);
         assertTrue(ascendingSort(arrayToSort));
-        
+
         arrayToSort = new ArrayList<Object>();
         Collections.addAll(arrayToSort, baseArray);
         selectionSorter = new ComparatorSelectionSorter(new TestComparator(), SelectionSorterOrder.DESCENDING);
@@ -49,7 +49,9 @@ public class ComparatorSelectionSorterTest {
         for (Object aList : list) {
             if (tmp <= (Integer) aList) {
                 tmp = (Integer) aList;
-            } else return false;
+            } else {
+                return false;
+            }
         }
         return true;
     }
@@ -59,7 +61,9 @@ public class ComparatorSelectionSorterTest {
         for (Object aList : list) {
             if (tmp >= (Integer) aList) {
                 tmp = (Integer) aList;
-            } else return false;
+            } else {
+                return false;
+            }
         }
         return true;
     }
@@ -70,7 +74,7 @@ public class ComparatorSelectionSorterTest {
         public int compare(Object o, Object o2) {
             Integer first = (Integer) o;
             Integer second = (Integer) o2;
-            if(first.intValue() == second.intValue()) {
+            if (first.intValue() == second.intValue()) {
                 return 0;
             }
             return first > second ? 1 : -1;

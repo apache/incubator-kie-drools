@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Implementations must be immutable
+ * Implementations must be immutable.
  */
 public abstract class StatisticPoint {
 

@@ -42,5 +42,5 @@ public class MoveCountPerStepStatisticPoint extends StatisticPoint {
         return buildCsvLineWithLongs(timeMillisSpent, moveCountPerStepMeasurement.getAcceptedMoveCount(),
                 moveCountPerStepMeasurement.getSelectedMoveCount());
     }
-   
+
 }

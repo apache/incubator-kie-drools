@@ -131,7 +131,7 @@ public class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
         // bestScore unchanged
         acceptor.stepEnded(stepScope5);
         phaseScope.setLastCompletedStepScope(stepScope5);
-        
+
         acceptor.phaseEnded(phaseScope);
     }
 
@@ -226,7 +226,7 @@ public class LateAcceptanceAcceptorTest extends AbstractAcceptorTest {
 
         // lateScore = -200, lastCompletedStepScore = -300
         LocalSearchStepScope stepScope5 = new LocalSearchStepScope(phaseScope);
-        LocalSearchMoveScope moveScope5= buildMoveScope(stepScope1, -300);
+        LocalSearchMoveScope moveScope5 = buildMoveScope(stepScope1, -300);
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope5, -301)));
         assertEquals(false, acceptor.isAccepted(buildMoveScope(stepScope5, -400)));
         assertEquals(true, acceptor.isAccepted(moveScope5));

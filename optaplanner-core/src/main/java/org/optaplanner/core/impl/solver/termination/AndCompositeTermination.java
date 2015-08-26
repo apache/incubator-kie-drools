@@ -23,7 +23,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 public class AndCompositeTermination extends AbstractCompositeTermination {
 
-    public AndCompositeTermination(List<Termination>terminationList) {
+    public AndCompositeTermination(List<Termination> terminationList) {
         super(terminationList);
     }
 

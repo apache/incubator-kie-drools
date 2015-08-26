@@ -65,8 +65,7 @@ import org.optaplanner.examples.vehiclerouting.app.VehicleRoutingApp;
 public class OptaPlannerExamplesApp extends JFrame {
 
     /**
-     * Supported system properties:
-     * {@link AbstractSolutionDao#DATA_DIR_SYSTEM_PROPERTY}
+     * Supported system properties: {@link AbstractSolutionDao#DATA_DIR_SYSTEM_PROPERTY}.
      * @param args never null
      */
     public static void main(String[] args) {
@@ -257,7 +256,7 @@ public class OptaPlannerExamplesApp extends JFrame {
     private class WebExamplesDialog extends JDialog {
 
         private WebExamplesDialog() {
-            super (OptaPlannerExamplesApp.this, "Web examples", true);
+            super(OptaPlannerExamplesApp.this, "Web examples", true);
             JPanel contentPanel = new JPanel(new BorderLayout(5, 5));
             contentPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
             contentPanel.add(createMiddlePanel(), BorderLayout.CENTER);

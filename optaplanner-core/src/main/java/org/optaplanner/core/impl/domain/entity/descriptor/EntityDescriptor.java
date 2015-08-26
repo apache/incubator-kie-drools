@@ -322,7 +322,7 @@ public class EntityDescriptor {
     public Class<?> getEntityClass() {
         return entityClass;
     }
-    
+
     public boolean matchesEntity(Object entity) {
         return entityClass.isAssignableFrom(entity.getClass());
     }
@@ -363,7 +363,7 @@ public class EntityDescriptor {
     public boolean hasGenuineVariableDescriptor(String variableName) {
         return effectiveGenuineVariableDescriptorMap.containsKey(variableName);
     }
-    
+
     public GenuineVariableDescriptor getGenuineVariableDescriptor(String variableName) {
         return effectiveGenuineVariableDescriptorMap.get(variableName);
     }

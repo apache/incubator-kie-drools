@@ -36,7 +36,7 @@ public class SubChainChangeMove extends AbstractMove {
     protected final SingletonInverseVariableSupply inverseVariableSupply;
     private final Object toPlanningValue;
 
-    public SubChainChangeMove(SubChain subChain,GenuineVariableDescriptor variableDescriptor,
+    public SubChainChangeMove(SubChain subChain, GenuineVariableDescriptor variableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply, Object toPlanningValue) {
         this.subChain = subChain;
         this.variableDescriptor = variableDescriptor;

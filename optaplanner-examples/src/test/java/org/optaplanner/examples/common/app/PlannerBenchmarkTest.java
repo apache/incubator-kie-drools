@@ -52,7 +52,7 @@ public abstract class PlannerBenchmarkTest extends LoggingTest {
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         plannerBenchmark.benchmark();
     }
-    
+
     protected PlannerBenchmarkFactory buildPlannerBenchmarkFactory(File unsolvedDataFile) {
         String benchmarkConfigResource = createBenchmarkConfigResource();
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(benchmarkConfigResource);

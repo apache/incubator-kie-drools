@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.solver.termination.AbstractTermination;
 
 /**
  * Concurrency notes:
- * Condition predicate on ({@link #problemFactChangeQueue} is not empty or {@link #terminatedEarly} is true)
+ * Condition predicate on ({@link #problemFactChangeQueue} is not empty or {@link #terminatedEarly} is true).
  */
 public class BasicPlumbingTermination extends AbstractTermination {
 
@@ -44,13 +44,13 @@ public class BasicPlumbingTermination extends AbstractTermination {
     // ************************************************************************
     // Plumbing worker methods
     // ************************************************************************
-    
+
     public synchronized void resetTerminateEarly() {
         terminatedEarly = false;
     }
 
     /**
-     * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}
+     * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}.
      * @return true if successful
      */
     public synchronized boolean terminateEarly() {
@@ -89,7 +89,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
     }
 
     /**
-     * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}
+     * Concurrency note: unblocks {@link #waitForRestartSolverDecision()}.
      * @param problemFactChange never null
      * @return as specified by {@link Collection#add}
      */

@@ -62,7 +62,7 @@ public class EntityTabuAcceptorTest {
         stepScope0.setStep(moveScope1.getMove());
         acceptor.stepEnded(stepScope0);
         phaseScope.setLastCompletedStepScope(stepScope0);
-        
+
         LocalSearchStepScope stepScope1 = new LocalSearchStepScope(phaseScope);
         LocalSearchMoveScope moveScope2 = buildMoveScope(stepScope1, e2);
         assertEquals(true, acceptor.isAccepted(buildMoveScope(stepScope1, e0)));
@@ -110,7 +110,7 @@ public class EntityTabuAcceptorTest {
         stepScope4.setStep(moveScope1Again.getMove());
         acceptor.stepEnded(stepScope4);
         phaseScope.setLastCompletedStepScope(stepScope4);
-        
+
         acceptor.phaseEnded(phaseScope);
     }
 

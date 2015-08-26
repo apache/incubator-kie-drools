@@ -119,7 +119,7 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
     }
 
     /**
-     * Not incremental
+     * Not incremental.
      */
     public long calculateExpectedReturnMicros() {
         long expectedReturnMicros = 0L;
@@ -130,7 +130,7 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
     }
 
     /**
-     * Not incremental
+     * Not incremental.
      */
     public long calculateStandardDeviationMicros() {
         long squaredFemtos = calculateStandardDeviationSquaredFemtos();
@@ -138,7 +138,7 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
     }
 
     /**
-     * Not incremental
+     * Not incremental.
      */
     public long calculateStandardDeviationSquaredFemtos() {
         long totalFemtos = 0L;

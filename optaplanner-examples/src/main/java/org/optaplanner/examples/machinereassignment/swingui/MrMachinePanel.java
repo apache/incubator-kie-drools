@@ -174,7 +174,7 @@ public class MrMachinePanel extends JPanel {
                 usedTotal += processAssignment.getProcess().getProcessRequirement(resource).getUsage();
             }
             resourceField.setText(usedTotal + " / " + maximumCapacity);
-            resourceField.setForeground(usedTotal > maximumCapacity? TangoColorFactory.SCARLET_3 :
+            resourceField.setForeground(usedTotal > maximumCapacity ? TangoColorFactory.SCARLET_3 :
                     (usedTotal > safetyCapacity ? TangoColorFactory.ORANGE_3 : Color.BLACK));
             resourceField.setEnabled(used);
         }
@@ -219,5 +219,5 @@ public class MrMachinePanel extends JPanel {
         }
 
     }
-    
+
 }

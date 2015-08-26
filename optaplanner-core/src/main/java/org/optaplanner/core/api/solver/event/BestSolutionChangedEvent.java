@@ -61,9 +61,9 @@ public class BestSolutionChangedEvent<SolutionG extends Solution> extends EventO
      * Note that:
      * <ul>
      *     <li>In real-time planning, not all {@link ProblemFactChange}s might be processed:
-     *     check {@link #isEveryProblemFactChangeProcessed()}</li>
-     *     <li>this {@link Solution} might be uninitialized: check {@link #isNewBestSolutionInitialized()}</li>
-     *     <li>this {@link Solution} might be infeasible: check {@link FeasibilityScore#isFeasible()}</li>
+     *     check {@link #isEveryProblemFactChangeProcessed()}.</li>
+     *     <li>this {@link Solution} might be uninitialized: check {@link #isNewBestSolutionInitialized()}.</li>
+     *     <li>this {@link Solution} might be infeasible: check {@link FeasibilityScore#isFeasible()}.</li>
      * </ul>
      * @return never null
      */

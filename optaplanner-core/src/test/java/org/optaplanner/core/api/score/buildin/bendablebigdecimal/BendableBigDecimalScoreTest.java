@@ -60,12 +60,12 @@ public class BendableBigDecimalScoreTest extends AbstractScoreTest {
     private static final BigDecimal MINUS_5000 = BigDecimal.valueOf(-5000);
     private static final BigDecimal MINUS_8000 = BigDecimal.valueOf(-8000);
     private static final BigDecimal MIN_INTEGER = BigDecimal.valueOf(Integer.MIN_VALUE);
-    
+
     private BendableBigDecimalScoreDefinition scoreDefinitionHSS = new BendableBigDecimalScoreDefinition(1, 2);
 
     @Test
     public void parseScore() {
-        assertEquals(scoreDefinitionHSS.createScore(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258), 
+        assertEquals(scoreDefinitionHSS.createScore(BigDecimal.valueOf(-147), BigDecimal.valueOf(-258),
                 BigDecimal.valueOf(-369)), scoreDefinitionHSS.parseScore("-147/-258/-369"));
     }
 
