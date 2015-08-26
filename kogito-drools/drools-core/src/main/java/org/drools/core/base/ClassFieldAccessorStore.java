@@ -21,10 +21,8 @@ import org.drools.core.base.extractors.MVELDateClassFieldReader;
 import org.drools.core.base.extractors.MVELNumberClassFieldReader;
 import org.drools.core.base.extractors.MVELObjectClassFieldReader;
 import org.drools.core.rule.TypeDeclaration;
-import org.drools.core.spi.Acceptor;
 import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.AcceptsWriteAccessor;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.asm.ClassFieldInspector;
@@ -39,10 +37,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 public class ClassFieldAccessorStore
     implements
@@ -80,17 +76,8 @@ public class ClassFieldAccessorStore
         this.cache = cache;
     }
 
-    public ClassFieldWriter getWriter(Class cls,
-                                      String fieldName,
-                                      ClassLoader classLoader) {
-        return getWriter( cls.getName(),
-                          fieldName,
-                          null );
-    }
-
     public ClassFieldReader getReader(Class cls,
-                                      String fieldName,
-                                      ClassLoader classLoader) {
+                                      String fieldName) {
         return getReader( cls.getName(),
                           fieldName,
                           null,
@@ -130,10 +117,8 @@ public class ClassFieldAccessorStore
             }
         }
 
-
         if ( target != null ) {
             target.setReadAccessor( entry.getClassFieldReader() );
-            entry.addAccessorTarget( target );
         }
 
         if ( !exists ) {
@@ -181,41 +166,8 @@ public class ClassFieldAccessorStore
         }       
     }     
 
-    public synchronized ClassFieldWriter getWriter(final String className,
-                                                   final String fieldName,
-                                                   final AcceptsWriteAccessor target) {
-        AccessorKey key = new AccessorKey( className,
-                                           fieldName,
-                                           AccessorKey.AccessorType.FieldAccessor );
-        FieldLookupEntry entry = (FieldLookupEntry) this.lookup.get( key );
-        boolean exists = true;
-        if ( entry == null ) {
-            exists = false;
-            entry = new FieldLookupEntry( new ClassFieldWriter( className,
-                                                                fieldName ) );
-        }
-
-        if ( this.eagerWire ) {
-            wire( entry.getClassFieldReader() );
-        }
-
-        if ( target != null ) {
-            target.setWriteAccessor( entry.getClassFieldWriter() );
-            entry.addAccessorTarget( target );
-        }
-
-        if ( !exists ) {
-            // we delay the key writing as we only want to do it if the wiring was successful
-            this.lookup.put( key,
-                             entry );
-        }
-
-        return entry.getClassFieldWriter();
-    }
-
     public ClassFieldAccessor getAccessor(Class cls,
-                                          String fieldName,
-                                          ClassLoader classLoader) {
+                                          String fieldName) {
         return getAccessor( cls.getName(),
                             fieldName );
     }
@@ -238,8 +190,6 @@ public class ClassFieldAccessorStore
         ClassFieldAccessor accessor = new ClassFieldAccessor( (ClassFieldReader) entry.getClassFieldReader(),
                                                               entry.getClassFieldWriter() );
 
-        entry.addAccessorTarget( accessor );
-
         if ( this.eagerWire ) {
             wire( entry.getClassFieldReader() );
             wire( entry.getClassFieldWriter() );
@@ -247,53 +197,6 @@ public class ClassFieldAccessorStore
 
         return accessor;
     }
-
-    //    public PatternExtractor getObjectAccessor(final Class cls,
-    //                                              final String identifier,
-    //                                              final Declaration declaration) {
-    //        AccessorKey key = new AccessorKey( cls.getName(),
-    //                                           identifier, // we are re-using the fieldName as a global identifier
-    //                                           AccessorKey.AccessorType.GlobalAccessor );
-    //
-    //        ObjectExtractorLookupEntry entry = (ObjectExtractorLookupEntry) this.lookup.get( key );
-    //        if ( entry == null ) {
-    //            PatternExtractor extractor = (PatternExtractor) declaration.getExtractor();
-    //            entry = new ObjectExtractorLookupEntry( extractor );
-    //            this.lookup.put( key,
-    //                             entry );
-    //        }
-    //
-    //        entry.addAccessorTarget( declaration );
-    //
-    //        // there is no wiring here as the GlobalExtractor already references the class,
-    //        // although we will need to re-wire on serialisation
-    //
-    //        return entry.getObjectExtractor();
-    //    }
-    //
-    //    public GlobalExtractor getGlobalAccessor(final ClassObjectType classObjectType,
-    //                                             final String identifier,
-    //                                             final Declaration declaration) {
-    //        AccessorKey key = new AccessorKey( classObjectType.getClassType().getName(),
-    //                                           identifier, // we are re-using the fieldName as a global identifier
-    //                                           AccessorKey.AccessorType.GlobalAccessor );
-    //
-    //        GlobalExtractorLookupEntry entry = (GlobalExtractorLookupEntry) this.lookup.get( key );
-    //        if ( entry == null ) {
-    //            entry = new GlobalExtractorLookupEntry( new GlobalExtractor( identifier,
-    //                                                                         classObjectType ) );
-    //            this.lookup.put( key,
-    //                             entry );
-    //        }
-    //
-    //        entry.addAccessorTarget( declaration );
-    //        declaration.setReadAccessor( entry.getGlobalExtractor() );
-    //
-    //        // there is no wiring here as the GlobalExtractor already references the class,
-    //        // although we will need to re-wire on serialisation
-    //
-    //        return entry.getGlobalExtractor();
-    //    }
 
     public ClassObjectType getClassObjectType(final ClassObjectType objectType,
                                               final AcceptsClassObjectType target) {
@@ -317,7 +220,6 @@ public class ClassFieldAccessorStore
         }
 
         if ( target != null ) {
-            entry.addAccessorTarget( target );
             target.setClassObjectType( entry.getClassObjectType() );
         }
 
@@ -333,31 +235,12 @@ public class ClassFieldAccessorStore
 
     public void merge(ClassFieldAccessorStore other) {
         for ( Entry<AccessorKey, BaseLookupEntry> entry : other.lookup.entrySet() ) {
-
             switch ( entry.getValue().getAccessorType() ) {
                 case FieldAccessor : {
                     FieldLookupEntry lookupEntry = (FieldLookupEntry) this.lookup.get( entry.getKey() );
                     if ( lookupEntry == null ) {
                         lookupEntry = (FieldLookupEntry) entry.getValue();
-                        this.lookup.put( entry.getKey(),
-                                         lookupEntry );
-                        for ( Acceptor target : lookupEntry.getAccessorTargets() ) {
-                            if ( target instanceof ClassWireable ) {
-                                wire( (ClassWireable) target );
-                            }
-                        }
-                    } else {
-                        // iterate through new targets adding them and wiring them up
-                        // to the existing ClassFieldReader, no need to wire generated accessor
-                        // as we know it already exists
-                        for ( Acceptor target : entry.getValue().getAccessorTargets() ) {
-                            if ( target instanceof AcceptsReadAccessor ) {
-                                ((AcceptsReadAccessor) target).setReadAccessor( lookupEntry.getClassFieldReader() );
-                            } else if ( target instanceof AcceptsWriteAccessor ) {
-                                ((AcceptsWriteAccessor) target).setWriteAccessor( lookupEntry.getClassFieldWriter() );
-                            }
-                            lookupEntry.addAccessorTarget( target );
-                        }
+                        this.lookup.put( entry.getKey(), lookupEntry );
                     }
                     // wire up ClassFieldReaders
                     if (lookupEntry.getClassFieldReader() != null ) {
@@ -372,50 +255,12 @@ public class ClassFieldAccessorStore
                 case ClassObjectType : {
                     ClassObjectTypeLookupEntry lookupEntry = (ClassObjectTypeLookupEntry) this.lookup.get( entry.getKey() );
                     if ( lookupEntry == null ) {
-                                                // Create new entry with correct ClassObjectType and targets
+                        // Create new entry with correct ClassObjectType and targets
                         lookupEntry = new ClassObjectTypeLookupEntry(  cache.getClassObjectType( ((ClassObjectTypeLookupEntry) entry.getValue()).getClassObjectType(), true ) );
+                        this.lookup.put( entry.getKey(), lookupEntry );
 
-                        this.lookup.put( entry.getKey(),
-                                         lookupEntry );
-
-                    }
-
-                    for ( Acceptor target : entry.getValue().getAccessorTargets() ) {
-                        ((AcceptsClassObjectType) target).setClassObjectType( lookupEntry.getClassObjectType() );
-                        lookupEntry.addAccessorTarget( target );
                     }
                 }
-
-                    //                case ObjectAccessor : {
-                    //                    ObjectExtractorLookupEntry lookupEntry = ( ObjectExtractorLookupEntry ) this.lookup.get( entry.getKey() );
-                    //                    if ( lookupEntry == null ) {
-                    //                        lookupEntry = ( ObjectExtractorLookupEntry )  entry.getValue();
-                    //                        this.lookup.put( entry.getKey(),
-                    //                                         lookupEntry );
-                    //                        wire( lookupEntry.getObjectExtractor() );
-                    //                    } else {
-                    //                        for ( Acceptor target : entry.getValue().getAccessorTargets() ) {
-                    //                            ((Declaration)target).setReadAccessor( lookupEntry.getObjectExtractor() );
-                    //                            lookupEntry.addAccessorTarget( target );
-                    //                        }
-                    //                    }
-                    //                    break;
-                    //                }
-                    //                case GlobalAccessor : {
-                    //                    GlobalExtractorLookupEntry lookupEntry = ( GlobalExtractorLookupEntry ) this.lookup.get( entry.getKey() );
-                    //                    if ( lookupEntry == null ) {
-                    //                        lookupEntry = ( GlobalExtractorLookupEntry )  entry.getValue();
-                    //                        this.lookup.put( entry.getKey(),
-                    //                                         lookupEntry );
-                    //                        wire( lookupEntry.getGlobalExtractor() );
-                    //                    } else {
-                    //                        for ( Acceptor target : entry.getValue().getAccessorTargets() ) {
-                    //                            ((Declaration)target).setReadAccessor( lookupEntry.getGlobalExtractor() );
-                    //                            lookupEntry.addAccessorTarget( target );
-                    //                        }
-                    //                    }
-                    //                    break;
-                    //                }
             }
         }
     }
@@ -440,17 +285,6 @@ public class ClassFieldAccessorStore
                     wire( classObjectType );
                     break;
                 }
-
-                    //                case ObjectAccessor : {
-                    //                    PatternExtractor reader = ((ObjectExtractorLookupEntry) entry.getValue()).getObjectExtractor();
-                    //                    wire( reader );
-                    //                    break;
-                    //                }
-                    //                case GlobalAccessor : {
-                    //                    GlobalExtractor reader = ((GlobalExtractorLookupEntry) entry.getValue()).getGlobalExtractor();
-                    //                    wire( reader );
-                    //                    break;
-                    //                }
             }
         }
     }
@@ -484,57 +318,11 @@ public class ClassFieldAccessorStore
         return inspectors.containsKey( klass ) ? inspectors.get( klass ).getInspectionResults( fieldName ) : Collections.EMPTY_LIST;
     }
 
-    public static abstract class BaseLookupEntry
-        implements
-        Externalizable {
-        // we use an identity hashmap to avoid hashcode/equals being called on stored targets
-        private Map<Acceptor, Object> accessorTargets = Collections.<Acceptor, Object> emptyMap();
-
-        public BaseLookupEntry() {
-
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( accessorTargets );
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            accessorTargets = (Map<Acceptor, Object>) in.readObject();
-
-        }
-
-        public Set<Acceptor> getAccessorTargets() {
-            return accessorTargets.keySet();
-        }
-
-        public void addAccessorTarget(Acceptor target) {
-            if ( this.accessorTargets == Collections.EMPTY_MAP ) {
-                this.accessorTargets = new IdentityHashMap<Acceptor, Object>();
-            }
-
-            this.accessorTargets.put( target, null );
-        }
-
-        public void addAccessorTargets(Set<Acceptor> targets) {
-            if ( this.accessorTargets == Collections.EMPTY_MAP ) {
-                this.accessorTargets = new IdentityHashMap<Acceptor, Object>( );
-            }
-
-            for ( Acceptor target : targets ) {
-                this.accessorTargets.put( target, null );
-            }
-        }
-
-        public void removeTarget(Acceptor target) {
-            this.accessorTargets.remove( target );
-        }
-
-        public abstract AccessorKey.AccessorType getAccessorType();
-
+    public interface BaseLookupEntry extends Externalizable {
+        AccessorKey.AccessorType getAccessorType();
     }
 
-    public static class ClassObjectTypeLookupEntry extends BaseLookupEntry {
+    public static class ClassObjectTypeLookupEntry implements BaseLookupEntry {
         ClassObjectType classObjectType;
 
         public ClassObjectTypeLookupEntry() {
@@ -547,13 +335,11 @@ public class ClassFieldAccessorStore
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal( out );
             out.writeObject( classObjectType );
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            super.readExternal( in );
             classObjectType = (ClassObjectType) in.readObject();
         }
 
@@ -571,73 +357,7 @@ public class ClassFieldAccessorStore
 
     }
 
-    //
-    //    public static class GlobalExtractorLookupEntry extends BaseLookupEntry {
-    //        GlobalExtractor globalExtractor;
-    //
-    //        public GlobalExtractorLookupEntry() {
-    //            super();
-    //        }
-    //
-    //        public GlobalExtractorLookupEntry(GlobalExtractor globalExtractor) {
-    //            super();
-    //            this.globalExtractor = globalExtractor;
-    //        }
-    //
-    //        public void writeExternal(ObjectOutput out) throws IOException {
-    //            super.writeExternal( out );
-    //            out.writeObject( globalExtractor );
-    //        }
-    //
-    //        public void readExternal(ObjectInput in) throws IOException,
-    //                                                ClassNotFoundException {
-    //            super.readExternal( in );
-    //            globalExtractor = (GlobalExtractor) in.readObject();
-    //        }
-    //
-    //        public GlobalExtractor getGlobalExtractor() {
-    //            return globalExtractor;
-    //        }
-    //
-    //        public AccessorType getAccessorType() {
-    //            return AccessorKey.AccessorType.GlobalAccessor;
-    //        }
-    //
-    //    }
-    //
-    //    public static class ObjectExtractorLookupEntry extends BaseLookupEntry {
-    //        PatternExtractor patternExtractor;
-    //
-    //        public ObjectExtractorLookupEntry() {
-    //            super();
-    //        }
-    //
-    //        public ObjectExtractorLookupEntry(PatternExtractor patternExtractor) {
-    //            super();
-    //            this.patternExtractor = patternExtractor;
-    //        }
-    //
-    //        public void writeExternal(ObjectOutput out) throws IOException {
-    //            super.writeExternal( out );
-    //            out.writeObject( patternExtractor );
-    //        }
-    //
-    //        public void readExternal(ObjectInput in) throws IOException,
-    //                                                ClassNotFoundException {
-    //            super.readExternal( in );
-    //            patternExtractor = (PatternExtractor) in.readObject();
-    //        }
-    //
-    //        public PatternExtractor getObjectExtractor() {
-    //            return patternExtractor;
-    //        }
-    //
-    //        public AccessorType getAccessorType() {
-    //            return AccessorKey.AccessorType.ObjectAccessor;
-    //        }
-    //    }
-    //
-    public static class FieldLookupEntry extends BaseLookupEntry {
+    public static class FieldLookupEntry implements BaseLookupEntry {
         private InternalReadAccessor reader;
         private ClassFieldWriter writer;
 
@@ -660,14 +380,12 @@ public class ClassFieldAccessorStore
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal( out );
             out.writeObject( reader );
             out.writeObject( writer );
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            super.readExternal( in );
             reader = (InternalReadAccessor) in.readObject();
             writer = (ClassFieldWriter) in.readObject();
         }
@@ -684,68 +402,4 @@ public class ClassFieldAccessorStore
             return AccessorKey.AccessorType.FieldAccessor;
         }
     }
-
-    //    public static class LookupEntry
-    //        implements
-    //        Externalizable {
-    //        private ClassFieldReader     reader;
-    //        private ClassFieldWriter     writer;
-    //        private Set<AcceptsAccessor> accessorTargets = Collections.<AcceptsAccessor> emptySet();
-    //
-    //        public LookupEntry() {
-    //
-    //        }
-    //
-    //        public void writeExternal(ObjectOutput out) throws IOException {
-    //            out.writeObject( reader );
-    //            out.writeObject( writer );
-    //            out.writeObject( accessorTargets );
-    //        }
-    //
-    //        public void readExternal(ObjectInput in) throws IOException,
-    //                                                ClassNotFoundException {
-    //            reader = (ClassFieldReader) in.readObject();
-    //            writer = (ClassFieldWriter) in.readObject();
-    //            accessorTargets = (Set<AcceptsAccessor>) in.readObject();
-    //
-    //        }
-    //
-    //        public LookupEntry(ClassFieldReader reader) {
-    //            this.reader = reader;
-    //        }
-    //
-    //        public LookupEntry(ClassFieldWriter writer) {
-    //            this.writer = writer;
-    //        }
-    //
-    //        public LookupEntry(ClassFieldReader reader,
-    //                           ClassFieldWriter writer) {
-    //            this.writer = writer;
-    //            this.reader = reader;
-    //        }
-    //
-    //        public ClassFieldReader getClassFieldReader() {
-    //            return reader;
-    //        }
-    //
-    //        public ClassFieldWriter getClassFieldWriter() {
-    //            return this.writer;
-    //        }
-    //
-    //        public Set<AcceptsAccessor> getAccessorTargets() {
-    //            return accessorTargets;
-    //        }
-    //
-    //        public void addAccessorTarget(AcceptsAccessor target) {
-    //            if ( this.accessorTargets == Collections.EMPTY_SET ) {
-    //                this.accessorTargets = new HashSet<AcceptsAccessor>();
-    //            }
-    //
-    //            this.accessorTargets.add( target );
-    //        }
-    //
-    //        public void removeConstraint(Constraint constraint) {
-    //            this.accessorTargets.remove( constraint );
-    //        }
-    //    }
 }

@@ -86,8 +86,7 @@ public class FromNodeTest {
         final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl(1L, kBase);
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
-                                                           "type",
-                                                           getClass().getClassLoader());
+                                                           "type");
 
         final MvelConstraint constraint = new MvelConstraintTestUtil("type == \"stilton\"",
                                                                      FieldFactory.getInstance().getFieldValue("stilton"),
@@ -189,12 +188,10 @@ public class FromNodeTest {
         final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1L, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
 
         final ClassFieldReader priceExtractor = store.getReader( Cheese.class,
-                                                                 "price",
-                                                                 getClass().getClassLoader() );
+                                                                 "price" );
 
         final ClassFieldReader ageExtractor = store.getReader( Person.class,
-                                                               "age",
-                                                               getClass().getClassLoader() );
+                                                               "age" );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Person.class ) );
@@ -303,8 +300,7 @@ public class FromNodeTest {
         final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
         final StatefulKnowledgeSessionImpl workingMemory = new StatefulKnowledgeSessionImpl( 1L, (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase() );
         final ClassFieldReader extractor = store.getReader( Cheese.class,
-                                                            "type",
-                                                            getClass().getClassLoader() );
+                                                            "type" );
 
         final MvelConstraint constraint = new MvelConstraintTestUtil( "type == \"stilton\"",
                                                                       FieldFactory.getInstance().getFieldValue("stilton"),

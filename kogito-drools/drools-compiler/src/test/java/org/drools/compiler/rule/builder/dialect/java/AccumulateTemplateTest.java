@@ -15,19 +15,14 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.compiler.Cheese;
 import org.drools.compiler.Person;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.util.StringUtils;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PatternExtractor;
+import org.drools.core.util.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
@@ -37,6 +32,11 @@ import org.mvel2.templates.TemplateCompiler;
 import org.mvel2.templates.TemplateRegistry;
 import org.mvel2.templates.TemplateRuntime;
 import org.mvel2.templates.res.Node;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AccumulateTemplateTest {
 
@@ -62,8 +62,7 @@ public class AccumulateTemplateTest {
                                                                        new PatternExtractor( new ClassObjectType( Cheese.class ) ),
                                                                        null ), new Declaration( "price",
                                                                                                 store.getReader( Cheese.class,
-                                                                                                                 "price",
-                                                                                                                 getClass().getClassLoader() ),
+                                                                                                                 "price" ),
                                                                                                 null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
         final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
@@ -138,19 +137,16 @@ public class AccumulateTemplateTest {
         final String[] declarationTypes = new String[]{"String", "int"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
                                                                               store.getReader( Person.class,
-                                                                                               "name",
-                                                                                               getClass().getClassLoader() ),
+                                                                                               "name" ),
                                                                               null ), new Declaration( "age",
                                                                                                        store.getReader( Person.class,
-                                                                                                                        "age",
-                                                                                                                        getClass().getClassLoader() ),
+                                                                                                                        "age" ),
                                                                                                        null )};
         final Declaration[] inner = new Declaration[]{new Declaration( "cheese",
                                                                        new PatternExtractor( new ClassObjectType( Cheese.class ) ),
                                                                        null ), new Declaration( "price",
                                                                                                 store.getReader( Cheese.class,
-                                                                                                                 "price",
-                                                                                                                 getClass().getClassLoader() ),
+                                                                                                                 "price" ),
                                                                                                 null )};
         final String[] globals = new String[]{"aGlobal", "anotherGlobal"};
         final List globalTypes = Arrays.asList( new String[]{"String", "String"} );
@@ -226,12 +222,10 @@ public class AccumulateTemplateTest {
         final String[] declarationTypes = new String[]{"String", "int"};
         final Declaration[] declarations = new Declaration[]{new Declaration( "name",
                                                                               store.getReader( Person.class,
-                                                                                               "name",
-                                                                                               getClass().getClassLoader() ),
+                                                                                               "name" ),
                                                                               null ), new Declaration( "age",
                                                                                                        store.getReader( Person.class,
-                                                                                                                        "age",
-                                                                                                                        getClass().getClassLoader() ),
+                                                                                                                        "age" ),
                                                                                                        null )};
         final Declaration[] inner = new Declaration[]{new Declaration( "$cheese",
                                                                        new PatternExtractor( new ClassObjectType( Cheese.class ) ),

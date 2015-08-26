@@ -55,8 +55,7 @@ public class RightTupleIndexHashTableTest {
     @Test
     public void testSingleEntry() throws Exception {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                                "type",
-                                                                getClass().getClassLoader() );
+                                                                "type" );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -111,8 +110,7 @@ public class RightTupleIndexHashTableTest {
     @Test
     public void testTwoDifferentEntries() throws Exception {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                                "type",
-                                                                getClass().getClassLoader() );
+                                                                "type" );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -175,8 +173,7 @@ public class RightTupleIndexHashTableTest {
     @Test
     public void testTwoEqualEntries() throws Exception {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                                "type",
-                                                                getClass().getClassLoader() );
+                                                                "type" );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -238,8 +235,7 @@ public class RightTupleIndexHashTableTest {
     @Test
     public void testTwoDifferentEntriesSameHashCode() throws Exception {
         final InternalReadAccessor extractor = store.getReader( TestClass.class,
-                                                                "object",
-                                                                getClass().getClassLoader() );
+                                                                "object" );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( TestClass.class ) );
@@ -298,8 +294,7 @@ public class RightTupleIndexHashTableTest {
     @Test
     public void testRemove() throws Exception {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                                "type",
-                                                                getClass().getClassLoader() );
+                                                                "type" );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -372,8 +367,7 @@ public class RightTupleIndexHashTableTest {
     @Test
     public void testResize() throws Exception {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                                "type",
-                                                                getClass().getClassLoader() );
+                                                                "type" );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );
@@ -600,8 +594,7 @@ public class RightTupleIndexHashTableTest {
     @Test
     public void testEmptyIterator() {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                                "type",
-                                                                getClass().getClassLoader() );
+                                                                "type" );
 
         final Pattern pattern = new Pattern( 0,
                                              new ClassObjectType( Cheese.class ) );

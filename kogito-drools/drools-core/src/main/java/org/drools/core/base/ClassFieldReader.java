@@ -16,7 +16,11 @@
 
 package org.drools.core.base;
 
-import java.beans.*;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.ClassUtils;
+
+import java.beans.Introspector;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -24,10 +28,6 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.spi.InternalReadAccessor;
 
 /**
  * This provides access to fields, and what their numerical index/object type is.
@@ -206,101 +206,46 @@ public class ClassFieldReader
         return "this".equals( this.fieldName );
     }
 
-    /**
-     * @param object
-     * @return
-     * @see org.drools.core.spi.ReadAccessor#getBooleanValue(java.lang.Object)
-     */
     public boolean getBooleanValue(Object object) {
         return reader.getBooleanValue( object );
     }
 
-    /**
-     * @param object
-     * @return
-     * @see org.drools.core.spi.ReadAccessor#getByteValue(java.lang.Object)
-     */
     public byte getByteValue(Object object) {
         return reader.getByteValue( object );
     }
 
-    /**
-     * @param object
-     * @return
-     * @see org.drools.core.spi.ReadAccessor#getCharValue(java.lang.Object)
-     */
     public char getCharValue(Object object) {
         return reader.getCharValue( object );
     }
 
-    /**
-     * @param object
-     * @return
-     * @see org.drools.core.spi.ReadAccessor#getDoubleValue(java.lang.Object)
-     */
     public double getDoubleValue(Object object) {
         return reader.getDoubleValue( object );
     }
 
-    /**
-     * @param object
-     * @return
-     * @see org.drools.core.spi.ReadAccessor#getFloatValue(java.lang.Object)
-     */
     public float getFloatValue(Object object) {
         return reader.getFloatValue( object );
     }
 
-    /**
-     * @param object
-     * @return
-     * @see org.drools.core.spi.ReadAccessor#getHashCode(java.lang.Object)
-     */
     public int getHashCode(Object object) {
         return reader.getHashCode( object );
     }
 
-    /**
-     * @param object
-     * @return
-     * @see org.drools.core.spi.ReadAccessor#getIntValue(java.lang.Object)
-     */
     public int getIntValue(Object object) {
         return reader.getIntValue( object );
     }
 
-    /**
-     * @param object
-     * @return
-     * @see org.drools.core.spi.ReadAccessor#getLongValue(java.lang.Object)
-     */
     public long getLongValue(Object object) {
         return reader.getLongValue( object );
     }
 
-    /**
-     * @param object
-     * @return
-     * @see org.drools.core.spi.ReadAccessor#getShortValue(java.lang.Object)
-     */
     public short getShortValue(Object object) {
         return reader.getShortValue( object );
     }
 
-    /**
-     * @param object
-     * @return
-     * @see org.drools.core.spi.ReadAccessor#getValue(java.lang.Object)
-     */
     public Object getValue(Object object) {
         return reader.getValue( object );
     }
 
-    /**
-     * @param object
-     * @return
-     * @see org.drools.core.spi.ReadAccessor#isNullValue(java.lang.Object)
-     */
     public boolean isNullValue(Object object) {
         return reader.isNullValue( object );
     }

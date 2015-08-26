@@ -42,10 +42,6 @@ abstract public class BaseClassFieldReader
 
     /**
      * This constructor is not supposed to be used from outside the class hirarchy
-     *
-     * @param index
-     * @param fieldType
-     * @param valueType
      */
     protected BaseClassFieldReader(final int index,
                                    final Class< ? > fieldType,

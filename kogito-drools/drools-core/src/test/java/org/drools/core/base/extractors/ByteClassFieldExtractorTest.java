@@ -35,8 +35,7 @@ public class ByteClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
         this.reader = store.getReader( TestBean.class,
-                                          "byteAttr",
-                                          getClass().getClassLoader() );
+                                          "byteAttr" );
     }
 
     @Test

@@ -37,8 +37,7 @@ public class FloatClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
         this.reader = store.getReader( TestBean.class,
-                                          "floatAttr",
-                                          getClass().getClassLoader() );
+                                          "floatAttr" );
     }
 
     @Test

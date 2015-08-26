@@ -37,8 +37,7 @@ public class LongClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
         extractor = store.getReader( TestBean.class,
-                                "longAttr",
-                                getClass().getClassLoader() );
+                                "longAttr" );
     }
 
     @Test

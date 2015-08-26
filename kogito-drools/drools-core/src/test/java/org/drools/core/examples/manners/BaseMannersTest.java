@@ -1180,8 +1180,7 @@ public abstract class BaseMannersTest {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,
-                                                                fieldName,
-                                                                getClass().getClassLoader() );
+                                                                fieldName );
 
         final FieldValue field = new LongFieldImpl( fieldValue );
 
@@ -1196,8 +1195,7 @@ public abstract class BaseMannersTest {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,
-                                                                fieldName,
-                                                                getClass().getClassLoader() );
+                                                                fieldName );
 
         final FieldValue field = new BooleanFieldImpl( fieldValue );
 
@@ -1212,8 +1210,7 @@ public abstract class BaseMannersTest {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,
-                                                                fieldName,
-                                                                getClass().getClassLoader() );
+                                                                fieldName );
 
         pattern.addDeclaration( identifier ).setReadAccessor( extractor );
     }
@@ -1225,8 +1222,7 @@ public abstract class BaseMannersTest {
         final Class clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,
-                                                                fieldName,
-                                                                getClass().getClassLoader() );
+                                                                fieldName );
 
         String expression = fieldName + " " + operator + " " + declaration.getIdentifier();
         return new MvelConstraintTestUtil(expression, declaration, extractor);

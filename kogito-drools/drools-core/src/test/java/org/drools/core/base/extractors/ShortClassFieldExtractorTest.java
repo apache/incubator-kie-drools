@@ -37,8 +37,7 @@ public class ShortClassFieldExtractorTest extends BaseClassFieldExtractorsTest {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
         this.reader = store.getReader( TestBean.class,
-                                              "shortAttr",
-                                              getClass().getClassLoader() );
+                                              "shortAttr" );
     }
 
     @Test

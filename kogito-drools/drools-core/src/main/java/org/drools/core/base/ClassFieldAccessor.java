@@ -16,6 +16,11 @@
 
 package org.drools.core.base;
 
+import org.drools.core.spi.AcceptsReadAccessor;
+import org.drools.core.spi.AcceptsWriteAccessor;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.WriteAccessor;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,11 +28,6 @@ import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-
-import org.drools.core.spi.AcceptsReadAccessor;
-import org.drools.core.spi.AcceptsWriteAccessor;
-import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.WriteAccessor;
 
 /**
  * This is a wrapper for a ClassFieldExtractor that provides
@@ -74,15 +74,6 @@ public class ClassFieldAccessor
         this.writer = (ClassFieldWriter) writeAccessor;
     }
 
-    public InternalReadAccessor getReadAccessor() {
-        return reader;
-    }
-
-    public WriteAccessor getWriteAccessor() {
-        return writer;
-    }
-
-
     public int getIndex() {
         return this.reader.getIndex();
     }
@@ -111,24 +102,6 @@ public class ClassFieldAccessor
     public String toString() {
         return this.reader.toString();
     }
-
-    //    public int hashCode() {
-    //        return this.reader.hashCode();
-    //    }
-    //
-    //    public boolean equals(final Object object) {
-    //        if ( this == object ) {
-    //            return true;
-    //        }
-    //
-    //        if ( object == null || !(object instanceof ClassFieldAccessor) ) {
-    //            return false;
-    //        }
-    //
-    //        final ClassFieldAccessor other = (ClassFieldAccessor) object;
-    //
-    //        return this.reader.equals( other.reader );
-    //    }
 
     @Override
     public int hashCode() {
@@ -208,123 +181,66 @@ public class ClassFieldAccessor
                                         object );
     }
 
-    /**
-     * @return
-     * @see org.kie.base.ClassFieldReader#isGlobal()
-     */
     public boolean isGlobal() {
         return reader.isGlobal();
     }
 
-    /**
-     * @return
-     * @see org.kie.base.ClassFieldWriter#getFieldType()
-     */
     public Class< ? > getFieldType() {
         return writer.getFieldType();
     }
 
-    /**
-     * @return
-     * @see org.kie.base.ClassFieldWriter#getNativeWriteMethod()
-     */
     public Method getNativeWriteMethod() {
         return writer.getNativeWriteMethod();
     }
 
-    /**
-     * @param bean
-     * @param value
-     * @see org.kie.base.ClassFieldWriter#setBooleanValue(java.lang.Object, boolean)
-     */
     public void setBooleanValue(Object bean,
                                 boolean value) {
         writer.setBooleanValue( bean,
                                 value );
     }
 
-    /**
-     * @param bean
-     * @param value
-     * @see org.kie.base.ClassFieldWriter#setByteValue(java.lang.Object, byte)
-     */
     public void setByteValue(Object bean,
                              byte value) {
         writer.setByteValue( bean,
                              value );
     }
 
-    /**
-     * @param bean
-     * @param value
-     * @see org.kie.base.ClassFieldWriter#setCharValue(java.lang.Object, char)
-     */
     public void setCharValue(Object bean,
                              char value) {
         writer.setCharValue( bean,
                              value );
     }
 
-    /**
-     * @param bean
-     * @param value
-     * @see org.kie.base.ClassFieldWriter#setDoubleValue(java.lang.Object, double)
-     */
     public void setDoubleValue(Object bean,
                                double value) {
         writer.setDoubleValue( bean,
                                value );
     }
 
-    /**
-     * @param bean
-     * @param value
-     * @see org.kie.base.ClassFieldWriter#setFloatValue(java.lang.Object, float)
-     */
     public void setFloatValue(Object bean,
                               float value) {
         writer.setFloatValue( bean,
                               value );
     }
 
-    /**
-     * @param bean
-     * @param value
-     * @see org.kie.base.ClassFieldWriter#setIntValue(java.lang.Object, int)
-     */
     public void setIntValue(Object bean,
                             int value) {
         writer.setIntValue( bean,
                             value );
     }
 
-    /**
-     * @param bean
-     * @param value
-     * @see org.kie.base.ClassFieldWriter#setLongValue(java.lang.Object, long)
-     */
     public void setLongValue(Object bean,
                              long value) {
         writer.setLongValue( bean,
                              value );
     }
 
-    /**
-     * @param bean
-     * @param value
-     * @see org.kie.base.ClassFieldWriter#setShortValue(java.lang.Object, short)
-     */
     public void setShortValue(Object bean,
                               short value) {
         writer.setShortValue( bean,
                               value );
     }
 
-    /**
-     * @param bean
-     * @param value
-     * @see org.kie.base.ClassFieldWriter#setValue(java.lang.Object, java.lang.Object)
-     */
     public void setValue(Object bean,
                          Object value) {
         writer.setValue( bean,

@@ -26,7 +26,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.test.model.Cheese;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.PredicateConstraint.PredicateContextEntry;
@@ -34,9 +33,9 @@ import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PredicateExpression;
 import org.drools.core.spi.Tuple;
+import org.drools.core.test.model.Cheese;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBaseFactory;
 
 import java.beans.IntrospectionException;
@@ -80,8 +79,7 @@ public class FieldConstraintTest {
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
-                "type",
-                getClass().getClassLoader());
+                "type");
 
         final MvelConstraint constraint = new MvelConstraintTestUtil( "type == \"cheddar\"",
                                                                       FieldFactory.getInstance().getFieldValue( "cheddar" ),
@@ -127,8 +125,7 @@ public class FieldConstraintTest {
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final ClassFieldReader extractor = store.getReader(Cheese.class,
-                "price",
-                getClass().getClassLoader());
+                "price");
 
         final MvelConstraint constraint = new MvelConstraintTestUtil( "price == 5",
                                                                       FieldFactory.getInstance().getFieldValue( 5 ),
@@ -174,8 +171,7 @@ public class FieldConstraintTest {
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
 
         final InternalReadAccessor priceExtractor = store.getReader( Cheese.class,
-                                                                     "price",
-                                                                     getClass().getClassLoader() );
+                                                                     "price" );
 
         Pattern pattern = new Pattern( 0,
                                        new ClassObjectType( Cheese.class ) );

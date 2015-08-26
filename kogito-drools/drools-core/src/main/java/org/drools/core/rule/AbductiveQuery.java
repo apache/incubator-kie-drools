@@ -31,7 +31,7 @@ import java.util.List;
 public class AbductiveQuery extends QueryImpl implements Externalizable, AcceptsClassObjectType {
 
     private ClassObjectType returnType;
-    private transient Constructor constructor;
+    private transient Constructor cachedConstructor;
 
     private String[] params;
     private String[] abducibleArgs;
@@ -88,7 +88,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
     protected void findConstructor( Declaration[] declarations ) throws NoSuchMethodException {
         int N = this.abducibleArgs.length;
 
-        constructor = null;
+        cachedConstructor = null;
         List<Class> availableArgs = N > 0 ? new ArrayList<Class>( N ) : Collections.<Class>emptyList();
         for ( int j = 0; j < N; j++ ) {
             // during the initial build (KieBuilder), the declarations are provided on the fly and use for type checking
@@ -99,9 +99,9 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
             }
         }
         Class klass = returnType.getClassType();
-        while ( constructor == null ) {
+        while ( cachedConstructor == null ) {
             try {
-                constructor = klass.getConstructor( availableArgs.toArray( new Class[ availableArgs.size() ] ) );
+                cachedConstructor = klass.getConstructor( availableArgs.toArray( new Class[ availableArgs.size() ] ) );
             } catch ( NoSuchMethodException nsme ) {
                 if ( klass == Object.class ) {
                     throw nsme;
@@ -131,6 +131,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
     }
 
     public Object abduce( Object... args ) {
+        Constructor constructor = getConstructor();
         if ( constructor == null ) {
             // no proper constructor was found
             return null;
@@ -164,14 +165,21 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
     public void setClassObjectType( ClassObjectType classObjectType ) {
         returnType = classObjectType;
         if ( params != null ) { // the first time, params may not have been initialized yet
+            getConstructor();
+        }
+    }
+
+    private Constructor getConstructor() {
+        if (cachedConstructor == null || cachedConstructor.getDeclaringClass() != returnType.getClassType()) {
             try {
                 findConstructor( null );
             } catch ( NoSuchMethodException e ) {
                 e.printStackTrace();
-                constructor = null;
+                cachedConstructor = null;
                 returnType = null;
             }
         }
+        return cachedConstructor;
     }
 
     public void setReturnBound( boolean returnBound ) {

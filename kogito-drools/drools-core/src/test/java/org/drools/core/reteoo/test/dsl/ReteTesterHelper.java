@@ -78,8 +78,7 @@ public class ReteTesterHelper {
                                                               final String evaluatorString) throws IntrospectionException {
 
         final InternalReadAccessor extractor = store.getReader( clazz,
-                                                                fieldName,
-                                                                getClass().getClassLoader() );
+                                                                fieldName );
         String expression = fieldName + " " + evaluatorString + " " + declaration.getIdentifier();
         return new MvelConstraintTestUtil(expression, declaration, extractor);
     }
@@ -91,8 +90,7 @@ public class ReteTesterHelper {
         final Class< ? > clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
 
         final InternalReadAccessor extractor = store.getReader( clazz,
-                                                                fieldName,
-                                                                getClass().getClassLoader() );
+                                                                fieldName );
 
         FieldValue fieldValue = FieldFactory.getInstance().getFieldValue( value, extractor.getValueType() );
 

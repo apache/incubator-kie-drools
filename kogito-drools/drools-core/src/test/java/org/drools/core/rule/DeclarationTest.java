@@ -16,19 +16,20 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.base.ClassFieldAccessorCache;
+import org.drools.core.base.ClassFieldAccessorStore;
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.test.model.Cheese;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.*;
-
-import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.test.model.Cheese;
-import org.drools.core.spi.InternalReadAccessor;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 public class DeclarationTest {
 
@@ -43,8 +44,7 @@ public class DeclarationTest {
     @Test
     public void testDeclaration() throws IntrospectionException {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                                "type",
-                                                                getClass().getClassLoader() );
+                                                                "type" );
 
         final Pattern pattern = new Pattern( 5,
                                              new ClassObjectType( Cheese.class ) );
@@ -72,8 +72,7 @@ public class DeclarationTest {
     @Test
     public void testGetFieldValue() throws IntrospectionException {
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                                "type",
-                                                                getClass().getClassLoader() );
+                                                                "type" );
 
         final Pattern pattern = new Pattern( 5,
                                              new ClassObjectType( Cheese.class ) );

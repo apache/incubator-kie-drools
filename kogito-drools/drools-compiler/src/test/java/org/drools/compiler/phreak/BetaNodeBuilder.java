@@ -113,8 +113,7 @@ public class BetaNodeBuilder {
             ClassFieldAccessorStore store = (ClassFieldAccessorStore) reteTesterHelper.getStore();
 
             InternalReadAccessor extractor = store.getReader(leftType,
-                                                             leftFieldName,
-                                                             getClass().getClassLoader());
+                                                             leftFieldName);
 
             Declaration declr = new Declaration(leftVariableName,
                                                 extractor,
