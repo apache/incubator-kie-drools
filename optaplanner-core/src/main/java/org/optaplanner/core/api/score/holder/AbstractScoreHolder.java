@@ -273,7 +273,7 @@ public abstract class AbstractScoreHolder implements ScoreHolder, Serializable {
             for (ConstraintUndoListener constraintUndoListener : scoreLevelToConstraintUndoListenerMap.values()) {
                 constraintUndoListener.unMatch();
             }
-            scoreLevelToConstraintUndoListenerMap = new HashMap<Integer, ConstraintUndoListener>(INITIAL_MAP_CAPACITY);
+            scoreLevelToConstraintUndoListenerMap.clear();
         }
 
         public void overwriteMatch(int scoreLevel, ConstraintUndoListener constraintUndoListener) {
