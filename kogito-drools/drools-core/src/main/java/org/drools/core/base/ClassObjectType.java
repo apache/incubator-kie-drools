@@ -17,6 +17,7 @@
 package org.drools.core.base;
 
 import org.drools.core.InitialFact;
+import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;
@@ -113,7 +114,10 @@ public class ClassObjectType
             this.valueType = ValueType.QUERY_TYPE;
         } else {
             try {
-                setClassType(Class.forName(clsName));
+                Class<?> clazz = in instanceof DroolsObjectInput ?
+                                 Class.forName( clsName, false, ( (DroolsObjectInput) in ).getClassLoader() ) :
+                                 Class.forName( clsName );
+                setClassType( clazz );
             } catch (ClassNotFoundException e) { }
         }
 

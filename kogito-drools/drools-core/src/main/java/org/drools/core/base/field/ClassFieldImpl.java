@@ -16,6 +16,7 @@
 
 package org.drools.core.base.field;
 
+import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.FieldValue;
 
@@ -50,7 +51,9 @@ public class ClassFieldImpl implements FieldValue, Externalizable {
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         className = in.readUTF();
         try {
-            type = Class.forName(className);
+            type = in instanceof DroolsObjectInput ?
+                   Class.forName( className, false, ( (DroolsObjectInput) in ).getClassLoader() ) :
+                   Class.forName( className );
         } catch (ClassNotFoundException e) { }
     }
 
