@@ -212,14 +212,6 @@ public class SolutionBusiness {
         return guiScoreDirector.calculateScore();
     }
 
-    public String getScoreWithUninitializedPrefix() {
-        // TODO Remove after fixing https://issues.jboss.org/browse/PLANNER-405
-        if (solver instanceof DefaultSolver) {
-            return ((DefaultSolver) solver).getSolverScope().getBestScoreWithUninitializedPrefix();
-        }
-        return getScore().toString();
-    }
-
     public boolean isSolving() {
         return solver.isSolving();
     }
