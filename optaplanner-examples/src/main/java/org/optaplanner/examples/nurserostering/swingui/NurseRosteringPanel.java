@@ -258,6 +258,7 @@ public class NurseRosteringPanel extends SolutionPanel {
                         scoreDirector.afterVariableChanged(shiftAssignment, "employee");
                     }
                 }
+                scoreDirector.triggerVariableListeners();
                 // A SolutionCloner does not clone problem fact lists (such as employeeList)
                 // Shallow clone the employeeList so only workingSolution is affected, not bestSolution or guiSolution
                 nurseRoster.setEmployeeList(new ArrayList<Employee>(nurseRoster.getEmployeeList()));

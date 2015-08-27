@@ -47,6 +47,7 @@ public class InvestmentAllocationSolutionInitializer implements CustomPhaseComma
             scoreDirector.beforeVariableChanged(allocation, "quantityMillis");
             allocation.setQuantityMillis(quantityMillis);
             scoreDirector.afterVariableChanged(allocation, "quantityMillis");
+            scoreDirector.triggerVariableListeners();
         }
     }
 

@@ -32,11 +32,11 @@ public abstract class AbstractMove implements Move {
     @Override
     public final void doMove(ScoreDirector scoreDirector) {
         doMoveOnGenuineVariables(scoreDirector);
-        scoreDirector.commitMove();
+        scoreDirector.triggerVariableListeners();
     }
 
     /**
-     * Like {@link #doMove(ScoreDirector)} but without the {@link ScoreDirector#commitMove()} call
+     * Like {@link #doMove(ScoreDirector)} but without the {@link ScoreDirector#triggerVariableListeners()} call
      * (because {@link #doMove(ScoreDirector)} already does that).
      * @param scoreDirector never null
      */

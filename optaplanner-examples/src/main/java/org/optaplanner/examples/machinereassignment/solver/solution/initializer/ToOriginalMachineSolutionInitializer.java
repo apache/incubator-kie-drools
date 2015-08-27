@@ -41,6 +41,7 @@ public class ToOriginalMachineSolutionInitializer implements CustomPhaseCommand 
             scoreDirector.beforeVariableChanged(processAssignment, "machine");
             processAssignment.setMachine(machine);
             scoreDirector.afterVariableChanged(processAssignment, "machine");
+            scoreDirector.triggerVariableListeners();
         }
     }
 

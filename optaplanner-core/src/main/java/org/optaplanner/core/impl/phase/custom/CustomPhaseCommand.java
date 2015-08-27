@@ -20,6 +20,11 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public interface CustomPhaseCommand {
 
+    /**
+     * Don't forget to call {@link ScoreDirector#triggerVariableListeners()} after each set of changes
+     * (especially before a {@link ScoreDirector#calculateScore()} call).
+     * @param scoreDirector never null
+     */
     void changeWorkingSolution(ScoreDirector scoreDirector);
 
 }

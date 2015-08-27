@@ -77,7 +77,7 @@ public interface Move {
      * When the {@link Solution} is modified, the {@link ScoreDirector} should be correctly notified,
      * otherwise later calculated {@link Score}s can be corrupted.
      * <p>
-     * This method must end with calling {@link ScoreDirector#commitMove()} to ensure all shadow variables are updated.
+     * This method must end with calling {@link ScoreDirector#triggerVariableListeners()} to ensure all shadow variables are updated.
      * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes.
      */
     void doMove(ScoreDirector scoreDirector);

@@ -280,6 +280,7 @@ public class CloudBalancingPanel extends SolutionPanel {
                         scoreDirector.afterVariableChanged(process, "computer");
                     }
                 }
+                scoreDirector.triggerVariableListeners();
                 // A SolutionCloner does not clone problem fact lists (such as computerList)
                 // Shallow clone the computerList so only workingSolution is affected, not bestSolution or guiSolution
                 cloudBalance.setComputerList(new ArrayList<CloudComputer>(cloudBalance.getComputerList()));
@@ -314,6 +315,7 @@ public class CloudBalancingPanel extends SolutionPanel {
                 scoreDirector.beforeEntityAdded(process);
                 cloudBalance.getProcessList().add(process);
                 scoreDirector.afterEntityAdded(process);
+                scoreDirector.triggerVariableListeners();
             }
         });
     }
@@ -333,6 +335,7 @@ public class CloudBalancingPanel extends SolutionPanel {
                         break;
                     }
                 }
+                scoreDirector.triggerVariableListeners();
             }
         });
     }

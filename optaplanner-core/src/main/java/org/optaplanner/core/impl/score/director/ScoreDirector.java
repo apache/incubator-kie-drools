@@ -54,8 +54,6 @@ public interface ScoreDirector {
      */
     void setWorkingSolution(Solution workingSolution);
 
-    void commitMove();
-
     /**
      * Calculates the {@link Score} and updates the {@link Solution workingSolution} accordingly.
      * @return never null, the {@link Score} of the {@link Solution workingSolution}
@@ -88,6 +86,8 @@ public interface ScoreDirector {
     void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity);
 
     void changeVariableFacade(VariableDescriptor variableDescriptor, Object entity, Object newValue);
+
+    void triggerVariableListeners();
 
     void beforeEntityRemoved(Object entity);
 

@@ -92,10 +92,6 @@ public class TspPanel extends SolutionPanel {
         tspListPanel.updatePanel(travelingSalesmanTour);
     }
 
-    public void doMove(Move move) {
-        solutionBusiness.doMove(move);
-    }
-
     public SolverAndPersistenceFrame getWorkflowFrame() {
         return solverAndPersistenceFrame;
     }
@@ -130,6 +126,7 @@ public class TspPanel extends SolutionPanel {
                 scoreDirector.beforeEntityAdded(newVisit);
                 tour.getVisitList().add(newVisit);
                 scoreDirector.afterEntityAdded(newVisit);
+                scoreDirector.triggerVariableListeners();
             }
         });
     }

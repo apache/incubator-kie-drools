@@ -154,6 +154,7 @@ public class MachineReassignmentPanel extends SolutionPanel {
                         scoreDirector.afterVariableChanged(processAssignment, "machine");
                     }
                 }
+                scoreDirector.triggerVariableListeners();
                 // A SolutionCloner does not clone problem fact lists (such as machineList)
                 // Shallow clone the machineList so only workingSolution is affected, not bestSolution or guiSolution
                 machineReassignment.setMachineList(new ArrayList<MrMachine>(machineReassignment.getMachineList()));

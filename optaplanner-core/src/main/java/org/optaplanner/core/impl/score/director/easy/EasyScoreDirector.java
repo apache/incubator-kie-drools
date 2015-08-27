@@ -44,6 +44,7 @@ public class EasyScoreDirector extends AbstractScoreDirector<EasyScoreDirectorFa
     // ************************************************************************
 
     public Score calculateScore() {
+        variableListenerSupport.assertNotificationQueuesAreEmpty();
         Score score = easyScoreCalculator.calculateScore(workingSolution);
         setCalculatedScore(score);
         return score;

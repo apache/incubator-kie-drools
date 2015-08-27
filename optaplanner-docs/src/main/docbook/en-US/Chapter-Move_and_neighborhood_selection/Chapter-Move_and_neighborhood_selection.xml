@@ -1397,11 +1397,11 @@
       <para>An instance of <literal>RowChangeMove</literal> moves a queen from its current row to a different
       row.</para>
 
-      <para>Planner calls the <literal>doMove(ScoreDirector)</literal> method to do a move. The <literal>Move</literal>
-      implementation must notify the <literal>ScoreDirector</literal> of any changes it makes to planning entity's
-      variables:</para>
+      <para>Planner calls the <literal>doMove(ScoreDirector)</literal> method to do a move, which calls
+      <literal>doMoveOnGenuineVariables(ScoreDirector)</literal>. The <literal>Move</literal> implementation must notify
+      the <literal>ScoreDirector</literal> of any changes it makes to planning entity's variables:</para>
 
-      <programlisting language="java">    public void doMove(ScoreDirector scoreDirector) {
+      <programlisting language="java">    public void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         scoreDirector.beforeVariableChanged(queen, "row"); // before changes are made to the queen.row
         queen.setRow(toRow);
         scoreDirector.afterVariableChanged(queen, "row"); // after changes are made to the queen.row

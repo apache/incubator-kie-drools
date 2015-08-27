@@ -125,6 +125,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
             scoreDirector.beforeEntityAdded(process);
             cloudBalance.getProcessList().add(process);
             scoreDirector.afterEntityAdded(process);
+            scoreDirector.triggerVariableListeners();
         }
 
     }

@@ -68,21 +68,21 @@ public class CustomVariableListenerTest {
         scoreDirector.beforeVariableChanged(variableDescriptor, a);
         a.setValue(val1);
         scoreDirector.afterVariableChanged(variableDescriptor, a);
-        scoreDirector.commitMove();
+        scoreDirector.triggerVariableListeners();
         assertEquals("1/firstShadow", a.getFirstShadow());
         assertEquals(null, a.getThirdShadow());
 
         scoreDirector.beforeVariableChanged(variableDescriptor, a);
         a.setValue(val3);
         scoreDirector.afterVariableChanged(variableDescriptor, a);
-        scoreDirector.commitMove();
+        scoreDirector.triggerVariableListeners();
         assertEquals("3/firstShadow", a.getFirstShadow());
         assertEquals(null, a.getThirdShadow());
 
         scoreDirector.beforeVariableChanged(variableDescriptor, c);
         c.setValue(val1);
         scoreDirector.afterVariableChanged(variableDescriptor, c);
-        scoreDirector.commitMove();
+        scoreDirector.triggerVariableListeners();
         assertEquals("1/firstShadow", c.getFirstShadow());
         assertEquals("1/firstShadow/secondShadow", c.getSecondShadow());
         assertEquals("1/firstShadow/secondShadow/thirdShadow", c.getThirdShadow());
@@ -90,7 +90,7 @@ public class CustomVariableListenerTest {
         scoreDirector.beforeVariableChanged(variableDescriptor, c);
         c.setValue(val3);
         scoreDirector.afterVariableChanged(variableDescriptor, c);
-        scoreDirector.commitMove();
+        scoreDirector.triggerVariableListeners();
         assertEquals("3/firstShadow", c.getFirstShadow());
         assertEquals("3/firstShadow/secondShadow", c.getSecondShadow());
         assertEquals("3/firstShadow/secondShadow/thirdShadow", c.getThirdShadow());
@@ -122,35 +122,35 @@ public class CustomVariableListenerTest {
         scoreDirector.beforeVariableChanged(primaryVariableDescriptor, a);
         a.setPrimaryValue(val1);
         scoreDirector.afterVariableChanged(primaryVariableDescriptor, a);
-        scoreDirector.commitMove();
+        scoreDirector.triggerVariableListeners();
         assertEquals(null, a.getComposedCode());
         assertEquals(null, a.getReverseComposedCode());
 
         scoreDirector.beforeVariableChanged(secondaryVariableDescriptor, a);
         a.setSecondaryValue(val3);
         scoreDirector.afterVariableChanged(secondaryVariableDescriptor, a);
-        scoreDirector.commitMove();
+        scoreDirector.triggerVariableListeners();
         assertEquals("1-3", a.getComposedCode());
         assertEquals("3-1", a.getReverseComposedCode());
 
         scoreDirector.beforeVariableChanged(secondaryVariableDescriptor, a);
         a.setSecondaryValue(val4);
         scoreDirector.afterVariableChanged(secondaryVariableDescriptor, a);
-        scoreDirector.commitMove();
+        scoreDirector.triggerVariableListeners();
         assertEquals("1-4", a.getComposedCode());
         assertEquals("4-1", a.getReverseComposedCode());
 
         scoreDirector.beforeVariableChanged(primaryVariableDescriptor, a);
         a.setPrimaryValue(val2);
         scoreDirector.afterVariableChanged(primaryVariableDescriptor, a);
-        scoreDirector.commitMove();
+        scoreDirector.triggerVariableListeners();
         assertEquals("2-4", a.getComposedCode());
         assertEquals("4-2", a.getReverseComposedCode());
 
         scoreDirector.beforeVariableChanged(primaryVariableDescriptor, a);
         a.setPrimaryValue(null);
         scoreDirector.afterVariableChanged(primaryVariableDescriptor, a);
-        scoreDirector.commitMove();
+        scoreDirector.triggerVariableListeners();
         assertEquals(null, a.getComposedCode());
         assertEquals(null, a.getReverseComposedCode());
 
@@ -160,7 +160,7 @@ public class CustomVariableListenerTest {
         scoreDirector.beforeVariableChanged(secondaryVariableDescriptor, c);
         c.setSecondaryValue(val3);
         scoreDirector.afterVariableChanged(secondaryVariableDescriptor, c);
-        scoreDirector.commitMove();
+        scoreDirector.triggerVariableListeners();
         assertEquals("1-3", c.getComposedCode());
         assertEquals("3-1", c.getReverseComposedCode());
     }

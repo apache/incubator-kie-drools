@@ -17,16 +17,13 @@
 package org.optaplanner.examples.dinnerparty.solver.solution.initializer;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
-import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
-import org.optaplanner.examples.dinnerparty.domain.Guest;
 import org.optaplanner.examples.dinnerparty.domain.Seat;
 import org.optaplanner.examples.dinnerparty.domain.SeatDesignation;
 import org.slf4j.Logger;
@@ -56,6 +53,7 @@ public class DinnerPartySolutionInitializer implements CustomPhaseCommand {
                     scoreDirector.beforeVariableChanged(seatDesignation, "seat");
                     seatDesignation.setSeat(seat);
                     scoreDirector.afterVariableChanged(seatDesignation, "seat");
+                    scoreDirector.triggerVariableListeners();
                     Score score = scoreDirector.calculateScore();
                     if (score.compareTo(bestScore) > 0) {
                         bestScore = score;
@@ -69,6 +67,7 @@ public class DinnerPartySolutionInitializer implements CustomPhaseCommand {
             scoreDirector.beforeVariableChanged(seatDesignation, "seat");
             seatDesignation.setSeat(bestSeat);
             scoreDirector.afterVariableChanged(seatDesignation, "seat");
+            scoreDirector.triggerVariableListeners();
             // There will always be enough allowed seats: ok to do this for this problem, but not ok for most problems
             undesignatedSeatList.remove(bestSeat);
         }

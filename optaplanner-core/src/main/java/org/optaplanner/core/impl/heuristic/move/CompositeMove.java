@@ -102,11 +102,11 @@ public class CompositeMove implements Move {
 
     public void doMove(ScoreDirector scoreDirector) {
         for (Move move : moves) {
-            // Calls scoreDirector.commitMove() between moves
+            // Calls scoreDirector.triggerVariableListeners() between moves
             // because a later move can depend on the shadow variables changed by an earlier move
             move.doMove(scoreDirector);
         }
-        // No need to call scoreDirector.commitMove() because Move.doMove() already does it for every move.
+        // No need to call scoreDirector.triggerVariableListeners() because Move.doMove() already does it for every move.
     }
 
     // ************************************************************************

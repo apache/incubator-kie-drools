@@ -17,17 +17,14 @@
 package org.optaplanner.core.impl.heuristic.selector.value.chained;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.selector.SelectorTestUtils;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
@@ -141,7 +138,7 @@ public class DefaultSubChainSelectorTest {
         scoreDirector.changeVariableFacade(variableDescriptor, a4, a2);
         scoreDirector.changeVariableFacade(variableDescriptor, a3, b1);
         scoreDirector.changeVariableFacade(variableDescriptor, b2, a3);
-        scoreDirector.commitMove();
+        scoreDirector.triggerVariableListeners();
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);

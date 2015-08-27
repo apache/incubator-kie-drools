@@ -62,6 +62,7 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     }
 
     public Score calculateScore() {
+        variableListenerSupport.assertNotificationQueuesAreEmpty();
         Score score = incrementalScoreCalculator.calculateScore();
         setCalculatedScore(score);
         return score;

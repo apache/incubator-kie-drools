@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.domain.variable.supply.Demand;
 import org.optaplanner.core.impl.domain.variable.supply.Supply;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public class VariableListenerSupport implements SupplyManager {
 
@@ -48,6 +49,7 @@ public class VariableListenerSupport implements SupplyManager {
     protected int nextGlobalOrder = 0;
 
     protected SortedMap<VariableListenerNotifiable, Set<VariableListenerNotification>> notificationQueueMap;
+    protected boolean notificationQueuesAreEmpty;
 
     public VariableListenerSupport(InnerScoreDirector scoreDirector) {
         this.scoreDirector = scoreDirector;
@@ -58,6 +60,7 @@ public class VariableListenerSupport implements SupplyManager {
 
     public void linkVariableListeners() {
         notificationQueueMap = new TreeMap<VariableListenerNotifiable, Set<VariableListenerNotification>>();
+        notificationQueuesAreEmpty = true;
         for (EntityDescriptor entityDescriptor : scoreDirector.getSolutionDescriptor().getEntityDescriptors()) {
             for (VariableDescriptor variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
                 List<VariableListenerNotifiable> variableNotifiableList = new ArrayList<VariableListenerNotifiable>();
@@ -147,6 +150,7 @@ public class VariableListenerSupport implements SupplyManager {
                 notifiable.getVariableListener().beforeEntityAdded(scoreDirector, entity);
             }
         }
+        notificationQueuesAreEmpty = false;
     }
 
     public void afterEntityAdded(EntityDescriptor entityDescriptor, Object entity) {
@@ -163,6 +167,7 @@ public class VariableListenerSupport implements SupplyManager {
                 notifiable.getVariableListener().beforeVariableChanged(scoreDirector, entity);
             }
         }
+        notificationQueuesAreEmpty = false;
     }
 
     public void afterVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
@@ -179,6 +184,7 @@ public class VariableListenerSupport implements SupplyManager {
                 notifiable.getVariableListener().beforeEntityRemoved(scoreDirector, entity);
             }
         }
+        notificationQueuesAreEmpty = false;
     }
 
     public void afterEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
@@ -210,6 +216,7 @@ public class VariableListenerSupport implements SupplyManager {
                 it.remove();
             }
         }
+        notificationQueuesAreEmpty = true;
     }
 
     public void triggerAllVariableListeners() {
@@ -222,6 +229,17 @@ public class VariableListenerSupport implements SupplyManager {
                 // No change
                 afterVariableChanged(variableDescriptor, entity);
             }
+        }
+        triggerVariableListenersInNotificationQueues();
+    }
+
+    public void assertNotificationQueuesAreEmpty() {
+        if (!notificationQueuesAreEmpty) {
+            throw new IllegalStateException("The notificationQueues might not be empty (" + notificationQueuesAreEmpty
+                    + ") so any shadow variables might be stale so score calculation is unreliable.\n"
+                    + "Maybe a " + ScoreDirector.class.getSimpleName() + ".before*() method was called"
+                    + " without calling " + ScoreDirector.class.getSimpleName() + ".triggerVariableListeners(),"
+                    + " before calling " + ScoreDirector.class.getSimpleName() + ".calculateScore().");
         }
     }
 

@@ -89,10 +89,6 @@ public class VehicleRoutingPanel extends SolutionPanel {
         vehicleRoutingWorldPanel.updatePanel(solution);
     }
 
-    public void doMove(Move move) {
-        solutionBusiness.doMove(move);
-    }
-
     public SolverAndPersistenceFrame getWorkflowFrame() {
         return solverAndPersistenceFrame;
     }
@@ -128,6 +124,7 @@ public class VehicleRoutingPanel extends SolutionPanel {
                 scoreDirector.beforeEntityAdded(newCustomer);
                 solution.getCustomerList().add(newCustomer);
                 scoreDirector.afterEntityAdded(newCustomer);
+                scoreDirector.triggerVariableListeners();
             }
         });
     }

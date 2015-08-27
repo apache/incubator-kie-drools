@@ -2578,16 +2578,14 @@ From 6.3.0.CR1 to 6.3.0.CR2
 [README] VariableListeners no longer trigger chaotically. This applies to both out of the box shadow variables and custom shadow variables.
 Planner now guarantees that the first VariableListener's after*() method triggers AFTER the last genuine variable has been modified.
 This means a VariableListener is no longer exposed to intermediate state.
-The before*() methods still trigger immediately (otherwise they would not be before the source variable changes).
+The before*() methods still trigger immediately (otherwise they would not be able to capture the source variable's orginal state).
 Furthermore, Planner guarantees this triggering in stages also for VariableListener for a shadow variable that depend on earlier shadow variables.
-The order of the calls to the same VariableListener (so for the same shadow variable) for different entity instances is still arbitrary.
 
-[MAJOR] If you have a custom Move, its doMove() method must now call scoreDirector.commitMove() at the end.
-In practice, you should have extended AbstractMove - which does the commitMove() call for you -
+[MAJOR] If you have a custom Move, its doMove() method must now call scoreDirector.triggerVariableListeners() at the end.
+In practice, you should have extended AbstractMove - which does the triggerVariableListeners() call for you -
 but you'll need to rename your doMove() method to doMoveOnGenuineVariables().
 Before in *.java:
     public class CloudComputerChangeMove extends AbstractMove {
-
         ...
 
         public void doMove(ScoreDirector scoreDirector) {
@@ -2597,11 +2595,74 @@ Before in *.java:
     }
 After in *.java:
     public class CloudComputerChangeMove extends AbstractMove {
-
         ...
 
         protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
             CloudBalancingMoveHelper.moveCloudComputer(scoreDirector, cloudProcess, toCloudComputer);
+        }
+
+    }
+
+[MAJOR] If you have a ProblemFactChange, its doChange() method must now call scoreDirector.triggerVariableListeners()
+after every set of changes (before calling calculateScore() or relying on shadow variables).
+Before in *.java:
+    public void deleteComputer(final CloudComputer computer) {
+        doProblemFactChange(new ProblemFactChange() {
+            public void doChange(ScoreDirector scoreDirector) {
+                CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
+                // First remove the problem fact from all planning entities that use it
+                for (CloudProcess process : cloudBalance.getProcessList()) {
+                    if (ObjectUtils.equals(process.getComputer(), computer)) {
+                        scoreDirector.beforeVariableChanged(process, "computer");
+                        process.setComputer(null);
+                        scoreDirector.afterVariableChanged(process, "computer");
+                    }
+                }
+                ...
+            }
+        });
+    }
+After in *.java:
+    public void deleteComputer(final CloudComputer computer) {
+        doProblemFactChange(new ProblemFactChange() {
+            public void doChange(ScoreDirector scoreDirector) {
+                CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
+                // First remove the problem fact from all planning entities that use it
+                for (CloudProcess process : cloudBalance.getProcessList()) {
+                    if (ObjectUtils.equals(process.getComputer(), computer)) {
+                        scoreDirector.beforeVariableChanged(process, "computer");
+                        process.setComputer(null);
+                        scoreDirector.afterVariableChanged(process, "computer");
+                    }
+                }
+                scoreDirector.triggerVariableListeners();
+                ...
+            }
+        });
+    }
+
+[MAJOR] If you have a CustomPhaseCommand, its changeWorkingSolution() method must now call scoreDirector.triggerVariableListeners()
+after every set of changes (before calling calculateScore() or relying on shadow variables).
+Before in *.java:
+    public class MyCustomPhase implements CustomPhaseCommand {
+
+        public void changeWorkingSolution(ScoreDirector scoreDirector) {
+            scoreDirector.beforeVariableChanged(processAssignment, "machine");
+            processAssignment.setMachine(machine);
+            scoreDirector.afterVariableChanged(processAssignment, "machine");
+            Score score = scoreDirector.calculateScore();
+        }
+
+    }
+After in *.java:
+    public class MyCustomPhase implements CustomPhaseCommand {
+
+        public void changeWorkingSolution(ScoreDirector scoreDirector) {
+            scoreDirector.beforeVariableChanged(processAssignment, "machine");
+            processAssignment.setMachine(machine);
+            scoreDirector.afterVariableChanged(processAssignment, "machine");
+            scoreDirector.triggerVariableListeners();
+            Score score = scoreDirector.calculateScore();
         }
 
     }

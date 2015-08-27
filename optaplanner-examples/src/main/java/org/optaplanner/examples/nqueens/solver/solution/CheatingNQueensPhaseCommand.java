@@ -76,7 +76,7 @@ public class CheatingNQueensPhaseCommand implements CustomPhaseCommand {
                 scoreDirector.afterVariableChanged(b, "row");
             }
         }
-
+        scoreDirector.triggerVariableListeners();
     }
 
 }
