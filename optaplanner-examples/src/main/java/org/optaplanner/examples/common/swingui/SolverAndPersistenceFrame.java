@@ -56,6 +56,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.slf4j.Logger;
@@ -600,8 +601,10 @@ public class SolverAndPersistenceFrame extends JFrame {
 
     public void refreshScoreField(Solution solution) {
         // TODO Fix after https://issues.jboss.org/browse/PLANNER-405
-        scoreField.setForeground(determineScoreFieldForeground(solutionBusiness.getUninitializedVariableCount(), solution.getScore()));
-        scoreField.setText("Latest best score: " + solutionBusiness.getScoreWithUninitializedPrefix());
+        int uninitializedVariableCount = solutionBusiness.getUninitializedVariableCount();
+        Score score = solution.getScore();
+        scoreField.setForeground(determineScoreFieldForeground(uninitializedVariableCount, score));
+        scoreField.setText("Latest best score: " + ScoreUtils.getScoreWithUninitializedPrefix(uninitializedVariableCount, score));
     }
 
     private Color determineScoreFieldForeground(int uninitializedVariableCount, Score<?> score) {
