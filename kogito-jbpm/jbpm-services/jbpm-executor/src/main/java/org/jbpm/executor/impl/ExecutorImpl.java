@@ -87,6 +87,7 @@ public class ExecutorImpl implements Executor {
     private boolean useJMS = Boolean.parseBoolean(System.getProperty("org.kie.executor.jms", "true"));
     private String connectionFactoryName = System.getProperty("org.kie.executor.jms.cf", "java:/JmsXA");
     private String queueName = System.getProperty("org.kie.executor.jms.queue", "queue/KIE.EXECUTOR");
+    private boolean transacted = Boolean.parseBoolean(System.getProperty("org.kie.executor.jms.transacted", "false"));
     private ConnectionFactory connectionFactory;
     private Queue queue;
 
@@ -375,10 +376,13 @@ public class ExecutorImpl implements Executor {
         MessageProducer producer = null;
         try {
             queueConnection = connectionFactory.createConnection();
-            queueSession = queueConnection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+            queueSession = queueConnection.createSession(transacted, Session.AUTO_ACKNOWLEDGE);
                       
             TextMessage message = queueSession.createTextMessage(messageBody);
-            producer = queueSession.createProducer(queue);            
+            producer = queueSession.createProducer(queue);   
+            
+            queueConnection.start();
+            
             producer.send(message);
         } catch (Exception e) {
             throw new RuntimeException("Error when sending JMS message with executor job request", e);

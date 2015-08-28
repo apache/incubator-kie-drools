@@ -120,7 +120,8 @@ public class EjbSchedulerService implements GlobalSchedulerService {
 
 	@Override
 	public boolean isValid(GlobalJobHandle jobHandle) {
-		return scheduler.isValid(jobHandle);
+	    
+        return true;	    
 	}
 	
 	private String getJobName(JobContext ctx, Long id) {
