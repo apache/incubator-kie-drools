@@ -59,7 +59,7 @@ public class DeclarationTest {
                       declaration.getIdentifier() );
 
         assertSame( String.class,
-                    declaration.getExtractor().getExtractToClass() );
+                    declaration.getDeclarationClass() );
 
         assertSame( extractor,
                     declaration.getExtractor() );

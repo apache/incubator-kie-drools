@@ -57,7 +57,7 @@ public class JavaExprAnalyzer {
      * 
      * @param expr
      *            The expression to analyze.
-     * @param availDecls
+     * @param availableIdentifiers
      *            Total set of declarations available.
      * 
      * @return The <code>Set</code> of declarations used by the expression.
@@ -110,9 +110,9 @@ public class JavaExprAnalyzer {
     /**
      * Analyze an expression.
      * 
-     * @param availDecls
+     * @param availableIdentifiers
      *            Total set of declarations available.
-     * @param ast
+     * @param result
      *            The AST for the expression.
      * 
      * @return The <code>Set</code> of declarations used by the expression.

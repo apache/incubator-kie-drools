@@ -612,7 +612,7 @@ public class MVELDialect
                 if ( analysis.getBoundIdentifiers().getDeclrClasses().containsKey( decl.getIdentifier() ) ) {
                     ids.add( decl.getIdentifier() );
                     resolvedInputs.put( decl.getIdentifier(),
-                                        decl.getExtractor().getExtractToClass() );
+                                        decl.getDeclarationClass() );
                 }
             }
         }
@@ -622,7 +622,7 @@ public class MVELDialect
                 if ( analysis.getBoundIdentifiers().getDeclrClasses().containsKey( decl.getIdentifier() ) ) {
                     ids.add( decl.getIdentifier() );
                     resolvedInputs.put( decl.getIdentifier(),
-                                        decl.getExtractor().getExtractToClass() );
+                                        decl.getDeclarationClass() );
                 }
             }
         }

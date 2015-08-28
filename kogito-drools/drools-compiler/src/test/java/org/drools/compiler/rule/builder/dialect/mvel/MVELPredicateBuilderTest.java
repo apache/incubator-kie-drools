@@ -24,6 +24,7 @@ import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.PredicateDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.reteoo.MockLeftTupleSink;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
@@ -73,11 +74,11 @@ public class MVELPredicateBuilderTest {
         PackageRegistry pkgRegistry = pkgBuilder.getPackageRegistry( pkg.getName() );
         MVELDialect mvelDialect = ( MVELDialect ) pkgRegistry.getDialectCompiletimeRegistry().getDialect( "mvel" );
 
-        final InstrumentedBuildContent context = new InstrumentedBuildContent( pkgBuilder,
-                                                                               ruleDescr,
-                                                                               pkgRegistry.getDialectCompiletimeRegistry(),
-                                                                               pkg,                                                                               
-                                                                               mvelDialect );
+        final RuleBuildContext context = new RuleBuildContext( pkgBuilder,
+                                                               ruleDescr,
+                                                               pkgRegistry.getDialectCompiletimeRegistry(),
+                                                               pkg,
+                                                               mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
         final InternalReadAccessor extractor = store.getReader( Cheese.class,
@@ -95,9 +96,9 @@ public class MVELPredicateBuilderTest {
         final Declaration b = new Declaration( "b",
                                                extractor,
                                                patternB );
-        
-        context.getBuildStack().add( patternA );
-        context.getBuildStack().add( patternB );
+
+        declarationResolver.pushOnBuildStack( patternA );
+        declarationResolver.pushOnBuildStack( patternB );
 
         final Map map = new HashMap();
         map.put( "a",

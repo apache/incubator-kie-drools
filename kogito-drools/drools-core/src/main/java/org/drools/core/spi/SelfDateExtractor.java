@@ -16,14 +16,14 @@
 
 package org.drools.core.spi;
 
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.extractors.BaseDateClassFieldReader;
+import org.drools.core.common.InternalWorkingMemory;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.extractors.BaseDateClassFieldReader;
-import org.drools.core.common.InternalWorkingMemory;
 
 public class SelfDateExtractor extends BaseDateClassFieldReader
     implements
@@ -32,20 +32,21 @@ public class SelfDateExtractor extends BaseDateClassFieldReader
     Externalizable {
 
     private static final long serialVersionUID = 510l;
-    private ObjectType        objectType;
+    private ClassObjectType   objectType;
 
     public SelfDateExtractor() {
     }
 
-    public SelfDateExtractor(final ObjectType objectType) {
-        super(-1, ((ClassObjectType) objectType).getClassType(), objectType.getValueType() );
+    public SelfDateExtractor(ClassObjectType objectType) {
+        super(-1, objectType.getClassType(), objectType.getValueType() );
+        this.objectType = objectType;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        objectType = (ObjectType) in.readObject();
+        objectType = (ClassObjectType) in.readObject();
         setIndex( -1 );
-        setFieldType( ((ClassObjectType) objectType).getClassType() );
+        setFieldType( objectType.getClassType() );
         setValueType( objectType.getValueType() );
     }
 
@@ -56,7 +57,7 @@ public class SelfDateExtractor extends BaseDateClassFieldReader
     public void setClassObjectType(ClassObjectType objectType) {
         this.objectType = objectType;
         setIndex( -1 );
-        setFieldType( ((ClassObjectType) objectType).getClassType());
+        setFieldType( objectType.getClassType());
         setValueType( objectType.getValueType() );        
     }
 

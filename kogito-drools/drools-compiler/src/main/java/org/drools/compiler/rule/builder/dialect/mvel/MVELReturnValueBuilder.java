@@ -27,11 +27,8 @@ import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELReturnValueExpression;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.core.rule.Pattern;
 import org.drools.core.rule.ReturnValueRestriction;
 import org.drools.core.spi.KnowledgeHelper;
-
-import java.util.Map;
 
 public class MVELReturnValueBuilder
     implements
@@ -47,10 +44,6 @@ public class MVELReturnValueBuilder
         boolean typesafe = context.isTypesafe();
         try {
             MVELDialect dialect = (MVELDialect) context.getDialect( context.getDialect().getId() );
-            
-            Map< String , Class<?> > declIds = context.getDeclarationResolver().getDeclarationClasses(context.getRule());
-            
-            Pattern p = ( Pattern ) context.getBuildStack().peek();
             
             context.setTypesafe( ((MVELAnalysisResult)analysis).isTypesafe() );
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit((String) returnValueRestrictionDescr.getContent(), 

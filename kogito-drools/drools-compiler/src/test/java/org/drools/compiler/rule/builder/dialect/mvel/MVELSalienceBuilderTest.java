@@ -20,6 +20,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.SalienceBuilder;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
@@ -51,7 +52,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 public class MVELSalienceBuilderTest {
-    private InstrumentedBuildContent context;
+    private RuleBuildContext context;
     private InternalKnowledgeBase kBase ;
 
     @Before
@@ -66,11 +67,11 @@ public class MVELSalienceBuilderTest {
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         MVELDialect mvelDialect = (MVELDialect) dialectRegistry.getDialect( "mvel" );
 
-        context = new InstrumentedBuildContent( pkgBuilder,
-                                                ruleDescr,
-                                                dialectRegistry,
-                                                pkg,
-                                                mvelDialect );
+        context = new RuleBuildContext( pkgBuilder,
+                                        ruleDescr,
+                                        dialectRegistry,
+                                        pkg,
+                                        mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
 
@@ -171,13 +172,13 @@ public class MVELSalienceBuilderTest {
         private WorkingMemory            wm;
         private final int                result;
         private transient boolean        halt;
-        private InstrumentedBuildContent context;
+        private RuleBuildContext         context;
         private AgendaItem               item;
 
         private boolean                  error;
 
         public SalienceEvaluator(InternalKnowledgeBase kBase,
-                                 InstrumentedBuildContent context,
+                                 RuleBuildContext context,
                                  Rule rule,
                                  Salience salience,
                                  Person person) {

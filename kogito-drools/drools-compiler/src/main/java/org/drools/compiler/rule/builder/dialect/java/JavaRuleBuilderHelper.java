@@ -25,6 +25,7 @@ import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.JavaDialectRuntimeData;
 import org.drools.core.spi.AcceptsClassObjectType;
+import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.util.StringUtils;
 import org.mvel2.integration.impl.MapVariableResolverFactory;
@@ -103,7 +104,7 @@ public final class JavaRuleBuilderHelper {
                                                                Map<String, Declaration> decls) {
         final RuleDescr ruleDescr = context.getRuleDescr();
 
-        BoundIdentifiers bindings = new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ),
+        BoundIdentifiers bindings = new BoundIdentifiers(DeclarationScopeResolver.getDeclarationClasses( decls ),
                                                          context.getKnowledgeBuilder().getGlobals(),
                                                          null,
                                                          KnowledgeHelper.class );

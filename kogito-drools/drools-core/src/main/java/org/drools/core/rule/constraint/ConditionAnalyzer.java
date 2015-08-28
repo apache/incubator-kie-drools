@@ -536,12 +536,9 @@ public class ConditionAnalyzer {
     private Class<?> getVariableType(String name) {
         for (Declaration declaration : declarations) {
             if (declaration.getBindingName().equals(name)) {
-                if (declaration.getExtractor() != null) {
-                    return declaration.getExtractor().getExtractToClass();
-                } else {
-                    // TODO when can declaration.getExtractor() be null? (mdp)
-                    return declaration.getValueType().getClassType();
-                }
+                return declaration.getDeclarationClass() != null ?
+                       declaration.getDeclarationClass() :
+                       declaration.getValueType().getClassType();
             }
         }
         return null;

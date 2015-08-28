@@ -114,8 +114,8 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
             EvaluatorDefinition.Target right = getRightTarget( extractor );
             EvaluatorDefinition.Target left = (requiredDeclaration.isPatternDeclaration() &&
-                                               !(Date.class.isAssignableFrom( requiredDeclaration.getExtractor().getExtractToClass() )
-                                                 || Number.class.isAssignableFrom( requiredDeclaration.getExtractor().getExtractToClass() ))) ?
+                                               !(Date.class.isAssignableFrom( requiredDeclaration.getDeclarationClass() )
+                                                 || Number.class.isAssignableFrom( requiredDeclaration.getDeclarationClass() ))) ?
                                               EvaluatorDefinition.Target.HANDLE :
                                               EvaluatorDefinition.Target.FACT;
             final Evaluator evaluator = getEvaluator( context,
@@ -337,7 +337,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         try {
             Map<String, Class< ? >> declIds = context.getDeclarationResolver().getDeclarationClasses( context.getRule() );
 
-            Pattern p = (Pattern) context.getBuildStack().peek();
+            Pattern p = (Pattern) context.getDeclarationResolver().peekBuildStack();
             if ( p.getObjectType() instanceof ClassObjectType) {
                 declIds.put( "this",
                         ((ClassObjectType) p.getObjectType()).getClassType() );

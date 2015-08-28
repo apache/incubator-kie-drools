@@ -234,7 +234,7 @@ public class LogicTransformer {
                     // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
                     ArrayElementReader reader = new ArrayElementReader( new SelfReferenceClassFieldReader(Object[].class, "this"),
                                                                         qe.getDeclIndexes()[i],
-                                                                        resolved.getExtractor().getExtractToClass() );                    
+                                                                        resolved.getDeclarationClass() );
                     declr.setReadAccessor( reader );
                     
                     varIndexes.add( qe.getDeclIndexes()[i] );

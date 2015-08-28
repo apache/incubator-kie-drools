@@ -90,6 +90,8 @@ public class Declaration
 
     private boolean              internalFact;
 
+    private transient Class<?>   declarationClass;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -174,10 +176,6 @@ public class Declaration
         out.writeObject( bindingName );
     }
 
-    public void setReadAccessor(InternalReadAccessor readAccessor) {
-        this.readAccessor = readAccessor;
-    }
-
     // ------------------------------------------------------------
     // Instance methods
     // ------------------------------------------------------------
@@ -223,19 +221,31 @@ public class Declaration
 
     /**
      * Returns true if this declaration is a pattern declaration
-     * @return
      */
     public boolean isPatternDeclaration() {
         return ( this.pattern != null && this.pattern.getDeclaration() == this ) || this.getIdentifier().equals( "this" ) ;
     }
 
+    public void setReadAccessor(InternalReadAccessor readAccessor) {
+        this.readAccessor = readAccessor;
+    }
+
     /**
      * Returns the Extractor expression
-     *
-     * @return
      */
     public InternalReadAccessor getExtractor() {
         return this.readAccessor;
+    }
+
+    public Class<?> getDeclarationClass() {
+        if (declarationClass == null) {
+            declarationClass = readAccessor != null ? readAccessor.getExtractToClass() : null;
+        }
+        return declarationClass;
+    }
+
+    public void setDeclarationClass( Class<?> declarationClass ) {
+        this.declarationClass = declarationClass;
     }
 
     public Object getValue(InternalWorkingMemory workingMemory,
@@ -316,8 +326,8 @@ public class Declaration
     public String getTypeName() {
         if (cachedTypeName == null) {
         // we assume that null extractor errors are reported else where
-            cachedTypeName = ( getExtractor() != null && getExtractor().getExtractToClass() != null )
-                             ? canonicalName(getExtractor().getExtractToClass())
+            cachedTypeName = ( getExtractor() != null && getDeclarationClass() != null )
+                             ? canonicalName(getDeclarationClass())
                              : "java.lang.Object";
         }
         return cachedTypeName;
@@ -327,7 +337,7 @@ public class Declaration
     public String getBoxedTypeName() {
         if (cachedBoxedTypeName == null) {
             // we assume that null extractor errors are reported else where
-            cachedBoxedTypeName = getExtractor() != null ? canonicalName(convertFromPrimitiveType(getExtractor().getExtractToClass())) : "java.lang.Object";
+            cachedBoxedTypeName = getExtractor() != null ? canonicalName(convertFromPrimitiveType(getDeclarationClass())) : "java.lang.Object";
         }
         return cachedBoxedTypeName;
     }

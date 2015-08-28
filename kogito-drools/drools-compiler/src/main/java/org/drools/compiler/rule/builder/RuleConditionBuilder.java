@@ -26,11 +26,11 @@ import org.drools.core.rule.RuleConditionElement;
  */
 public interface RuleConditionBuilder<T extends BaseDescr> extends EngineElementBuilder {
 
-    public RuleConditionElement build(final RuleBuildContext context,
-                                      final T descr);
+    RuleConditionElement build(final RuleBuildContext context,
+                               final T descr);
     
-    public RuleConditionElement build(final RuleBuildContext context,
-                                      final T descr,
-                                      final Pattern prefixPattern);
+    RuleConditionElement build(final RuleBuildContext context,
+                               final T descr,
+                               final Pattern prefixPattern);
 
 }

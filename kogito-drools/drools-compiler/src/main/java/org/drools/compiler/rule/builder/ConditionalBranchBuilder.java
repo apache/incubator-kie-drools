@@ -59,7 +59,7 @@ public class ConditionalBranchBuilder implements RuleConditionBuilder {
     }
 
     private Pattern getLastPattern(RuleBuildContext context) {
-        GroupElement ge = (GroupElement)context.getBuildStack().peek();
+        GroupElement ge = (GroupElement)context.getDeclarationResolver().peekBuildStack();
         Pattern lastPattern = getLastPattern(ge.getChildren());
         if (lastPattern == null) {
             RuleImpl parent = context.getRule().getParent();

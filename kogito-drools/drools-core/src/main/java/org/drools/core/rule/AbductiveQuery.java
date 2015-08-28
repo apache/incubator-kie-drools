@@ -95,7 +95,7 @@ public class AbductiveQuery extends QueryImpl implements Externalizable, Accepts
             // when building the KieBase, the internal declarations are set and can be used
             Declaration decl = declarations != null ? declarations[ mapArgToParam( j ) ] : getDeclaration( abducibleArgs[ j ] );
             if ( decl != null ) {
-                availableArgs.add( decl.getExtractor().getExtractToClass() );
+                availableArgs.add( decl.getDeclarationClass() );
             }
         }
         Class klass = returnType.getClassType();

@@ -22,6 +22,7 @@ import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.lang.descr.EvalDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.reteoo.MockLeftTupleSink;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
@@ -67,11 +68,11 @@ public class MVELEvalBuilderTest {
         DialectCompiletimeRegistry dialectRegistry = pkgBuilder.getPackageRegistry( pkg.getName() ).getDialectCompiletimeRegistry();
         MVELDialect mvelDialect = ( MVELDialect ) dialectRegistry.getDialect( "mvel" );
 
-        final InstrumentedBuildContent context = new InstrumentedBuildContent( pkgBuilder,
-                                                                               ruleDescr,
-                                                                               dialectRegistry,
-                                                                               pkg,                                                                               
-                                                                               mvelDialect );
+        final RuleBuildContext context = new RuleBuildContext( pkgBuilder,
+                                                               ruleDescr,
+                                                               dialectRegistry,
+                                                               pkg,
+                                                               mvelDialect );
 
         final InstrumentedDeclarationScopeResolver declarationResolver = new InstrumentedDeclarationScopeResolver();
 

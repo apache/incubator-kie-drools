@@ -700,4 +700,24 @@ public final class ClassUtils {
         return IS_ANDROID;
     }
 
+    public static Class<?> findCommonSuperClass(Class<?> c1, Class<?> c2) {
+        if (c1 == null) {
+            return c2;
+        }
+        if (c2 == null) {
+            return c1;
+        }
+        if (c1.isAssignableFrom( c2 )) {
+            return c1;
+        }
+        if (c2.isAssignableFrom( c1 )) {
+            return c2;
+        }
+        for (Class<?> parent = c1.getSuperclass(); parent != null; parent = parent.getSuperclass()) {
+            if (parent.isAssignableFrom(c2)) {
+                return parent;
+            }
+        }
+        return c1;
+    }
 }

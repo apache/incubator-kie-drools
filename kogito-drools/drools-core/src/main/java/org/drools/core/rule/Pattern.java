@@ -169,7 +169,8 @@ public class Pattern
         if ( !(objectType instanceof ClassObjectType) ) {
             return new PatternExtractor(objectType);
         }
-        Class returnType = ((ClassObjectType) objectType).getClassType();
+        ClassObjectType classObjectType = ((ClassObjectType) objectType);
+        Class returnType = classObjectType.getClassType();
         
         if (Number.class.isAssignableFrom( returnType ) ||
                 ( returnType == byte.class ||
@@ -178,9 +179,9 @@ public class Pattern
                   returnType == long.class ||
                   returnType == float.class ||
                   returnType == double.class ) ) {            
-            return new SelfNumberExtractor(objectType);            
+            return new SelfNumberExtractor(classObjectType);
          } else if (  Date.class.isAssignableFrom( returnType ) ) {
-            return new SelfDateExtractor(objectType);
+            return new SelfDateExtractor(classObjectType);
         } else {
             return new PatternExtractor(objectType);
         }        

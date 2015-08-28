@@ -15,15 +15,16 @@
 
 package org.drools.compiler.rule.builder.dialect.mvel;
 
-import org.drools.core.base.mvel.MVELCompilationUnit;
-import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.DescrBuildError;
+import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.dialect.DialectUtil;
+import org.drools.core.base.mvel.MVELCompilationUnit;
+import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
-import org.drools.compiler.rule.builder.RuleBuildContext;
+import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.KnowledgeHelper;
 
 import java.util.Arrays;
@@ -36,7 +37,7 @@ public class MVELObjectExpressionBuilder {
     public static MVELObjectExpression build( String expression, RuleBuildContext context ) {
         boolean typesafe = context.isTypesafe();
         // pushing consequence LHS into the stack for variable resolution
-        context.getBuildStack().push( context.getRule().getLhs() );
+        context.getDeclarationResolver().pushOnBuildStack( context.getRule().getLhs() );
 
         try {
             // This builder is re-usable in other dialects, so specify by name
@@ -47,8 +48,8 @@ public class MVELObjectExpressionBuilder {
             MVELAnalysisResult analysis = ( MVELAnalysisResult) dialect.analyzeExpression( context,
                                                                                            context.getRuleDescr(),
                                                                                            expression,
-                                                                                           new BoundIdentifiers(context.getDeclarationResolver().getDeclarationClasses( decls ),
-                                                                                                                context.getKnowledgeBuilder().getGlobals() ) );
+                                                                                           new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( decls ),
+                                                                                                                 context.getKnowledgeBuilder().getGlobals() ) );
             context.setTypesafe( analysis.isTypesafe() );
             final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
             int i = usedIdentifiers.getDeclrClasses().keySet().size();

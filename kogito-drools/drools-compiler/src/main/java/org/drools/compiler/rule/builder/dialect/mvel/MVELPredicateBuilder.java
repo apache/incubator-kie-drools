@@ -63,7 +63,7 @@ public class MVELPredicateBuilder
         try {
             Map<String, Class< ? >> declIds = context.getDeclarationResolver().getDeclarationClasses( context.getRule() );
 
-            Pattern p = (Pattern) context.getBuildStack().peek();
+            Pattern p = (Pattern) context.getDeclarationResolver().peekBuildStack();
             if ( p.getObjectType() instanceof ClassObjectType ) {
                 declIds.put( "this",
                              ((ClassObjectType) p.getObjectType()).getClassType() );

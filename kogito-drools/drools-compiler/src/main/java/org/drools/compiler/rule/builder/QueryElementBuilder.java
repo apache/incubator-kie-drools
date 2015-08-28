@@ -15,14 +15,10 @@
 
 package org.drools.compiler.rule.builder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.compiler.compiler.DescrBuildError;
 import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.MVELDumper;
-import org.drools.compiler.lang.descr.AtomicExprDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
@@ -34,8 +30,8 @@ import org.drools.core.base.extractors.SelfReferenceClassFieldReader;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.rule.Pattern;
-import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.QueryElement;
+import org.drools.core.rule.QueryImpl;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ObjectType;
@@ -46,6 +42,9 @@ import org.kie.api.runtime.rule.Variable;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class QueryElementBuilder
     implements
@@ -127,9 +126,7 @@ public class QueryElementBuilder
         }
 
         // Deal with the constraints, both positional and bindings
-        for ( int i = 0, length = args.size(); i < length; i++ ) {
-            BaseDescr base = args.get( i );
-
+        for ( BaseDescr base : args ) {
             String expression = null;
             boolean isPositional = false;
             boolean isBinding = false;
@@ -137,7 +134,7 @@ public class QueryElementBuilder
             ConstraintConnectiveDescr result = null;
             if ( base instanceof BindingDescr ) {
                 bind = (BindingDescr) base;
-                expression = bind.getVariable() + (bind.isUnification() ? " := " : " : ") + bind.getExpression();
+                expression = bind.getVariable() + ( bind.isUnification() ? " := " : " : " ) + bind.getExpression();
                 isBinding = true;
             } else {
                 if ( base instanceof ExprConstraintDescr ) {
@@ -155,9 +152,9 @@ public class QueryElementBuilder
                 if ( result == null ) {
                     // error, can't parse expression.
                     context.addError( new DescrBuildError( context.getParentDescr(),
-                                                                  descr,
-                                                                  null,
-                                                                  "Unable to parse constraint: \n" + expression ) );
+                                                           descr,
+                                                           null,
+                                                           "Unable to parse constraint: \n" + expression ) );
                     continue;
                 }
                 isBinding = result.getDescrs().size() == 1 && result.getDescrs().get( 0 ) instanceof BindingDescr;
@@ -166,20 +163,18 @@ public class QueryElementBuilder
                 }
             }
 
-            if ( (!isPositional) && (!isBinding) ) {
+            if ( ( !isPositional ) && ( !isBinding ) ) {
                 // error, can't have non binding slots.
                 context.addError( new DescrBuildError( context.getParentDescr(),
-                                                              descr,
-                                                              null,
-                                                              "Query's must use positional or bindings, not field constraints:\n" + expression ) );
-                continue;
+                                                       descr,
+                                                       null,
+                                                       "Query's must use positional or bindings, not field constraints:\n" + expression ) );
             } else if ( isPositional && isBinding ) {
                 // error, can't have positional binding slots.
                 context.addError( new DescrBuildError( context.getParentDescr(),
-                                                              descr,
-                                                              null,
-                                                              "Query's can't use positional bindings:\n" + expression ) );
-                continue;
+                                                       descr,
+                                                       null,
+                                                       "Query's can't use positional bindings:\n" + expression ) );
             } else if ( isPositional ) {
                 processPositional( context,
                                    query,
@@ -223,8 +218,8 @@ public class QueryElementBuilder
         for ( Integer declIndex : declrIndexes ) {
             Declaration knownInputArg = (Declaration) arguments.get( declIndex );
             Declaration formalArgument = query.getParameters()[ declIndex ];
-            Class actual = knownInputArg.getExtractor().getExtractToClass();
-            Class formal = formalArgument.getExtractor().getExtractToClass();
+            Class actual = knownInputArg.getDeclarationClass();
+            Class formal = formalArgument.getDeclarationClass();
 
             // with queries invoking each other, we won't know until runtime whether a declaration is input, output or else
             // input argument require a broader type, while output types require a narrower type, so we check for both.
@@ -339,7 +334,7 @@ public class QueryElementBuilder
             // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
             ArrayElementReader reader = new ArrayElementReader( arrayReader,
                                                                 pos,
-                                                                params[pos].getExtractor().getExtractToClass() );
+                                                                params[pos].getDeclarationClass() );
 
             // Should the reader be registered like the others? Probably yes...
             // PatternBuilder.registerReadAccessor(  );
@@ -394,7 +389,7 @@ public class QueryElementBuilder
                 // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
                 ArrayElementReader reader = new ArrayElementReader( arrayReader,
                                                                     position,
-                                                                    params[position].getExtractor().getExtractToClass() );
+                                                                    params[position].getDeclarationClass() );
 
                 declr.setReadAccessor( reader );
             }
@@ -423,10 +418,6 @@ public class QueryElementBuilder
             }
         }
         return -1;
-    }
-
-    public static boolean isAtomic( ConstraintConnectiveDescr result ) {
-        return (result.getDescrs().size() == 1 && result.getDescrs().get( 0 ) instanceof AtomicExprDescr);
     }
 
     @SuppressWarnings("unchecked")

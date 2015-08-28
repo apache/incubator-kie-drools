@@ -50,11 +50,9 @@ public class CollectBuilder
         final String className = "collect" + context.getNextId();
         collectDescr.setClassMethodName( className );
         
-        Pattern resultPattern = (Pattern) context.getBuildStack().peek();
+        Pattern resultPattern = (Pattern) context.getDeclarationResolver().peekBuildStack();
 
-        final Collect collect = new Collect( sourcePattern,
-                                             resultPattern );
-        return collect;
+        return new Collect( sourcePattern, resultPattern );
     }
 
 }

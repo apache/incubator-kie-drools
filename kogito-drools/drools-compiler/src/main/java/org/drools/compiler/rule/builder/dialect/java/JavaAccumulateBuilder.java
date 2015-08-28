@@ -139,7 +139,7 @@ public class JavaAccumulateBuilder
         // set of required previous declarations
         Set<Declaration> requiredDecl = new HashSet<Declaration>();
 
-        Pattern pattern = (Pattern) context.getBuildStack().peek();
+        Pattern pattern = (Pattern) context.getDeclarationResolver().peekBuildStack();
 
         if (accumDescr.isMultiFunction()) {
             // the accumulator array
