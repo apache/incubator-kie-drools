@@ -30,6 +30,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static org.drools.core.util.ClassUtils.findCommonSuperClass;
+
 public class GroupElement extends ConditionalElement
     implements
     Externalizable {
@@ -75,8 +77,6 @@ public class GroupElement extends ConditionalElement
      *
      * Restrictions are:
      * NOT/EXISTS: can have only one child, either a single Pattern or another CE
-     *
-     * @param child
      */
     public void addChild(final RuleConditionElement child) {
         if ( (this.isNot() || this.isExists()) && (this.children.size() > 0) ) {
@@ -87,8 +87,6 @@ public class GroupElement extends ConditionalElement
 
     /**
      * Adds the given child as the (index)th child of the this GroupElement
-     * @param index
-     * @param rce
      */
     public void addChild(final int index,
                          final RuleConditionElement rce) {
@@ -137,10 +135,6 @@ public class GroupElement extends ConditionalElement
 
     public void setForallBaseObjectType(ObjectType objectType) {
         this.forallBaseObjectType = objectType;
-    }
-
-    public ObjectType getForallBaseObjectType() {
-        return this.forallBaseObjectType;
     }
 
     /**
@@ -198,9 +192,6 @@ public class GroupElement extends ConditionalElement
         parent.children.addAll( child.getChildren() );
     }
 
-    /**
-     * @param parent
-     */
     public void pack(final GroupElement parent) {
         if ( this.children.size() == 0 ) {
             // if there is no child, just remove this node
@@ -297,10 +288,7 @@ public class GroupElement extends ConditionalElement
     }
 
     /**
-     * Clones all Conditional Elements but references the non ConditionalElement
-     * children
-     *
-     * @return
+     * Clones all Conditional Elements but references the non ConditionalElement children
      */
     public GroupElement clone() {
         return clone(true);
@@ -453,9 +441,17 @@ public class GroupElement extends ConditionalElement
                             return elementDeclarations;
                         }
                         declarations.keySet().retainAll( elementDeclarations.keySet() );
+                        findCommonDeclarationClasses(declarations, elementDeclarations);
                     }
                 }
                 return declarations;
+            }
+        }
+
+        private void findCommonDeclarationClasses(Map<String, Declaration> original, Map<String, Declaration> merged) {
+            for (Map.Entry<String, Declaration> entry : original.entrySet()) {
+                Declaration declaration = entry.getValue();
+                declaration.setDeclarationClass( findCommonSuperClass( declaration.getDeclarationClass(), merged.get(entry.getKey()).getDeclarationClass() ) );
             }
         }
 

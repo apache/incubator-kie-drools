@@ -27,10 +27,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.rule.AbductiveQuery;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.QueryImpl;
-import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.DeclarationScopeResolver;
-
-import java.util.Stack;
 
 /**
  * A context for the current build
@@ -38,14 +35,10 @@ import java.util.Stack;
 public class RuleBuildContext extends PackageBuildContext {
 
     // current rule
-    private RuleImpl rule;
-
-    // a stack for the rule building used
-    // for declarations resolution
-    private Stack<RuleConditionElement> buildStack;
+    private final RuleImpl rule;
 
     // current Rule descriptor
-    private RuleDescr ruleDescr;
+    private final RuleDescr ruleDescr;
 
     // available declarationResolver 
     private DeclarationScopeResolver declarationResolver;
@@ -53,7 +46,7 @@ public class RuleBuildContext extends PackageBuildContext {
     // a simple counter for patterns
     private int patternId = -1;
 
-    private DroolsCompilerComponentFactory compilerFactory;
+    private final DroolsCompilerComponentFactory compilerFactory;
 
     private boolean needStreamMode = false;
 
@@ -67,11 +60,7 @@ public class RuleBuildContext extends PackageBuildContext {
                             final DialectCompiletimeRegistry dialectCompiletimeRegistry,
                             final InternalKnowledgePackage pkg,
                             final Dialect defaultDialect) {
-        this.buildStack = new Stack<RuleConditionElement>();
-
-        this.declarationResolver = new DeclarationScopeResolver(kBuilder.getGlobals(),
-                                                                this.buildStack);
-        this.declarationResolver.setPackage(pkg);
+        this.declarationResolver = new DeclarationScopeResolver( kBuilder.getGlobals(), pkg );
         this.ruleDescr = ruleDescr;
 
         if ( ruleDescr instanceof QueryDescr ) {
@@ -100,12 +89,10 @@ public class RuleBuildContext extends PackageBuildContext {
         }
 
         compilerFactory = kBuilder.getBuilderConfiguration().getComponentFactory();
-
     }
 
     /**
      * Returns the current Rule being built
-     * @return
      */
     public RuleImpl getRule() {
         return this.rule;
@@ -113,7 +100,6 @@ public class RuleBuildContext extends PackageBuildContext {
 
     /**
      * Returns the current RuleDescriptor
-     * @return
      */
     public RuleDescr getRuleDescr() {
         return this.ruleDescr;
@@ -121,7 +107,6 @@ public class RuleBuildContext extends PackageBuildContext {
 
     /**
      * Returns the available declarationResolver instance
-     * @return
      */
     public DeclarationScopeResolver getDeclarationResolver() {
         return this.declarationResolver;
@@ -129,34 +114,17 @@ public class RuleBuildContext extends PackageBuildContext {
 
     /**
      * Sets the available declarationResolver instance
-     * @param variables
      */
-    public void setDeclarationResolver(final DeclarationScopeResolver variables) {
-        this.declarationResolver = variables;
-    }
-
-    public int getPatternId() {
-        return this.patternId;
+    public void setDeclarationResolver(final DeclarationScopeResolver declarationResolver) {
+        this.declarationResolver = declarationResolver;
     }
 
     public int getNextPatternId() {
         return ++this.patternId;
     }
 
-    public void setPatternId(final int patternId) {
-        this.patternId = patternId;
-    }
-
-    public Stack<RuleConditionElement> getBuildStack() {
-        return this.buildStack;
-    }
-
     public DroolsCompilerComponentFactory getCompilerFactory() {
         return compilerFactory;
-    }
-
-    public void setCompilerFactory(DroolsCompilerComponentFactory compilerFactory) {
-        this.compilerFactory = compilerFactory;
     }
 
     public boolean needsStreamMode() {

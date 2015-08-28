@@ -44,7 +44,7 @@ public class GroupElementBuilder
         final ConditionalElementDescr cedescr = (ConditionalElementDescr) descr;
 
         final GroupElement ge = this.newGroupElementFor( descr );
-        context.getBuildStack().push( ge );
+        context.getDeclarationResolver().pushOnBuildStack( ge );
 
         if ( prefixPattern != null ) {
             ge.addChild( prefixPattern );
@@ -70,10 +70,9 @@ public class GroupElementBuilder
             } else {
                 throw new RuntimeException( "BUG: no builder found for descriptor class " + child.getClass() );
             }
-
         }
 
-        context.getBuildStack().pop();
+        context.getDeclarationResolver().popBuildStack();
 
         return ge;
     }

@@ -97,7 +97,7 @@ public class ClassFieldReader
     }
 
     public Class< ? > getExtractToClass() {
-        return this.reader.getExtractToClass();
+        return reader != null ? reader.getExtractToClass() : null;
     }
 
     public String getExtractToClassName() {

@@ -28,6 +28,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl.SafeEnabled;
 import org.drools.core.reteoo.RuleTerminalNode.SortDeclarations;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.spi.DeclarationScopeResolver;
 import org.drools.core.spi.KnowledgeHelper;
 import org.kie.internal.security.KiePolicyHelper;
 
@@ -41,7 +42,7 @@ public class MVELEnabledBuilder
 
     public void build(RuleBuildContext context) {
         // pushing consequence LHS into the stack for variable resolution
-        context.getBuildStack().push( context.getRule().getLhs() );
+        context.getDeclarationResolver().pushOnBuildStack( context.getRule().getLhs() );
 
         try {
             // This builder is re-usable in other dialects, so specify by name            
@@ -55,8 +56,8 @@ public class MVELEnabledBuilder
 
             AnalysisResult analysis = dialect.analyzeExpression( context,
                                                                  context.getRuleDescr(),
-                                                                 (String) context.getRuleDescr().getEnabled(),
-                                                                 new BoundIdentifiers( context.getDeclarationResolver().getDeclarationClasses( declrs ),
+                                                                 context.getRuleDescr().getEnabled(),
+                                                                 new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( declrs ),
                                                                                        context.getKnowledgeBuilder().getGlobals() ),
                                                                  otherVars );
 
@@ -69,7 +70,7 @@ public class MVELEnabledBuilder
             }
             Arrays.sort( previousDeclarations, SortDeclarations.instance  );            
 
-            String exprStr = (String) context.getRuleDescr().getEnabled();
+            String exprStr = context.getRuleDescr().getEnabled();
             exprStr = exprStr.substring( 1,
                                          exprStr.length() - 1 ) + " ";
             MVELCompilationUnit unit = dialect.getMVELCompilationUnit( exprStr,

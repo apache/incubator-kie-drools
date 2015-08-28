@@ -188,7 +188,7 @@ public class PatternBuilder
         }
 
         // poping the pattern
-        context.getBuildStack().pop();
+        context.getDeclarationResolver().popBuildStack();
 
         return pattern;
     }
@@ -255,7 +255,7 @@ public class PatternBuilder
         }
 
         // adding the newly created pattern to the build stack this is necessary in case of local declaration usage
-        context.getBuildStack().push( pattern );
+        context.getDeclarationResolver().pushOnBuildStack( pattern );
 
         if ( duplicateBindings ) {
             processDuplicateBindings( patternDescr.isUnification(), patternDescr, pattern, patternDescr, "this", patternDescr.getIdentifier(), context );
@@ -906,7 +906,7 @@ public class PatternBuilder
         StringBuilder sb = new StringBuilder();
         for (BaseDescr subDescr : d.getDescrs()) {
             if (i > 0) {
-                sb.append(" " + d.getConnective().getConnective() + " ");
+                sb.append( " " ).append( d.getConnective().getConnective() ).append( " " );
             }
             String normalizedExpr;
             if (subDescr instanceof RelationalExprDescr && isSimpleExpr( (RelationalExprDescr)subDescr )) {
@@ -1049,7 +1049,7 @@ public class PatternBuilder
 
             if ( declr == null ) {
                 // trying to create implicit declaration
-                final Pattern thisPattern = (Pattern) context.getBuildStack().peek();
+                final Pattern thisPattern = (Pattern) context.getDeclarationResolver().peekBuildStack();
                 declr = createDeclarationObject( context, value2, thisPattern );
             }
         }
@@ -1059,7 +1059,7 @@ public class PatternBuilder
             String[] parts = value2.split( "\\." );
             if ( parts.length == 2 ) {
                 if ( "this".equals( parts[0].trim() ) ) {
-                    declr = createDeclarationObject(context, parts[1].trim(), (Pattern) context.getBuildStack().peek());
+                    declr = createDeclarationObject(context, parts[1].trim(), (Pattern) context.getDeclarationResolver().peekBuildStack());
                     value2 = parts[1].trim();
                 } else {
                     declr = context.getDeclarationResolver().getDeclaration( context.getRule(), parts[0].trim() );
@@ -1095,7 +1095,7 @@ public class PatternBuilder
     }
 
     private Declaration[] getDeclarationsForReturnValue(RuleBuildContext context, RelationalExprDescr relDescr, String operator, String value2) {
-        Pattern pattern = (Pattern) context.getBuildStack().peek();
+        Pattern pattern = (Pattern) context.getDeclarationResolver().peekBuildStack();
         ReturnValueRestrictionDescr returnValueRestrictionDescr = new ReturnValueRestrictionDescr( operator,
                                                                                                    relDescr.isNegated(),
                                                                                                    relDescr.getParametersText(),
@@ -1541,7 +1541,7 @@ public class PatternBuilder
             String part1 = expr.substring(0, dotPos).trim();
             String part2 = expr.substring(dotPos+1).trim();
             if ( "this".equals( part1 ) ) {
-                declaration = createDeclarationObject(context, part2, (Pattern) context.getBuildStack().peek());
+                declaration = createDeclarationObject(context, part2, (Pattern) context.getDeclarationResolver().peekBuildStack());
             } else {
                 declaration = context.getDeclarationResolver().getDeclaration( context.getRule(), part1 );
                 // if a declaration exists, then it may be a variable direct property access
@@ -1573,7 +1573,7 @@ public class PatternBuilder
                 continue;
             }
             declarations.put( entry.getKey(),
-                              entry.getValue().getExtractor().getExtractToClass() );
+                              entry.getValue().getDeclarationClass() );
         }
 
         if (pattern != null) {
@@ -1613,7 +1613,7 @@ public class PatternBuilder
                 boundIdentifiers.getDeclarations().put( identifier,
                                                         declaration );
                 boundIdentifiers.getDeclrClasses().put( identifier,
-                                                        declaration.getExtractor().getExtractToClass() );
+                                                        declaration.getDeclarationClass() );
                 it.remove();
             }
         }

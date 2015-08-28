@@ -144,56 +144,56 @@ import static java.util.Arrays.asList;
  */
 public class Misc2Test extends CommonTestMethodBase {
 
-    private static final Logger logger = LoggerFactory.getLogger(Misc2Test.class);
+    private static final Logger logger = LoggerFactory.getLogger( Misc2Test.class );
 
     @Test
     public void testUpdateWithNonEffectiveActivations() throws Exception {
         // JBRULES-3604
         String str = "package inheritance\n" +
-                "\n" +
-                "import org.drools.compiler.Address\n" +
-                "\n" +
-                "rule \"Parent\"\n" +
-                "    enabled false\n" +
-                "    when \n" +
-                "        $a : Address(suburb == \"xyz\")\n" +
-                "    then \n" +
-                "        System.out.println( $a ); \n" +
-                "end \n" +
-                "rule \"Child\" extends \"Parent\" \n" +
-                "    when \n" +
-                "        $b : Address( this == $a, street == \"123\")\n" +
-                "    then \n" +
-                "        System.out.println( $b ); \n" +
-                "end";
+                     "\n" +
+                     "import org.drools.compiler.Address\n" +
+                     "\n" +
+                     "rule \"Parent\"\n" +
+                     "    enabled false\n" +
+                     "    when \n" +
+                     "        $a : Address(suburb == \"xyz\")\n" +
+                     "    then \n" +
+                     "        System.out.println( $a ); \n" +
+                     "end \n" +
+                     "rule \"Child\" extends \"Parent\" \n" +
+                     "    when \n" +
+                     "        $b : Address( this == $a, street == \"123\")\n" +
+                     "    then \n" +
+                     "        System.out.println( $b ); \n" +
+                     "end";
 
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL);
+        builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
 
         if ( builder.hasErrors() ) {
-            throw new RuntimeException(builder.getErrors().toString());
+            throw new RuntimeException( builder.getErrors().toString() );
         }
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( RuleEngineOption.PHREAK );
-        KnowledgeBase knowledgeBase  = KnowledgeBaseFactory.newKnowledgeBase(kconf);
-        knowledgeBase.addKnowledgePackages(builder.getKnowledgePackages());
+        KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
+        knowledgeBase.addKnowledgePackages( builder.getKnowledgePackages() );
 
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
 
         Address address = new Address();
 
-        address.setSuburb("xyz");
-        FactHandle addressHandle = ksession.insert(address);
+        address.setSuburb( "xyz" );
+        FactHandle addressHandle = ksession.insert( address );
 
         int rulesFired = ksession.fireAllRules();
 
         assertEquals( 0, rulesFired );
 
-        address.setStreet("123");
+        address.setStreet( "123" );
 
 
-        ksession.update(addressHandle, address);
+        ksession.update( addressHandle, address );
 
         rulesFired = ksession.fireAllRules();
 
@@ -207,35 +207,35 @@ public class Misc2Test extends CommonTestMethodBase {
     public void testNPEOnMutableGlobal() throws Exception {
         // BZ-1019473
         String str = "package org.drools.compiler\n" +
-                "global java.util.List context\n" + 
-                "rule B\n" + 
-                "  when\n" +
-                "    Message( message == \"b\" )\n" +
-                "    $s : String() from context\n" + 
-                "  then\n" + 
-                "    System.out.println($s);\n" + 
-                "end";
+                     "global java.util.List context\n" +
+                     "rule B\n" +
+                     "  when\n" +
+                     "    Message( message == \"b\" )\n" +
+                     "    $s : String() from context\n" +
+                     "  then\n" +
+                     "    System.out.println($s);\n" +
+                     "end";
 
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write(ResourceFactory.newByteArrayResource(str.getBytes()).setTargetPath("org/drools/compiler/rules.drl") );
-        
-        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
-        kbuilder.buildAll();
-        
-        assertEquals(0, kbuilder.getResults().getMessages().size());
+        kfs.write( ResourceFactory.newByteArrayResource( str.getBytes() ).setTargetPath( "org/drools/compiler/rules.drl" ) );
 
-        ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).getKieBase();
-        KieSession ksession = ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).newKieSession();
+        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder( kfs );
+        kbuilder.buildAll();
+
+        assertEquals( 0, kbuilder.getResults().getMessages().size() );
+
+        ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).getKieBase();
+        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
         assertNotNull( ksession );
-        
+
         List<String> context = new ArrayList<String>();
-        ksession.setGlobal("context", context);
-        
+        ksession.setGlobal( "context", context );
+
         FactHandle b = ksession.insert( new Message( "b" ) );
-        ksession.delete(b);
-        int fired = ksession.fireAllRules(1);
-        
+        ksession.delete( b );
+        int fired = ksession.fireAllRules( 1 );
+
         assertEquals( 0, fired );
         ksession.dispose();
     }
@@ -259,10 +259,10 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
 
         if ( kbuilder.hasErrors() ) {
-            throw new RuntimeException("" + kbuilder.getErrors());
+            throw new RuntimeException( "" + kbuilder.getErrors() );
         }
 
         FileManager fileManager = new FileManager().setUp();
@@ -270,16 +270,16 @@ public class Misc2Test extends CommonTestMethodBase {
         try {
             File root = fileManager.getRootDirectory();
 
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(root, "test.drl.compiled")));
-            out.writeObject( kbuilder.getKnowledgePackages());
+            ObjectOutputStream out = new ObjectOutputStream( new FileOutputStream( new File( root, "test.drl.compiled" ) ) );
+            out.writeObject( kbuilder.getKnowledgePackages() );
             out.close();
 
             KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
             kconf.setOption( RuleEngineOption.PHREAK );
-            KnowledgeBase kbase  = KnowledgeBaseFactory.newKnowledgeBase(kconf);
+            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
 
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(root, "test.drl.compiled")));
-            kbase.addKnowledgePackages((Collection<KnowledgePackage>) in.readObject());
+            ObjectInputStream in = new ObjectInputStream( new FileInputStream( new File( root, "test.drl.compiled" ) ) );
+            kbase.addKnowledgePackages( (Collection<KnowledgePackage>) in.readObject() );
             in.close();
         } finally {
             fileManager.tearDown();
@@ -316,10 +316,10 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        assertEquals(2, ksession.fireAllRules());
+        assertEquals( 2, ksession.fireAllRules() );
     }
 
     @Test
@@ -365,10 +365,10 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        assertEquals(4, ksession.fireAllRules());
+        assertEquals( 4, ksession.fireAllRules() );
     }
 
     @Test
@@ -390,7 +390,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         System.out.println( str );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List list = new ArrayList();
@@ -403,11 +403,11 @@ public class Misc2Test extends CommonTestMethodBase {
         // JBRULES-3666
         KnowledgeBase kbase = getKnowledgeBase();
         KieBaseEventListener listener = new DefaultKieBaseEventListener();
-        kbase.addEventListener(listener);
-        kbase.addEventListener(listener);
-        assertEquals(1, ((KnowledgeBaseImpl) kbase).getKieBaseEventListeners().size());
-        kbase.removeEventListener(listener);
-        assertEquals(0, ((KnowledgeBaseImpl) kbase).getKieBaseEventListeners().size());
+        kbase.addEventListener( listener );
+        kbase.addEventListener( listener );
+        assertEquals( 1, ( (KnowledgeBaseImpl) kbase ).getKieBaseEventListeners().size() );
+        kbase.removeEventListener( listener );
+        assertEquals( 0, ( (KnowledgeBaseImpl) kbase ).getKieBaseEventListeners().size() );
     }
 
     @Test
@@ -415,81 +415,82 @@ public class Misc2Test extends CommonTestMethodBase {
         // JBRULES-3677
 
         String str = "import org.drools.compiler.Person;\n" +
-                "global java.util.List results;" +
-                "rule R1\n" +
-                "ruleflow-group \"test\"\n" +
-                "when\n" +
-                "   Person( $age : age ) \n" +
-                "then\n" +
-                "   if ($age > 40) throw new RuntimeException(\"Too old\");\n" +
-                "   results.add(\"OK\");" +
-                "end";
+                     "global java.util.List results;" +
+                     "rule R1\n" +
+                     "ruleflow-group \"test\"\n" +
+                     "when\n" +
+                     "   Person( $age : age ) \n" +
+                     "then\n" +
+                     "   if ($age > 40) throw new RuntimeException(\"Too old\");\n" +
+                     "   results.add(\"OK\");" +
+                     "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<String> res = new ArrayList<String>();
         ksession.setGlobal( "results", res );
 
         AgendaEventListener agendaEventListener = new AgendaEventListener() {
-            public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) {
+            public void matchCreated( org.kie.api.event.rule.MatchCreatedEvent event ) {
             }
 
-            public void matchCancelled(org.kie.api.event.rule.MatchCancelledEvent event) {
+            public void matchCancelled( org.kie.api.event.rule.MatchCancelledEvent event ) {
             }
 
-            public void beforeMatchFired(org.kie.api.event.rule.BeforeMatchFiredEvent event) {
+            public void beforeMatchFired( org.kie.api.event.rule.BeforeMatchFiredEvent event ) {
             }
 
-            public void afterMatchFired(org.kie.api.event.rule.AfterMatchFiredEvent event) {
+            public void afterMatchFired( org.kie.api.event.rule.AfterMatchFiredEvent event ) {
             }
 
-            public void agendaGroupPopped(org.kie.api.event.rule.AgendaGroupPoppedEvent event) {
+            public void agendaGroupPopped( org.kie.api.event.rule.AgendaGroupPoppedEvent event ) {
             }
 
-            public void agendaGroupPushed(org.kie.api.event.rule.AgendaGroupPushedEvent event) {
+            public void agendaGroupPushed( org.kie.api.event.rule.AgendaGroupPushedEvent event ) {
             }
 
-            public void beforeRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) {
+            public void beforeRuleFlowGroupActivated( org.kie.api.event.rule.RuleFlowGroupActivatedEvent event ) {
             }
 
-            public void afterRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) {
+            public void afterRuleFlowGroupActivated( org.kie.api.event.rule.RuleFlowGroupActivatedEvent event ) {
                 ksession.fireAllRules();
             }
 
-            public void beforeRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) {
+            public void beforeRuleFlowGroupDeactivated( org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event ) {
             }
 
-            public void afterRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) {
+            public void afterRuleFlowGroupDeactivated( org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event ) {
             }
         };
 
-        ksession.addEventListener(agendaEventListener);
+        ksession.addEventListener( agendaEventListener );
 
-        FactHandle fact1 = ksession.insert(new Person("Mario", 38));
-        ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("test");
+        FactHandle fact1 = ksession.insert( new Person( "Mario", 38 ) );
+        ( (InternalAgenda) ksession.getAgenda() ).activateRuleFlowGroup( "test" );
         ksession.fireAllRules();
-        assertEquals(1, res.size());
+        assertEquals( 1, res.size() );
         res.clear();
 
-        ksession.delete(fact1);
+        ksession.delete( fact1 );
 
-        FactHandle fact2 = ksession.insert(new Person("Mario", 48));
+        FactHandle fact2 = ksession.insert( new Person( "Mario", 48 ) );
         try {
-            ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("test");
+            ( (InternalAgenda) ksession.getAgenda() ).activateRuleFlowGroup( "test" );
             ksession.fireAllRules();
-            fail("should throw an Exception");
-        } catch (Exception e) { }
-        ksession.delete(fact2);
+            fail( "should throw an Exception" );
+        } catch (Exception e) {
+        }
+        ksession.delete( fact2 );
 
-        assertEquals(0, res.size());
+        assertEquals( 0, res.size() );
 
         // try to reuse the ksession after the Exception
-        FactHandle fact3 = ksession.insert(new Person("Mario", 38));
-        ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("test");
+        FactHandle fact3 = ksession.insert( new Person( "Mario", 38 ) );
+        ( (InternalAgenda) ksession.getAgenda() ).activateRuleFlowGroup( "test" );
         ksession.fireAllRules();
-        assertEquals(1, res.size());
-        ksession.delete(fact3);
+        assertEquals( 1, res.size() );
+        ksession.delete( fact3 );
 
         ksession.dispose();
 
@@ -509,27 +510,27 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
     }
 
     @Test
     public void testMVELForLoop() throws Exception {
         // JBRULES-3717
         String str = "rule demo\n" +
-                "dialect \"mvel\"\n" +
-                "when\n" +
-                "then\n" +
-                "   for ( int i = 1; i <= 3; i++ ) {\n" +
-                "       insert( \"foo\" + i );\n" +
-                "   }\n" +
-                "end";
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "then\n" +
+                     "   for ( int i = 1; i <= 3; i++ ) {\n" +
+                     "       insert( \"foo\" + i );\n" +
+                     "   }\n" +
+                     "end";
 
         KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL);
+        builder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
 
         if ( builder.hasErrors() ) {
-            throw new RuntimeException(builder.getErrors().toString());
+            throw new RuntimeException( builder.getErrors().toString() );
         }
     }
 
@@ -537,21 +538,21 @@ public class Misc2Test extends CommonTestMethodBase {
     public void testBigDecimalComparison() throws Exception {
         // JBRULES-3715
         String str = "import org.drools.compiler.Person;\n" +
-                "rule \"Big Decimal Comparison\"\n" +
-                "    dialect \"mvel\"\n" +
-                "when\n" +
-                "    Person( bigDecimal == 0.0B )\n" +
-                "then\n" +
-                "end";
+                     "rule \"Big Decimal Comparison\"\n" +
+                     "    dialect \"mvel\"\n" +
+                     "when\n" +
+                     "    Person( bigDecimal == 0.0B )\n" +
+                     "then\n" +
+                     "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        Person p = new Person("Mario", 38);
-        p.setBigDecimal(new BigDecimal("0"));
-        ksession.insert(p);
+        Person p = new Person( "Mario", 38 );
+        p.setBigDecimal( new BigDecimal( "0" ) );
+        ksession.insert( p );
 
-        assertEquals(1, ksession.fireAllRules());
+        assertEquals( 1, ksession.fireAllRules() );
         ksession.dispose();
     }
 
@@ -588,7 +589,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    }\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.fireAllRules();
     }
@@ -608,21 +609,21 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   delete($number);\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
-        ksession.insert(5);
-        ksession.insert(6);
-        ksession.insert(4);
-        ksession.insert(1);
-        ksession.insert(2);
+        ksession.insert( 5 );
+        ksession.insert( 6 );
+        ksession.insert( 4 );
+        ksession.insert( 1 );
+        ksession.insert( 2 );
 
         ksession.fireAllRules();
 
-        assertEquals(asList(1, 2, 4, 5, 6), list);
+        assertEquals( asList( 1, 2, 4, 5, 6 ), list );
     }
 
     @Test
@@ -640,23 +641,23 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   delete($number);\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
-        ksession.insert(3);
-        ksession.insert(7);
-        ksession.insert(4);
-        ksession.insert(5);
-        ksession.insert(2);
-        ksession.insert(1);
-        ksession.insert(6);
+        ksession.insert( 3 );
+        ksession.insert( 7 );
+        ksession.insert( 4 );
+        ksession.insert( 5 );
+        ksession.insert( 2 );
+        ksession.insert( 1 );
+        ksession.insert( 6 );
 
         ksession.fireAllRules();
 
-        assertEquals(asList(7, 6, 5, 4, 3, 2, 1), list);
+        assertEquals( asList( 7, 6, 5, 4, 3, 2, 1 ), list );
     }
 
     @Test(timeout = 5000)
@@ -725,9 +726,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "                             ) );\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        assertEquals(3, ksession.fireAllRules());
+        assertEquals( 3, ksession.fireAllRules() );
     }
 
     @Test
@@ -791,11 +792,11 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  Neuron( $value : value )\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.fireAllRules();
 
-        assertEquals(2.0, ksession.getQueryResults( "getNeuron" ).iterator().next().get( "$value" ));
+        assertEquals( 2.0, ksession.getQueryResults( "getNeuron" ).iterator().next().get( "$value" ) );
     }
 
     @Test
@@ -810,16 +811,16 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   $foo.x = 1;\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         Foo foo1 = new Foo();
         Foo foo2 = new Foo();
-        ksession.insert(foo1);
-        ksession.insert(foo2);
+        ksession.insert( foo1 );
+        ksession.insert( foo2 );
         ksession.fireAllRules();
-        assertEquals(1, foo1.x);
-        assertEquals(1, foo2.x);
+        assertEquals( 1, foo1.x );
+        assertEquals( 1, foo2.x );
     }
 
     @Test
@@ -855,7 +856,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    };\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.fireAllRules();
     }
@@ -887,10 +888,10 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        FactHandle fh = ksession.insert(new A(1, 1, 1, 1));
+        FactHandle fh = ksession.insert( new A( 1, 1, 1, 1 ) );
 
         ksession.fireAllRules();
 
@@ -899,9 +900,9 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         // this second insert forces the regeneration of the otnIds
-        ksession.insert(new A(2, 2, 2, 2));
+        ksession.insert( new A( 2, 2, 2, 2 ) );
 
-        LeftTuple leftTuple = ((DefaultFactHandle) fh).getFirstLeftTuple();
+        LeftTuple leftTuple = ( (DefaultFactHandle) fh ).getFirstLeftTuple();
         ObjectTypeNode.Id letTupleOtnId = leftTuple.getLeftTupleSink().getLeftInputOtnId();
         leftTuple = leftTuple.getLeftParentNext();
         while ( leftTuple != null ) {
@@ -922,7 +923,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         }
 
-        public A(int f1, int f2, int f3, int f4) {
+        public A( int f1, int f2, int f3, int f4 ) {
             this.f1 = f1;
             this.f2 = f2;
             this.f3 = f3;
@@ -933,7 +934,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return f1;
         }
 
-        public void setF1(int f1) {
+        public void setF1( int f1 ) {
             this.f1 = f1;
         }
 
@@ -941,7 +942,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return f2;
         }
 
-        public void setF2(int f2) {
+        public void setF2( int f2 ) {
             this.f2 = f2;
         }
 
@@ -949,7 +950,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return f3;
         }
 
-        public void setF3(int f3) {
+        public void setF3( int f3 ) {
             this.f3 = f3;
         }
 
@@ -957,7 +958,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return f4;
         }
 
-        public void setF4(int f4) {
+        public void setF4( int f4 ) {
             this.f4 = f4;
         }
 
@@ -997,16 +998,16 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        Map<Parameter, Double> values = new EnumMap<Parameter, Double>(Parameter.class);
-        values.put(Parameter.PARAM_A, 4.0);
+        Map<Parameter, Double> values = new EnumMap<Parameter, Double>( Parameter.class );
+        values.put( Parameter.PARAM_A, 4.0 );
         DataSample data = new DataSample();
-        data.setValues(values);
-        ksession.insert(data);
+        data.setValues( values );
+        ksession.insert( data );
 
-        assertEquals(2, ksession.fireAllRules());
+        assertEquals( 2, ksession.fireAllRules() );
     }
 
     @Test
@@ -1049,34 +1050,34 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    System.out.println(drools.getRule().getName());\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ksession.insert(new DataSample());
+        ksession.insert( new DataSample() );
 
-        assertEquals(3, ksession.fireAllRules());
+        assertEquals( 3, ksession.fireAllRules() );
     }
 
-    public enum Parameter { PARAM_A, PARAM_B }
+    public enum Parameter {PARAM_A, PARAM_B}
 
     @PropertyReactive
     public static class DataSample {
-        private Map<Parameter, Double> values = new EnumMap<Parameter, Double>(Parameter.class);
+        private Map<Parameter, Double> values = new EnumMap<Parameter, Double>( Parameter.class );
 
         public Map<Parameter, Double> getValues() {
             return values;
         }
 
-        public void setValues(Map<Parameter, Double> values) {
+        public void setValues( Map<Parameter, Double> values ) {
             this.values = values;
         }
 
         @Modifies({"values", "notEmpty"})
-        public void addValue(Parameter p, double value){
-            this.values.put(p, value);
+        public void addValue( Parameter p, double value ) {
+            this.values.put( p, value );
         }
 
-        public boolean isNotEmpty(){
+        public boolean isNotEmpty() {
             return !this.values.isEmpty();
         }
     }
@@ -1095,16 +1096,21 @@ public class Misc2Test extends CommonTestMethodBase {
                 "$S.getFoo().concat(\"this works with java dialect\");\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
     }
 
     public static abstract class AbstractBase<T> {
         protected T foo;
-        public T getFoo() { return foo; }
+
+        public T getFoo() {
+            return foo;
+        }
     }
 
     public static class StringConcrete extends AbstractBase<String> {
-        public StringConcrete() { this.foo = new String(); }
+        public StringConcrete() {
+            this.foo = new String();
+        }
     }
 
     @Test
@@ -1118,12 +1124,15 @@ public class Misc2Test extends CommonTestMethodBase {
                 "String s = new String(\"write something with ) a paren\");\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
     }
 
-    public static enum Answer { YES, NO }
+    public static enum Answer {YES, NO}
+
     public static class AnswerGiver {
-        public Answer getAnswer() { return Answer.YES; }
+        public Answer getAnswer() {
+            return Answer.YES;
+        }
     }
 
     @Test
@@ -1139,7 +1148,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
         assertTrue( kbuilder.hasErrors() );
     }
 
@@ -1148,8 +1157,8 @@ public class Misc2Test extends CommonTestMethodBase {
         // DROOLS-27
         String str =
                 "import " + Misc2Test.StaticPerson.class.getCanonicalName() + "\n" +
-                "declare StaticPerson end\n"+
-                "declare Student extends StaticPerson end\n"+
+                "declare StaticPerson end\n" +
+                "declare Student extends StaticPerson end\n" +
                 "rule Init when\n" +
                 "then\n" +
                 "    Student s = new Student();\n" +
@@ -1161,9 +1170,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        assertEquals(2, ksession.fireAllRules());
+        assertEquals( 2, ksession.fireAllRules() );
     }
 
     public static class StaticPerson {
@@ -1173,7 +1182,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return name;
         }
 
-        public void setName(String name) {
+        public void setName( String name ) {
             this.name = name;
         }
     }
@@ -1203,7 +1212,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   System.out.println( \"Success!\" );\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         assertEquals( 1, ksession.fireAllRules() );
     }
@@ -1222,18 +1231,18 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    modify ($product) { price = $product.cost + 0.10B }\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
 
         final Model model = new Model();
-        model.setCost(new BigDecimal("2.43"));
-        model.setPrice(new BigDecimal("2.43"));
+        model.setCost( new BigDecimal( "2.43" ) );
+        model.setPrice( new BigDecimal( "2.43" ) );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.insert(model);
+        ksession.insert( model );
 
-        int fired = ksession.fireAllRules(2);
-        if (fired > 1)
-            throw new RuntimeException("loop");
+        int fired = ksession.fireAllRules( 2 );
+        if ( fired > 1 )
+            throw new RuntimeException( "loop" );
     }
 
     public static class Model {
@@ -1243,13 +1252,16 @@ public class Misc2Test extends CommonTestMethodBase {
         public BigDecimal getCost() {
             return cost;
         }
-        public void setCost(BigDecimal cost) {
+
+        public void setCost( BigDecimal cost ) {
             this.cost = cost;
         }
+
         public BigDecimal getPrice() {
             return price;
         }
-        public void setPrice(BigDecimal price) {
+
+        public void setPrice( BigDecimal price ) {
             this.price = price;
         }
     }
@@ -1267,29 +1279,30 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.insert(new IntegerWrapperImpl(2));
-        ksession.insert(new IntegerWrapperImpl(3));
+        ksession.insert( new IntegerWrapperImpl( 2 ) );
+        ksession.insert( new IntegerWrapperImpl( 3 ) );
 
-        assertEquals(1, ksession.fireAllRules());
+        assertEquals( 1, ksession.fireAllRules() );
     }
 
     interface IntegerWraper {
         int getInt();
     }
 
-    public static abstract class AbstractIntegerWrapper implements IntegerWraper, Comparable<IntegerWraper> { }
+    public static abstract class AbstractIntegerWrapper implements IntegerWraper, Comparable<IntegerWraper> {
+    }
 
     public static class IntegerWrapperImpl extends AbstractIntegerWrapper {
 
         private final int i;
 
-        public IntegerWrapperImpl(int i) {
+        public IntegerWrapperImpl( int i ) {
             this.i = i;
         }
 
-        public int compareTo(IntegerWraper o) {
+        public int compareTo( IntegerWraper o ) {
             return getInt() - o.getInt();
         }
 
@@ -1311,24 +1324,24 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.insert(new ComparableInteger(2));
-        ksession.insert(new ComparableInteger(3));
+        ksession.insert( new ComparableInteger( 2 ) );
+        ksession.insert( new ComparableInteger( 3 ) );
 
-        assertEquals(1, ksession.fireAllRules());
+        assertEquals( 1, ksession.fireAllRules() );
     }
 
     public static class ComparableInteger implements Comparable {
 
         private final int i;
 
-        public ComparableInteger(int i) {
+        public ComparableInteger( int i ) {
             this.i = i;
         }
 
-        public int compareTo(Object o) {
-            return getInt() - ((ComparableInteger)o).getInt();
+        public int compareTo( Object o ) {
+            return getInt() - ( (ComparableInteger) o ).getInt();
         }
 
         public int getInt() {
@@ -1349,29 +1362,30 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.insert(new IntegerWrapperImpl2(2));
-        ksession.insert(new IntegerWrapperImpl2(3));
+        ksession.insert( new IntegerWrapperImpl2( 2 ) );
+        ksession.insert( new IntegerWrapperImpl2( 3 ) );
 
-        assertEquals(1, ksession.fireAllRules());
+        assertEquals( 1, ksession.fireAllRules() );
     }
 
     interface IntegerWraper2 extends Comparable<IntegerWraper2> {
         int getInt();
     }
 
-    public static abstract class AbstractIntegerWrapper2 implements IntegerWraper2 { }
+    public static abstract class AbstractIntegerWrapper2 implements IntegerWraper2 {
+    }
 
     public static class IntegerWrapperImpl2 extends AbstractIntegerWrapper2 {
 
         private final int i;
 
-        public IntegerWrapperImpl2(int i) {
+        public IntegerWrapperImpl2( int i ) {
             this.i = i;
         }
 
-        public int compareTo(IntegerWraper2 o) {
+        public int compareTo( IntegerWraper2 o ) {
             return getInt() - o.getInt();
         }
 
@@ -1412,7 +1426,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    System.out.println( \"c/e \" + $c + \" \" + $e );\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.fireAllRules();
     }
@@ -1443,9 +1457,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        assertEquals(2, ksession.fireAllRules());
+        assertEquals( 2, ksession.fireAllRules() );
     }
 
     @Test
@@ -1481,9 +1495,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        assertEquals(2, ksession.fireAllRules());
+        assertEquals( 2, ksession.fireAllRules() );
     }
 
     @Test
@@ -1515,9 +1529,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    System.out.println( $b1 );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        assertEquals(2, ksession.fireAllRules());
+        assertEquals( 2, ksession.fireAllRules() );
     }
 
     @Test
@@ -1555,9 +1569,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        assertEquals(3, ksession.fireAllRules());
+        assertEquals( 3, ksession.fireAllRules() );
     }
 
     @Test
@@ -1589,7 +1603,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        assertTrue(kbuilder.hasErrors());
+        assertTrue( kbuilder.hasErrors() );
     }
 
     @Test
@@ -1627,10 +1641,10 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  System.out.println( $m );\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        assertEquals(2, ksession.fireAllRules());
+        assertEquals( 2, ksession.fireAllRules() );
     }
 
     @Test
@@ -1647,7 +1661,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        assertTrue(kbuilder.hasErrors());
+        assertTrue( kbuilder.hasErrors() );
     }
 
     @Test
@@ -1662,15 +1676,15 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
-        list.add(1);
-        list.add(null);
-        list.add(2);
+        list.add( 1 );
+        list.add( null );
+        list.add( 2 );
 
         ksession.fireAllRules();
     }
@@ -1699,10 +1713,10 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        assertEquals(2, ksession.fireAllRules());
+        assertEquals( 2, ksession.fireAllRules() );
     }
 
     @Test
@@ -1733,15 +1747,15 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    l.add(s);\n" +
                 "end \n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<String> l = new ArrayList<String>();
-        ksession.setGlobal("l", l);
+        ksession.setGlobal( "l", l );
 
         ksession.fireAllRules();
 
-        assertEquals("http://onefineday.123", l.get(0));
+        assertEquals( "http://onefineday.123", l.get( 0 ) );
     }
 
     @Test
@@ -1753,11 +1767,11 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ksession.insert(new Long(6));
-        assertEquals(1, ksession.fireAllRules());
+        ksession.insert( new Long( 6 ) );
+        assertEquals( 1, ksession.fireAllRules() );
     }
 
 
@@ -1813,9 +1827,9 @@ public class Misc2Test extends CommonTestMethodBase {
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( new ByteArrayResource( str2.getBytes() ), ResourceType.DRL );
 
-        System.out.println(  knowledgeBuilder.getErrors() );
+        System.out.println( knowledgeBuilder.getErrors() );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List list = new ArrayList();
@@ -1856,7 +1870,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 " list.add( $i );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List list = new ArrayList();
@@ -1873,7 +1887,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return duration;
         }
 
-        public void setDuration(long duration) {
+        public void setDuration( long duration ) {
             this.duration = duration;
         }
     }
@@ -1889,7 +1903,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    @duration(duration)\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
     }
 
@@ -1906,10 +1920,10 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KieServices ks = KieServices.Factory.get();
 
-        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", str);
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         ks.newKieBuilder( kfs ).buildAll();
 
-        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
     }
 
     @Test
@@ -1925,7 +1939,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        assertTrue(kbuilder.hasErrors());
+        assertTrue( kbuilder.hasErrors() );
     }
 
     @Test
@@ -1940,45 +1954,45 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ksession.insert(30);
-        ksession.insert(31);
-        ksession.insert("B");
-        ksession.insert("D");
+        ksession.insert( 30 );
+        ksession.insert( 31 );
+        ksession.insert( "B" );
+        ksession.insert( "D" );
 
-        Person pA = new Person("AAA", 30);
-        Person pB = new Person("BBB", 30);
-        Person pC = new Person("CCC", 31);
-        Person pD = new Person("DDD", 31);
+        Person pA = new Person( "AAA", 30 );
+        Person pB = new Person( "BBB", 30 );
+        Person pC = new Person( "CCC", 31 );
+        Person pD = new Person( "DDD", 31 );
 
-        FactHandle fhB = ksession.insert(pB);
-        FactHandle fhD = ksession.insert(pD);
-        FactHandle fhA = ksession.insert(pA);
-        FactHandle fhC = ksession.insert(pC);
+        FactHandle fhB = ksession.insert( pB );
+        FactHandle fhD = ksession.insert( pD );
+        FactHandle fhA = ksession.insert( pA );
+        FactHandle fhC = ksession.insert( pC );
 
         ksession.fireAllRules();
 
-        pB.setAge(31);
-        pB.setName("DBB");
-        ksession.update(fhB, pB);
+        pB.setAge( 31 );
+        pB.setName( "DBB" );
+        ksession.update( fhB, pB );
 
-        pD.setAge(30);
-        pD.setName("BDD");
-        ksession.update(fhD, pD);
+        pD.setAge( 30 );
+        pD.setName( "BDD" );
+        ksession.update( fhD, pD );
 
-        assertEquals(0, ksession.fireAllRules());
+        assertEquals( 0, ksession.fireAllRules() );
 
-        pB.setAge(30);
-        pB.setName("BBB");
-        ksession.update(fhB, pB);
+        pB.setAge( 30 );
+        pB.setName( "BBB" );
+        ksession.update( fhB, pB );
 
-        pD.setAge(31);
-        pD.setName("DDD");
-        ksession.update(fhD, pD);
+        pD.setAge( 31 );
+        pD.setName( "DDD" );
+        ksession.update( fhD, pD );
 
-        assertEquals(0, ksession.fireAllRules());
+        assertEquals( 0, ksession.fireAllRules() );
     }
 
     @Test
@@ -1995,34 +2009,34 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  list.add($age);\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
-        Person p1 = new Person("AAA", 31);
-        Person p2 = new Person("AAA", 34);
-        Person p3 = new Person("AAA", 33);
+        Person p1 = new Person( "AAA", 31 );
+        Person p2 = new Person( "AAA", 34 );
+        Person p3 = new Person( "AAA", 33 );
 
-        FactHandle fh1 = ksession.insert(p1);
-        FactHandle fh3 = ksession.insert(p3);
-        FactHandle fh2 = ksession.insert(p2);
+        FactHandle fh1 = ksession.insert( p1 );
+        FactHandle fh3 = ksession.insert( p3 );
+        FactHandle fh2 = ksession.insert( p2 );
 
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals(31, (int)list.get(0));
+        assertEquals( 1, list.size() );
+        assertEquals( 31, (int) list.get( 0 ) );
 
         list.clear();
 
-        p1.setAge(35);
-        ksession.update(fh1, p1);
-        p3.setAge(31);
-        ksession.update(fh3, p3);
+        p1.setAge( 35 );
+        ksession.update( fh1, p1 );
+        p3.setAge( 31 );
+        ksession.update( fh3, p3 );
 
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals(31, (int)list.get(0));
+        assertEquals( 1, list.size() );
+        assertEquals( 31, (int) list.get( 0 ) );
     }
 
     @Test
@@ -2038,22 +2052,22 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  insertLogical(new Cheese(\"gorgonzola\", 10));\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        Person p1 = new Person("A", 31);
-        FactHandle fh1 = ksession.insert(p1);
+        Person p1 = new Person( "A", 31 );
+        FactHandle fh1 = ksession.insert( p1 );
 
         ksession.fireAllRules();
 
-        assertEquals(1, ksession.getObjects(new ClassObjectFilter(Cheese.class)).size());
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( Cheese.class ) ).size() );
 
-        Person p2 = new Person("A", 32);
-        FactHandle fh2 = ksession.insert(p2);
+        Person p2 = new Person( "A", 32 );
+        FactHandle fh2 = ksession.insert( p2 );
 
         ksession.fireAllRules();
 
-        assertEquals(1, ksession.getObjects(new ClassObjectFilter(Cheese.class)).size());
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( Cheese.class ) ).size() );
     }
 
     @Test
@@ -2070,28 +2084,28 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KieServices ks = KieServices.Factory.get();
 
-        KieFileSystem kfs = ks.newKieFileSystem().write("src/main/resources/r1.drl", drl);
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
 
         KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
-        assertEquals(0, builder.getResults().getMessages().size());
-        ks.getRepository().addKieModule(builder.getKieModule());
+        assertEquals( 0, builder.getResults().getMessages().size() );
+        ks.getRepository().addKieModule( builder.getKieModule() );
 
-        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
 
-        FactType messageType = ksession.getKieBase().getFactType("org.drools.test", "Message");
+        FactType messageType = ksession.getKieBase().getFactType( "org.drools.test", "Message" );
         Object message = messageType.newInstance();
-        messageType.set(message, "message", "Hello World");
+        messageType.set( message, "message", "Hello World" );
 
-        ksession.insert(message);
+        ksession.insert( message );
         assertEquals( 1, ksession.fireAllRules() );
 
-        KieSession ksession2 = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        KieSession ksession2 = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
 
-        FactType messageType2 = ksession2.getKieBase().getFactType("org.drools.test", "Message");
+        FactType messageType2 = ksession2.getKieBase().getFactType( "org.drools.test", "Message" );
         Object message2 = messageType2.newInstance();
-        messageType2.set(message2, "message", "Hello World");
+        messageType2.set( message2, "message", "Hello World" );
 
-        ksession2.insert(message2);
+        ksession2.insert( message2 );
         assertEquals( 1, ksession2.fireAllRules() );
     }
 
@@ -2101,11 +2115,11 @@ public class Misc2Test extends CommonTestMethodBase {
         private int index;
         private boolean available;
 
-        public Lecture(String id, int day, int index) {
-            this(id, day, index, true);
+        public Lecture( String id, int day, int index ) {
+            this( id, day, index, true );
         }
 
-        public Lecture(String id, int day, int index, boolean available) {
+        public Lecture( String id, int day, int index, boolean available ) {
             this.id = id;
             this.day = day;
             this.index = index;
@@ -2120,7 +2134,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return day;
         }
 
-        public Lecture setDay(int day) {
+        public Lecture setDay( int day ) {
             this.day = day;
             return this;
         }
@@ -2129,7 +2143,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return index;
         }
 
-        public Lecture setIndex(int index) {
+        public Lecture setIndex( int index ) {
             this.index = index;
             return this;
         }
@@ -2138,7 +2152,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return available;
         }
 
-        public Lecture setAvailable(boolean available) {
+        public Lecture setAvailable( boolean available ) {
             this.available = available;
             return this;
         }
@@ -2167,38 +2181,38 @@ public class Misc2Test extends CommonTestMethodBase {
                 "        list.add($lecture.getId());\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        Lecture lA = new Lecture("A", 0, 4);
-        Lecture lB = new Lecture("B", 2, 2);
-        Lecture lC = new Lecture("C", 2, 1);
+        Lecture lA = new Lecture( "A", 0, 4 );
+        Lecture lB = new Lecture( "B", 2, 2 );
+        Lecture lC = new Lecture( "C", 2, 1 );
 
-        FactHandle fhA = ksession.insert(lA);
-        FactHandle fhB = ksession.insert(lB);
-        FactHandle fhC = ksession.insert(lC);
+        FactHandle fhA = ksession.insert( lA );
+        FactHandle fhB = ksession.insert( lB );
+        FactHandle fhC = ksession.insert( lC );
 
         ksession.fireAllRules(); // C gets blocked by B
 
-        assertEquals(2, list.size());
-        assertTrue(list.containsAll(asList("A", "B")));
+        assertEquals( 2, list.size() );
+        assertTrue( list.containsAll( asList( "A", "B" ) ) );
         list.clear();
 
-        ksession.update(fhB, lB.setDay(0).setIndex(4));
-        ksession.update(fhC, lC.setDay(0).setIndex(3));
+        ksession.update( fhB, lB.setDay( 0 ).setIndex( 4 ) );
+        ksession.update( fhC, lC.setDay( 0 ).setIndex( 3 ) );
         ksession.fireAllRules(); // B is still a valid blocker for C
 
-        assertEquals(1, list.size());
-        assertTrue(list.contains("B"));
+        assertEquals( 1, list.size() );
+        assertTrue( list.contains( "B" ) );
         list.clear();
 
-        ksession.update(fhB, lB.setDay(2).setIndex(2));
+        ksession.update( fhB, lB.setDay( 2 ).setIndex( 2 ) );
         ksession.fireAllRules(); // C doesn't find A as blocker
 
-        assertEquals(1, list.size());
-        assertTrue(list.contains("B"));
+        assertEquals( 1, list.size() );
+        assertTrue( list.contains( "B" ) );
     }
 
     @Test
@@ -2229,33 +2243,33 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        Lecture lA = new Lecture("A", 0, 4, true);
-        Lecture lB = new Lecture("B", 2, 2, true);
-        Lecture lC = new Lecture("C", 2, 1, true);
+        Lecture lA = new Lecture( "A", 0, 4, true );
+        Lecture lB = new Lecture( "B", 2, 2, true );
+        Lecture lC = new Lecture( "C", 2, 1, true );
 
-        FactHandle fhA = ksession.insert(lA);
-        FactHandle fhB = ksession.insert(lB);
-        FactHandle fhC = ksession.insert(lC);
+        FactHandle fhA = ksession.insert( lA );
+        FactHandle fhB = ksession.insert( lB );
+        FactHandle fhC = ksession.insert( lC );
 
         ksession.fireAllRules();
 
-        assertEquals(2, list.size());
-        assertTrue(list.containsAll(asList("A", "B")));
+        assertEquals( 2, list.size() );
+        assertTrue( list.containsAll( asList( "A", "B" ) ) );
         list.clear();
 
-        ksession.update(fhB, lB.setAvailable(false));
+        ksession.update( fhB, lB.setAvailable( false ) );
         ksession.fireAllRules();
 
-        ksession.update(fhB, lB.setDay(0).setIndex(3));
+        ksession.update( fhB, lB.setDay( 0 ).setIndex( 3 ) );
         ksession.fireAllRules();
 
-        assertEquals(2, list.size());
-        assertTrue(list.containsAll(asList("B", "C")));
+        assertEquals( 2, list.size() );
+        assertTrue( list.containsAll( asList( "B", "C" ) ) );
         list.clear();
     }
 
@@ -2283,16 +2297,16 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    delete( \"x\" );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List list = new ArrayList();
-        ksession.setGlobal("list",list);
+        ksession.setGlobal( "list", list );
 
-        ksession.insert("x");
+        ksession.insert( "x" );
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
+        assertEquals( 1, list.size() );
     }
 
     @Test(timeout = 5000)
@@ -2316,10 +2330,10 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    modify( $p ) { setAge( 40 ) };\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        assertEquals(2, ksession.fireAllRules());
+        assertEquals( 2, ksession.fireAllRules() );
     }
 
     @Test
@@ -2333,8 +2347,8 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-        assertTrue(kbuilder.hasResults(ResultSeverity.INFO, ResultSeverity.WARNING, ResultSeverity.ERROR));
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
+        assertTrue( kbuilder.hasResults( ResultSeverity.INFO, ResultSeverity.WARNING, ResultSeverity.ERROR ) );
     }
 
     @Test
@@ -2368,9 +2382,9 @@ public class Misc2Test extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
 
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        assertEquals(0, ks.newKieBuilder( kfs ).buildAll().getResults().getMessages().size());
+        assertEquals( 0, ks.newKieBuilder( kfs ).buildAll().getResults().getMessages().size() );
 
-        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
     }
 
     @Test
@@ -2423,7 +2437,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertFalse( kb.hasErrors() );
 
         KieBaseConfiguration kbconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        ((RuleBaseConfiguration) kbconf).setConflictResolver( SalienceConflictResolver.getInstance() );
+        ( (RuleBaseConfiguration) kbconf ).setConflictResolver( SalienceConflictResolver.getInstance() );
 
         KnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase( kbconf );
         knowledgeBase.addKnowledgePackages( kb.getKnowledgePackages() );
@@ -2446,13 +2460,13 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ksession.insert(3);
-        ksession.insert(-3);
+        ksession.insert( 3 );
+        ksession.insert( -3 );
 
-        assertEquals(1, ksession.fireAllRules());
+        assertEquals( 1, ksession.fireAllRules() );
     }
 
     public static class Conversation {
@@ -2460,11 +2474,11 @@ public class Misc2Test extends CommonTestMethodBase {
         private String family;
         private int timeslot;
 
-        public Conversation(int id) {
+        public Conversation( int id ) {
             this.id = id;
         }
 
-        public Conversation(int id, String family, int timeslot) {
+        public Conversation( int id, String family, int timeslot ) {
             this.id = id;
             this.family = family;
             this.timeslot = timeslot;
@@ -2478,7 +2492,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return family;
         }
 
-        public void setFamily(String family) {
+        public void setFamily( String family ) {
             this.family = family;
         }
 
@@ -2486,7 +2500,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return timeslot;
         }
 
-        public void setTimeslot(int timeslot) {
+        public void setTimeslot( int timeslot ) {
             this.timeslot = timeslot;
         }
 
@@ -2513,44 +2527,44 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   list.add($conversation);\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<Conversation> conversations = new ArrayList<Conversation>();
-        ksession.setGlobal("list", conversations);
+        ksession.setGlobal( "list", conversations );
 
-        Conversation c0 = new Conversation(0, "Fusco", 2);
-        Conversation c1 = new Conversation(1, "Fusco", 3);
-        Conversation c2 = new Conversation(2, "Fusco", 4);
+        Conversation c0 = new Conversation( 0, "Fusco", 2 );
+        Conversation c1 = new Conversation( 1, "Fusco", 3 );
+        Conversation c2 = new Conversation( 2, "Fusco", 4 );
 
-        FactHandle fh0 = ksession.insert(c0);
-        FactHandle fh1 = ksession.insert(c1);
-        FactHandle fh2 = ksession.insert(c2);
+        FactHandle fh0 = ksession.insert( c0 );
+        FactHandle fh1 = ksession.insert( c1 );
+        FactHandle fh2 = ksession.insert( c2 );
 
         ksession.fireAllRules();
-        assertEquals(1, conversations.size());
+        assertEquals( 1, conversations.size() );
         conversations.clear();
 
-        c2.setTimeslot(0);
-        ksession.update(fh2, c2);
+        c2.setTimeslot( 0 );
+        ksession.update( fh2, c2 );
         ksession.fireAllRules();
-        c2.setTimeslot(4);
-        ksession.update(fh2, c2);
-        ksession.fireAllRules();
-        conversations.clear();
-
-        c0.setTimeslot(3);
-        ksession.update(fh0, c0);
-        ksession.fireAllRules();
-        c0.setTimeslot(2);
-        ksession.update(fh0, c0);
+        c2.setTimeslot( 4 );
+        ksession.update( fh2, c2 );
         ksession.fireAllRules();
         conversations.clear();
 
-        c2.setTimeslot(1);
-        ksession.update(fh2, c2);
+        c0.setTimeslot( 3 );
+        ksession.update( fh0, c0 );
         ksession.fireAllRules();
-        assertEquals(1, conversations.size());
+        c0.setTimeslot( 2 );
+        ksession.update( fh0, c0 );
+        ksession.fireAllRules();
+        conversations.clear();
+
+        c2.setTimeslot( 1 );
+        ksession.update( fh2, c2 );
+        ksession.fireAllRules();
+        assertEquals( 1, conversations.size() );
     }
 
     @Test
@@ -2567,7 +2581,7 @@ public class Misc2Test extends CommonTestMethodBase {
         kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         assertTrue( kb.hasErrors() );
     }
-    
+
     @Test
     public void testNamedConsequence() {
         List<String> firedRules = new ArrayList<String>();
@@ -2589,14 +2603,14 @@ public class Misc2Test extends CommonTestMethodBase {
                 "        };\n" +
                 "end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.setGlobal("fired", firedRules);
-        ksession.insert(new Foo());
-        ksession.insert(new Foo2(1));
+        ksession.setGlobal( "fired", firedRules );
+        ksession.insert( new Foo() );
+        ksession.insert( new Foo2( 1 ) );
         ksession.fireAllRules();
 
-        assertEquals(1, firedRules.size());
+        assertEquals( 1, firedRules.size() );
     }
 
     @Test
@@ -2619,23 +2633,25 @@ public class Misc2Test extends CommonTestMethodBase {
                 "            setX(1)\n" +
                 "        };\n" +
                 "end";
-        
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        ksession.setGlobal("fired", firedRules);
-        ksession.insert(new Foo());
-        ksession.insert(new Foo2(1));
+        ksession.setGlobal( "fired", firedRules );
+        ksession.insert( new Foo() );
+        ksession.insert( new Foo2( 1 ) );
         ksession.fireAllRules();
-        
-        assertEquals(1, firedRules.size());
+
+        assertEquals( 1, firedRules.size() );
     }
 
     public static class Foo {
         public int x;
+
         public int getX() {
             return x;
         }
-        public void setX(int x) {
+
+        public void setX( int x ) {
             this.x = x;
         }
     }
@@ -2643,14 +2659,19 @@ public class Misc2Test extends CommonTestMethodBase {
     public static class Foo2 {
         @Position(0)
         public int x;
-        public Foo2() { }
-        public Foo2(int x) {
+
+        public Foo2() {
+        }
+
+        public Foo2( int x ) {
             this.x = x;
         }
+
         public int getX() {
             return x;
         }
-        public void setX(int x) {
+
+        public void setX( int x ) {
             this.x = x;
         }
     }
@@ -2677,19 +2698,19 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KieBaseConfiguration kBaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kBaseConf.setOption( EventProcessingOption.STREAM );
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(kBaseConf, str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kBaseConf, str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ksession.setGlobal("context", new ArrayList() {{
-            add(new Long(0));
-        }});
+        ksession.setGlobal( "context", new ArrayList() {{
+            add( new Long( 0 ) );
+        }} );
 
         Foo foo = new Foo();
-        foo.setX(1);
-        ksession.insert(foo);
+        foo.setX( 1 );
+        ksession.insert( foo );
         ksession.fireAllRules();
 
-        assertEquals(2, foo.getX());
+        assertEquals( 2, foo.getX() );
     }
 
     @Test
@@ -2724,23 +2745,23 @@ public class Misc2Test extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        kfs.write("src/main/resources/isA.drl", str);
+        kfs.write( "src/main/resources/isA.drl", str );
 
-        KieBuilder kbuilder = ks.newKieBuilder(kfs);
+        KieBuilder kbuilder = ks.newKieBuilder( kfs );
 
         kbuilder.buildAll();
-        assertEquals(0, kbuilder.getResults().getMessages().size());
+        assertEquals( 0, kbuilder.getResults().getMessages().size() );
 
-        ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).getKieBase();
+        ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).getKieBase();
 
-        KieSession ksession = ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).newKieSession();
+        KieSession ksession = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
         assertNotNull( ksession );
 
         List students = new ArrayList();
-        ksession.setGlobal("students", students);
-        ksession.insert(new Person("tom", 20));
+        ksession.setGlobal( "students", students );
+        ksession.insert( new Person( "tom", 20 ) );
         ksession.fireAllRules();
-        assertEquals(1, students.size());
+        assertEquals( 1, students.size() );
     }
 
     @Test
@@ -2750,16 +2771,16 @@ public class Misc2Test extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem();
 
-        kfs.write("src/main/resources/rule.drl", str);
+        kfs.write( "src/main/resources/rule.drl", str );
 
-        KieBuilder kbuilder = ks.newKieBuilder(kfs);
+        KieBuilder kbuilder = ks.newKieBuilder( kfs );
 
         kbuilder.buildAll();
-        assertEquals(0, kbuilder.getResults().getMessages().size());
+        assertEquals( 0, kbuilder.getResults().getMessages().size() );
 
         KieBaseConfiguration conf = ks.newKieBaseConfiguration();
-        conf.setOption(RuleEngineOption.RETEOO);
-        KieBase kbase = ks.newKieContainer(kbuilder.getKieModule().getReleaseId()).newKieBase(conf);
+        conf.setOption( RuleEngineOption.RETEOO );
+        KieBase kbase = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieBase( conf );
         KieSession ksession = kbase.newKieSession();
         ksession.fireAllRules();
     }
@@ -2774,58 +2795,58 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatelessKieSession ksession = kbase.newStatelessKnowledgeSession();
 
         final List<String> firings = new ArrayList<String>();
 
         AgendaEventListener agendaEventListener = new AgendaEventListener() {
-            public void matchCreated(org.kie.api.event.rule.MatchCreatedEvent event) {
+            public void matchCreated( org.kie.api.event.rule.MatchCreatedEvent event ) {
             }
 
-            public void matchCancelled(org.kie.api.event.rule.MatchCancelledEvent event) {
+            public void matchCancelled( org.kie.api.event.rule.MatchCancelledEvent event ) {
             }
 
-            public void beforeMatchFired(org.kie.api.event.rule.BeforeMatchFiredEvent event) {
+            public void beforeMatchFired( org.kie.api.event.rule.BeforeMatchFiredEvent event ) {
             }
 
-            public void afterMatchFired(org.kie.api.event.rule.AfterMatchFiredEvent event) {
-                firings.add("Fired!");
+            public void afterMatchFired( org.kie.api.event.rule.AfterMatchFiredEvent event ) {
+                firings.add( "Fired!" );
             }
 
-            public void agendaGroupPopped(org.kie.api.event.rule.AgendaGroupPoppedEvent event) {
+            public void agendaGroupPopped( org.kie.api.event.rule.AgendaGroupPoppedEvent event ) {
             }
 
-            public void agendaGroupPushed(org.kie.api.event.rule.AgendaGroupPushedEvent event) {
+            public void agendaGroupPushed( org.kie.api.event.rule.AgendaGroupPushedEvent event ) {
             }
 
-            public void beforeRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) {
+            public void beforeRuleFlowGroupActivated( org.kie.api.event.rule.RuleFlowGroupActivatedEvent event ) {
             }
 
-            public void afterRuleFlowGroupActivated(org.kie.api.event.rule.RuleFlowGroupActivatedEvent event) {
+            public void afterRuleFlowGroupActivated( org.kie.api.event.rule.RuleFlowGroupActivatedEvent event ) {
             }
 
-            public void beforeRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) {
+            public void beforeRuleFlowGroupDeactivated( org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event ) {
             }
 
-            public void afterRuleFlowGroupDeactivated(org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event) {
+            public void afterRuleFlowGroupDeactivated( org.kie.api.event.rule.RuleFlowGroupDeactivatedEvent event ) {
             }
         };
 
-        ksession.addEventListener(agendaEventListener);
+        ksession.addEventListener( agendaEventListener );
 
-        ksession.execute("1");
-        ksession.execute("2");
+        ksession.execute( "1" );
+        ksession.execute( "2" );
 
-        assertEquals(2, firings.size());
+        assertEquals( 2, firings.size() );
 
-        ksession.removeEventListener(agendaEventListener);
+        ksession.removeEventListener( agendaEventListener );
 
-        ksession.execute("3");
+        ksession.execute( "3" );
 
-        assertEquals(2, firings.size());
+        assertEquals( 2, firings.size() );
     }
-    
+
     @Test
     public void testKsessionSerializationWithInsertLogical() {
         List<String> firedRules = new ArrayList<String>();
@@ -2879,50 +2900,55 @@ public class Misc2Test extends CommonTestMethodBase {
                 "		delete(p);\n" +
                 "		System.out.printf(\"Promoted %s to %s%n\", n, j);\n" +
                 "end\n";
-        
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        
+
         ksession.fireAllRules(); // insertLogical Person(Bob)
-        
+
         // Serialize and Deserialize
         try {
-	        Marshaller marshaller = MarshallerFactory.newMarshaller(kbase);
-	        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-	        marshaller.marshall(baos, ksession);
-	        marshaller = MarshallerFactory.newMarshaller(kbase);
-	        ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-	        baos.close();
-	        ksession = (StatefulKnowledgeSession)marshaller.unmarshall(bais);
-	        bais.close();
+            Marshaller marshaller = MarshallerFactory.newMarshaller( kbase );
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            marshaller.marshall( baos, ksession );
+            marshaller = MarshallerFactory.newMarshaller( kbase );
+            ByteArrayInputStream bais = new ByteArrayInputStream( baos.toByteArray() );
+            baos.close();
+            ksession = (StatefulKnowledgeSession) marshaller.unmarshall( bais );
+            bais.close();
         } catch (Exception e) {
-        	e.printStackTrace();
-        	fail("unexpected exception :" + e.getMessage());
+            e.printStackTrace();
+            fail( "unexpected exception :" + e.getMessage() );
         }
-        
-        ksession.insert(new Promotion("Claire", "Scientist"));
+
+        ksession.insert( new Promotion( "Claire", "Scientist" ) );
         int result = ksession.fireAllRules();
-        
-        assertEquals(1, result);
+
+        assertEquals( 1, result );
     }
-    
+
     public static class Promotion {
         private String name;
         private String job;
-        public Promotion(String name, String job) {
-            this.setName(name);
-            this.setJob(job);
+
+        public Promotion( String name, String job ) {
+            this.setName( name );
+            this.setJob( job );
         }
+
         public String getName() {
             return this.name;
         }
-        public void setName(String name) {
+
+        public void setName( String name ) {
             this.name = name;
         }
+
         public String getJob() {
             return this.job;
         }
-        public void setJob(String job) {
+
+        public void setJob( String job ) {
             this.job = job;
         }
     }
@@ -2942,7 +2968,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end\n" +
                 "";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -2965,14 +2991,14 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  list.add( 1 );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
 
         Map<String, String> map = new HashMap<String, String>();
-        map.put("x", "Test");
-        ksession.insert(map);
+        map.put( "x", "Test" );
+        ksession.insert( map );
 
         ksession.fireAllRules();
 
@@ -2992,14 +3018,14 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  list.add( 1 );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
 
         Map<String, String> map = new HashMap<String, String>();
-        map.put("x", "Test");
-        ksession.insert(map);
+        map.put( "x", "Test" );
+        ksession.insert( map );
 
         ksession.fireAllRules();
 
@@ -3039,18 +3065,18 @@ public class Misc2Test extends CommonTestMethodBase {
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( DeclarativeAgendaOption.ENABLED );
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(kconf, str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         ArrayList<String> ruleList = new ArrayList<String>();
-        ksession.setGlobal("ruleList", ruleList);
+        ksession.setGlobal( "ruleList", ruleList );
 
-        ksession.insert("fireRules");
+        ksession.insert( "fireRules" );
         ksession.fireAllRules();
 
-        assertEquals(ruleList.get(0), "first");
-        assertEquals(ruleList.get(1), "second");
-        assertEquals(ruleList.get(2), "third");
+        assertEquals( ruleList.get( 0 ), "first" );
+        assertEquals( ruleList.get( 1 ), "second" );
+        assertEquals( ruleList.get( 2 ), "third" );
     }
 
     @Test
@@ -3081,7 +3107,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.fireAllRules();
     }
@@ -3105,11 +3131,11 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ksession.insert(new ResourceRequirement(new Resource(2), 3));
-        ksession.insert(new Allocation(3));
+        ksession.insert( new ResourceRequirement( new Resource( 2 ), 3 ) );
+        ksession.insert( new Allocation( 3 ) );
 
         ksession.fireAllRules();
     }
@@ -3117,7 +3143,7 @@ public class Misc2Test extends CommonTestMethodBase {
     public static class Resource {
         private final int capacity;
 
-        public Resource(int capacity) {
+        public Resource( int capacity ) {
             this.capacity = capacity;
         }
 
@@ -3130,7 +3156,7 @@ public class Misc2Test extends CommonTestMethodBase {
         private final Resource resource;
         private final int executionMode;
 
-        public ResourceRequirement(Resource resource, int executionMode) {
+        public ResourceRequirement( Resource resource, int executionMode ) {
             this.resource = resource;
             this.executionMode = executionMode;
         }
@@ -3147,7 +3173,7 @@ public class Misc2Test extends CommonTestMethodBase {
     public static class Allocation {
         private final int executionMode;
 
-        public Allocation(int executionMode) {
+        public Allocation( int executionMode ) {
             this.executionMode = executionMode;
         }
 
@@ -3158,12 +3184,17 @@ public class Misc2Test extends CommonTestMethodBase {
 
     public static interface FooIntf {
         public boolean isSafe();
+
         public void setSafe( boolean safe );
     }
 
     public static class BarKlass implements FooIntf {
-        public boolean isSafe() { return true; }
-        public void setSafe( boolean safe ) { }
+        public boolean isSafe() {
+            return true;
+        }
+
+        public void setSafe( boolean safe ) {
+        }
     }
 
     @Test
@@ -3196,7 +3227,7 @@ public class Misc2Test extends CommonTestMethodBase {
         }
 
         // wait for jitting
-        Thread.sleep(100);
+        Thread.sleep( 100 );
 
         ks.insert( 0 );
         ks.fireAllRules();
@@ -3207,10 +3238,10 @@ public class Misc2Test extends CommonTestMethodBase {
         // BZ-1013545
         String drl =
                 // ensure no Locale can parse the Date
-                 "rule X date-effective \"9-asbrdfh-1974\" when\n" +
-                 "    $s : String() " +
-                 "then\n" +
-                 "end\n";
+                "rule X date-effective \"9-asbrdfh-1974\" when\n" +
+                "    $s : String() " +
+                "then\n" +
+                "end\n";
 
         KnowledgeBuilder kb = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kb.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
@@ -3240,13 +3271,13 @@ public class Misc2Test extends CommonTestMethodBase {
         StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
 
         Map<String, String> context = new HashMap<String, String>();
-        context.put("key", "value");
-        ks.setGlobal("context", context);
+        context.put( "key", "value" );
+        ks.setGlobal( "context", context );
 
-        ks.insert(1);
+        ks.insert( 1 );
         ks.fireAllRules();
 
-        context.put("key", "value");
+        context.put( "key", "value" );
         //ks.insert(2);
         ks.fireAllRules();
     }
@@ -3290,7 +3321,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end \n" +
                 "";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -3326,7 +3357,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -3380,11 +3411,11 @@ public class Misc2Test extends CommonTestMethodBase {
         ArrayList list = new ArrayList();
         ks.setGlobal( "list", list );
 
-        new Thread () {
-            public void run () {
+        new Thread() {
+            public void run() {
                 ks.fireUntilHalt();
             }
-        }.start ();
+        }.start();
 
         for ( int j = 0; j < N; j++ ) {
             ks.getEntryPoint( "x" ).insert( new Integer( j ) );
@@ -3430,8 +3461,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "  System.out.println( Thread.currentThread().getName() + \"Taken out \" + $p ); \n" +
                      "  if ( list.isEmpty() ) { list.add( $p.getName() ); } \n" +
                      "end\n" +
-                     "\n"
-                ;
+                     "\n";
         KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         knowledgeBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         if ( knowledgeBuilder.hasErrors() ) {
@@ -3452,7 +3482,6 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
         assertTrue( list.contains( "mark" ) );
     }
-
 
 
     public static class SQLTimestamped {
@@ -3489,7 +3518,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end\n" +
                 "";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -3505,11 +3534,25 @@ public class Misc2Test extends CommonTestMethodBase {
 
 
     public static class Foo3 {
-        public boolean getX() { return true; }
-        public String isX() { return "x"; }
-        public boolean isY() { return true; }
-        public String getZ() { return "ok"; }
-        public boolean isZ() { return true; }
+        public boolean getX() {
+            return true;
+        }
+
+        public String isX() {
+            return "x";
+        }
+
+        public boolean isY() {
+            return true;
+        }
+
+        public String getZ() {
+            return "ok";
+        }
+
+        public boolean isZ() {
+            return true;
+        }
     }
 
     @Test
@@ -3593,9 +3636,9 @@ public class Misc2Test extends CommonTestMethodBase {
                      "     }\n" +
                      " end";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(drl);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        Map map = new HashMap(  );
+        Map map = new HashMap();
         ksession.setGlobal( "map", map );
 
         ksession.fireAllRules();
@@ -3612,6 +3655,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
     public static interface TradeHeader {
         public void setAction( String s );
+
         public String getAction();
     }
 
@@ -3733,14 +3777,14 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 1, fired.size() );
 
 
-        assertEquals( "Rule2", created.get(0));
-        assertEquals( "Rule1", created.get(1));
-        assertEquals( "Rule2", created.get(2));
+        assertEquals( "Rule2", created.get( 0 ) );
+        assertEquals( "Rule1", created.get( 1 ) );
+        assertEquals( "Rule2", created.get( 2 ) );
 
-        assertEquals( "Rule2", cancelled.get(0));
-        assertEquals( "Rule2", cancelled.get(1));
+        assertEquals( "Rule2", cancelled.get( 0 ) );
+        assertEquals( "Rule2", cancelled.get( 1 ) );
 
-        assertEquals( "Rule1", fired.get(0));
+        assertEquals( "Rule1", fired.get( 0 ) );
     }
 
     @Test
@@ -3778,7 +3822,8 @@ public class Misc2Test extends CommonTestMethodBase {
         ks.addEventListener( new DefaultAgendaEventListener() {
 
             public void matchCreated( MatchCreatedEvent event ) {
-                created.add( event.getMatch().getRule().getName() );}
+                created.add( event.getMatch().getRule().getName() );
+            }
 
             public void matchCancelled( MatchCancelledEvent event ) {
                 cancelled.add( event.getMatch().getRule().getName() );
@@ -3799,14 +3844,14 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 1, cancelled.size() );
         assertEquals( 2, fired.size() );
 
-        assertEquals( "Rule1", created.get(0));
-        assertEquals( "Rule1", created.get(1));
-        assertEquals( "Rule2", created.get(2));
+        assertEquals( "Rule1", created.get( 0 ) );
+        assertEquals( "Rule1", created.get( 1 ) );
+        assertEquals( "Rule2", created.get( 2 ) );
 
-        assertEquals( "Rule1", cancelled.get(0));
+        assertEquals( "Rule1", cancelled.get( 0 ) );
 
-        assertEquals( "Rule1", fired.get(0));
-        assertEquals( "Rule2", fired.get(1));
+        assertEquals( "Rule1", fired.get( 0 ) );
+        assertEquals( "Rule2", fired.get( 1 ) );
     }
 
     @Test
@@ -3838,7 +3883,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end";
         KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
-        ks.addEventListener( new DebugAgendaEventListener(  ) );
+        ks.addEventListener( new DebugAgendaEventListener() );
 
         ks.fireAllRules();
 
@@ -3878,7 +3923,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end";
         KnowledgeBase kb = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ks = kb.newStatefulKnowledgeSession();
-        ks.addEventListener( new DebugAgendaEventListener(  ) );
+        ks.addEventListener( new DebugAgendaEventListener() );
 
         ks.fireAllRules();
 
@@ -3938,8 +3983,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(rule1.getBytes()), ResourceType.DRL );
-        kbuilder.add( ResourceFactory.newByteArrayResource(rule2.getBytes()), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( rule2.getBytes() ), ResourceType.DRL );
 
 
         //the default behavior of kbuilder is not to fail because of duplicated
@@ -3949,12 +3994,11 @@ public class Misc2Test extends CommonTestMethodBase {
         }
 
         //We must have 1 INFO result.
-        KnowledgeBuilderResults infos = kbuilder.getResults( ResultSeverity.INFO);
+        KnowledgeBuilderResults infos = kbuilder.getResults( ResultSeverity.INFO );
         Assert.assertNotNull( infos );
-        Assert.assertEquals(1, infos.size());
+        Assert.assertEquals( 1, infos.size() );
 
     }
-
 
 
     @Test
@@ -3992,7 +4036,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertTrue( ! list.isEmpty() );
+        assertTrue( !list.isEmpty() );
         assertEquals( 3, list.size() );
         assertEquals( 3, list.get( 0 ) );
         assertEquals( 4, list.get( 1 ) );
@@ -4035,7 +4079,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertTrue( ! list.isEmpty() );
+        assertTrue( !list.isEmpty() );
         assertEquals( 3, list.size() );
         assertEquals( 3, list.get( 0 ) );
         assertEquals( 4, list.get( 1 ) );
@@ -4045,14 +4089,14 @@ public class Misc2Test extends CommonTestMethodBase {
 
 
     @Test
-    public void testEvalConstraintWithMvelOperator( ) {
+    public void testEvalConstraintWithMvelOperator() {
         String drl = "rule \"yeah\" " + "\tdialect \"mvel\"\n when "
                      + "Foo( eval( field soundslike \"water\" ) )" + " then " + "end";
         DrlParser drlParser = new DrlParser();
         PackageDescr packageDescr;
         try {
-            packageDescr = drlParser.parse( true, drl);
-        } catch ( DroolsParserException e ) {
+            packageDescr = drlParser.parse( true, drl );
+        } catch (DroolsParserException e) {
             throw new RuntimeException( e );
         }
         RuleDescr r = packageDescr.getRules().get( 0 );
@@ -4177,8 +4221,8 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 2, list.size() );
-        assertEquals( 2, list.get(0).intValue() );
-        assertEquals( 2, list.get(1).intValue() );
+        assertEquals( 2, list.get( 0 ).intValue() );
+        assertEquals( 2, list.get( 1 ).intValue() );
 
     }
 
@@ -4224,7 +4268,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        List list = new ArrayList(  );
+        List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
         ksession.insert( 1L );
@@ -4251,19 +4295,19 @@ public class Misc2Test extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
 
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-        List list = new ArrayList(  );
+        List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
-        assertEquals(0, list.size());
+        assertEquals( 0, list.size() );
 
-        ksession.insert("1");
+        ksession.insert( "1" );
         ksession.fireAllRules();
-        assertEquals(1, list.size());
+        assertEquals( 1, list.size() );
 
-        ksession.insert(1);
+        ksession.insert( 1 );
         ksession.fireAllRules();
-        assertEquals(2, list.size());
+        assertEquals( 2, list.size() );
 
         ksession.dispose();
     }
@@ -4290,7 +4334,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kbConf, drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ksession.insert(new Message("Hello World"));
+        ksession.insert( new Message( "Hello World" ) );
         ksession.fireAllRules();
     }
 
@@ -4320,8 +4364,8 @@ public class Misc2Test extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         Message m1 = new Message( "msg1" );
-        ksession.insert(m1);
-        assertEquals(2, ksession.fireAllRules());
+        ksession.insert( m1 );
+        assertEquals( 2, ksession.fireAllRules() );
 
         Message m2 = (Message) ksession.getGlobal( "m2" );
 
@@ -4334,7 +4378,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( "Three", m2.getMessage3() );
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testWumpus1() {
         String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
@@ -4363,16 +4407,16 @@ public class Misc2Test extends CommonTestMethodBase {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        Hero hero = new Hero(1);
-        ksession.insert(hero);
+        Hero hero = new Hero( 1 );
+        ksession.insert( hero );
         ksession.fireAllRules();
 
-        ksession.insert(new StepForwardCommand());
+        ksession.insert( new StepForwardCommand() );
         assertEquals( 1, ksession.fireAllRules() );
-        assertEquals(2, hero.getPos());
+        assertEquals( 2, hero.getPos() );
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testWumpus2() {
         String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
@@ -4402,16 +4446,16 @@ public class Misc2Test extends CommonTestMethodBase {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        Hero hero = new Hero(1);
-        ksession.insert(hero);
+        Hero hero = new Hero( 1 );
+        ksession.insert( hero );
         ksession.fireAllRules();
 
-        ksession.insert(new StepForwardCommand());
+        ksession.insert( new StepForwardCommand() );
         assertEquals( 1, ksession.fireAllRules() );
-        assertEquals(2, hero.getPos());
+        assertEquals( 2, hero.getPos() );
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testWumpus3() {
         String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
@@ -4452,22 +4496,22 @@ public class Misc2Test extends CommonTestMethodBase {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        Hero hero = new Hero(1);
-        ksession.insert(hero);
+        Hero hero = new Hero( 1 );
+        ksession.insert( hero );
         ksession.fireAllRules();
 
-        ksession.insert(new StepForwardCommand());
+        ksession.insert( new StepForwardCommand() );
         ksession.fireAllRules();
-        assertEquals(2, hero.getPos());
+        assertEquals( 2, hero.getPos() );
 
-        ksession.insert(new ChangeDirectionCommand());
+        ksession.insert( new ChangeDirectionCommand() );
         ksession.fireAllRules();
-        ksession.insert(new StepForwardCommand());
+        ksession.insert( new StepForwardCommand() );
         ksession.fireAllRules();
-        assertEquals(1, hero.getPos());
+        assertEquals( 1, hero.getPos() );
     }
 
-    @Test(timeout=10000)
+    @Test(timeout = 10000)
     public void testWumpus4() {
         String drl = "import org.drools.compiler.integrationtests.Misc2Test.Hero;\n" +
                      "import org.drools.compiler.integrationtests.Misc2Test.StepForwardCommand;\n" +
@@ -4508,21 +4552,20 @@ public class Misc2Test extends CommonTestMethodBase {
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
 
-        Hero hero = new Hero(1);
-        ksession.insert(hero);
+        Hero hero = new Hero( 1 );
+        ksession.insert( hero );
         ksession.fireAllRules();
 
-        ksession.insert(new StepForwardCommand());
+        ksession.insert( new StepForwardCommand() );
         ksession.fireAllRules();
-        assertEquals(2, hero.getPos());
+        assertEquals( 2, hero.getPos() );
 
 
-
-        ksession.insert(new ChangeDirectionCommand());
+        ksession.insert( new ChangeDirectionCommand() );
         ksession.fireAllRules();
-        ksession.insert(new StepForwardCommand());
+        ksession.insert( new StepForwardCommand() );
         ksession.fireAllRules();
-        assertEquals(1, hero.getPos());
+        assertEquals( 1, hero.getPos() );
     }
 
     @PropertyReactive
@@ -4530,7 +4573,7 @@ public class Misc2Test extends CommonTestMethodBase {
         private int pos = 1;
         private boolean goingRight = true;
 
-        public Hero(int pos) {
+        public Hero( int pos ) {
             this.pos = pos;
         }
 
@@ -4538,7 +4581,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return pos;
         }
 
-        public void setPos(int pos) {
+        public void setPos( int pos ) {
             this.pos = pos;
         }
 
@@ -4546,14 +4589,17 @@ public class Misc2Test extends CommonTestMethodBase {
             return goingRight;
         }
 
-        public void setGoingRight(boolean goingRight) {
+        public void setGoingRight( boolean goingRight ) {
             this.goingRight = goingRight;
         }
 
     }
 
-    public static class ChangeDirectionCommand { }
-    public static class StepForwardCommand { }
+    public static class ChangeDirectionCommand {
+    }
+
+    public static class StepForwardCommand {
+    }
 
     @Test
     public void testDynamicSalience() {
@@ -4581,28 +4627,28 @@ public class Misc2Test extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        SimpleMessage[] msgs = new SimpleMessage[] { new SimpleMessage(0), new SimpleMessage(1), new SimpleMessage(2), new SimpleMessage(3) };
-        for (SimpleMessage msg : msgs) {
-            ksession.insert(msg);
+        SimpleMessage[] msgs = new SimpleMessage[]{new SimpleMessage( 0 ), new SimpleMessage( 1 ), new SimpleMessage( 2 ), new SimpleMessage( 3 )};
+        for ( SimpleMessage msg : msgs ) {
+            ksession.insert( msg );
         }
 
         ksession.fireAllRules();
 
-        for (SimpleMessage msg : msgs) {
-            assertEquals(SimpleMessage.Status.FILTERED, msg.getStatus());
+        for ( SimpleMessage msg : msgs ) {
+            assertEquals( SimpleMessage.Status.FILTERED, msg.getStatus() );
         }
 
-        assertEquals(0, ksession.getFactCount());
+        assertEquals( 0, ksession.getFactCount() );
     }
 
     public static class SimpleMessage {
 
-        public enum Status { ENRICHED, TO_SEND, SENT, FILTERED }
+        public enum Status {ENRICHED, TO_SEND, SENT, FILTERED}
 
         private final int index;
         private Status status = Status.ENRICHED;
 
-        public SimpleMessage(int index) {
+        public SimpleMessage( int index ) {
             this.index = index;
         }
 
@@ -4610,7 +4656,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return status;
         }
 
-        public void setStatus(Status status) {
+        public void setStatus( Status status ) {
             this.status = status;
         }
 
@@ -4678,15 +4724,15 @@ public class Misc2Test extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List list = new ArrayList();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
 
-        assertEquals(4, list.size());
-        assertEquals(160.0, list.get(0));
-        assertEquals(4, list.get(1));
-        assertEquals(120.0, list.get(2));
-        assertEquals(3, list.get(3));
+        assertEquals( 4, list.size() );
+        assertEquals( 160.0, list.get( 0 ) );
+        assertEquals( 4, list.get( 1 ) );
+        assertEquals( 120.0, list.get( 2 ) );
+        assertEquals( 3, list.get( 3 ) );
     }
 
     @Test
@@ -4714,10 +4760,10 @@ public class Misc2Test extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("working", list.get(0));
+        assertEquals( 1, list.size() );
+        assertEquals( "working", list.get( 0 ) );
     }
 
     @Test
@@ -4745,34 +4791,34 @@ public class Misc2Test extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("working", list.get(0));
+        assertEquals( 1, list.size() );
+        assertEquals( "working", list.get( 0 ) );
     }
 
     @Test
     public void testMatchingEventsInStreamMode() {
         // DROOLS-338
         String drl =
-                    "import org.drools.compiler.integrationtests.Misc2Test.SimpleEvent\n" +
-                     "declare SimpleEvent\n" +
-                     "    @role(event)\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule \"RuleA\"\n" +
-                     "salience 5\n" +
-                     "when\n" +
-                     "    $f : SimpleEvent( )\n" +
-                     "then\n" +
-                     "    delete ($f);\n" +
-                     "end\n" +
-                     "\n" +
-                     "rule \"RuleB\"\n" +
-                     "when\n" +
-                     "    $f : SimpleEvent( )\n" +
-                     "then\n" +
-                     "end\n";
+                "import org.drools.compiler.integrationtests.Misc2Test.SimpleEvent\n" +
+                "declare SimpleEvent\n" +
+                "    @role(event)\n" +
+                "end\n" +
+                "\n" +
+                "rule \"RuleA\"\n" +
+                "salience 5\n" +
+                "when\n" +
+                "    $f : SimpleEvent( )\n" +
+                "then\n" +
+                "    delete ($f);\n" +
+                "end\n" +
+                "\n" +
+                "rule \"RuleB\"\n" +
+                "when\n" +
+                "    $f : SimpleEvent( )\n" +
+                "then\n" +
+                "end\n";
 
         KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
         kconf.setOption( EventProcessingOption.STREAM );
@@ -4780,7 +4826,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KnowledgeBase kbase = loadKnowledgeBaseFromString( kconf, drl );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        final AtomicInteger i = new AtomicInteger(0);
+        final AtomicInteger i = new AtomicInteger( 0 );
 
         ksession.addEventListener( new DefaultAgendaEventListener() {
             public void matchCreated( MatchCreatedEvent event ) {
@@ -4792,10 +4838,10 @@ public class Misc2Test extends CommonTestMethodBase {
             }
         } );
 
-        ksession.insert(new SimpleEvent());
+        ksession.insert( new SimpleEvent() );
         ksession.fireAllRules();
 
-        assertEquals(1, i.get());
+        assertEquals( 1, i.get() );
     }
 
     @Test
@@ -4829,21 +4875,21 @@ public class Misc2Test extends CommonTestMethodBase {
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List list = new ArrayList();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("working", list.get(0));
+        assertEquals( 1, list.size() );
+        assertEquals( "working", list.get( 0 ) );
         ksession.dispose();
 
         ksession = kbase.newStatefulKnowledgeSession();
 
         list.clear();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
-        assertEquals(1, list.size());
-        assertEquals("working", list.get(0));
+        assertEquals( 1, list.size() );
+        assertEquals( "working", list.get( 0 ) );
         ksession.dispose();
     }
 
@@ -4860,7 +4906,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
         ks.newKieBuilder( kfs ).buildAll();
 
-        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
     }
 
     @Test
@@ -4892,7 +4938,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      "\n" +
                      "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         ksession.fireAllRules();
@@ -4910,11 +4956,11 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        Person p1 = new Person("A", 31);
-        FactHandle fh1 = ksession.insert(p1);
+        Person p1 = new Person( "A", 31 );
+        FactHandle fh1 = ksession.insert( p1 );
 
         ksession.fireAllRules();
     }
@@ -4932,17 +4978,17 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    modify($p) { setAge( $age + 1 ) }\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        Person mario = new Person("Mario", 38);
+        Person mario = new Person( "Mario", 38 );
 
-        ksession.insert("a");
-        ksession.insert("b");
-        ksession.insert(mario);
+        ksession.insert( "a" );
+        ksession.insert( "b" );
+        ksession.insert( mario );
         ksession.fireAllRules();
 
-        assertEquals(40, mario.getAge());
+        assertEquals( 40, mario.getAge() );
     }
 
     @Test
@@ -4956,17 +5002,17 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        ksession.insert(new SerializableValue("0"));
+        ksession.insert( new SerializableValue( "0" ) );
         ksession.fireAllRules();
     }
 
     public static class SerializableValue {
         private final Serializable value;
 
-        public SerializableValue(Serializable value) {
+        public SerializableValue( Serializable value ) {
             this.value = value;
         }
 
@@ -4992,41 +5038,48 @@ public class Misc2Test extends CommonTestMethodBase {
         Person[] ps = new Person[4];
         FactHandle[] fhs = new FactHandle[4];
 
-        ps[0] = new Person("a", 5);
-        ps[1] = new Person("b", 5);
-        ps[2] = new Person("d", 10);
-        ps[3] = new Person("a", 15);
+        ps[0] = new Person( "a", 5 );
+        ps[1] = new Person( "b", 5 );
+        ps[2] = new Person( "d", 10 );
+        ps[3] = new Person( "a", 15 );
 
-        fhs[0] = ks.insert(ps[0]);
-        fhs[1] = ks.insert(ps[1]);
-        fhs[2] = ks.insert(ps[2]);
-        fhs[3] = ks.insert(ps[3]);
+        fhs[0] = ks.insert( ps[0] );
+        fhs[1] = ks.insert( ps[1] );
+        fhs[2] = ks.insert( ps[2] );
+        fhs[3] = ks.insert( ps[3] );
 
-        ps[0].setName("c");
-        ks.update(fhs[0], ps[0]);
+        ps[0].setName( "c" );
+        ks.update( fhs[0], ps[0] );
         ks.fireAllRules();
 
-        ps[2].setName("b");
-        ks.update(fhs[2], ps[2]);
+        ps[2].setName( "b" );
+        ks.update( fhs[2], ps[2] );
         ks.fireAllRules();
 
-        ps[2].setName("d");
-        ks.update(fhs[2], ps[2]);
+        ps[2].setName( "d" );
+        ks.update( fhs[2], ps[2] );
         ks.fireAllRules();
 
-        ps[1].setName("c");
-        ks.update(fhs[1], ps[1]);
+        ps[1].setName( "c" );
+        ks.update( fhs[1], ps[1] );
         ks.fireAllRules();
 
-        ps[3].setName("d");
-        ks.update(fhs[3], ps[3]);
+        ps[3].setName( "d" );
+        ks.update( fhs[3], ps[3] );
         ks.fireAllRules();
     }
 
     public static class AA {
         int id;
-        public AA( int i ) { this.id = i; }
-        public boolean match( Long value ) { return true; }
+
+        public AA( int i ) {
+            this.id = i;
+        }
+
+        public boolean match( Long value ) {
+            return true;
+        }
+
         public boolean equals( Object o ) {
             if ( this == o ) return true;
             if ( o == null || getClass() != o.getClass() ) return false;
@@ -5034,10 +5087,16 @@ public class Misc2Test extends CommonTestMethodBase {
             if ( id != aa.id ) return false;
             return true;
         }
-        public int hashCode() { return id; }
+
+        public int hashCode() {
+            return id;
+        }
     }
+
     public static class BB {
-        public Integer getValue() { return 42; }
+        public Integer getValue() {
+            return 42;
+        }
     }
 
     @Test
@@ -5057,11 +5116,11 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   list.add( $a ); \n" +
                 " end \n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List list = new ArrayList();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
         ksession.insert( new BB() );
         for ( int j = 0; j < 100; j++ ) {
@@ -5145,14 +5204,14 @@ public class Misc2Test extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
 
         // Create an in-memory jar for version 1.0.0
-        ReleaseId releaseId = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
-        byte[] jar = createKJar(ks, releaseId, null, drl1);
-        KieModule km = deployJar(ks, jar);
+        ReleaseId releaseId = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+        byte[] jar = createKJar( ks, releaseId, null, drl1 );
+        KieModule km = deployJar( ks, jar );
 
         // Create a session and fire rules
-        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
         KieSession ksession = kc.newKieSession();
-        ksession.insert(new Message("Hello World"));
+        ksession.insert( new Message( "Hello World" ) );
         ksession.fireAllRules();
     }
 
@@ -5178,31 +5237,31 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        for (int i = 0; i < 10; i++) {
-            ksession.insert(i);
+        for ( int i = 0; i < 10; i++ ) {
+            ksession.insert( i );
             ksession.fireAllRules();
         }
 
-        Rete rete = ((KnowledgeBaseImpl)kbase).getRete();
+        Rete rete = ( (KnowledgeBaseImpl) kbase ).getRete();
         JoinNode joinNode = null;
-        for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {
+        for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             if ( String.class == otn.getObjectType().getValueType().getClassType() ) {
-                joinNode = (JoinNode)otn.getSinkPropagator().getSinks()[0];
+                joinNode = (JoinNode) otn.getSinkPropagator().getSinks()[0];
                 break;
             }
         }
 
-        assertNotNull(joinNode);
-        InternalWorkingMemory wm = (InternalWorkingMemory)ksession;
-        BetaMemory memory = (BetaMemory)wm.getNodeMemory(joinNode);
+        assertNotNull( joinNode );
+        InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
+        BetaMemory memory = (BetaMemory) wm.getNodeMemory( joinNode );
         RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
-        assertEquals(0, stagedRightTuples.deleteSize());
-        assertNull(stagedRightTuples.getDeleteFirst());
-        assertEquals(0, stagedRightTuples.insertSize());
-        assertNull(stagedRightTuples.getInsertFirst());
+        assertEquals( 0, stagedRightTuples.deleteSize() );
+        assertNull( stagedRightTuples.getDeleteFirst() );
+        assertEquals( 0, stagedRightTuples.insertSize() );
+        assertNull( stagedRightTuples.getInsertFirst() );
     }
 
     @Test
@@ -5226,33 +5285,33 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    anyList.add(\"1\");\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<String> allList = new ArrayList<String>();
-        ksession.setGlobal("allList", allList);
+        ksession.setGlobal( "allList", allList );
         List<String> anyList = new ArrayList<String>();
-        ksession.setGlobal("anyList", anyList);
+        ksession.setGlobal( "anyList", anyList );
 
-        ksession.insert(new Strings("1", "2", "3"));
-        ksession.insert(new Strings("2", "3"));
+        ksession.insert( new Strings( "1", "2", "3" ) );
+        ksession.insert( new Strings( "2", "3" ) );
         ksession.fireAllRules();
 
-        assertEquals(1, allList.size());
-        assertEquals(2, anyList.size());
+        assertEquals( 1, allList.size() );
+        assertEquals( 2, anyList.size() );
     }
 
     public static class Strings {
         private final String[] strings;
 
-        public Strings(String... strings) {
+        public Strings( String... strings ) {
             this.strings = strings;
         }
 
-        public boolean containsAny(String[] array) {
-            for (String candidate : array) {
-                for (String s : strings) {
-                    if (candidate.equals(s)) {
+        public boolean containsAny( String[] array ) {
+            for ( String candidate : array ) {
+                for ( String s : strings ) {
+                    if ( candidate.equals( s ) ) {
                         return true;
                     }
                 }
@@ -5260,11 +5319,11 @@ public class Misc2Test extends CommonTestMethodBase {
             return false;
         }
 
-        public boolean containsAll(String... array) {
+        public boolean containsAll( String... array ) {
             int counter = 0;
-            for (String candidate : array) {
-                for (String s : strings) {
-                    if (candidate.equals(s)) {
+            for ( String candidate : array ) {
+                for ( String s : strings ) {
+                    if ( candidate.equals( s ) ) {
                         counter++;
                         break;
                     }
@@ -5275,13 +5334,13 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     public static class ARef {
-        public static int getSize(String s) {
+        public static int getSize( String s ) {
             return 0;
         }
     }
 
     public static class BRef extends ARef {
-        public static int getSize(String s) {
+        public static int getSize( String s ) {
             return s.length();
         }
     }
@@ -5302,16 +5361,16 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add($s);\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
-        ksession.insert("1234");
+        ksession.insert( "1234" );
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
+        assertEquals( 1, list.size() );
     }
 
     @Test
@@ -5324,53 +5383,71 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         ksession.fireAllRules();
 
-        for (int i = 0; i < 10; i++) {
-            FactHandle fh = ksession.insert("this");
+        for ( int i = 0; i < 10; i++ ) {
+            FactHandle fh = ksession.insert( "this" );
             ksession.fireAllRules();
-            ksession.delete(fh);
+            ksession.delete( fh );
             ksession.fireAllRules();
         }
 
-        Rete rete = ((KnowledgeBaseImpl)kbase).getRete();
+        Rete rete = ( (KnowledgeBaseImpl) kbase ).getRete();
         LeftInputAdapterNode liaNode = null;
-        for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {
+        for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             if ( String.class == otn.getObjectType().getValueType().getClassType() ) {
-                AlphaNode alphaNode = (AlphaNode)otn.getSinkPropagator().getSinks()[0];
-                liaNode = (LeftInputAdapterNode)alphaNode.getSinkPropagator().getSinks()[0];
+                AlphaNode alphaNode = (AlphaNode) otn.getSinkPropagator().getSinks()[0];
+                liaNode = (LeftInputAdapterNode) alphaNode.getSinkPropagator().getSinks()[0];
                 break;
             }
         }
 
-        assertNotNull(liaNode);
-        InternalWorkingMemory wm = (InternalWorkingMemory)ksession;
+        assertNotNull( liaNode );
+        InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
         LeftInputAdapterNode.LiaNodeMemory memory = (LeftInputAdapterNode.LiaNodeMemory) wm.getNodeMemory( liaNode );
         LeftTupleSets stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();
-        assertEquals(0, stagedLeftTuples.deleteSize());
-        assertNull(stagedLeftTuples.getDeleteFirst());
-        assertEquals(0, stagedLeftTuples.insertSize());
-        assertNull(stagedLeftTuples.getInsertFirst());
+        assertEquals( 0, stagedLeftTuples.deleteSize() );
+        assertNull( stagedLeftTuples.getDeleteFirst() );
+        assertEquals( 0, stagedLeftTuples.insertSize() );
+        assertNull( stagedLeftTuples.getInsertFirst() );
     }
 
     public static class EvallerBean {
-        private final Evaller evaller = new Evaller(1);
-        public Evaller getEvaller() { return evaller; }
+        private final Evaller evaller = new Evaller( 1 );
+
+        public Evaller getEvaller() {
+            return evaller;
+        }
     }
 
     public static class Evaller {
         private final int size;
 
-        public Evaller() { this(0); }
-        public Evaller(int size) { this.size = size; }
+        public Evaller() {
+            this( 0 );
+        }
 
-        public boolean check( Object o ) { return true; }
-        public static boolean checkStatic( Object o ) { return true; }
+        public Evaller( int size ) {
+            this.size = size;
+        }
 
-        public int size() { return size; }
-        public int getSize() { return size; }
+        public boolean check( Object o ) {
+            return true;
+        }
+
+        public static boolean checkStatic( Object o ) {
+            return true;
+        }
+
+        public int size() {
+            return size;
+        }
+
+        public int getSize() {
+            return size;
+        }
     }
 
     @Test
@@ -5391,17 +5468,17 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add( 43 );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list );
-        ksession.setGlobal("evaller", new Evaller() );
+        ksession.setGlobal( "list", list );
+        ksession.setGlobal( "evaller", new Evaller() );
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals(42, (int)list.get(0));
+        assertEquals( 1, list.size() );
+        assertEquals( 42, (int) list.get( 0 ) );
     }
 
     @Test
@@ -5422,16 +5499,16 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add( 43 );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list );
+        ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals(42, (int)list.get(0));
+        assertEquals( 1, list.size() );
+        assertEquals( 42, (int) list.get( 0 ) );
     }
 
     @Test
@@ -5446,18 +5523,18 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add( 42 );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list );
-        ksession.setGlobal("evaller", new Evaller());
+        ksession.setGlobal( "list", list );
+        ksession.setGlobal( "evaller", new Evaller() );
 
-        ksession.insert(new EvallerBean());
+        ksession.insert( new EvallerBean() );
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals(42, (int)list.get(0));
+        assertEquals( 1, list.size() );
+        assertEquals( 42, (int) list.get( 0 ) );
     }
 
     @Test
@@ -5473,18 +5550,18 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add( 42 );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list );
+        ksession.setGlobal( "list", list );
 
-        ksession.insert(new Evaller());
-        ksession.insert(new EvallerBean());
+        ksession.insert( new Evaller() );
+        ksession.insert( new EvallerBean() );
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals(42, (int) list.get(0));
+        assertEquals( 1, list.size() );
+        assertEquals( 42, (int) list.get( 0 ) );
     }
 
     @Test
@@ -5498,19 +5575,19 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add( $s );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list );
+        ksession.setGlobal( "list", list );
 
-        ksession.insert("abcde");
-        ksession.insert("bcdef");
-        ksession.insert("cdefg");
+        ksession.insert( "abcde" );
+        ksession.insert( "bcdef" );
+        ksession.insert( "cdefg" );
         ksession.fireAllRules();
 
-        assertEquals(2, list.size());
-        assertTrue(list.containsAll(Arrays.asList("abcde", "bcdef")));
+        assertEquals( 2, list.size() );
+        assertTrue( list.containsAll( Arrays.asList( "abcde", "bcdef" ) ) );
     }
 
 
@@ -5527,16 +5604,16 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add( $s );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list );
+        ksession.setGlobal( "list", list );
 
-        ksession.insert("abcde");
+        ksession.insert( "abcde" );
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
+        assertEquals( 1, list.size() );
     }
 
     @Test
@@ -5560,16 +5637,16 @@ public class Misc2Test extends CommonTestMethodBase {
                      "    list.add( $s );\n" +
                      "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
         List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list );
-        ksession.setGlobal("tat", new Date( 2000 ) );
+        ksession.setGlobal( "list", list );
+        ksession.setGlobal( "tat", new Date( 2000 ) );
 
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
+        assertEquals( 1, list.size() );
     }
 
     @Test
@@ -5594,14 +5671,14 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    insert( new Person() );\n" +
                 "end\n";
 
-        KnowledgeBase kbase = loadKnowledgeBaseFromString(str);
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( str );
         StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
         Foo f1 = new Foo();
         Foo2 f2 = new Foo2();
         ksession.insert( f1 );
         ksession.insert( f2 );
-        assertEquals(2, ksession.fireAllRules() );
-        assertEquals(3, f2.getX());
+        assertEquals( 2, ksession.fireAllRules() );
+        assertEquals( 3, f2.getX() );
     }
 
     @Test
@@ -5651,10 +5728,10 @@ public class Misc2Test extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         ks.newKieBuilder( kfs ).buildAll();
-        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
 
         int n = ksession.fireAllRules();
-        assertEquals(7, n);
+        assertEquals( 7, n );
     }
 
     @Test
@@ -5711,10 +5788,10 @@ public class Misc2Test extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         ks.newKieBuilder( kfs ).buildAll();
-        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
 
         int n = ksession.fireAllRules();
-        assertEquals(8, n);
+        assertEquals( 8, n );
     }
 
     @Test
@@ -5734,10 +5811,10 @@ public class Misc2Test extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         ks.newKieBuilder( kfs ).buildAll();
-        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
 
         int n = ksession.fireAllRules();
-        assertEquals(1, n);
+        assertEquals( 1, n );
     }
 
     @Test
@@ -5751,15 +5828,17 @@ public class Misc2Test extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(0, results.getMessages().size());
+        assertEquals( 0, results.getMessages().size() );
     }
 
     public static class MyDate extends Date {
         private String description;
+
         public String getDescription() {
             return this.description;
         }
-        public void setDescription(final String desc) {
+
+        public void setDescription( final String desc ) {
             this.description = desc;
         }
     }
@@ -5788,18 +5867,18 @@ public class Misc2Test extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         ks.newKieBuilder( kfs ).buildAll();
-        KieSession ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
+        KieSession ksession = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() ).newKieSession();
 
         List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
-        ksession.insert(0);
+        ksession.insert( 0 );
         ksession.fireAllRules();
-        ksession.insert(1);
+        ksession.insert( 1 );
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals(0, (int)list.get(0));
+        assertEquals( 1, list.size() );
+        assertEquals( 0, (int) list.get( 0 ) );
     }
 
     @Test
@@ -5807,7 +5886,7 @@ public class Misc2Test extends CommonTestMethodBase {
         // BZ-1092084
         String str = "rule R salience 10 salience 100 when then end\n";
 
-        assertDrlHasCompilationError(str, 1);
+        assertDrlHasCompilationError( str, 1 );
     }
 
     @Test
@@ -5825,7 +5904,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(0, results.getMessages().size());
+        assertEquals( 0, results.getMessages().size() );
     }
 
     @Test
@@ -5879,7 +5958,7 @@ public class Misc2Test extends CommonTestMethodBase {
         MVELDialectConfiguration mvelConf = (MVELDialectConfiguration) pkgBuilderCfg.getDialectConfiguration( "mvel" );
         mvelConf.setStrict( false );
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(pkgBuilderCfg);
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( pkgBuilderCfg );
         kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ), ResourceType.DRL );
         assertFalse( kbuilder.hasErrors() );
     }
@@ -5892,7 +5971,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      " @role(event)\n" +
                      "end\n";
 
-        assertDrlHasCompilationError(str, 1);
+        assertDrlHasCompilationError( str, 1 );
     }
 
     @Test
@@ -5990,11 +6069,11 @@ public class Misc2Test extends CommonTestMethodBase {
         KieSession ksession = helper.build().newKieSession();
 
         ArrayList<Trailer> trailerList = new ArrayList<Trailer>();
-        ksession.setGlobal("trailerList", trailerList);
+        ksession.setGlobal( "trailerList", trailerList );
 
-        Trailer trailer1 = new Trailer(Trailer.TypeStatus.WAITING);
+        Trailer trailer1 = new Trailer( Trailer.TypeStatus.WAITING );
 
-        ksession.insert(trailer1);
+        ksession.insert( trailer1 );
 
         // set the agenda groups in reverse order so that stack is preserved
         ksession.getAgenda().getAgendaGroup( "Start" ).setFocus();
@@ -6003,16 +6082,16 @@ public class Misc2Test extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        assertEquals(2, trailerList.size());
+        assertEquals( 2, trailerList.size() );
     }
 
 
     public static class Trailer {
-        public enum TypeStatus { WAITING, LOADING, SHIPPING }
+        public enum TypeStatus {WAITING, LOADING, SHIPPING}
 
         private TypeStatus status;
 
-        public Trailer(TypeStatus status) {
+        public Trailer( TypeStatus status ) {
             this.status = status;
         }
 
@@ -6020,12 +6099,13 @@ public class Misc2Test extends CommonTestMethodBase {
             return status;
         }
 
-        public void setStatus(TypeStatus status) {
+        public void setStatus( TypeStatus status ) {
             this.status = status;
         }
     }
 
-    public static class Host { }
+    public static class Host {
+    }
 
     @Test
     public void testJITIncompatibleTypes() throws Exception {
@@ -6042,35 +6122,59 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
-        ksession.insert(new Host());
-        ksession.insert("host");
+        ksession.insert( new Host() );
+        ksession.insert( "host" );
         ksession.fireAllRules();
     }
 
     public static class TypeA {
         private int id = 1;
-        public int getId() { return id; }
+
+        public int getId() {
+            return id;
+        }
     }
 
     public static class TypeB {
         private int parentId = 1;
         private int id = 2;
-        public int getParentId() { return parentId; }
-        public int getId() { return id; }
+
+        public int getParentId() {
+            return parentId;
+        }
+
+        public int getId() {
+            return id;
+        }
     }
 
     public static class TypeC {
         private int parentId = 2;
-        public int getParentId() { return parentId; }
-        public int getValue() { return 1; }
+
+        public int getParentId() {
+            return parentId;
+        }
+
+        public int getValue() {
+            return 1;
+        }
     }
 
     public static class TypeD {
         private int parentId = 2;
         private int value;
-        public int getParentId() { return parentId; }
-        public int getValue() { return value; }
-        public void setValue(int value) { this.value = value; }
+
+        public int getParentId() {
+            return parentId;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue( int value ) {
+            this.value = value;
+        }
     }
 
     @Test
@@ -6113,20 +6217,20 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
-        ksession.insert(new TypeA());
-        ksession.insert(new TypeB());
-        ksession.insert(new TypeC());
+        ksession.insert( new TypeA() );
+        ksession.insert( new TypeB() );
+        ksession.insert( new TypeC() );
         TypeD d = new TypeD();
-        ksession.insert(d);
+        ksession.insert( d );
         ksession.fireAllRules();
-        assertEquals(1, d.getValue());
+        assertEquals( 1, d.getValue() );
     }
 
     public static class Reading {
         private final String type;
         private final int value;
 
-        public Reading(String type, int value) {
+        public Reading( String type, int value ) {
             this.type = type;
             this.value = value;
         }
@@ -6148,7 +6252,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return level;
         }
 
-        public void setLevel(String level) {
+        public void setLevel( String level ) {
             this.level = level;
         }
 
@@ -6156,7 +6260,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return type;
         }
 
-        public void setType(String type) {
+        public void setType( String type ) {
             this.type = type;
         }
     }
@@ -6221,44 +6325,62 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
-        ksession.insert("t1");
+        ksession.insert( "t1" );
 
-        ksession.insert(new Reading("t1", 12));
+        ksession.insert( new Reading( "t1", 12 ) );
         ksession.fireAllRules();
-        ksession.insert(new Reading("t1", 0));
+        ksession.insert( new Reading( "t1", 0 ) );
         ksession.fireAllRules();
-        ksession.insert(new Reading("t1", 0));
+        ksession.insert( new Reading( "t1", 0 ) );
         ksession.fireAllRules();
 
-        ksession.insert(new Reading("t1", 16));
+        ksession.insert( new Reading( "t1", 16 ) );
         ksession.fireAllRules();
-        ksession.insert(new Reading("t1", 32));
+        ksession.insert( new Reading( "t1", 32 ) );
         ksession.fireAllRules();
-        ksession.insert(new Reading("t1", -6));
+        ksession.insert( new Reading( "t1", -6 ) );
         ksession.fireAllRules();
     }
 
     public static class C1 {
         private int counter = 0;
-        private final List<C2> c2s = Arrays.asList(new C2(), new C2());
+        private final List<C2> c2s = Arrays.asList( new C2(), new C2() );
 
-        public List<C2> getC2s() { return c2s; }
+        public List<C2> getC2s() {
+            return c2s;
+        }
 
-        public int getSize() { return getC2s().size(); }
+        public int getSize() {
+            return getC2s().size();
+        }
 
-        public int getCounter() { return counter; }
-        public void setCounter(int counter) { this.counter = counter; }
+        public int getCounter() {
+            return counter;
+        }
+
+        public void setCounter( int counter ) {
+            this.counter = counter;
+        }
     }
 
     public static class C2 {
-        private final List<C3> c3s = Arrays.asList(new C3(1), new C3(2));
-        public List<C3> getC3s() { return c3s; }
+        private final List<C3> c3s = Arrays.asList( new C3( 1 ), new C3( 2 ) );
+
+        public List<C3> getC3s() {
+            return c3s;
+        }
     }
 
     public static class C3 {
         public final int value;
-        public C3(int value) { this.value = value; }
-        public int getValue() { return value; }
+
+        public C3( int value ) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
     }
 
     @Test
@@ -6283,7 +6405,7 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
-        ksession.insert(new C1());
+        ksession.insert( new C1() );
         ksession.fireAllRules();
     }
 
@@ -6291,7 +6413,8 @@ public class Misc2Test extends CommonTestMethodBase {
         String getValue();
     }
 
-    public interface I1 extends I0 { }
+    public interface I1 extends I0 {
+    }
 
     public static class X implements I0 {
         @Override
@@ -6300,7 +6423,8 @@ public class Misc2Test extends CommonTestMethodBase {
         }
     }
 
-    public static class Y extends X implements I1 { }
+    public static class Y extends X implements I1 {
+    }
 
     public static class Z implements I1 {
         @Override
@@ -6323,9 +6447,9 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
-        ksession.insert(new Y());
+        ksession.insert( new Y() );
         ksession.fireAllRules();
-        ksession.insert(new Z());
+        ksession.insert( new Z() );
         ksession.fireAllRules();
     }
 
@@ -6349,7 +6473,7 @@ public class Misc2Test extends CommonTestMethodBase {
                      " e : int[]\n" +
                      "end\n";
 
-        assertDrlHasCompilationError(str, 1);
+        assertDrlHasCompilationError( str, 1 );
     }
 
     @Test
@@ -6364,7 +6488,7 @@ public class Misc2Test extends CommonTestMethodBase {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(0, results.getMessages().size());
+        assertEquals( 0, results.getMessages().size() );
     }
 
     public static class Underscore {
@@ -6374,7 +6498,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return _id;
         }
 
-        public void set_id(String _id) {
+        public void set_id( String _id ) {
             this._id = _id;
         }
     }
@@ -6404,8 +6528,8 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
-        ksession.insert("1");
-        ksession.insert(1);
+        ksession.insert( "1" );
+        ksession.insert( 1 );
         ksession.fireAllRules();
     }
 
@@ -6428,9 +6552,9 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
-        ksession.insert("1");
-        ksession.insert(1L);
-        ksession.insert(1);
+        ksession.insert( "1" );
+        ksession.insert( 1L );
+        ksession.insert( 1 );
         ksession.fireAllRules();
     }
 
@@ -6482,13 +6606,13 @@ public class Misc2Test extends CommonTestMethodBase {
         KieSession ksession = helper.build().newKieSession();
 
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
 
-        assertEquals(2, list.size());
-        assertTrue(list.contains("group by hello count is 2"));
-        assertTrue(list.contains("group by hi count is 1"));
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "group by hello count is 2" ) );
+        assertTrue( list.contains( "group by hi count is 1" ) );
     }
 
     @Test
@@ -6496,57 +6620,57 @@ public class Misc2Test extends CommonTestMethodBase {
         // DROOLS-577
         String drl =
                 "package foo.bar;\n" +
-                        "declare Fired\n" +
-                        "        rule: String\n" +
-                        "end\n" +
-                        "global java.util.List list\n" +
-                        "rule \"F060\" dialect \"mvel\"\n" +
-                        "when\n" +
-                        "then\n" +
-                        "    Fired f = new Fired();\n" +
-                        "    f.rule = \"F060\";\n" +
-                        "    insert(f);\n" +
-                        "end\n" +
-                        " \n" +
-                        "rule \"F060b\"  //this prints F060b: Fired( rule=F060 )\n" +
-                        "    dialect \"mvel\"\n" +
-                        "when\n" +
-                        "        $rule: Fired()\n" +
-                        "then\n" +
-                        "    list.add( drools.getRule().getName() )\n" +
-                        "end\n" +
-                        " \n" +
-                        "rule \"F060c\"  //doesn't work\n" +
-                        "    dialect \"mvel\"\n" +
-                        "when\n" +
-                        "        $rule: Fired( rule==\"F060\" )\n" +
-                        "then\n" +
-                        "    list.add( drools.getRule().getName() )\n" +
-                        "end\n" +
-                        " \n" +
-                        "rule \"F060d\"  //this prints F060d: Fired( rule=F060 )\n" +
-                        "    dialect \"mvel\"\n" +
-                        "when\n" +
-                        "        $rule: Fired()\n" +
-                        "        eval( $rule.rule == \"F060\")\n" +
-                        "then\n" +
-                        "    list.add( drools.getRule().getName() )\n" +
-                        "end";
+                "declare Fired\n" +
+                "        rule: String\n" +
+                "end\n" +
+                "global java.util.List list\n" +
+                "rule \"F060\" dialect \"mvel\"\n" +
+                "when\n" +
+                "then\n" +
+                "    Fired f = new Fired();\n" +
+                "    f.rule = \"F060\";\n" +
+                "    insert(f);\n" +
+                "end\n" +
+                " \n" +
+                "rule \"F060b\"  //this prints F060b: Fired( rule=F060 )\n" +
+                "    dialect \"mvel\"\n" +
+                "when\n" +
+                "        $rule: Fired()\n" +
+                "then\n" +
+                "    list.add( drools.getRule().getName() )\n" +
+                "end\n" +
+                " \n" +
+                "rule \"F060c\"  //doesn't work\n" +
+                "    dialect \"mvel\"\n" +
+                "when\n" +
+                "        $rule: Fired( rule==\"F060\" )\n" +
+                "then\n" +
+                "    list.add( drools.getRule().getName() )\n" +
+                "end\n" +
+                " \n" +
+                "rule \"F060d\"  //this prints F060d: Fired( rule=F060 )\n" +
+                "    dialect \"mvel\"\n" +
+                "when\n" +
+                "        $rule: Fired()\n" +
+                "        eval( $rule.rule == \"F060\")\n" +
+                "then\n" +
+                "    list.add( drools.getRule().getName() )\n" +
+                "end";
 
         KieHelper helper = new KieHelper();
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
         List<String> list = new ArrayList<String>();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
 
-        System.out.println(list);
-        assertEquals(3, list.size());
-        assertTrue(list.contains("F060b"));
-        assertTrue(list.contains("F060c"));
-        assertTrue(list.contains("F060d"));
+        System.out.println( list );
+        assertEquals( 3, list.size() );
+        assertTrue( list.contains( "F060b" ) );
+        assertTrue( list.contains( "F060c" ) );
+        assertTrue( list.contains( "F060d" ) );
     }
 
     @Test
@@ -6580,8 +6704,8 @@ public class Misc2Test extends CommonTestMethodBase {
         kieSession.fireAllRules();
 
         assertEquals( 2, list.size() );
-        assertEquals( 10, (int) list.get(0) );
-        assertEquals( 10, (int) list.get(1) );
+        assertEquals( 10, (int) list.get( 0 ) );
+        assertEquals( 10, (int) list.get( 1 ) );
     }
 
     @Test
@@ -6617,30 +6741,30 @@ public class Misc2Test extends CommonTestMethodBase {
         kieSession.fireAllRules();
 
         assertEquals( 2, list.size() );
-        assertEquals( 10, list.get(0) );
-        assertEquals( "10", list.get(1) );
+        assertEquals( 10, list.get( 0 ) );
+        assertEquals( "10", list.get( 1 ) );
     }
 
     @Test
     public void testCustomDynamicSalience() {
-        String drl  = "package org.drools.test; " +
-                      "import " + Person.class.getName() + "; " +
-                      "global java.util.List list; " +
+        String drl = "package org.drools.test; " +
+                     "import " + Person.class.getName() + "; " +
+                     "global java.util.List list; " +
 
-                      "rule A " +
-                      "when " +
-                      "     $person : Person( name == 'a' ) " +
-                      "then" +
-                      "     list.add( $person.getAge() ); " +
-                      "end " +
+                     "rule A " +
+                     "when " +
+                     "     $person : Person( name == 'a' ) " +
+                     "then" +
+                     "     list.add( $person.getAge() ); " +
+                     "end " +
 
-                      "rule B " +
-                      "when " +
-                      "     $person : Person( name == 'b' ) " +
-                      "then" +
-                      "     list.add( $person.getAge() ); " +
-                      "end " +
-                      "";
+                     "rule B " +
+                     "when " +
+                     "     $person : Person( name == 'b' ) " +
+                     "then" +
+                     "     list.add( $person.getAge() ); " +
+                     "end " +
+                     "";
 
         KieHelper helper = new KieHelper();
         helper.addContent( drl, ResourceType.DRL );
@@ -6650,28 +6774,34 @@ public class Misc2Test extends CommonTestMethodBase {
         session.setGlobal( "list", list );
 
         for ( Rule r : session.getKieBase().getKiePackage( "org.drools.test" ).getRules() ) {
-            ((RuleImpl) r).setSalience( new Salience() {
+            ( (RuleImpl) r ).setSalience( new Salience() {
                 @Override
                 public int getValue( KnowledgeHelper khelper, Rule rule, WorkingMemory workingMemory ) {
-                    if ( khelper == null ) { return 0; }
+                    if ( khelper == null ) {
+                        return 0;
+                    }
                     InternalFactHandle h = (InternalFactHandle) khelper.getMatch().getFactHandles().get( 0 );
-                    return ((Person) h.getObject()).getAge();
+                    return ( (Person) h.getObject() ).getAge();
                 }
 
                 @Override
-                public int getValue() { throw new IllegalStateException( "Should not have been called..." ); }
+                public int getValue() {
+                    throw new IllegalStateException( "Should not have been called..." );
+                }
 
                 @Override
-                public boolean isDynamic() { return true; }
+                public boolean isDynamic() {
+                    return true;
+                }
             } );
         }
 
-        session.insert(new Person( "a", 1 ) );
-        session.insert(new Person( "a", 5 ) );
-        session.insert(new Person( "a", 3 ) );
-        session.insert(new Person( "b", 4 ) );
-        session.insert(new Person( "b", 2 ) );
-        session.insert(new Person( "b", 6 ) );
+        session.insert( new Person( "a", 1 ) );
+        session.insert( new Person( "a", 5 ) );
+        session.insert( new Person( "a", 3 ) );
+        session.insert( new Person( "b", 4 ) );
+        session.insert( new Person( "b", 2 ) );
+        session.insert( new Person( "b", 6 ) );
 
         session.fireAllRules();
 
@@ -6680,7 +6810,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
     @Test
     public void testNotWithSubNetwork() {
-        String drl  =
+        String drl =
                 "rule R when\n" +
                 "    $s : String( )\n" +
                 "    not (\n" +
@@ -6696,13 +6826,13 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
-        ksession.insert("1");
-        FactHandle iFH = ksession.insert(1);
-        FactHandle lFH = ksession.insert(1L);
+        ksession.insert( "1" );
+        FactHandle iFH = ksession.insert( 1 );
+        FactHandle lFH = ksession.insert( 1L );
         ksession.fireAllRules();
 
-        ksession.delete(iFH);
-        ksession.delete(lFH);
+        ksession.delete( iFH );
+        ksession.delete( lFH );
         ksession.fireAllRules();
 
         assertEquals( 0, ksession.getFactCount() );
@@ -6711,7 +6841,7 @@ public class Misc2Test extends CommonTestMethodBase {
     @Test
     public void testGenericsInRHSWithModify() {
         // DROOLS-493
-        String drl  =
+        String drl =
                 "import java.util.Map;\n" +
                 "import java.util.HashMap;\n" +
                 "rule R no-loop when\n" +
@@ -6725,7 +6855,7 @@ public class Misc2Test extends CommonTestMethodBase {
         helper.addContent( drl, ResourceType.DRL );
         KieSession ksession = helper.build().newKieSession();
 
-        ksession.insert("1");
+        ksession.insert( "1" );
         ksession.fireAllRules();
     }
 
@@ -6768,8 +6898,8 @@ public class Misc2Test extends CommonTestMethodBase {
         FactHandle handle = kieSession.insert( 42 );
 
         Agenda agenda = kieSession.getAgenda();
-        agenda.getAgendaGroup("two").setFocus();
-        agenda.getAgendaGroup("one").setFocus();
+        agenda.getAgendaGroup( "two" ).setFocus();
+        agenda.getAgendaGroup( "one" ).setFocus();
 
         kieSession.fireAllRules();
         assertEquals( Arrays.asList( 42 ), list );
@@ -6778,8 +6908,8 @@ public class Misc2Test extends CommonTestMethodBase {
 
         kieSession.insert( 99 );
 
-        agenda.getAgendaGroup("two").setFocus();
-        agenda.getAgendaGroup("one").setFocus();
+        agenda.getAgendaGroup( "two" ).setFocus();
+        agenda.getAgendaGroup( "one" ).setFocus();
 
         kieSession.fireAllRules();
         assertEquals( Arrays.asList( 42, 99 ), list );
@@ -6838,9 +6968,9 @@ public class Misc2Test extends CommonTestMethodBase {
         FactHandle sFH = kieSession.insert( "42" );
 
         Agenda agenda = kieSession.getAgenda();
-        agenda.getAgendaGroup("three").setFocus();
-        agenda.getAgendaGroup("two").setFocus();
-        agenda.getAgendaGroup("one").setFocus();
+        agenda.getAgendaGroup( "three" ).setFocus();
+        agenda.getAgendaGroup( "two" ).setFocus();
+        agenda.getAgendaGroup( "one" ).setFocus();
 
         kieSession.fireAllRules();
         assertEquals( Arrays.asList( 42 ), list );
@@ -6851,9 +6981,9 @@ public class Misc2Test extends CommonTestMethodBase {
         kieSession.insert( 99 );
         kieSession.insert( "99" );
 
-        agenda.getAgendaGroup("three").setFocus();
-        agenda.getAgendaGroup("two").setFocus();
-        agenda.getAgendaGroup("one").setFocus();
+        agenda.getAgendaGroup( "three" ).setFocus();
+        agenda.getAgendaGroup( "two" ).setFocus();
+        agenda.getAgendaGroup( "one" ).setFocus();
 
         kieSession.fireAllRules();
         assertEquals( Arrays.asList( 42, 99 ), list );
@@ -6871,16 +7001,16 @@ public class Misc2Test extends CommonTestMethodBase {
                      " System.out.println( \"Hello World\" ); " +
                      " end ";
 
-        KnowledgePackageImpl kPackage = new KnowledgePackageImpl("com.testfacttemplate");
-        FieldTemplate fieldTemplate = new FieldTemplateImpl("status", 0, Integer.class);
-        FactTemplate factTemplate = new FactTemplateImpl(kPackage, "TestFactTemplate", new FieldTemplate[]{fieldTemplate});
+        KnowledgePackageImpl kPackage = new KnowledgePackageImpl( "com.testfacttemplate" );
+        FieldTemplate fieldTemplate = new FieldTemplateImpl( "status", 0, Integer.class );
+        FactTemplate factTemplate = new FactTemplateImpl( kPackage, "TestFactTemplate", new FieldTemplate[]{fieldTemplate} );
 
-        KnowledgeBuilder kBuilder = new KnowledgeBuilderImpl(kPackage);
-        StringReader rule = new StringReader(drl);
+        KnowledgeBuilder kBuilder = new KnowledgeBuilderImpl( kPackage );
+        StringReader rule = new StringReader( drl );
         try {
-            ((KnowledgeBuilderImpl) kBuilder).addPackageFromDrl(rule);
+            ( (KnowledgeBuilderImpl) kBuilder ).addPackageFromDrl( rule );
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException( e );
         }
     }
 
@@ -6897,19 +7027,19 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end";
 
         KieHelper helper = new KieHelper();
-        helper.addContent(drl, ResourceType.DRL);
+        helper.addContent( drl, ResourceType.DRL );
         KieSession kieSession = helper.build().newKieSession();
 
         List<Integer> list = new ArrayList<Integer>();
         kieSession.setGlobal( "list", list );
 
-        kieSession.insert(3);
-        kieSession.insert(2);
-        kieSession.insert(6);
+        kieSession.insert( 3 );
+        kieSession.insert( 2 );
+        kieSession.insert( 6 );
         kieSession.fireAllRules();
 
-        assertEquals(2, list.size());
-        assertTrue(list.containsAll(asList(3, 6)));
+        assertEquals( 2, list.size() );
+        assertTrue( list.containsAll( asList( 3, 6 ) ) );
     }
 
     @Test
@@ -6940,31 +7070,40 @@ public class Misc2Test extends CommonTestMethodBase {
                 "   modify($cc) { setValue($cc.getValue()+1); }\n" +
                 "end; ";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
-        ksession.insert("1");
-        ksession.insert("2");
+        ksession.insert( "1" );
+        ksession.insert( "2" );
 
         TypeCC cc = new TypeCC();
-        ksession.insert(cc);
-        ksession.insert(new TypeDD());
+        ksession.insert( cc );
+        ksession.insert( new TypeDD() );
 
         ksession.fireAllRules();
 
-        System.out.println("Rule R2 is fired count - " +cc.getValue());
+        System.out.println( "Rule R2 is fired count - " + cc.getValue() );
 
-        assertEquals("Rule 2 should be fired once as we have firing rule as one of criteria checking rule only fire once",1,cc.getValue());
+        assertEquals( "Rule 2 should be fired once as we have firing rule as one of criteria checking rule only fire once", 1, cc.getValue() );
     }
 
     public static class ValueContainer {
         private int value;
-        public int getValue() { return value; }
-        public void setValue(int value) { this.value = value; }
+
+        public int getValue() {
+            return value;
+        }
+
+        public void setValue( int value ) {
+            this.value = value;
+        }
     }
 
-    public static class TypeCC extends ValueContainer { }
-    public static class TypeDD extends ValueContainer { }
+    public static class TypeCC extends ValueContainer {
+    }
+
+    public static class TypeDD extends ValueContainer {
+    }
 
     @Test
     public void testClassAccumulator() {
@@ -6988,18 +7127,18 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  list.addAll($classes);\n" +
                 "end ";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
         List<Class> list = new ArrayList<Class>();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
         ksession.fireAllRules();
 
-        assertEquals(2, list.size());
-        System.out.println(list);
-        assertTrue(list.containsAll(asList(String.class, Integer.class)));
+        assertEquals( 2, list.size() );
+        System.out.println( list );
+        assertTrue( list.containsAll( asList( String.class, Integer.class ) ) );
     }
 
     @Test
@@ -7016,39 +7155,39 @@ public class Misc2Test extends CommonTestMethodBase {
                 "  sb.append($i);\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
         StringBuilder sb = new StringBuilder();
-        ksession.setGlobal("sb", sb);
+        ksession.setGlobal( "sb", sb );
 
-        ksession.insert("test");
+        ksession.insert( "test" );
         StringWrapper sw = new StringWrapper();
-        FactHandle swFH = ksession.insert(sw);
+        FactHandle swFH = ksession.insert( sw );
         ksession.fireAllRules();
 
-        sw.setWrapped("test");
-        ksession.update(swFH, sw);
+        sw.setWrapped( "test" );
+        ksession.update( swFH, sw );
         ksession.fireAllRules();
 
-        sw.setWrapped(null);
-        ksession.update(swFH, sw);
+        sw.setWrapped( null );
+        ksession.update( swFH, sw );
         ksession.fireAllRules();
 
-        sw.setWrapped("test");
-        ksession.update(swFH, sw);
+        sw.setWrapped( "test" );
+        ksession.update( swFH, sw );
         ksession.fireAllRules();
 
-        sw.setWrapped(null);
-        ksession.update(swFH, sw);
+        sw.setWrapped( null );
+        ksession.update( swFH, sw );
         ksession.fireAllRules();
 
-        sw.setWrapped("test");
-        ksession.update(swFH, sw);
+        sw.setWrapped( "test" );
+        ksession.update( swFH, sw );
         ksession.fireAllRules();
 
-        assertEquals("040404", sb.toString());
+        assertEquals( "040404", sb.toString() );
     }
 
     public static class StringWrapper {
@@ -7058,12 +7197,12 @@ public class Misc2Test extends CommonTestMethodBase {
             return wrapped;
         }
 
-        public void setWrapped(String wrapped) {
+        public void setWrapped( String wrapped ) {
             this.wrapped = wrapped;
         }
 
-        public boolean contains(String s) {
-            return wrapped != null && wrapped.equals(s);
+        public boolean contains( String s ) {
+            return wrapped != null && wrapped.equals( s );
         }
 
         public int getValue() {
@@ -7081,7 +7220,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "declare Foo " +
                 "   bar : Misc2Test.AA " +
                 "end " +
-                "" ;
+                "";
 
         KieHelper helper = new KieHelper();
         helper.addContent( drl, ResourceType.DRL );
@@ -7123,12 +7262,12 @@ public class Misc2Test extends CommonTestMethodBase {
                 "       then\n" +
                 "           System.out.println( $b ); " +
                 "    end" +
-                "\n" ;
+                "\n";
 
         KieHelper helper = new KieHelper();
         helper.addContent( drl, ResourceType.DRL );
         assertTrue( helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR ).isEmpty() );
-        KieSession ks = helper.build(  ).newKieSession();
+        KieSession ks = helper.build().newKieSession();
         assertEquals( 1, ks.fireAllRules() );
     }
 
@@ -7143,18 +7282,18 @@ public class Misc2Test extends CommonTestMethodBase {
                 " Person( address.street == 'abbey' ) " +
                 " then " +
                 " end " +
-                "\n" ;
+                "\n";
         KieHelper helper = new KieHelper();
-        helper.addContent(drl, ResourceType.DRL);
-        assertTrue(helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR).isEmpty());
+        helper.addContent( drl, ResourceType.DRL );
+        assertTrue( helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR ).isEmpty() );
         KieSession ks = helper.build().newKieSession();
-        Person john = new Person("John"); // address is null
+        Person john = new Person( "John" ); // address is null
         try {
-            ks.insert(john);
+            ks.insert( john );
             ks.fireAllRules();
-            fail("Should throw an exception");
+            fail( "Should throw an exception" );
         } catch (Exception e) {
-            assertTrue(e.getMessage().contains("hello person"));
+            assertTrue( e.getMessage().contains( "hello person" ) );
         }
     }
 
@@ -7170,19 +7309,19 @@ public class Misc2Test extends CommonTestMethodBase {
                 " Person( address.street == $s ) " +
                 " then " +
                 " end " +
-                "\n" ;
+                "\n";
         KieHelper helper = new KieHelper();
-        helper.addContent(drl, ResourceType.DRL);
-        assertTrue(helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR).isEmpty());
+        helper.addContent( drl, ResourceType.DRL );
+        assertTrue( helper.verify().getMessages( org.kie.api.builder.Message.Level.ERROR ).isEmpty() );
         KieSession ks = helper.build().newKieSession();
-        Person john = new Person("John"); // address is null
+        Person john = new Person( "John" ); // address is null
         try {
-            ks.insert("abbey");
-            ks.insert(john);
+            ks.insert( "abbey" );
+            ks.insert( john );
             ks.fireAllRules();
-            fail("Should throw an exception");
+            fail( "Should throw an exception" );
         } catch (Exception e) {
-            assertTrue(e.getMessage().contains("hello person"));
+            assertTrue( e.getMessage().contains( "hello person" ) );
         }
     }
 
@@ -7200,14 +7339,14 @@ public class Misc2Test extends CommonTestMethodBase {
                 + "not( exists( String() ) )\n"
                 + "then end\n";
 
-        KieSession ksession = new KieHelper().addContent(drl2, ResourceType.DRL)
+        KieSession ksession = new KieHelper().addContent( drl2, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
-        ksession.insert(asList("Mario", "Mark"));
-        ksession.insert(asList("Julie", "Leiti"));
+        ksession.insert( asList( "Mario", "Mark" ) );
+        ksession.insert( asList( "Julie", "Leiti" ) );
 
-        assertEquals(4, ksession.fireAllRules());
+        assertEquals( 4, ksession.fireAllRules() );
     }
 
     @Test
@@ -7222,12 +7361,12 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    then\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(drl2, ResourceType.DRL)
+        KieSession ksession = new KieHelper().addContent( drl2, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
-        ksession.insert(1);
-        assertEquals(1, ksession.fireAllRules());
+        ksession.insert( 1 );
+        assertEquals( 1, ksession.fireAllRules() );
     }
 
     @Test
@@ -7243,14 +7382,14 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    )\n" +
                 "then end\n";
 
-        assertDrlHasCompilationError(str, 1);
+        assertDrlHasCompilationError( str, 1 );
     }
 
-    private void assertDrlHasCompilationError(String str, int errorNr) {
+    private void assertDrlHasCompilationError( String str, int errorNr ) {
         KieServices ks = KieServices.Factory.get();
         KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        if (errorNr > 0) {
+        if ( errorNr > 0 ) {
             assertEquals( errorNr, results.getMessages().size() );
         }
     }
@@ -7268,7 +7407,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 " then\n" +
                 "end\n";
 
-        assertDrlHasCompilationError(drl1, 1);
+        assertDrlHasCompilationError( drl1, 1 );
     }
 
     @Test
@@ -7284,7 +7423,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end;\n";
 
-        assertDrlHasCompilationError(drl1, 1);
+        assertDrlHasCompilationError( drl1, 1 );
     }
 
     @Test
@@ -7298,7 +7437,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end;\n";
 
-        assertDrlHasCompilationError(drl1, 1);
+        assertDrlHasCompilationError( drl1, 1 );
     }
 
     @Test
@@ -7312,12 +7451,12 @@ public class Misc2Test extends CommonTestMethodBase {
                 " then " +
                 " end " +
                 "\n";
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
-        ksession.insert(new org.drools.compiler.Person("Elizabeth2", 88));
-        assertEquals(1, ksession.fireAllRules());
+        ksession.insert( new org.drools.compiler.Person( "Elizabeth2", 88 ) );
+        assertEquals( 1, ksession.fireAllRules() );
     }
 
     @Test
@@ -7342,20 +7481,20 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add($p.getAge());\n" +
                 "end\n";
 
-        URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{ this.getClass().getResource("/billasurf.jar") } );
-        KieSession ksession = new KieHelper().setClassLoader(urlClassLoader)
-                                             .addContent(drl, ResourceType.DRL)
+        URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{this.getClass().getResource( "/billasurf.jar" )} );
+        KieSession ksession = new KieHelper().setClassLoader( urlClassLoader )
+                                             .addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
         List<Integer> list = new ArrayList<Integer>();
-        ksession.setGlobal("list", list);
+        ksession.setGlobal( "list", list );
 
-        ksession.insert(18);
+        ksession.insert( 18 );
         ksession.fireAllRules();
 
-        assertEquals(1, list.size());
-        assertEquals(18, (int)list.get(0));
+        assertEquals( 1, list.size() );
+        assertEquals( 18, (int) list.get( 0 ) );
     }
 
     @Test
@@ -7371,7 +7510,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add($s);\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
@@ -7406,18 +7545,18 @@ public class Misc2Test extends CommonTestMethodBase {
                 "list.add(\"Rule without agenda group executed\");\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
-        ksession.setGlobal("list", new ArrayList<String>());
-        ksession.getAgenda().getAgendaGroup("first-agenda").setFocus();
-        ksession.getAgenda().getAgendaGroup("first-agenda").clear();
+        ksession.setGlobal( "list", new ArrayList<String>() );
+        ksession.getAgenda().getAgendaGroup( "first-agenda" ).setFocus();
+        ksession.getAgenda().getAgendaGroup( "first-agenda" ).clear();
         ksession.fireAllRules();
 
-        ArrayList<String> list = (ArrayList<String>)ksession.getGlobal("list");
-        assertEquals(1, list.size());
-        assertEquals("Rule without agenda group executed", list.get(0));
+        ArrayList<String> list = (ArrayList<String>) ksession.getGlobal( "list" );
+        assertEquals( 1, list.size() );
+        assertEquals( "Rule without agenda group executed", list.get( 0 ) );
     }
 
     @Test
@@ -7440,18 +7579,18 @@ public class Misc2Test extends CommonTestMethodBase {
                 "list.add(\"Rule without agenda group executed\");\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
-        ksession.setGlobal("list", new ArrayList<String>());
-        ksession.getAgenda().getAgendaGroup("first-agenda").setFocus();
-        ksession.getAgenda().getAgendaGroup("first-agenda").clear();
+        ksession.setGlobal( "list", new ArrayList<String>() );
+        ksession.getAgenda().getAgendaGroup( "first-agenda" ).setFocus();
+        ksession.getAgenda().getAgendaGroup( "first-agenda" ).clear();
         ksession.fireAllRules();
 
-        ArrayList<String> list = (ArrayList<String>)ksession.getGlobal("list");
-        assertEquals(1, list.size());
-        assertEquals("Rule without agenda group executed", list.get(0));
+        ArrayList<String> list = (ArrayList<String>) ksession.getGlobal( "list" );
+        assertEquals( 1, list.size() );
+        assertEquals( "Rule without agenda group executed", list.get( 0 ) );
     }
 
     public static class $X {
@@ -7480,18 +7619,18 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    list.add($v);\n" +
                 "end";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
 
-        ksession.insert( new $X.$Y(42) );
+        ksession.insert( new $X.$Y( 42 ) );
         ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
-        assertEquals( 42, list.get(0) );
+        assertEquals( 42, list.get( 0 ) );
     }
 
     @Test
@@ -7529,10 +7668,10 @@ public class Misc2Test extends CommonTestMethodBase {
         kieSession.fireAllRules();
 
         assertEquals( 1, list.size() );
-        assertEquals( "OK", list.get(0) );
+        assertEquals( "OK", list.get( 0 ) );
     }
 
-    public static int parseInt(String s) {
+    public static int parseInt( String s ) {
         return 0;
     }
 
@@ -7556,19 +7695,19 @@ public class Misc2Test extends CommonTestMethodBase {
                 + "        list.add(\"Fired\");\n"
                 + "end";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
         List<Object> globalList = new ArrayList<Object>();
-        ksession.setGlobal("list", globalList);
+        ksession.setGlobal( "list", globalList );
 
         NonStringConstructorClass simpleTestObject = new NonStringConstructorClass();
-        simpleTestObject.setSomething("simpleTestObject");
+        simpleTestObject.setSomething( "simpleTestObject" );
 
         Map<Object, Object> map = new HashMap<Object, Object>();
-        map.put("someOtherValue", "someOtherValue");
-        map.put(simpleTestObject, "someValue");
+        map.put( "someOtherValue", "someOtherValue" );
+        map.put( simpleTestObject, "someValue" );
 
         List<Object> list = new ArrayList<Object>();
         ksession.insert( map );
@@ -7576,7 +7715,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         ksession.fireAllRules();
 
-        Assert.assertEquals(1, globalList.size());
+        Assert.assertEquals( 1, globalList.size() );
     }
 
     public static class NonStringConstructorClass {
@@ -7586,7 +7725,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return something;
         }
 
-        public void setSomething(String something) {
+        public void setSomething( String something ) {
             this.something = something;
         }
 
@@ -7607,11 +7746,11 @@ public class Misc2Test extends CommonTestMethodBase {
                      "end";
 
         KieSessionConfiguration config = KieServices.Factory.get().newKieSessionConfiguration();
-        config.setOption( ForceEagerActivationOption.YES);
+        config.setOption( ForceEagerActivationOption.YES );
 
-        final KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession(config, null);
+        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                                   .build()
+                                                   .newKieSession( config, null );
 
         final Integer monitor = 42;
         int factsNr = 5;
@@ -7629,21 +7768,21 @@ public class Misc2Test extends CommonTestMethodBase {
 
         // thread for firing until halt
         ExecutorService thread = Executors.newSingleThreadExecutor();
-        thread.submit(new Runnable() {
+        thread.submit( new Runnable() {
 
             @Override
             public void run() {
                 ksession.fireUntilHalt();
             }
-        });
+        } );
 
-        for (int i = 0; i < factsNr; i++) {
-            ksession.insert("" + i);
+        for ( int i = 0; i < factsNr; i++ ) {
+            ksession.insert( "" + i );
         }
 
         // wait for rule to fire
         synchronized (monitor) {
-            if (list.size() < factsNr) {
+            if ( list.size() < factsNr ) {
                 monitor.wait();
             }
         }
@@ -7664,7 +7803,7 @@ public class Misc2Test extends CommonTestMethodBase {
         @Override
         public boolean add( T t ) {
             boolean result = super.add( t );
-            if (size() == limit) {
+            if ( size() == limit ) {
                 listener.run();
             }
             return result;
@@ -7716,7 +7855,7 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 3, list.size() );
-        assertTrue( list.containsAll( asList("1", "2", "3") ) );
+        assertTrue( list.containsAll( asList( "1", "2", "3" ) ) );
     }
 
     @Test
@@ -7732,10 +7871,11 @@ public class Misc2Test extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        assertDrlHasCompilationError(drl, -1);
+        assertDrlHasCompilationError( drl, -1 );
     }
 
-    @Test @Ignore("Requires mvel 2.2.7.Final")
+    @Test
+    @Ignore("Requires mvel 2.2.7.Final")
     public void testVariableMatchesField() throws Exception {
         // DROOLS-882
         String drl =
@@ -7760,11 +7900,11 @@ public class Misc2Test extends CommonTestMethodBase {
                 "        insert( new Fact(\"bar\") );\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
-        assertEquals(2, ksession.fireAllRules());
+        assertEquals( 2, ksession.fireAllRules() );
     }
 
     @Test
@@ -7784,7 +7924,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "    }\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL)
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
                                              .build()
                                              .newKieSession();
 
@@ -7795,6 +7935,51 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
-        assertEquals( "mario.fusco@test.org", list.get(0) );
+        assertEquals( "mario.fusco@test.org", list.get( 0 ) );
+    }
+
+    public static class Parent {
+        public String value;
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue( String value ) {
+            this.value = value;
+        }
+    }
+
+    public static class ChildA extends Parent { }
+    public static class ChildB extends Parent { }
+
+    @Test
+    public void testDifferentClassesWithOR() throws Exception {
+        // DROOLS-897
+        String drl =
+                "import " + ChildA.class.getCanonicalName() + "\n" +
+                "import " + ChildB.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    (\n" +
+                "    ChildA(value == null, $entity : this) or \n" +
+                "    ChildB(value == null, $entity : this)\n" +
+                "    )\n" +
+                "then\n" +
+                "    modify( $entity ) { setValue(\"Done!\"); }\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        ChildA childA = new ChildA();
+        ChildB childB = new ChildB();
+
+        ksession.insert( childA );
+        ksession.insert( childB );
+        ksession.fireAllRules();
+
+        assertEquals( "Done!", childA.getValue() );
+        assertEquals( "Done!", childB.getValue() );
     }
 }
