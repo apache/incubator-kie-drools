@@ -100,7 +100,7 @@ public class JavaConsequenceBuilderTest {
         
         rule.addPattern( p );
         
-        context.getBuildStack().push(rule.getLhs());
+        context.getDeclarationResolver().pushOnBuildStack(rule.getLhs());
         
         context.getDialect().getConsequenceBuilder().build(context, RuleImpl.DEFAULT_CONSEQUENCE_NAME);
         for ( String name : namedConsequences.keySet() ) {

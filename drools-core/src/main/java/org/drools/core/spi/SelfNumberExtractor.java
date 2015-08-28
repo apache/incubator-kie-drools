@@ -16,16 +16,15 @@
 
 package org.drools.core.spi;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.extractors.BaseNumberClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.facttemplates.Fact;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 public class SelfNumberExtractor extends BaseNumberClassFieldReader
     implements
@@ -34,18 +33,19 @@ public class SelfNumberExtractor extends BaseNumberClassFieldReader
     Externalizable {
 
     private static final long serialVersionUID = 510l;
-    private ObjectType        objectType;
+    private ClassObjectType   objectType;
 
     public SelfNumberExtractor() {
     }
 
-    public SelfNumberExtractor(final ObjectType objectType) {
+    public SelfNumberExtractor(ClassObjectType objectType) {
         super(-1, ((ClassObjectType) objectType).getClassType(), objectType.getValueType() );
+        this.objectType = objectType;
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        objectType = (ObjectType) in.readObject();
+        objectType = (ClassObjectType) in.readObject();
         setIndex( -1 );
         setFieldType( ((ClassObjectType) objectType).getClassType() );
         setValueType( objectType.getValueType() );
@@ -58,7 +58,7 @@ public class SelfNumberExtractor extends BaseNumberClassFieldReader
     public void setClassObjectType(ClassObjectType objectType) {
         this.objectType = objectType;
         setIndex( -1 );
-        setFieldType( ((ClassObjectType) objectType).getClassType() );
+        setFieldType( objectType.getClassType() );
         setValueType( objectType.getValueType() );        
     }
 
@@ -72,23 +72,11 @@ public class SelfNumberExtractor extends BaseNumberClassFieldReader
     }
 
     public Class<?> getExtractToClass() {
-        // @todo : this is a bit nasty, but does the trick
-        if ( this.objectType instanceof ClassObjectType ) {
-            return ((ClassObjectType) this.objectType).getClassType();
-        } else {
-            return Fact.class;
-        }
+        return this.objectType.getClassType();
     }
 
     public String getExtractToClassName() {
-        Class<?> clazz = null;
-        // @todo : this is a bit nasty, but does the trick
-        if ( this.objectType instanceof ClassObjectType ) {
-            clazz = ((ClassObjectType) this.objectType).getClassType();
-        } else {
-            clazz = Fact.class;
-        }
-        return ClassUtils.canonicalName( clazz );
+        return ClassUtils.canonicalName( getExtractToClass() );
     }
 
     public int hashCode() {

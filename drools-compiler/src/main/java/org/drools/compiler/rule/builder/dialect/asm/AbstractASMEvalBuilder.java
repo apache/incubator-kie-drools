@@ -27,6 +27,7 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.compiler.rule.builder.RuleBuildContext;
 import org.drools.compiler.rule.builder.RuleConditionBuilder;
+import org.drools.core.spi.DeclarationScopeResolver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +50,7 @@ public abstract class AbstractASMEvalBuilder implements RuleConditionBuilder {
         AnalysisResult analysis = context.getDialect().analyzeExpression( context,
                                                                           evalDescr,
                                                                           evalDescr.getContent(),
-                                                                          new BoundIdentifiers( context.getDeclarationResolver().getDeclarationClasses(decls),
+                                                                          new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( decls ),
                                                                                                 context.getKnowledgeBuilder().getGlobals() ) );
 
         List<Declaration> requiredDeclarations = new ArrayList<Declaration>();

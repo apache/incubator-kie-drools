@@ -16,8 +16,6 @@
 
 package org.drools.compiler.rule.builder;
 
-import java.util.Iterator;
-
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ForallDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
@@ -53,11 +51,11 @@ public class ForallBuilder
 
         // adding the newly created forall CE to the build stack
         // this is necessary in case of local declaration usage
-        context.getBuildStack().push( forall );
+        context.getDeclarationResolver().pushOnBuildStack( forall );
 
-        for ( final Iterator it = forallDescr.getRemainingPatterns().iterator(); it.hasNext(); ) {
+        for ( BaseDescr baseDescr : forallDescr.getRemainingPatterns() ) {
             final Pattern anotherPattern = (Pattern) patternBuilder.build( context,
-                                                                           (PatternDescr) it.next() );
+                                                                           (PatternDescr) baseDescr );
             forall.addRemainingPattern( anotherPattern );
         }
         
@@ -73,7 +71,7 @@ public class ForallBuilder
         }        
 
         // poping the forall
-        context.getBuildStack().pop();
+        context.getDeclarationResolver().popBuildStack();
 
         return forall;
     }

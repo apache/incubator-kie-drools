@@ -190,7 +190,7 @@ public class MVELAccumulateBuilder
                                                                               "this" );
 
         int index = 0;
-        Pattern pattern = (Pattern) context.getBuildStack().peek();
+        Pattern pattern = (Pattern) context.getDeclarationResolver().peekBuildStack();
         for ( AccumulateFunctionCallDescr func : functions ) {
             // build an external function executor
             AccumulateFunction function = context.getConfiguration().getAccumulateFunction( func.getFunction() );
