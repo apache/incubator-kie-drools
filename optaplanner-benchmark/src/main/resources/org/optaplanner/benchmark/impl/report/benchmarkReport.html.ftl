@@ -614,15 +614,27 @@
                     </tr>
                     <tr>
                         <th>Warm up time spent</th>
-                        <td>${benchmarkReport.plannerBenchmarkResult.warmUpTimeMillisSpentLimit!"Differs"} ms</td>
+                        <#if benchmarkReport.plannerBenchmarkResult.warmUpTimeMillisSpentLimit??>
+                            <td>${benchmarkReport.plannerBenchmarkResult.warmUpTimeMillisSpentLimit} ms</td>
+                        <#else>
+                            <td>Differs</td>
+                        </#if>
                     </tr>
                     <tr>
                         <th>Parallel benchmark count / available processors</th>
-                        <td>${benchmarkReport.plannerBenchmarkResult.parallelBenchmarkCount!"Differs"} / ${benchmarkReport.plannerBenchmarkResult.availableProcessors!"Differs"}</td>
+                        <#if benchmarkReport.plannerBenchmarkResult.parallelBenchmarkCount?? && benchmarkReport.plannerBenchmarkResult.availableProcessors??>
+                            <td>${benchmarkReport.plannerBenchmarkResult.parallelBenchmarkCount} / ${benchmarkReport.plannerBenchmarkResult.availableProcessors}</td>
+                        <#else>
+                            <td>Differs</td>
+                        </#if>
                     </tr>
                     <tr>
                         <th>Benchmark time spent</th>
-                        <td>${benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpent!"Differs"} ms</td>
+                        <#if benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpent??>
+                            <td>${benchmarkReport.plannerBenchmarkResult.benchmarkTimeMillisSpent} ms</td>
+                        <#else>
+                            <td>Differs</td>
+                        </#if>
                     </tr>
                     <tr>
                         <th>Environment mode</th>
@@ -634,11 +646,19 @@
                     </tr>
                     <tr>
                         <th>Solver ranking class</th>
-                        <td><span data-toggle="tooltip" title="${benchmarkReport.solverRankingClassFullName!"Unknown"}">${benchmarkReport.solverRankingClassSimpleName!"Unknown"}</span></td>
+                        <td>
+                            <span data-toggle="tooltip" title="${benchmarkReport.solverRankingClassFullName!"Unknown"}">
+                                ${benchmarkReport.solverRankingClassSimpleName!"Unknown"}
+                            </span>
+                        </td>
                     </tr>
                     <tr>
                         <th>VM max memory (as in -Xmx but lower)</th>
-                        <td>${(benchmarkReport.plannerBenchmarkResult.maxMemory?string.number)!"Differs"} bytes</td>
+                        <#if (benchmarkReport.plannerBenchmarkResult.maxMemory?string.number)??>
+                            <td>${benchmarkReport.plannerBenchmarkResult.maxMemory?string.number} bytes</td>
+                        <#else>
+                            <td>Differs</td>
+                        </#if>
                     </tr>
                     <tr>
                         <th>OptaPlanner version</th>
