@@ -147,7 +147,7 @@ public class ProjectClassLoader extends ClassLoader {
         return cls;
     }
 
-    Class<?> internalLoadClass(String name, boolean resolve) throws ClassNotFoundException {
+    private Class<?> internalLoadClass(String name, boolean resolve) throws ClassNotFoundException {
         if (CACHE_NON_EXISTING_CLASSES && nonExistingClasses.contains(name)) {
             throw dummyCFNE;
         }
@@ -176,7 +176,7 @@ public class ProjectClassLoader extends ClassLoader {
         return tryDefineType(name, cnfe);
     }
 
-    Class<?> tryDefineType(String name, ClassNotFoundException cnfe) throws ClassNotFoundException {
+    private Class<?> tryDefineType(String name, ClassNotFoundException cnfe) throws ClassNotFoundException {
         byte[] bytecode = getBytecode(convertClassToResourcePath(name));
         if (bytecode == null) {
             if (CACHE_NON_EXISTING_CLASSES) {
@@ -209,7 +209,7 @@ public class ProjectClassLoader extends ClassLoader {
         return defineClass(name, convertClassToResourcePath(name), bytecode);
     }
 
-    public Class<?> defineClass(String name, String resourceName, byte[] bytecode) {
+    public synchronized Class<?> defineClass(String name, String resourceName, byte[] bytecode) {
         storeClass(name, resourceName, bytecode);
         return defineType(name, bytecode);
     }
