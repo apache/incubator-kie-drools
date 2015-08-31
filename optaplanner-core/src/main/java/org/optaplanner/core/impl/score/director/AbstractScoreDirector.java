@@ -353,7 +353,8 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                             + ") after all " + VariableListener.class.getSimpleName() + "s were triggered without changes to the genuine variables.\n"
                             + "Probably the " + VariableListener.class.getSimpleName()
                             + " class for that shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
-                            + ") forgot to update it when one of its sources changed.");
+                            + ") forgot to update it when one of its sources changed"
+                            + " after completedAction (" + completedAction + ").");
                 }
             }
         }
