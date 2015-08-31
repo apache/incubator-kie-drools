@@ -135,6 +135,7 @@ public abstract class AbstractPhaseScope {
     public void assertExpectedUndoMoveScore(Move move, Move undoMove, Score beforeMoveScore) {
         Score undoScore = calculateScore();
         if (!undoScore.equals(beforeMoveScore)) {
+            logger.trace("        Corruption detected. Diagnosing...");
             // TODO PLANNER-421 Avoid undoMove.toString() because it's stale (because the move is already done)
             String undoMoveString = "Undo(" + move + ")";
             // Precondition: assert that are probably no corrupted score rules.
