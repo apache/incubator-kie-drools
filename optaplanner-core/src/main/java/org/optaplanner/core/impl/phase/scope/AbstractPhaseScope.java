@@ -135,15 +135,18 @@ public abstract class AbstractPhaseScope {
     public void assertExpectedUndoMoveScore(Move move, Move undoMove, Score beforeMoveScore) {
         Score undoScore = calculateScore();
         if (!undoScore.equals(beforeMoveScore)) {
-            // First assert that are probably no corrupted score rules.
+            // Precondition: assert that are probably no corrupted score rules.
             getScoreDirector().assertWorkingScoreFromScratch(undoScore, undoMove);
+            // Precondition: assert that shadow variable after the undoMove aren't stale
+            getScoreDirector().assertShadowVariablesAreNotStale(undoScore, undoMove);
+            // TODO PLANNER-421 undoMove.toString() not included because it's stale (because the move is already done)
             throw new IllegalStateException("UndoMove corruption: the beforeMoveScore (" + beforeMoveScore
                     + ") is not the undoScore (" + undoScore
                     + ") which is the uncorruptedScore (" + undoScore + ") of the workingSolution.\n"
                     + "  1) Enable EnvironmentMode " + EnvironmentMode.FULL_ASSERT
                     + " (if you haven't already) to fail-faster in case there's a score corruption.\n"
                     + "  2) Check the Move.createUndoMove(...) method of the moveClass (" + move.getClass() + ")."
-                    + " The move (" + move + ") might have a corrupted undoMove (" + undoMove + ").\n"
+                    + " The move (" + move + ") might have a corrupted undoMove.\n"
                     + "  3) Check your custom " + VariableListener.class.getSimpleName() + "s (if you have any)"
                     + " for shadow variables that are used by the score constraints with a different score weight"
                     + " between the beforeMoveScore (" + beforeMoveScore + ") and the undoScore (" + undoScore + ").");

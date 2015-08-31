@@ -16,14 +16,18 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
@@ -32,9 +36,11 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
+import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.support.VariableListenerSupport;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -314,17 +320,50 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
         }
     }
 
-    public void assertVariableListenersDoNotAffectWorkingScore(Score expectedWorkingScore) {
+    public void assertShadowVariablesAreNotStale(Score expectedWorkingScore, Object completedAction) {
+        SolutionDescriptor solutionDescriptor = getSolutionDescriptor();
+        Map<Object, Map<ShadowVariableDescriptor, Object>> entityToShadowVariableValuesMap
+                = new IdentityHashMap<Object, Map<ShadowVariableDescriptor, Object>>();
+        for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
+            Object entity = it.next();
+            EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
+            Collection<ShadowVariableDescriptor> shadowVariableDescriptors = entityDescriptor.getShadowVariableDescriptors();
+            Map<ShadowVariableDescriptor, Object> shadowVariableValuesMap
+                    = new HashMap<ShadowVariableDescriptor, Object>(shadowVariableDescriptors.size());
+            for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptors) {
+                Object value = shadowVariableDescriptor.getValue(entity);
+                shadowVariableValuesMap.put(shadowVariableDescriptor, value);
+            }
+            entityToShadowVariableValuesMap.put(entity, shadowVariableValuesMap);
+        }
         variableListenerSupport.triggerAllVariableListeners();
+        for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
+            Object entity = it.next();
+            EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
+            Collection<ShadowVariableDescriptor> shadowVariableDescriptors = entityDescriptor.getShadowVariableDescriptors();
+            Map<ShadowVariableDescriptor, Object> shadowVariableValuesMap = entityToShadowVariableValuesMap.get(entity);
+            for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptors) {
+                Object newValue = shadowVariableDescriptor.getValue(entity);
+                Object originalValue = shadowVariableValuesMap.get(shadowVariableDescriptor);
+                if (!ObjectUtils.equals(originalValue, newValue)) {
+                    throw new IllegalStateException(VariableListener.class.getSimpleName() + " corruption:"
+                            + " the entity (" + entity
+                            + ")'s shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
+                            + ")'s originalValue (" + originalValue + ") changed to newValue (" + newValue
+                            + ") after all " + VariableListener.class.getSimpleName() + "s were triggered without changes to the genuine variables.\n"
+                            + "Probably the " + VariableListener.class.getSimpleName()
+                            + " class for that shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
+                            + ") forgot to update it when one of its sources changed.");
+                }
+            }
+        }
         Score workingScore = calculateScore();
         if (!expectedWorkingScore.equals(workingScore)) {
-            throw new IllegalStateException(
-                    "VariableListener corruption: the expectedWorkingScore (" + expectedWorkingScore
-                            + ") is not the workingScore  (" + workingScore
-                            + ") after all VariableListeners were triggered without changes to the genuine variables.\n"
-                            + "A VariableListener probably changed a shadow variable,"
-                            + " despite that the genuine variable didn't change,"
-                            + " which means the shadow variable's original value is probably wrong.");
+            throw new IllegalStateException("Impossible " + VariableListener.class.getSimpleName() + " corruption:"
+                    + " the expectedWorkingScore (" + expectedWorkingScore
+                    + ") is not the workingScore  (" + workingScore
+                    + ") after all " + VariableListener.class.getSimpleName() + "s were triggered without changes to the genuine variables.\n"
+                    + "But all the shadow variable values are still the same, so this is impossible.");
         }
     }
 

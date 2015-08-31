@@ -32,8 +32,6 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.policy.DescriptorPolicy;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
@@ -255,7 +253,7 @@ public class SolverConfig {
             bestSolutionRecaller.setAssertBestScoreIsUnmodified(true);
         }
         if (environmentMode == EnvironmentMode.FULL_ASSERT) {
-            bestSolutionRecaller.setAssertVariableListenersDoNotAffectInitialScore(true);
+            bestSolutionRecaller.setAssertShadowVariablesAreNotStale(true);
         }
         return bestSolutionRecaller;
     }

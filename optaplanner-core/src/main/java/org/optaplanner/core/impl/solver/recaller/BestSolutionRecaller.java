@@ -36,7 +36,7 @@ public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected boolean assertInitialScoreFromScratch = false;
-    protected boolean assertVariableListenersDoNotAffectInitialScore = false;
+    protected boolean assertShadowVariablesAreNotStale = false;
     protected boolean assertBestScoreIsUnmodified = false;
 
     protected SolverEventSupport solverEventSupport;
@@ -45,8 +45,8 @@ public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
         this.assertInitialScoreFromScratch = assertInitialScoreFromScratch;
     }
 
-    public void setAssertVariableListenersDoNotAffectInitialScore(boolean assertVariableListenersDoNotAffectInitialScore) {
-        this.assertVariableListenersDoNotAffectInitialScore = assertVariableListenersDoNotAffectInitialScore;
+    public void setAssertShadowVariablesAreNotStale(boolean assertShadowVariablesAreNotStale) {
+        this.assertShadowVariablesAreNotStale = assertShadowVariablesAreNotStale;
     }
 
     public void setAssertBestScoreIsUnmodified(boolean assertBestScoreIsUnmodified) {
@@ -80,8 +80,8 @@ public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
         if (assertInitialScoreFromScratch) {
             scoreDirector.assertWorkingScoreFromScratch(score, "Initial score calculated");
         }
-        if (assertVariableListenersDoNotAffectInitialScore) {
-            scoreDirector.assertVariableListenersDoNotAffectWorkingScore(score);
+        if (assertShadowVariablesAreNotStale) {
+            scoreDirector.assertShadowVariablesAreNotStale(score, "Initial score calculated");
         }
     }
 

@@ -126,13 +126,16 @@ public interface InnerScoreDirector extends ScoreDirector {
     /**
      * Asserts that if all {@link VariableListener}s are forcibly triggered,
      * and therefore all shadow variables are updated if needed,
-     * that the {@link Score} calculated for the {@link Solution workingSolution} afterwards
+     * that none of the shadow variables of the {@link Solution workingSolution} change,
+     * Then also asserts that the {@link Score} calculated for the {@link Solution workingSolution} afterwards
      * is equal to the parameter {@link Score expectedWorkingScore}.
      * <p>
      * Used to assert that the shadow variables' state is consistent with the genuine variables' state.
      * @param expectedWorkingScore never null
+     * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
+     * is included in the exception message
      */
-    void assertVariableListenersDoNotAffectWorkingScore(Score expectedWorkingScore);
+    void assertShadowVariablesAreNotStale(Score expectedWorkingScore, Object completedAction);
 
     /**
      * Asserts that if the {@link Score} is calculated for the current {@link Solution workingSolution}
@@ -142,7 +145,7 @@ public interface InnerScoreDirector extends ScoreDirector {
      * Furthermore, if the assert fails, a score corruption analysis might be included in the exception message.
      * @param workingScore never null
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
-     * is included* in the exception message
+     * is included in the exception message
      * @see InnerScoreDirectorFactory#assertScoreFromScratch(Solution)
      */
     void assertWorkingScoreFromScratch(Score workingScore, Object completedAction);

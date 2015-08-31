@@ -372,6 +372,10 @@ public class EntityDescriptor {
         return effectiveShadowVariableDescriptorMap;
     }
 
+    public Collection<ShadowVariableDescriptor> getShadowVariableDescriptors() {
+        return effectiveShadowVariableDescriptorMap.values();
+    }
+
     public boolean hasShadowVariableDescriptor(String variableName) {
         return effectiveShadowVariableDescriptorMap.containsKey(variableName);
     }
