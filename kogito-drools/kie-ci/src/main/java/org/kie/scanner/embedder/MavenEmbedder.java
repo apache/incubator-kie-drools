@@ -101,7 +101,7 @@ public class MavenEmbedder {
             mavenExecutionRequest.setGlobalSettingsFile( new File( mavenRequest.getGlobalSettingsFile() ) );
         }
 
-        if ( mavenExecutionRequest.getUserSettingsFile() != null ) {
+        if ( mavenRequest.getUserSettingsFile() != null ) {
             mavenExecutionRequest.setUserSettingsFile( new File( mavenRequest.getUserSettingsFile() ) );
         }
 
