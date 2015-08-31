@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<persistence version="2.0" 
-             xmlns="http://java.sun.com/xml/ns/persistence" 
-             xmlns:orm="http://java.sun.com/xml/ns/persistence/orm" 
+<persistence version="2.0"
+             xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:orm="http://java.sun.com/xml/ns/persistence/orm"
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd 
                                  http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_2_0.xsd">
@@ -32,6 +32,7 @@
       <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
       <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
       <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
+      <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->
       <property name="hibernate.id.new_generator_mappings" value="false" />
@@ -41,7 +42,7 @@
 
   <persistence-unit name="org.jbpm.logging.jta" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    
+
     <class>org.jbpm.process.audit.ProcessInstanceLog</class>
     <class>org.jbpm.process.audit.NodeInstanceLog</class>
     <class>org.jbpm.process.audit.VariableInstanceLog</class>
@@ -56,16 +57,17 @@
       <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
       <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
       <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
+      <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->
       <property name="hibernate.id.new_generator_mappings" value="false" />
       <property name="hibernate.transaction.jta.platform" value="org.hibernate.service.jta.platform.internal.BitronixJtaPlatform" />
     </properties>
   </persistence-unit>
-  
+
   <persistence-unit name="org.jbpm.logging.local" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
-    
+
     <class>org.jbpm.process.audit.ProcessInstanceLog</class>
     <class>org.jbpm.process.audit.NodeInstanceLog</class>
     <class>org.jbpm.process.audit.VariableInstanceLog</class>
@@ -80,6 +82,7 @@
       <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
       <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
       <property name="hibernate.connection.password" value="${maven.jdbc.password}" />
+      <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
 
       <!-- BZ 841786: AS7/EAP 6/Hib 4 uses new (sequence) generators which seem to cause problems -->
       <property name="hibernate.id.new_generator_mappings" value="false" />

@@ -197,7 +197,7 @@ public class PersistenceUtil {
             if( startServer ) { 
                 h2Server.start();
             }
-            for (String propertyName : new String[] { "url", "driverClassName" }) {
+            for (String propertyName : new String[] { "url", "driverClassName"}) {
                 pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
             }
         } else {
@@ -212,6 +212,7 @@ public class PersistenceUtil {
                 pds.getDriverProperties().put("driverType", "4");
                 pds.getDriverProperties().put("serverName", dsProps.getProperty("serverName"));
                 pds.getDriverProperties().put("portNumber", dsProps.getProperty("portNumber"));
+                pds.getDriverProperties().put("currentSchema", dsProps.getProperty("defaultSchema"));
             } else if (driverClass.startsWith("com.microsoft")) {
                 for (String propertyName : new String[] { "serverName", "portNumber", "databaseName" }) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));

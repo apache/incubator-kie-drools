@@ -231,6 +231,7 @@ public class DBUserGroupCallbackImplTest {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
                 }
                 pds.getDriverProperties().put("driverType", "4");
+                pds.getDriverProperties().put("currentSchema", dsProps.getProperty("defaultSchema"));
             } else if (driverClass.startsWith("com.microsoft")) {
                 for (String propertyName : new String[]{"serverName", "portNumber", "databaseName"}) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
