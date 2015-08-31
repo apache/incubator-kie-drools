@@ -481,33 +481,37 @@
                                                 <p>${warning}</p>
                                             </div>
                                         </#list>
-                                        <#if problemStatistic.problemStatisticType.hasScoreLevels()>
-                                            <div class="tabbable tabs-right">
-                                                <ul class="nav nav-tabs">
-                                                    <#assign scoreLevelIndex = 0>
-                                                    <#list problemStatistic.graphFileList as graphFile>
-                                                        <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                                                            <a href="#problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
-                                                        </li>
-                                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                                    </#list>
-                                                </ul>
-                                                <div class="tab-content">
-                                                    <#assign scoreLevelIndex = 0>
-                                                    <#list problemStatistic.graphFileList as graphFile>
-                                                        <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}">
-                                                            <div class="benchmark-chart">
-                                                                <img src="${benchmarkReport.getRelativePathToBenchmarkReportDirectory(graphFile)}"/>
+                                        <#if problemStatistic.graphFileList?? && problemStatistic.graphFileList?size != 0>
+                                            <#if problemStatistic.problemStatisticType.hasScoreLevels()>
+                                                <div class="tabbable tabs-right">
+                                                    <ul class="nav nav-tabs">
+                                                        <#assign scoreLevelIndex = 0>
+                                                        <#list problemStatistic.graphFileList as graphFile>
+                                                            <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
+                                                                <a href="#problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
+                                                            </li>
+                                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                                        </#list>
+                                                    </ul>
+                                                    <div class="tab-content">
+                                                        <#assign scoreLevelIndex = 0>
+                                                        <#list problemStatistic.graphFileList as graphFile>
+                                                            <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="problemStatistic_${problemStatistic.anchorId}_${scoreLevelIndex}">
+                                                                <div class="benchmark-chart">
+                                                                    <img src="${benchmarkReport.getRelativePathToBenchmarkReportDirectory(graphFile)}"/>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                                    </#list>
+                                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                                        </#list>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            <#else>
+                                                <div class="benchmark-chart">
+                                                    <img src="${benchmarkReport.getRelativePathToBenchmarkReportDirectory(problemStatistic.graphFile)}"/>
+                                                </div>
+                                            </#if>
                                         <#else>
-                                            <div class="benchmark-chart">
-                                                <img src="${benchmarkReport.getRelativePathToBenchmarkReportDirectory(problemStatistic.graphFile)}"/>
-                                            </div>
+                                            <p>Graph unavailable (the benchmark probably failed).</p>
                                         </#if>
                                         <#if !benchmarkReport.plannerBenchmarkResult.aggregation>
                                             <span>CSV files per solver:</span>
@@ -524,33 +528,37 @@
                                     <div class="tab-pane<#if firstRow> active</#if>" id="singleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}">
                                         <#list problemBenchmarkResult.extractPureSingleStatisticList(singleStatisticType) as pureSingleStatistic>
                                             <h3>${pureSingleStatistic.singleBenchmarkResult.solverBenchmarkResult.name}</h3>
-                                            <#if singleStatisticType.hasScoreLevels()>
-                                                <div class="tabbable tabs-right">
-                                                    <ul class="nav nav-tabs">
-                                                        <#assign scoreLevelIndex = 0>
-                                                        <#list pureSingleStatistic.graphFileList as graphFile>
-                                                            <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                                                                <a href="#singleStatistic_${pureSingleStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
-                                                            </li>
-                                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                                        </#list>
-                                                    </ul>
-                                                    <div class="tab-content">
-                                                        <#assign scoreLevelIndex = 0>
-                                                        <#list pureSingleStatistic.graphFileList as graphFile>
-                                                            <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="singleStatistic_${pureSingleStatistic.anchorId}_${scoreLevelIndex}">
-                                                                <div class="benchmark-chart">
-                                                                    <img src="${benchmarkReport.getRelativePathToBenchmarkReportDirectory(graphFile)}"/>
+                                            <#if pureSingleStatistic.graphFileList?? && pureSingleStatistic.graphFileList?size != 0>
+                                                <#if singleStatisticType.hasScoreLevels()>
+                                                    <div class="tabbable tabs-right">
+                                                        <ul class="nav nav-tabs">
+                                                            <#assign scoreLevelIndex = 0>
+                                                            <#list pureSingleStatistic.graphFileList as graphFile>
+                                                                <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
+                                                                    <a href="#singleStatistic_${pureSingleStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
+                                                                </li>
+                                                                <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                                            </#list>
+                                                        </ul>
+                                                        <div class="tab-content">
+                                                            <#assign scoreLevelIndex = 0>
+                                                            <#list pureSingleStatistic.graphFileList as graphFile>
+                                                                <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="singleStatistic_${pureSingleStatistic.anchorId}_${scoreLevelIndex}">
+                                                                    <div class="benchmark-chart">
+                                                                        <img src="${benchmarkReport.getRelativePathToBenchmarkReportDirectory(graphFile)}"/>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <#assign scoreLevelIndex = scoreLevelIndex + 1>
-                                                        </#list>
+                                                                <#assign scoreLevelIndex = scoreLevelIndex + 1>
+                                                            </#list>
+                                                        </div>
                                                     </div>
-                                                </div>
+                                                <#else>
+                                                    <div class="benchmark-chart">
+                                                        <img src="${benchmarkReport.getRelativePathToBenchmarkReportDirectory(pureSingleStatistic.graphFile)}"/>
+                                                    </div>
+                                                </#if>
                                             <#else>
-                                                <div class="benchmark-chart">
-                                                    <img src="${benchmarkReport.getRelativePathToBenchmarkReportDirectory(pureSingleStatistic.graphFile)}"/>
-                                                </div>
+                                                <p>Graph unavailable (the benchmark probably failed).</p>
                                             </#if>
                                             <#if !benchmarkReport.plannerBenchmarkResult.aggregation>
                                                 <span>CSV file:</span>
@@ -610,7 +618,7 @@
                     </tr>
                     <tr>
                         <th>Starting timestamp</th>
-                        <td>${(benchmarkReport.plannerBenchmarkResult.startingTimestamp?datetime)!"Differs"}</td>
+                        <td>${(benchmarkReport.plannerBenchmarkResult.startingTimestamp?datetime?string.medium)!"Differs"}</td>
                     </tr>
                     <tr>
                         <th>Warm up time spent</th>

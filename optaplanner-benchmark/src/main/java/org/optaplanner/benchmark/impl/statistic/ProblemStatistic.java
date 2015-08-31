@@ -18,6 +18,7 @@ package org.optaplanner.benchmark.impl.statistic;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamInclude;
@@ -119,5 +120,20 @@ public abstract class ProblemStatistic {
         GraphSupport.writeChartToImageFile(chart, chartFile);
         return chartFile;
     }
+
+    public File getGraphFile() {
+        List<File> graphFileList = getGraphFileList();
+        if (graphFileList == null || graphFileList.isEmpty()) {
+            return null;
+        } else if (graphFileList.size() > 1) {
+            throw new IllegalStateException("Cannot get graph file for the ProblemStatistic ( " + this
+                    + " ) because it has more than 1 graph file. See method getGraphList() and "
+                    + "ProblemStatisticType.hasScoreLevels()");
+        } else {
+            return graphFileList.get(0);
+        }
+    };
+
+    public abstract List<File> getGraphFileList();
 
 }

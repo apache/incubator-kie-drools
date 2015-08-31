@@ -453,9 +453,9 @@ public class ProblemBenchmarkResult {
                             it.remove();
                         }
                     }
-                    newResult.entityCount = ConfigUtils.mergeProperty(oldResult.entityCount, newResult.entityCount);
-                    newResult.variableCount = ConfigUtils.mergeProperty(oldResult.variableCount, newResult.variableCount);
-                    newResult.problemScale = ConfigUtils.mergeProperty(oldResult.problemScale, newResult.problemScale);
+                    newResult.entityCount = ConfigUtils.meldProperty(oldResult.entityCount, newResult.entityCount);
+                    newResult.variableCount = ConfigUtils.meldProperty(oldResult.variableCount, newResult.variableCount);
+                    newResult.problemScale = ConfigUtils.meldProperty(oldResult.problemScale, newResult.problemScale);
                 }
                 mergeMap.put(oldResult, newResult);
             }

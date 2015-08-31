@@ -78,6 +78,18 @@ public class ConfigUtils {
         return ObjectUtils.equals(a, b) ? a : null;
     }
 
+    public static <T> T meldProperty(T a, T b) {
+        if (a == null && b == null) {
+            return null;
+        } else if (a == null && b != null) {
+            return b;
+        } else if (a != null && b == null) {
+            return a;
+        } else {
+            return ConfigUtils.mergeProperty(a, b);
+        }
+    }
+
     public static boolean isEmptyCollection(Collection<?> collection) {
         return collection == null || collection.isEmpty();
     }

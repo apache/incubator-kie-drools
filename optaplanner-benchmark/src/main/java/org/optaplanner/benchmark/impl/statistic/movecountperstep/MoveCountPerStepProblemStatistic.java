@@ -20,6 +20,8 @@ import java.awt.BasicStroke;
 import java.awt.Paint;
 import java.io.File;
 import java.text.NumberFormat;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -58,8 +60,9 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
     /**
      * @return never null
      */
-    public File getGraphFile() {
-        return graphFile;
+    @Override
+    public List<File> getGraphFileList() {
+        return Collections.singletonList(graphFile);
     }
 
     // ************************************************************************
