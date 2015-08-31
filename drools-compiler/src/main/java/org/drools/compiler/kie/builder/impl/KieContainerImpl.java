@@ -442,7 +442,7 @@ public class KieContainerImpl
     public KieBase newKieBase(KieBaseConfiguration conf) {
         KieBaseModel defaultKieBaseModel = kProject.getDefaultKieBaseModel();
         if (defaultKieBaseModel == null) {
-            throw new RuntimeException("Cannot find a defualt KieBase");
+            throw new RuntimeException("Cannot find a default KieBase");
         }
         return newKieBase(defaultKieBaseModel.getName(), conf);
     }
