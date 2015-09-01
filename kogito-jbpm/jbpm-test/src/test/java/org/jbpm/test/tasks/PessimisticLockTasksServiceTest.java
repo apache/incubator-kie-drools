@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
 
 import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
@@ -115,21 +116,19 @@ public class PessimisticLockTasksServiceTest extends JbpmJUnitBaseTestCase {
         Assert.assertEquals(1, salaboysTasks.size());
 
         final long taskId = salaboysTasks.get(0).getId();
+        final CountDownLatch t2StartLockedTask = new CountDownLatch(1);
+        final CountDownLatch t1Continue = new CountDownLatch(1);
+
         Thread t1 = new Thread() {
             @Override
             public void run() {
                 try {
                     UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
                     ut.begin();
-                    logger.info("Attempting to lock task instance for 3 secs ");
+                    logger.info("Attempting to lock task instance");
                     taskService.start(taskId, "salaboy");
-
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    logger.info("Unlocked task instance after 3 secs");
+                    t2StartLockedTask.countDown();
+                    t1Continue.await();
                     ut.rollback();
                 } catch (Exception e) {
                     logger.error("Error on thread ", e);
@@ -138,25 +137,21 @@ public class PessimisticLockTasksServiceTest extends JbpmJUnitBaseTestCase {
 
         };
 
-        t1.start();
-        Thread.sleep(1000);
-
         Thread t2 = new Thread() {
             @Override
             public void run() {
                 try {
                     UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
                     ut.begin();
+                    t2StartLockedTask.await();
                     logger.info("Trying to start locked task instance");
                     try {
-
                         internalTaskService.start(taskId, "salaboy");
-
                     } catch (Exception e) {
                         logger.info("Abort failed with error {}", e.getMessage());
                         exceptions.add(e);
-
                     } finally {
+                        t1Continue.countDown();
                         ut.rollback();
                     }
                 } catch (Exception e) {
@@ -164,9 +159,11 @@ public class PessimisticLockTasksServiceTest extends JbpmJUnitBaseTestCase {
                 }
             }
         };
+        t1.start();
         t2.start();
 
-        Thread.sleep(3000);
+        t1.join();
+        t2.join();
 
         assertEquals(1, exceptions.size());
         assertEquals(PessimisticLockException.class.getName(), exceptions.get(0).getClass().getName());
