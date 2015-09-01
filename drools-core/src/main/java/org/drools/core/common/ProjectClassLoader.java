@@ -147,7 +147,8 @@ public class ProjectClassLoader extends ClassLoader {
         return cls;
     }
 
-    private Class<?> internalLoadClass(String name, boolean resolve) throws ClassNotFoundException {
+    // This method has to be public because is also used by the android ClassLoader
+    public Class<?> internalLoadClass(String name, boolean resolve) throws ClassNotFoundException {
         if (CACHE_NON_EXISTING_CLASSES && nonExistingClasses.contains(name)) {
             throw dummyCFNE;
         }
@@ -176,7 +177,8 @@ public class ProjectClassLoader extends ClassLoader {
         return tryDefineType(name, cnfe);
     }
 
-    private Class<?> tryDefineType(String name, ClassNotFoundException cnfe) throws ClassNotFoundException {
+    // This method has to be public because is also used by the android ClassLoader
+    public Class<?> tryDefineType(String name, ClassNotFoundException cnfe) throws ClassNotFoundException {
         byte[] bytecode = getBytecode(convertClassToResourcePath(name));
         if (bytecode == null) {
             if (CACHE_NON_EXISTING_CLASSES) {
@@ -344,7 +346,7 @@ public class ProjectClassLoader extends ClassLoader {
     private InternalTypesClassLoader makeClassLoader() {
         return ClassUtils.isAndroid() ?
                 (InternalTypesClassLoader) ClassUtils.instantiateObject(
-                        "org.drools.core.common.DexInternalTypesClassLoader", null, this) :
+                        "org.drools.android.DexInternalTypesClassLoader", null, this) :
                 new DefaultInternalTypesClassLoader( this );
     }
 
