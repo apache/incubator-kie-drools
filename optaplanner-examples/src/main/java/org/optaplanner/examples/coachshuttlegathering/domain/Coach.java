@@ -37,6 +37,7 @@ public class Coach extends Bus {
     public void setDestination(BusHub destination) {
         this.destination = destination;
     }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
