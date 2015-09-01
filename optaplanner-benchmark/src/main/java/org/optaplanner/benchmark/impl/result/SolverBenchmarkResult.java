@@ -268,7 +268,7 @@ public class SolverBenchmarkResult {
     }
 
     public String getAverageScoreWithUninitializedPrefix() {
-        return ScoreUtils.getScoreWithUninitializedPrefix(totalUninitializedVariableCount / getSingleBenchmarkResultList().size(), averageScore);
+        return ScoreUtils.getScoreWithUninitializedPrefix(Math.round(Math.ceil(totalUninitializedVariableCount / (double) getSingleBenchmarkResultList().size())), averageScore);
     }
 
     public EnvironmentMode getEnvironmentMode() {
