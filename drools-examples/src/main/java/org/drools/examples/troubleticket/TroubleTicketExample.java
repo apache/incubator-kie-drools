@@ -16,33 +16,20 @@
 
 package org.drools.examples.troubleticket;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class TroubleTicketExample {
 
-    /**
-     * @param args
-     */
     public static void main(final String[] args) {
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        execute( kc );
+    }
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource("TroubleTicket.drl",
-                TroubleTicketExample.class),
-                              ResourceType.DRL );
-
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-//        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket.log");
+    public static void execute( KieContainer kc ) {
+        KieSession ksession = kc.newKieSession( "TroubleTicketKS" );
 
         final Customer a = new Customer( "A",
                                          "Drools",
@@ -89,8 +76,6 @@ public class TroubleTicketExample {
         System.err.println( "[[ awake ]]" );
 
         ksession.dispose();
-
-//        logger.close();
     }
 
 }

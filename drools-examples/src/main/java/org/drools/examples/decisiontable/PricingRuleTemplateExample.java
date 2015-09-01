@@ -30,13 +30,11 @@ import org.kie.api.runtime.KieSession;
 public class PricingRuleTemplateExample {
 
     public static void main(String[] args) {
-        PricingRuleTemplateExample launcher = new PricingRuleTemplateExample();
-        launcher.executeExample();
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        execute( kc );
     }
 
-    private int executeExample() {
-
-        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+    public static void execute( KieContainer kc ) {
         KieSession ksession = kc.newKieSession( "DTableWithTemplateKS" );
 
         //now create some test data
@@ -53,7 +51,6 @@ public class PricingRuleTemplateExample {
 
         ksession.dispose();
 
-        return policy.getBasePrice();
-
+        policy.getBasePrice();
     }
 }

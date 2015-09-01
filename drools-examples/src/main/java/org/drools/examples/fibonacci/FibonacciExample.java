@@ -24,14 +24,15 @@ public class FibonacciExample {
 
     public static void main(final String[] args) {
         KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
-        KieSession ksession = kc.newKieSession("FibonacciKS");
+        execute( kc );
+    }
 
-//        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/fibonacci.log");
+    public static void execute( KieContainer kc ) {
+        KieSession ksession = kc.newKieSession("FibonacciKS");
 
         ksession.insert( new Fibonacci( 50 ) );
         ksession.fireAllRules();
 
-//        logger.close();
         ksession.dispose(); // Stateful rule session must always be disposed when finished
     }
 

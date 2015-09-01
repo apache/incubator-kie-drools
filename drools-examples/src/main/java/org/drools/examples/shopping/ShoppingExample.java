@@ -26,6 +26,10 @@ public class ShoppingExample {
     public static final void main(String[] args) {
         KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
         System.out.println(kc.verify().getMessages().toString());
+        execute( kc );
+    }
+
+    public static void execute( KieContainer kc ) {
         KieSession ksession = kc.newKieSession("ShoppingKS");
 
         Customer mark = new Customer( "mark",
