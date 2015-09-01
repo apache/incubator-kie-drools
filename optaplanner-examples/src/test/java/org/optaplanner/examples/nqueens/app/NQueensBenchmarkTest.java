@@ -17,9 +17,14 @@
 package org.optaplanner.examples.nqueens.app;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
+import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
+import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.PlannerBenchmarkRunner;
 import org.optaplanner.examples.common.app.PlannerBenchmarkTest;
 
@@ -30,13 +35,36 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
         return "org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml";
     }
 
+    public List<SingleStatisticType> buildAllSingleStatisticTypeList() {
+        return Arrays.asList(SingleStatisticType.values());
+    }
+
+    public List<ProblemStatisticType> buildAllProblemStatisticTypeList() {
+        return Arrays.asList(ProblemStatisticType.values());
+    }
+
     // ************************************************************************
     // Tests
     // ************************************************************************
 
     @Test(timeout = 600000)
     public void benchmark64queens() {
-        runBenchmarkTest(new File("data/nqueens/unsolved/64queens.xml"));
+        PlannerBenchmarkFactory plannerBenchmarkFactory = buildPlannerBenchmarkFactory(new File("data/nqueens/unsolved/64queens.xml"));
+        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setSingleStatisticTypeList(buildAllSingleStatisticTypeList());
+        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setProblemStatisticTypeList(buildAllProblemStatisticTypeList());
+        plannerBenchmarkFactory.getPlannerBenchmarkConfig().setParallelBenchmarkCount("AUTO");
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        plannerBenchmark.benchmark();
+    }
+
+    @Test(timeout = 600000)
+    public void benchmark64queensSingleThread() {
+        PlannerBenchmarkFactory plannerBenchmarkFactory = buildPlannerBenchmarkFactory(new File("data/nqueens/unsolved/64queens.xml"));
+        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setSingleStatisticTypeList(buildAllSingleStatisticTypeList());
+        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setProblemStatisticTypeList(buildAllProblemStatisticTypeList());
+        plannerBenchmarkFactory.getPlannerBenchmarkConfig().setParallelBenchmarkCount("1");
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        plannerBenchmark.benchmark();
     }
 
     @Test
