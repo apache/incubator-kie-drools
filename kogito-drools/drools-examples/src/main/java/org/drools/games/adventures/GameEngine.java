@@ -18,13 +18,11 @@ package org.drools.games.adventures;
 import org.apache.commons.io.IOUtils;
 import org.drools.core.util.IoUtils;
 import org.drools.games.adventures.model.Command;
-import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.mvel2.MVEL;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +34,8 @@ public class GameEngine {
     Map<String, Map> data;
 
 
-    public void createGame() {
+    public void createGame(KieContainer kc) {
 
-        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
-        //System.out.println(kc.verify().getMessages().toString());
         ksession = kc.newKieSession("TextAdventureKS");
 
         Counter c = new Counter();

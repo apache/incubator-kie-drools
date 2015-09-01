@@ -29,13 +29,11 @@ import java.util.List;
 public class SimpleRuleTemplateExample {
 
     public static void main(String[] args) {
-        SimpleRuleTemplateExample launcher = new SimpleRuleTemplateExample();
-        launcher.executeExample();
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        execute( kc );
     }
 
-    private void executeExample() {
-
-        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+    public static void execute( KieContainer kc ) {
         KieSession ksession = kc.newKieSession( "TemplatesKS" );
 
         //now create some test data

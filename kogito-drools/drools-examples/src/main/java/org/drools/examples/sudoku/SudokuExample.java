@@ -15,8 +15,14 @@
  */
 package org.drools.examples.sudoku;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import org.drools.core.util.IoUtils;
+import org.drools.examples.sudoku.swing.SudokuGridSamples;
+import org.drools.examples.sudoku.swing.SudokuGridView;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -25,21 +31,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
-
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
-
-import org.drools.core.util.IoUtils;
-import org.drools.examples.sudoku.swing.SudokuGridSamples;
-import org.drools.examples.sudoku.swing.SudokuGridView;
-import org.kie.api.KieServices;
-import org.kie.api.runtime.KieContainer;
 
 /**
  * This example shows how Drools can be used to solve a 9x9 Sudoku Grid.
@@ -81,12 +72,13 @@ public class SudokuExample implements ActionListener {
     private JFileChooser fileChooser;
 
     public static void main(String[] args) {
-        new SudokuExample().init(true);
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        new SudokuExample().init(kc, true);
     }
     public SudokuExample() {
     }
 
-    public void init(boolean exitOnClose) {
+    public void init(KieContainer kc, boolean exitOnClose) {
         mainFrame = new JFrame("Sudoku Example");
         for (String sampleName : SudokuGridSamples.getInstance().getSampleNames()){
             JMenuItem menuItem = new JMenuItem(sampleName);
@@ -102,7 +94,6 @@ public class SudokuExample implements ActionListener {
         mainFrame.setJMenuBar(menuBar);
         sudokuGridView = new SudokuGridView();
 
-        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
         sudoku = new Sudoku( kc );
 
         mainFrame.setLayout(borderLayout);

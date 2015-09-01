@@ -144,4 +144,15 @@
         <ksession name="TemplatesKS"/>
     </kbase>
 
+    <kbase name="TroubleTicketKB" packages="org.drools.examples.troubleticket">
+        <ksession name="TroubleTicketKS"/>
+    </kbase>
+
+    <kbase name="TroubleTicketWithDSLKB" packages="org.drools.examples.troubleticketWithDSL">
+        <ksession name="TroubleTicketWithDSLKS"/>
+    </kbase>
+
+    <kbase name="TroubleTicketWithDTKB" packages="org.drools.examples.troubleticketWithDT">
+        <ksession name="TroubleTicketWithDTKS"/>
+    </kbase>
 </kmodule>

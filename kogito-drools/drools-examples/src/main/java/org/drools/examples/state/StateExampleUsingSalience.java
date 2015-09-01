@@ -26,17 +26,20 @@ public class StateExampleUsingSalience {
      * @param args
      */
     public static void main(final String[] args) {
-        // KieServices is the factory for all KIE services 
+        // KieServices is the factory for all KIE services
         KieServices ks = KieServices.Factory.get();
-        
+
         // From the kie services, a container is created from the classpath
         KieContainer kc = ks.getKieClasspathContainer();
-        
-        // From the container, a session is created based on  
-        // its definition and configuration in the META-INF/kmodule.xml file 
+        execute( kc );
+    }
+
+    public static void execute( KieContainer kc ) {
+        // From the container, a session is created based on
+        // its definition and configuration in the META-INF/kmodule.xml file
         KieSession ksession = kc.newKieSession("StateSalienceKS");
-        
-        // To setup a file based audit logger, uncomment the next line 
+
+        // To setup a file based audit logger, uncomment the next line
         // KieRuntimeLogger logger = ks.getLoggers().newFileLogger( ksession, "./state" );
 
         final State a = new State( "A" );
@@ -52,8 +55,8 @@ public class StateExampleUsingSalience {
         ksession.fireAllRules();
 
         // logger.close();
-        
-        ksession.dispose(); // Stateful rule session must always be disposed when finished        
+
+        ksession.dispose(); // Stateful rule session must always be disposed when finished
     }
 
 }
