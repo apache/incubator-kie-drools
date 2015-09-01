@@ -237,6 +237,13 @@ public class BenchmarkReport {
                         }
                     }
                     problemStatistic.writeGraphFiles(this);
+                    for (SingleStatistic singleStatistic : problemStatistic.getSingleStatisticList()) {
+                        if (plannerBenchmarkResult.getAggregation()) {
+                            singleStatistic.setPointList(null);
+                        } else {
+                            singleStatistic.hibernatePointList();
+                        }
+                    }
                 }
                 for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                     if (singleBenchmarkResult.isSuccess()) {
@@ -251,6 +258,11 @@ public class BenchmarkReport {
                                         + "( {} ) of pure single statistic ( {} ).", pureSingleStatistic.getCsvFile().getAbsolutePath(), pureSingleStatistic);
                             }
                             pureSingleStatistic.writeGraphFiles(this);
+                            if (plannerBenchmarkResult.getAggregation()) {
+                                pureSingleStatistic.setPointList(null);
+                            } else {
+                                pureSingleStatistic.hibernatePointList();
+                            }
                         }
                     }
                 }
