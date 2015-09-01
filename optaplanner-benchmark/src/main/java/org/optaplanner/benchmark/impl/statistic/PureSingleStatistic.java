@@ -72,11 +72,11 @@ public abstract class PureSingleStatistic<P extends StatisticPoint> extends Sing
         } else if (graphFileList.size() > 1) {
             throw new IllegalStateException("Cannot get graph file for the PureSingleStatistic ( " + this
                     + " ) because it has more than 1 graph file. See method getGraphList() and "
-                    + "SingleStatisticType.hasScoreLevels()");
+                    + SingleStatisticType.class.getSimpleName() + ".hasScoreLevels()");
         } else {
             return graphFileList.get(0);
         }
-    };
+    }
 
     public abstract List<File> getGraphFileList();
 

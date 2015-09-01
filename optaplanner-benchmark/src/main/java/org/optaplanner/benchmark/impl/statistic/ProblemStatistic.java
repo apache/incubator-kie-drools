@@ -128,11 +128,11 @@ public abstract class ProblemStatistic {
         } else if (graphFileList.size() > 1) {
             throw new IllegalStateException("Cannot get graph file for the ProblemStatistic ( " + this
                     + " ) because it has more than 1 graph file. See method getGraphList() and "
-                    + "ProblemStatisticType.hasScoreLevels()");
+                    + ProblemStatisticType.class.getSimpleName() + ".hasScoreLevels()");
         } else {
             return graphFileList.get(0);
         }
-    };
+    }
 
     public abstract List<File> getGraphFileList();
 
