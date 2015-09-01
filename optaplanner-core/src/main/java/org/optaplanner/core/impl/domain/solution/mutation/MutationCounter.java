@@ -63,4 +63,8 @@ public class MutationCounter {
         return mutationCount;
     }
 
+    @Override
+    public String toString() {
+        return "MutationCounter(" + solutionDescriptor + ")";
+    }
 }
