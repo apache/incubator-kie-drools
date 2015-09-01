@@ -15,31 +15,33 @@
 
 package org.drools.games.adventures;
 
-import java.awt.EventQueue;
-import java.util.Map;
-
-import javax.swing.JFrame;
-
 import org.drools.games.adventures.AdventureFrame.JTableChannel;
 import org.drools.games.adventures.AdventureFrame.JTextAreaChannel;
-import org.drools.games.adventures.model.*;
 import org.drools.games.adventures.model.Character;
+import org.drools.games.adventures.model.LookCommand;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.Map;
 
 public class TextAdventure {
 
     public static void main(String[] args) {
-        new TextAdventure().init(true);
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        new TextAdventure().init(kc, true);
     }
 
     public TextAdventure() {
     }
 
-    public void init(final boolean exitOnClose) {
+    public void init(final KieContainer kc, final boolean exitOnClose) {
         
         EventQueue.invokeLater( new Runnable() {
             public void run() {
                 GameEngine engine = new GameEngine();
-                engine.createGame();
+                engine.createGame(kc);
 
                 createFrame(engine, exitOnClose ? JFrame.EXIT_ON_CLOSE : JFrame.DISPOSE_ON_CLOSE);
             }

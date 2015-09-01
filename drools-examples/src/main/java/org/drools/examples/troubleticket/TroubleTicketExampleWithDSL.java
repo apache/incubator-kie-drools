@@ -16,38 +16,21 @@
 
 package org.drools.examples.troubleticket;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 public class TroubleTicketExampleWithDSL {
 
-    /**
-     * @param args
-     */
     public static void main(final String[] args) {
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        execute( kc );
+    }
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    public static void execute( KieContainer kc ) {
+        KieSession ksession = kc.newKieSession( "TroubleTicketWithDTKS" );
 
-        kbuilder.add( ResourceFactory.newClassPathResource( "ticketing.dsl",
-                                                                    TroubleTicketExampleWithDSL.class ),
-                              ResourceType.DSL );
-        kbuilder.add( ResourceFactory.newClassPathResource("TroubleTicketWithDSL.dslr",
-                TroubleTicketExampleWithDSL.class),
-                              ResourceType.DSLR );
-
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        final StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-//        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket.log");
-        
         final Customer a = new Customer( "A",
                                          "Drools",
                                          "Gold" );
@@ -95,7 +78,5 @@ public class TroubleTicketExampleWithDSL {
         ksession.fireAllRules();
 
         ksession.dispose();
-
-//        logger.close();
     }
 }

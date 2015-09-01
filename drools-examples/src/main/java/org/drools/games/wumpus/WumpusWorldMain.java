@@ -24,14 +24,14 @@ import org.kie.api.runtime.KieSession;
 public class WumpusWorldMain {
 
     public static void main(String[] args) {
-        new WumpusWorldMain().init(true);
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        new WumpusWorldMain().init(kc, true);
     }
 
     public WumpusWorldMain() {
     }
 
-    public void init(boolean exitOnClose) {
-        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+    public void init(final KieContainer kc, boolean exitOnClose) {
         final KieSession serverKsession = kc.newKieSession( "WumpusMainKS");
         final KieSession clientKsession = kc.newKieSession("WumpusClientKS");
 

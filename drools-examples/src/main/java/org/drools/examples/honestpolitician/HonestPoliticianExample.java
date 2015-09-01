@@ -26,9 +26,12 @@ public class HonestPoliticianExample {
      * @param args
      */
     public static void main(final String[] args) {
-
         KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
         System.out.println(kc.verify().getMessages().toString());
+        execute( kc );
+    }
+
+    public static void execute( KieContainer kc ) {
         KieSession ksession = kc.newKieSession("HonestPoliticianKS");
 
         final Politician p1 = new Politician( "President of Umpa Lumpa", true );

@@ -15,22 +15,12 @@
 
 package org.drools.games.pong;
 
-import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static org.kie.internal.io.ResourceFactory.newClassPathResource;
-import static org.kie.api.io.ResourceType.DRL;
 
 public class PongMain {
 
@@ -38,14 +28,14 @@ public class PongMain {
      * @param args
      */
     public static void main(String[] args) {
-        new PongMain().init(true);
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        new PongMain().init(kc, true);
     }
 
     public PongMain() {
     }
 
-    public void init(boolean exitOnClose) {
-        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+    public void init(final KieContainer kc, boolean exitOnClose) {
         final KieSession ksession = kc.newKieSession( "PongKS");
         PongConfiguration pconf = new PongConfiguration();
         pconf.setExitOnClose(exitOnClose);

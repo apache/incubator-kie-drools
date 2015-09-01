@@ -29,6 +29,10 @@ public class GolfingExample {
 
         KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
         System.out.println(kc.verify().getMessages().toString());
+        execute( kc );
+    }
+
+    public static void execute( KieContainer kc ) {
         KieSession ksession = kc.newKieSession("GolfingKS");
 
         String[] names = new String[]{"Fred", "Joe", "Bob", "Tom"};
@@ -48,7 +52,6 @@ public class GolfingExample {
         ksession.fireAllRules();
 
         ksession.dispose();
-
     }
 
     public static class Golfer {

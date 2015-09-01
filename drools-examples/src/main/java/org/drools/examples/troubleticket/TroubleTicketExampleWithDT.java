@@ -16,15 +16,9 @@
 
 package org.drools.examples.troubleticket;
 
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.DecisionTableConfiguration;
-import org.kie.internal.builder.DecisionTableInputType;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.io.ResourceType;
+import org.kie.api.KieServices;
+import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 /**
@@ -32,28 +26,13 @@ import org.kie.api.runtime.rule.FactHandle;
  */
 public class TroubleTicketExampleWithDT {
 
-    public static final void main(String[] args) {
-        TroubleTicketExampleWithDT launcher = new TroubleTicketExampleWithDT();
-        launcher.executeExample();
+    public static void main(final String[] args) {
+        KieContainer kc = KieServices.Factory.get().getKieClasspathContainer();
+        execute( kc );
     }
 
-    public void executeExample() {
-
-        final DecisionTableConfiguration dtableconfiguration = KnowledgeBuilderFactory.newDecisionTableConfiguration();
-        dtableconfiguration.setInputType( DecisionTableInputType.XLS );
-
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(  ResourceFactory.newClassPathResource( "TroubleTicket.xls", TroubleTicketExampleWithDT.class ),
-                              ResourceType.DTABLE,
-                              dtableconfiguration );
-
-        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        // typical decision tables are used statelessly
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-//        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession, "log/trouble_ticket.log");
+    public static void execute( KieContainer kc ) {
+        KieSession ksession = kc.newKieSession( "TroubleTicketWithDTKS" );
 
         final Customer a = new Customer( "A",
                                          "Drools",
@@ -100,8 +79,6 @@ public class TroubleTicketExampleWithDT {
         System.err.println( "[[ awake ]]" );
 
         ksession.dispose();
-
-//        logger.close();
     }
 
 }
