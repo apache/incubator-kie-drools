@@ -52,13 +52,13 @@ import org.slf4j.LoggerFactory;
 public class PessimisticLockTasksServiceTest extends JbpmJUnitBaseTestCase {
 
     private static final Logger logger = LoggerFactory.getLogger(PessimisticLockTasksServiceTest.class);
-    
+
     private EntityManagerFactory emfTasks;
     protected Map<String, User> users;
     protected Map<String, Group> groups;
-    
+
     protected Properties conf;
-    
+
     protected ExternalTaskEventListener externalTaskEventListener;
 
 
@@ -68,45 +68,44 @@ public class PessimisticLockTasksServiceTest extends JbpmJUnitBaseTestCase {
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();               
+        super.setUp();
     }
 
     @After
     public void tearDown() throws Exception {
         super.tearDown();
-
     }
 
-    @Test 
+    @Test
     public void testPessimisticLockingOnTask() throws Exception {
-    	final List<Exception> exceptions = new ArrayList<Exception>();
-    	addEnvironmentEntry(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
-        
-    	createRuntimeManager("Evaluation2.bpmn");
+        final List<Exception> exceptions = new ArrayList<Exception>();
+        addEnvironmentEntry(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
+
+        createRuntimeManager("Evaluation2.bpmn");
         RuntimeEngine runtimeEngine = getRuntimeEngine();
         final KieSession ksession = runtimeEngine.getKieSession();
         final TaskService taskService = runtimeEngine.getTaskService();
-        
-        
+
+
         // setup another instance of task service to allow not synchronized access to cause pessimistic lock exception
         RuntimeEnvironment runtimeEnv = ((InternalRuntimeManager) manager).getEnvironment();
         HumanTaskConfigurator configurator = HumanTaskServiceFactory.newTaskServiceConfigurator()
-        		.environment(runtimeEnv.getEnvironment())
-        		.entityManagerFactory((EntityManagerFactory) runtimeEnv.getEnvironment().get(EnvironmentName.ENTITY_MANAGER_FACTORY))                     
+                .environment(runtimeEnv.getEnvironment())
+                .entityManagerFactory((EntityManagerFactory) runtimeEnv.getEnvironment().get(EnvironmentName.ENTITY_MANAGER_FACTORY))
                 .userGroupCallback(runtimeEnv.getUserGroupCallback());
-    	// register task listeners if any
-    	RegisterableItemsFactory itemsFactory = runtimeEnv.getRegisterableItemsFactory();
-    	for (TaskLifeCycleEventListener taskListener : itemsFactory.getTaskListeners()) {
-    		configurator.listener(taskListener);
-    	}
-    	
+        // register task listeners if any
+        RegisterableItemsFactory itemsFactory = runtimeEnv.getRegisterableItemsFactory();
+        for (TaskLifeCycleEventListener taskListener : itemsFactory.getTaskListeners()) {
+            configurator.listener(taskListener);
+        }
+
         final TaskService internalTaskService = configurator.getTaskService();
 
         logger.info("### Starting process ###");
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("employee", "salaboy");
         ProcessInstance process = ksession.startProcess("com.sample.evaluation", parameters);
-        
+
 
         //The process is in the first Human Task waiting for its completion
         Assert.assertEquals(ProcessInstance.STATE_ACTIVE, process.getState());
@@ -114,29 +113,29 @@ public class PessimisticLockTasksServiceTest extends JbpmJUnitBaseTestCase {
         //gets salaboy's tasks
         List<TaskSummary> salaboysTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", "en-UK");
         Assert.assertEquals(1, salaboysTasks.size());
-        
-        final long taskId = salaboysTasks.get(0).getId(); 
+
+        final long taskId = salaboysTasks.get(0).getId();
         Thread t1 = new Thread() {
             @Override
             public void run() {
-            	try {
-	                UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
-	                ut.begin();
-	                logger.info("Attempting to lock task instance for 3 secs ");
-	                taskService.start(taskId, "salaboy");
-	
-	                try {
-	                    Thread.sleep(3000);
-	                } catch (InterruptedException e) {
-	                    e.printStackTrace();
-	                }
-	                logger.info("Unlocked task instance after 3 secs");
-	                ut.rollback();
-            	} catch (Exception e) {
-            		logger.error("Error on thread ", e);
-            	}
+                try {
+                    UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+                    ut.begin();
+                    logger.info("Attempting to lock task instance for 3 secs ");
+                    taskService.start(taskId, "salaboy");
+
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    logger.info("Unlocked task instance after 3 secs");
+                    ut.rollback();
+                } catch (Exception e) {
+                    logger.error("Error on thread ", e);
+                }
             }
-            	
+
         };
 
         t1.start();
@@ -145,52 +144,52 @@ public class PessimisticLockTasksServiceTest extends JbpmJUnitBaseTestCase {
         Thread t2 = new Thread() {
             @Override
             public void run() {
-            	try {
-	            	UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
-	                ut.begin();
-	                logger.info("Trying to start locked task instance");
-	                try {
-	                	
-	                	internalTaskService.start(taskId, "salaboy");
-	
-	                } catch (Exception e) {
-	                    logger.info("Abort failed with error {}", e.getMessage());
-	                    exceptions.add(e);
-	
-	                } finally {
-	                	ut.rollback();
-	                }
-            	} catch (Exception e) {
-            		logger.error("Error on thread ", e);
-            	}  
+                try {
+                    UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+                    ut.begin();
+                    logger.info("Trying to start locked task instance");
+                    try {
+
+                        internalTaskService.start(taskId, "salaboy");
+
+                    } catch (Exception e) {
+                        logger.info("Abort failed with error {}", e.getMessage());
+                        exceptions.add(e);
+
+                    } finally {
+                        ut.rollback();
+                    }
+                } catch (Exception e) {
+                    logger.error("Error on thread ", e);
+                }
             }
         };
         t2.start();
 
         Thread.sleep(3000);
-        
+
         assertEquals(1, exceptions.size());
         assertEquals(PessimisticLockException.class.getName(), exceptions.get(0).getClass().getName());
 
 
         taskService.start(salaboysTasks.get(0).getId(), "salaboy");
-        
+
         // complete task within user transaction to make sure no deadlock happens as both task service and ksession are under tx lock
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
         ut.begin();
         taskService.complete(salaboysTasks.get(0).getId(), "salaboy", null);
         ut.commit();
-        
-        
+
+
         List<TaskSummary> pmsTasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         Assert.assertEquals(1, pmsTasks.size());
 
 
         List<TaskSummary> hrsTasks = taskService.getTasksAssignedAsPotentialOwner("mary", "en-UK");
         Assert.assertEquals(1, hrsTasks.size());
-        
+
         ksession.abortProcessInstance(process.getId());
         assertProcessInstanceAborted(process.getId());
     }
-   
+
 }
