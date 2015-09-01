@@ -1,0 +1,38 @@
+<settings>
+
+  <servers>
+    <server>
+      <id>kie-wb-m2-repo</id>
+      <username>testadmin</username>
+      <password>admin1234;</password>
+      <configuration>
+        <wagonProvider>httpclient</wagonProvider>
+        <httpConfiguration>
+          <all>
+            <usePreemptive>true</usePreemptive>
+          </all>
+        </httpConfiguration>
+      </configuration>
+    </server>
+  </servers>
+
+  <profiles>
+    <profile>
+      <id>kie-wb-m2-profile</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <repositories>
+        <repository>
+          <id>kie-wb-m2-repo</id>
+          <name>KIE-WB M2 Repo</name>
+          <url>http://localhost:8080/business-central/maven2</url>
+          <snapshots>
+            <updatePolicy>always</updatePolicy>
+          </snapshots>
+        </repository>
+      </repositories>
+    </profile>
+  </profiles>
+  
+</settings>

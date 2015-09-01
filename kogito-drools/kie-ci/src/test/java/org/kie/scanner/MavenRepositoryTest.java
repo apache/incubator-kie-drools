@@ -48,7 +48,11 @@ public class MavenRepositoryTest {
         }
 
         @Override
-        protected Settings getSettings() {
+        protected MavenRepositoryConfiguration getMavenRepositoryConfiguration() {
+            return new MavenRepositoryConfiguration(getMavenSettings());
+        }
+
+        private Settings getMavenSettings() {
             String path = getClass().getResource(".").toString().substring("file:".length());
             File testSettingsFile = new File(path + "settings_with_mirror.xml");
             assertTrue(testSettingsFile.exists());
