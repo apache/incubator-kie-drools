@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,42 +14,42 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cheaptime.app;
+package org.optaplanner.examples.coachshuttlegathering.app;
 
 import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
-import org.optaplanner.examples.cheaptime.persistence.CheapTimeDao;
-import org.optaplanner.examples.cheaptime.solver.score.CheapTimeEasyScoreCalculator;
+import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringDao;
+import org.optaplanner.examples.coachshuttlegathering.solver.CoachShuttleGatheringEasyScoreCalculator;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
-public class CheapTimeSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
+public class CoachShuttleGatheringSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
 
     @Parameterized.Parameters(name = "{index}: {0}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return getUnsolvedDirFilesAsParameters(new CheapTimeDao());
+        return getUnsolvedDirFilesAsParameters(new CoachShuttleGatheringDao());
     }
 
-    public CheapTimeSolveAllTurtleTest(File unsolvedDataFile) {
+    public CoachShuttleGatheringSolveAllTurtleTest(File unsolvedDataFile) {
         super(unsolvedDataFile);
     }
 
     @Override
     protected String createSolverConfigResource() {
-        return CheapTimeApp.SOLVER_CONFIG;
+        return CoachShuttleGatheringApp.SOLVER_CONFIG;
     }
 
     @Override
     protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
-        return CheapTimeEasyScoreCalculator.class;
+        return CoachShuttleGatheringEasyScoreCalculator.class;
     }
 
     @Override
     protected SolutionDao createSolutionDao() {
-        return new CheapTimeDao();
+        return new CoachShuttleGatheringDao();
     }
 
 }

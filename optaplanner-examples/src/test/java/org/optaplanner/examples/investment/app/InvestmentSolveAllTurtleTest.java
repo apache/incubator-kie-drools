@@ -20,9 +20,11 @@ import java.io.File;
 import java.util.Collection;
 
 import org.junit.runners.Parameterized;
+import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.common.app.UnsolvedDirSolveAllTurtleTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.investment.persistence.InvestmentDao;
+import org.optaplanner.examples.investment.solver.score.InvestmentEasyScoreCalculator;
 
 public class InvestmentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest {
 
@@ -38,6 +40,11 @@ public class InvestmentSolveAllTurtleTest extends UnsolvedDirSolveAllTurtleTest 
     @Override
     protected String createSolverConfigResource() {
         return InvestmentApp.SOLVER_CONFIG;
+    }
+
+    @Override
+    protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
+        return InvestmentEasyScoreCalculator.class;
     }
 
     @Override
