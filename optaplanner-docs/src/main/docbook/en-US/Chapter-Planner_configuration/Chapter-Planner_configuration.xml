@@ -1561,7 +1561,7 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 
           <listitem>
             <para>The clone must use different, cloned instances of the entities and entity collections. Changes to an
-            original <literal>Solution</literal> entity's variables must not effect its clone.</para>
+            original <literal>Solution</literal> entity's variables must not affect its clone.</para>
           </listitem>
         </itemizedlist>
 
