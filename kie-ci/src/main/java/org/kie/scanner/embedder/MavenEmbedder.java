@@ -43,6 +43,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.Os;
 import org.eclipse.aether.RepositorySystemSession;
+import org.kie.scanner.MavenRepositoryConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -54,47 +55,48 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-
 public class MavenEmbedder {
 
     public static final File DEFAULT_GLOBAL_SETTINGS_FILE =
             new File( System.getProperty( "maven.home", System.getProperty( "user.dir", "" ) ), "conf/settings.xml" );
 
     private final MavenRequest mavenRequest;
-
     private final ComponentProvider componentProvider;
-    
+
     private MavenExecutionRequest mavenExecutionRequest;
 
-    public MavenEmbedder(MavenRequest mavenRequest) throws MavenEmbedderException {
-        this(Thread.currentThread().getContextClassLoader(), null, mavenRequest);
+    public MavenEmbedder( MavenRequest mavenRequest ) throws MavenEmbedderException {
+        this( Thread.currentThread().getContextClassLoader(), null, mavenRequest );
     }
 
-    public MavenEmbedder(ClassLoader mavenClassLoader, ClassLoader parent, MavenRequest mavenRequest) throws MavenEmbedderException {
-        this(mavenRequest, MavenEmbedderUtils.buildComponentProvider( mavenClassLoader, parent, mavenRequest ));
+    public MavenEmbedder( ClassLoader mavenClassLoader,
+                          ClassLoader parent,
+                          MavenRequest mavenRequest ) throws MavenEmbedderException {
+        this( mavenRequest, MavenEmbedderUtils.buildComponentProvider( mavenClassLoader, parent, mavenRequest ) );
     }
 
-    private MavenEmbedder(MavenRequest mavenRequest, ComponentProvider componentProvider) throws MavenEmbedderException {
+    private MavenEmbedder( MavenRequest mavenRequest,
+                           ComponentProvider componentProvider ) throws MavenEmbedderException {
         this.mavenRequest = mavenRequest;
         this.componentProvider = componentProvider;
 
         try {
-            this.mavenExecutionRequest = this.buildMavenExecutionRequest(mavenRequest);
+            this.mavenExecutionRequest = this.buildMavenExecutionRequest( mavenRequest );
 
-            RepositorySystemSession rss = ((DefaultMaven) componentProvider.lookup( Maven.class )).newRepositorySession(mavenExecutionRequest);
+            RepositorySystemSession rss = ( (DefaultMaven) componentProvider.lookup( Maven.class ) ).newRepositorySession( mavenExecutionRequest );
 
             MavenSession mavenSession = new MavenSession( componentProvider.getPlexusContainer(), rss, mavenExecutionRequest, new DefaultMavenExecutionResult() );
 
             componentProvider.lookup( LegacySupport.class ).setSession( mavenSession );
-        } catch (MavenEmbedderException e) {
-            throw new MavenEmbedderException(e.getMessage(), e);
-        } catch (ComponentLookupException e) {
-            throw new MavenEmbedderException(e.getMessage(), e);
+        } catch ( MavenEmbedderException e ) {
+            throw new MavenEmbedderException( e.getMessage(), e );
+        } catch ( ComponentLookupException e ) {
+            throw new MavenEmbedderException( e.getMessage(), e );
         }
     }
 
-    protected MavenExecutionRequest buildMavenExecutionRequest(MavenRequest mavenRequest)
-        throws MavenEmbedderException, ComponentLookupException {
+    protected MavenExecutionRequest buildMavenExecutionRequest( MavenRequest mavenRequest )
+            throws MavenEmbedderException, ComponentLookupException {
         MavenExecutionRequest mavenExecutionRequest = new DefaultMavenExecutionRequest();
 
         if ( mavenRequest.getGlobalSettingsFile() != null ) {
@@ -132,8 +134,8 @@ public class MavenEmbedder {
         }
         mavenExecutionRequest.getSystemProperties().putAll( getEnvVars() );
 
-        if (mavenRequest.getProfiles() != null && !mavenRequest.getProfiles().isEmpty()) {
-            for (String id : mavenRequest.getProfiles()) {
+        if ( mavenRequest.getProfiles() != null && !mavenRequest.getProfiles().isEmpty() ) {
+            for ( String id : mavenRequest.getProfiles() ) {
                 Profile p = new Profile();
                 p.setId( id );
                 p.setSource( "cli" );
@@ -142,28 +144,36 @@ public class MavenEmbedder {
             }
         }
 
+        //DROOLS-899: Copy repositories defined in settings to execution request
+        for ( ArtifactRepository artifactRepository : getMavenRepositoryConfiguration().getArtifactRepositoriesForRequest() ) {
+            mavenExecutionRequest.addRemoteRepository( artifactRepository );
+        }
 
         mavenExecutionRequest.setLoggingLevel( mavenRequest.getLoggingLevel() );
 
         componentProvider.lookup( Logger.class ).setThreshold( mavenRequest.getLoggingLevel() );
 
         mavenExecutionRequest.setExecutionListener( mavenRequest.getExecutionListener() )
-            .setInteractiveMode( mavenRequest.isInteractive() )
-            .setGlobalChecksumPolicy( mavenRequest.getGlobalChecksumPolicy() )
-            .setGoals( mavenRequest.getGoals() );
+                .setInteractiveMode( mavenRequest.isInteractive() )
+                .setGlobalChecksumPolicy( mavenRequest.getGlobalChecksumPolicy() )
+                .setGoals( mavenRequest.getGoals() );
 
         if ( mavenRequest.getPom() != null ) {
             mavenExecutionRequest.setPom( new File( mavenRequest.getPom() ) );
         }
-        
-        if (mavenRequest.getWorkspaceReader() != null) {
+
+        if ( mavenRequest.getWorkspaceReader() != null ) {
             mavenExecutionRequest.setWorkspaceReader( mavenRequest.getWorkspaceReader() );
         }
 
-        return  mavenExecutionRequest;
+        return mavenExecutionRequest;
     }
 
-    private Properties getEnvVars( ) {
+    protected MavenRepositoryConfiguration getMavenRepositoryConfiguration() {
+        return MavenSettings.getMavenRepositoryConfiguration();
+    }
+
+    private Properties getEnvVars() {
         Properties envVars = new Properties();
         boolean caseSensitive = !Os.isFamily( Os.FAMILY_WINDOWS );
         for ( Entry<String, String> entry : System.getenv().entrySet() ) {
@@ -184,7 +194,7 @@ public class MavenEmbedder {
             settingsBuildingRequest.setUserSettingsFile( new File( this.mavenRequest.getUserSettingsFile() ) );
         } else {
             File userSettingsFile = MavenSettings.getUserSettingsFile();
-            if (userSettingsFile != null) {
+            if ( userSettingsFile != null ) {
                 settingsBuildingRequest.setUserSettingsFile( userSettingsFile );
             }
         }
@@ -227,7 +237,7 @@ public class MavenEmbedder {
         }
 
         if ( this.mavenRequest.getLocalRepositoryPath() != null ) {
-            path =  this.mavenRequest.getLocalRepositoryPath();
+            path = this.mavenRequest.getLocalRepositoryPath();
         }
 
         if ( path == null ) {
@@ -259,19 +269,22 @@ public class MavenEmbedder {
             ProjectBuilder projectBuilder = componentProvider.lookup( ProjectBuilder.class );
             // BZ-1007894: Check if added dependencies are resolvable.
             ProjectBuildingResult result = projectBuilder.build( modelSource, getProjectBuildingRequest() );
-            if (result != null && result.getDependencyResolutionResult() != null && !result.getDependencyResolutionResult().getCollectionErrors().isEmpty()) {
+            if ( result != null && result.getDependencyResolutionResult() != null && !result.getDependencyResolutionResult().getCollectionErrors().isEmpty() ) {
                 // A dependency resolution error has been produced. It can contains some error. Throw the first one to the client, so the user will fix every one sequentially.
-                Exception depedencyResolutionException = result.getDependencyResolutionResult().getCollectionErrors().get(0);
-                if (depedencyResolutionException != null) throw new MavenEmbedderException(depedencyResolutionException.getMessage(), depedencyResolutionException);
+                Exception depedencyResolutionException = result.getDependencyResolutionResult().getCollectionErrors().get( 0 );
+                if ( depedencyResolutionException != null ) {
+                    throw new MavenEmbedderException( depedencyResolutionException.getMessage(), depedencyResolutionException );
+                }
             }
             return result.getProject();
-        } catch(ComponentLookupException e) {
-            throw new MavenEmbedderException(e.getMessage(), e);
+        } catch ( ComponentLookupException e ) {
+            throw new MavenEmbedderException( e.getMessage(), e );
         } finally {
             Thread.currentThread().setContextClassLoader( originalCl );
             try {
                 mavenProjectStream.close();
-            } catch (IOException e) { }
+            } catch ( IOException e ) {
+            }
         }
     }
 
@@ -280,13 +293,14 @@ public class MavenEmbedder {
         return projects == null || projects.isEmpty() ? null : projects.get( 0 );
     }
 
-    public List<MavenProject> readProjects( File mavenProject, boolean recursive ) throws ProjectBuildingException, MavenEmbedderException {
+    public List<MavenProject> readProjects( File mavenProject,
+                                            boolean recursive ) throws ProjectBuildingException, MavenEmbedderException {
         ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader( componentProvider.getSystemClassLoader() );
             List<ProjectBuildingResult> results = buildProjects( mavenProject, recursive );
-            List<MavenProject> projects = new ArrayList<MavenProject>(results.size());
-            for (ProjectBuildingResult result : results) {
+            List<MavenProject> projects = new ArrayList<MavenProject>( results.size() );
+            for ( ProjectBuildingResult result : results ) {
                 projects.add( result.getProject() );
             }
             return projects;
@@ -295,14 +309,15 @@ public class MavenEmbedder {
         }
     }
 
-    public List<ProjectBuildingResult> buildProjects( File mavenProject, boolean recursive ) throws ProjectBuildingException, MavenEmbedderException {
+    public List<ProjectBuildingResult> buildProjects( File mavenProject,
+                                                      boolean recursive ) throws ProjectBuildingException, MavenEmbedderException {
         ClassLoader originalCl = Thread.currentThread().getContextClassLoader();
         try {
             Thread.currentThread().setContextClassLoader( componentProvider.getSystemClassLoader() );
-            ProjectBuilder projectBuilder = componentProvider.lookup( ProjectBuilder.class);
+            ProjectBuilder projectBuilder = componentProvider.lookup( ProjectBuilder.class );
             return projectBuilder.build( Collections.singletonList( mavenProject ), recursive, getProjectBuildingRequest() );
-        } catch(ComponentLookupException e) {
-            throw new MavenEmbedderException(e.getMessage(), e);
+        } catch ( ComponentLookupException e ) {
+            throw new MavenEmbedderException( e.getMessage(), e );
         } finally {
             Thread.currentThread().setContextClassLoader( originalCl );
         }
