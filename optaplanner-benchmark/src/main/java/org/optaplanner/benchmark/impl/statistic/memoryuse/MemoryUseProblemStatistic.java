@@ -19,6 +19,8 @@ package org.optaplanner.benchmark.impl.statistic.memoryuse;
 import java.awt.BasicStroke;
 import java.io.File;
 import java.text.NumberFormat;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -55,8 +57,9 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
     /**
      * @return never null
      */
-    public File getGraphFile() {
-        return graphFile;
+    @Override
+    public List<File> getGraphFileList() {
+        return Collections.singletonList(graphFile);
     }
 
     // ************************************************************************

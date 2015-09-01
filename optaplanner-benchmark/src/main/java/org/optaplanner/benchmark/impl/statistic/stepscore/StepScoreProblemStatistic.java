@@ -59,6 +59,7 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
     /**
      * @return never null
      */
+    @Override
     public List<File> getGraphFileList() {
         return graphFileList;
     }

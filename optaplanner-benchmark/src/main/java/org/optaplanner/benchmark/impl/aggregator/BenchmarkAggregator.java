@@ -63,7 +63,7 @@ public class BenchmarkAggregator {
     }
 
     public File aggregate(List<SingleBenchmarkResult> singleBenchmarkResultList,
-            Map<SolverBenchmarkResult, String> solverBenchamkarkResultNameMap) {
+            Map<SolverBenchmarkResult, String> solverBenchmarkResultNameMap) {
         if (benchmarkDirectory == null) {
             throw new IllegalArgumentException("The benchmarkDirectory (" + benchmarkDirectory + ") must not be null.");
         }
@@ -87,8 +87,8 @@ public class BenchmarkAggregator {
         }
         // Handle renamed solver benchmarks after statistics have been read (they're resolved by
         // original solver benchmarks' names)
-        if (solverBenchamkarkResultNameMap != null) {
-            for (Entry<SolverBenchmarkResult, String> results : solverBenchamkarkResultNameMap.entrySet()) {
+        if (solverBenchmarkResultNameMap != null) {
+            for (Entry<SolverBenchmarkResult, String> results : solverBenchmarkResultNameMap.entrySet()) {
                 if (!results.getKey().getName().equals(results.getValue())) {
                     results.getKey().setName(results.getValue());
                 }

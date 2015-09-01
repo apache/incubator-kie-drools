@@ -17,6 +17,7 @@
 package org.optaplanner.benchmark.impl.statistic;
 
 import java.io.File;
+import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.jfree.chart.JFreeChart;
@@ -63,5 +64,20 @@ public abstract class PureSingleStatistic<P extends StatisticPoint> extends Sing
         GraphSupport.writeChartToImageFile(chart, chartFile);
         return chartFile;
     }
+
+    public File getGraphFile() {
+        List<File> graphFileList = getGraphFileList();
+        if (graphFileList == null || graphFileList.isEmpty()) {
+            return null;
+        } else if (graphFileList.size() > 1) {
+            throw new IllegalStateException("Cannot get graph file for the PureSingleStatistic ( " + this
+                    + " ) because it has more than 1 graph file. See method getGraphList() and "
+                    + SingleStatisticType.class.getSimpleName() + ".hasScoreLevels()");
+        } else {
+            return graphFileList.get(0);
+        }
+    }
+
+    public abstract List<File> getGraphFileList();
 
 }

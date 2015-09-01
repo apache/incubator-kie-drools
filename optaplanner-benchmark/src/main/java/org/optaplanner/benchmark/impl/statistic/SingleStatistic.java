@@ -150,6 +150,13 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
             }
             Map<String, String> stringDuplicationRemovalMap = new HashMap<String, String>(1024);
             for (line = reader.readLine(); line != null && !line.isEmpty(); line = reader.readLine()) {
+                if (line.equals("Failed")) {
+                    if (singleBenchmarkResult.isFailure()) {
+                        continue;
+                    }
+                    throw new IllegalStateException("SingleStatistic ( " + this + " ) failed even though the "
+                            + "corresponding SingleBenchmarkResult ( " + singleBenchmarkResult + " ) is a success.");
+                }
                 List<String> csvLine = StatisticPoint.parseCsvLine(line);
                 // HACK
                 // Some statistics (such as CONSTRAINT_MATCH_TOTAL_STEP_SCORE) contain the same String many times

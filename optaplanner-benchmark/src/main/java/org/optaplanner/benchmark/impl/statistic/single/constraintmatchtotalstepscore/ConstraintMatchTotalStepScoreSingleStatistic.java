@@ -66,6 +66,7 @@ public class ConstraintMatchTotalStepScoreSingleStatistic extends PureSingleStat
     /**
      * @return never null
      */
+    @Override
     public List<File> getGraphFileList() {
         return graphFileList;
     }

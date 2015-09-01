@@ -78,6 +78,34 @@ public class ConfigUtils {
         return ObjectUtils.equals(a, b) ? a : null;
     }
 
+    /**
+     * A relaxed version of {@link #mergeProperty(Object, Object)}.
+     * <p>
+     * Null-handling:
+     * <ul>
+     *     <li>if <strong>both</strong> properties <strong>are null</strong>, returns null</li>
+     *     <li>if <strong>only one</strong> of the properties <strong>is not null</strong>, returns that property</li>
+     *     <li>if <strong>both</strong> properties <strong>are not null</strong>, returns {@link #mergeProperty(Object, Object)}</li>
+     * </ul>
+     *
+     * @see #mergeProperty(Object, Object)
+     * @param a property {@code a}
+     * @param b property {@code b}
+     * @param <T> the type of property {@code a} and {@code b}
+     * @return sometimes null
+     */
+    public static <T> T meldProperty(T a, T b) {
+        if (a == null && b == null) {
+            return null;
+        } else if (a == null && b != null) {
+            return b;
+        } else if (a != null && b == null) {
+            return a;
+        } else {
+            return ConfigUtils.mergeProperty(a, b);
+        }
+    }
+
     public static boolean isEmptyCollection(Collection<?> collection) {
         return collection == null || collection.isEmpty();
     }

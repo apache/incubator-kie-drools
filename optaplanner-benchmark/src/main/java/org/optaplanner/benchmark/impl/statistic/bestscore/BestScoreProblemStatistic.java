@@ -59,6 +59,7 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
     /**
      * @return never null
      */
+    @Override
     public List<File> getGraphFileList() {
         return graphFileList;
     }

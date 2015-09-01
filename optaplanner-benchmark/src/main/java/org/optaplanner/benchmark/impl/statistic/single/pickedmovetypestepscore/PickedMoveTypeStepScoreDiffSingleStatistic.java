@@ -67,6 +67,7 @@ public class PickedMoveTypeStepScoreDiffSingleStatistic extends PureSingleStatis
     /**
      * @return never null
      */
+    @Override
     public List<File> getGraphFileList() {
         return graphFileList;
     }
