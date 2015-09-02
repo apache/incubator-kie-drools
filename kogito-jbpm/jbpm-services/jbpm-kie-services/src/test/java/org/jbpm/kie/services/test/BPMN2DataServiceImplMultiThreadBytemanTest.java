@@ -36,26 +36,34 @@ import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
 @BMUnitConfig(loadDirectory="target/test-classes") // set "debug=true to see debug output
 @BMScript(value="byteman/setBPMN2ProcessProvider.btm")
 public class BPMN2DataServiceImplMultiThreadBytemanTest extends AbstractKieServicesBaseTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(BPMN2DataServiceImplMultiThreadBytemanTest.class);
+    
     @Before
     public void prepare() {
+        logger.info("@Before: start");
         configureServices();
+        logger.info("@Before: end");
     }
 
     @After
     public void cleanup() {
+        logger.info("@After");
         cleanupSingletonSessionId();
         close();
     }
 
-    @Test
+    @Test(timeout=5000)
     public void testBuildProcessDefinitionConcurrentWithKieBuilder() throws Exception {
-
+        logger.info("testBuildProcessDefinitionConcurrentWithKieBuilde: start");
+        
         final List<ProcessDefinition> defs = new ArrayList<ProcessDefinition>();
 
         byte[] process1 = IoUtils.readBytesFromInputStream(this.getClass().getResourceAsStream(

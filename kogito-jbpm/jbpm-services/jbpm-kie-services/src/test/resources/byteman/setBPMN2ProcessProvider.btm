@@ -18,7 +18,7 @@ METHOD setRepoHelper
 AT EXIT
 IF TRUE
 DO 
-# traceStack();  # commented out 
+traceln(">>>> Wait For: exit setRepoHelper");
 signalWake("Add Resource to KieBuilder");
 waitFor("After KieBuilder.add(..)");
 ENDRULE
@@ -32,7 +32,9 @@ CLASS  org.jbpm.kie.services.test.BPMN2DataServiceImplMultiThreadBytemanTest
 METHOD createKBuilder
 AT ENTRY
 IF true
-DO waitFor("Add Resource to KieBuilder");
+DO 
+traceln(">>>> Wait For: entry createKBuilder");
+waitFor("Add Resource to KieBuilder");
 ENDRULE
 
 # 2. let DataService finish 
@@ -42,5 +44,7 @@ CLASS  org.jbpm.kie.services.test.BPMN2DataServiceImplMultiThreadBytemanTest
 METHOD letDataServiceThreadFinish
 AT ENTRY
 IF true
-DO signalWake("After KieBuilder.add(..)");
+DO 
+traceln(">>>> Wait For: entry letDataServiceThreadFinish");
+signalWake("After KieBuilder.add(..)");
 ENDRULE
