@@ -21,6 +21,7 @@ import java.util.Map;
 import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
 import org.drools.workbench.models.datamodel.rule.ExpressionCollectionIndex;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
+import org.drools.workbench.models.datamodel.rule.ExpressionFieldVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionGlobalVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
@@ -73,6 +74,12 @@ public class CopyExpressionVisitor implements ExpressionVisitor {
     public void visit( ExpressionVariable part ) {
         add( new ExpressionVariable( part.getName(),
                                      part.getFactType() ) );
+        moveNext( part );
+    }
+
+    public void visit( ExpressionFieldVariable part ) {
+        add( new ExpressionFieldVariable( part.getName(),
+                                          part.getClassType() ) );
         moveNext( part );
     }
 
