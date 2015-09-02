@@ -78,7 +78,8 @@ public class CloudBalancingDaemonTest extends LoggingTest {
             // Wait until the solver thread dies.
             solverThread.join();
         } catch (InterruptedException e) {
-            throw new IllegalStateException("SolverThread did not die.", e);
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("SolverThread did not die yet due to an interruption.", e);
         }
     }
 

@@ -544,7 +544,8 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 dialog.setLocationRelativeTo(parentFrame);
                 dialog.setVisible(true);
             } catch (InterruptedException e) {
-                throw new IllegalStateException("The report generation failed.", e);
+                Thread.currentThread().interrupt();
+                throw new IllegalStateException("The report generation was interrupted.", e);
             } catch (ExecutionException e) {
                 throw new IllegalStateException("The report generation failed.", e.getCause());
             } finally {

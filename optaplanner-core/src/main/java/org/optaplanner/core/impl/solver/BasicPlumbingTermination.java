@@ -81,7 +81,8 @@ public class BasicPlumbingTermination extends AbstractTermination {
                 try {
                     wait();
                 } catch (InterruptedException e) {
-                    throw new IllegalStateException("Solver thread interrupted during wait.", e);
+                    Thread.currentThread().interrupt();
+                    throw new IllegalStateException("Solver thread was interrupted during Object.wait().", e);
                 }
             }
             return !terminatedEarly;

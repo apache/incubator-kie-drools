@@ -209,7 +209,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             try {
                 future = warmUpExecutorCompletionService.take();
             } catch (InterruptedException e) {
-                // TODO reconsider this approach when resolving https://issues.jboss.org/browse/PLANNER-402
+                Thread.currentThread().interrupt();
                 throw new IllegalStateException("Waiting for a warm up singleBenchmarkRunner was interrupted.", e);
             }
 
@@ -219,6 +219,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 // Explicitly returning it in the Callable guarantees memory visibility
                 singleBenchmarkRunner = future.get();
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 singleBenchmarkRunner = futureMap.get(future);
                 singleBenchmarkRunnerExceptionLogger.error("The warm up singleBenchmarkRunner ({}) was interrupted.",
                         singleBenchmarkRunner, e);
@@ -277,6 +278,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                     throw new IllegalStateException("Score is null. TODO fix PLANNER-46.");
                 }
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
                 singleBenchmarkRunnerExceptionLogger.error("The singleBenchmarkRunner ({}) was interrupted.",
                         singleBenchmarkRunner, e);
                 failureThrowable = e;
