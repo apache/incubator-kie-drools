@@ -21,6 +21,7 @@ import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
 import org.drools.workbench.models.datamodel.rule.ExpressionCollectionIndex;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
+import org.drools.workbench.models.datamodel.rule.ExpressionFieldVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionGlobalVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
@@ -109,6 +110,14 @@ public class ToStringExpressionVisitor implements
 
     public void visit( ExpressionCollectionIndex part ) {
         sb.append( '[' ).append( paramsToString( part.getOrderedParams() ) ).append( ']' );
+        moveNext( part );
+    }
+
+    public void visit( ExpressionFieldVariable part ) {
+        if ( !first ) {
+            sb.append( '.' );
+        }
+        sb.append( part.getName() );
         moveNext( part );
     }
 
