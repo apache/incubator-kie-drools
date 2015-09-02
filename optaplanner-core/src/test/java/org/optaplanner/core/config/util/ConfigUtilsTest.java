@@ -24,6 +24,34 @@ import static org.optaplanner.core.config.util.ConfigUtils.*;
 
 public class ConfigUtilsTest {
 
+    @Test
+    public void testMergeProperty() {
+        Integer a = null;
+        Integer b = null;
+        assertEquals(null, mergeProperty(a, b));
+        a = Integer.valueOf(1);
+        assertEquals(null, mergeProperty(a, b));
+        b = Integer.valueOf(10);
+        assertEquals(null, mergeProperty(a, b));
+        b = Integer.valueOf(1);
+        assertEquals(Integer.valueOf(1), mergeProperty(a, b));
+        a = null;
+        assertEquals(null, mergeProperty(a, b));
+    }
+
+    @Test
+    public void testMeldProperty() {
+        Integer a = null;
+        Integer b = null;
+        assertEquals(null, meldProperty(a, b));
+        a = Integer.valueOf(1);
+        assertEquals(Integer.valueOf(1), meldProperty(a, b));
+        b = Integer.valueOf(10);
+        assertEquals(mergeProperty(Integer.valueOf(1), Integer.valueOf(10)), meldProperty(a, b));
+        a = null;
+        assertEquals(Integer.valueOf(10), meldProperty(a, b));
+    }
+
     private static void checkCeilDivision(int dividend, int divisor) {
         long result = Math.round(Math.ceil(dividend / (double) divisor));
         assertEquals("CeilDiv: " + dividend + "/" + divisor + "=" + result, result, ceilDivide(dividend, divisor));
