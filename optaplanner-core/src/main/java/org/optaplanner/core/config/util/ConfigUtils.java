@@ -79,7 +79,10 @@ public class ConfigUtils {
     }
 
     /**
-     * A relaxed version of {@link #mergeProperty(Object, Object)}.
+     * A relaxed version of {@link #mergeProperty(Object, Object)}. Used primarily for merging failed benchmarks,
+     * where a property remains the same over benchmark runs (for example: dataset problem size), but the property in
+     * the failed benchmark isn't initialized, therefore null. When merging, we can still use the correctly initialized
+     * property of the benchmark that didn't fail.
      * <p>
      * Null-handling:
      * <ul>
