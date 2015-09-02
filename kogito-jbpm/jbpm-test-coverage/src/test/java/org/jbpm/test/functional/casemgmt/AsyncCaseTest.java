@@ -18,6 +18,9 @@ package org.jbpm.test.functional.casemgmt;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.assertj.core.api.Assertions;
 import org.jbpm.casemgmt.CaseMgmtService;
@@ -38,7 +41,7 @@ public class AsyncCaseTest extends JbpmTestCase {
     protected static final String TERMINATE_CASE = "org/jbpm/test/functional/casemgmt/TerminateMilestone.bpmn2";
 
     @Test(timeout = 30000)
-    public void testAsyncWorkItem() {
+    public void testAsyncWorkItem() throws Exception {
         
         ExecutorService executorService = ExecutorServiceFactory.newExecutorService();
         executorService.setThreadPoolSize(1);
@@ -58,16 +61,13 @@ public class AsyncCaseTest extends JbpmTestCase {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("CommandClass", CheckCallCommand.class.getCanonicalName());
         caseMgmtService.createDynamicWorkTask(pid, "async", params);
-        
-        Object LOCK = CheckCallCommand.getLOCK();
-        synchronized (LOCK) {
-            try {
-                LOCK.wait(5000);
-            } catch (InterruptedException e) {
-            }
-        }
-        Boolean commandExecuted = CheckCallCommand.isCommandExecuted();
-        Assertions.assertThat(commandExecuted).isTrue();
+       
+        // This will time out if the barrier waits for longer than 5 seconds.
+        // The .await(..) call will only timeout (throw an exception) if the 
+        //   other party (that is calling .execute(CommandContext)) has *not* also 
+        //   called await (in CheckCallCommand.execute(CommandContext)
+        // In this way, it's also a check to see if the command has executed
+        CheckCallCommand.getBarrier().await(5, TimeUnit.SECONDS);
 
         caseMgmtService.triggerAdHocFragment(pid, "Terminate");
         
