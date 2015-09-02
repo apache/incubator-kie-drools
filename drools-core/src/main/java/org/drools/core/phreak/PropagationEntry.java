@@ -76,6 +76,7 @@ public interface PropagationEntry {
         private final PropagationContext context;
         private final InternalWorkingMemory workingMemory;
         private final ObjectTypeConf objectTypeConf;
+        private final boolean isEvent;
         private final long insertionTime;
 
         public Insert( InternalFactHandle handle, PropagationContext context, InternalWorkingMemory workingMemory, ObjectTypeConf objectTypeConf) {
@@ -83,17 +84,20 @@ public interface PropagationEntry {
             this.context = context;
             this.workingMemory = workingMemory;
             this.objectTypeConf = objectTypeConf;
-            this.insertionTime = workingMemory.getTimerService().getCurrentTime();
+            this.isEvent = objectTypeConf.isEvent();
+            this.insertionTime = isEvent ? workingMemory.getTimerService().getCurrentTime() : 0L;
         }
 
         public void execute(InternalWorkingMemory wm) {
             for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
                 otn.propagateAssert( handle, context, wm );
-                scheduleExpiration( otn, otn.getExpirationOffset() );
+                if (isEvent) {
+                    scheduleExpiration( otn, otn.getExpirationOffset() );
+                }
             }
 
-            if (objectTypeConf.getConcreteObjectTypeNode() == null) {
-                scheduleExpiration( null, ((ClassObjectTypeConf) objectTypeConf).getExpirationOffset() );
+            if (isEvent && objectTypeConf.getConcreteObjectTypeNode() == null) {
+                scheduleExpiration( null, ( (ClassObjectTypeConf) objectTypeConf ).getExpirationOffset() );
             }
         }
 

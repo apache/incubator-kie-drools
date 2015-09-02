@@ -49,6 +49,34 @@ public abstract class ReactiveObject {
 
             LeftTupleSinkNode sink = node.getSinkPropagator().getFirstLeftTupleSink();
             InternalWorkingMemory wm = getInternalWorkingMemory(propagationContext);
+
+            wm.addPropagation(new ReactivePropagation(object, leftTuple, propagationContext, node, sink));
+        }
+    }
+
+    private InternalWorkingMemory getInternalWorkingMemory(PropagationContext propagationContext) {
+        InternalFactHandle fh = (InternalFactHandle) propagationContext.getFactHandleOrigin();
+        return ((InternalWorkingMemoryEntryPoint) fh.getEntryPoint()).getInternalWorkingMemory();
+    }
+
+    class ReactivePropagation extends PropagationEntry.AbstractPropagationEntry {
+
+        private final Object object;
+        private final LeftTuple leftTuple;
+        private final PropagationContext propagationContext;
+        private final ReactiveFromNode node;
+        private final LeftTupleSinkNode sink;
+
+        ReactivePropagation( Object object, LeftTuple leftTuple, PropagationContext propagationContext, ReactiveFromNode node, LeftTupleSinkNode sink ) {
+            this.object = object;
+            this.leftTuple = leftTuple;
+            this.propagationContext = propagationContext;
+            this.node = node;
+            this.sink = sink;
+        }
+
+        @Override
+        public void execute( InternalWorkingMemory wm ) {
             ReactiveFromNode.ReactiveFromMemory mem = (ReactiveFromNode.ReactiveFromMemory)wm.getNodeMemory(node);
 
             RightTuple rightTuple = node.createRightTuple(leftTuple, propagationContext, wm, object);
@@ -68,16 +96,11 @@ public abstract class ReactiveObject {
                                          wm,
                                          mem,
                                          context,
-                                         RuleNetworkEvaluator.useLeftMemory(node, leftTuple),
+                                         RuleNetworkEvaluator.useLeftMemory( node, leftTuple ),
                                          mem.getStagedLeftTuples(),
                                          null);
 
             mem.getBetaMemory().setNodeDirty(wm);
         }
-    }
-
-    private InternalWorkingMemory getInternalWorkingMemory(PropagationContext propagationContext) {
-        InternalFactHandle fh = (InternalFactHandle) propagationContext.getFactHandleOrigin();
-        return ((InternalWorkingMemoryEntryPoint) fh.getEntryPoint()).getInternalWorkingMemory();
     }
 }
