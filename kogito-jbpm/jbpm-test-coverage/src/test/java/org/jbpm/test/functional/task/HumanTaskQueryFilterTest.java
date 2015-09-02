@@ -64,7 +64,7 @@ public class HumanTaskQueryFilterTest extends JbpmTestCase {
 
         List<TaskSummary> taskList = taskService.getTasksAssignedAsPotentialOwner("john", null, null,
                 new QueryFilter(2, 2, "t.name", true));
-        logger.info("### Potential owner task list: " + taskList);
+        logger.debug("### Potential owner task list: " + taskList);
         Assertions.assertThat(taskList).hasSize(2);
         for (int i = 0; i < taskList.size(); i++) {
             Assertions.assertThat(taskList.get(i).getName()).isEqualTo("john's task " + (i + 1 + 2));
@@ -80,11 +80,11 @@ public class HumanTaskQueryFilterTest extends JbpmTestCase {
         List<TaskSummary> taskList = taskService.getTasksAssignedAsPotentialOwner("john", null, null,
                 new QueryFilter(0, 2, "t.id", true));
         Assertions.assertThat(taskList).hasSize(2);
-        logger.info("### Potential owner task list: " + taskList);
+        logger.debug("### Potential owner task list: " + taskList);
 
         taskList = taskService.getTasksOwned("john", null, new QueryFilter(0, 1, false, null, "en-UK", null));
         Assertions.assertThat(taskList).hasSize(1);
-        logger.info("### Owned task list: " + taskList);
+        logger.debug("### Owned task list: " + taskList);
 
         abortHumanTaskProcess(4);
     }
@@ -95,11 +95,11 @@ public class HumanTaskQueryFilterTest extends JbpmTestCase {
 
         List<TaskSummary> taskList = taskService.getTasksAssignedAsPotentialOwner("john", null, null,
                 new QueryFilter(0, 0, "t.name", false));
-        logger.info("### Potential owner task list: " + taskList);
+        logger.debug("### Potential owner task list: " + taskList);
         Assertions.assertThat(taskList).hasSize(3);
 
         for (int i = 0; i < taskList.size(); i++) {
-            logger.info("### Task Name: " + taskList.get(i).getName());
+            logger.debug("### Task Name: " + taskList.get(i).getName());
             Assertions.assertThat(taskList.get(i).getName()).isEqualTo("john's task " + (3 - i));
         }
 
@@ -112,11 +112,11 @@ public class HumanTaskQueryFilterTest extends JbpmTestCase {
 
         List<TaskSummary> taskList = taskService.getTasksAssignedAsPotentialOwner("john", null, null,
                 new QueryFilter(0, 0, "t.name", true));
-        logger.info("### Potential owner task list: " + taskList);
+        logger.debug("### Potential owner task list: " + taskList);
         Assertions.assertThat(taskList).hasSize(3);
 
         for (int i = 0; i < taskList.size(); i++) {
-            logger.info("### Task Name: " + taskList.get(i).getName());
+            logger.debug("### Task Name: " + taskList.get(i).getName());
             Assertions.assertThat(taskList.get(i).getName()).isEqualTo("john's task " + (i + 1));
         }
 
@@ -130,7 +130,7 @@ public class HumanTaskQueryFilterTest extends JbpmTestCase {
 
         List<TaskSummary> taskList = taskService.getTasksAssignedAsPotentialOwner("john", null, null,
                 new QueryFilter(0, 0, true));
-        logger.info("### Potential owner task list: " + taskList);
+        logger.debug("### Potential owner task list: " + taskList);
         Assertions.assertThat(taskList).hasSize(1);
 
         abortHumanTaskProcess(4);
@@ -147,7 +147,7 @@ public class HumanTaskQueryFilterTest extends JbpmTestCase {
         QueryFilter queryFilter = new QueryFilter("x=1,y=2", null, "t.name", true);
 
         List<TaskSummary> taskList = taskService.getTasksAssignedAsPotentialOwner("john", null, null, queryFilter);
-        logger.info("### Potential owner task list: " + taskList);
+        logger.debug("### Potential owner task list: " + taskList);
         Assertions.assertThat(taskList).hasSize(1);
 
         abortHumanTaskProcess(10);

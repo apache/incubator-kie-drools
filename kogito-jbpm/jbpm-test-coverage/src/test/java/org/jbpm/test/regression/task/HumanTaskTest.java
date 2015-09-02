@@ -95,14 +95,14 @@ public class HumanTaskTest extends JbpmTestCase {
         KieSession ksession = getRuntimeEngine().getKieSession();
 
         ProcessInstance pi = ksession.startProcess(COMPLETION_ROLLBACK_ID);
-        logger.info("Process with id = " + pi.getId() + " has just been started.");
+        logger.debug("Process with id = " + pi.getId() + " has just been started.");
 
         List<TaskSummary> taskList = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
         long taskId = taskList.get(0).getId();
         taskService.start(taskId, "john");
 
         Task task = taskService.getTaskById(taskId);
-        logger.info("Actual task status: " + task.getTaskData().getStatus());
+        logger.debug("Actual task status: " + task.getTaskData().getStatus());
 
         try {
             taskService.complete(taskId, "john", null);

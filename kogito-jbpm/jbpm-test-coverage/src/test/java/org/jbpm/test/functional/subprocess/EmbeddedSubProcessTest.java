@@ -46,14 +46,14 @@ public class EmbeddedSubProcessTest extends JbpmTestCase {
         assertNextNode(eventListener, "ScriptOuter");
         assertTriggered(eventListener, "embedded");
 
-        logger.info("inside embedded subprocess");
+        logger.debug("inside embedded subprocess");
 
         assertNextNode(eventListener, "sub-start");
         assertNextNode(eventListener, "ScriptInner");
         assertNextNode(eventListener, "sub-end");
         assertLeft(eventListener, "embedded");
 
-        logger.info("outside embedded subprocess");
+        logger.debug("outside embedded subprocess");
 
         assertNextNode(eventListener, "end");
         assertProcessCompleted(eventListener, EMBEDDED_ID);

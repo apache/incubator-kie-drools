@@ -157,7 +157,7 @@ public class IterableProcessEventListener implements ProcessEventListener, Itera
 
     private void printToLogger(Logger logger) {
         while (hasNext()) {
-            logger.info(next().toString());
+            logger.debug(next().toString());
         }
     }
 
