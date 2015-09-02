@@ -46,7 +46,7 @@ public class SolverBenchmarkResultTest {
         assertEquals("1uninitialized/-10hard/-100soft", solverBenchmarkResult.getAverageScoreWithUninitializedPrefix());
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = ArithmeticException.class)
     public void testZeroDivisorGetAverageScoreWithUninitializedPrefix() throws Exception {
         SolverBenchmarkResult solverBenchmarkResult = spy(new SolverBenchmarkResult(null));
         when(solverBenchmarkResult.getSingleBenchmarkResultList()).thenReturn(Collections.<SingleBenchmarkResult>emptyList());

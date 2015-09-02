@@ -34,6 +34,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 
@@ -268,12 +269,9 @@ public class SolverBenchmarkResult {
     }
 
     public String getAverageScoreWithUninitializedPrefix() {
-        int dividend = getTotalUninitializedVariableCount();
-        int divisor = getSingleBenchmarkResultList().size();
-        if (divisor == 0) {
-            throw new IllegalStateException("Cannot calculate average score of 0 single benchmarks.");
-        }
-        return ScoreUtils.getScoreWithUninitializedPrefix((dividend / divisor) + (dividend % divisor != 0 ? 1 : 0), getAverageScore());
+        return ScoreUtils.getScoreWithUninitializedPrefix(
+                ConfigUtils.ceilDivide(getTotalUninitializedVariableCount(), getSingleBenchmarkResultList().size()),
+                getAverageScore());
     }
 
     public EnvironmentMode getEnvironmentMode() {
