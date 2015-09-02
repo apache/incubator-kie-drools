@@ -104,10 +104,8 @@ public abstract class ExpressionPart
         if (classType != null ? !classType.equals(that.classType) : that.classType != null) return false;
         if (genericType != null ? !genericType.equals(that.genericType) : that.genericType != null) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
-        if (next != null ? !next.equals(that.next) : that.next != null) return false;
         if (parametricType != null ? !parametricType.equals(that.parametricType) : that.parametricType != null)
             return false;
-        if (prev != null ? !prev.equals(that.prev) : that.prev != null) return false;
 
         return true;
     }

@@ -32,6 +32,8 @@ public interface ExpressionVisitor {
 
     void visit( ExpressionCollectionIndex part );
 
+    void visit( ExpressionFieldVariable part );
+
     void visit( ExpressionText part );
 
     void visit( ExpressionMethodParameter part );
