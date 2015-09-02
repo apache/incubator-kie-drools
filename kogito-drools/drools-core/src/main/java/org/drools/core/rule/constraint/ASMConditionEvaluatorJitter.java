@@ -660,9 +660,7 @@ public class ASMConditionEvaluatorJitter {
         private Class<?> jitEvaluatedExpression(EvaluatedExpression exp, boolean firstInvocation, Class<?> currentClass) {
             if (exp.firstExpression != null) {
                 currentClass = jitExpression(exp.firstExpression, currentClass);
-                if (exp.firstExpression instanceof FixedExpression || exp.firstExpression instanceof CastExpression) {
-                    firstInvocation = false;
-                }
+                firstInvocation = false;
             }
             Iterator<Invocation> invocations = exp.invocations.iterator();
             currentClass = jitInvocation(invocations.next(), currentClass, firstInvocation);

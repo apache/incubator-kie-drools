@@ -457,7 +457,7 @@ public class ConditionAnalyzer {
             Class<?> valueType = Object.class;
             Type[] generics = getGenerics(formerInvocation);
             if (generics != null && generics.length == 2 && generics[0] instanceof Class) {
-                if (generics[0] instanceof Class) keyType = (Class<?>)generics[0];
+                keyType = (Class<?>)generics[0];
                 if (generics[1] instanceof Class) valueType = (Class<?>)generics[1];
             }
             MapAccessorNest mapAccessor = (MapAccessorNest)accessorNode;
