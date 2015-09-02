@@ -19,6 +19,7 @@ package org.jbpm.test.regression.task;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.persistence.EntityManagerFactory;
 
 import org.assertj.core.api.Assertions;
@@ -32,8 +33,8 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
-import qa.tools.ikeeper.annotation.BZ;
 
+import qa.tools.ikeeper.annotation.BZ;
 import static org.jbpm.test.tools.TrackingListenerAssert.assertTriggered;
 import static org.jbpm.test.tools.TrackingListenerAssert.assertTriggeredAndLeft;
 
@@ -62,7 +63,7 @@ public class HumanTaskTest extends JbpmTestCase {
 
     @Test
     @BZ("958397")
-    public void testBoundaryTimer() throws InterruptedException {
+    public void testBoundaryTimer() throws Exception {
         createRuntimeManager(BOUNDARY_TIMER);
         KieSession ksession = getRuntimeEngine().getKieSession();
         TaskService taskService = getRuntimeEngine().getTaskService();
@@ -72,10 +73,11 @@ public class HumanTaskTest extends JbpmTestCase {
         ProcessInstance pi = ksession.startProcess(BOUNDARY_TIMER_ID);
 
         // wait for timer
-        Thread.sleep(2000);
+        String endNodeName = "End1";
+        assertTrue( "Node '" + endNodeName + "' was not triggered on time!", tpel.waitForNodeTobeTriggered(endNodeName, 1000));
 
         assertTriggeredAndLeft(tpel, "Script1");
-        assertTriggered(tpel, "End1");
+        assertTriggered(tpel, endNodeName);
 
         long taskId = taskService.getTasksByProcessInstanceId(pi.getId()).get(0);
         taskService.start(taskId, "john");

@@ -157,14 +157,16 @@ public class StartEventTest extends JbpmTestCase {
         TrackingProcessEventListener process = new TrackingProcessEventListener();
         ksession.addEventListener(process);
         ksession.fireAllRules();
-        Thread.sleep(1500);
+        assertTrue( "The process did not start on time!", process.waitForProcessToStart(1000) );
+        assertTrue( "The process did not complete on time!", process.waitForProcessToComplete(1000) );
 
         Assertions.assertThat(process.wasProcessStarted(TIMER_CYCLE_ID)).isTrue();
         Assertions.assertThat(process.wasProcessCompleted(TIMER_CYCLE_ID)).isTrue();
         process.clear();
 
         for (int i = 0; i < 10; i++) {
-            Thread.sleep(1000);
+            assertTrue( "The process was not triggered on time!", process.waitForProcessToStart(1000) );
+            assertTrue( "The process did not complete on time!", process.waitForProcessToComplete(1000) );
             Assertions.assertThat(process.wasProcessStarted(TIMER_CYCLE_ID)).isTrue();
             Assertions.assertThat(process.wasProcessCompleted(TIMER_CYCLE_ID)).isTrue();
             process.clear();
@@ -178,7 +180,9 @@ public class StartEventTest extends JbpmTestCase {
         TrackingProcessEventListener process = new TrackingProcessEventListener();
         ksession.addEventListener(process);
         ksession.fireAllRules();
-        Thread.sleep(1500);
+        
+        assertTrue( "The process did not start on time!", process.waitForProcessToStart(1000) );
+        assertTrue( "The process did not complete on time!", process.waitForProcessToComplete(1000) );
         ksession.fireAllRules();
 
         Assertions.assertThat(process.wasProcessStarted(TIMER_DURATION_ID)).isTrue();

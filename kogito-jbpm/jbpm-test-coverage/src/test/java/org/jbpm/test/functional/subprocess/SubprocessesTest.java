@@ -682,8 +682,8 @@ public class SubprocessesTest extends JbpmTestCase {
         }
 
         try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
+            assertTrue( "Process was not started on time!", process.waitForProcessToStart(1000));
+        } catch (Exception ex) {
             logger.warn("Interrupted", ex);
         }
 

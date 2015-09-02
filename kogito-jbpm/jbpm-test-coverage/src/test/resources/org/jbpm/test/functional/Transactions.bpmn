@@ -16,7 +16,7 @@
       <bpmn2:incoming>_3-_2</bpmn2:incoming>
       <bpmn2:outgoing>_2-_5</bpmn2:outgoing>
     </bpmn2:parallelGateway>
-    <bpmn2:intermediateCatchEvent id="_3" drools:bgcolor="#f5deb3" drools:selectable="true" drools:bordercolor="#a0522d" drools:boundaryca="false" name="Signal">
+    <bpmn2:intermediateCatchEvent id="_3" drools:bgcolor="#f5deb3" drools:selectable="true" drools:bordercolor="#a0522d" drools:boundaryca="false" name="Start-Signal">
       <bpmn2:incoming>_44F0534A-A7FC-48CA-A19A-B96CB0522925</bpmn2:incoming>
       <bpmn2:outgoing>_3-_2</bpmn2:outgoing>
       <bpmn2:dataOutput id="_3_event" name="event"/>
@@ -29,7 +29,7 @@
       </bpmn2:outputSet>
       <bpmn2:signalEventDefinition id="_m36w0sxTEeOILsVq6BbZLw" signalRef="start"/>
     </bpmn2:intermediateCatchEvent>
-    <bpmn2:scriptTask id="_4" drools:selectable="true" name="Start" scriptFormat="http://www.java.com/java">
+    <bpmn2:scriptTask id="_4" drools:selectable="true" name="Start-Script" scriptFormat="http://www.java.com/java">
       <bpmn2:incoming>_A9C2AB65-BFC5-48C6-815F-CDFB6B7DB2CE</bpmn2:incoming>
       <bpmn2:outgoing>_4-_2</bpmn2:outgoing>
       <bpmn2:script><![CDATA[System.out.println("Starting transactions test.");]]></bpmn2:script>
@@ -61,7 +61,7 @@
       <bpmn2:incoming>_24-_9</bpmn2:incoming>
       <bpmn2:outgoing>_9-_13</bpmn2:outgoing>
       <bpmn2:timerEventDefinition id="_m36w08xTEeOILsVq6BbZLw">
-        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="_m36w1MxTEeOILsVq6BbZLw">500</bpmn2:timeDuration>
+        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="_m36w1MxTEeOILsVq6BbZLw">500ms</bpmn2:timeDuration>
       </bpmn2:timerEventDefinition>
     </bpmn2:intermediateCatchEvent>
     <bpmn2:userTask id="_10" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" name="User Task">
@@ -139,12 +139,12 @@
       <bpmn2:incoming>_6-_13</bpmn2:incoming>
       <bpmn2:outgoing>_13-_14</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
-    <bpmn2:scriptTask id="_14" drools:selectable="true" name="Finish" scriptFormat="http://www.java.com/java">
+    <bpmn2:scriptTask id="_14" drools:selectable="true" name="Finish-Script" scriptFormat="http://www.java.com/java">
       <bpmn2:incoming>_42EE4034-05C5-4187-8FCF-5AB7B5986FCA</bpmn2:incoming>
       <bpmn2:outgoing>_14-_15</bpmn2:outgoing>
       <bpmn2:script><![CDATA[System.out.println("Finished and waiting.");]]></bpmn2:script>
     </bpmn2:scriptTask>
-    <bpmn2:parallelGateway id="_15" drools:bgcolor="#f0e68c" drools:selectable="true" drools:bordercolor="#a67f00" name="Gateway" gatewayDirection="Converging">
+    <bpmn2:parallelGateway id="_15" drools:bgcolor="#f0e68c" drools:selectable="true" drools:bordercolor="#a67f00" name="End-Gateway" gatewayDirection="Converging">
       <bpmn2:incoming>_16-_15</bpmn2:incoming>
       <bpmn2:incoming>_14-_15</bpmn2:incoming>
       <bpmn2:outgoing>_15-_17</bpmn2:outgoing>
@@ -153,7 +153,7 @@
       <bpmn2:incoming>_15-_17</bpmn2:incoming>
       <bpmn2:terminateEventDefinition id="_m36w4cxTEeOILsVq6BbZLw"/>
     </bpmn2:endEvent>
-    <bpmn2:intermediateCatchEvent id="_16" drools:bgcolor="#f5deb3" drools:selectable="true" drools:bordercolor="#a0522d" drools:boundaryca="false" name="Signal">
+    <bpmn2:intermediateCatchEvent id="_16" drools:bgcolor="#f5deb3" drools:selectable="true" drools:bordercolor="#a0522d" drools:boundaryca="false" name="Finish-Signal">
       <bpmn2:incoming>_91F2D3EC-09E4-42BD-AE94-784EE8218ADA</bpmn2:incoming>
       <bpmn2:outgoing>_16-_15</bpmn2:outgoing>
       <bpmn2:signalEventDefinition id="_m36w4sxTEeOILsVq6BbZLw" signalRef="finish"/>
@@ -243,7 +243,7 @@
     </bpmn2:parallelGateway>
     <bpmn2:sequenceFlow id="_A9C2AB65-BFC5-48C6-815F-CDFB6B7DB2CE" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_B211C336-B113-4E3B-8B20-A8C0FAC7DF46" targetRef="_4"/>
     <bpmn2:sequenceFlow id="_44F0534A-A7FC-48CA-A19A-B96CB0522925" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_B211C336-B113-4E3B-8B20-A8C0FAC7DF46" targetRef="_3"/>
-    <bpmn2:parallelGateway id="_A656084F-6398-4908-8C99-79D498B99426" drools:bgcolor="#f0e68c" drools:selectable="true" drools:bordercolor="#a67f00" name="" gatewayDirection="Diverging">
+    <bpmn2:parallelGateway id="_A656084F-6398-4908-8C99-79D498B99426" drools:bgcolor="#f0e68c" drools:selectable="true" drools:bordercolor="#a67f00" name="Finish-Gateway" gatewayDirection="Diverging">
       <bpmn2:incoming>_13-_14</bpmn2:incoming>
       <bpmn2:outgoing>_42EE4034-05C5-4187-8FCF-5AB7B5986FCA</bpmn2:outgoing>
       <bpmn2:outgoing>_91F2D3EC-09E4-42BD-AE94-784EE8218ADA</bpmn2:outgoing>

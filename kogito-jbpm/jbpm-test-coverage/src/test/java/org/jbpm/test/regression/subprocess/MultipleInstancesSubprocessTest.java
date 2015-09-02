@@ -30,6 +30,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.manager.audit.VariableInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
+
 import qa.tools.ikeeper.annotation.BZ;
 
 public class MultipleInstancesSubprocessTest extends JbpmTestCase {
@@ -54,7 +55,7 @@ public class MultipleInstancesSubprocessTest extends JbpmTestCase {
 
     @Test
     @BZ("958390")
-    public void testTimerEvent() {
+    public void testTimerEvent() throws Exception {
         KieSession ksession = createKSession(TIMER_EVENT_PARENT, TIMER_EVENT_SUBPROCESS1, TIMER_EVENT_SUBPROCESS2);
         TrackingProcessEventListener processEvents = new TrackingProcessEventListener();
         ksession.addEventListener(processEvents);
@@ -68,17 +69,16 @@ public class MultipleInstancesSubprocessTest extends JbpmTestCase {
         List<Command<?>> commands = new ArrayList<Command<?>>();
         commands.add(getCommands().newStartProcess(TIMER_EVENT_PARENT_ID, params));
         ksession.execute(getCommands().newBatchExecution(commands, null));
-        try {
-            Thread.sleep(3000);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+       
+        String lastNodeName = "main-end";
+        assertTrue( "Node '" + lastNodeName + "' was not triggered on time!", 
+                processEvents.waitForNodeTobeTriggered(lastNodeName, 3000));
 
         Assertions.assertThat(processEvents.wasNodeTriggered("main-script1")).isTrue();
         Assertions.assertThat(processEvents.wasNodeTriggered("main-multiinstance1")).isTrue();
         Assertions.assertThat(processEvents.wasNodeTriggered("main-script2")).isTrue();
         Assertions.assertThat(processEvents.wasNodeTriggered("main-multiinstance2")).isTrue();
-        Assertions.assertThat(processEvents.wasNodeTriggered("main-end")).isTrue();
+        Assertions.assertThat(processEvents.wasNodeTriggered(lastNodeName)).isTrue();
     }
 
     @Test
@@ -88,7 +88,7 @@ public class MultipleInstancesSubprocessTest extends JbpmTestCase {
         KieSession ksession = getRuntimeEngine().getKieSession();
 
         ProcessInstance pi = ksession.startProcess(ENTRY_AND_EXIT_SCRIPT_PARENT_ID);
-        logger.info("Process with id = " + pi.getId() + " has just been started.");
+        logger.debug("Process with id = " + pi.getId() + " has just been started.");
 
         List<? extends VariableInstanceLog> varList = getLogService()
                 .findVariableInstancesByName("onEntryScriptTriggered", false);

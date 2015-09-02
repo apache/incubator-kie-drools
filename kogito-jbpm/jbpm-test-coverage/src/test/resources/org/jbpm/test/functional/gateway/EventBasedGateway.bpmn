@@ -33,7 +33,7 @@
       <bpmn2:incoming>_DCDC87C8-9F0C-43C0-81EE-0196CA40A018</bpmn2:incoming>
       <bpmn2:outgoing>_E408162B-18CC-4459-8C1E-B82166CA8D10</bpmn2:outgoing>
       <bpmn2:timerEventDefinition id="_MdiZsHJ-EeGfNdh8dsCFaQ">
-        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="_MdiZsXJ-EeGfNdh8dsCFaQ">1S</bpmn2:timeDuration>
+        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="_MdiZsXJ-EeGfNdh8dsCFaQ">500ms</bpmn2:timeDuration>
       </bpmn2:timerEventDefinition>
     </bpmn2:intermediateCatchEvent>
     <bpmn2:intermediateCatchEvent id="_1C02E695-EC89-4919-9EB5-AAD01A66192E" drools:bgcolor="#ffffff" drools:boundaryca="false" name="sig">

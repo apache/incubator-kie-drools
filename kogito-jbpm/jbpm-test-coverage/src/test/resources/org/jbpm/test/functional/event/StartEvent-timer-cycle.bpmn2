@@ -4,7 +4,7 @@
     <bpmn2:startEvent id="_689FBA33-E28C-45D4-A6A8-D13A1D4D767F" drools:bgcolor="#ffffff" name="start">
       <bpmn2:outgoing>_CAA1381F-630C-44A8-9BC8-9FD4D13A4AE2</bpmn2:outgoing>
       <bpmn2:timerEventDefinition id="_3Z8P0W22EeGKHscdJtk_0w">
-        <bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="_3Z8P0m22EeGKHscdJtk_0w">1s</bpmn2:timeCycle>
+        <bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="_3Z8P0m22EeGKHscdJtk_0w">250ms</bpmn2:timeCycle>
       </bpmn2:timerEventDefinition>
     </bpmn2:startEvent>
     <bpmn2:scriptTask id="_9F5F4C8F-C32D-4F6A-B833-155D915FBDF4" name="script" scriptFormat="http://www.java.com/java">

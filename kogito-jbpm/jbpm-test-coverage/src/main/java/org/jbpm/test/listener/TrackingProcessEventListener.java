@@ -19,6 +19,9 @@ package org.jbpm.test.listener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
@@ -30,27 +33,58 @@ import org.kie.api.runtime.process.ProcessInstance;
 
 public class TrackingProcessEventListener extends DefaultProcessEventListener {
 
+    private final int numberOfCountDownsNeeded;
+    
+    public TrackingProcessEventListener(int involvedThreads) { 
+        this.numberOfCountDownsNeeded = involvedThreads;
+        
+        this.processesAbortedLatch = new CountDownLatch(involvedThreads);
+        this.processesStartedLatch = new CountDownLatch(involvedThreads);
+        this.processesCompletedLatch = new CountDownLatch(involvedThreads);
+    }
+    
+    public TrackingProcessEventListener() { 
+       this(1);
+    }
+   
     private final List<String> processesStarted = new ArrayList<String>();
+    private CountDownLatch processesStartedLatch;
+    
     private final List<String> processesCompleted = new ArrayList<String>();
+    private CountDownLatch processesCompletedLatch;
+    
     private final List<String> processesAborted = new ArrayList<String>();
+    private CountDownLatch processesAbortedLatch;
 
     private final List<String> nodesTriggered = new ArrayList<String>();
+    private final ConcurrentHashMap<String, CountDownLatch> nodeTriggeredLatchMap = new ConcurrentHashMap<String, CountDownLatch>();
     private final List<String> nodesLeft = new ArrayList<String>();
+    private final ConcurrentHashMap<String, CountDownLatch> nodeLeftLatchMap = new ConcurrentHashMap<String, CountDownLatch>();
 
     private final List<String> variablesChanged = new ArrayList<String>();
 
     @Override
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
-        nodesTriggered.add(event.getNodeInstance().getNodeName());
+        String nodeName = event.getNodeInstance().getNodeName();
+        CountDownLatch nodeLatch = getNodeTriggeredLatch(nodeName);
+        nodeLatch.countDown();
+        nodesTriggered.add(nodeName);
     }
 
     @Override
     public void beforeNodeLeft(ProcessNodeLeftEvent event) {
-        nodesLeft.add(event.getNodeInstance().getNodeName());
+        String nodeName = event.getNodeInstance().getNodeName();
+        CountDownLatch nodeLatch = getNodeLeftLatch(nodeName);
+        nodeLatch.countDown();
+        nodesLeft.add(nodeName);
     }
 
     @Override
     public void beforeProcessStarted(ProcessStartedEvent event) {
+        if( processesStartedLatch.getCount() == 0 ) { 
+            processesStartedLatch = new CountDownLatch(numberOfCountDownsNeeded);
+        }
+        processesStartedLatch.countDown();
         processesStarted.add(event.getProcessInstance().getProcessId());
     }
 
@@ -58,8 +92,16 @@ public class TrackingProcessEventListener extends DefaultProcessEventListener {
     public void beforeProcessCompleted(ProcessCompletedEvent event) {
         if (event.getProcessInstance().getState() == ProcessInstance.STATE_ABORTED) {
             processesAborted.add(event.getProcessInstance().getProcessId());
+            if( processesAbortedLatch.getCount() == 0 ) { 
+                processesAbortedLatch = new CountDownLatch(numberOfCountDownsNeeded);
+            }
+            processesAbortedLatch.countDown();
         } else {
             processesCompleted.add(event.getProcessInstance().getProcessId());
+            if( processesCompletedLatch.getCount() == 0 ) { 
+                processesCompletedLatch = new CountDownLatch(numberOfCountDownsNeeded);
+            }
+            processesCompletedLatch.countDown();
         }
     }
 
@@ -116,6 +158,47 @@ public class TrackingProcessEventListener extends DefaultProcessEventListener {
         return variablesChanged.contains(variableId);
     }
 
+    public boolean waitForProcessToStart(long milliseconds) throws Exception {
+        return processesStartedLatch.await(milliseconds, TimeUnit.MILLISECONDS);
+    }
+
+    public boolean waitForProcessToComplete(long milliseconds) throws Exception {
+        return processesCompletedLatch.await(milliseconds, TimeUnit.MILLISECONDS);
+    }
+
+    public boolean waitForProcessToAbort(long milliseconds) throws Exception {
+        return processesAbortedLatch.await(milliseconds, TimeUnit.MILLISECONDS);
+    }
+    
+    public boolean waitForNodeTobeTriggered(String nodeName, long milliseconds) throws Exception {
+        CountDownLatch nodeLatch = getNodeTriggeredLatch(nodeName);
+        return nodeLatch.await(milliseconds, TimeUnit.MILLISECONDS);
+    }
+    
+    public boolean waitForNodeToBeLeft(String nodeName, long milliseconds) throws Exception {
+        CountDownLatch nodeLatch = getNodeLeftLatch(nodeName);
+        return nodeLatch.await(milliseconds, TimeUnit.MILLISECONDS);
+    }
+    
+    private CountDownLatch getNodeTriggeredLatch(String nodeName) { 
+        return getNodeLatch(nodeTriggeredLatchMap, nodeName);
+    }
+    
+    private CountDownLatch getNodeLeftLatch(String nodeName) { 
+        return getNodeLatch(nodeLeftLatchMap, nodeName);
+    }
+    
+    private CountDownLatch getNodeLatch(ConcurrentHashMap<String, CountDownLatch> nodeLatchMap, String nodeName) { 
+        synchronized(nodeLatchMap) { 
+            CountDownLatch nodeLatch = new CountDownLatch(numberOfCountDownsNeeded);
+            CountDownLatch previousLatch = nodeLatchMap.putIfAbsent(nodeName,nodeLatch); 
+            if( previousLatch != null ) {  
+                return previousLatch;
+            }
+            return nodeLatch;
+        }
+    }
+
     public void clear() {
         nodesTriggered.clear();
         nodesLeft.clear();
@@ -123,6 +206,12 @@ public class TrackingProcessEventListener extends DefaultProcessEventListener {
         processesCompleted.clear();
         processesAborted.clear();
         variablesChanged.clear();
+        
+        processesStartedLatch = new CountDownLatch(numberOfCountDownsNeeded);
+        processesAbortedLatch = new CountDownLatch(numberOfCountDownsNeeded);
+        processesCompletedLatch = new CountDownLatch(numberOfCountDownsNeeded);
+        nodeTriggeredLatchMap.clear();
+        nodeLeftLatchMap.clear();
     }
 
 }
