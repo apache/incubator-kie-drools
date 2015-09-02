@@ -3601,11 +3601,12 @@ public class DRL6Parser extends AbstractDRLParser implements DRLParser {
             int nextToken = input.LA(++cursor);
             switch (lastToken) {
                 case DRL6Lexer.ID:
-                    if (nextToken != DRL6Lexer.DOT && nextToken != DRL6Lexer.HASH) {
+                    if (nextToken != DRL6Lexer.DOT && nextToken != DRL6Lexer.NULL_SAFE_DOT && nextToken != DRL6Lexer.HASH) {
                         return -1;
                     }
                     break;
                 case DRL6Lexer.DOT:
+                case DRL6Lexer.NULL_SAFE_DOT:
                     if (nextToken == DRL6Lexer.LEFT_PAREN) {
                         return cursor;
                     }
