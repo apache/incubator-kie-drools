@@ -7982,4 +7982,58 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( "Done!", childA.getValue() );
         assertEquals( "Done!", childB.getValue() );
     }
+
+    @Test
+    public void testJittingCollectionCreation() {
+        // DROOLS-900
+        String drl =
+                "import " + Arrays.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "    $s : String( Arrays.asList(\"a\", \"b\", \"c\").contains(this) )\n" +
+                "then\n" +
+                "    list.add($s);\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( "a" );
+        ksession.insert( "d" );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "a", list.get( 0 ) );
+    }
+
+    @Test
+    public void testJittingCollectionCreationInParenthesis() {
+        // DROOLS-900
+        String drl =
+                "import " + Arrays.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "    $s : String( (Arrays.asList(\"a\", \"b\", \"c\")).contains(this) )\n" +
+                "then\n" +
+                "    list.add($s);\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( "a" );
+        ksession.insert( "d" );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "a", list.get( 0 ) );
+    }
 }
