@@ -268,7 +268,12 @@ public class SolverBenchmarkResult {
     }
 
     public String getAverageScoreWithUninitializedPrefix() {
-        return ScoreUtils.getScoreWithUninitializedPrefix(Math.round(Math.ceil(totalUninitializedVariableCount / (double) getSingleBenchmarkResultList().size())), averageScore);
+        int dividend = getTotalUninitializedVariableCount();
+        int divisor = getSingleBenchmarkResultList().size();
+        if (divisor == 0) {
+            throw new IllegalStateException("Cannot calculate average score of 0 single benchmarks.");
+        }
+        return ScoreUtils.getScoreWithUninitializedPrefix((dividend / divisor) + (dividend % divisor != 0 ? 1 : 0), getAverageScore());
     }
 
     public EnvironmentMode getEnvironmentMode() {
