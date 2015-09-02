@@ -165,7 +165,10 @@ public class BaseSingleFieldConstraint
         if (constraintValueType != that.constraintValueType) return false;
         if (expression != null ? !expression.equals(that.expression) : that.expression != null) return false;
         if (operator != null ? !operator.equals(that.operator) : that.operator != null) return false;
-        if (parameters != null ? !parameters.equals(that.parameters) : that.parameters != null) return false;
+        if (parameters != null ?
+                !parameters.equals( that.parameters ) && !parameters.isEmpty() && that.parameters != null
+                : that.parameters != null && !that.parameters.isEmpty() )
+            return false;
         if (value != null ? !value.equals(that.value) : that.value != null) return false;
 
         return true;
