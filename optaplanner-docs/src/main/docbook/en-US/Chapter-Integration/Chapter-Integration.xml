@@ -49,8 +49,39 @@
 
       <note>
         <para>Do not confuse JPA's <literal>@Entity</literal> annotation with Planner's
-        <literal>@PlanningEntity</literal> annotation. They can appear both on the same class.</para>
+        <literal>@PlanningEntity</literal> annotation. They can appear both on the same class:</para>
+
+        <programlisting language="java">@PlanningEntity // OptaPlanner annotation
+@Entity // JPA annotation
+public class Talk {...}</programlisting>
       </note>
+
+      <para>In JPA and Hibernate, there is usually a <literal>@ManyToOne</literal> relationship from most problem fact
+      classes to the planning solution class. Therefore, the problem fact classes reference the planning solution class,
+      which implies that when the solution is <link linkend="cloningASolution">planning cloned</link>, they need to be
+      cloned too. Use an <literal>@DeepPlanningClone</literal> on each such problem fact class to enforce that:</para>
+
+      <programlisting language="java">@PlanningSolution // OptaPlanner annotation
+@Entity // JPA annotation
+public class Conference {
+
+    @OneToMany(mappedBy="conference")
+    private List&lt;Room&gt; roomList;
+
+    ...
+}</programlisting>
+
+      <programlisting language="java">@DeepPlanningClone // OptaPlanner annotation: Force the default planning cloner to planning clone this class too
+@Entity // JPA annotation
+public class Room {
+
+    @ManyToOne
+    private Conference conference; // Because of this reference, this problem fact needs to be planning cloned too
+
+}</programlisting>
+
+      <para>Neglecting to do this can lead to persisting duplicate solutions, JPA exceptions or other side
+      effects.</para>
     </section>
 
     <section xml:id="integrationWithXStream">
