@@ -1,10 +1,14 @@
 package org.jbpm.casemgmt;
 
+import java.util.List;
+
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.JbpmJUnitBaseTestCase;
 import org.junit.Test;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.TaskSummary;
 
 public class CaseMgmtMilestoneTest extends JbpmJUnitBaseTestCase {
     
@@ -29,6 +33,18 @@ public class CaseMgmtMilestoneTest extends JbpmJUnitBaseTestCase {
         assertEquals(0, milestones.length);
         
         runtimeEngine.getKieSession().signalEvent("Milestone1", null, processInstance.getId());
+        milestones = caseMgmtService.getAchievedMilestones(processInstance.getId());
+        prettyPrintAchievedMilestones(milestones);
+        assertEquals(1, milestones.length);
+        
+        TaskService taskService = runtimeEngine.getTaskService();
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("krisv", "en-UK");
+        assertEquals(1, tasks.size());
+        TaskSummary task = tasks.get(0);
+        taskService.start(task.getId(), "krisv");
+        taskService.complete(task.getId(), "krisv", null);
+        assertProcessInstanceCompleted(processInstance.getId());
+        
         milestones = caseMgmtService.getAchievedMilestones(processInstance.getId());
         prettyPrintAchievedMilestones(milestones);
         assertEquals(1, milestones.length);

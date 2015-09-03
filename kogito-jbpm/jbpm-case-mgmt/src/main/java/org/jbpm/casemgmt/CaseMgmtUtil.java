@@ -29,6 +29,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.audit.AuditService;
 import org.kie.api.runtime.manager.audit.NodeInstanceLog;
+import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessContext;
@@ -225,7 +226,7 @@ public class CaseMgmtUtil implements CaseMgmtService {
                 result.add(process);
             }
         }
-        return processes.toArray(new Process[processes.size()]);
+        return result.toArray(new Process[result.size()]);
     }
     
     /**
@@ -355,7 +356,7 @@ public class CaseMgmtUtil implements CaseMgmtService {
     }
     
     public String[] getAchievedMilestones(long processInstanceId) {
-        ProcessInstance processInstance = getProcessInstance(processInstanceId);
+        ProcessInstanceLog processInstance = auditService.findProcessInstance(processInstanceId);
         Map<String, String> milestones = getMilestones(processInstance.getProcessId());
         List<? extends NodeInstanceLog> nodeInstances = auditService.findNodeInstances(processInstanceId);
         Map<String, String> nodes = new HashMap<String, String>();
