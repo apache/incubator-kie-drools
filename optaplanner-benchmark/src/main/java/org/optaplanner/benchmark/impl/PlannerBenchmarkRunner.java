@@ -187,12 +187,15 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 }
                 singleBenchmarkResult.setPureSingleStatisticList(Collections.<PureSingleStatistic>emptyList());
 
-                List<ProblemStatistic> originalProblemStatisticList = singleBenchmarkResult.getProblemBenchmarkResult().getProblemStatisticList();
-                List<ProblemStatistic> problemStatisticPutResult = originalProblemStatisticMap.putIfAbsent(singleBenchmarkResult.getProblemBenchmarkResult(), originalProblemStatisticList);
-                if (problemStatisticPutResult != null && !originalProblemStatisticList.isEmpty()) {
-                    throw new IllegalStateException("OriginalProblemStatisticMap already contained key ( "
-                            + singleBenchmarkResult.getProblemBenchmarkResult() + " ) with value ( "
-                            + problemStatisticPutResult + " ).");
+                ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
+                List<ProblemStatistic> originalProblemStatisticList = problemBenchmarkResult.getProblemStatisticList();
+                if (!originalProblemStatisticMap.containsKey(problemBenchmarkResult)) { // TODO: After Java 8, do Map#putIfAbsent
+                    List<ProblemStatistic> problemStatisticPutResult = originalProblemStatisticMap.put(problemBenchmarkResult, originalProblemStatisticList);
+                    if (problemStatisticPutResult != null && !originalProblemStatisticList.isEmpty()) {
+                        throw new IllegalStateException("OriginalProblemStatisticMap already contained key ( "
+                                + problemBenchmarkResult + " ) with value ( "
+                                + problemStatisticPutResult + " ).");
+                    }
                 }
                 singleBenchmarkResult.getProblemBenchmarkResult().setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
                 singleBenchmarkResult.initSingleStatisticMap();
@@ -283,9 +286,10 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             solverBenchmarkResult.getSolverConfig().setTerminationConfig(originalTerminationConfig);
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 singleBenchmarkResult.setPureSingleStatisticList(configBackup.getPureSingleStatisticMap().get(singleBenchmarkResult));
-
                 ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
-                problemBenchmarkResult.setProblemStatisticList(originalProblemStatisticMap.get(problemBenchmarkResult));
+                if (problemBenchmarkResult.getProblemStatisticList() == null || problemBenchmarkResult.getProblemStatisticList().size() <= 0) {
+                    problemBenchmarkResult.setProblemStatisticList(originalProblemStatisticMap.get(problemBenchmarkResult));
+                }
                 singleBenchmarkResult.initSingleStatisticMap();
             }
         }
