@@ -62,7 +62,7 @@ public class BestSolutionMutationSingleStatistic extends ProblemBasedSingleStati
 
         private void setMutationCounter(MutationCounter mutationCounter) {
             if (this.mutationCounter != null) {
-                throw new IllegalStateException("Impossible state: mutationCounter (" + mutationCounter
+                throw new IllegalStateException("Impossible state: mutationCounter (" + this.mutationCounter
                         + ") is not null.");
             }
             this.mutationCounter = mutationCounter;

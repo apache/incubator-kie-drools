@@ -139,8 +139,8 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         long timeLeftTotal = plannerBenchmarkResult.getWarmUpTimeMillisSpentLimit();
         int parallelBenchmarkCount = plannerBenchmarkResult.getParallelBenchmarkCount();
         int solverBenchmarkResultCount = plannerBenchmarkResult.getSolverBenchmarkResultList().size();
-        long cyclesCount = Math.round(Math.ceil(solverBenchmarkResultCount / (double) parallelBenchmarkCount));
-        long timeLeftPerCycle = Math.round(Math.floor((timeLeftTotal / (double) cyclesCount)));
+        int cyclesCount = ConfigUtils.ceilDivide(solverBenchmarkResultCount, parallelBenchmarkCount);
+        long timeLeftPerCycle = ConfigUtils.floorDivide(timeLeftTotal, cyclesCount);
         Map<ProblemBenchmarkResult, List<ProblemStatistic>> originalProblemStatisticMap
                 = new HashMap<ProblemBenchmarkResult, List<ProblemStatistic>>(plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList().size());
         ConcurrentMap<SolverBenchmarkResult, Integer> singleBenchmarkResultIndexMap

@@ -511,7 +511,7 @@
                                                 </div>
                                             </#if>
                                         <#else>
-                                            <p>Graph unavailable (the benchmark probably failed).</p>
+                                            <p>Graph unavailable (statistic unavailable for this solver configuration or benchmark failed).</p>
                                         </#if>
                                         <#if !benchmarkReport.plannerBenchmarkResult.aggregation>
                                             <span>CSV files per solver:</span>
@@ -558,7 +558,7 @@
                                                     </div>
                                                 </#if>
                                             <#else>
-                                                <p>Graph unavailable (the benchmark probably failed).</p>
+                                                <p>Graph unavailable (statistic unavailable for this solver configuration or benchmark failed).</p>
                                             </#if>
                                             <#if !benchmarkReport.plannerBenchmarkResult.aggregation>
                                                 <span>CSV file:</span>
