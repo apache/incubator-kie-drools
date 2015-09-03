@@ -17,6 +17,7 @@
 package org.optaplanner.benchmark.impl;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,8 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
@@ -138,12 +141,12 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         int solverBenchmarkResultCount = plannerBenchmarkResult.getSolverBenchmarkResultList().size();
         long cyclesCount = Math.round(Math.ceil(solverBenchmarkResultCount / (double) parallelBenchmarkCount));
         long timeLeftPerCycle = Math.round(Math.floor((timeLeftTotal / (double) cyclesCount)));
-        Map<SolverBenchmarkResult, TerminationConfig> originalTerminationConfigMap
-                = new HashMap<SolverBenchmarkResult, TerminationConfig>(solverBenchmarkResultCount);
+        Map<ProblemBenchmarkResult, List<ProblemStatistic>> originalProblemStatisticMap
+                = new HashMap<ProblemBenchmarkResult, List<ProblemStatistic>>(plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList().size());
         ConcurrentMap<SolverBenchmarkResult, Integer> singleBenchmarkResultIndexMap
                 = new ConcurrentHashMap<SolverBenchmarkResult, Integer>(solverBenchmarkResultCount);
 
-        backupTerminationConfigs(originalTerminationConfigMap);
+        Map<SolverBenchmarkResult, WarmUpConfigBackup> warmUpConfigBackupMap = WarmUpConfigBackup.backupBenchmarkConfig(plannerBenchmarkResult, originalProblemStatisticMap);
         SolverBenchmarkResult[] solverBenchmarkResultCycle = new SolverBenchmarkResult[parallelBenchmarkCount];
         int solverBenchmarkResultIndex = 0;
         for (int i = 0; i < cyclesCount; i++) {
@@ -158,7 +161,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             warmUpPopulate(futureMap, singleBenchmarkResultIndexMap, solverBenchmarkResultCycle, timeLeftPerCycle);
             warmUp(futureMap, singleBenchmarkResultIndexMap, timeCycleEnd);
         }
-        restoreTerminationConfigs(originalTerminationConfigMap);
+        WarmUpConfigBackup.restoreBenchmarkConfig(plannerBenchmarkResult, originalProblemStatisticMap, warmUpConfigBackupMap);
         List<Runnable> notFinishedWarmUpList = warmUpExecutorService.shutdownNow();
         if (!notFinishedWarmUpList.isEmpty()) {
             throw new IllegalStateException("Impossible state: notFinishedWarmUpList (" + notFinishedWarmUpList
@@ -167,15 +170,6 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         logger.info("================================================================================");
         logger.info("Warm up ended");
         logger.info("================================================================================");
-    }
-
-    private void backupTerminationConfigs(Map<SolverBenchmarkResult, TerminationConfig> originalTerminationConfigMap) {
-        for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
-            TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
-            if (!originalTerminationConfigMap.containsKey(solverBenchmarkResult)) {
-                originalTerminationConfigMap.put(solverBenchmarkResult, originalTerminationConfig);
-            }
-        }
     }
 
     private void warmUpPopulate(Map<Future<SingleBenchmarkRunner>, SingleBenchmarkRunner> futureMap,
@@ -245,13 +239,6 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 warmUpPopulate(futureMap, singleBenchmarkResultIndexMap, solverBenchmarkResultSingleton, timeLeftInCycle);
                 tasksCount++;
             }
-        }
-    }
-
-    private void restoreTerminationConfigs(Map<SolverBenchmarkResult, TerminationConfig> originalTerminationConfigMap) {
-        for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
-            TerminationConfig originalTerminationConfig = originalTerminationConfigMap.get(solverBenchmarkResult);
-            solverBenchmarkResult.getSolverConfig().setTerminationConfig(originalTerminationConfig);
         }
     }
 
@@ -336,6 +323,78 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     public long calculateTimeMillisSpent() {
         long now = System.currentTimeMillis();
         return now - startingSystemTimeMillis;
+    }
+
+    private static final class WarmUpConfigBackup {
+
+        private final TerminationConfig terminationConfig;
+        private final Map<SingleBenchmarkResult, List<PureSingleStatistic>> pureSingleStatisticMap;
+
+        public WarmUpConfigBackup(TerminationConfig terminationConfig) {
+            this.terminationConfig = terminationConfig;
+            this.pureSingleStatisticMap = new HashMap<SingleBenchmarkResult, List<PureSingleStatistic>>();
+        }
+
+        public Map<SingleBenchmarkResult, List<PureSingleStatistic>> getPureSingleStatisticMap() {
+            return pureSingleStatisticMap;
+        }
+
+        public TerminationConfig getTerminationConfig() {
+            return terminationConfig;
+        }
+
+        private static void restoreBenchmarkConfig(PlannerBenchmarkResult plannerBenchmarkResult, Map<ProblemBenchmarkResult, List<ProblemStatistic>> originalProblemStatisticMap, Map<SolverBenchmarkResult, WarmUpConfigBackup> warmUpConfigBackupMap) {
+            for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
+                WarmUpConfigBackup warmUpConfigBackup = warmUpConfigBackupMap.get(solverBenchmarkResult);
+                TerminationConfig originalTerminationConfig = warmUpConfigBackup.getTerminationConfig();
+                solverBenchmarkResult.getSolverConfig().setTerminationConfig(originalTerminationConfig);
+                for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
+                    singleBenchmarkResult.setPureSingleStatisticList(warmUpConfigBackup.getPureSingleStatisticMap().get(singleBenchmarkResult));
+                    ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
+                    if (problemBenchmarkResult.getProblemStatisticList() == null || problemBenchmarkResult.getProblemStatisticList().size() <= 0) {
+                        problemBenchmarkResult.setProblemStatisticList(originalProblemStatisticMap.get(problemBenchmarkResult));
+                    }
+                    singleBenchmarkResult.initSingleStatisticMap();
+                }
+            }
+        }
+
+        private static Map<SolverBenchmarkResult, WarmUpConfigBackup> backupBenchmarkConfig(PlannerBenchmarkResult plannerBenchmarkResult, Map<ProblemBenchmarkResult, List<ProblemStatistic>> originalProblemStatisticMap) { // backup & remove stats, backup termination config
+            Map<SolverBenchmarkResult, WarmUpConfigBackup> warmUpConfigBackupMap = new HashMap<SolverBenchmarkResult, WarmUpConfigBackup>(plannerBenchmarkResult.getSolverBenchmarkResultList().size());
+            for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
+                TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
+                WarmUpConfigBackup warmUpConfigBackup = new WarmUpConfigBackup(originalTerminationConfig);
+                for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
+                    List<PureSingleStatistic> originalPureSingleStatisticList = singleBenchmarkResult.getPureSingleStatisticList();
+                    List<PureSingleStatistic> singleBenchmarkStatisticPutResult = warmUpConfigBackup.getPureSingleStatisticMap().put(singleBenchmarkResult, originalPureSingleStatisticList);
+                    if (singleBenchmarkStatisticPutResult != null) {
+                        throw new IllegalStateException("SingleBenchmarkStatisticMap of WarmUpConfigBackup ( " + warmUpConfigBackup
+                                + " ) already contained key ( " + singleBenchmarkResult + " ) with value ( "
+                                + singleBenchmarkStatisticPutResult + " ).");
+                    }
+                    singleBenchmarkResult.setPureSingleStatisticList(Collections.<PureSingleStatistic>emptyList());
+
+                    ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
+                    List<ProblemStatistic> originalProblemStatisticList = problemBenchmarkResult.getProblemStatisticList();
+                    if (!originalProblemStatisticMap.containsKey(problemBenchmarkResult)) { // TODO: After Java 8, do Map#putIfAbsent
+                        List<ProblemStatistic> problemStatisticPutResult = originalProblemStatisticMap.put(problemBenchmarkResult, originalProblemStatisticList);
+                        if (problemStatisticPutResult != null) {
+                            throw new IllegalStateException("OriginalProblemStatisticMap already contained key ( "
+                                    + problemBenchmarkResult + " ) with value ( "
+                                    + problemStatisticPutResult + " ).");
+                        }
+                    }
+                    singleBenchmarkResult.getProblemBenchmarkResult().setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
+                    singleBenchmarkResult.initSingleStatisticMap();
+                }
+                WarmUpConfigBackup warmUpConfigBackupPutResult = warmUpConfigBackupMap.put(solverBenchmarkResult, warmUpConfigBackup);
+                if (warmUpConfigBackupPutResult != null) {
+                    throw new IllegalStateException("WarmUpConfigBackupMap already contained key ( " + solverBenchmarkResult
+                            + " ) with value ( " + warmUpConfigBackupPutResult + " ).");
+                }
+            }
+            return warmUpConfigBackupMap;
+        }
     }
 
 }
