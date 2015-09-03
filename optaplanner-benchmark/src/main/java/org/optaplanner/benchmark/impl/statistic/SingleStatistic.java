@@ -59,7 +59,6 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
 
     protected SingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
         this.singleBenchmarkResult = singleBenchmarkResult;
-        initPointList();
     }
 
     public SingleBenchmarkResult getSingleBenchmarkResult() {
@@ -105,7 +104,7 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
 
     protected abstract String getCsvHeader();
 
-    public void writeCsvStatisticFile() {
+    private void writeCsvStatisticFile() {
         File csvFile = getCsvFile();
         Writer writer = null;
         try {
@@ -124,7 +123,7 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
         }
     }
 
-    public void readCsvStatisticFile() {
+    private void readCsvStatisticFile() {
         File csvFile = getCsvFile();
         ScoreDefinition scoreDefinition = singleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig()
                 .getScoreDirectorFactoryConfig().buildScoreDefinition();
@@ -183,6 +182,23 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
         } finally {
             IOUtils.closeQuietly(reader);
         }
+    }
+
+    public void unhibernatePointList() {
+        if (!getCsvFile().exists()) {
+            throw new IllegalStateException("The csvFile ( " + getCsvFile() + " ) of the statistic ( " + getStatisticType()
+                    + " ) of the single benchmark ( " + singleBenchmarkResult + " ) doesn't exist.");
+        } else if (pointList != null) {
+            throw new IllegalStateException("The pointList ( " + pointList + " ) of the statistic ( " + getStatisticType()
+                    + " ) of the single benchmark ( " + singleBenchmarkResult + " ) should be null when unhibernating.");
+        }
+        initPointList();
+        readCsvStatisticFile();
+    }
+
+    public void hibernatePointList() {
+        writeCsvStatisticFile();
+        pointList = null;
     }
 
     protected abstract P createPointFromCsvLine(ScoreDefinition scoreDefinition, List<String> csvLine);

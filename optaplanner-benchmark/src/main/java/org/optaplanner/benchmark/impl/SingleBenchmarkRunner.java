@@ -77,6 +77,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
 
         for (SingleStatistic singleStatistic : singleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
             singleStatistic.open(solver);
+            singleStatistic.initPointList();
         }
 
         solver.solve(inputSolution);
@@ -95,7 +96,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
 
         for (SingleStatistic singleStatistic : singleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
             singleStatistic.close(solver);
-            singleStatistic.writeCsvStatisticFile();
+            singleStatistic.hibernatePointList();
         }
         problemBenchmarkResult.writeOutputSolution(singleBenchmarkResult, outputSolution);
         MDC.remove(NAME_MDC);

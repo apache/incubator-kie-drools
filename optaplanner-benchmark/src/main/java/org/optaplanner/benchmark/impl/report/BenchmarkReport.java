@@ -64,10 +64,15 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.impl.score.ScoreUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BenchmarkReport {
+
+    protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     public static final int CHARTED_SCORE_LEVEL_SIZE = 15;
     public static final int LOG_SCALE_MIN_DATASETS_COUNT = 5;
@@ -220,12 +225,46 @@ public class BenchmarkReport {
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
             if (problemBenchmarkResult.hasAnySuccess()) {
                 for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
+                    for (SingleStatistic singleStatistic : problemStatistic.getSingleStatisticList()) {
+                        try {
+                            singleStatistic.unhibernatePointList();
+                        } catch (IllegalStateException e) {
+                            if (!plannerBenchmarkResult.getAggregation()) {
+                                throw new IllegalStateException("Failed to unhibernate point list of SingleStatistic ( "
+                                        + singleStatistic + " ) of ProblemStatistic ( " + problemStatistic + " ).", e);
+                            }
+                            logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
+                                    + "( {} ) of single statistic ( {} ).", singleStatistic.getCsvFile().getAbsolutePath(), singleStatistic);
+                        }
+                    }
                     problemStatistic.writeGraphFiles(this);
+                    for (SingleStatistic singleStatistic : problemStatistic.getSingleStatisticList()) {
+                        if (plannerBenchmarkResult.getAggregation()) {
+                            singleStatistic.setPointList(null);
+                        } else {
+                            singleStatistic.hibernatePointList();
+                        }
+                    }
                 }
                 for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                     if (singleBenchmarkResult.isSuccess()) {
                         for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
+                            try {
+                                pureSingleStatistic.unhibernatePointList();
+                            } catch (IllegalStateException e) {
+                                if (!plannerBenchmarkResult.getAggregation()) {
+                                    throw new IllegalStateException("Failed to unhibernate point list of "
+                                            + "PureSingleStatistic ( " + pureSingleStatistic + " ).", e);
+                                }
+                                logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
+                                        + "( {} ) of pure single statistic ( {} ).", pureSingleStatistic.getCsvFile().getAbsolutePath(), pureSingleStatistic);
+                            }
                             pureSingleStatistic.writeGraphFiles(this);
+                            if (plannerBenchmarkResult.getAggregation()) {
+                                pureSingleStatistic.setPointList(null);
+                            } else {
+                                pureSingleStatistic.hibernatePointList();
+                            }
                         }
                     }
                 }
