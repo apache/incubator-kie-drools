@@ -135,7 +135,7 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     public static InternalKieModule fetchKModule(URL url) {
-        if (url.toString().startsWith("bundle:")) {
+        if (url.toString().startsWith("bundle:") || url.toString().startsWith("bundleresource:")) {
             return fetchOsgiKModule(url);
         }
         return fetchKModule(url, fixURLFromKProjectPath(url));
