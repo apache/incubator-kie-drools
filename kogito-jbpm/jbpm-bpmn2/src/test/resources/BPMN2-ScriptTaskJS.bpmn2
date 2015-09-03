@@ -14,6 +14,7 @@
   <itemDefinition id="_xItem" structureRef="String" />
   <itemDefinition id="_yItem" structureRef="String" />
   <itemDefinition id="_nameItem" structureRef="String" />
+  <itemDefinition id="_personItem" structureRef="org.jbpm.bpmn2.objects.Person" />
 
   <process processType="Private" isExecutable="true" id="ScriptTask" name="ScriptTask Process" tns:packageName="com.sample" >
 
@@ -21,6 +22,7 @@
     <property id="x" itemSubjectRef="_xItem"/>
     <property id="y" itemSubjectRef="_yItem"/>
     <property id="name" itemSubjectRef="_nameItem"/>
+    <property id="person" itemSubjectRef="_personItem"/>
     
     <!-- nodes -->
     <startEvent id="_1" name="StartProcess" />
@@ -36,6 +38,7 @@
         } catch(err) {
             print(err + '\n');
         }
+        print(person.name + '\n');
       </script>
     </scriptTask>
     <userTask id="_3" name="Hello" >
@@ -89,7 +92,7 @@
     <sequenceFlow id="_2-_3" sourceRef="_2" targetRef="_3" />
     <sequenceFlow id="_3-_4" sourceRef="_3" targetRef="_4" />
     <sequenceFlow id="_4-_5" sourceRef="_4" targetRef="_5" name="First" >
-      <conditionExpression xsi:type="tFormalExpression" language="http://www.javascript.com/javascript">kcontext.getVariable('x') == 'Entry'</conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression" language="http://www.javascript.com/javascript">x == 'Entry'</conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_4-_6" sourceRef="_4" targetRef="_6" name="Second" >
       <conditionExpression xsi:type="tFormalExpression" language="http://www.javascript.com/javascript">kcontext.getVariable('x') == 'Exit'</conditionExpression>

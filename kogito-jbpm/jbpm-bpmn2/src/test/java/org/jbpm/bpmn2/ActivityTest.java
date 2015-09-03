@@ -233,6 +233,9 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", handler);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("name", "krisv");
+        Person person = new Person();
+        person.setName("krisv");
+        params.put("person", person);
 
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("ScriptTask", params);
         assertEquals("Entry", processInstance.getVariable("x"));

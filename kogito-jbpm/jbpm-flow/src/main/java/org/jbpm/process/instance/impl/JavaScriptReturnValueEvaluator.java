@@ -67,14 +67,6 @@ public class JavaScriptReturnValueEvaluator implements ReturnValueEvaluator, Ext
         }
         // insert process kcontext
         engine.put("kcontext", context);
-        Object value = engine.eval(expr);
-
-        if ( !(value instanceof Boolean) ) {
-            throw new RuntimeException( "Constraints must return boolean values: " + 
-        		expr + " returns " + value + 
-        		(value == null? "" : " (type=" + value.getClass()));
-        }
-        
         if (context.getProcessInstance() != null && context.getProcessInstance().getProcess() != null) {
             // insert process variables
             VariableScopeInstance variableScope = (VariableScopeInstance) ((WorkflowProcessInstance)context.getProcessInstance())
@@ -87,6 +79,15 @@ public class JavaScriptReturnValueEvaluator implements ReturnValueEvaluator, Ext
                 }
             }
         }
+
+        Object value = engine.eval(expr);
+
+        if ( !(value instanceof Boolean) ) {
+            throw new RuntimeException( "Constraints must return boolean values: " + 
+        		expr + " returns " + value + 
+        		(value == null? "" : " (type=" + value.getClass()));
+        }
+        
         return ((Boolean) value).booleanValue();
     }
 
