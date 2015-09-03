@@ -138,7 +138,7 @@ public abstract class ProblemStatistic {
 
     @Override
     public String toString() {
-        return problemBenchmarkResult.toString() + "_" + problemStatisticType.toString();
+        return problemBenchmarkResult + "_" + problemStatisticType;
     }
 
 }

@@ -82,7 +82,7 @@ public abstract class PureSingleStatistic<P extends StatisticPoint> extends Sing
 
     @Override
     public String toString() {
-        return singleBenchmarkResult.toString() + "_" + singleStatisticType.toString();
+        return singleBenchmarkResult + "_" + singleStatisticType;
     }
 
 }

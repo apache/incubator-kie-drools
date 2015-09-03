@@ -36,7 +36,7 @@ public abstract class ProblemBasedSingleStatistic<P extends StatisticPoint> exte
 
     @Override
     public String toString() {
-        return singleBenchmarkResult.toString() + "_" + problemStatisticType.toString();
+        return singleBenchmarkResult + "_" + problemStatisticType;
     }
 
 }
