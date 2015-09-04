@@ -16,6 +16,7 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.BetaConstraints;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.reteoo.BetaMemory;
@@ -92,7 +93,7 @@ public class PhreakFromNode {
             boolean useLeftMemory = RuleNetworkEvaluator.useLeftMemory(fromNode, leftTuple);
 
             if (useLeftMemory) {
-                fm.betaMemory.getLeftTupleMemory().add(leftTuple);
+                fm.getBetaMemory().getLeftTupleMemory().add(leftTuple);
                 matches = new LinkedHashMap<Object, RightTuple>();
                 leftTuple.setObject(matches);
             }
@@ -283,22 +284,37 @@ public class PhreakFromNode {
                                                     final boolean useLeftMemory,
                                                     LeftTupleSets trgLeftTuples,
                                                     LeftTupleSets stagedLeftTuples) {
-        boolean isAllowed = true;
+        if ( isAllowed( rightTuple.getFactHandle(), alphaConstraints, wm, fm ) ) {
+            propagate( sink, leftTuple, rightTuple, betaConstraints, propagationContext, context, useLeftMemory, trgLeftTuples, stagedLeftTuples );
+        }
+    }
+
+    public static boolean isAllowed( InternalFactHandle factHandle,
+                                     AlphaNodeFieldConstraint[] alphaConstraints,
+                                     InternalWorkingMemory wm,
+                                     FromMemory fm ) {
         if (alphaConstraints != null) {
-            // First alpha node filters
             for (int i = 0, length = alphaConstraints.length; i < length; i++) {
-                if (!alphaConstraints[i].isAllowed(rightTuple.getFactHandle(),
+                if (!alphaConstraints[i].isAllowed(factHandle,
                                                    wm,
-                                                   fm.alphaContexts[i])) {
-                    // next iteration
-                    isAllowed = false;
-                    break;
+                                                   fm.getAlphaContexts()[i])) {
+                    return false;
                 }
             }
         }
+        return true;
+    }
 
-        if (isAllowed && betaConstraints.isAllowedCachedLeft(context,
-                                                             rightTuple.getFactHandle())) {
+    public static void propagate( LeftTupleSink sink,
+                                  LeftTuple leftTuple,
+                                  RightTuple rightTuple,
+                                  BetaConstraints betaConstraints,
+                                  PropagationContext propagationContext,
+                                  ContextEntry[] context,
+                                  boolean useLeftMemory,
+                                  LeftTupleSets trgLeftTuples,
+                                  LeftTupleSets stagedLeftTuples ) {
+        if (betaConstraints.isAllowedCachedLeft(context, rightTuple.getFactHandle())) {
 
             if (rightTuple.firstChild == null) {
                 // this is a new match, so propagate as assert
@@ -320,7 +336,10 @@ public class PhreakFromNode {
         }
     }
 
-    private static void deleteChildLeftTuple(PropagationContext propagationContext, LeftTupleSets trgLeftTuples, LeftTupleSets stagedLeftTuples, LeftTuple childLeftTuple) {
+    public static void deleteChildLeftTuple(PropagationContext propagationContext,
+                                            LeftTupleSets trgLeftTuples,
+                                            LeftTupleSets stagedLeftTuples,
+                                            LeftTuple childLeftTuple) {
         if (childLeftTuple != null) {
             childLeftTuple.unlinkFromLeftParent();
             childLeftTuple.unlinkFromRightParent();

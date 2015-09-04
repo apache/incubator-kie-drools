@@ -53,7 +53,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 public class AlphaNode extends ObjectSource
     implements
     ObjectSinkNode,
-    MemoryFactory {
+    MemoryFactory<AlphaNode.AlphaMemory> {
 
     private static final long        serialVersionUID = 510l;
 
@@ -137,7 +137,7 @@ public class AlphaNode extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
+        final AlphaMemory memory = workingMemory.getNodeMemory( this );
         if ( this.constraint.isAllowed( factHandle,
                                         workingMemory,
                                         memory.context ) ) {
@@ -154,7 +154,7 @@ public class AlphaNode extends ObjectSource
                              final InternalWorkingMemory workingMemory) {
         if ( context.getModificationMask().intersects( inferredMask ) ) {
 
-            final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
+            final AlphaMemory memory = workingMemory.getNodeMemory( this );
             if ( this.constraint.isAllowed( factHandle,
                     workingMemory,
                     memory.context ) ) {
@@ -179,7 +179,7 @@ public class AlphaNode extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        final AlphaMemory memory = (AlphaMemory) workingMemory.getNodeMemory( this );
+        final AlphaMemory memory = workingMemory.getNodeMemory( this );
 
         // get the objects from the parent
         ObjectSinkUpdateAdapter adapter = new ObjectSinkUpdateAdapter( sink,
@@ -193,7 +193,7 @@ public class AlphaNode extends ObjectSource
     /**
      * Creates a HashSet for the AlphaNode's memory.
      */
-    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public AlphaMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         AlphaMemory memory = new AlphaMemory();
         memory.context = this.constraint.createContextEntry();
         return memory;

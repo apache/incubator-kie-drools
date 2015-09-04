@@ -88,7 +88,7 @@ public class PhreakActivationIterator
 
 
     public static List<RuleTerminalNode> populateRuleTerminalNodes(InternalKnowledgeBase kbase, Set<RuleTerminalNode>  nodeSet) {
-        Collection<BaseNode[]> nodesWithArray = ((InternalKnowledgeBase) kbase).getReteooBuilder().getTerminalNodes().values();
+        Collection<BaseNode[]> nodesWithArray = kbase.getReteooBuilder().getTerminalNodes().values();
 
         for (BaseNode[] nodeArray : nodesWithArray) {
             for (BaseNode node : nodeArray) {
@@ -137,7 +137,7 @@ public class PhreakActivationIterator
                         AccumulateMemory am = (AccumulateMemory) memory;
                         bm = am.getBetaMemory();
                         FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                        LeftTuple lt = ((BetaNode) node).getFirstLeftTuple(bm.getLeftTupleMemory(), it);
+                        LeftTuple lt = BetaNode.getFirstLeftTuple(bm.getLeftTupleMemory(), it);
                         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                             AccumulateContext accctx = (AccumulateContext) lt.getObject();
                             collectFromPeers(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
@@ -145,7 +145,7 @@ public class PhreakActivationIterator
                     } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
                         bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                         FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
-                        RightTuple rt = ((BetaNode) node).getFirstRightTuple(bm.getRightTupleMemory(), it);
+                        RightTuple rt = BetaNode.getFirstRightTuple(bm.getRightTupleMemory(), it);
                         for (; rt != null; rt = (RightTuple) it.next(rt)) {
                             for ( LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext() ) {
                                 if ( lt.getFirstChild() != null ) {
@@ -156,7 +156,7 @@ public class PhreakActivationIterator
                     } else {
                         bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                         FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                        LeftTuple lt = ((BetaNode) node).getFirstLeftTuple(bm.getLeftTupleMemory(), it);
+                        LeftTuple lt = BetaNode.getFirstLeftTuple(bm.getLeftTupleMemory(), it);
                         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                             if ( lt.getFirstChild() != null ) {
                                 collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
@@ -193,7 +193,7 @@ public class PhreakActivationIterator
             os = os.getParentObjectSource();
         }
         ObjectTypeNode otn = (ObjectTypeNode) os;
-        final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) wm.getNodeMemory(otn);
+        final ObjectTypeNodeMemory omem = wm.getNodeMemory(otn);
         LeftTupleSink firstLiaSink = lian.getSinkPropagator().getFirstLeftTupleSink();
 
         java.util.Iterator<InternalFactHandle> it = omem.iterator();

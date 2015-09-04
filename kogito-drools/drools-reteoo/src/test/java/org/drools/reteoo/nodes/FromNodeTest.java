@@ -349,8 +349,8 @@ public class FromNodeTest {
 
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( from );
         assertEquals( 1,
-                      memory.betaMemory.getLeftTupleMemory().size() );
-        assertNull( memory.betaMemory.getRightTupleMemory() );
+                      memory.getBetaMemory().getLeftTupleMemory().size() );
+        assertNull( memory.getBetaMemory().getRightTupleMemory() );
         RightTuple rightTuple2 = tuple.getFirstChild().getRightParent();
         RightTuple rightTuple1 = tuple.getFirstChild().getLeftParentNext().getRightParent();
         assertFalse( rightTuple1.equals( rightTuple2 ) );
@@ -367,8 +367,8 @@ public class FromNodeTest {
                                context,
                                workingMemory );
         assertEquals( 0,
-                      memory.betaMemory.getLeftTupleMemory().size() );
-        assertNull( memory.betaMemory.getRightTupleMemory() );
+                      memory.getBetaMemory().getLeftTupleMemory().size() );
+        assertNull( memory.getBetaMemory().getRightTupleMemory() );
     }
     
     @Test

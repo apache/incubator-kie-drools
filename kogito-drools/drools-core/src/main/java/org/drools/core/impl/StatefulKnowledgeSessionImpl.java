@@ -890,7 +890,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             lts = lts.getLeftTupleSource();
         }
         LeftInputAdapterNode lian = ( LeftInputAdapterNode ) lts;
-        LeftInputAdapterNode.LiaNodeMemory lmem = (LeftInputAdapterNode.LiaNodeMemory) getNodeMemory( (MemoryFactory) lts);
+        LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory( lian );
         if ( lmem.getSegmentMemory() == null) {
             SegmentUtilities.createSegmentMemory(lts, this);
         }
@@ -914,7 +914,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.lock.lock();
 
             LeftInputAdapterNode lian = ( LeftInputAdapterNode ) factHandle.getFirstLeftTuple().getLeftTupleSink().getLeftTupleSource();
-            LeftInputAdapterNode.LiaNodeMemory lmem = (LeftInputAdapterNode.LiaNodeMemory) getNodeMemory(lian);
+            LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory(lian);
             SegmentMemory lsmem = lmem.getSegmentMemory();
 
             LeftTuple childLeftTuple = factHandle.getFirstLeftTuple(); // there is only one, all other LTs are peers
@@ -1558,7 +1558,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      *            The <code>JoinNode</code> key.
      * @return The node's memory.
      */
-    public Memory getNodeMemory(final MemoryFactory node) {
+    public <T extends Memory> T getNodeMemory(MemoryFactory<T> node) {
         return nodeMemories.getNodeMemory( node, this );
     }
 

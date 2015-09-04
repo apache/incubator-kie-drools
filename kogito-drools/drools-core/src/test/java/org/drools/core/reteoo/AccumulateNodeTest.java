@@ -100,7 +100,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         this.node.addTupleSink( this.sink );
 
-        this.memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).betaMemory;
+        this.memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).getBetaMemory();
 
         // check memories are empty
         assertEquals( 0,
@@ -311,7 +311,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                                   false,
                                                                   buildContext );
 
-        final BetaMemory memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( accumulateNode )).betaMemory;
+        final BetaMemory memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( accumulateNode )).getBetaMemory();
 
         assertNotNull( memory );
     }
@@ -341,7 +341,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)KnowledgeBaseFactory.newKnowledgeBase(conf).newStatefulKnowledgeSession();
 
-        this.memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).betaMemory;
+        this.memory = ((AccumulateMemory) this.workingMemory.getNodeMemory( this.node )).getBetaMemory();
 
         final DefaultFactHandle f0 = (DefaultFactHandle) this.workingMemory.getFactHandleFactory().newFactHandle( "cheese",
                                                                                                                   null,

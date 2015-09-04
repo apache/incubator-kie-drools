@@ -79,7 +79,7 @@ public class ObjectTypeNode extends ObjectSource
         implements
         ObjectSink,
         Externalizable,
-        MemoryFactory {
+        MemoryFactory<ObjectTypeNode.ObjectTypeNodeMemory> {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -368,7 +368,7 @@ public class ObjectTypeNode extends ObjectSource
         checkDirty();
 
         // Regular updateSink
-        final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory(this);
+        final ObjectTypeNodeMemory memory = workingMemory.getNodeMemory(this);
         Iterator<InternalFactHandle> it = memory.iterator();
 
         while (it.hasNext()) {
@@ -443,7 +443,7 @@ public class ObjectTypeNode extends ObjectSource
         if (!context.getKnowledgeBase().getConfiguration().isPhreakEnabled() && context.getCleanupAdapter() != null) {
             for (InternalWorkingMemory workingMemory : workingMemories) {
                 CleanupAdapter adapter = context.getCleanupAdapter();
-                final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) workingMemory.getNodeMemory(this);
+                final ObjectTypeNodeMemory memory = workingMemory.getNodeMemory(this);
                 Iterator<InternalFactHandle> it = memory.iterator();
                 while (it.hasNext()) {
                     InternalFactHandle handle = it.next();
@@ -463,7 +463,7 @@ public class ObjectTypeNode extends ObjectSource
      * However PrimitiveLongMap is not ideal for spase data. So it should be monitored incase its more optimal
      * to switch back to a standard HashMap.
      */
-    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public ObjectTypeNodeMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         Class<?> classType = ((ClassObjectType) getObjectType()).getClassType();
         if (InitialFact.class.isAssignableFrom(classType)) {
             return new InitialFactObjectTypeNodeMemory(classType);

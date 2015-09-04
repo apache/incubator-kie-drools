@@ -25,9 +25,7 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
-import org.drools.core.marshalling.impl.ProtobufInputMarshaller;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
-import org.drools.core.marshalling.impl.ProtobufMessages;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
@@ -45,10 +43,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-public class FromNode extends LeftTupleSource
+public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     implements
     LeftTupleSinkNode,
-    MemoryFactory {
+    MemoryFactory<T> {
     private static final long          serialVersionUID = 510l;
 
     protected DataProvider               dataProvider;
@@ -134,26 +132,31 @@ public class FromNode extends LeftTupleSource
                                         final PropagationContext context,
                                         final InternalWorkingMemory workingMemory,
                                         final Object object ) {
-        InternalFactHandle handle;
-        ProtobufMessages.FactHandle _handle = null;
+        return new RightTuple( createFactHandle( leftTuple, context, workingMemory, object ) );
+    }
+
+    public InternalFactHandle createFactHandle( LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory, Object object ) {
+        FactHandle _handle = null;
         if ( objectTypeConf == null ) {
             // use default entry point and object class. Notice that at this point object is assignable to resultClass
             objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), resultClass, workingMemory.getKnowledgeBase() );
         }
         if( context.getReaderContext() != null ) {
-            Map<ProtobufInputMarshaller.TupleKey, List<FactHandle>> map = (Map<ProtobufInputMarshaller.TupleKey, List<ProtobufMessages.FactHandle>>) context.getReaderContext().nodeMemories.get( getId() );
+            Map<TupleKey, List<FactHandle>> map = (Map<TupleKey, List<FactHandle>>) context.getReaderContext().nodeMemories.get( getId() );
             if( map != null ) {
-                TupleKey key = PersisterHelper.createTupleKey(leftTuple);
+                TupleKey key = PersisterHelper.createTupleKey( leftTuple );
                 List<FactHandle> list = map.get( key );
                 if( list != null && ! list.isEmpty() ) {
                     // it is a linked list, so the operation is fairly efficient
-                    _handle = ((java.util.LinkedList<ProtobufMessages.FactHandle>)list).removeFirst();
+                    _handle = ((java.util.LinkedList<FactHandle>)list).removeFirst();
                     if( list.isEmpty() ) {
                         map.remove(key);
                     }
                 }
             }
         }
+
+        InternalFactHandle handle;
         if( _handle != null ) {
             // create a handle with the given id
             handle = workingMemory.getFactHandleFactory().newFactHandle( _handle.getId(),
@@ -168,15 +171,9 @@ public class FromNode extends LeftTupleSource
                                                                          workingMemory,
                                                                          null );
         }
-
-        return newRightTuple( handle );
+        return handle;
     }
 
-
-    protected RightTuple newRightTuple(InternalFactHandle handle) {
-        return new RightTuple( handle );
-
-    }
 
     public void addToCreatedHandlesMap(final Map<Object, RightTuple> matches,
                                        final RightTuple rightTuple) {
@@ -196,14 +193,14 @@ public class FromNode extends LeftTupleSource
     }
 
 
-    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public T createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         BetaMemory beta = new BetaMemory( new LeftTupleList(),
                                           null,
                                           this.betaConstraints.createContext(),
                                           NodeTypeEnums.FromNode );
-        return new FromMemory( beta,
-                               this.dataProvider,
-                               this.alphaConstraints );
+        return (T) new FromMemory( beta,
+                                   this.dataProvider,
+                                   this.alphaConstraints );
     }
    
 
@@ -271,9 +268,9 @@ public class FromNode extends LeftTupleSource
 
         private DataProvider      dataProvider;
 
-        public BetaMemory         betaMemory;
-        public Object             providerContext;
-        public ContextEntry[]     alphaContexts;
+        private final BetaMemory         betaMemory;
+        private final ContextEntry[]     alphaContexts;
+        public Object                    providerContext;
 
         public FromMemory(BetaMemory betaMemory,
                           DataProvider dataProvider,
@@ -303,8 +300,8 @@ public class FromNode extends LeftTupleSource
             return betaMemory;
         }
 
-        public void setBetaMemory(BetaMemory betaMemory) {
-            this.betaMemory = betaMemory;
+        public ContextEntry[] getAlphaContexts() {
+            return alphaContexts;
         }
 
         public void reset() {

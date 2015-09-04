@@ -86,9 +86,9 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     public void setSinkFactory(LeftTupleSink sink) {
     }
 
-    public Memory createNodeMemory(MemoryFactory memoryFactory,
-                                   InternalWorkingMemory wm) {
-        Memory memory = wm.getNodeMemory(memoryFactory);
+    public <T extends Memory> T createNodeMemory(MemoryFactory<T> memoryFactory,
+                                                 InternalWorkingMemory wm) {
+        T memory = wm.getNodeMemory(memoryFactory);
         nodeMemories.add(memory);
         return memory;
     }

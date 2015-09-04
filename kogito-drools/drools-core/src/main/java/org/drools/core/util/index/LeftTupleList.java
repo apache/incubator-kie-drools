@@ -225,7 +225,7 @@ public class LeftTupleList
         return LinkedList.fastIterator; // contains no state, so ok to be static
     }    
 
-    public Iterator iterator() {
+    public Iterator<LeftTuple> iterator() {
         if ( this.iterator == null ) {
             this.iterator = new TupleHashTableIterator();
         }
@@ -235,14 +235,14 @@ public class LeftTupleList
 
     public static class TupleHashTableIterator
         implements
-        Iterator {
+        Iterator<LeftTuple> {
         private LeftTuple current;
 
         public void reset(LeftTuple first) {
             this.current = first;
         }
 
-        public Object next() {
+        public LeftTuple next() {
             if ( this.current != null ) {
                 LeftTuple returnValue = this.current;
                 this.current = (LeftTuple) current.getNext();

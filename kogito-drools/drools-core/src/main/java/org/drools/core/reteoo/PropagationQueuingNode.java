@@ -47,7 +47,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class PropagationQueuingNode extends ObjectSource
     implements
     ObjectSinkNode,
-    MemoryFactory {
+    MemoryFactory<PropagationQueuingNode.PropagationQueueingNodeMemory> {
 
     private static final long serialVersionUID        = 510l;
 
@@ -65,10 +65,6 @@ public class PropagationQueuingNode extends ObjectSource
      * Construct a <code>PropagationQueuingNode</code> that will queue up
      * propagations until it the engine reaches a safe propagation point,
      * when all the queued facts are propagated.
-     *
-     * @param id           Node's ID
-     * @param objectSource Node's object source
-     * @param context
      */
     public PropagationQueuingNode(final int id,
                                   final ObjectSource objectSource,
@@ -106,7 +102,7 @@ public class PropagationQueuingNode extends ObjectSource
                             PropagationContext context,
                             InternalWorkingMemory workingMemory ) {
 
-        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory.getNodeMemory( this );
+        final PropagationQueueingNodeMemory memory = workingMemory.getNodeMemory( this );
 
         // this is just sanity code. We may remove it in the future, but keeping it for now.
         if ( !memory.isEmpty() ) {
@@ -147,7 +143,7 @@ public class PropagationQueuingNode extends ObjectSource
     public void assertObject( InternalFactHandle factHandle,
                               PropagationContext context,
                               InternalWorkingMemory workingMemory ) {
-        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory.getNodeMemory( this );
+        final PropagationQueueingNodeMemory memory = workingMemory.getNodeMemory( this );
         memory.addAction( new AssertAction( factHandle,
                                             context ) );
 
@@ -161,7 +157,7 @@ public class PropagationQueuingNode extends ObjectSource
     public void retractObject( InternalFactHandle handle,
                                PropagationContext context,
                                InternalWorkingMemory workingMemory ) {
-        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory.getNodeMemory( this );
+        final PropagationQueueingNodeMemory memory = workingMemory.getNodeMemory( this );
         memory.addAction( new RetractAction( handle,
                                              context ) );
 
@@ -176,23 +172,7 @@ public class PropagationQueuingNode extends ObjectSource
                              ModifyPreviousTuples modifyPreviousTuples,
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
-        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory.getNodeMemory( this );
-
-        //        for ( ObjectSink s : this.sink.getSinks() ) {
-        //            RightTuple rightTuple = modifyPreviousTuples.removeRightTuple( (RightTupleSink) s );
-        //            if ( rightTuple != null ) {
-        //                rightTuple.reAdd();
-        //                // RightTuple previously existed, so continue as modify
-        //                memory.addAction( new ModifyToSinkAction( rightTuple,
-        //                                                          context,
-        //                                                          (RightTupleSink) s ) );
-        //            } else {
-        //                // RightTuple does not exist, so create and continue as assert
-        //                memory.addAction( new AssertToSinkAction( factHandle,
-        //                                                          context,
-        //                                                          s ) );
-        //            }
-        //        }
+        final PropagationQueueingNodeMemory memory = workingMemory.getNodeMemory( this );
 
         for ( ObjectSink s : this.sink.getSinks() ) {
             BetaNode betaNode = (BetaNode) s;
@@ -246,11 +226,9 @@ public class PropagationQueuingNode extends ObjectSource
      * This method implementation is based on optimistic behavior to avoid the
      * use of locks. There may eventually be a minimum wasted effort, but overall
      * it will be better than paying for the lock's cost.
-     *
-     * @param workingMemory
      */
     public void propagateActions( InternalWorkingMemory workingMemory ) {
-        final PropagationQueueingNodeMemory memory = (PropagationQueueingNodeMemory) workingMemory.getNodeMemory( this );
+        final PropagationQueueingNodeMemory memory = workingMemory.getNodeMemory( this );
 
         // first we clear up the action queued flag
         memory.isQueued().compareAndSet( true,
@@ -279,7 +257,7 @@ public class PropagationQueuingNode extends ObjectSource
         throw new UnsupportedOperationException( "PropagationQueueingNode must have its node memory enabled." );
     }
 
-    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public PropagationQueueingNodeMemory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new PropagationQueueingNodeMemory();
     }
     

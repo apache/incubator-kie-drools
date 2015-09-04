@@ -22,11 +22,11 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EvalCondition;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleComponent;
+import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.kie.api.definition.rule.Rule;
 
 import java.io.Externalizable;
@@ -38,7 +38,7 @@ import java.util.Map.Entry;
 public class EvalConditionNode extends LeftTupleSource
     implements
     LeftTupleSinkNode,
-    MemoryFactory {
+    MemoryFactory<EvalConditionNode.EvalMemory> {
 
     private static final long serialVersionUID = 510l;
 
@@ -140,7 +140,7 @@ public class EvalConditionNode extends LeftTupleSource
         return this.leftInput.equals( other.leftInput ) && this.condition.equals( other.condition );
     }
 
-    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public EvalMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new EvalMemory( this.condition.createContext() );
     }
 

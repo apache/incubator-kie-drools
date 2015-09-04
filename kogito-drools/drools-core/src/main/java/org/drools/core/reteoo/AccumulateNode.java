@@ -191,11 +191,12 @@ public class AccumulateNode extends BetaNode {
      * Creates a BetaMemory for the BetaNode's memory.
      */
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+        BetaMemory betaMemory = this.constraints.createBetaMemory(config,
+                                                                  NodeTypeEnums.AccumulateNode);
         AccumulateMemory memory = this.accumulate.isMultiFunction() ?
-                                  new MultiAccumulateMemory(this.accumulate.getAccumulators()) :
-                                  new SingleAccumulateMemory(this.accumulate.getAccumulators()[0]);
-        memory.betaMemory = this.constraints.createBetaMemory(config,
-                                                              NodeTypeEnums.AccumulateNode);
+                                  new MultiAccumulateMemory(betaMemory, this.accumulate.getAccumulators()) :
+                                  new SingleAccumulateMemory(betaMemory, this.accumulate.getAccumulators()[0]);
+
         memory.workingMemoryContext = this.accumulate.createWorkingMemoryContext();
         memory.resultsContext = this.resultBinder.createContext();
         memory.alphaContexts = new ContextEntry[this.resultConstraints.length];
@@ -210,10 +211,14 @@ public class AccumulateNode extends BetaNode {
         Memory {
 
         public Object             workingMemoryContext;
-        public BetaMemory         betaMemory;
+        private final BetaMemory  betaMemory;
         public ContextEntry[]     resultsContext;
         public ContextEntry[]     alphaContexts;
-        
+
+        protected AccumulateMemory( BetaMemory betaMemory ) {
+            this.betaMemory = betaMemory;
+        }
+
         public BetaMemory getBetaMemory() {
             return this.betaMemory;
         }
@@ -237,12 +242,13 @@ public class AccumulateNode extends BetaNode {
 
         private final Accumulator accumulator;
 
-        public SingleAccumulateMemory(Accumulator accumulator) {
+        public SingleAccumulateMemory(BetaMemory betaMemory, Accumulator accumulator) {
+            super( betaMemory );
             this.accumulator = accumulator;
         }
 
         public void reset() {
-            betaMemory.reset();
+            getBetaMemory().reset();
             workingMemoryContext = this.accumulator.createWorkingMemoryContext();
         }
     }
@@ -251,12 +257,13 @@ public class AccumulateNode extends BetaNode {
 
         private final Accumulator[] accumulators;
 
-        public MultiAccumulateMemory(Accumulator[] accumulators) {
+        public MultiAccumulateMemory(BetaMemory betaMemory, Accumulator[] accumulators) {
+            super( betaMemory );
             this.accumulators = accumulators;
         }
 
         public void reset() {
-            betaMemory.reset();
+            getBetaMemory().reset();
             workingMemoryContext = new Object[ this.accumulators.length ];
             for( int i = 0; i < this.accumulators.length; i++ ) {
                 ((Object[])workingMemoryContext)[i] = this.accumulators[i].createWorkingMemoryContext();

@@ -21,7 +21,6 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaMemory;
@@ -110,7 +109,7 @@ public class SegmentUtilities {
                             updateNodeBit = processBranchNode((ConditionalBranchNode) tupleSource, wm, smem);
                             break;
                         case NodeTypeEnums.FromNode:
-                            processFromNode((MemoryFactory) tupleSource, wm, smem);
+                            processFromNode((FromNode) tupleSource, wm, smem);
                             break;
                         case NodeTypeEnums.ReactiveFromNode:
                             processReactiveFromNode((MemoryFactory) tupleSource, wm, smem, nodePosMask);
@@ -198,7 +197,7 @@ public class SegmentUtilities {
     private static boolean processQueryNode(QueryElementNode queryNode, InternalWorkingMemory wm, LeftTupleSource segmentRoot, SegmentMemory smem, long nodePosMask) {
         // Initialize the QueryElementNode and have it's memory reference the actual query SegmentMemory
         SegmentMemory querySmem = getQuerySegmentMemory(wm, segmentRoot, queryNode);
-        QueryElementNodeMemory queryNodeMem = (QueryElementNodeMemory) smem.createNodeMemory(queryNode, wm);
+        QueryElementNodeMemory queryNodeMem = smem.createNodeMemory(queryNode, wm);
         queryNodeMem.setNodePosMaskBit(nodePosMask);
         queryNodeMem.setQuerySegmentMemory(querySmem);
         queryNodeMem.setSegmentMemory(smem);
@@ -207,7 +206,7 @@ public class SegmentUtilities {
 
     public static SegmentMemory getQuerySegmentMemory(InternalWorkingMemory wm, LeftTupleSource segmentRoot, QueryElementNode queryNode) {
         LeftInputAdapterNode liaNode = getQueryLiaNode(queryNode.getQueryElement().getQueryName(), getQueryOtn(segmentRoot));
-        LiaNodeMemory liam = (LiaNodeMemory) wm.getNodeMemory(liaNode);
+        LiaNodeMemory liam = wm.getNodeMemory(liaNode);
         SegmentMemory querySmem = liam.getSegmentMemory();
         if (querySmem == null) {
             querySmem = createSegmentMemory(liaNode, wm);
@@ -226,25 +225,25 @@ public class SegmentUtilities {
     }
 
     private static boolean processBranchNode(ConditionalBranchNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem) {
-        ConditionalBranchMemory branchMem = (ConditionalBranchMemory) smem.createNodeMemory(tupleSource, wm);
+        ConditionalBranchMemory branchMem = smem.createNodeMemory(tupleSource, wm);
         branchMem.setSegmentMemory(smem);
         // nodes after a branch CE can notify, but they cannot impact linking
         return false;
     }
 
     private static void processEvalNode(EvalConditionNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem) {
-        EvalMemory evalMem = (EvalMemory) smem.createNodeMemory(tupleSource, wm);
+        EvalMemory evalMem = smem.createNodeMemory(tupleSource, wm);
         evalMem.setSegmentMemory(smem);
     }
 
     private static void processTimerNode(TimerNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem, long nodePosMask) {
-        TimerNodeMemory tnMem = (TimerNodeMemory) smem.createNodeMemory( tupleSource, wm );
+        TimerNodeMemory tnMem = smem.createNodeMemory( tupleSource, wm );
         tnMem.setNodePosMaskBit(nodePosMask);
         tnMem.setSegmentMemory(smem);
     }
 
     private static long processLiaNode(LeftInputAdapterNode tupleSource, InternalWorkingMemory wm, SegmentMemory smem, long nodePosMask, long allLinkedTestMask) {
-        LiaNodeMemory liaMemory = (LiaNodeMemory) smem.createNodeMemory(tupleSource, wm);
+        LiaNodeMemory liaMemory = smem.createNodeMemory(tupleSource, wm);
         liaMemory.setSegmentMemory(smem);
         liaMemory.setNodePosMaskBit(nodePosMask);
         allLinkedTestMask = allLinkedTestMask | nodePosMask;
@@ -253,7 +252,7 @@ public class SegmentUtilities {
 
     private static long processBetaNode(BetaNode betaNode, InternalWorkingMemory wm, SegmentMemory smem, long nodePosMask, long allLinkedTestMask, boolean updateNodeBit) {
         BetaMemory bm = NodeTypeEnums.AccumulateNode == betaNode.getType() ?
-                        ((AccumulateMemory) smem.createNodeMemory((AccumulateNode) betaNode, wm)).getBetaMemory() :
+                        ((AccumulateMemory) smem.createNodeMemory(betaNode, wm)).getBetaMemory() :
                         (BetaMemory) smem.createNodeMemory(betaNode, wm);
 
         // this must be set first, to avoid recursion as sub networks can be initialised multiple ways
@@ -278,7 +277,7 @@ public class SegmentUtilities {
                 createSegmentMemory(subnetworkLts, wm);
             }
 
-            RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory(riaNode);
+            RiaNodeMemory riaMem = wm.getNodeMemory(riaNode);
             bm.setRiaRuleMemory(riaMem.getRiaPathMemory());
             if (updateNodeBit && canBeDisabled(betaNode) && riaMem.getRiaPathMemory().getAllLinkedMaskTest() > 0) {
                 // only ria's with reactive subnetworks can be disabled and thus need checking

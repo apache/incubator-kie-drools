@@ -109,7 +109,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         this.factSize = factSize;
     }    
 
-    public Iterator iterator() {
+    public Iterator<LeftTuple> iterator() {
         if ( this.tupleValueFullIterator == null ) {
             this.tupleValueFullIterator = new FieldIndexHashTableFullIterator( this );
         } else {
@@ -255,7 +255,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
 
     public static class FieldIndexHashTableFullIterator
         implements
-        Iterator {
+        Iterator<LeftTuple> {
         private final AbstractHashTable hashTable;
         private Entry[]                 table;
         private int                     row;
@@ -271,7 +271,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         /* (non-Javadoc)
          * @see org.kie.util.Iterator#next()
          */
-        public Object next() {
+        public LeftTuple next() {
             while ( this.row <= this.length ) {
                 // check if there is a current bucket
                 while ( this.list == null ) {
@@ -438,7 +438,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
             entry = (LeftTupleList) entry.getNext();
         }
 
-        return entry;
+        return null;
     }
 
     /**
@@ -488,7 +488,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
             }
             entry = (LeftTupleList) entry.next;
         }
-        return entry;
+        return null;
     }
 
     public int size() {

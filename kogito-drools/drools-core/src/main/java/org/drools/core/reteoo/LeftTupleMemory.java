@@ -21,7 +21,7 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 
 public interface LeftTupleMemory {
-    Iterator iterator();
+    Iterator<LeftTuple> iterator();
 
     LeftTuple getFirst(RightTuple rightTuple);
     
@@ -49,9 +49,7 @@ public interface LeftTupleMemory {
     
     /**
      * Iterator that resumes from the current RightTuple, regardless of whether the TupleMemory is hashed or not 
-     * @param rightTuple
-     * @return
-     */    
+     */
     FastIterator fullFastIterator(LeftTuple leftTuple);
 
     void clear();

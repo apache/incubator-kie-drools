@@ -16,15 +16,15 @@
 
 package org.drools.core.util.debug;
 
-import java.util.Stack;
-
 import org.drools.core.common.NetworkNode;
-import org.drools.core.util.FastIterator;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.util.FastIterator;
+
+import java.util.Stack;
 
 public class AccumulateNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -38,20 +38,20 @@ public class AccumulateNodeVisitor extends AbstractNetworkNodeVisitor {
                            Stack<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         AccumulateNode an = (AccumulateNode) node;
-        DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
+        DefaultNodeInfo ni = info.getNodeInfo( node );
         final AccumulateMemory memory = (AccumulateMemory) info.getSession().getNodeMemory( an );
         
         ni.setMemoryEnabled( true );
         
         if( an.isObjectMemoryEnabled() ) {
-            ni.setFactMemorySize( memory.betaMemory.getRightTupleMemory().size() );
+            ni.setFactMemorySize( memory.getBetaMemory().getRightTupleMemory().size() );
         }
         if( an.isLeftTupleMemoryEnabled() ) {
-            ni.setTupleMemorySize( memory.betaMemory.getLeftTupleMemory().size() );
-            FastIterator it =  memory.betaMemory.getLeftTupleMemory().fullFastIterator();
+            ni.setTupleMemorySize( memory.getBetaMemory().getLeftTupleMemory().size() );
+            FastIterator it =  memory.getBetaMemory().getLeftTupleMemory().fullFastIterator();
             
             int i = 0;
-            for ( LeftTuple leftTuple = BetaNode.getFirstLeftTuple( memory.betaMemory.getLeftTupleMemory(), it ); leftTuple != null; leftTuple = ( LeftTuple) it.next( leftTuple  )) {
+            for ( LeftTuple leftTuple = BetaNode.getFirstLeftTuple( memory.getBetaMemory().getLeftTupleMemory(), it ); leftTuple != null; leftTuple = ( LeftTuple) it.next( leftTuple  )) {
                 AccumulateContext ctx = (AccumulateContext) leftTuple.getObject();
                 if ( ctx != null && ctx.result != null ) {
                     i++;

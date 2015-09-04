@@ -166,7 +166,7 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
         return getFirst(key);
     }
 
-    public Iterator iterator() {
+    public Iterator<LeftTuple> iterator() {
         LeftTupleList list = tree.first().value.first().value;
         LeftTuple firstTuple = list != null ? list.first : null;
         return new FastIterator.IteratorAdapter(fastIterator(), firstTuple);

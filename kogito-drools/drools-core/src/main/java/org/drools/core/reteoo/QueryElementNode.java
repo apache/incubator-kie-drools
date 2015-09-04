@@ -56,7 +56,7 @@ import java.util.Map;
 public class QueryElementNode extends LeftTupleSource
     implements
     LeftTupleSinkNode,
-    MemoryFactory {
+    MemoryFactory<QueryElementNode.QueryElementNodeMemory> {
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
@@ -629,7 +629,7 @@ public class QueryElementNode extends LeftTupleSource
         return true;
     }
 
-    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public QueryElementNodeMemory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new QueryElementNodeMemory(this);
     }
     

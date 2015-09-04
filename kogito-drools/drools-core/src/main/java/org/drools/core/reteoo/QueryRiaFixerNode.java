@@ -354,7 +354,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
                 if (node instanceof BetaMemory) {
                     rightMemory = ((BetaMemory) node).getRightTupleMemory();
                 } else if (node instanceof AccumulateMemory) {
-                    rightMemory = ((AccumulateMemory) node).betaMemory.getRightTupleMemory();
+                    rightMemory = ((AccumulateMemory) node).getBetaMemory().getRightTupleMemory();
                 }
 
 

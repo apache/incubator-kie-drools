@@ -52,7 +52,7 @@ public interface InternalWorkingMemory
 
     void setAgendaEventSupport(AgendaEventSupport agendaEventSupport);
 
-    Memory getNodeMemory(MemoryFactory node);
+    <T extends Memory> T getNodeMemory(MemoryFactory<T> node);
 
     void clearNodeMemory(MemoryFactory node);
     

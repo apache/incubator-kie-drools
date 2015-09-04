@@ -57,7 +57,7 @@ public class ReteFromNode extends FromNode {
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         LeftTupleSourceUtils.doModifyLeftTuple(factHandle, modifyPreviousTuples, context, workingMemory,
-                                               (LeftTupleSink) this, getLeftInputOtnId(), getLeftInferredMask());
+                                               this, getLeftInputOtnId(), getLeftInferredMask());
     }
 
     /**
@@ -79,12 +79,12 @@ public class ReteFromNode extends FromNode {
         }
 
         if ( useLeftMemory ) {
-            memory.betaMemory.getLeftTupleMemory().add( leftTuple );
+            memory.getBetaMemory().getLeftTupleMemory().add( leftTuple );
             matches = new LinkedHashMap<Object, RightTuple>();
             leftTuple.setObject( matches );
         }
 
-        this.betaConstraints.updateFromTuple( memory.betaMemory.getContext(),
+        this.betaConstraints.updateFromTuple( memory.getBetaMemory().getContext(),
                                               workingMemory,
                                               leftTuple );
 
@@ -114,7 +114,7 @@ public class ReteFromNode extends FromNode {
             }
         }
 
-        this.betaConstraints.resetTuple( memory.betaMemory.getContext() );
+        this.betaConstraints.resetTuple( memory.getBetaMemory().getContext() );
     }
 
     @SuppressWarnings("unchecked")
@@ -124,13 +124,13 @@ public class ReteFromNode extends FromNode {
 
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
 
-        memory.betaMemory.getLeftTupleMemory().removeAdd( leftTuple );
+        memory.getBetaMemory().getLeftTupleMemory().removeAdd( leftTuple );
 
         final Map<Object, RightTuple> previousMatches = (Map<Object, RightTuple>) leftTuple.getObject();
         final Map<Object, RightTuple> newMatches = new HashMap<Object, RightTuple>();
         leftTuple.setObject( newMatches );
 
-        this.betaConstraints.updateFromTuple( memory.betaMemory.getContext(),
+        this.betaConstraints.updateFromTuple( memory.getBetaMemory().getContext(),
                                               workingMemory,
                                               leftTuple );
 
@@ -172,7 +172,7 @@ public class ReteFromNode extends FromNode {
                                     rightTuple );
         }
 
-        this.betaConstraints.resetTuple( memory.betaMemory.getContext() );
+        this.betaConstraints.resetTuple( memory.getBetaMemory().getContext() );
 
         for ( RightTuple rightTuple : previousMatches.values() ) {
             for ( RightTuple current = rightTuple; current != null; current = (RightTuple) rightIt.next( current ) ) {
@@ -196,7 +196,7 @@ public class ReteFromNode extends FromNode {
             for ( int i = 0, length = this.alphaConstraints.length; i < length; i++ ) {
                 if ( !this.alphaConstraints[i].isAllowed( rightTuple.getFactHandle(),
                                                           workingMemory,
-                                                          memory.alphaContexts[i] ) ) {
+                                                          memory.getAlphaContexts()[i] ) ) {
                     // next iteration
                     isAllowed = false;
                     break;
@@ -204,7 +204,7 @@ public class ReteFromNode extends FromNode {
             }
         }
 
-        if ( isAllowed && this.betaConstraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
+        if ( isAllowed && this.betaConstraints.isAllowedCachedLeft( memory.getBetaMemory().getContext(),
                                                                     rightTuple.getFactHandle() ) ) {
 
             if ( rightTuple.firstChild == null ) {
@@ -251,7 +251,7 @@ public class ReteFromNode extends FromNode {
                                  final InternalWorkingMemory workingMemory) {
 
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
-        memory.betaMemory.getLeftTupleMemory().remove( leftTuple );
+        memory.getBetaMemory().getLeftTupleMemory().remove( leftTuple );
         this.sink.propagateRetractLeftTuple( leftTuple,
                                              context,
                                              workingMemory );
@@ -267,7 +267,7 @@ public class ReteFromNode extends FromNode {
         if ( !this.isInUse() ) {
             for ( InternalWorkingMemory workingMemory : workingMemories ) {
                 FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
-                Iterator it = memory.betaMemory.getLeftTupleMemory().iterator();
+                Iterator it = memory.getBetaMemory().getLeftTupleMemory().iterator();
                 for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
                     unlinkCreatedHandles( workingMemory,
                                           memory,
@@ -306,10 +306,10 @@ public class ReteFromNode extends FromNode {
         final FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
 
         FastIterator rightIter = LinkedList.fastIterator;
-        final Iterator tupleIter = memory.betaMemory.getLeftTupleMemory().iterator();
+        final Iterator tupleIter = memory.getBetaMemory().getLeftTupleMemory().iterator();
         for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
 
-            this.betaConstraints.updateFromTuple( memory.betaMemory.getContext(),
+            this.betaConstraints.updateFromTuple( memory.getBetaMemory().getContext(),
                                                   workingMemory,
                                                   leftTuple );
 
@@ -322,7 +322,7 @@ public class ReteFromNode extends FromNode {
                         for ( int i = 0, length = this.alphaConstraints.length; i < length; i++ ) {
                             if ( !this.alphaConstraints[i].isAllowed( rightTuple.getFactHandle(),
                                                                       workingMemory,
-                                                                      memory.alphaContexts[i] ) ) {
+                                                                      memory.getAlphaContexts()[i] ) ) {
                                 // next iteration
                                 isAllowed = false;
                                 break;
@@ -330,7 +330,7 @@ public class ReteFromNode extends FromNode {
                         }
                     }
 
-                    if ( isAllowed && this.betaConstraints.isAllowedCachedLeft( memory.betaMemory.getContext(),
+                    if ( isAllowed && this.betaConstraints.isAllowedCachedLeft( memory.getBetaMemory().getContext(),
                                                                                 rightTuple.getFactHandle() ) ) {
                         sink.assertLeftTuple( sink.createLeftTuple( leftTuple,
                                                                     rightTuple,
@@ -344,7 +344,7 @@ public class ReteFromNode extends FromNode {
                 }
             }
 
-            this.betaConstraints.resetTuple( memory.betaMemory.getContext() );
+            this.betaConstraints.resetTuple( memory.getBetaMemory().getContext() );
         }
     }
 
