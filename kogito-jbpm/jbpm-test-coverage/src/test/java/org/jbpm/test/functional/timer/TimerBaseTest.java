@@ -39,6 +39,7 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.ResourceRegistrar;
 import bitronix.tm.resource.common.XAResourceProducer;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
@@ -58,6 +59,12 @@ public abstract class TimerBaseTest extends AbstractBaseTest {
     protected static final String USER = "user";
     protected static final String PASSWORD = "password";
     protected static final String JDBC_URL = "url";
+    
+    static {
+        if (!TransactionManagerServices.isTransactionManagerRunning()) {
+            TransactionManagerServices.getConfiguration().setJournal("null");
+        }
+    }
     
     public static PoolingDataSource setupPoolingDataSource() {
         Properties dsProps = getDatasourceProperties();
