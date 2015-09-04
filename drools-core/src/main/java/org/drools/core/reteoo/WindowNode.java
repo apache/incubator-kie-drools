@@ -270,7 +270,7 @@ public class WindowNode extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory wm) {
-        final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) wm.getNodeMemory( getObjectTypeNode());
+        final ObjectTypeNodeMemory omem = wm.getNodeMemory( getObjectTypeNode());
         Iterator<InternalFactHandle> it = omem.iterator();
 
         while (it.hasNext()) {

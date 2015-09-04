@@ -15,7 +15,18 @@
 
 package org.drools.compiler.xpath;
 
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleMemory;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.ReactiveFromNode;
+import org.drools.core.util.Iterator;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
@@ -376,6 +387,76 @@ public class XpathTest {
 
         assertEquals( 1, list.size() );
         assertTrue( list.contains( "doll" ) );
+    }
+
+    @Test
+    public void testReactiveDeleteOnLia() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  Man( $toy: /wife/children{age > 10}/toys )\n" +
+                "then\n" +
+                "  list.add( $toy.getName() );\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
+        KieSession ksession = kbase.newKieSession();
+
+        EntryPointNode epn = ( (InternalKnowledgeBase) ksession.getKieBase() ).getRete().getEntryPointNodes().values().iterator().next();
+        ObjectTypeNode otn = epn.getObjectTypeNodes().values().iterator().next();
+        LeftInputAdapterNode lian = (LeftInputAdapterNode)otn.getSinkPropagator().getSinks()[0];
+        ReactiveFromNode from1 = (ReactiveFromNode)lian.getSinkPropagator().getSinks()[0];
+        ReactiveFromNode from2 = (ReactiveFromNode)from1.getSinkPropagator().getSinks()[0];
+        ReactiveFromNode from3 = (ReactiveFromNode)from2.getSinkPropagator().getSinks()[0];
+
+        BetaMemory betaMemory = ( (InternalWorkingMemory) ksession ).getNodeMemory(from3).getBetaMemory();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        Woman alice = new Woman( "Alice", 38 );
+        Man bob = new Man( "Bob", 40 );
+        bob.setWife( alice );
+
+        Child charlie = new Child( "Charles", 12 );
+        Child debbie = new Child( "Debbie", 11 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        charlie.addToy( new Toy( "car" ) );
+        charlie.addToy( new Toy( "ball" ) );
+        debbie.addToy( new Toy( "doll" ) );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        assertEquals( 3, list.size() );
+        assertTrue( list.contains( "car" ) );
+        assertTrue( list.contains( "ball" ) );
+        assertTrue( list.contains( "doll" ) );
+
+        LeftTupleMemory tupleMemory = betaMemory.getLeftTupleMemory();
+        assertEquals( 2, betaMemory.getLeftTupleMemory().size() );
+        Iterator<LeftTuple> it = tupleMemory.iterator();
+        for ( LeftTuple next = it.next(); next != null; next = it.next() ) {
+            Object obj = next.getHandle().getObject();
+            assertTrue( obj == charlie || obj == debbie );
+        }
+
+        list.clear();
+        debbie.setAge( 10 );
+        ksession.fireAllRules();
+
+        assertEquals( 0, list.size() );
+
+        assertEquals( 1, betaMemory.getLeftTupleMemory().size() );
+        it = tupleMemory.iterator();
+        for ( LeftTuple next = it.next(); next != null; next = it.next() ) {
+            Object obj = next.getHandle().getObject();
+            assertTrue( obj == charlie );
+        }
     }
 
     @Test

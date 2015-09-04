@@ -37,7 +37,7 @@ import java.util.Arrays;
 public class TimerNode extends LeftTupleSource
         implements
         LeftTupleSinkNode,
-        MemoryFactory {
+        MemoryFactory<TimerNode.TimerNodeMemory> {
 
     private static final long serialVersionUID = 510l;
     private Timer             timer;
@@ -128,8 +128,8 @@ public class TimerNode extends LeftTupleSource
     public int hashCode() {
         int hash = this.leftInput.hashCode() ^ this.timer.hashCode();
         if (calendarNames != null) {
-            for (int i = 0; i < calendarNames.length; i++) {
-                hash = hash ^ calendarNames[i].hashCode();
+            for ( String calendarName : calendarNames ) {
+                hash = hash ^ calendarName.hashCode();
             }
         }
         return hash;
@@ -162,7 +162,7 @@ public class TimerNode extends LeftTupleSource
                this.timer.equals(other.timer) && this.leftInput.equals(other.leftInput);
     }
 
-    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public TimerNodeMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new TimerNodeMemory();
     }
 

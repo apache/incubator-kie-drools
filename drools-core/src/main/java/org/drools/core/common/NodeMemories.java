@@ -25,7 +25,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
  */
 public interface NodeMemories {
 
-    Memory getNodeMemory(MemoryFactory node, InternalWorkingMemory wm);
+    <T extends Memory> T getNodeMemory(MemoryFactory<T> node, InternalWorkingMemory wm);
 
     void clearNodeMemory( MemoryFactory node );
 

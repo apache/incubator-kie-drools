@@ -34,7 +34,7 @@ import java.io.ObjectOutput;
  * Node which allows to follow different paths in the Rete-OO network,
  * based on the result of a boolean <code>Test</code>.
  */
-public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleSinkNode, MemoryFactory  {
+public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleSinkNode, MemoryFactory<ConditionalBranchNode.ConditionalBranchMemory>  {
 
     private LeftTupleSource tupleSource;
 
@@ -119,7 +119,7 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         return this.tupleSource.equals( other.tupleSource ) && this.branchEvaluator.equals( other.branchEvaluator );
     }
 
-    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public ConditionalBranchMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new ConditionalBranchMemory( branchEvaluator.createContext() );
     }
 

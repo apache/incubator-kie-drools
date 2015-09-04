@@ -16,12 +16,12 @@
 
 package org.drools.core.util.debug;
 
-import java.util.Stack;
-
 import org.drools.core.common.NetworkNode;
 import org.drools.core.reteoo.FromNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.FromNode.FromMemory;
+import org.drools.core.reteoo.LeftTuple;
+
+import java.util.Stack;
 
 public class FromNodeVisitor extends AbstractNetworkNodeVisitor {
     
@@ -35,16 +35,16 @@ public class FromNodeVisitor extends AbstractNetworkNodeVisitor {
                            Stack<NetworkNode> nodeStack,
                            StatefulKnowledgeSessionInfo info) {
         FromNode fn = (FromNode) node;
-        DefaultNodeInfo ni = (DefaultNodeInfo) info.getNodeInfo( node );
+        DefaultNodeInfo ni = info.getNodeInfo( node );
         final FromMemory memory = (FromMemory) info.getSession().getNodeMemory( fn );
         
         ni.setMemoryEnabled( true );
         
         if( fn.isLeftTupleMemoryEnabled() ) {
-            ni.setTupleMemorySize( memory.betaMemory.getLeftTupleMemory().size() );
+            ni.setTupleMemorySize( memory.getBetaMemory().getLeftTupleMemory().size() );
 
             long handles = 0;
-            org.drools.core.util.Iterator it = memory.betaMemory.getLeftTupleMemory().iterator();
+            org.drools.core.util.Iterator it = memory.getBetaMemory().getLeftTupleMemory().iterator();
             for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
                 LeftTuple child = leftTuple.getFirstChild();
                 while( child != null ) {

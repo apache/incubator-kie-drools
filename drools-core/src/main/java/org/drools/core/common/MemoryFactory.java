@@ -18,8 +18,8 @@ package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
 
-public interface MemoryFactory {
-    public int getId();
+public interface MemoryFactory<T extends Memory> {
+    int getId();
     
-    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm);
+    T createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm);
 }

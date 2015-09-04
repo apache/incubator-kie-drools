@@ -121,7 +121,7 @@ public class LeftTupleIndexRBTree implements LeftTupleMemory, Externalizable {
         return getNext(key, true);
     }
 
-    public Iterator iterator() {
+    public Iterator<LeftTuple> iterator() {
         LeftTupleList list = tree.first();
         LeftTuple firstTuple = list != null ? list.first : null;
         return new FastIterator.IteratorAdapter(fastIterator(), firstTuple);

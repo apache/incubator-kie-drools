@@ -45,7 +45,7 @@ import java.util.Map;
 public class RightInputAdapterNode extends ObjectSource
     implements
     LeftTupleSinkNode,
-    MemoryFactory {
+    MemoryFactory<RightInputAdapterNode.RiaNodeMemory> {
 
     private static final long serialVersionUID = 510l;
 
@@ -108,7 +108,7 @@ public class RightInputAdapterNode extends ObjectSource
     /**
      * Creates and return the node memory
      */    
-    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public RiaNodeMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         RiaNodeMemory rianMem = new RiaNodeMemory();
 
         RiaPathMemory pmem = new RiaPathMemory(this);

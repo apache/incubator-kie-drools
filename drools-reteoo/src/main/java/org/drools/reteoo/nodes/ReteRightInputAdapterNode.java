@@ -180,7 +180,7 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
         workingMemory.clearNodeMemory( this );
     }
 
-    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public RiaNodeMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new RiaNodeMemory();
     }
 
