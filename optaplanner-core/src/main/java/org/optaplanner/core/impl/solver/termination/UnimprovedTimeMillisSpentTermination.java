@@ -31,6 +31,10 @@ public class UnimprovedTimeMillisSpentTermination extends AbstractTermination {
         }
     }
 
+    public long getUnimprovedTimeMillisSpentLimit() {
+        return unimprovedTimeMillisSpentLimit;
+    }
+
     // ************************************************************************
     // Terminated methods
     // ************************************************************************
