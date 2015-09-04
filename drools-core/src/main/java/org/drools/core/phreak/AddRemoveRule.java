@@ -82,7 +82,7 @@ public class AddRemoveRule {
 
                 collectRtnPathMemories(splitStartLeftTupleSource, wm, pathMems, tn); // get all PathMemories, except current
 
-                PathMemory newPmem = (PathMemory) wm.getNodeMemory( tn );
+                PathMemory newPmem = wm.getNodeMemory( tn );
 
                 int s = getSegmentPos(splitStartLeftTupleSource, null);
 
@@ -142,7 +142,7 @@ public class AddRemoveRule {
 
          for ( InternalWorkingMemory wm : wms ) {
 
-             PathMemory removedPmem = (PathMemory) wm.getNodeMemory( tn );
+             PathMemory removedPmem = wm.getNodeMemory( tn );
              int s = getSegmentPos(splitStartNode, null);
 
              // if a segment is going to be merged it is necessary to flush all its staged left tuples before doing any change to the network
@@ -511,7 +511,7 @@ public class AddRemoveRule {
             os = os.getParentObjectSource();
         }
         ObjectTypeNode otn = (ObjectTypeNode) os;
-        final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) wm.getNodeMemory(otn);
+        final ObjectTypeNodeMemory omem = wm.getNodeMemory(otn);
         Iterator<InternalFactHandle> it = omem.iterator();
 
         while (it.hasNext()) {
@@ -684,7 +684,7 @@ public class AddRemoveRule {
             os = os.getParentObjectSource();
         }
         ObjectTypeNode otn = (ObjectTypeNode) os;
-        final ObjectTypeNodeMemory omem = (ObjectTypeNodeMemory) wm.getNodeMemory(otn);
+        final ObjectTypeNodeMemory omem = wm.getNodeMemory(otn);
         LeftTupleSink firstLiaSink = lian.getSinkPropagator().getFirstLeftTupleSink();
         Iterator<InternalFactHandle> it = omem.iterator();
 

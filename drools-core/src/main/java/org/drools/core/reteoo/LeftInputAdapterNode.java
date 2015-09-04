@@ -59,7 +59,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.*;
 public class LeftInputAdapterNode extends LeftTupleSource
         implements
         ObjectSinkNode,
-        MemoryFactory {
+        MemoryFactory<LeftInputAdapterNode.LiaNodeMemory> {
 
     protected static final transient Logger log = LoggerFactory.getLogger(LeftInputAdapterNode.class);
 
@@ -162,7 +162,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
+        LiaNodeMemory lm = workingMemory.getNodeMemory( this );
         if ( lm.getSegmentMemory() == null ) {
             SegmentUtilities.createSegmentMemory(this, workingMemory);
         }
@@ -349,7 +349,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     public void retractLeftTuple(LeftTuple leftTuple,
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory) {
-        LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
+        LiaNodeMemory lm = workingMemory.getNodeMemory( this );
         SegmentMemory smem = lm.getSegmentMemory();
         if ( smem.getTipNode() == this ) {
             // segment with only a single LiaNode in it, skip to next segment
@@ -369,7 +369,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         LeftTuple leftTuple = processDeletesFromModify(modifyPreviousTuples, context, workingMemory, otnId);
 
-        LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
+        LiaNodeMemory lm = workingMemory.getNodeMemory( this );
         if ( lm.getSegmentMemory() == null ) {
             SegmentUtilities.createSegmentMemory( this, workingMemory );
         }
@@ -403,7 +403,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             modifyPreviousTuples.removeLeftTuple();
 
             LeftInputAdapterNode prevLiaNode = (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource();
-            LiaNodeMemory prevLm = ( LiaNodeMemory ) workingMemory.getNodeMemory( prevLiaNode );
+            LiaNodeMemory prevLm = workingMemory.getNodeMemory( prevLiaNode );
             SegmentMemory prevSm = prevLm.getSegmentMemory();
             doDeleteObject( leftTuple, context, prevSm, workingMemory, prevLiaNode, true, prevLm );
 
@@ -417,22 +417,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                        PropagationContext context,
                                        InternalWorkingMemory workingMemory) {
         modifyObject(factHandle, modifyPreviousTuples, context, workingMemory );
-//        ObjectTypeNode.Id otnId = this.sink.getFirstLeftTupleSink().getLeftInputOtnId();
-//
-//        LeftTuple leftTuple = processDeletesFromModify(modifyPreviousTuples, context, workingMemory, otnId);
-//
-//        LiaNodeMemory lm = ( LiaNodeMemory ) workingMemory.getNodeMemory( this );
-//        if ( lm.getSegmentMemory() == null ) {
-//            SegmentUtilities.createSegmentMemory( this, workingMemory );
-//        }
-//
-//        if ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId().equals( otnId ) ) {
-//            modifyPreviousTuples.removeLeftTuple();
-//            leftTuple.reAdd();
-//            doUpdateObject( leftTuple, context, workingMemory, (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource(), true, lm, lm.getSegmentMemory() );
-//        } else {
-//            throw new RuntimeException("no");
-//        }
     }
 
 
@@ -524,7 +508,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return null;
     }
 
-    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public LiaNodeMemory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         return new LiaNodeMemory();
     }
 

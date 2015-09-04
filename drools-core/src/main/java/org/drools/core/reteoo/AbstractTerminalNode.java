@@ -20,7 +20,6 @@ import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -130,7 +129,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     public abstract RuleImpl getRule();
     
 
-    public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public PathMemory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         PathMemory pmem = new PathMemory(this);
         initPathMemory(pmem, getLeftTupleSource(), null, wm, null );
         return pmem;

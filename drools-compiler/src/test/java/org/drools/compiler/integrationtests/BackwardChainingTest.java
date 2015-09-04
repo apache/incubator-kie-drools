@@ -1619,11 +1619,11 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         food );
 
         assertEquals( 0,
-                      accMemory.betaMemory.getRightTupleMemory().size() );
+                      accMemory.getBetaMemory().getRightTupleMemory().size() );
         assertEquals( 0,
                       existsMemory.getRightTupleMemory().size() );
         assertEquals( 0,
-                      fromMemory.betaMemory.getLeftTupleMemory().size() );
+                      fromMemory.getBetaMemory().getLeftTupleMemory().size() );
         assertEquals( 0,
                       notMemory.getRightTupleMemory().size() );
 
@@ -1651,11 +1651,11 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         food );
 
         assertEquals( 2,
-                      accMemory.betaMemory.getRightTupleMemory().size() );
+                      accMemory.getBetaMemory().getRightTupleMemory().size() );
         assertEquals( 2,
                       existsMemory.getRightTupleMemory().size() );
         assertEquals( 2,
-                      fromMemory.betaMemory.getLeftTupleMemory().size() );
+                      fromMemory.getBetaMemory().getLeftTupleMemory().size() );
         assertEquals( 0,
                       notMemory.getRightTupleMemory().size() );
 
@@ -1676,11 +1676,11 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                         food );
 
         assertEquals( 2,
-                      accMemory.betaMemory.getRightTupleMemory().size() );
+                      accMemory.getBetaMemory().getRightTupleMemory().size() );
         assertEquals( 2,
                       existsMemory.getRightTupleMemory().size() );
         assertEquals( 2,
-                      fromMemory.betaMemory.getLeftTupleMemory().size() );
+                      fromMemory.getBetaMemory().getLeftTupleMemory().size() );
         assertEquals( 0,
                       notMemory.getRightTupleMemory().size() );
         food.clear();
@@ -1692,11 +1692,11 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      accMemory.betaMemory.getRightTupleMemory().size() );
+                      accMemory.getBetaMemory().getRightTupleMemory().size() );
         assertEquals( 2,
                       existsMemory.getRightTupleMemory().size() );
         assertEquals( 2,
-                      fromMemory.betaMemory.getLeftTupleMemory().size() );
+                      fromMemory.getBetaMemory().getLeftTupleMemory().size() );
         assertEquals( 1,
                       notMemory.getRightTupleMemory().size() );
 
@@ -1709,11 +1709,11 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 2,
-                      accMemory.betaMemory.getRightTupleMemory().size() );
+                      accMemory.getBetaMemory().getRightTupleMemory().size() );
         assertEquals( 2,
                       existsMemory.getRightTupleMemory().size() );
         assertEquals( 2,
-                      fromMemory.betaMemory.getLeftTupleMemory().size() );
+                      fromMemory.getBetaMemory().getLeftTupleMemory().size() );
         assertEquals( 0,
                       notMemory.getRightTupleMemory().size() );
 
@@ -1725,11 +1725,11 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         // Close the open
         query.close();
         assertEquals( 0,
-                      accMemory.betaMemory.getRightTupleMemory().size() );
+                      accMemory.getBetaMemory().getRightTupleMemory().size() );
         assertEquals( 0,
                       existsMemory.getRightTupleMemory().size() );
         assertEquals( 0,
-                      fromMemory.betaMemory.getLeftTupleMemory().size() );
+                      fromMemory.getBetaMemory().getLeftTupleMemory().size() );
         assertEquals( 0,
                       notMemory.getRightTupleMemory().size() );
     }

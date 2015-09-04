@@ -29,7 +29,9 @@ import org.drools.core.spi.PropagationContext;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drools.core.phreak.PhreakFromNode.checkConstraintsAndPropagate;
+import static org.drools.core.phreak.PhreakFromNode.deleteChildLeftTuple;
+import static org.drools.core.phreak.PhreakFromNode.isAllowed;
+import static org.drools.core.phreak.PhreakFromNode.propagate;
 
 public abstract class ReactiveObject {
     private final List<LeftTuple> lts = new ArrayList<LeftTuple>();
@@ -77,28 +79,35 @@ public abstract class ReactiveObject {
 
         @Override
         public void execute( InternalWorkingMemory wm ) {
-            ReactiveFromNode.ReactiveFromMemory mem = (ReactiveFromNode.ReactiveFromMemory)wm.getNodeMemory(node);
+            ReactiveFromNode.ReactiveFromMemory mem = wm.getNodeMemory(node);
+            InternalFactHandle factHandle = node.createFactHandle( leftTuple, propagationContext, wm, object );
 
-            RightTuple rightTuple = node.createRightTuple(leftTuple, propagationContext, wm, object);
+            if ( isAllowed( factHandle, node.getAlphaConstraints(), wm, mem ) ) {
+                ContextEntry[] context = mem.getBetaMemory().getContext();
+                BetaConstraints betaConstraints = node.getBetaConstraints();
+                betaConstraints.updateFromTuple( context,
+                                                 wm,
+                                                 leftTuple );
 
-            ContextEntry[] context = mem.getBetaMemory().getContext();
-            BetaConstraints betaConstraints = node.getBetaConstraints();
-            betaConstraints.updateFromTuple(context,
-                                            wm,
-                                            leftTuple);
-
-            checkConstraintsAndPropagate(sink,
-                                         leftTuple,
-                                         rightTuple,
-                                         node.getAlphaConstraints(),
-                                         betaConstraints,
-                                         propagationContext,
-                                         wm,
-                                         mem,
-                                         context,
-                                         RuleNetworkEvaluator.useLeftMemory( node, leftTuple ),
-                                         mem.getStagedLeftTuples(),
-                                         null);
+                propagate( sink,
+                           leftTuple,
+                           new RightTuple( factHandle ),
+                           betaConstraints,
+                           propagationContext,
+                           context,
+                           RuleNetworkEvaluator.useLeftMemory( node, leftTuple ),
+                           mem.getStagedLeftTuples(),
+                           null );
+            } else {
+                LeftTuple childLeftTuple = leftTuple.getFirstChild();
+                while (childLeftTuple != null) {
+                    LeftTuple next = childLeftTuple.getLeftParentNext();
+                    if ( object == childLeftTuple.getHandle().getObject() ) {
+                        deleteChildLeftTuple( propagationContext, mem.getStagedLeftTuples(), null, childLeftTuple );
+                    }
+                    childLeftTuple = next;
+                }
+            }
 
             mem.getBetaMemory().setNodeDirty(wm);
         }

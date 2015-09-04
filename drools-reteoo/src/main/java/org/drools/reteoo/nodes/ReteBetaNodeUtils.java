@@ -18,7 +18,6 @@ package org.drools.reteoo.nodes;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
@@ -97,7 +96,7 @@ public class ReteBetaNodeUtils {
                 // handle special cases for Accumulate to make sure they tidy up their specific data
                 // like destroying the local FactHandles
                 if (object instanceof AccumulateMemory) {
-                    memory = ((AccumulateMemory) object).betaMemory;
+                    memory = ((AccumulateMemory) object).getBetaMemory();
                 } else {
                     memory = (BetaMemory) object;
                 }

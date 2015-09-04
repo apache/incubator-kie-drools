@@ -21,14 +21,13 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.LeftTupleSetsImpl;
-import org.drools.core.common.Memory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.From;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.util.index.LeftTupleList;
 
-public class ReactiveFromNode extends FromNode {
+public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemory> {
     public ReactiveFromNode() { }
 
     public ReactiveFromNode(final int id,
@@ -42,7 +41,7 @@ public class ReactiveFromNode extends FromNode {
         super(id, dataProvider, tupleSource, constraints, binder, tupleMemoryEnabled, context, from);
     }
 
-    public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
+    public ReactiveFromMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         BetaMemory beta = new BetaMemory( new LeftTupleList(),
                                           null,
                                           this.betaConstraints.createContext(),

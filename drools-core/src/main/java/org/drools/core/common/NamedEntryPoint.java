@@ -29,7 +29,6 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl.ObjectStoreWrapper;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
@@ -737,7 +736,7 @@ public class NamedEntryPoint
                 // even if they were also asserted into higher level OTNs as well
                 ObjectTypeNode otn = conf.getConcreteObjectTypeNode();
                 if (otn != null) {
-                    Iterator<InternalFactHandle> it = ((ObjectTypeNodeMemory) this.getInternalWorkingMemory().getNodeMemory(otn)).iterator();
+                    Iterator<InternalFactHandle> it = this.getInternalWorkingMemory().getNodeMemory(otn).iterator();
                     while (it.hasNext()) {
                         removePropertyChangeListener(it.next(), false);
                     }

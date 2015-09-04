@@ -277,7 +277,7 @@ public abstract class BetaNode extends LeftTupleSource
     public void assertObject( final InternalFactHandle factHandle,
                               final PropagationContext pctx,
                               final InternalWorkingMemory wm ) {
-        final BetaMemory memory = (BetaMemory) getBetaMemoryFromRightInput(this, wm);
+        final BetaMemory memory = getBetaMemoryFromRightInput(this, wm);
 
         RightTuple rightTuple = createRightTuple( factHandle, this, pctx );
 
@@ -679,7 +679,7 @@ public abstract class BetaNode extends LeftTupleSource
         return rightTuple;
     }
     
-    public static Object getBetaMemoryFromRightInput( final BetaNode betaNode, final InternalWorkingMemory workingMemory ) {        
+    public static BetaMemory getBetaMemoryFromRightInput( final BetaNode betaNode, final InternalWorkingMemory workingMemory ) {
         BetaMemory memory = NodeTypeEnums.AccumulateNode == betaNode.getType() ?
                             ((AccumulateMemory)workingMemory.getNodeMemory( betaNode )).getBetaMemory() :
                             (BetaMemory) workingMemory.getNodeMemory( betaNode );

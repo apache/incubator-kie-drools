@@ -137,7 +137,7 @@ public class ProtobufOutputMarshaller {
                 }
             }
 
-            ((InternalAgenda)wm.getAgenda()).unstageActivations();
+            wm.getAgenda().unstageActivations();
 
             evaluateRuleActivations( wm );
 
@@ -244,7 +244,7 @@ public class ProtobufOutputMarshaller {
         for( ObjectTypeConf otc : otcs ) {
             ObjectTypeNode objectTypeNode = otc.getConcreteObjectTypeNode();
             if (objectTypeNode != null) {
-                final ObjectTypeNodeMemory memory = (ObjectTypeNodeMemory) context.wm.getNodeMemory(objectTypeNode);
+                final ObjectTypeNodeMemory memory = context.wm.getNodeMemory(objectTypeNode);
                 if (memory != null) {
                     ObjectTypeConfiguration _otc = ObjectTypeConfiguration.newBuilder()
                                                                           .setType(otc.getTypeName())
@@ -272,7 +272,7 @@ public class ProtobufOutputMarshaller {
         // need to evaluate all lazy partially evaluated activations before serializing
         boolean dirty = true;
         while ( dirty) {
-            for ( Activation activation : ((InternalAgenda)wm.getAgenda()).getActivations() ) {
+            for ( Activation activation : wm.getAgenda().getActivations() ) {
                 if ( activation.isRuleAgendaItem() /*&& evaluated.contains( activation.getRule().getPackageName()+"."+activation.getRule().getName() )*/ ) {
                     // evaluate it
                     ((RuleAgendaItem)activation).getRuleExecutor().reEvaluateNetwork( wm );
@@ -282,7 +282,7 @@ public class ProtobufOutputMarshaller {
             dirty = false;
             if ( wm.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
                 // network evaluation with phreak and TMS may make previous processed rules dirty again, so need to reprocess until all is flushed.
-                for ( Activation activation : ((InternalAgenda)wm.getAgenda()).getActivations() ) {
+                for ( Activation activation : wm.getAgenda().getActivations() ) {
                     if ( activation.isRuleAgendaItem() && ((RuleAgendaItem)activation).getRuleExecutor().isDirty() ) {
                         dirty = true;
                         break;
@@ -296,11 +296,11 @@ public class ProtobufOutputMarshaller {
     private static void writeAgenda(MarshallerWriteContext context,
                                     ProtobufMessages.RuleData.Builder _ksb) throws IOException {
         InternalWorkingMemory wm = context.wm;
-        InternalAgenda agenda = (InternalAgenda) wm.getAgenda();
+        InternalAgenda agenda = wm.getAgenda();
 
         org.drools.core.marshalling.impl.ProtobufMessages.Agenda.Builder _ab = ProtobufMessages.Agenda.newBuilder();
 
-        AgendaGroup[] agendaGroups = (AgendaGroup[]) agenda.getAgendaGroupsMap().values().toArray( new AgendaGroup[agenda.getAgendaGroupsMap().size()] );
+        AgendaGroup[] agendaGroups = agenda.getAgendaGroupsMap().values().toArray( new AgendaGroup[agenda.getAgendaGroupsMap().size()] );
         Arrays.sort( agendaGroups,
                      AgendaGroupSorter.instance );
         for ( AgendaGroup ag : agendaGroups ) {
@@ -327,8 +327,7 @@ public class ProtobufOutputMarshaller {
 
         org.drools.core.marshalling.impl.ProtobufMessages.Agenda.FocusStack.Builder _fsb = ProtobufMessages.Agenda.FocusStack.newBuilder();
         LinkedList<AgendaGroup> focusStack = agenda.getStackList();
-        for ( Iterator<AgendaGroup> it = focusStack.iterator(); it.hasNext(); ) {
-            AgendaGroup group = it.next();
+        for ( AgendaGroup group : focusStack ) {
             _fsb.addGroupName( group.getName() );
         }
         _ab.setFocusStack( _fsb.build() );
@@ -401,11 +400,11 @@ public class ProtobufOutputMarshaller {
                                                                          final Memory memory) {
         // for accumulate nodes, we need to store the ID of created (result) handles
         AccumulateMemory accmem = (AccumulateMemory) memory;
-        if ( accmem.betaMemory.getLeftTupleMemory().size() > 0 ) {
+        if ( accmem.getBetaMemory().getLeftTupleMemory().size() > 0 ) {
             ProtobufMessages.NodeMemory.AccumulateNodeMemory.Builder _accumulate = ProtobufMessages.NodeMemory.AccumulateNodeMemory.newBuilder();
 
-            final org.drools.core.util.Iterator tupleIter = accmem.betaMemory.getLeftTupleMemory().iterator();
-            for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
+            final org.drools.core.util.Iterator<LeftTuple> tupleIter = accmem.getBetaMemory().getLeftTupleMemory().iterator();
+            for ( LeftTuple leftTuple = tupleIter.next(); leftTuple != null; leftTuple = tupleIter.next() ) {
                 AccumulateContext accctx = (AccumulateContext) leftTuple.getObject();
                 if ( accctx.getResultFactHandle() != null ) {
                     FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()
@@ -484,11 +483,11 @@ public class ProtobufOutputMarshaller {
                                                                    final Memory memory) {
         FromMemory fromMemory = (FromMemory) memory;
 
-        if ( fromMemory.betaMemory.getLeftTupleMemory().size() > 0 ) {
+        if ( fromMemory.getBetaMemory().getLeftTupleMemory().size() > 0 ) {
             ProtobufMessages.NodeMemory.FromNodeMemory.Builder _from = ProtobufMessages.NodeMemory.FromNodeMemory.newBuilder();
 
-            final org.drools.core.util.Iterator tupleIter = fromMemory.betaMemory.getLeftTupleMemory().iterator();
-            for ( LeftTuple leftTuple = (LeftTuple) tupleIter.next(); leftTuple != null; leftTuple = (LeftTuple) tupleIter.next() ) {
+            final org.drools.core.util.Iterator<LeftTuple> tupleIter = fromMemory.getBetaMemory().getLeftTupleMemory().iterator();
+            for ( LeftTuple leftTuple = tupleIter.next(); leftTuple != null; leftTuple = tupleIter.next() ) {
                 Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
                 ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.Builder _context = ProtobufMessages.NodeMemory.FromNodeMemory.FromContext.newBuilder()
                         .setTuple( PersisterHelper.createTuple( leftTuple ) );
@@ -665,7 +664,7 @@ public class ProtobufOutputMarshaller {
                 ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( belief.getObject() );
 
                 Integer index = context.getStrategyIndex( strategy );
-                _logicalDependency.setObjectStrategyIndex( index.intValue() );
+                _logicalDependency.setObjectStrategyIndex( index );
                 _logicalDependency.setObject( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
                                                                                      context,
                                                                                      belief.getObject() ) ) );
@@ -675,7 +674,7 @@ public class ProtobufOutputMarshaller {
                 ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( belief.getMode() );
 
                 Integer index = context.getStrategyIndex( strategy );
-                _logicalDependency.setValueStrategyIndex( index.intValue() );
+                _logicalDependency.setValueStrategyIndex( index );
                 _logicalDependency.setValue( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
                                                                                     context,
                                                                                     belief.getMode() ) ) );
@@ -741,7 +740,7 @@ public class ProtobufOutputMarshaller {
             ObjectMarshallingStrategy strategy = objectMarshallingStrategyStore.getStrategyObject( object );
 
             Integer index = context.getStrategyIndex( strategy );
-            _handle.setStrategyIndex( index.intValue() );
+            _handle.setStrategyIndex( index );
             _handle.setObject( ByteString.copyFrom( strategy.marshal( context.strategyContext.get( strategy ),
                                                                       context,
                                                                       object ) ) );

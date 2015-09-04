@@ -88,10 +88,10 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
         if ( sink.getType() == NodeTypeEnums.AccumulateNode ) {
             AccumulateNode accnode = ( AccumulateNode ) sink;
             AccumulateMemory accMem = ( AccumulateMemory ) wm.getNodeMemory( accnode );
-            bm = ( BetaMemory ) accMem.getBetaMemory();            
+            bm = accMem.getBetaMemory();
         } else if ( NodeTypeEnums.isBetaNode( sink ) ) {
             BetaNode betaNode = ( BetaNode ) sink;
-            bm = (BetaMemory) BetaNode.getBetaMemoryFromRightInput(betaNode, wm);
+            bm = BetaNode.getBetaMemoryFromRightInput(betaNode, wm);
         } else {
             throw new RuntimeException( "Should not be possible to have link into a node of type" + sink);
         }
@@ -114,10 +114,10 @@ public class SingleObjectSinkAdapter extends AbstractObjectSinkAdapter {
         if ( sink.getType() == NodeTypeEnums.AccumulateNode ) {
             AccumulateNode accnode = ( AccumulateNode ) sink;
             AccumulateMemory accMem = ( AccumulateMemory ) wm.getNodeMemory( accnode );
-            bm = ( BetaMemory ) accMem.getBetaMemory();            
+            bm = accMem.getBetaMemory();
         } else if ( NodeTypeEnums.isBetaNode( sink ) ) {
             BetaNode betaNode = ( BetaNode ) sink;
-            bm = (BetaMemory) BetaNode.getBetaMemoryFromRightInput(betaNode, wm);                       
+            bm = BetaNode.getBetaMemoryFromRightInput(betaNode, wm);
         } else {
             throw new RuntimeException( "Should not be possible to have link into a node of type" + sink);
         }
