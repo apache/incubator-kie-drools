@@ -734,6 +734,24 @@
     &lt;hoursSpentLimit&gt;1&lt;/hoursSpentLimit&gt;
   &lt;/termination&gt;</programlisting>
 
+      <programlisting language="xml">  &lt;termination&gt;
+    &lt;daysSpentLimit&gt;2&lt;/daysSpentLimit&gt;
+  &lt;/termination&gt;</programlisting>
+
+      <para>Multiple time types can be used together, for example to configure 150 minutes, either configure it
+      directly:</para>
+
+      <programlisting language="xml">  &lt;termination&gt;
+    &lt;minutesSpentLimit&gt;150&lt;/minutesSpentLimit&gt;
+  &lt;/termination&gt;</programlisting>
+
+      <para>Or use a combination that sums up to 150 minutes:</para>
+
+      <programlisting language="xml">  &lt;termination&gt;
+    &lt;hoursSpentLimit&gt;2&lt;/hoursSpentLimit&gt;
+    &lt;minutesSpentLimit&gt;30&lt;/minutesSpentLimit&gt;
+  &lt;/termination&gt;</programlisting>
+
       <note>
         <para>This <literal>Termination</literal> will most likely sacrifice perfect reproducibility (even with
         <literal>environmentMode</literal> <literal>REPRODUCIBLE</literal>) because the available CPU time differs
@@ -779,6 +797,12 @@
       <programlisting language="xml">  &lt;localSearch&gt;
     &lt;termination&gt;
       &lt;unimprovedHoursSpentLimit&gt;1&lt;/unimprovedHoursSpentLimit&gt;
+    &lt;/termination&gt;
+  &lt;/localSearch&gt;</programlisting>
+
+      <programlisting language="xml">  &lt;localSearch&gt;
+    &lt;termination&gt;
+      &lt;unimprovedDaysSpentLimit&gt;1&lt;/unimprovedDaysSpentLimit&gt;
     &lt;/termination&gt;
   &lt;/localSearch&gt;</programlisting>
 

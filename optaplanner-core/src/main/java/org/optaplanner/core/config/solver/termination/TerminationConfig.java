@@ -48,10 +48,12 @@ public class TerminationConfig implements Cloneable {
     private Long secondsSpentLimit = null;
     private Long minutesSpentLimit = null;
     private Long hoursSpentLimit = null;
+    private Long daysSpentLimit = null;
     private Long unimprovedMillisecondsSpentLimit = null;
     private Long unimprovedSecondsSpentLimit = null;
     private Long unimprovedMinutesSpentLimit = null;
     private Long unimprovedHoursSpentLimit = null;
+    private Long unimprovedDaysSpentLimit = null;
 
     private String bestScoreLimit = null;
     private Boolean bestScoreFeasible = null;
@@ -110,6 +112,14 @@ public class TerminationConfig implements Cloneable {
         this.hoursSpentLimit = hoursSpentLimit;
     }
 
+    public Long getDaysSpentLimit() {
+        return daysSpentLimit;
+    }
+
+    public void setDaysSpentLimit(Long daysSpentLimit) {
+        this.daysSpentLimit = daysSpentLimit;
+    }
+
     public Long getUnimprovedMillisecondsSpentLimit() {
         return unimprovedMillisecondsSpentLimit;
     }
@@ -140,6 +150,14 @@ public class TerminationConfig implements Cloneable {
 
     public void setUnimprovedHoursSpentLimit(Long unimprovedHoursSpentLimit) {
         this.unimprovedHoursSpentLimit = unimprovedHoursSpentLimit;
+    }
+
+    public Long getUnimprovedDaysSpentLimit() {
+        return unimprovedDaysSpentLimit;
+    }
+
+    public void setUnimprovedDaysSpentLimit(Long unimprovedDaysSpentLimit) {
+        this.unimprovedDaysSpentLimit = unimprovedDaysSpentLimit;
     }
 
     public String getBestScoreLimit() {
@@ -276,7 +294,7 @@ public class TerminationConfig implements Cloneable {
 
     public Long calculateTimeMillisSpentLimit() {
         if (millisecondsSpentLimit == null && secondsSpentLimit == null
-                && minutesSpentLimit == null && hoursSpentLimit == null) {
+                && minutesSpentLimit == null && hoursSpentLimit == null && daysSpentLimit == null) {
             return null;
         }
         long timeMillisSpentLimit = 0L;
@@ -308,6 +326,13 @@ public class TerminationConfig implements Cloneable {
             }
             timeMillisSpentLimit += hoursSpentLimit * 3600000L;
         }
+        if (daysSpentLimit != null) {
+            if (daysSpentLimit < 0L) {
+                throw new IllegalArgumentException("The termination daysSpentLimit (" + daysSpentLimit
+                        + ") cannot be negative.");
+            }
+            timeMillisSpentLimit += daysSpentLimit * 86400000L;
+        }
         return timeMillisSpentLimit;
     }
 
@@ -318,6 +343,7 @@ public class TerminationConfig implements Cloneable {
             secondsSpentLimit = null;
             minutesSpentLimit = null;
             hoursSpentLimit = null;
+            daysSpentLimit = null;
         }
     }
 
@@ -355,6 +381,13 @@ public class TerminationConfig implements Cloneable {
             }
             unimprovedTimeMillisSpentLimit += unimprovedHoursSpentLimit * 3600000L;
         }
+        if (unimprovedDaysSpentLimit != null) {
+            if (unimprovedDaysSpentLimit < 0L) {
+                throw new IllegalArgumentException("The termination unimprovedDaysSpentLimit (" + unimprovedDaysSpentLimit
+                        + ") cannot be negative.");
+            }
+            unimprovedTimeMillisSpentLimit += unimprovedDaysSpentLimit * 86400000L;
+        }
         return unimprovedTimeMillisSpentLimit;
     }
 
@@ -371,6 +404,8 @@ public class TerminationConfig implements Cloneable {
                 inheritedConfig.getMinutesSpentLimit());
         hoursSpentLimit = ConfigUtils.inheritOverwritableProperty(hoursSpentLimit,
                 inheritedConfig.getHoursSpentLimit());
+        daysSpentLimit = ConfigUtils.inheritOverwritableProperty(daysSpentLimit,
+                inheritedConfig.getDaysSpentLimit());
         unimprovedMillisecondsSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedMillisecondsSpentLimit,
                 inheritedConfig.getUnimprovedMillisecondsSpentLimit());
         unimprovedSecondsSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedSecondsSpentLimit,
@@ -379,6 +414,8 @@ public class TerminationConfig implements Cloneable {
                 inheritedConfig.getUnimprovedMinutesSpentLimit());
         unimprovedHoursSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedHoursSpentLimit,
                 inheritedConfig.getUnimprovedHoursSpentLimit());
+        unimprovedDaysSpentLimit = ConfigUtils.inheritOverwritableProperty(unimprovedDaysSpentLimit,
+                inheritedConfig.getUnimprovedDaysSpentLimit());
         bestScoreLimit = ConfigUtils.inheritOverwritableProperty(bestScoreLimit,
                 inheritedConfig.getBestScoreLimit());
         bestScoreFeasible = ConfigUtils.inheritOverwritableProperty(bestScoreFeasible,
