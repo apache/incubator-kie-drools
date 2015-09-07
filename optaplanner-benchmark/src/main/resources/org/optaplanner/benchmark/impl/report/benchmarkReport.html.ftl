@@ -32,19 +32,19 @@
         </#if>
     </#if>
 </#macro>
-<#macro addSingleBenchmarkBadges singleBenchmarkResult>
-    <#if !singleBenchmarkResult.ranking??>
+<#macro addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult>
+    <#if !solverProblemBenchmarkResult.ranking??>
         <span class="badge badge-important" data-toggle="tooltip" title="Failed benchmark">F</span>
     <#else>
-        <#if singleBenchmarkResult.winner>
-            <span class="badge badge-success">${singleBenchmarkResult.ranking}</span>
+        <#if solverProblemBenchmarkResult.winner>
+            <span class="badge badge-success">${solverProblemBenchmarkResult.ranking}</span>
         <#else>
-            <span class="badge">${singleBenchmarkResult.ranking}</span>
+            <span class="badge">${solverProblemBenchmarkResult.ranking}</span>
         </#if>
 
-        <#if !singleBenchmarkResult.initialized>
+        <#if !solverProblemBenchmarkResult.initialized>
             <span class="badge badge-important" data-toggle="tooltip" title="Uninitialized solution">!</span>
-        <#elseif !singleBenchmarkResult.scoreFeasible>
+        <#elseif !solverProblemBenchmarkResult.scoreFeasible>
             <span class="badge badge-warning" data-toggle="tooltip" title="Infeasible score">!</span>
         </#if>
     </#if>
@@ -185,7 +185,31 @@
                                                 <#if !singleBenchmarkResult.success>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
-                                                    <td>${singleBenchmarkResult.scoreWithUninitializedPrefix}&nbsp;<@addSingleBenchmarkBadges singleBenchmarkResult=singleBenchmarkResult/></td>
+                                                    <#if solverBenchmarkResult.subSingleCount lte 1>
+                                                      <td>${singleBenchmarkResult.scoreWithUninitializedPrefix!""}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/></td>
+                                                    <#else>
+                                                        <td><div class="dropdown">
+                                                            <span class="nav nav-pills dropdown-toggle" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                ${singleBenchmarkResult.scoreWithUninitializedPrefix!""}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/>
+                                                                <span class="caret"></span>
+                                                            </span>
+                                                            <ul class="dropdown-menu" aria-labelledby="dLabel">
+                                                                <li class="dropdown-header"><strong>Individual runs</strong></li>
+                                                                <li role="separator" class="divider"></li>
+                                                                <#list singleBenchmarkResult.subSingleBenchmarkResultList as subSingleBenchmarkResult>
+                                                                    <li class="dropdown-header"><strong>Run #${subSingleBenchmarkResult.getSubSingleBenchmarkIndex()}</strong></li>
+                                                                    <li>${subSingleBenchmarkResult.scoreWithUninitializedPrefix!""}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=subSingleBenchmarkResult/></li>
+                                                                </#list>
+                                                                <li role="separator" class="divider"></li>
+                                                                <li class="dropdown-header"><strong>Average</strong></li>
+                                                                <li>${singleBenchmarkResult.scoreWithUninitializedPrefix!""}</li>
+                                                                <li class="dropdown-header"><strong>Standard Deviation</strong></li>
+                                                                <#--<li>${singleBenchmarkResult.standardDeviationString!""}</li>-->
+                                                                <li class="dropdown-header"><strong>Median</strong></li>
+                                                                <#--<li>${singleBenchmarkResult.medianScoreWithUninitializedPrefix!""}</li>-->
+                                                            </ul>
+                                                        </div></td>
+                                                    </#if>
                                                 </#if>
                                             </#if>
                                         </#list>
@@ -227,7 +251,7 @@
                                                 <#if !singleBenchmarkResult.success>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
-                                                    <td>${singleBenchmarkResult.winningScoreDifference}&nbsp;<@addSingleBenchmarkBadges singleBenchmarkResult=singleBenchmarkResult/></td>
+                                                    <td>${singleBenchmarkResult.winningScoreDifference}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/></td>
                                                 </#if>
                                             </#if>
                                         </#list>
@@ -266,7 +290,7 @@
                                                 <#if !singleBenchmarkResult.success>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
-                                                    <td>${singleBenchmarkResult.worstScoreDifferencePercentage.toString(.locale)}&nbsp;<@addSingleBenchmarkBadges singleBenchmarkResult=singleBenchmarkResult/></td>
+                                                    <td>${singleBenchmarkResult.worstScoreDifferencePercentage.toString(.locale)}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/></td>
                                                 </#if>
                                             </#if>
                                         </#list>
