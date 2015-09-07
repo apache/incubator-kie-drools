@@ -19,8 +19,8 @@ package org.optaplanner.benchmark.impl.statistic.calculatecount;
 import java.util.List;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSingleStatistic;
+import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
@@ -34,12 +34,12 @@ public class CalculateCountSingleStatistic extends ProblemBasedSingleStatistic<C
 
     private final CalculateCountSingleStatisticListener listener;
 
-    public CalculateCountSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
-        this(singleBenchmarkResult, 1000L);
+    public CalculateCountSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+        this(solverProblemBenchmarkResult, 1000L);
     }
 
-    public CalculateCountSingleStatistic(SingleBenchmarkResult singleBenchmarkResult, long timeMillisThresholdInterval) {
-        super(singleBenchmarkResult, ProblemStatisticType.CALCULATE_COUNT_PER_SECOND);
+    public CalculateCountSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult, long timeMillisThresholdInterval) {
+        super(solverProblemBenchmarkResult, ProblemStatisticType.CALCULATE_COUNT_PER_SECOND);
         if (timeMillisThresholdInterval <= 0L) {
             throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
                     + ") must be bigger than 0.");

@@ -44,7 +44,6 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
@@ -267,12 +266,12 @@ public class ProblemBenchmarkResult {
         return solutionFileIO.read(inputSolutionFile);
     }
 
-    public void writeOutputSolution(SingleBenchmarkResult singleBenchmarkResult, Solution outputSolution) {
+    public void writeOutputSolution(SubSingleBenchmarkResult subSingleBenchmarkResult, Solution outputSolution) {
         if (!writeOutputSolutionEnabled) {
             return;
         }
         String filename = getName() + "." + solutionFileIO.getOutputFileExtension();
-        File outputSolutionFile = new File(singleBenchmarkResult.getSingleReportDirectory(), filename);
+        File outputSolutionFile = new File(subSingleBenchmarkResult.getReportDirectory(), filename);
         solutionFileIO.write(outputSolution, outputSolutionFile);
     }
 

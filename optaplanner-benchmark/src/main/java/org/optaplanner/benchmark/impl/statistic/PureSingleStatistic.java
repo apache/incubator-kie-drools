@@ -24,6 +24,7 @@ import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.GraphSupport;
 import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalbestscore.ConstraintMatchTotalBestScoreSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalstepscore.ConstraintMatchTotalStepScoreSingleStatistic;
@@ -43,8 +44,8 @@ public abstract class PureSingleStatistic<P extends StatisticPoint> extends Sing
 
     protected final SingleStatisticType singleStatisticType;
 
-    protected PureSingleStatistic(SingleBenchmarkResult singleBenchmarkResult, SingleStatisticType singleStatisticType) {
-        super(singleBenchmarkResult);
+    protected PureSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult, SingleStatisticType singleStatisticType) {
+        super(solverProblemBenchmarkResult);
         this.singleStatisticType = singleStatisticType;
     }
 
@@ -60,7 +61,7 @@ public abstract class PureSingleStatistic<P extends StatisticPoint> extends Sing
     public abstract void writeGraphFiles(BenchmarkReport benchmarkReport);
 
     protected File writeChartToImageFile(JFreeChart chart, String fileNameBase) {
-        File chartFile = new File(singleBenchmarkResult.getSingleReportDirectory(), fileNameBase + ".png");
+        File chartFile = new File(solverProblemBenchmarkResult.getReportDirectory(), fileNameBase + ".png");
         GraphSupport.writeChartToImageFile(chart, chartFile);
         return chartFile;
     }
@@ -82,7 +83,7 @@ public abstract class PureSingleStatistic<P extends StatisticPoint> extends Sing
 
     @Override
     public String toString() {
-        return singleBenchmarkResult + "_" + singleStatisticType;
+        return solverProblemBenchmarkResult + "_" + singleStatisticType;
     }
 
 }

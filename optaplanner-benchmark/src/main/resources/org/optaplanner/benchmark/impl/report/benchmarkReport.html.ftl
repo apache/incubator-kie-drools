@@ -527,7 +527,7 @@
                                 <#list problemBenchmarkResult.extractSingleStatisticTypeList() as singleStatisticType>
                                     <div class="tab-pane<#if firstRow> active</#if>" id="singleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}">
                                         <#list problemBenchmarkResult.extractPureSingleStatisticList(singleStatisticType) as pureSingleStatistic>
-                                            <h3>${pureSingleStatistic.singleBenchmarkResult.solverBenchmarkResult.name}</h3>
+                                            <h3>${pureSingleStatistic.solverProblemBenchmarkResult.solverBenchmarkResult.name}</h3>
                                             <#if pureSingleStatistic.graphFileList?? && pureSingleStatistic.graphFileList?size != 0>
                                                 <#if singleStatisticType.hasScoreLevels()>
                                                     <div class="tabbable tabs-right">

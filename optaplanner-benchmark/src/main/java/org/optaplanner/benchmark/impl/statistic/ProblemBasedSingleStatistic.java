@@ -17,15 +17,15 @@
 package org.optaplanner.benchmark.impl.statistic;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
 
 public abstract class ProblemBasedSingleStatistic<P extends StatisticPoint> extends SingleStatistic<P> {
 
     protected final ProblemStatisticType problemStatisticType;
 
-    protected ProblemBasedSingleStatistic(SingleBenchmarkResult singleBenchmarkResult,
+    protected ProblemBasedSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult,
             ProblemStatisticType problemStatisticType) {
-        super(singleBenchmarkResult);
+        super(solverProblemBenchmarkResult);
         this.problemStatisticType = problemStatisticType;
     }
 
@@ -36,7 +36,7 @@ public abstract class ProblemBasedSingleStatistic<P extends StatisticPoint> exte
 
     @Override
     public String toString() {
-        return singleBenchmarkResult + "_" + problemStatisticType;
+        return solverProblemBenchmarkResult + "_" + problemStatisticType;
     }
 
 }

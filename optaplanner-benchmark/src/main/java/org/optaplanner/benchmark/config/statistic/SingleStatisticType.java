@@ -17,8 +17,8 @@
 package org.optaplanner.benchmark.config.statistic;
 
 import org.optaplanner.benchmark.impl.report.ReportHelper;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalbestscore.ConstraintMatchTotalBestScoreSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalstepscore.ConstraintMatchTotalStepScoreSingleStatistic;
@@ -31,17 +31,17 @@ public enum SingleStatisticType implements StatisticType {
     PICKED_MOVE_TYPE_BEST_SCORE_DIFF,
     PICKED_MOVE_TYPE_STEP_SCORE_DIFF;
 
-    public PureSingleStatistic buildPureSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
+    public PureSingleStatistic buildPureSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         // Keep in sync with ProblemStatistic XStreamInclude list
         switch (this) {
             case CONSTRAINT_MATCH_TOTAL_BEST_SCORE:
-                return new ConstraintMatchTotalBestScoreSingleStatistic(singleBenchmarkResult);
+                return new ConstraintMatchTotalBestScoreSingleStatistic(solverProblemBenchmarkResult);
             case CONSTRAINT_MATCH_TOTAL_STEP_SCORE:
-                return new ConstraintMatchTotalStepScoreSingleStatistic(singleBenchmarkResult);
+                return new ConstraintMatchTotalStepScoreSingleStatistic(solverProblemBenchmarkResult);
             case PICKED_MOVE_TYPE_BEST_SCORE_DIFF:
-                return new PickedMoveTypeBestScoreDiffSingleStatistic(singleBenchmarkResult);
+                return new PickedMoveTypeBestScoreDiffSingleStatistic(solverProblemBenchmarkResult);
             case PICKED_MOVE_TYPE_STEP_SCORE_DIFF:
-                return new PickedMoveTypeStepScoreDiffSingleStatistic(singleBenchmarkResult);
+                return new PickedMoveTypeStepScoreDiffSingleStatistic(solverProblemBenchmarkResult);
             default:
                 throw new IllegalStateException("The singleStatisticType (" + this + ") is not implemented.");
         }

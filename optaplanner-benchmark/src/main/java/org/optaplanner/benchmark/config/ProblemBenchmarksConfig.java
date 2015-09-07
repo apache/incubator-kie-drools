@@ -29,6 +29,7 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -189,6 +190,14 @@ public class ProblemBenchmarksConfig {
             }
         }
         singleBenchmarkResult.setPureSingleStatisticList(pureSingleStatisticList);
+
+        List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<SubSingleBenchmarkResult>(solverBenchmarkResult.getSubSingleCount());
+        for (int i = 0; i < solverBenchmarkResult.getSubSingleCount(); i++) {
+            SubSingleBenchmarkResult subSingleBenchmarkResult = new SubSingleBenchmarkResult(singleBenchmarkResult, i);
+            subSingleBenchmarkResultList.add(subSingleBenchmarkResult);
+        }
+        singleBenchmarkResult.setSubSingleBenchmarkResultList(subSingleBenchmarkResultList);
+
         singleBenchmarkResult.initSingleStatisticMap();
         solverBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);

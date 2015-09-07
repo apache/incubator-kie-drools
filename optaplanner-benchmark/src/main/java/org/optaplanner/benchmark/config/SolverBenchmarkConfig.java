@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
@@ -29,6 +30,8 @@ import org.optaplanner.core.config.solver.SolverConfig;
 public class SolverBenchmarkConfig {
 
     private String name = null;
+
+    private Integer subSingleCount = null;
 
     @XStreamAlias("solver")
     private SolverConfig solverConfig = null;
@@ -42,6 +45,14 @@ public class SolverBenchmarkConfig {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getSubSingleCount() {
+        return subSingleCount;
+    }
+
+    public void setSubSingleCount(Integer subSingleCount) {
+        this.subSingleCount = subSingleCount;
     }
 
     public SolverConfig getSolverConfig() {
@@ -68,6 +79,7 @@ public class SolverBenchmarkConfig {
         validate();
         SolverBenchmarkResult solverBenchmarkResult = new SolverBenchmarkResult(plannerBenchmark);
         solverBenchmarkResult.setName(name);
+        solverBenchmarkResult.setSubSingleCount(subSingleCount);
         solverBenchmarkResult.setSolverConfig(solverConfig);
         solverBenchmarkResult.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
         ProblemBenchmarksConfig problemBenchmarksConfig_
@@ -88,6 +100,10 @@ public class SolverBenchmarkConfig {
             throw new IllegalStateException("The solverBenchmark name (" + name
                     + ") is invalid because it starts or ends with whitespace.");
         }
+        if (subSingleCount == null || subSingleCount < 1) {
+            throw new IllegalStateException("The solverBenchmark name (" + name
+                    + ") is invalid because the subSingleCount (" + subSingleCount + ") must be greater than 1.");
+        }
     }
 
     public void inherit(SolverBenchmarkConfig inheritedConfig) {
@@ -100,6 +116,9 @@ public class SolverBenchmarkConfig {
             problemBenchmarksConfig = inheritedConfig.getProblemBenchmarksConfig();
         } else if (inheritedConfig.getProblemBenchmarksConfig() != null) {
             problemBenchmarksConfig.inherit(inheritedConfig.getProblemBenchmarksConfig());
+        }
+        if (subSingleCount == null) {
+            subSingleCount = ObjectUtils.defaultIfNull(inheritedConfig.getSubSingleCount(), 1);
         }
     }
 

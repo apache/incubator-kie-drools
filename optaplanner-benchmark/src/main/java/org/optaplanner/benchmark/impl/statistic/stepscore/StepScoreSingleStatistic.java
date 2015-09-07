@@ -19,8 +19,8 @@ package org.optaplanner.benchmark.impl.statistic.stepscore;
 import java.util.List;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSingleStatistic;
+import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
@@ -31,8 +31,8 @@ public class StepScoreSingleStatistic extends ProblemBasedSingleStatistic<StepSc
 
     private final StepScoreSingleStatisticListener listener;
 
-    public StepScoreSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
-        super(singleBenchmarkResult, ProblemStatisticType.STEP_SCORE);
+    public StepScoreSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+        super(solverProblemBenchmarkResult, ProblemStatisticType.STEP_SCORE);
         listener = new StepScoreSingleStatisticListener();
     }
 

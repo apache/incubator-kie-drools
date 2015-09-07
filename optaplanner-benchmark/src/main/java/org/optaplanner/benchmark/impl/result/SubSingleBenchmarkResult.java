@@ -1,11 +1,11 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,19 +18,15 @@ package org.optaplanner.benchmark.impl.result;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
-import org.optaplanner.benchmark.impl.ranking.SubSingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
@@ -43,23 +39,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Represents 1 benchmark for 1 {@link Solver} configuration for 1 problem instance (data set).
+ * Represents 1 benchmark run for 1 Single Benchmark configuration for 1 {@link Solver} configuration for 1 problem
+ * instance (data set).
  */
-@XStreamAlias("singleBenchmarkResult")
-public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
+@XStreamAlias("subSingleBenchmarkResult")
+public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
 
-    protected static final transient Logger logger = LoggerFactory.getLogger(SingleBenchmarkResult.class);
+    protected static final transient Logger logger = LoggerFactory.getLogger(SubSingleBenchmarkResult.class);
 
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
-    private SolverBenchmarkResult solverBenchmarkResult;
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
-    private ProblemBenchmarkResult problemBenchmarkResult;
+    @XStreamOmitField
+    private SingleBenchmarkResult singleBenchmarkResult;
 
-    @XStreamImplicit(itemFieldName = "subSingleBenchmarkResult")
-    private List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = null;
+    private int subSingleBenchmarkIndex = -1;
 
-    @XStreamImplicit()
-    private List<PureSingleStatistic> pureSingleStatisticList = null;
+    // @XStreamImplicit() // TODO FIXME
+    private List<PureSingleStatistic> subPureSingleStatisticList = null;
 
     @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files
     private Map<StatisticType, SingleStatistic> effectiveSingleStatisticMap;
@@ -76,57 +70,53 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     // Report accumulates
     // ************************************************************************
 
-    // Compared to winningSingleBenchmarkResult in the same ProblemBenchmarkResult (which might not be the overall favorite)
+    // Compared to winningSubSingleBenchmarkResult in the same SubSingleBenchmarkResult (which might not be the overall favorite)
     private Score winningScoreDifference = null;
     private ScoreDifferencePercentage worstScoreDifferencePercentage = null;
 
     // Ranking starts from 0
     private Integer ranking = null;
 
-    public SingleBenchmarkResult(SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {
-        this.solverBenchmarkResult = solverBenchmarkResult;
-        this.problemBenchmarkResult = problemBenchmarkResult;
+    public SubSingleBenchmarkResult(SingleBenchmarkResult singleBenchmarkResult, int subSingleBenchmarkIndex) {
+        this.singleBenchmarkResult = singleBenchmarkResult;
+        this.subSingleBenchmarkIndex = subSingleBenchmarkIndex;
     }
 
-    public List<PureSingleStatistic> getPureSingleStatisticList() {
-        return pureSingleStatisticList;
+    public List<PureSingleStatistic> getSubPureSingleStatisticList() {
+        return subPureSingleStatisticList;
     }
 
-    public void setPureSingleStatisticList(List<PureSingleStatistic> pureSingleStatisticList) {
-        this.pureSingleStatisticList = pureSingleStatisticList;
+    public void setSubPureSingleStatisticList(List<PureSingleStatistic> subPureSingleStatisticList) {
+        this.subPureSingleStatisticList = subPureSingleStatisticList;
     }
 
     public void initSingleStatisticMap() {
-        for (SubSingleBenchmarkResult subSingleBenchmarkResult : subSingleBenchmarkResultList) {
-            subSingleBenchmarkResult.setSubPureSingleStatisticList(pureSingleStatisticList);
-            subSingleBenchmarkResult.initSingleStatisticMap();
+        List<ProblemStatistic> problemStatisticList = singleBenchmarkResult.getProblemBenchmarkResult().getProblemStatisticList();
+        effectiveSingleStatisticMap = new HashMap<StatisticType, SingleStatistic>(
+                problemStatisticList.size() + subPureSingleStatisticList.size());
+        for (ProblemStatistic problemStatistic : problemStatisticList) {
+            SingleStatistic singleStatistic = problemStatistic.createSingleStatistic(this);
+            effectiveSingleStatisticMap.put(singleStatistic.getStatisticType(), singleStatistic);
+        }
+        for (PureSingleStatistic pureSingleStatistic : subPureSingleStatisticList) {
+            effectiveSingleStatisticMap.put(pureSingleStatistic.getStatisticType(), pureSingleStatistic.getStatisticType().buildPureSingleStatistic(this));
         }
     }
 
-    @Override
-    public SolverBenchmarkResult getSolverBenchmarkResult() {
-        return solverBenchmarkResult;
+    public SingleBenchmarkResult getSingleBenchmarkResult() {
+        return singleBenchmarkResult;
     }
 
-    public void setSolverBenchmarkResult(SolverBenchmarkResult solverBenchmarkResult) {
-        this.solverBenchmarkResult = solverBenchmarkResult;
+    public void setSingleBenchmarkResult(SingleBenchmarkResult singleBenchmarkResult) {
+        this.singleBenchmarkResult = singleBenchmarkResult;
     }
 
-    @Override
-    public ProblemBenchmarkResult getProblemBenchmarkResult() {
-        return problemBenchmarkResult;
+    public int getSubSingleBenchmarkIndex() {
+        return subSingleBenchmarkIndex;
     }
 
-    public void setProblemBenchmarkResult(ProblemBenchmarkResult problemBenchmarkResult) {
-        this.problemBenchmarkResult = problemBenchmarkResult;
-    }
-
-    public List<SubSingleBenchmarkResult> getSubSingleBenchmarkResultList() {
-        return subSingleBenchmarkResultList;
-    }
-
-    public void setSubSingleBenchmarkResultList(List<SubSingleBenchmarkResult> subSingleBenchmarkResultList) {
-        this.subSingleBenchmarkResultList = subSingleBenchmarkResultList;
+    public void setSubSingleBenchmarkIndex(int subSingleBenchmarkIndex) {
+        this.subSingleBenchmarkIndex = subSingleBenchmarkIndex;
     }
 
     public Map<StatisticType, SingleStatistic> getEffectiveSingleStatisticMap() {
@@ -216,11 +206,7 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
      * @return never null, filename safe
      */
     public String getName() {
-        return problemBenchmarkResult.getName() + "_" + solverBenchmarkResult.getName();
-    }
-
-    public File getBenchmarkReportDirectory() {
-        return problemBenchmarkResult.getBenchmarkReportDirectory();
+        return singleBenchmarkResult.getName() + "_" + subSingleBenchmarkIndex;
     }
 
     public boolean isSuccess() {
@@ -264,81 +250,35 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         return ScoreUtils.getScoreWithUninitializedPrefix(uninitializedVariableCount, score);
     }
 
+    @Override
+    public SolverBenchmarkResult getSolverBenchmarkResult() {
+        return singleBenchmarkResult.getSolverBenchmarkResult();
+    }
+
+    @Override
+    public ProblemBenchmarkResult getProblemBenchmarkResult() {
+        return singleBenchmarkResult.getProblemBenchmarkResult();
+    }
+
     // ************************************************************************
     // Accumulate methods
     // ************************************************************************
 
     public String getReportDirectoryPath() {
-        return problemBenchmarkResult.getProblemReportDirectoryPath() + "/" + solverBenchmarkResult.getName();
+        return singleBenchmarkResult.getReportDirectoryPath() + File.separator + subSingleBenchmarkIndex;
     }
 
     public File getReportDirectory() {
-        return new File(getBenchmarkReportDirectory(), getReportDirectoryPath());
+        return new File(singleBenchmarkResult.getBenchmarkReportDirectory(), getReportDirectoryPath());
     }
 
     public void makeDirs(File problemReportDirectory) {
-        File singleReportDirectory = getReportDirectory();
-        singleReportDirectory.mkdirs();
-        for (SubSingleBenchmarkResult subSingleBenchmarkResult : subSingleBenchmarkResultList) {
-            File subSingleReportDirectory = subSingleBenchmarkResult.getReportDirectory();
-            subSingleReportDirectory.mkdirs();
-        }
+        File subSingleReportDirectory = getReportDirectory();
+        subSingleReportDirectory.mkdirs();
     }
 
-    public void accumulateResults(BenchmarkReport benchmarkReport) { // OOO: accumulate according to merge strategy: average, worst case, propagate failure
-        determineTotalsAndAveragesAndRanking();
-        SubSingleBenchmarkResult[] subSingleBenchmarkResults = new SubSingleBenchmarkResult[subSingleBenchmarkResultList.size()];
-        SubSingleBenchmarkResult median = ObjectUtils.median(new SubSingleBenchmarkRankingComparator(), subSingleBenchmarkResultList.toArray(subSingleBenchmarkResults)); // OOO: Use ranking
-        this.pureSingleStatisticList = median.getSubPureSingleStatisticList();
-        this.effectiveSingleStatisticMap = median.getEffectiveSingleStatisticMap();
-        this.usedMemoryAfterInputSolution = median.getUsedMemoryAfterInputSolution();
-        this.succeeded = median.getSucceeded();
-        this.uninitializedVariableCount = median.getUninitializedVariableCount();
-        this.score = median.getScore();
-        this.timeMillisSpent = median.getTimeMillisSpent();
-        this.calculateCount = median.getCalculateCount();
-        this.winningScoreDifference = median.getWinningScoreDifference();
-        this.worstScoreDifferencePercentage = median.getWorstScoreDifferencePercentage();
+    public void accumulateResults(BenchmarkReport benchmarkReport) {
 
-        for (SingleStatistic singleStatistic : median.getEffectiveSingleStatisticMap().values()) { // copy to parent dir
-            singleStatistic.unhibernatePointList();
-            singleStatistic.setSolverProblemBenchmarkResult(this);
-            singleStatistic.hibernatePointList();
-        }
-    }
-
-    private void determineTotalsAndAveragesAndRanking() {
-        int failureCount = 0;
-        long totalUsedMemoryAfterInputSolution = 0L;
-        int usedMemoryAfterInputSolutionCount = 0;
-        List<SubSingleBenchmarkResult> successResultList = new ArrayList<SubSingleBenchmarkResult>(subSingleBenchmarkResultList);
-        // Do not rank a SubSingleBenchmarkResult that has a failure
-        for (Iterator<SubSingleBenchmarkResult> it = successResultList.iterator(); it.hasNext(); ) {
-            SubSingleBenchmarkResult subSingleBenchmarkResult = it.next();
-            if (subSingleBenchmarkResult.isFailure()) {
-                failureCount++;
-                it.remove();
-            }
-        }
-        determineRanking(successResultList);
-    }
-
-    private void determineRanking(List<SubSingleBenchmarkResult> rankedSubSingleBenchmarkResultList) {
-        Comparator subSingleBenchmarkRankingComparator = new SubSingleBenchmarkRankingComparator();
-        Collections.sort(rankedSubSingleBenchmarkResultList, Collections.reverseOrder(subSingleBenchmarkRankingComparator));
-        int ranking = 0;
-        SubSingleBenchmarkResult previousSubSingleBenchmarkResult = null;
-        int previousSameRankingCount = 0;
-        for (SubSingleBenchmarkResult subSingleBenchmarkResult : rankedSubSingleBenchmarkResultList) {
-            if (previousSubSingleBenchmarkResult != null
-                    && subSingleBenchmarkRankingComparator.compare(previousSubSingleBenchmarkResult, subSingleBenchmarkResult) != 0) {
-                ranking += previousSameRankingCount;
-                previousSameRankingCount = 0;
-            }
-            subSingleBenchmarkResult.setRanking(ranking);
-            previousSubSingleBenchmarkResult = subSingleBenchmarkResult;
-            previousSameRankingCount++;
-        }
     }
 
     // ************************************************************************
@@ -346,12 +286,11 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     // ************************************************************************
 
 
-    protected static SingleBenchmarkResult createMerge(SolverBenchmarkResult solverBenchmarkResult,
-            ProblemBenchmarkResult problemBenchmarkResult, SingleBenchmarkResult oldResult) {
-        SingleBenchmarkResult newResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
-        newResult.pureSingleStatisticList = new ArrayList<PureSingleStatistic>(oldResult.pureSingleStatisticList.size());
-        for (PureSingleStatistic oldSingleStatistic : oldResult.pureSingleStatisticList) {
-            newResult.pureSingleStatisticList.add(
+    protected static SubSingleBenchmarkResult createMerge(SingleBenchmarkResult singleBenchmarkResult, SubSingleBenchmarkResult oldResult) {
+        SubSingleBenchmarkResult newResult = new SubSingleBenchmarkResult(singleBenchmarkResult, oldResult.getSubSingleBenchmarkIndex());
+        newResult.subPureSingleStatisticList = new ArrayList<PureSingleStatistic>(oldResult.subPureSingleStatisticList.size());
+        for (PureSingleStatistic oldSingleStatistic : oldResult.subPureSingleStatisticList) {
+            newResult.subPureSingleStatisticList.add(
                     oldSingleStatistic.getStatisticType().buildPureSingleStatistic(newResult));
         }
 
@@ -381,8 +320,7 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         newResult.timeMillisSpent = oldResult.timeMillisSpent;
         newResult.calculateCount = oldResult.calculateCount;
 
-        solverBenchmarkResult.getSingleBenchmarkResultList().add(newResult);
-        problemBenchmarkResult.getSingleBenchmarkResultList().add(newResult);
+        singleBenchmarkResult.getSubSingleBenchmarkResultList().add(newResult);
         return newResult;
     }
 

@@ -49,6 +49,8 @@ public class SolverBenchmarkResult {
 
     private String name = null;
 
+    private Integer subSingleCount = null;
+
     private SolverConfig solverConfig = null;
 
     @XStreamImplicit(itemFieldName = "singleBenchmarkResult")
@@ -98,6 +100,14 @@ public class SolverBenchmarkResult {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getSubSingleCount() {
+        return subSingleCount;
+    }
+
+    public void setSubSingleCount(Integer subSingleCount) {
+        this.subSingleCount = subSingleCount;
     }
 
     public SolverConfig getSolverConfig() {
@@ -391,6 +401,7 @@ public class SolverBenchmarkResult {
                     nameCount++;
                 }
                 nameCountMap.put(oldResult.name, nameCount);
+                newResult.subSingleCount = oldResult.subSingleCount;
                 newResult.solverConfig = oldResult.solverConfig;
                 newResult.singleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>(
                         oldResult.singleBenchmarkResultList.size());

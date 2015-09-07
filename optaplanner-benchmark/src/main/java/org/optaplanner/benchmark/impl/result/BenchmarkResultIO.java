@@ -141,9 +141,17 @@ public class BenchmarkResultIO {
                 singleBenchmarkResult.setSolverBenchmarkResult(solverBenchmarkResult);
                 if (singleBenchmarkResult.getPureSingleStatisticList() == null) {
                     singleBenchmarkResult.setPureSingleStatisticList(new ArrayList<PureSingleStatistic>(0));
+                    for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                        subSingleBenchmarkResult.setSubPureSingleStatisticList(new ArrayList<PureSingleStatistic>(0));
+                    }
+                }
+                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                    for (PureSingleStatistic pureSingleStatistic : subSingleBenchmarkResult.getSubPureSingleStatisticList()) {
+                        pureSingleStatistic.setSolverProblemBenchmarkResult(subSingleBenchmarkResult);
+                    }
                 }
                 for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
-                    pureSingleStatistic.setSingleBenchmarkResult(singleBenchmarkResult);
+                    pureSingleStatistic.setSolverProblemBenchmarkResult(singleBenchmarkResult);
                 }
             }
         }
