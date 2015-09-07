@@ -39,6 +39,9 @@ import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.runtime.rule.QueryResultsRow;
+import org.kie.api.runtime.rule.Variable;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -393,6 +396,87 @@ public class JpaPersistenceTraitTest {
     @Test
     public void testTraitsOnLegacyJPAMap() {
         traitsLegacyWrapperWithJPA( VirtualPropertyMode.MAP );
+    }
+
+
+    @Test
+    public void testTraitWithJPAOnFreshKieBase() {
+        //DROOLS-904
+        String str = "package org.drools.trait.test; " +
+                     "global java.util.List list; " +
+
+                     "declare TBean2  " +
+                     "  @propertyReactive  " +
+                     "  @Traitable  " +
+                     "end   " +
+
+                     "declare trait Mask " +
+                     "  @propertyReactive  " +
+                     "end  " +
+
+                     "query getTraits( Mask $m ) " +
+                     "  $m := Mask() " +
+                     "end " +
+
+                     "rule Init when then don( new TBean2(), Mask.class ); end " +
+
+                     "rule Trig when String() then don( new TBean2(), Mask.class ); end " +
+
+                     "rule Main when $m : Mask() then list.add( $m ); end ";
+
+        List list = new ArrayList();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
+                      ResourceType.DRL );
+
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+        StatefulKnowledgeSession ksession = JPAKnowledgeService.newStatefulKnowledgeSession( kbase, null, env );
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+
+        long id = ksession.getIdentifier();
+
+
+        KnowledgeBase kbase2 = KnowledgeBaseFactory.newKnowledgeBase();
+        TraitFactory.setMode( VirtualPropertyMode.MAP, kbase );
+        kbase2.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+
+
+        StatefulKnowledgeSession ksession2 = JPAKnowledgeService.loadStatefulKnowledgeSession( id, kbase2, null, env );
+        ksession.setGlobal( "list", list );
+        ksession2.insert( "go" );
+        ksession2.fireAllRules();
+
+        assertEquals( 2, list.size() );
+
+        Class<?> oldProxyClass = list.get( 0 ).getClass();
+        Class<?> newProxyClass = list.get( 1 ).getClass();
+        assertNotSame( oldProxyClass, newProxyClass );
+
+        QueryResults qry = ksession2.getQueryResults( "getTraits", Variable.v );
+        assertEquals( 2, qry.size() );
+        java.util.Iterator<QueryResultsRow> iter = qry.iterator();
+        int j = 0;
+        while ( iter.hasNext() ) {
+            QueryResultsRow row = iter.next();
+            Object entry = row.get( "$m" );
+            assertNotNull( entry );
+            assertSame( newProxyClass, entry.getClass() );
+            j++;
+        }
+        assertEquals( 2, j );
+
+        for ( Object o : ksession2.getObjects() ) {
+            if ( o.getClass().getName().contains( "Mask" ) ) {
+                assertSame( newProxyClass, o.getClass() );
+            }
+        }
     }
 
 }

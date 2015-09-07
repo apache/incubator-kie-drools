@@ -37,6 +37,10 @@ message Header {
     // byte blobs
     optional bytes payload = 10;
 
+    // classes generated after the KieBase compilation, which may be needed by the session
+    // DROOLS-904
+	repeated RuntimeClassDef runtime_class_definitions = 13;
+
     message StrategyIndex {
         optional int32 id = 1;
         optional string name = 2;
@@ -88,6 +92,12 @@ message RuleData {
 
     optional ActionQueue action_queue = 11;
     optional TruthMaintenanceSystem OBSOLETE_tms = 12;
+
+}
+
+message RuntimeClassDef {
+	required string class_fq_name = 1;
+	required bytes  class_def = 2;
 }
 
 message ProcessData {
