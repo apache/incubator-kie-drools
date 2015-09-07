@@ -79,12 +79,25 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
         this.pointList = pointList;
     }
 
+    /**
+     * Used in report.
+     * @return the path to the csv file from report root
+     */
+    public String getRelativeCsvFilePath() {
+        return new StringBuilder().append(solverProblemBenchmarkResult.getProblemBenchmarkResult().getProblemReportDirectoryPath())
+                .append(File.separator)
+                .append(solverProblemBenchmarkResult.getReportDirectoryPath())
+                .append(File.separator)
+                .append(getCsvFilePath())
+                .toString();
+    }
+
     public String getCsvFilePath() {
-        return solverProblemBenchmarkResult.getReportDirectoryPath() + File.separator + getStatisticType().name() + ".csv";
+        return getStatisticType().name() + ".csv";
     }
 
     public File getCsvFile() {
-        return new File(solverProblemBenchmarkResult.getBenchmarkReportDirectory(), getCsvFilePath());
+        return new File(solverProblemBenchmarkResult.getReportDirectory(), getCsvFilePath());
     }
 
     // ************************************************************************

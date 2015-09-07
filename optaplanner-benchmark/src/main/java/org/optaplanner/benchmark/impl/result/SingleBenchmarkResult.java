@@ -269,19 +269,18 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     // ************************************************************************
 
     public String getReportDirectoryPath() {
-        return problemBenchmarkResult.getProblemReportDirectoryPath() + "/" + solverBenchmarkResult.getName();
+        return solverBenchmarkResult.getName();
     }
 
     public File getReportDirectory() {
-        return new File(getBenchmarkReportDirectory(), getReportDirectoryPath());
+        return new File(problemBenchmarkResult.getProblemReportDirectory(), getReportDirectoryPath());
     }
 
-    public void makeDirs(File problemReportDirectory) {
+    public void makeDirs() {
         File singleReportDirectory = getReportDirectory();
         singleReportDirectory.mkdirs();
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : subSingleBenchmarkResultList) {
-            File subSingleReportDirectory = subSingleBenchmarkResult.getReportDirectory();
-            subSingleReportDirectory.mkdirs();
+            subSingleBenchmarkResult.makeDirs();
         }
     }
 

@@ -265,14 +265,14 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
     // ************************************************************************
 
     public String getReportDirectoryPath() {
-        return singleBenchmarkResult.getReportDirectoryPath() + File.separator + subSingleBenchmarkIndex;
+        return singleBenchmarkResult.getReportDirectoryPath() + "_" + subSingleBenchmarkIndex;
     }
 
     public File getReportDirectory() {
-        return new File(singleBenchmarkResult.getBenchmarkReportDirectory(), getReportDirectoryPath());
+        return new File(singleBenchmarkResult.getReportDirectory(), getReportDirectoryPath());
     }
 
-    public void makeDirs(File problemReportDirectory) {
+    public void makeDirs() {
         File subSingleReportDirectory = getReportDirectory();
         subSingleReportDirectory.mkdirs();
     }

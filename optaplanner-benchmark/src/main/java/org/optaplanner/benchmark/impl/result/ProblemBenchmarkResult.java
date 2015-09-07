@@ -254,11 +254,11 @@ public class ProblemBenchmarkResult {
         return new File(getBenchmarkReportDirectory(), name);
     }
 
-    public void makeDirs(File benchmarkReportDirectory) {
+    public void makeDirs() {
         File problemReportDirectory = getProblemReportDirectory();
         problemReportDirectory.mkdirs();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            singleBenchmarkResult.makeDirs(problemReportDirectory);
+            singleBenchmarkResult.makeDirs();
         }
     }
 

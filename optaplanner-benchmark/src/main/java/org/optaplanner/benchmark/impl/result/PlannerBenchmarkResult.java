@@ -244,7 +244,7 @@ public class PlannerBenchmarkResult {
                     BooleanUtils.isFalse(aggregation) ? directoryName : directoryName + "_aggregation");
         } while (!benchmarkReportDirectory.mkdir());
         for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
-            problemBenchmarkResult.makeDirs(benchmarkReportDirectory);
+            problemBenchmarkResult.makeDirs();
         }
     }
 
