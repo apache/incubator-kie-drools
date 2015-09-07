@@ -25,7 +25,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +32,7 @@ import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
+import org.jbpm.kie.services.impl.security.DeploymentRolesManager;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.RuntimeDataService;
@@ -47,33 +47,22 @@ import org.jbpm.shared.services.impl.QueryManager;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.QueryNameCommand;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.AuditTask;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.model.TaskEvent;
 
 
-
 public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEventListener {
-
-	private static final int MAX_CACHE_ENTRIES = Integer.parseInt(System.getProperty("org.jbpm.service.cache.size", "100"));
 	
     protected Set<ProcessDefinition> availableProcesses = new HashSet<ProcessDefinition>();
-    protected Map<String, List<String>> deploymentsRoles = new HashMap<String, List<String>>();
     
-	protected Map<String, List<String>> userDeploymentIdsCache = new LinkedHashMap<String, List<String>>() {
-		private static final long serialVersionUID = -2324394641773215253L;
-		
-		protected boolean removeEldestEntry(Map.Entry<String, List<String>> eldest) {
-			return size() > MAX_CACHE_ENTRIES;
-		}
-	};
     
     private TransactionalCommandService commandService;
         
@@ -83,6 +72,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     
     protected TaskAuditService taskAuditService;
     
+    private DeploymentRolesManager deploymentRolesManager = new DeploymentRolesManager();
     
     public RuntimeDataServiceImpl() {
     	QueryManager.get().addNamedQueries("META-INF/Servicesorm.xml");
@@ -106,7 +96,10 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     public void setTaskAuditService(TaskAuditService taskAuditService) {
         this.taskAuditService = taskAuditService;
     }
-    
+        
+    public void setDeploymentRolesManager(DeploymentRolesManager deploymentRolesManager) {
+        this.deploymentRolesManager = deploymentRolesManager;
+    }
     
 	/*
      * start
@@ -126,8 +119,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         if (roles == null) {
         	roles = Collections.emptyList();
         }
-        deploymentsRoles.put(event.getDeploymentId(), roles);
-        userDeploymentIdsCache.clear();
+        deploymentRolesManager.addRolesForDeployment(event.getDeploymentId(), roles);
     }
     
     public void onUnDeploy(DeploymentEvent event) {
@@ -135,8 +127,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         CollectionUtils.select(availableProcesses, new UnsecureByDeploymentIdPredicate(event.getDeploymentId()), outputCollection);
         
         availableProcesses.removeAll(outputCollection);
-        deploymentsRoles.remove(event.getDeploymentId());
-        userDeploymentIdsCache.clear();
+        deploymentRolesManager.removeRolesForDeployment(event.getDeploymentId());
     }
     
 
@@ -178,42 +169,10 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         }
     }
     
-    protected List<String> getDeploymentsForUser() {
-    	String identityName = null;
-    	List<String> roles = null;
-    	try {
-	    	identityName = identityProvider.getName();
-	    	roles = identityProvider.getRoles();
-    	} catch (Exception e) {
-    		// in case there is no way to collect either name of roles of the requesting used return empty list
-    		return new ArrayList<String>();
-    	}
-    	List<String> usersDeploymentIds = userDeploymentIdsCache.get(identityName);
-    	if (usersDeploymentIds != null) {
-    		return usersDeploymentIds;
-    	}
-    	
-    	usersDeploymentIds = new ArrayList<String>();
-    	userDeploymentIdsCache.put(identityName, usersDeploymentIds);
-    	boolean isSecured = false;
-    	for (Map.Entry<String, List<String>> entry : deploymentsRoles.entrySet()){
-    		if (entry.getValue().isEmpty() || CollectionUtils.containsAny(roles, entry.getValue())) {
-    			usersDeploymentIds.add(entry.getKey());
-    		}
-    		if (entry.getValue() != null && !entry.getValue().isEmpty()) {
-    			isSecured = true;
-    		}
-    	}
-    	
-    	if (isSecured && usersDeploymentIds.isEmpty()) {
-    		usersDeploymentIds.add("deployments-are-secured");
-    	}
-    	
-    	return usersDeploymentIds;
-    }
+
     
     protected void applyDeploymentFilter(Map<String, Object> params) {
-    	List<String> deploymentIdForUser = getDeploymentsForUser();
+    	List<String> deploymentIdForUser = deploymentRolesManager.getDeploymentsForUser(identityProvider);
     	
     	if (deploymentIdForUser != null && !deploymentIdForUser.isEmpty()) {
     		params.put(FILTER, " log.externalId in (:deployments) ");

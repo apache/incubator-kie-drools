@@ -23,6 +23,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
+import org.jbpm.kie.services.impl.security.DeploymentRolesManager;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.cdi.Activate;
 import org.jbpm.services.cdi.Audit;
@@ -85,6 +86,12 @@ public class RuntimeDataServiceCDIImpl extends RuntimeDataServiceImpl {
         super.setTaskAuditService(taskAuditService);
     }
     
+    @Inject
+    @Override
+    public void setDeploymentRolesManager(DeploymentRolesManager deploymentRolesManager) {
+        super.setDeploymentRolesManager(deploymentRolesManager);
+    }
+
     @PostConstruct
     public void init() {
         taskAuditService.setTaskService(taskService);

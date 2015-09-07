@@ -81,6 +81,7 @@ public class CDISupportProcessTest extends SupportProcessBaseTest {
                 .addPackage("org.jbpm.services.cdi.impl.form")
                 .addPackage("org.jbpm.services.cdi.impl.manager")
                 .addPackage("org.jbpm.services.cdi.producer")
+                .addPackage("org.jbpm.services.cdi.impl.security")
                 
                 .addPackage("org.jbpm.kie.services.test")
                 .addPackage("org.jbpm.services.cdi.test") // Identity Provider Test Impl here

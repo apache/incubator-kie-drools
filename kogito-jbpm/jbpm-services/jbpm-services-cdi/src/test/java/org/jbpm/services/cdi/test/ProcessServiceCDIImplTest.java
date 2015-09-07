@@ -90,6 +90,7 @@ public class ProcessServiceCDIImplTest extends ProcessServiceImplTest {
                 .addPackage("org.jbpm.services.cdi.impl.form")
                 .addPackage("org.jbpm.services.cdi.impl.manager")
                 .addPackage("org.jbpm.services.cdi.producer")
+                .addPackage("org.jbpm.services.cdi.impl.security")
                 
                 .addPackage("org.jbpm.test.util")
                 .addPackage("org.jbpm.kie.services.test")

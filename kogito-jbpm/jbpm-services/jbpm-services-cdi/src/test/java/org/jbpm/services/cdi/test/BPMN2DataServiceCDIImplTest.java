@@ -83,13 +83,14 @@ public class BPMN2DataServiceCDIImplTest extends BPMN2DataServicesTest {
                 .addPackage("org.jbpm.kie.services.impl.event.listeners")
                 .addPackage("org.jbpm.kie.services.impl.audit")
                 .addPackage("org.jbpm.kie.services.impl.form")
-                .addPackage("org.jbpm.kie.services.impl.form.provider")
+                .addPackage("org.jbpm.kie.services.impl.form.provider")                
                 
                 .addPackage("org.jbpm.services.cdi")
                 .addPackage("org.jbpm.services.cdi.impl")
                 .addPackage("org.jbpm.services.cdi.impl.form")
                 .addPackage("org.jbpm.services.cdi.impl.manager")
                 .addPackage("org.jbpm.services.cdi.producer")
+                .addPackage("org.jbpm.services.cdi.impl.security")
                 
                 .addPackage("org.jbpm.test.util")
                 .addPackage("org.jbpm.kie.services.test")

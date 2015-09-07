@@ -29,6 +29,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
+import org.jbpm.kie.services.impl.security.DeploymentRolesManager;
 import org.jbpm.services.api.DeploymentEvent;
 import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.RuntimeDataService;
@@ -36,6 +37,7 @@ import org.jbpm.services.ejb.TaskServiceEJBLocal;
 import org.jbpm.services.ejb.api.RuntimeDataServiceEJBLocal;
 import org.jbpm.services.ejb.api.RuntimeDataServiceEJBRemote;
 import org.jbpm.services.ejb.impl.identity.EJBContextIdentityProvider;
+import org.jbpm.services.ejb.impl.security.DeploymentRolesManagerEJBImpl;
 import org.jbpm.services.ejb.impl.tx.AuditTransactionalCommandServiceEJBImpl;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.api.task.TaskService;
@@ -75,7 +77,13 @@ public class RuntimeDataServiceEJBImpl extends RuntimeDataServiceImpl implements
 		super.setTaskService(taskService);
 	}
 
-	@Lock(LockType.WRITE)
+	@EJB(beanInterface=DeploymentRolesManagerEJBImpl.class)
+	@Override
+    public void setDeploymentRolesManager(DeploymentRolesManager deploymentRolesManager) {
+        super.setDeploymentRolesManager(deploymentRolesManager);
+    }
+
+    @Lock(LockType.WRITE)
 	@Override
 	public void onDeploy(DeploymentEvent event) {
 		super.onDeploy(event);
