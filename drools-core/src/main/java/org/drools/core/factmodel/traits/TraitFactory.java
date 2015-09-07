@@ -19,9 +19,9 @@ package org.drools.core.factmodel.traits;
 import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.KieComponentFactory;
+import org.drools.core.util.ClassUtils;
 import org.drools.core.util.HierarchyEncoder;
 import org.drools.core.util.TripleFactory;
 import org.drools.core.util.TripleStore;
@@ -29,10 +29,14 @@ import org.kie.api.KieBase;
 import org.mvel2.asm.Opcodes;
 
 import java.io.Externalizable;
+import java.util.HashSet;
+import java.util.Set;
 
 public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends AbstractTraitFactory<T,K> implements Opcodes, Externalizable {
 
     private transient InternalKnowledgeBase kBase;
+
+    private transient Set<String> runtimeClasses;
 
     public static void setMode( VirtualPropertyMode newMode, KieBase kBase ) {
         KieComponentFactory rcf = ((InternalKnowledgeBase) kBase).getConfiguration().getComponentFactory();
@@ -48,7 +52,15 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends A
     }
 
     protected Class<?> registerAndLoadTypeDefinition( String proxyName, byte[] proxy ) throws ClassNotFoundException {
+        registerRuntimeClass( proxyName );
         return kBase.registerAndLoadTypeDefinition( proxyName, proxy );
+    }
+
+    private void registerRuntimeClass( String proxyName ) {
+        if ( runtimeClasses == null ) {
+            runtimeClasses = new HashSet<String>();
+        }
+        runtimeClasses.add( ClassUtils.convertClassToResourcePath( proxyName ) );
     }
 
     protected ClassLoader getRootClassLoader() {
@@ -83,8 +95,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends A
             traitPackage.setClassFieldAccessorCache( kBase.getClassFieldAccessorCache() );
             kBase.getPackagesMap().put( pack, traitPackage );
         }
-        ClassFieldAccessorStore store = traitPackage.getClassFieldAccessorStore();
-        return store;
+        return traitPackage.getClassFieldAccessorStore();
     }
 
 
@@ -108,4 +119,7 @@ public class TraitFactory<T extends Thing<K>, K extends TraitableBean> extends A
         }
     }
 
+    public boolean isRuntimeClass( String resourceName ) {
+        return runtimeClasses != null && runtimeClasses.contains( resourceName );
+    }
 }

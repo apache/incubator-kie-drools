@@ -23,7 +23,11 @@ import com.google.protobuf.Message;
 import org.drools.core.beliefsystem.simple.BeliefSystemLogicalCallback;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
+import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.WorkingMemoryAction;
+import org.drools.core.factmodel.traits.TraitFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteAssertAction;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header;
@@ -43,6 +47,9 @@ import java.security.InvalidKeyException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map.Entry;
 
 public class PersisterHelper {
@@ -196,16 +203,37 @@ public class PersisterHelper {
                             .build() );
         
         writeStrategiesIndex( context, _header );
-        
+
+        writeRuntimeDefinedClasses( context, _header );
+
         byte[] buff = payload.toByteArray();
         sign( _header, buff );
         _header.setPayload( ByteString.copyFrom( buff ) );
 
-//        LoggerFactory.getLogger(PersisterHelper.class).trace("=============================================================================================================");
-//        LoggerFactory.getLogger(PersisterHelper.class).trace(payload);
         context.stream.write( _header.build().toByteArray() );
     }
-    
+
+    public static void writeRuntimeDefinedClasses( MarshallerWriteContext context,
+                                                  ProtobufMessages.Header.Builder _header ) {
+        StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl) context.wm;
+        ProjectClassLoader pcl = (ProjectClassLoader) ( (InternalKnowledgeBase) wm.getKieBase() ).getRootClassLoader();
+
+        if ( pcl.getStore() != null && ! pcl.getStore().isEmpty() ) {
+            TraitFactory traitFactory = TraitFactory.getTraitBuilderForKnowledgeBase( context.kBase );
+            List<String> runtimeClassNames = new ArrayList( pcl.getStore().keySet() );
+            Collections.sort( runtimeClassNames );
+            ProtobufMessages.RuntimeClassDef.Builder _classDef = ProtobufMessages.RuntimeClassDef.newBuilder();
+            for ( String resourceName : runtimeClassNames ) {
+                if ( traitFactory.isRuntimeClass( resourceName ) ) {
+                    _classDef.clear();
+                    _classDef.setClassFqName( resourceName );
+                    _classDef.setClassDef( ByteString.copyFrom( pcl.getStore().get( resourceName ) ) );
+                    _header.addRuntimeClassDefinitions( _classDef.build() );
+                }
+            }
+        }
+    }
+
     private static void writeStrategiesIndex(MarshallerWriteContext context,
                                              ProtobufMessages.Header.Builder _header) throws IOException {
         for( Entry<ObjectMarshallingStrategy,Integer> entry : context.usedStrategies.entrySet() ) {
@@ -285,13 +313,29 @@ public class PersisterHelper {
             Context ctx = strategyObject.createContext();
             context.strategyContexts.put( strategyObject, ctx );
             if( _entry.hasData() && ctx != null ) {
-		ClassLoader classLoader = null;
+		        ClassLoader classLoader = null;
                 if (context.classLoader != null ){
                     classLoader = context.classLoader;
                 } else if(context.kBase != null){
                     classLoader = context.kBase.getRootClassLoader();
                 }
+                if ( classLoader instanceof ProjectClassLoader ) {
+                   readRuntimeDefinedClasses( _header, (ProjectClassLoader) classLoader );
+                }
                 ctx.read( new DroolsObjectInputStream( _entry.getData().newInput(), classLoader) );
+            }
+        }
+    }
+
+    public static void readRuntimeDefinedClasses( Header _header,
+                                                  ProjectClassLoader pcl ) throws IOException, ClassNotFoundException {
+        if ( _header.getRuntimeClassDefinitionsCount() > 0 ) {
+            for ( ProtobufMessages.RuntimeClassDef def : _header.getRuntimeClassDefinitionsList() ) {
+                String resourceName = def.getClassFqName();
+                byte[] byteCode = def.getClassDef().toByteArray();
+                if ( ! pcl.getStore().containsKey( resourceName ) ) {
+                    pcl.getStore().put(resourceName, byteCode);
+                }
             }
         }
     }
