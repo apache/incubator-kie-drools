@@ -498,6 +498,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 writeExtensionElements(node, xmlDump);
                 String duration = (String) eventNode.getMetaData("TimeDuration");
                 String cycle = (String) eventNode.getMetaData("TimeCycle");
+                String date = (String) eventNode.getMetaData("TimeDate");
                 
                 
                 if (duration != null && cycle != null) {
@@ -515,6 +516,11 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                     xmlDump.append(
                             "      <timerEventDefinition>" + EOL +
                             "        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(duration) + "</timeDuration>" + EOL +
+                            "      </timerEventDefinition>" + EOL);
+                } else if (date != null) {
+                    xmlDump.append(
+                            "      <timerEventDefinition>" + EOL +
+                            "        <timeDate xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(date) + "</timeDate>" + EOL +
                             "      </timerEventDefinition>" + EOL);
                 } else {
                 	String lang = (String) eventNode.getMetaData("Language");

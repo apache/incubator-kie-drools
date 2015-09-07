@@ -322,7 +322,9 @@ public class StartEventHandler extends AbstractNodeHandler {
 	            Timer timer = startNode.getTimer(); 
 	            xmlDump.append("      <timerEventDefinition>" + EOL);
 	            if (timer != null && (timer.getDelay() != null || timer.getDate() != null)) {
-	                if (timer.getTimeType() == Timer.TIME_DURATION) {
+	                if (timer.getTimeType() == Timer.TIME_DATE) {
+                        xmlDump.append("        <timeDate xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDate()) + "</timeDate>" + EOL);
+                    } else if (timer.getTimeType() == Timer.TIME_DURATION) {
 	                    xmlDump.append("        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDuration>" + EOL);
 	                } else if (timer.getTimeType() == Timer.TIME_CYCLE) {
 	                    
@@ -341,7 +343,9 @@ public class StartEventHandler extends AbstractNodeHandler {
             Timer timer = startNode.getTimer(); 
             xmlDump.append("      <timerEventDefinition>" + EOL);
             if (timer != null && (timer.getDelay() != null || timer.getDate() != null)) {
-                if (timer.getTimeType() == Timer.TIME_DURATION) {
+                if (timer.getTimeType() == Timer.TIME_DATE) {
+                    xmlDump.append("        <timeDate xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDate()) + "</timeDate>" + EOL);
+                } else if (timer.getTimeType() == Timer.TIME_DURATION) {
                     xmlDump.append("        <timeDuration xsi:type=\"tFormalExpression\">" + XmlDumper.replaceIllegalChars(timer.getDelay()) + "</timeDuration>" + EOL);
                 } else if (timer.getTimeType() == Timer.TIME_CYCLE) {
                     

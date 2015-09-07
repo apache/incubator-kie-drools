@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions id="Definition" typeLanguage="http://www.java.com/javaTypes" expressionLanguage="http://www.mvel.org/2.0"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:tns="http://www.jboss.org/drools">
+  <process id="start.delaying" name="Test process" isExecutable="true">
+
+    <startEvent id="start" name="start">
+      <timerEventDefinition>
+        <timeDuration xsi:type="tFormalExpression">abcdef</timeDuration>
+      </timerEventDefinition>
+    </startEvent>
+
+    <scriptTask id="script" name="script" />
+    <sequenceFlow sourceRef="start" targetRef="script" />
+
+    <endEvent id="end" name="end">
+      <terminateEventDefinition />
+    </endEvent>
+    <sequenceFlow sourceRef="script" targetRef="end" />
+
+  </process>
+</definitions>

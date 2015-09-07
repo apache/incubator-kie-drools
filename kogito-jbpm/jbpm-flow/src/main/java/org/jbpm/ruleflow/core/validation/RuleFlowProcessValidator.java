@@ -162,6 +162,10 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     errors.add(new ProcessValidationErrorImpl(process,
                         "Start node '" + node.getName() + "' [" + node.getId() + "] has no outgoing connection."));
                 }
+                if (startNode.getTimer() != null) {                    
+                    validateTimer(startNode.getTimer(), node, process, errors);
+                    
+                }
             } else if (node instanceof EndNode) {
                 final EndNode endNode = (EndNode) node;
                 endNodeFound = true;
@@ -458,7 +462,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                        "Start node '" + startNode.getName() + "' [" + startNode.getId() + "] in Event SubProcess '" + compositeNode.getName() + "' [" + compositeNode.getId() + "] must contain a trigger (event definition)." ));
                            }
                        }
-                   }
+                   }                  
                    
                 } else {
                 	Boolean isForCompensationObject = (Boolean) compositeNode.getMetaData("isForCompensation"); 
@@ -469,6 +473,12 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 	if( compositeNode.getOutgoingConnections().size() == 0 && !Boolean.TRUE.equals(isForCompensationObject)) { 
                         errors.add(new ProcessValidationErrorImpl(process, 
                                 "Embedded subprocess '" + node.getName() + "' [" + node.getId() + "] does not have outgoing connection." ));
+                    }
+                }
+                
+                if (compositeNode.getTimers() != null) {
+                    for (Timer timer: compositeNode.getTimers().keySet()) {
+                        validateTimer(timer, node, process, errors);
                     }
                 }
                 validateNodes(compositeNode.getNodes(), errors, process);
@@ -638,17 +648,14 @@ public class RuleFlowProcessValidator implements ProcessValidator {
 	    		try {
 	    		    switch (timer.getTimeType()) {
 	    	        case Timer.TIME_CYCLE:
-	    	            if (timer.getPeriod() != null) {
-	    	                TimeUtils.parseTimeString(timer.getDelay());
-	    	            } else {
-	    	            	if (CronExpression.isValidExpression(timer.getDelay())){
-	    	            		
-	    	            	} else {
-	    	            	
-		    	                // when using ISO date/time period is not set
-		    	                DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
-	    	            	}
-	    	            }
+    	            	if (CronExpression.isValidExpression(timer.getDelay())){
+    	            		
+    	            	} else {
+    	            	
+	    	                // when using ISO date/time period is not set
+	    	                DateTimeUtils.parseRepeatableDateTime(timer.getDelay());
+    	            	}
+    	            
 	    	            break;
 	    	        case Timer.TIME_DURATION:
 
@@ -672,12 +679,30 @@ public class RuleFlowProcessValidator implements ProcessValidator {
     	if (timer.getPeriod() != null) {
     		if (!timer.getPeriod().contains("#{")) {
 	    		try {
-	    			TimeUtils.parseTimeString(timer.getPeriod());
+	    		    if (CronExpression.isValidExpression(timer.getPeriod())){
+                        
+                    } else {
+                     // when using ISO date/time period is not set
+                        DateTimeUtils.parseRepeatableDateTime(timer.getPeriod());
+                    }
 	    		} catch (RuntimeException e) {
 	    			errors.add(new ProcessValidationErrorImpl(process,
 	                    "Could not parse period '" + timer.getPeriod() + "' of node '" + node.getName() + "': " + e.getMessage()));
 	    		}
     		}
+    	}
+    	
+    	if (timer.getDate() != null) {
+    	    if (!timer.getDate().contains("#{")) {
+                try {
+                    
+                    DateTimeUtils.parseDateAsDuration(timer.getDate());
+                    
+                } catch (RuntimeException e) {
+                    errors.add(new ProcessValidationErrorImpl(process,
+                        "Could not parse date '" + timer.getDate() + "' of node '" + node.getName() + "': " + e.getMessage()));
+                }
+            }
     	}
     }
 

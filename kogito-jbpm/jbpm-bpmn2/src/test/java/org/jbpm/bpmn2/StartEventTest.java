@@ -571,6 +571,36 @@ public class StartEventTest extends JbpmBpmn2TestCase {
         assertProcessVarValue(list.get(0), "report", "NotAvailableGoodsReport{type:test}");
 
     }
+    
+    @Test
+    public void testInvalidDateTimerStart() throws Exception {
+        try {
+            createKnowledgeBase("timer/BPMN2-StartTimerDateInvalid.bpmn2");
+            fail("Should fail as timer expression is not valid");
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().contains("Could not parse date 'abcdef'"));
+        }
+    }
+    
+    @Test
+    public void testInvalidDurationTimerStart() throws Exception {
+        try {
+            createKnowledgeBase("timer/BPMN2-StartTimerDurationInvalid.bpmn2");
+            fail("Should fail as timer expression is not valid");
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("Could not parse delay 'abcdef'"));
+        }
+    }
+    
+    @Test
+    public void testInvalidCycleTimerStart() throws Exception {
+        try {
+            createKnowledgeBase("timer/BPMN2-StartTimerCycleInvalid.bpmn2");
+            fail("Should fail as timer expression is not valid");
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("Could not parse delay 'abcdef'"));
+        }
+    }
 
 
     private static class StartCountingListener extends DefaultProcessEventListener {

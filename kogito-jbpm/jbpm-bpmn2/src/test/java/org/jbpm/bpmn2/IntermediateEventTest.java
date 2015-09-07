@@ -2421,6 +2421,36 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
 
     }
     
+    @Test
+    public void testInvalidDateTimerBoundary() throws Exception {
+        try {
+            createKnowledgeBase("timer/BPMN2-TimerBoundaryEventDateInvalid.bpmn2");
+            fail("Should fail as timer expression is not valid");
+        } catch (RuntimeException e) {
+            assertTrue(e.getMessage().contains("Could not parse date 'abcdef'"));
+        }
+    }
+    
+    @Test
+    public void testInvalidDurationTimerBoundary() throws Exception {
+        try {
+            createKnowledgeBase("timer/BPMN2-TimerBoundaryEventDurationInvalid.bpmn2");
+            fail("Should fail as timer expression is not valid");
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("Could not parse delay 'abcdef'"));
+        }
+    }
+    
+    @Test
+    public void testInvalidCycleTimerBoundary() throws Exception {
+        try {
+            createKnowledgeBase("timer/BPMN2-TimerBoundaryEventCycleInvalid.bpmn2");
+            fail("Should fail as timer expression is not valid");
+        } catch (Exception e) {
+            assertTrue(e.getMessage().contains("Could not parse delay 'abcdef'"));
+        }
+    }
+    
     class AssertNodeActiveCommand implements GenericCommand<Void> {
 
         private long piId;
