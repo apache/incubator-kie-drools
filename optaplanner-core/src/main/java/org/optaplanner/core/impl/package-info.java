@@ -18,6 +18,7 @@
  * Implementation classes of OptaPlanner.
  * <p>
  * All classes in this namespace are NOT backwards compatible: they might change in future releases
- * (including hotfix releases). All relevant changes are documented in the upgrade recipe.
+ * (including hotfix releases). All relevant changes are documented in
+ * <a href="http://www.optaplanner.org/download/upgradeRecipe/upgradeRecipeArchive.html">the upgrade recipe</a>.
  */
 package org.optaplanner.core.impl;
