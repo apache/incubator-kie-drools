@@ -187,7 +187,7 @@ public class SingleSessionCommandService
             // do not rollback transaction otherwise it will mark it as aborted
             // making the whole operation to fail  if not transaction owner
             if (transactionOwner) {
-                rollbackTransaction( e, transactionOwner );
+                rollbackTransaction( e, transactionOwner, false );
             }
             throw e;
 
@@ -377,17 +377,25 @@ public class SingleSessionCommandService
         return commandService.execute(command);
     }
 
+    private void rollbackTransaction(Exception t1, boolean transactionOwner) {
+        rollbackTransaction(t1, transactionOwner, true);
+    }
+
     private void rollbackTransaction(Exception t1,
-                                     boolean transactionOwner) {
+            boolean transactionOwner, boolean logstack) {
         try {
-            logger.warn( "Could not commit session",
-                          t1 );
+
+            if (logstack) {
+                logger.warn( "Could not commit session", t1 );
+            } else {
+                logger.warn( "Could not commit session due to {}", t1.getMessage() );
+            }
             txm.rollback( transactionOwner );
         } catch ( Exception t2 ) {
             logger.error( "Could not rollback",
-                          t2 );
+                    t2 );
             throw new RuntimeException( "Could not commit session or rollback",
-                                        t2 );
+                    t2 );
         }
     }
 
