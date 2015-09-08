@@ -52,37 +52,51 @@ public class ConfigUtilsTest {
         assertEquals(Integer.valueOf(10), meldProperty(a, b));
     }
 
-    private static void checkCeilDivision(int dividend, int divisor) {
-        long result = Math.round(Math.ceil(dividend / (double) divisor));
-        assertEquals("CeilDiv: " + dividend + "/" + divisor + "=" + result, result, ceilDivide(dividend, divisor));
-    }
+    @Test
+    public void testCeilDivide() {
+        assertEquals(10, ceilDivide(19, 2));
+        assertEquals(10, ceilDivide(20, 2));
+        assertEquals(11, ceilDivide(21, 2));
 
-    private static void checkFloorDivision(int dividend, int divisor) {
-        long result = Math.round(Math.floor(dividend / (double) divisor));
-        assertEquals("FloorDiv: " + dividend + "/" + divisor + "=" + result, result, floorDivide(dividend, divisor));
-    }
+        assertEquals(-9, ceilDivide(19, -2));
+        assertEquals(-10, ceilDivide(20, -2));
+        assertEquals(-10, ceilDivide(21, -2));
 
-    private static void checkBothDivisions(int dividend, int divisor) {
-        checkCeilDivision(dividend, divisor);
-        checkFloorDivision(dividend, divisor);
+        assertEquals(-9, ceilDivide(-19, 2));
+        assertEquals(-10, ceilDivide(-20, 2));
+        assertEquals(-10, ceilDivide(-21, 2));
+
+        assertEquals(10, ceilDivide(-19, -2));
+        assertEquals(10, ceilDivide(-20, -2));
+        assertEquals(11, ceilDivide(-21, -2));
     }
 
     @Test
-    public void testBothDivisions() {
-        int a = 20;
-        int b = 2;
-        int[] signs = {-1, 1};
-        for (int signB : signs) {
-            for (int signA : signs) {
-                for (int deltaA = -1; deltaA <= 1; deltaA++) {
-                    checkBothDivisions(signA * a + deltaA, signB * b);
-                }
-            }
-        }
+    public void testFloorDivide() {
+        assertEquals(9, floorDivide(19, 2));
+        assertEquals(10, floorDivide(20, 2));
+        assertEquals(10, floorDivide(21, 2));
+
+        assertEquals(-10, floorDivide(19, -2));
+        assertEquals(-10, floorDivide(20, -2));
+        assertEquals(-11, floorDivide(21, -2));
+
+        assertEquals(-10, floorDivide(-19, 2));
+        assertEquals(-10, floorDivide(-20, 2));
+        assertEquals(-11, floorDivide(-21, 2));
+
+        assertEquals(9, floorDivide(-19, -2));
+        assertEquals(10, floorDivide(-20, -2));
+        assertEquals(10, floorDivide(-21, -2));
     }
 
     @Test(expected = ArithmeticException.class)
     public void testCeilDivideByZero() {
         ceilDivide(20, -0);
+    }
+
+    @Test(expected = ArithmeticException.class)
+    public void testFloorDivideByZero() {
+        floorDivide(20, -0);
     }
 }
