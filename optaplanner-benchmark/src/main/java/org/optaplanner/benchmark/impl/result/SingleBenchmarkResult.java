@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,6 @@ import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,10 +97,8 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     }
 
     public void initSingleStatisticMap() {
-        for (SubSingleBenchmarkResult subSingleBenchmarkResult : subSingleBenchmarkResultList) {
-            subSingleBenchmarkResult.setSubPureSingleStatisticList(pureSingleStatisticList);
-            subSingleBenchmarkResult.initSingleStatisticMap();
-        }
+        effectiveSingleStatisticMap = new HashMap<StatisticType, SingleStatistic>(pureSingleStatisticList.size()
+                + problemBenchmarkResult.getProblemStatisticList().size());
     }
 
     @Override

@@ -357,7 +357,11 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                     if (problemBenchmarkResult.getProblemStatisticList() == null || problemBenchmarkResult.getProblemStatisticList().size() <= 0) {
                         problemBenchmarkResult.setProblemStatisticList(originalProblemStatisticMap.get(problemBenchmarkResult));
                     }
-                    singleBenchmarkResult.initSingleStatisticMap();
+                    for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                        subSingleBenchmarkResult.setSubPureSingleStatisticList(singleBenchmarkResult.getPureSingleStatisticList());
+                        subSingleBenchmarkResult.initSubSingleStatisticMap();
+                    }
+//                    singleBenchmarkResult.initSingleStatisticMap();
                 }
             }
         }
@@ -388,7 +392,11 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                         }
                     }
                     singleBenchmarkResult.getProblemBenchmarkResult().setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
-                    singleBenchmarkResult.initSingleStatisticMap();
+                    for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                        subSingleBenchmarkResult.setSubPureSingleStatisticList(singleBenchmarkResult.getPureSingleStatisticList());
+                        subSingleBenchmarkResult.initSubSingleStatisticMap();
+                    }
+//                    singleBenchmarkResult.initSingleStatisticMap();
                 }
                 WarmUpConfigBackup warmUpConfigBackupPutResult = warmUpConfigBackupMap.put(solverBenchmarkResult, warmUpConfigBackup);
                 if (warmUpConfigBackupPutResult != null) {

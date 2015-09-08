@@ -33,7 +33,6 @@ import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +89,7 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
         this.subPureSingleStatisticList = subPureSingleStatisticList;
     }
 
-    public void initSingleStatisticMap() {
+    public void initSubSingleStatisticMap() {
         List<ProblemStatistic> problemStatisticList = singleBenchmarkResult.getProblemBenchmarkResult().getProblemStatisticList();
         effectiveSingleStatisticMap = new HashMap<StatisticType, SingleStatistic>(
                 problemStatisticList.size() + subPureSingleStatisticList.size());
@@ -294,7 +293,7 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
                     oldSingleStatistic.getStatisticType().buildPureSingleStatistic(newResult));
         }
 
-        newResult.initSingleStatisticMap();
+        newResult.initSubSingleStatisticMap();
         for (SingleStatistic singleStatistic : newResult.effectiveSingleStatisticMap.values()) {
             SingleStatistic oldSingleStatistic = oldResult.getSingleStatistic(singleStatistic.getStatisticType());
             if (!oldSingleStatistic.getCsvFile().exists()) {

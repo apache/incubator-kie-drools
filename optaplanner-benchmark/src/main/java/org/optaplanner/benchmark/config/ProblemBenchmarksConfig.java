@@ -190,14 +190,14 @@ public class ProblemBenchmarksConfig {
             }
         }
         singleBenchmarkResult.setPureSingleStatisticList(pureSingleStatisticList);
-
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<SubSingleBenchmarkResult>(solverBenchmarkResult.getSubSingleCount());
         for (int i = 0; i < solverBenchmarkResult.getSubSingleCount(); i++) {
             SubSingleBenchmarkResult subSingleBenchmarkResult = new SubSingleBenchmarkResult(singleBenchmarkResult, i);
+            subSingleBenchmarkResult.setSubPureSingleStatisticList(pureSingleStatisticList);
+            subSingleBenchmarkResult.initSubSingleStatisticMap();
             subSingleBenchmarkResultList.add(subSingleBenchmarkResult);
         }
         singleBenchmarkResult.setSubSingleBenchmarkResultList(subSingleBenchmarkResultList);
-
         singleBenchmarkResult.initSingleStatisticMap();
         solverBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
