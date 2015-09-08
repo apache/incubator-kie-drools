@@ -25,13 +25,12 @@ import org.assertj.core.api.Assertions;
 import org.jbpm.test.JbpmTestCase;
 import org.jbpm.test.domain.Person;
 import org.jbpm.test.listener.TrackingAgendaEventListener;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 
 /**
- * Tests fireUntilHalt with jBPM process.
+ * Tests fireUntilHalt with jBPM process - this test makes sense only with singleton strategy
  */
 public class FireUntilHaltTest extends JbpmTestCase {
 
@@ -43,7 +42,7 @@ public class FireUntilHaltTest extends JbpmTestCase {
         super(false);
     }
 
-    @Ignore
+    
     @Test(timeout = 30000)
     public void testFireUntilHaltWithProcess() throws Exception {
         Map<String, ResourceType> res = new HashMap<String, ResourceType>();
