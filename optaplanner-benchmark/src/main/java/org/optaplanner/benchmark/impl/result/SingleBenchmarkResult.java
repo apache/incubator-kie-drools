@@ -28,7 +28,7 @@ import java.util.Map;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SubSingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -75,6 +75,10 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     private Score averageScore = null;
     private Integer medianUninitializedVariableCount = null;
     private Score medianScore = null;
+    private Integer worstUninitializedVariableCount = null;
+    private Score worstScore = null;
+    private Integer bestUninitializedVariableCount = null;
+    private Score bestScore = null;
     private Integer uninitializedSolutionCount = null;
     private Integer infeasibleScoreCount = null;
     // Not a Score because
@@ -315,6 +319,20 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         return ScoreUtils.getScoreWithUninitializedPrefix(medianUninitializedVariableCount, medianScore);
     }
 
+    public String getWorstScoreWithUninitializedPrefix() {
+        if (worstUninitializedVariableCount == null) {
+            return null;
+        }
+        return ScoreUtils.getScoreWithUninitializedPrefix(worstUninitializedVariableCount, worstScore);
+    }
+
+    public String getBestScoreWithUninitializedPrefix() {
+        if (bestUninitializedVariableCount == null) {
+            return null;
+        }
+        return ScoreUtils.getScoreWithUninitializedPrefix(bestUninitializedVariableCount, bestScore);
+    }
+
     public String getAverageScoreWithUninitializedPrefix() {
         return ScoreUtils.getScoreWithUninitializedPrefix(
                 ConfigUtils.ceilDivide(getTotalUninitializedVariableCount(), getSuccessCount()),
@@ -372,8 +390,23 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     }
 
     private SubSingleBenchmarkResult determineRepresentativeSubSingleBenchmarkResult() {
-        SubSingleBenchmarkResult[] subSingleBenchmarkResults = new SubSingleBenchmarkResult[subSingleBenchmarkResultList.size()];
-        SubSingleBenchmarkResult median = ObjectUtils.median(new SubSingleBenchmarkRankingComparator(), subSingleBenchmarkResultList.toArray(subSingleBenchmarkResults)); // OOO: Use ranking
+        if (subSingleBenchmarkResultList == null || subSingleBenchmarkResultList.isEmpty()) {
+            throw new IllegalStateException("Cannot get representative subSingleBenchmarkResult from empty subSingleBenchmarkResultList.");
+        }
+        List<SubSingleBenchmarkResult> subSingleBenchmarkResultListCopy = new ArrayList<SubSingleBenchmarkResult>(subSingleBenchmarkResultList);
+        // sort (according to ranking) so that the best subSingle is at index 0
+        Collections.sort(subSingleBenchmarkResultListCopy, new Comparator<SubSingleBenchmarkResult>() {
+            @Override
+            public int compare(SubSingleBenchmarkResult o1, SubSingleBenchmarkResult o2) {
+                return new CompareToBuilder()
+                        .append(o1.isFailure(), o2.isFailure())
+                        .append(o1.getRanking(), o2.getRanking())
+                        .toComparison();
+            }
+        });
+        SubSingleBenchmarkResult best = subSingleBenchmarkResultListCopy.get(0);
+        SubSingleBenchmarkResult worst = subSingleBenchmarkResultListCopy.get(subSingleBenchmarkResultListCopy.size() - 1);
+        SubSingleBenchmarkResult median = subSingleBenchmarkResultListCopy.get(ConfigUtils.ceilDivide(subSingleBenchmarkResultListCopy.size() - 1, 2));
         usedMemoryAfterInputSolution = median.getUsedMemoryAfterInputSolution();
         timeMillisSpent = median.getTimeMillisSpent();
         calculateCount = median.getCalculateCount();
@@ -381,6 +414,10 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         worstScoreDifferencePercentage = median.getWorstScoreDifferencePercentage();
         medianUninitializedVariableCount = median.getUninitializedVariableCount();
         medianScore = median.getScore();
+        worstUninitializedVariableCount = worst.getUninitializedVariableCount();
+        worstScore = worst.getScore();
+        bestUninitializedVariableCount = best.getUninitializedVariableCount();
+        bestScore = best.getScore();
         return median;
     }
 
@@ -504,6 +541,10 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         }
         newResult.medianScore = oldResult.medianScore;
         newResult.medianUninitializedVariableCount = oldResult.medianUninitializedVariableCount;
+        newResult.worstScore = oldResult.worstScore;
+        newResult.worstUninitializedVariableCount = oldResult.worstUninitializedVariableCount;
+        newResult.bestScore = oldResult.bestScore;
+        newResult.bestUninitializedVariableCount = oldResult.bestUninitializedVariableCount;
 
         solverBenchmarkResult.getSingleBenchmarkResultList().add(newResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(newResult);

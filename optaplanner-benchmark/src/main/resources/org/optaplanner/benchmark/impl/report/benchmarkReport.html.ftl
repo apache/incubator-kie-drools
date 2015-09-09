@@ -205,6 +205,10 @@
                                                                 <li>${singleBenchmarkResult.averageScoreWithUninitializedPrefix!""}</li>
                                                                 <li class="dropdown-header"><strong>Standard Deviation</strong></li>
                                                                 <li>${singleBenchmarkResult.standardDeviationString!""}</li>
+                                                                <li class="dropdown-header"><strong>Best</strong></li>
+                                                                <li>${singleBenchmarkResult.bestScoreWithUninitializedPrefix!""}</li>
+                                                                <li class="dropdown-header"><strong>Worst</strong></li>
+                                                                <li>${singleBenchmarkResult.worstScoreWithUninitializedPrefix!""}</li>
                                                                 <li class="dropdown-header"><strong>Median</strong></li>
                                                                 <li>${singleBenchmarkResult.medianScoreWithUninitializedPrefix!""}</li>
                                                             </ul>
