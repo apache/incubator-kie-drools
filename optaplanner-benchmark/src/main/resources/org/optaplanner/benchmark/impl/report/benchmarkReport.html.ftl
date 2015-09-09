@@ -190,7 +190,7 @@
                                                     <#else>
                                                         <td><div class="dropdown">
                                                             <span class="nav nav-pills dropdown-toggle" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                ${singleBenchmarkResult.scoreWithUninitializedPrefix!""}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/>
+                                                                ${singleBenchmarkResult.averageScoreWithUninitializedPrefix!""}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/>
                                                                 <span class="caret"></span>
                                                             </span>
                                                             <ul class="dropdown-menu" aria-labelledby="dLabel">
@@ -202,7 +202,7 @@
                                                                 </#list>
                                                                 <li role="separator" class="divider"></li>
                                                                 <li class="dropdown-header"><strong>Average</strong></li>
-                                                                <li>${singleBenchmarkResult.scoreWithUninitializedPrefix!""}</li>
+                                                                <li>${singleBenchmarkResult.averageScoreWithUninitializedPrefix!""}</li>
                                                                 <li class="dropdown-header"><strong>Standard Deviation</strong></li>
                                                                 <#--<li>${singleBenchmarkResult.standardDeviationString!""}</li>-->
                                                                 <li class="dropdown-header"><strong>Median</strong></li>

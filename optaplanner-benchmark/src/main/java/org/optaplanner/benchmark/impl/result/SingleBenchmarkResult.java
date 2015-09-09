@@ -38,6 +38,7 @@ import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,9 +67,15 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
 
     private Long usedMemoryAfterInputSolution = null;
 
-    private Boolean succeeded = null;
+    private Integer failureCount = null;
     private Integer uninitializedVariableCount = null;
     private Score score = null;
+    private Integer totalUninitializedVariableCount = null;
+    private Score totalScore = null;
+    private Integer averageUninitializedVariableCount = null;
+    private Score averageScore = null;
+    private Integer uninitializedSolutionCount = null;
+    private Integer infeasibleScoreCount = null;
     private long timeMillisSpent = -1L;
     private long calculateCount = -1L;
 
@@ -142,12 +149,12 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         this.usedMemoryAfterInputSolution = usedMemoryAfterInputSolution;
     }
 
-    public Boolean getSucceeded() {
-        return succeeded;
+    public Integer getFailureCount() {
+        return failureCount;
     }
 
-    public void setSucceeded(Boolean succeeded) {
-        this.succeeded = succeeded;
+    public void setFailureCount(Integer failureCount) {
+        this.failureCount = failureCount;
     }
 
     public Integer getUninitializedVariableCount() {
@@ -206,6 +213,30 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         this.ranking = ranking;
     }
 
+    public Score getAverageScore() {
+        return averageScore;
+    }
+
+    public Integer getAverageUninitializedVariableCount() {
+        return averageUninitializedVariableCount;
+    }
+
+    public Integer getInfeasibleScoreCount() {
+        return infeasibleScoreCount;
+    }
+
+    public Integer getTotalUninitializedVariableCount() {
+        return totalUninitializedVariableCount;
+    }
+
+    public Integer getUninitializedSolutionCount() {
+        return uninitializedSolutionCount;
+    }
+
+    public Score getTotalScore() {
+        return totalScore;
+    }
+
     // ************************************************************************
     // Smart getters
     // ************************************************************************
@@ -222,7 +253,7 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     }
 
     public boolean isSuccess() {
-        return succeeded != null && succeeded.booleanValue();
+        return !isFailure();
     }
 
     public boolean isInitialized() {
@@ -230,7 +261,7 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     }
 
     public boolean isFailure() {
-        return succeeded != null && !succeeded.booleanValue();
+        return failureCount != null && failureCount != 0;
     }
 
     public boolean isScoreFeasible() {
@@ -262,6 +293,16 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         return ScoreUtils.getScoreWithUninitializedPrefix(uninitializedVariableCount, score);
     }
 
+    public String getAverageScoreWithUninitializedPrefix() {
+        return ScoreUtils.getScoreWithUninitializedPrefix(
+                ConfigUtils.ceilDivide(getTotalUninitializedVariableCount(), getSuccessCount()),
+                getAverageScore());
+    }
+
+    public int getSuccessCount() {
+        return subSingleBenchmarkResultList.size() - failureCount;
+    }
+
     // ************************************************************************
     // Accumulate methods
     // ************************************************************************
@@ -282,32 +323,44 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         }
     }
 
-    public void accumulateResults(BenchmarkReport benchmarkReport) { // OOO: accumulate according to merge strategy: average, worst case, propagate failure
+    public void accumulateResults(BenchmarkReport benchmarkReport) {
+        if (this.score == null) { // OOO: hack
+            SubSingleBenchmarkResult median = determineRepresentativeSubSingleBenchmarkResult();
+            mergeSubSingleStatistics(median);
+        }
         determineTotalsAndAveragesAndRanking();
+    }
+
+    private void mergeSubSingleStatistics(SubSingleBenchmarkResult median) {
+        if (median.getEffectiveSingleStatisticMap() != null) { // OOO fix this, copy statistics and pures
+            for (SingleStatistic singleStatistic : median.getEffectiveSingleStatisticMap().values()) { // copy to parent dir
+                singleStatistic.unhibernatePointList();
+                singleStatistic.setSolverProblemBenchmarkResult(this);
+                singleStatistic.hibernatePointList();
+            }
+        }
+    }
+
+    private SubSingleBenchmarkResult determineRepresentativeSubSingleBenchmarkResult() {
         SubSingleBenchmarkResult[] subSingleBenchmarkResults = new SubSingleBenchmarkResult[subSingleBenchmarkResultList.size()];
         SubSingleBenchmarkResult median = ObjectUtils.median(new SubSingleBenchmarkRankingComparator(), subSingleBenchmarkResultList.toArray(subSingleBenchmarkResults)); // OOO: Use ranking
-        this.pureSingleStatisticList = median.getSubPureSingleStatisticList();
-        this.effectiveSingleStatisticMap = median.getEffectiveSingleStatisticMap();
         this.usedMemoryAfterInputSolution = median.getUsedMemoryAfterInputSolution();
-        this.succeeded = median.getSucceeded();
-        this.uninitializedVariableCount = median.getUninitializedVariableCount();
-        this.score = median.getScore();
         this.timeMillisSpent = median.getTimeMillisSpent();
         this.calculateCount = median.getCalculateCount();
         this.winningScoreDifference = median.getWinningScoreDifference();
         this.worstScoreDifferencePercentage = median.getWorstScoreDifferencePercentage();
-
-        for (SingleStatistic singleStatistic : median.getEffectiveSingleStatisticMap().values()) { // copy to parent dir
-            singleStatistic.unhibernatePointList();
-            singleStatistic.setSolverProblemBenchmarkResult(this);
-            singleStatistic.hibernatePointList();
-        }
+        this.uninitializedVariableCount = median.getUninitializedVariableCount();
+        this.score = median.getScore();
+        return median;
     }
 
     private void determineTotalsAndAveragesAndRanking() {
-        int failureCount = 0;
-        long totalUsedMemoryAfterInputSolution = 0L;
-        int usedMemoryAfterInputSolutionCount = 0;
+        failureCount = 0;
+        boolean firstNonFailure = true;
+        totalScore = null;
+        uninitializedSolutionCount = 0;
+        totalUninitializedVariableCount = 0;
+        infeasibleScoreCount = 0;
         List<SubSingleBenchmarkResult> successResultList = new ArrayList<SubSingleBenchmarkResult>(subSingleBenchmarkResultList);
         // Do not rank a SubSingleBenchmarkResult that has a failure
         for (Iterator<SubSingleBenchmarkResult> it = successResultList.iterator(); it.hasNext(); ) {
@@ -315,7 +368,23 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
             if (subSingleBenchmarkResult.isFailure()) {
                 failureCount++;
                 it.remove();
+            } else {
+                if (!subSingleBenchmarkResult.isInitialized()) {
+                    uninitializedSolutionCount++;
+                    totalUninitializedVariableCount += subSingleBenchmarkResult.getUninitializedVariableCount();
+                } else if (!subSingleBenchmarkResult.isScoreFeasible()) {
+                    infeasibleScoreCount++;
+                }
+                if (firstNonFailure) {
+                    totalScore = subSingleBenchmarkResult.getScore();
+                    firstNonFailure = false;
+                } else {
+                    totalScore = totalScore.add(subSingleBenchmarkResult.getScore());
+                }
             }
+        }
+        if (!firstNonFailure) {
+            averageScore = totalScore.divide(getSuccessCount());
         }
         determineRanking(successResultList);
     }
@@ -372,11 +441,11 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         }
         // Skip oldResult.reportDirectory
         // Skip oldResult.usedMemoryAfterInputSolution
-        newResult.succeeded = oldResult.succeeded;
-        newResult.score = oldResult.score;
-        newResult.uninitializedVariableCount = oldResult.uninitializedVariableCount;
-        newResult.timeMillisSpent = oldResult.timeMillisSpent;
-        newResult.calculateCount = oldResult.calculateCount;
+//        newResult.failureCount = oldResult.failureCount;
+//        newResult.score = oldResult.score;
+//        newResult.uninitializedVariableCount = oldResult.uninitializedVariableCount;
+//        newResult.timeMillisSpent = oldResult.timeMillisSpent;
+//        newResult.calculateCount = oldResult.calculateCount;
 
         solverBenchmarkResult.getSingleBenchmarkResultList().add(newResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(newResult);

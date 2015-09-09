@@ -84,7 +84,7 @@ public class BenchmarkAggregator {
             for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
                 subSingleBenchmarkResult.initSubSingleStatisticMap();
             }
-//            singleBenchmarkResult.initSingleStatisticMap();
+            singleBenchmarkResult.initSingleStatisticMap();
         }
         // Handle renamed solver benchmarks after statistics have been read (they're resolved by
         // original solver benchmarks' names)
