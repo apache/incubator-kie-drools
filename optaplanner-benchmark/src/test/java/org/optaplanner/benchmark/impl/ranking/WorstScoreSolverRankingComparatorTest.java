@@ -112,24 +112,24 @@ public class WorstScoreSolverRankingComparatorTest extends AbstractSolverRanking
         assertEquals(0, comparator.compare(a, b));
         assertEquals(0, comparator.compare(b, a));
 
-        a0.setUninitializedVariableCount(100);
-        b0.setUninitializedVariableCount(100);
-        b1.setUninitializedVariableCount(100);
+        a0.setAverageUninitializedVariableCount(100);
+        b0.setAverageUninitializedVariableCount(100);
+        b1.setAverageUninitializedVariableCount(100);
         a.accumulateResults(benchmarkReport);
         b.accumulateResults(benchmarkReport);
         // B is worse on uninitialized variable count in the second worst score
         assertEquals(1, comparator.compare(a, b));
         assertEquals(-1, comparator.compare(b, a));
 
-        a0.setUninitializedVariableCount(101);
+        a0.setAverageUninitializedVariableCount(101);
         a.accumulateResults(benchmarkReport);
         // uninitialized variable count in a better score is bigger in A
         assertEquals(-1, comparator.compare(a, b));
         assertEquals(1, comparator.compare(b, a));
 
         // uninitialized variable counts are equal, A is worse on score
-        b0.setUninitializedVariableCount(0);
-        b1.setUninitializedVariableCount(100);
+        b0.setAverageUninitializedVariableCount(0);
+        b1.setAverageUninitializedVariableCount(100);
         b.accumulateResults(benchmarkReport);
         assertEquals(-1, comparator.compare(a, b));
         assertEquals(1, comparator.compare(b, a));

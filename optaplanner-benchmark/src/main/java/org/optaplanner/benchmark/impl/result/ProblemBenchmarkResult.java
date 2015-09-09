@@ -342,10 +342,10 @@ public class ProblemBenchmarkResult {
                 continue;
             }
             singleBenchmarkResult.setWinningScoreDifference(
-                    singleBenchmarkResult.getScore().subtract(winningSingleBenchmarkResult.getScore()));
+                    singleBenchmarkResult.getAverageScore().subtract(winningSingleBenchmarkResult.getAverageScore()));
             singleBenchmarkResult.setWorstScoreDifferencePercentage(
                     ScoreDifferencePercentage.calculateScoreDifferencePercentage(
-                            worstSingleBenchmarkResult.getScore(), singleBenchmarkResult.getScore()));
+                            worstSingleBenchmarkResult.getAverageScore(), singleBenchmarkResult.getAverageScore()));
         }
     }
 

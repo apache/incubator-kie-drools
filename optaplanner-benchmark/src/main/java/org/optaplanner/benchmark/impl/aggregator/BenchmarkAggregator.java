@@ -82,7 +82,7 @@ public class BenchmarkAggregator {
         Date startingTimestamp = new Date();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                subSingleBenchmarkResult.initSubSingleStatisticMap();
+                subSingleBenchmarkResult.setSingleBenchmarkResult(singleBenchmarkResult);
             }
             singleBenchmarkResult.initSingleStatisticMap();
         }

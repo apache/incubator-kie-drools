@@ -186,7 +186,7 @@
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <#if solverBenchmarkResult.subSingleCount lte 1>
-                                                      <td>${singleBenchmarkResult.scoreWithUninitializedPrefix!""}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/></td>
+                                                        <td>${singleBenchmarkResult.averageScoreWithUninitializedPrefix!""}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/></td>
                                                     <#else>
                                                         <td><div class="dropdown">
                                                             <span class="nav nav-pills dropdown-toggle" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

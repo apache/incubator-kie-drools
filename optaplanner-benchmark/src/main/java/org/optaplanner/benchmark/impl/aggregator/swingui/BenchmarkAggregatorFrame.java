@@ -510,7 +510,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
                 "Score: %s%n"
                 + "Used memory: %s%n"
                 + "Time spent: %s",
-                singleBenchmarkResult.getScore(),
+                singleBenchmarkResult.getAverageScore(),
                 toEmptyStringIfNull(singleBenchmarkResult.getUsedMemoryAfterInputSolution()),
                 millisecondsSpentNumberFormat.format(singleBenchmarkResult.getTimeMillisSpent()));
         return new MixedCheckBox(singleCheckBoxName, singleBenchmarkDetail, singleBenchmarkResult);

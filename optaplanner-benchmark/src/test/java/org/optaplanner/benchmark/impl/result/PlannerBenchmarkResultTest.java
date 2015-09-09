@@ -101,7 +101,7 @@ public class PlannerBenchmarkResultTest {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
         solverBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
-        singleBenchmarkResult.setScore(SimpleScore.valueOf(score));
+        singleBenchmarkResult.setAverageScore(SimpleScore.valueOf(score));
         singleBenchmarkResult.setPureSingleStatisticList(Collections.<PureSingleStatistic>emptyList());
         return singleBenchmarkResult;
     }

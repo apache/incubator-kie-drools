@@ -248,7 +248,7 @@ public class SolverBenchmarkResult {
     public List<Score> getScoreList() {
         List<Score> scoreList = new ArrayList<Score>(singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            scoreList.add(singleBenchmarkResult.getScore());
+            scoreList.add(singleBenchmarkResult.getAverageScore());
         }
         return scoreList;
     }
@@ -323,19 +323,19 @@ public class SolverBenchmarkResult {
             } else {
                 if (!singleBenchmarkResult.isInitialized()) {
                     uninitializedSolutionCount++;
-                    totalUninitializedVariableCount += singleBenchmarkResult.getUninitializedVariableCount();
+                    totalUninitializedVariableCount += singleBenchmarkResult.getAverageUninitializedVariableCount();
                 } else if (!singleBenchmarkResult.isScoreFeasible()) {
                     infeasibleScoreCount++;
                 }
                 if (firstNonFailure) {
-                    totalScore = singleBenchmarkResult.getScore();
+                    totalScore = singleBenchmarkResult.getAverageScore();
                     totalWinningScoreDifference = singleBenchmarkResult.getWinningScoreDifference();
                     totalWorstScoreDifferencePercentage = singleBenchmarkResult.getWorstScoreDifferencePercentage();
                     totalAverageCalculateCountPerSecond = singleBenchmarkResult.getAverageCalculateCountPerSecond();
                     totalTimeMillisSpent = singleBenchmarkResult.getTimeMillisSpent();
                     firstNonFailure = false;
                 } else {
-                    totalScore = totalScore.add(singleBenchmarkResult.getScore());
+                    totalScore = totalScore.add(singleBenchmarkResult.getAverageScore());
                     totalWinningScoreDifference = totalWinningScoreDifference.add(
                             singleBenchmarkResult.getWinningScoreDifference());
                     totalWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.add(
@@ -363,7 +363,7 @@ public class SolverBenchmarkResult {
         double[] differenceSquaredTotalDoubles = null;
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             if (!singleBenchmarkResult.isFailure()) {
-                Score difference = singleBenchmarkResult.getScore().subtract(averageScore);
+                Score difference = singleBenchmarkResult.getAverageScore().subtract(averageScore);
                 // Calculations done on doubles to avoid common overflow when executing with an int score > 500 000
                 double[] differenceDoubles = ScoreUtils.extractLevelDoubles(difference);
                 if (differenceSquaredTotalDoubles == null) {
