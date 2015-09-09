@@ -76,6 +76,7 @@ public class PlannerBenchmarkResultTest {
         p2ProblemA.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
 
         SingleBenchmarkResult p1SolverXProblemA = createSingleBenchmarkResult(p1SolverX, p1ProblemA, -1);
+        createSubSingleBenchmarkResult(p1SolverXProblemA, 1);
         SingleBenchmarkResult p1SolverXProblemB = createSingleBenchmarkResult(p1SolverX, p1ProblemB, -20);
         SingleBenchmarkResult p1SolverYProblemA = createSingleBenchmarkResult(p1SolverY, p1ProblemA, -300);
         SingleBenchmarkResult p1SolverYProblemB = createSingleBenchmarkResult(p1SolverY, p1ProblemB, -4000);
@@ -103,7 +104,16 @@ public class PlannerBenchmarkResultTest {
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         singleBenchmarkResult.setAverageScore(SimpleScore.valueOf(score));
         singleBenchmarkResult.setPureSingleStatisticList(Collections.<PureSingleStatistic>emptyList());
+        singleBenchmarkResult.setSubSingleBenchmarkResultList(new ArrayList<SubSingleBenchmarkResult>(1));
+        createSubSingleBenchmarkResult(singleBenchmarkResult, 0);
         return singleBenchmarkResult;
+    }
+
+    protected SubSingleBenchmarkResult createSubSingleBenchmarkResult(SingleBenchmarkResult parent, int subSingleIndex) {
+        SubSingleBenchmarkResult subSingleBenchmarkResult = new SubSingleBenchmarkResult(parent, subSingleIndex);
+        subSingleBenchmarkResult.setSubPureSingleStatisticList(Collections.<PureSingleStatistic>emptyList());
+        parent.getSubSingleBenchmarkResultList().add(subSingleBenchmarkResult);
+        return subSingleBenchmarkResult;
     }
 
 }

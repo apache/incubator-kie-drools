@@ -362,7 +362,7 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     }
 
     private void mergeSubSingleStatistics(SubSingleBenchmarkResult median) {
-        if (median.getEffectiveSingleStatisticMap() != null) { // OOO fix this, copy statistics and pures
+        if (median.getEffectiveSingleStatisticMap() != null && !median.isFailure()) { // OOO fix this, copy statistics and pures
             for (SingleStatistic singleStatistic : median.getEffectiveSingleStatisticMap().values()) { // copy to parent dir
                 singleStatistic.unhibernatePointList();
                 singleStatistic.setSolverProblemBenchmarkResult(this);

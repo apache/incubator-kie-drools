@@ -185,14 +185,14 @@ public class ProblemBenchmarksConfig {
         buildSubSingleBenchmarks(singleBenchmarkResult, solverBenchmarkResult.getSubSingleCount());
         singleBenchmarkResult.setPureSingleStatisticList(new ArrayList<PureSingleStatistic>(
                 singleStatisticTypeList == null ? 0 : singleStatisticTypeList.size()));
+        for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+            subSingleBenchmarkResult.setSubPureSingleStatisticList(new ArrayList<PureSingleStatistic>(
+                    singleStatisticTypeList == null ? 0 : singleStatisticTypeList.size()));
+        }
         if (singleStatisticTypeList != null) {
             for (SingleStatisticType singleStatisticType : singleStatisticTypeList) {
                 singleBenchmarkResult.getPureSingleStatisticList().add(singleStatisticType.buildPureSingleStatistic(singleBenchmarkResult));
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                    if (subSingleBenchmarkResult.getSubPureSingleStatisticList() == null) {
-                        subSingleBenchmarkResult.setSubPureSingleStatisticList(new ArrayList<PureSingleStatistic>(
-                                singleStatisticTypeList == null ? 0 : singleStatisticTypeList.size()));
-                    }
                     subSingleBenchmarkResult.getSubPureSingleStatisticList().add(singleStatisticType.buildPureSingleStatistic(subSingleBenchmarkResult));
                 }
             }
