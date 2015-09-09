@@ -59,15 +59,7 @@ public class SolverBenchmarkResultTest {
         assertEquals("2uninitialized/-10hard/-100soft", solverBenchmarkResult.getAverageScoreWithUninitializedPrefix());
         when(solverBenchmarkResult.getFailureCount()).thenReturn(0);
         assertEquals("1uninitialized/-10hard/-100soft", solverBenchmarkResult.getAverageScoreWithUninitializedPrefix());
-    }
-
-    @Test(expected = ArithmeticException.class)
-    public void testZeroDivisorGetAverageScoreWithUninitializedPrefix() throws Exception {
-        SolverBenchmarkResult solverBenchmarkResult = spy(new SolverBenchmarkResult(null));
-        when(solverBenchmarkResult.getSingleBenchmarkResultList()).thenReturn(Collections.<SingleBenchmarkResult>emptyList());
-        when(solverBenchmarkResult.getAverageScore()).thenReturn(HardSoftScore.valueOf(-10, -100));
-        when(solverBenchmarkResult.getTotalUninitializedVariableCount()).thenReturn(0);
-        when(solverBenchmarkResult.getFailureCount()).thenReturn(0);
-        solverBenchmarkResult.getAverageScoreWithUninitializedPrefix();
+        when(solverBenchmarkResult.getFailureCount()).thenReturn(2);
+        assertEquals(null, solverBenchmarkResult.getAverageScoreWithUninitializedPrefix());
     }
 }
