@@ -27,6 +27,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Predicate;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.jbpm.services.api.model.DeployedUnit;
+import org.kie.internal.runtime.manager.RuntimeManagerIdFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * <br/>
  * Primary method to be used {@link DeploymentIdResolver#matchAndReturnLatest}
  */
-public class DeploymentIdResolver {
+public class DeploymentIdResolver implements RuntimeManagerIdFilter {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DeploymentIdResolver.class);
 	
@@ -131,4 +132,15 @@ public class DeploymentIdResolver {
 			return version;
 		}
 	}
+
+    @Override
+    public Collection<String> filter(String pattern, Collection<String> identifiers) {
+        Collection<String> filtered = new ArrayList<String>();
+        String found = DeploymentIdResolver.matchAndReturnLatest(pattern, identifiers);
+        if (found != null && !found.equals(pattern)) {
+            filtered.add(found);
+        }
+        
+        return filtered;
+    }
 }

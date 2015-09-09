@@ -19,8 +19,12 @@ package org.jbpm.process.workitem.jms;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
@@ -31,6 +35,7 @@ import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
+import org.kie.internal.runtime.manager.RuntimeManagerIdFilter;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.slf4j.Logger;
@@ -40,6 +45,8 @@ import org.slf4j.LoggerFactory;
 public class JMSSignalReceiver implements MessageListener {
     
     private static final Logger logger = LoggerFactory.getLogger(JMSSignalReceiver.class);
+    
+    private static final ServiceLoader<RuntimeManagerIdFilter> runtimeManagerIdFilters = ServiceLoader.load(RuntimeManagerIdFilter.class);
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Override
@@ -68,50 +75,56 @@ public class JMSSignalReceiver implements MessageListener {
                 
                 logger.debug("Deployment id '{}', signal '{}', processInstanceId '{}', workItemId '{}'", deploymentId, signal, processInstanceId, workItemId);
                                 
-                runtimeManager = RuntimeManagerRegistry.get().getManager(deploymentId);
+                Collection<String> availableRuntimeManagers = matchDeployments(deploymentId, RuntimeManagerRegistry.get().getRegisteredIdentifiers());
                 
-                if (runtimeManager == null) {
-                    throw new IllegalStateException("There is no runtime manager for deployment " + deploymentId);
-                }
-                logger.debug("RuntimeManager found for deployment id {}, reading message content with custom class loader of the deployment", deploymentId);
-                data = readData(bytesMessage, ((InternalRuntimeManager)runtimeManager).getEnvironment().getClassLoader());
-                logger.debug("Data read successfully with output {}", data);
-                engine = runtimeManager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
-                
-                // perform operation either signal or complete work item
-                if (workItemId != null) {
-                    Map<String, Object> results = new HashMap<String, Object>();
-                    if (data != null) {
-                        if (data instanceof Map) {
-                            results.putAll((Map) data);
+                for (String matchedDeploymentId : availableRuntimeManagers) {
+                    try {
+                        runtimeManager = RuntimeManagerRegistry.get().getManager(matchedDeploymentId);
+                        
+                        if (runtimeManager == null) {
+                            throw new IllegalStateException("There is no runtime manager for deployment " + matchedDeploymentId);
+                        }
+                        logger.debug("RuntimeManager found for deployment id {}, reading message content with custom class loader of the deployment", matchedDeploymentId);
+                        data = readData(bytesMessage, ((InternalRuntimeManager)runtimeManager).getEnvironment().getClassLoader());
+                        logger.debug("Data read successfully with output {}", data);
+                        engine = runtimeManager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstanceId));
+                        
+                        // perform operation either signal or complete work item
+                        if (workItemId != null) {
+                            Map<String, Object> results = new HashMap<String, Object>();
+                            if (data != null) {
+                                if (data instanceof Map) {
+                                    results.putAll((Map) data);
+                                } else {
+                                    results.put("Data", data);
+                                }
+                            }
+                            logger.debug("About to complete work item with id {} and data {}", workItemId, results);
+                            engine.getKieSession().getWorkItemManager().completeWorkItem(workItemId, results);
+                            logger.debug("Successfully completed work item with id {}", workItemId);
+                        } else if (signal != null) {
+                            if (processInstanceId != null) {
+                                logger.debug("About to signal process instance with id {} and event data {} with signal {}", processInstanceId, data, signal);
+                                engine.getKieSession().signalEvent(signal, data, processInstanceId);    
+                            } else {
+                                logger.debug("About to broadcast signal {} and event data {}", signal, data);
+                                runtimeManager.signalEvent(signal, data);
+                            }
+                            logger.debug("Signal completed successfully for signal {} with data {}", signal, data);
                         } else {
-                            results.put("Data", data);
+                            logger.warn("No signal or workitem id is given, skipping this message");
+                        }
+                    } catch (Exception e) {
+                        logger.error("Unexpected exception while signaling: {}", e.getMessage(), e);
+                    } finally {
+                        if (runtimeManager != null && engine != null) {
+                            runtimeManager.disposeRuntimeEngine(engine);
                         }
                     }
-                    logger.debug("About to complete work item with id {} and data {}", workItemId, results);
-                    engine.getKieSession().getWorkItemManager().completeWorkItem(workItemId, results);
-                    logger.debug("Successfully completed work item with id {}", workItemId);
-                } else if (signal != null) {
-                    if (processInstanceId != null) {
-                        logger.debug("About to signal process instance with id {} and event data {} with signal {}", processInstanceId, data, signal);
-                        engine.getKieSession().signalEvent(signal, data, processInstanceId);    
-                    } else {
-                        logger.debug("About to broadcast signal {} and event data {}", signal, data);
-                        runtimeManager.signalEvent(signal, data);
-                    }
-                    logger.debug("Signal completed successfully for signal {} with data {}", signal, data);
-                } else {
-                    logger.warn("No signal or workitem id is given, skipping this message");
-                }
-                
+                }               
             } catch (Exception e) {
                 logger.error("Unexpected exception while processing signal JMS message: {}", e.getMessage(), e);
-            } finally {
-                if (runtimeManager != null && engine != null) {
-                    runtimeManager.disposeRuntimeEngine(engine);
-                }
             }
-           
         }
     }
     
@@ -139,4 +152,21 @@ public class JMSSignalReceiver implements MessageListener {
         return data;
     }
 
+    protected Collection<String> matchDeployments(String deploymentId, Collection<String> availableDeployments) {
+        if (availableDeployments == null || availableDeployments.isEmpty()) {
+            return Collections.emptyList();
+        }
+        Collection<String> matched = new ArrayList<String>();
+        for (RuntimeManagerIdFilter filter : runtimeManagerIdFilters) {
+            matched = filter.filter(deploymentId, availableDeployments);
+            
+            if (matched != null && !matched.isEmpty()) {
+                return matched;
+            }
+        }
+        
+        // nothing matched return given deployment id
+        return Collections.singletonList(deploymentId);
+    }
+    
 }
