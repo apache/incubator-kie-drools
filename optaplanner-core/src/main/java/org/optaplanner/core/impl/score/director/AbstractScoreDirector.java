@@ -349,7 +349,7 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
                     throw new IllegalStateException(VariableListener.class.getSimpleName() + " corruption:"
                             + " the entity (" + entity
                             + ")'s shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
-                            + ")'s originalValue (" + originalValue + ") changed to newValue (" + newValue
+                            + ")'s corrupted value (" + originalValue + ") changed to uncorrupted value (" + newValue
                             + ") after all " + VariableListener.class.getSimpleName() + "s were triggered without changes to the genuine variables.\n"
                             + "Probably the " + VariableListener.class.getSimpleName()
                             + " class for that shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()
