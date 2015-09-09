@@ -213,31 +213,6 @@ public class SolverBenchmarkResult {
         return ranking != null && ranking.intValue() == 0;
     }
 
-    // TODO Do the locale formatting in benchmarkReport.html.ftl - https://issues.jboss.org/browse/PLANNER-169
-    public String getStandardDeviationString() {
-        if (standardDeviationDoubles == null) {
-            return null;
-        }
-        StringBuilder standardDeviationString = new StringBuilder(standardDeviationDoubles.length * 9);
-        boolean first = true;
-        for (double standardDeviationDouble : standardDeviationDoubles) {
-            if (first) {
-                first = false;
-            } else {
-                standardDeviationString.append("/");
-            }
-            String abbreviated = Double.toString(standardDeviationDouble);
-            // Abbreviate to 2 decimals
-            // We don't use DecimalFormat to abbreviate because it's written locale insensitive (like java literals)
-            int dotIndex = abbreviated.lastIndexOf('.');
-            if (dotIndex >= 0 && dotIndex + 3 < abbreviated.length()) {
-                abbreviated = abbreviated.substring(0, dotIndex + 3);
-            }
-            standardDeviationString.append(abbreviated);
-        }
-        return standardDeviationString.toString();
-    }
-
     public Score getAverageWinningScoreDifference() {
         if (totalWinningScoreDifference == null) {
             return null;
@@ -289,6 +264,10 @@ public class SolverBenchmarkResult {
 
     public EnvironmentMode getEnvironmentMode() {
         return solverConfig.determineEnvironmentMode();
+    }
+
+    public String getStandardDeviationString() {
+        return StatsUtil.getStandardDeviationString(standardDeviationDoubles);
     }
 
     // ************************************************************************

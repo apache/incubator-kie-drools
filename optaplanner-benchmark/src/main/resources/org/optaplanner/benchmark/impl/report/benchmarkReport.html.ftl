@@ -204,7 +204,7 @@
                                                                 <li class="dropdown-header"><strong>Average</strong></li>
                                                                 <li>${singleBenchmarkResult.averageScoreWithUninitializedPrefix!""}</li>
                                                                 <li class="dropdown-header"><strong>Standard Deviation</strong></li>
-                                                                <#--<li>${singleBenchmarkResult.standardDeviationString!""}</li>-->
+                                                                <li>${singleBenchmarkResult.standardDeviationString!""}</li>
                                                                 <li class="dropdown-header"><strong>Median</strong></li>
                                                                 <#--<li>${singleBenchmarkResult.medianScoreWithUninitializedPrefix!""}</li>-->
                                                             </ul>

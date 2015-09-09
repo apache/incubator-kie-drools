@@ -77,6 +77,10 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     private Score medianScore = null;
     private Integer uninitializedSolutionCount = null;
     private Integer infeasibleScoreCount = null;
+    // Not a Score because
+    // - the squaring would cause overflow for relatively small int and long scores.
+    // - standard deviation should not be rounded to integer numbers
+    private double[] standardDeviationDoubles = null;
     private long timeMillisSpent = -1L;
     private long calculateCount = -1L;
 
@@ -318,6 +322,10 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         return subSingleBenchmarkResultList.size() - failureCount;
     }
 
+    public String getStandardDeviationString() {
+        return StatsUtil.getStandardDeviationString(standardDeviationDoubles);
+    }
+
     // ************************************************************************
     // Accumulate methods
     // ************************************************************************
@@ -343,6 +351,7 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
             subSingleBenchmarkResult.accumulateResults(benchmarkReport);
         }
         determineTotalsAndAveragesAndRanking();
+        determineStandardDeviation();
         if (!solverBenchmarkResult.getPlannerBenchmarkResult().getAggregation()) {
             SubSingleBenchmarkResult median = determineRepresentativeSubSingleBenchmarkResult();
             mergeSubSingleStatistics(median);
@@ -423,6 +432,32 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
             subSingleBenchmarkResult.setRanking(ranking);
             previousSubSingleBenchmarkResult = subSingleBenchmarkResult;
             previousSameRankingCount++;
+        }
+    }
+
+    protected void determineStandardDeviation() {
+        int successCount = getSuccessCount();
+        if (successCount <= 0) {
+            return;
+        }
+        // averageScore can no longer be null
+        double[] differenceSquaredTotalDoubles = null;
+        for (SubSingleBenchmarkResult subSingleBenchmarkResult : subSingleBenchmarkResultList) {
+            if (!subSingleBenchmarkResult.isFailure()) {
+                Score difference = subSingleBenchmarkResult.getScore().subtract(averageScore);
+                // Calculations done on doubles to avoid common overflow when executing with an int score > 500 000
+                double[] differenceDoubles = ScoreUtils.extractLevelDoubles(difference);
+                if (differenceSquaredTotalDoubles == null) {
+                    differenceSquaredTotalDoubles = new double[differenceDoubles.length];
+                }
+                for (int i = 0; i < differenceDoubles.length; i++) {
+                    differenceSquaredTotalDoubles[i] += Math.pow(differenceDoubles[i], 2.0);
+                }
+            }
+        }
+        standardDeviationDoubles = new double[differenceSquaredTotalDoubles.length];
+        for (int i = 0; i < differenceSquaredTotalDoubles.length; i++) {
+            standardDeviationDoubles[i] = Math.pow(differenceSquaredTotalDoubles[i] / successCount, 0.5);
         }
     }
 
