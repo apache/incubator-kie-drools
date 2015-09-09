@@ -37,6 +37,7 @@ public class SolverBenchmarkResultTest {
         when(solverBenchmarkResult.getSingleBenchmarkResultList()).thenReturn(Arrays.asList(singleBenchmarkResult1, singleBenchmarkResult2));
         when(solverBenchmarkResult.getAverageScore()).thenReturn(HardSoftScore.valueOf(-10, -100));
         when(solverBenchmarkResult.getTotalUninitializedVariableCount()).thenReturn(0);
+        when(solverBenchmarkResult.getFailureCount()).thenReturn(0);
         assertEquals("-10hard/-100soft", solverBenchmarkResult.getAverageScoreWithUninitializedPrefix());
         when(solverBenchmarkResult.getTotalUninitializedVariableCount()).thenReturn(2);
         assertEquals("1uninitialized/-10hard/-100soft", solverBenchmarkResult.getAverageScoreWithUninitializedPrefix());
@@ -46,12 +47,27 @@ public class SolverBenchmarkResultTest {
         assertEquals("1uninitialized/-10hard/-100soft", solverBenchmarkResult.getAverageScoreWithUninitializedPrefix());
     }
 
+    @Test
+    public void testGetAverageScoreWithUninitializedPrefixWithFailure() throws Exception {
+        SolverBenchmarkResult solverBenchmarkResult = spy(new SolverBenchmarkResult(null));
+        SingleBenchmarkResult singleBenchmarkResult1 = mock(SingleBenchmarkResult.class);
+        SingleBenchmarkResult singleBenchmarkResult2 = mock(SingleBenchmarkResult.class);
+        when(solverBenchmarkResult.getSingleBenchmarkResultList()).thenReturn(Arrays.asList(singleBenchmarkResult1, singleBenchmarkResult2));
+        when(solverBenchmarkResult.getAverageScore()).thenReturn(HardSoftScore.valueOf(-10, -100));
+        when(solverBenchmarkResult.getTotalUninitializedVariableCount()).thenReturn(2);
+        when(solverBenchmarkResult.getFailureCount()).thenReturn(1);
+        assertEquals("2uninitialized/-10hard/-100soft", solverBenchmarkResult.getAverageScoreWithUninitializedPrefix());
+        when(solverBenchmarkResult.getFailureCount()).thenReturn(0);
+        assertEquals("1uninitialized/-10hard/-100soft", solverBenchmarkResult.getAverageScoreWithUninitializedPrefix());
+    }
+
     @Test(expected = ArithmeticException.class)
     public void testZeroDivisorGetAverageScoreWithUninitializedPrefix() throws Exception {
         SolverBenchmarkResult solverBenchmarkResult = spy(new SolverBenchmarkResult(null));
         when(solverBenchmarkResult.getSingleBenchmarkResultList()).thenReturn(Collections.<SingleBenchmarkResult>emptyList());
         when(solverBenchmarkResult.getAverageScore()).thenReturn(HardSoftScore.valueOf(-10, -100));
         when(solverBenchmarkResult.getTotalUninitializedVariableCount()).thenReturn(0);
+        when(solverBenchmarkResult.getFailureCount()).thenReturn(0);
         solverBenchmarkResult.getAverageScoreWithUninitializedPrefix();
     }
 }

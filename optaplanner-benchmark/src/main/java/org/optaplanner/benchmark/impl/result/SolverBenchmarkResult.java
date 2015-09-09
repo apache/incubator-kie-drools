@@ -180,7 +180,7 @@ public class SolverBenchmarkResult {
     }
 
     public int getSuccessCount() {
-        return singleBenchmarkResultList.size() - failureCount;
+        return getSingleBenchmarkResultList().size() - getFailureCount();
     }
 
     public boolean hasAnySuccess() {
@@ -270,7 +270,7 @@ public class SolverBenchmarkResult {
 
     public String getAverageScoreWithUninitializedPrefix() {
         return ScoreUtils.getScoreWithUninitializedPrefix(
-                ConfigUtils.ceilDivide(getTotalUninitializedVariableCount(), getSingleBenchmarkResultList().size()),
+                ConfigUtils.ceilDivide(getTotalUninitializedVariableCount(), getSuccessCount()),
                 getAverageScore());
     }
 
