@@ -309,6 +309,9 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     }
 
     public String getMedianScoreWithUninitializedPrefix() {
+        if (medianUninitializedVariableCount == null) {
+            return null;
+        }
         return ScoreUtils.getScoreWithUninitializedPrefix(medianUninitializedVariableCount, medianScore);
     }
 
@@ -475,9 +478,10 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         }
 
         newResult.subSingleBenchmarkResultList = new ArrayList<SubSingleBenchmarkResult>(oldResult.getSubSingleBenchmarkResultList().size());
+        int subSingleBenchmarkIndex = 0;
         for (SubSingleBenchmarkResult oldSubResult : oldResult.subSingleBenchmarkResultList) {
-            SubSingleBenchmarkResult newSubResult = SubSingleBenchmarkResult.createMerge(newResult, oldSubResult);
-            newResult.subSingleBenchmarkResultList.add(newSubResult);
+            SubSingleBenchmarkResult.createMerge(newResult, oldSubResult, subSingleBenchmarkIndex);
+            subSingleBenchmarkIndex++;
         }
 
         newResult.initSingleStatisticMap();
@@ -498,13 +502,8 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
             singleStatistic.setPointList(oldSingleStatistic.getPointList());
             oldSingleStatistic.hibernatePointList();
         }
-        // Skip oldResult.reportDirectory
-        // Skip oldResult.usedMemoryAfterInputSolution
-//        newResult.failureCount = oldResult.failureCount;
-//        newResult.averageScore = oldResult.averageScore;
-//        newResult.averageUninitializedVariableCount = oldResult.avereageUninitializedVariableCount;
-//        newResult.timeMillisSpent = oldResult.timeMillisSpent;
-//        newResult.calculateCount = oldResult.calculateCount;
+        newResult.medianScore = oldResult.medianScore;
+        newResult.medianUninitializedVariableCount = oldResult.medianUninitializedVariableCount;
 
         solverBenchmarkResult.getSingleBenchmarkResultList().add(newResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(newResult);

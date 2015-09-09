@@ -285,8 +285,8 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
     // ************************************************************************
 
 
-    protected static SubSingleBenchmarkResult createMerge(SingleBenchmarkResult singleBenchmarkResult, SubSingleBenchmarkResult oldResult) {
-        SubSingleBenchmarkResult newResult = new SubSingleBenchmarkResult(singleBenchmarkResult, oldResult.getSubSingleBenchmarkIndex());
+    protected static SubSingleBenchmarkResult createMerge(SingleBenchmarkResult singleBenchmarkResult, SubSingleBenchmarkResult oldResult, int subSingleBenchmarkIndex) {
+        SubSingleBenchmarkResult newResult = new SubSingleBenchmarkResult(singleBenchmarkResult, subSingleBenchmarkIndex);
         newResult.subPureSingleStatisticList = new ArrayList<PureSingleStatistic>(oldResult.subPureSingleStatisticList.size());
         for (PureSingleStatistic oldSingleStatistic : oldResult.subPureSingleStatisticList) {
             newResult.subPureSingleStatisticList.add(

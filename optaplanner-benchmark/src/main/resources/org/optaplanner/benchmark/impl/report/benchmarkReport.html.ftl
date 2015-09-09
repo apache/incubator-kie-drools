@@ -206,7 +206,7 @@
                                                                 <li class="dropdown-header"><strong>Standard Deviation</strong></li>
                                                                 <li>${singleBenchmarkResult.standardDeviationString!""}</li>
                                                                 <li class="dropdown-header"><strong>Median</strong></li>
-                                                                <#--<li>${singleBenchmarkResult.medianScoreWithUninitializedPrefix!""}</li>-->
+                                                                <li>${singleBenchmarkResult.medianScoreWithUninitializedPrefix!""}</li>
                                                             </ul>
                                                         </div></td>
                                                     </#if>
