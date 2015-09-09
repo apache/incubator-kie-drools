@@ -270,7 +270,7 @@ public class SolverBenchmarkResult {
 
     public String getAverageScoreWithUninitializedPrefix() {
         if (getSuccessCount() == 0) {
-            return null; // return null, not String "null" so we can use a default value
+            return null;
         }
         return ScoreUtils.getScoreWithUninitializedPrefix(
                 ConfigUtils.ceilDivide(getTotalUninitializedVariableCount(), getSuccessCount()),
