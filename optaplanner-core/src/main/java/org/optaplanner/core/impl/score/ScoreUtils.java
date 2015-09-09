@@ -82,7 +82,7 @@ public class ScoreUtils {
     // TODO remove me (and all occurences) once https://issues.jboss.org/browse/PLANNER-405 is fixed
     public static String getScoreWithUninitializedPrefix(int uninitializedVariableCount, Score score) {
         if (score == null) {
-            return null; // return null, not String "null" so we can use a default value
+            return null;
         }
         return uninitializedVariableCount == 0 ? score.toString() : uninitializedVariableCount + "uninitialized/" + score.toString();
     }
