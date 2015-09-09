@@ -15,6 +15,8 @@
 
 package org.kie.internal.runtime.manager;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.kie.api.runtime.manager.RuntimeManager;
@@ -56,6 +58,10 @@ public class RuntimeManagerRegistry {
 	
 	public boolean isRegistered(String id) {
 		return this.registeredManager.containsKey(id);
+	}
+	
+	public Collection<String> getRegisteredIdentifiers() {
+	    return Collections.unmodifiableCollection(this.registeredManager.keySet());
 	}
 	
 }
