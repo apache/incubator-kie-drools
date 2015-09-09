@@ -78,6 +78,9 @@ public class ProblemBenchmarkResult {
     private Long variableCount = null;
     private Long problemScale = null;
 
+    @XStreamOmitField // loaded lazily from singleBenchmarkResults
+    private Boolean hasNonDefaultSubSingleCount = null;
+
     // ************************************************************************
     // Report accumulates
     // ************************************************************************
@@ -217,6 +220,20 @@ public class ProblemBenchmarkResult {
             }
         }
         return false;
+    }
+
+    public boolean hasSubSingleCountBiggerThanOne() {
+        if (hasNonDefaultSubSingleCount != null) {
+            return hasNonDefaultSubSingleCount;
+        }
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            if (singleBenchmarkResult.getSolverBenchmarkResult().getSubSingleCount() > 1) {
+                hasNonDefaultSubSingleCount = true;
+                return hasNonDefaultSubSingleCount;
+            }
+        }
+        hasNonDefaultSubSingleCount = false;
+        return hasNonDefaultSubSingleCount;
     }
 
     public Collection<SingleStatisticType> extractSingleStatisticTypeList() {
