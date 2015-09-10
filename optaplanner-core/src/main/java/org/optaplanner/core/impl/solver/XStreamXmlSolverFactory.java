@@ -52,11 +52,25 @@ public class XStreamXmlSolverFactory extends SolverFactory {
         return xStream;
     }
 
+    protected final ClassLoader classLoader;
     protected XStream xStream;
+
     protected SolverConfig solverConfig = null;
 
     public XStreamXmlSolverFactory() {
+        this(null);
+    }
+
+    /**
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     *      null to use the default {@link ClassLoader}
+     */
+    public XStreamXmlSolverFactory(ClassLoader classLoader) {
+        this.classLoader = classLoader;
         xStream = buildXStream();
+        if (classLoader != null) {
+            xStream.setClassLoader(classLoader);
+        }
     }
 
     /**
@@ -81,10 +95,11 @@ public class XStreamXmlSolverFactory extends SolverFactory {
      * @return this
      */
     public XStreamXmlSolverFactory configure(String solverConfigResource) {
-        InputStream in = getClass().getClassLoader().getResourceAsStream(solverConfigResource);
+        ClassLoader actualClassLoader = (classLoader != null) ? classLoader : getClass().getClassLoader();
+        InputStream in = actualClassLoader.getResourceAsStream(solverConfigResource);
         if (in == null) {
             String errorMessage = "The solverConfigResource (" + solverConfigResource
-                    + ") does not exist in the classpath.";
+                    + ") does not exist as a classpath resource in the classLoader (" + actualClassLoader + ").";
             if (solverConfigResource.startsWith("/")) {
                 errorMessage += "\nAs from 6.1, a classpath resource should not start with a slash (/)."
                         + " A solverConfigResource now adheres to ClassLoader.getResource(String)."
@@ -139,7 +154,7 @@ public class XStreamXmlSolverFactory extends SolverFactory {
             throw new IllegalStateException("The solverConfig (" + solverConfig + ") is null," +
                     " call configure(...) first.");
         }
-        return solverConfig.buildSolver();
+        return solverConfig.buildSolver(classLoader);
     }
 
 }

@@ -190,26 +190,25 @@ public class Room {
         </listitem>
       </orderedlist>
 
-      <important>
-        <para>Because of WildFly's class loading, the method <literal>SolverFactory.createFromXmlResource()</literal>
-        might not find the solver configuration and throw an <literal>IllegalArgumentException</literal>. Instead
-        use:</para>
-
-        <programlisting language="java">        SolverFactory solverFactory = SolverFactory.createFromXmlInputStream(
-                getClass().getClassLoader().getResourceAsStream(
-                        "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml"));</programlisting>
-      </important>
+      <para>Because of JBoss Modules' <literal>ClassLoader</literal> magic, you'll likely need to provide the
+      <literal>ClassLoader</literal> of your classes <link linkend="solverConfigurationByXML">during the SolverFactory
+      creation</link>, so it can find the classpath resources (such as the solver config, score DRL's and domain
+      classes) in your jars.</para>
     </section>
 
     <section xml:id="integrationWithOSGi">
       <title>OSGi</title>
 
       <para>The <literal>optaplanner-core</literal> jar includes OSGi metadata in its <literal>MANIFEST.MF</literal>
-      file to function properly in an OSGi environment too.</para>
+      file to function properly in an OSGi environment too. Furthermore, the maven artifact
+      <literal>drools-karaf-features</literal> (which will be renamed to <literal>kie-karaf-features</literal>) contains
+      a <literal>features.xml</literal> file that supports the OSGi-feature
+      <literal>optaplanner-engine</literal>.</para>
 
-      <para>Furthermore, the maven artifact <literal>drools-karaf-features</literal> (which will be renamed to
-      <literal>kie-karaf-features</literal>) contains a <literal>features.xml</literal> file that supports the
-      OSGi-feature <literal>optaplanner-engine</literal>.</para>
+      <para>Because of the OSGi's <literal>ClassLoader</literal> magic, you'll likely need to provide the
+      <literal>ClassLoader</literal> of your classes <link linkend="solverConfigurationByXML">during the SolverFactory
+      creation</link>, so it can find the classpath resources (such as the solver config, score DRL's and domain
+      classes) in your jars.</para>
 
       <note>
         <para>Planner does <emphasis>not</emphasis> require OSGi. It works perfectly fine in a normal Java environment

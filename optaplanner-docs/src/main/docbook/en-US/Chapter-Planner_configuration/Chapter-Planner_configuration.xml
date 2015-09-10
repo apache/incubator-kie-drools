@@ -62,14 +62,21 @@
       <para>In a typical project (following the Maven directory structure), that solverConfig XML file would be located
       at
       <literal>$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml</literal>.
-      On some environments (<link linkend="integrationWithOSGi">OSGi</link>, <link
-      linkend="integrationWithJBossModules">JBoss modules</link>, ...), classpath resources in your jars might not be
-      available in by default to the classes in optaplanner's jars.</para>
-
-      <para>Alternatively, a <literal>SolverFactory</literal> can be created from a <literal>File</literal>, an
+      Alternatively, a <literal>SolverFactory</literal> can be created from a <literal>File</literal>, an
       <literal>InputStream</literal> or a <literal>Reader</literal> with methods such as
       <literal>SolverFactory.createFromXmlFile()</literal>. However, for portability reasons, a classpath resource is
       recommended.</para>
+
+      <note>
+        <para>On some environments (<link linkend="integrationWithOSGi">OSGi</link>, <link
+        linkend="integrationWithJBossModules">JBoss modules</link>, ...), classpath resources (such as the solver
+        config, score DRL's and domain classes) in your jars might not be available to the default
+        <literal>ClassLoader</literal> of the <literal>optaplanner-core</literal> jar. In those cases, provide the
+        <literal>ClassLoader</literal> of your classes as a parameter:</para>
+
+        <programlisting language="java">       SolverFactory solverFactory = SolverFactory.createFromXmlResource(
+               ".../nqueensSolverConfig.xml", getClass().getClassLoader());</programlisting>
+      </note>
 
       <para>A solver configuration file looks like this:</para>
 

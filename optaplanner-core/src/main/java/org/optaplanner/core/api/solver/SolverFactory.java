@@ -42,9 +42,19 @@ public abstract class SolverFactory {
      * @return never null
      */
     public static SolverFactory createFromXmlResource(String solverConfigResource) {
-        XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory();
-        solverFactory.configure(solverConfigResource);
-        return solverFactory;
+        return new XStreamXmlSolverFactory().configure(solverConfigResource);
+    }
+
+    /**
+     * See {@link #createFromXmlResource(String)}.
+     * @param solverConfigResource never null, a classpath resource
+     * as defined by {@link ClassLoader#getResource(String)}
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     *      null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static SolverFactory createFromXmlResource(String solverConfigResource, ClassLoader classLoader) {
+        return new XStreamXmlSolverFactory(classLoader).configure(solverConfigResource);
     }
 
     /**
@@ -52,9 +62,17 @@ public abstract class SolverFactory {
      * @return never null
      */
     public static SolverFactory createFromXmlFile(File solverConfigFile) {
-        XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory();
-        solverFactory.configure(solverConfigFile);
-        return solverFactory;
+        return new XStreamXmlSolverFactory().configure(solverConfigFile);
+    }
+
+    /**
+     * @param solverConfigFile never null
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     *      null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static SolverFactory createFromXmlFile(File solverConfigFile, ClassLoader classLoader) {
+        return new XStreamXmlSolverFactory(classLoader).configure(solverConfigFile);
     }
 
     /**
@@ -62,9 +80,17 @@ public abstract class SolverFactory {
      * @return never null
      */
     public static SolverFactory createFromXmlInputStream(InputStream in) {
-        XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory();
-        solverFactory.configure(in);
-        return solverFactory;
+        return new XStreamXmlSolverFactory().configure(in);
+    }
+
+    /**
+     * @param in never null, gets closed
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     *      null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static SolverFactory createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
+        return new XStreamXmlSolverFactory(classLoader).configure(in);
     }
 
     /**
@@ -72,9 +98,17 @@ public abstract class SolverFactory {
      * @return never null
      */
     public static SolverFactory createFromXmlReader(Reader reader) {
-        XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory();
-        solverFactory.configure(reader);
-        return solverFactory;
+        return new XStreamXmlSolverFactory().configure(reader);
+    }
+
+    /**
+     * @param reader never null, gets closed
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     *      null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static SolverFactory createFromXmlReader(Reader reader, ClassLoader classLoader) {
+        return new XStreamXmlSolverFactory(classLoader).configure(reader);
     }
 
     // ************************************************************************

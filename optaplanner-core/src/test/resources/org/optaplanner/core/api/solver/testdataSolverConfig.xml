@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+
+  <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
+  <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+
+  <!-- Score configuration -->
+  <scoreDirectorFactory>
+    <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+    <scoreDrl>org/optaplanner/core/api/solver/testdataScoreRules.drl</scoreDrl>
+  </scoreDirectorFactory>
+</solver>

@@ -194,7 +194,7 @@ public class ScoreDirectorFactoryConfig {
     // Builder methods
     // ************************************************************************
 
-    public InnerScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
+    public InnerScoreDirectorFactory buildScoreDirectorFactory(ClassLoader classLoader, EnvironmentMode environmentMode,
             SolutionDescriptor solutionDescriptor) {
         ScoreDefinition scoreDefinition = buildScoreDefinition();
         Class<? extends Score> solutionScoreClass = solutionDescriptor.extractScoreClass();
@@ -204,7 +204,7 @@ public class ScoreDirectorFactoryConfig {
                     + ") is the same or a superclass as the scoreDefinition's scoreClass ("
                     + scoreDefinition.getScoreClass() + ").");
         }
-        return buildScoreDirectorFactory(environmentMode, solutionDescriptor, scoreDefinition);
+        return buildScoreDirectorFactory(classLoader, environmentMode, solutionDescriptor, scoreDefinition);
     }
 
     public ScoreDefinition buildScoreDefinition() {
@@ -268,11 +268,11 @@ public class ScoreDirectorFactoryConfig {
         }
     }
 
-    protected InnerScoreDirectorFactory buildScoreDirectorFactory(EnvironmentMode environmentMode,
-            SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition) {
+    protected InnerScoreDirectorFactory buildScoreDirectorFactory(ClassLoader classLoader,
+            EnvironmentMode environmentMode, SolutionDescriptor solutionDescriptor, ScoreDefinition scoreDefinition) {
         AbstractScoreDirectorFactory easyScoreDirectorFactory = buildEasyScoreDirectorFactory();
         AbstractScoreDirectorFactory incrementalScoreDirectorFactory = buildIncrementalScoreDirectorFactory();
-        AbstractScoreDirectorFactory droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory();
+        AbstractScoreDirectorFactory droolsScoreDirectorFactory = buildDroolsScoreDirectorFactory(classLoader);
         AbstractScoreDirectorFactory scoreDirectorFactory;
         if (easyScoreDirectorFactory != null) {
             if (incrementalScoreDirectorFactory != null) {
@@ -316,7 +316,7 @@ public class ScoreDirectorFactoryConfig {
                         + environmentMode + ") of " + EnvironmentMode.FAST_ASSERT + " or lower.");
             }
             scoreDirectorFactory.setAssertionScoreDirectorFactory(
-                    assertionScoreDirectorFactory.buildScoreDirectorFactory(
+                    assertionScoreDirectorFactory.buildScoreDirectorFactory(classLoader,
                             EnvironmentMode.PRODUCTION, solutionDescriptor, scoreDefinition));
         }
         scoreDirectorFactory.setInitializingScoreTrend(InitializingScoreTrend.parseTrend(
@@ -351,7 +351,7 @@ public class ScoreDirectorFactoryConfig {
         }
     }
 
-    protected AbstractScoreDirectorFactory buildDroolsScoreDirectorFactory() {
+    protected AbstractScoreDirectorFactory buildDroolsScoreDirectorFactory(ClassLoader classLoader) {
         if (kieBase != null) {
             if (!ConfigUtils.isEmptyCollection(scoreDrlList) || !ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
                 throw new IllegalArgumentException("If kieBase is not null, the scoreDrlList (" + scoreDrlList
@@ -367,13 +367,15 @@ public class ScoreDirectorFactoryConfig {
             KieResources kieResources = kieServices.getResources();
             KieFileSystem kieFileSystem = kieServices.newKieFileSystem();
             if (!ConfigUtils.isEmptyCollection(scoreDrlList)) {
+                ClassLoader actualClassLoader = (classLoader != null) ? classLoader : getClass().getClassLoader();
                 for (String scoreDrl : scoreDrlList) {
                     if (scoreDrl == null) {
                         throw new IllegalArgumentException("The scoreDrl (" + scoreDrl + ") cannot be null.");
                     }
-                    URL scoreDrlURL = getClass().getClassLoader().getResource(scoreDrl);
+                    URL scoreDrlURL = actualClassLoader.getResource(scoreDrl);
                     if (scoreDrlURL == null) {
-                        String errorMessage = "The scoreDrl (" + scoreDrl + ") does not exist as a classpath resource.";
+                        String errorMessage = "The scoreDrl (" + scoreDrl + ") does not exist as a classpath resource"
+                                + " in the classLoader (" + actualClassLoader + ").";
                         if (scoreDrl.startsWith("/")) {
                             errorMessage += "\nAs from 6.1, a classpath resource should not start with a slash (/)."
                                     + " A scoreDrl now adheres to ClassLoader.getResource(String)."
@@ -381,7 +383,7 @@ public class ScoreDirectorFactoryConfig {
                         }
                         throw new IllegalArgumentException(errorMessage);
                     }
-                    kieFileSystem.write(kieResources.newClassPathResource(scoreDrl, "UTF-8"));
+                    kieFileSystem.write(kieResources.newClassPathResource(scoreDrl, "UTF-8", classLoader));
                 }
             }
             if (!ConfigUtils.isEmptyCollection(scoreDrlFileList)) {
