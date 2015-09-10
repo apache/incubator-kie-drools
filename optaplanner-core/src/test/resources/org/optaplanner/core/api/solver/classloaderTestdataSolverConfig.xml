@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <solver>
-
   <!-- Using these classnames doesn't work because the className still differs from class.getName()-->
   <!--<solutionClass>divertThroughClassLoader.org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>-->
   <!--<entityClass>divertThroughClassLoader.org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>-->
