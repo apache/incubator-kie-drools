@@ -26,8 +26,6 @@ import org.drools.core.common.DroolsObjectOutputStream;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.factmodel.traits.TraitFactory;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteAssertAction;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header;
@@ -215,21 +213,25 @@ public class PersisterHelper {
 
     public static void writeRuntimeDefinedClasses( MarshallerWriteContext context,
                                                   ProtobufMessages.Header.Builder _header ) {
-        StatefulKnowledgeSessionImpl wm = (StatefulKnowledgeSessionImpl) context.wm;
-        ProjectClassLoader pcl = (ProjectClassLoader) ( (InternalKnowledgeBase) wm.getKieBase() ).getRootClassLoader();
+        if (context.kBase == null) {
+            return;
+        }
 
-        if ( pcl.getStore() != null && ! pcl.getStore().isEmpty() ) {
-            TraitFactory traitFactory = TraitFactory.getTraitBuilderForKnowledgeBase( context.kBase );
-            List<String> runtimeClassNames = new ArrayList( pcl.getStore().keySet() );
-            Collections.sort( runtimeClassNames );
-            ProtobufMessages.RuntimeClassDef.Builder _classDef = ProtobufMessages.RuntimeClassDef.newBuilder();
-            for ( String resourceName : runtimeClassNames ) {
-                if ( traitFactory.isRuntimeClass( resourceName ) ) {
-                    _classDef.clear();
-                    _classDef.setClassFqName( resourceName );
-                    _classDef.setClassDef( ByteString.copyFrom( pcl.getStore().get( resourceName ) ) );
-                    _header.addRuntimeClassDefinitions( _classDef.build() );
-                }
+        ProjectClassLoader pcl = (ProjectClassLoader) ( context.kBase ).getRootClassLoader();
+        if ( pcl.getStore() == null || pcl.getStore().isEmpty() ) {
+            return;
+        }
+
+        TraitFactory traitFactory = TraitFactory.getTraitBuilderForKnowledgeBase( context.kBase );
+        List<String> runtimeClassNames = new ArrayList( pcl.getStore().keySet() );
+        Collections.sort( runtimeClassNames );
+        ProtobufMessages.RuntimeClassDef.Builder _classDef = ProtobufMessages.RuntimeClassDef.newBuilder();
+        for ( String resourceName : runtimeClassNames ) {
+            if ( traitFactory.isRuntimeClass( resourceName ) ) {
+                _classDef.clear();
+                _classDef.setClassFqName( resourceName );
+                _classDef.setClassDef( ByteString.copyFrom( pcl.getStore().get( resourceName ) ) );
+                _header.addRuntimeClassDefinitions( _classDef.build() );
             }
         }
     }
