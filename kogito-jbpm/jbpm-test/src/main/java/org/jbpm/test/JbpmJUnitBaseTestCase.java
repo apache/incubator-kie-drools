@@ -198,7 +198,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
         if (!this.setupDataSource && this.sessionPersistence) {
             throw new IllegalArgumentException("Unsupported configuration, cannot enable sessionPersistence when setupDataSource is disabled");
         }
-        logger.info("Configuring entire test case to have data source enabled {} and session persistence enabled {} with persistence unit name {}",
+        logger.debug("Configuring entire test case to have data source enabled {} and session persistence enabled {} with persistence unit name {}",
                 this.setupDataSource, this.sessionPersistence, this.persistenceUnitName);
     }
 
@@ -860,9 +860,9 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
                 XAResourceProducer producer = ResourceRegistrar.get(resource);
                 producer.close();
                 ResourceRegistrar.unregister(producer);
-                logger.info("DBPOOL_MGR:Removed resource " + resource);
+                logger.debug("DBPOOL_MGR:Removed resource " + resource);
             }
-            logger.info("DBPOOL_MGR: attempting to create db pool again...");
+            logger.debug("DBPOOL_MGR: attempting to create db pool again...");
             pds = new PoolingDataSource();
             pds.setUniqueName("jdbc/jbpm-ds");
             pds.setClassName("bitronix.tm.resource.jdbc.lrc.LrcXADataSource");
@@ -873,7 +873,7 @@ public abstract class JbpmJUnitBaseTestCase extends Assert {
             pds.getDriverProperties().put("url", "jdbc:h2:mem:jbpm-db;MVCC=true");
             pds.getDriverProperties().put("driverClassName", "org.h2.Driver");
             pds.init();         
-            logger.info("DBPOOL_MGR:Pool created after cleanup of leftover resources");
+            logger.debug("DBPOOL_MGR:Pool created after cleanup of leftover resources");
         }
         return pds;
     }
