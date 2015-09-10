@@ -30,6 +30,8 @@ import org.drools.core.runtime.rule.impl.FlatQueryResults;
 
 public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<String,Object>> {
 
+    private static final JaxbUnknownAdapter unknownAdapter = new JaxbUnknownAdapter();
+    
     @Override
     public JaxbStringObjectPair[] marshal(Map<String, Object> value) throws Exception {
         if (value == null || value.isEmpty()) {
@@ -43,8 +45,8 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<Strin
 
             if ( obj instanceof QueryResultsImpl) {
                 obj = new FlatQueryResults( (QueryResultsImpl)obj );
-            } else if (List.class.isAssignableFrom(vClass) && !JaxbListWrapper.class.equals(vClass)) {
-                obj = new JaxbListWrapper( ((List<?>) obj).toArray( new Object[((List<?>) obj).size()]) );;
+            } else if (!JaxbListWrapper.class.equals(vClass)) {
+                obj = unknownAdapter.marshal(obj);
             }
             ret.add(new JaxbStringObjectPair(entry.getKey(), obj));
         }
@@ -57,7 +59,7 @@ public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<Strin
         Map<String, Object> r = new LinkedHashMap<String, Object>();
         for( JaxbStringObjectPair p : value ) {
             if ( p.getValue() instanceof JaxbListWrapper) {
-                r.put(p.getKey(), Arrays.asList( ((JaxbListWrapper)p.getValue()).getElements() ) );
+                r.put(p.getKey(), unknownAdapter.unmarshal(p.getValue()));
             } else {
                 r.put(p.getKey(), p.getValue());
             }

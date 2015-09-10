@@ -21,27 +21,54 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * This is actually a wrapper for the following collections:
+ * - list
+ * - set
+ * - map
+ */
 
-@XmlAccessorType(XmlAccessType.NONE)
 @XmlRootElement(name="list")
+@XmlAccessorType(XmlAccessType.NONE)
 public class JaxbListWrapper  {
-    
-    Object[] elements;
-    
-    public JaxbListWrapper() {
-        
+
+    public static enum JaxbWrapperType {
+        LIST, SET, MAP;
     }
-    
+
+    // set to null for backwards compatibility
+    @XmlElement
+    private JaxbWrapperType type = null;
+
+    @XmlElement(name="element")
+    private Object[] elements;
+
+    public JaxbListWrapper() {
+        // JAXB constructor
+    }
+
     public JaxbListWrapper(Object[] elements) {
         this.elements = elements;
     }
-    
-    @XmlElement(name="element")
+
+    public JaxbListWrapper(Object[] elements, JaxbWrapperType type) {
+        this.elements = elements;
+        this.type = type;
+    }
+
     public Object[] getElements() {
         return elements;
     }
 
     public void setElements(Object[] elements) {
         this.elements = elements;
+    }
+
+    public JaxbWrapperType getType() {
+        return type;
+    }
+
+    public void setType( JaxbWrapperType type ) {
+        this.type = type;
     }
 }
