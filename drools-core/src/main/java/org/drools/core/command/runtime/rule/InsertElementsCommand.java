@@ -29,13 +29,13 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
-import org.drools.core.util.StringUtils;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.xml.jaxb.util.JaxbCollectionAdapter;
-import org.kie.internal.command.Context;
+import org.drools.core.util.StringUtils;
+import org.drools.core.xml.jaxb.util.JaxbListAdapter;
 import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.Context;
 
 @XmlAccessorType( XmlAccessType.NONE )
 public class InsertElementsCommand
@@ -44,7 +44,7 @@ public class InsertElementsCommand
 
     private static final long serialVersionUID = 510l;
 
-    @XmlJavaTypeAdapter(JaxbCollectionAdapter.class)
+    @XmlJavaTypeAdapter(JaxbListAdapter.class)
     @XmlElement(name="list")
     public Collection<Object> objects;
 
