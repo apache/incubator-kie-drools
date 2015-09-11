@@ -20,6 +20,8 @@ import static org.junit.Assert.fail;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
+import org.drools.core.util.MemoryUtil;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
@@ -299,6 +301,7 @@ public class KnowledgeBaseConfigurationTest {
 
     @Test
     public void testPermGenThresholdConfiguration() {
+        Assume.assumeTrue("JVM with perm gen", MemoryUtil.hasPermGen());
         // setting the option using the type safe method
         config.setOption( PermGenThresholdOption.get(85) );
 
