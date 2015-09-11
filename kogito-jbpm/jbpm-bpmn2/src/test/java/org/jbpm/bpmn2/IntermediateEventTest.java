@@ -44,6 +44,7 @@ import org.jbpm.bpmn2.test.RequirePersistence;
 import org.jbpm.persistence.ProcessPersistenceContext;
 import org.jbpm.persistence.ProcessPersistenceContextManager;
 import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.process.instance.timer.TimerInstance;
@@ -63,6 +64,7 @@ import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -2449,6 +2451,94 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         } catch (Exception e) {
             assertTrue(e.getMessage().contains("Could not parse delay 'abcdef'"));
         }
+    }
+    
+    @Test
+    public void testIntermediateCatchEventConditionSetVariableAfter() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventConditionSetVariableAfter.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(new RuleAwareProcessEventLister());
+        ProcessInstance processInstance = ksession
+                .startProcess("IntermediateCatchEvent");
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        ksession.addEventListener(new RuleAwareProcessEventLister());
+        
+        Collection<? extends Object> processInstances = ksession.getObjects(new ObjectFilter() {
+            
+            @Override
+            public boolean accept(Object object) {
+                if (object instanceof ProcessInstance) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        assertNotNull(processInstances);
+        assertEquals(1, processInstances.size());
+        
+        // now activate condition
+        Person person = new Person();
+        person.setName("Jack");
+        ksession.insert(person);
+        assertProcessInstanceFinished(processInstance, ksession);
+        
+        processInstances = ksession.getObjects(new ObjectFilter() {
+            
+            @Override
+            public boolean accept(Object object) {
+                if (object instanceof ProcessInstance) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        assertNotNull(processInstances);
+        assertEquals(0, processInstances.size());
+    }
+    
+    @Test
+    public void testIntermediateCatchEventConditionRemovePIAfter() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventCondition.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(new RuleAwareProcessEventLister());
+        ProcessInstance processInstance = ksession
+                .startProcess("IntermediateCatchEvent");
+        assertProcessInstanceActive(processInstance);
+        ksession = restoreSession(ksession, true);
+        ksession.addEventListener(new RuleAwareProcessEventLister());
+        
+        Collection<? extends Object> processInstances = ksession.getObjects(new ObjectFilter() {
+            
+            @Override
+            public boolean accept(Object object) {
+                if (object instanceof ProcessInstance) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        assertNotNull(processInstances);
+        assertEquals(1, processInstances.size());
+        
+        // now activate condition
+        Person person = new Person();
+        person.setName("Jack");
+        ksession.insert(person);
+        assertProcessInstanceFinished(processInstance, ksession);
+
+        processInstances = ksession.getObjects(new ObjectFilter() {
+            
+            @Override
+            public boolean accept(Object object) {
+                if (object instanceof ProcessInstance) {
+                    return true;
+                }
+                return false;
+            }
+        });
+        assertNotNull(processInstances);
+        assertEquals(0, processInstances.size());
     }
     
     class AssertNodeActiveCommand implements GenericCommand<Void> {
