@@ -267,39 +267,29 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
     }
 
     @Test
-    @Ignore("https://bugzilla.redhat.com/show_bug.cgi?id=1049674")
     public void testKieMavenPluginEmptyProject() {
         // According to https://bugzilla.redhat.com/show_bug.cgi?id=1049674#c2 the below is the minimal POM required to use KieMavenPlugin.
-        // However when we attempt to retrieve meta-data about the classes in the KieModule some are not accessible. IDK whether the minimal
-        // POM is correct; or whether KieModuleMetaData needs to ignore certain classes (e.g. if a transient dependency is optional?!?)
         final KieServices ks = KieServices.Factory.get();
 
         final KieFileSystem kfs = ks.newKieFileSystem();
         kfs.write( "pom.xml",
                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                            + "<project xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\" xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
-                           + "<modelVersion>4.0.0</modelVersion>"
-                           + "<groupId>org.kie</groupId>"
-                           + "<artifactId>plugin-test</artifactId>"
-                           + "<version>1.0</version>"
-                           + "<packaging>kjar</packaging>"
-                           + "<dependencies>"
-                           + "<dependency>"
-                           + "<groupId>org.drools</groupId>"
-                           + "<artifactId>drools-compiler</artifactId>"
-                           + "<version>6.1.0-SNAPSHOT</version>"
-                           + "</dependency>"
-                           + "</dependencies>"
-                           + "<build>"
-                           + "<plugins>"
-                           + "<plugin>"
-                           + "<groupId>org.kie</groupId>"
-                           + "<artifactId>kie-maven-plugin</artifactId>"
-                           + "<version>6.1.0-SNAPSHOT</version>"
-                           + "<extensions>true</extensions>"
-                           + "</plugin>"
-                           + "</plugins>"
-                           + "</build>"
+                           + "  <modelVersion>4.0.0</modelVersion>"
+                           + "  <groupId>org.kie</groupId>"
+                           + "  <artifactId>plugin-test</artifactId>"
+                           + "  <version>1.0</version>"
+                           + "  <packaging>kjar</packaging>"
+                           + "  <build>"
+                           + "    <plugins>"
+                           + "      <plugin>"
+                           + "        <groupId>org.kie</groupId>"
+                           + "        <artifactId>kie-maven-plugin</artifactId>"
+                           + "        <version>the-test-does-not-need-proper-version-here</version>"
+                           + "        <extensions>true</extensions>"
+                           + "      </plugin>"
+                           + "    </plugins>"
+                           + "  </build>"
                            + "</project>" );
 
         kfs.write("/src/main/resources/META-INF/kmodule.xml",
