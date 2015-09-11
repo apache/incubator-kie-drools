@@ -21,6 +21,10 @@ import org.apache.maven.artifact.resolver.filter.CumulativeScopeArtifactFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.LifecyclePhase;
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
+import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.drools.compiler.compiler.BPMN2ProcessFactory;
 import org.drools.compiler.compiler.DecisionTableFactory;
@@ -49,6 +53,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -57,33 +63,33 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsfor
 
 /**
  * This goal builds the drools file belonging to the kproject.
- *
- * @goal build
- * @phase compile
  */
+@Mojo(name = "build",
+        requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME,
+        requiresProject = true,
+        defaultPhase = LifecyclePhase.COMPILE)
 public class BuildMojo extends AbstractMojo {
 
     /**
      * Directory containing the generated JAR.
-     *
-     * @parameter default-value="${project.build.outputDirectory}"
-     * @required
      */
+    @Parameter(required = true, defaultValue = "${project.build.outputDirectory}")
     private File outputDirectory;
 
     /**
      * Project sourceFolder folder.
-     *
-     * @parameter default-value="src/main/resources"
-     * @required
      */
+    @Parameter(required = true, defaultValue = "src/main/resources")
     private File sourceFolder;
 
-    /**
-     * @parameter default-value="${project}"
-     * @required
-     */
+    @Parameter(required = true, defaultValue = "${project}")
     private MavenProject project;
+
+    /**
+     * System properties
+     */
+    @Parameter
+    private Properties systemProperties;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
@@ -129,6 +135,13 @@ public class BuildMojo extends AbstractMojo {
         KieServices ks = KieServices.Factory.get();
 
         try {
+            if(systemProperties!=null) {
+                getLog().info("System properties: " + systemProperties);
+                for(Map.Entry<Object,Object > property : systemProperties.entrySet()) {
+                    System.setProperty(property.getKey().toString(), property.getValue().toString());
+                }
+                getLog().info("set System properties");
+            }
             KieRepository kr = ks.getRepository();
             InternalKieModule kModule = (InternalKieModule)kr.addKieModule(ks.getResources().newFileSystemResource(sourceFolder));
             for (InternalKieModule kmoduleDep : kmoduleDeps) {
@@ -147,7 +160,7 @@ public class BuildMojo extends AbstractMojo {
                 }
                 throw new MojoFailureException("Build failed!");
             } else {
-                new KieMetaInfoBuilder(new DiskResourceStore(outputDirectory), (InternalKieModule)kModule).writeKieModuleMetaInfo();
+                new KieMetaInfoBuilder(new DiskResourceStore(outputDirectory), kModule).writeKieModuleMetaInfo();
             }
         } finally {
             Thread.currentThread().setContextClassLoader(contextClassLoader);

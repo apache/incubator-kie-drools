@@ -22,6 +22,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
+import org.drools.core.rule.builder.dialect.asm.ClassLevel;
 import org.drools.core.util.DroolsStreamUtils;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -32,6 +33,8 @@ import org.kie.api.runtime.KieContainer;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Compiles and serializes knowledge packages.
@@ -55,13 +58,24 @@ public class SerializeMojo extends AbstractMojo {
     @Parameter(property = "kie.resDirectory", defaultValue = "${project.basedir}/src/main/res/raw" )
     private String resDirectory;
 
+    /**
+     * System properties
+     */
+    @Parameter
+    private Properties systemProperties;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
             File outputFolder = new File(resDirectory);
             outputFolder.mkdirs();
-
+            if(systemProperties!=null) {
+                getLog().info("System properties: " + systemProperties);
+                for(Map.Entry<Object,Object > property : systemProperties.entrySet()) {
+                    System.setProperty(property.getKey().toString(), property.getValue().toString());
+                }
+                getLog().info("set System properties");
+            }
             KieServices ks = KieServices.Factory.get();
             KieContainer kc = ks.newKieClasspathContainer();
             Results messages = kc.verify();
