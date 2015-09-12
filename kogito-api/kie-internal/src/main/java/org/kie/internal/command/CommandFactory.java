@@ -44,7 +44,7 @@ import java.util.Map;
  * <p>This api is experimental and thus the classes and the interfaces returned are subject to change.</p>  
  */
 public class CommandFactory {
-    private static volatile KieCommands provider;
+    private static volatile ExtendedKieCommands provider;
 
     /**
      * Inserts a new instance
@@ -368,11 +368,11 @@ public class CommandFactory {
                                                               lookup);
     }
 
-    private static synchronized void setCommandFactoryProvider(KieCommands provider) {
+    private static synchronized void setCommandFactoryProvider( ExtendedKieCommands provider) {
         CommandFactory.provider = provider;
     }
 
-    private static synchronized KieCommands getCommandFactoryProvider() {
+    private static synchronized ExtendedKieCommands getCommandFactoryProvider() {
         if ( provider == null ) {
             loadProvider();
         }
@@ -381,7 +381,7 @@ public class CommandFactory {
 
     private static void loadProvider() {
         try {
-            Class<KieCommands> cls = (Class<KieCommands>) Class.forName( "org.drools.core.command.impl.CommandFactoryServiceImpl" );
+            Class<ExtendedKieCommands> cls = (Class<ExtendedKieCommands>) Class.forName( "org.drools.core.command.impl.CommandFactoryServiceImpl" );
             setCommandFactoryProvider( cls.newInstance() );
         } catch ( Exception e2 ) {
             throw new RuntimeException( "Provider org.drools.core.command.impl.CommandFactoryProviderImpl could not be set.",
@@ -395,5 +395,13 @@ public class CommandFactory {
 
     public static Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm, boolean disconnected) {
         return getCommandFactoryProvider().fromExternalFactHandleCommand(factHandleExternalForm, disconnected);
+    }
+    
+    public static Command newEnableAuditLog( String directory, String filename ){
+        return getCommandFactoryProvider().newEnableAuditLog( directory, filename );
+    }
+    
+    public static Command newEnableAuditLog( String filename ){
+        return getCommandFactoryProvider().newEnableAuditLog( filename );
     }
 }
