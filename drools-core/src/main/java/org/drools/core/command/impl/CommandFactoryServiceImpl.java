@@ -16,6 +16,11 @@
 
 package org.drools.core.command.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.core.command.NewKnowledgeBuilderConfigurationCommand;
 import org.drools.core.command.runtime.BatchExecutionCommandImpl;
 import org.drools.core.command.runtime.GetGlobalCommand;
@@ -26,22 +31,34 @@ import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.RegisterWorkItemHandlerCommand;
 import org.drools.core.command.runtime.process.SignalEventCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
-import org.drools.core.command.runtime.rule.*;
+import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
+import org.drools.core.command.runtime.rule.ClearActivationGroupCommand;
+import org.drools.core.command.runtime.rule.ClearAgendaCommand;
+import org.drools.core.command.runtime.rule.ClearAgendaGroupCommand;
+import org.drools.core.command.runtime.rule.ClearRuleFlowGroupCommand;
+import org.drools.core.command.runtime.rule.DeleteCommand;
+import org.drools.core.command.runtime.rule.DeleteObjectCommand;
+import org.drools.core.command.runtime.rule.EnableAuditLogCommand;
+import org.drools.core.command.runtime.rule.FireAllRulesCommand;
+import org.drools.core.command.runtime.rule.FromExternalFactHandleCommand;
+import org.drools.core.command.runtime.rule.GetFactHandleCommand;
+import org.drools.core.command.runtime.rule.GetFactHandleInEntryPointCommand;
+import org.drools.core.command.runtime.rule.GetObjectCommand;
+import org.drools.core.command.runtime.rule.GetObjectsCommand;
+import org.drools.core.command.runtime.rule.InsertElementsCommand;
+import org.drools.core.command.runtime.rule.InsertObjectCommand;
+import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand.SetterImpl;
+import org.drools.core.command.runtime.rule.QueryCommand;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
-import org.kie.api.command.KieCommands;
 import org.kie.api.command.Setter;
 import org.kie.api.runtime.ObjectFilter;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.ExtendedKieCommands;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-public class CommandFactoryServiceImpl implements KieCommands {
+public class CommandFactoryServiceImpl implements ExtendedKieCommands {
 
     public Command newGetGlobal(String identifier) {
         return new GetGlobalCommand(identifier);
@@ -279,4 +296,16 @@ public class CommandFactoryServiceImpl implements KieCommands {
     public Command newClearRuleFlowGroup(String name) {
         return new ClearRuleFlowGroupCommand(name);
     }
+
+	@Override
+	public Command newEnableAuditLog( String directory, String filename ) {
+		return new EnableAuditLogCommand( directory, filename );
+	}
+
+    @Override
+    public Command newEnableAuditLog( String filename ) {
+        return new EnableAuditLogCommand( null, filename );
+    }
+	
+	
 }
