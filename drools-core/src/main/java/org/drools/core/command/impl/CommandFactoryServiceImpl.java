@@ -279,4 +279,16 @@ public class CommandFactoryServiceImpl implements KieCommands {
     public Command newClearRuleFlowGroup(String name) {
         return new ClearRuleFlowGroupCommand(name);
     }
+
+	@Override
+	public Command newEnableAuditLog( String directory, String filename ) {
+		return new EnableAuditLogCommand( directory, filename );
+	}
+
+    @Override
+    public Command newEnableAuditLog( String filename ) {
+        return new EnableAuditLogCommand( null, filename );
+    }
+	
+	
 }
