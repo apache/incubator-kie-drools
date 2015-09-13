@@ -61,7 +61,12 @@ public class RuntimeManagerRegistry {
 	}
 	
 	public Collection<String> getRegisteredIdentifiers() {
-	    return Collections.unmodifiableCollection(this.registeredManager.keySet());
+		// Using "registeredManager.keySet()" directly would result in issues when compiling with JDK 8+. The "keySet()"
+		// method returns type ConcurrentHashMap$KeySetView which is only available in Java 8+. That means
+		// the bytecode would contain reference to that type, which does not exist in Java 6 and Java 7 and thus
+		// clients would get NoSuchMethodError at runtime. The "keys()" method is fully backwards compatible, but it
+		// requires wrapping inside additional collection as "unmodifiableCollection()" does not accept Enumerations.
+	    return Collections.unmodifiableCollection(Collections.list(this.registeredManager.keys()));
 	}
 	
 }
