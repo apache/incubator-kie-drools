@@ -77,10 +77,10 @@ public class AddRuleTest {
 
         LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
-        assertEquals(1, sm.getStagedLeftTuples().insertSize());
+        assertNotNull(sm.getStagedLeftTuples().getInsertFirst());
 
         wm.fireAllRules();
-        assertEquals(0, sm.getStagedLeftTuples().insertSize());
+        assertNull(sm.getStagedLeftTuples().getInsertFirst());
         assertEquals(1, list.size() );
 
         assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
@@ -112,18 +112,22 @@ public class AddRuleTest {
 
         LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
-        assertEquals(0, sm.getStagedLeftTuples().insertSize());
+        assertNull( sm.getStagedLeftTuples().getInsertFirst() );
 
         SegmentMemory subSm = sm.getFirst();
         SegmentMemory mainSm = subSm.getNext();
 
 
-        assertEquals(2, subSm.getStagedLeftTuples().insertSize());
-        assertEquals(2, mainSm.getStagedLeftTuples().insertSize());
+        assertNotNull( subSm.getStagedLeftTuples().getInsertFirst() );
+        assertNotNull( subSm.getStagedLeftTuples().getInsertFirst().getStagedNext() );
+        assertNull( subSm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
+        assertNotNull( mainSm.getStagedLeftTuples().getInsertFirst() );
+        assertNotNull( mainSm.getStagedLeftTuples().getInsertFirst().getStagedNext() );
+        assertNull( mainSm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
 
         wm.fireAllRules();
-        assertEquals(0, subSm.getStagedLeftTuples().insertSize());
-        assertEquals(0, mainSm.getStagedLeftTuples().insertSize());
+        assertNull(subSm.getStagedLeftTuples().getInsertFirst());
+        assertNull(mainSm.getStagedLeftTuples().getInsertFirst());
         assertEquals(2, list.size() );
 
         assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
@@ -170,12 +174,15 @@ public class AddRuleTest {
         assertSame( c2Smem, c2Mem.getSegmentMemory());
         assertEquals( 0, c2Mem.getLeftTupleMemory().size() );
         assertEquals( 0, c2Mem.getRightTupleMemory().size() );
-        assertEquals(3, c2Smem.getStagedLeftTuples().insertSize());
+        assertNotNull( c2Smem.getStagedLeftTuples().getInsertFirst() );
+        assertNotNull( c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext() );
+        assertNotNull( c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
+        assertNull( c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext() );
 
         wm.fireAllRules();
         assertEquals( 3, c2Mem.getLeftTupleMemory().size() );
         assertEquals( 1, c2Mem.getRightTupleMemory().size() );
-        assertEquals( 0, c2Smem.getStagedLeftTuples().insertSize());
+        assertNull(c2Smem.getStagedLeftTuples().getInsertFirst());
         assertEquals(6, list.size() );
 
         assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
@@ -231,12 +238,15 @@ public class AddRuleTest {
         assertSame( c2Smem, c2Mem.getSegmentMemory());
         assertEquals( 0, c2Mem.getLeftTupleMemory().size() );
         assertEquals( 0, c2Mem.getRightTupleMemory().size() );
-        assertEquals(3, c2Smem.getStagedLeftTuples().insertSize());
+        assertNotNull( c2Smem.getStagedLeftTuples().getInsertFirst() );
+        assertNotNull( c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext() );
+        assertNotNull( c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
+        assertNull( c2Smem.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext() );
 
         wm.fireAllRules();
         assertEquals( 3, c2Mem.getLeftTupleMemory().size() );
         assertEquals( 1, c2Mem.getRightTupleMemory().size() );
-        assertEquals( 0, c2Smem.getStagedLeftTuples().insertSize());
+        assertNull( c2Smem.getStagedLeftTuples().getInsertFirst() );
         assertEquals(6, list.size() );
 
         assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
@@ -278,10 +288,13 @@ public class AddRuleTest {
 
         BetaMemory bm = ( BetaMemory ) wm.getNodeMemory(bNode2);
         SegmentMemory sm = bm.getSegmentMemory();
-        assertEquals(3, sm.getStagedLeftTuples().insertSize());
+        assertNotNull( sm.getStagedLeftTuples().getInsertFirst() );
+        assertNotNull( sm.getStagedLeftTuples().getInsertFirst().getStagedNext() );
+        assertNotNull( sm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
+        assertNull( sm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext() );
 
         wm.fireAllRules();
-        assertEquals(0, sm.getStagedLeftTuples().insertSize());
+        assertNull( sm.getStagedLeftTuples().getInsertFirst() );
         assertEquals(6, list.size() );
 
         assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
@@ -323,10 +336,12 @@ public class AddRuleTest {
 
         PathMemory pm = (PathMemory) wm.getNodeMemory(rtn);
         SegmentMemory sm = pm.getSegmentMemory();
-        assertEquals(2, sm.getStagedLeftTuples().insertSize());
+        assertNotNull( sm.getStagedLeftTuples().getInsertFirst() );
+        assertNotNull( sm.getStagedLeftTuples().getInsertFirst().getStagedNext() );
+        assertNull( sm.getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
 
         wm.fireAllRules();
-        assertEquals(0, sm.getStagedLeftTuples().insertSize());
+        assertNull( sm.getStagedLeftTuples().getInsertFirst() );
         assertEquals(4, list.size() );
 
         System.out.println( list );

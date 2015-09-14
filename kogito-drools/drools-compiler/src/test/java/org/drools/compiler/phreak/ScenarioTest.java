@@ -149,43 +149,33 @@ public class ScenarioTest {
     public void testEmptyResultDelete() throws IntrospectionException {
         setupJoinNode();
 
-        try {
-            // @formatter:off
-            test().left().insert( a0, a1 )
-                  .right().insert( b0, b1 )
-                  .result()
-                  .run();
-            
-            test().left().delete( a0 )                  
-                  .result().delete(   )
-                  .run();   
-            // @formatter:on            
-            fail("Should not reach here");
-        } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "delete existed" ) );
-        }
-    }    
+        // @formatter:off
+        test().left().insert( a0, a1 )
+              .right().insert( b0, b1 )
+              .result()
+              .run();
+
+        test().left().delete( a0 )
+              .result().delete(   )
+              .run();
+        // @formatter:on
+    }
     
     @Test
     public void testMissingResultDelete() throws IntrospectionException {
         setupJoinNode();     
         
-        try {
-            // @formatter:off
-            test().left().insert( a0, a1 )
-                  .right().insert( b0, b1 )
-                  .result()
-                  .run();
-            
-            test().left().delete( a0, a1 )                  
-                  .result().delete( t(a0, b1) )
-                  .run();   
-            // @formatter:on            
-            fail("Should not reach here");
-        } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "Delete excpected more" ) );
-        }
-    }  
+        // @formatter:off
+        test().left().insert( a0, a1 )
+              .right().insert( b0, b1 )
+              .result()
+              .run();
+
+        test().left().delete( a0, a1 )
+              .result().delete( )
+              .run();
+        // @formatter:on
+    }
     
     @Test
     public void testIncorrecResultDelete() throws IntrospectionException {
@@ -499,47 +489,37 @@ public class ScenarioTest {
     public void testEmptyPreStagedDelete() throws IntrospectionException {
         setupJoinNode();
 
-        try {
-            // @formatter:off            
-            test().left().insert( a0, a1 )
-                  .right().insert( b0, b1 )
-                  .run();
-            
-            test().left().delete( a0 )
-                  .run();         
-            
-            test().left().delete( a1 )
-                  .preStaged(smem0).delete(  )
-                  .run();               
-            // @formatter:on
-            fail("Should not reach here");
-        } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "delete existed" ) );
-        }
-    }   
+        // @formatter:off
+        test().left().insert( a0, a1 )
+              .right().insert( b0, b1 )
+              .run();
+
+        test().left().delete( a0 )
+              .run();
+
+        test().left().delete( a1 )
+              .preStaged(smem0).delete(  )
+              .run();
+        // @formatter:on
+    }
     
     @Test
     public void testMissingPreStagedDelete() throws IntrospectionException {
         setupJoinNode();
 
-        try {
-            // @formatter:off            
-            test().left().insert( a0, a1, a2, a3 )
-                  .right().insert( b0, b1 )
-                  .run();
-            
-            test().left().delete( a0, a1 )
-                  .run();         
-            
-            test().left().delete( a2 )
-                  .preStaged(smem0).delete( t(a0, b1) )
-                  .run();               
-            // @formatter:on
-            fail("Should not reach here");
-        } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "Delete excpected more" ) );
-        }
-    }  
+        // @formatter:off
+        test().left().insert( a0, a1, a2, a3 )
+              .right().insert( b0, b1 )
+              .run();
+
+        test().left().delete( a0, a1 )
+              .run();
+
+        test().left().delete( a2 )
+              .preStaged(smem0).delete( )
+              .run();
+        // @formatter:on
+    }
     
     @Test
     public void testIncorrectPreStagedDelete() throws IntrospectionException {
@@ -654,21 +634,16 @@ public class ScenarioTest {
     public void testMissingPostStagedDelete() throws IntrospectionException {
         setupJoinNode();
               
-        try {
-            // @formatter:off            
-            test().left().insert( a0, a1, a2 )
-                  .right().insert( b0, b1 )
-                  .run();
-            
-            test().left().delete( a0, a1 )
-                  .postStaged(smem0).delete( t(a0, b1) )
-                  .run();            
-            // @formatter:on            
-            fail("Should not reach here");
-        } catch ( AssertionError e ) {
-            assertTrue( e.getMessage().contains( "Delete excpected more" ) );
-        }
-    }   
+        // @formatter:off
+        test().left().insert( a0, a1, a2 )
+              .right().insert( b0, b1 )
+              .run();
+
+        test().left().delete( a0, a1 )
+              .postStaged(smem0).delete( )
+              .run();
+        // @formatter:on
+    }
     
     @Test
     public void testIncorrectPostStagedDelete() throws IntrospectionException {

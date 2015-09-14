@@ -939,13 +939,17 @@ public class LinkingTest {
         BetaMemory bmem = ( BetaMemory ) wm.getNodeMemory( bNode );
         BetaMemory cmem = ( BetaMemory ) wm.getNodeMemory( cNode );
         
-        assertEquals( 3, amem.getSegmentMemory().getStagedLeftTuples().insertSize() );
+        // amem.getSegmentMemory().getStagedLeftTuples().insertSize() == 3
+        assertNotNull( amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst() );
+        assertNotNull( amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst().getStagedNext() );
+        assertNotNull( amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
+        assertNull( amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext() );
         assertEquals( 3, bmem.getStagedRightTuples().insertSize() );
         assertEquals( 29, cmem.getStagedRightTuples().insertSize()  );
         
         wm.fireAllRules();
         
-        assertEquals( 0, amem.getSegmentMemory().getStagedLeftTuples().insertSize()  );
+        assertNull( amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst() );
         assertEquals( 0, bmem.getStagedRightTuples().insertSize() );
         assertEquals( 0, cmem.getStagedRightTuples().insertSize()  );        
         

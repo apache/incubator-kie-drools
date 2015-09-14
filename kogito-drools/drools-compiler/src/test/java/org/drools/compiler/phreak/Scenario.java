@@ -174,7 +174,7 @@ public class Scenario {
     }
 
     public Scenario run() {
-        previousResultTuples = ( LeftTupleSets ) ((SegmentMemory) bm.getSegmentMemory().getFirst()).getStagedLeftTuples();
+        previousResultTuples = bm.getSegmentMemory().getFirst().getStagedLeftTuples();
         actualResultLeftTuples = new LeftTupleSetsImpl();
         
         if ( phreakNode == PhreakJoinNode.class ) {
@@ -257,7 +257,7 @@ public class Scenario {
                 actualTuple = actual.getInsertFirst();        
                 int i = 0;
                 for ( ; expectedTuple != null; expectedTuple = expectedTuple.getStagedNext() ) {
-                    Assert.assertTrue("insert " + i, equals(expectedTuple, actualTuple));
+                    Assert.assertTrue("insert " + i + ": " + actualTuple + " is not the expected " + expectedTuple, equals(expectedTuple, actualTuple));
                     actualTuple = actualTuple.getStagedNext();
                     i++;
                 }
@@ -273,7 +273,7 @@ public class Scenario {
                 actualTuple = actual.getDeleteFirst();
                 int i = 0;
                 for ( ; expectedTuple != null; expectedTuple = expectedTuple.getStagedNext() ) {
-                    Assert.assertTrue( "delete " + i, equals( expectedTuple, actualTuple ) );
+                    Assert.assertTrue( "delete " + i + ": " + actualTuple + " is not the expected " + expectedTuple, equals( expectedTuple, actualTuple ) );
                     actualTuple = actualTuple.getStagedNext();
                     i++;
                 }
@@ -289,7 +289,7 @@ public class Scenario {
                 actualTuple = actual.getUpdateFirst();
                 int i = 0;
                 for ( ; expectedTuple != null; expectedTuple = expectedTuple.getStagedNext() ) {
-                    Assert.assertTrue( "update " + i, equals( expectedTuple, actualTuple ) );
+                    Assert.assertTrue( "update " + i + ": " + actualTuple + " is not the expected " + expectedTuple, equals( expectedTuple, actualTuple ) );
                     actualTuple = actualTuple.getStagedNext();
                     i++;
                 }
