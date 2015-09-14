@@ -73,6 +73,7 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
                 singleBenchmarkResult.getName());
 
         // Intentionally create a fresh solver for every SingleBenchmarkResult to reset Random, tabu lists, ...
+        // TODO PLANNER-440 Use a classLoader argument buildSolver()
         Solver solver = singleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig().buildSolver();
 
         for (SingleStatistic singleStatistic : singleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {

@@ -2706,3 +2706,19 @@ After in *.drl:
         scoreHolder.addMediumConstraintMatch(kcontext, -1); // Financial cost
         scoreHolder.addSoftConstraintMatch(kcontext, -1); // Employee happiness cost
     end
+
+
+From 6.3.0.CR2 to 6.3.0.CR3
+---------------------------
+
+[MINOR] If you build a Solver entirely from API (not recommended - it's better to load it partially from XML),
+use SolverFactory.createEmpty() and solverFactory.getSolverConfig() accordingly.
+Before in *.java:
+        SolverConfig solverConfig = new SolverConfig();
+        ...
+        return solverConfig.buildSolver();
+After in *.java:
+        SolverFactory solverFactory = SolverFactory.createEmpty();
+        SolverConfig solverConfig = solverFactory.getSolverConfig();
+        ...
+        return solverFactory.buildSolver();

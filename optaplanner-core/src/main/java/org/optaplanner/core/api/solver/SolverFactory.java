@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.Reader;
 
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.impl.solver.EmptySolverFactory;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 
 /**
@@ -35,6 +36,26 @@ public abstract class SolverFactory {
     // ************************************************************************
     // Static creation methods
     // ************************************************************************
+
+    /**
+     * Useful to build configuration programmatically, although it's almost always recommended
+     * to instead load a partial configuration with {@link #createFromXmlResource(String)}
+     * and configure the remainder programmatically with {@link #getSolverConfig()}.
+     * @return never null
+     */
+    public static SolverFactory createEmpty() {
+        return new EmptySolverFactory();
+    }
+
+    /**
+     * See {@link #createEmpty()}.
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     *      null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static SolverFactory createEmpty(ClassLoader classLoader) {
+        return new EmptySolverFactory(classLoader);
+    }
 
     /**
      * @param solverConfigResource never null, a classpath resource

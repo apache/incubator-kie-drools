@@ -36,7 +36,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
  * XML based configuration that builds a {@link Solver} with {@link XStream}.
  * @see SolverFactory
  */
-public class XStreamXmlSolverFactory extends SolverFactory {
+public class XStreamXmlSolverFactory extends AbstractSolverFactory {
 
     /**
      * Builds the {@link XStream} setup which is used to read/write solver configs and benchmark configs.
@@ -52,10 +52,11 @@ public class XStreamXmlSolverFactory extends SolverFactory {
         return xStream;
     }
 
-    protected final ClassLoader classLoader;
-    protected XStream xStream;
+    // ************************************************************************
+    // Non-static fields and methods
+    // ************************************************************************
 
-    protected SolverConfig solverConfig = null;
+    protected XStream xStream;
 
     public XStreamXmlSolverFactory() {
         this(null);
@@ -66,7 +67,7 @@ public class XStreamXmlSolverFactory extends SolverFactory {
      *      null to use the default {@link ClassLoader}
      */
     public XStreamXmlSolverFactory(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+        super(classLoader);
         xStream = buildXStream();
         if (classLoader != null) {
             xStream.setClassLoader(classLoader);
@@ -139,22 +140,6 @@ public class XStreamXmlSolverFactory extends SolverFactory {
     public XStreamXmlSolverFactory configure(Reader reader) {
         solverConfig = (SolverConfig) xStream.fromXML(reader);
         return this;
-    }
-
-    public SolverConfig getSolverConfig() {
-        if (solverConfig == null) {
-            throw new IllegalStateException("The solverConfig (" + solverConfig + ") is null," +
-                    " call configure(...) first.");
-        }
-        return solverConfig;
-    }
-
-    public Solver buildSolver() {
-        if (solverConfig == null) {
-            throw new IllegalStateException("The solverConfig (" + solverConfig + ") is null," +
-                    " call configure(...) first.");
-        }
-        return solverConfig.buildSolver(classLoader);
     }
 
 }

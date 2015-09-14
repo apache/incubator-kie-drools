@@ -80,7 +80,8 @@ public class NQueensApp extends CommonApp {
      * @return never null
      */
     protected Solver createSolverByApi() {
-        SolverConfig solverConfig = new SolverConfig();
+        SolverFactory solverFactory = SolverFactory.createEmpty();
+        SolverConfig solverConfig = solverFactory.getSolverConfig();
 
         solverConfig.setSolutionClass(NQueens.class);
         solverConfig.setEntityClassList(Collections.<Class<?>>singletonList(Queen.class));
@@ -111,7 +112,7 @@ public class NQueensApp extends CommonApp {
         phaseConfigList.add(localSearchPhaseConfig);
 
         solverConfig.setPhaseConfigList(phaseConfigList);
-        return solverConfig.buildSolver();
+        return solverFactory.buildSolver();
     }
 
     @Override

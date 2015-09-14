@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.domain.ScanAnnotatedClassesConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -173,10 +174,18 @@ public class SolverConfig {
     // Builder methods
     // ************************************************************************
 
+    /**
+     * @deprecated Use {@link SolverFactory#buildSolver()} or {@link #buildSolver(ClassLoader)} instead.
+     */
+    @Deprecated
     public Solver buildSolver() {
         return buildSolver(null);
     }
 
+    /**
+     * @param classLoader sometimes null
+     * @return never null
+     */
     public Solver buildSolver(ClassLoader classLoader) {
         DefaultSolver solver = new DefaultSolver();
         EnvironmentMode environmentMode_ = determineEnvironmentMode();
