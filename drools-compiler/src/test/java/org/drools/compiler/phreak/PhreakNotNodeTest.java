@@ -105,7 +105,7 @@ public class PhreakNotNodeTest {
         test().left().delete( a2 )
               .right().insert( b1 )
                       
-              .result().delete( a2, a0 )
+              .result().delete( )
                        .left( a1 )
                        .right( b1 )
          .run().getActualResultLeftTuples().resetAll();
@@ -125,7 +125,7 @@ public class PhreakNotNodeTest {
 
         test().right().insert( b1 )
 
-              .result().delete( a2 )
+              .result().delete( )
                        .left( a0, a1 )
                        .right( b1 )
               .run().getActualResultLeftTuples().resetAll();

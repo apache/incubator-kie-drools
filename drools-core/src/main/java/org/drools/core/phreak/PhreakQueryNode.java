@@ -23,7 +23,6 @@ import org.drools.core.common.LeftTupleSets;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.QueryElementNode.UnificationNodeViewChangedEventListener;
@@ -36,7 +35,6 @@ public class PhreakQueryNode {
     public void doNode(QueryElementNode queryNode,
                        QueryElementNodeMemory qmem,
                        StackEntry stackEntry,
-                       LeftTupleSink sink,
                        InternalWorkingMemory wm,
                        LeftTupleSets srcLeftTuples,
                        LeftTupleSets trgLeftTuples,
@@ -47,7 +45,7 @@ public class PhreakQueryNode {
         }
 
         if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(queryNode, qmem, sink, wm, srcLeftTuples);
+            doLeftUpdates(queryNode, qmem, wm, srcLeftTuples);
         }
 
         if (srcLeftTuples.getInsertFirst() != null) {
@@ -88,7 +86,6 @@ public class PhreakQueryNode {
 
     public void doLeftUpdates(QueryElementNode queryNode,
                               QueryElementNodeMemory qmem,
-                              LeftTupleSink sink,
                               InternalWorkingMemory wm,
                               LeftTupleSets srcLeftTuples) {
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
@@ -109,35 +106,35 @@ public class PhreakQueryNode {
 
             int[] declIndexes = queryNode.getQueryElement().getDeclIndexes();
 
-            for (int i = 0, length = declIndexes.length; i < length; i++) {
-                Declaration declr = (Declaration) argTemplate[declIndexes[i]];
+            for ( int declIndexe : declIndexes ) {
+                Declaration declr = (Declaration) argTemplate[declIndexe];
 
-                Object tupleObject = leftTuple.get(declr).getObject();
+                Object tupleObject = leftTuple.get( declr ).getObject();
 
                 Object o;
 
-                if (tupleObject instanceof DroolsQuery) {
+                if ( tupleObject instanceof DroolsQuery ) {
                     // If the query passed in a Variable, we need to use it
                     ArrayElementReader arrayReader = (ArrayElementReader) declr.getExtractor();
-                    if (((DroolsQuery) tupleObject).getVariables()[arrayReader.getIndex()] != null) {
+                    if ( ( (DroolsQuery) tupleObject ).getVariables()[arrayReader.getIndex()] != null ) {
                         o = Variable.v;
                     } else {
-                        o = declr.getValue(wm,
-                                           tupleObject);
+                        o = declr.getValue( wm,
+                                            tupleObject );
                     }
                 } else {
-                    o = declr.getValue(wm,
-                                       tupleObject);
+                    o = declr.getValue( wm,
+                                        tupleObject );
                 }
 
-                args[declIndexes[i]] = o;
+                args[declIndexe] = o;
             }
 
             int[] varIndexes = queryNode.getQueryElement().getVariableIndexes();
-            for (int i = 0, length = varIndexes.length; i < length; i++) {
-                if (argTemplate[varIndexes[i]] == Variable.v) {
+            for ( int varIndexe : varIndexes ) {
+                if ( argTemplate[varIndexe] == Variable.v ) {
                     // Need to check against the arg template, as the varIndexes also includes re-declared declarations
-                    args[varIndexes[i]] = Variable.v;
+                    args[varIndexe] = Variable.v;
                 }
             }
 
@@ -182,8 +179,9 @@ public class PhreakQueryNode {
             } else {
                 LeftTuple childLeftTuple = leftTuple.getFirstChild();
                 while (childLeftTuple != null) {
-                    childLeftTuple = RuleNetworkEvaluator.deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
-                    LiaNodeMemory lm = (LiaNodeMemory) qmem.getQuerySegmentMemory().getNodeMemories().get(0);
+                    LeftTuple nextChild = childLeftTuple.getLeftParentNext();
+                    RuleNetworkEvaluator.deleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                    childLeftTuple = nextChild;
                 }
             }
 
