@@ -135,9 +135,6 @@ public class PhreakAccumulateNode {
         BetaConstraints constraints = accNode.getRawConstraints();
 
         boolean leftTupleMemoryEnabled = accNode.isLeftTupleMemoryEnabled();
-        if (leftTupleMemoryEnabled && srcLeftTuples.insertSize() > 32 && ltm instanceof AbstractHashTable) {
-            ((AbstractHashTable) ltm).ensureCapacity(srcLeftTuples.insertSize());
-        }
 
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
