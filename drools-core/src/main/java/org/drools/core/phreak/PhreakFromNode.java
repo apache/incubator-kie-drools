@@ -227,10 +227,11 @@ public class PhreakFromNode {
 
                 while (childLeftTuple != null) {
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());
-                    childLeftTuple = RuleNetworkEvaluator.deleteLeftChild(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                    LeftTuple nextChild = childLeftTuple.getLeftParentNext();
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                    childLeftTuple = nextChild;
                 }
             }
-
 
             // if matches == null, the deletion might be happening before the fact was even propagated. See BZ-1019473 for details.
             if( matches != null ) {
@@ -307,20 +308,8 @@ public class PhreakFromNode {
 
     private void deleteChildLeftTuple(PropagationContext propagationContext, LeftTupleSets trgLeftTuples, LeftTupleSets stagedLeftTuples, LeftTuple childLeftTuple) {
         if (childLeftTuple != null) {
-            childLeftTuple.unlinkFromLeftParent();
-            childLeftTuple.unlinkFromRightParent();
-
-            switch (childLeftTuple.getStagedType()) {
-                // handle clash with already staged entries
-                case LeftTuple.INSERT:
-                    stagedLeftTuples.removeInsert(childLeftTuple);
-                    break;
-                case LeftTuple.UPDATE:
-                    stagedLeftTuples.removeUpdate(childLeftTuple);
-                    break;
-            }
-            childLeftTuple.setPropagationContext(propagationContext);
-            trgLeftTuples.addDelete(childLeftTuple);
+            childLeftTuple.setPropagationContext( propagationContext );
+            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
         }
     }
 }

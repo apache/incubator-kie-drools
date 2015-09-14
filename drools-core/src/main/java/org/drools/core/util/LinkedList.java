@@ -261,12 +261,12 @@ public class LinkedList<T extends LinkedListNode<T>>
             return null;
         }
         final T node = this.lastNode;
-        this.lastNode = (T) node.getPrevious();
+        this.lastNode = node.getPrevious();
         node.setPrevious( null );
         if ( this.lastNode != null ) {
             this.lastNode.setNext( null );
         } else {
-            this.firstNode = this.lastNode;
+            this.firstNode = null;
         }
         this.size--;
         return node;
