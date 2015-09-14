@@ -43,7 +43,8 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
 
     @Test
     public void trackLocalSearch() {
-        SolverConfig config = SolverFactory.createFromXmlResource(NQueensApp.SOLVER_CONFIG).getSolverConfig();
+        SolverFactory solverFactory = SolverFactory.createFromXmlResource(NQueensApp.SOLVER_CONFIG);
+        SolverConfig solverConfig = solverFactory.getSolverConfig();
 
         NQueensGenerator generator = new NQueensGenerator();
         NQueens planningProblem = NQueensSolutionInitializer.initialize(generator.createNQueens(N));
@@ -56,10 +57,10 @@ public class NQueensLocalSearchTrackingTest extends NQueensAbstractTrackingTest 
         localSearchPhaseConfig.getMoveSelectorConfig().setSelectionOrder(SelectionOrder.ORIGINAL);
         localSearchPhaseConfig.setTerminationConfig(new TerminationConfig());
         localSearchPhaseConfig.getTerminationConfig().setStepCountLimit(20);
-        config.getPhaseConfigList().set(1, localSearchPhaseConfig);
+        solverConfig.getPhaseConfigList().set(1, localSearchPhaseConfig);
 
         NQueensStepTracker listener = new NQueensStepTracker();
-        DefaultSolver solver = (DefaultSolver) config.buildSolver();
+        DefaultSolver solver = (DefaultSolver) solverFactory.buildSolver();
         solver.addPhaseLifecycleListener(listener);
         solver.solve(planningProblem);
 
