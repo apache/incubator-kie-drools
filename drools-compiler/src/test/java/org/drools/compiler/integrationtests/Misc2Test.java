@@ -37,6 +37,8 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.Memory;
+import org.drools.core.common.NodeMemories;
 import org.drools.core.common.RightTupleSets;
 import org.drools.core.conflict.SalienceConflictResolver;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -54,6 +56,7 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
+import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
 import org.drools.core.util.FileManager;
@@ -5408,9 +5411,7 @@ public class Misc2Test extends CommonTestMethodBase {
         InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
         LeftInputAdapterNode.LiaNodeMemory memory = (LeftInputAdapterNode.LiaNodeMemory) wm.getNodeMemory( liaNode );
         LeftTupleSets stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();
-        assertEquals( 0, stagedLeftTuples.deleteSize() );
         assertNull( stagedLeftTuples.getDeleteFirst() );
-        assertEquals( 0, stagedLeftTuples.insertSize() );
         assertNull( stagedLeftTuples.getInsertFirst() );
     }
 
@@ -7950,8 +7951,11 @@ public class Misc2Test extends CommonTestMethodBase {
         }
     }
 
-    public static class ChildA extends Parent { }
-    public static class ChildB extends Parent { }
+    public static class ChildA extends Parent {
+    }
+
+    public static class ChildB extends Parent {
+    }
 
     @Test
     public void testDifferentClassesWithOR() throws Exception {
@@ -8035,5 +8039,94 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertEquals( 1, list.size() );
         assertEquals( "a", list.get( 0 ) );
+    }
+
+    @Test
+    public void testBetaMemoryLeakOnFactDelete() {
+        // DROOLS-913
+        String drl =
+                "rule R1 when\n" +
+                "    $a : Integer(this == 1)\n" +
+                "    $b : String()\n" +
+                "    $c : Integer(this == 2)\n" +
+                "then \n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $a : Integer(this == 1)\n" +
+                "    $b : String()\n" +
+                "then \n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        FactHandle fh1 = ksession.insert(1);
+        FactHandle fh2 = ksession.insert("test");
+        ksession.fireAllRules();
+
+        ksession.delete(fh1);
+        ksession.delete(fh2);
+        ksession.fireAllRules();
+
+        NodeMemories nodeMemories = ((InternalWorkingMemory) ksession).getNodeMemories();
+        for (int i = 0; i < nodeMemories.length(); i++) {
+            Memory memory = nodeMemories.peekNodeMemory( i );
+            if ( memory != null && memory.getSegmentMemory() != null ) {
+                SegmentMemory segmentMemory = memory.getSegmentMemory();
+                System.out.println( memory );
+                LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
+                System.out.println( deleteFirst );
+                assertNull( deleteFirst );
+            }
+        }
+    }
+
+    @Test @Ignore
+    public void testBetaMemoryLeakOnSegmentUnlinking() {
+        // DROOLS-915
+        String drl =
+                "rule R1 when\n" +
+                "    $a : Integer(this == 1)\n" +
+                "    $b : String()\n" +
+                "    $c : Integer(this == 2)\n" +
+                "    $d : Integer(this == 3)\n" +
+                "then \n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $a : Integer(this == 1)\n" +
+                "    $b : String()\n" +
+                "then \n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        FactHandle fh1 = ksession.insert(1);
+        FactHandle fh2 = ksession.insert(2);
+        FactHandle fh3 = ksession.insert(3);
+        FactHandle fhtest = ksession.insert("test");
+        ksession.fireAllRules();
+
+        ksession.delete(fh3);
+        ksession.fireAllRules();
+
+        ksession.delete(fh1);
+        ksession.delete(fh2);
+        ksession.delete(fhtest);
+        ksession.fireAllRules();
+
+        NodeMemories nodeMemories = ((InternalWorkingMemory) ksession).getNodeMemories();
+        for (int i = 0; i < nodeMemories.length(); i++) {
+            Memory memory = nodeMemories.peekNodeMemory( i );
+            if ( memory != null && memory.getSegmentMemory() != null ) {
+                SegmentMemory segmentMemory = memory.getSegmentMemory();
+                System.out.println( memory );
+                LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
+                System.out.println( deleteFirst );
+                assertNull( deleteFirst );
+            }
+        }
     }
 }

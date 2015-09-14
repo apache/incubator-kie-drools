@@ -78,7 +78,7 @@ public class RemoveRuleTest {
 
         LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
-        assertEquals(1, sm.getStagedLeftTuples().insertSize());
+        assertNotNull(sm.getStagedLeftTuples().getInsertFirst());
 
         wm.fireAllRules();
 
@@ -93,7 +93,7 @@ public class RemoveRuleTest {
         NodeMemories nms = wm.getNodeMemories();
         assertEquals( 13, countNodeMemories(nms));
 
-        assertEquals(0, sm.getStagedLeftTuples().insertSize());
+        assertNull(sm.getStagedLeftTuples().getInsertFirst());
         assertEquals(1, list.size() );
 
         assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
