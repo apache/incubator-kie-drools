@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.jbpm.casemgmt.CaseMgmtService;
 import org.jbpm.casemgmt.CaseMgmtUtil;
@@ -28,7 +29,6 @@ import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Task;
-import org.kie.internal.task.api.model.InternalTask;
 
 public class WorkCaseService {
 
@@ -56,6 +56,7 @@ public class WorkCaseService {
         long caseId = pi.getId();
 
         caseMgmtService.setCaseData(caseId, "goal", goal);
+        caseMgmtService.setCaseData(caseId, "responsible", responsiblePerson);
         caseMgmtService.addUserToRole(caseId, "responsible", responsiblePerson);
         return caseId;
     }
@@ -77,6 +78,7 @@ public class WorkCaseService {
         caseMgmtService.triggerAdHocFragment(caseId, "Inform interested people");
     }
 
+    private static String lastConsultTaskName = "Consult work with";
     /**
      * To plan the meeting.
      */
@@ -87,13 +89,14 @@ public class WorkCaseService {
         }
 
         caseMgmtService.setCaseData(caseId, "consultant", userId);
-        caseMgmtService.triggerAdHocFragment(caseId, "Consult work with");
+        caseMgmtService.triggerAdHocFragment(caseId, lastConsultTaskName);
 
         List<Long> taskIds = taskService.getTasksByProcessInstanceId(caseId);
         for (Long taskId : taskIds) {
             Task t = taskService.getTaskById(taskId);
             if (t.getName().startsWith("Consult work with")) {
-                ((InternalTask) t).setName("Consult work with " + userId);
+                lastConsultTaskName = "Consult work with " + userId;
+                updateTaskName(caseId, t, lastConsultTaskName);
             }
         }
     }
@@ -112,6 +115,20 @@ public class WorkCaseService {
     public void prolongTimeoutTo(long caseId, int timeout) {
         kieSession.execute(new UpdateTimerCommand(caseId, "Timeout", timeout));
         caseMgmtService.setCaseData(caseId, "timeout", 15);
+    }
+
+    public String getRandomUserInTheRole(long pid, String role) {
+        String[] users = caseMgmtService.getCaseRoleInstanceNames(pid).get(role);
+        Random rand = new Random();
+        int n = 0;
+        if (users.length > 1) {
+            n = rand.nextInt(users.length - 1);
+        }
+        return users[n];
+    }
+    
+    private void updateTaskName(long caseId, Task t, String name) {
+        kieSession.execute(new UpdateTaskNameCommand(taskService, caseId, t, name));
     }
 
     public static enum WorkCaseMilestones {

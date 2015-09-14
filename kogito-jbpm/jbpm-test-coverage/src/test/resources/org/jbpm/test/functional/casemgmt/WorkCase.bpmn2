@@ -33,7 +33,9 @@
     <property id="name" itemSubjectRef="_sItem"/>
     <property id="timeout" itemSubjectRef="_timeoutItem"/>
     <property id="informAbout" itemSubjectRef="_sItem"/>
+    <property id="responsible" itemSubjectRef="_sItem"/>
     <property id="consultant" itemSubjectRef="_sItem"/>
+    <property id="accountable" itemSubjectRef="_sItem"/>
 
     <!-- nodes -->
     <startEvent id="processStartEvent" name=""  isInterrupting="true">
@@ -103,7 +105,7 @@
       <dataInputAssociation>
         <targetRef>_B66E2E64-5B32-4D60-9DBB-08ABC587F776_GroupIdInput</targetRef>
         <assignment>
-          <from xsi:type="tFormalExpression">responsible</from>
+          <from xsi:type="tFormalExpression"></from>
           <to xsi:type="tFormalExpression">_B66E2E64-5B32-4D60-9DBB-08ABC587F776_GroupIdInput</to>
         </assignment>
       </dataInputAssociation>
@@ -114,6 +116,11 @@
           <to xsi:type="tFormalExpression">_B66E2E64-5B32-4D60-9DBB-08ABC587F776_NodeNameInput</to>
         </assignment>
       </dataInputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>#{responsible}</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
     </userTask>
     <userTask id="_6D0A8F9A-4E15-42AA-A628-F6FC18101EFF" name="Check resolution" >
       <ioSpecification>
@@ -147,7 +154,7 @@
       <dataInputAssociation>
         <targetRef>_6D0A8F9A-4E15-42AA-A628-F6FC18101EFF_GroupIdInput</targetRef>
         <assignment>
-          <from xsi:type="tFormalExpression">accountable</from>
+          <from xsi:type="tFormalExpression"></from>
           <to xsi:type="tFormalExpression">_6D0A8F9A-4E15-42AA-A628-F6FC18101EFF_GroupIdInput</to>
         </assignment>
       </dataInputAssociation>
@@ -158,6 +165,11 @@
           <to xsi:type="tFormalExpression">_6D0A8F9A-4E15-42AA-A628-F6FC18101EFF_NodeNameInput</to>
         </assignment>
       </dataInputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>#{accountable}</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
     </userTask>
     <task id="_2763C93F-4EBE-492A-8011-2A539FA385F1" name="Milestone: Planning Done" tns:taskName="Milestone" >
       <ioSpecification>

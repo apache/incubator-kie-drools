@@ -37,8 +37,6 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
 
-import qa.tools.ikeeper.annotation.BZ;
-
 public class WorkCaseTest extends JbpmTestCase {
 
     private KieSession kieSession;
@@ -109,7 +107,6 @@ public class WorkCaseTest extends JbpmTestCase {
     }
 
     @Test(timeout = 30000)
-    @BZ("1257975")
     public void testConsultations() {
 
         String responsible = "john";
@@ -123,41 +120,62 @@ public class WorkCaseTest extends JbpmTestCase {
         Assertions.assertThat(tasks).hasSize(1);
 
         TaskSummary task = tasks.get(0);
-        Assertions.assertThat(task.getName()).isEqualTo("Consult work with mary");
+        Assertions.assertThat(taskService.getTaskById(task.getId()).getName()).isEqualTo("Consult work with mary");
+
+        taskService.start(task.getId(), responsible);
+        taskService.complete(task.getId(), responsible, null);
+        
+        String secondConsultant = "admin";
+        wcs.addConsultant(caseId, secondConsultant);
+
+        wcs.consultWith(caseId, secondConsultant);
+
+        tasks = taskService.getTasksAssignedAsPotentialOwner(responsible, "en-UK");
+        Assertions.assertThat(tasks).hasSize(1);
+
+        task = tasks.get(0);
+        Assertions.assertThat(taskService.getTaskById(task.getId()).getName()).isEqualTo("Consult work with admin");
 
         taskService.start(task.getId(), responsible);
         taskService.complete(task.getId(), responsible, null);
 
         wcs.milestone(caseId, WorkCaseMilestones.CLOSE);
 
+        String[] passedNodes = getPassedNodes(caseId);
+        Assertions.assertThat(passedNodes).containsSequence("Consult work with mary", "Consult work with admin", "Milestone: Close");
+
     }
 
     @Test(timeout = 30000)
-    @BZ("1257975")
     public void testCheckResolution() {
 
         String responsiblePerson = "john";
         long caseId = wcs.createWork("Integrate module X into project Y", "Module X working in the project Y by ...", responsiblePerson);
-        
+
         createAndCompleteTask(caseId, "Do it", responsiblePerson, null, responsiblePerson);
 
         String approver = "mary";
         wcs.addApprover(caseId, approver);
+
+        String selectedApprover = wcs.getRandomUserInTheRole(caseId, "accountable");
+        caseMgmtService.setCaseData(caseId, "accountable", selectedApprover);
         wcs.checkResolution(caseId);
 
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(approver, "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(selectedApprover, "en-UK");
         Assertions.assertThat(tasks).hasSize(1);
         TaskSummary task = tasks.get(0);
 
-        taskService.start(task.getId(), approver);
-        taskService.complete(task.getId(), approver, null);
+        taskService.start(task.getId(), selectedApprover);
+        taskService.complete(task.getId(), selectedApprover, null);
 
         wcs.milestone(caseId, WorkCaseMilestones.CLOSE);
+
+        String[] passedNodes = getPassedNodes(caseId);
+        Assertions.assertThat(passedNodes).containsSequence("[Dynamic] Do it", "Check resolution", "Milestone: Close");
 
     }
 
     @Test(timeout = 30000)
-    @BZ("1257975")
     public void testCompleteHistory() {
         String responsiblePerson = "john";
         long caseId = wcs.createWork("Integrate module X into project Y", "Module X working in the project Y by ...", responsiblePerson);
@@ -170,14 +188,17 @@ public class WorkCaseTest extends JbpmTestCase {
 
         String approver = "john";
         wcs.addApprover(caseId, approver);
+
+        String selectedApprover = wcs.getRandomUserInTheRole(caseId, "accountable");
+        caseMgmtService.setCaseData(caseId, "accountable", selectedApprover);
         wcs.checkResolution(caseId);
 
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(approver, "en-UK");
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(selectedApprover, "en-UK");
         Assertions.assertThat(tasks).hasSize(1);
         TaskSummary task = tasks.get(0);
 
-        taskService.start(task.getId(), approver);
-        taskService.complete(task.getId(), approver, null);
+        taskService.start(task.getId(), selectedApprover);
+        taskService.complete(task.getId(), selectedApprover, null);
 
         wcs.milestone(caseId, WorkCaseMilestones.WORK_DONE);
         wcs.milestone(caseId, WorkCaseMilestones.CLOSE);

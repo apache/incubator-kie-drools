@@ -17,6 +17,7 @@
 package org.jbpm.test.functional.casemgmt;
 
 import java.util.List;
+import java.util.Random;
 
 import org.assertj.core.api.Assertions;
 import org.jbpm.casemgmt.CaseMgmtService;
@@ -31,17 +32,14 @@ import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 
-import qa.tools.ikeeper.annotation.BZ;
-
-@BZ("1257975")
 public class HumanTaskRoleCaseTest extends JbpmTestCase {
-    
+
     private KieSession kieSession;
     private RuntimeEngine runtimeEngine;
     private CaseMgmtService caseMgmtService;
     private TaskService taskService;
     private ProcessInstance casePi;
-    
+
     @Before
     public void setup() {
         kieSession = createKSession("org/jbpm/test/functional/casemgmt/HumanTaskRoleCase.bpmn2");
@@ -52,41 +50,56 @@ public class HumanTaskRoleCaseTest extends JbpmTestCase {
 
     @Test(timeout = 30000)
     public void testCustomRole() {
-        
+
         casePi = caseMgmtService.startNewCase("caseDataHT");
         long pid = casePi.getId();
-        
+
+        caseMgmtService.addUserToRole(pid, "customRole", "admin");
         caseMgmtService.addUserToRole(pid, "customRole", "john");
-        caseMgmtService.triggerAdHocFragment(pid, "Optional Human Task");
         
-        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        String selectedUser = getRandomUserInTheRole(pid, "customRole");
+        
+        caseMgmtService.setCaseData(pid, "optUserId", selectedUser);
+        
+        
+        caseMgmtService.triggerAdHocFragment(pid, "Optional Human Task");
+
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsPotentialOwner(selectedUser, "en-UK");
         Assertions.assertThat(tasks).hasSize(1);
 
         TaskSummary task = tasks.get(0);
-        taskService.claim(task.getId(), "john");
-        taskService.start(task.getId(), "john");
-        taskService.complete(task.getId(), "john", null);
+        taskService.start(task.getId(), selectedUser);
+        taskService.complete(task.getId(), selectedUser, null);
 
     }
 
     @Test(timeout = 30000)
     public void testCustomRoleOnDynamicTask() {
-        
+
         casePi = caseMgmtService.startNewCase("caseDataHT");
         long pid = casePi.getId();
-        
+
         caseMgmtService.addUserToRole(pid, "customRole", "john");
-        caseMgmtService.createDynamicHumanTask(pid, "Custom Role Task", null, "customRole", null, null);
+        caseMgmtService.addUserToRole(pid, "customRole", "mary");
         
+        String selectedUser = getRandomUserInTheRole(pid, "customRole");
+
+        caseMgmtService.createDynamicHumanTask(pid, "Custom Role Task", selectedUser, null, null, null);
+
         List<Long> tasks = taskService.getTasksByProcessInstanceId(pid);
         Assertions.assertThat(tasks).hasSize(1);
 
         Task task = taskService.getTaskById(tasks.get(0));
-        taskService.claim(task.getId(), "john");
-        taskService.start(task.getId(), "john");
-        taskService.complete(task.getId(), "john", null);
-        
+        taskService.start(task.getId(), selectedUser);
+        taskService.complete(task.getId(), selectedUser, null);
 
+    }
+
+    private String getRandomUserInTheRole(long pid, String role) {
+        String[] users = caseMgmtService.getCaseRoleInstanceNames(pid).get(role);
+        Random rand = new Random();
+        int n = rand.nextInt(users.length-1);
+        return users[n];
     }
 
 }
