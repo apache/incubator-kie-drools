@@ -1,0 +1,105 @@
+package org.jbpm.persistence.scripts;
+
+import java.io.File;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.text.ParseException;
+
+import org.jbpm.persistence.scripts.util.TestsUtil;
+import org.junit.Assert;
+import org.junit.Test;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+/**
+ * Contains tests that test database upgrade scripts.
+ */
+public class UpgradeScriptsTest {
+
+    private static final String TEST_PROCESS_ID = "minimalProcess";
+    private static final Long TEST_PROCESS_INSTANCE_ID = 1L;
+    private static final Integer TEST_SESSION_ID = 1;
+
+    /**
+     * Tests that DB schema is upgraded properly using database upgrade scripts.
+     * @throws IOException
+     */
+    @Test
+    public void testExecutingScripts() throws IOException, SQLException {
+        // Clear schema.
+        TestsUtil.clearSchema();
+
+        final TestPersistenceContext scriptRunnerContext = new TestPersistenceContext();
+        scriptRunnerContext.init(PersistenceUnit.SCRIPT_RUNNER);
+        try {
+            // Prepare 6.0. schema
+            scriptRunnerContext.executeScripts(new File(getClass().getResource("/ddl60").getFile()));
+            // Execute upgrade scripts.
+            scriptRunnerContext.executeScripts(new File(getClass().getResource("/upgrade-scripts").getFile()));
+        } finally {
+            scriptRunnerContext.clean();
+        }
+
+        final TestPersistenceContext dbTestingContext = new TestPersistenceContext();
+        dbTestingContext.init(PersistenceUnit.DB_TESTING);
+        try {
+            dbTestingContext.startAndPersistSomeProcess(TEST_PROCESS_ID);
+            Assert.assertTrue(dbTestingContext.getStoredProcessesCount() > 0);
+        } finally {
+            dbTestingContext.clean();
+        }
+    }
+
+    /**
+     * Tests that persisted process is not destroyed by upgrade scripts.
+     * @throws IOException
+     * @throws ParseException
+     * @throws SQLException
+     */
+    @Test
+    public void testPersistedProcess() throws IOException, ParseException, SQLException {
+        // Clear schema.
+        TestsUtil.clearSchema();
+
+        // Prepare + upgrade schema.
+        final TestPersistenceContext scriptRunnerContext = new TestPersistenceContext();
+        scriptRunnerContext.init(PersistenceUnit.SCRIPT_RUNNER);
+        try {
+            // Prepare 6.0. schema
+            scriptRunnerContext.executeScripts(new File(getClass().getResource("/ddl60").getFile()));
+            scriptRunnerContext.persistOldProcessAndSession(TEST_SESSION_ID, TEST_PROCESS_ID, TEST_PROCESS_INSTANCE_ID);
+            // Execute upgrade scripts.
+            scriptRunnerContext.executeScripts(new File(getClass().getResource("/upgrade-scripts").getFile()));
+        } finally {
+            scriptRunnerContext.clean();
+        }
+
+        final TestPersistenceContext dbTestingContext = new TestPersistenceContext();
+        dbTestingContext.init(PersistenceUnit.DB_TESTING);
+        try {
+            Assert.assertTrue(dbTestingContext.getStoredProcessesCount() > 0);
+
+            final StatefulKnowledgeSession persistedSession = dbTestingContext.loadPersistedSession(
+                    TEST_SESSION_ID.longValue(), TEST_PROCESS_ID);
+            Assert.assertNotNull(persistedSession);
+
+            // Start another process.
+            persistedSession.startProcess(TEST_PROCESS_ID);
+
+            // Load old process instance.
+            ProcessInstance processInstance = persistedSession.getProcessInstance(TEST_PROCESS_INSTANCE_ID);
+            Assert.assertNotNull(processInstance);
+
+            persistedSession.signalEvent("test", null);
+            processInstance = persistedSession.getProcessInstance(TEST_PROCESS_INSTANCE_ID);
+            Assert.assertNull(processInstance);
+            Assert.assertTrue(dbTestingContext.getStoredProcessesCount() == 0);
+
+            persistedSession.dispose();
+            persistedSession.destroy();
+            Assert.assertTrue(dbTestingContext.getStoredSessionsCount() == 0);
+        } finally {
+            dbTestingContext.clean();
+        }
+    }
+}

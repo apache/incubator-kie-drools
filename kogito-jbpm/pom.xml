@@ -83,6 +83,7 @@
     <module>jbpm-case-mgmt</module>
     <module>jbpm-test-coverage</module>
     <module>jbpm-examples</module>
+    <module>jbpm-installer</module>
   </modules>
 
   <build>
