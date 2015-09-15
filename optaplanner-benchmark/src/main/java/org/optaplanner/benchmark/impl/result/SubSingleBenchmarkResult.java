@@ -149,6 +149,7 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
         this.uninitializedVariableCount = uninitializedVariableCount;
     }
 
+    @Override
     public Score getScore() {
         return score;
     }
@@ -208,6 +209,7 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
         return singleBenchmarkResult.getName() + "_" + subSingleBenchmarkIndex;
     }
 
+    @Override
     public boolean isSuccess() {
         return succeeded != null && succeeded.booleanValue();
     }
@@ -216,6 +218,7 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
         return uninitializedVariableCount != null && uninitializedVariableCount == 0;
     }
 
+    @Override
     public boolean isFailure() {
         return succeeded != null && !succeeded.booleanValue();
     }

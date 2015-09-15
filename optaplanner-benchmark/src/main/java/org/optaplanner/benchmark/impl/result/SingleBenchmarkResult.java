@@ -36,6 +36,7 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
+import org.optaplanner.benchmark.impl.statistic.StatsUtil;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
@@ -275,14 +276,16 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         return problemBenchmarkResult.getBenchmarkReportDirectory();
     }
 
+    @Override
     public boolean isSuccess() {
-        return !isFailure();
+        return failureCount != null && failureCount == 0;
     }
 
     public boolean isInitialized() {
         return averageUninitializedVariableCount != null && averageUninitializedVariableCount == 0;
     }
 
+    @Override
     public boolean isFailure() {
         return failureCount != null && failureCount != 0;
     }
@@ -347,6 +350,11 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         return StatsUtil.getStandardDeviationString(standardDeviationDoubles);
     }
 
+    @Override
+    public Score getScore() {
+        return getAverageScore();
+    }
+
     // ************************************************************************
     // Accumulate methods
     // ************************************************************************
@@ -372,7 +380,7 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
             subSingleBenchmarkResult.accumulateResults(benchmarkReport);
         }
         determineTotalsAndAveragesAndRanking();
-        determineStandardDeviation();
+        standardDeviationDoubles = StatsUtil.determineStandardDeviationDoubles(subSingleBenchmarkResultList, averageScore, getSuccessCount());
         if (!solverBenchmarkResult.getPlannerBenchmarkResult().getAggregation()) {
             SubSingleBenchmarkResult median = determineRepresentativeSubSingleBenchmarkResult();
             mergeSubSingleStatistics(median);
@@ -380,12 +388,21 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     }
 
     private void mergeSubSingleStatistics(SubSingleBenchmarkResult median) {
-        if (median.getEffectiveSingleStatisticMap() != null && !median.isFailure()) { // OOO fix this, copy statistics and pures
-            for (SingleStatistic singleStatistic : median.getEffectiveSingleStatisticMap().values()) { // copy to parent dir
-                singleStatistic.unhibernatePointList();
-                singleStatistic.setSolverProblemBenchmarkResult(this);
-                singleStatistic.hibernatePointList();
-            }
+        if (!median.isSuccess()) {
+            logger.debug("The median SubSingleBenchmarkResult ({}) is not a success, not copying it's single statistics"
+                    + "to parent SingleBenchmarkResult's ({}) directory.", median, this);
+            return;
+        }
+        if (median.getEffectiveSingleStatisticMap() == null) {
+            logger.debug("The median SubSingleBenchmarkResult ({}) does not have any single statistics,"
+                    + "nothing to copy to parent SingleBenchmarkResult ({}) directory.", median, this);
+            return;
+        }
+        for (SingleStatistic singleStatistic : median.getEffectiveSingleStatisticMap().values()) {
+            // copy single stat's point list to parent (single benchmark) dir
+            singleStatistic.unhibernatePointList();
+            singleStatistic.setSolverProblemBenchmarkResult(this);
+            singleStatistic.hibernatePointList();
         }
     }
 
@@ -472,32 +489,6 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
             subSingleBenchmarkResult.setRanking(ranking);
             previousSubSingleBenchmarkResult = subSingleBenchmarkResult;
             previousSameRankingCount++;
-        }
-    }
-
-    protected void determineStandardDeviation() {
-        int successCount = getSuccessCount();
-        if (successCount <= 0) {
-            return;
-        }
-        // averageScore can no longer be null
-        double[] differenceSquaredTotalDoubles = null;
-        for (SubSingleBenchmarkResult subSingleBenchmarkResult : subSingleBenchmarkResultList) {
-            if (!subSingleBenchmarkResult.isFailure()) {
-                Score difference = subSingleBenchmarkResult.getScore().subtract(averageScore);
-                // Calculations done on doubles to avoid common overflow when executing with an int score > 500 000
-                double[] differenceDoubles = ScoreUtils.extractLevelDoubles(difference);
-                if (differenceSquaredTotalDoubles == null) {
-                    differenceSquaredTotalDoubles = new double[differenceDoubles.length];
-                }
-                for (int i = 0; i < differenceDoubles.length; i++) {
-                    differenceSquaredTotalDoubles[i] += Math.pow(differenceDoubles[i], 2.0);
-                }
-            }
-        }
-        standardDeviationDoubles = new double[differenceSquaredTotalDoubles.length];
-        for (int i = 0; i < differenceSquaredTotalDoubles.length; i++) {
-            standardDeviationDoubles[i] = Math.pow(differenceSquaredTotalDoubles[i] / successCount, 0.5);
         }
     }
 

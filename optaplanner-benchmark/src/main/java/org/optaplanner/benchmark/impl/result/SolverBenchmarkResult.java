@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
+import org.optaplanner.benchmark.impl.statistic.StatsUtil;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -282,7 +283,7 @@ public class SolverBenchmarkResult {
      */
     public void accumulateResults(BenchmarkReport benchmarkReport) {
         determineTotalsAndAverages();
-        determineStandardDeviation();
+        standardDeviationDoubles = StatsUtil.determineStandardDeviationDoubles(singleBenchmarkResultList, averageScore, getSuccessCount());
     }
 
     protected void determineTotalsAndAverages() {
@@ -330,32 +331,6 @@ public class SolverBenchmarkResult {
             averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide((double) successCount);
             averageAverageCalculateCountPerSecond = totalAverageCalculateCountPerSecond / (long) successCount;
             averageTimeMillisSpent = totalTimeMillisSpent / (long) successCount;
-        }
-    }
-
-    protected void determineStandardDeviation() {
-        int successCount = getSuccessCount();
-        if (successCount <= 0) {
-            return;
-        }
-        // averageScore can no longer be null
-        double[] differenceSquaredTotalDoubles = null;
-        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            if (!singleBenchmarkResult.isFailure()) {
-                Score difference = singleBenchmarkResult.getAverageScore().subtract(averageScore);
-                // Calculations done on doubles to avoid common overflow when executing with an int score > 500 000
-                double[] differenceDoubles = ScoreUtils.extractLevelDoubles(difference);
-                if (differenceSquaredTotalDoubles == null) {
-                    differenceSquaredTotalDoubles = new double[differenceDoubles.length];
-                }
-                for (int i = 0; i < differenceDoubles.length; i++) {
-                    differenceSquaredTotalDoubles[i] += Math.pow(differenceDoubles[i], 2.0);
-                }
-            }
-        }
-        standardDeviationDoubles = new double[differenceSquaredTotalDoubles.length];
-        for (int i = 0; i < differenceSquaredTotalDoubles.length; i++) {
-            standardDeviationDoubles[i] = Math.pow(differenceSquaredTotalDoubles[i] / successCount, 0.5);
         }
     }
 

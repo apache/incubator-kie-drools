@@ -18,6 +18,7 @@ package org.optaplanner.benchmark.impl.result;
 
 import java.io.File;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.solver.SolverConfig;
 
 public interface SolverProblemBenchmarkResult {
@@ -32,6 +33,10 @@ public interface SolverProblemBenchmarkResult {
 
     public boolean isFailure();
 
+    public boolean isSuccess();
+
     public String getName();
+
+    public Score getScore();
 
 }
