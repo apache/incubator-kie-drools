@@ -30,9 +30,10 @@ import org.optaplanner.webexamples.vehiclerouting.rest.domain.JsonVehicleRouting
 
 import static org.junit.Assert.*;
 
+@Ignore // TODO Fix arquillian/shrinkwrap/maven/aether dependency mess https://issues.jboss.org/browse/PLANNER-445
 public class VehicleRoutingRestServiceTest extends AbstractClientArquillianTest {
 
-    @Test @Ignore // TODO Fix arquillian/shrinkwrap/maven/aether dependency mess https://issues.jboss.org/browse/PLANNER-445
+    @Test
     public void getSolutions(@ArquillianResource URL baseUrl) throws IOException {
         RegisterBuiltin.register(ResteasyProviderFactory.getInstance());
         VehicleRoutingRestService proxy
