@@ -115,14 +115,9 @@ public final class TestsUtil {
      * Clears database schema.
      */
     public static void clearSchema() {
-        try {
-            final TestPersistenceContext clearSchemaContext = new TestPersistenceContext();
-            clearSchemaContext.init(PersistenceUnit.CLEAR_SCHEMA);
-            clearSchemaContext.clean();
-        } catch (Exception ex) {
-            System.out.println("EXCEPTION!!!!!!!!!!!!!!!!!!");
-            ex.printStackTrace();
-        }
+        final TestPersistenceContext clearSchemaContext = new TestPersistenceContext();
+        clearSchemaContext.init(PersistenceUnit.CLEAR_SCHEMA);
+        clearSchemaContext.clean();
     }
 
     private TestsUtil() {

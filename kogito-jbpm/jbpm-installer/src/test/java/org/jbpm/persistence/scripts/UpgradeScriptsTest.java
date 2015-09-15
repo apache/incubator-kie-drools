@@ -44,7 +44,7 @@ public class UpgradeScriptsTest {
         dbTestingContext.init(PersistenceUnit.DB_TESTING);
         try {
             dbTestingContext.startAndPersistSomeProcess(TEST_PROCESS_ID);
-            Assert.assertTrue(dbTestingContext.getStoredProcessesCount() > 0);
+            Assert.assertTrue(dbTestingContext.getStoredProcessesCount() == 1);
         } finally {
             dbTestingContext.clean();
         }
@@ -77,7 +77,8 @@ public class UpgradeScriptsTest {
         final TestPersistenceContext dbTestingContext = new TestPersistenceContext();
         dbTestingContext.init(PersistenceUnit.DB_TESTING);
         try {
-            Assert.assertTrue(dbTestingContext.getStoredProcessesCount() > 0);
+            Assert.assertTrue(dbTestingContext.getStoredProcessesCount() == 1);
+            Assert.assertTrue(dbTestingContext.getStoredSessionsCount() == 1);
 
             final StatefulKnowledgeSession persistedSession = dbTestingContext.loadPersistedSession(
                     TEST_SESSION_ID.longValue(), TEST_PROCESS_ID);
@@ -85,6 +86,7 @@ public class UpgradeScriptsTest {
 
             // Start another process.
             persistedSession.startProcess(TEST_PROCESS_ID);
+            Assert.assertTrue(dbTestingContext.getStoredProcessesCount() == 2);
 
             // Load old process instance.
             ProcessInstance processInstance = persistedSession.getProcessInstance(TEST_PROCESS_INSTANCE_ID);

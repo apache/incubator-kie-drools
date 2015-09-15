@@ -34,7 +34,7 @@ public class DDLScriptsTest {
         dbTestingContext.init(PersistenceUnit.DB_TESTING);
         try {
             dbTestingContext.startAndPersistSomeProcess("minimalProcess");
-            Assert.assertTrue(dbTestingContext.getStoredProcessesCount() > 0);
+            Assert.assertTrue(dbTestingContext.getStoredProcessesCount() == 1);
         } finally {
             dbTestingContext.clean();
         }
