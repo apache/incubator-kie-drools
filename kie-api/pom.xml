@@ -14,7 +14,7 @@
 
   <name>KIE API</name>
   <description>The Drools and jBPM public API which is backwards compatible between releases.</description>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -89,6 +89,65 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <!-- Checks a backward compatibility of the KIE API. By default, the current build is checked against the last
+         released (non-SNAPSHOT) version. The check can't be added directly to the default builds as it requires Java 8,
+         to run. Once KIE moves to JDK 8 for builds, the check should be moved directly to the default build. -->
+    <profile>
+      <id>api-compatibility-check</id>
+      <properties>
+        <jdk.min.version>1.8.0</jdk.min.version>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.revapi</groupId>
+            <artifactId>revapi-maven-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>check</id>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <phase>verify</phase>
+                <configuration>
+                  <oldArtifacts>
+                    <artifact>${project.groupId}:${project.artifactId}:6.2.0.Final</artifact>
+                  </oldArtifacts>
+                  <!-- In case some changes are expected, the following configuration example shows how to prevent a build
+                       from failing.
+                  <analysisConfiguration>
+                      {
+                        "revapi" : {
+                          "reclassify" : [
+                            {
+                              "regex" : true,
+                              "code" : "java.method.addedToInterface",
+                              "classify" : {
+                                "SOURCE": "POTENTIALLY_BREAKING"
+                              }
+                            }
+                          ]
+                        }
+                      }
+                  </analysisConfiguration> -->
+                </configuration>
+              </execution>
+              <execution>
+                <!-- report can be found in ${build.directory}/site/revapi-report.html -->
+                <id>report</id>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+                <phase>package</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <dependencies>
     <dependency>
