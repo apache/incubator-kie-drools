@@ -43,7 +43,7 @@ public class BuildMojoTest extends AbstractMojoTestCase {
         assertNotNull(pom);
         assertTrue(pom.exists());
 
-        BuildMojo myMojo = (BuildMojo) lookupMojo("touch", pom);
+        BuildMojo myMojo = (BuildMojo) lookupMojo("build", pom);
         assertNotNull(myMojo);
         myMojo.execute();
     }
