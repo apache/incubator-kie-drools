@@ -131,19 +131,7 @@ public class PhreakEvalNode {
 
                     LeftTuple childLeftTuple = leftTuple.getFirstChild();
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());
-                    switch (childLeftTuple.getStagedType()) {
-                        // handle clash with already staged entries
-                        case LeftTuple.INSERT:
-                            stagedLeftTuples.removeInsert(childLeftTuple);
-                            break;
-                        case LeftTuple.UPDATE:
-                            stagedLeftTuples.removeUpdate(childLeftTuple);
-                            break;
-                    }
-
-                    trgLeftTuples.addDelete(childLeftTuple);
-                    childLeftTuple.unlinkFromLeftParent();
-                    childLeftTuple.unlinkFromRightParent();
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
                 }
                 // else do nothing
             }
@@ -162,17 +150,8 @@ public class PhreakEvalNode {
 
             LeftTuple childLeftTuple = leftTuple.getFirstChild();
             if (childLeftTuple != null) {
-                switch (childLeftTuple.getStagedType()) {
-                    // handle clash with already staged entries
-                    case LeftTuple.INSERT:
-                        stagedLeftTuples.removeInsert(childLeftTuple);
-                        break;
-                    case LeftTuple.UPDATE:
-                        stagedLeftTuples.removeUpdate(childLeftTuple);
-                        break;
-                }
                 childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());
-                trgLeftTuples.addDelete(childLeftTuple);
+                RuleNetworkEvaluator.deleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
             }
 
             leftTuple.clearStaged();
