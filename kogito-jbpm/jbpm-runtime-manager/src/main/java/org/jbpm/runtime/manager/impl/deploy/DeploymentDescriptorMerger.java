@@ -33,7 +33,7 @@ public class DeploymentDescriptorMerger {
 		if (descriptorHierarchy == null || descriptorHierarchy.isEmpty()) {
 			throw new IllegalArgumentException("Descriptor hierarchy list cannot be empty");
 		}
-				 
+
 		if (descriptorHierarchy.size() == 1) {
 			return descriptorHierarchy.get(0);
 		}
@@ -42,10 +42,10 @@ public class DeploymentDescriptorMerger {
 		if (mode == null) {
 			mode = MergeMode.MERGE_COLLECTIONS;
 		}
-		
-		while (stack.size() > 1) {		
+
+		while (stack.size() > 1) {
 			DeploymentDescriptor master = stack.pop();
-			DeploymentDescriptor slave = stack.pop();			
+			DeploymentDescriptor slave = stack.pop();
 			DeploymentDescriptor desc = merge(master, slave, mode);
 			// add merged one to be next iteration slave
 			stack.push(desc);
@@ -53,16 +53,16 @@ public class DeploymentDescriptorMerger {
 		// last element from the stack is the one that contains all merged descriptors
 		return stack.pop();
 	}
-	
+
 	public DeploymentDescriptor merge(DeploymentDescriptor master, DeploymentDescriptor slave, MergeMode mode) {
 		if (master == null || slave == null) {
 			throw new IllegalArgumentException("Descriptors to merge must be provided");
 		}
-		
+
 		DeploymentDescriptor merged = null;
 		DeploymentDescriptorBuilder builder = master.getBuilder();
 		builder.setBuildHandler(new MergeModeBuildHandler(mode));
-		
+
 		switch (mode) {
 			case KEEP_ALL:
 				// do nothing as master wins
@@ -87,18 +87,19 @@ public class DeploymentDescriptorMerger {
 				builder.setWorkItemHandlers(slave.getWorkItemHandlers());
 				builder.setRequiredRoles(slave.getRequiredRoles());
 				builder.setClasses(slave.getClasses());
-				
+				builder.setLimitSerializationClasses(slave.getLimitSerializationClasses());
+
 				merged = builder.get();
 				break;
-				
+
 			case MERGE_COLLECTIONS:
-				
+
 				builder.auditMode(slave.getAuditMode());
 				builder.auditPersistenceUnit(slave.getAuditPersistenceUnit());
 				builder.persistenceMode(slave.getPersistenceMode());
 				builder.persistenceUnit(slave.getPersistenceUnit());
 				builder.runtimeStrategy(slave.getRuntimeStrategy());
-			
+
 				for (ObjectModel model : slave.getEventListeners()) {
 					builder.addEventListener(model);
 				}
@@ -126,26 +127,32 @@ public class DeploymentDescriptorMerger {
 				for (String clazz : slave.getClasses()) {
 					builder.addClass(clazz);
 				}
-				
+				Boolean slaveLimit =  slave.getLimitSerializationClasses();
+				Boolean masterLimit =  master.getLimitSerializationClasses();
+				if( slaveLimit != null && masterLimit != null &&
+				        (slaveLimit || masterLimit) ) {
+				    builder.setLimitSerializationClasses(true);
+				}
+
 				merged = builder.get();
 				break;
-	
+
 			default:
 				break;
 		}
-		
-		
+
+
 		return merged;
 	}
-	
+
 	private class MergeModeBuildHandler implements BuilderHandler {
 
 		private MergeMode mode;
-		
+
 		MergeModeBuildHandler(MergeMode mode) {
 			this.mode = mode;
 		}
-		
+
 		@Override
 		public boolean accepted(Object value) {
 			boolean accepted = false;
@@ -158,36 +165,36 @@ public class DeploymentDescriptorMerger {
 						accepted = true;
 					}
 					break;
-					
-				case MERGE_COLLECTIONS:				
+
+				case MERGE_COLLECTIONS:
 					if (!isEmpty(value)) {
 						accepted = true;
 					}
 					break;
-		
+
 				default:
 					break;
 			}
 			return accepted;
 		}
-		
+
 		protected boolean isEmpty(Object value) {
 			if (value == null) {
 				return true;
 			}
-			
+
 			if (value instanceof String) {
 				return ((String) value).isEmpty();
 			}
-			
+
 			if (value instanceof Collection<?>) {
 				return ((Collection<?>) value).isEmpty();
 			}
-			
+
 			return false;
 		}
-		
+
 	}
-	
-	
+
+
 }

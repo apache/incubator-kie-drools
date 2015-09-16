@@ -52,86 +52,88 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	@XmlElement(name="persistence-unit")
 	@XmlSchemaType(name="string")
 	private String persistenceUnit;
-	
+
 	@XmlElement(name="audit-persistence-unit")
 	@XmlSchemaType(name="string")
 	private String auditPersistenceUnit;
-	
+
 	@XmlElement(name="audit-mode")
 	private AuditMode auditMode = AuditMode.JPA;
-	
+
 	@XmlElement(name="persistence-mode")
 	private PersistenceMode persistenceMode = PersistenceMode.JPA;
-	
+
 	@XmlElement(name="runtime-strategy")
 	private RuntimeStrategy runtimeStrategy = RuntimeStrategy.SINGLETON;
-	
+
 	@XmlElement(name="marshalling-strategy")
 	@XmlElementWrapper(name="marshalling-strategies")
 	private Set<ObjectModel> marshallingStrategies = new LinkedHashSet<ObjectModel>();
-	
+
 	@XmlElement(name="event-listener")
 	@XmlElementWrapper(name="event-listeners")
 	private Set<ObjectModel> eventListeners = new LinkedHashSet<ObjectModel>();
-	
+
 	@XmlElement(name="task-event-listener")
 	@XmlElementWrapper(name="task-event-listeners")
 	private Set<ObjectModel> taskEventListeners = new LinkedHashSet<ObjectModel>();
-	
+
 	@XmlElement(name="global")
 	@XmlElementWrapper(name="globals")
 	private Set<NamedObjectModel> globals = new LinkedHashSet<NamedObjectModel>();
-	
-	
+
 	@XmlElement(name="work-item-handler")
 	@XmlElementWrapper(name="work-item-handlers")
 	private Set<NamedObjectModel> workItemHandlers = new LinkedHashSet<NamedObjectModel>();
-	
+
 	@XmlElement(name="environment-entry")
 	@XmlElementWrapper(name="environment-entries")
 	private Set<NamedObjectModel> environmentEntries = new LinkedHashSet<NamedObjectModel>();
-	
+
 	@XmlElement(name="configuration")
 	@XmlElementWrapper(name="configurations")
 	private Set<NamedObjectModel> configuration = new LinkedHashSet<NamedObjectModel>();
-	
+
 	@XmlElement(name="required-role")
 	@XmlElementWrapper(name="required-roles")
 	private Set<String> requiredRoles = new LinkedHashSet<String>();
-	
+
 	@XmlElement(name="remoteable-class")
 	@XmlElementWrapper(name="remoteable-classes")
 	private List<String> classes = new ArrayList<String>();
-	
+
+	@XmlElement(name="limit-serialization-classes")
+	private Boolean limitSerializationClasses = false;
+
 	@XmlTransient
 	private Map<String, Set<String>> mappedRoles;
-	
+
 	protected void mapRequiredRoles() {
 		if (mappedRoles != null) {
 			return;
 		}
 		mappedRoles = new HashMap<String, Set<String>>();
-		
+
 		Set<String> typeAll = new LinkedHashSet<String>();
 		Set<String> typeView = new LinkedHashSet<String>();
 		Set<String> typeExecute = new LinkedHashSet<String>();
-		
+
 		mappedRoles.put(TYPE_ALL, typeAll);
 		mappedRoles.put(TYPE_VIEW, typeView);
 		mappedRoles.put(TYPE_EXECUTE, typeExecute);
-		
+
 		if (requiredRoles != null && !requiredRoles.isEmpty()) {
-			
+
 			for (String roleString : requiredRoles) {
 				String rolePrefix = null;
 				String role = roleString;
-				
+
 				if (roleString.indexOf(":") != -1) {
 					String[] roleInfo = roleString.split(":");
-					
+
 					rolePrefix = roleInfo[0];
 					role = roleInfo[1];
-					
+
 					mappedRoles.get(rolePrefix).add(role);
 					typeAll.add(role);
 				} else {
@@ -140,16 +142,16 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 					typeExecute.add(role);
 				}
 			}
-			
+
 		}
-		
+
 	}
 
-	
+
 	public DeploymentDescriptorImpl() {
 		// fox jaxb only
 	}
-	
+
 	public DeploymentDescriptorImpl(String defaultPU) {
 		this.persistenceUnit = defaultPU;
 		this.auditPersistenceUnit = defaultPU;
@@ -166,57 +168,57 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	}
 
 	@Override
-	public AuditMode getAuditMode() {		
+	public AuditMode getAuditMode() {
 		return auditMode;
 	}
 
 	@Override
-	public PersistenceMode getPersistenceMode() {		
+	public PersistenceMode getPersistenceMode() {
 		return persistenceMode;
 	}
 
 	@Override
-	public RuntimeStrategy getRuntimeStrategy() {		
+	public RuntimeStrategy getRuntimeStrategy() {
 		return runtimeStrategy;
 	}
 
 	@Override
-	public List<ObjectModel> getMarshallingStrategies() {		
+	public List<ObjectModel> getMarshallingStrategies() {
 		return new ArrayList<ObjectModel>(cleanSet(marshallingStrategies));
 	}
 
 	@Override
-	public List<ObjectModel> getEventListeners() {		
+	public List<ObjectModel> getEventListeners() {
 		return new ArrayList<ObjectModel>(cleanSet(eventListeners));
 	}
 
 	@Override
-	public List<NamedObjectModel> getGlobals() {		
+	public List<NamedObjectModel> getGlobals() {
 		return new ArrayList<NamedObjectModel>(cleanNamedSet(globals));
 	}
 
 	@Override
-	public List<NamedObjectModel> getWorkItemHandlers() {		
+	public List<NamedObjectModel> getWorkItemHandlers() {
 		return new ArrayList<NamedObjectModel>(cleanNamedSet(workItemHandlers));
 	}
 
 	@Override
-	public List<ObjectModel> getTaskEventListeners() {		
+	public List<ObjectModel> getTaskEventListeners() {
 		return new ArrayList<ObjectModel>(cleanSet(taskEventListeners));
 	}
 
 	@Override
-	public List<NamedObjectModel> getEnvironmentEntries() {		
+	public List<NamedObjectModel> getEnvironmentEntries() {
 		return new ArrayList<NamedObjectModel>(cleanNamedSet(environmentEntries));
 	}
 
 	@Override
-	public List<NamedObjectModel> getConfiguration() {		
+	public List<NamedObjectModel> getConfiguration() {
 		return new ArrayList<NamedObjectModel>(cleanNamedSet(configuration));
 	}
-	
+
 	@Override
-	public List<String> getRequiredRoles() {		
+	public List<String> getRequiredRoles() {
 		return new ArrayList<String>(requiredRoles);
 	}
 	@Override
@@ -229,7 +231,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			return new ArrayList<String>(roles);
 		}
 	}
-	
+
 	@Override
 	public List<String> getClasses() {
 		if (classes == null) {
@@ -254,7 +256,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	public void setPersistenceMode(PersistenceMode persistenceMode) {
 		this.persistenceMode = persistenceMode;
 	}
-	
+
 	public void setRuntimeStrategy(RuntimeStrategy runtimeStrategy) {
 		this.runtimeStrategy = runtimeStrategy;
 	}
@@ -300,47 +302,54 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			this.configuration = new HashSet<NamedObjectModel>(configuration);
 		}
 	}
-	
+
 	public void setRequiredRoles(List<String> requiredRoles) {
 		if (requiredRoles != null) {
 			this.requiredRoles = new HashSet<String>(requiredRoles);
 		}
 	}
-	
+
 	public void setClasses(List<String> classes) {
 		if (classes != null) {
 			this.classes = new ArrayList<String>(classes);
 		}
 	}
-	
+
+    public Boolean getLimitSerializationClasses() {
+        return limitSerializationClasses;
+    }
+
+    public void setLimitSerializationClasses( Boolean limitSerializationClasses ) {
+        this.limitSerializationClasses = limitSerializationClasses;
+    }
+
     protected Set<NamedObjectModel> cleanNamedSet(Set<NamedObjectModel> input) {
         input.remove(null);
-        
+
         return input;
 	}
-    
+
     protected Set<ObjectModel> cleanSet(Set<ObjectModel> input) {
         input.remove(null);
-        
+
         return input;
     }
-    
+
     protected void removeTransient(Set<?> input) {
         Iterator<?> it = input.iterator();
-        
+
         while (it.hasNext()) {
             Object object = (Object) it.next();
-            if (object instanceof TransientNamedObjectModel 
+            if (object instanceof TransientNamedObjectModel
                     || object instanceof TransientObjectModel) {
                 it.remove();
             }
         }
     }
-	
-	
+
     public DeploymentDescriptor clearClone() throws CloneNotSupportedException {
 	    DeploymentDescriptorImpl clone = new DeploymentDescriptorImpl();
-	    
+
 	     clone.getBuilder()
 	    .setClasses(getClasses())
 	    .setConfiguration(getConfiguration())
@@ -356,7 +365,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	    .persistenceMode(getPersistenceMode())
 	    .persistenceUnit(getPersistenceUnit())
 	    .runtimeStrategy(getRuntimeStrategy());
-	     
+
 	     removeTransient(clone.configuration);
 	     removeTransient(clone.environmentEntries);
 	     removeTransient(clone.eventListeners);
@@ -364,26 +373,25 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	     removeTransient(clone.marshallingStrategies);
 	     removeTransient(clone.taskEventListeners);
 	     removeTransient(clone.workItemHandlers);
-	     
+
 	     return clone;
     }
 
-
     @Override
 	public DeploymentDescriptorBuilder getBuilder() {
-		
+
 		return new DeploymentDescriptorBuilder() {
-			
+
 			private BuilderHandler handler = new BuilderHandler() {
-				
+
 				@Override
 				public boolean accepted(Object value) {
 					return true;
 				}
 			};
-			
+
 			private DeploymentDescriptorImpl descriptor = DeploymentDescriptorImpl.this;
-			
+
 			@Override
 			public DeploymentDescriptorBuilder runtimeStrategy(RuntimeStrategy strategy) {
 				if (handler.accepted(strategy)) {
@@ -391,7 +399,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder persistenceUnit(String pu) {
 				if (handler.accepted(pu)) {
@@ -399,7 +407,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder persistenceMode(PersistenceMode mode) {
 				if (handler.accepted(mode)) {
@@ -407,7 +415,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder auditPersistenceUnit(String pu) {
 				if (handler.accepted(pu)) {
@@ -415,7 +423,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder auditMode(AuditMode mode) {
 				if (handler.accepted(mode)) {
@@ -423,7 +431,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder addWorkItemHandler(NamedObjectModel model) {
 				if (handler.accepted(model)) {
@@ -434,7 +442,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder addTaskEventListener(ObjectModel model) {
 				if (handler.accepted(model)) {
@@ -445,7 +453,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder addMarshalingStrategy(ObjectModel model) {
 				if (handler.accepted(model)) {
@@ -456,7 +464,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder addGlobal(NamedObjectModel model) {
 				if (handler.accepted(model)) {
@@ -467,7 +475,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder addEventListener(ObjectModel model) {
 				if (handler.accepted(model)) {
@@ -478,7 +486,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder addEnvironmentEntry(NamedObjectModel model) {
 				if (handler.accepted(model)) {
@@ -489,7 +497,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder addConfiguration(NamedObjectModel model) {
 				if (handler.accepted(model)) {
@@ -508,7 +516,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder addClass(String clazz) {
 				if (handler.accepted(clazz)) {
@@ -516,7 +524,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder setConfiguration(List<NamedObjectModel> models) {
 				if (handler.accepted(models)) {
@@ -580,7 +588,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
 			@Override
 			public DeploymentDescriptorBuilder setClasses(List<String> classes) {
 				if (handler.accepted(classes)) {
@@ -588,15 +596,22 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 				}
 				return this;
 			}
-			
+
+			@Override
+            public DeploymentDescriptorBuilder setLimitSerializationClasses(Boolean limit) {
+				if (handler.accepted(limit)) {
+				    descriptor.setLimitSerializationClasses(limit);
+				}
+                return this;
+            }
+
 			@Override
 			public void setBuildHandler(BuilderHandler handler) {
 				this.handler = handler;
 			}
-			
+
 			@Override
 			public DeploymentDescriptor get() {
-
 				return descriptor;
 			}
 

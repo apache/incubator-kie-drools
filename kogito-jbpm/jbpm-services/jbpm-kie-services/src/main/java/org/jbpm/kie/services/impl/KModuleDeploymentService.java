@@ -20,6 +20,7 @@ import static org.kie.scanner.MavenRepository.getMavenRepository;
 
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Collection;
@@ -31,6 +32,7 @@ import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
@@ -119,6 +121,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             KModuleDeploymentUnit kmoduleUnit = (KModuleDeploymentUnit) unit;
             DeployedUnitImpl deployedUnit = new DeployedUnitImpl(unit);
 
+            // Create the release id
             KieContainer kieContainer = kmoduleUnit.getKieContainer();
             ReleaseId releaseId = null;
             if (kieContainer == null) {
@@ -135,6 +138,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             }
             releaseId = kieContainer.getReleaseId();
 
+            // retrieve the kbase name
             String kbaseName = kmoduleUnit.getKbaseName();
             if (StringUtils.isEmpty(kbaseName)) {
                 KieBaseModel defaultKBaseModel = ((KieContainerImpl)kieContainer).getKieProject().getDefaultKieBaseModel();
@@ -155,11 +159,12 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                 processDescriptors.put(process.getId(), (ProcessDescriptor) process.getMetaData().get("ProcessDescriptor"));
             }
 
-            //Map<String, String> formsData = new HashMap<String, String>();
+            // TODO: add forms data?
             Collection<String> files = module.getFileNames();
 
             processResources(module, files, kieContainer, kmoduleUnit, deployedUnit, releaseId, processDescriptors);
 
+            // process the files in the deployment
             if (module.getKieDependencies() != null) {
     	        Collection<InternalKieModule> dependencies = module.getKieDependencies().values();
     	        for (InternalKieModule depModule : dependencies) {
@@ -172,7 +177,9 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             }
             Collection<ReleaseId> dependencies = module.getJarDependencies(new DependencyFilter.ExcludeScopeFilter("test"));
 
+            // process deployment dependencies
             if (dependencies != null && !dependencies.isEmpty()) {
+                // Classes 2: classes added from project and dependencies added
             	processClassloader(kieContainer, deployedUnit);
             }
 
@@ -217,6 +224,18 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		ks.getRepository().removeKieModule(releaseId);
 	}
 
+    /**
+     * This creates and fills a {@link RuntimeEnvironmentBuilder} instance, which is later used when creating services.
+     * </p>
+     * A lot of the logic here is used to process the information in the {@link DeploymentDescriptor} instance, which is
+     * part of the {@link DeploymentUnit}.
+     *
+     * @param deploymentUnit The {@link KModuleDeploymentUnit}, which is filled by the method
+     * @param deployedUnit The {@link DeployedUnit}, which is also filled by the method
+     * @param kieContainer The {@link KieContainer}, which contains information needed to fill the above two arguments
+     * @param mode The {@link MergeMode} used to resolve conflicts in the {@link DeploymentDescriptor}.
+     * @return A {@link RuntimeEnvironmentBuilder} instance ready for use
+     */
     protected RuntimeEnvironmentBuilder boostrapRuntimeEnvironmentBuilder(KModuleDeploymentUnit deploymentUnit,
     		DeployedUnit deployedUnit, KieContainer kieContainer, MergeMode mode) {
     	DeploymentDescriptor descriptor = deploymentUnit.getDeploymentDescriptor();
@@ -288,18 +307,20 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 			}
 		}
 
-		// process additional classes
+		// Classes 3: classes added from descriptor
 		List<String> remoteableClasses = descriptor.getClasses();
 		if (remoteableClasses != null && !remoteableClasses.isEmpty()) {
 			for (String className : remoteableClasses) {
+			    Class descriptorClass = null;
 				try {
-                    ((DeployedUnitImpl)deployedUnit).addClass(kieContainer.getClassLoader().loadClass(className));
+				    descriptorClass = kieContainer.getClassLoader().loadClass(className);
                     logger.debug( "Loaded {} into the classpath from deployment descriptor {}", className, kieContainer.getReleaseId().toExternalForm());
                 } catch (ClassNotFoundException cnfe) {
                     throw new IllegalArgumentException("Class " + className + " not found in the project");
                 } catch (NoClassDefFoundError e) {
                 	throw new IllegalArgumentException("Class " + className + " not found in the project");
 				}
+				addClassToDeployedUnit(descriptorClass, (DeployedUnitImpl) deployedUnit);
 			}
 		}
 
@@ -317,6 +338,16 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		return resolver.getInstance(model, kieContainer.getClassLoader(), contaxtParams);
     }
 
+    /**
+     * Goes through all files in a deployment, and processes them so that they are then ready
+     * for use after deployment.
+     *
+     * @param module The {@link InternalKieModule}, necessary to get form content
+     * @param files The {@link List} of file (names) to process.
+     * @param kieContainer The {@link KieContainer}, necesary in order to load classes
+     * @param deploymentUnit The {@link DeploymentUnit}, necessary to get the deployment id
+     * @param deployedUnit The {@link DeployedUnit}, which contains the results of actions here
+     */
 	protected void processResources(InternalKieModule module, Collection<String> files,
     		KieContainer kieContainer, DeploymentUnit unit, DeployedUnitImpl deployedUnit, ReleaseId releaseId, Map<String, ProcessDescriptor> processes) {
         for (String fileName : files) {
@@ -349,20 +380,47 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
                 	throw new IllegalArgumentException("Unsupported encoding while processing form " + fileName);
                 }
             } else if( fileName.matches(".+class$")) {
+                // Classes 1: classes from deployment added
                 String className = fileName.replaceAll("/", ".");
                 className = className.substring(0, fileName.length() - ".class".length());
+                Class deploymentClass = null;
                 try {
-                    deployedUnit.addClass(kieContainer.getClassLoader().loadClass(className));
-                    logger.debug( "Loaded {} into the classpath from deployment {}", className, releaseId.toExternalForm());
+                    deploymentClass = kieContainer.getClassLoader().loadClass(className);
                 } catch (ClassNotFoundException cnfe) {
                     throw new IllegalArgumentException("Class " + className + " not found in the project");
                 } catch (NoClassDefFoundError e) {
                 	throw new IllegalArgumentException("Class " + className + " not found in the project");
 				}
+                addClassToDeployedUnit(deploymentClass, deployedUnit);
             }
         }
     }
 
+	private void addClassToDeployedUnit(Class deploymentClass, DeployedUnitImpl deployedUnit) {
+        if( deploymentClass != null ) {
+            DeploymentUnit unit = deployedUnit.getDeploymentUnit();
+            Boolean limitClasses = false;
+            if( unit != null ) {
+                DeploymentDescriptor depDesc = ((KModuleDeploymentUnit) unit).getDeploymentDescriptor();
+                if( depDesc != null ) {
+                   limitClasses = depDesc.getLimitSerializationClasses();
+                }
+            }
+            if( limitClasses != null && limitClasses ) {
+                filterClassesAddedToDeployedUnit(deployedUnit, deploymentClass);
+            } else {
+                logger.debug( "Loaded {} onto the classpath from deployment {}", deploymentClass.getName(), unit.getIdentifier());
+                deployedUnit.addClass(deploymentClass);
+            }
+        }
+	}
+
+	/**
+	 * This processes the deployment dependencies, which are made available by the {@link KieContainer} {@link ClassLoader}.
+	 *
+	 * @param kieContainer The {@link KieContainer}, used to get the {@link ClassLoader}
+	 * @param deployedUnit The {@link DeployedUnitImpl}, used to store the classes loaded
+	 */
 	protected void processClassloader(KieContainer kieContainer, DeployedUnitImpl deployedUnit) {
 		if (kieContainer.getClassLoader() instanceof ProjectClassLoader) {
 			ClassLoader parentCl = kieContainer.getClassLoader().getParent();
@@ -377,23 +435,74 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 
 				Reflections reflections = new Reflections(builder);
 
-				Set<Class<?>> jaxbClasses = reflections.getTypesAnnotatedWith(XmlRootElement.class);
-				Set<Class<?>> remoteClasses = reflections.getTypesAnnotatedWith(Remotable.class);
-				Set<Class<?>> allClasses = new HashSet<Class<?>>();
-				if (jaxbClasses != null) {
-					allClasses.addAll(jaxbClasses);
-				}
-				if (remoteClasses != null) {
-					allClasses.addAll(remoteClasses);
-				}
-				for (Class<?> clazz : allClasses) {
+				Set<Class<?>> xmlRootElemClasses = reflections.getTypesAnnotatedWith(XmlRootElement.class);
+				Set<Class<?>> xmlTypeClasses = reflections.getTypesAnnotatedWith(XmlType.class);
+				Set<Class<?>> remoteableClasses = reflections.getTypesAnnotatedWith(Remotable.class);
 
-				    deployedUnit.addClass(clazz);
-                    logger.debug( "Loaded {} into the classpath from deployment {}", clazz.getName(), kieContainer.getReleaseId().toExternalForm());
+				Set<Class<?>> allClasses = new HashSet<Class<?>>();
+				for( Set<Class<?>> classesToAdd : new Set[] { xmlRootElemClasses, xmlTypeClasses, remoteableClasses } ) {
+				   if( classesToAdd != null ) {
+				       allClasses.addAll(classesToAdd);
+				   }
+				}
+
+				for (Class<?> clazz : allClasses) {
+				    filterClassesAddedToDeployedUnit(deployedUnit, clazz);
+				    break;
 				}
 			}
-		}
+	    }
 	}
+
+	/**
+     * This method is used to filter classes that are added to the {@link DeployedUnit}.
+     * </p>
+     * When this method is used, only classes that are meant to be used with serialization are
+     * added to the deployment. This feature can be used to, for example, make sure that non-serialization-compatible
+     * classes (such as interfaces), do not complicate the use of a deployment with the remote services (REST/JMS/WS).
+     * </p>
+     * Note to other developers, it's possible that classpath problems may arise, because
+     * of either classloader or lazy class resolution problems: I simply don't know enough about the
+     * inner workings of the JAXB implementations (plural!) to figure this out.
+     *
+     * @param deployedUnit The {@link DeployedUnit} to which the classes are added. The {@link DeployedUnit} to which the classes are added. The {@link DeployedUnit} to which the classes are added.
+     * @param classToAdd The class to add to the {@link DeployedUnit}.
+     */
+    private static void filterClassesAddedToDeployedUnit( DeployedUnit deployedUnit, Class classToAdd) {
+
+        if( classToAdd.isInterface()
+                || classToAdd.isAnnotation()
+                || classToAdd.isLocalClass()
+                || classToAdd.isMemberClass() ) {
+           return;
+        }
+
+        boolean jaxbClass = false;
+        boolean remoteableClass = false;
+        // @XmlRootElement and @XmlType may be used with inheritance
+        for( Annotation anno : classToAdd.getAnnotations() ) {
+           if( XmlRootElement.class.equals(anno.annotationType()) ) {
+              jaxbClass = true;
+              break;
+           }
+           if( XmlType.class.equals(anno.annotationType()) ) {
+              jaxbClass = true;
+              break;
+           }
+        }
+        // @Remotable is not inheritable, and may not be used as such
+        for( Annotation anno : classToAdd.getDeclaredAnnotations() ) {
+           if( Remotable.class.equals(anno.annotationType()) ) {
+               remoteableClass = true;
+               break;
+           }
+        }
+
+        if( jaxbClass || remoteableClass ) {
+            DeployedUnitImpl deployedUnitImpl = (DeployedUnitImpl) deployedUnit;
+            deployedUnitImpl.addClass(classToAdd);
+        }
+    }
 
 	public void setBpmn2Service(DefinitionService bpmn2Service) {
 	    this.bpmn2Service = bpmn2Service;
