@@ -196,18 +196,8 @@ public class PhreakTimerNode {
                 // if it's != null, then it's already been postponed, and the existing child propagated
                 LeftTuple childLeftTuple = leftTuple.getFirstChild(); // only has one child
                 if ( childLeftTuple != null ) {
-                    switch ( childLeftTuple.getStagedType() ) {
-                        // handle clash with already staged entries
-                        case LeftTuple.INSERT :
-                            stagedLeftTuples.removeInsert( childLeftTuple );
-                            break;
-                        case LeftTuple.UPDATE :
-                            stagedLeftTuples.removeUpdate( childLeftTuple );
-                            break;
-                    }
-
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext() );
-                    trgLeftTuples.addDelete( childLeftTuple );
+                    RuleNetworkEvaluator.deleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
                     if ( log.isTraceEnabled() ) {
                         log.trace( "Timer Delete {}", leftTuple );
                     }

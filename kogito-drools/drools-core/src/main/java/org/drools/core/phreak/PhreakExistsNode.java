@@ -261,7 +261,7 @@ public class PhreakExistsNode {
 
                 if (leftTuple.getFirstChild() != null) {
                     // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
-                    RuleNetworkEvaluator.deleteChildLeftTuple( leftTuple.getFirstChild(), trgLeftTuples, stagedLeftTuples );
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( leftTuple.getFirstChild(), trgLeftTuples, stagedLeftTuples );
                 }
                 // with no previous children. do nothing.
             } else if (leftTuple.getFirstChild() == null) {
@@ -401,7 +401,7 @@ public class PhreakExistsNode {
                         LeftTuple childLeftTuple = leftTuple.getFirstChild();
                         if ( childLeftTuple != null ) {
                             childLeftTuple.setPropagationContext( rightTuple.getPropagationContext() );
-                            RuleNetworkEvaluator.deleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
                         }
                     }
 
@@ -431,7 +431,7 @@ public class PhreakExistsNode {
             } else {
                 if (leftTuple.getFirstChild() != null) {
                     // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
-                    RuleNetworkEvaluator.deleteChildLeftTuple( leftTuple.getFirstChild(), trgLeftTuples, stagedLeftTuples);
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( leftTuple.getFirstChild(), trgLeftTuples, stagedLeftTuples );
                 }
                 blocker.removeBlocked(leftTuple);
             }
@@ -504,7 +504,7 @@ public class PhreakExistsNode {
                         LeftTuple childLeftTuple = leftTuple.getFirstChild();
                         if (childLeftTuple != null) {
                             childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
-                            RuleNetworkEvaluator.deleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
                         }
                     }
 

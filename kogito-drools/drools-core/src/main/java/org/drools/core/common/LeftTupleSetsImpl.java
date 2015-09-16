@@ -22,13 +22,15 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
     private LeftTuple insertFirst;
     private LeftTuple deleteFirst;
     private LeftTuple updateFirst;
+    private LeftTuple normalizedDeleteFirst;
 
     public LeftTupleSetsImpl() { }
 
-    LeftTupleSetsImpl(LeftTuple insertFirst, LeftTuple updateFirst, LeftTuple deleteFirst) {
+    LeftTupleSetsImpl(LeftTuple insertFirst, LeftTuple updateFirst, LeftTuple deleteFirst, LeftTuple normalizedDeleteFirst) {
         this.insertFirst = insertFirst;
         this.updateFirst = updateFirst;
         this.deleteFirst = deleteFirst;
+        this.normalizedDeleteFirst = normalizedDeleteFirst;
     }
 
     public LeftTuple getInsertFirst() {
@@ -43,10 +45,15 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
         return this.updateFirst;
     }
 
+    public LeftTuple getNormalizedDeleteFirst() {
+        return normalizedDeleteFirst;
+    }
+
     public void resetAll() {
         insertFirst = null;
         deleteFirst = null;
         updateFirst = null;
+        normalizedDeleteFirst = null;
     }
 
     public boolean addInsert(LeftTuple leftTuple) {
@@ -88,6 +95,17 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
         return false;
     }
 
+    public boolean addNormalizedDelete(LeftTuple leftTuple) {
+        leftTuple.setStagedType( LeftTuple.NORMALIZED_DELETE );
+        if ( normalizedDeleteFirst == null ) {
+            normalizedDeleteFirst = leftTuple;
+            return true;
+        }
+        leftTuple.setStagedNext( normalizedDeleteFirst );
+        normalizedDeleteFirst.setStagePrevious( leftTuple );
+        normalizedDeleteFirst = leftTuple;
+        return false;
+    }
 
     public boolean addUpdate(LeftTuple leftTuple) {
         if (leftTuple.getStagedType() == LeftTuple.INSERT) {
@@ -231,7 +249,7 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
 
     @Override
     public LeftTupleSets takeAll() {
-        LeftTupleSets clone = new LeftTupleSetsImpl(insertFirst, updateFirst, deleteFirst);
+        LeftTupleSets clone = new LeftTupleSetsImpl(insertFirst, updateFirst, deleteFirst, normalizedDeleteFirst);
         resetAll();
         return clone;
     }
@@ -241,30 +259,24 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
      * reset does not touch any contained tuples
      */
     public void clear() {
-        for ( LeftTuple leftTuple = getInsertFirst(); leftTuple != null; ) {
-            LeftTuple next =  leftTuple.getStagedNext();
-            leftTuple.clearStaged();
-            leftTuple = next;
-        }
-
-        for ( LeftTuple leftTuple = getDeleteFirst(); leftTuple != null; ) {
-            LeftTuple next =  leftTuple.getStagedNext();
-            leftTuple.clearStaged();
-            leftTuple = next;
-        }
-
-        for ( LeftTuple leftTuple = getUpdateFirst(); leftTuple != null; ) {
-            LeftTuple next =  leftTuple.getStagedNext();
-            leftTuple.clearStaged();
-            leftTuple = next;
-        }
-
+        clear( getInsertFirst() );
+        clear( getDeleteFirst() );
+        clear( getUpdateFirst() );
+        clear( getNormalizedDeleteFirst() );
         resetAll();
+    }
+
+    private void clear( LeftTuple leftTuple ) {
+        while ( leftTuple != null ) {
+            LeftTuple next =  leftTuple.getStagedNext();
+            leftTuple.clearStaged();
+            leftTuple = next;
+        }
     }
 
     @Override
     public boolean isEmpty() {
-        return insertFirst == null && deleteFirst == null && updateFirst == null;
+        return insertFirst == null && deleteFirst == null && updateFirst == null && normalizedDeleteFirst == null;
     }
 
     @Override
@@ -276,20 +288,23 @@ public class LeftTupleSetsImpl implements LeftTupleSets {
         StringBuilder sbuilder = new StringBuilder();
 
         sbuilder.append( "Inserted:\n" );
-        for ( LeftTuple leftTuple = getInsertFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext() ) {
-            sbuilder.append( " " ).append( leftTuple ).append( "\n" );
-        }
+        appendSet( sbuilder, getInsertFirst() );
 
         sbuilder.append( "Deleted:\n" );
-        for ( LeftTuple leftTuple = getDeleteFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext() ) {
-            sbuilder.append( " " ).append( leftTuple ).append( "\n" );
-        }
+        appendSet( sbuilder, getDeleteFirst() );
 
         sbuilder.append( "Updated:\n" );
-        for ( LeftTuple leftTuple = getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext() ) {
-            sbuilder.append( " " ).append( leftTuple ).append( "\n" );
-        }
+        appendSet( sbuilder, getUpdateFirst() );
+
+        sbuilder.append( "Normalized Deleted:\n" );
+        appendSet( sbuilder, getNormalizedDeleteFirst() );
 
         return sbuilder.toString();
+    }
+
+    private void appendSet( StringBuilder sbuilder, LeftTuple leftTuple ) {
+        for ( ; leftTuple != null; leftTuple = leftTuple.getStagedNext() ) {
+            sbuilder.append( " " ).append( leftTuple ).append( "\n" );
+        }
     }
 }

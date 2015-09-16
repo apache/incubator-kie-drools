@@ -330,9 +330,9 @@ public class RuleNetworkEvaluator {
             LeftTupleSinkNode sink = ((LeftTupleSource) node).getSinkPropagator().getFirstLeftTupleSink();
 
             trgTuples = evalNode( liaNode, pmem, node, bit, nodeMem, smems, smemIndex, wm, stack, processRian, executor, srcTuples, smem, stagedLeftTuples, sink );
-            if ( trgTuples == null )
+            if ( trgTuples == null ) {
                 break; // Queries exists and has been placed StackEntry, and there are no current trgTuples to process
-
+            }
 
             if (node != smem.getTipNode()) {
                 // get next node and node memory in the segment
@@ -529,12 +529,11 @@ public class RuleNetworkEvaluator {
             // if the subnetwork is nested in this segment, it will create srcTuples containing
             // peer LeftTuples, suitable for the node in the main path.
             doRiaNode( wm, liaNode, pmem, srcTuples,
-                      betaNode, sink, smems, smemIndex, nodeMem, bm, stack, executor);
+                       betaNode, sink, smems, smemIndex, nodeMem, bm, stack, executor );
             return true; // return here, doRiaNode queues the evaluation on the stack, which is necessary to handled nested query nodes
         }
 
         switchOnDoBetaNode(node, trgTuples, wm, srcTuples, stagedLeftTuples, sink, bm, am);
-
 
         return false;
     }
@@ -603,10 +602,10 @@ public class RuleNetworkEvaluator {
 
         LeftTupleSets subLts = subSmem.getStagedLeftTuples().takeAll();
         // node is first in the segment, so bit is 1
-        innerEval(liaNode, pathMem, subSmem.getRootNode(), 1,
-                  subSmem.getNodeMemories().getFirst(),
-                  subnetworkSmems, subSmem.getPos(),
-                  subLts, wm, stack, true, executor);
+        innerEval( liaNode, pathMem, subSmem.getRootNode(), 1,
+                   subSmem.getNodeMemories().getFirst(),
+                   subnetworkSmems, subSmem.getPos(),
+                   subLts, wm, stack, true, executor );
     }
 
     private void doRiaNode2(InternalWorkingMemory wm,
@@ -741,17 +740,21 @@ public class RuleNetworkEvaluator {
     }
 
 
-    public static void deleteChildLeftTuple(LeftTuple childLeftTuple,
-                                            LeftTupleSets trgLeftTuples,
-                                            LeftTupleSets stagedLeftTuples) {
+    public static void unlinkAndDeleteChildLeftTuple( LeftTuple childLeftTuple,
+                                                      LeftTupleSets trgLeftTuples,
+                                                      LeftTupleSets stagedLeftTuples ) {
         childLeftTuple.unlinkFromRightParent();
         childLeftTuple.unlinkFromLeftParent();
+        deleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+    }
 
+    public static void deleteChildLeftTuple( LeftTuple childLeftTuple, LeftTupleSets trgLeftTuples, LeftTupleSets stagedLeftTuples ) {
         switch (childLeftTuple.getStagedType()) {
             // handle clash with already staged entries
             case LeftTuple.INSERT:
                 stagedLeftTuples.removeInsert(childLeftTuple);
-                return; // normalized deletes don't need to be propagated
+                trgLeftTuples.addNormalizedDelete(childLeftTuple);
+                return;
             case LeftTuple.UPDATE:
                 stagedLeftTuples.removeUpdate(childLeftTuple);
                 break;

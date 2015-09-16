@@ -192,13 +192,9 @@ public class SegmentPropagationTest {
                                 .delete( )
                                 .update( )
               .postStaged( smem1 ).insert( t(a1, b0),
-                                           t(a1, b2),
-                                           t(a0, b1),
-                                           t(a0, b2) )
+                                           t(a0, b1) )
               .postStaged( smem2 ).insert( t(a1, b0),
-                                           t(a1, b2),
-                                           t(a0, b1),
-                                           t(a0, b2) )
+                                           t(a0, b1) )
               .run();
                  
         // @formatter:on

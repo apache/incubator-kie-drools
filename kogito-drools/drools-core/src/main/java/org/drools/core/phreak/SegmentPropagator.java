@@ -42,20 +42,10 @@ public class SegmentPropagator {
         SegmentMemory firstSmem = sourceSegment.getFirst();
 
         // Process Deletes
-        for ( LeftTuple leftTuple = leftTuples.getDeleteFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
-            SegmentMemory smem = firstSmem.getNext();
-            if ( smem != null ) {
-                for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
-                    peer.setPropagationContext( leftTuple.getPropagationContext() );
-                    LeftTupleSets stagedLeftTuples = smem.getStagedLeftTuples();
-                    // if the peer is already staged as insert or update the LeftTupleSets will reconcile it internally
-                    stagedLeftTuples.addDelete( peer );
-                    smem = smem.getNext();
-                }
-            }
-        }
+        processPeerDeletes( leftTuples, leftTuples.getDeleteFirst(), firstSmem );
+        processPeerDeletes( leftTuples, leftTuples.getNormalizedDeleteFirst(), firstSmem );
 
-        // Process Updates        
+        // Process Updates
         for ( LeftTuple leftTuple = leftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
             SegmentMemory smem = firstSmem.getNext();
             if ( smem != null ) {
@@ -92,5 +82,21 @@ public class SegmentPropagator {
         }
 
         firstSmem.getStagedLeftTuples().addAll( leftTuples );
+        leftTuples.resetAll();
+    }
+
+    private static void processPeerDeletes( LeftTupleSets leftTuples, LeftTuple leftTuple, SegmentMemory firstSmem ) {
+        for (; leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
+            SegmentMemory smem = firstSmem.getNext();
+            if ( smem != null ) {
+                for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
+                    peer.setPropagationContext( leftTuple.getPropagationContext() );
+                    LeftTupleSets stagedLeftTuples = smem.getStagedLeftTuples();
+                    // if the peer is already staged as insert or update the LeftTupleSets will reconcile it internally
+                    stagedLeftTuples.addDelete( peer );
+                    smem = smem.getNext();
+                }
+            }
+        }
     }
 }

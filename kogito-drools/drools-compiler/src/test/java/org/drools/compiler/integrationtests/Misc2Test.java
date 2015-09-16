@@ -8054,6 +8054,7 @@ public class Misc2Test extends CommonTestMethodBase {
                 "rule R2 when\n" +
                 "    $a : Integer(this == 1)\n" +
                 "    $b : String()\n" +
+                "    $c : Integer(this == 3)\n" +
                 "then \n" +
                 "end\n";
 
@@ -8062,11 +8063,13 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .newKieSession();
 
         FactHandle fh1 = ksession.insert(1);
-        FactHandle fh2 = ksession.insert("test");
+        FactHandle fh2 = ksession.insert(3);
+        FactHandle fh3 = ksession.insert("test");
         ksession.fireAllRules();
 
         ksession.delete(fh1);
         ksession.delete(fh2);
+        ksession.delete(fh3);
         ksession.fireAllRules();
 
         NodeMemories nodeMemories = ((InternalWorkingMemory) ksession).getNodeMemories();
@@ -8076,6 +8079,10 @@ public class Misc2Test extends CommonTestMethodBase {
                 SegmentMemory segmentMemory = memory.getSegmentMemory();
                 System.out.println( memory );
                 LeftTuple deleteFirst = memory.getSegmentMemory().getStagedLeftTuples().getDeleteFirst();
+                if ( segmentMemory.getRootNode() instanceof JoinNode ) {
+                    BetaMemory bm = (BetaMemory) segmentMemory.getNodeMemories().getFirst();
+                    assertEquals( 0, bm.getLeftTupleMemory().size() );
+                }
                 System.out.println( deleteFirst );
                 assertNull( deleteFirst );
             }
