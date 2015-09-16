@@ -180,7 +180,7 @@ public class PhreakQueryNode {
                 LeftTuple childLeftTuple = leftTuple.getFirstChild();
                 while (childLeftTuple != null) {
                     LeftTuple nextChild = childLeftTuple.getLeftParentNext();
-                    RuleNetworkEvaluator.deleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
                     childLeftTuple = nextChild;
                 }
             }

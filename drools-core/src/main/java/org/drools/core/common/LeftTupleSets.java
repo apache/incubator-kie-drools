@@ -43,4 +43,7 @@ public interface LeftTupleSets {
     boolean isEmpty();
 
     String toStringSizes();
+
+    LeftTuple getNormalizedDeleteFirst();
+    boolean addNormalizedDelete(LeftTuple leftTuple);
 }
