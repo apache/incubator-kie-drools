@@ -114,7 +114,7 @@
         not work on Linux and Mac.</para>
       </note>
 
-      <para>To lower verbosity, the common parts of multiple <literal>&lt;solverBenchmark&gt;</literal> elements are
+      <para xml:id="inheritedSolverBenchmark">To lower verbosity, the common parts of multiple <literal>&lt;solverBenchmark&gt;</literal> elements are
       extracted to the <literal>&lt;inheritedSolverBenchmark&gt;</literal> element. Every property can still be
       overwritten per <literal>&lt;solverBenchmark&gt;</literal> element. Note that inherited solver phases such as
       <literal>&lt;constructionHeuristic&gt;</literal> or <literal>&lt;localSearch&gt;</literal> are not overwritten but
@@ -972,6 +972,49 @@
           solving.</para>
         </note>
       </section>
+    </section>
+
+    <section xml:id="statisticalBenchmarking">
+      <title>Statistical Benchmarking</title>
+
+      <para>If you want to minimize the influence of your environment on the benchmark results, you
+        can configure the number of times each single benchmark run is repeated. The results of
+        those runs will get statistically aggregated and are even visible in the report
+        individually.</para>
+
+      <figure>
+        <title>Sub Single Benchmark Summary Statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/subSingleBenchmarkSummaryStatistic.png"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>To configure this in your benchmarks, add a <literal>&lt;subSingleCount&gt;</literal>
+        element to a <literal>&lt;solverBenchmark&gt;</literal> element:</para>
+
+      <programlisting language="xml">&lt;plannerBenchmark&gt;
+  ...
+  &lt;solverBenchmark&gt;
+    &lt;name&gt;...&lt;/name&gt;
+    &lt;solver&gt;
+      ...
+    &lt;/solver&gt;
+    &lt;subSingleCount&gt;10&lt;subSingleCount&gt;
+  &lt;/solverBenchmark&gt;
+  ...
+&lt;/plannerBenchmark&gt;</programlisting>
+
+      <para>You can also configure <literal>subSingleCount</literal> in the
+        <link linkend="inheritedSolverBenchmark"><literal>&lt;inheritedSolverBenchmark&gt;</literal></link> element
+        and possibly overwrite it in the individual <literal>&lt;solverBenchmark&gt;</literal> elements.</para>
+
+      <note>
+        <para><literal>subSingleCount</literal> is by default set to 1. Any positive integer is a
+          valid value.</para>
+      </note>
     </section>
 
     <section xml:id="templateBasedBenchmarking">
