@@ -182,7 +182,7 @@ public class PhreakNotNode {
 
                         if ( childLeftTuple != null ) { // NotNode only has one child
                             childLeftTuple.setPropagationContext( rightTuple.getPropagationContext() );
-                            RuleNetworkEvaluator.deleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
                         }
                     }
 
@@ -278,7 +278,7 @@ public class PhreakNotNode {
                         // no need to remove, as we removed at the start
                         // to be matched against, as it's now blocked
                         childLeftTuple.setPropagationContext(leftTuple.getBlocker().getPropagationContext()); // we have the righttuple, so use it for the pctx
-                        RuleNetworkEvaluator.deleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples);
+                        RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
                     } // else: it's blocked now and no children so blocked before, thus do nothing
                 } else if (childLeftTuple == null) {
                     // not blocked, with no children, must have been previously blocked so assert
@@ -351,7 +351,7 @@ public class PhreakNotNode {
                         LeftTuple childLeftTuple = leftTuple.getFirstChild();
                         if ( childLeftTuple != null ) {
                             childLeftTuple.setPropagationContext( rightTuple.getPropagationContext() );
-                            RuleNetworkEvaluator.deleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
+                            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
                         }
                     }
 
@@ -448,7 +448,7 @@ public class PhreakNotNode {
 
                 if (childLeftTuple != null) { // NotNode only has one child
                     childLeftTuple.setPropagationContext(leftTuple.getPropagationContext());
-                    RuleNetworkEvaluator.deleteChildLeftTuple(childLeftTuple, trgLeftTuples, stagedLeftTuples); // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
+                    RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples ); // no need to update pctx, as no right available, and pctx will exist on a parent LeftTuple anyway
                 }
             } else {
                 blocker.removeBlocked(leftTuple);

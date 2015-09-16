@@ -241,16 +241,7 @@ public class PhreakBranchNode {
             }
 
             if (mainLeftTuple != null) {
-                switch (mainLeftTuple.getStagedType()) {
-                    // handle clash with already staged entries
-                    case LeftTuple.INSERT:
-                        stagedLeftTuples.removeInsert(mainLeftTuple);
-                        break;
-                    case LeftTuple.UPDATE:
-                        stagedLeftTuples.removeUpdate(mainLeftTuple);
-                        break;
-                }
-                trgLeftTuples.addDelete(mainLeftTuple);
+                RuleNetworkEvaluator.deleteChildLeftTuple(mainLeftTuple, trgLeftTuples, stagedLeftTuples);
             }
 
             leftTuple.clearStaged();
