@@ -17,7 +17,11 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.InternalWorkingMemory;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class SynchronizedBypassPropagationList extends SynchronizedPropagationList {
+
+    private AtomicBoolean executing = new AtomicBoolean( false );
 
     public SynchronizedBypassPropagationList(InternalWorkingMemory workingMemory) {
         super(workingMemory);
@@ -28,7 +32,16 @@ public class SynchronizedBypassPropagationList extends SynchronizedPropagationLi
         workingMemory.getAgenda().executeTask( new ExecutableEntry() {
            @Override
            public void execute() {
-               propagationEntry.execute(workingMemory);
+               if (executing.compareAndSet( false, true )) {
+                   try {
+                       propagationEntry.execute( workingMemory );
+                   } finally {
+                       executing.set( false );
+                       flush();
+                   }
+               } else {
+                   internalAddEntry( propagationEntry );
+               }
            }
 
            @Override
@@ -37,6 +50,13 @@ public class SynchronizedBypassPropagationList extends SynchronizedPropagationLi
            }
         });
         notifyHalt();
+    }
+
+    @Override
+    public void flush() {
+        if (!executing.get()) {
+            super.flush();
+        }
     }
 
     @Override
