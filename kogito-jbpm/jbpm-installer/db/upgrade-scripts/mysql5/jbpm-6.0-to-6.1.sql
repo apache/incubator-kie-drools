@@ -1,6 +1,6 @@
 -- update context mapping info table with owner id (deployment id) for per process instance strategies
 alter table ContextMappingInfo add column OWNER_ID varchar(255);
-update ContextMappingInfo set OWNER_ID = (select externalId from ProcessInstanceLog where processInstanceId = cast(CONTEXT_ID as bigint));
+update ContextMappingInfo set OWNER_ID = (select externalId from ProcessInstanceLog where processInstanceId = cast(CONTEXT_ID as DECIMAL(19,0)));
 
 create table AuditTaskImpl (
         id bigint not null auto_increment,
