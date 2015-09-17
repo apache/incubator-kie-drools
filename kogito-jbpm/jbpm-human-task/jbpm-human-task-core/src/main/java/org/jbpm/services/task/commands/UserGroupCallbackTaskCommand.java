@@ -482,6 +482,8 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
      protected List<String> filterGroups(List<String> groups) {
          if (groups != null) {
              groups.removeAll(restrictedGroups);
+         } else{
+             groups = new ArrayList<String>();
          }
          
          return groups;
