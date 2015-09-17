@@ -15,18 +15,20 @@
 
 package org.drools.compiler.builder;
 
-
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Before;
@@ -64,14 +66,14 @@ public class KieBuilderTest extends CommonTestMethodBase {
     public void testInMemory() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
 
-        ReleaseId releaseId = KieServices.Factory.get().newReleaseId(namespace, "memory", "1.0-SNAPSHOT");
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( namespace, "memory", "1.0-SNAPSHOT" );
         
-        KieModuleModel kProj = createKieProject(namespace);
+        KieModuleModel kProj = createKieProject( namespace );
         
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
-        generateAll(kfs, namespace, releaseId, kProj);
+        generateAll( kfs, namespace, releaseId, kProj );
         
-        createAndTestKieContainer(releaseId, createKieBuilder(kfs), namespace );
+        createAndTestKieContainer( releaseId, createKieBuilder( kfs ), namespace );
     }    
 
     @Test
@@ -167,13 +169,13 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         final String defaultBaseName = "defaultKBase";
         KieBaseModel defaultBase = module.newKieBaseModel(defaultBaseName)
-                                         .addInclude("notExistingKB1")
-                                         .addInclude("notExistingKB2");
+                                         .addInclude( "notExistingKB1" )
+                                         .addInclude( "notExistingKB2" );
         defaultBase.setDefault(true);
-        defaultBase.addPackage("*");
-        defaultBase.newKieSessionModel("defaultKSession").setDefault(true);
+        defaultBase.addPackage( "*" );
+        defaultBase.newKieSessionModel("defaultKSession").setDefault( true );
 
-        kfs.writeKModuleXML(module.toXML());
+        kfs.writeKModuleXML( module.toXML() );
         KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
         assertEquals( 2, kb.getResults().getMessages().size() );
     }
@@ -182,7 +184,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
     public void testNoPomXml() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
 
-        KieModuleModel kProj = createKieProject(namespace);
+        KieModuleModel kProj = createKieProject( namespace );
         
         ReleaseId releaseId = KieServices.Factory.get().getRepository().getDefaultReleaseId();
         
@@ -193,17 +195,17 @@ public class KieBuilderTest extends CommonTestMethodBase {
         
         MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
                
-        createAndTestKieContainer(releaseId, createKieBuilder(kfs), namespace );
+        createAndTestKieContainer( releaseId, createKieBuilder( kfs ), namespace );
     }
     
     @Test
     public void testNoProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
         
-        ReleaseId releaseId = KieServices.Factory.get().newReleaseId(namespace, "memory", "1.0-SNAPSHOT");
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( namespace, "memory", "1.0-SNAPSHOT" );
         
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
-        generatePomXML(kfs, releaseId);
+        generatePomXML( kfs, releaseId );
         generateMessageClass( kfs, namespace );
         generateRule( kfs, namespace );
         
@@ -246,7 +248,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
         
         MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
                
-        createAndTestKieContainer(releaseId, createKieBuilder(kfs), null );
+        createAndTestKieContainer( releaseId, createKieBuilder( kfs ), null );
     }
     
     @Test
@@ -258,16 +260,16 @@ public class KieBuilderTest extends CommonTestMethodBase {
         ReleaseId releaseId = new ReleaseIdImpl( "", "", "" );
         
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
-        generatePomXML(kfs, releaseId);
+        generatePomXML( kfs, releaseId );
         
         generateMessageClass( kfs, namespace );
         generateRule( kfs, namespace );
         
         MemoryFileSystem mfs = ((KieFileSystemImpl)kfs).asMemoryFileSystem();
           
-        KieBuilder kieBuilder = createKieBuilder(kfs);
+        KieBuilder kieBuilder = createKieBuilder( kfs );
         kieBuilder.buildAll();
-        assertTrue ( kieBuilder.getResults().hasMessages(Level.ERROR) );
+        assertTrue( kieBuilder.getResults().hasMessages( Level.ERROR ) );
     }   
     
     @Test
@@ -293,22 +295,73 @@ public class KieBuilderTest extends CommonTestMethodBase {
     public void testInvalidProjectXml() throws ClassNotFoundException, InterruptedException, IOException {
         String namespace = "org.kie.test";
 
-        KieModuleModel kProj = createKieProject(namespace);
+        KieModuleModel kProj = createKieProject( namespace );
         
-        ReleaseId releaseId = KieServices.Factory.get().newReleaseId(namespace, "memory", "1.0-SNAPSHOT");
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( namespace, "memory", "1.0-SNAPSHOT" );
         
         KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
-        generatePomXML(kfs, releaseId);
-        kfs.writeKModuleXML("xxxx" );
+        generatePomXML( kfs, releaseId );
+        kfs.writeKModuleXML( "xxxx" );
         generateMessageClass( kfs, namespace );
         generateRule( kfs, namespace );
         
         KieBuilder kieBuilder = createKieBuilder(kfs);
         kieBuilder.buildAll();
-        assertTrue ( kieBuilder.getResults().hasMessages(Level.ERROR) );
-    }     
-    
-    
+        assertTrue( kieBuilder.getResults().hasMessages( Level.ERROR ) );
+    }
+
+    @Test
+    public void testSetPomModelReuse() throws IOException {
+        String namespace = "org.kie.test";
+
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( namespace,
+                                                                      "pomModelReuse",
+                                                                      "1.0-SNAPSHOT" );
+
+        String pom = KieBuilderImpl.generatePomXml( releaseId );
+        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
+        kfs.writePomXML( pom );
+
+        //Create a KieBuilder instance
+        KieBuilder kieBuilder1 = createKieBuilder( kfs );
+        kieBuilder1.buildAll();
+
+        //Get PomModel to re-use in second KieBuilder instance
+        PomModel pomModel = ( (KieBuilderImpl) kieBuilder1 ).getPomModel();
+
+        kfs.writePomXML( pom );
+
+        //Create another KieBuilder instance with the same KieFileSystem, setting PomModel
+        KieBuilder kieBuilder2 = createKieBuilder( kfs );
+        ( (KieBuilderImpl) kieBuilder2 ).setPomModel( pomModel );
+        kieBuilder2.buildAll();
+
+        //Read pom.xml from first KieBuilder's KieModule
+        InternalKieModule kieModule1 = (InternalKieModule) ( (KieBuilderImpl) kieBuilder1 ).getKieModuleIgnoringErrors();
+        final Reader reader1 = kieModule1.getResource( "META-INF/maven/org.kie.test/pomModelReuse/pom.xml" ).getReader();
+        int charCode;
+        String readPom1 = "";
+        while ( ( charCode = reader1.read() ) != -1 ) {
+            readPom1 = readPom1 + (char) charCode;
+        }
+        reader1.close();
+
+        assertEquals( pom,
+                      readPom1 );
+
+        //Read pom.xml from second KieBuilder's KieModule
+        InternalKieModule kieModule2 = (InternalKieModule) ( (KieBuilderImpl) kieBuilder2 ).getKieModuleIgnoringErrors();
+        final Reader reader2 = kieModule2.getResource( "META-INF/maven/org.kie.test/pomModelReuse/pom.xml" ).getReader();
+        String readPom2 = "";
+        while ( ( charCode = reader2.read() ) != -1 ) {
+            readPom2 = readPom2 + (char) charCode;
+        }
+        reader1.close();
+
+        assertEquals( pom,
+                      readPom2 );
+    }
+
     public KieModuleModel createKieProject(String namespace) {
         KieServices ks = KieServices.Factory.get();
         

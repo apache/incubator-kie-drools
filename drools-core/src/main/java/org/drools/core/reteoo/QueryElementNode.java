@@ -37,6 +37,7 @@ import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.QueryElementContext;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
 import org.drools.core.marshalling.impl.ProtobufMessages;
+import org.drools.core.phreak.RuleNetworkEvaluator;
 import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.AbductiveQuery;
@@ -481,18 +482,7 @@ public class QueryElementNode extends LeftTupleSource
             LeftTupleSets leftTuples = query.getResultLeftTupleSets();
             LeftTuple childLeftTuple = rightTuple.getFirstChild();
 
-            switch ( childLeftTuple.getStagedType() ) {
-                // handle clash with already staged entries
-                case LeftTuple.INSERT :
-                    leftTuples.removeInsert( childLeftTuple );
-                    break;
-                case LeftTuple.UPDATE :
-                    leftTuples.removeUpdate( childLeftTuple );
-                    break;
-            }
-            leftTuples.addDelete( childLeftTuple  );
-            childLeftTuple.unlinkFromRightParent();
-            childLeftTuple.unlinkFromLeftParent();
+            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, leftTuples, leftTuples );
         }
 
         public void rowUpdated(final RuleImpl rule,

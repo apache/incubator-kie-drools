@@ -981,18 +981,8 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                 "  <groupId>org.kie</groupId>\n" +
                 "  <artifactId>test</artifactId>\n" +
                 "  <version>1.0</version>\n" +
-                "  <packaging>kjar</packaging>\n" +
+                "  <packaging>jar</packaging>\n" +
                 "  <name>test</name>\n" +
-                "  <build>\n" +
-                "    <plugins>\n" +
-                "      <plugin>\n" +
-                "        <groupId>org.kie</groupId>\n" +
-                "        <artifactId>kie-maven-plugin</artifactId>\n" +
-                "        <version>6.1.0-SNAPSHOT</version>\n" +
-                "        <extensions>true</extensions>\n" +
-                "      </plugin>\n" +
-                "    </plugins>\n" +
-                "  </build>\n" +
                 "</project>";
 
         String kmodule = "<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +

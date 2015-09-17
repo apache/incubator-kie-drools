@@ -26,10 +26,11 @@ public interface LeftTuple
         Entry,
         Tuple {
 
-    static final short NONE   = 0;
-    static final short INSERT = 1;
-    static final short UPDATE = 2;
-    static final short DELETE = 3;
+    short NONE   = 0;
+    short INSERT = 1;
+    short UPDATE = 2;
+    short DELETE = 3;
+    short NORMALIZED_DELETE = 4;
 
     void reAdd();
 
@@ -84,19 +85,19 @@ public interface LeftTuple
 
     InternalFactHandle getLastHandle();
 
-    public short getStagedType();
+    short getStagedType();
 
-    public void setStagedType(short stagedType);
+    void setStagedType(short stagedType);
 
-    public LeftTuple getStagedNext();
+    LeftTuple getStagedNext();
 
-    public void setStagedNext(LeftTuple stageNext);
+    void setStagedNext(LeftTuple stageNext);
 
-    public LeftTuple getStagedPrevious();
+    LeftTuple getStagedPrevious();
 
-    public void setStagePrevious(LeftTuple stagePrevious);
+    void setStagePrevious(LeftTuple stagePrevious);
 
-    public void clearStaged();
+    void clearStaged();
 
     void clearBlocker();
     
@@ -118,9 +119,6 @@ public interface LeftTuple
 
     /**
      * We use this equals method to avoid the cast
-     *
-     * @param tuple
-     * @return
      */
     boolean equals(final LeftTuple other);
 
@@ -172,11 +170,11 @@ public interface LeftTuple
 
     void setParent(LeftTuple parent);
 
-    public LeftTuple getRootLeftTuple();
+    LeftTuple getRootLeftTuple();
 
-    public PropagationContext getPropagationContext();
+    PropagationContext getPropagationContext();
 
-    public void setPropagationContext(PropagationContext propagationContext);
+    void setPropagationContext(PropagationContext propagationContext);
 
     void clear();
 
