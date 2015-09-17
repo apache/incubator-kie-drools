@@ -21,40 +21,19 @@ import java.util.Arrays;
 
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreHolder;
+import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class BendableBigDecimalScoreDefinition extends AbstractFeasibilityScoreDefinition<BendableBigDecimalScore> {
-
-    private final int hardLevelsSize;
-    private final int softLevelsSize;
+public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefinition<BendableBigDecimalScore> {
 
     public BendableBigDecimalScoreDefinition(int hardLevelsSize, int softLevelsSize) {
-        this.hardLevelsSize = hardLevelsSize;
-        this.softLevelsSize = softLevelsSize;
-    }
-
-    public int getHardLevelsSize() {
-        return hardLevelsSize;
-    }
-
-    public int getSoftLevelsSize() {
-        return softLevelsSize;
+        super(hardLevelsSize, softLevelsSize);
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public int getLevelsSize() {
-        return hardLevelsSize + softLevelsSize;
-    }
-
-    @Override
-    public int getFeasibleLevelsSize() {
-        return hardLevelsSize;
-    }
 
     public Class<BendableBigDecimalScore> getScoreClass() {
         return BendableBigDecimalScore.class;

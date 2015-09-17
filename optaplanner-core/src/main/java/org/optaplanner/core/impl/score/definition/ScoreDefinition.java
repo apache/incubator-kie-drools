@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.definition;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
@@ -31,12 +32,21 @@ public interface ScoreDefinition<S extends Score> {
 
     /**
      * Returns the length of {@link Score#toLevelNumbers()} for every {@link Score} of this definition.
+     * For example: returns 2 on {@link HardSoftScoreDefinition}.
      * @return at least 1
      */
     int getLevelsSize();
 
     /**
+     * Returns a label for each score level. Each label includes the suffix "score" and must start in lower case.
+     * For example: returns {@code {"hard score", "soft score "}} on {@link HardSoftScoreDefinition}.
+     * @return never null, array with length of {@link #getLevelsSize()}, each element is never null
+     */
+    String[] getLevelLabels();
+
+    /**
      * Returns the {@link Class} of the actual {@link Score} implementation.
+     * For example: returns {@link HardSoftScore HardSoftScore.class} on {@link HardSoftScoreDefinition}.
      * @return never null
      */
     Class<S> getScoreClass();

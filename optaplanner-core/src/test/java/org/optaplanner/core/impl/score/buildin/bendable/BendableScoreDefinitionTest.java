@@ -21,7 +21,7 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class BendableScoreDefinitionTest {
 
@@ -32,6 +32,15 @@ public class BendableScoreDefinitionTest {
         assertEquals(7, new BendableScoreDefinition(4, 3).getLevelsSize());
         assertEquals(5, new BendableScoreDefinition(0, 5).getLevelsSize());
         assertEquals(5, new BendableScoreDefinition(5, 0).getLevelsSize());
+    }
+
+    @Test
+    public void getLevelLabels() {
+        assertArrayEquals(new String[]{"hard 0 score", "soft 0 score"}, new BendableScoreDefinition(1, 1).getLevelLabels());
+        assertArrayEquals(new String[]{"hard 0 score", "hard 1 score", "hard 2 score", "soft 0 score", "soft 1 score", "soft 2 score", "soft 3 score"}, new BendableScoreDefinition(3, 4).getLevelLabels());
+        assertArrayEquals(new String[]{"hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "soft 0 score", "soft 1 score", "soft 2 score"}, new BendableScoreDefinition(4, 3).getLevelLabels());
+        assertArrayEquals(new String[]{"soft 0 score", "soft 1 score", "soft 2 score", "soft 3 score", "soft 4 score"}, new BendableScoreDefinition(0, 5).getLevelLabels());
+        assertArrayEquals(new String[]{"hard 0 score", "hard 1 score", "hard 2 score", "hard 3 score", "hard 4 score"}, new BendableScoreDefinition(5, 0).getLevelLabels());
     }
 
     @Test

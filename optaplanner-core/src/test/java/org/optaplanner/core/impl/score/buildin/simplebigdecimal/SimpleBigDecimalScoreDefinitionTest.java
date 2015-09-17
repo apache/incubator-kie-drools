@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
 import org.junit.Test;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 
 import static org.junit.Assert.*;
 
@@ -25,6 +26,11 @@ public class SimpleBigDecimalScoreDefinitionTest {
     @Test
     public void getLevelsSize() {
         assertEquals(1, new SimpleBigDecimalScoreDefinition().getLevelsSize());
+    }
+
+    @Test
+    public void getLevelLabels() {
+        assertArrayEquals(new String[]{"score"}, new SimpleBigDecimalScoreDefinition().getLevelLabels());
     }
 
     // Optimistic and pessimistic bounds are currently not supported for this score definition

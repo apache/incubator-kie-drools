@@ -21,13 +21,18 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftL
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class HardMediumSoftLongScoreDefinitionTest {
 
     @Test
     public void getLevelsSize() {
         assertEquals(3, new HardMediumSoftLongScoreDefinition().getLevelsSize());
+    }
+
+    @Test
+    public void getLevelLabels() {
+        assertArrayEquals(new String[]{"hard score", "medium score", "soft score"}, new HardMediumSoftLongScoreDefinition().getLevelLabels());
     }
 
     @Test

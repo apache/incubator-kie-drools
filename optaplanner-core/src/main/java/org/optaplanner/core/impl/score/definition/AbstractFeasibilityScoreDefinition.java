@@ -26,4 +26,11 @@ import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 public abstract class AbstractFeasibilityScoreDefinition<S extends FeasibilityScore<S>>
         extends AbstractScoreDefinition<S> implements FeasibilityScoreDefinition<S> {
 
+    /**
+     * @param levelLabels never null, as defined by {@link ScoreDefinition#getLevelLabels()}
+     */
+    public AbstractFeasibilityScoreDefinition(String[] levelLabels) {
+        super(levelLabels);
+    }
+
 }

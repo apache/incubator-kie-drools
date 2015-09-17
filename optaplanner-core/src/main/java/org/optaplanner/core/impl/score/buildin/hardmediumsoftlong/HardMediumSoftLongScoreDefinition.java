@@ -24,6 +24,10 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class HardMediumSoftLongScoreDefinition extends AbstractFeasibilityScoreDefinition<HardMediumSoftLongScore> {
 
+    public HardMediumSoftLongScoreDefinition() {
+        super(new String[]{"hard score", "medium score", "soft score"});
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************

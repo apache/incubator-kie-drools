@@ -19,15 +19,21 @@ package org.optaplanner.core.impl.score.buildin.simplelong;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class SimpleLongScoreDefinitionTest {
 
     @Test
     public void getLevelSize() {
         assertEquals(1, new SimpleLongScoreDefinition().getLevelsSize());
+    }
+
+    @Test
+    public void getLevelLabels() {
+        assertArrayEquals(new String[]{"score"}, new SimpleLongScoreDefinition().getLevelLabels());
     }
 
     @Test

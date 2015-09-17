@@ -2722,3 +2722,31 @@ After in *.java:
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         ...
         return solverFactory.buildSolver();
+
+
+From 6.3.0.Final to 6.4.0.Beta1
+-------------------------------
+
+[MINOR] If you have a custom ScoreDefinition: that interface has new method getLevelLabels().
+AbstractScoreDefinition and AbstractFeasibilityScoreDefinition now expect those levelLabels as a constructor parameter.
+Before in *.java:
+    public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftScore> {
+
+        public HardSoftScoreDefinition() {}
+
+        public int getLevelsSize() {
+            return 2;
+        }
+
+        ...
+    }
+After in *.java:
+    public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftScore> {
+
+        public HardSoftScoreDefinition() {
+            super(new String[]{"hard score", "soft score"});
+        }
+
+        ...
+    }
+

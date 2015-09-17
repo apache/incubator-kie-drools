@@ -24,14 +24,13 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLongScore> {
 
+    public SimpleLongScoreDefinition() {
+        super(new String[]{"score"});
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public int getLevelsSize() {
-        return 1;
-    }
 
     public Class<SimpleLongScore> getScoreClass() {
         return SimpleLongScore.class;

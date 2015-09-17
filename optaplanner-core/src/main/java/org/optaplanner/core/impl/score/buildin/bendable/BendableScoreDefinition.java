@@ -21,40 +21,19 @@ import java.util.Arrays;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
+import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public class BendableScoreDefinition extends AbstractFeasibilityScoreDefinition<BendableScore> {
-
-    private final int hardLevelsSize;
-    private final int softLevelsSize;
+public class BendableScoreDefinition extends AbstractBendableScoreDefinition<BendableScore> {
 
     public BendableScoreDefinition(int hardLevelsSize, int softLevelsSize) {
-        this.hardLevelsSize = hardLevelsSize;
-        this.softLevelsSize = softLevelsSize;
-    }
-
-    public int getHardLevelsSize() {
-        return hardLevelsSize;
-    }
-
-    public int getSoftLevelsSize() {
-        return softLevelsSize;
+        super(hardLevelsSize, softLevelsSize);
     }
 
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public int getLevelsSize() {
-        return hardLevelsSize + softLevelsSize;
-    }
-
-    @Override
-    public int getFeasibleLevelsSize() {
-        return hardLevelsSize;
-    }
 
     public Class<BendableScore> getScoreClass() {
         return BendableScore.class;

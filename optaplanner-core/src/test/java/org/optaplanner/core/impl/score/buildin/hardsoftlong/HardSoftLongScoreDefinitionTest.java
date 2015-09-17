@@ -19,15 +19,21 @@ package org.optaplanner.core.impl.score.buildin.hardsoftlong;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
+import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class HardSoftLongScoreDefinitionTest {
 
     @Test
     public void getLevelSize() {
         assertEquals(2, new HardSoftLongScoreDefinition().getLevelsSize());
+    }
+
+    @Test
+    public void getLevelLabels() {
+        assertArrayEquals(new String[]{"hard score", "soft score"}, new HardSoftLongScoreDefinition().getLevelLabels());
     }
 
     @Test

@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.buildin.simple;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
+import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 import static org.junit.Assert.*;
@@ -28,6 +29,11 @@ public class SimpleScoreDefinitionTest {
     @Test
     public void getLevelsSize() {
         assertEquals(1, new SimpleScoreDefinition().getLevelsSize());
+    }
+
+    @Test
+    public void getLevelLabels() {
+        assertArrayEquals(new String[]{"score"}, new SimpleScoreDefinition().getLevelLabels());
     }
 
     @Test

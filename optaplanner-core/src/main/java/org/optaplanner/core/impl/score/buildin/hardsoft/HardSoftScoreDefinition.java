@@ -24,14 +24,13 @@ import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftScore> {
 
+    public HardSoftScoreDefinition() {
+        super(new String[]{"hard score", "soft score"});
+    }
+
     // ************************************************************************
     // Worker methods
     // ************************************************************************
-
-    @Override
-    public int getLevelsSize() {
-        return 2;
-    }
 
     @Override
     public int getFeasibleLevelsSize() {
