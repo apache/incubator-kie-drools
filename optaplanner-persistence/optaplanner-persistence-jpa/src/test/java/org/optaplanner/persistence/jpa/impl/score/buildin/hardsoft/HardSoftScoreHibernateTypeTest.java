@@ -37,14 +37,7 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 
 import static org.junit.Assert.*;
 
-public class HardSoftScoreHibernateTypeTest {
-
-    protected static EntityManagerFactory entityManagerFactory;
-
-    @BeforeClass
-    public static void setup() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("optaplanner-persistence-jpa-test");
-    }
+public class HardSoftScoreHibernateTypeTest extends org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest {
 
     @Test
     public void persistAndMerge() {
@@ -53,62 +46,8 @@ public class HardSoftScoreHibernateTypeTest {
         findAndAssert(TestJpaEntity.class, id, HardSoftScore.valueOf(-10, -2));
     }
 
-    protected Long persistAndAssert(TestJpaEntity jpaEntity) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        entityManager.persist(jpaEntity);
-        transaction.commit();
-        Long id = jpaEntity.getId();
-        assertNotNull(id);
-        return id;
-    }
-
-    protected <S extends Score, E extends AbstractTestJpaEntity<S>> void findAssertAndChangeScore(
-            Class<E> jpaEntityClass, Long id, S oldScore, S newScore) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        E jpaEntity = entityManager.find(jpaEntityClass, id);
-        assertEquals(oldScore, jpaEntity.getScore());
-        jpaEntity.setScore(newScore);
-        jpaEntity = entityManager.merge(jpaEntity);
-        transaction.commit();
-    }
-
-    protected <S extends Score, E extends AbstractTestJpaEntity<S>> void findAndAssert(
-            Class<E> jpaEntityClass, Long id, S score) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        E jpaEntity = entityManager.find(jpaEntityClass, id);
-        assertEquals(score, jpaEntity.getScore());
-        transaction.commit();
-    }
-
-    @MappedSuperclass
-    protected static abstract class AbstractTestJpaEntity<S extends Score> {
-
-        protected Long id;
-
-        @Id
-        @GeneratedValue(strategy = GenerationType.AUTO)
-        public Long getId() {
-            return id;
-        }
-
-        public void setId(Long id) {
-            this.id = id;
-        }
-
-        @Transient
-        public abstract S getScore();
-        public abstract void setScore(S score);
-
-    }
-
     @Entity
-    @TypeDef(name = "hardSoftScoreHibernateType", defaultForType = HardSoftScore.class, typeClass = HardSoftScoreHibernateType.class)
+    @TypeDef(defaultForType = HardSoftScore.class, typeClass = HardSoftScoreHibernateType.class)
     public static class TestJpaEntity extends AbstractTestJpaEntity<HardSoftScore> {
 
         protected HardSoftScore score;

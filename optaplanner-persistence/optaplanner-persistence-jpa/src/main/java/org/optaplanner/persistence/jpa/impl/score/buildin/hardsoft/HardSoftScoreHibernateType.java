@@ -28,14 +28,17 @@ import org.hibernate.type.Type;
 import org.hibernate.usertype.CompositeUserType;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 
 /**
- * This class is Hibernate specific, because JPA 2.1's @Converter currently
- * cannot handle 1 class mapping to multiple SQL columns.
+ * {@inheritDoc}
  */
-public class HardSoftScoreHibernateType implements CompositeUserType {
+public class HardSoftScoreHibernateType extends AbstractScoreHibernateType {
 
-    protected HardSoftScoreDefinition scoreDefinition = new HardSoftScoreDefinition();
+    @Override
+    public Class returnedClass() {
+        return HardSoftScore.class;
+    }
 
     @Override
     public String[] getPropertyNames() {
@@ -45,44 +48,6 @@ public class HardSoftScoreHibernateType implements CompositeUserType {
     @Override
     public Type[] getPropertyTypes() {
         return new Type[] {IntegerType.INSTANCE, IntegerType.INSTANCE};
-    }
-
-    @Override
-    public Class returnedClass() {
-        return HardSoftScore.class;
-    }
-
-    @Override
-    public boolean isMutable() {
-        return false;
-    }
-
-    @Override
-    public Object deepCopy(Object value) {
-        return value; // Score is immutable
-    }
-
-    @Override
-    public Object replace(Object original, Object target, SessionImplementor session, Object owner) {
-        return original; // Score is immutable
-    }
-
-    @Override
-    public boolean equals(Object a, Object b) {
-        if (a == b) {
-            return true;
-        } else if (a == null || b == null) {
-            return false;
-        }
-        return a.equals(b);
-    }
-
-    @Override
-    public int hashCode(Object o) {
-        if (o == null) {
-            return 0;
-        }
-        return o.hashCode();
     }
 
     @Override
@@ -98,14 +63,8 @@ public class HardSoftScoreHibernateType implements CompositeUserType {
                 return score.getSoftScore();
             default:
                 throw new IllegalArgumentException("The propertyIndex (" + propertyIndex
-                        + ") must be lower than the levelsSize (" + scoreDefinition.getLevelsSize()
-                        + ") for score (" + score + ").");
+                        + ") must be lower than the levelsSize for score (" + score + ").");
         }
-    }
-
-    @Override
-    public void setPropertyValue(Object component, int property, Object value) {
-        throw new UnsupportedOperationException("A Score is immutable.");
     }
 
     @Override
@@ -133,16 +92,6 @@ public class HardSoftScoreHibernateType implements CompositeUserType {
         HardSoftScore score = (HardSoftScore) value;
         statement.setInt(parameterIndex, score.getHardScore());
         statement.setInt(parameterIndex + 1, score.getSoftScore());
-    }
-
-    @Override
-    public Serializable disassemble(Object value, SessionImplementor session) {
-        return (Serializable) value;
-    }
-
-    @Override
-    public Object assemble(Serializable cached, SessionImplementor session, Object owner) {
-        return cached;
     }
 
 }
