@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.xstream;
+package org.optaplanner.persistence.xstream.impl.score;
 
 import java.io.Serializable;
 

@@ -297,6 +297,11 @@
     <para>Each <literal>Score</literal> implementation also has a <literal>ScoreDefinition</literal> implementation. For
     example: <literal>SimpleScore</literal> is defined by <literal>SimpleScoreDefinition</literal>.</para>
 
+    <note>
+      <para>To properly write a <literal>Score</literal> to database (with JPA/Hibernate) or to XML/JSON (with
+      XStream/JAXB), see <link linkend="integration">the integration chapter</link>.</para>
+    </note>
+
     <section xml:id="simpleScore">
       <title>SimpleScore</title>
 

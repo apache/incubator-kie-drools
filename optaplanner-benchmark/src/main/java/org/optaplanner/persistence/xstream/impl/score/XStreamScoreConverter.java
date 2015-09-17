@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 /**
@@ -39,7 +40,7 @@ public class XStreamScoreConverter implements Converter {
 
     public XStreamScoreConverter(Class<? extends Score> scoreClass,
             Class<? extends ScoreDefinition> scoreDefinitionClass) {
-        if (BendableScore.class.equals(scoreClass)) {
+        if (AbstractBendableScoreDefinition.class.isAssignableFrom(scoreDefinitionClass)) {
             throw new IllegalArgumentException(XStreamScoreConverter.class + " is not compatible with scoreClass ("
                     + scoreClass + "), use " + XStreamBendableScoreConverter.class.getSimpleName() + " instead.");
         }
