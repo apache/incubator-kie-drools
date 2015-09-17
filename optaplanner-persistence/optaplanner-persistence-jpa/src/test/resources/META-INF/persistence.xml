@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             version="2.0"  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_0.xsd">
+  <persistence-unit name="optaplanner-persistence-jpa-test" transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+    <class>org.optaplanner.persistence.jpa.impl.score.buildin.hardsoft.HardSoftScoreHibernateTypeTest$AbstractTestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.impl.score.buildin.hardsoft.HardSoftScoreHibernateTypeTest$TestJpaEntity</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+    <properties>
+      <property name="hibernate.hbm2ddl.auto" value="create"/>
+
+      <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+      <property name="hibernate.connection.driver_class" value="org.h2.Driver" />
+      <property name="hibernate.connection.url" value="jdbc:h2:mem:optaplannerPersistenceJpaTest" />
+      <property name="hibernate.connection.username" value="" />
+      <property name="hibernate.connection.password" value="" />
+    </properties>
+  </persistence-unit>
+</persistence>

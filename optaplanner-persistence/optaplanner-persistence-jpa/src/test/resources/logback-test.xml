@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <!-- %L lowers performance -->
+      <!--<pattern>%d [%t] %-5p %L%n  %m%n</pattern>-->
+      <pattern>%d [%t] %-5p %m%n</pattern>
+    </encoder>
+  </appender>
+
+  <!--<logger name="org.hibernate" level="info"/>-->
+  <logger name="org.optaplanner" level="info"/>
+
+  <root level="warn">
+    <appender-ref ref="consoleAppender" />
+  </root>
+
+</configuration>
+
