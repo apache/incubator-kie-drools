@@ -72,6 +72,9 @@ public class PlannerTestUtils {
     public static <T> T serializeAndDeserializeWithXStream(T input) {
         XStream xStream = new XStream();
         xStream.setMode(XStream.ID_REFERENCES);
+        if (input != null) {
+            xStream.processAnnotations(input.getClass());
+        }
         String xmlString = xStream.toXML(input);
         return (T) xStream.fromXML(xmlString);
     }

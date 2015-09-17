@@ -18,12 +18,13 @@ package org.optaplanner.persistence.xstream.impl.score;
 
 import java.io.Serializable;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
-import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 import static org.junit.Assert.*;
 
@@ -31,10 +32,10 @@ public class XStreamScoreConverterTest {
 
     @Test
     public void serializeAndDeserializeWithNullField() {
-        XStreamScoreConverterTestObject input = new XStreamScoreConverterTestObject(null);
+        TestXStreamObject input = new TestXStreamObject(null);
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
-                new PlannerTestUtils.OutputAsserter<XStreamScoreConverterTestObject>() {
-                    public void assertOutput(XStreamScoreConverterTestObject output) {
+                new PlannerTestUtils.OutputAsserter<TestXStreamObject>() {
+                    public void assertOutput(TestXStreamObject output) {
                         assertEquals(null, output.getScore());
                     }
                 }
@@ -43,30 +44,43 @@ public class XStreamScoreConverterTest {
 
     @Test
     public void serializeAndDeserialize() {
-        XStreamScoreConverterTestObject input = new XStreamScoreConverterTestObject(SimpleScore.valueOf(123));
+        TestXStreamObject input = new TestXStreamObject(HardSoftScore.valueOf(1200, 34));
+        assertXStreamXml("<TestXStreamObject>\\s*<score>1200hard/34soft</score>\\s*</TestXStreamObject>", input);
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
-                new PlannerTestUtils.OutputAsserter<XStreamScoreConverterTestObject>() {
-                    public void assertOutput(XStreamScoreConverterTestObject output) {
-                        assertEquals(123, output.getScore().getScore());
+                new PlannerTestUtils.OutputAsserter<TestXStreamObject>() {
+                    public void assertOutput(TestXStreamObject output) {
+                        assertEquals(HardSoftScore.valueOf(1200, 34), output.getScore());
                     }
                 }
         );
     }
 
-    public static class XStreamScoreConverterTestObject implements Serializable {
+    public static void assertXStreamXml(String regex, Object input) {
+        XStream xStream = new XStream();
+        xStream.setMode(XStream.NO_REFERENCES);
+        xStream.processAnnotations(input.getClass());
+        String xml = xStream.toXML(input);
+        if (!xml.matches(regex)) {
+            fail("Regular expression match failed.\nExpected regular expression: " + regex + "\nActual: " + xml);
+        }
+        assertTrue(xml.matches(regex));
+    }
 
-        @XStreamConverter(value = XStreamScoreConverter.class, types = {SimpleScoreDefinition.class})
-        private SimpleScore score;
+    @XStreamAlias("TestXStreamObject")
+    public static class TestXStreamObject implements Serializable {
 
-        public XStreamScoreConverterTestObject(SimpleScore score) {
+        @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
+        private HardSoftScore score;
+
+        public TestXStreamObject(HardSoftScore score) {
             this.score = score;
         }
 
-        public SimpleScore getScore() {
+        public HardSoftScore getScore() {
             return score;
         }
 
-        public void setScore(SimpleScore score) {
+        public void setScore(HardSoftScore score) {
             this.score = score;
         }
     }

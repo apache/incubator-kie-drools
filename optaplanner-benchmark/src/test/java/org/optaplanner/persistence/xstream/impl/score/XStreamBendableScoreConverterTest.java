@@ -18,11 +18,11 @@ package org.optaplanner.persistence.xstream.impl.score;
 
 import java.io.Serializable;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
-import org.optaplanner.persistence.xstream.impl.score.XStreamBendableScoreConverter;
 
 import static org.junit.Assert.*;
 
@@ -30,10 +30,10 @@ public class XStreamBendableScoreConverterTest {
 
     @Test
     public void serializeAndDeserializeWithNullField() {
-        XStreamBendableScoreConverterTestObject input = new XStreamBendableScoreConverterTestObject(null);
+        TestXStreamObject input = new TestXStreamObject(null);
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
-                new PlannerTestUtils.OutputAsserter<XStreamBendableScoreConverterTestObject>() {
-                    public void assertOutput(XStreamBendableScoreConverterTestObject output) {
+                new PlannerTestUtils.OutputAsserter<TestXStreamObject>() {
+                    public void assertOutput(TestXStreamObject output) {
                         assertEquals(null, output.getScore());
                     }
                 }
@@ -42,11 +42,13 @@ public class XStreamBendableScoreConverterTest {
 
     @Test
     public void serializeAndDeserialize() {
-        XStreamBendableScoreConverterTestObject input = new XStreamBendableScoreConverterTestObject(
+        TestXStreamObject input = new TestXStreamObject(
                 BendableScore.valueOf(new int[]{-5}, new int[]{-300, -4000}));
+        XStreamScoreConverterTest.assertXStreamXml(
+                "<TestXStreamObject>\\s*<score>-5/-300/-4000</score>\\s*</TestXStreamObject>", input);
         PlannerTestUtils.serializeAndDeserializeWithAll(input,
-                new PlannerTestUtils.OutputAsserter<XStreamBendableScoreConverterTestObject>() {
-                    public void assertOutput(XStreamBendableScoreConverterTestObject output) {
+                new PlannerTestUtils.OutputAsserter<TestXStreamObject>() {
+                    public void assertOutput(TestXStreamObject output) {
                         BendableScore score = output.getScore();
                         assertEquals(1, score.getHardLevelsSize());
                         assertEquals(-5, score.getHardScore(0));
@@ -58,12 +60,13 @@ public class XStreamBendableScoreConverterTest {
         );
     }
 
-    public static class XStreamBendableScoreConverterTestObject implements Serializable {
+    @XStreamAlias("TestXStreamObject")
+    public static class TestXStreamObject implements Serializable {
 
         @XStreamConverter(value = XStreamBendableScoreConverter.class, ints = {1, 2})
         private BendableScore score;
 
-        public XStreamBendableScoreConverterTestObject(BendableScore score) {
+        public TestXStreamObject(BendableScore score) {
             this.score = score;
         }
 
