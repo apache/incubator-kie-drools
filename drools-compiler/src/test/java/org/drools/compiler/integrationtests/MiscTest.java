@@ -1462,11 +1462,11 @@ import static org.mockito.Mockito.*;
          DefaultFactHandle helloHandle = (DefaultFactHandle) ksession.insert( "hello" );
          DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert( "goodbye" );
 
-         FactHandle key = new DefaultFactHandle( helloHandle.toExternalForm() );
+         FactHandle key = DefaultFactHandle.createFromExternalFormat( helloHandle.toExternalForm() );
          assertEquals( "hello",
                        ksession.getObject( key ) );
 
-         key = new DefaultFactHandle( goodbyeHandle.toExternalForm() );
+         key = DefaultFactHandle.createFromExternalFormat( goodbyeHandle.toExternalForm() );
          assertEquals( "goodbye",
                        ksession.getObject( key ) );
      }

@@ -184,7 +184,7 @@ public class XStreamJSon {
                 }
                 reader.moveUp();
             }
-            return new RowItemContainer( new DefaultFactHandle( externalForm ),
+            return new RowItemContainer( DefaultFactHandle.createFromExternalFormat( externalForm ),
                                          object );
         }
 
@@ -333,7 +333,7 @@ public class XStreamJSon {
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext unmarshallingContext) {
             reader.moveDown();
-            DefaultFactHandle factHandle = new DefaultFactHandle( reader.getValue() );
+            DefaultFactHandle factHandle = DefaultFactHandle.createFromExternalFormat( reader.getValue() );
             reader.moveUp();
             return factHandle;
         }
@@ -430,7 +430,7 @@ public class XStreamJSon {
                 reader.moveDown();
                 String name = reader.getNodeName();
                 if ( "fact-handle".equals( name ) ) {
-                    factHandle = new DefaultFactHandle( reader.getValue() );
+                    factHandle = DefaultFactHandle.createFromExternalFormat( reader.getValue() );
                 } else if ( "out-identifier".equals( name ) ) {
                     outIdentifier = reader.getValue();
                 }
@@ -469,7 +469,7 @@ public class XStreamJSon {
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
             reader.moveDown();
-            FactHandle factHandle = new DefaultFactHandle( reader.getValue() );
+            FactHandle factHandle = DefaultFactHandle.createFromExternalFormat( reader.getValue() );
             reader.moveUp();
 
             return CommandFactory.newDelete(factHandle);
@@ -509,7 +509,7 @@ public class XStreamJSon {
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
             reader.moveDown();
-            FactHandle factHandle = new DefaultFactHandle( reader.getValue() );
+            FactHandle factHandle = DefaultFactHandle.createFromExternalFormat( reader.getValue() );
             reader.moveUp();
 
             List<Setter> setters = new ArrayList<Setter>();
@@ -752,7 +752,7 @@ public class XStreamJSon {
                         reader.moveUp();
 
                         facts.put( identifier,
-                                   new DefaultFactHandle( externalForm ) );
+                                   DefaultFactHandle.createFromExternalFormat( externalForm ) );
                     } else if ( reader.getNodeName().equals( "fact-handles" ) ) {
                         List<FactHandle> list = new ArrayList<FactHandle>();
                         String identifier = null;
@@ -762,7 +762,7 @@ public class XStreamJSon {
                             reader.moveUp();
                             while ( reader.hasMoreChildren() ) {
                                 reader.moveDown();
-                                FactHandle factHandle = new DefaultFactHandle( (String) readItem( reader,
+                                FactHandle factHandle = DefaultFactHandle.createFromExternalFormat( (String) readItem( reader,
                                                                                                        context,
                                                                                                        null ) );
                                 list.add( factHandle );
