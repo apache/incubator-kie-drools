@@ -37,7 +37,6 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -46,6 +45,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Stack;
 import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
@@ -240,8 +240,8 @@ public class KieRepositoryImpl
     private static class KieModuleRepo {
 
         private final InternalKieScanner kieScanner;
-        private final Map<String, TreeMap<ComparableVersion, KieModule>> kieModules = new HashMap<String, TreeMap<ComparableVersion, KieModule>>();
-        private final Map<ReleaseId, KieModule> oldKieModules = new HashMap<ReleaseId, KieModule>();
+        private final Map<String, TreeMap<ComparableVersion, KieModule>> kieModules = new ConcurrentHashMap<String, TreeMap<ComparableVersion, KieModule>>();
+        private final Map<ReleaseId, KieModule> oldKieModules = new ConcurrentHashMap<ReleaseId, KieModule>();
 
         private KieModuleRepo(InternalKieScanner kieScanner) {
             this.kieScanner = kieScanner;
@@ -273,7 +273,10 @@ public class KieRepositoryImpl
             }
             ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());
             if (oldKieModules.get(releaseId) == null) {
-                oldKieModules.put(releaseId, artifactMap.get(comparableVersion));
+                KieModule oldKieModule = artifactMap.get( comparableVersion);
+                if (oldKieModule != null) {
+                    oldKieModules.put( releaseId, oldKieModule );
+                }
             }
             artifactMap.put(comparableVersion, kieModule);
         }
