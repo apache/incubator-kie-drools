@@ -15,9 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.core.util.FileManager;
-import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -26,14 +23,14 @@ import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
-import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.drools.compiler.integrationtests.IncrementalCompilationTest.createAndDeployJar;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.drools.compiler.integrationtests.IncrementalCompilationTest.createAndDeployJar;
+import static org.junit.Assert.assertTrue;
 
 public class KieContainerTest {
 
@@ -193,7 +190,9 @@ public class KieContainerTest {
             kieSession.setGlobal("list", list);
             kieSession.fireAllRules();
             kieSession.dispose();
-            assertEquals(1, list.size());
+            // There can be 2 items in the list if an updateToVersion is triggered during a fireAllRules
+            // in that case it may fire with both the old and the new rule
+            assertTrue( list.size() >= 1 && list.size() <= 2);
             if (list.get(0).equals("rule9")) {
                 break;
             }
