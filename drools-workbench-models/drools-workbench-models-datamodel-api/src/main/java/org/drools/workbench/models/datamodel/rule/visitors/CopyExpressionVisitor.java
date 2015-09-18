@@ -26,6 +26,7 @@ import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionGlobalVariable;
 import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
 import org.drools.workbench.models.datamodel.rule.ExpressionMethodParameter;
+import org.drools.workbench.models.datamodel.rule.ExpressionMethodParameterDefinition;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
 import org.drools.workbench.models.datamodel.rule.ExpressionText;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
@@ -133,9 +134,11 @@ public class CopyExpressionVisitor implements ExpressionVisitor {
 
     private void copyMethodParams( ExpressionMethod part,
                                    ExpressionMethod method ) {
-        Map<String, ExpressionFormLine> params = new HashMap<String, ExpressionFormLine>();
-        for ( Map.Entry<String, ExpressionFormLine> entry : part.getParams().entrySet() ) {
-            params.put( entry.getKey(), new ExpressionFormLine( entry.getValue() ) );
+        Map<ExpressionMethodParameterDefinition, ExpressionFormLine> params = new HashMap<ExpressionMethodParameterDefinition, ExpressionFormLine>();
+        for ( Map.Entry<ExpressionMethodParameterDefinition, ExpressionFormLine> entry : part.getParams().entrySet() ) {
+            params.put( new ExpressionMethodParameterDefinition( entry.getKey().getIndex(),
+                                                                 entry.getKey().getDataType() ),
+                        new ExpressionFormLine( entry.getValue() ) );
         }
         method.setParams( params );
     }
