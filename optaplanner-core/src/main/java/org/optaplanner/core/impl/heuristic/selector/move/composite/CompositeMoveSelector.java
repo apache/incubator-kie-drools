@@ -16,9 +16,12 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.composite;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.impl.heuristic.selector.move.AbstractMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 
@@ -49,7 +52,11 @@ public abstract class CompositeMoveSelector extends AbstractMoveSelector {
                                 + ") with randomSelection (" + randomSelection + ")."
                                 + (childMoveSelector.isCountable() ? ""
                                 : "\nThe selector is not countable, check the "
-                                + ValueRange.class.getSimpleName() + "s involved."));
+                                + ValueRange.class.getSimpleName() + "s involved.\n"
+                                + "Verify that a " + ValueRangeProvider.class.getSimpleName()
+                                + " does not return " + ValueRange.class.getSimpleName()
+                                + " when it can return " + CountableValueRange.class.getSimpleName()
+                                + " or " + Collection.class.getSimpleName() + "."));
                     }
                 }
             }
