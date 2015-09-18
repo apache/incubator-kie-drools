@@ -16,15 +16,7 @@
 
 package org.jbpm.marshalling.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.google.protobuf.ExtensionRegistry;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -45,7 +37,20 @@ import org.jbpm.process.instance.context.swimlane.SwimlaneContextInstance;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.jbpm.workflow.instance.node.*;
+import org.jbpm.workflow.instance.node.AsyncEventNodeInstance;
+import org.jbpm.workflow.instance.node.CompositeContextNodeInstance;
+import org.jbpm.workflow.instance.node.DynamicNodeInstance;
+import org.jbpm.workflow.instance.node.EventNodeInstance;
+import org.jbpm.workflow.instance.node.EventSubProcessNodeInstance;
+import org.jbpm.workflow.instance.node.ForEachNodeInstance;
+import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
+import org.jbpm.workflow.instance.node.JoinInstance;
+import org.jbpm.workflow.instance.node.MilestoneNodeInstance;
+import org.jbpm.workflow.instance.node.RuleSetNodeInstance;
+import org.jbpm.workflow.instance.node.StateNodeInstance;
+import org.jbpm.workflow.instance.node.SubProcessNodeInstance;
+import org.jbpm.workflow.instance.node.TimerNodeInstance;
+import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
@@ -53,7 +58,14 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.FactHandle;
 
-import com.google.protobuf.ExtensionRegistry;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Default implementation of a process instance marshaller.
@@ -676,7 +688,7 @@ public abstract class AbstractProtobufProcessInstanceMarshaller
                     Map<String, FactHandle> factInfo = new HashMap<String, FactHandle>();
                     
                     for (TextMapEntry entry : _content.getRuleSet().getMapEntryList()) {
-                        factInfo.put(entry.getName(), new DefaultFactHandle(entry.getValue()));
+                        factInfo.put(entry.getName(), DefaultFactHandle.createFromExternalFormat(entry.getValue()));
                     }
                     
                     ((RuleSetNodeInstance) nodeInstance).setFactHandles(factInfo);
