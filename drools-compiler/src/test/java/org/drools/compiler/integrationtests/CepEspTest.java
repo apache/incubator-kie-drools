@@ -27,6 +27,7 @@ import org.drools.core.WorkingMemory;
 import org.drools.core.audit.WorkingMemoryFileLogger;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.evaluators.TimeIntervalParser;
+import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.NamedEntryPoint;
@@ -5558,5 +5559,29 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ksession.insert( new HashMap<String, Object>() );
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testDisconnectedEventFactHandle() {
+        // DROOLS-924
+        String drl =
+                "declare String \n"+
+                "  @role(event)\n"+
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        DefaultFactHandle helloHandle = (DefaultFactHandle) ksession.insert( "hello" );
+        DefaultFactHandle goodbyeHandle = (DefaultFactHandle) ksession.insert( "goodbye" );
+
+        FactHandle key = DefaultFactHandle.createFromExternalFormat( helloHandle.toExternalForm() );
+        assertEquals( "hello",
+                      ksession.getObject( key ) );
+
+        key = DefaultFactHandle.createFromExternalFormat( goodbyeHandle.toExternalForm() );
+        assertEquals( "goodbye",
+                      ksession.getObject( key ) );
     }
 }
