@@ -16,6 +16,17 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
@@ -43,6 +54,7 @@ import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
+import org.drools.workbench.models.datamodel.rule.ExpressionMethodParameterDefinition;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
 import org.drools.workbench.models.datamodel.rule.ExpressionText;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
@@ -64,20 +76,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class RuleModelDRLPersistenceUnmarshallingTest {
 
@@ -1050,16 +1050,16 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
-                Collections.EMPTY_LIST,
-                dmo);
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
-        assertNotNull(m);
-        assertEquals(1, m.lhs.length);
-        assertTrue(m.lhs[0] instanceof FactPattern);
-        SingleFieldConstraint constraint = (SingleFieldConstraint) ((FactPattern) m.lhs[0]).getConstraint(0);
-        assertEquals("functionTrue() && functionFalse()", constraint.getValue());
-        assertEquals(BaseSingleFieldConstraint.TYPE_PREDICATE, constraint.getConstraintValueType());
+        assertNotNull( m );
+        assertEquals( 1, m.lhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        SingleFieldConstraint constraint = (SingleFieldConstraint) ( (FactPattern) m.lhs[ 0 ] ).getConstraint( 0 );
+        assertEquals( "functionTrue() && functionFalse()", constraint.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_PREDICATE, constraint.getConstraintValueType() );
     }
 
     @Test
@@ -7871,6 +7871,103 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       fp0sfc0.getFieldType() );
         assertEquals( "http://www.redhat.com",
                       fp0sfc0.getValue() );
+
+        assertEquals( 0,
+                      m.rhs.length );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1264321
+    public void testStringReplaceExpression() throws Exception {
+        String drl = "rule \"Replace_condition_Issue\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  MyType( myString.replace(\"a\",\"b\"))\n" +
+                "then\n" +
+                "end";
+
+        addModelField( "org.test.MyType",
+                       "this",
+                       "org.test.MyType",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.MyType",
+                       "myString",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        addMethodInformation( "java.lang.String",
+                              "replace",
+                              new ArrayList<String>() {{
+                                  add( "String" );
+                                  add( "String" );
+                              }},
+                              "java.lang.String",
+                              null,
+                              DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "MyType",
+                      fp0.getFactType() );
+        assertEquals( 1,
+                      fp0.getNumberOfConstraints() );
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraintEBLeftSide );
+        final SingleFieldConstraintEBLeftSide fp0sfc0 = (SingleFieldConstraintEBLeftSide) fp0.getConstraint( 0 );
+
+        assertEquals( 3,
+                      fp0sfc0.getExpressionLeftSide().getParts().size() );
+
+        assertTrue( fp0sfc0.getExpressionLeftSide().getParts().get( 0 ) instanceof ExpressionUnboundFact );
+        final ExpressionUnboundFact ep0 = (ExpressionUnboundFact) fp0sfc0.getExpressionLeftSide().getParts().get( 0 );
+        assertEquals( "MyType",
+                      ep0.getFactType() );
+
+        assertTrue( fp0sfc0.getExpressionLeftSide().getParts().get( 1 ) instanceof ExpressionField );
+        final ExpressionField ep1 = (ExpressionField) fp0sfc0.getExpressionLeftSide().getParts().get( 1 );
+        assertEquals( "myString",
+                      ep1.getName() );
+
+        assertTrue( fp0sfc0.getExpressionLeftSide().getParts().get( 2 ) instanceof ExpressionMethod );
+        final ExpressionMethod ep2 = (ExpressionMethod) fp0sfc0.getExpressionLeftSide().getParts().get( 2 );
+        assertEquals( "replace",
+                      ep2.getName() );
+        assertEquals( 2,
+                      ep2.getParams().size() );
+
+        final ExpressionFormLine param0 = ep2.getParams().get( new ExpressionMethodParameterDefinition( 0, "String" ) );
+        assertNotNull( param0 );
+        assertEquals( 1,
+                      param0.getParts().size() );
+        assertNotNull( param0.getParts().get( 0 ) );
+        assertEquals( "a",
+                      param0.getParts().get( 0 ).getName() );
+        assertEquals( "String",
+                      param0.getParts().get( 0 ).getClassType() );
+
+        final ExpressionFormLine param1 = ep2.getParams().get( new ExpressionMethodParameterDefinition( 1, "String" ) );
+        assertNotNull( param1 );
+        assertEquals( 1,
+                      param1.getParts().size() );
+        assertNotNull( param1.getParts().get( 0 ) );
+        assertEquals( "b",
+                      param1.getParts().get( 0 ).getName() );
+        assertEquals( "String",
+                      param1.getParts().get( 0 ).getClassType() );
 
         assertEquals( 0,
                       m.rhs.length );
