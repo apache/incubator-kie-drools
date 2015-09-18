@@ -2153,18 +2153,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return modified;
     }
 
-    public void startPackageUpdate() {
-        if (kBase != null) {
-            kBase.lock();
-        }
-    }
-
-    public void completePackageUpdate() {
-        if (kBase != null) {
-            kBase.unlock();
-        }
-    }
-
     public void setAllRuntimesDirty(Collection<String> packages) {
         if (kBase != null) {
             for (String pkgName : packages) {

@@ -685,6 +685,21 @@ public class KnowledgeBaseImpl
         }
     }
 
+    public boolean tryLock() {
+        // The lock is reentrant, so we need additional magic here to skip
+        // notifications for locked if this thread already has locked it.
+        boolean firstLock = !this.lock.isWriteLockedByCurrentThread();
+        if (firstLock) {
+            this.eventSupport.fireBeforeRuleBaseLocked();
+        }
+        // Always lock to increase the counter
+        boolean locked = this.lock.writeLock().tryLock();
+        if ( firstLock && locked ) {
+            this.eventSupport.fireAfterRuleBaseLocked();
+        }
+        return locked;
+    }
+
     public void unlock() {
         boolean lastUnlock = this.lock.getWriteHoldCount() == 1;
         if (lastUnlock) {
@@ -725,13 +740,17 @@ public class KnowledgeBaseImpl
                 unlock();
             }
         } else {
-            kbaseModificationsQueue.offer(new Runnable() {
+            enqueueModification(new Runnable() {
                 @Override
                 public void run() {
                     internalAddPackages(clonedPkgs);
                 }
             });
         }
+    }
+
+    public void enqueueModification(Runnable modification) {
+        kbaseModificationsQueue.offer(modification);
     }
 
     public boolean flushModifications() {
