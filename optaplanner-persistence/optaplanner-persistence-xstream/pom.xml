@@ -5,20 +5,20 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.optaplanner</groupId>
-    <artifactId>optaplanner</artifactId>
+    <artifactId>optaplanner-persistence</artifactId>
     <version>6.4.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>optaplanner-benchmark</artifactId>
+  <artifactId>optaplanner-persistence-xstream</artifactId>
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
-  <name>OptaPlanner benchmark</name>
+  <name>OptaPlanner persistence XStream</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
     to optimize business resource scheduling and planning.
 
-    This module contains the benchmarker toolkit.
+    This module contains the XStream integration.
   </description>
 
   <dependencies>
@@ -36,14 +36,6 @@
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-persistence-xstream</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
     </dependency>
     <!-- External dependencies -->
     <!-- Common utils -->
@@ -74,19 +66,6 @@
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
     </dependency>
-    <!-- Benchmarker statistics -->
-    <dependency>
-      <groupId>org.jfree</groupId>
-      <artifactId>jfreechart</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.jfree</groupId>
-      <artifactId>jcommon</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.freemarker</groupId>
-      <artifactId>freemarker</artifactId>
-    </dependency>
   </dependencies>
 
   <build>
@@ -97,9 +76,9 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
-            <Bundle-SymbolicName>org.optaplanner.benchmark</Bundle-SymbolicName>
+            <Bundle-SymbolicName>org.optaplanner.persistence.xstream</Bundle-SymbolicName>
             <Export-Package>
-              org.optaplanner.benchmark.*
+              org.optaplanner.persistence.xstream.*
             </Export-Package>
           </instructions>
         </configuration>

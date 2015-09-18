@@ -12,7 +12,7 @@
   <artifactId>optaplanner-persistence</artifactId>
   <packaging>pom</packaging>
 
-  <name>OptaPlanner Persistence</name>
+  <name>OptaPlanner persistence</name>
   <description>
     OptaPlanner solves planning problems.
     This lightweight, embeddable planning engine implements powerful and scalable algorithms
@@ -22,7 +22,9 @@
   </description>
 
   <modules>
+    <module>optaplanner-persistence-common</module>
     <module>optaplanner-persistence-jpa</module>
+    <module>optaplanner-persistence-xstream</module>
   </modules>
 
 </project>

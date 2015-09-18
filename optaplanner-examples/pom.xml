@@ -82,6 +82,14 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-persistence-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-persistence-xstream</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-benchmark</artifactId>
     </dependency>
     <dependency>

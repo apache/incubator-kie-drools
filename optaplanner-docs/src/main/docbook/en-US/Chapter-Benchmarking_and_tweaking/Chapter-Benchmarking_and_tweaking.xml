@@ -156,6 +156,10 @@
     void write(Solution solution, File outputSolutionFile);
 
 }</programlisting>
+
+        <para>The <literal>SolutionFileIO</literal> interface is in the
+        <literal>optaplanner-persistence-common</literal> jar (which is a dependency of the
+        <literal>optaplanner-benchmark</literal> jar).</para>
       </section>
 
       <section xml:id="xStreamSolutionFileIO">
@@ -249,8 +253,8 @@
 &lt;/plannerBenchmark&gt;</programlisting>
 
       <note>
-        <para>The warm up time budget does not include the time it takes to load the datasets. With large datasets,
-        this can cause the warm up to run considerably longer than specified in the configuration.</para>
+        <para>The warm up time budget does not include the time it takes to load the datasets. With large datasets, this
+        can cause the warm up to run considerably longer than specified in the configuration.</para>
       </note>
     </section>
 
