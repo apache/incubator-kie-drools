@@ -26,9 +26,10 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
-import org.optaplanner.persistence.xstream.impl.score.XStreamBendableScoreConverter;
+import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("PjsSchedule")
@@ -42,7 +43,7 @@ public class Schedule extends AbstractPersistable implements Solution<BendableSc
 
     private List<Allocation> allocationList;
 
-    @XStreamConverter(value = XStreamBendableScoreConverter.class, ints = {1, 2})
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {BendableScoreDefinition.class}, ints = {1, 2})
     private BendableScore score;
 
     public List<Project> getProjectList() {

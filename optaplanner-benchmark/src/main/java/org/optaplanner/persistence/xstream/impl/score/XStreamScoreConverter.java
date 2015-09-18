@@ -22,13 +22,14 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.bendablebigdecimal.BendableBigDecimalScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 /**
- * Some {@link Score} implementations require specific subclasses:
- * For {@link BendableScore}, use {@link XStreamBendableScoreConverter}.
+ * @see Score
  */
 public class XStreamScoreConverter implements Converter {
 
@@ -41,8 +42,8 @@ public class XStreamScoreConverter implements Converter {
     public XStreamScoreConverter(Class<? extends Score> scoreClass,
             Class<? extends ScoreDefinition> scoreDefinitionClass) {
         if (AbstractBendableScoreDefinition.class.isAssignableFrom(scoreDefinitionClass)) {
-            throw new IllegalArgumentException(XStreamScoreConverter.class + " is not compatible with scoreClass ("
-                    + scoreClass + "), use " + XStreamBendableScoreConverter.class.getSimpleName() + " instead.");
+            throw new IllegalArgumentException("This constructor is not compatible with scoreClass ("
+                    + scoreClass + "), use the other constructor with 2 int parameters instead.");
         }
         try {
             scoreDefinition = scoreDefinitionClass.newInstance();
@@ -52,6 +53,28 @@ public class XStreamScoreConverter implements Converter {
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException("The scoreDefinitionClass (" + scoreDefinitionClass
                     + ") does not have a public no-arg constructor", e);
+        }
+        if (scoreClass != scoreDefinition.getScoreClass()) {
+            throw new IllegalStateException("The scoreClass (" + scoreClass + ") of the Score field to serialize to XML"
+                    + " does not match the scoreDefinition's scoreClass (" + scoreDefinition.getScoreClass() + ").");
+        }
+    }
+
+    public XStreamScoreConverter(Class<? extends Score> scoreClass,
+            Class<? extends ScoreDefinition> scoreDefinitionClass, int hardLevelsSize, int softLevelsSize) {
+        if (!AbstractBendableScoreDefinition.class.isAssignableFrom(scoreDefinitionClass)) {
+            throw new IllegalArgumentException("This constructor is not compatible with scoreClass ("
+                    + scoreClass + "), use the other constructor with no int parameters instead.");
+        }
+        if (BendableScoreDefinition.class.equals(scoreDefinitionClass)) {
+            scoreDefinition = new BendableScoreDefinition(hardLevelsSize, softLevelsSize);
+        } else if (BendableLongScoreDefinition.class.equals(scoreDefinitionClass)) {
+            scoreDefinition = new BendableLongScoreDefinition(hardLevelsSize, softLevelsSize);
+        } else if (BendableBigDecimalScoreDefinition.class.equals(scoreDefinitionClass)) {
+            scoreDefinition = new BendableBigDecimalScoreDefinition(hardLevelsSize, softLevelsSize);
+        } else {
+            throw new IllegalArgumentException("The scoreDefinitionClass (" + scoreDefinitionClass
+                    + ") is not yet supported in " + this.getClass().getSimpleName() + ".");
         }
         if (scoreClass != scoreDefinition.getScoreClass()) {
             throw new IllegalStateException("The scoreClass (" + scoreClass + ") of the Score field to serialize to XML"

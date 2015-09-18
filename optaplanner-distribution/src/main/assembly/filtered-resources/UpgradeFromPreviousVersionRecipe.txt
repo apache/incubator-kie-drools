@@ -2750,3 +2750,11 @@ After in *.java:
         ...
     }
 
+[MINOR] If you're using BendableScore and XStream: XStreamBendableScoreConverter (which only supported BendableScore) has been deleted.
+The generic XStreamScoreConverter now supports BendableScore, BendableLongScore and BendableBigDecimalScore too.
+Before in *.java:
+    @XStreamConverter(value = XStreamBendableScoreConverter.class, ints = {1, 2})
+    private BendableScore score;
+After in *.java:
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {BendableScoreDefinition.class}, ints = {1, 2})
+    private BendableScore score;

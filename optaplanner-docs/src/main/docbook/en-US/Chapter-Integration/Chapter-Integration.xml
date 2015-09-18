@@ -56,12 +56,27 @@
 public class Talk {...}</programlisting>
       </note>
 
-      <para>In JPA and Hibernate, there is usually a <literal>@ManyToOne</literal> relationship from most problem fact
-      classes to the planning solution class. Therefore, the problem fact classes reference the planning solution class,
-      which implies that when the solution is <link linkend="cloningASolution">planning cloned</link>, they need to be
-      cloned too. Use an <literal>@DeepPlanningClone</literal> on each such problem fact class to enforce that:</para>
+      <para>Add a dependency to the <literal>optaplanner-persistence-jpa</literal> jar to take advantage of the extra
+      integration features:</para>
 
-      <programlisting language="java">@PlanningSolution // OptaPlanner annotation
+      <section xml:id="jpaAndHibernatePersistingAScore">
+        <title>JPA and Hibernate: Persisting a <literal>Score</literal></title>
+
+        <para>TODO</para>
+
+        <para/>
+      </section>
+
+      <section xml:id="jpaAndHibernatePlanningCloning">
+        <title>JPA and Hibernate: Planning Cloning</title>
+
+        <para>In JPA and Hibernate, there is usually a <literal>@ManyToOne</literal> relationship from most problem fact
+        classes to the planning solution class. Therefore, the problem fact classes reference the planning solution
+        class, which implies that when the solution is <link linkend="cloningASolution">planning cloned</link>, they
+        need to be cloned too. Use an <literal>@DeepPlanningClone</literal> on each such problem fact class to enforce
+        that:</para>
+
+        <programlisting language="java">@PlanningSolution // OptaPlanner annotation
 @Entity // JPA annotation
 public class Conference {
 
@@ -71,7 +86,7 @@ public class Conference {
     ...
 }</programlisting>
 
-      <programlisting language="java">@DeepPlanningClone // OptaPlanner annotation: Force the default planning cloner to planning clone this class too
+        <programlisting language="java">@DeepPlanningClone // OptaPlanner annotation: Force the default planning cloner to planning clone this class too
 @Entity // JPA annotation
 public class Room {
 
@@ -80,22 +95,71 @@ public class Room {
 
 }</programlisting>
 
-      <para>Neglecting to do this can lead to persisting duplicate solutions, JPA exceptions or other side
-      effects.</para>
+        <para>Neglecting to do this can lead to persisting duplicate solutions, JPA exceptions or other side
+        effects.</para>
+      </section>
     </section>
 
     <section xml:id="integrationWithXStream">
-      <title>XML: XStream</title>
+      <title>XML or JSON: XStream</title>
 
       <para>Enrich the domain POJO's (solution, entities and problem facts) with XStream annotations to serialize them
-      to/from XML.</para>
+      to/from XML or JSON.</para>
+
+      <para>Add a dependency to the <literal>optaplanner-persistence-xstream</literal> jar to take advantage of the
+      extra integration features:</para>
+
+      <section xml:id="xStreamMarshallingAScore">
+        <title>XStream: Marshalling a <literal>Score</literal></title>
+
+        <para>When a <literal>Score</literal> is marshalled to XML or JSON by the default XStream configuration, it's
+        verbose and ugly. To fix that, configure the <literal>XStreamScoreConverter</literal> and provide the
+        <literal>ScoreDefinition</literal> as a parameter:</para>
+
+        <programlisting language="java">@PlanningSolution
+@XStreamAlias("CloudBalance")
+public class CloudBalance implements Solution&lt;HardSoftScore&gt; {
+
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
+    private HardSoftScore score;
+
+    ...
+}</programlisting>
+
+        <para>For example, this will generate pretty XML:</para>
+
+        <programlisting language="xml">&lt;CloudBalance&gt;
+   ...
+   &lt;score&gt;0hard/-200soft&lt;/score&gt;
+&lt;/CloudBalance&gt;</programlisting>
+
+        <para>To use this for any type of bendable score, also provide 2 <literal>int</literal> parameters to define
+        <literal>hardLevelsSize</literal> and <literal>softLevelsSize</literal>:</para>
+
+        <programlisting language="java">@PlanningSolution
+@XStreamAlias("Schedule")
+public class Schedule implements Solution&lt;BendableScore&gt; {
+
+    @XStreamConverter(value = XStreamScoreConverter.class, types = {BendableScoreDefinition.class}, ints = {2, 3})
+    private BendableScore score;
+
+    ...
+}</programlisting>
+
+        <para>For example, this will generate:</para>
+
+        <programlisting language="xml">&lt;Schedule&gt;
+   ...
+   &lt;score&gt;0/0/-100/-20/-3&lt;/score&gt;
+&lt;/Schedule&gt;</programlisting>
+      </section>
     </section>
 
     <section xml:id="integrationWithJaxb">
-      <title>XML: JAXB</title>
+      <title>XML or JSON: JAXB</title>
 
       <para>Enrich the domain POJO's (solution, entities and problem facts) with JAXB annotations to serialize them
-      to/from XML.</para>
+      to/from XML or JSON.</para>
     </section>
   </section>
 
