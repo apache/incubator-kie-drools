@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class ExpressionMethod extends ExpressionPart {
 
-    private Map<String, ExpressionFormLine> params = new LinkedHashMap<String, ExpressionFormLine>();
+    private Map<ExpressionMethodParameterDefinition, ExpressionFormLine> params = new LinkedHashMap<ExpressionMethodParameterDefinition, ExpressionFormLine>();
 
     public ExpressionMethod() {
     }
@@ -48,17 +48,18 @@ public class ExpressionMethod extends ExpressionPart {
                parametricType );
     }
 
-    public Map<String, ExpressionFormLine> getParams() {
+    public Map<ExpressionMethodParameterDefinition, ExpressionFormLine> getParams() {
         return params;
     }
 
-    public void setParams( Map<String, ExpressionFormLine> params ) {
+    public void setParams( Map<ExpressionMethodParameterDefinition, ExpressionFormLine> params ) {
         this.params.putAll( params );
     }
 
     public void putParam( String name,
                           ExpressionFormLine expression ) {
-        this.params.put( name,
+        this.params.put( new ExpressionMethodParameterDefinition( this.params.size(),
+                                                                  name ),
                          expression );
     }
 
@@ -77,9 +78,9 @@ public class ExpressionMethod extends ExpressionPart {
     }
 
     public String getParameterDataType( final ExpressionFormLine efl ) {
-        for ( Map.Entry<String, ExpressionFormLine> e : params.entrySet() ) {
+        for ( Map.Entry<ExpressionMethodParameterDefinition, ExpressionFormLine> e : params.entrySet() ) {
             if ( e.getValue().equals( efl ) ) {
-                return e.getKey();
+                return e.getKey().getDataType();
             }
         }
         return null;
@@ -91,13 +92,19 @@ public class ExpressionMethod extends ExpressionPart {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals( Object o ) {
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
 
         ExpressionMethod that = (ExpressionMethod) o;
 
-        if (params != null ? !params.equals(that.params) : that.params != null) return false;
+        if ( params != null ? !params.equals( that.params ) : that.params != null ) {
+            return false;
+        }
 
         return true;
     }
@@ -106,7 +113,7 @@ public class ExpressionMethod extends ExpressionPart {
     public int hashCode() {
         int result = super.hashCode();
         result = ~~result;
-        result = 31 * result + (params != null ? params.hashCode() : 0);
+        result = 31 * result + ( params != null ? params.hashCode() : 0 );
         result = ~~result;
         return result;
     }
