@@ -25,6 +25,8 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
 
     private static final long serialVersionUID = 510l;
 
+    static final String EVENT_FORMAT_VERSION = "5";
+
     private long              startTimestamp;
     private long              duration;
     private boolean           expired;
@@ -78,8 +80,8 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
         this.duration = duration;
     }
 
-    public String toExternalForm() {
-        return  "5:" + super.getId() + ":" + getIdentityHashCode() + ":" + getObjectHashCode() + ":" + getRecency() + ":" + ( ((super.getEntryPoint() != null) ? super.getEntryPoint().getEntryPointId() : "null" ) + ":" + getObject() );
+    protected String getFormatVersion() {
+        return EVENT_FORMAT_VERSION;
     }
 
     /**

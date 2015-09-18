@@ -16,14 +16,14 @@
 
 package org.drools.core.runtime.help.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter;
+import com.thoughtworks.xstream.io.ExtendedHierarchicalStreamWriterHelper;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
@@ -34,28 +34,39 @@ import org.drools.core.command.runtime.process.AbortWorkItemCommand;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
 import org.drools.core.command.runtime.process.SignalEventCommand;
 import org.drools.core.command.runtime.process.StartProcessCommand;
-import org.drools.core.command.runtime.rule.*;
+import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
+import org.drools.core.command.runtime.rule.ClearActivationGroupCommand;
+import org.drools.core.command.runtime.rule.ClearAgendaCommand;
+import org.drools.core.command.runtime.rule.ClearAgendaGroupCommand;
+import org.drools.core.command.runtime.rule.ClearRuleFlowGroupCommand;
+import org.drools.core.command.runtime.rule.DeleteCommand;
+import org.drools.core.command.runtime.rule.FireAllRulesCommand;
+import org.drools.core.command.runtime.rule.GetObjectCommand;
+import org.drools.core.command.runtime.rule.GetObjectsCommand;
+import org.drools.core.command.runtime.rule.InsertElementsCommand;
+import org.drools.core.command.runtime.rule.InsertObjectCommand;
+import org.drools.core.command.runtime.rule.ModifyCommand;
+import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.rule.Declaration;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
 import org.kie.api.command.Command;
-import org.kie.internal.command.CommandFactory;
 import org.kie.api.command.Setter;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
+import org.kie.internal.command.CommandFactory;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.Converter;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.converters.UnmarshallingContext;
-import com.thoughtworks.xstream.converters.collections.AbstractCollectionConverter;
-import com.thoughtworks.xstream.io.ExtendedHierarchicalStreamWriterHelper;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class XStreamXML {
     public static volatile boolean SORT_MAPS = false;
@@ -206,7 +217,7 @@ public class XStreamXML {
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
-            FactHandle factHandle = new DefaultFactHandle( reader.getAttribute( "fact-handle" ) );
+            FactHandle factHandle = DefaultFactHandle.createFromExternalFormat( reader.getAttribute( "fact-handle" ) );
 
             List<Setter> setters = new ArrayList();
             while ( reader.hasMoreChildren() ) {
@@ -247,7 +258,7 @@ public class XStreamXML {
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
-            FactHandle factHandle = new DefaultFactHandle( reader.getAttribute( "fact-handle" ) );
+            FactHandle factHandle = DefaultFactHandle.createFromExternalFormat( reader.getAttribute( "fact-handle" ) );
 
             return CommandFactory.newDelete( factHandle );
         }
@@ -404,7 +415,7 @@ public class XStreamXML {
 
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
-            FactHandle factHandle = new DefaultFactHandle( reader.getAttribute( "fact-handle" ) );
+            FactHandle factHandle = DefaultFactHandle.createFromExternalFormat( reader.getAttribute( "fact-handle" ) );
             String identifierOut = reader.getAttribute( "out-identifier" );
 
             GetObjectCommand cmd = new GetObjectCommand( factHandle );
@@ -897,13 +908,13 @@ public class XStreamXML {
                 } else if ( reader.getNodeName().equals( "fact-handle" ) ) {
                     String identifier = reader.getAttribute( "identifier" );
                     facts.put( identifier,
-                               new DefaultFactHandle( reader.getAttribute( "external-form" ) ) );
+                               DefaultFactHandle.createFromExternalFormat( reader.getAttribute( "external-form" ) ) );
                 } else if ( reader.getNodeName().equals( "fact-handles" ) ) {
                     String identifier = reader.getAttribute( "identifier" );
                     List<FactHandle> list = new ArrayList<FactHandle>();
                     while ( reader.hasMoreChildren() ) {
                         reader.moveDown();
-                        list.add( new DefaultFactHandle( reader.getAttribute( "external-form" ) ) );
+                        list.add( DefaultFactHandle.createFromExternalFormat( reader.getAttribute( "external-form" ) ) );
                         reader.moveUp();
                     }
                     facts.put( identifier,
@@ -1009,7 +1020,7 @@ public class XStreamXML {
                     reader.moveUp();
 
                     reader.moveDown();
-                    FactHandle handle = new DefaultFactHandle( reader.getAttribute( "external-form" ) );
+                    FactHandle handle = DefaultFactHandle.createFromExternalFormat( reader.getAttribute( "external-form" ) );
                     reader.moveUp();
 
                     objects.add( object );

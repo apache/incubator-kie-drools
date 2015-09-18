@@ -16,22 +16,21 @@
 
 package org.drools.core.util;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.api.conf.EqualityBehaviorOption;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.rule.FactHandle;
-
-import static org.junit.Assert.*;
-
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class ObjectHashMapTest {
     @Test
@@ -152,7 +151,7 @@ public class ObjectHashMapTest {
             assertSame( handle, ksession.getFactHandle( s ) );
             
             // now check with disconnected facthandle
-            handle = new DefaultFactHandle(((DefaultFactHandle)handle).toExternalForm());
+            handle = DefaultFactHandle.createFromExternalFormat(((DefaultFactHandle)handle).toExternalForm());
             assertEquals( s, ksession.getObject( handle ) );
         }
         
@@ -160,7 +159,7 @@ public class ObjectHashMapTest {
             FactHandle handle = handles.get( i );         
             
             // now retract with disconnected facthandle
-            handle = new DefaultFactHandle(((DefaultFactHandle)handle).toExternalForm());
+            handle = DefaultFactHandle.createFromExternalFormat(((DefaultFactHandle)handle).toExternalForm());
             ksession.retract( handle );
             assertEquals( length - i -1, ksession.getObjects().size() );
             assertEquals( length - i -1, ksession.getFactHandles().size() );            
@@ -195,7 +194,7 @@ public class ObjectHashMapTest {
             assertSame( handle, ksession.getFactHandle( s ) );
             
             // now check with disconnected facthandle
-            handle = new DefaultFactHandle(((DefaultFactHandle)handle).toExternalForm());
+            handle = DefaultFactHandle.createFromExternalFormat(((DefaultFactHandle)handle).toExternalForm());
             assertEquals( s, ksession.getObject( handle ) );            
         }
         
@@ -203,7 +202,7 @@ public class ObjectHashMapTest {
             FactHandle handle = handles.get( i );         
             
             // now retract with disconnected facthandle
-            handle = new DefaultFactHandle(((DefaultFactHandle)handle).toExternalForm());
+            handle = DefaultFactHandle.createFromExternalFormat(((DefaultFactHandle)handle).toExternalForm());
             ksession.retract( handle );
             assertEquals( length - i -1, ksession.getObjects().size() );
             assertEquals( length - i -1, ksession.getFactHandles().size() );            

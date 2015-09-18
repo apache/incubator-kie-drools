@@ -65,7 +65,7 @@ public class GetObjectInEntryPointCommand
 
     @XmlAttribute(name="fact-handle", required=true)
     public void setFactHandleFromString(String factHandleId) {
-        factHandle = new DefaultFactHandle(factHandleId);
+        factHandle = DefaultFactHandle.createFromExternalFormat(factHandleId);
     }
     
     public String getFactHandleFromString() {

@@ -16,18 +16,18 @@
 
 package org.drools.core.command.runtime.rule;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.Context;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectCommand
@@ -59,7 +59,7 @@ public class GetObjectCommand
 
     @XmlAttribute(name="fact-handle", required=true)
     public void setFactHandleFromString(String factHandleId) {
-        factHandle = new DefaultFactHandle(factHandleId);
+        factHandle = DefaultFactHandle.createFromExternalFormat(factHandleId);
     }
     
     public String getFactHandleFromString() {
