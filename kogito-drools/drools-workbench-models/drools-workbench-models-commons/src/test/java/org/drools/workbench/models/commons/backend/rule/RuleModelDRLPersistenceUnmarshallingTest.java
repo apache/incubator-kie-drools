@@ -16,6 +16,17 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
@@ -64,20 +75,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class RuleModelDRLPersistenceUnmarshallingTest {
 
@@ -1050,16 +1049,16 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                 + "then\n"
                 + "end";
 
-        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal(drl,
-                Collections.EMPTY_LIST,
-                dmo);
+        RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                           Collections.EMPTY_LIST,
+                                                                           dmo );
 
-        assertNotNull(m);
-        assertEquals(1, m.lhs.length);
-        assertTrue(m.lhs[0] instanceof FactPattern);
-        SingleFieldConstraint constraint = (SingleFieldConstraint) ((FactPattern) m.lhs[0]).getConstraint(0);
-        assertEquals("functionTrue() && functionFalse()", constraint.getValue());
-        assertEquals(BaseSingleFieldConstraint.TYPE_PREDICATE, constraint.getConstraintValueType());
+        assertNotNull( m );
+        assertEquals( 1, m.lhs.length );
+        assertTrue( m.lhs[ 0 ] instanceof FactPattern );
+        SingleFieldConstraint constraint = (SingleFieldConstraint) ( (FactPattern) m.lhs[ 0 ] ).getConstraint( 0 );
+        assertEquals( "functionTrue() && functionFalse()", constraint.getValue() );
+        assertEquals( BaseSingleFieldConstraint.TYPE_PREDICATE, constraint.getConstraintValueType() );
     }
 
     @Test
@@ -7871,6 +7870,94 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       fp0sfc0.getFieldType() );
         assertEquals( "http://www.redhat.com",
                       fp0sfc0.getValue() );
+
+        assertEquals( 0,
+                      m.rhs.length );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
+    //https://bugzilla.redhat.com/show_bug.cgi?id=1264339
+    public void testBoundListConstraint() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"List_Of_Values_Issue\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  MyTransactionVO( $myData : myData )\n" +
+                "  MyDataList( myDataList contains $myData )\n" +
+                "     then\n" +
+                "end";
+
+        addModelField( "org.test.MyTransactionVO",
+                       "this",
+                       "org.test.MyTransactionVO",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.MyTransactionVO",
+                       "myData",
+                       List.class.getName(),
+                       DataType.TYPE_COLLECTION );
+
+        addModelField( "org.test.MyDataList",
+                       "this",
+                       "org.test.MyDataList",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.MyDataList",
+                       "myDataList",
+                       List.class.getName(),
+                       DataType.TYPE_COLLECTION );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 2,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "MyTransactionVO",
+                      fp0.getFactType() );
+        assertEquals( 1,
+                      fp0.getNumberOfConstraints() );
+
+        final IPattern p1 = m.lhs[ 1 ];
+        assertTrue( p1 instanceof FactPattern );
+        final FactPattern fp1 = (FactPattern) p1;
+        assertEquals( "MyDataList",
+                      fp1.getFactType() );
+        assertEquals( 1,
+                      fp1.getNumberOfConstraints() );
+
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint fp0sfc0 = (SingleFieldConstraint) fp0.getConstraint( 0 );
+        assertEquals( "MyTransactionVO",
+                      fp0sfc0.getFactType() );
+        assertEquals( "myData",
+                      fp0sfc0.getFieldName() );
+        assertEquals( "$myData",
+                      fp0sfc0.getFieldBinding() );
+        assertNull( fp0sfc0.getOperator() );
+        assertNull( fp0sfc0.getValue() );
+
+        assertTrue( fp1.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint fp1sfc0 = (SingleFieldConstraint) fp1.getConstraint( 0 );
+        assertEquals( "MyDataList",
+                      fp1sfc0.getFactType() );
+        assertEquals( "myDataList",
+                      fp1sfc0.getFieldName() );
+        assertEquals( "contains",
+                      fp1sfc0.getOperator() );
+        assertEquals( "$myData",
+                      fp1sfc0.getValue() );
+        assertEquals( SingleFieldConstraint.TYPE_VARIABLE,
+                      fp1sfc0.getConstraintValueType() );
 
         assertEquals( 0,
                       m.rhs.length );
