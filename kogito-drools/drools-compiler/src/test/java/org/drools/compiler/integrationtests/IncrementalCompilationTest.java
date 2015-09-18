@@ -61,6 +61,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -1895,5 +1900,59 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         kc.updateToVersion( releaseId1 );
 
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testConcurrentKJarDeployment() throws Exception {
+        // DROOLS-923
+        int parallelThreads = 10;
+        ExecutorService executor = Executors.newFixedThreadPool( parallelThreads );
+
+        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+        for (Callable<Boolean> s : Deployer.getDeployer( parallelThreads )) {
+            ecs.submit(s);
+        }
+        for (int i = 0; i < parallelThreads; ++i) {
+            assertTrue( ecs.take().get() );
+        }
+    }
+
+    public static class Deployer implements Callable<Boolean> {
+
+        private static final KieServices ks = KieServices.Factory.get();
+
+        private final int i;
+
+        public Deployer( int i ) {
+            this.i = i;
+        }
+
+        public Boolean call() throws Exception {
+            String drl =
+                    "rule R when\n" +
+                    "   Integer( this == " + i + " )\n" +
+                    "then\n" +
+                    "end\n";
+
+            ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-" + i, "1.0.0" );
+            try {
+                for (int i = 0; i < 10; i++) {
+                    createAndDeployJar( ks, releaseId1, drl );
+                    ks.getRepository().removeKieModule( releaseId1 );
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+
+        public static Collection<Callable<Boolean>> getDeployer( int nr ) {
+            Collection<Callable<Boolean>> solvers = new ArrayList<Callable<Boolean>>();
+            for ( int i = 0; i < nr; ++i ) {
+                solvers.add( new Deployer(i) );
+            }
+            return solvers;
+        }
     }
 }
