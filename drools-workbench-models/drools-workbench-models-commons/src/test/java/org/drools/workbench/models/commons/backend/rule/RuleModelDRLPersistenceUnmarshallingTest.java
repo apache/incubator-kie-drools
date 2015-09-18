@@ -54,6 +54,7 @@ import org.drools.workbench.models.datamodel.rule.ExpressionCollection;
 import org.drools.workbench.models.datamodel.rule.ExpressionField;
 import org.drools.workbench.models.datamodel.rule.ExpressionFormLine;
 import org.drools.workbench.models.datamodel.rule.ExpressionMethod;
+import org.drools.workbench.models.datamodel.rule.ExpressionMethodParameterDefinition;
 import org.drools.workbench.models.datamodel.rule.ExpressionPart;
 import org.drools.workbench.models.datamodel.rule.ExpressionText;
 import org.drools.workbench.models.datamodel.rule.ExpressionUnboundFact;
@@ -7879,17 +7880,125 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
+    private void assertEqualsIgnoreWhitespace( final String expected,
+                                               final String actual ) {
+        final String cleanExpected = expected.replaceAll( "\\s+",
+                                                          "" );
+        final String cleanActual = actual.replaceAll( "\\s+",
+                                                      "" );
+
+        assertEquals( cleanExpected,
+                      cleanActual );
+    }
+
     @Test
-    //https://bugzilla.redhat.com/show_bug.cgi?id=1264339
+    public void testStringReplaceExpression() throws Exception {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1264321
+        String drl = "rule \"Replace_condition_Issue\"\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "  MyType( myString.replace(\"a\",\"b\"))\n" +
+                     "then\n" +
+                     "end";
+
+        addModelField( "org.test.MyType",
+                       "this",
+                       "org.test.MyType",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.MyType",
+                       "myString",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        addMethodInformation( "java.lang.String",
+                              "replace",
+                              new ArrayList<String>() {{
+                                  add( "String" );
+                                  add( "String" );
+                              }},
+                              "java.lang.String",
+                              null,
+                              DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "MyType",
+                      fp0.getFactType() );
+        assertEquals( 1,
+                      fp0.getNumberOfConstraints() );
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraintEBLeftSide );
+        final SingleFieldConstraintEBLeftSide fp0sfc0 = (SingleFieldConstraintEBLeftSide) fp0.getConstraint( 0 );
+
+        assertEquals( 3,
+                      fp0sfc0.getExpressionLeftSide().getParts().size() );
+
+        assertTrue( fp0sfc0.getExpressionLeftSide().getParts().get( 0 ) instanceof ExpressionUnboundFact );
+        final ExpressionUnboundFact ep0 = (ExpressionUnboundFact) fp0sfc0.getExpressionLeftSide().getParts().get( 0 );
+        assertEquals( "MyType",
+                      ep0.getFactType() );
+
+        assertTrue( fp0sfc0.getExpressionLeftSide().getParts().get( 1 ) instanceof ExpressionField );
+        final ExpressionField ep1 = (ExpressionField) fp0sfc0.getExpressionLeftSide().getParts().get( 1 );
+        assertEquals( "myString",
+                      ep1.getName() );
+
+        assertTrue( fp0sfc0.getExpressionLeftSide().getParts().get( 2 ) instanceof ExpressionMethod );
+        final ExpressionMethod ep2 = (ExpressionMethod) fp0sfc0.getExpressionLeftSide().getParts().get( 2 );
+        assertEquals( "replace",
+                      ep2.getName() );
+        assertEquals( 2,
+                      ep2.getParams().size() );
+
+        final ExpressionFormLine param0 = ep2.getParams().get( new ExpressionMethodParameterDefinition( 0, "String" ) );
+        assertNotNull( param0 );
+        assertEquals( 1,
+                      param0.getParts().size() );
+        assertNotNull( param0.getParts().get( 0 ) );
+        assertEquals( "a",
+                      param0.getParts().get( 0 ).getName() );
+        assertEquals( "String",
+                      param0.getParts().get( 0 ).getClassType() );
+
+        final ExpressionFormLine param1 = ep2.getParams().get( new ExpressionMethodParameterDefinition( 1, "String" ) );
+        assertNotNull( param1 );
+        assertEquals( 1,
+                      param1.getParts().size() );
+        assertNotNull( param1.getParts().get( 0 ) );
+        assertEquals( "b",
+                      param1.getParts().get( 0 ).getName() );
+        assertEquals( "String",
+                      param1.getParts().get( 0 ).getClassType() );
+
+        assertEquals( 0,
+                      m.rhs.length );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
+    @Test
     public void testBoundListConstraint() throws Exception {
+        //https://bugzilla.redhat.com/show_bug.cgi?id=1264339
         String drl = "package org.test;\n" +
-                "rule \"List_Of_Values_Issue\"\n" +
-                "dialect \"mvel\"\n" +
-                "when\n" +
-                "  MyTransactionVO( $myData : myData )\n" +
-                "  MyDataList( myDataList contains $myData )\n" +
-                "     then\n" +
-                "end";
+                     "rule \"List_Of_Values_Issue\"\n" +
+                     "dialect \"mvel\"\n" +
+                     "when\n" +
+                     "  MyTransactionVO( $myData : myData )\n" +
+                     "  MyDataList( myDataList contains $myData )\n" +
+                     "     then\n" +
+                     "end";
 
         addModelField( "org.test.MyTransactionVO",
                        "this",
@@ -7966,16 +8075,4 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEqualsIgnoreWhitespace( drl,
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
-
-    private void assertEqualsIgnoreWhitespace( final String expected,
-                                               final String actual ) {
-        final String cleanExpected = expected.replaceAll( "\\s+",
-                                                          "" );
-        final String cleanActual = actual.replaceAll( "\\s+",
-                                                      "" );
-
-        assertEquals( cleanExpected,
-                      cleanActual );
-    }
-
 }
