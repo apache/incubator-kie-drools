@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jbpm.test.casemgmt;
+package org.jbpm.process.instance.command;
 
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;

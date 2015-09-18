@@ -16,6 +16,7 @@
 
 package org.jbpm.test.casemgmt;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,11 +25,16 @@ import java.util.Random;
 
 import org.jbpm.casemgmt.CaseMgmtService;
 import org.jbpm.casemgmt.CaseMgmtUtil;
+import org.jbpm.process.instance.command.UpdateTimerCommand;
+import org.jbpm.services.task.commands.SetTaskPropertyCommand;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.Task;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalI18NText;
 
 public class WorkCaseService {
 
@@ -128,7 +134,15 @@ public class WorkCaseService {
     }
     
     private void updateTaskName(long caseId, Task t, String name) {
-        kieSession.execute(new UpdateTaskNameCommand(taskService, caseId, t, name));
+        kieSession.execute(new SetNodeNameCommand(caseId, t.getName(), name));
+        
+        List<I18NText> updatedNames = new ArrayList<I18NText>();
+        I18NText updatedName = TaskModelProvider.getFactory().newI18NText();
+        ((InternalI18NText) updatedName).setLanguage(t.getNames().get(0).getLanguage());
+        ((InternalI18NText) updatedName).setText(name);
+        updatedNames.add(updatedName);
+        
+        taskService.execute(new SetTaskPropertyCommand(t.getId(), null, SetTaskPropertyCommand.TASK_NAMES_PROPERTY, updatedNames));
     }
 
     public static enum WorkCaseMilestones {

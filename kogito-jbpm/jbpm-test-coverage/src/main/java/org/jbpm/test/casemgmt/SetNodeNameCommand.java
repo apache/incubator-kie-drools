@@ -16,9 +16,7 @@
 
 package org.jbpm.test.casemgmt;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -26,31 +24,21 @@ import org.jbpm.workflow.core.impl.NodeImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.api.task.TaskService;
-import org.kie.api.task.model.I18NText;
-import org.kie.api.task.model.Task;
 import org.kie.internal.command.Context;
-import org.kie.internal.task.api.InternalTaskService;
-import org.kie.internal.task.api.TaskModelProvider;
-import org.kie.internal.task.api.model.InternalI18NText;
 
-public class UpdateTaskNameCommand implements GenericCommand<Object> {
+public class SetNodeNameCommand implements GenericCommand<Object> {
     
     private static final long serialVersionUID = 7323092505416116457L;
     
-    private TaskService taskService;
     private long processInstanceId;
-    private Task task;
+    private String oldName;
     private String newName;
 
-    public UpdateTaskNameCommand(TaskService taskService, long processInstanceId, Task task, String newName) {
-        this.taskService = taskService;
+    public SetNodeNameCommand(long processInstanceId, String oldName, String newName) {
         this.processInstanceId = processInstanceId;
-        this.task = task;
+        this.oldName = oldName;
         this.newName = newName;
     }
-
-    
 
     @Override
     public Object execute(Context context) {
@@ -58,18 +46,10 @@ public class UpdateTaskNameCommand implements GenericCommand<Object> {
         
         Collection<NodeInstance> nodes = ((WorkflowProcessInstance) kieSession.getProcessInstance(processInstanceId)).getNodeInstances();
         for (NodeInstance ni : nodes) {
-            if (ni.getNodeName().equals(task.getName())) {
+            if (ni.getNodeName().equals(oldName)) {
                 ((NodeImpl)ni.getNode()).setName(newName);
             }
         }
-        
-        List<I18NText> updatedNames = new ArrayList<I18NText>();
-        I18NText updatedName = TaskModelProvider.getFactory().newI18NText();
-        ((InternalI18NText) updatedName).setLanguage(task.getNames().get(0).getLanguage());
-        ((InternalI18NText) updatedName).setText(newName);
-        updatedNames.add(updatedName);
-
-        ((InternalTaskService) taskService).setTaskNames(task.getId(), updatedNames);
         
         return null;
     }
