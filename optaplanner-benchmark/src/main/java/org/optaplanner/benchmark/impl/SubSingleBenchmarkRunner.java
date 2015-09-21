@@ -38,10 +38,17 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
 
     private final SubSingleBenchmarkResult subSingleBenchmarkResult;
 
+    private final ClassLoader classLoader;
+
     private Throwable failureThrowable = null;
 
     public SubSingleBenchmarkRunner(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        this(subSingleBenchmarkResult, null);
+    }
+
+    public SubSingleBenchmarkRunner(SubSingleBenchmarkResult subSingleBenchmarkResult, ClassLoader classLoader) {
         this.subSingleBenchmarkResult = subSingleBenchmarkResult;
+        this.classLoader = classLoader != null ? classLoader : getClass().getClassLoader();
     }
 
     public SubSingleBenchmarkResult getSubSingleBenchmarkResult() {
@@ -60,6 +67,7 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
     // Benchmark methods
     // ************************************************************************
 
+    @Override
     public SubSingleBenchmarkRunner call() {
         MDC.put(NAME_MDC, subSingleBenchmarkResult.getName());
         Runtime runtime = Runtime.getRuntime();

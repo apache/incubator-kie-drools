@@ -144,7 +144,7 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
             throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") is null," +
                     " call configure(...) first.");
         }
-        return plannerBenchmarkConfig.buildPlannerBenchmark();
+        return plannerBenchmarkConfig.buildPlannerBenchmark(classLoader);
     }
 
 }
