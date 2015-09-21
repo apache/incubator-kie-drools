@@ -14,13 +14,12 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<solver>
-  <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
-  <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
 
-  <!-- Score configuration -->
-  <scoreDirectorFactory>
-    <scoreDefinitionType>SIMPLE</scoreDefinitionType>
-    <scoreDrl>org/optaplanner/core/api/solver/testdataScoreRules.drl</scoreDrl>
-  </scoreDirectorFactory>
-</solver>
+<TestdataSolution id="1">
+  <entityList id="2">
+    <TestdataEntity id="3"/>
+  </entityList>
+  <valueList id="4">
+    <TestdataValue id="5"/>
+  </valueList>
+</TestdataSolution>

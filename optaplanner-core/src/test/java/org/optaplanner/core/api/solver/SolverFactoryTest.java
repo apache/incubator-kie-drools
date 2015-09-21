@@ -17,9 +17,6 @@
 package org.optaplanner.core.api.solver;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Enumeration;
 
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -27,10 +24,8 @@ import org.mockito.stubbing.Answer;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 
 import static org.junit.Assert.*;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
 
-public class SolverFactoryTest {
+public class SolverFactoryTest extends ClassLoaderTest {
 
     @Test
     public void testdataSolverConfig() {
@@ -55,55 +50,6 @@ public class SolverFactoryTest {
                 "divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataSolverConfig.xml", classLoader);
         Solver solver = solverFactory.buildSolver();
         assertNotNull(solver);
-    }
-
-    protected ClassLoader mockDivertingClassLoader() throws ClassNotFoundException, IOException {
-        final String divertedPrefix = "divertThroughClassLoader";
-        final ClassLoader realClassLoader = getClass().getClassLoader();
-        ClassLoader divertingClassLoader = mock(ClassLoader.class);
-        // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
-        when(divertingClassLoader.loadClass(anyString())).thenAnswer(new Answer<Class<?>>() {
-            @Override
-            public Class<?> answer(InvocationOnMock invocation) throws Throwable {
-                String className = (String) invocation.getArguments()[0];
-                if (className.startsWith(divertedPrefix + ".")) {
-                    className = className.substring(divertedPrefix.length() + 1);
-                }
-                return realClassLoader.loadClass(className);
-            }
-        });
-        when(divertingClassLoader.getResource(anyString())).thenAnswer(new Answer<URL>() {
-            @Override
-            public URL answer(InvocationOnMock invocation) {
-                String resourceName = (String) invocation.getArguments()[0];
-                if (resourceName.startsWith(divertedPrefix + "/")) {
-                    resourceName = resourceName.substring(divertedPrefix.length() + 1);
-                }
-                return realClassLoader.getResource(resourceName);
-            }
-        });
-        when(divertingClassLoader.getResourceAsStream(anyString())).thenAnswer(new Answer<InputStream>() {
-            @Override
-            public InputStream answer(InvocationOnMock invocation) {
-                String resourceName = (String) invocation.getArguments()[0];
-                if (resourceName.startsWith(divertedPrefix + "/")) {
-                    resourceName = resourceName.substring(divertedPrefix.length() + 1);
-                }
-                return realClassLoader.getResourceAsStream(resourceName);
-            }
-        });
-        when(divertingClassLoader.getResources(anyString())).thenAnswer(new Answer<Enumeration<URL>>() {
-            @Override
-            public Enumeration<URL> answer(InvocationOnMock invocation) throws Throwable {
-                String resourceName = (String) invocation.getArguments()[0];
-                if (resourceName.startsWith(divertedPrefix + "/")) {
-                    resourceName = resourceName.substring(divertedPrefix.length() + 1);
-                }
-                return realClassLoader.getResources(resourceName);
-            }
-        });
-        // Mocking divertingClassLoader.getParent() fails because it's a final method
-        return divertingClassLoader;
     }
 
     @Test
