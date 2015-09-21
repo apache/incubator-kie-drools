@@ -16,8 +16,11 @@
 
 package org.optaplanner.benchmark.api;
 
+import java.io.File;
 import java.io.IOException;
 
+import com.google.common.io.Files;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.api.solver.ClassLoaderTest;
 
@@ -31,6 +34,18 @@ public class PlannerBenchmarkFactoryTest extends ClassLoaderTest {
                 "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfig.xml");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);
+    }
+
+    @Test
+    public void testdataPlannerBenchmarkConfigBenchmark() {
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
+                "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfig.xml");
+        File tempDir = Files.createTempDir();
+        plannerBenchmarkFactory.getPlannerBenchmarkConfig().setBenchmarkDirectory(tempDir);
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        assertNotNull(plannerBenchmark);
+        plannerBenchmark.benchmark();
+        tempDir.delete();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -48,6 +63,19 @@ public class PlannerBenchmarkFactoryTest extends ClassLoaderTest {
                 "divertThroughClassLoader/org/optaplanner/benchmark/api/classloaderTestdataPlannerBenchmarkConfig.xml", classLoader);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);
+    }
+
+    @Test
+    public void testdataPlannerBenchmarkConfigWithClassLoaderBenchmark() throws ClassNotFoundException, IOException {
+        ClassLoader classLoader = mockDivertingClassLoader();
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
+                "divertThroughClassLoader/org/optaplanner/benchmark/api/classloaderTestdataPlannerBenchmarkConfig.xml", classLoader);
+        File tempDir = Files.createTempDir();
+        plannerBenchmarkFactory.getPlannerBenchmarkConfig().setBenchmarkDirectory(tempDir);
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        assertNotNull(plannerBenchmark);
+        plannerBenchmark.benchmark();
+        tempDir.delete();
     }
 
 }
