@@ -51,7 +51,7 @@ public class DefaultPillarSelector extends AbstractSelector
     protected final boolean subPillarEnabled;
     /**
      * Unlike {@link DefaultSubChainSelector#minimumSubChainSize} and {@link DefaultSubChainSelector#maximumSubChainSize},
-     * the sub selection here is any sub set. For example from ABCDE,it can select BCD and also ACD.
+     * the sub selection here is any sub set. For example from ABCDE, it can select BCD and also ACD.
      */
     protected final int minimumSubPillarSize;
     protected final int maximumSubPillarSize;

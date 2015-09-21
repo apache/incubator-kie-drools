@@ -54,7 +54,7 @@ public class DefaultSubChainSelector extends AbstractSelector
 
     /**
      * Unlike {@link DefaultPillarSelector#minimumSubPillarSize} and {@link DefaultPillarSelector#maximumSubPillarSize},
-     * the sub selection here is a sequence. For example from ABCDE,it can select BCD, but not ACD.
+     * the sub selection here is a sequence. For example from ABCDE, it can select BCD, but not ACD.
      */
     protected final int minimumSubChainSize;
     protected final int maximumSubChainSize;
