@@ -389,13 +389,14 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
 
     private void mergeSubSingleStatistics(SubSingleBenchmarkResult median) {
         if (!median.isSuccess()) {
-            logger.debug("The median SubSingleBenchmarkResult ({}) is not a success, not copying it's single statistics"
-                    + " to parent SingleBenchmarkResult's ({}) directory.", median, this);
+            logger.debug("The median SubSingleBenchmarkResult (index: {}) is not a success, not copying it's single statistics"
+                    + " to parent SingleBenchmarkResult's ({}) directory.", median.getSubSingleBenchmarkIndex(), this);
             return;
         }
         if (median.getEffectiveSingleStatisticMap() == null) {
-            logger.debug("The median SubSingleBenchmarkResult ({}) does not have any single statistics, "
-                    + "nothing to copy to parent SingleBenchmarkResult ({}) directory.", median, this);
+            logger.debug("The median SubSingleBenchmarkResult (index: {}) does not have any single statistics, "
+                    + "nothing to copy to parent SingleBenchmarkResult ({}) directory. If this is an aggregation, "
+                    + "this is expected.", median.getSubSingleBenchmarkIndex(), this);
             return;
         }
         for (SingleStatistic singleStatistic : median.getEffectiveSingleStatisticMap().values()) {
