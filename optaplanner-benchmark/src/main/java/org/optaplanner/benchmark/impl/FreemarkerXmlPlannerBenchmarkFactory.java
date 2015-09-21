@@ -40,10 +40,20 @@ import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
  */
 public class FreemarkerXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
 
+    protected final ClassLoader classLoader;
     private final XStreamXmlPlannerBenchmarkFactory xmlPlannerBenchmarkFactory;
 
     public FreemarkerXmlPlannerBenchmarkFactory() {
-        xmlPlannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory();
+        this(null);
+    }
+
+    /**
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     *      null to use the default {@link ClassLoader}
+     */
+    public FreemarkerXmlPlannerBenchmarkFactory(ClassLoader classLoader) {
+        this.classLoader = classLoader;
+        xmlPlannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory(classLoader);
     }
 
     // ************************************************************************
@@ -64,10 +74,12 @@ public class FreemarkerXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactor
      * @return this
      */
     public FreemarkerXmlPlannerBenchmarkFactory configure(String templateResource, Object model) {
+        ClassLoader actualClassLoader = (classLoader != null) ? classLoader : getClass().getClassLoader();
+        InputStream in = actualClassLoader.getResourceAsStream(templateResource);
         InputStream templateIn = getClass().getClassLoader().getResourceAsStream(templateResource);
         if (templateIn == null) {
             String errorMessage = "The templateResource (" + templateResource
-                    + ") does not exist in the classpath.";
+                    + ") does not exist as a classpath resource in the classLoader (" + actualClassLoader + ").";
             if (templateResource.startsWith("/")) {
                 errorMessage += "\nAs from 6.1, a classpath resource should not start with a slash (/)."
                         + " A templateResource now adheres to ClassLoader.getResource(String)."

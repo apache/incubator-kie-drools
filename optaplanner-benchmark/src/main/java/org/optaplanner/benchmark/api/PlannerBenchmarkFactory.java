@@ -41,9 +41,19 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromXmlResource(String benchmarkConfigResource) {
-        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory();
-        plannerBenchmarkFactory.configure(benchmarkConfigResource);
-        return plannerBenchmarkFactory;
+        return new XStreamXmlPlannerBenchmarkFactory().configure(benchmarkConfigResource);
+    }
+
+    /**
+     * See {@link #createFromXmlResource(String)}.
+     * @param benchmarkConfigResource never null, a classpath resource
+     * as defined by {@link ClassLoader#getResource(String)}
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     * null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromXmlResource(String benchmarkConfigResource, ClassLoader classLoader) {
+        return new XStreamXmlPlannerBenchmarkFactory(classLoader).configure(benchmarkConfigResource);
     }
 
     /**
@@ -51,9 +61,17 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromXmlFile(File benchmarkConfigFile) {
-        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory();
-        plannerBenchmarkFactory.configure(benchmarkConfigFile);
-        return plannerBenchmarkFactory;
+        return new XStreamXmlPlannerBenchmarkFactory().configure(benchmarkConfigFile);
+    }
+
+    /**
+     * @param benchmarkConfigFile never null
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     * null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromXmlFile(File benchmarkConfigFile, ClassLoader classLoader) {
+        return new XStreamXmlPlannerBenchmarkFactory(classLoader).configure(benchmarkConfigFile);
     }
 
     /**
@@ -61,9 +79,17 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromXmlInputStream(InputStream in) {
-        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory();
-        plannerBenchmarkFactory.configure(in);
-        return plannerBenchmarkFactory;
+        return new XStreamXmlPlannerBenchmarkFactory().configure(in);
+    }
+
+    /**
+     * @param in never null, gets closed
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     * null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
+        return new XStreamXmlPlannerBenchmarkFactory(classLoader).configure(in);
     }
 
     /**
@@ -71,9 +97,17 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromXmlReader(Reader reader) {
-        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory();
-        plannerBenchmarkFactory.configure(reader);
-        return plannerBenchmarkFactory;
+        return new XStreamXmlPlannerBenchmarkFactory().configure(reader);
+    }
+
+    /**
+     * @param reader never null, gets closed
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     * null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromXmlReader(Reader reader, ClassLoader classLoader) {
+        return new XStreamXmlPlannerBenchmarkFactory(classLoader).configure(reader);
     }
 
     // ************************************************************************
@@ -90,13 +124,32 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     * null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlResource(String templateResource, ClassLoader classLoader) {
+        return createFromFreemarkerXmlResource(templateResource, null, classLoader);
+    }
+
+    /**
+     * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
      * @param model sometimes null
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlResource(String templateResource, Object model) {
-        FreemarkerXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory();
-        plannerBenchmarkFactory.configure(templateResource, model);
-        return plannerBenchmarkFactory;
+        return new FreemarkerXmlPlannerBenchmarkFactory().configure(templateResource, model);
+    }
+
+    /**
+     * @param templateResource never null, a classpath resource as defined by {@link ClassLoader#getResource(String)}
+     * @param model sometimes null
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     * null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlResource(String templateResource, Object model, ClassLoader classLoader) {
+        return new FreemarkerXmlPlannerBenchmarkFactory(classLoader).configure(templateResource, model);
     }
 
     /**
@@ -109,13 +162,32 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * @param templateFile never null
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     * null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlFile(File templateFile, ClassLoader classLoader) {
+        return createFromFreemarkerXmlFile(templateFile, null, classLoader);
+    }
+
+    /**
+     * @param templateFile never null
      * @param model sometimes null
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlFile(File templateFile, Object model) {
-        FreemarkerXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory();
-        plannerBenchmarkFactory.configure(templateFile, model);
-        return plannerBenchmarkFactory;
+        return new FreemarkerXmlPlannerBenchmarkFactory().configure(templateFile, model);
+    }
+
+    /**
+     * @param templateFile never null
+     * @param model sometimes null
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     * null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlFile(File templateFile, Object model, ClassLoader classLoader) {
+        return new FreemarkerXmlPlannerBenchmarkFactory(classLoader).configure(templateFile, model);
     }
 
     /**
@@ -128,13 +200,32 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * @param templateIn never null, gets closed
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     * null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlInputStream(InputStream templateIn, ClassLoader classLoader) {
+        return createFromFreemarkerXmlInputStream(templateIn, null, classLoader);
+    }
+
+    /**
+     * @param templateIn never null, gets closed
      * @param model sometimes null
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlInputStream(InputStream templateIn, Object model) {
-        FreemarkerXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory();
-        plannerBenchmarkFactory.configure(templateIn, model);
-        return plannerBenchmarkFactory;
+        return new FreemarkerXmlPlannerBenchmarkFactory().configure(templateIn, model);
+    }
+
+    /**
+     * @param templateIn never null, gets closed
+     * @param model sometimes null
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     * null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlInputStream(InputStream templateIn, Object model, ClassLoader classLoader) {
+        return new FreemarkerXmlPlannerBenchmarkFactory(classLoader).configure(templateIn, model);
     }
 
     /**
@@ -147,13 +238,32 @@ public abstract class PlannerBenchmarkFactory {
 
     /**
      * @param templateReader never null, gets closed
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     * null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlReader(Reader templateReader, ClassLoader classLoader) {
+        return createFromFreemarkerXmlReader(templateReader, null, classLoader);
+    }
+
+    /**
+     * @param templateReader never null, gets closed
      * @param model sometimes null
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlReader(Reader templateReader, Object model) {
-        FreemarkerXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new FreemarkerXmlPlannerBenchmarkFactory();
-        plannerBenchmarkFactory.configure(templateReader, model);
-        return plannerBenchmarkFactory;
+        return new FreemarkerXmlPlannerBenchmarkFactory().configure(templateReader, model);
+    }
+
+    /**
+     * @param templateReader never null, gets closed
+     * @param model sometimes null
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     * null to use the default {@link ClassLoader}
+     * @return never null
+     */
+    public static PlannerBenchmarkFactory createFromFreemarkerXmlReader(Reader templateReader, Object model, ClassLoader classLoader) {
+        return new FreemarkerXmlPlannerBenchmarkFactory(classLoader).configure(templateReader, model);
     }
 
     // ************************************************************************
