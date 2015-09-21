@@ -22,6 +22,8 @@
   </description>
 
   <properties>
+    <!-- Overwrite ip-bom's jboss-logging version of EAP 6.4 to allow Arquillian test to work on WildFly 9 -->
+    <version.org.jboss.logging.jboss-logging>3.2.1.Final</version.org.jboss.logging.jboss-logging>
     <version.org.wildfly>9.0.1.Final</version.org.wildfly>
     <version.org.wildfly.arquillian.container>1.0.0.Final</version.org.wildfly.arquillian.container>
   </properties>
@@ -62,6 +64,12 @@
 
   <dependencyManagement>
     <dependencies>
+      <!-- Overwrite ip-bom's jboss-logging version of EAP 6.4 to allow Arquillian test to work on WildFly 9 -->
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>${version.org.jboss.logging.jboss-logging}</version>
+      </dependency>
       <dependency>
         <groupId>org.wildfly.arquillian</groupId>
         <artifactId>wildfly-arquillian-container-managed</artifactId>
