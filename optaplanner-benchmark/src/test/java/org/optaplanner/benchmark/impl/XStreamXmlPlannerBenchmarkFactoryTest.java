@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.impl;
 import java.io.File;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -31,6 +32,38 @@ public class XStreamXmlPlannerBenchmarkFactoryTest {
     @Test
     public void configFileRemainsSameAfterReadWrite() throws Exception {
         File originalConfigFile = new File("src/test/resources/org/optaplanner/benchmark/impl/testdataPlannerBenchmarkConfigXStream.xml");
+        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory().configure(originalConfigFile);
+        PlannerBenchmarkConfig benchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
+        String savedXml = plannerBenchmarkFactory.getXStream().toXML(benchmarkConfig);
+        String originalXml = FileUtils.readFileToString(originalConfigFile);
+        assertEquals(originalXml, savedXml);
+    }
+
+    @Test
+    public void configFileRemainsSameAfterReadWriteBuild() throws Exception {
+        File originalConfigFile = new File("src/test/resources/org/optaplanner/benchmark/impl/testdataPlannerBenchmarkConfigXStream.xml");
+        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory().configure(originalConfigFile);
+        PlannerBenchmarkConfig benchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
+        benchmarkConfig.buildPlannerBenchmark();
+        String savedXml = plannerBenchmarkFactory.getXStream().toXML(benchmarkConfig);
+        String originalXml = FileUtils.readFileToString(originalConfigFile);
+        assertEquals(originalXml, savedXml);
+    }
+
+    @Test
+    public void configFileRemainsSameAfterReadWriteWithInherited() throws Exception {
+        File originalConfigFile = new File("src/test/resources/org/optaplanner/benchmark/impl/testdataPlannerBenchmarkConfigXStreamInherited.xml");
+        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory().configure(originalConfigFile);
+        PlannerBenchmarkConfig benchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
+        String savedXml = plannerBenchmarkFactory.getXStream().toXML(benchmarkConfig);
+        String originalXml = FileUtils.readFileToString(originalConfigFile);
+        assertEquals(originalXml, savedXml);
+    }
+
+    @Test
+    @Ignore("Config shouldn't actually remain the same: we inherited the subSingleCount")
+    public void configFileRemainsSameAfterReadWriteBuildWithInherited() throws Exception {
+        File originalConfigFile = new File("src/test/resources/org/optaplanner/benchmark/impl/testdataPlannerBenchmarkConfigXStreamInherited.xml");
         XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory().configure(originalConfigFile);
         PlannerBenchmarkConfig benchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
         benchmarkConfig.buildPlannerBenchmark();
