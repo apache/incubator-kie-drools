@@ -22,7 +22,6 @@ import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
-import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class BendableScoreDefinition extends AbstractBendableScoreDefinition<BendableScore> {
@@ -41,6 +40,23 @@ public class BendableScoreDefinition extends AbstractBendableScoreDefinition<Ben
 
     public BendableScore parseScore(String scoreString) {
         return BendableScore.parseScore(hardLevelsSize, softLevelsSize, scoreString);
+    }
+
+    @Override
+    public BendableScore fromLevelNumbers(Number[] levelNumbers) {
+        if (levelNumbers.length != getLevelsSize()) {
+            throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
+                    + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
+        }
+        int[] hardScores = new int[hardLevelsSize];
+        for (int i = 0; i < hardLevelsSize; i++) {
+            hardScores[i] = (Integer) levelNumbers[i];
+        }
+        int[] softScores = new int[softLevelsSize];
+        for (int i = 0; i < softLevelsSize; i++) {
+            softScores[i] = (Integer) levelNumbers[hardLevelsSize + i];
+        }
+        return BendableScore.valueOf(hardScores, softScores);
     }
 
     public BendableScore createScore(int... scores) {

@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.buildin.simple;
 
+import java.util.Arrays;
+
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
@@ -43,6 +45,15 @@ public class SimpleScoreDefinition extends AbstractScoreDefinition<SimpleScore> 
 
     public SimpleScore parseScore(String scoreString) {
         return SimpleScore.parseScore(scoreString);
+    }
+
+    @Override
+    public SimpleScore fromLevelNumbers(Number[] levelNumbers) {
+        if (levelNumbers.length != getLevelsSize()) {
+            throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
+                    + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
+        }
+        return SimpleScore.valueOf((Integer) levelNumbers[0]);
     }
 
     public SimpleScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {

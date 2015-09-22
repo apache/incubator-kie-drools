@@ -2772,3 +2772,19 @@ Before in *.java:
 After in *.java:
     @XStreamConverter(value = XStreamScoreConverter.class, types = {BendableScoreDefinition.class}, ints = {1, 2})
     private BendableScore score;
+
+[MINOR] If you have a custom ScoreDefinition: that interface has another new method fromLevelNumbers().
+It does the opposite of Score.toLevelNumbers().
+After in *.java:
+    public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<HardSoftScore> {
+        ...
+
+        @Override
+        public HardSoftScore fromLevelNumbers(Number[] levelNumbers) {
+            if (levelNumbers.length != getLevelsSize()) {
+                throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
+                        + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
+            }
+            return HardSoftScore.valueOf((Integer) levelNumbers[0], (Integer) levelNumbers[1]);
+        }
+    }

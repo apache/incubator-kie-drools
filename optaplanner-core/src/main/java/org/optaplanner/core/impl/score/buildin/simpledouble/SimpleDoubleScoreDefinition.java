@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.buildin.simpledouble;
 
+import java.util.Arrays;
+
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
@@ -43,6 +45,15 @@ public class SimpleDoubleScoreDefinition extends AbstractScoreDefinition<SimpleD
 
     public SimpleDoubleScore parseScore(String scoreString) {
         return SimpleDoubleScore.parseScore(scoreString);
+    }
+
+    @Override
+    public SimpleDoubleScore fromLevelNumbers(Number[] levelNumbers) {
+        if (levelNumbers.length != getLevelsSize()) {
+            throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
+                    + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
+        }
+        return SimpleDoubleScore.valueOf((Double) levelNumbers[0]);
     }
 
     public SimpleDoubleScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {

@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.buildin.simplelong;
 
+import java.util.Arrays;
+
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
@@ -38,6 +40,15 @@ public class SimpleLongScoreDefinition extends AbstractScoreDefinition<SimpleLon
 
     public SimpleLongScore parseScore(String scoreString) {
         return SimpleLongScore.parseScore(scoreString);
+    }
+
+    @Override
+    public SimpleLongScore fromLevelNumbers(Number[] levelNumbers) {
+        if (levelNumbers.length != getLevelsSize()) {
+            throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
+                    + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
+        }
+        return SimpleLongScore.valueOf((Long) levelNumbers[0]);
     }
 
     public SimpleLongScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {

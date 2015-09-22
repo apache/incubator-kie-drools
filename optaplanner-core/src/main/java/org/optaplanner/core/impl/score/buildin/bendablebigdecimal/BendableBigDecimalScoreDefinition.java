@@ -22,7 +22,6 @@ import java.util.Arrays;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractBendableScoreDefinition;
-import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
 public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefinition<BendableBigDecimalScore> {
@@ -41,6 +40,23 @@ public class BendableBigDecimalScoreDefinition extends AbstractBendableScoreDefi
 
     public BendableBigDecimalScore parseScore(String scoreString) {
         return BendableBigDecimalScore.parseScore(hardLevelsSize, softLevelsSize, scoreString);
+    }
+
+    @Override
+    public BendableBigDecimalScore fromLevelNumbers(Number[] levelNumbers) {
+        if (levelNumbers.length != getLevelsSize()) {
+            throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
+                    + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
+        }
+        BigDecimal[] hardScores = new BigDecimal[hardLevelsSize];
+        for (int i = 0; i < hardLevelsSize; i++) {
+            hardScores[i] = (BigDecimal) levelNumbers[i];
+        }
+        BigDecimal[] softScores = new BigDecimal[softLevelsSize];
+        for (int i = 0; i < softLevelsSize; i++) {
+            softScores[i] = (BigDecimal) levelNumbers[hardLevelsSize + i];
+        }
+        return BendableBigDecimalScore.valueOf(hardScores, softScores);
     }
 
     public BendableBigDecimalScore createScore(BigDecimal... scores) {

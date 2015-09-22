@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoft;
 
+import java.util.Arrays;
+
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
@@ -43,6 +45,15 @@ public class HardSoftScoreDefinition extends AbstractFeasibilityScoreDefinition<
 
     public HardSoftScore parseScore(String scoreString) {
         return HardSoftScore.parseScore(scoreString);
+    }
+
+    @Override
+    public HardSoftScore fromLevelNumbers(Number[] levelNumbers) {
+        if (levelNumbers.length != getLevelsSize()) {
+            throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
+                    + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
+        }
+        return HardSoftScore.valueOf((Integer) levelNumbers[0], (Integer) levelNumbers[1]);
     }
 
     public HardSoftScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {

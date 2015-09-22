@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.buildin.hardsoftbigdecimal;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.hardsoftbigdecimal.HardSoftBigDecimalScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractFeasibilityScoreDefinition;
@@ -47,6 +50,15 @@ public class HardSoftBigDecimalScoreDefinition extends AbstractFeasibilityScoreD
 
     public HardSoftBigDecimalScore parseScore(String scoreString) {
         return HardSoftBigDecimalScore.parseScore(scoreString);
+    }
+
+    @Override
+    public HardSoftBigDecimalScore fromLevelNumbers(Number[] levelNumbers) {
+        if (levelNumbers.length != getLevelsSize()) {
+            throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
+                    + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
+        }
+        return HardSoftBigDecimalScore.valueOf((BigDecimal) levelNumbers[0], (BigDecimal) levelNumbers[1]);
     }
 
     public HardSoftBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {

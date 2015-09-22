@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.score.buildin.simplebigdecimal;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScoreHolder;
 import org.optaplanner.core.impl.score.definition.AbstractScoreDefinition;
@@ -42,6 +45,15 @@ public class SimpleBigDecimalScoreDefinition extends AbstractScoreDefinition<Sim
 
     public SimpleBigDecimalScore parseScore(String scoreString) {
         return SimpleBigDecimalScore.parseScore(scoreString);
+    }
+
+    @Override
+    public SimpleBigDecimalScore fromLevelNumbers(Number[] levelNumbers) {
+        if (levelNumbers.length != getLevelsSize()) {
+            throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
+                    + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
+        }
+        return SimpleBigDecimalScore.valueOf((BigDecimal) levelNumbers[0]);
     }
 
     public SimpleBigDecimalScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {

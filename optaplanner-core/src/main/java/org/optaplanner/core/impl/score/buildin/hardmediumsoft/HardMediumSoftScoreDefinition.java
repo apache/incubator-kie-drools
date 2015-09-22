@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.score.buildin.hardmediumsoft;
 
+import java.util.Arrays;
+
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
@@ -48,6 +50,15 @@ public class HardMediumSoftScoreDefinition extends AbstractFeasibilityScoreDefin
 
     public HardMediumSoftScore parseScore(String scoreString) {
         return HardMediumSoftScore.parseScore(scoreString);
+    }
+
+    @Override
+    public HardMediumSoftScore fromLevelNumbers(Number[] levelNumbers) {
+        if (levelNumbers.length != getLevelsSize()) {
+            throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
+                    + ")'s length (" + levelNumbers.length + ") must equal the levelSize (" + getLevelsSize() + ").");
+        }
+        return HardMediumSoftScore.valueOf((Integer) levelNumbers[0], (Integer) levelNumbers[1], (Integer) levelNumbers[2]);
     }
 
     public HardMediumSoftScoreHolder buildScoreHolder(boolean constraintMatchEnabled) {

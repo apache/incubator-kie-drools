@@ -68,6 +68,13 @@ public interface ScoreDefinition<S extends Score> {
     S parseScore(String scoreString);
 
     /**
+     * The opposite of {@link Score#toLevelNumbers()}.
+     * @param levelNumbers never null
+     * @return never null
+     */
+    S fromLevelNumbers(Number[] levelNumbers);
+
+    /**
      * Used by {@link DroolsScoreDirector}.
      * @param constraintMatchEnabled true if {@link ScoreHolder#isConstraintMatchEnabled()} should be true
      * @return never null

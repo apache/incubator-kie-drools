@@ -17,6 +17,7 @@
 package org.optaplanner.core.api.score;
 
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 /**
  * A Score is result of the score function (AKA fitness function) on a single possible solution.
@@ -92,8 +93,9 @@ public interface Score<S extends Score> extends Comparable<S> {
      * When rounding is needed, each rounding should be floored (as defined by {@link Math#floor(double)}.
      * The length of the returned array must be stable for a specific {@link Score} implementation.
      * <p>
-     * For example: -0hard/-7soft returns new int{-0, -7}
+     * For example: {@code -0hard/-7soft} returns {@code new int{-0, -7}}
      * @return never null
+     * @see ScoreDefinition#fromLevelNumbers(Number[])
      */
     Number[] toLevelNumbers();
 
