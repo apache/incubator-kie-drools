@@ -206,11 +206,11 @@
                                                                 <li class="dropdown-header"><strong>Standard Deviation</strong></li>
                                                                 <li>${singleBenchmarkResult.standardDeviationString!""}</li>
                                                                 <li class="dropdown-header"><strong>Best</strong></li>
-                                                                <li>${singleBenchmarkResult.bestScoreWithUninitializedPrefix!""}</li>
+                                                                <li>${singleBenchmarkResult.best.scoreWithUninitializedPrefix!""}</li>
                                                                 <li class="dropdown-header"><strong>Worst</strong></li>
-                                                                <li>${singleBenchmarkResult.worstScoreWithUninitializedPrefix!""}</li>
+                                                                <li>${singleBenchmarkResult.worst.scoreWithUninitializedPrefix!""}</li>
                                                                 <li class="dropdown-header"><strong>Median</strong></li>
-                                                                <li>${singleBenchmarkResult.medianScoreWithUninitializedPrefix!""}</li>
+                                                                <li>${singleBenchmarkResult.median.scoreWithUninitializedPrefix!""}</li>
                                                             </ul>
                                                         </div></td>
                                                     </#if>
