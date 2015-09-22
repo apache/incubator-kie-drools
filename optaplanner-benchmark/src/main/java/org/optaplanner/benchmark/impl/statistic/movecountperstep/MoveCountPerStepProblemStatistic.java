@@ -54,7 +54,7 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SubSingleStatistic createSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+    public SubSingleStatistic createSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         return new MoveCountPerStepSubSingleStatistic(solverProblemBenchmarkResult);
     }
 
@@ -89,9 +89,9 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
                     singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " selected");
             XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
             if (singleBenchmarkResult.isSuccess()) {
-                MoveCountPerStepSubSingleStatistic singleStatistic = (MoveCountPerStepSubSingleStatistic)
-                        singleBenchmarkResult.getSingleStatistic(problemStatisticType);
-                for (MoveCountPerStepStatisticPoint point : singleStatistic.getPointList()) {
+                MoveCountPerStepSubSingleStatistic subSingleStatistic = (MoveCountPerStepSubSingleStatistic)
+                        singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
+                for (MoveCountPerStepStatisticPoint point : subSingleStatistic.getPointList()) {
                     long timeMillisSpent = point.getTimeMillisSpent();
                     long acceptedMoveCount = point.getMoveCountPerStepMeasurement().getAcceptedMoveCount();
                     long selectedMoveCount = point.getMoveCountPerStepMeasurement().getSelectedMoveCount();

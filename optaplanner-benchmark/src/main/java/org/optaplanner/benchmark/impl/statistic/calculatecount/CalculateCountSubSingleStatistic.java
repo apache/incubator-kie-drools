@@ -32,7 +32,7 @@ public class CalculateCountSubSingleStatistic extends ProblemBasedSubSingleStati
 
     private final long timeMillisThresholdInterval;
 
-    private final CalculateCountSingleStatisticListener listener;
+    private final CalculateCountSubSingleStatisticListener listener;
 
     public CalculateCountSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         this(solverProblemBenchmarkResult, 1000L);
@@ -45,7 +45,7 @@ public class CalculateCountSubSingleStatistic extends ProblemBasedSubSingleStati
                     + ") must be bigger than 0.");
         }
         this.timeMillisThresholdInterval = timeMillisThresholdInterval;
-        listener = new CalculateCountSingleStatisticListener();
+        listener = new CalculateCountSubSingleStatisticListener();
     }
 
     // ************************************************************************
@@ -60,7 +60,7 @@ public class CalculateCountSubSingleStatistic extends ProblemBasedSubSingleStati
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class CalculateCountSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class CalculateCountSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         private long nextTimeMillisThreshold = timeMillisThresholdInterval;
         private long lastTimeMillisSpent = 0L;

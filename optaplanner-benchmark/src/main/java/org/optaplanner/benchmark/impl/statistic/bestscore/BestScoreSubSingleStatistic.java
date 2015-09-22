@@ -29,11 +29,11 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 public class BestScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<BestScoreStatisticPoint> {
 
-    private final BestScoreSingleStatisticListener listener;
+    private final BestScoreSubSingleStatisticListener listener;
 
     public BestScoreSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         super(solverProblemBenchmarkResult, ProblemStatisticType.BEST_SCORE);
-        listener = new BestScoreSingleStatisticListener();
+        listener = new BestScoreSubSingleStatisticListener();
     }
 
     // ************************************************************************
@@ -48,7 +48,7 @@ public class BestScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<
         solver.removeEventListener(listener);
     }
 
-    private class BestScoreSingleStatisticListener implements SolverEventListener<Solution> {
+    private class BestScoreSubSingleStatisticListener implements SolverEventListener<Solution> {
 
         public void bestSolutionChanged(BestSolutionChangedEvent<Solution> event) {
             pointList.add(new BestScoreStatisticPoint(

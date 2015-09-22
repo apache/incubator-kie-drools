@@ -51,7 +51,7 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SubSingleStatistic createSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+    public SubSingleStatistic createSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         return new CalculateCountSubSingleStatistic(solverProblemBenchmarkResult);
     }
 
@@ -82,9 +82,9 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
             XYSeries series = new XYSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmarkResult.isSuccess()) {
-                CalculateCountSubSingleStatistic singleStatistic = (CalculateCountSubSingleStatistic)
-                        singleBenchmarkResult.getSingleStatistic(problemStatisticType);
-                for (CalculateCountStatisticPoint point : singleStatistic.getPointList()) {
+                CalculateCountSubSingleStatistic subSingleStatistic = (CalculateCountSubSingleStatistic)
+                        singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
+                for (CalculateCountStatisticPoint point : subSingleStatistic.getPointList()) {
                     long timeMillisSpent = point.getTimeMillisSpent();
                     long calculateCountPerSecond = point.getCalculateCountPerSecond();
                     series.add(timeMillisSpent, calculateCountPerSecond);

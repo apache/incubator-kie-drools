@@ -32,11 +32,11 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 
 public class BestSolutionMutationSubSingleStatistic extends ProblemBasedSubSingleStatistic<BestSolutionMutationStatisticPoint> {
 
-    private BestSolutionMutationSingleStatisticListener listener;
+    private BestSolutionMutationSubSingleStatisticListener listener;
 
     public BestSolutionMutationSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         super(solverProblemBenchmarkResult, ProblemStatisticType.BEST_SOLUTION_MUTATION);
-        listener = new BestSolutionMutationSingleStatisticListener();
+        listener = new BestSolutionMutationSubSingleStatisticListener();
     }
 
     // ************************************************************************
@@ -54,7 +54,7 @@ public class BestSolutionMutationSubSingleStatistic extends ProblemBasedSubSingl
         solver.removeEventListener(listener);
     }
 
-    private class BestSolutionMutationSingleStatisticListener implements SolverEventListener<Solution> {
+    private class BestSolutionMutationSubSingleStatisticListener implements SolverEventListener<Solution> {
 
         private MutationCounter mutationCounter;
 

@@ -35,7 +35,7 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
         return "org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml";
     }
 
-    public List<SubSingleStatisticType> buildAllSingleStatisticTypeList() {
+    public List<SubSingleStatisticType> buildAllSubSingleStatisticTypeList() {
         return Arrays.asList(SubSingleStatisticType.values());
     }
 
@@ -50,7 +50,7 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     @Test(timeout = 600000)
     public void benchmark64queens() {
         PlannerBenchmarkFactory plannerBenchmarkFactory = buildPlannerBenchmarkFactory(new File("data/nqueens/unsolved/64queens.xml"));
-        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setSubSingleStatisticTypeList(buildAllSingleStatisticTypeList());
+        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setSubSingleStatisticTypeList(buildAllSubSingleStatisticTypeList());
         plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setProblemStatisticTypeList(buildAllProblemStatisticTypeList());
         plannerBenchmarkFactory.getPlannerBenchmarkConfig().setParallelBenchmarkCount("AUTO");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
@@ -60,7 +60,7 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     @Test(timeout = 600000)
     public void benchmark64queensSingleThread() {
         PlannerBenchmarkFactory plannerBenchmarkFactory = buildPlannerBenchmarkFactory(new File("data/nqueens/unsolved/64queens.xml"));
-        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setSubSingleStatisticTypeList(buildAllSingleStatisticTypeList());
+        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setSubSingleStatisticTypeList(buildAllSubSingleStatisticTypeList());
         plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setProblemStatisticTypeList(buildAllProblemStatisticTypeList());
         plannerBenchmarkFactory.getPlannerBenchmarkConfig().setParallelBenchmarkCount("1");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();

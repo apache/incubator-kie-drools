@@ -31,7 +31,7 @@ public class MemoryUseSubSingleStatistic extends ProblemBasedSubSingleStatistic<
 
     private long timeMillisThresholdInterval;
 
-    private MemoryUseSingleStatisticListener listener;
+    private MemoryUseSubSingleStatisticListener listener;
 
     public MemoryUseSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         this(solverProblemBenchmarkResult, 1000L);
@@ -44,7 +44,7 @@ public class MemoryUseSubSingleStatistic extends ProblemBasedSubSingleStatistic<
                     + ") must be bigger than 0.");
         }
         this.timeMillisThresholdInterval = timeMillisThresholdInterval;
-        listener = new MemoryUseSingleStatisticListener();
+        listener = new MemoryUseSubSingleStatisticListener();
     }
 
     // ************************************************************************
@@ -59,7 +59,7 @@ public class MemoryUseSubSingleStatistic extends ProblemBasedSubSingleStatistic<
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class MemoryUseSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class MemoryUseSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         private long nextTimeMillisThreshold = timeMillisThresholdInterval;
 

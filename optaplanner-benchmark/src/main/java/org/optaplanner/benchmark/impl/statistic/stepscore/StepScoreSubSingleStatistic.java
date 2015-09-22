@@ -29,11 +29,11 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 
 public class StepScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<StepScoreStatisticPoint> {
 
-    private final StepScoreSingleStatisticListener listener;
+    private final StepScoreSubSingleStatisticListener listener;
 
     public StepScoreSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         super(solverProblemBenchmarkResult, ProblemStatisticType.STEP_SCORE);
-        listener = new StepScoreSingleStatisticListener();
+        listener = new StepScoreSubSingleStatisticListener();
     }
 
     // ************************************************************************
@@ -48,7 +48,7 @@ public class StepScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class StepScoreSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class StepScoreSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {

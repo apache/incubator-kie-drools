@@ -30,11 +30,11 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 
 public class MoveCountPerStepSubSingleStatistic extends ProblemBasedSubSingleStatistic<MoveCountPerStepStatisticPoint> {
 
-    private MoveCountPerStepSingleStatisticListener listener;
+    private MoveCountPerStepSubSingleStatisticListener listener;
 
     public MoveCountPerStepSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         super(solverProblemBenchmarkResult, ProblemStatisticType.MOVE_COUNT_PER_STEP);
-        listener = new MoveCountPerStepSingleStatisticListener();
+        listener = new MoveCountPerStepSubSingleStatisticListener();
     }
 
     // ************************************************************************
@@ -49,7 +49,7 @@ public class MoveCountPerStepSubSingleStatistic extends ProblemBasedSubSingleSta
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class MoveCountPerStepSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class MoveCountPerStepSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {

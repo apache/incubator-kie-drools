@@ -31,7 +31,7 @@ public enum SubSingleStatisticType implements StatisticType {
     PICKED_MOVE_TYPE_BEST_SCORE_DIFF,
     PICKED_MOVE_TYPE_STEP_SCORE_DIFF;
 
-    public PureSubSingleStatistic buildPureSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+    public PureSubSingleStatistic buildPureSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         // Keep in sync with ProblemStatistic XStreamInclude list
         switch (this) {
             case CONSTRAINT_MATCH_TOTAL_BEST_SCORE:
@@ -43,7 +43,7 @@ public enum SubSingleStatisticType implements StatisticType {
             case PICKED_MOVE_TYPE_STEP_SCORE_DIFF:
                 return new PickedMoveTypeStepScoreDiffSubSingleStatistic(solverProblemBenchmarkResult);
             default:
-                throw new IllegalStateException("The singleStatisticType (" + this + ") is not implemented.");
+                throw new IllegalStateException("The subSingleStatisticType (" + this + ") is not implemented.");
         }
     }
 

@@ -50,7 +50,7 @@ public class ProblemBenchmarksConfig {
     @XStreamImplicit(itemFieldName = "problemStatisticType")
     private List<ProblemStatisticType> problemStatisticTypeList = null;
 
-    @XStreamImplicit(itemFieldName = "singleStatisticType")
+    @XStreamImplicit(itemFieldName = "subSingleStatisticType")
     private List<SubSingleStatisticType> subSingleStatisticTypeList = null;
 
     public Class<SolutionFileIO> getSolutionFileIOClass() {
@@ -183,21 +183,21 @@ public class ProblemBenchmarksConfig {
             ProblemBenchmarkResult problemBenchmarkResult) {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
         buildSubSingleBenchmarks(singleBenchmarkResult, solverBenchmarkResult.getSubSingleCount());
-        singleBenchmarkResult.setPureSingleStatisticList(new ArrayList<PureSubSingleStatistic>(
+        singleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<PureSubSingleStatistic>(
                 subSingleStatisticTypeList == null ? 0 : subSingleStatisticTypeList.size()));
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-            subSingleBenchmarkResult.setSubPureSingleStatisticList(new ArrayList<PureSubSingleStatistic>(
+            subSingleBenchmarkResult.setSubPureSubSingleStatisticList(new ArrayList<PureSubSingleStatistic>(
                     subSingleStatisticTypeList == null ? 0 : subSingleStatisticTypeList.size()));
         }
         if (subSingleStatisticTypeList != null) {
             for (SubSingleStatisticType subSingleStatisticType : subSingleStatisticTypeList) {
-                singleBenchmarkResult.getPureSingleStatisticList().add(subSingleStatisticType.buildPureSingleStatistic(singleBenchmarkResult));
+                singleBenchmarkResult.getPureSubSingleStatisticList().add(subSingleStatisticType.buildPureSubSingleStatistic(singleBenchmarkResult));
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                    subSingleBenchmarkResult.getSubPureSingleStatisticList().add(subSingleStatisticType.buildPureSingleStatistic(subSingleBenchmarkResult));
+                    subSingleBenchmarkResult.getSubPureSubSingleStatisticList().add(subSingleStatisticType.buildPureSubSingleStatistic(subSingleBenchmarkResult));
                 }
             }
         }
-        singleBenchmarkResult.initSingleStatisticMap();
+        singleBenchmarkResult.initSubSingleStatisticMap();
         solverBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
     }

@@ -763,14 +763,14 @@
   <section xml:id="benchmarkReportStatisticPerSingleBenchmark">
     <title>Statistic Per Single Benchmark (Graph And CSV)</title>
 
-    <section xml:id="enableASingleStatistic">
-      <title>Enable A Single Statistic</title>
+    <section xml:id="enableASubSingleStatistic">
+      <title>Enable A Sub Single Statistic</title>
 
-      <para>A single statistic is a statics for 1 dataset for 1 solver configuration. Unlike a problem statistic, it
+      <para>A sub single statistic is a statics for 1 dataset for 1 solver configuration. Unlike a problem statistic, it
       does not aggregate over solver configurations.</para>
 
-      <para>The benchmarker supports outputting single statistics as graphs and CSV (comma separated values) files to
-      the <literal>benchmarkDirectory</literal>. To configure one, add a <literal>singleStatisticType</literal>
+      <para>The benchmarker supports outputting sub single statistics as graphs and CSV (comma separated values) files to
+      the <literal>benchmarkDirectory</literal>. To configure one, add a <literal>subSingleStatisticType</literal>
       line:</para>
 
       <programlisting language="xml">&lt;plannerBenchmark&gt;
@@ -779,14 +779,14 @@
     &lt;problemBenchmarks&gt;
       ...
       &lt;problemStatisticType&gt;...&lt;/problemStatisticType&gt;
-      &lt;singleStatisticType&gt;PICKED_MOVE_TYPE_BEST_SCORE_DIFF&lt;/singleStatisticType&gt;
+      &lt;subSingleStatisticType&gt;PICKED_MOVE_TYPE_BEST_SCORE_DIFF&lt;/subSingleStatisticType&gt;
     &lt;/problemBenchmarks&gt;
     ...
   &lt;/inheritedSolverBenchmark&gt;
   ...
 &lt;/plannerBenchmark&gt;</programlisting>
 
-      <para>Multiple <literal>singleStatisticType</literal> elements are allowed.</para>
+      <para>Multiple <literal>subSingleStatisticType</literal> elements are allowed.</para>
 
       <note>
         <para>These statistic per single benchmark can slow down the solver noticeably, which affects the benchmark
@@ -803,7 +803,7 @@
 
       <programlisting language="xml">    &lt;problemBenchmarks&gt;
       ...
-      &lt;singleStatisticType&gt;CONSTRAINT_MATCH_TOTAL_BEST_SCORE&lt;/singleStatisticType&gt;
+      &lt;subSingleStatisticType&gt;CONSTRAINT_MATCH_TOTAL_BEST_SCORE&lt;/subSingleStatisticType&gt;
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
@@ -833,7 +833,7 @@
 
       <programlisting language="xml">    &lt;problemBenchmarks&gt;
       ...
-      &lt;singleStatisticType&gt;CONSTRAINT_MATCH_TOTAL_STEP_SCORE&lt;/singleStatisticType&gt;
+      &lt;subSingleStatisticType&gt;CONSTRAINT_MATCH_TOTAL_STEP_SCORE&lt;/subSingleStatisticType&gt;
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
@@ -863,7 +863,7 @@
 
       <programlisting language="xml">    &lt;problemBenchmarks&gt;
       ...
-      &lt;singleStatisticType&gt;PICKED_MOVE_TYPE_BEST_SCORE_DIFF&lt;/singleStatisticType&gt;
+      &lt;subSingleStatisticType&gt;PICKED_MOVE_TYPE_BEST_SCORE_DIFF&lt;/subSingleStatisticType&gt;
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>
@@ -884,7 +884,7 @@
 
       <programlisting language="xml">    &lt;problemBenchmarks&gt;
       ...
-      &lt;singleStatisticType&gt;PICKED_MOVE_TYPE_STEP_SCORE_DIFF&lt;/singleStatisticType&gt;
+      &lt;subSingleStatisticType&gt;PICKED_MOVE_TYPE_STEP_SCORE_DIFF&lt;/subSingleStatisticType&gt;
     &lt;/problemBenchmarks&gt;</programlisting>
 
       <figure>

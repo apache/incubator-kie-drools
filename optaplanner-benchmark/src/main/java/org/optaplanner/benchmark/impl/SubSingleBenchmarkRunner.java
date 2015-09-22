@@ -76,7 +76,7 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
         // TODO PLANNER-440 Use a classLoader argument buildSolver()
         Solver solver = subSingleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig().buildSolver();
 
-        for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
+        for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
             subSingleStatistic.open(solver);
             subSingleStatistic.initPointList();
         }
@@ -95,7 +95,7 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
         subSingleBenchmarkResult.setTimeMillisSpent(timeMillisSpent);
         subSingleBenchmarkResult.setCalculateCount(solverScope.getCalculateCount());
 
-        for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
+        for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
             subSingleStatistic.close(solver);
             subSingleStatistic.hibernatePointList();
         }

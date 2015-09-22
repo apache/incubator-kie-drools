@@ -53,7 +53,7 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SubSingleStatistic createSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+    public SubSingleStatistic createSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         return new BestScoreSubSingleStatistic(solverProblemBenchmarkResult);
     }
 
@@ -78,9 +78,9 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
             if (singleBenchmarkResult.isSuccess()) {
-                BestScoreSubSingleStatistic singleStatistic = (BestScoreSubSingleStatistic)
-                        singleBenchmarkResult.getSingleStatistic(problemStatisticType);
-                for (BestScoreStatisticPoint point : singleStatistic.getPointList()) {
+                BestScoreSubSingleStatistic subSingleStatistic = (BestScoreSubSingleStatistic)
+                        singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
+                for (BestScoreStatisticPoint point : subSingleStatistic.getPointList()) {
                     long timeMillisSpent = point.getTimeMillisSpent();
                     double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
@@ -102,7 +102,7 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
                     }
                     seriesList.get(i).add(timeMillisSpent, bestScoreLevels[i]);
                 }
-                if (singleStatistic.getPointList().size() <= 1) {
+                if (subSingleStatistic.getPointList().size() <= 1) {
                     // Workaround for https://sourceforge.net/tracker/?func=detail&aid=3387330&group_id=15494&atid=115494
                     renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
                 }

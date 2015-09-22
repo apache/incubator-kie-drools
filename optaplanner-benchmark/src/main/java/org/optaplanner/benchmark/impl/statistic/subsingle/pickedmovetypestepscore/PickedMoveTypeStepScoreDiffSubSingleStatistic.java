@@ -50,18 +50,18 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-@XStreamAlias("pickedMoveTypeStepScoreDiffSingleStatistic")
+@XStreamAlias("pickedMoveTypeStepScoreDiffSubSingleStatistic")
 public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingleStatistic<PickedMoveTypeStepScoreDiffStatisticPoint> {
 
     @XStreamOmitField
-    private PickedMoveTypeStepScoreDiffSingleStatisticListener listener;
+    private PickedMoveTypeStepScoreDiffSubSingleStatisticListener listener;
 
     @XStreamOmitField
     protected List<File> graphFileList = null;
 
     public PickedMoveTypeStepScoreDiffSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         super(solverProblemBenchmarkResult, SubSingleStatisticType.PICKED_MOVE_TYPE_STEP_SCORE_DIFF);
-        listener = new PickedMoveTypeStepScoreDiffSingleStatisticListener();
+        listener = new PickedMoveTypeStepScoreDiffSubSingleStatisticListener();
     }
 
     /**
@@ -84,7 +84,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingle
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class PickedMoveTypeStepScoreDiffSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class PickedMoveTypeStepScoreDiffSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         private Score oldStepScore = null;
 

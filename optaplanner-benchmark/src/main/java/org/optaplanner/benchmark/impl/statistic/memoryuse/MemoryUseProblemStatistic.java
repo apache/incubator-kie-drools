@@ -51,7 +51,7 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SubSingleStatistic createSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+    public SubSingleStatistic createSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         return new MemoryUseSubSingleStatistic(solverProblemBenchmarkResult);
     }
 
@@ -85,9 +85,9 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
 //                    singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " max");
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmarkResult.isSuccess()) {
-                MemoryUseSubSingleStatistic singleStatistic = (MemoryUseSubSingleStatistic)
-                        singleBenchmarkResult.getSingleStatistic(problemStatisticType);
-                for (MemoryUseStatisticPoint point : singleStatistic.getPointList()) {
+                MemoryUseSubSingleStatistic subSingleStatistic = (MemoryUseSubSingleStatistic)
+                        singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
+                for (MemoryUseStatisticPoint point : subSingleStatistic.getPointList()) {
                     long timeMillisSpent = point.getTimeMillisSpent();
                     MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
                     usedSeries.add(timeMillisSpent, memoryUseMeasurement.getUsedMemory());

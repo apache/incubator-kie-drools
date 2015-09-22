@@ -90,16 +90,16 @@ public abstract class ProblemStatistic {
         return warningList;
     }
 
-    public List<SubSingleStatistic> getSingleStatisticList() {
+    public List<SubSingleStatistic> getSubSingleStatisticList() {
         List<SingleBenchmarkResult> singleBenchmarkResultList = problemBenchmarkResult.getSingleBenchmarkResultList();
         List<SubSingleStatistic> subSingleStatisticList = new ArrayList<SubSingleStatistic>(singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            subSingleStatisticList.add(singleBenchmarkResult.getEffectiveSingleStatisticMap().get(problemStatisticType));
+            subSingleStatisticList.add(singleBenchmarkResult.getEffectiveSubSingleStatisticMap().get(problemStatisticType));
         }
         return subSingleStatisticList;
     }
 
-    public abstract SubSingleStatistic createSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult);
+    public abstract SubSingleStatistic createSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult);
 
     // ************************************************************************
     // Write methods

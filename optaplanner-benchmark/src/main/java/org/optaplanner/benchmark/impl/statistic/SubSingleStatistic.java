@@ -167,7 +167,7 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
                     if (solverProblemBenchmarkResult.isFailure()) {
                         continue;
                     }
-                    throw new IllegalStateException("SingleStatistic ( " + this + " ) failed even though the "
+                    throw new IllegalStateException("SubSingleStatistic ( " + this + " ) failed even though the "
                             + "corresponding SingleBenchmarkResult ( " + solverProblemBenchmarkResult + " ) is a success.");
                 }
                 List<String> csvLine = StatisticPoint.parseCsvLine(line);

@@ -210,7 +210,7 @@ public class ProblemBenchmarkResult {
             return true;
         }
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            if (singleBenchmarkResult.getPureSingleStatisticList().size() > 0) {
+            if (singleBenchmarkResult.getPureSubSingleStatisticList().size() > 0) {
                 return true;
             }
         }
@@ -230,27 +230,27 @@ public class ProblemBenchmarkResult {
         return maximumSubSingleCount != null ? maximumSubSingleCount > 1 : false;
     }
 
-    public Collection<SubSingleStatisticType> extractSingleStatisticTypeList() {
+    public Collection<SubSingleStatisticType> extractSubSingleStatisticTypeList() {
         Set<SubSingleStatisticType> subSingleStatisticTypeSet = new LinkedHashSet<SubSingleStatisticType>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            for (PureSubSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
-                subSingleStatisticTypeSet.add(pureSingleStatistic.getStatisticType());
+            for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getPureSubSingleStatisticList()) {
+                subSingleStatisticTypeSet.add(pureSubSingleStatistic.getStatisticType());
             }
         }
         return subSingleStatisticTypeSet;
     }
 
-    public List<PureSubSingleStatistic> extractPureSingleStatisticList(SubSingleStatisticType subSingleStatisticType) {
-        List<PureSubSingleStatistic> pureSingleStatisticList = new ArrayList<PureSubSingleStatistic>(
+    public List<PureSubSingleStatistic> extractPureSubSingleStatisticList(SubSingleStatisticType subSingleStatisticType) {
+        List<PureSubSingleStatistic> pureSubSingleStatisticList = new ArrayList<PureSubSingleStatistic>(
                 singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            for (PureSubSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
-                if (pureSingleStatistic.getStatisticType() == subSingleStatisticType) {
-                    pureSingleStatisticList.add(pureSingleStatistic);
+            for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getPureSubSingleStatisticList()) {
+                if (pureSubSingleStatistic.getStatisticType() == subSingleStatisticType) {
+                    pureSubSingleStatisticList.add(pureSubSingleStatistic);
                 }
             }
         }
-        return pureSingleStatisticList;
+        return pureSubSingleStatisticList;
     }
 
     // ************************************************************************

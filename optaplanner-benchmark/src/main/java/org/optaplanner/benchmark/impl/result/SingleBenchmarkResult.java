@@ -62,10 +62,10 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     private List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = null;
 
     @XStreamImplicit()
-    private List<PureSubSingleStatistic> pureSingleStatisticList = null;
+    private List<PureSubSingleStatistic> pureSubSingleStatisticList = null;
 
     @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files
-    private Map<StatisticType, SubSingleStatistic> effectiveSingleStatisticMap;
+    private Map<StatisticType, SubSingleStatistic> effectiveSubSingleStatisticMap;
 
     private Long usedMemoryAfterInputSolution = null;
 
@@ -105,23 +105,23 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         this.problemBenchmarkResult = problemBenchmarkResult;
     }
 
-    public List<PureSubSingleStatistic> getPureSingleStatisticList() {
-        return pureSingleStatisticList;
+    public List<PureSubSingleStatistic> getPureSubSingleStatisticList() {
+        return pureSubSingleStatisticList;
     }
 
-    public void setPureSingleStatisticList(List<PureSubSingleStatistic> pureSingleStatisticList) {
-        this.pureSingleStatisticList = pureSingleStatisticList;
+    public void setPureSubSingleStatisticList(List<PureSubSingleStatistic> pureSubSingleStatisticList) {
+        this.pureSubSingleStatisticList = pureSubSingleStatisticList;
     }
 
-    public void initSingleStatisticMap() {
-        effectiveSingleStatisticMap = new HashMap<StatisticType, SubSingleStatistic>(pureSingleStatisticList.size()
+    public void initSubSingleStatisticMap() {
+        effectiveSubSingleStatisticMap = new HashMap<StatisticType, SubSingleStatistic>(pureSubSingleStatisticList.size()
                 + problemBenchmarkResult.getProblemStatisticList().size());
         for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
-            SubSingleStatistic subSingleStatistic = problemStatistic.createSingleStatistic(this);
-            effectiveSingleStatisticMap.put(subSingleStatistic.getStatisticType(), subSingleStatistic);
+            SubSingleStatistic subSingleStatistic = problemStatistic.createSubSingleStatistic(this);
+            effectiveSubSingleStatisticMap.put(subSingleStatistic.getStatisticType(), subSingleStatistic);
         }
-        for (PureSubSingleStatistic pureSingleStatistic : pureSingleStatisticList) {
-            effectiveSingleStatisticMap.put(pureSingleStatistic.getStatisticType(), pureSingleStatistic);
+        for (PureSubSingleStatistic pureSubSingleStatistic : pureSubSingleStatisticList) {
+            effectiveSubSingleStatisticMap.put(pureSubSingleStatistic.getStatisticType(), pureSubSingleStatistic);
         }
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : subSingleBenchmarkResultList) {
             subSingleBenchmarkResult.initSubSingleStatisticMap();
@@ -154,8 +154,8 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         this.subSingleBenchmarkResultList = subSingleBenchmarkResultList;
     }
 
-    public Map<StatisticType, SubSingleStatistic> getEffectiveSingleStatisticMap() {
-        return effectiveSingleStatisticMap;
+    public Map<StatisticType, SubSingleStatistic> getEffectiveSubSingleStatisticMap() {
+        return effectiveSubSingleStatisticMap;
     }
 
     /**
@@ -311,8 +311,8 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         return ranking != null && ranking.intValue() == 0;
     }
 
-    public SubSingleStatistic getSingleStatistic(StatisticType statisticType) {
-        return effectiveSingleStatisticMap.get(statisticType);
+    public SubSingleStatistic getSubSingleStatistic(StatisticType statisticType) {
+        return effectiveSubSingleStatisticMap.get(statisticType);
     }
 
     public String getMedianScoreWithUninitializedPrefix() {
@@ -389,17 +389,17 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
 
     private void mergeSubSingleStatistics(SubSingleBenchmarkResult median) {
         if (!median.isSuccess()) {
-            logger.debug("The median SubSingleBenchmarkResult (index: {}) is not a success, not copying it's single statistics"
+            logger.debug("The median SubSingleBenchmarkResult (index: {}) is not a success, not copying it's sub single statistics"
                     + " to parent SingleBenchmarkResult's ({}) directory.", median.getSubSingleBenchmarkIndex(), this);
             return;
         }
-        if (median.getEffectiveSingleStatisticMap() == null) {
-            logger.debug("The median SubSingleBenchmarkResult (index: {}) does not have any single statistics, "
+        if (median.getEffectiveSubSingleStatisticMap() == null) {
+            logger.debug("The median SubSingleBenchmarkResult (index: {}) does not have any sub single statistics, "
                     + "nothing to copy to parent SingleBenchmarkResult ({}) directory. If this is an aggregation, "
                     + "this is expected.", median.getSubSingleBenchmarkIndex(), this);
             return;
         }
-        for (SubSingleStatistic subSingleStatistic : median.getEffectiveSingleStatisticMap().values()) {
+        for (SubSingleStatistic subSingleStatistic : median.getEffectiveSubSingleStatisticMap().values()) {
             // copy single stat's point list to parent (single benchmark) dir
             subSingleStatistic.unhibernatePointList();
             subSingleStatistic.setSolverProblemBenchmarkResult(this);
@@ -500,10 +500,10 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     protected static SingleBenchmarkResult createMerge(SolverBenchmarkResult solverBenchmarkResult,
             ProblemBenchmarkResult problemBenchmarkResult, SingleBenchmarkResult oldResult) {
         SingleBenchmarkResult newResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
-        newResult.pureSingleStatisticList = new ArrayList<PureSubSingleStatistic>(oldResult.pureSingleStatisticList.size());
-        for (PureSubSingleStatistic oldSingleStatistic : oldResult.pureSingleStatisticList) {
-            newResult.pureSingleStatisticList.add(
-                    oldSingleStatistic.getStatisticType().buildPureSingleStatistic(newResult));
+        newResult.pureSubSingleStatisticList = new ArrayList<PureSubSingleStatistic>(oldResult.pureSubSingleStatisticList.size());
+        for (PureSubSingleStatistic oldSubSingleStatistic : oldResult.pureSubSingleStatisticList) {
+            newResult.pureSubSingleStatisticList.add(
+                    oldSubSingleStatistic.getStatisticType().buildPureSubSingleStatistic(newResult));
         }
 
         newResult.subSingleBenchmarkResultList = new ArrayList<SubSingleBenchmarkResult>(oldResult.getSubSingleBenchmarkResultList().size());
@@ -513,18 +513,18 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
             subSingleBenchmarkIndex++;
         }
 
-        newResult.initSingleStatisticMap();
-        for (SubSingleStatistic subSingleStatistic : newResult.effectiveSingleStatisticMap.values()) {
-            SubSingleStatistic oldSubSingleStatistic = oldResult.getSingleStatistic(subSingleStatistic.getStatisticType());
+        newResult.initSubSingleStatisticMap();
+        for (SubSingleStatistic subSingleStatistic : newResult.effectiveSubSingleStatisticMap.values()) {
+            SubSingleStatistic oldSubSingleStatistic = oldResult.getSubSingleStatistic(subSingleStatistic.getStatisticType());
             if (!oldSubSingleStatistic.getCsvFile().exists()) {
                 if (oldResult.isFailure()) {
                     subSingleStatistic.initPointList();
-                    logger.debug("Old result ({}) is a failure, skipping merge of it's single statistic ({}).",
+                    logger.debug("Old result ({}) is a failure, skipping merge of it's sub single statistic ({}).",
                             oldResult, oldSubSingleStatistic);
                     continue;
                 } else {
                     throw new IllegalStateException("Could not find old result's ( " + oldResult
-                            + " ) single statistic's ( " + oldSubSingleStatistic + " ) CSV file.");
+                            + " ) sub single statistic's ( " + oldSubSingleStatistic + " ) CSV file.");
                 }
             }
             oldSubSingleStatistic.unhibernatePointList();

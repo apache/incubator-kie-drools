@@ -534,9 +534,9 @@
                                         </li>
                                         <#assign firstRow = false>
                                     </#list>
-                                    <#list problemBenchmarkResult.extractSingleStatisticTypeList() as singleStatisticType>
+                                    <#list problemBenchmarkResult.extractSubSingleStatisticTypeList() as subSingleStatisticType>
                                         <li<#if firstRow && !subSingleSummaryChartShown> class="active"</#if>>
-                                            <a href="#singleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}" data-toggle="tab">${singleStatisticType}</a>
+                                            <a href="#subSingleStatistic_${problemBenchmarkResult.anchorId}_${subSingleStatisticType.anchorId}" data-toggle="tab">${subSingleStatisticType}</a>
                                         </li>
                                         <#assign firstRow = false>
                                     </#list>
@@ -620,34 +620,34 @@
                                             <#if !benchmarkReport.plannerBenchmarkResult.aggregation>
                                                 <span>CSV files per solver:</span>
                                                 <div class="btn-group download-btn-group">
-                                                <#list problemStatistic.singleStatisticList as singleStatistic>
-                                                    <button class="btn" onclick="window.location.href='${singleStatistic.relativeCsvFilePath}'"><i class="icon-download"></i></button>
+                                                <#list problemStatistic.subSingleStatisticList as subSingleStatistic>
+                                                    <button class="btn" onclick="window.location.href='${subSingleStatistic.relativeCsvFilePath}'"><i class="icon-download"></i></button>
                                                 </#list>
                                                 </div>
                                             </#if>
                                         </div>
                                         <#assign firstRow = false>
                                     </#list>
-                                    <#list problemBenchmarkResult.extractSingleStatisticTypeList() as singleStatisticType>
-                                        <div class="tab-pane<#if firstRow && !subSingleSummaryChartShown> active</#if>" id="singleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}">
-                                            <#list problemBenchmarkResult.extractPureSingleStatisticList(singleStatisticType) as pureSingleStatistic>
-                                                <h3>${pureSingleStatistic.solverProblemBenchmarkResult.solverBenchmarkResult.name}</h3>
-                                                <#if pureSingleStatistic.graphFileList?? && pureSingleStatistic.graphFileList?size != 0>
-                                                    <#if singleStatisticType.hasScoreLevels()>
+                                    <#list problemBenchmarkResult.extractSubSingleStatisticTypeList() as subSingleStatisticType>
+                                        <div class="tab-pane<#if firstRow && !subSingleSummaryChartShown> active</#if>" id="subSingleStatistic_${problemBenchmarkResult.anchorId}_${subSingleStatisticType.anchorId}">
+                                            <#list problemBenchmarkResult.extractPureSubSingleStatisticList(subSingleStatisticType) as pureSubSingleStatistic>
+                                                <h3>${pureSubSingleStatistic.solverProblemBenchmarkResult.solverBenchmarkResult.name}</h3>
+                                                <#if pureSubSingleStatistic.graphFileList?? && pureSubSingleStatistic.graphFileList?size != 0>
+                                                    <#if subSingleStatisticType.hasScoreLevels()>
                                                         <div class="tabbable tabs-right">
                                                             <ul class="nav nav-tabs">
                                                                 <#assign scoreLevelIndex = 0>
-                                                                <#list pureSingleStatistic.graphFileList as graphFile>
+                                                                <#list pureSubSingleStatistic.graphFileList as graphFile>
                                                                     <li<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> class="active"</#if>>
-                                                                        <a href="#singleStatistic_${pureSingleStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
+                                                                        <a href="#subSingleStatistic_${pureSubSingleStatistic.anchorId}_${scoreLevelIndex}" data-toggle="tab">Score level ${scoreLevelIndex}</a>
                                                                     </li>
                                                                     <#assign scoreLevelIndex = scoreLevelIndex + 1>
                                                                 </#list>
                                                             </ul>
                                                             <div class="tab-content">
                                                                 <#assign scoreLevelIndex = 0>
-                                                                <#list pureSingleStatistic.graphFileList as graphFile>
-                                                                    <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="singleStatistic_${pureSingleStatistic.anchorId}_${scoreLevelIndex}">
+                                                                <#list pureSubSingleStatistic.graphFileList as graphFile>
+                                                                    <div class="tab-pane<#if scoreLevelIndex == benchmarkReport.defaultShownScoreLevelIndex> active</#if>" id="subSingleStatistic_${pureSubSingleStatistic.anchorId}_${scoreLevelIndex}">
                                                                         <div class="benchmark-chart">
                                                                             <img src="${benchmarkReport.getRelativePathToBenchmarkReportDirectory(graphFile)}"/>
                                                                         </div>
@@ -658,7 +658,7 @@
                                                         </div>
                                                     <#else>
                                                         <div class="benchmark-chart">
-                                                            <img src="${benchmarkReport.getRelativePathToBenchmarkReportDirectory(pureSingleStatistic.graphFile)}"/>
+                                                            <img src="${benchmarkReport.getRelativePathToBenchmarkReportDirectory(pureSubSingleStatistic.graphFile)}"/>
                                                         </div>
                                                     </#if>
                                                 <#else>
@@ -667,7 +667,7 @@
                                                 <#if !benchmarkReport.plannerBenchmarkResult.aggregation>
                                                     <span>CSV file:</span>
                                                     <div class="btn-group download-btn-group">
-                                                        <button class="btn" onclick="window.location.href='${pureSingleStatistic.relativeCsvFilePath}'"><i class="icon-download"></i></button>
+                                                        <button class="btn" onclick="window.location.href='${pureSubSingleStatistic.relativeCsvFilePath}'"><i class="icon-download"></i></button>
                                                     </div>
                                                 </#if>
                                             </#list>

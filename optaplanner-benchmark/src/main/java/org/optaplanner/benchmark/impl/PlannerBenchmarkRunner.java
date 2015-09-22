@@ -332,15 +332,15 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     private static final class WarmUpConfigBackup {
 
         private final TerminationConfig terminationConfig;
-        private final Map<SingleBenchmarkResult, List<PureSubSingleStatistic>> pureSingleStatisticMap;
+        private final Map<SingleBenchmarkResult, List<PureSubSingleStatistic>> pureSubSingleStatisticMap;
 
         public WarmUpConfigBackup(TerminationConfig terminationConfig) {
             this.terminationConfig = terminationConfig;
-            this.pureSingleStatisticMap = new HashMap<SingleBenchmarkResult, List<PureSubSingleStatistic>>();
+            this.pureSubSingleStatisticMap = new HashMap<SingleBenchmarkResult, List<PureSubSingleStatistic>>();
         }
 
-        public Map<SingleBenchmarkResult, List<PureSubSingleStatistic>> getPureSingleStatisticMap() {
-            return pureSingleStatisticMap;
+        public Map<SingleBenchmarkResult, List<PureSubSingleStatistic>> getPureSubSingleStatisticMap() {
+            return pureSubSingleStatisticMap;
         }
 
         public TerminationConfig getTerminationConfig() {
@@ -353,16 +353,16 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 TerminationConfig originalTerminationConfig = warmUpConfigBackup.getTerminationConfig();
                 solverBenchmarkResult.getSolverConfig().setTerminationConfig(originalTerminationConfig);
                 for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
-                    singleBenchmarkResult.setPureSingleStatisticList(warmUpConfigBackup.getPureSingleStatisticMap().get(singleBenchmarkResult));
+                    singleBenchmarkResult.setPureSubSingleStatisticList(warmUpConfigBackup.getPureSubSingleStatisticMap().get(singleBenchmarkResult));
                     ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
                     if (problemBenchmarkResult.getProblemStatisticList() == null || problemBenchmarkResult.getProblemStatisticList().size() <= 0) {
                         problemBenchmarkResult.setProblemStatisticList(originalProblemStatisticMap.get(problemBenchmarkResult));
                     }
                     for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                        subSingleBenchmarkResult.setSubPureSingleStatisticList(singleBenchmarkResult.getPureSingleStatisticList());
+                        subSingleBenchmarkResult.setSubPureSubSingleStatisticList(singleBenchmarkResult.getPureSubSingleStatisticList());
                         subSingleBenchmarkResult.initSubSingleStatisticMap();
                     }
-                    singleBenchmarkResult.initSingleStatisticMap();
+                    singleBenchmarkResult.initSubSingleStatisticMap();
                 }
             }
         }
@@ -373,14 +373,14 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
                 WarmUpConfigBackup warmUpConfigBackup = new WarmUpConfigBackup(originalTerminationConfig);
                 for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
-                    List<PureSubSingleStatistic> originalPureSingleStatisticList = singleBenchmarkResult.getPureSingleStatisticList();
-                    List<PureSubSingleStatistic> singleBenchmarkStatisticPutResult = warmUpConfigBackup.getPureSingleStatisticMap().put(singleBenchmarkResult, originalPureSingleStatisticList);
+                    List<PureSubSingleStatistic> originalPureSubSingleStatisticList = singleBenchmarkResult.getPureSubSingleStatisticList();
+                    List<PureSubSingleStatistic> singleBenchmarkStatisticPutResult = warmUpConfigBackup.getPureSubSingleStatisticMap().put(singleBenchmarkResult, originalPureSubSingleStatisticList);
                     if (singleBenchmarkStatisticPutResult != null) {
                         throw new IllegalStateException("SingleBenchmarkStatisticMap of WarmUpConfigBackup ( " + warmUpConfigBackup
                                 + " ) already contained key ( " + singleBenchmarkResult + " ) with value ( "
                                 + singleBenchmarkStatisticPutResult + " ).");
                     }
-                    singleBenchmarkResult.setPureSingleStatisticList(Collections.<PureSubSingleStatistic>emptyList());
+                    singleBenchmarkResult.setPureSubSingleStatisticList(Collections.<PureSubSingleStatistic>emptyList());
 
                     ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
                     List<ProblemStatistic> originalProblemStatisticList = problemBenchmarkResult.getProblemStatisticList();
@@ -394,10 +394,10 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                     }
                     singleBenchmarkResult.getProblemBenchmarkResult().setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
                     for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                        subSingleBenchmarkResult.setSubPureSingleStatisticList(singleBenchmarkResult.getPureSingleStatisticList());
+                        subSingleBenchmarkResult.setSubPureSubSingleStatisticList(singleBenchmarkResult.getPureSubSingleStatisticList());
                         subSingleBenchmarkResult.initSubSingleStatisticMap();
                     }
-                    singleBenchmarkResult.initSingleStatisticMap();
+                    singleBenchmarkResult.initSubSingleStatisticMap();
                 }
                 WarmUpConfigBackup warmUpConfigBackupPutResult = warmUpConfigBackupMap.put(solverBenchmarkResult, warmUpConfigBackup);
                 if (warmUpConfigBackupPutResult != null) {

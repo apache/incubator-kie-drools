@@ -49,18 +49,18 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-@XStreamAlias("constraintMatchTotalStepScoreSingleStatistic")
+@XStreamAlias("constraintMatchTotalStepScoreSubSingleStatistic")
 public class ConstraintMatchTotalStepScoreSubSingleStatistic extends PureSubSingleStatistic<ConstraintMatchTotalStepScoreStatisticPoint> {
 
     @XStreamOmitField
-    private ConstraintMatchTotalStepScoreSingleStatisticListener listener;
+    private ConstraintMatchTotalStepScoreSubSingleStatisticListener listener;
 
     @XStreamOmitField
     protected List<File> graphFileList = null;
 
     public ConstraintMatchTotalStepScoreSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         super(solverProblemBenchmarkResult, SubSingleStatisticType.CONSTRAINT_MATCH_TOTAL_STEP_SCORE);
-        listener = new ConstraintMatchTotalStepScoreSingleStatisticListener();
+        listener = new ConstraintMatchTotalStepScoreSubSingleStatisticListener();
     }
 
     /**
@@ -85,7 +85,7 @@ public class ConstraintMatchTotalStepScoreSubSingleStatistic extends PureSubSing
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class ConstraintMatchTotalStepScoreSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class ConstraintMatchTotalStepScoreSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         private boolean constraintMatchEnabled;
 
@@ -94,7 +94,7 @@ public class ConstraintMatchTotalStepScoreSubSingleStatistic extends PureSubSing
             InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
             constraintMatchEnabled = scoreDirector.isConstraintMatchEnabled();
             if (!constraintMatchEnabled) {
-                logger.warn("The singleStatistic ({}) cannot function properly" +
+                logger.warn("The subSingleStatistic ({}) cannot function properly" +
                         " because ConstraintMatches are not supported on the ScoreDirector.", subSingleStatisticType);
             }
         }
