@@ -267,7 +267,7 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
     // ************************************************************************
 
     public String getReportDirectoryPath() {
-        return singleBenchmarkResult.getReportDirectoryPath() + "_" + subSingleBenchmarkIndex;
+        return "sub" + subSingleBenchmarkIndex;
     }
 
     public File getReportDirectory() {
@@ -286,7 +286,6 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
     // ************************************************************************
     // Merger methods
     // ************************************************************************
-
 
     protected static SubSingleBenchmarkResult createMerge(SingleBenchmarkResult singleBenchmarkResult, SubSingleBenchmarkResult oldResult, int subSingleBenchmarkIndex) {
         SubSingleBenchmarkResult newResult = new SubSingleBenchmarkResult(singleBenchmarkResult, subSingleBenchmarkIndex);
