@@ -46,7 +46,7 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(SubSingleBenchmarkResult.class);
 
-    @XStreamOmitField
+    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
     private SingleBenchmarkResult singleBenchmarkResult;
 
     private int subSingleBenchmarkIndex = -1;
