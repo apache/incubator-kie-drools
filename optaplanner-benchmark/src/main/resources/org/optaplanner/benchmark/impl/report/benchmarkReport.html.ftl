@@ -394,17 +394,6 @@
                                                                 <li class="dropdown-header"><strong>Run #${subSingleBenchmarkResult.getSubSingleBenchmarkIndex()}</strong></li>
                                                                 <li>${subSingleBenchmarkResult.averageCalculateCountPerSecond!""}/s</li>
                                                             </#list>
-                                                            <#--<li role="separator" class="divider"></li>-->
-                                                            <#--<li class="dropdown-header"><strong>Average</strong></li>-->
-                                                            <#--<li>${singleBenchmarkResult.averageAverageCalculateCountPerSecond!""}/s</li>-->
-                                                            <#--<li class="dropdown-header"><strong>Standard Deviation</strong></li>-->
-                                                            <#--<li>${singleBenchmarkResult.standardDeviationStringAverageCalculateCountPerSecond!""}/s</li>-->
-                                                            <#--<li class="dropdown-header"><strong>Best</strong></li>-->
-                                                            <#--<li>${singleBenchmarkResult.bestAverageCalculateCountPerSecond!""}/s</li>-->
-                                                            <#--<li class="dropdown-header"><strong>Worst</strong></li>-->
-                                                            <#--<li>${singleBenchmarkResult.worstAverageCalculateCountPerSecond!""}/s</li>-->
-                                                            <#--<li class="dropdown-header"><strong>Median</strong></li>-->
-                                                            <#--<li>${singleBenchmarkResult.medianAverageCalculateCountPerSecond!""}/s</li>-->
                                                         </ul>
                                                       </div></td>
                                                     </#if>
@@ -466,17 +455,6 @@
                                                                     <li class="dropdown-header"><strong>Run #${subSingleBenchmarkResult.getSubSingleBenchmarkIndex()}</strong></li>
                                                                     <li>${subSingleBenchmarkResult.timeMillisSpent!""}</li>
                                                                 </#list>
-                                                                <#--<li role="separator" class="divider"></li>-->
-                                                                <#--<li class="dropdown-header"><strong>Average</strong></li>-->
-                                                                <#--<li>${singleBenchmarkResult.averageTimeMillisSpent!""}</li>-->
-                                                                <#--<li class="dropdown-header"><strong>Standard Deviation</strong></li>-->
-                                                                <#--<li>${singleBenchmarkResult.standardDeviationStringTimeMillisSpent!""}</li>-->
-                                                                <#--<li class="dropdown-header"><strong>Best</strong></li>-->
-                                                                <#--<li>${singleBenchmarkResult.bestTimeMillisSpent!""}</li>-->
-                                                                <#--<li class="dropdown-header"><strong>Worst</strong></li>-->
-                                                                <#--<li>${singleBenchmarkResult.worstTimeMillisSpent!""}</li>-->
-                                                                <#--<li class="dropdown-header"><strong>Median</strong></li>-->
-                                                                <#--<li>${singleBenchmarkResult.medianTimeMillisSpent!""}</li>-->
                                                             </ul>
                                                         </div></td>
                                                     </#if>
