@@ -25,6 +25,7 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.util.ConfigUtils;
 
 @XStreamAlias("solverBenchmark")
 public class SolverBenchmarkConfig {
@@ -79,7 +80,7 @@ public class SolverBenchmarkConfig {
         validate();
         SolverBenchmarkResult solverBenchmarkResult = new SolverBenchmarkResult(plannerBenchmark);
         solverBenchmarkResult.setName(name);
-        solverBenchmarkResult.setSubSingleCount(subSingleCount);
+        solverBenchmarkResult.setSubSingleCount(ConfigUtils.inheritOverwritableProperty(subSingleCount, 1));
         solverBenchmarkResult.setSolverConfig(solverConfig);
         solverBenchmarkResult.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
         ProblemBenchmarksConfig problemBenchmarksConfig_
@@ -100,7 +101,7 @@ public class SolverBenchmarkConfig {
             throw new IllegalStateException("The solverBenchmark name (" + name
                     + ") is invalid because it starts or ends with whitespace.");
         }
-        if (subSingleCount == null || subSingleCount < 1) {
+        if (subSingleCount != null && subSingleCount < 1) {
             throw new IllegalStateException("The solverBenchmark name (" + name
                     + ") is invalid because the subSingleCount (" + subSingleCount + ") must be greater than 1.");
         }
@@ -117,9 +118,7 @@ public class SolverBenchmarkConfig {
         } else if (inheritedConfig.getProblemBenchmarksConfig() != null) {
             problemBenchmarksConfig.inherit(inheritedConfig.getProblemBenchmarksConfig());
         }
-        if (subSingleCount == null) {
-            subSingleCount = ObjectUtils.defaultIfNull(inheritedConfig.getSubSingleCount(), 1);
-        }
+        subSingleCount = ConfigUtils.inheritOverwritableProperty(subSingleCount, inheritedConfig.getSubSingleCount());
     }
 
 }

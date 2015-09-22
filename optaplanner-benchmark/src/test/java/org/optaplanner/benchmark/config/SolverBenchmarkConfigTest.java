@@ -71,8 +71,7 @@ public class SolverBenchmarkConfigTest {
         config.validate();
     }
 
-    @Test(expected = IllegalStateException.class)
-    public void invalidNullSubSingleCount() {
+    public void validNullSubSingleCount() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("name");
         config.setSubSingleCount(null);
