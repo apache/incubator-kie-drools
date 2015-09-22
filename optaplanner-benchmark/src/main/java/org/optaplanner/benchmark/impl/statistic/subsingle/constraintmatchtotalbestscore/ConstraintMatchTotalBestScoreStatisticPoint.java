@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalstepscore;
+package org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalbestscore;
 
 import org.optaplanner.benchmark.impl.statistic.StatisticPoint;
 
-public class ConstraintMatchTotalStepScoreStatisticPoint extends StatisticPoint {
+public class ConstraintMatchTotalBestScoreStatisticPoint extends StatisticPoint {
 
     private final long timeMillisSpent;
     protected final String constraintPackage;
@@ -27,7 +27,7 @@ public class ConstraintMatchTotalStepScoreStatisticPoint extends StatisticPoint 
     private final int constraintMatchCount;
     private final double weightTotal;
 
-    public ConstraintMatchTotalStepScoreStatisticPoint(long timeMillisSpent,
+    public ConstraintMatchTotalBestScoreStatisticPoint(long timeMillisSpent,
             String constraintPackage, String constraintName, int scoreLevel,
             int constraintMatchCount, double weightTotal) {
         this.timeMillisSpent = timeMillisSpent;

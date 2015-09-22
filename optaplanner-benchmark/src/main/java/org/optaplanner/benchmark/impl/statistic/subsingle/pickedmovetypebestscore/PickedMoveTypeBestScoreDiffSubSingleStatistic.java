@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore;
+package org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypebestscore;
 
 import java.io.File;
 import java.text.NumberFormat;
@@ -50,18 +50,18 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-@XStreamAlias("pickedMoveTypeStepScoreDiffSingleStatistic")
-public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingleStatistic<PickedMoveTypeStepScoreDiffStatisticPoint> {
+@XStreamAlias("pickedMoveTypeBestScoreDiffSingleStatistic")
+public class PickedMoveTypeBestScoreDiffSubSingleStatistic extends PureSubSingleStatistic<PickedMoveTypeBestScoreDiffStatisticPoint> {
 
     @XStreamOmitField
-    private PickedMoveTypeStepScoreDiffSingleStatisticListener listener;
+    private PickedMoveTypeBestScoreDiffSingleStatisticListener listener;
 
     @XStreamOmitField
     protected List<File> graphFileList = null;
 
-    public PickedMoveTypeStepScoreDiffSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
-        super(solverProblemBenchmarkResult, SubSingleStatisticType.PICKED_MOVE_TYPE_STEP_SCORE_DIFF);
-        listener = new PickedMoveTypeStepScoreDiffSingleStatisticListener();
+    public PickedMoveTypeBestScoreDiffSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+        super(solverProblemBenchmarkResult, SubSingleStatisticType.PICKED_MOVE_TYPE_BEST_SCORE_DIFF);
+        listener = new PickedMoveTypeBestScoreDiffSingleStatisticListener();
     }
 
     /**
@@ -84,21 +84,21 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingle
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class PickedMoveTypeStepScoreDiffSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class PickedMoveTypeBestScoreDiffSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
-        private Score oldStepScore = null;
+        private Score oldBestScore = null;
 
         @Override
         public void phaseStarted(AbstractPhaseScope phaseScope) {
             if (phaseScope instanceof LocalSearchPhaseScope) {
-                oldStepScore = phaseScope.getStartingScore();
+                oldBestScore = phaseScope.getBestScore();
             }
         }
 
         @Override
         public void phaseEnded(AbstractPhaseScope phaseScope) {
             if (phaseScope instanceof LocalSearchPhaseScope) {
-                oldStepScore = null;
+                oldBestScore = null;
             }
         }
 
@@ -110,13 +110,15 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingle
         }
 
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
-            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
-            String moveType = stepScope.getStep().getSimpleMoveTypeDescription();
-            Score newStepScore = stepScope.getScore();
-            Score stepScoreDiff = newStepScore.subtract(oldStepScore);
-            oldStepScore = newStepScore;
-            pointList.add(new PickedMoveTypeStepScoreDiffStatisticPoint(
-                    timeMillisSpent, moveType, stepScoreDiff));
+            if (stepScope.getBestScoreImproved()) {
+                long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
+                String moveType = stepScope.getStep().getSimpleMoveTypeDescription();
+                Score newBestScore = stepScope.getScore();
+                Score bestScoreDiff = newBestScore.subtract(oldBestScore);
+                oldBestScore = newBestScore;
+                pointList.add(new PickedMoveTypeBestScoreDiffStatisticPoint(
+                        timeMillisSpent, moveType, bestScoreDiff));
+            }
         }
 
     }
@@ -127,13 +129,13 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingle
 
     @Override
     protected String getCsvHeader() {
-        return PickedMoveTypeStepScoreDiffStatisticPoint.buildCsvLine("timeMillisSpent", "moveType", "stepScoreDiff");
+        return PickedMoveTypeBestScoreDiffStatisticPoint.buildCsvLine("timeMillisSpent", "moveType", "bestScoreDiff");
     }
 
     @Override
-    protected PickedMoveTypeStepScoreDiffStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected PickedMoveTypeBestScoreDiffStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new PickedMoveTypeStepScoreDiffStatisticPoint(Long.valueOf(csvLine.get(0)),
+        return new PickedMoveTypeBestScoreDiffStatisticPoint(Long.valueOf(csvLine.get(0)),
                 csvLine.get(1), scoreDefinition.parseScore(csvLine.get(2)));
     }
 
@@ -145,10 +147,10 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingle
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         List<Map<String, XYIntervalSeries>> moveTypeToSeriesMapList
                 = new ArrayList<Map<String, XYIntervalSeries>>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
-        for (PickedMoveTypeStepScoreDiffStatisticPoint point : getPointList()) {
+        for (PickedMoveTypeBestScoreDiffStatisticPoint point : getPointList()) {
             long timeMillisSpent = point.getTimeMillisSpent();
             String moveType = point.getMoveType();
-            double[] levelValues = ScoreUtils.extractLevelDoubles(point.getStepScoreDiff());
+            double[] levelValues = ScoreUtils.extractLevelDoubles(point.getBestScoreDiff());
             for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                 if (i >= moveTypeToSeriesMapList.size()) {
                     moveTypeToSeriesMapList.add(new LinkedHashMap<String, XYIntervalSeries>());
@@ -176,10 +178,10 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingle
             }
             plot.setDataset(seriesCollection);
             JFreeChart chart = new JFreeChart(solverProblemBenchmarkResult.getName()
-                    + " picked move type step score diff level " + scoreLevelIndex + " statistic",
+                    + " picked move type best score diff level " + scoreLevelIndex + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             graphFileList.add(writeChartToImageFile(chart,
-                    "PickedMoveTypeStepScoreDiffStatisticLevel" + scoreLevelIndex));
+                    "PickedMoveTypeBestScoreDiffStatisticLevel" + scoreLevelIndex));
         }
     }
 
@@ -187,7 +189,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingle
         Locale locale = benchmarkReport.getLocale();
         NumberAxis xAxis = new NumberAxis("Time spent");
         xAxis.setNumberFormatOverride(new MillisecondsSpentNumberFormat(locale));
-        NumberAxis yAxis = new NumberAxis("Step score diff level " + scoreLevelIndex);
+        NumberAxis yAxis = new NumberAxis("Best score diff level " + scoreLevelIndex);
         yAxis.setNumberFormatOverride(NumberFormat.getInstance(locale));
         yAxis.setAutoRangeIncludesZero(true);
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalstepscore;
+package org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalstepscore;
 
 import java.io.File;
 import java.text.NumberFormat;
