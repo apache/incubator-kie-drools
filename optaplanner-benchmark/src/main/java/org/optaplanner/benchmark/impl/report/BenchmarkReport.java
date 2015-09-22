@@ -254,7 +254,7 @@ public class BenchmarkReport {
                                         + singleStatistic + " ) of ProblemStatistic ( " + problemStatistic + " ).", e);
                             }
                             logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
-                                    + "( {} ) of single statistic ( {} ).", singleStatistic.getCsvFile().getAbsolutePath(), singleStatistic);
+                                    + "({}) of single statistic ({}).", singleStatistic.getCsvFile().getAbsolutePath(), singleStatistic);
                         }
                     }
                     problemStatistic.writeGraphFiles(this);
@@ -277,7 +277,7 @@ public class BenchmarkReport {
                                             + "PureSingleStatistic ( " + pureSingleStatistic + " ).", e);
                                 }
                                 logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
-                                        + "( {} ) of pure single statistic ( {} ).", pureSingleStatistic.getCsvFile().getAbsolutePath(), pureSingleStatistic);
+                                        + "({}) of pure single statistic ({}).", pureSingleStatistic.getCsvFile().getAbsolutePath(), pureSingleStatistic);
                             }
                             pureSingleStatistic.writeGraphFiles(this);
                             if (plannerBenchmarkResult.getAggregation()) {

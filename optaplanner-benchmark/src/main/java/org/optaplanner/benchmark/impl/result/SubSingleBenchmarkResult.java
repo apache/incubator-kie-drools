@@ -302,7 +302,7 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
             if (!oldSingleStatistic.getCsvFile().exists()) {
                 if (oldResult.isFailure()) {
                     singleStatistic.initPointList();
-                    logger.debug("Old result ( {} ) is a failure, skipping merge of it's single statistic ( {} ).",
+                    logger.debug("Old result ({}) is a failure, skipping merge of it's single statistic ({}).",
                             oldResult, oldSingleStatistic);
                     continue;
                 } else {
