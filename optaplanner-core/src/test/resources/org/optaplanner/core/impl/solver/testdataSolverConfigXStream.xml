@@ -1,0 +1,8 @@
+<solver xStreamId="1">
+  <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
+  <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+  <scoreDirectorFactory xStreamId="2">
+    <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+    <scoreDrl>org/optaplanner/core/api/solver/testdataScoreRules.drl</scoreDrl>
+  </scoreDirectorFactory>
+</solver>
