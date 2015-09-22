@@ -102,6 +102,25 @@ public final class BendableLongScore extends AbstractScore<BendableLongScore>
     // Worker methods
     // ************************************************************************
 
+    /**
+     * @return {@link #getHardLevelsSize()} + {@link #getSoftLevelsSize()}
+     */
+    public int getLevelsSize() {
+        return hardScores.length + softScores.length;
+    }
+
+    /**
+     * @param index {@code 0 <= index <} {@link #getLevelsSize()}
+     * @return higher is better
+     */
+    public long getHardOrSoftScore(int index) {
+        if (index < hardScores.length) {
+            return hardScores[index];
+        } else {
+            return softScores[index - hardScores.length];
+        }
+    }
+
     public boolean isFeasible() {
         for (long hardScore : hardScores) {
             if (hardScore > 0) {

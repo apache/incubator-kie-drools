@@ -6,6 +6,7 @@
 
     <class>org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest$AbstractTestJpaEntity</class>
     <class>org.optaplanner.persistence.jpa.impl.score.buildin.hardsoft.HardSoftScoreHibernateTypeTest$TestJpaEntity</class>
+    <class>org.optaplanner.persistence.jpa.impl.score.buildin.bendable.BendableScoreHibernateTypeTest$TestJpaEntity</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
 
     <properties>

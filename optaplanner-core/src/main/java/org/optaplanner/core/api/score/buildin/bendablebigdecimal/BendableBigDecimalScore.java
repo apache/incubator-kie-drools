@@ -103,6 +103,25 @@ public final class BendableBigDecimalScore extends AbstractScore<BendableBigDeci
     // Worker methods
     // ************************************************************************
 
+    /**
+     * @return {@link #getHardLevelsSize()} + {@link #getSoftLevelsSize()}
+     */
+    public int getLevelsSize() {
+        return hardScores.length + softScores.length;
+    }
+
+    /**
+     * @param index {@code 0 <= index <} {@link #getLevelsSize()}
+     * @return higher is better
+     */
+    public BigDecimal getHardOrSoftScore(int index) {
+        if (index < hardScores.length) {
+            return hardScores[index];
+        } else {
+            return softScores[index - hardScores.length];
+        }
+    }
+
     public boolean isFeasible() {
         for (BigDecimal hardScore : hardScores) {
             int comparison = hardScore.compareTo(BigDecimal.ZERO);

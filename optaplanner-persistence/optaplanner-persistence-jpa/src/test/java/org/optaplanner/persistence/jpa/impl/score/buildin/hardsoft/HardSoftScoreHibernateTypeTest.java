@@ -18,24 +18,11 @@ package org.optaplanner.persistence.jpa.impl.score.buildin.hardsoft;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Persistence;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.TypeDef;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-
-import static org.junit.Assert.*;
 
 public class HardSoftScoreHibernateTypeTest extends org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest {
 
