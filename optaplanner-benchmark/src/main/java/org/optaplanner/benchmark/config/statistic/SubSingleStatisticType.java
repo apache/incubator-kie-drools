@@ -25,7 +25,7 @@ import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalsteps
 import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSubSingleStatistic;
 
-public enum SingleStatisticType implements StatisticType {
+public enum SubSingleStatisticType implements StatisticType {
     CONSTRAINT_MATCH_TOTAL_BEST_SCORE,
     CONSTRAINT_MATCH_TOTAL_STEP_SCORE,
     PICKED_MOVE_TYPE_BEST_SCORE_DIFF,

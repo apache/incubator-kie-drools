@@ -34,7 +34,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.YIntervalRenderer;
 import org.jfree.data.xy.XYIntervalSeries;
 import org.jfree.data.xy.XYIntervalSeriesCollection;
-import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
+import org.optaplanner.benchmark.config.statistic.SubSingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
@@ -60,7 +60,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingle
     protected List<File> graphFileList = null;
 
     public PickedMoveTypeStepScoreDiffSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
-        super(solverProblemBenchmarkResult, SingleStatisticType.PICKED_MOVE_TYPE_STEP_SCORE_DIFF);
+        super(solverProblemBenchmarkResult, SubSingleStatisticType.PICKED_MOVE_TYPE_STEP_SCORE_DIFF);
         listener = new PickedMoveTypeStepScoreDiffSingleStatisticListener();
     }
 

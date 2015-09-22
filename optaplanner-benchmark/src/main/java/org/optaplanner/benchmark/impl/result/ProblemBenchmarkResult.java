@@ -35,7 +35,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
+import org.optaplanner.benchmark.config.statistic.SubSingleStatisticType;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -230,22 +230,22 @@ public class ProblemBenchmarkResult {
         return maximumSubSingleCount != null ? maximumSubSingleCount > 1 : false;
     }
 
-    public Collection<SingleStatisticType> extractSingleStatisticTypeList() {
-        Set<SingleStatisticType> singleStatisticTypeSet = new LinkedHashSet<SingleStatisticType>();
+    public Collection<SubSingleStatisticType> extractSingleStatisticTypeList() {
+        Set<SubSingleStatisticType> subSingleStatisticTypeSet = new LinkedHashSet<SubSingleStatisticType>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             for (PureSubSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
-                singleStatisticTypeSet.add(pureSingleStatistic.getStatisticType());
+                subSingleStatisticTypeSet.add(pureSingleStatistic.getStatisticType());
             }
         }
-        return singleStatisticTypeSet;
+        return subSingleStatisticTypeSet;
     }
 
-    public List<PureSubSingleStatistic> extractPureSingleStatisticList(SingleStatisticType singleStatisticType) {
+    public List<PureSubSingleStatistic> extractPureSingleStatisticList(SubSingleStatisticType subSingleStatisticType) {
         List<PureSubSingleStatistic> pureSingleStatisticList = new ArrayList<PureSubSingleStatistic>(
                 singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             for (PureSubSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
-                if (pureSingleStatistic.getStatisticType() == singleStatisticType) {
+                if (pureSingleStatistic.getStatisticType() == subSingleStatisticType) {
                     pureSingleStatisticList.add(pureSingleStatistic);
                 }
             }
