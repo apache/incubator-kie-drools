@@ -46,9 +46,9 @@ import org.slf4j.LoggerFactory;
  * 1 statistic of {@link SingleBenchmarkResult}.
  */
 @XStreamInclude({
-        PureSingleStatistic.class
+        PureSubSingleStatistic.class
 })
-public abstract class SingleStatistic<P extends StatisticPoint> {
+public abstract class SubSingleStatistic<P extends StatisticPoint> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -58,7 +58,7 @@ public abstract class SingleStatistic<P extends StatisticPoint> {
     @XStreamOmitField
     protected List<P> pointList;
 
-    protected SingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+    protected SubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         this.solverProblemBenchmarkResult = solverProblemBenchmarkResult;
     }
 

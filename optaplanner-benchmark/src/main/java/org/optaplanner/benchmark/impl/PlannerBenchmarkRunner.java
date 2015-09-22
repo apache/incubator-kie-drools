@@ -40,7 +40,7 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
@@ -332,14 +332,14 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     private static final class WarmUpConfigBackup {
 
         private final TerminationConfig terminationConfig;
-        private final Map<SingleBenchmarkResult, List<PureSingleStatistic>> pureSingleStatisticMap;
+        private final Map<SingleBenchmarkResult, List<PureSubSingleStatistic>> pureSingleStatisticMap;
 
         public WarmUpConfigBackup(TerminationConfig terminationConfig) {
             this.terminationConfig = terminationConfig;
-            this.pureSingleStatisticMap = new HashMap<SingleBenchmarkResult, List<PureSingleStatistic>>();
+            this.pureSingleStatisticMap = new HashMap<SingleBenchmarkResult, List<PureSubSingleStatistic>>();
         }
 
-        public Map<SingleBenchmarkResult, List<PureSingleStatistic>> getPureSingleStatisticMap() {
+        public Map<SingleBenchmarkResult, List<PureSubSingleStatistic>> getPureSingleStatisticMap() {
             return pureSingleStatisticMap;
         }
 
@@ -373,14 +373,14 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
                 WarmUpConfigBackup warmUpConfigBackup = new WarmUpConfigBackup(originalTerminationConfig);
                 for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
-                    List<PureSingleStatistic> originalPureSingleStatisticList = singleBenchmarkResult.getPureSingleStatisticList();
-                    List<PureSingleStatistic> singleBenchmarkStatisticPutResult = warmUpConfigBackup.getPureSingleStatisticMap().put(singleBenchmarkResult, originalPureSingleStatisticList);
+                    List<PureSubSingleStatistic> originalPureSingleStatisticList = singleBenchmarkResult.getPureSingleStatisticList();
+                    List<PureSubSingleStatistic> singleBenchmarkStatisticPutResult = warmUpConfigBackup.getPureSingleStatisticMap().put(singleBenchmarkResult, originalPureSingleStatisticList);
                     if (singleBenchmarkStatisticPutResult != null) {
                         throw new IllegalStateException("SingleBenchmarkStatisticMap of WarmUpConfigBackup ( " + warmUpConfigBackup
                                 + " ) already contained key ( " + singleBenchmarkResult + " ) with value ( "
                                 + singleBenchmarkStatisticPutResult + " ).");
                     }
-                    singleBenchmarkResult.setPureSingleStatisticList(Collections.<PureSingleStatistic>emptyList());
+                    singleBenchmarkResult.setPureSingleStatisticList(Collections.<PureSubSingleStatistic>emptyList());
 
                     ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
                     List<ProblemStatistic> originalProblemStatisticList = problemBenchmarkResult.getProblemStatisticList();

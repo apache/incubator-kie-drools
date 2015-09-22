@@ -37,7 +37,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 
@@ -51,8 +51,8 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SingleStatistic createSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
-        return new MemoryUseSingleStatistic(solverProblemBenchmarkResult);
+    public SubSingleStatistic createSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+        return new MemoryUseSubSingleStatistic(solverProblemBenchmarkResult);
     }
 
     /**
@@ -85,7 +85,7 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
 //                    singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " max");
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmarkResult.isSuccess()) {
-                MemoryUseSingleStatistic singleStatistic = (MemoryUseSingleStatistic)
+                MemoryUseSubSingleStatistic singleStatistic = (MemoryUseSubSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (MemoryUseStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpent = point.getTimeMillisSpent();

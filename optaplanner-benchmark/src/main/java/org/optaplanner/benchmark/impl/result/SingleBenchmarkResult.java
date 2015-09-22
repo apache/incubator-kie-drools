@@ -33,8 +33,8 @@ import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SubSingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.benchmark.impl.statistic.StatisticUtils;
 import org.optaplanner.core.api.score.FeasibilityScore;
@@ -62,10 +62,10 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     private List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = null;
 
     @XStreamImplicit()
-    private List<PureSingleStatistic> pureSingleStatisticList = null;
+    private List<PureSubSingleStatistic> pureSingleStatisticList = null;
 
     @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files
-    private Map<StatisticType, SingleStatistic> effectiveSingleStatisticMap;
+    private Map<StatisticType, SubSingleStatistic> effectiveSingleStatisticMap;
 
     private Long usedMemoryAfterInputSolution = null;
 
@@ -105,22 +105,22 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         this.problemBenchmarkResult = problemBenchmarkResult;
     }
 
-    public List<PureSingleStatistic> getPureSingleStatisticList() {
+    public List<PureSubSingleStatistic> getPureSingleStatisticList() {
         return pureSingleStatisticList;
     }
 
-    public void setPureSingleStatisticList(List<PureSingleStatistic> pureSingleStatisticList) {
+    public void setPureSingleStatisticList(List<PureSubSingleStatistic> pureSingleStatisticList) {
         this.pureSingleStatisticList = pureSingleStatisticList;
     }
 
     public void initSingleStatisticMap() {
-        effectiveSingleStatisticMap = new HashMap<StatisticType, SingleStatistic>(pureSingleStatisticList.size()
+        effectiveSingleStatisticMap = new HashMap<StatisticType, SubSingleStatistic>(pureSingleStatisticList.size()
                 + problemBenchmarkResult.getProblemStatisticList().size());
         for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
-            SingleStatistic singleStatistic = problemStatistic.createSingleStatistic(this);
-            effectiveSingleStatisticMap.put(singleStatistic.getStatisticType(), singleStatistic);
+            SubSingleStatistic subSingleStatistic = problemStatistic.createSingleStatistic(this);
+            effectiveSingleStatisticMap.put(subSingleStatistic.getStatisticType(), subSingleStatistic);
         }
-        for (PureSingleStatistic pureSingleStatistic : pureSingleStatisticList) {
+        for (PureSubSingleStatistic pureSingleStatistic : pureSingleStatisticList) {
             effectiveSingleStatisticMap.put(pureSingleStatistic.getStatisticType(), pureSingleStatistic);
         }
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : subSingleBenchmarkResultList) {
@@ -154,7 +154,7 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         this.subSingleBenchmarkResultList = subSingleBenchmarkResultList;
     }
 
-    public Map<StatisticType, SingleStatistic> getEffectiveSingleStatisticMap() {
+    public Map<StatisticType, SubSingleStatistic> getEffectiveSingleStatisticMap() {
         return effectiveSingleStatisticMap;
     }
 
@@ -311,7 +311,7 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         return ranking != null && ranking.intValue() == 0;
     }
 
-    public SingleStatistic getSingleStatistic(StatisticType statisticType) {
+    public SubSingleStatistic getSingleStatistic(StatisticType statisticType) {
         return effectiveSingleStatisticMap.get(statisticType);
     }
 
@@ -399,11 +399,11 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
                     + "this is expected.", median.getSubSingleBenchmarkIndex(), this);
             return;
         }
-        for (SingleStatistic singleStatistic : median.getEffectiveSingleStatisticMap().values()) {
+        for (SubSingleStatistic subSingleStatistic : median.getEffectiveSingleStatisticMap().values()) {
             // copy single stat's point list to parent (single benchmark) dir
-            singleStatistic.unhibernatePointList();
-            singleStatistic.setSolverProblemBenchmarkResult(this);
-            singleStatistic.hibernatePointList();
+            subSingleStatistic.unhibernatePointList();
+            subSingleStatistic.setSolverProblemBenchmarkResult(this);
+            subSingleStatistic.hibernatePointList();
         }
     }
 
@@ -500,8 +500,8 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     protected static SingleBenchmarkResult createMerge(SolverBenchmarkResult solverBenchmarkResult,
             ProblemBenchmarkResult problemBenchmarkResult, SingleBenchmarkResult oldResult) {
         SingleBenchmarkResult newResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
-        newResult.pureSingleStatisticList = new ArrayList<PureSingleStatistic>(oldResult.pureSingleStatisticList.size());
-        for (PureSingleStatistic oldSingleStatistic : oldResult.pureSingleStatisticList) {
+        newResult.pureSingleStatisticList = new ArrayList<PureSubSingleStatistic>(oldResult.pureSingleStatisticList.size());
+        for (PureSubSingleStatistic oldSingleStatistic : oldResult.pureSingleStatisticList) {
             newResult.pureSingleStatisticList.add(
                     oldSingleStatistic.getStatisticType().buildPureSingleStatistic(newResult));
         }
@@ -514,22 +514,22 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
         }
 
         newResult.initSingleStatisticMap();
-        for (SingleStatistic singleStatistic : newResult.effectiveSingleStatisticMap.values()) {
-            SingleStatistic oldSingleStatistic = oldResult.getSingleStatistic(singleStatistic.getStatisticType());
-            if (!oldSingleStatistic.getCsvFile().exists()) {
+        for (SubSingleStatistic subSingleStatistic : newResult.effectiveSingleStatisticMap.values()) {
+            SubSingleStatistic oldSubSingleStatistic = oldResult.getSingleStatistic(subSingleStatistic.getStatisticType());
+            if (!oldSubSingleStatistic.getCsvFile().exists()) {
                 if (oldResult.isFailure()) {
-                    singleStatistic.initPointList();
+                    subSingleStatistic.initPointList();
                     logger.debug("Old result ({}) is a failure, skipping merge of it's single statistic ({}).",
-                            oldResult, oldSingleStatistic);
+                            oldResult, oldSubSingleStatistic);
                     continue;
                 } else {
                     throw new IllegalStateException("Could not find old result's ( " + oldResult
-                            + " ) single statistic's ( " + oldSingleStatistic + " ) CSV file.");
+                            + " ) single statistic's ( " + oldSubSingleStatistic + " ) CSV file.");
                 }
             }
-            oldSingleStatistic.unhibernatePointList();
-            singleStatistic.setPointList(oldSingleStatistic.getPointList());
-            oldSingleStatistic.hibernatePointList();
+            oldSubSingleStatistic.unhibernatePointList();
+            subSingleStatistic.setPointList(oldSubSingleStatistic.getPointList());
+            oldSubSingleStatistic.hibernatePointList();
         }
         newResult.medianScore = oldResult.medianScore;
         newResult.medianUninitializedVariableCount = oldResult.medianUninitializedVariableCount;

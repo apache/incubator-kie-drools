@@ -35,7 +35,7 @@ import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,17 +140,17 @@ public class BenchmarkResultIO {
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 singleBenchmarkResult.setSolverBenchmarkResult(solverBenchmarkResult);
                 if (singleBenchmarkResult.getPureSingleStatisticList() == null) {
-                    singleBenchmarkResult.setPureSingleStatisticList(new ArrayList<PureSingleStatistic>(0));
+                    singleBenchmarkResult.setPureSingleStatisticList(new ArrayList<PureSubSingleStatistic>(0));
                     for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                        subSingleBenchmarkResult.setSubPureSingleStatisticList(new ArrayList<PureSingleStatistic>(0));
+                        subSingleBenchmarkResult.setSubPureSingleStatisticList(new ArrayList<PureSubSingleStatistic>(0));
                     }
                 }
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                    for (PureSingleStatistic pureSingleStatistic : subSingleBenchmarkResult.getSubPureSingleStatisticList()) {
+                    for (PureSubSingleStatistic pureSingleStatistic : subSingleBenchmarkResult.getSubPureSingleStatisticList()) {
                         pureSingleStatistic.setSolverProblemBenchmarkResult(subSingleBenchmarkResult);
                     }
                 }
-                for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
+                for (PureSubSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
                     pureSingleStatistic.setSolverProblemBenchmarkResult(singleBenchmarkResult);
                 }
             }

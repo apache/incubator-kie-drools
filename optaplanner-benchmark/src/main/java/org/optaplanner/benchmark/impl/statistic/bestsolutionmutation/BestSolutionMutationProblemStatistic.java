@@ -37,7 +37,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 
@@ -51,8 +51,8 @@ public class BestSolutionMutationProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SingleStatistic createSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
-        return new BestSolutionMutationSingleStatistic(solverProblemBenchmarkResult);
+    public SubSingleStatistic createSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+        return new BestSolutionMutationSubSingleStatistic(solverProblemBenchmarkResult);
     }
 
     /**
@@ -75,7 +75,7 @@ public class BestSolutionMutationProblemStatistic extends ProblemStatistic {
             XYIntervalSeries series = new XYIntervalSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new YIntervalRenderer();
             if (singleBenchmarkResult.isSuccess()) {
-                BestSolutionMutationSingleStatistic singleStatistic = (BestSolutionMutationSingleStatistic)
+                BestSolutionMutationSubSingleStatistic singleStatistic = (BestSolutionMutationSubSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (BestSolutionMutationStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpent = point.getTimeMillisSpent();

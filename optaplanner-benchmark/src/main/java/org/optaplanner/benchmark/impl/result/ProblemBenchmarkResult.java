@@ -41,7 +41,7 @@ import org.optaplanner.benchmark.impl.ranking.SingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.util.ConfigUtils;
@@ -233,18 +233,18 @@ public class ProblemBenchmarkResult {
     public Collection<SingleStatisticType> extractSingleStatisticTypeList() {
         Set<SingleStatisticType> singleStatisticTypeSet = new LinkedHashSet<SingleStatisticType>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
+            for (PureSubSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
                 singleStatisticTypeSet.add(pureSingleStatistic.getStatisticType());
             }
         }
         return singleStatisticTypeSet;
     }
 
-    public List<PureSingleStatistic> extractPureSingleStatisticList(SingleStatisticType singleStatisticType) {
-        List<PureSingleStatistic> pureSingleStatisticList = new ArrayList<PureSingleStatistic>(
+    public List<PureSubSingleStatistic> extractPureSingleStatisticList(SingleStatisticType singleStatisticType) {
+        List<PureSubSingleStatistic> pureSingleStatisticList = new ArrayList<PureSubSingleStatistic>(
                 singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
+            for (PureSubSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
                 if (pureSingleStatistic.getStatisticType() == singleStatisticType) {
                     pureSingleStatisticList.add(pureSingleStatistic);
                 }

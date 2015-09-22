@@ -38,7 +38,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.impl.score.ScoreUtils;
@@ -53,8 +53,8 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SingleStatistic createSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
-        return new StepScoreSingleStatistic(solverProblemBenchmarkResult);
+    public SubSingleStatistic createSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+        return new StepScoreSubSingleStatistic(solverProblemBenchmarkResult);
     }
 
     /**
@@ -78,7 +78,7 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
             if (singleBenchmarkResult.isSuccess()) {
-                StepScoreSingleStatistic singleStatistic = (StepScoreSingleStatistic)
+                StepScoreSubSingleStatistic singleStatistic = (StepScoreSubSingleStatistic)
                         singleBenchmarkResult.getSingleStatistic(problemStatisticType);
                 for (StepScoreStatisticPoint point : singleStatistic.getPointList()) {
                     long timeMillisSpent = point.getTimeMillisSpent();

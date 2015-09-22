@@ -67,8 +67,8 @@ import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
@@ -245,30 +245,30 @@ public class BenchmarkReport {
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
             if (problemBenchmarkResult.hasAnySuccess()) {
                 for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
-                    for (SingleStatistic singleStatistic : problemStatistic.getSingleStatisticList()) {
+                    for (SubSingleStatistic subSingleStatistic : problemStatistic.getSingleStatisticList()) {
                         try {
-                            singleStatistic.unhibernatePointList();
+                            subSingleStatistic.unhibernatePointList();
                         } catch (IllegalStateException e) {
                             if (!plannerBenchmarkResult.getAggregation()) {
                                 throw new IllegalStateException("Failed to unhibernate point list of SingleStatistic ( "
-                                        + singleStatistic + " ) of ProblemStatistic ( " + problemStatistic + " ).", e);
+                                        + subSingleStatistic + " ) of ProblemStatistic ( " + problemStatistic + " ).", e);
                             }
                             logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
-                                    + "({}) of single statistic ({}).", singleStatistic.getCsvFile().getAbsolutePath(), singleStatistic);
+                                    + "({}) of single statistic ({}).", subSingleStatistic.getCsvFile().getAbsolutePath(), subSingleStatistic);
                         }
                     }
                     problemStatistic.writeGraphFiles(this);
-                    for (SingleStatistic singleStatistic : problemStatistic.getSingleStatisticList()) {
+                    for (SubSingleStatistic subSingleStatistic : problemStatistic.getSingleStatisticList()) {
                         if (plannerBenchmarkResult.getAggregation()) {
-                            singleStatistic.setPointList(null);
+                            subSingleStatistic.setPointList(null);
                         } else {
-                            singleStatistic.hibernatePointList();
+                            subSingleStatistic.hibernatePointList();
                         }
                     }
                 }
                 for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                     if (singleBenchmarkResult.isSuccess()) {
-                        for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
+                        for (PureSubSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
                             try {
                                 pureSingleStatistic.unhibernatePointList();
                             } catch (IllegalStateException e) {

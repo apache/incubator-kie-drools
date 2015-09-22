@@ -26,25 +26,25 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.GraphSupport;
-import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalbestscore.ConstraintMatchTotalBestScoreSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalstepscore.ConstraintMatchTotalStepScoreSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalbestscore.ConstraintMatchTotalBestScoreSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalstepscore.ConstraintMatchTotalStepScoreSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSubSingleStatistic;
 
 /**
  * 1 statistic of {@link SingleBenchmarkResult}.
  */
 @XStreamInclude({
-        ConstraintMatchTotalBestScoreSingleStatistic.class,
-        ConstraintMatchTotalStepScoreSingleStatistic.class,
-        PickedMoveTypeBestScoreDiffSingleStatistic.class,
-        PickedMoveTypeStepScoreDiffSingleStatistic.class
+        ConstraintMatchTotalBestScoreSubSingleStatistic.class,
+        ConstraintMatchTotalStepScoreSubSingleStatistic.class,
+        PickedMoveTypeBestScoreDiffSubSingleStatistic.class,
+        PickedMoveTypeStepScoreDiffSubSingleStatistic.class
 })
-public abstract class PureSingleStatistic<P extends StatisticPoint> extends SingleStatistic<P> {
+public abstract class PureSubSingleStatistic<P extends StatisticPoint> extends SubSingleStatistic<P> {
 
     protected final SingleStatisticType singleStatisticType;
 
-    protected PureSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult, SingleStatisticType singleStatisticType) {
+    protected PureSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult, SingleStatisticType singleStatisticType) {
         super(solverProblemBenchmarkResult);
         this.singleStatisticType = singleStatisticType;
     }

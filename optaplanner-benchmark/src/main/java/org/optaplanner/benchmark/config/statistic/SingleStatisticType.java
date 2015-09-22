@@ -17,13 +17,13 @@
 package org.optaplanner.benchmark.config.statistic;
 
 import org.optaplanner.benchmark.impl.report.ReportHelper;
-import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
-import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalbestscore.ConstraintMatchTotalBestScoreSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalstepscore.ConstraintMatchTotalStepScoreSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalbestscore.ConstraintMatchTotalBestScoreSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalstepscore.ConstraintMatchTotalStepScoreSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSubSingleStatistic;
 
 public enum SingleStatisticType implements StatisticType {
     CONSTRAINT_MATCH_TOTAL_BEST_SCORE,
@@ -31,17 +31,17 @@ public enum SingleStatisticType implements StatisticType {
     PICKED_MOVE_TYPE_BEST_SCORE_DIFF,
     PICKED_MOVE_TYPE_STEP_SCORE_DIFF;
 
-    public PureSingleStatistic buildPureSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+    public PureSubSingleStatistic buildPureSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         // Keep in sync with ProblemStatistic XStreamInclude list
         switch (this) {
             case CONSTRAINT_MATCH_TOTAL_BEST_SCORE:
-                return new ConstraintMatchTotalBestScoreSingleStatistic(solverProblemBenchmarkResult);
+                return new ConstraintMatchTotalBestScoreSubSingleStatistic(solverProblemBenchmarkResult);
             case CONSTRAINT_MATCH_TOTAL_STEP_SCORE:
-                return new ConstraintMatchTotalStepScoreSingleStatistic(solverProblemBenchmarkResult);
+                return new ConstraintMatchTotalStepScoreSubSingleStatistic(solverProblemBenchmarkResult);
             case PICKED_MOVE_TYPE_BEST_SCORE_DIFF:
-                return new PickedMoveTypeBestScoreDiffSingleStatistic(solverProblemBenchmarkResult);
+                return new PickedMoveTypeBestScoreDiffSubSingleStatistic(solverProblemBenchmarkResult);
             case PICKED_MOVE_TYPE_STEP_SCORE_DIFF:
-                return new PickedMoveTypeStepScoreDiffSingleStatistic(solverProblemBenchmarkResult);
+                return new PickedMoveTypeStepScoreDiffSubSingleStatistic(solverProblemBenchmarkResult);
             default:
                 throw new IllegalStateException("The singleStatisticType (" + this + ") is not implemented.");
         }

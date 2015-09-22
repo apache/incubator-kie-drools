@@ -36,7 +36,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
-import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -51,7 +51,7 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
 @XStreamAlias("constraintMatchTotalBestScoreSingleStatistic")
-public class ConstraintMatchTotalBestScoreSingleStatistic extends PureSingleStatistic<ConstraintMatchTotalBestScoreStatisticPoint> {
+public class ConstraintMatchTotalBestScoreSubSingleStatistic extends PureSubSingleStatistic<ConstraintMatchTotalBestScoreStatisticPoint> {
 
     @XStreamOmitField
     private ConstraintMatchTotalBestScoreSingleStatisticListener listener;
@@ -59,7 +59,7 @@ public class ConstraintMatchTotalBestScoreSingleStatistic extends PureSingleStat
     @XStreamOmitField
     protected List<File> graphFileList = null;
 
-    public ConstraintMatchTotalBestScoreSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+    public ConstraintMatchTotalBestScoreSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         super(solverProblemBenchmarkResult, SingleStatisticType.CONSTRAINT_MATCH_TOTAL_BEST_SCORE);
         listener = new ConstraintMatchTotalBestScoreSingleStatisticListener();
     }

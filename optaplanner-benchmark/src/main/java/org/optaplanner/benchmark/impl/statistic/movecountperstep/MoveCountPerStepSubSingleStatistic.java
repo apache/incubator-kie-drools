@@ -19,7 +19,7 @@ package org.optaplanner.benchmark.impl.statistic.movecountperstep;
 import java.util.List;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.statistic.ProblemBasedSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
 import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -28,11 +28,11 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-public class MoveCountPerStepSingleStatistic extends ProblemBasedSingleStatistic<MoveCountPerStepStatisticPoint> {
+public class MoveCountPerStepSubSingleStatistic extends ProblemBasedSubSingleStatistic<MoveCountPerStepStatisticPoint> {
 
     private MoveCountPerStepSingleStatisticListener listener;
 
-    public MoveCountPerStepSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
+    public MoveCountPerStepSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
         super(solverProblemBenchmarkResult, ProblemStatisticType.MOVE_COUNT_PER_STEP);
         listener = new MoveCountPerStepSingleStatisticListener();
     }

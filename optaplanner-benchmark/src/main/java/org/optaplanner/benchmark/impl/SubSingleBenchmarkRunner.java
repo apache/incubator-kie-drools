@@ -19,9 +19,8 @@ package org.optaplanner.benchmark.impl;
 import java.util.concurrent.Callable;
 
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -77,9 +76,9 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
         // TODO PLANNER-440 Use a classLoader argument buildSolver()
         Solver solver = subSingleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig().buildSolver();
 
-        for (SingleStatistic singleStatistic : subSingleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
-            singleStatistic.open(solver);
-            singleStatistic.initPointList();
+        for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
+            subSingleStatistic.open(solver);
+            subSingleStatistic.initPointList();
         }
 
         solver.solve(inputSolution);
@@ -96,9 +95,9 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
         subSingleBenchmarkResult.setTimeMillisSpent(timeMillisSpent);
         subSingleBenchmarkResult.setCalculateCount(solverScope.getCalculateCount());
 
-        for (SingleStatistic singleStatistic : subSingleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
-            singleStatistic.close(solver);
-            singleStatistic.hibernatePointList();
+        for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
+            subSingleStatistic.close(solver);
+            subSingleStatistic.hibernatePointList();
         }
         problemBenchmarkResult.writeOutputSolution(subSingleBenchmarkResult, outputSolution);
         MDC.remove(NAME_MDC);
