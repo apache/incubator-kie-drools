@@ -518,7 +518,7 @@
                         </#if>
                     </p>
                     <#if problemBenchmarkResult.hasAnySuccess()>
-                        <#assign subSingleSummaryChartShown = problemBenchmarkResult.hasSubSingleCountBiggerThanOne()>
+                        <#assign subSingleSummaryChartShown = problemBenchmarkResult.isMaximumSubSingleCountMultiple()>
                         <div class="tabbable">
                             <ul class="nav nav-tabs">
                                 <#if subSingleSummaryChartShown>

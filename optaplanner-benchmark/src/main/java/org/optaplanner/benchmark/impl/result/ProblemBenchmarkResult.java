@@ -78,8 +78,8 @@ public class ProblemBenchmarkResult {
     private Long variableCount = null;
     private Long problemScale = null;
 
-    @XStreamOmitField // loaded lazily from singleBenchmarkResults
-    private Boolean hasNonDefaultSubSingleCount = null;
+    @XStreamOmitField // Loaded lazily from singleBenchmarkResults
+    private Integer maximumSubSingleCount = null;
 
     // ************************************************************************
     // Report accumulates
@@ -165,6 +165,10 @@ public class ProblemBenchmarkResult {
         return problemScale;
     }
 
+    public Integer getMaximumSubSingleCount() {
+        return maximumSubSingleCount;
+    }
+
     public Long getAverageUsedMemoryAfterInputSolution() {
         return averageUsedMemoryAfterInputSolution;
     }
@@ -222,18 +226,8 @@ public class ProblemBenchmarkResult {
         return false;
     }
 
-    public boolean hasSubSingleCountBiggerThanOne() {
-        if (hasNonDefaultSubSingleCount != null) {
-            return hasNonDefaultSubSingleCount;
-        }
-        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            if (singleBenchmarkResult.getSolverBenchmarkResult().getSubSingleCount() > 1) {
-                hasNonDefaultSubSingleCount = true;
-                return hasNonDefaultSubSingleCount;
-            }
-        }
-        hasNonDefaultSubSingleCount = false;
-        return hasNonDefaultSubSingleCount;
+    public boolean isMaximumSubSingleCountMultiple() {
+        return maximumSubSingleCount != null ? maximumSubSingleCount > 1 : false;
     }
 
     public Collection<SingleStatisticType> extractSingleStatisticTypeList() {
@@ -309,6 +303,7 @@ public class ProblemBenchmarkResult {
 
     private void determineTotalsAndAveragesAndRanking() {
         failureCount = 0;
+        maximumSubSingleCount = 0;
         long totalUsedMemoryAfterInputSolution = 0L;
         int usedMemoryAfterInputSolutionCount = 0;
         List<SingleBenchmarkResult> successResultList = new ArrayList<SingleBenchmarkResult>(singleBenchmarkResultList);
@@ -319,6 +314,10 @@ public class ProblemBenchmarkResult {
                 failureCount++;
                 it.remove();
             } else {
+                int subSingleCount = singleBenchmarkResult.getSubSingleBenchmarkResultList().size();
+                if (subSingleCount > maximumSubSingleCount) {
+                    maximumSubSingleCount = subSingleCount;
+                }
                 if (singleBenchmarkResult.getUsedMemoryAfterInputSolution() != null) {
                     totalUsedMemoryAfterInputSolution += singleBenchmarkResult.getUsedMemoryAfterInputSolution();
                     usedMemoryAfterInputSolutionCount++;
