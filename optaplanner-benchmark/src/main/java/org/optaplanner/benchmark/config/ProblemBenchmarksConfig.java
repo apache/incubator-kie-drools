@@ -183,17 +183,14 @@ public class ProblemBenchmarksConfig {
             ProblemBenchmarkResult problemBenchmarkResult) {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
         buildSubSingleBenchmarks(singleBenchmarkResult, solverBenchmarkResult.getSubSingleCount());
-        singleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<PureSubSingleStatistic>(
-                subSingleStatisticTypeList == null ? 0 : subSingleStatisticTypeList.size()));
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-            subSingleBenchmarkResult.setSubPureSubSingleStatisticList(new ArrayList<PureSubSingleStatistic>(
+            subSingleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<PureSubSingleStatistic>(
                     subSingleStatisticTypeList == null ? 0 : subSingleStatisticTypeList.size()));
         }
         if (subSingleStatisticTypeList != null) {
             for (SubSingleStatisticType subSingleStatisticType : subSingleStatisticTypeList) {
-                singleBenchmarkResult.getPureSubSingleStatisticList().add(subSingleStatisticType.buildPureSubSingleStatistic(singleBenchmarkResult));
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                    subSingleBenchmarkResult.getSubPureSubSingleStatisticList().add(subSingleStatisticType.buildPureSubSingleStatistic(subSingleBenchmarkResult));
+                    subSingleBenchmarkResult.getPureSubSingleStatisticList().add(subSingleStatisticType.buildPureSubSingleStatistic(subSingleBenchmarkResult));
                 }
             }
         }

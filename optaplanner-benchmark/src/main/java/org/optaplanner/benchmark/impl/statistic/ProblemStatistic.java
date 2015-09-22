@@ -94,7 +94,11 @@ public abstract class ProblemStatistic {
         List<SingleBenchmarkResult> singleBenchmarkResultList = problemBenchmarkResult.getSingleBenchmarkResultList();
         List<SubSingleStatistic> subSingleStatisticList = new ArrayList<SubSingleStatistic>(singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            subSingleStatisticList.add(singleBenchmarkResult.getEffectiveSubSingleStatisticMap().get(problemStatisticType));
+            if (singleBenchmarkResult.getSubSingleBenchmarkResultList().isEmpty()) {
+                continue;
+            }
+            // All subSingles have the same sub single statistics
+            subSingleStatisticList.add(singleBenchmarkResult.getSubSingleBenchmarkResultList().get(0).getEffectiveSubSingleStatisticMap().get(problemStatisticType));
         }
         return subSingleStatisticList;
     }

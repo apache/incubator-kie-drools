@@ -268,22 +268,30 @@ public class BenchmarkReport {
                 }
                 for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                     if (singleBenchmarkResult.isSuccess()) {
-                        for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getPureSubSingleStatisticList()) {
-                            try {
-                                pureSubSingleStatistic.unhibernatePointList();
-                            } catch (IllegalStateException e) {
-                                if (!plannerBenchmarkResult.getAggregation()) {
-                                    throw new IllegalStateException("Failed to unhibernate point list of "
-                                            + "PureSubSingleStatistic ( " + pureSubSingleStatistic + " ).", e);
+                        for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                            for (PureSubSingleStatistic pureSubSingleStatistic : subSingleBenchmarkResult.getPureSubSingleStatisticList()) {
+                                try {
+                                    pureSubSingleStatistic.unhibernatePointList();
+                                } catch (IllegalStateException e) {
+                                    if (!plannerBenchmarkResult.getAggregation()) {
+                                        throw new IllegalStateException("Failed to unhibernate point list of "
+                                                + "PureSubSingleStatistic ( " + pureSubSingleStatistic + " ).", e);
+                                    }
+                                    logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
+                                            + "({}) of pure sub single statistic ({}).", pureSubSingleStatistic.getCsvFile().getAbsolutePath(), pureSubSingleStatistic);
                                 }
-                                logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
-                                        + "({}) of pure sub single statistic ({}).", pureSubSingleStatistic.getCsvFile().getAbsolutePath(), pureSubSingleStatistic);
                             }
+                        }
+                        for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
                             pureSubSingleStatistic.writeGraphFiles(this);
-                            if (plannerBenchmarkResult.getAggregation()) {
-                                pureSubSingleStatistic.setPointList(null);
-                            } else {
-                                pureSubSingleStatistic.hibernatePointList();
+                        }
+                        for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                            for (PureSubSingleStatistic pureSubSingleStatistic : subSingleBenchmarkResult.getPureSubSingleStatisticList()) {
+                                if (plannerBenchmarkResult.getAggregation()) {
+                                    pureSubSingleStatistic.setPointList(null);
+                                } else {
+                                    pureSubSingleStatistic.hibernatePointList();
+                                }
                             }
                         }
                     }

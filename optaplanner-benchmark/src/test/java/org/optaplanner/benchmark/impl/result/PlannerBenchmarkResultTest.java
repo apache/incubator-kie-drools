@@ -103,7 +103,6 @@ public class PlannerBenchmarkResultTest {
         solverBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         singleBenchmarkResult.setAverageScore(SimpleScore.valueOf(score));
-        singleBenchmarkResult.setPureSubSingleStatisticList(Collections.<PureSubSingleStatistic>emptyList());
         singleBenchmarkResult.setSubSingleBenchmarkResultList(new ArrayList<SubSingleBenchmarkResult>(1));
         createSubSingleBenchmarkResult(singleBenchmarkResult, 0);
         return singleBenchmarkResult;
@@ -111,7 +110,7 @@ public class PlannerBenchmarkResultTest {
 
     protected SubSingleBenchmarkResult createSubSingleBenchmarkResult(SingleBenchmarkResult parent, int subSingleIndex) {
         SubSingleBenchmarkResult subSingleBenchmarkResult = new SubSingleBenchmarkResult(parent, subSingleIndex);
-        subSingleBenchmarkResult.setSubPureSubSingleStatisticList(Collections.<PureSubSingleStatistic>emptyList());
+        subSingleBenchmarkResult.setPureSubSingleStatisticList(Collections.<PureSubSingleStatistic>emptyList());
         parent.getSubSingleBenchmarkResultList().add(subSingleBenchmarkResult);
         return subSingleBenchmarkResult;
     }

@@ -52,7 +52,7 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
     private int subSingleBenchmarkIndex = -1;
 
     // @XStreamImplicit() // TODO FIXME
-    private List<PureSubSingleStatistic> subPureSubSingleStatisticList = null;
+    private List<PureSubSingleStatistic> pureSubSingleStatisticList = null;
 
     @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files
     private Map<StatisticType, SubSingleStatistic> effectiveSubSingleStatisticMap;
@@ -81,23 +81,23 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
         this.subSingleBenchmarkIndex = subSingleBenchmarkIndex;
     }
 
-    public List<PureSubSingleStatistic> getSubPureSubSingleStatisticList() {
-        return subPureSubSingleStatisticList;
+    public List<PureSubSingleStatistic> getPureSubSingleStatisticList() {
+        return pureSubSingleStatisticList;
     }
 
-    public void setSubPureSubSingleStatisticList(List<PureSubSingleStatistic> subPureSubSingleStatisticList) {
-        this.subPureSubSingleStatisticList = subPureSubSingleStatisticList;
+    public void setPureSubSingleStatisticList(List<PureSubSingleStatistic> pureSubSingleStatisticList) {
+        this.pureSubSingleStatisticList = pureSubSingleStatisticList;
     }
 
     public void initSubSingleStatisticMap() {
         List<ProblemStatistic> problemStatisticList = singleBenchmarkResult.getProblemBenchmarkResult().getProblemStatisticList();
         effectiveSubSingleStatisticMap = new HashMap<StatisticType, SubSingleStatistic>(
-                problemStatisticList.size() + subPureSubSingleStatisticList.size());
+                problemStatisticList.size() + pureSubSingleStatisticList.size());
         for (ProblemStatistic problemStatistic : problemStatisticList) {
             SubSingleStatistic subSingleStatistic = problemStatistic.createSubSingleStatistic(this);
             effectiveSubSingleStatisticMap.put(subSingleStatistic.getStatisticType(), subSingleStatistic);
         }
-        for (PureSubSingleStatistic pureSubSingleStatistic : subPureSubSingleStatisticList) {
+        for (PureSubSingleStatistic pureSubSingleStatistic : pureSubSingleStatisticList) {
             effectiveSubSingleStatisticMap.put(pureSubSingleStatistic.getStatisticType(), pureSubSingleStatistic.getStatisticType().buildPureSubSingleStatistic(this));
         }
     }
@@ -289,9 +289,9 @@ public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
 
     protected static SubSingleBenchmarkResult createMerge(SingleBenchmarkResult singleBenchmarkResult, SubSingleBenchmarkResult oldResult, int subSingleBenchmarkIndex) {
         SubSingleBenchmarkResult newResult = new SubSingleBenchmarkResult(singleBenchmarkResult, subSingleBenchmarkIndex);
-        newResult.subPureSubSingleStatisticList = new ArrayList<PureSubSingleStatistic>(oldResult.subPureSubSingleStatisticList.size());
-        for (PureSubSingleStatistic oldSubSingleStatistic : oldResult.subPureSubSingleStatisticList) {
-            newResult.subPureSubSingleStatisticList.add(
+        newResult.pureSubSingleStatisticList = new ArrayList<PureSubSingleStatistic>(oldResult.pureSubSingleStatisticList.size());
+        for (PureSubSingleStatistic oldSubSingleStatistic : oldResult.pureSubSingleStatisticList) {
+            newResult.pureSubSingleStatisticList.add(
                     oldSubSingleStatistic.getStatisticType().buildPureSubSingleStatistic(newResult));
         }
 

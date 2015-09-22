@@ -210,7 +210,7 @@ public class ProblemBenchmarkResult {
             return true;
         }
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            if (singleBenchmarkResult.getPureSubSingleStatisticList().size() > 0) {
+            if (singleBenchmarkResult.getMedian().getPureSubSingleStatisticList().size() > 0) {
                 return true;
             }
         }
@@ -233,7 +233,7 @@ public class ProblemBenchmarkResult {
     public Collection<SubSingleStatisticType> extractSubSingleStatisticTypeList() {
         Set<SubSingleStatisticType> subSingleStatisticTypeSet = new LinkedHashSet<SubSingleStatisticType>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getPureSubSingleStatisticList()) {
+            for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
                 subSingleStatisticTypeSet.add(pureSubSingleStatistic.getStatisticType());
             }
         }
@@ -244,7 +244,7 @@ public class ProblemBenchmarkResult {
         List<PureSubSingleStatistic> pureSubSingleStatisticList = new ArrayList<PureSubSingleStatistic>(
                 singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getPureSubSingleStatisticList()) {
+            for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
                 if (pureSubSingleStatistic.getStatisticType() == subSingleStatisticType) {
                     pureSubSingleStatisticList.add(pureSubSingleStatistic);
                 }

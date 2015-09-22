@@ -353,13 +353,13 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 TerminationConfig originalTerminationConfig = warmUpConfigBackup.getTerminationConfig();
                 solverBenchmarkResult.getSolverConfig().setTerminationConfig(originalTerminationConfig);
                 for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
-                    singleBenchmarkResult.setPureSubSingleStatisticList(warmUpConfigBackup.getPureSubSingleStatisticMap().get(singleBenchmarkResult));
+                    List<PureSubSingleStatistic> pureSubSingleStatisticList = warmUpConfigBackup.getPureSubSingleStatisticMap().get(singleBenchmarkResult);
                     ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
                     if (problemBenchmarkResult.getProblemStatisticList() == null || problemBenchmarkResult.getProblemStatisticList().size() <= 0) {
                         problemBenchmarkResult.setProblemStatisticList(originalProblemStatisticMap.get(problemBenchmarkResult));
                     }
                     for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                        subSingleBenchmarkResult.setSubPureSubSingleStatisticList(singleBenchmarkResult.getPureSubSingleStatisticList());
+                        subSingleBenchmarkResult.setPureSubSingleStatisticList(pureSubSingleStatisticList);
                         subSingleBenchmarkResult.initSubSingleStatisticMap();
                     }
                     singleBenchmarkResult.initSubSingleStatisticMap();
@@ -373,14 +373,17 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
                 WarmUpConfigBackup warmUpConfigBackup = new WarmUpConfigBackup(originalTerminationConfig);
                 for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
-                    List<PureSubSingleStatistic> originalPureSubSingleStatisticList = singleBenchmarkResult.getPureSubSingleStatisticList();
+                    if (singleBenchmarkResult.getSubSingleBenchmarkResultList().isEmpty()) {
+                        continue;
+                    }
+                    // All subSingles have the same sub single statistics
+                    List<PureSubSingleStatistic> originalPureSubSingleStatisticList = singleBenchmarkResult.getSubSingleBenchmarkResultList().get(0).getPureSubSingleStatisticList();
                     List<PureSubSingleStatistic> singleBenchmarkStatisticPutResult = warmUpConfigBackup.getPureSubSingleStatisticMap().put(singleBenchmarkResult, originalPureSubSingleStatisticList);
                     if (singleBenchmarkStatisticPutResult != null) {
                         throw new IllegalStateException("SingleBenchmarkStatisticMap of WarmUpConfigBackup ( " + warmUpConfigBackup
                                 + " ) already contained key ( " + singleBenchmarkResult + " ) with value ( "
                                 + singleBenchmarkStatisticPutResult + " ).");
                     }
-                    singleBenchmarkResult.setPureSubSingleStatisticList(Collections.<PureSubSingleStatistic>emptyList());
 
                     ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
                     List<ProblemStatistic> originalProblemStatisticList = problemBenchmarkResult.getProblemStatisticList();
@@ -394,7 +397,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                     }
                     singleBenchmarkResult.getProblemBenchmarkResult().setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
                     for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                        subSingleBenchmarkResult.setSubPureSubSingleStatisticList(singleBenchmarkResult.getPureSubSingleStatisticList());
+                        subSingleBenchmarkResult.setPureSubSingleStatisticList(Collections.<PureSubSingleStatistic>emptyList());
                         subSingleBenchmarkResult.initSubSingleStatisticMap();
                     }
                     singleBenchmarkResult.initSubSingleStatisticMap();

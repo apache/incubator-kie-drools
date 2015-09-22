@@ -139,19 +139,15 @@ public class BenchmarkResultIO {
             solverBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 singleBenchmarkResult.setSolverBenchmarkResult(solverBenchmarkResult);
-                if (singleBenchmarkResult.getPureSubSingleStatisticList() == null) {
-                    singleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<PureSubSingleStatistic>(0));
-                    for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                        subSingleBenchmarkResult.setSubPureSubSingleStatisticList(new ArrayList<PureSubSingleStatistic>(0));
+                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                    if (subSingleBenchmarkResult.getPureSubSingleStatisticList() == null) {
+                        subSingleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<PureSubSingleStatistic>(0));
                     }
                 }
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                    for (PureSubSingleStatistic pureSubSingleStatistic : subSingleBenchmarkResult.getSubPureSubSingleStatisticList()) {
+                    for (PureSubSingleStatistic pureSubSingleStatistic : subSingleBenchmarkResult.getPureSubSingleStatisticList()) {
                         pureSubSingleStatistic.setSolverProblemBenchmarkResult(subSingleBenchmarkResult);
                     }
-                }
-                for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getPureSubSingleStatisticList()) {
-                    pureSubSingleStatistic.setSolverProblemBenchmarkResult(singleBenchmarkResult);
                 }
             }
         }
