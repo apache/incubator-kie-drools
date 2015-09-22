@@ -187,6 +187,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             singleBenchmarkResultIndex = (singleBenchmarkResultIndex == null) ? 0 : singleBenchmarkResultIndex % solverBenchmarkResult.getSingleBenchmarkResultList().size();
             SingleBenchmarkResult singleBenchmarkResult
                     = solverBenchmarkResult.getSingleBenchmarkResultList().get(singleBenchmarkResultIndex);
+            // Just take the first subSingle, we don't need to warm up each one
             SubSingleBenchmarkRunner subSingleBenchmarkRunner = new SubSingleBenchmarkRunner(singleBenchmarkResult.getSubSingleBenchmarkResultList().get(0));
             Future<SubSingleBenchmarkRunner> future = warmUpExecutorCompletionService.submit(subSingleBenchmarkRunner);
             futureMap.put(future, subSingleBenchmarkRunner);
