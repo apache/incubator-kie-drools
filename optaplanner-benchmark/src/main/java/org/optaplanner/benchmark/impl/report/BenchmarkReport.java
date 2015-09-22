@@ -228,7 +228,7 @@ public class BenchmarkReport {
     // ************************************************************************
 
     public void writeReport() {
-        logger.info("Generating benchmarking report...");
+        logger.info("Generating benchmark report...");
         summaryDirectory = new File(plannerBenchmarkResult.getBenchmarkReportDirectory(), "summary");
         summaryDirectory.mkdir();
         plannerBenchmarkResult.accumulateResults(this);
