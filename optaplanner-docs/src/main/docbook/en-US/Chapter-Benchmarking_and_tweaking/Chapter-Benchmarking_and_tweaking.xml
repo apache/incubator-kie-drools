@@ -992,29 +992,28 @@
         </mediaobject>
       </figure>
 
-      <para>To configure this in your benchmarks, add a <literal>&lt;subSingleCount&gt;</literal>
-        element to a <literal>&lt;solverBenchmark&gt;</literal> element:</para>
+      <para>To configure this in your benchmarks, add a <literal>&lt;subSingleCount&gt;</literal> element to an
+        <link linkend="inheritedSolverBenchmark"><literal>&lt;inheritedSolverBenchmark&gt;</literal></link>
+        element:</para>
 
-      <programlisting language="xml">&lt;plannerBenchmark&gt;
+      <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;plannerBenchmark&gt;
   ...
-  &lt;solverBenchmark&gt;
-    &lt;name&gt;...&lt;/name&gt;
+  &lt;inheritedSolverBenchmark&gt;
+    ...
     &lt;solver&gt;
       ...
     &lt;/solver&gt;
     &lt;subSingleCount&gt;10&lt;subSingleCount&gt;
-  &lt;/solverBenchmark&gt;
+  &lt;/inheritedSolverBenchmark&gt;
   ...
 &lt;/plannerBenchmark&gt;</programlisting>
 
-      <para>You can also configure <literal>subSingleCount</literal> in the
-        <link linkend="inheritedSolverBenchmark"><literal>&lt;inheritedSolverBenchmark&gt;</literal></link> element
-        and possibly overwrite it in the individual <literal>&lt;solverBenchmark&gt;</literal> elements.</para>
-
-      <note>
-        <para><literal>subSingleCount</literal> is by default set to 1. Any positive integer is a
-          valid value.</para>
-      </note>
+      <para>You can also configure <literal>subSingleCount</literal> in the individual
+        <literal>&lt;solverBenchmark&gt;</literal> elements. This will override the configuration in the
+        <literal>&lt;inheritedSolverBenchmark&gt;</literal> element. <literal>subSingleCount</literal> is by default
+        set to 1.
+      </para>
     </section>
 
     <section xml:id="templateBasedBenchmarking">
