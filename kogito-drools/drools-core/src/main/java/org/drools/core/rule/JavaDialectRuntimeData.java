@@ -55,6 +55,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletionService;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
@@ -624,6 +625,8 @@ public class JavaDialectRuntimeData
      */
     public static class PackageClassLoader extends ClassLoader implements FastClassLoader {
 
+        private final ConcurrentHashMap<String, Object> parallelLockMap = new ConcurrentHashMap<String, Object>();
+
         protected JavaDialectRuntimeData store;
 
         private Set<String> existingPackages = new ConcurrentSkipListSet<String>();
@@ -654,34 +657,46 @@ public class JavaDialectRuntimeData
             Class<?> cls = findLoadedClass( name );
 
             if (cls == null) {
-                final byte[] clazzBytes = this.store.read( convertClassToResourcePath( name ) );
-                if (clazzBytes != null) {
-                    String pkgName = name.substring( 0,
-                                                     name.lastIndexOf( '.' ) );
-
-                    if (!existingPackages.contains( pkgName )) {
-                        synchronized (this) {
-                            if (getPackage( pkgName ) == null) {
-                                definePackage( pkgName,
-                                               "", "", "", "", "", "",
-                                               null );
-                            }
-                            existingPackages.add( pkgName );
+                Object lock = getLockObject(name);
+                synchronized (lock) {
+                    cls = findLoadedClass( name );
+                    if (cls == null) {
+                        try {
+                            cls = internalDefineClass( name, this.store.read( convertClassToResourcePath( name ) ) );
+                        } finally {
+                            releaseLockObject( name );
                         }
                     }
-
-                    cls = defineClass( name,
-                                       clazzBytes,
-                                       0,
-                                       clazzBytes.length,
-                                       PROTECTION_DOMAIN );
-                }
-
-                if (cls != null) {
-                    resolveClass( cls );
                 }
             }
 
+            return cls;
+        }
+
+        private Class<?> internalDefineClass( String name, byte[] clazzBytes ) {
+            if ( clazzBytes == null ) {
+                return null;
+            }
+            String pkgName = name.substring( 0,
+                                             name.lastIndexOf( '.' ) );
+
+            if ( !existingPackages.contains( pkgName ) ) {
+                synchronized (this) {
+                    if ( getPackage( pkgName ) == null ) {
+                        definePackage( pkgName,
+                                       "", "", "", "", "", "",
+                                       null );
+                    }
+                    existingPackages.add( pkgName );
+                }
+            }
+
+            Class<?> cls = defineClass( name,
+                                        clazzBytes,
+                                        0,
+                                        clazzBytes.length,
+                                        PROTECTION_DOMAIN );
+            resolveClass( cls );
             return cls;
         }
 
@@ -710,5 +725,14 @@ public class JavaDialectRuntimeData
             };
         }
 
+        private Object getLockObject(String className) {
+            Object newLock = new Object();
+            Object lock = parallelLockMap.putIfAbsent(className, newLock);
+            return lock != null ? lock : newLock;
+        }
+
+        private void releaseLockObject(String className) {
+            parallelLockMap.remove( className );
+        }
     }
 }

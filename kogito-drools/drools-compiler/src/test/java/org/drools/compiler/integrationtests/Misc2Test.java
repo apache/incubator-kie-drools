@@ -134,6 +134,9 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletionService;
+import java.util.concurrent.ExecutorCompletionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -8134,6 +8137,58 @@ public class Misc2Test extends CommonTestMethodBase {
                 System.out.println( deleteFirst );
                 assertNull( deleteFirst );
             }
+        }
+    }
+
+    @Test
+    public void testFunctionInvokingFunction() throws Exception {
+        // DROOLS-926
+        String drl =
+                "function boolean isOdd(int i) {\n" +
+                "    return i % 2 == 1;\n" +
+                "}\n" +
+                "\n" +
+                "function boolean isEven(int i) {\n" +
+                "    return !isOdd(i);\n" +
+                "}\n" +
+                "\n" +
+                "global java.util.List list;\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $i : Integer( isEven( this ) ) \n" +
+                "then\n" +
+                "    list.add($i);\n" +
+                "end\n";
+
+        final KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
+
+        int parallelThreads = 10;
+        ExecutorService executor = Executors.newFixedThreadPool( parallelThreads );
+
+        Collection<Callable<Boolean>> solvers = new ArrayList<Callable<Boolean>>();
+        for ( int i = 0; i < parallelThreads; ++i ) {
+            solvers.add( new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws Exception {
+                    KieSession ksession = kbase.newKieSession();
+                    List<Integer> list = new ArrayList<Integer>();
+                    ksession.setGlobal( "list", list );
+
+                    for (int i = 0; i < 100; i++) {
+                        ksession.insert( i );
+                    }
+                    ksession.fireAllRules();
+                    return list.size() == 50;
+                }
+            } );
+        }
+
+        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+        for (Callable<Boolean> s : solvers) {
+            ecs.submit(s);
+        }
+        for (int i = 0; i < parallelThreads; ++i) {
+            assertTrue( ecs.take().get() );
         }
     }
 }
