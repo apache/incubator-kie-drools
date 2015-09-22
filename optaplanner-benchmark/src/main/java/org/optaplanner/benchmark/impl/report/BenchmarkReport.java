@@ -243,56 +243,45 @@ public class BenchmarkReport {
         writeBestScorePerTimeSpentSummaryChart();
         writeSubSingleBenchmarkScoreCharts();
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
-            if (problemBenchmarkResult.hasAnySuccess()) {
-                for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
-                    for (SubSingleStatistic subSingleStatistic : problemStatistic.getSubSingleStatisticList()) {
+            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                    for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
                         try {
                             subSingleStatistic.unhibernatePointList();
                         } catch (IllegalStateException e) {
                             if (!plannerBenchmarkResult.getAggregation()) {
                                 throw new IllegalStateException("Failed to unhibernate point list of SubSingleStatistic ( "
-                                        + subSingleStatistic + " ) of ProblemStatistic ( " + problemStatistic + " ).", e);
+                                        + subSingleStatistic + " ) of SubSingleBenchmark ( " + subSingleBenchmarkResult + " ).", e);
                             }
                             logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
                                     + "({}) of sub single statistic ({}).", subSingleStatistic.getCsvFile().getAbsolutePath(), subSingleStatistic);
                         }
                     }
+                }
+            }
+        }
+        for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
+            if (problemBenchmarkResult.hasAnySuccess()) {
+                for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
                     problemStatistic.writeGraphFiles(this);
-                    for (SubSingleStatistic subSingleStatistic : problemStatistic.getSubSingleStatisticList()) {
+                }
+                for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+                    if (singleBenchmarkResult.isSuccess()) {
+                        for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
+                            pureSubSingleStatistic.writeGraphFiles(this);
+                        }
+                    }
+                }
+            }
+        }
+        for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
+            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                    for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
                         if (plannerBenchmarkResult.getAggregation()) {
                             subSingleStatistic.setPointList(null);
                         } else {
                             subSingleStatistic.hibernatePointList();
-                        }
-                    }
-                }
-                for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
-                    if (singleBenchmarkResult.isSuccess()) {
-                        for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                            for (PureSubSingleStatistic pureSubSingleStatistic : subSingleBenchmarkResult.getPureSubSingleStatisticList()) {
-                                try {
-                                    pureSubSingleStatistic.unhibernatePointList();
-                                } catch (IllegalStateException e) {
-                                    if (!plannerBenchmarkResult.getAggregation()) {
-                                        throw new IllegalStateException("Failed to unhibernate point list of "
-                                                + "PureSubSingleStatistic ( " + pureSubSingleStatistic + " ).", e);
-                                    }
-                                    logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
-                                            + "({}) of pure sub single statistic ({}).", pureSubSingleStatistic.getCsvFile().getAbsolutePath(), pureSubSingleStatistic);
-                                }
-                            }
-                        }
-                        for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
-                            pureSubSingleStatistic.writeGraphFiles(this);
-                        }
-                        for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                            for (PureSubSingleStatistic pureSubSingleStatistic : subSingleBenchmarkResult.getPureSubSingleStatisticList()) {
-                                if (plannerBenchmarkResult.getAggregation()) {
-                                    pureSubSingleStatistic.setPointList(null);
-                                } else {
-                                    pureSubSingleStatistic.hibernatePointList();
-                                }
-                            }
                         }
                     }
                 }
