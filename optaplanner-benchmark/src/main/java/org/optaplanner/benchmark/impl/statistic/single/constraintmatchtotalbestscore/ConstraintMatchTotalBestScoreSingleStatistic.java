@@ -204,8 +204,8 @@ public class ConstraintMatchTotalBestScoreSingleStatistic extends PureSingleStat
                 seriesCollection.addSeries(series);
             }
             plot.setDataset(seriesCollection);
-            JFreeChart chart = new JFreeChart(
-                    solverProblemBenchmarkResult + " constraint match total best score diff level " + scoreLevelIndex + " statistic",
+            JFreeChart chart = new JFreeChart(solverProblemBenchmarkResult.getName()
+                    + " constraint match total best score diff level " + scoreLevelIndex + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             graphFileList.add(writeChartToImageFile(chart,
                     "ConstraintMatchTotalBestScoreStatisticLevel" + scoreLevelIndex));

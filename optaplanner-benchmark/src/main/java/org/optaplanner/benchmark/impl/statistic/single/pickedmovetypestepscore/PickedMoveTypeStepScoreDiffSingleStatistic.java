@@ -175,8 +175,8 @@ public class PickedMoveTypeStepScoreDiffSingleStatistic extends PureSingleStatis
                 seriesCollection.addSeries(series);
             }
             plot.setDataset(seriesCollection);
-            JFreeChart chart = new JFreeChart(
-                    solverProblemBenchmarkResult + " picked move type step score diff level " + scoreLevelIndex + " statistic",
+            JFreeChart chart = new JFreeChart(solverProblemBenchmarkResult.getName()
+                    + " picked move type step score diff level " + scoreLevelIndex + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             graphFileList.add(writeChartToImageFile(chart,
                     "PickedMoveTypeStepScoreDiffStatisticLevel" + scoreLevelIndex));
