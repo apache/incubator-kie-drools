@@ -22,7 +22,7 @@ import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
-public class StatsUtil {
+public class StatisticUtils {
 
     /**
      * Calculates standard deviation of {@link SolverProblemBenchmarkResult#getScore()}s from {@code averageScore}.

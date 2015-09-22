@@ -30,7 +30,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
-import org.optaplanner.benchmark.impl.statistic.StatsUtil;
+import org.optaplanner.benchmark.impl.statistic.StatisticUtils;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -268,7 +268,7 @@ public class SolverBenchmarkResult {
     }
 
     public String getStandardDeviationString() {
-        return StatsUtil.getStandardDeviationString(standardDeviationDoubles);
+        return StatisticUtils.getStandardDeviationString(standardDeviationDoubles);
     }
 
     // ************************************************************************
@@ -283,7 +283,7 @@ public class SolverBenchmarkResult {
      */
     public void accumulateResults(BenchmarkReport benchmarkReport) {
         determineTotalsAndAverages();
-        standardDeviationDoubles = StatsUtil.determineStandardDeviationDoubles(singleBenchmarkResultList, averageScore, getSuccessCount());
+        standardDeviationDoubles = StatisticUtils.determineStandardDeviationDoubles(singleBenchmarkResultList, averageScore, getSuccessCount());
     }
 
     protected void determineTotalsAndAverages() {

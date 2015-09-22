@@ -36,7 +36,7 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
-import org.optaplanner.benchmark.impl.statistic.StatsUtil;
+import org.optaplanner.benchmark.impl.statistic.StatisticUtils;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
@@ -347,7 +347,7 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
     }
 
     public String getStandardDeviationString() {
-        return StatsUtil.getStandardDeviationString(standardDeviationDoubles);
+        return StatisticUtils.getStandardDeviationString(standardDeviationDoubles);
     }
 
     @Override
@@ -380,7 +380,7 @@ public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
             subSingleBenchmarkResult.accumulateResults(benchmarkReport);
         }
         determineTotalsAndAveragesAndRanking();
-        standardDeviationDoubles = StatsUtil.determineStandardDeviationDoubles(subSingleBenchmarkResultList, averageScore, getSuccessCount());
+        standardDeviationDoubles = StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, averageScore, getSuccessCount());
         if (!solverBenchmarkResult.getPlannerBenchmarkResult().getAggregation()) {
             SubSingleBenchmarkResult median = determineRepresentativeSubSingleBenchmarkResult();
             mergeSubSingleStatistics(median);
