@@ -35,7 +35,7 @@ public class StatisticUtils {
             return null;
         }
         if (averageScore == null) {
-            throw new IllegalArgumentException("Average score ( " + averageScore + " ) cannot be null.");
+            throw new IllegalArgumentException("Average score (" + averageScore + ") cannot be null.");
         }
         // averageScore can no longer be null
         double[] differenceSquaredTotalDoubles = null;

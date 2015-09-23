@@ -130,8 +130,8 @@ public abstract class ProblemStatistic {
         if (graphFileList == null || graphFileList.isEmpty()) {
             return null;
         } else if (graphFileList.size() > 1) {
-            throw new IllegalStateException("Cannot get graph file for the ProblemStatistic ( " + this
-                    + " ) because it has more than 1 graph file. See method getGraphList() and "
+            throw new IllegalStateException("Cannot get graph file for the ProblemStatistic (" + this
+                    + ") because it has more than 1 graph file. See method getGraphList() and "
                     + ProblemStatisticType.class.getSimpleName() + ".hasScoreLevels()");
         } else {
             return graphFileList.get(0);

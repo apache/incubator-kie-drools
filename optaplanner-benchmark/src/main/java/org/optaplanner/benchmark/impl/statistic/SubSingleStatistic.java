@@ -166,8 +166,8 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
                     if (subSingleBenchmarkResult.hasAnyFailure()) {
                         continue;
                     }
-                    throw new IllegalStateException("SubSingleStatistic ( " + this + " ) failed even though the "
-                            + "corresponding SinglesubSingleBenchmarkResult ( " + subSingleBenchmarkResult + " ) is a success.");
+                    throw new IllegalStateException("SubSingleStatistic (" + this + ") failed even though the "
+                            + "corresponding SinglesubSingleBenchmarkResult (" + subSingleBenchmarkResult + ") is a success.");
                 }
                 List<String> csvLine = StatisticPoint.parseCsvLine(line);
                 // HACK
@@ -199,11 +199,11 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
 
     public void unhibernatePointList() {
         if (!getCsvFile().exists()) {
-            throw new IllegalStateException("The csvFile ( " + getCsvFile() + " ) of the statistic ( " + getStatisticType()
-                    + " ) of the single benchmark ( " + subSingleBenchmarkResult + " ) doesn't exist.");
+            throw new IllegalStateException("The csvFile (" + getCsvFile() + ") of the statistic (" + getStatisticType()
+                    + ") of the single benchmark (" + subSingleBenchmarkResult + ") doesn't exist.");
         } else if (pointList != null) {
-            throw new IllegalStateException("The pointList ( " + pointList + " ) of the statistic ( " + getStatisticType()
-                    + " ) of the single benchmark ( " + subSingleBenchmarkResult + " ) should be null when unhibernating.");
+            throw new IllegalStateException("The pointList (" + pointList + ") of the statistic (" + getStatisticType()
+                    + ") of the single benchmark (" + subSingleBenchmarkResult + ") should be null when unhibernating.");
         }
         initPointList();
         readCsvStatisticFile();

@@ -377,9 +377,9 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                         List<PureSubSingleStatistic> originalPureSubSingleStatisticList = subSingleBenchmarkResult.getPureSubSingleStatisticList();
                         List<PureSubSingleStatistic> subSingleBenchmarkStatisticPutResult = warmUpConfigBackup.getPureSubSingleStatisticMap().put(subSingleBenchmarkResult, originalPureSubSingleStatisticList);
                         if (subSingleBenchmarkStatisticPutResult != null) {
-                            throw new IllegalStateException("SubSingleBenchmarkStatisticMap of WarmUpConfigBackup ( " + warmUpConfigBackup
-                                    + " ) already contained key ( " + subSingleBenchmarkResult + " ) with value ( "
-                                    + subSingleBenchmarkStatisticPutResult + " ).");
+                            throw new IllegalStateException("SubSingleBenchmarkStatisticMap of WarmUpConfigBackup (" + warmUpConfigBackup
+                                    + ") already contained key (" + subSingleBenchmarkResult + ") with value ("
+                                    + subSingleBenchmarkStatisticPutResult + ").");
                         }
                     }
                     ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
@@ -387,9 +387,9 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                     if (!originalProblemStatisticMap.containsKey(problemBenchmarkResult)) { // TODO: After Java 8, do Map#putIfAbsent
                         List<ProblemStatistic> problemStatisticPutResult = originalProblemStatisticMap.put(problemBenchmarkResult, originalProblemStatisticList);
                         if (problemStatisticPutResult != null) {
-                            throw new IllegalStateException("OriginalProblemStatisticMap already contained key ( "
-                                    + problemBenchmarkResult + " ) with value ( "
-                                    + problemStatisticPutResult + " ).");
+                            throw new IllegalStateException("OriginalProblemStatisticMap already contained key ("
+                                    + problemBenchmarkResult + ") with value ("
+                                    + problemStatisticPutResult + ").");
                         }
                     }
                     singleBenchmarkResult.getProblemBenchmarkResult().setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
@@ -400,8 +400,8 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 }
                 WarmUpConfigBackup warmUpConfigBackupPutResult = warmUpConfigBackupMap.put(solverBenchmarkResult, warmUpConfigBackup);
                 if (warmUpConfigBackupPutResult != null) {
-                    throw new IllegalStateException("WarmUpConfigBackupMap already contained key ( " + solverBenchmarkResult
-                            + " ) with value ( " + warmUpConfigBackupPutResult + " ).");
+                    throw new IllegalStateException("WarmUpConfigBackupMap already contained key (" + solverBenchmarkResult
+                            + ") with value (" + warmUpConfigBackupPutResult + ").");
                 }
             }
             return warmUpConfigBackupMap;

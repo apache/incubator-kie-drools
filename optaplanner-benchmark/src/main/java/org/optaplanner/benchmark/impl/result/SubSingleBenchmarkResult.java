@@ -304,8 +304,8 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
                             oldResult, oldSubSingleStatistic);
                     continue;
                 } else {
-                    throw new IllegalStateException("Could not find old result's ( " + oldResult
-                            + " ) sub single statistic's ( " + oldSubSingleStatistic + " ) CSV file.");
+                    throw new IllegalStateException("Could not find old result's (" + oldResult
+                            + ") sub single statistic's (" + oldSubSingleStatistic + ") CSV file.");
                 }
             }
             oldSubSingleStatistic.unhibernatePointList();

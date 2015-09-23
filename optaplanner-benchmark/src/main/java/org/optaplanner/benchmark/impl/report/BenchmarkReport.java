@@ -253,8 +253,8 @@ public class BenchmarkReport {
                             subSingleStatistic.unhibernatePointList();
                         } catch (IllegalStateException e) {
                             if (!plannerBenchmarkResult.getAggregation()) {
-                                throw new IllegalStateException("Failed to unhibernate point list of SubSingleStatistic ( "
-                                        + subSingleStatistic + " ) of SubSingleBenchmark ( " + subSingleBenchmarkResult + " ).", e);
+                                throw new IllegalStateException("Failed to unhibernate point list of SubSingleStatistic ("
+                                        + subSingleStatistic + ") of SubSingleBenchmark (" + subSingleBenchmarkResult + ").", e);
                             }
                             logger.trace("This is expected, aggregator doesn't copy CSV files. Could not read CSV file "
                                     + "({}) of sub single statistic ({}).", subSingleStatistic.getCsvFile().getAbsolutePath(), subSingleStatistic);

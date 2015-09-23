@@ -70,8 +70,8 @@ public abstract class PureSubSingleStatistic<P extends StatisticPoint> extends S
         if (graphFileList == null || graphFileList.isEmpty()) {
             return null;
         } else if (graphFileList.size() > 1) {
-            throw new IllegalStateException("Cannot get graph file for the PureSubSingleStatistic ( " + this
-                    + " ) because it has more than 1 graph file. See method getGraphList() and "
+            throw new IllegalStateException("Cannot get graph file for the PureSubSingleStatistic (" + this
+                    + ") because it has more than 1 graph file. See method getGraphList() and "
                     + SubSingleStatisticType.class.getSimpleName() + ".hasScoreLevels()");
         } else {
             return graphFileList.get(0);
