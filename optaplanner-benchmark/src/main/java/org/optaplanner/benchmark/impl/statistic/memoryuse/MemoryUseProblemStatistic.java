@@ -84,7 +84,7 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
 //            XYSeries maxSeries = new XYSeries(
 //                    singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " max");
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
-            if (singleBenchmarkResult.hasAnySuccess()) {
+            if (singleBenchmarkResult.hasAllSuccess()) {
                 MemoryUseSubSingleStatistic subSingleStatistic = (MemoryUseSubSingleStatistic)
                         singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
                 for (MemoryUseStatisticPoint point : subSingleStatistic.getPointList()) {

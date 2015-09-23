@@ -209,7 +209,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     }
 
     @Override
-    public boolean hasAnySuccess() {
+    public boolean hasAllSuccess() {
         return succeeded != null && succeeded.booleanValue();
     }
 
@@ -265,12 +265,12 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     // Accumulate methods
     // ************************************************************************
 
-    public String getResultDirectoryPath() {
+    public String getResultDirectoryName() {
         return "sub" + subSingleBenchmarkIndex;
     }
 
     public File getResultDirectory() {
-        return new File(singleBenchmarkResult.getResultDirectory(), getResultDirectoryPath());
+        return new File(singleBenchmarkResult.getResultDirectory(), getResultDirectoryName());
     }
 
     public void makeDirs() {

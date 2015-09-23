@@ -85,7 +85,7 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
     public String getRelativeCsvFilePath() {
         return new StringBuilder().append(subSingleBenchmarkResult.getSingleBenchmarkResult().getProblemBenchmarkResult().getProblemReportDirectoryPath())
                 .append(File.separator)
-                .append(subSingleBenchmarkResult.getResultDirectoryPath())
+                .append(subSingleBenchmarkResult.getResultDirectoryName())
                 .append(File.separator)
                 .append(getCsvFilePath())
                 .toString();

@@ -88,7 +88,7 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
             XYSeries selectedSeries = new XYSeries(
                     singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " selected");
             XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
-            if (singleBenchmarkResult.hasAnySuccess()) {
+            if (singleBenchmarkResult.hasAllSuccess()) {
                 MoveCountPerStepSubSingleStatistic subSingleStatistic = (MoveCountPerStepSubSingleStatistic)
                         singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
                 for (MoveCountPerStepStatisticPoint point : subSingleStatistic.getPointList()) {

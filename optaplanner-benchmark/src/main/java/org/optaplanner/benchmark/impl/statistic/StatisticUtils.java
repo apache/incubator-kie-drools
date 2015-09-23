@@ -40,7 +40,7 @@ public class StatisticUtils {
         // averageScore can no longer be null
         double[] differenceSquaredTotalDoubles = null;
         for (BenchmarkResult benchmarkResult : benchmarkResultList) {
-            if (benchmarkResult.hasAnySuccess()) {
+            if (benchmarkResult.hasAllSuccess()) {
                 Score difference = benchmarkResult.getAverageScore().subtract(averageScore);
                 // Calculations done on doubles to avoid common overflow when executing with an int score > 500 000
                 double[] differenceDoubles = ScoreUtils.extractLevelDoubles(difference);

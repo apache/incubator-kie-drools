@@ -247,7 +247,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     }
 
     @Override
-    public boolean hasAnySuccess() {
+    public boolean hasAllSuccess() {
         return failureCount != null && failureCount == 0;
     }
 
@@ -303,12 +303,12 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     // Accumulate methods
     // ************************************************************************
 
-    public String getResultDirectoryPath() {
+    public String getResultDirectoryName() {
         return solverBenchmarkResult.getName();
     }
 
     public File getResultDirectory() {
-        return new File(problemBenchmarkResult.getProblemReportDirectory(), getResultDirectoryPath());
+        return new File(problemBenchmarkResult.getProblemReportDirectory(), getResultDirectoryName());
     }
 
     public void makeDirs() {
