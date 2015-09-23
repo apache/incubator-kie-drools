@@ -16,18 +16,20 @@
 
 package org.optaplanner.benchmark.impl.aggregator.swingui;
 
+import java.util.Enumeration;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.plaf.FontUIResource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-// TODO move to optaplanner-swingwb, the Swing version of optaplanner-wb (which doesn't exist yet either)
 public class SwingUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(SwingUtils.class);
 
     public static void fixateLookAndFeel() {
+        // increaseDefaultFont(1.5F);
         String lookAndFeelName = "Metal"; // "Nimbus" is nicer but incompatible
         Exception lookAndFeelException;
         try {
@@ -49,6 +51,17 @@ public class SwingUtils {
         }
         logger.warn("Could not switch to lookAndFeel (" + lookAndFeelName + "). Layout might be incorrect.",
                 lookAndFeelException);
+    }
+
+    public static void increaseDefaultFont(float multiplier) {
+        for (Enumeration keys = UIManager.getDefaults().keys(); keys.hasMoreElements();) {
+            Object key = keys.nextElement();
+            Object value = UIManager.get(key);
+            if (value != null && value instanceof FontUIResource) {
+                FontUIResource fontUIResource = (FontUIResource) value;
+                UIManager.put(key, fontUIResource.deriveFont(fontUIResource.getSize() * multiplier));
+            }
+        }
     }
 
     private SwingUtils() {
