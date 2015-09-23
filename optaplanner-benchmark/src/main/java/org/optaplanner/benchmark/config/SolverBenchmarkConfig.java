@@ -32,13 +32,13 @@ public class SolverBenchmarkConfig {
 
     private String name = null;
 
-    private Integer subSingleCount = null;
-
     @XStreamAlias("solver")
     private SolverConfig solverConfig = null;
 
     @XStreamAlias("problemBenchmarks")
     private ProblemBenchmarksConfig problemBenchmarksConfig = null;
+
+    private Integer subSingleCount = null;
 
     public String getName() {
         return name;
@@ -46,14 +46,6 @@ public class SolverBenchmarkConfig {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getSubSingleCount() {
-        return subSingleCount;
-    }
-
-    public void setSubSingleCount(Integer subSingleCount) {
-        this.subSingleCount = subSingleCount;
     }
 
     public SolverConfig getSolverConfig() {
@@ -70,6 +62,14 @@ public class SolverBenchmarkConfig {
 
     public void setProblemBenchmarksConfig(ProblemBenchmarksConfig problemBenchmarksConfig) {
         this.problemBenchmarksConfig = problemBenchmarksConfig;
+    }
+
+    public Integer getSubSingleCount() {
+        return subSingleCount;
+    }
+
+    public void setSubSingleCount(Integer subSingleCount) {
+        this.subSingleCount = subSingleCount;
     }
 
     // ************************************************************************
