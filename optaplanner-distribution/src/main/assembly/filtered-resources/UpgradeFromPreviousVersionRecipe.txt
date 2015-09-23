@@ -2788,3 +2788,6 @@ After in *.java:
             return HardSoftScore.valueOf((Integer) levelNumbers[0], (Integer) levelNumbers[1]);
         }
     }
+
+[README] If you're using JPA-Hibernate with OptaPlanner, you'll want to take advantage of the new module optaplanner-persistence-jpa.
+See docs chapter "Integration" for more information.

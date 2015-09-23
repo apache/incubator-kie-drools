@@ -56,15 +56,99 @@
 public class Talk {...}</programlisting>
       </note>
 
-      <para>Add a dependency to the <literal>optaplanner-persistence-jpa</literal> jar to take advantage of the extra
+      <para>Add a dependency to the <literal>optaplanner-persistence-jpa</literal> jar to take advantage of these extra
       integration features:</para>
 
       <section xml:id="jpaAndHibernatePersistingAScore">
         <title>JPA and Hibernate: Persisting a <literal>Score</literal></title>
 
-        <para>TODO</para>
+        <para>When a <literal>Score</literal> is persisted into a relational database, JPA and Hibernate will default to
+        Java serializing it to a <literal>BLOB</literal> column. This has several disadvantages:</para>
 
-        <para/>
+        <itemizedlist>
+          <listitem>
+            <para>The Java serialization format of <literal>Score</literal> classes is currently not backwards
+            compatible. Upgrading to a newer Planner version can break reading an existing database.</para>
+          </listitem>
+
+          <listitem>
+            <para>The score is not easily readable for a query executed in the database console. This is annoying during
+            development.</para>
+          </listitem>
+
+          <listitem>
+            <para>The score cannot be used in a SQL or JPA-QL query to filter the results: for example to query all
+            infeasible schedules.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>To avoid these issues, configure it to use 2 <literal>INTEGER</literal> columns instead by using the
+        appropriate <literal>*ScoreHibernateType</literal> for your <literal>Score</literal> type, for example if for a
+        <literal>HardSoftScore</literal>:</para>
+
+        <programlisting language="java">@PlanningSolution
+@Entity
+@TypeDef(defaultForType = HardSoftScore.class, typeClass = HardSoftScoreHibernateType.class)
+public class CloudBalance implements Solution&lt;HardSoftScore&gt; {
+
+    @Columns(columns = {@Column(name = "hardScore"), @Column(name = "softScore")})
+    protected HardSoftScore score;
+
+    ...
+}</programlisting>
+
+        <note>
+          <para>Configure the same number of <literal>@Column</literal> annotations as the number of score levels in the
+          score, otherwise Hibernate will fail fast because a property mapping has the wrong number of columns.</para>
+        </note>
+
+        <para>In this case, the DDL will look like this:</para>
+
+        <programlisting language="java">CREATE TABLE CloudBalance(
+    ...
+    hardScore INTEGER,
+    softScore INTEGER
+);</programlisting>
+
+        <para>When using a <literal>BigDecimal</literal> based <literal>Score</literal>, specify the precision and scale
+        of the columns to avoid silent rounding:</para>
+
+        <programlisting language="java">@PlanningSolution
+@Entity
+@TypeDef(defaultForType = HardSoftBigDecimalScore.class, typeClass = HardSoftBigDecimalScoreHibernateType.class)
+public class CloudBalance implements Solution&lt;HardSoftBigDecimalScore&gt; {
+
+    @Columns(columns = {
+            @Column(name = "hardScore", precision = 10, scale = 5),
+            @Column(name = "softScore", precision = 10, scale = 5)})
+    protected HardSoftBigDecimalScore score;
+
+    ...
+}</programlisting>
+
+        <para>When using any type of bendable <literal>Score</literal>, specify the hard and soft level sizes as
+        parameters:</para>
+
+        <programlisting language="java">@PlanningSolution
+@Entity
+@TypeDef(defaultForType = BendableScore.class, typeClass = BendableScoreHibernateType.class, parameters = {
+        @Parameter(name = "hardLevelsSize", value = "3"),
+        @Parameter(name = "softLevelsSize", value = "2")})
+public class Schedule implements Solution&lt;BendableScore&gt; {
+
+    @Columns(columns = {
+            @Column(name = "hard0Score"),
+            @Column(name = "hard1Score"),
+            @Column(name = "hard2Score"),
+            @Column(name = "soft0Score"),
+            @Column(name = "soft1Score")})
+    protected BendableScore score;
+
+    ...
+}</programlisting>
+
+        <para>All this support is Hibernate specific because currently JPA 2.1's converters do not support converting to
+        multiple columns.</para>
       </section>
 
       <section xml:id="jpaAndHibernatePlanningCloning">
@@ -106,7 +190,7 @@ public class Room {
       <para>Enrich the domain POJO's (solution, entities and problem facts) with XStream annotations to serialize them
       to/from XML or JSON.</para>
 
-      <para>Add a dependency to the <literal>optaplanner-persistence-xstream</literal> jar to take advantage of the
+      <para>Add a dependency to the <literal>optaplanner-persistence-xstream</literal> jar to take advantage of these
       extra integration features:</para>
 
       <section xml:id="xStreamMarshallingAScore">
