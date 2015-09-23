@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
-import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
@@ -31,8 +31,8 @@ public class BestScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<
 
     private final BestScoreSubSingleStatisticListener listener;
 
-    public BestScoreSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
-        super(solverProblemBenchmarkResult, ProblemStatisticType.BEST_SCORE);
+    public BestScoreSubSingleStatistic(BenchmarkResult benchmarkResult) {
+        super(benchmarkResult, ProblemStatisticType.BEST_SCORE);
         listener = new BestScoreSubSingleStatisticListener();
     }
 

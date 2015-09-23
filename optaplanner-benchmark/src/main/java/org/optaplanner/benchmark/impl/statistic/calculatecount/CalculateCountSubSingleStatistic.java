@@ -20,7 +20,7 @@ import java.util.List;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
-import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
@@ -34,12 +34,12 @@ public class CalculateCountSubSingleStatistic extends ProblemBasedSubSingleStati
 
     private final CalculateCountSubSingleStatisticListener listener;
 
-    public CalculateCountSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
-        this(solverProblemBenchmarkResult, 1000L);
+    public CalculateCountSubSingleStatistic(BenchmarkResult benchmarkResult) {
+        this(benchmarkResult, 1000L);
     }
 
-    public CalculateCountSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult, long timeMillisThresholdInterval) {
-        super(solverProblemBenchmarkResult, ProblemStatisticType.CALCULATE_COUNT_PER_SECOND);
+    public CalculateCountSubSingleStatistic(BenchmarkResult benchmarkResult, long timeMillisThresholdInterval) {
+        super(benchmarkResult, ProblemStatisticType.CALCULATE_COUNT_PER_SECOND);
         if (timeMillisThresholdInterval <= 0L) {
             throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
                     + ") must be bigger than 0.");

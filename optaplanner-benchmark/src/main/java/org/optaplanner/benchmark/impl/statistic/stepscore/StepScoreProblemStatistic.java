@@ -39,7 +39,7 @@ import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
-import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
@@ -53,8 +53,8 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SubSingleStatistic createSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
-        return new StepScoreSubSingleStatistic(solverProblemBenchmarkResult);
+    public SubSingleStatistic createSubSingleStatistic(BenchmarkResult benchmarkResult) {
+        return new StepScoreSubSingleStatistic(benchmarkResult);
     }
 
     /**

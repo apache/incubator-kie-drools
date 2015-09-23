@@ -18,19 +18,19 @@ package org.optaplanner.benchmark.impl.statistic;
 
 import java.util.List;
 
-import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
 public class StatisticUtils {
 
     /**
-     * Calculates standard deviation of {@link SolverProblemBenchmarkResult#getScore()}s from {@code averageScore}.
+     * Calculates standard deviation of {@link BenchmarkResult#getScore()}s from {@code averageScore}.
      * @param averageScore not null
      * @return standard deviation double values
      */
     public static double[] determineStandardDeviationDoubles(
-            List<? extends SolverProblemBenchmarkResult> solverProblemBenchmarkResultList, Score averageScore, int successCount) {
+            List<? extends BenchmarkResult> solverProblemBenchmarkResultList, Score averageScore, int successCount) {
         if (successCount <= 0) {
             return null;
         }
@@ -39,9 +39,9 @@ public class StatisticUtils {
         }
         // averageScore can no longer be null
         double[] differenceSquaredTotalDoubles = null;
-        for (SolverProblemBenchmarkResult solverProblemBenchmarkResult : solverProblemBenchmarkResultList) {
-            if (solverProblemBenchmarkResult.isSuccess()) {
-                Score difference = solverProblemBenchmarkResult.getScore().subtract(averageScore);
+        for (BenchmarkResult benchmarkResult : solverProblemBenchmarkResultList) {
+            if (benchmarkResult.isSuccess()) {
+                Score difference = benchmarkResult.getScore().subtract(averageScore);
                 // Calculations done on doubles to avoid common overflow when executing with an int score > 500 000
                 double[] differenceDoubles = ScoreUtils.extractLevelDoubles(difference);
                 if (differenceSquaredTotalDoubles == null) {

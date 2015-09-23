@@ -20,24 +20,18 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.config.statistic.SubSingleStatisticType;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SubSingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
-import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.StatisticType;
 import org.optaplanner.benchmark.impl.statistic.StatisticUtils;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
@@ -51,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * Represents 1 benchmark for 1 {@link Solver} configuration for 1 problem instance (data set).
  */
 @XStreamAlias("singleBenchmarkResult")
-public class SingleBenchmarkResult implements SolverProblemBenchmarkResult {
+public class SingleBenchmarkResult implements BenchmarkResult {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(SingleBenchmarkResult.class);
 

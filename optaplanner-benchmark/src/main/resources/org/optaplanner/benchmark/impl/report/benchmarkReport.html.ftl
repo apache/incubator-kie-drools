@@ -631,7 +631,7 @@
                                     <#list problemBenchmarkResult.extractSubSingleStatisticTypeList() as subSingleStatisticType>
                                         <div class="tab-pane<#if firstRow && !subSingleSummaryChartShown> active</#if>" id="subSingleStatistic_${problemBenchmarkResult.anchorId}_${subSingleStatisticType.anchorId}">
                                             <#list problemBenchmarkResult.extractPureSubSingleStatisticList(subSingleStatisticType) as pureSubSingleStatistic>
-                                                <h3>${pureSubSingleStatistic.solverProblemBenchmarkResult.solverBenchmarkResult.name}</h3>
+                                                <h3>${pureSubSingleStatistic.benchmarkResult.solverBenchmarkResult.name}</h3>
                                                 <#if pureSubSingleStatistic.graphFileList?? && pureSubSingleStatistic.graphFileList?size != 0>
                                                     <#if subSingleStatisticType.hasScoreLevels()>
                                                         <div class="tabbable tabs-right">

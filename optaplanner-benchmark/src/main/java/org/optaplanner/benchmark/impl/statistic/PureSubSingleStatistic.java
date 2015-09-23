@@ -23,7 +23,7 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.config.statistic.SubSingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
-import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.GraphSupport;
 import org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalbestscore.ConstraintMatchTotalBestScoreSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalstepscore.ConstraintMatchTotalStepScoreSubSingleStatistic;
@@ -43,8 +43,8 @@ public abstract class PureSubSingleStatistic<P extends StatisticPoint> extends S
 
     protected final SubSingleStatisticType subSingleStatisticType;
 
-    protected PureSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult, SubSingleStatisticType subSingleStatisticType) {
-        super(solverProblemBenchmarkResult);
+    protected PureSubSingleStatistic(BenchmarkResult benchmarkResult, SubSingleStatisticType subSingleStatisticType) {
+        super(benchmarkResult);
         this.subSingleStatisticType = subSingleStatisticType;
     }
 
@@ -60,7 +60,7 @@ public abstract class PureSubSingleStatistic<P extends StatisticPoint> extends S
     public abstract void writeGraphFiles(BenchmarkReport benchmarkReport);
 
     protected File writeChartToImageFile(JFreeChart chart, String fileNameBase) {
-        File chartFile = new File(solverProblemBenchmarkResult.getReportDirectory(), fileNameBase + ".png");
+        File chartFile = new File(benchmarkResult.getReportDirectory(), fileNameBase + ".png");
         GraphSupport.writeChartToImageFile(chart, chartFile);
         return chartFile;
     }
@@ -82,7 +82,7 @@ public abstract class PureSubSingleStatistic<P extends StatisticPoint> extends S
 
     @Override
     public String toString() {
-        return solverProblemBenchmarkResult + "_" + subSingleStatisticType;
+        return benchmarkResult + "_" + subSingleStatisticType;
     }
 
 }

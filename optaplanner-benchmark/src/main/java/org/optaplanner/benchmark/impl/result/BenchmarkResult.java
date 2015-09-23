@@ -21,7 +21,7 @@ import java.io.File;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.solver.SolverConfig;
 
-public interface SolverProblemBenchmarkResult {
+public interface BenchmarkResult {
 
     public SolverBenchmarkResult getSolverBenchmarkResult();
 

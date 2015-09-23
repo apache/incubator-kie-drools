@@ -38,7 +38,7 @@ import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
-import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 
 @XStreamAlias("calculateCountProblemStatistic")
@@ -51,8 +51,8 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SubSingleStatistic createSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult) {
-        return new CalculateCountSubSingleStatistic(solverProblemBenchmarkResult);
+    public SubSingleStatistic createSubSingleStatistic(BenchmarkResult benchmarkResult) {
+        return new CalculateCountSubSingleStatistic(benchmarkResult);
     }
 
     /**

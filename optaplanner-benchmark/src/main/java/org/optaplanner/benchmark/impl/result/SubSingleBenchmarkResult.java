@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  * instance (data set).
  */
 @XStreamAlias("subSingleBenchmarkResult")
-public class SubSingleBenchmarkResult implements SolverProblemBenchmarkResult {
+public class SubSingleBenchmarkResult implements BenchmarkResult {
 
     protected static final transient Logger logger = LoggerFactory.getLogger(SubSingleBenchmarkResult.class);
 

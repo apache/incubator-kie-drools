@@ -28,7 +28,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.result.SolverProblemBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
@@ -103,7 +103,7 @@ public abstract class ProblemStatistic {
         return subSingleStatisticList;
     }
 
-    public abstract SubSingleStatistic createSubSingleStatistic(SolverProblemBenchmarkResult solverProblemBenchmarkResult);
+    public abstract SubSingleStatistic createSubSingleStatistic(BenchmarkResult benchmarkResult);
 
     // ************************************************************************
     // Write methods
