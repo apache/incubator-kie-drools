@@ -34,7 +34,7 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.chart.renderer.xy.XYStepRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import org.optaplanner.benchmark.config.statistic.SubSingleStatisticType;
+import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
@@ -60,7 +60,7 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic extends PureSubSing
     protected List<File> graphFileList = null;
 
     public ConstraintMatchTotalBestScoreSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
-        super(subSingleBenchmarkResult, SubSingleStatisticType.CONSTRAINT_MATCH_TOTAL_BEST_SCORE);
+        super(subSingleBenchmarkResult, SingleStatisticType.CONSTRAINT_MATCH_TOTAL_BEST_SCORE);
         listener = new ConstraintMatchTotalBestScoreSubSingleStatisticListener();
     }
 
@@ -96,7 +96,7 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic extends PureSubSing
             constraintMatchEnabled = scoreDirector.isConstraintMatchEnabled();
             if (!constraintMatchEnabled) {
                 logger.warn("The subSingleStatistic ({}) cannot function properly" +
-                        " because ConstraintMatches are not supported on the ScoreDirector.", subSingleStatisticType);
+                        " because ConstraintMatches are not supported on the ScoreDirector.", singleStatisticType);
             }
         }
 

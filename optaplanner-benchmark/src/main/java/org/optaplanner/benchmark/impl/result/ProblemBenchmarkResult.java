@@ -35,7 +35,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.config.statistic.SubSingleStatisticType;
+import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.ranking.SingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -230,22 +230,22 @@ public class ProblemBenchmarkResult {
         return maximumSubSingleCount != null ? maximumSubSingleCount > 1 : false;
     }
 
-    public Collection<SubSingleStatisticType> extractSubSingleStatisticTypeList() {
-        Set<SubSingleStatisticType> subSingleStatisticTypeSet = new LinkedHashSet<SubSingleStatisticType>();
+    public Collection<SingleStatisticType> extractSingleStatisticTypeList() {
+        Set<SingleStatisticType> singleStatisticTypeSet = new LinkedHashSet<SingleStatisticType>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
-                subSingleStatisticTypeSet.add(pureSubSingleStatistic.getStatisticType());
+                singleStatisticTypeSet.add(pureSubSingleStatistic.getStatisticType());
             }
         }
-        return subSingleStatisticTypeSet;
+        return singleStatisticTypeSet;
     }
 
-    public List<PureSubSingleStatistic> extractPureSubSingleStatisticList(SubSingleStatisticType subSingleStatisticType) {
+    public List<PureSubSingleStatistic> extractPureSubSingleStatisticList(SingleStatisticType singleStatisticType) {
         List<PureSubSingleStatistic> pureSubSingleStatisticList = new ArrayList<PureSubSingleStatistic>(
                 singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
             for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
-                if (pureSubSingleStatistic.getStatisticType() == subSingleStatisticType) {
+                if (pureSubSingleStatistic.getStatisticType() == singleStatisticType) {
                     pureSubSingleStatisticList.add(pureSubSingleStatistic);
                 }
             }

@@ -534,9 +534,9 @@
                                         </li>
                                         <#assign firstRow = false>
                                     </#list>
-                                    <#list problemBenchmarkResult.extractSubSingleStatisticTypeList() as subSingleStatisticType>
+                                    <#list problemBenchmarkResult.extractSingleStatisticTypeList() as singleStatisticType>
                                         <li<#if firstRow && !subSingleSummaryChartShown> class="active"</#if>>
-                                            <a href="#subSingleStatistic_${problemBenchmarkResult.anchorId}_${subSingleStatisticType.anchorId}" data-toggle="tab">${subSingleStatisticType}</a>
+                                            <a href="#singleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}" data-toggle="tab">${singleStatisticType}</a>
                                         </li>
                                         <#assign firstRow = false>
                                     </#list>
@@ -628,12 +628,12 @@
                                         </div>
                                         <#assign firstRow = false>
                                     </#list>
-                                    <#list problemBenchmarkResult.extractSubSingleStatisticTypeList() as subSingleStatisticType>
-                                        <div class="tab-pane<#if firstRow && !subSingleSummaryChartShown> active</#if>" id="subSingleStatistic_${problemBenchmarkResult.anchorId}_${subSingleStatisticType.anchorId}">
-                                            <#list problemBenchmarkResult.extractPureSubSingleStatisticList(subSingleStatisticType) as pureSubSingleStatistic>
+                                    <#list problemBenchmarkResult.extractSingleStatisticTypeList() as singleStatisticType>
+                                        <div class="tab-pane<#if firstRow && !subSingleSummaryChartShown> active</#if>" id="subSingleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}">
+                                            <#list problemBenchmarkResult.extractPureSubSingleStatisticList(singleStatisticType) as pureSubSingleStatistic>
                                                 <h3>${pureSubSingleStatistic.subSingleBenchmarkResult.singleBenchmarkResult.solverBenchmarkResult.name}</h3>
                                                 <#if pureSubSingleStatistic.graphFileList?? && pureSubSingleStatistic.graphFileList?size != 0>
-                                                    <#if subSingleStatisticType.hasScoreLevels()>
+                                                    <#if singleStatisticType.hasScoreLevels()>
                                                         <div class="tabbable tabs-right">
                                                             <ul class="nav nav-tabs">
                                                                 <#assign scoreLevelIndex = 0>

@@ -25,7 +25,7 @@ import org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalst
 import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSubSingleStatistic;
 
-public enum SubSingleStatisticType implements StatisticType {
+public enum SingleStatisticType implements StatisticType {
     CONSTRAINT_MATCH_TOTAL_BEST_SCORE,
     CONSTRAINT_MATCH_TOTAL_STEP_SCORE,
     PICKED_MOVE_TYPE_BEST_SCORE_DIFF,
@@ -43,7 +43,7 @@ public enum SubSingleStatisticType implements StatisticType {
             case PICKED_MOVE_TYPE_STEP_SCORE_DIFF:
                 return new PickedMoveTypeStepScoreDiffSubSingleStatistic(subSingleBenchmarkResult);
             default:
-                throw new IllegalStateException("The subSingleStatisticType (" + this + ") is not implemented.");
+                throw new IllegalStateException("The singleStatisticType (" + this + ") is not implemented.");
         }
     }
 

@@ -21,7 +21,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.jfree.chart.JFreeChart;
-import org.optaplanner.benchmark.config.statistic.SubSingleStatisticType;
+import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.GraphSupport;
@@ -41,16 +41,16 @@ import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypestepscor
 })
 public abstract class PureSubSingleStatistic<P extends StatisticPoint> extends SubSingleStatistic<P> {
 
-    protected final SubSingleStatisticType subSingleStatisticType;
+    protected final SingleStatisticType singleStatisticType;
 
-    protected PureSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult, SubSingleStatisticType subSingleStatisticType) {
+    protected PureSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult, SingleStatisticType singleStatisticType) {
         super(subSingleBenchmarkResult);
-        this.subSingleStatisticType = subSingleStatisticType;
+        this.singleStatisticType = singleStatisticType;
     }
 
     @Override
-    public SubSingleStatisticType getStatisticType() {
-        return subSingleStatisticType;
+    public SingleStatisticType getStatisticType() {
+        return singleStatisticType;
     }
 
     // ************************************************************************
@@ -72,7 +72,7 @@ public abstract class PureSubSingleStatistic<P extends StatisticPoint> extends S
         } else if (graphFileList.size() > 1) {
             throw new IllegalStateException("Cannot get graph file for the PureSubSingleStatistic (" + this
                     + ") because it has more than 1 graph file. See method getGraphList() and "
-                    + SubSingleStatisticType.class.getSimpleName() + ".hasScoreLevels()");
+                    + SingleStatisticType.class.getSimpleName() + ".hasScoreLevels()");
         } else {
             return graphFileList.get(0);
         }
@@ -82,7 +82,7 @@ public abstract class PureSubSingleStatistic<P extends StatisticPoint> extends S
 
     @Override
     public String toString() {
-        return subSingleBenchmarkResult + "_" + subSingleStatisticType;
+        return subSingleBenchmarkResult + "_" + singleStatisticType;
     }
 
 }

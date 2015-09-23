@@ -24,7 +24,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.config.statistic.SubSingleStatisticType;
+import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -50,8 +50,8 @@ public class ProblemBenchmarksConfig {
     @XStreamImplicit(itemFieldName = "problemStatisticType")
     private List<ProblemStatisticType> problemStatisticTypeList = null;
 
-    @XStreamImplicit(itemFieldName = "subSingleStatisticType")
-    private List<SubSingleStatisticType> subSingleStatisticTypeList = null;
+    @XStreamImplicit(itemFieldName = "singleStatisticType")
+    private List<SingleStatisticType> singleStatisticTypeList = null;
 
     public Class<SolutionFileIO> getSolutionFileIOClass() {
         return solutionFileIOClass;
@@ -93,12 +93,12 @@ public class ProblemBenchmarksConfig {
         this.problemStatisticTypeList = problemStatisticTypeList;
     }
 
-    public List<SubSingleStatisticType> getSubSingleStatisticTypeList() {
-        return subSingleStatisticTypeList;
+    public List<SingleStatisticType> getSingleStatisticTypeList() {
+        return singleStatisticTypeList;
     }
 
-    public void setSubSingleStatisticTypeList(List<SubSingleStatisticType> subSingleStatisticTypeList) {
-        this.subSingleStatisticTypeList = subSingleStatisticTypeList;
+    public void setSingleStatisticTypeList(List<SingleStatisticType> singleStatisticTypeList) {
+        this.singleStatisticTypeList = singleStatisticTypeList;
     }
 
     // ************************************************************************
@@ -185,12 +185,12 @@ public class ProblemBenchmarksConfig {
         buildSubSingleBenchmarks(singleBenchmarkResult, solverBenchmarkResult.getSubSingleCount());
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
             subSingleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<PureSubSingleStatistic>(
-                    subSingleStatisticTypeList == null ? 0 : subSingleStatisticTypeList.size()));
+                    singleStatisticTypeList == null ? 0 : singleStatisticTypeList.size()));
         }
-        if (subSingleStatisticTypeList != null) {
-            for (SubSingleStatisticType subSingleStatisticType : subSingleStatisticTypeList) {
+        if (singleStatisticTypeList != null) {
+            for (SingleStatisticType singleStatisticType : singleStatisticTypeList) {
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                    subSingleBenchmarkResult.getPureSubSingleStatisticList().add(subSingleStatisticType.buildPureSubSingleStatistic(subSingleBenchmarkResult));
+                    subSingleBenchmarkResult.getPureSubSingleStatisticList().add(singleStatisticType.buildPureSubSingleStatistic(subSingleBenchmarkResult));
                 }
             }
         }
@@ -219,8 +219,8 @@ public class ProblemBenchmarksConfig {
                 inheritedConfig.getInputSolutionFileList());
         problemStatisticTypeList = ConfigUtils.inheritMergeableListProperty(problemStatisticTypeList,
                 inheritedConfig.getProblemStatisticTypeList());
-        subSingleStatisticTypeList = ConfigUtils.inheritMergeableListProperty(subSingleStatisticTypeList,
-                inheritedConfig.getSubSingleStatisticTypeList());
+        singleStatisticTypeList = ConfigUtils.inheritMergeableListProperty(singleStatisticTypeList,
+                inheritedConfig.getSingleStatisticTypeList());
     }
 
 }

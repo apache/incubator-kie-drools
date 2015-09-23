@@ -24,7 +24,7 @@ import org.junit.Test;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.config.statistic.SubSingleStatisticType;
+import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.PlannerBenchmarkRunner;
 import org.optaplanner.examples.common.app.PlannerBenchmarkTest;
 
@@ -35,8 +35,8 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
         return "org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml";
     }
 
-    public List<SubSingleStatisticType> buildAllSubSingleStatisticTypeList() {
-        return Arrays.asList(SubSingleStatisticType.values());
+    public List<SingleStatisticType> buildAllSingleStatisticTypeList() {
+        return Arrays.asList(SingleStatisticType.values());
     }
 
     public List<ProblemStatisticType> buildAllProblemStatisticTypeList() {
@@ -50,7 +50,7 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     @Test(timeout = 600000)
     public void benchmark64queens() {
         PlannerBenchmarkFactory plannerBenchmarkFactory = buildPlannerBenchmarkFactory(new File("data/nqueens/unsolved/64queens.xml"));
-        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setSubSingleStatisticTypeList(buildAllSubSingleStatisticTypeList());
+        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setSingleStatisticTypeList(buildAllSingleStatisticTypeList());
         plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setProblemStatisticTypeList(buildAllProblemStatisticTypeList());
         plannerBenchmarkFactory.getPlannerBenchmarkConfig().setParallelBenchmarkCount("AUTO");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
@@ -60,7 +60,7 @@ public class NQueensBenchmarkTest extends PlannerBenchmarkTest {
     @Test(timeout = 600000)
     public void benchmark64queensSingleThread() {
         PlannerBenchmarkFactory plannerBenchmarkFactory = buildPlannerBenchmarkFactory(new File("data/nqueens/unsolved/64queens.xml"));
-        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setSubSingleStatisticTypeList(buildAllSubSingleStatisticTypeList());
+        plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setSingleStatisticTypeList(buildAllSingleStatisticTypeList());
         plannerBenchmarkFactory.getPlannerBenchmarkConfig().getInheritedSolverBenchmarkConfig().getProblemBenchmarksConfig().setProblemStatisticTypeList(buildAllProblemStatisticTypeList());
         plannerBenchmarkFactory.getPlannerBenchmarkConfig().setParallelBenchmarkCount("1");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
