@@ -194,7 +194,7 @@ public class ProblemBenchmarksConfig {
                 }
             }
         }
-        singleBenchmarkResult.initSubSingleStatisticMap();
+        singleBenchmarkResult.initSubSingleStatisticMaps();
         solverBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
     }

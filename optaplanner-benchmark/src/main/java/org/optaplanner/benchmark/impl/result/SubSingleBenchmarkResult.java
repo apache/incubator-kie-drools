@@ -98,7 +98,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
             effectiveSubSingleStatisticMap.put(subSingleStatistic.getStatisticType(), subSingleStatistic);
         }
         for (PureSubSingleStatistic pureSubSingleStatistic : pureSubSingleStatisticList) {
-            effectiveSubSingleStatisticMap.put(pureSubSingleStatistic.getStatisticType(), pureSubSingleStatistic.getStatisticType().buildPureSubSingleStatistic(this));
+            effectiveSubSingleStatisticMap.put(pureSubSingleStatistic.getStatisticType(), pureSubSingleStatistic);
         }
     }
 
@@ -294,11 +294,11 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
         }
 
         newResult.initSubSingleStatisticMap();
-        for (SubSingleStatistic subSingleStatistic : newResult.effectiveSubSingleStatisticMap.values()) {
-            SubSingleStatistic oldSubSingleStatistic = oldResult.getSubSingleStatistic(subSingleStatistic.getStatisticType());
+        for (SubSingleStatistic newSubSingleStatistic : newResult.effectiveSubSingleStatisticMap.values()) {
+            SubSingleStatistic oldSubSingleStatistic = oldResult.getSubSingleStatistic(newSubSingleStatistic.getStatisticType());
             if (!oldSubSingleStatistic.getCsvFile().exists()) {
                 if (oldResult.hasAnyFailure()) {
-                    subSingleStatistic.initPointList();
+                    newSubSingleStatistic.initPointList();
                     logger.debug("Old result ({}) is a failure, skipping merge of it's sub single statistic ({}).",
                             oldResult, oldSubSingleStatistic);
                     continue;
@@ -308,7 +308,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
                 }
             }
             oldSubSingleStatistic.unhibernatePointList();
-            subSingleStatistic.setPointList(oldSubSingleStatistic.getPointList());
+            newSubSingleStatistic.setPointList(oldSubSingleStatistic.getPointList());
             oldSubSingleStatistic.hibernatePointList();
         }
         // Skip oldResult.reportDirectory

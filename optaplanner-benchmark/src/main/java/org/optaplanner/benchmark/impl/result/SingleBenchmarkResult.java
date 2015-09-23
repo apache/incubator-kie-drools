@@ -92,7 +92,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         this.problemBenchmarkResult = problemBenchmarkResult;
     }
 
-    public void initSubSingleStatisticMap() {
+    public void initSubSingleStatisticMaps() {
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : subSingleBenchmarkResultList) {
             subSingleBenchmarkResult.initSubSingleStatisticMap();
         }
@@ -420,7 +420,6 @@ public class SingleBenchmarkResult implements BenchmarkResult {
             SubSingleBenchmarkResult.createMerge(newResult, oldSubResult, subSingleBenchmarkIndex);
             subSingleBenchmarkIndex++;
         }
-        newResult.initSubSingleStatisticMap();
         newResult.median = oldResult.median;
         newResult.best = oldResult.best;
         newResult.worst = oldResult.worst;
