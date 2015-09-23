@@ -104,7 +104,7 @@ public class CloudBalance implements Solution&lt;HardSoftScore&gt; {
 
         <para>In this case, the DDL will look like this:</para>
 
-        <programlisting language="java">CREATE TABLE CloudBalance(
+        <programlisting language="sql">CREATE TABLE CloudBalance(
     ...
     hardScore INTEGER,
     softScore INTEGER
