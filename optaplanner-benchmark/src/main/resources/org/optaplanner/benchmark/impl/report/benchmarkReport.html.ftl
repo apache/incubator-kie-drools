@@ -182,7 +182,7 @@
                                                 <td></td>
                                             <#else>
                                                 <#assign singleBenchmarkResult = solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)>
-                                                <#if !singleBenchmarkResult.hasAnySuccess>
+                                                <#if !singleBenchmarkResult.hasAnySuccess()>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <#if solverBenchmarkResult.subSingleCount lte 1>
@@ -252,7 +252,7 @@
                                                 <td></td>
                                             <#else>
                                                 <#assign singleBenchmarkResult = solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)>
-                                                <#if !singleBenchmarkResult.hasAnySuccess>
+                                                <#if !singleBenchmarkResult.hasAnySuccess()>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <td>${singleBenchmarkResult.winningScoreDifference}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/></td>
@@ -291,7 +291,7 @@
                                                 <td></td>
                                             <#else>
                                                 <#assign singleBenchmarkResult = solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)>
-                                                <#if !singleBenchmarkResult.hasAnySuccess>
+                                                <#if !singleBenchmarkResult.hasAnySuccess()>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <td>${singleBenchmarkResult.worstScoreDifferencePercentage.toString(.locale)}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/></td>
@@ -376,7 +376,7 @@
                                                 <td></td>
                                             <#else>
                                                 <#assign singleBenchmarkResult = solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)>
-                                                <#if !singleBenchmarkResult.hasAnySuccess>
+                                                <#if !singleBenchmarkResult.hasAnySuccess()>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <#if solverBenchmarkResult.subSingleCount lte 1>
@@ -437,7 +437,7 @@
                                                 <td></td>
                                             <#else>
                                                 <#assign singleBenchmarkResult = solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)>
-                                                <#if !singleBenchmarkResult.hasAnySuccess>
+                                                <#if !singleBenchmarkResult.hasAnySuccess()>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <#if solverBenchmarkResult.subSingleCount lte 1>
@@ -631,7 +631,7 @@
                                     <#list problemBenchmarkResult.extractSubSingleStatisticTypeList() as subSingleStatisticType>
                                         <div class="tab-pane<#if firstRow && !subSingleSummaryChartShown> active</#if>" id="subSingleStatistic_${problemBenchmarkResult.anchorId}_${subSingleStatisticType.anchorId}">
                                             <#list problemBenchmarkResult.extractPureSubSingleStatisticList(subSingleStatisticType) as pureSubSingleStatistic>
-                                                <h3>${pureSubSingleStatistic.benchmarkResult.solverBenchmarkResult.name}</h3>
+                                                <h3>${pureSubSingleStatistic.subSingleBenchmarkResult.singleBenchmarkResult.solverBenchmarkResult.name}</h3>
                                                 <#if pureSubSingleStatistic.graphFileList?? && pureSubSingleStatistic.graphFileList?size != 0>
                                                     <#if subSingleStatisticType.hasScoreLevels()>
                                                         <div class="tabbable tabs-right">
