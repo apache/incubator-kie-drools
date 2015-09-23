@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
@@ -33,7 +34,7 @@ public class XStreamXmlSolverFactoryTest {
     @Test
     public void configFileRemainsSameAfterReadWrite() throws Exception {
         String solverConfigResource = "testdataSolverConfigXStream.xml";
-        String originalXml = PlannerTestUtils.readResourceToString(getClass(), solverConfigResource);
+        String originalXml = IOUtils.toString(getClass().getResourceAsStream(solverConfigResource), "UTF-8");
         InputStream originalConfigInputStream = getClass().getResourceAsStream(solverConfigResource);
         XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory().configure(originalConfigInputStream);
         SolverConfig solverConfig = solverFactory.getSolverConfig();

@@ -89,21 +89,6 @@ public class PlannerTestUtils {
 
     }
 
-    public static String readResourceToString(Class clazz, String resource) throws IOException {
-        InputStream resourceInputStream = clazz.getResourceAsStream(resource);
-        String resourceContent = "";
-        String buffer;
-        BufferedReader br = new BufferedReader(new InputStreamReader(resourceInputStream));
-        while((buffer = br.readLine()) != null) {
-            if (!resourceContent.equals("")) {
-                resourceContent += "\n";
-            }
-            resourceContent += buffer;
-        }
-        resourceInputStream.close();
-        return resourceContent;
-    }
-
     // ************************************************************************
     // Private constructor
     // ************************************************************************

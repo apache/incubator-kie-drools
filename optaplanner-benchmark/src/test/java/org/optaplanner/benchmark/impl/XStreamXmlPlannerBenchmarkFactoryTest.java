@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
@@ -37,7 +38,7 @@ public class XStreamXmlPlannerBenchmarkFactoryTest {
     @Test
     public void configFileRemainsSameAfterReadWrite() throws Exception {
         String plannerBenchmarkConfigResource = "testdataPlannerBenchmarkConfigXStream.xml";
-        String originalXml = PlannerTestUtils.readResourceToString(getClass(), plannerBenchmarkConfigResource);
+        String originalXml = IOUtils.toString(getClass().getResourceAsStream(plannerBenchmarkConfigResource), "UTF-8");
         InputStream originalConfigInputStream = getClass().getResourceAsStream(plannerBenchmarkConfigResource);
         XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory().configure(originalConfigInputStream);
         PlannerBenchmarkConfig benchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
@@ -48,7 +49,7 @@ public class XStreamXmlPlannerBenchmarkFactoryTest {
     @Test
     public void configFileRemainsSameAfterReadWriteBuild() throws Exception {
         String plannerBenchmarkConfigResource = "testdataPlannerBenchmarkConfigXStream.xml";
-        String originalXml = PlannerTestUtils.readResourceToString(getClass(), plannerBenchmarkConfigResource);
+        String originalXml = IOUtils.toString(getClass().getResourceAsStream(plannerBenchmarkConfigResource), "UTF-8");
         InputStream originalConfigInputStream = getClass().getResourceAsStream(plannerBenchmarkConfigResource);
         XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory().configure(originalConfigInputStream);
         PlannerBenchmarkConfig benchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
@@ -60,7 +61,7 @@ public class XStreamXmlPlannerBenchmarkFactoryTest {
     @Test
     public void configFileRemainsSameAfterReadWriteWithInherited() throws Exception {
         String plannerBenchmarkConfigResource = "testdataPlannerBenchmarkConfigXStreamInherited.xml";
-        String originalXml = PlannerTestUtils.readResourceToString(getClass(), plannerBenchmarkConfigResource);
+        String originalXml = IOUtils.toString(getClass().getResourceAsStream(plannerBenchmarkConfigResource), "UTF-8");
         InputStream originalConfigInputStream = getClass().getResourceAsStream(plannerBenchmarkConfigResource);
         XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory().configure(originalConfigInputStream);
         PlannerBenchmarkConfig benchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
@@ -72,7 +73,7 @@ public class XStreamXmlPlannerBenchmarkFactoryTest {
     @Ignore("Config shouldn't actually remain the same: we inherited the subSingleCount")
     public void configFileRemainsSameAfterReadWriteBuildWithInherited() throws Exception {
         String plannerBenchmarkConfigResource = "testdataPlannerBenchmarkConfigXStreamInherited.xml";
-        String originalXml = PlannerTestUtils.readResourceToString(getClass(), plannerBenchmarkConfigResource);
+        String originalXml = IOUtils.toString(getClass().getResourceAsStream(plannerBenchmarkConfigResource), "UTF-8");
         InputStream originalConfigInputStream = getClass().getResourceAsStream(plannerBenchmarkConfigResource);
         XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory().configure(originalConfigInputStream);
         PlannerBenchmarkConfig benchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
