@@ -36,8 +36,8 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.optaplanner.benchmark.config.statistic.SubSingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
-import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
@@ -59,8 +59,8 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic extends PureSubSing
     @XStreamOmitField
     protected List<File> graphFileList = null;
 
-    public ConstraintMatchTotalBestScoreSubSingleStatistic(BenchmarkResult benchmarkResult) {
-        super(benchmarkResult, SubSingleStatisticType.CONSTRAINT_MATCH_TOTAL_BEST_SCORE);
+    public ConstraintMatchTotalBestScoreSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        super(subSingleBenchmarkResult, SubSingleStatisticType.CONSTRAINT_MATCH_TOTAL_BEST_SCORE);
         listener = new ConstraintMatchTotalBestScoreSubSingleStatisticListener();
     }
 
@@ -204,7 +204,7 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic extends PureSubSing
                 seriesCollection.addSeries(series);
             }
             plot.setDataset(seriesCollection);
-            JFreeChart chart = new JFreeChart(benchmarkResult.getName()
+            JFreeChart chart = new JFreeChart(subSingleBenchmarkResult.getName()
                     + " constraint match total best score diff level " + scoreLevelIndex + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             graphFileList.add(writeChartToImageFile(chart,

@@ -146,7 +146,7 @@ public class BenchmarkResultIO {
                 }
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
                     for (PureSubSingleStatistic pureSubSingleStatistic : subSingleBenchmarkResult.getPureSubSingleStatisticList()) {
-                        pureSubSingleStatistic.setBenchmarkResult(subSingleBenchmarkResult);
+                        pureSubSingleStatistic.setSubSingleBenchmarkResult(subSingleBenchmarkResult);
                     }
                 }
             }

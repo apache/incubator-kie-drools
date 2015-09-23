@@ -30,7 +30,7 @@ public class StatisticUtils {
      * @return standard deviation double values
      */
     public static double[] determineStandardDeviationDoubles(
-            List<? extends BenchmarkResult> solverProblemBenchmarkResultList, Score averageScore, int successCount) {
+            List<? extends BenchmarkResult> benchmarkResultList, Score averageScore, int successCount) {
         if (successCount <= 0) {
             return null;
         }
@@ -39,7 +39,7 @@ public class StatisticUtils {
         }
         // averageScore can no longer be null
         double[] differenceSquaredTotalDoubles = null;
-        for (BenchmarkResult benchmarkResult : solverProblemBenchmarkResultList) {
+        for (BenchmarkResult benchmarkResult : benchmarkResultList) {
             if (benchmarkResult.hasAnySuccess()) {
                 Score difference = benchmarkResult.getAverageScore().subtract(averageScore);
                 // Calculations done on doubles to avoid common overflow when executing with an int score > 500 000

@@ -39,9 +39,9 @@ import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
-import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 
 @XStreamAlias("moveCountPerStepProblemStatistic")
@@ -54,8 +54,8 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SubSingleStatistic createSubSingleStatistic(BenchmarkResult benchmarkResult) {
-        return new MoveCountPerStepSubSingleStatistic(benchmarkResult);
+    public SubSingleStatistic createSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        return new MoveCountPerStepSubSingleStatistic(subSingleBenchmarkResult);
     }
 
     /**

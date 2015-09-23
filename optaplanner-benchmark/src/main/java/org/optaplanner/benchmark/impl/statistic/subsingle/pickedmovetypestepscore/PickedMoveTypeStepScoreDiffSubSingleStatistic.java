@@ -36,8 +36,8 @@ import org.jfree.data.xy.XYIntervalSeries;
 import org.jfree.data.xy.XYIntervalSeriesCollection;
 import org.optaplanner.benchmark.config.statistic.SubSingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
-import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
@@ -59,8 +59,8 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingle
     @XStreamOmitField
     protected List<File> graphFileList = null;
 
-    public PickedMoveTypeStepScoreDiffSubSingleStatistic(BenchmarkResult benchmarkResult) {
-        super(benchmarkResult, SubSingleStatisticType.PICKED_MOVE_TYPE_STEP_SCORE_DIFF);
+    public PickedMoveTypeStepScoreDiffSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        super(subSingleBenchmarkResult, SubSingleStatisticType.PICKED_MOVE_TYPE_STEP_SCORE_DIFF);
         listener = new PickedMoveTypeStepScoreDiffSubSingleStatisticListener();
     }
 
@@ -175,7 +175,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingle
                 seriesCollection.addSeries(series);
             }
             plot.setDataset(seriesCollection);
-            JFreeChart chart = new JFreeChart(benchmarkResult.getName()
+            JFreeChart chart = new JFreeChart(subSingleBenchmarkResult.getName()
                     + " picked move type step score diff level " + scoreLevelIndex + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             graphFileList.add(writeChartToImageFile(chart,

@@ -35,14 +35,14 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
-import org.optaplanner.benchmark.impl.result.BenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 1 statistic of {@link SubSingleBenchmarkResult}.
+ * 1 statistic of {@link SubSinglesubSingleBenchmarkResult}.
  */
 @XStreamInclude({
         PureSubSingleStatistic.class
@@ -51,22 +51,22 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
-    protected BenchmarkResult benchmarkResult;
+    @XStreamOmitField // Bi-directional relationship restored through subSingleBenchmarkResultIO
+    protected SubSingleBenchmarkResult subSingleBenchmarkResult;
 
     @XStreamOmitField
     protected List<P> pointList;
 
-    protected SubSingleStatistic(BenchmarkResult benchmarkResult) {
-        this.benchmarkResult = benchmarkResult;
+    protected SubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        this.subSingleBenchmarkResult = subSingleBenchmarkResult;
     }
 
-    public BenchmarkResult getBenchmarkResult() {
-        return benchmarkResult;
+    public SubSingleBenchmarkResult getSubSingleBenchmarkResult() {
+        return subSingleBenchmarkResult;
     }
 
-    public void setBenchmarkResult(BenchmarkResult benchmarkResult) {
-        this.benchmarkResult = benchmarkResult;
+    public void setSubSingleBenchmarkResult(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        this.subSingleBenchmarkResult = subSingleBenchmarkResult;
     }
 
     public abstract StatisticType getStatisticType();
@@ -83,9 +83,9 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
      * @return the path to the csv file from report root
      */
     public String getRelativeCsvFilePath() {
-        return new StringBuilder().append(benchmarkResult.getProblemBenchmarkResult().getProblemReportDirectoryPath())
+        return new StringBuilder().append(subSingleBenchmarkResult.getSingleBenchmarkResult().getProblemBenchmarkResult().getProblemReportDirectoryPath())
                 .append(File.separator)
-                .append(benchmarkResult.getResultDirectoryPath())
+                .append(subSingleBenchmarkResult.getResultDirectoryPath())
                 .append(File.separator)
                 .append(getCsvFilePath())
                 .toString();
@@ -96,7 +96,7 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
     }
 
     public File getCsvFile() {
-        return new File(benchmarkResult.getResultDirectory(), getCsvFilePath());
+        return new File(subSingleBenchmarkResult.getResultDirectory(), getCsvFilePath());
     }
 
     // ************************************************************************
@@ -126,7 +126,7 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
             for (StatisticPoint point : getPointList()) {
                 writer.append(point.toCsvLine()).append("\n");
             }
-            if (benchmarkResult.hasAnyFailure()) {
+            if (subSingleBenchmarkResult.hasAnyFailure()) {
                 writer.append("Failed\n");
             }
         } catch (IOException e) {
@@ -138,13 +138,13 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
 
     private void readCsvStatisticFile() {
         File csvFile = getCsvFile();
-        ScoreDefinition scoreDefinition = benchmarkResult.getSolverBenchmarkResult().getSolverConfig()
+        ScoreDefinition scoreDefinition = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig()
                 .getScoreDirectorFactoryConfig().buildScoreDefinition();
         if (!pointList.isEmpty()) {
             throw new IllegalStateException("The pointList with size (" + pointList.size() + ") should be empty.");
         }
         if (!csvFile.exists()) {
-            if (benchmarkResult.hasAnyFailure()) {
+            if (subSingleBenchmarkResult.hasAnyFailure()) {
                 pointList = Collections.emptyList();
                 return;
             } else {
@@ -163,11 +163,11 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
             Map<String, String> stringDuplicationRemovalMap = new HashMap<String, String>(1024);
             for (line = reader.readLine(); line != null && !line.isEmpty(); line = reader.readLine()) {
                 if (line.equals("Failed")) {
-                    if (benchmarkResult.hasAnyFailure()) {
+                    if (subSingleBenchmarkResult.hasAnyFailure()) {
                         continue;
                     }
                     throw new IllegalStateException("SubSingleStatistic ( " + this + " ) failed even though the "
-                            + "corresponding SingleBenchmarkResult ( " + benchmarkResult + " ) is a success.");
+                            + "corresponding SinglesubSingleBenchmarkResult ( " + subSingleBenchmarkResult + " ) is a success.");
                 }
                 List<String> csvLine = StatisticPoint.parseCsvLine(line);
                 // HACK
@@ -200,10 +200,10 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
     public void unhibernatePointList() {
         if (!getCsvFile().exists()) {
             throw new IllegalStateException("The csvFile ( " + getCsvFile() + " ) of the statistic ( " + getStatisticType()
-                    + " ) of the single benchmark ( " + benchmarkResult + " ) doesn't exist.");
+                    + " ) of the single benchmark ( " + subSingleBenchmarkResult + " ) doesn't exist.");
         } else if (pointList != null) {
             throw new IllegalStateException("The pointList ( " + pointList + " ) of the statistic ( " + getStatisticType()
-                    + " ) of the single benchmark ( " + benchmarkResult + " ) should be null when unhibernating.");
+                    + " ) of the single benchmark ( " + subSingleBenchmarkResult + " ) should be null when unhibernating.");
         }
         initPointList();
         readCsvStatisticFile();
@@ -221,7 +221,7 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
     // ************************************************************************
 
     public String getAnchorId() {
-        return ReportHelper.escapeHtmlId(benchmarkResult.getName() + "_" + getStatisticType().name());
+        return ReportHelper.escapeHtmlId(subSingleBenchmarkResult.getName() + "_" + getStatisticType().name());
     }
 
 }

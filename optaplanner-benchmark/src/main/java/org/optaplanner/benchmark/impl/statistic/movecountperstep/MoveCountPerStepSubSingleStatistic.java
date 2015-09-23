@@ -19,8 +19,8 @@ package org.optaplanner.benchmark.impl.statistic.movecountperstep;
 import java.util.List;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
-import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
@@ -32,8 +32,8 @@ public class MoveCountPerStepSubSingleStatistic extends ProblemBasedSubSingleSta
 
     private MoveCountPerStepSubSingleStatisticListener listener;
 
-    public MoveCountPerStepSubSingleStatistic(BenchmarkResult benchmarkResult) {
-        super(benchmarkResult, ProblemStatisticType.MOVE_COUNT_PER_STEP);
+    public MoveCountPerStepSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        super(subSingleBenchmarkResult, ProblemStatisticType.MOVE_COUNT_PER_STEP);
         listener = new MoveCountPerStepSubSingleStatisticListener();
     }
 

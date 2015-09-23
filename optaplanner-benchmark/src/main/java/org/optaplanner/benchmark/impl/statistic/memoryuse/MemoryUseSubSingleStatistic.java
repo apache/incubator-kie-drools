@@ -19,8 +19,8 @@ package org.optaplanner.benchmark.impl.statistic.memoryuse;
 import java.util.List;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
-import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
@@ -33,12 +33,12 @@ public class MemoryUseSubSingleStatistic extends ProblemBasedSubSingleStatistic<
 
     private MemoryUseSubSingleStatisticListener listener;
 
-    public MemoryUseSubSingleStatistic(BenchmarkResult benchmarkResult) {
-        this(benchmarkResult, 1000L);
+    public MemoryUseSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        this(subSingleBenchmarkResult, 1000L);
     }
 
-    public MemoryUseSubSingleStatistic(BenchmarkResult benchmarkResult, long timeMillisThresholdInterval) {
-        super(benchmarkResult, ProblemStatisticType.MEMORY_USE);
+    public MemoryUseSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult, long timeMillisThresholdInterval) {
+        super(subSingleBenchmarkResult, ProblemStatisticType.MEMORY_USE);
         if (timeMillisThresholdInterval <= 0L) {
             throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
                     + ") must be bigger than 0.");
