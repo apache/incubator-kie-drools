@@ -2801,9 +2801,10 @@ After in *.java:
     singleBenchmarkResult.getAverageScore();
     singleBenchmarkResult.getAverageUninitializedVariableCount();
 
-[MINOR] If you're using SingleStatistic or any of it's subclasses: all of them were renamed to include "Sub" as a part of
+[IMPL_DETAIL] If you're using SingleStatistic or any of it's subclasses: all of them were renamed to include "Sub" as a part of
 Statistical benchmarking. The package org.optaplanner.benchmark.impl.statistic.single was also renamed to
-org.optaplanner.benchmark.impl.statistic.subsingle.
+org.optaplanner.benchmark.impl.statistic.subsingle. SingleStatisticType has not been changed, therefore no changes
+in the configuration are needed.
 Before in *.java:
     import org.optaplanner.benchmark.impl.statistic.single.*;
     *SingleStatistic singleStatistic;
