@@ -556,6 +556,7 @@ public class BenchmarkReport {
         subSingleBenchmarkAggregationChartFileMap = new HashMap<ProblemBenchmarkResult, List<File>>();
         CategoryAxis xAxis = new CategoryAxis("Solver Configurations");
         NumberAxis yAxis = new NumberAxis("Scores distribution of single benchmark runs");
+        yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         yAxis.setAutoRangeIncludesZero(false);
         BoxAndWhiskerRenderer renderer = new BoxAndWhiskerRenderer(){
             @Override
