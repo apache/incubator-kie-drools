@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
@@ -51,7 +52,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
 
     private int subSingleBenchmarkIndex = -1;
 
-    // @XStreamImplicit() // TODO FIXME
+    @XStreamImplicit(itemFieldName = "pureSubSingleStatistic")
     private List<PureSubSingleStatistic> pureSubSingleStatisticList = null;
 
     @XStreamOmitField // Lazily restored when read through ProblemStatistic and CSV files

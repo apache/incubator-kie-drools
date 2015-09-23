@@ -68,10 +68,10 @@ public class ProblemBenchmarkResult {
 
     private File inputSolutionFile = null;
 
-    @XStreamImplicit()
+    @XStreamImplicit(itemFieldName = "problemStatistic")
     private List<ProblemStatistic> problemStatisticList = null;
 
-    @XStreamImplicit()
+    @XStreamImplicit(itemFieldName = "singleBenchmarkResult")
     private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
     private Long entityCount = null;
