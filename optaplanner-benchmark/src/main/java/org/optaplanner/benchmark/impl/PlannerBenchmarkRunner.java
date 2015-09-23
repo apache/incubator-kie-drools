@@ -265,7 +265,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                 // Explicitly returning it in the Callable guarantees memory visibility
                 subSingleBenchmarkRunner = future.get();
                 // TODO WORKAROUND Remove when PLANNER-46 is fixed.
-                if (subSingleBenchmarkRunner.getSubSingleBenchmarkResult().getScore() == null) {
+                if (subSingleBenchmarkRunner.getSubSingleBenchmarkResult().getAverageScore() == null) {
                     throw new IllegalStateException("Score is null. TODO fix PLANNER-46.");
                 }
             } catch (InterruptedException e) {

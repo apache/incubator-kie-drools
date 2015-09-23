@@ -60,7 +60,7 @@ public abstract class PureSubSingleStatistic<P extends StatisticPoint> extends S
     public abstract void writeGraphFiles(BenchmarkReport benchmarkReport);
 
     protected File writeChartToImageFile(JFreeChart chart, String fileNameBase) {
-        File chartFile = new File(benchmarkResult.getReportDirectory(), fileNameBase + ".png");
+        File chartFile = new File(benchmarkResult.getResultDirectory(), fileNameBase + ".png");
         GraphSupport.writeChartToImageFile(chart, chartFile);
         return chartFile;
     }

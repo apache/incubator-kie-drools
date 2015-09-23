@@ -74,7 +74,7 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
 
         // Intentionally create a fresh solver for every SingleBenchmarkResult to reset Random, tabu lists, ...
         // TODO PLANNER-440 Use a classLoader argument buildSolver()
-        Solver solver = subSingleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig().buildSolver();
+        Solver solver = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig().buildSolver();
 
         for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
             subSingleStatistic.open(solver);

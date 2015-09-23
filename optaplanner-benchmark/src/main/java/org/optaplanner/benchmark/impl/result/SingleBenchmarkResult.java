@@ -98,7 +98,6 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         }
     }
 
-    @Override
     public SolverBenchmarkResult getSolverBenchmarkResult() {
         return solverBenchmarkResult;
     }
@@ -107,7 +106,6 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         this.solverBenchmarkResult = solverBenchmarkResult;
     }
 
-    @Override
     public ProblemBenchmarkResult getProblemBenchmarkResult() {
         return problemBenchmarkResult;
     }
@@ -183,6 +181,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         this.ranking = ranking;
     }
 
+    @Override
     public Score getAverageScore() {
         return averageScore;
     }
@@ -207,6 +206,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         return standardDeviationDoubles;
     }
 
+    @Override
     public Integer getAverageUninitializedVariableCount() {
         return averageUninitializedVariableCount;
     }
@@ -247,7 +247,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     }
 
     @Override
-    public boolean isSuccess() {
+    public boolean hasAnySuccess() {
         return failureCount != null && failureCount == 0;
     }
 
@@ -256,7 +256,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
     }
 
     @Override
-    public boolean isFailure() {
+    public boolean hasAnyFailure() {
         return failureCount != null && failureCount != 0;
     }
 
@@ -299,25 +299,20 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         return StatisticUtils.getStandardDeviationString(standardDeviationDoubles);
     }
 
-    @Override
-    public Score getScore() {
-        return getAverageScore();
-    }
-
     // ************************************************************************
     // Accumulate methods
     // ************************************************************************
 
-    public String getReportDirectoryPath() {
+    public String getResultDirectoryPath() {
         return solverBenchmarkResult.getName();
     }
 
-    public File getReportDirectory() {
-        return new File(problemBenchmarkResult.getProblemReportDirectory(), getReportDirectoryPath());
+    public File getResultDirectory() {
+        return new File(problemBenchmarkResult.getProblemReportDirectory(), getResultDirectoryPath());
     }
 
     public void makeDirs() {
-        File singleReportDirectory = getReportDirectory();
+        File singleReportDirectory = getResultDirectory();
         singleReportDirectory.mkdirs();
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : subSingleBenchmarkResultList) {
             subSingleBenchmarkResult.makeDirs();
@@ -343,7 +338,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
             @Override
             public int compare(SubSingleBenchmarkResult o1, SubSingleBenchmarkResult o2) {
                 return new CompareToBuilder()
-                        .append(o1.isFailure(), o2.isFailure())
+                        .append(o1.hasAnyFailure(), o2.hasAnyFailure())
                         .append(o1.getRanking(), o2.getRanking())
                         .toComparison();
             }
@@ -369,7 +364,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         // Do not rank a SubSingleBenchmarkResult that has a failure
         for (Iterator<SubSingleBenchmarkResult> it = successResultList.iterator(); it.hasNext(); ) {
             SubSingleBenchmarkResult subSingleBenchmarkResult = it.next();
-            if (subSingleBenchmarkResult.isFailure()) {
+            if (subSingleBenchmarkResult.hasAnyFailure()) {
                 failureCount++;
                 it.remove();
             } else {
@@ -380,10 +375,10 @@ public class SingleBenchmarkResult implements BenchmarkResult {
                     infeasibleScoreCount++;
                 }
                 if (firstNonFailure) {
-                    totalScore = subSingleBenchmarkResult.getScore();
+                    totalScore = subSingleBenchmarkResult.getAverageScore();
                     firstNonFailure = false;
                 } else {
-                    totalScore = totalScore.add(subSingleBenchmarkResult.getScore());
+                    totalScore = totalScore.add(subSingleBenchmarkResult.getAverageScore());
                 }
             }
         }

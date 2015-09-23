@@ -40,8 +40,8 @@ public class StatisticUtils {
         // averageScore can no longer be null
         double[] differenceSquaredTotalDoubles = null;
         for (BenchmarkResult benchmarkResult : solverProblemBenchmarkResultList) {
-            if (benchmarkResult.isSuccess()) {
-                Score difference = benchmarkResult.getScore().subtract(averageScore);
+            if (benchmarkResult.hasAnySuccess()) {
+                Score difference = benchmarkResult.getAverageScore().subtract(averageScore);
                 // Calculations done on doubles to avoid common overflow when executing with an int score > 500 000
                 double[] differenceDoubles = ScoreUtils.extractLevelDoubles(difference);
                 if (differenceSquaredTotalDoubles == null) {

@@ -23,20 +23,18 @@ import org.optaplanner.core.config.solver.SolverConfig;
 
 public interface BenchmarkResult {
 
-    public SolverBenchmarkResult getSolverBenchmarkResult();
+    public String getResultDirectoryPath();
 
-    public ProblemBenchmarkResult getProblemBenchmarkResult();
+    public File getResultDirectory();
 
-    public String getReportDirectoryPath();
+    public boolean hasAnyFailure();
 
-    public File getReportDirectory();
-
-    public boolean isFailure();
-
-    public boolean isSuccess();
+    public boolean hasAnySuccess();
 
     public String getName();
 
-    public Score getScore();
+    public Integer getAverageUninitializedVariableCount();
+
+    public Score getAverageScore();
 
 }

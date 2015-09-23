@@ -298,7 +298,7 @@ public class SolverBenchmarkResult {
         totalUninitializedVariableCount = 0;
         infeasibleScoreCount = 0;
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            if (singleBenchmarkResult.isFailure()) {
+            if (singleBenchmarkResult.hasAnyFailure()) {
                 failureCount++;
             } else {
                 if (!singleBenchmarkResult.isInitialized()) {

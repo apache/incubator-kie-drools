@@ -85,7 +85,7 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
     public String getRelativeCsvFilePath() {
         return new StringBuilder().append(benchmarkResult.getProblemBenchmarkResult().getProblemReportDirectoryPath())
                 .append(File.separator)
-                .append(benchmarkResult.getReportDirectoryPath())
+                .append(benchmarkResult.getResultDirectoryPath())
                 .append(File.separator)
                 .append(getCsvFilePath())
                 .toString();
@@ -96,7 +96,7 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
     }
 
     public File getCsvFile() {
-        return new File(benchmarkResult.getReportDirectory(), getCsvFilePath());
+        return new File(benchmarkResult.getResultDirectory(), getCsvFilePath());
     }
 
     // ************************************************************************
@@ -126,7 +126,7 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
             for (StatisticPoint point : getPointList()) {
                 writer.append(point.toCsvLine()).append("\n");
             }
-            if (benchmarkResult.isFailure()) {
+            if (benchmarkResult.hasAnyFailure()) {
                 writer.append("Failed\n");
             }
         } catch (IOException e) {
@@ -144,7 +144,7 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
             throw new IllegalStateException("The pointList with size (" + pointList.size() + ") should be empty.");
         }
         if (!csvFile.exists()) {
-            if (benchmarkResult.isFailure()) {
+            if (benchmarkResult.hasAnyFailure()) {
                 pointList = Collections.emptyList();
                 return;
             } else {
@@ -163,7 +163,7 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
             Map<String, String> stringDuplicationRemovalMap = new HashMap<String, String>(1024);
             for (line = reader.readLine(); line != null && !line.isEmpty(); line = reader.readLine()) {
                 if (line.equals("Failed")) {
-                    if (benchmarkResult.isFailure()) {
+                    if (benchmarkResult.hasAnyFailure()) {
                         continue;
                     }
                     throw new IllegalStateException("SubSingleStatistic ( " + this + " ) failed even though the "

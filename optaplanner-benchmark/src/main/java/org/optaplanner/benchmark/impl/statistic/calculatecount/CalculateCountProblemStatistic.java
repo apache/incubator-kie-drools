@@ -81,7 +81,7 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
         for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
             XYSeries series = new XYSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
-            if (singleBenchmarkResult.isSuccess()) {
+            if (singleBenchmarkResult.hasAnySuccess()) {
                 CalculateCountSubSingleStatistic subSingleStatistic = (CalculateCountSubSingleStatistic)
                         singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
                 for (CalculateCountStatisticPoint point : subSingleStatistic.getPointList()) {

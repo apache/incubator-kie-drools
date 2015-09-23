@@ -182,7 +182,7 @@
                                                 <td></td>
                                             <#else>
                                                 <#assign singleBenchmarkResult = solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)>
-                                                <#if !singleBenchmarkResult.success>
+                                                <#if !singleBenchmarkResult.hasAnySuccess>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <#if solverBenchmarkResult.subSingleCount lte 1>
@@ -252,7 +252,7 @@
                                                 <td></td>
                                             <#else>
                                                 <#assign singleBenchmarkResult = solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)>
-                                                <#if !singleBenchmarkResult.success>
+                                                <#if !singleBenchmarkResult.hasAnySuccess>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <td>${singleBenchmarkResult.winningScoreDifference}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/></td>
@@ -291,7 +291,7 @@
                                                 <td></td>
                                             <#else>
                                                 <#assign singleBenchmarkResult = solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)>
-                                                <#if !singleBenchmarkResult.success>
+                                                <#if !singleBenchmarkResult.hasAnySuccess>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <td>${singleBenchmarkResult.worstScoreDifferencePercentage.toString(.locale)}&nbsp;<@addSolverProblemBenchmarkResultBadges solverProblemBenchmarkResult=singleBenchmarkResult/></td>
@@ -376,7 +376,7 @@
                                                 <td></td>
                                             <#else>
                                                 <#assign singleBenchmarkResult = solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)>
-                                                <#if !singleBenchmarkResult.success>
+                                                <#if !singleBenchmarkResult.hasAnySuccess>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <#if solverBenchmarkResult.subSingleCount lte 1>
@@ -437,7 +437,7 @@
                                                 <td></td>
                                             <#else>
                                                 <#assign singleBenchmarkResult = solverBenchmarkResult.findSingleBenchmark(problemBenchmarkResult)>
-                                                <#if !singleBenchmarkResult.success>
+                                                <#if !singleBenchmarkResult.hasAnySuccess>
                                                     <td><span class="label label-important">Failed</span></td>
                                                 <#else>
                                                     <#if solverBenchmarkResult.subSingleCount lte 1>

@@ -30,7 +30,7 @@ public class SingleBenchmarkRankingComparator implements Comparator<SingleBenchm
     @Override
     public int compare(SingleBenchmarkResult a, SingleBenchmarkResult b) {
         return new CompareToBuilder()
-                .append(b.isFailure(), a.isFailure()) // Reverse, less is better (redundant: failed benchmarks don't get ranked at all)
+                .append(b.hasAnyFailure(), a.hasAnyFailure()) // Reverse, less is better (redundant: failed benchmarks don't get ranked at all)
                 .append(b.getAverageUninitializedVariableCount(), a.getAverageUninitializedVariableCount()) // Reverse, less is better
                 .append(a.getAverageScore(), b.getAverageScore(), resilientScoreComparator)
                 .toComparison();

@@ -77,7 +77,7 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
             List<XYSeries> seriesList = new ArrayList<XYSeries>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
-            if (singleBenchmarkResult.isSuccess()) {
+            if (singleBenchmarkResult.hasAnySuccess()) {
                 BestScoreSubSingleStatistic subSingleStatistic = (BestScoreSubSingleStatistic)
                         singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
                 for (BestScoreStatisticPoint point : subSingleStatistic.getPointList()) {

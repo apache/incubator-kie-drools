@@ -282,7 +282,7 @@ public class ProblemBenchmarkResult {
             return;
         }
         String filename = getName() + "." + solutionFileIO.getOutputFileExtension();
-        File outputSolutionFile = new File(subSingleBenchmarkResult.getReportDirectory(), filename);
+        File outputSolutionFile = new File(subSingleBenchmarkResult.getResultDirectory(), filename);
         solutionFileIO.write(outputSolution, outputSolutionFile);
     }
 
@@ -310,7 +310,7 @@ public class ProblemBenchmarkResult {
         // Do not rank a SingleBenchmarkResult that has a failure
         for (Iterator<SingleBenchmarkResult> it = successResultList.iterator(); it.hasNext(); ) {
             SingleBenchmarkResult singleBenchmarkResult = it.next();
-            if (singleBenchmarkResult.isFailure()) {
+            if (singleBenchmarkResult.hasAnyFailure()) {
                 failureCount++;
                 it.remove();
             } else {
@@ -354,7 +354,7 @@ public class ProblemBenchmarkResult {
 
     private void determineWinningScoreDifference() {
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            if (singleBenchmarkResult.isFailure()) {
+            if (singleBenchmarkResult.hasAnyFailure()) {
                 continue;
             }
             singleBenchmarkResult.setWinningScoreDifference(

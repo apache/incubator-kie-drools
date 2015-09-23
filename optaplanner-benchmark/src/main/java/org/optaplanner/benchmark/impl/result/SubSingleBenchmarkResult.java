@@ -148,8 +148,6 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     public void setUninitializedVariableCount(Integer uninitializedVariableCount) {
         this.uninitializedVariableCount = uninitializedVariableCount;
     }
-
-    @Override
     public Score getScore() {
         return score;
     }
@@ -210,7 +208,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     }
 
     @Override
-    public boolean isSuccess() {
+    public boolean hasAnySuccess() {
         return succeeded != null && succeeded.booleanValue();
     }
 
@@ -219,7 +217,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     }
 
     @Override
-    public boolean isFailure() {
+    public boolean hasAnyFailure() {
         return succeeded != null && !succeeded.booleanValue();
     }
 
@@ -253,29 +251,29 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
     }
 
     @Override
-    public SolverBenchmarkResult getSolverBenchmarkResult() {
-        return singleBenchmarkResult.getSolverBenchmarkResult();
+    public Integer getAverageUninitializedVariableCount() {
+        return getUninitializedVariableCount();
     }
 
     @Override
-    public ProblemBenchmarkResult getProblemBenchmarkResult() {
-        return singleBenchmarkResult.getProblemBenchmarkResult();
+    public Score getAverageScore() {
+        return getScore();
     }
 
     // ************************************************************************
     // Accumulate methods
     // ************************************************************************
 
-    public String getReportDirectoryPath() {
+    public String getResultDirectoryPath() {
         return "sub" + subSingleBenchmarkIndex;
     }
 
-    public File getReportDirectory() {
-        return new File(singleBenchmarkResult.getReportDirectory(), getReportDirectoryPath());
+    public File getResultDirectory() {
+        return new File(singleBenchmarkResult.getResultDirectory(), getResultDirectoryPath());
     }
 
     public void makeDirs() {
-        File subSingleReportDirectory = getReportDirectory();
+        File subSingleReportDirectory = getResultDirectory();
         subSingleReportDirectory.mkdirs();
     }
 
@@ -299,7 +297,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
         for (SubSingleStatistic subSingleStatistic : newResult.effectiveSubSingleStatisticMap.values()) {
             SubSingleStatistic oldSubSingleStatistic = oldResult.getSubSingleStatistic(subSingleStatistic.getStatisticType());
             if (!oldSubSingleStatistic.getCsvFile().exists()) {
-                if (oldResult.isFailure()) {
+                if (oldResult.hasAnyFailure()) {
                     subSingleStatistic.initPointList();
                     logger.debug("Old result ({}) is a failure, skipping merge of it's sub single statistic ({}).",
                             oldResult, oldSubSingleStatistic);
