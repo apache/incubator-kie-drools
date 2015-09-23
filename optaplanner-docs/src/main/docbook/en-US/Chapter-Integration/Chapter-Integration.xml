@@ -83,7 +83,7 @@ public class Talk {...}</programlisting>
         </itemizedlist>
 
         <para>To avoid these issues, configure it to use 2 <literal>INTEGER</literal> columns instead by using the
-        appropriate <literal>*ScoreHibernateType</literal> for your <literal>Score</literal> type, for example if for a
+        appropriate <literal>*ScoreHibernateType</literal> for your <literal>Score</literal> type, for example for a
         <literal>HardSoftScore</literal>:</para>
 
         <programlisting language="java">@PlanningSolution
