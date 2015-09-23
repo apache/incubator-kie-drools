@@ -104,7 +104,7 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
     }
 
     public Number[] toLevelNumbers() {
-        return new Number[]{score.doubleValue()};
+        return new Number[]{score};
     }
 
     public boolean equals(Object o) {

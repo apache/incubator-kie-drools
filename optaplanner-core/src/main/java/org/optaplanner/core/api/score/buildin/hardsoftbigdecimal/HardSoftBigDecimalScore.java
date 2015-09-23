@@ -136,7 +136,7 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     }
 
     public Number[] toLevelNumbers() {
-        return new Number[]{hardScore.doubleValue(), softScore.doubleValue()};
+        return new Number[]{hardScore, softScore};
     }
 
     public boolean equals(Object o) {
