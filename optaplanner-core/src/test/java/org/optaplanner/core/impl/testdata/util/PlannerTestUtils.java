@@ -16,6 +16,10 @@
 
 package org.optaplanner.core.impl.testdata.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 
 import com.thoughtworks.xstream.XStream;
@@ -83,6 +87,21 @@ public class PlannerTestUtils {
 
         void assertOutput(T output);
 
+    }
+
+    public static String readResourceToString(Class clazz, String resource) throws IOException {
+        InputStream resourceInputStream = clazz.getResourceAsStream(resource);
+        String resourceContent = "";
+        String buffer;
+        BufferedReader br = new BufferedReader(new InputStreamReader(resourceInputStream));
+        while((buffer = br.readLine()) != null) {
+            if (!resourceContent.equals("")) {
+                resourceContent += "\n";
+            }
+            resourceContent += buffer;
+        }
+        resourceInputStream.close();
+        return resourceContent;
     }
 
     // ************************************************************************

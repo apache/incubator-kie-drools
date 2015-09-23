@@ -16,11 +16,15 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
 import static org.junit.Assert.*;
 
@@ -28,12 +32,14 @@ public class XStreamXmlSolverFactoryTest {
 
     @Test
     public void configFileRemainsSameAfterReadWrite() throws Exception {
-        File originalConfigFile = new File("src/test/resources/org/optaplanner/core/impl/solver/testdataSolverConfigXStream.xml");
-        XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory().configure(originalConfigFile);
+        String solverConfigResource = "testdataSolverConfigXStream.xml";
+        String originalXml = PlannerTestUtils.readResourceToString(getClass(), solverConfigResource);
+        InputStream originalConfigInputStream = getClass().getResourceAsStream(solverConfigResource);
+        XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory().configure(originalConfigInputStream);
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.buildSolver(getClass().getClassLoader());
         String savedXml = solverFactory.getXStream().toXML(solverConfig);
-        String originalXml = FileUtils.readFileToString(originalConfigFile);
         assertEquals(originalXml, savedXml);
+        originalConfigInputStream.close();
     }
 }
