@@ -14,28 +14,20 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jpa.impl.score.buildin.hardsoft;
+package org.optaplanner.persistence.jpa.impl.score.buildin.hardmediumsoft;
 
-import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.type.IntegerType;
 import org.hibernate.type.StandardBasicTypes;
-import org.hibernate.type.Type;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 
 /**
  * {@inheritDoc}
  */
-public class HardSoftScoreHibernateType extends AbstractScoreHibernateType {
+public class HardMediumSoftScoreHibernateType extends AbstractScoreHibernateType {
 
-    public HardSoftScoreHibernateType() {
-        scoreDefinition = new HardSoftScoreDefinition();
+    public HardMediumSoftScoreHibernateType() {
+        scoreDefinition = new HardMediumSoftScoreDefinition();
         type = StandardBasicTypes.INTEGER;
     }
 

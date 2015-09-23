@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jpa.impl.score.buildin.hardsoft;
+package org.optaplanner.persistence.jpa.impl.score.buildin.simpledouble;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,37 +22,39 @@ import javax.persistence.Entity;
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest;
 
-public class HardSoftScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
+import static org.junit.Assert.*;
+
+public class SimpleDoubleScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
 
     @Test
     public void persistAndMerge() {
         Long id = persistAndAssert(new TestJpaEntity(null));
-        findAssertAndChangeScore(TestJpaEntity.class, id, null, HardSoftScore.valueOf(-10, -2));
-        findAndAssert(TestJpaEntity.class, id, HardSoftScore.valueOf(-10, -2));
+        findAssertAndChangeScore(TestJpaEntity.class, id, null, SimpleDoubleScore.valueOf(-10.01));
+        findAndAssert(TestJpaEntity.class, id, SimpleDoubleScore.valueOf(-10.01));
     }
 
     @Entity
-    @TypeDef(defaultForType = HardSoftScore.class, typeClass = HardSoftScoreHibernateType.class)
-    public static class TestJpaEntity extends AbstractTestJpaEntity<HardSoftScore> {
+    @TypeDef(defaultForType = SimpleDoubleScore.class, typeClass = SimpleDoubleScoreHibernateType.class)
+    public static class TestJpaEntity extends AbstractTestJpaEntity<SimpleDoubleScore> {
 
-        protected HardSoftScore score;
+        protected SimpleDoubleScore score;
 
         private TestJpaEntity() {
         }
 
-        public TestJpaEntity(HardSoftScore score) {
+        public TestJpaEntity(SimpleDoubleScore score) {
             this.score = score;
         }
 
-        @Columns(columns = {@Column(name = "hardScore"), @Column(name = "softScore")})
-        public HardSoftScore getScore() {
+        @Columns(columns = {@Column(name = "score")})
+        public SimpleDoubleScore getScore() {
             return score;
         }
 
-        public void setScore(HardSoftScore score) {
+        public void setScore(SimpleDoubleScore score) {
             this.score = score;
         }
 

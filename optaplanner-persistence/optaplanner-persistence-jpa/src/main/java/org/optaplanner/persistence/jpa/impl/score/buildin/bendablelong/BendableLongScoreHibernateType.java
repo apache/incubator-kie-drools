@@ -14,35 +14,27 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jpa.impl.score.buildin.bendable;
+package org.optaplanner.persistence.jpa.impl.score.buildin.bendablelong;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.Properties;
 
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.type.IntegerType;
 import org.hibernate.type.StandardBasicTypes;
-import org.hibernate.type.Type;
 import org.hibernate.usertype.ParameterizedType;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
-import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
+import org.optaplanner.core.impl.score.buildin.bendablelong.BendableLongScoreDefinition;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateType;
 
 /**
  * {@inheritDoc}
  */
-public class BendableScoreHibernateType extends AbstractScoreHibernateType implements ParameterizedType {
+public class BendableLongScoreHibernateType extends AbstractScoreHibernateType implements ParameterizedType {
 
     @Override
     public void setParameterValues(Properties parameterMap) {
         int hardLevelsSize = extractIntParameter(parameterMap, "hardLevelsSize");
         int softLevelsSize = extractIntParameter(parameterMap, "softLevelsSize");
-        scoreDefinition = new BendableScoreDefinition(hardLevelsSize, softLevelsSize);
-        type = StandardBasicTypes.INTEGER;
+        scoreDefinition = new BendableLongScoreDefinition(hardLevelsSize, softLevelsSize);
+        type = StandardBasicTypes.LONG;
     }
 
 }

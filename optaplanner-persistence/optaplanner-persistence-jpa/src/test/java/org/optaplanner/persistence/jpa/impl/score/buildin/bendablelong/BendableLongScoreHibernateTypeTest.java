@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jpa.impl.score.buildin.bendable;
+package org.optaplanner.persistence.jpa.impl.score.buildin.bendablelong;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,41 +23,43 @@ import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.buildin.bendablelong.BendableLongScore;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest;
 
-public class BendableScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
+import static org.junit.Assert.*;
+
+public class BendableLongScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
 
     @Test
     public void persistAndMerge() {
         Long id = persistAndAssert(new TestJpaEntity(null));
         findAssertAndChangeScore(TestJpaEntity.class, id, null,
-                BendableScore.valueOf(new int[]{10000, 2000, 300}, new int[]{40, 5}));
+                BendableLongScore.valueOf(new long[]{10000L, 2000L, 300L}, new long[]{40L, 5L}));
         findAndAssert(TestJpaEntity.class, id,
-                BendableScore.valueOf(new int[]{10000, 2000, 300}, new int[]{40, 5}));
+                BendableLongScore.valueOf(new long[]{10000L, 2000L, 300L}, new long[]{40L, 5L}));
     }
 
     @Entity
-    @TypeDef(defaultForType = BendableScore.class, typeClass = BendableScoreHibernateType.class,
+    @TypeDef(defaultForType = BendableLongScore.class, typeClass = BendableLongScoreHibernateType.class,
             parameters = {@Parameter(name = "hardLevelsSize", value = "3"), @Parameter(name = "softLevelsSize", value = "2")})
-    public static class TestJpaEntity extends AbstractTestJpaEntity<BendableScore> {
+    public static class TestJpaEntity extends AbstractTestJpaEntity<BendableLongScore> {
 
-        protected BendableScore score;
+        protected BendableLongScore score;
 
         private TestJpaEntity() {
         }
 
-        public TestJpaEntity(BendableScore score) {
+        public TestJpaEntity(BendableLongScore score) {
             this.score = score;
         }
 
         @Columns(columns = {@Column(name = "hard0Score"), @Column(name = "hard1Score"), @Column(name = "hard2Score"),
                 @Column(name = "soft0Score"), @Column(name = "soft1Score")})
-        public BendableScore getScore() {
+        public BendableLongScore getScore() {
             return score;
         }
 
-        public void setScore(BendableScore score) {
+        public void setScore(BendableLongScore score) {
             this.score = score;
         }
 

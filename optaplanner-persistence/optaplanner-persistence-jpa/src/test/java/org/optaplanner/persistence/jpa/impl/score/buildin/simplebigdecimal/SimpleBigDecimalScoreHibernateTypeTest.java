@@ -14,45 +14,50 @@
  * limitations under the License.
  */
 
-package org.optaplanner.persistence.jpa.impl.score.buildin.hardsoft;
+package org.optaplanner.persistence.jpa.impl.score.buildin.simplebigdecimal;
 
+import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
-import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest;
 
-public class HardSoftScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
+import static org.junit.Assert.*;
+
+public class SimpleBigDecimalScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
 
     @Test
     public void persistAndMerge() {
         Long id = persistAndAssert(new TestJpaEntity(null));
-        findAssertAndChangeScore(TestJpaEntity.class, id, null, HardSoftScore.valueOf(-10, -2));
-        findAndAssert(TestJpaEntity.class, id, HardSoftScore.valueOf(-10, -2));
+        findAssertAndChangeScore(TestJpaEntity.class, id, null,
+                SimpleBigDecimalScore.valueOf(new BigDecimal("-10.01000")));
+        findAndAssert(TestJpaEntity.class, id,
+                SimpleBigDecimalScore.valueOf(new BigDecimal("-10.01000")));
     }
 
     @Entity
-    @TypeDef(defaultForType = HardSoftScore.class, typeClass = HardSoftScoreHibernateType.class)
-    public static class TestJpaEntity extends AbstractTestJpaEntity<HardSoftScore> {
+    @TypeDef(defaultForType = SimpleBigDecimalScore.class, typeClass = SimpleBigDecimalScoreHibernateType.class)
+    public static class TestJpaEntity extends AbstractTestJpaEntity<SimpleBigDecimalScore> {
 
-        protected HardSoftScore score;
+        protected SimpleBigDecimalScore score;
 
         private TestJpaEntity() {
         }
 
-        public TestJpaEntity(HardSoftScore score) {
+        public TestJpaEntity(SimpleBigDecimalScore score) {
             this.score = score;
         }
 
-        @Columns(columns = {@Column(name = "hardScore"), @Column(name = "softScore")})
-        public HardSoftScore getScore() {
+        @Columns(columns = {@Column(name = "score", precision = 10, scale = 5)})
+        public SimpleBigDecimalScore getScore() {
             return score;
         }
 
-        public void setScore(HardSoftScore score) {
+        public void setScore(SimpleBigDecimalScore score) {
             this.score = score;
         }
 
