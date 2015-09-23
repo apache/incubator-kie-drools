@@ -114,12 +114,6 @@
         not work on Linux and Mac.</para>
       </note>
 
-      <para xml:id="inheritedSolverBenchmark">To lower verbosity, the common parts of multiple <literal>&lt;solverBenchmark&gt;</literal> elements are
-      extracted to the <literal>&lt;inheritedSolverBenchmark&gt;</literal> element. Every property can still be
-      overwritten per <literal>&lt;solverBenchmark&gt;</literal> element. Note that inherited solver phases such as
-      <literal>&lt;constructionHeuristic&gt;</literal> or <literal>&lt;localSearch&gt;</literal> are not overwritten but
-      instead are added to the tail of the solver phases list.</para>
-
       <para>The benchmark report will be written in the directory specified the
       <literal>&lt;benchmarkDirectory&gt;</literal> element (relative to the working directory).</para>
 
@@ -133,6 +127,17 @@
       Benchmarker will not fail-fast (unlike everything else in Planner). Instead, the Benchmarker will continue to run
       all other benchmarks, write the benchmark report and then fail (if there is at least 1 failing single benchmark).
       The failing benchmarks will be clearly marked as such in the benchmark report.</para>
+
+      <section xml:id="inheritedSolverBenchmark">
+        <title>Inherited solver benchmark</title>
+
+        <para>To lower verbosity, the common parts of multiple <literal>&lt;solverBenchmark&gt;</literal> elements are
+          extracted to the <literal>&lt;inheritedSolverBenchmark&gt;</literal> element. Every property can still be
+          overwritten per <literal>&lt;solverBenchmark&gt;</literal> element. Note that inherited solver phases such as
+          <literal>&lt;constructionHeuristic&gt;</literal> or <literal>&lt;localSearch&gt;</literal> are not overwritten but
+          instead are added to the tail of the solver phases list.</para>
+      </section>
+
     </section>
 
     <section xml:id="solutionFileIO">
