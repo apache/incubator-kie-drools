@@ -2800,3 +2800,13 @@ Before in *.java:
 After in *.java:
     singleBenchmarkResult.getAverageScore();
     singleBenchmarkResult.getAverageUninitializedVariableCount();
+
+[MINOR] If you're using SingleStatistic or any of it's subclasses: all of them were renamed to include "Sub" as a part of
+Statistical benchmarking. The package org.optaplanner.benchmark.impl.statistic.single was also renamed to
+org.optaplanner.benchmark.impl.statistic.subsingle.
+Before in *.java:
+    import org.optaplanner.benchmark.impl.statistic.single.*;
+    *SingleStatistic singleStatistic;
+After in *.java:
+    import org.optaplanner.benchmark.impl.statistic.subsingle.*;
+    *SubSingleStatistic subSingleStatistic;
