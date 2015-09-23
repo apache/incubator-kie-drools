@@ -199,9 +199,9 @@ public class ProblemBenchmarksConfig {
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
     }
 
-    private void buildSubSingleBenchmarks(SingleBenchmarkResult parent, int count) {
-        List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<SubSingleBenchmarkResult>(count);
-        for (int i = 0; i < count; i++) {
+    private void buildSubSingleBenchmarks(SingleBenchmarkResult parent, int subSingleCount) {
+        List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<SubSingleBenchmarkResult>(subSingleCount);
+        for (int i = 0; i < subSingleCount; i++) {
             SubSingleBenchmarkResult subSingleBenchmarkResult = new SubSingleBenchmarkResult(parent, i);
             subSingleBenchmarkResultList.add(subSingleBenchmarkResult);
         }
