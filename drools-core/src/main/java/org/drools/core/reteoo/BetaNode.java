@@ -56,7 +56,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
+import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
 import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 
@@ -291,7 +291,9 @@ public abstract class BetaNode extends LeftTupleSource
             memory.setNodeDirty( wm, !rightInputIsPassive );
         }
 
-        if (flushLeftTupleIfNecessary(wm, memory.getSegmentMemory())) return;
+        if (flushLeftTupleIfNecessary(wm, memory.getSegmentMemory(), null, isStreamMode())) {
+            return;
+        }
 
         if( pctx.getReaderContext() != null ) {
             // we are deserializing a session, so we might need to evaluate
@@ -299,17 +301,6 @@ public abstract class BetaNode extends LeftTupleSource
             MarshallerReaderContext mrc = pctx.getReaderContext();
             mrc.filter.fireRNEAs( wm );
         }
-    }
-
-    protected boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory smem) {
-        PathMemory pmem = isStreamMode() ?
-                          smem.getPathMemories().get(0) :
-                          smem.getFirstDataDrivenPathMemory();
-        if (pmem != null) {
-            forceFlushLeftTuple(pmem, smem, wm, null);
-            return true;
-        }
-        return false;
     }
 
     public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory wm) {
