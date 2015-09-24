@@ -291,16 +291,15 @@ public class AddRemoveRule {
                           sm.getPathMemories().get(0) :
                           sm.getFirstDataDrivenPathMemory();
         if (pmem != null) {
-            forceFlushLeftTuple(pmem, sm, wm, leftTuple);
-            return true;
+            return forceFlushLeftTuple(pmem, sm, wm, leftTuple);
         }
         return false;
     }
 
-    private static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, LeftTuple leftTuple) {
+    private static boolean forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, LeftTuple leftTuple) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
         if (smems[0] == null) {
-            return; // segment has not yet been initialized
+            return false; // segment has not yet been initialized
         }
         int smemIndex = sm.getPos();
 
@@ -325,6 +324,7 @@ public class AddRemoveRule {
                                               pmem, sink, bit, mem, smems, smemIndex, leftTupleSets, wm,
                                               new LinkedList<StackEntry>(),
                                               true, pmem.getOrCreateRuleAgendaItem(wm).getRuleExecutor() );
+        return true;
      }
 
 

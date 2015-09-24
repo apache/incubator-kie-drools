@@ -231,6 +231,9 @@ public class LeftInputAdapterNode extends LeftTupleSource
     private static void doInsertSegmentMemory( InternalWorkingMemory wm, boolean linkOrNotify, final LiaNodeMemory lm,
                                                SegmentMemory sm, LeftTuple leftTuple, boolean streamMode ) {
         if ( flushLeftTupleIfNecessary( wm, sm, leftTuple, streamMode ) ) {
+            if ( linkOrNotify ) {
+                lm.setNodeDirty( wm );
+            }
             return;
         }
 
