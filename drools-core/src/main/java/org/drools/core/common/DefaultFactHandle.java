@@ -226,6 +226,10 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return toExternalForm();
     }
 
+    public void setExternalForm(String externalForm) {
+        populateFactHandleFromExternalForm( externalForm, this );
+    }
+
     /**
      * @see Object
      */
@@ -603,11 +607,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     public static DefaultFactHandle createFromExternalFormat( String externalFormat ) {
-        String[] elements = externalFormat.split( ":" );
-        if (elements.length < 6) {
-            throw new IllegalArgumentException( "externalFormat did not have enough elements ["+externalFormat+"]" );
-        }
-
+        String[] elements = splitExternalForm( externalFormat );
         DefaultFactHandle handle;
         if (FACT_FORMAT_VERSION.equals( elements[0]) ) {
             handle = new DefaultFactHandle();
@@ -616,17 +616,32 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         } else {
             throw new RuntimeException( "Unknown fact handle version format: " + elements[0]);
         }
+        populateFactHandleFromExternalForm( elements, handle );
+        return handle;
+    }
 
+    private static String[] splitExternalForm( String externalFormat ) {
+        String[] elements = externalFormat.split( ":" );
+        if (elements.length < 6) {
+            throw new IllegalArgumentException( "externalFormat did not have enough elements ["+externalFormat+"]" );
+        }
+        return elements;
+    }
+
+    private static void populateFactHandleFromExternalForm( String externalFormat, DefaultFactHandle handle ) {
+        populateFactHandleFromExternalForm( splitExternalForm( externalFormat ), handle );
+    }
+
+    private static void populateFactHandleFromExternalForm( String[] elements, DefaultFactHandle handle ) {
         handle.id = Integer.parseInt( elements[1] );
         handle.identityHashCode = Integer.parseInt( elements[2] );
         handle.objectHashCode = Integer.parseInt( elements[3] );
-        handle.recency = Long.parseLong(elements[4] );
+        handle.recency = Long.parseLong( elements[4] );
         handle.entryPoint = ( StringUtils.isEmpty( elements[5] ) || "null".equals( elements[5].trim() ) ) ? null
                                                                                                        : new DisconnectedWorkingMemoryEntryPoint(
                 elements[5].trim() );
         handle.disconnected = true;
         handle.traitType = elements.length > 6 ? TraitTypeEnum.valueOf( elements[6] ) : TraitTypeEnum.NON_TRAIT;
-        return handle;
     }
 
     private TraitTypeEnum determineTraitType() {
