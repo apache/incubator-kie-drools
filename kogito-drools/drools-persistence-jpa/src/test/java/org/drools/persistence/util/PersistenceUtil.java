@@ -223,7 +223,7 @@ public class PersistenceUtil {
                 }
                 pds.getDriverProperties().put("REQUEST_HA_SESSION", "false");
                 pds.getDriverProperties().put("networkProtocol", "Tds");
-            } else if (driverClass.startsWith("org.postgresql")) {
+            } else if (driverClass.startsWith("org.postgresql") || driverClass.startsWith("com.edb")) {
                 for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
                 }
