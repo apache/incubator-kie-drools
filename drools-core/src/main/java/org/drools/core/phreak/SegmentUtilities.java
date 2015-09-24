@@ -333,10 +333,9 @@ public class SegmentUtilities {
                 }
                 pmem.getSegmentMemories()[pmem.getSegmentMemories().length - 1] = childSmem;
                 pmem.setSegmentMemory(childSmem);
-                childSmem.getPathMemories().add(pmem);
+                childSmem.addPathMemory( pmem );
 
                 childSmem.setTipNode(sink);
-                childSmem.setSinkFactory(sink);
             }
         }
         return memory.getSegmentMemory();
@@ -386,7 +385,7 @@ public class SegmentUtilities {
                 if (inSubNetwork((RightInputAdapterNode) sink, originalLt)) {
                     RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) sink);
                     PathMemory pmem = riaMem.getRiaPathMemory();
-                    smem.getPathMemories().add(pmem);
+                    smem.addPathMemory( pmem );
                     pmem.getSegmentMemories()[smem.getPos()] = smem;
 
                     if (fromPrototype) {
@@ -409,7 +408,7 @@ public class SegmentUtilities {
                 }
             } else if (NodeTypeEnums.isTerminalNode(sink)) {
                 PathMemory pmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
-                smem.getPathMemories().add(pmem);
+                smem.addPathMemory(pmem);
                 pmem.getSegmentMemories()[smem.getPos()] = smem;
                 if (smem.isSegmentLinked()) {
                     // not's can cause segments to be linked, and the rules need to be notified for evaluation
