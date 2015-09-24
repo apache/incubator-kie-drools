@@ -47,7 +47,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Map;
 
-import static org.drools.core.phreak.AddRemoveRule.forceFlushLeftTuple;
+import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
 /**
@@ -199,7 +199,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink();
         LeftTuple leftTuple = sink.createLeftTuple( factHandle, sink, useLeftMemory );
         leftTuple.setPropagationContext( context );
-        doInsertSegmentMemory(context, wm, notifySegment, lm, sm, leftTuple);
+        doInsertSegmentMemory( wm, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
 
         if ( sm.getRootNode() != liaNode ) {
             // sm points to lia child sm, so iterate for all remaining children
@@ -207,7 +207,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             for ( sm = sm.getNext(); sm != null; sm = sm.getNext() ) {
                 sink =  sm.getSinkFactory();
                 leftTuple = sink.createPeer( leftTuple ); // pctx is set during peer cloning
-                doInsertSegmentMemory(context, wm, notifySegment, lm, sm, leftTuple);
+                doInsertSegmentMemory( wm, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
             }
         }
 
@@ -230,11 +230,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
     }
 
-    private static void doInsertSegmentMemory(PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify, final LiaNodeMemory lm,
-                                              SegmentMemory sm, LeftTuple leftTuple) {
-        PathMemory pmem = sm.getFirstDataDrivenPathMemory();
-        if (pmem != null) {
-            forceFlushLeftTuple(pmem, sm, wm, leftTuple);
+    private static void doInsertSegmentMemory( InternalWorkingMemory wm, boolean linkOrNotify, final LiaNodeMemory lm,
+                                               SegmentMemory sm, LeftTuple leftTuple, boolean streamMode ) {
+        if ( flushLeftTupleIfNecessary( wm, sm, leftTuple, streamMode ) ) {
+            if ( linkOrNotify ) {
+                lm.setNodeDirty( wm );
+            }
             return;
         }
 

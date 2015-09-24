@@ -200,7 +200,7 @@ public class AddRemoveRule {
                              if ( smems[i] == null) {
                                  continue;
                              }
-                             smems[i].getPathMemories().remove(removedPmem);
+                             smems[i].removePathMemory( removedPmem );
                              pmem.getSegmentMemories()[i] = smems[i];
                          }
                      }
@@ -257,7 +257,7 @@ public class AddRemoveRule {
 
          // stages the LeftTuples for deletion in the target SegmentMemory, if necessary it looks up the nodes to find.
          if (removeTuples) {
-            processLeftTuples(splitStartNode, sink, sm, wm, false);
+            processLeftTuples( splitStartNode, sink, sm, wm, false );
          }
 
          // The graph must be fully updated before SegmentMemory and PathMemories are mutated
@@ -270,10 +270,17 @@ public class AddRemoveRule {
          }
      }
 
-    public static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, LeftTuple leftTuple) {
+    public static boolean flushLeftTupleIfNecessary( InternalWorkingMemory wm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode ) {
+        PathMemory pmem = streamMode ?
+                          sm.getPathMemories().get(0) :
+                          sm.getFirstDataDrivenPathMemory();
+        return pmem != null && forceFlushLeftTuple(pmem, sm, wm, leftTuple);
+    }
+
+    private static boolean forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, LeftTuple leftTuple) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
         if (smems[0] == null) {
-            return; // segment has not yet been initialized
+            return false; // segment has not yet been initialized
         }
         int smemIndex = sm.getPos();
 
@@ -291,13 +298,14 @@ public class AddRemoveRule {
 
         LeftTupleSets leftTupleSets = new LeftTupleSetsImpl();
         if (leftTuple != null) {
-            leftTupleSets.addInsert(leftTuple);
+            leftTupleSets.addInsert( leftTuple);
         }
 
         new RuleNetworkEvaluator().outerEval( ( LeftInputAdapterNode ) smems[0].getRootNode(),
                                               pmem, sink, bit, mem, smems, smemIndex, leftTupleSets, wm,
                                               new LinkedList<StackEntry>(),
                                               true, pmem.getOrCreateRuleAgendaItem(wm).getRuleExecutor() );
+        return true;
      }
 
 
@@ -326,7 +334,7 @@ public class AddRemoveRule {
          if ( p == 0 ) {
              // only handle for the first PathMemory, all others are shared and duplicate until this point
              newPmem.getSegmentMemories()[sm.getPos()] = sm;
-             sm.getPathMemories().add( newPmem );
+             sm.addPathMemory( newPmem );
 
              sm.notifyRuleLinkSegment(wm);
          }
@@ -336,7 +344,7 @@ public class AddRemoveRule {
          pmem.getSegmentMemories()[sm.getPos()] = sm;
          if ( p == 0 ) {
              // only handle for the first PathMemory, all others are shared and duplicate until this point
-             sm.getPathMemories().remove(removedPmem);
+             sm.removePathMemory( removedPmem );
              sm.notifyRuleLinkSegment(wm);
          }
      }
@@ -354,8 +362,8 @@ public class AddRemoveRule {
              newPmem.getSegmentMemories()[sm.getPos()] = sm;
              newPmem.getSegmentMemories()[splitSmem.getPos()] = splitSmem;
 
-             sm.getPathMemories().add( newPmem );
-             splitSmem.getPathMemories().add( newPmem );
+             sm.addPathMemory( newPmem );
+             splitSmem.addPathMemory( newPmem );
 
              sm.notifyRuleLinkSegment(wm);
              splitSmem.notifyRuleLinkSegment(wm);
@@ -400,7 +408,7 @@ public class AddRemoveRule {
 
              pmem.getSegmentMemories()[sm1.getPos()] = sm1;
 
-             sm1.getPathMemories().remove(removedPmem);
+             sm1.removePathMemory( removedPmem);
              sm1.remove( removedPmem.getSegmentMemories()[sm1.getPos()+1]);
 
              sm1.notifyRuleLinkSegment(wm);
@@ -919,7 +927,7 @@ public class AddRemoveRule {
          sm2.setSegmentPosMaskBit(sm1.getSegmentPosMaskBit()); // clone for now, it's corrected later
          sm2.setLinkedNodeMask(sm1.getLinkedNodeMask());  // clone for now, it's corrected later
 
-         sm2.getPathMemories().addAll( sm1.getPathMemories() );
+         sm2.mergePathMemories( sm1 );
 
          // re-assigned tip nodes
          sm2.setTipNode(sm1.getTipNode());
