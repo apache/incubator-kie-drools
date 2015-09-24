@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.random.RandomType;
@@ -76,6 +76,7 @@ public class PlannerBenchmarkResultTest {
         p2ProblemA.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
 
         SingleBenchmarkResult p1SolverXProblemA = createSingleBenchmarkResult(p1SolverX, p1ProblemA, -1);
+        createSubSingleBenchmarkResult(p1SolverXProblemA, 1);
         SingleBenchmarkResult p1SolverXProblemB = createSingleBenchmarkResult(p1SolverX, p1ProblemB, -20);
         SingleBenchmarkResult p1SolverYProblemA = createSingleBenchmarkResult(p1SolverY, p1ProblemA, -300);
         SingleBenchmarkResult p1SolverYProblemB = createSingleBenchmarkResult(p1SolverY, p1ProblemB, -4000);
@@ -101,9 +102,17 @@ public class PlannerBenchmarkResultTest {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
         solverBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
-        singleBenchmarkResult.setScore(SimpleScore.valueOf(score));
-        singleBenchmarkResult.setPureSingleStatisticList(Collections.<PureSingleStatistic>emptyList());
+        singleBenchmarkResult.setAverageScore(SimpleScore.valueOf(score));
+        singleBenchmarkResult.setSubSingleBenchmarkResultList(new ArrayList<SubSingleBenchmarkResult>(1));
+        createSubSingleBenchmarkResult(singleBenchmarkResult, 0);
         return singleBenchmarkResult;
+    }
+
+    protected SubSingleBenchmarkResult createSubSingleBenchmarkResult(SingleBenchmarkResult parent, int subSingleIndex) {
+        SubSingleBenchmarkResult subSingleBenchmarkResult = new SubSingleBenchmarkResult(parent, subSingleIndex);
+        subSingleBenchmarkResult.setPureSubSingleStatisticList(Collections.<PureSubSingleStatistic>emptyList());
+        parent.getSubSingleBenchmarkResultList().add(subSingleBenchmarkResult);
+        return subSingleBenchmarkResult;
     }
 
 }

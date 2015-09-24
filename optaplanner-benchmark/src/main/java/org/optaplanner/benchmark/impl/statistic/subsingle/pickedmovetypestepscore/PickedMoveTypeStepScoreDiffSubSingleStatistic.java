@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore;
+package org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypestepscore;
 
 import java.io.File;
 import java.text.NumberFormat;
@@ -36,8 +36,8 @@ import org.jfree.data.xy.XYIntervalSeries;
 import org.jfree.data.xy.XYIntervalSeriesCollection;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
@@ -50,18 +50,18 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-@XStreamAlias("pickedMoveTypeStepScoreDiffSingleStatistic")
-public class PickedMoveTypeStepScoreDiffSingleStatistic extends PureSingleStatistic<PickedMoveTypeStepScoreDiffStatisticPoint> {
+@XStreamAlias("pickedMoveTypeStepScoreDiffSubSingleStatistic")
+public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingleStatistic<PickedMoveTypeStepScoreDiffStatisticPoint> {
 
     @XStreamOmitField
-    private PickedMoveTypeStepScoreDiffSingleStatisticListener listener;
+    private PickedMoveTypeStepScoreDiffSubSingleStatisticListener listener;
 
     @XStreamOmitField
     protected List<File> graphFileList = null;
 
-    public PickedMoveTypeStepScoreDiffSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
-        super(singleBenchmarkResult, SingleStatisticType.PICKED_MOVE_TYPE_STEP_SCORE_DIFF);
-        listener = new PickedMoveTypeStepScoreDiffSingleStatisticListener();
+    public PickedMoveTypeStepScoreDiffSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        super(subSingleBenchmarkResult, SingleStatisticType.PICKED_MOVE_TYPE_STEP_SCORE_DIFF);
+        listener = new PickedMoveTypeStepScoreDiffSubSingleStatisticListener();
     }
 
     /**
@@ -84,7 +84,7 @@ public class PickedMoveTypeStepScoreDiffSingleStatistic extends PureSingleStatis
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class PickedMoveTypeStepScoreDiffSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class PickedMoveTypeStepScoreDiffSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         private Score oldStepScore = null;
 
@@ -175,8 +175,8 @@ public class PickedMoveTypeStepScoreDiffSingleStatistic extends PureSingleStatis
                 seriesCollection.addSeries(series);
             }
             plot.setDataset(seriesCollection);
-            JFreeChart chart = new JFreeChart(
-                    singleBenchmarkResult.getName() + " picked move type step score diff level " + scoreLevelIndex + " statistic",
+            JFreeChart chart = new JFreeChart(subSingleBenchmarkResult.getName()
+                    + " picked move type step score diff level " + scoreLevelIndex + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             graphFileList.add(writeChartToImageFile(chart,
                     "PickedMoveTypeStepScoreDiffStatisticLevel" + scoreLevelIndex));

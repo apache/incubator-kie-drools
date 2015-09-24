@@ -37,8 +37,9 @@ import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.impl.score.ScoreUtils;
 
@@ -52,8 +53,8 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SingleStatistic createSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
-        return new StepScoreSingleStatistic(singleBenchmarkResult);
+    public SubSingleStatistic createSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        return new StepScoreSubSingleStatistic(subSingleBenchmarkResult);
     }
 
     /**
@@ -76,10 +77,10 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
             List<XYSeries> seriesList = new ArrayList<XYSeries>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
-            if (singleBenchmarkResult.isSuccess()) {
-                StepScoreSingleStatistic singleStatistic = (StepScoreSingleStatistic)
-                        singleBenchmarkResult.getSingleStatistic(problemStatisticType);
-                for (StepScoreStatisticPoint point : singleStatistic.getPointList()) {
+            if (singleBenchmarkResult.hasAllSuccess()) {
+                StepScoreSubSingleStatistic subSingleStatistic = (StepScoreSubSingleStatistic)
+                        singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
+                for (StepScoreStatisticPoint point : subSingleStatistic.getPointList()) {
                     long timeMillisSpent = point.getTimeMillisSpent();
                     double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
@@ -90,7 +91,7 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
                         seriesList.get(i).add(timeMillisSpent, levelValues[i]);
                     }
                 }
-                if (singleStatistic.getPointList().size() <= 1) {
+                if (subSingleStatistic.getPointList().size() <= 1) {
                     // Workaround for https://sourceforge.net/tracker/?func=detail&aid=3387330&group_id=15494&atid=115494
                     renderer = new StandardXYItemRenderer(StandardXYItemRenderer.SHAPES_AND_LINES);
                 }

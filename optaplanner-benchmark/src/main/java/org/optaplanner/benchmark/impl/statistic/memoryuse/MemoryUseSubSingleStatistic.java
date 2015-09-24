@@ -19,32 +19,32 @@ package org.optaplanner.benchmark.impl.statistic.memoryuse;
 import java.util.List;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.ProblemBasedSingleStatistic;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-public class MemoryUseSingleStatistic extends ProblemBasedSingleStatistic<MemoryUseStatisticPoint> {
+public class MemoryUseSubSingleStatistic extends ProblemBasedSubSingleStatistic<MemoryUseStatisticPoint> {
 
     private long timeMillisThresholdInterval;
 
-    private MemoryUseSingleStatisticListener listener;
+    private MemoryUseSubSingleStatisticListener listener;
 
-    public MemoryUseSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
-        this(singleBenchmarkResult, 1000L);
+    public MemoryUseSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        this(subSingleBenchmarkResult, 1000L);
     }
 
-    public MemoryUseSingleStatistic(SingleBenchmarkResult singleBenchmarkResult, long timeMillisThresholdInterval) {
-        super(singleBenchmarkResult, ProblemStatisticType.MEMORY_USE);
+    public MemoryUseSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult, long timeMillisThresholdInterval) {
+        super(subSingleBenchmarkResult, ProblemStatisticType.MEMORY_USE);
         if (timeMillisThresholdInterval <= 0L) {
             throw new IllegalArgumentException("The timeMillisThresholdInterval (" + timeMillisThresholdInterval
                     + ") must be bigger than 0.");
         }
         this.timeMillisThresholdInterval = timeMillisThresholdInterval;
-        listener = new MemoryUseSingleStatisticListener();
+        listener = new MemoryUseSubSingleStatisticListener();
     }
 
     // ************************************************************************
@@ -59,7 +59,7 @@ public class MemoryUseSingleStatistic extends ProblemBasedSingleStatistic<Memory
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class MemoryUseSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class MemoryUseSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         private long nextTimeMillisThreshold = timeMillisThresholdInterval;
 

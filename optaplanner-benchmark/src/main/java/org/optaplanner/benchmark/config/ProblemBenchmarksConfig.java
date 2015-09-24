@@ -29,8 +29,9 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
@@ -178,20 +179,33 @@ public class ProblemBenchmarksConfig {
         return problemBenchmarkResult;
     }
 
-    private void buildSingleBenchmark(
-            SolverBenchmarkResult solverBenchmarkResult, ProblemBenchmarkResult problemBenchmarkResult) {
+    private void buildSingleBenchmark(SolverBenchmarkResult solverBenchmarkResult,
+            ProblemBenchmarkResult problemBenchmarkResult) {
         SingleBenchmarkResult singleBenchmarkResult = new SingleBenchmarkResult(solverBenchmarkResult, problemBenchmarkResult);
-        List<PureSingleStatistic> pureSingleStatisticList = new ArrayList<PureSingleStatistic>(
-                singleStatisticTypeList == null ? 0 : singleStatisticTypeList.size());
+        buildSubSingleBenchmarks(singleBenchmarkResult, solverBenchmarkResult.getSubSingleCount());
+        for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+            subSingleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<PureSubSingleStatistic>(
+                    singleStatisticTypeList == null ? 0 : singleStatisticTypeList.size()));
+        }
         if (singleStatisticTypeList != null) {
             for (SingleStatisticType singleStatisticType : singleStatisticTypeList) {
-                pureSingleStatisticList.add(singleStatisticType.buildPureSingleStatistic(singleBenchmarkResult));
+                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                    subSingleBenchmarkResult.getPureSubSingleStatisticList().add(singleStatisticType.buildPureSubSingleStatistic(subSingleBenchmarkResult));
+                }
             }
         }
-        singleBenchmarkResult.setPureSingleStatisticList(pureSingleStatisticList);
-        singleBenchmarkResult.initSingleStatisticMap();
+        singleBenchmarkResult.initSubSingleStatisticMaps();
         solverBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
         problemBenchmarkResult.getSingleBenchmarkResultList().add(singleBenchmarkResult);
+    }
+
+    private void buildSubSingleBenchmarks(SingleBenchmarkResult parent, int subSingleCount) {
+        List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<SubSingleBenchmarkResult>(subSingleCount);
+        for (int i = 0; i < subSingleCount; i++) {
+            SubSingleBenchmarkResult subSingleBenchmarkResult = new SubSingleBenchmarkResult(parent, i);
+            subSingleBenchmarkResultList.add(subSingleBenchmarkResult);
+        }
+        parent.setSubSingleBenchmarkResultList(subSingleBenchmarkResultList);
     }
 
     public void inherit(ProblemBenchmarksConfig inheritedConfig) {

@@ -41,10 +41,9 @@ import org.optaplanner.benchmark.impl.ranking.SingleBenchmarkRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
@@ -69,15 +68,18 @@ public class ProblemBenchmarkResult {
 
     private File inputSolutionFile = null;
 
-    @XStreamImplicit()
+    @XStreamImplicit(itemFieldName = "problemStatistic")
     private List<ProblemStatistic> problemStatisticList = null;
 
-    @XStreamImplicit()
+    @XStreamImplicit(itemFieldName = "singleBenchmarkResult")
     private List<SingleBenchmarkResult> singleBenchmarkResultList = null;
 
     private Long entityCount = null;
     private Long variableCount = null;
     private Long problemScale = null;
+
+    @XStreamOmitField // Loaded lazily from singleBenchmarkResults
+    private Integer maximumSubSingleCount = null;
 
     // ************************************************************************
     // Report accumulates
@@ -163,6 +165,10 @@ public class ProblemBenchmarkResult {
         return problemScale;
     }
 
+    public Integer getMaximumSubSingleCount() {
+        return maximumSubSingleCount;
+    }
+
     public Long getAverageUsedMemoryAfterInputSolution() {
         return averageUsedMemoryAfterInputSolution;
     }
@@ -204,7 +210,7 @@ public class ProblemBenchmarkResult {
             return true;
         }
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            if (singleBenchmarkResult.getPureSingleStatisticList().size() > 0) {
+            if (singleBenchmarkResult.getMedian().getPureSubSingleStatisticList().size() > 0) {
                 return true;
             }
         }
@@ -220,27 +226,31 @@ public class ProblemBenchmarkResult {
         return false;
     }
 
+    public boolean isMaximumSubSingleCountMultiple() {
+        return maximumSubSingleCount != null ? maximumSubSingleCount > 1 : false;
+    }
+
     public Collection<SingleStatisticType> extractSingleStatisticTypeList() {
         Set<SingleStatisticType> singleStatisticTypeSet = new LinkedHashSet<SingleStatisticType>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
-                singleStatisticTypeSet.add(pureSingleStatistic.getStatisticType());
+            for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
+                singleStatisticTypeSet.add(pureSubSingleStatistic.getStatisticType());
             }
         }
         return singleStatisticTypeSet;
     }
 
-    public List<PureSingleStatistic> extractPureSingleStatisticList(SingleStatisticType singleStatisticType) {
-        List<PureSingleStatistic> pureSingleStatisticList = new ArrayList<PureSingleStatistic>(
+    public List<PureSubSingleStatistic> extractPureSubSingleStatisticList(SingleStatisticType singleStatisticType) {
+        List<PureSubSingleStatistic> pureSubSingleStatisticList = new ArrayList<PureSubSingleStatistic>(
                 singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
-                if (pureSingleStatistic.getStatisticType() == singleStatisticType) {
-                    pureSingleStatisticList.add(pureSingleStatistic);
+            for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
+                if (pureSubSingleStatistic.getStatisticType() == singleStatisticType) {
+                    pureSubSingleStatisticList.add(pureSubSingleStatistic);
                 }
             }
         }
-        return pureSingleStatisticList;
+        return pureSubSingleStatisticList;
     }
 
     // ************************************************************************
@@ -255,11 +265,11 @@ public class ProblemBenchmarkResult {
         return new File(getBenchmarkReportDirectory(), name);
     }
 
-    public void makeDirs(File benchmarkReportDirectory) {
+    public void makeDirs() {
         File problemReportDirectory = getProblemReportDirectory();
         problemReportDirectory.mkdirs();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            singleBenchmarkResult.makeDirs(problemReportDirectory);
+            singleBenchmarkResult.makeDirs();
         }
     }
 
@@ -267,12 +277,12 @@ public class ProblemBenchmarkResult {
         return solutionFileIO.read(inputSolutionFile);
     }
 
-    public void writeOutputSolution(SingleBenchmarkResult singleBenchmarkResult, Solution outputSolution) {
+    public void writeOutputSolution(SubSingleBenchmarkResult subSingleBenchmarkResult, Solution outputSolution) {
         if (!writeOutputSolutionEnabled) {
             return;
         }
         String filename = getName() + "." + solutionFileIO.getOutputFileExtension();
-        File outputSolutionFile = new File(singleBenchmarkResult.getSingleReportDirectory(), filename);
+        File outputSolutionFile = new File(subSingleBenchmarkResult.getResultDirectory(), filename);
         solutionFileIO.write(outputSolution, outputSolutionFile);
     }
 
@@ -293,16 +303,21 @@ public class ProblemBenchmarkResult {
 
     private void determineTotalsAndAveragesAndRanking() {
         failureCount = 0;
+        maximumSubSingleCount = 0;
         long totalUsedMemoryAfterInputSolution = 0L;
         int usedMemoryAfterInputSolutionCount = 0;
         List<SingleBenchmarkResult> successResultList = new ArrayList<SingleBenchmarkResult>(singleBenchmarkResultList);
         // Do not rank a SingleBenchmarkResult that has a failure
         for (Iterator<SingleBenchmarkResult> it = successResultList.iterator(); it.hasNext(); ) {
             SingleBenchmarkResult singleBenchmarkResult = it.next();
-            if (singleBenchmarkResult.isFailure()) {
+            if (singleBenchmarkResult.hasAnyFailure()) {
                 failureCount++;
                 it.remove();
             } else {
+                int subSingleCount = singleBenchmarkResult.getSubSingleBenchmarkResultList().size();
+                if (subSingleCount > maximumSubSingleCount) {
+                    maximumSubSingleCount = subSingleCount;
+                }
                 if (singleBenchmarkResult.getUsedMemoryAfterInputSolution() != null) {
                     totalUsedMemoryAfterInputSolution += singleBenchmarkResult.getUsedMemoryAfterInputSolution();
                     usedMemoryAfterInputSolutionCount++;
@@ -339,14 +354,14 @@ public class ProblemBenchmarkResult {
 
     private void determineWinningScoreDifference() {
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            if (singleBenchmarkResult.isFailure()) {
+            if (singleBenchmarkResult.hasAnyFailure()) {
                 continue;
             }
             singleBenchmarkResult.setWinningScoreDifference(
-                    singleBenchmarkResult.getScore().subtract(winningSingleBenchmarkResult.getScore()));
+                    singleBenchmarkResult.getAverageScore().subtract(winningSingleBenchmarkResult.getAverageScore()));
             singleBenchmarkResult.setWorstScoreDifferencePercentage(
                     ScoreDifferencePercentage.calculateScoreDifferencePercentage(
-                            worstSingleBenchmarkResult.getScore(), singleBenchmarkResult.getScore()));
+                            worstSingleBenchmarkResult.getAverageScore(), singleBenchmarkResult.getAverageScore()));
         }
     }
 

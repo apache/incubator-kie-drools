@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalstepscore;
+package org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalbestscore;
 
 import java.io.File;
 import java.text.NumberFormat;
@@ -36,11 +36,12 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
@@ -49,18 +50,18 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-@XStreamAlias("constraintMatchTotalStepScoreSingleStatistic")
-public class ConstraintMatchTotalStepScoreSingleStatistic extends PureSingleStatistic<ConstraintMatchTotalStepScoreStatisticPoint> {
+@XStreamAlias("constraintMatchTotalBestScoreSubSingleStatistic")
+public class ConstraintMatchTotalBestScoreSubSingleStatistic extends PureSubSingleStatistic<ConstraintMatchTotalBestScoreStatisticPoint> {
 
     @XStreamOmitField
-    private ConstraintMatchTotalStepScoreSingleStatisticListener listener;
+    private ConstraintMatchTotalBestScoreSubSingleStatisticListener listener;
 
     @XStreamOmitField
     protected List<File> graphFileList = null;
 
-    public ConstraintMatchTotalStepScoreSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
-        super(singleBenchmarkResult, SingleStatisticType.CONSTRAINT_MATCH_TOTAL_STEP_SCORE);
-        listener = new ConstraintMatchTotalStepScoreSingleStatisticListener();
+    public ConstraintMatchTotalBestScoreSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        super(subSingleBenchmarkResult, SingleStatisticType.CONSTRAINT_MATCH_TOTAL_BEST_SCORE);
+        listener = new ConstraintMatchTotalBestScoreSubSingleStatisticListener();
     }
 
     /**
@@ -85,7 +86,7 @@ public class ConstraintMatchTotalStepScoreSingleStatistic extends PureSingleStat
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class ConstraintMatchTotalStepScoreSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class ConstraintMatchTotalBestScoreSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         private boolean constraintMatchEnabled;
 
@@ -94,7 +95,7 @@ public class ConstraintMatchTotalStepScoreSingleStatistic extends PureSingleStat
             InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
             constraintMatchEnabled = scoreDirector.isConstraintMatchEnabled();
             if (!constraintMatchEnabled) {
-                logger.warn("The singleStatistic ({}) cannot function properly" +
+                logger.warn("The subSingleStatistic ({}) cannot function properly" +
                         " because ConstraintMatches are not supported on the ScoreDirector.", singleStatisticType);
             }
         }
@@ -107,17 +108,36 @@ public class ConstraintMatchTotalStepScoreSingleStatistic extends PureSingleStat
         }
 
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
-            if (constraintMatchEnabled) {
+            if (constraintMatchEnabled && stepScope.getBestScoreImproved()) {
                 long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
                 for (ConstraintMatchTotal constraintMatchTotal
                         : stepScope.getScoreDirector().getConstraintMatchTotals()) {
-                    pointList.add(new ConstraintMatchTotalStepScoreStatisticPoint(
+                    pointList.add(new ConstraintMatchTotalBestScoreStatisticPoint(
                             timeMillisSpent,
                             constraintMatchTotal.getConstraintPackage(),
                             constraintMatchTotal.getConstraintName(),
                             constraintMatchTotal.getScoreLevel(),
                             constraintMatchTotal.getConstraintMatchCount(),
                             constraintMatchTotal.getWeightTotalAsNumber().doubleValue()));
+                }
+            }
+        }
+
+        @Override
+        public void phaseEnded(AbstractPhaseScope phaseScope) {
+            if (phaseScope instanceof LocalSearchPhaseScope) {
+                if (constraintMatchEnabled && !pointList.isEmpty()) {
+                    // Draw horizontal lines from the last new best step to how long the solver actually ran
+                    // HACK because this also adds a entry in the CSV (and it should not do that)
+                    long timeMillisSpent = phaseScope.calculateSolverTimeMillisSpent();
+                    ConstraintMatchTotalBestScoreStatisticPoint previousPoint = pointList.get(pointList.size() - 1);
+                    pointList.add(new ConstraintMatchTotalBestScoreStatisticPoint(
+                            timeMillisSpent,
+                            previousPoint.getConstraintPackage(),
+                            previousPoint.getConstraintName(),
+                            previousPoint.getScoreLevel(),
+                            previousPoint.getConstraintMatchCount(),
+                            previousPoint.getWeightTotal()));
                 }
             }
         }
@@ -130,15 +150,15 @@ public class ConstraintMatchTotalStepScoreSingleStatistic extends PureSingleStat
 
     @Override
     protected String getCsvHeader() {
-        return ConstraintMatchTotalStepScoreStatisticPoint.buildCsvLine(
+        return ConstraintMatchTotalBestScoreStatisticPoint.buildCsvLine(
                 "timeMillisSpent", "constraintPackage", "constraintName", "scoreLevel",
                 "constraintMatchCount", "weightTotal");
     }
 
     @Override
-    protected ConstraintMatchTotalStepScoreStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected ConstraintMatchTotalBestScoreStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new ConstraintMatchTotalStepScoreStatisticPoint(Long.valueOf(csvLine.get(0)),
+        return new ConstraintMatchTotalBestScoreStatisticPoint(Long.valueOf(csvLine.get(0)),
                 csvLine.get(1), csvLine.get(2), Integer.valueOf(csvLine.get(3)),
                 Integer.valueOf(csvLine.get(4)), Double.valueOf(csvLine.get(5)));
     }
@@ -151,7 +171,7 @@ public class ConstraintMatchTotalStepScoreSingleStatistic extends PureSingleStat
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         List<Map<String, XYSeries>> constraintIdToWeightSeriesMapList
                 = new ArrayList<Map<String, XYSeries>>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
-        for (ConstraintMatchTotalStepScoreStatisticPoint point : getPointList()) {
+        for (ConstraintMatchTotalBestScoreStatisticPoint point : getPointList()) {
             int scoreLevel = point.getScoreLevel();
             if (scoreLevel >= BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE) {
                 continue;
@@ -184,11 +204,11 @@ public class ConstraintMatchTotalStepScoreSingleStatistic extends PureSingleStat
                 seriesCollection.addSeries(series);
             }
             plot.setDataset(seriesCollection);
-            JFreeChart chart = new JFreeChart(
-                    singleBenchmarkResult.getName() + " constraint match total step score diff level " + scoreLevelIndex + " statistic",
+            JFreeChart chart = new JFreeChart(subSingleBenchmarkResult.getName()
+                    + " constraint match total best score diff level " + scoreLevelIndex + " statistic",
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             graphFileList.add(writeChartToImageFile(chart,
-                    "ConstraintMatchTotalStepScoreStatisticLevel" + scoreLevelIndex));
+                    "ConstraintMatchTotalBestScoreStatisticLevel" + scoreLevelIndex));
         }
     }
 

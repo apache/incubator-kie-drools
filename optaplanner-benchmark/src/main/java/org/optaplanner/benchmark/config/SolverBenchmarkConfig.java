@@ -20,10 +20,12 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.util.ConfigUtils;
 
 @XStreamAlias("solverBenchmark")
 public class SolverBenchmarkConfig {
@@ -35,6 +37,8 @@ public class SolverBenchmarkConfig {
 
     @XStreamAlias("problemBenchmarks")
     private ProblemBenchmarksConfig problemBenchmarksConfig = null;
+
+    private Integer subSingleCount = null;
 
     public String getName() {
         return name;
@@ -60,6 +64,14 @@ public class SolverBenchmarkConfig {
         this.problemBenchmarksConfig = problemBenchmarksConfig;
     }
 
+    public Integer getSubSingleCount() {
+        return subSingleCount;
+    }
+
+    public void setSubSingleCount(Integer subSingleCount) {
+        this.subSingleCount = subSingleCount;
+    }
+
     // ************************************************************************
     // Builder methods
     // ************************************************************************
@@ -68,6 +80,7 @@ public class SolverBenchmarkConfig {
         validate();
         SolverBenchmarkResult solverBenchmarkResult = new SolverBenchmarkResult(plannerBenchmark);
         solverBenchmarkResult.setName(name);
+        solverBenchmarkResult.setSubSingleCount(ConfigUtils.inheritOverwritableProperty(subSingleCount, 1));
         solverBenchmarkResult.setSolverConfig(solverConfig);
         solverBenchmarkResult.setSingleBenchmarkResultList(new ArrayList<SingleBenchmarkResult>());
         ProblemBenchmarksConfig problemBenchmarksConfig_
@@ -88,6 +101,10 @@ public class SolverBenchmarkConfig {
             throw new IllegalStateException("The solverBenchmark name (" + name
                     + ") is invalid because it starts or ends with whitespace.");
         }
+        if (subSingleCount != null && subSingleCount < 1) {
+            throw new IllegalStateException("The solverBenchmark name (" + name
+                    + ") is invalid because the subSingleCount (" + subSingleCount + ") must be greater than 1.");
+        }
     }
 
     public void inherit(SolverBenchmarkConfig inheritedConfig) {
@@ -101,6 +118,7 @@ public class SolverBenchmarkConfig {
         } else if (inheritedConfig.getProblemBenchmarksConfig() != null) {
             problemBenchmarksConfig.inherit(inheritedConfig.getProblemBenchmarksConfig());
         }
+        subSingleCount = ConfigUtils.inheritOverwritableProperty(subSingleCount, inheritedConfig.getSubSingleCount());
     }
 
 }

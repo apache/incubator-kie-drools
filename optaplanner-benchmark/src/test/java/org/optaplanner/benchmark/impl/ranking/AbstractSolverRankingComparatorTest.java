@@ -41,11 +41,12 @@ public abstract class AbstractSolverRankingComparatorTest {
         SimpleScore scoreObject = SimpleScore.valueOf(score);
         SimpleScore bestScoreObject = SimpleScore.valueOf(bestScore);
         SimpleScore worstScoreObject = SimpleScore.valueOf(worstScore);
-        singleBenchmarkResult.setScore(scoreObject);
+        singleBenchmarkResult.setFailureCount(0);
+        singleBenchmarkResult.setAverageScore(scoreObject);
         singleBenchmarkResult.setWinningScoreDifference(scoreObject.subtract(bestScoreObject));
         singleBenchmarkResult.setWorstScoreDifferencePercentage(
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(worstScoreObject, scoreObject));
-        singleBenchmarkResult.setUninitializedVariableCount(0);
+        singleBenchmarkResult.setAverageUninitializedVariableCount(0);
         singleBenchmarkResultList.add(singleBenchmarkResult);
         return singleBenchmarkResult;
     }
@@ -56,11 +57,12 @@ public abstract class AbstractSolverRankingComparatorTest {
         HardSoftLongScore scoreObject = HardSoftLongScore.valueOf(hardScore, softScore);
         HardSoftLongScore bestScoreObject = HardSoftLongScore.valueOf(hardBestScore, softBestScore);
         HardSoftLongScore worstScoreObject = HardSoftLongScore.valueOf(hardWorstScore, softWorstScore);
-        singleBenchmarkResult.setScore(scoreObject);
+        singleBenchmarkResult.setFailureCount(0);
+        singleBenchmarkResult.setAverageScore(scoreObject);
         singleBenchmarkResult.setWinningScoreDifference(scoreObject.subtract(bestScoreObject));
         singleBenchmarkResult.setWorstScoreDifferencePercentage(
                 ScoreDifferencePercentage.calculateScoreDifferencePercentage(worstScoreObject, scoreObject));
-        singleBenchmarkResult.setUninitializedVariableCount(0);
+        singleBenchmarkResult.setAverageUninitializedVariableCount(0);
         singleBenchmarkResultList.add(singleBenchmarkResult);
         return singleBenchmarkResult;
     }

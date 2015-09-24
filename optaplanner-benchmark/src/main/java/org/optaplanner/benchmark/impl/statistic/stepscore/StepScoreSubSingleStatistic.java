@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 JBoss Inc
+ * Copyright 2013 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package org.optaplanner.benchmark.impl.statistic.movecountperstep;
+package org.optaplanner.benchmark.impl.statistic.stepscore;
 
 import java.util.List;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.ProblemBasedSingleStatistic;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
-public class MoveCountPerStepSingleStatistic extends ProblemBasedSingleStatistic<MoveCountPerStepStatisticPoint> {
+public class StepScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<StepScoreStatisticPoint> {
 
-    private MoveCountPerStepSingleStatisticListener listener;
+    private final StepScoreSubSingleStatisticListener listener;
 
-    public MoveCountPerStepSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
-        super(singleBenchmarkResult, ProblemStatisticType.MOVE_COUNT_PER_STEP);
-        listener = new MoveCountPerStepSingleStatisticListener();
+    public StepScoreSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        super(subSingleBenchmarkResult, ProblemStatisticType.STEP_SCORE);
+        listener = new StepScoreSubSingleStatisticListener();
     }
 
     // ************************************************************************
@@ -49,20 +48,14 @@ public class MoveCountPerStepSingleStatistic extends ProblemBasedSingleStatistic
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 
-    private class MoveCountPerStepSingleStatisticListener extends PhaseLifecycleListenerAdapter {
+    private class StepScoreSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
 
         @Override
         public void stepEnded(AbstractStepScope stepScope) {
-            if (stepScope instanceof LocalSearchStepScope) {
-                localSearchStepEnded((LocalSearchStepScope) stepScope);
+            if (stepScope.hasNoUninitializedVariables()) {
+                long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
+                pointList.add(new StepScoreStatisticPoint(timeMillisSpent, stepScope.getScore()));
             }
-        }
-
-        private void localSearchStepEnded(LocalSearchStepScope stepScope) {
-            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
-            pointList.add(new MoveCountPerStepStatisticPoint(timeMillisSpent,
-                    new MoveCountPerStepMeasurement(stepScope.getAcceptedMoveCount(), stepScope.getSelectedMoveCount())
-            ));
         }
 
     }
@@ -73,14 +66,14 @@ public class MoveCountPerStepSingleStatistic extends ProblemBasedSingleStatistic
 
     @Override
     protected String getCsvHeader() {
-        return MoveCountPerStepStatisticPoint.buildCsvLine("timeMillisSpent", "acceptedMoveCount", "selectedMoveCount");
+        return StepScoreStatisticPoint.buildCsvLine("timeMillisSpent", "score");
     }
 
     @Override
-    protected MoveCountPerStepStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected StepScoreStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new MoveCountPerStepStatisticPoint(Long.valueOf(csvLine.get(0)),
-                new MoveCountPerStepMeasurement(Long.valueOf(csvLine.get(1)), Long.valueOf(csvLine.get(2))));
+        return new StepScoreStatisticPoint(Long.valueOf(csvLine.get(0)),
+                scoreDefinition.parseScore(csvLine.get(1)));
     }
 
 }

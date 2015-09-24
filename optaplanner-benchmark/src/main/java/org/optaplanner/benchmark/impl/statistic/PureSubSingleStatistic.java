@@ -23,28 +23,28 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.jfree.chart.JFreeChart;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.GraphSupport;
-import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalbestscore.ConstraintMatchTotalBestScoreSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.single.constraintmatchtotalstepscore.ConstraintMatchTotalStepScoreSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSingleStatistic;
-import org.optaplanner.benchmark.impl.statistic.single.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalbestscore.ConstraintMatchTotalBestScoreSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalstepscore.ConstraintMatchTotalStepScoreSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypebestscore.PickedMoveTypeBestScoreDiffSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypestepscore.PickedMoveTypeStepScoreDiffSubSingleStatistic;
 
 /**
- * 1 statistic of {@link SingleBenchmarkResult}.
+ * 1 statistic of {@link SubSingleBenchmarkResult}.
  */
 @XStreamInclude({
-        ConstraintMatchTotalBestScoreSingleStatistic.class,
-        ConstraintMatchTotalStepScoreSingleStatistic.class,
-        PickedMoveTypeBestScoreDiffSingleStatistic.class,
-        PickedMoveTypeStepScoreDiffSingleStatistic.class
+        ConstraintMatchTotalBestScoreSubSingleStatistic.class,
+        ConstraintMatchTotalStepScoreSubSingleStatistic.class,
+        PickedMoveTypeBestScoreDiffSubSingleStatistic.class,
+        PickedMoveTypeStepScoreDiffSubSingleStatistic.class
 })
-public abstract class PureSingleStatistic<P extends StatisticPoint> extends SingleStatistic<P> {
+public abstract class PureSubSingleStatistic<P extends StatisticPoint> extends SubSingleStatistic<P> {
 
     protected final SingleStatisticType singleStatisticType;
 
-    protected PureSingleStatistic(SingleBenchmarkResult singleBenchmarkResult, SingleStatisticType singleStatisticType) {
-        super(singleBenchmarkResult);
+    protected PureSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult, SingleStatisticType singleStatisticType) {
+        super(subSingleBenchmarkResult);
         this.singleStatisticType = singleStatisticType;
     }
 
@@ -60,7 +60,7 @@ public abstract class PureSingleStatistic<P extends StatisticPoint> extends Sing
     public abstract void writeGraphFiles(BenchmarkReport benchmarkReport);
 
     protected File writeChartToImageFile(JFreeChart chart, String fileNameBase) {
-        File chartFile = new File(singleBenchmarkResult.getSingleReportDirectory(), fileNameBase + ".png");
+        File chartFile = new File(subSingleBenchmarkResult.getResultDirectory(), fileNameBase + ".png");
         GraphSupport.writeChartToImageFile(chart, chartFile);
         return chartFile;
     }
@@ -70,8 +70,8 @@ public abstract class PureSingleStatistic<P extends StatisticPoint> extends Sing
         if (graphFileList == null || graphFileList.isEmpty()) {
             return null;
         } else if (graphFileList.size() > 1) {
-            throw new IllegalStateException("Cannot get graph file for the PureSingleStatistic ( " + this
-                    + " ) because it has more than 1 graph file. See method getGraphList() and "
+            throw new IllegalStateException("Cannot get graph file for the PureSubSingleStatistic (" + this
+                    + ") because it has more than 1 graph file. See method getGraphList() and "
                     + SingleStatisticType.class.getSimpleName() + ".hasScoreLevels()");
         } else {
             return graphFileList.get(0);
@@ -82,7 +82,7 @@ public abstract class PureSingleStatistic<P extends StatisticPoint> extends Sing
 
     @Override
     public String toString() {
-        return singleBenchmarkResult + "_" + singleStatisticType;
+        return subSingleBenchmarkResult + "_" + singleStatisticType;
     }
 
 }

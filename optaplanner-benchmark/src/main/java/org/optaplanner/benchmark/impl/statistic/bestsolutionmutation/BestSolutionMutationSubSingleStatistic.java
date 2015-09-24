@@ -19,8 +19,8 @@ package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
 import java.util.List;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.ProblemBasedSingleStatistic;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
@@ -30,13 +30,13 @@ import org.optaplanner.core.impl.domain.solution.mutation.MutationCounter;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 
-public class BestSolutionMutationSingleStatistic extends ProblemBasedSingleStatistic<BestSolutionMutationStatisticPoint> {
+public class BestSolutionMutationSubSingleStatistic extends ProblemBasedSubSingleStatistic<BestSolutionMutationStatisticPoint> {
 
-    private BestSolutionMutationSingleStatisticListener listener;
+    private BestSolutionMutationSubSingleStatisticListener listener;
 
-    public BestSolutionMutationSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
-        super(singleBenchmarkResult, ProblemStatisticType.BEST_SOLUTION_MUTATION);
-        listener = new BestSolutionMutationSingleStatisticListener();
+    public BestSolutionMutationSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        super(subSingleBenchmarkResult, ProblemStatisticType.BEST_SOLUTION_MUTATION);
+        listener = new BestSolutionMutationSubSingleStatisticListener();
     }
 
     // ************************************************************************
@@ -54,7 +54,7 @@ public class BestSolutionMutationSingleStatistic extends ProblemBasedSingleStati
         solver.removeEventListener(listener);
     }
 
-    private class BestSolutionMutationSingleStatisticListener implements SolverEventListener<Solution> {
+    private class BestSolutionMutationSubSingleStatisticListener implements SolverEventListener<Solution> {
 
         private MutationCounter mutationCounter;
 

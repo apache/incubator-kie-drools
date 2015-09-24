@@ -36,8 +36,9 @@ import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 
 @XStreamAlias("calculateCountProblemStatistic")
@@ -50,8 +51,8 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SingleStatistic createSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
-        return new CalculateCountSingleStatistic(singleBenchmarkResult);
+    public SubSingleStatistic createSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        return new CalculateCountSubSingleStatistic(subSingleBenchmarkResult);
     }
 
     /**
@@ -80,10 +81,10 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
         for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
             XYSeries series = new XYSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
-            if (singleBenchmarkResult.isSuccess()) {
-                CalculateCountSingleStatistic singleStatistic = (CalculateCountSingleStatistic)
-                        singleBenchmarkResult.getSingleStatistic(problemStatisticType);
-                for (CalculateCountStatisticPoint point : singleStatistic.getPointList()) {
+            if (singleBenchmarkResult.hasAllSuccess()) {
+                CalculateCountSubSingleStatistic subSingleStatistic = (CalculateCountSubSingleStatistic)
+                        singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
+                for (CalculateCountStatisticPoint point : subSingleStatistic.getPointList()) {
                     long timeMillisSpent = point.getTimeMillisSpent();
                     long calculateCountPerSecond = point.getCalculateCountPerSecond();
                     series.add(timeMillisSpent, calculateCountPerSecond);

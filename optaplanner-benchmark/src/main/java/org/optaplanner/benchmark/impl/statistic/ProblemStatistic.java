@@ -18,7 +18,6 @@ package org.optaplanner.benchmark.impl.statistic;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamInclude;
@@ -29,6 +28,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.bestscore.BestScoreProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.bestsolutionmutation.BestSolutionMutationProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.calculatecount.CalculateCountProblemStatistic;
@@ -90,16 +90,20 @@ public abstract class ProblemStatistic {
         return warningList;
     }
 
-    public List<SingleStatistic> getSingleStatisticList() {
+    public List<SubSingleStatistic> getSubSingleStatisticList() {
         List<SingleBenchmarkResult> singleBenchmarkResultList = problemBenchmarkResult.getSingleBenchmarkResultList();
-        List<SingleStatistic> singleStatisticList = new ArrayList<SingleStatistic>(singleBenchmarkResultList.size());
+        List<SubSingleStatistic> subSingleStatisticList = new ArrayList<SubSingleStatistic>(singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            singleStatisticList.add(singleBenchmarkResult.getEffectiveSingleStatisticMap().get(problemStatisticType));
+            if (singleBenchmarkResult.getSubSingleBenchmarkResultList().isEmpty()) {
+                continue;
+            }
+            // All subSingles have the same sub single statistics
+            subSingleStatisticList.add(singleBenchmarkResult.getSubSingleBenchmarkResultList().get(0).getEffectiveSubSingleStatisticMap().get(problemStatisticType));
         }
-        return singleStatisticList;
+        return subSingleStatisticList;
     }
 
-    public abstract SingleStatistic createSingleStatistic(SingleBenchmarkResult singleBenchmarkResult);
+    public abstract SubSingleStatistic createSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult);
 
     // ************************************************************************
     // Write methods
@@ -126,8 +130,8 @@ public abstract class ProblemStatistic {
         if (graphFileList == null || graphFileList.isEmpty()) {
             return null;
         } else if (graphFileList.size() > 1) {
-            throw new IllegalStateException("Cannot get graph file for the ProblemStatistic ( " + this
-                    + " ) because it has more than 1 graph file. See method getGraphList() and "
+            throw new IllegalStateException("Cannot get graph file for the ProblemStatistic (" + this
+                    + ") because it has more than 1 graph file. See method getGraphList() and "
                     + ProblemStatisticType.class.getSimpleName() + ".hasScoreLevels()");
         } else {
             return graphFileList.get(0);

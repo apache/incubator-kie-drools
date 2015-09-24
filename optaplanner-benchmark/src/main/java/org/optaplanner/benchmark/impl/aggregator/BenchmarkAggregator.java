@@ -27,7 +27,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +80,10 @@ public class BenchmarkAggregator {
         }
         Date startingTimestamp = new Date();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            singleBenchmarkResult.initSingleStatisticMap();
+            for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                subSingleBenchmarkResult.setSingleBenchmarkResult(singleBenchmarkResult);
+            }
+            singleBenchmarkResult.initSubSingleStatisticMaps();
         }
         // Handle renamed solver benchmarks after statistics have been read (they're resolved by
         // original solver benchmarks' names)

@@ -19,8 +19,8 @@ package org.optaplanner.benchmark.impl;
 import java.util.concurrent.Callable;
 
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -30,22 +30,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
+public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunner> {
 
     public static final String NAME_MDC = "singleBenchmark.name";
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final SingleBenchmarkResult singleBenchmarkResult;
+    private final SubSingleBenchmarkResult subSingleBenchmarkResult;
 
     private Throwable failureThrowable = null;
 
-    public SingleBenchmarkRunner(SingleBenchmarkResult singleBenchmarkResult) {
-        this.singleBenchmarkResult = singleBenchmarkResult;
+    public SubSingleBenchmarkRunner(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        this.subSingleBenchmarkResult = subSingleBenchmarkResult;
     }
 
-    public SingleBenchmarkResult getSingleBenchmarkResult() {
-        return singleBenchmarkResult;
+    public SubSingleBenchmarkResult getSubSingleBenchmarkResult() {
+        return subSingleBenchmarkResult;
     }
 
     public Throwable getFailureThrowable() {
@@ -60,25 +60,25 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
     // Benchmark methods
     // ************************************************************************
 
-    public SingleBenchmarkRunner call() {
-        MDC.put(NAME_MDC, singleBenchmarkResult.getName());
+    public SubSingleBenchmarkRunner call() {
+        MDC.put(NAME_MDC, subSingleBenchmarkResult.getName());
         Runtime runtime = Runtime.getRuntime();
-        ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
+        ProblemBenchmarkResult problemBenchmarkResult = subSingleBenchmarkResult.getSingleBenchmarkResult().getProblemBenchmarkResult();
         Solution inputSolution = problemBenchmarkResult.readPlanningProblem();
         if (!problemBenchmarkResult.getPlannerBenchmarkResult().hasMultipleParallelBenchmarks()) {
             runtime.gc();
-            singleBenchmarkResult.setUsedMemoryAfterInputSolution(runtime.totalMemory() - runtime.freeMemory());
+            subSingleBenchmarkResult.setUsedMemoryAfterInputSolution(runtime.totalMemory() - runtime.freeMemory());
         }
-        logger.trace("Benchmark inputSolution has been read for singleBenchmarkResult ({}).",
-                singleBenchmarkResult.getName());
+        logger.trace("Benchmark inputSolution has been read for subSingleBenchmarkResult ({}).",
+                subSingleBenchmarkResult);
 
         // Intentionally create a fresh solver for every SingleBenchmarkResult to reset Random, tabu lists, ...
         // TODO PLANNER-440 Use a classLoader argument buildSolver()
-        Solver solver = singleBenchmarkResult.getSolverBenchmarkResult().getSolverConfig().buildSolver();
+        Solver solver = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig().buildSolver();
 
-        for (SingleStatistic singleStatistic : singleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
-            singleStatistic.open(solver);
-            singleStatistic.initPointList();
+        for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
+            subSingleStatistic.open(solver);
+            subSingleStatistic.initPointList();
         }
 
         solver.solve(inputSolution);
@@ -90,27 +90,27 @@ public class SingleBenchmarkRunner implements Callable<SingleBenchmarkRunner> {
         problemBenchmarkResult.registerScale(solutionDescriptor.getEntityCount(outputSolution),
                 solutionDescriptor.getGenuineVariableCount(outputSolution),
                 solutionDescriptor.getProblemScale(outputSolution));
-        singleBenchmarkResult.setScore(outputSolution.getScore());
-        singleBenchmarkResult.setUninitializedVariableCount(solverScope.getBestUninitializedVariableCount());
-        singleBenchmarkResult.setTimeMillisSpent(timeMillisSpent);
-        singleBenchmarkResult.setCalculateCount(solverScope.getCalculateCount());
+        subSingleBenchmarkResult.setScore(outputSolution.getScore());
+        subSingleBenchmarkResult.setUninitializedVariableCount(solverScope.getBestUninitializedVariableCount());
+        subSingleBenchmarkResult.setTimeMillisSpent(timeMillisSpent);
+        subSingleBenchmarkResult.setCalculateCount(solverScope.getCalculateCount());
 
-        for (SingleStatistic singleStatistic : singleBenchmarkResult.getEffectiveSingleStatisticMap().values()) {
-            singleStatistic.close(solver);
-            singleStatistic.hibernatePointList();
+        for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
+            subSingleStatistic.close(solver);
+            subSingleStatistic.hibernatePointList();
         }
-        problemBenchmarkResult.writeOutputSolution(singleBenchmarkResult, outputSolution);
+        problemBenchmarkResult.writeOutputSolution(subSingleBenchmarkResult, outputSolution);
         MDC.remove(NAME_MDC);
         return this;
     }
 
     public String getName() {
-        return singleBenchmarkResult.getName();
+        return subSingleBenchmarkResult.getName();
     }
 
     @Override
     public String toString() {
-        return singleBenchmarkResult.toString();
+        return subSingleBenchmarkResult.toString();
     }
 
 }

@@ -137,22 +137,22 @@ public class TotalRankSolverRankingWeightFactoryTest extends AbstractSolverRanki
         assertEquals(0, aWeight.compareTo(bWeight));
         assertEquals(0, bWeight.compareTo(aWeight));
 
-        a0.setUninitializedVariableCount(100);
-        b0.setUninitializedVariableCount(100);
+        a0.setAverageUninitializedVariableCount(100);
+        b0.setAverageUninitializedVariableCount(100);
         a.accumulateResults(benchmarkReport);
         b.accumulateResults(benchmarkReport);
         // ranks, uninitialized variable counts, total scores and worst scores are equal
         assertEquals(0, aWeight.compareTo(bWeight));
         assertEquals(0, bWeight.compareTo(aWeight));
 
-        b0.setUninitializedVariableCount(0);
-        b1.setUninitializedVariableCount(100);
+        b0.setAverageUninitializedVariableCount(0);
+        b1.setAverageUninitializedVariableCount(100);
         b.accumulateResults(benchmarkReport);
         // ranks, uninitialized variable counts and total scores are equal, A loses on worst score (tie-breaker)
         assertEquals(-1, aWeight.compareTo(bWeight));
         assertEquals(1, bWeight.compareTo(aWeight));
 
-        b1.setUninitializedVariableCount(101);
+        b1.setAverageUninitializedVariableCount(101);
         b.accumulateResults(benchmarkReport);
         // ranks are equal, uninitialized variable count is bigger in B
         assertEquals(1, aWeight.compareTo(bWeight));

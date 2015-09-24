@@ -27,6 +27,7 @@ public class SolverBenchmarkConfigTest {
     public void validNameWithUnderscoreAndSpace() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("Valid_name with space_and_underscore");
+        config.setSubSingleCount(1);
         config.validate();
     }
 
@@ -34,6 +35,7 @@ public class SolverBenchmarkConfigTest {
     public void validNameWithJapanese() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("Valid name (有効名 in Japanese)");
+        config.setSubSingleCount(1);
         config.validate();
     }
 
@@ -41,6 +43,7 @@ public class SolverBenchmarkConfigTest {
     public void invalidNameWithSlash() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("slash/name");
+        config.setSubSingleCount(1);
         config.validate();
     }
 
@@ -48,6 +51,7 @@ public class SolverBenchmarkConfigTest {
     public void invalidNameWithSuffixWhitespace() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName("Suffixed with space ");
+        config.setSubSingleCount(1);
         config.validate();
     }
 
@@ -55,6 +59,30 @@ public class SolverBenchmarkConfigTest {
     public void invalidNameWithPrefixWhitespace() {
         SolverBenchmarkConfig config = new SolverBenchmarkConfig();
         config.setName(" prefixed with space");
+        config.setSubSingleCount(1);
+        config.validate();
+    }
+
+    @Test
+    public void validNonZeroSubSingleCount() {
+        SolverBenchmarkConfig config = new SolverBenchmarkConfig();
+        config.setName("name");
+        config.setSubSingleCount(2);
+        config.validate();
+    }
+
+    public void validNullSubSingleCount() {
+        SolverBenchmarkConfig config = new SolverBenchmarkConfig();
+        config.setName("name");
+        config.setSubSingleCount(null);
+        config.validate();
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void invalidZeroSubSingleCount() {
+        SolverBenchmarkConfig config = new SolverBenchmarkConfig();
+        config.setName("name");
+        config.setSubSingleCount(0);
         config.validate();
     }
 

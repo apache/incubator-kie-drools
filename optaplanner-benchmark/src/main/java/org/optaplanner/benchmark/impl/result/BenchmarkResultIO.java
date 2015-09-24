@@ -35,7 +35,7 @@ import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.DirectoryFileFilter;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.PureSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,11 +139,15 @@ public class BenchmarkResultIO {
             solverBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
             for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
                 singleBenchmarkResult.setSolverBenchmarkResult(solverBenchmarkResult);
-                if (singleBenchmarkResult.getPureSingleStatisticList() == null) {
-                    singleBenchmarkResult.setPureSingleStatisticList(new ArrayList<PureSingleStatistic>(0));
+                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                    if (subSingleBenchmarkResult.getPureSubSingleStatisticList() == null) {
+                        subSingleBenchmarkResult.setPureSubSingleStatisticList(new ArrayList<PureSubSingleStatistic>(0));
+                    }
                 }
-                for (PureSingleStatistic pureSingleStatistic : singleBenchmarkResult.getPureSingleStatisticList()) {
-                    pureSingleStatistic.setSingleBenchmarkResult(singleBenchmarkResult);
+                for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                    for (PureSubSingleStatistic pureSubSingleStatistic : subSingleBenchmarkResult.getPureSubSingleStatisticList()) {
+                        pureSubSingleStatistic.setSubSingleBenchmarkResult(subSingleBenchmarkResult);
+                    }
                 }
             }
         }

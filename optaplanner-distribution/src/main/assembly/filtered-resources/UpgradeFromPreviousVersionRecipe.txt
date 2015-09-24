@@ -2791,3 +2791,23 @@ After in *.java:
 
 [README] If you're using JPA-Hibernate with OptaPlanner, you'll want to take advantage of the new module optaplanner-persistence-jpa.
 See docs chapter "Integration" for more information.
+
+[MINOR] If you're using SingleBenchmarkResult: the functionality of the method getScore() and getUninitializedVariableCount() has moved to
+getAverageScore() and getAverageUninitializedVariableCount() because of the addition of SubSingleBenchmarkResult (Statistical benchmarking).
+Before in *.java:
+    singleBenchmarkResult.getScore();
+    singleBenchmarkResult.getUninitializedVariableCount();
+After in *.java:
+    singleBenchmarkResult.getAverageScore();
+    singleBenchmarkResult.getAverageUninitializedVariableCount();
+
+[IMPL_DETAIL] If you're using SingleStatistic or any of it's subclasses: all of them were renamed to include "Sub" as a part of
+Statistical benchmarking. The package org.optaplanner.benchmark.impl.statistic.single was also renamed to
+org.optaplanner.benchmark.impl.statistic.subsingle. SingleStatisticType has not been changed, therefore no changes
+in the configuration are needed.
+Before in *.java:
+    import org.optaplanner.benchmark.impl.statistic.single.*;
+    *SingleStatistic singleStatistic;
+After in *.java:
+    import org.optaplanner.benchmark.impl.statistic.subsingle.*;
+    *SubSingleStatistic subSingleStatistic;

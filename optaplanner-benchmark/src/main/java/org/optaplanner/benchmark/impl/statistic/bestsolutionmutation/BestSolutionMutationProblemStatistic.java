@@ -36,8 +36,9 @@ import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 
 @XStreamAlias("bestSolutionMutationProblemStatistic")
@@ -50,8 +51,8 @@ public class BestSolutionMutationProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SingleStatistic createSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
-        return new BestSolutionMutationSingleStatistic(singleBenchmarkResult);
+    public SubSingleStatistic createSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        return new BestSolutionMutationSubSingleStatistic(subSingleBenchmarkResult);
     }
 
     /**
@@ -73,10 +74,10 @@ public class BestSolutionMutationProblemStatistic extends ProblemStatistic {
         for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
             XYIntervalSeries series = new XYIntervalSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new YIntervalRenderer();
-            if (singleBenchmarkResult.isSuccess()) {
-                BestSolutionMutationSingleStatistic singleStatistic = (BestSolutionMutationSingleStatistic)
-                        singleBenchmarkResult.getSingleStatistic(problemStatisticType);
-                for (BestSolutionMutationStatisticPoint point : singleStatistic.getPointList()) {
+            if (singleBenchmarkResult.hasAllSuccess()) {
+                BestSolutionMutationSubSingleStatistic subSingleStatistic = (BestSolutionMutationSubSingleStatistic)
+                        singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
+                for (BestSolutionMutationStatisticPoint point : subSingleStatistic.getPointList()) {
                     long timeMillisSpent = point.getTimeMillisSpent();
                     long mutationCount = point.getMutationCount();
                     double yValue = mutationCount;

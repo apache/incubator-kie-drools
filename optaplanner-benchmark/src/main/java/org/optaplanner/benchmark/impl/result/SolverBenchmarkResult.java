@@ -30,6 +30,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.optaplanner.benchmark.impl.measurement.ScoreDifferencePercentage;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
+import org.optaplanner.benchmark.impl.statistic.StatisticUtils;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -48,6 +49,8 @@ public class SolverBenchmarkResult {
     private PlannerBenchmarkResult plannerBenchmarkResult;
 
     private String name = null;
+
+    private Integer subSingleCount = null;
 
     private SolverConfig solverConfig = null;
 
@@ -98,6 +101,14 @@ public class SolverBenchmarkResult {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getSubSingleCount() {
+        return subSingleCount;
+    }
+
+    public void setSubSingleCount(Integer subSingleCount) {
+        this.subSingleCount = subSingleCount;
     }
 
     public SolverConfig getSolverConfig() {
@@ -203,31 +214,6 @@ public class SolverBenchmarkResult {
         return ranking != null && ranking.intValue() == 0;
     }
 
-    // TODO Do the locale formatting in benchmarkReport.html.ftl - https://issues.jboss.org/browse/PLANNER-169
-    public String getStandardDeviationString() {
-        if (standardDeviationDoubles == null) {
-            return null;
-        }
-        StringBuilder standardDeviationString = new StringBuilder(standardDeviationDoubles.length * 9);
-        boolean first = true;
-        for (double standardDeviationDouble : standardDeviationDoubles) {
-            if (first) {
-                first = false;
-            } else {
-                standardDeviationString.append("/");
-            }
-            String abbreviated = Double.toString(standardDeviationDouble);
-            // Abbreviate to 2 decimals
-            // We don't use DecimalFormat to abbreviate because it's written locale insensitive (like java literals)
-            int dotIndex = abbreviated.lastIndexOf('.');
-            if (dotIndex >= 0 && dotIndex + 3 < abbreviated.length()) {
-                abbreviated = abbreviated.substring(0, dotIndex + 3);
-            }
-            standardDeviationString.append(abbreviated);
-        }
-        return standardDeviationString.toString();
-    }
-
     public Score getAverageWinningScoreDifference() {
         if (totalWinningScoreDifference == null) {
             return null;
@@ -238,7 +224,7 @@ public class SolverBenchmarkResult {
     public List<Score> getScoreList() {
         List<Score> scoreList = new ArrayList<Score>(singleBenchmarkResultList.size());
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            scoreList.add(singleBenchmarkResult.getScore());
+            scoreList.add(singleBenchmarkResult.getAverageScore());
         }
         return scoreList;
     }
@@ -281,6 +267,10 @@ public class SolverBenchmarkResult {
         return solverConfig.determineEnvironmentMode();
     }
 
+    public String getStandardDeviationString() {
+        return StatisticUtils.getStandardDeviationString(standardDeviationDoubles);
+    }
+
     // ************************************************************************
     // Accumulate methods
     // ************************************************************************
@@ -293,7 +283,7 @@ public class SolverBenchmarkResult {
      */
     public void accumulateResults(BenchmarkReport benchmarkReport) {
         determineTotalsAndAverages();
-        determineStandardDeviation();
+        standardDeviationDoubles = StatisticUtils.determineStandardDeviationDoubles(singleBenchmarkResultList, averageScore, getSuccessCount());
     }
 
     protected void determineTotalsAndAverages() {
@@ -308,24 +298,24 @@ public class SolverBenchmarkResult {
         totalUninitializedVariableCount = 0;
         infeasibleScoreCount = 0;
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            if (singleBenchmarkResult.isFailure()) {
+            if (singleBenchmarkResult.hasAnyFailure()) {
                 failureCount++;
             } else {
                 if (!singleBenchmarkResult.isInitialized()) {
                     uninitializedSolutionCount++;
-                    totalUninitializedVariableCount += singleBenchmarkResult.getUninitializedVariableCount();
+                    totalUninitializedVariableCount += singleBenchmarkResult.getAverageUninitializedVariableCount();
                 } else if (!singleBenchmarkResult.isScoreFeasible()) {
                     infeasibleScoreCount++;
                 }
                 if (firstNonFailure) {
-                    totalScore = singleBenchmarkResult.getScore();
+                    totalScore = singleBenchmarkResult.getAverageScore();
                     totalWinningScoreDifference = singleBenchmarkResult.getWinningScoreDifference();
                     totalWorstScoreDifferencePercentage = singleBenchmarkResult.getWorstScoreDifferencePercentage();
                     totalAverageCalculateCountPerSecond = singleBenchmarkResult.getAverageCalculateCountPerSecond();
                     totalTimeMillisSpent = singleBenchmarkResult.getTimeMillisSpent();
                     firstNonFailure = false;
                 } else {
-                    totalScore = totalScore.add(singleBenchmarkResult.getScore());
+                    totalScore = totalScore.add(singleBenchmarkResult.getAverageScore());
                     totalWinningScoreDifference = totalWinningScoreDifference.add(
                             singleBenchmarkResult.getWinningScoreDifference());
                     totalWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.add(
@@ -341,32 +331,6 @@ public class SolverBenchmarkResult {
             averageWorstScoreDifferencePercentage = totalWorstScoreDifferencePercentage.divide((double) successCount);
             averageAverageCalculateCountPerSecond = totalAverageCalculateCountPerSecond / (long) successCount;
             averageTimeMillisSpent = totalTimeMillisSpent / (long) successCount;
-        }
-    }
-
-    protected void determineStandardDeviation() {
-        int successCount = getSuccessCount();
-        if (successCount <= 0) {
-            return;
-        }
-        // averageScore can no longer be null
-        double[] differenceSquaredTotalDoubles = null;
-        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            if (!singleBenchmarkResult.isFailure()) {
-                Score difference = singleBenchmarkResult.getScore().subtract(averageScore);
-                // Calculations done on doubles to avoid common overflow when executing with an int score > 500 000
-                double[] differenceDoubles = ScoreUtils.extractLevelDoubles(difference);
-                if (differenceSquaredTotalDoubles == null) {
-                    differenceSquaredTotalDoubles = new double[differenceDoubles.length];
-                }
-                for (int i = 0; i < differenceDoubles.length; i++) {
-                    differenceSquaredTotalDoubles[i] += Math.pow(differenceDoubles[i], 2.0);
-                }
-            }
-        }
-        standardDeviationDoubles = new double[differenceSquaredTotalDoubles.length];
-        for (int i = 0; i < differenceSquaredTotalDoubles.length; i++) {
-            standardDeviationDoubles[i] = Math.pow(differenceSquaredTotalDoubles[i] / successCount, 0.5);
         }
     }
 
@@ -391,6 +355,7 @@ public class SolverBenchmarkResult {
                     nameCount++;
                 }
                 nameCountMap.put(oldResult.name, nameCount);
+                newResult.subSingleCount = oldResult.subSingleCount;
                 newResult.solverConfig = oldResult.solverConfig;
                 newResult.singleBenchmarkResultList = new ArrayList<SingleBenchmarkResult>(
                         oldResult.singleBenchmarkResultList.size());

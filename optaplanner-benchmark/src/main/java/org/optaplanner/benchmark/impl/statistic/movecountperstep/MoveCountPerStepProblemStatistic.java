@@ -39,8 +39,9 @@ import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
-import org.optaplanner.benchmark.impl.statistic.SingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 
 @XStreamAlias("moveCountPerStepProblemStatistic")
@@ -53,8 +54,8 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
     }
 
     @Override
-    public SingleStatistic createSingleStatistic(SingleBenchmarkResult singleBenchmarkResult) {
-        return new MoveCountPerStepSingleStatistic(singleBenchmarkResult);
+    public SubSingleStatistic createSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        return new MoveCountPerStepSubSingleStatistic(subSingleBenchmarkResult);
     }
 
     /**
@@ -87,10 +88,10 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
             XYSeries selectedSeries = new XYSeries(
                     singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " selected");
             XYItemRenderer renderer = new XYLineAndShapeRenderer(true, false);
-            if (singleBenchmarkResult.isSuccess()) {
-                MoveCountPerStepSingleStatistic singleStatistic = (MoveCountPerStepSingleStatistic)
-                        singleBenchmarkResult.getSingleStatistic(problemStatisticType);
-                for (MoveCountPerStepStatisticPoint point : singleStatistic.getPointList()) {
+            if (singleBenchmarkResult.hasAllSuccess()) {
+                MoveCountPerStepSubSingleStatistic subSingleStatistic = (MoveCountPerStepSubSingleStatistic)
+                        singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
+                for (MoveCountPerStepStatisticPoint point : subSingleStatistic.getPointList()) {
                     long timeMillisSpent = point.getTimeMillisSpent();
                     long acceptedMoveCount = point.getMoveCountPerStepMeasurement().getAcceptedMoveCount();
                     long selectedMoveCount = point.getMoveCountPerStepMeasurement().getSelectedMoveCount();
