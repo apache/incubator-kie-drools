@@ -21,7 +21,6 @@ import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
-import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.util.AtomicBitwiseLong;
@@ -56,7 +55,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private          SegmentMemory      previous;
     private          SegmentMemory      next;
 
-    private transient List<PathMemory>  dataDrivenPMems;
+    private transient PathMemory firstDataDrivenPathMemory;
 
     public SegmentMemory(NetworkNode rootNode) {
         this.rootNode = rootNode;
@@ -81,9 +80,6 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public LeftTupleSink getSinkFactory() {
         return (LeftTupleSink) rootNode;
-    }
-
-    public void setSinkFactory(LeftTupleSink sink) {
     }
 
     public <T extends Memory> T createNodeMemory(MemoryFactory<T> memoryFactory,
@@ -119,7 +115,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public void updateCleanNodeMask(long mask) {
-        dirtyNodeMask.getAndBitwiseReset(mask);
+        dirtyNodeMask.getAndBitwiseReset( mask );
         //dirtyNodeMask = dirtyNodeMask & ~( 1 << mask );
     }
 
@@ -144,7 +140,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             log.trace("LinkNode notify=true nmask={} smask={} spos={} rules={}", mask, linkedNodeMask, pos, getRuleNames());
         }
 
-        notifyRuleLinkSegment(wm);
+        notifyRuleLinkSegment( wm );
     }
 
     public void linkNodeWithoutRuleNotify(long mask) {
@@ -241,28 +237,35 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         return pathMemories;
     }
 
-    public PathMemory getFirstDataDrivenPathMemory() {
-        return getDataDrivenPathMemories().get(0);
+    public void addPathMemory(PathMemory pathMemory) {
+        pathMemories.add(pathMemory);
+        if (firstDataDrivenPathMemory == null && pathMemory.isDataDriven()) {
+            firstDataDrivenPathMemory = pathMemory;
+        }
     }
 
-    private List<PathMemory> getDataDrivenPathMemories() {
-        if (dataDrivenPMems == null) {
-            dataDrivenPMems = new ArrayList<PathMemory>();
+    public void mergePathMemories(SegmentMemory segmentMemory) {
+        pathMemories.addAll(segmentMemory.getPathMemories());
+        if (firstDataDrivenPathMemory == null) {
+            firstDataDrivenPathMemory = segmentMemory.getFirstDataDrivenPathMemory();
+        }
+    }
+
+    public void removePathMemory(PathMemory pathMemory) {
+        pathMemories.remove( pathMemory );
+        if (firstDataDrivenPathMemory != null && firstDataDrivenPathMemory.equals( pathMemory )) {
+            firstDataDrivenPathMemory = null;
             for (PathMemory pmem : pathMemories) {
-                RuleImpl rule = pmem.getRule();
-                if (rule != null && rule.isDataDriven()) {
-                    dataDrivenPMems.add(pmem);
+                if (pmem.isDataDriven()) {
+                    firstDataDrivenPathMemory = pmem;
+                    break;
                 }
             }
-            if (dataDrivenPMems.isEmpty()) {
-                dataDrivenPMems.add(null);
-            }
         }
-        return dataDrivenPMems;
     }
 
-    public void setPathMemories(List<PathMemory> ruleSegments) {
-        this.pathMemories = ruleSegments;
+    public PathMemory getFirstDataDrivenPathMemory() {
+        return firstDataDrivenPathMemory;
     }
 
     public long getSegmentPosMaskBit() {
@@ -468,7 +471,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
         @Override
         public void populateMemory(InternalWorkingMemory wm, Memory liaMemory) {
-            ((LeftInputAdapterNode.LiaNodeMemory)liaMemory).setNodePosMaskBit(nodePosMaskBit);
+            ((LeftInputAdapterNode.LiaNodeMemory)liaMemory).setNodePosMaskBit( nodePosMaskBit );
         }
     }
 
@@ -482,7 +485,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
         @Override
         public void populateMemory(InternalWorkingMemory wm, Memory memory) {
-            ((ReactiveFromNode.ReactiveFromMemory)memory).getBetaMemory().setNodePosMaskBit(nodePosMaskBit);
+            ((ReactiveFromNode.ReactiveFromMemory)memory).getBetaMemory().setNodePosMaskBit( nodePosMaskBit );
         }
     }
 

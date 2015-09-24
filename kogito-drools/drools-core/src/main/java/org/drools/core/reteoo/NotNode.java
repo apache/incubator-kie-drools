@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
+import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
+
 public class NotNode extends BetaNode {
     private static final long serialVersionUID = 510l;
 
@@ -132,7 +134,7 @@ public class NotNode extends BetaNode {
     public void assertObject( final InternalFactHandle factHandle,
                               final PropagationContext pctx,
                               final InternalWorkingMemory wm ) {
-        final BetaMemory memory = (BetaMemory) getBetaMemoryFromRightInput(this, wm);
+        final BetaMemory memory = getBetaMemoryFromRightInput(this, wm);
 
         RightTuple rightTuple = createRightTuple( factHandle,
                                                   this,
@@ -153,7 +155,7 @@ public class NotNode extends BetaNode {
             memory.setNodeDirty(wm);
         }
 
-        flushLeftTupleIfNecessary(wm, memory.getSegmentMemory());
+        flushLeftTupleIfNecessary(wm, memory.getSegmentMemory(), null, isStreamMode());
     }
 
     public void retractRightTuple(final RightTuple rightTuple,

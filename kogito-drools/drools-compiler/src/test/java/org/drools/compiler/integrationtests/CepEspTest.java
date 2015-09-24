@@ -5584,4 +5584,25 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( "goodbye",
                       ksession.getObject( key ) );
     }
+
+    @Test
+    public void testEventWithShortExpiration() {
+        // DROOLS-921
+        String drl = "declare String\n" +
+                     "  @expires( 1ms )\n" +
+                     "  @role( event )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     "  String( )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build( EventProcessingOption.STREAM )
+                                             .newKieSession();
+
+        ksession.insert( "test" );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
 }

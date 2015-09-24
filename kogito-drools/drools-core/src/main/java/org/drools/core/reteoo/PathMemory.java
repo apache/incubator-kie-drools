@@ -169,6 +169,11 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         return (linkedSegmentMask.get() & allLinkedMaskTest) == allLinkedMaskTest;
     }
 
+    public boolean isDataDriven() {
+        RuleImpl rule = getRule();
+        return rule != null && rule.isDataDriven();
+    }
+
     public short getNodeType() {
         return NodeTypeEnums.RuleTerminalNode;
     }
