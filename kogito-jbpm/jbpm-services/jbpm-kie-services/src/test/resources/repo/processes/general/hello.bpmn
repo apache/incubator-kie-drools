@@ -12,8 +12,13 @@
              xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
              xmlns:tns="http://www.jboss.org/drools">
 
+  <itemDefinition id="_idItem" structureRef="String" />
+  
   <process processType="Private" isExecutable="true" id="hello" name="Hello Process" tns:packageName="com.sample" >
 
+    <!-- process variables -->
+    <property id="name" itemSubjectRef="_idItem"/>
+    
     <extensionElements>
      <tns:import name="java.util.List" />
      <tns:import name="java.util.ArrayList" />
@@ -21,7 +26,7 @@
     <!-- nodes -->
     <startEvent id="_1" name="Start"  isInterrupting="true"/>
     <scriptTask id="_2" name="Hello" scriptFormat="http://www.java.com/java" >
-      <script>System.out.println("Hello");</script>
+      <script>String helloName = (String) kcontext.getVariable("name"); System.out.println("Hello " + helloName);</script>
     </scriptTask>
     <endEvent id="_3" name="End" >
         <terminateEventDefinition />

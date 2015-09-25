@@ -65,36 +65,36 @@ import org.slf4j.LoggerFactory;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public abstract class AbstractKieServicesBaseTest {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(AbstractKieServicesBaseTest.class);
-	
+
 	protected static final String ARTIFACT_ID = "test-module";
 	protected static final String GROUP_ID = "org.jbpm.test";
 	protected static final String VERSION = "1.0.0-SNAPSHOT";
-	
+
 	private PoolingDataSource ds;
-	
+
 	protected EntityManagerFactory emf;
-	protected DeploymentService deploymentService;    
+	protected DeploymentService deploymentService;
 	protected DefinitionService bpmn2Service;
 	protected RuntimeDataService runtimeDataService;
 	protected ProcessService processService;
 	protected UserTaskService userTaskService;
-	
+
 	protected TestIdentityProvider identityProvider;
-    
+
     @BeforeClass
-    public static void configure() { 
+    public static void configure() {
         LoggingPrintStream.interceptSysOutSysErr();
-     
+
     }
-    
+
     @AfterClass
-    public static void reset() {     	
+    public static void reset() {
     	LoggingPrintStream.resetInterceptSysOutSysErr();
-        
+
     }
-        
+
     protected void close() {
     	if (emf != null) {
     		emf.close();
@@ -102,15 +102,17 @@ public abstract class AbstractKieServicesBaseTest {
     	EntityManagerFactoryManager.get().clear();
     	closeDataSource();
     }
-    
+
 	protected void configureServices() {
 		buildDatasource();
 		emf = EntityManagerFactoryManager.get().getOrCreate("org.jbpm.domain");
 		identityProvider = new TestIdentityProvider();
-		
+
 		// build definition service
 		bpmn2Service = new BPMN2DataServiceImpl();
-		
+
+
+
 		// build deployment service
 		deploymentService = new KModuleDeploymentService();
 		((KModuleDeploymentService)deploymentService).setBpmn2Service(bpmn2Service);
@@ -118,29 +120,29 @@ public abstract class AbstractKieServicesBaseTest {
 		((KModuleDeploymentService)deploymentService).setIdentityProvider(identityProvider);
 		((KModuleDeploymentService)deploymentService).setManagerFactory(new RuntimeManagerFactoryImpl());
 		((KModuleDeploymentService)deploymentService).setFormManagerService(new FormManagerServiceImpl());
-		
+
 		// build runtime data service
 		runtimeDataService = new RuntimeDataServiceImpl();
 		((RuntimeDataServiceImpl) runtimeDataService).setCommandService(new TransactionalCommandService(emf));
 		((RuntimeDataServiceImpl) runtimeDataService).setIdentityProvider(identityProvider);
 		((RuntimeDataServiceImpl) runtimeDataService).setTaskService(HumanTaskServiceFactory.newTaskServiceConfigurator().entityManagerFactory(emf).getTaskService());
 		((KModuleDeploymentService)deploymentService).setRuntimeDataService(runtimeDataService);
-		
+
 		// set runtime data service as listener on deployment service
 		((KModuleDeploymentService)deploymentService).addListener(((RuntimeDataServiceImpl) runtimeDataService));
 		((KModuleDeploymentService)deploymentService).addListener(((BPMN2DataServiceImpl) bpmn2Service));
-		
+
 		// build process service
 		processService = new ProcessServiceImpl();
 		((ProcessServiceImpl) processService).setDataService(runtimeDataService);
 		((ProcessServiceImpl) processService).setDeploymentService(deploymentService);
-		
+
 		// build user task service
 		userTaskService = new UserTaskServiceImpl();
 		((UserTaskServiceImpl) userTaskService).setDataService(runtimeDataService);
 		((UserTaskServiceImpl) userTaskService).setDeploymentService(deploymentService);
 	}
-    
+
     protected String getPom(ReleaseId releaseId, ReleaseId... dependencies) {
         String pom =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -166,18 +168,18 @@ public abstract class AbstractKieServicesBaseTest {
         pom += "</project>";
         return pom;
     }
-   
+
     protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, List<String> resources) {
     	return createKieJar(ks, releaseId, resources, null);
     }
-    
+
    protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, List<String> resources, Map<String, String> extraResources ) {
-     
-        
+
+
         KieFileSystem kfs = createKieFileSystemWithKProject(ks);
         kfs.writePomXML( getPom(releaseId) );
 
-        
+
         for (String resource : resources) {
             kfs.write("src/main/resources/KBase-test/" + resource, ResourceFactory.newClassPathResource(resource));
         }
@@ -186,9 +188,9 @@ public abstract class AbstractKieServicesBaseTest {
 				kfs.write(entry.getKey(), ResourceFactory.newByteArrayResource(entry.getValue().getBytes()));
 			}
         }
-        
+
         kfs.write("src/main/resources/forms/DefaultProcess.ftl", ResourceFactory.newClassPathResource("repo/globals/forms/DefaultProcess.ftl"));
-        
+
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         if (!kieBuilder.buildAll().getResults().getMessages().isEmpty()) {
             for (Message message : kieBuilder.buildAll().getResults().getMessages()) {
@@ -197,11 +199,11 @@ public abstract class AbstractKieServicesBaseTest {
             throw new RuntimeException(
                     "There are errors builing the package, please check your knowledge assets!");
         }
-        
+
         return ( InternalKieModule ) kieBuilder.getKieModule();
     }
 
-    
+
 
     protected KieFileSystem createKieFileSystemWithKProject(KieServices ks) {
         KieModuleModel kproj = ks.newKieModuleModel();
@@ -210,31 +212,31 @@ public abstract class AbstractKieServicesBaseTest {
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM );
 
-    
+
         kieBaseModel1.newKieSessionModel("ksession-test").setDefault(true)
                 .setType(KieSessionModel.KieSessionType.STATEFUL)
                 .setClockType( ClockTypeOption.get("realtime") )
                 .newWorkItemHandlerModel("Log", "new org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler()");
-        
+
         kieBaseModel1.newKieSessionModel("ksession-test-2").setDefault(false)
         .setType(KieSessionModel.KieSessionType.STATEFUL)
         .setClockType( ClockTypeOption.get("realtime") )
         .newWorkItemHandlerModel("Log", "new org.jbpm.kie.services.test.objects.KieConteinerSystemOutWorkItemHandler(kieContainer)");
-        
+
         kieBaseModel1.newKieSessionModel("ksession-test2").setDefault(false)
         .setType(KieSessionModel.KieSessionType.STATEFUL)
         .setClockType( ClockTypeOption.get("realtime") );
-        
+
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.writeKModuleXML(kproj.toXML());
         return kfs;
     }
-    
+
     protected void buildDatasource() {
     	ds = new PoolingDataSource();
         ds.setUniqueName("jdbc/testDS1");
-        
-        
+
+
         //NON XA CONFIGS
         ds.setClassName("org.h2.jdbcx.JdbcDataSource");
         ds.setMaxPoolSize(3);
@@ -242,25 +244,25 @@ public abstract class AbstractKieServicesBaseTest {
         ds.getDriverProperties().put("user", "sa");
         ds.getDriverProperties().put("password", "sasa");
         ds.getDriverProperties().put("URL", "jdbc:h2:mem:mydb");
-         
+
         ds.init();
     }
-    
+
     protected void closeDataSource() {
     	if (ds != null) {
     		ds.close();
     	}
     }
-    
+
     public static void cleanupSingletonSessionId() {
         File tempDir = new File(System.getProperty("java.io.tmpdir"));
         if (tempDir.exists()) {
-            
+
             String[] jbpmSerFiles = tempDir.list(new FilenameFilter() {
-                
+
                 @Override
                 public boolean accept(File dir, String name) {
-                    
+
                     return name.endsWith("-jbpmSessionId.ser");
                 }
             });
@@ -270,7 +272,7 @@ public abstract class AbstractKieServicesBaseTest {
             }
         }
     }
-    
+
 	public void setDeploymentService(DeploymentService deploymentService) {
 		this.deploymentService = deploymentService;
 	}
@@ -291,14 +293,15 @@ public abstract class AbstractKieServicesBaseTest {
 		this.userTaskService = userTaskService;
 	}
 
-    
-    protected static void waitForTheOtherThreads(CyclicBarrier barrier) { 
+
+    protected static void waitForTheOtherThreads(CyclicBarrier barrier) {
         try {
             barrier.await();
         } catch( InterruptedException e ) {
             fail( "Thread 1 was interrupted while waiting for the other threads!");
         } catch( BrokenBarrierException e ) {
             fail( "Thread 1's barrier was broken while waiting for the other threads!");
-        } 
+        }
     }
+
 }

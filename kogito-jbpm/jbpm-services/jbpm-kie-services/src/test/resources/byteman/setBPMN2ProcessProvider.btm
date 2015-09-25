@@ -14,11 +14,12 @@
 
 RULE setBPMN2ProcessProvider wait
 CLASS org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceExtensionSemanticModule
-METHOD setRepoHelper
+METHOD setUseByThisThread(boolean)
 AT EXIT
-IF TRUE
+BIND usedByThisThread = $1
+IF usedByThisThread
 DO 
-traceln(">>>> Wait For: exit setRepoHelper");
+traceln(">>>> Wait at start of process definition building / Signal KieBuilder");
 signalWake("Add Resource to KieBuilder");
 waitFor("After KieBuilder.add(..)");
 ENDRULE
@@ -33,7 +34,7 @@ METHOD createKBuilder
 AT ENTRY
 IF true
 DO 
-traceln(">>>> Wait For: entry createKBuilder");
+traceln(">>>> Wait for signal to KieBuilder");
 waitFor("Add Resource to KieBuilder");
 ENDRULE
 
@@ -45,6 +46,6 @@ METHOD letDataServiceThreadFinish
 AT ENTRY
 IF true
 DO 
-traceln(">>>> Wait For: entry letDataServiceThreadFinish");
+traceln(">>>> Signal process definition building");
 signalWake("After KieBuilder.add(..)");
 ENDRULE
