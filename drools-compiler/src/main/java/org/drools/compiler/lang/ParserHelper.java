@@ -336,8 +336,12 @@ public class ParserHelper {
     }
 
     public void reportError( Exception e ) {
-        errors.add( errorMessageFactory.createDroolsException( e,
-                                                               input.LT( 1 ) ) );
+        try {
+            errors.add( errorMessageFactory.createDroolsException( e,
+                                                                   input.LT( 1 ) ) );
+        } catch (Exception ignored) {
+            errors.add(new DroolsParserException( "Unexpected error: " + e.getMessage(), e ));
+        }
     }
 
     /** return the raw DroolsParserException errors */
