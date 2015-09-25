@@ -16,6 +16,12 @@
 
 package org.jbpm.process.instance.command;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -28,17 +34,33 @@ import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.internal.command.Context;
+import org.kie.internal.command.ProcessInstanceIdCommand;
 
-public class UpdateTimerCommand implements GenericCommand<Object> {
+@XmlRootElement(name = "update-timer-command")
+@XmlAccessorType(XmlAccessType.NONE)
+public class UpdateTimerCommand implements GenericCommand<Void>, ProcessInstanceIdCommand {
 
     private static final long serialVersionUID = -8252686458877022330L;
-    
-    private final long processInstanceId;
-    private final String timerName;
-    
-    private final long delay;
-    private final long period;
-    private final int repeatLimit;
+
+    @XmlElement
+    @XmlSchemaType(name = "long")
+    private long processInstanceId;
+
+    @XmlElement
+    @XmlSchemaType(name = "string")
+    private String timerName;
+
+    @XmlElement
+    @XmlSchemaType(name = "long")
+    private long delay;
+
+    @XmlElement
+    @XmlSchemaType(name = "long")
+    private long period;
+
+    @XmlElement
+    @XmlSchemaType(name = "int")
+    private int repeatLimit;
 
     public UpdateTimerCommand(long processInstanceId, String timerName, long delay) {
         this(processInstanceId, timerName, delay, 0, 0);
@@ -57,7 +79,7 @@ public class UpdateTimerCommand implements GenericCommand<Object> {
     }
 
     @Override
-    public Object execute(Context context) {
+    public Void execute(Context context) {
         KieSession kieSession = ((KnowledgeCommandContext) context).getKieSession();
         TimerManager tm = getTimerManager(kieSession);
 
@@ -68,10 +90,10 @@ public class UpdateTimerCommand implements GenericCommand<Object> {
                 TimerNodeInstance tni = (TimerNodeInstance) nodeInstance;
                 if (tni.getNodeName().equals(timerName)) {
                     TimerInstance timer = tm.getTimerMap().get(tni.getTimerId());
-                    
+
                     tm.cancelTimer(timer.getTimerId());
                     TimerInstance newTimer = new TimerInstance();
-                    
+
                     if (delay != 0) {
                         long diff = System.currentTimeMillis() - timer.getActivated().getTime();
                         newTimer.setDelay(delay * 1000 - diff);
@@ -90,6 +112,16 @@ public class UpdateTimerCommand implements GenericCommand<Object> {
         return null;
     }
 
+    @Override
+    public void setProcessInstanceId(Long procInstId) {
+        this.processInstanceId = procInstId;
+    }
+
+    @Override
+    public Long getProcessInstanceId() {
+        return processInstanceId;
+    }
+
     private TimerManager getTimerManager(KieSession ksession) {
         KieSession internal = ksession;
         if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
@@ -97,6 +129,10 @@ public class UpdateTimerCommand implements GenericCommand<Object> {
         }
 
         return ((InternalProcessRuntime) ((StatefulKnowledgeSessionImpl) internal).getProcessRuntime()).getTimerManager();
+    }
+
+    public String toString() {
+        return "processInstance.updateTimer(" + timerName + ", " + delay + ", " + period + ", " + repeatLimit + ");";
     }
 
 }
