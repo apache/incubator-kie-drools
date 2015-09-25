@@ -80,7 +80,6 @@ public class MetByEvaluatorDefinition
     private static String[]             SUPPORTED_IDS;
 
     private Map<String, MetByEvaluator> cache         = Collections.emptyMap();
-    private volatile TimeIntervalParser parser        = new TimeIntervalParser();
 
     { init(); }
 
@@ -156,7 +155,7 @@ public class MetByEvaluatorDefinition
         String key = isNegated + ":" + parameterText;
         MetByEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
-            Long[] params = parser.parse( parameterText );
+            Long[] params = TimeIntervalParser.parse( parameterText );
             eval = new MetByEvaluator( type,
                                        isNegated,
                                        params,

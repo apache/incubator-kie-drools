@@ -16,13 +16,6 @@
 
 package org.drools.core.base.evaluators;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.EventFactHandle;
@@ -34,6 +27,13 @@ import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.time.Interval;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * <p>The implementation of the <code>starts</code> evaluator definition.</p>
@@ -81,7 +81,6 @@ public class StartsEvaluatorDefinition
     private static String[]         SUPPORTED_IDS;
 
     private Map<String, StartsEvaluator> cache        = Collections.emptyMap();
-    private volatile TimeIntervalParser parser        = new TimeIntervalParser();
 
     { init(); }
 
@@ -157,7 +156,7 @@ public class StartsEvaluatorDefinition
         String key = isNegated + ":" + parameterText;
         StartsEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
-            Long[] params = parser.parse( parameterText );
+            Long[] params = TimeIntervalParser.parse( parameterText );
             eval = new StartsEvaluator( type,
                                         isNegated,
                                         params,
