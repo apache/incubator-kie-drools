@@ -19,6 +19,8 @@ import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
+import org.drools.compiler.lang.descr.Annotated;
+import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
@@ -49,14 +51,11 @@ import java.util.Map;
 
 public class TypeDeclarationConfigurator {
 
-    protected TimeIntervalParser timeParser;
     protected KnowledgeBuilderImpl kbuilder;
 
     public TypeDeclarationConfigurator( KnowledgeBuilderImpl kbuilder ) {
         this.kbuilder = kbuilder;
     }
-
-
 
     public void finalize( TypeDeclaration type, AbstractClassTypeDeclarationDescr typeDescr, PackageRegistry pkgRegistry, Map<String, PackageRegistry> pkgRegistryMap, ClassHierarchyManager hierarchyManager ) {
         // prefer definitions where possible
@@ -107,13 +106,15 @@ public class TypeDeclarationConfigurator {
             }
         }
 
-        wireTimestampAccessor( typeDescr, type, pkgRegistry );
-        wireDurationAccessor( typeDescr, type, pkgRegistry );
-        configureExpirationOffset( typeDescr, type );
-
-        configurePropertyReactivity( typeDescr, type );
-
+        processTypeAnnotations( kbuilder, pkgRegistry, typeDescr, type );
         return true;
+    }
+
+    static void processTypeAnnotations( KnowledgeBuilderImpl kbuilder, PackageRegistry pkgRegistry, Annotated annotated, TypeDeclaration type ) {
+        wireTimestampAccessor( kbuilder, annotated, type, pkgRegistry );
+        wireDurationAccessor( kbuilder, annotated, type, pkgRegistry );
+        configureExpirationOffset( kbuilder, annotated, type );
+        configurePropertyReactivity( kbuilder, annotated, type );
     }
 
     protected void buildFieldAccessors(final TypeDeclaration type,
@@ -136,10 +137,11 @@ public class TypeDeclarationConfigurator {
         }
     }
 
-    protected void wireTimestampAccessor( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry ) {
-        Timestamp timestamp = typeDescr.getTypedAnnotation(Timestamp.class);
+    private static void wireTimestampAccessor( KnowledgeBuilderImpl kbuilder, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
+        Timestamp timestamp = annotated.getTypedAnnotation(Timestamp.class);
         if ( timestamp != null ) {
-            String timestampField = null;
+            BaseDescr typeDescr = annotated instanceof BaseDescr ? ( (BaseDescr) annotated ) : new BaseDescr();
+            String timestampField;
             try {
                 timestampField = timestamp.value();
             } catch (Exception e) {
@@ -149,48 +151,22 @@ public class TypeDeclarationConfigurator {
             type.setTimestampAttribute( timestampField );
             InternalKnowledgePackage pkg = pkgRegistry.getPackage();
 
-            MVELDialect dialect = (MVELDialect) pkgRegistry.getDialectCompiletimeRegistry().getDialect( "mvel" );
-            PackageBuildContext context = new PackageBuildContext();
-            context.init( kbuilder, pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null );
-            if ( ! type.isTypesafe() ) {
-                context.setTypesafe( false );
-            }
-
-            MVELAnalysisResult results = (MVELAnalysisResult)
-                    context.getDialect().analyzeExpression(context,
-                                                           typeDescr,
-                                                           timestampField,
-                                                           new BoundIdentifiers( Collections.EMPTY_MAP,
-                                                                                 Collections.EMPTY_MAP,
-                                                                                 Collections.EMPTY_MAP,
-                                                                                 type.getTypeClass()));
-
+            MVELAnalysisResult results = getMvelAnalysisResult( kbuilder, typeDescr, type, pkgRegistry, timestampField, pkg );
             if (results != null) {
-                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
-                                                                                              type.getTypeClass().getName(),
-                                                                                              timestampField,
-                                                                                              type.isTypesafe(),
-                                                                                              results.getReturnType());
-
-                MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData("mvel");
-                data.addCompileable((MVELCompileable) reader);
-                ((MVELCompileable) reader).compile(data);
-                type.setTimestampExtractor(reader);
+                type.setTimestampExtractor(getFieldExtractor( type, timestampField, pkg, results ));
             } else {
                 kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Error creating field accessors for timestamp field '" + timestamp +
-                                                                   "' for type '" +
-                                                                   type.getTypeName() +
-                                                                   "'"));
+                                                                   "' for type '" + type.getTypeName() + "'"));
             }
         }
-
     }
 
-    protected void wireDurationAccessor( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry ) {
-        Duration duration = typeDescr.getTypedAnnotation(Duration.class);
+    private static void wireDurationAccessor( KnowledgeBuilderImpl kbuilder, Annotated annotated, TypeDeclaration type, PackageRegistry pkgRegistry ) {
+        Duration duration = annotated.getTypedAnnotation(Duration.class);
         if (duration != null) {
-            String durationField = null;
+            BaseDescr typeDescr = annotated instanceof BaseDescr ? ( (BaseDescr) annotated ) : new BaseDescr();
+            String durationField;
             try {
                 durationField = duration.value();
             } catch (Exception e) {
@@ -200,33 +176,9 @@ public class TypeDeclarationConfigurator {
             type.setDurationAttribute(durationField);
             InternalKnowledgePackage pkg = pkgRegistry.getPackage();
 
-            MVELDialect dialect = (MVELDialect) pkgRegistry.getDialectCompiletimeRegistry().getDialect("mvel");
-            PackageBuildContext context = new PackageBuildContext();
-            context.init(kbuilder, pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null);
-            if (!type.isTypesafe()) {
-                context.setTypesafe(false);
-            }
-
-            MVELAnalysisResult results = (MVELAnalysisResult)
-                    context.getDialect().analyzeExpression(context,
-                                                           typeDescr,
-                                                           durationField,
-                                                           new BoundIdentifiers(Collections.EMPTY_MAP,
-                                                                                Collections.EMPTY_MAP,
-                                                                                Collections.EMPTY_MAP,
-                                                                                type.getTypeClass()));
-
+            MVELAnalysisResult results = getMvelAnalysisResult( kbuilder, typeDescr, type, pkgRegistry, durationField, pkg );
             if (results != null) {
-                InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader(ClassUtils.getPackage(type.getTypeClass()),
-                                                                                             type.getTypeClass().getName(),
-                                                                                             durationField,
-                                                                                             type.isTypesafe(),
-                                                                                             results.getReturnType());
-
-                MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData("mvel");
-                data.addCompileable((MVELCompileable) reader);
-                ((MVELCompileable) reader).compile(data);
-                type.setDurationExtractor(reader);
+                type.setDurationExtractor(getFieldExtractor( type, durationField, pkg, results ));
             } else {
                 kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr,
                                                                    "Error processing @duration for TypeDeclaration '" + type.getFullName() +
@@ -235,27 +187,57 @@ public class TypeDeclarationConfigurator {
         }
     }
 
-    protected void configureExpirationOffset( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type ) {
-        Expires expires = typeDescr.getTypedAnnotation(Expires.class);
+    private static MVELAnalysisResult getMvelAnalysisResult( KnowledgeBuilderImpl kbuilder, BaseDescr typeDescr, TypeDeclaration type, PackageRegistry pkgRegistry, String durationField, InternalKnowledgePackage pkg ) {
+        MVELDialect dialect = (MVELDialect) pkgRegistry.getDialectCompiletimeRegistry().getDialect("mvel");
+        PackageBuildContext context = new PackageBuildContext();
+        context.init(kbuilder, pkg, typeDescr, pkgRegistry.getDialectCompiletimeRegistry(), dialect, null);
+        if (!type.isTypesafe()) {
+            context.setTypesafe(false);
+        }
+
+        return (MVELAnalysisResult)
+                context.getDialect().analyzeExpression(context,
+                                                       typeDescr,
+                                                       durationField,
+                                                       new BoundIdentifiers( Collections.EMPTY_MAP,
+                                                                            Collections.EMPTY_MAP,
+                                                                            Collections.EMPTY_MAP,
+                                                                            type.getTypeClass()));
+    }
+
+    private static InternalReadAccessor getFieldExtractor( TypeDeclaration type, String timestampField, InternalKnowledgePackage pkg, MVELAnalysisResult results ) {
+        InternalReadAccessor reader = pkg.getClassFieldAccessorStore().getMVELReader( ClassUtils.getPackage( type.getTypeClass() ),
+                                                                                      type.getTypeClass().getName(),
+                                                                                      timestampField,
+                                                                                      type.isTypesafe(),
+                                                                                      results.getReturnType());
+
+        MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData("mvel");
+        data.addCompileable((MVELCompileable) reader);
+        ((MVELCompileable) reader).compile(data);
+        return reader;
+    }
+
+    private static void configureExpirationOffset( KnowledgeBuilderImpl kbuilder, Annotated annotated, TypeDeclaration type ) {
+        Expires expires = annotated.getTypedAnnotation(Expires.class);
         if (expires != null) {
-            String expiration = null;
+            String expiration;
             try {
                 expiration = expires.value();
             } catch (Exception e) {
-                kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, e.getMessage()));
+                if (annotated instanceof BaseDescr) {
+                    kbuilder.addBuilderResult( new TypeDeclarationError( (BaseDescr)annotated, e.getMessage() ) );
+                }
                 return;
             }
-            if (timeParser == null) {
-                timeParser = new TimeIntervalParser();
-            }
-            type.setExpirationOffset(timeParser.parse(expiration)[0]);
+            type.setExpirationOffset(TimeIntervalParser.parse( expiration )[0]);
         }
     }
 
-    protected void configurePropertyReactivity( AbstractClassTypeDeclarationDescr typeDescr, TypeDeclaration type ) {
+    private static void configurePropertyReactivity( KnowledgeBuilderImpl kbuilder, Annotated annotated, TypeDeclaration type ) {
         PropertySpecificOption propertySpecificOption = kbuilder.getBuilderConfiguration().getPropertySpecificOption();
-        boolean propertyReactive = propertySpecificOption.isPropSpecific( typeDescr.hasAnnotation(PropertyReactive.class),
-                                                                          typeDescr.hasAnnotation(ClassReactive.class) );
+        boolean propertyReactive = propertySpecificOption.isPropSpecific( annotated.hasAnnotation( PropertyReactive.class ),
+                                                                          annotated.hasAnnotation( ClassReactive.class ) );
         type.setPropertyReactive(propertyReactive);
     }
 }

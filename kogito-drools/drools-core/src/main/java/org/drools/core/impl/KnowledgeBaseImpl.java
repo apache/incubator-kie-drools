@@ -977,8 +977,6 @@ public class KnowledgeBaseImpl
     private void mergeTypeDeclarations( TypeDeclaration existingDecl,
                                         TypeDeclaration newDecl ) {
 
-        existingDecl.addRedeclaration(newDecl);
-
         if ( ! areNullSafeEquals( existingDecl.getFormat(),
                                   newDecl.getFormat() ) ||
              ! areNullSafeEquals( existingDecl.getObjectType(),

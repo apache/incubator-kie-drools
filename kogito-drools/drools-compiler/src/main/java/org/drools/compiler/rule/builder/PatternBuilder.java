@@ -294,8 +294,7 @@ public class PatternBuilder
                 }
                 PackageRegistry pkgr = context.getKnowledgeBuilder().getPackageRegistry( ClassUtils.getPackage( userProvidedClass ) );
                 InternalKnowledgePackage pkg = pkgr == null ? context.getPkg() : pkgr.getPackage();
-                final boolean isEvent = pkg.isEvent( userProvidedClass );
-                return new ClassObjectType( userProvidedClass, isEvent );
+                return new ClassObjectType( userProvidedClass, pkg.isEvent( userProvidedClass ) );
             } catch ( final ClassNotFoundException e ) {
                 // swallow as we'll do another check in a moment and then record the problem
             }

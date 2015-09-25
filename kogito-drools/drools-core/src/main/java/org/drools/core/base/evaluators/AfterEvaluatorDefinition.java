@@ -87,7 +87,6 @@ public class AfterEvaluatorDefinition
     private static String[]         SUPPORTED_IDS;
 
     private Map<String, AfterEvaluator> cache         = Collections.emptyMap();
-    private volatile TimeIntervalParser parser        = new TimeIntervalParser();
 
     { init(); }
 
@@ -166,7 +165,7 @@ public class AfterEvaluatorDefinition
         String key = left+":"+right+":"+isNegated + ":" + parameterText;
         AfterEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
-            Long[] params = parser.parse( parameterText );
+            Long[] params = TimeIntervalParser.parse( parameterText );
             eval = new AfterEvaluator( type,
                                        isNegated,
                                        params,

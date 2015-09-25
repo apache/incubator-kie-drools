@@ -34,7 +34,7 @@ import java.util.Set;
  */
 public class AnnotatedBaseDescr extends BaseDescr
     implements
-    Externalizable {
+    Annotated, Externalizable {
 
     private Map<String, AnnotationDescr> annotations;
     

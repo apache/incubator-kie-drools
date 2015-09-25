@@ -111,12 +111,12 @@ public interface PropagationEntry {
             long effectiveEnd = eventFactHandle.getEndTimestamp() + expirationOffset;
             long nextTimestamp = Math.max( insertionTime,
                                            effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
-            JobContext jobctx = new ObjectTypeNode.ExpireJobContext( new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn ),
-                                                                     workingMemory );
 
             if (nextTimestamp < workingMemory.getTimerService().getCurrentTime()) {
-                job.execute( jobctx );
+                workingMemory.queueWorkingMemoryAction(new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn ));
             } else {
+                JobContext jobctx = new ObjectTypeNode.ExpireJobContext( new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn ),
+                                                                         workingMemory );
                 JobHandle jobHandle = workingMemory.getTimerService()
                                                    .scheduleJob( job,
                                                                  jobctx,

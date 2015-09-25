@@ -88,7 +88,6 @@ public class BeforeEvaluatorDefinition
     private static String[]             SUPPORTED_IDS;
 
     private Map<String, BeforeEvaluator> cache         = Collections.emptyMap();
-    private volatile TimeIntervalParser  parser        = new TimeIntervalParser();
 
     { init(); }
 
@@ -164,7 +163,7 @@ public class BeforeEvaluatorDefinition
         String key = left+":"+right+":"+isNegated + ":" + parameterText;
         BeforeEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
-            Long[] params = parser.parse( parameterText );
+            Long[] params = TimeIntervalParser.parse( parameterText );
             eval = new BeforeEvaluator( type,
                                         isNegated,
                                         params,
