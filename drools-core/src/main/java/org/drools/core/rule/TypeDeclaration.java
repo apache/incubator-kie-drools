@@ -33,8 +33,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -116,7 +114,6 @@ public class TypeDeclaration
     private long                   expirationOffset = -1;
 
     private int                    order;
-    private List<TypeDeclaration>  redeclarations;
 
     public TypeDeclaration() {
 
@@ -126,8 +123,6 @@ public class TypeDeclaration
         nature = Nature.DECLARATION;
 
         this.valid =  true;
-
-        addRedeclaration( this );
     }
 
     public TypeDeclaration( Class< ? > typeClass ) {
@@ -150,8 +145,6 @@ public class TypeDeclaration
         this.typeTemplate = null;
         this.typesafe =  true;
         this.valid =  true;
-
-        addRedeclaration( this );
     }
 
     public void readExternal( ObjectInput in ) throws IOException,
@@ -503,27 +496,6 @@ public class TypeDeclaration
             settableProprties = ClassUtils.getSettableProperties( getTypeClass() );
         }
         return settableProprties;
-    }
-
-    public void addRedeclaration( TypeDeclaration typeDeclaration ) {
-        if ( redeclarations == null ) {
-            redeclarations = new ArrayList<TypeDeclaration>();
-        }
-        redeclarations.add( typeDeclaration );
-    }
-
-    private List<TypeDeclaration> getRedeclarations( ) {
-        return Collections.unmodifiableList( redeclarations );
-    }
-
-
-    public boolean removeRedeclaration( TypeDeclaration decl ) {
-        if ( ! redeclarations.contains( decl ) ) {
-            return false;
-        } else {
-            redeclarations.remove( decl );
-            return true;
-        }
     }
 
     public String toString() {

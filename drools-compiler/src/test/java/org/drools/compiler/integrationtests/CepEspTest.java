@@ -15,10 +15,6 @@ import org.drools.core.base.evaluators.TimeIntervalParser;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.Memory;
-import org.drools.core.common.NodeMemories;
-import org.drools.core.common.RightTupleSets;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
@@ -475,9 +471,8 @@ public class CepEspTest extends CommonTestMethodBase {
 
         // read in the source
         TypeDeclaration factType = ((KnowledgeBaseImpl)kbase).getTypeDeclaration( StockTick.class );
-        final TimeIntervalParser parser = new TimeIntervalParser();
 
-        assertEquals( parser.parse( "1h30m" )[0].longValue(),
+        assertEquals( TimeIntervalParser.parse( "1h30m" )[0].longValue(),
                       factType.getExpirationOffset() );
     }
 
@@ -488,7 +483,6 @@ public class CepEspTest extends CommonTestMethodBase {
         kbc.setOption( EventProcessingOption.STREAM );
         KnowledgeBase kbase = loadKnowledgeBase( kbc, "test_CEP_EventExpiration2.drl" );
 
-        final TimeIntervalParser parser = new TimeIntervalParser();
 
         Map<ObjectType, ObjectTypeNode> objectTypeNodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes( EntryPointId.DEFAULT );
         ObjectTypeNode node = objectTypeNodes.get( new ClassObjectType( StockTick.class ) );
@@ -496,7 +490,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertNotNull( node );
 
         // the expiration policy @expires(10m) should override the temporal operator usage 
-        assertEquals( parser.parse( "10m" )[0].longValue() + 1,
+        assertEquals( TimeIntervalParser.parse( "10m" )[0].longValue() + 1,
                       node.getExpirationOffset() );
     }
 
@@ -507,15 +501,13 @@ public class CepEspTest extends CommonTestMethodBase {
         conf.setOption( EventProcessingOption.STREAM );
         final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_EventExpiration3.drl" );
         
-        final TimeIntervalParser parser = new TimeIntervalParser();
-
         Map<ObjectType, ObjectTypeNode> objectTypeNodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes( EntryPointId.DEFAULT );
         ObjectTypeNode node = objectTypeNodes.get( new ClassObjectType( StockTick.class ) );
 
         assertNotNull( node );
 
         // the expiration policy @expires(10m) should override the temporal operator usage 
-        assertEquals( parser.parse( "10m" )[0].longValue() + 1,
+        assertEquals( TimeIntervalParser.parse( "10m" )[0].longValue() + 1,
                       node.getExpirationOffset() );
     }
 
@@ -5514,7 +5506,7 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test
-    public void testEventWithShortExpiration() {
+    public void testEventWithShortExpiration() throws InterruptedException {
         // DROOLS-921
         String drl = "declare String\n" +
                      "  @expires( 1ms )\n" +
@@ -5532,5 +5524,9 @@ public class CepEspTest extends CommonTestMethodBase {
 
         ksession.insert( "test" );
         assertEquals( 1, ksession.fireAllRules() );
+
+        Thread.sleep(2L);
+        ksession.fireAllRules();
+        assertEquals( 0, ksession.getObjects().size() );
     }
 }

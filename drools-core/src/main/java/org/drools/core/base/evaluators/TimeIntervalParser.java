@@ -21,11 +21,11 @@ import org.drools.core.time.TimeUtils;
 /**
  * A parameters parser that uses JodaTime for time units parsing.
  */
-public class TimeIntervalParser
-    implements
-    EvaluatorParametersParser {
+public class TimeIntervalParser {
 
-    public Long[] parse(String paramText) {
+    private TimeIntervalParser() { }
+
+    public static Long[] parse(String paramText) {
         if ( paramText == null || paramText.trim().length() == 0 ) {
             return new Long[0];
         }

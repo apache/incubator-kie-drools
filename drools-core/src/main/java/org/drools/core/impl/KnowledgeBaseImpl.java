@@ -945,8 +945,6 @@ public class KnowledgeBaseImpl
     private void mergeTypeDeclarations( TypeDeclaration existingDecl,
                                         TypeDeclaration newDecl ) {
 
-        existingDecl.addRedeclaration(newDecl);
-
         if ( ! nullSafeEquals( existingDecl.getFormat(),
                                newDecl.getFormat() ) ||
              ! nullSafeEquals( existingDecl.getObjectType(),
@@ -957,7 +955,6 @@ public class KnowledgeBaseImpl
                                newDecl.getTypeName() ) ) {
 
             throw new RuntimeException( "Unable to merge Type Declaration for class '" + existingDecl.getTypeName() + "'" );
-
         }
 
         existingDecl.setDurationAttribute( mergeLeft( existingDecl.getTypeName(),
