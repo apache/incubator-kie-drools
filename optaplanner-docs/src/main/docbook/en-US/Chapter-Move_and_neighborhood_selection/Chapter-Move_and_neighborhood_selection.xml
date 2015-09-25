@@ -1275,8 +1275,11 @@
       &lt;/tailChainSwapMoveSelector&gt;
     &lt;/unionMoveSelector&gt;</programlisting>
 
+      <para>A <literal>distributionSizeMaximum</literal> parameter should not be 1 because if the nearest is already the
+      planning value of the current entity, then the only move that is selectable is not doable.</para>
+
       <para>To allow every element to be selected, regardless of the number of entities, only set the distribution type
-      without the size maximum parameter:</para>
+      (so without a <literal>distributionSizeMaximum</literal> parameter):</para>
 
       <programlisting language="xml">  &lt;nearbySelection&gt;
     &lt;nearbySelectionDistributionType&gt;PARABOLIC_DISTRIBUTION&lt;/nearbySelectionDistributionType&gt;
