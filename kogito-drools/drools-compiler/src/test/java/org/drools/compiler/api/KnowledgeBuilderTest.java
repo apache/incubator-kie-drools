@@ -15,19 +15,20 @@
 
 package org.drools.compiler.api;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
-
-import java.util.Collection;
-
 import org.junit.Test;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Results;
+import org.kie.api.definition.rule.Rule;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.definition.KnowledgePackage;
-import org.kie.api.definition.rule.Rule;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
+
+import java.util.Collection;
+
+import static org.junit.Assert.*;
 
 
 public class KnowledgeBuilderTest {
@@ -113,6 +114,15 @@ public class KnowledgeBuilderTest {
         } catch ( IllegalArgumentException e ) {
             
         }
-    }    
+    }
 
+    @Test
+    public void testMalformedDrl() throws Exception {
+        // DROOLS-928
+        byte[] content = new byte[]{0x04,0x44,0x00,0x00,0x60,0x00,0x00,0x00};
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", new String(content) );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertTrue( results.getMessages().size() > 0 );
+    }
 }
