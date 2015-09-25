@@ -336,8 +336,13 @@ public class ParserHelper {
     }
 
     public void reportError( Exception e ) {
-        errors.add( errorMessageFactory.createDroolsException( e,
-                                                               input.LT( 1 ) ) );
+        if (input.index()-input.range()<2) {
+            errors.add( errorMessageFactory.createDroolsException( e,
+                                                                   input.LT( -1 ) ) );
+        }else{
+            errors.add( errorMessageFactory.createDroolsException( e,
+                                                                   input.LT( 1 ) ) );
+        }
     }
 
     /** return the raw DroolsParserException errors */
