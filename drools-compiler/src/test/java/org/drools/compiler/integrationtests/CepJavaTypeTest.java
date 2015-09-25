@@ -16,15 +16,24 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.compiler.CommonTestMethodBase;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.type.Expires;
+import org.kie.api.definition.type.Role;
+import org.kie.api.definition.type.Timestamp;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.utils.KieHelper;
 
 public class CepJavaTypeTest extends CommonTestMethodBase {
+
+    @Role(value = Role.Type.EVENT)
+    public static class Event { }
 
     @Test
     public void testJavaTypeAnnotatedWithRole_WindowTime() {
@@ -84,9 +93,43 @@ public class CepJavaTypeTest extends CommonTestMethodBase {
         assertTrue( builder.getResults().getMessages().isEmpty() );
     }
 
-    @org.kie.api.definition.type.Role(value = org.kie.api.definition.type.Role.Type.EVENT)
-    public static class Event {
+    @Role(value = Role.Type.EVENT)
+    @Timestamp( "Ts" )
+    @Expires( "1ms" )
+    public static class MyMessage {
+        String name;
+        long ts;
 
+        public MyMessage(String n) {
+            name = n;
+            ts = System.currentTimeMillis();
+        }
+
+        public void setName(String n) { name = n; }
+        public String getName() { return name; }
+        public void setTs(long t) { ts = t; }
+        public long getTs() { return ts; }
     }
 
+    @Test
+    public void testEventWithShortExpiration() throws InterruptedException {
+        // BZ-1265773
+        String drl = "import " + MyMessage.class.getCanonicalName() +"\n" +
+                     "rule \"Rule A Start\"\n" +
+                     "when\n" +
+                     "  MyMessage ( name == \"ATrigger\" )\n" +
+                     "then\n" +
+                     "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build( EventProcessingOption.STREAM )
+                                             .newKieSession();
+
+        ksession.insert(new MyMessage("ATrigger" ) );
+        assertEquals( 1, ksession.fireAllRules() );
+
+        Thread.sleep(2L);
+        ksession.fireAllRules();
+        assertEquals( 0, ksession.getObjects().size() );
+    }
 }
