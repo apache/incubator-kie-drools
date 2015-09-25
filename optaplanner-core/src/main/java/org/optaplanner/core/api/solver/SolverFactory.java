@@ -138,6 +138,9 @@ public abstract class SolverFactory {
 
     /**
      * Allows you to problematically change the {@link SolverConfig} at runtime before building the {@link Solver}.
+     * <p/>
+     * This method is not thread-safe. To configure a {@link SolverConfig} dynamically for parallel requests,
+     * differently during each request, use a different {@link SolverFactory} instance for each of them.
      * @return never null
      */
     public abstract SolverConfig getSolverConfig();
