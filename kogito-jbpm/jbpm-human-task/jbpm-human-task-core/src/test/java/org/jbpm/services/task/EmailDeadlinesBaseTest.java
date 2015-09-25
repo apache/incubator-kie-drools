@@ -16,8 +16,7 @@
 package org.jbpm.services.task;
 
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -28,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.mail.Address;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
@@ -149,8 +149,15 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(mySubject, msg.getSubject());
         assertEquals("from@domain.com", ((InternetAddress) msg.getFrom()[0]).getAddress());
         assertEquals("replyTo@domain.com", ((InternetAddress) msg.getReplyTo()[0]).getAddress());
-        assertEquals("tony@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[0]).getAddress());
-        assertEquals("darth@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[1]).getAddress());
+
+        final Address[] recipients = msg.getRecipients(RecipientType.TO);
+        assertNotNull(recipients);
+        assertTrue(recipients.length == 2);
+        list = new ArrayList<String>(2);
+        list.add(((InternetAddress) recipients[0]).getAddress());
+        list.add(((InternetAddress) recipients[1]).getAddress());
+        assertTrue(list.contains("tony@domain.com"));
+        assertTrue(list.contains("darth@domain.com"));
     }
     
     @Test    
@@ -200,8 +207,15 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         assertEquals("'singleobject'", msg.getSubject());
         assertEquals("from@domain.com", ((InternetAddress) msg.getFrom()[0]).getAddress());
         assertEquals("replyTo@domain.com", ((InternetAddress) msg.getReplyTo()[0]).getAddress());
-        assertEquals("tony@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[0]).getAddress());
-        assertEquals("darth@domain.com", ((InternetAddress) msg.getRecipients(RecipientType.TO)[1]).getAddress());
+
+        final Address[] recipients = msg.getRecipients(RecipientType.TO);
+        assertNotNull(recipients);
+        assertTrue(recipients.length == 2);
+        list = new ArrayList<String>(2);
+        list.add(((InternetAddress) recipients[0]).getAddress());
+        list.add(((InternetAddress) recipients[1]).getAddress());
+        assertTrue(list.contains("tony@domain.com"));
+        assertTrue(list.contains("darth@domain.com"));
     }
 
     @Test    
