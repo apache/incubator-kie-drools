@@ -1,0 +1,83 @@
+# Byteman Rule for 
+# org.drools.compiler.kie.builder.KieModuleRepoTest.newerVersionDeployOverwritesTest
+
+# The rules below contain out-of-date documentation in order to document
+# the race conditions that would happen 
+# if the KieModuleRepo methods were NOT synchronized
+
+RULE test setup ( after initial store and updateDependencyToVersion)
+CLASS org.drools.compiler.kie.builder.impl.KieModuleRepoTest
+METHOD newerVersionDeployOverwritesTest
+AFTER WRITE $deployRunnable
+BIND threadName = Thread.currentThread().getName();
+IF TRUE
+DO 
+# traceln(">>>> " + threadName + ": create rendezvous's");
+createRendezvous("before get oldKieModule", 2);
+createRendezvous("after 1st put new kieModule", 2);
+flag("0")
+ENDRULE
+
+# ----
+# Basically, the first thread does the normal store, 
+# except that the second thread
+# *also* thinks that it needs to store an 'oldKieModule'
+# and because of the timing, grabs the *first thread*'s *new* kieModule,
+# thereby incorrectly replacing the original/"real" oldKieModule instance!
+# ----
+
+RULE store: first thread before get oldKieModule
+CLASS org.drools.compiler.kie.builder.impl.KieModuleRepoTest$5
+METHOD run()
+AT INVOKE org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo.store(org.kie.api.builder.KieModule)
+BIND threadName = Thread.currentThread().getName();
+IF threadName.equals("one")
+DO 
+# traceln(">>>> " + threadName + " [1rst]: rendezvous at start store [before get oldKieModule]");
+rendezvous("before get oldKieModule");
+flag("1a")
+ENDRULE
+
+RULE store: second thread before get oldKieModule
+CLASS org.drools.compiler.kie.builder.impl.KieModuleRepoTest$5
+METHOD run()
+AT INVOKE org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo.store(org.kie.api.builder.KieModule)
+BIND threadName = Thread.currentThread().getName();
+IF threadName.equals("two")
+DO 
+# traceln(">>>> " + threadName + " [2nd]: rendezvous at start store [before get oldKieModule]");
+rendezvous("before get oldKieModule");
+# traceln(">>>> " + threadName + " [2nd]: rendezvous at start store [after 1rst put new kieModule]");
+rendezvous("after 1st put new kieModule");
+flag("2")
+ENDRULE
+
+RULE store: first thread after put oldKieModule
+CLASS org.drools.compiler.kie.builder.impl.KieModuleRepoTest$5
+METHOD run()
+AFTER INVOKE org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo.store(org.kie.api.builder.KieModule)
+BIND threadName = Thread.currentThread().getName();
+IF threadName.equals("one")
+DO 
+# traceln(">>>> " + threadName + " [1rst]: rendezvous after store [after 1rst put new kieModule]");
+rendezvous("after 1st put new kieModule");
+flag("1b")
+ENDRULE
+
+# --
+# Check rules
+# --
+ 
+RULE check thread actions
+CLASS org.drools.compiler.kie.builder.impl.KieModuleRepoTest
+METHOD checkRules
+AT ENTRY
+BIND threadName = Thread.currentThread().getName();
+IF NOT ( flagged("0") || flagged("2") || flagged("1a") || flagged("1b") )
+DO 
+throw new IllegalStateException("Not all rules were activated: " 
++ flagged("0") + ", "
++ flagged("2") + ", "
++ flagged("1a") + ", " 
++ flagged("1b") );
+ENDRULE
