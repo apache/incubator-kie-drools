@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -149,7 +149,7 @@ public class KieRepositoryImpl
         public void start(long pollingInterval) { }
 
         public void stop() { }
-        
+
         public void shutdown() { }
 
         public void scanNow() { }
@@ -237,13 +237,14 @@ public class KieRepositoryImpl
         }
     }
 
-    private static class KieModuleRepo {
+    // package scope so that we can test it
+    static class KieModuleRepo {
 
         private final InternalKieScanner kieScanner;
         private final Map<String, TreeMap<ComparableVersion, KieModule>> kieModules = new ConcurrentHashMap<String, TreeMap<ComparableVersion, KieModule>>();
         private final Map<ReleaseId, KieModule> oldKieModules = new ConcurrentHashMap<ReleaseId, KieModule>();
 
-        private KieModuleRepo(InternalKieScanner kieScanner) {
+        KieModuleRepo(InternalKieScanner kieScanner) {
             this.kieScanner = kieScanner;
         }
 
@@ -272,7 +273,9 @@ public class KieRepositoryImpl
                 kieModules.put(ga, artifactMap);
             }
             ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());
-            if (oldKieModules.get(releaseId) == null) {
+            KieModule oldReleaseIdKieModule = oldKieModules.get(releaseId);
+            // variable used in order to test race condition
+            if (oldReleaseIdKieModule == null) {
                 KieModule oldKieModule = artifactMap.get( comparableVersion);
                 if (oldKieModule != null) {
                     oldKieModules.put( releaseId, oldKieModule );
@@ -281,7 +284,7 @@ public class KieRepositoryImpl
             artifactMap.put(comparableVersion, kieModule);
         }
 
-        private KieModule loadOldAndRemove(ReleaseId releaseId) {
+        KieModule loadOldAndRemove(ReleaseId releaseId) {
             return oldKieModules.remove(releaseId);
         }
 
