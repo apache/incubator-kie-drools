@@ -151,8 +151,92 @@
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
       <scope>test</scope>
-    </dependency>     
+    </dependency>
+         
+   <!-- test: byteman -->
+    <dependency>
+      <groupId>org.jboss.byteman</groupId>
+      <artifactId>byteman</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.byteman</groupId>
+      <artifactId>byteman-submit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.byteman</groupId>
+      <artifactId>byteman-install</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.byteman</groupId>
+      <artifactId>byteman-bmunit</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>org.drools.compiler</Bundle-SymbolicName>
+            <Import-Package>
+              com.sun.tools.xjc.*;resolution:=optional,
+              com.sun.codemodel;resolution:=optional,
+              javax.enterprise.*;resolution:=optional,
+              org.antlr.*;resolution:=optional,
+              org.codehaus.janino.*;resolution:=optional,
+              org.eclipse.jdt.*;resolution:=optional,
+              org.osgi.*;resolution:=optional,
+              =org.kie.spring;resolution:=optional,
+              =org.kie.scanner.*;resolution:=optional,
+              *
+            </Import-Package>
+            <Export-Package>
+              org.drools.compiler.*
+            </Export-Package>
+            <Bundle-Activator>org.drools.compiler.osgi.Activator</Bundle-Activator>
+            <Provide-Capability>
+              org.ops4j.pax.cdi.extension; extension=kie-cdi
+            </Provide-Capability>
+            <_removeheaders>Private-Package</_removeheaders>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <configuration>
+          <excludeFilterFile>${project.basedir}/src/main/findbugs/findbugs-exclude.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+     
+      <plugin>
+        <groupId>org.jboss.byteman</groupId>
+        <artifactId>byteman-rulecheck-maven-plugin</artifactId>
+        <version>${version.org.jboss.byteman}</version>
+        <executions>
+          <execution>
+            <id>rulecheck-test</id>
+            <goals>
+              <goal>rulecheck</goal>
+            </goals>
+            <phase>test-compile</phase>
+            <configuration>
+              <includes>
+                <include>**/*.btm</include>
+              </includes>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
   
   <profiles>
     <profile>
@@ -252,44 +336,5 @@
       </build>
     </profile>
   </profiles>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Bundle-SymbolicName>org.drools.compiler</Bundle-SymbolicName>
-            <Import-Package>
-              com.sun.tools.xjc.*;resolution:=optional,
-              com.sun.codemodel;resolution:=optional,
-              javax.enterprise.*;resolution:=optional,
-              org.antlr.*;resolution:=optional,
-              org.codehaus.janino.*;resolution:=optional,
-              org.eclipse.jdt.*;resolution:=optional,
-              org.osgi.*;resolution:=optional,
-              =org.kie.spring;resolution:=optional,
-              =org.kie.scanner.*;resolution:=optional,
-              *
-            </Import-Package>
-            <Export-Package>
-              org.drools.compiler.*
-            </Export-Package>
-            <Bundle-Activator>org.drools.compiler.osgi.Activator</Bundle-Activator>
-            <Provide-Capability>
-              org.ops4j.pax.cdi.extension; extension=kie-cdi
-            </Provide-Capability>
-            <_removeheaders>Private-Package</_removeheaders>
-          </instructions>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <configuration>
-          <excludeFilterFile>${project.basedir}/src/main/findbugs/findbugs-exclude.xml</excludeFilterFile>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+  
 </project>
