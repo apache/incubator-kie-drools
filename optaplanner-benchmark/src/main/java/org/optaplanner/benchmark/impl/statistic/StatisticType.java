@@ -23,4 +23,9 @@ public interface StatisticType {
      */
     public String name();
 
+    /**
+     * @return never null
+     */
+    public String formattedName();
+
 }
