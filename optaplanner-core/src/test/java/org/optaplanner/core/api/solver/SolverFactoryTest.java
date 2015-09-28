@@ -24,6 +24,7 @@ import java.util.Enumeration;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.optaplanner.core.config.solver.termination.TerminationConfig;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyString;
@@ -103,6 +104,23 @@ public class SolverFactoryTest {
         });
         // Mocking divertingClassLoader.getParent() fails because it's a final method
         return divertingClassLoader;
+    }
+
+    @Test
+    public void cloneSolverFactory() {
+        SolverFactory solverFactoryTemplate = SolverFactory.createFromXmlResource(
+                "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
+        solverFactoryTemplate.getSolverConfig().setTerminationConfig(new TerminationConfig());
+        SolverFactory solverFactory1 = solverFactoryTemplate.cloneSolverFactory();
+        SolverFactory solverFactory2 = solverFactoryTemplate.cloneSolverFactory();
+        assertNotSame(solverFactory1, solverFactory2);
+        solverFactory1.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(1L);
+        solverFactory2.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(2L);
+        assertEquals((Long) 1L, solverFactory1.getSolverConfig().getTerminationConfig().getMinutesSpentLimit());
+        assertEquals((Long) 2L, solverFactory2.getSolverConfig().getTerminationConfig().getMinutesSpentLimit());
+        Solver solver1 = solverFactory1.buildSolver();
+        Solver solver2 = solverFactory2.buildSolver();
+        assertNotSame(solver1, solver2);
     }
 
 }

@@ -51,7 +51,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("exhaustiveSearch")
-public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
+public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPhaseConfig> {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
@@ -272,16 +272,8 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig {
                 inheritedConfig.getEntitySorterManner());
         valueSorterManner = ConfigUtils.inheritOverwritableProperty(valueSorterManner,
                 inheritedConfig.getValueSorterManner());
-        if (entitySelectorConfig == null) {
-            entitySelectorConfig = inheritedConfig.getEntitySelectorConfig();
-        } else if (inheritedConfig.getEntitySelectorConfig() != null) {
-            entitySelectorConfig.inherit(inheritedConfig.getEntitySelectorConfig());
-        }
-        if (moveSelectorConfig == null) {
-            moveSelectorConfig = inheritedConfig.getMoveSelectorConfig();
-        } else if (inheritedConfig.getMoveSelectorConfig() != null) {
-            moveSelectorConfig.inherit(inheritedConfig.getMoveSelectorConfig());
-        }
+        entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
+        moveSelectorConfig = ConfigUtils.inheritConfig(moveSelectorConfig, inheritedConfig.getMoveSelectorConfig());
     }
 
 }

@@ -29,4 +29,9 @@ public class EmptySolverFactory extends AbstractSolverFactory {
         solverConfig = new SolverConfig();
     }
 
+    protected EmptySolverFactory(ClassLoader classLoader, SolverConfig solverConfig) {
+        super(classLoader);
+        this.solverConfig = solverConfig;
+    }
+
 }

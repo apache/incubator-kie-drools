@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("pooledEntityPlacer")
-public class PooledEntityPlacerConfig extends EntityPlacerConfig {
+public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPlacerConfig> {
 
     // TODO This is a List due to XStream limitations. With JAXB it could be just a MoveSelectorConfig instead.
     @XStreamImplicit()

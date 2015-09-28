@@ -30,6 +30,7 @@ import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.CartesianProductMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.composite.UnionMoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -38,7 +39,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMoveSelec
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 @XStreamAlias("changeMoveSelector")
-public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
+public class ChangeMoveSelectorConfig extends MoveSelectorConfig<ChangeMoveSelectorConfig> {
 
     @XStreamAlias("entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
@@ -142,16 +143,8 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     public void inherit(ChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (entitySelectorConfig == null) {
-            entitySelectorConfig = inheritedConfig.getEntitySelectorConfig();
-        } else if (inheritedConfig.getEntitySelectorConfig() != null) {
-            entitySelectorConfig.inherit(inheritedConfig.getEntitySelectorConfig());
-        }
-        if (valueSelectorConfig == null) {
-            valueSelectorConfig = inheritedConfig.getValueSelectorConfig();
-        } else if (inheritedConfig.getValueSelectorConfig() != null) {
-            valueSelectorConfig.inherit(inheritedConfig.getValueSelectorConfig());
-        }
+        entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
+        valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
     }
 
     @Override

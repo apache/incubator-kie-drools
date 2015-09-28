@@ -26,13 +26,14 @@ import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.pillar.PillarSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.move.MoveSelectorConfig;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSelectorConfig;
+import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarChangeMoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 
 @XStreamAlias("pillarChangeMoveSelector")
-public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig {
+public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig<PillarChangeMoveSelectorConfig> {
 
     @XStreamAlias("pillarSelector")
     private PillarSelectorConfig pillarSelectorConfig = null;
@@ -78,16 +79,8 @@ public class PillarChangeMoveSelectorConfig extends MoveSelectorConfig {
 
     public void inherit(PillarChangeMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (pillarSelectorConfig == null) {
-            pillarSelectorConfig = inheritedConfig.getPillarSelectorConfig();
-        } else if (inheritedConfig.getPillarSelectorConfig() != null) {
-            pillarSelectorConfig.inherit(inheritedConfig.getPillarSelectorConfig());
-        }
-        if (valueSelectorConfig == null) {
-            valueSelectorConfig = inheritedConfig.getValueSelectorConfig();
-        } else if (inheritedConfig.getValueSelectorConfig() != null) {
-            valueSelectorConfig.inherit(inheritedConfig.getValueSelectorConfig());
-        }
+        pillarSelectorConfig = ConfigUtils.inheritConfig(pillarSelectorConfig, inheritedConfig.getPillarSelectorConfig());
+        valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
     }
 
     @Override

@@ -55,7 +55,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("localSearch")
-public class LocalSearchPhaseConfig extends PhaseConfig {
+public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
@@ -222,7 +222,7 @@ public class LocalSearchPhaseConfig extends PhaseConfig {
         if (ConfigUtils.isEmptyCollection(moveSelectorConfigList)) {
             // Default to changeMoveSelector and swapMoveSelector
             UnionMoveSelectorConfig unionMoveSelectorConfig = new UnionMoveSelectorConfig();
-            unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.asList(
+            unionMoveSelectorConfig.setMoveSelectorConfigList(Arrays.<MoveSelectorConfig>asList(
                     new ChangeMoveSelectorConfig(), new SwapMoveSelectorConfig()));
             moveSelector = unionMoveSelectorConfig.buildMoveSelector(configPolicy,
                     defaultCacheType, defaultSelectionOrder);
@@ -245,16 +245,8 @@ public class LocalSearchPhaseConfig extends PhaseConfig {
                 inheritedConfig.getLocalSearchType());
         setMoveSelectorConfig(ConfigUtils.inheritOverwritableProperty(
                 getMoveSelectorConfig(), inheritedConfig.getMoveSelectorConfig()));
-        if (acceptorConfig == null) {
-            acceptorConfig = inheritedConfig.getAcceptorConfig();
-        } else if (inheritedConfig.getAcceptorConfig() != null) {
-            acceptorConfig.inherit(inheritedConfig.getAcceptorConfig());
-        }
-        if (foragerConfig == null) {
-            foragerConfig = inheritedConfig.getForagerConfig();
-        } else if (inheritedConfig.getForagerConfig() != null) {
-            foragerConfig.inherit(inheritedConfig.getForagerConfig());
-        }
+        acceptorConfig = ConfigUtils.inheritConfig(acceptorConfig, inheritedConfig.getAcceptorConfig());
+        foragerConfig = ConfigUtils.inheritConfig(foragerConfig, inheritedConfig.getForagerConfig());
     }
 
 }

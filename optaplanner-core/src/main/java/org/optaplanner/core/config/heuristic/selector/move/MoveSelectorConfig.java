@@ -64,7 +64,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.decorator.SortingMoveSe
         SubChainChangeMoveSelectorConfig.class, SubChainSwapMoveSelectorConfig.class,
         MoveListFactoryConfig.class, MoveIteratorFactoryConfig.class
 })
-public abstract class MoveSelectorConfig extends SelectorConfig {
+public abstract class MoveSelectorConfig<C extends MoveSelectorConfig> extends SelectorConfig<C> {
 
     protected SelectionCacheType cacheType = null;
     protected SelectionOrder selectionOrder = null;
@@ -389,8 +389,20 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
         return moveSelector;
     }
 
-    public void inherit(MoveSelectorConfig inheritedConfig) {
+    public void inherit(C inheritedConfig) {
         super.inherit(inheritedConfig);
+        inheritCommon(inheritedConfig);
+    }
+
+    /**
+     * Does not inherit subclass properties because this class and {@code foldedConfig} can be of a different type.
+     * @param foldedConfig never null
+     */
+    public void inheritFolded(MoveSelectorConfig foldedConfig) {
+        inheritCommon(foldedConfig);
+    }
+
+    private void inheritCommon(MoveSelectorConfig inheritedConfig) {
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         filterClassList = ConfigUtils.inheritOverwritableProperty(
@@ -410,10 +422,6 @@ public abstract class MoveSelectorConfig extends SelectorConfig {
 
         fixedProbabilityWeight = ConfigUtils.inheritOverwritableProperty(
                 fixedProbabilityWeight, inheritedConfig.getFixedProbabilityWeight());
-    }
-
-    public void inheritFolded(MoveSelectorConfig foldedConfig) {
-        inherit(foldedConfig);
     }
 
 }

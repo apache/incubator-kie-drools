@@ -52,7 +52,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingE
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 
 @XStreamAlias("entitySelector")
-public class EntitySelectorConfig extends SelectorConfig {
+public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
 
     @XStreamAsAttribute
     protected String id = null;
@@ -538,11 +538,7 @@ public class EntitySelectorConfig extends SelectorConfig {
                 inheritedConfig.getMimicSelectorRef());
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass,
                 inheritedConfig.getEntityClass());
-        if (nearbySelectionConfig == null) {
-            nearbySelectionConfig = inheritedConfig.getNearbySelectionConfig();
-        } else if (inheritedConfig.getNearbySelectionConfig() != null) {
-            nearbySelectionConfig.inherit(inheritedConfig.getNearbySelectionConfig());
-        }
+        nearbySelectionConfig = ConfigUtils.inheritConfig(nearbySelectionConfig, inheritedConfig.getNearbySelectionConfig());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         filterClassList = ConfigUtils.inheritOverwritableProperty(

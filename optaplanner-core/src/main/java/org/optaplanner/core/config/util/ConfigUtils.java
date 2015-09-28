@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.optaplanner.core.config.AbstractConfig;
 
 public class ConfigUtils {
 
@@ -31,11 +32,39 @@ public class ConfigUtils {
             return clazz.newInstance();
         } catch (InstantiationException e) {
             throw new IllegalArgumentException("The " + bean.getClass().getSimpleName() + "'s " + propertyName + " ("
-                    + clazz.getName() + ") does not have a public no-arg constructor", e);
+                    + clazz.getName() + ") does not have a public no-arg constructor.", e);
         } catch (IllegalAccessException e) {
             throw new IllegalArgumentException("The " + bean.getClass().getSimpleName() + "'s " + propertyName + " ("
-                    + clazz.getName() + ") does not have a public no-arg constructor", e);
+                    + clazz.getName() + ") does not have a public no-arg constructor.", e);
         }
+    }
+
+    public static <C extends AbstractConfig<C>> C inheritConfig(C original, C inherited) {
+        if (inherited != null) {
+            if (original == null) {
+                original = inherited.newInstance();
+            }
+            original.inherit(inherited);
+        }
+        return original;
+    }
+
+    public static <C extends AbstractConfig<C>> List<C> inheritMergeableListConfig(List<C> originalList, List<C> inheritedList) {
+        if (inheritedList != null) {
+            List<C> mergedList = new ArrayList<C>(inheritedList.size()
+                    + (originalList == null ? 0 : originalList.size()));
+            // The inheritedList should be before the originalList
+            for (C inherited : inheritedList) {
+                C copy = inherited.newInstance();
+                copy.inherit(inherited);
+                mergedList.add(copy);
+            }
+            if (originalList != null) {
+                mergedList.addAll(originalList);
+            }
+            originalList = mergedList;
+        }
+        return originalList;
     }
 
     public static <T> T inheritOverwritableProperty(T original, T inherited) {

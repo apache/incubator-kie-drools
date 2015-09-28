@@ -26,7 +26,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactoryToMoveSelectorBridge;
 
 @XStreamAlias("moveListFactory")
-public class MoveListFactoryConfig extends MoveSelectorConfig {
+public class MoveListFactoryConfig extends MoveSelectorConfig<MoveListFactoryConfig> {
 
     protected Class<? extends MoveListFactory> moveListFactoryClass = null;
 

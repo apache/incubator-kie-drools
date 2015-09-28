@@ -32,12 +32,13 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
 @XStreamAlias("problemBenchmarks")
-public class ProblemBenchmarksConfig {
+public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksConfig> {
 
     private Class<SolutionFileIO> solutionFileIOClass = null;
     @XStreamImplicit(itemFieldName = "xStreamAnnotatedClass")

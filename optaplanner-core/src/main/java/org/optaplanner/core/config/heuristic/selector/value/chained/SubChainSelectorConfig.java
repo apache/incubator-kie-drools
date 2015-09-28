@@ -37,7 +37,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.chained.SubChainSelect
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("subChainSelector")
-public class SubChainSelectorConfig extends SelectorConfig {
+public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfig> {
 
     /**
      * Defaults to 1, even if it partially duplicates {@link ChangeMoveSelectorConfig},
@@ -122,11 +122,7 @@ public class SubChainSelectorConfig extends SelectorConfig {
 
     public void inherit(SubChainSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (valueSelectorConfig == null) {
-            valueSelectorConfig = inheritedConfig.getValueSelectorConfig();
-        } else if (inheritedConfig.getValueSelectorConfig() != null) {
-            valueSelectorConfig.inherit(inheritedConfig.getValueSelectorConfig());
-        }
+        valueSelectorConfig = ConfigUtils.inheritConfig(valueSelectorConfig, inheritedConfig.getValueSelectorConfig());
         minimumSubChainSize = ConfigUtils.inheritOverwritableProperty(minimumSubChainSize,
                 inheritedConfig.getMinimumSubChainSize());
         maximumSubChainSize = ConfigUtils.inheritOverwritableProperty(maximumSubChainSize,

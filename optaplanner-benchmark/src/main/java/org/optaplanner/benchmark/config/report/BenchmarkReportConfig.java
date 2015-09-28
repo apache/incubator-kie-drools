@@ -28,10 +28,11 @@ import org.optaplanner.benchmark.impl.ranking.WorstScoreSolverRankingComparator;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
 @XStreamAlias("benchmarkReport")
-public class BenchmarkReportConfig {
+public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig> {
 
     private Locale locale = null;
     private SolverRankingType solverRankingType = null;

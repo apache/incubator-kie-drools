@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.PillarSwapMoveS
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("pillarSwapMoveSelector")
-public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
+public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig<PillarSwapMoveSelectorConfig> {
 
     @XStreamAlias("pillarSelector")
     private PillarSelectorConfig pillarSelectorConfig = null;
@@ -91,16 +91,8 @@ public class PillarSwapMoveSelectorConfig extends MoveSelectorConfig {
 
     public void inherit(PillarSwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (pillarSelectorConfig == null) {
-            pillarSelectorConfig = inheritedConfig.getPillarSelectorConfig();
-        } else if (inheritedConfig.getPillarSelectorConfig() != null) {
-            pillarSelectorConfig.inherit(inheritedConfig.getPillarSelectorConfig());
-        }
-        if (secondaryPillarSelectorConfig == null) {
-            secondaryPillarSelectorConfig = inheritedConfig.getSecondaryPillarSelectorConfig();
-        } else if (inheritedConfig.getSecondaryPillarSelectorConfig() != null) {
-            secondaryPillarSelectorConfig.inherit(inheritedConfig.getSecondaryPillarSelectorConfig());
-        }
+        pillarSelectorConfig = ConfigUtils.inheritConfig(pillarSelectorConfig, inheritedConfig.getPillarSelectorConfig());
+        secondaryPillarSelectorConfig = ConfigUtils.inheritConfig(secondaryPillarSelectorConfig, inheritedConfig.getSecondaryPillarSelectorConfig());
         variableNameIncludeList = ConfigUtils.inheritMergeableListProperty(
                 variableNameIncludeList, inheritedConfig.getVariableNameIncludeList());
     }

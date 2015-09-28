@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.localsearch.decider.forager;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.localsearch.decider.forager.AcceptedForager;
@@ -25,7 +26,7 @@ import org.optaplanner.core.impl.localsearch.decider.forager.Forager;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("localSearchForagerConfig")
-public class LocalSearchForagerConfig {
+public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerConfig> {
 
     private Class<? extends Forager> foragerClass = null;
 

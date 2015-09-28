@@ -24,11 +24,12 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
 @XStreamAlias("solverBenchmark")
-public class SolverBenchmarkConfig {
+public class SolverBenchmarkConfig extends AbstractConfig<SolverBenchmarkConfig> {
 
     private String name = null;
 
@@ -108,16 +109,9 @@ public class SolverBenchmarkConfig {
     }
 
     public void inherit(SolverBenchmarkConfig inheritedConfig) {
-        if (solverConfig == null) {
-            solverConfig = inheritedConfig.getSolverConfig();
-        } else if (inheritedConfig.getSolverConfig() != null) {
-            solverConfig.inherit(inheritedConfig.getSolverConfig());
-        }
-        if (problemBenchmarksConfig == null) {
-            problemBenchmarksConfig = inheritedConfig.getProblemBenchmarksConfig();
-        } else if (inheritedConfig.getProblemBenchmarksConfig() != null) {
-            problemBenchmarksConfig.inherit(inheritedConfig.getProblemBenchmarksConfig());
-        }
+        solverConfig = ConfigUtils.inheritConfig(solverConfig, inheritedConfig.getSolverConfig());
+        problemBenchmarksConfig = ConfigUtils.inheritConfig(problemBenchmarksConfig,
+                inheritedConfig.getProblemBenchmarksConfig());
         subSingleCount = ConfigUtils.inheritOverwritableProperty(subSingleCount, inheritedConfig.getSubSingleCount());
     }
 

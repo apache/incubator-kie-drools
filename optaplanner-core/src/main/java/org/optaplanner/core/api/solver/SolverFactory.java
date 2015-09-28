@@ -139,11 +139,20 @@ public abstract class SolverFactory {
     /**
      * Allows you to problematically change the {@link SolverConfig} at runtime before building the {@link Solver}.
      * <p/>
-     * This method is not thread-safe. To configure a {@link SolverConfig} dynamically for parallel requests,
-     * differently during each request, use a different {@link SolverFactory} instance for each of them.
+     * This method is not thread-safe. To configure a {@link SolverConfig} differently for parallel requests,
+     * build a template {@link SolverFactory} from XML
+     * and clone it {@link SolverFactory#cloneSolverFactory()} for each request, before before calling this method.
      * @return never null
      */
     public abstract SolverConfig getSolverConfig();
+
+    /**
+     * Build a {@link SolverFactory} quickly (without parsing XML) that builds the exact same {@link Solver}
+     * with {@link #buildSolver()}, but can also be modified with {@link #getSolverConfig()} to build a different
+     * {@link Solver} without affecting the original {@link SolverFactory}.
+     * @return never null, often a different {@link SolverFactory} subclass implementation than this instance
+     */
+    public abstract SolverFactory cloneSolverFactory();
 
     /**
      * Creates a new {@link Solver} instance.

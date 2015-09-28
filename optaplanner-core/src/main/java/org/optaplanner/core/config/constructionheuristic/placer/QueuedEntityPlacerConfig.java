@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("queuedEntityPlacer")
-public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
+public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPlacerConfig> {
 
     @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
@@ -153,12 +153,8 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig {
 
     public void inherit(QueuedEntityPlacerConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (entitySelectorConfig == null) {
-            entitySelectorConfig = inheritedConfig.getEntitySelectorConfig();
-        } else if (inheritedConfig.getEntitySelectorConfig() != null) {
-            entitySelectorConfig.inherit(inheritedConfig.getEntitySelectorConfig());
-        }
-        moveSelectorConfigList = ConfigUtils.inheritMergeableListProperty(
+        entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
+        moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(
                 moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
     }
 

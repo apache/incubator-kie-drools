@@ -27,6 +27,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.reflections.Reflections;
@@ -35,7 +36,7 @@ import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
 @XStreamAlias("scanAnnotatedClasses")
-public class ScanAnnotatedClassesConfig {
+public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClassesConfig> {
 
     @XStreamImplicit(itemFieldName = "packageInclude")
     private List<String> packageIncludeList = null;

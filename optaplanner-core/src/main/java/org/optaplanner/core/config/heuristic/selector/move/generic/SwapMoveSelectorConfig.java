@@ -38,7 +38,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMoveSelecto
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("swapMoveSelector")
-public class SwapMoveSelectorConfig extends MoveSelectorConfig {
+public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorConfig> {
 
     @XStreamAlias("entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
@@ -151,16 +151,8 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig {
 
     public void inherit(SwapMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (entitySelectorConfig == null) {
-            entitySelectorConfig = inheritedConfig.getEntitySelectorConfig();
-        } else if (inheritedConfig.getEntitySelectorConfig() != null) {
-            entitySelectorConfig.inherit(inheritedConfig.getEntitySelectorConfig());
-        }
-        if (secondaryEntitySelectorConfig == null) {
-            secondaryEntitySelectorConfig = inheritedConfig.getSecondaryEntitySelectorConfig();
-        } else if (inheritedConfig.getSecondaryEntitySelectorConfig() != null) {
-            secondaryEntitySelectorConfig.inherit(inheritedConfig.getSecondaryEntitySelectorConfig());
-        }
+        entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
+        secondaryEntitySelectorConfig = ConfigUtils.inheritConfig(secondaryEntitySelectorConfig, inheritedConfig.getSecondaryEntitySelectorConfig());
         variableNameIncludeList = ConfigUtils.inheritMergeableListProperty(
                 variableNameIncludeList, inheritedConfig.getVariableNameIncludeList());
     }

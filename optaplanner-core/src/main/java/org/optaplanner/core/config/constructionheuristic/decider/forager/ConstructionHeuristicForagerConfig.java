@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.constructionheuristic.decider.forager;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.constructionheuristic.decider.forager.ConstructionHeuristicForager;
@@ -24,7 +25,7 @@ import org.optaplanner.core.impl.constructionheuristic.decider.forager.DefaultCo
 import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
 
 @XStreamAlias("constructionHeuristicForager")
-public class ConstructionHeuristicForagerConfig {
+public class ConstructionHeuristicForagerConfig extends AbstractConfig<ConstructionHeuristicForagerConfig> {
 
     private ConstructionHeuristicPickEarlyType pickEarlyType = null;
 

@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.localsearch.decider.deciderscorecomparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.DeciderScoreComparatorFactory;
 import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.NaturalDeciderScoreComparatorFactory;
@@ -24,7 +25,7 @@ import org.optaplanner.core.impl.localsearch.decider.deciderscorecomparator.Shif
 
 @Deprecated // Experimental feature (no backwards compatibility guarantee)
 @XStreamAlias("deciderScoreComparatorFactory")
-public class DeciderScoreComparatorFactoryConfig {
+public class DeciderScoreComparatorFactoryConfig extends AbstractConfig<DeciderScoreComparatorFactoryConfig> {
 
     private Class<? extends DeciderScoreComparatorFactory> deciderScoreComparatorClass = null;
     private DeciderScoreComparatorFactoryType deciderScoreComparatorFactoryType = null;

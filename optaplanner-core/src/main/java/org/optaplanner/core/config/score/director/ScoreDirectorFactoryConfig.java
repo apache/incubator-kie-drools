@@ -35,6 +35,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.io.KieResources;
 import org.kie.api.runtime.KieContainer;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.score.definition.ScoreDefinitionType;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -67,7 +68,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @XStreamAlias("scoreDirectorFactory")
-public class ScoreDirectorFactoryConfig {
+public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFactoryConfig> {
 
     private static final Logger logger = LoggerFactory.getLogger(ScoreDirectorFactoryConfig.class);
 

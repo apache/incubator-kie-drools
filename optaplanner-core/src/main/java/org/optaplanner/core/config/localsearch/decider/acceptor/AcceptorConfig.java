@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.localsearch.decider.acceptor.stepcountinghillclimbing.StepCountingHillClimbingType;
 import org.optaplanner.core.config.solver.EnvironmentMode;
@@ -43,7 +44,7 @@ import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.size.ValueRat
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("acceptor")
-public class AcceptorConfig {
+public class AcceptorConfig extends AbstractConfig<AcceptorConfig> {
 
     @XStreamImplicit(itemFieldName = "acceptorClass")
     private List<Class<? extends Acceptor>> acceptorClassList = null;

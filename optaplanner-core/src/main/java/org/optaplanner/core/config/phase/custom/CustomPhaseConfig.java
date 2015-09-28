@@ -32,7 +32,7 @@ import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
 @XStreamAlias("customPhase")
-public class CustomPhaseConfig extends PhaseConfig {
+public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file

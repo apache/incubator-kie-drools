@@ -24,6 +24,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.domain.ScanAnnotatedClassesConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -46,7 +47,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("solver")
-public class SolverConfig {
+public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     protected static final long DEFAULT_RANDOM_SEED = 0L;
 
@@ -296,25 +297,13 @@ public class SolverConfig {
         randomSeed = ConfigUtils.inheritOverwritableProperty(randomSeed, inheritedConfig.getRandomSeed());
         randomFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 randomFactoryClass, inheritedConfig.getRandomFactoryClass());
-        if (scanAnnotatedClassesConfig == null) {
-            scanAnnotatedClassesConfig = inheritedConfig.getScanAnnotatedClassesConfig();
-        } else if (inheritedConfig.getScoreDirectorFactoryConfig() != null) {
-            scanAnnotatedClassesConfig.inherit(inheritedConfig.getScanAnnotatedClassesConfig());
-        }
+        scanAnnotatedClassesConfig = ConfigUtils.inheritConfig(scanAnnotatedClassesConfig, inheritedConfig.getScanAnnotatedClassesConfig());
         solutionClass = ConfigUtils.inheritOverwritableProperty(solutionClass, inheritedConfig.getSolutionClass());
         entityClassList = ConfigUtils.inheritMergeableListProperty(
                 entityClassList, inheritedConfig.getEntityClassList());
-        if (scoreDirectorFactoryConfig == null) {
-            scoreDirectorFactoryConfig = inheritedConfig.getScoreDirectorFactoryConfig();
-        } else if (inheritedConfig.getScoreDirectorFactoryConfig() != null) {
-            scoreDirectorFactoryConfig.inherit(inheritedConfig.getScoreDirectorFactoryConfig());
-        }
-        if (terminationConfig == null) {
-            terminationConfig = inheritedConfig.getTerminationConfig();
-        } else if (inheritedConfig.getTerminationConfig() != null) {
-            terminationConfig.inherit(inheritedConfig.getTerminationConfig());
-        }
-        phaseConfigList = ConfigUtils.inheritMergeableListProperty(
+        scoreDirectorFactoryConfig = ConfigUtils.inheritConfig(scoreDirectorFactoryConfig, inheritedConfig.getScoreDirectorFactoryConfig());
+        terminationConfig = ConfigUtils.inheritConfig(terminationConfig, inheritedConfig.getTerminationConfig());
+        phaseConfigList = ConfigUtils.inheritMergeableListConfig(
                 phaseConfigList, inheritedConfig.getPhaseConfigList());
     }
 

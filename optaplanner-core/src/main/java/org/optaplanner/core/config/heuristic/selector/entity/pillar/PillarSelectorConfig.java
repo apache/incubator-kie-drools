@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.heuristic.selector.entity.pillar.PillarSelector
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("pillarSelector")
-public class PillarSelectorConfig extends SelectorConfig {
+public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
 
     @XStreamAlias("entitySelector")
     protected EntitySelectorConfig entitySelectorConfig = null;
@@ -121,11 +121,7 @@ public class PillarSelectorConfig extends SelectorConfig {
 
     public void inherit(PillarSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        if (entitySelectorConfig == null) {
-            entitySelectorConfig = inheritedConfig.getEntitySelectorConfig();
-        } else if (inheritedConfig.getEntitySelectorConfig() != null) {
-            entitySelectorConfig.inherit(inheritedConfig.getEntitySelectorConfig());
-        }
+        entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
         subPillarEnabled = ConfigUtils.inheritOverwritableProperty(subPillarEnabled,
                 inheritedConfig.getSubPillarEnabled());
         minimumSubPillarSize = ConfigUtils.inheritOverwritableProperty(minimumSubPillarSize,

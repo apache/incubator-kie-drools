@@ -54,7 +54,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingVal
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SortingValueSelector;
 
 @XStreamAlias("valueSelector")
-public class ValueSelectorConfig extends SelectorConfig {
+public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
 
     protected Class<?> downcastEntityClass = null;
     protected String variableName = null;
@@ -547,11 +547,7 @@ public class ValueSelectorConfig extends SelectorConfig {
         downcastEntityClass = ConfigUtils.inheritOverwritableProperty(downcastEntityClass,
                 inheritedConfig.getDowncastEntityClass());
         variableName = ConfigUtils.inheritOverwritableProperty(variableName, inheritedConfig.getVariableName());
-        if (nearbySelectionConfig == null) {
-            nearbySelectionConfig = inheritedConfig.getNearbySelectionConfig();
-        } else if (inheritedConfig.getNearbySelectionConfig() != null) {
-            nearbySelectionConfig.inherit(inheritedConfig.getNearbySelectionConfig());
-        }
+        nearbySelectionConfig = ConfigUtils.inheritConfig(nearbySelectionConfig, inheritedConfig.getNearbySelectionConfig());
         cacheType = ConfigUtils.inheritOverwritableProperty(cacheType, inheritedConfig.getCacheType());
         selectionOrder = ConfigUtils.inheritOverwritableProperty(selectionOrder, inheritedConfig.getSelectionOrder());
         sorterManner = ConfigUtils.inheritOverwritableProperty(

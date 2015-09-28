@@ -22,6 +22,7 @@ import java.util.List;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.score.definition.FeasibilityScoreDefinition;
@@ -38,7 +39,7 @@ import org.optaplanner.core.impl.solver.termination.UnimprovedStepCountTerminati
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentTermination;
 
 @XStreamAlias("termination")
-public class TerminationConfig implements Cloneable {
+public class TerminationConfig extends AbstractConfig<TerminationConfig> implements Cloneable {
 
     private Class<? extends Termination> terminationClass = null;
 
@@ -424,7 +425,7 @@ public class TerminationConfig implements Cloneable {
                 inheritedConfig.getStepCountLimit());
         unimprovedStepCountLimit = ConfigUtils.inheritOverwritableProperty(unimprovedStepCountLimit,
                 inheritedConfig.getUnimprovedStepCountLimit());
-        terminationConfigList = ConfigUtils.inheritMergeableListProperty(
+        terminationConfigList = ConfigUtils.inheritMergeableListConfig(
                 terminationConfigList, inheritedConfig.getTerminationConfigList());
     }
 

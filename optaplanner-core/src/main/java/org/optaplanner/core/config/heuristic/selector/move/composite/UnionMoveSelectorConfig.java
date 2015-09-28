@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.composite.UnionMoveSelector;
 
 @XStreamAlias("unionMoveSelector")
-public class UnionMoveSelectorConfig extends MoveSelectorConfig {
+public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelectorConfig> {
 
     @XStreamImplicit()
     private List<MoveSelectorConfig> moveSelectorConfigList = null;
@@ -110,7 +110,7 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig {
 
     public void inherit(UnionMoveSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        moveSelectorConfigList = ConfigUtils.inheritMergeableListProperty(
+        moveSelectorConfigList = ConfigUtils.inheritMergeableListConfig(
                 moveSelectorConfigList, inheritedConfig.getMoveSelectorConfigList());
         selectorProbabilityWeightFactoryClass = ConfigUtils.inheritOverwritableProperty(
                 selectorProbabilityWeightFactoryClass, inheritedConfig.getSelectorProbabilityWeightFactoryClass());

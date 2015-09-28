@@ -19,6 +19,7 @@ package org.optaplanner.core.config.constructionheuristic.placer;
 import java.util.Collection;
 
 import com.thoughtworks.xstream.annotations.XStreamInclude;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -32,7 +33,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
         QueuedEntityPlacerConfig.class,
         PooledEntityPlacerConfig.class
 })
-public abstract class EntityPlacerConfig {
+public abstract class EntityPlacerConfig<C extends EntityPlacerConfig> extends AbstractConfig<C> {
 
     // ************************************************************************
     // Helper methods
@@ -55,7 +56,7 @@ public abstract class EntityPlacerConfig {
 
     public abstract EntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination);
 
-    protected void inherit(EntityPlacerConfig inheritedConfig) {
+    public void inherit(C inheritedConfig) {
     }
 
     @Override

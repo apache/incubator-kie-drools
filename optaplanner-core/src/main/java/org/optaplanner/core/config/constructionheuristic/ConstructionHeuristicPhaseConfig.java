@@ -40,7 +40,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("constructionHeuristic")
-public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
+public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHeuristicPhaseConfig> {
 
     // Warning: all fields are null (and not defaulted) because they can be inherited
     // and also because the input config file should match the output config file
@@ -169,11 +169,7 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig {
                 inheritedConfig.getValueSorterManner());
         setEntityPlacerConfig(ConfigUtils.inheritOverwritableProperty(
                 getEntityPlacerConfig(), inheritedConfig.getEntityPlacerConfig()));
-        if (foragerConfig == null) {
-            foragerConfig = inheritedConfig.getForagerConfig();
-        } else if (inheritedConfig.getForagerConfig() != null) {
-            foragerConfig.inherit(inheritedConfig.getForagerConfig());
-        }
+        foragerConfig = ConfigUtils.inheritConfig(foragerConfig, inheritedConfig.getForagerConfig());
     }
 
 }

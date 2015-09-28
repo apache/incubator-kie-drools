@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySelectorConfig;
@@ -33,7 +34,7 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 /**
  * General superclass for {@link MoveSelectorConfig}, {@link EntitySelectorConfig} and {@link ValueSelectorConfig}.
  */
-public abstract class SelectorConfig {
+public abstract class SelectorConfig<C extends SelectorConfig> extends AbstractConfig<C> {
 
     // ************************************************************************
     // Helper methods
@@ -150,7 +151,7 @@ public abstract class SelectorConfig {
     // Builder methods
     // ************************************************************************
 
-    protected void inherit(SelectorConfig inheritedConfig) {
+    public void inherit(C inheritedConfig) {
     }
 
     @Override
