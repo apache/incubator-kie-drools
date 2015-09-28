@@ -147,9 +147,32 @@
       <para>Every element in the solver configuration XML is available as a <literal>*Config</literal> class or a
       property on a <literal>*Config</literal> class in the package namespace
       <literal>org.optaplanner.core.config</literal>. These <literal>*Config</literal> classes are the Java
-      representation of the XML format and they also provide the user-friendly way to assemble the runtime components
-      (of the package namespace <literal>org.optaplanner.core.impl</literal>) into an efficient
+      representation of the XML format. They build the runtime components (of the package namespace
+      <literal>org.optaplanner.core.impl</literal>) and assemble them into an efficient
       <literal>Solver</literal>.</para>
+
+      <important>
+        <para>The <literal>SolverFactory</literal> is only multi-thread safe after its configured. So the
+        <literal>getSolverConfig()</literal> method is not thread-safe. To configure a SolverFactory dynamically for
+        each user request, build a <literal>SolverFactory</literal> as base during initialization and clone it with the
+        <literal>cloneSolverFactory()</literal> method for a user request:</para>
+
+        <programlisting language="java">    private SolverFactory template;
+
+    public void init() {
+        SolverFactory base = SolverFactory.createFromXmlResource(
+                "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
+        base.getSolverConfig().setTerminationConfig(new TerminationConfig());
+    }
+
+    // Called concurrently from different threads
+    public void userRequest(..., long userInput)
+        SolverFactory solverFactory = base.cloneSolverFactory();
+        solverFactory.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(userInput);
+        Solver solver = solverFactory.buildSolver();
+        ...
+    }</programlisting>
+      </important>
     </section>
 
     <section xml:id="annotationsConfiguration">
