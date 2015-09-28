@@ -36,7 +36,7 @@ public enum ProblemStatisticType implements StatisticType {
     MEMORY_USE;
 
     @Override
-    public String formattedName() {
+    public String getLabel() {
         return StringUtils.capitalize(name().replace('_', ' ').toLowerCase());
     }
 

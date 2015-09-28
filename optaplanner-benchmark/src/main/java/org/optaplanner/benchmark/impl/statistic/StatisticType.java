@@ -26,6 +26,6 @@ public interface StatisticType {
     /**
      * @return never null
      */
-    public String formattedName();
+    public String getLabel();
 
 }

@@ -530,13 +530,13 @@
                                     <#assign firstRow = true>
                                     <#list problemBenchmarkResult.problemStatisticList as problemStatistic>
                                         <li<#if firstRow && !subSingleSummaryChartShown> class="active"</#if>>
-                                            <a href="#problemStatistic_${problemStatistic.anchorId}" data-toggle="tab">${problemStatistic.problemStatisticType.formattedName()}</a>
+                                            <a href="#problemStatistic_${problemStatistic.anchorId}" data-toggle="tab">${problemStatistic.problemStatisticType.label}</a>
                                         </li>
                                         <#assign firstRow = false>
                                     </#list>
                                     <#list problemBenchmarkResult.extractSingleStatisticTypeList() as singleStatisticType>
                                         <li<#if firstRow && !subSingleSummaryChartShown> class="active"</#if>>
-                                            <a href="#singleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}" data-toggle="tab">${singleStatisticType.formattedName()}</a>
+                                            <a href="#singleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}" data-toggle="tab">${singleStatisticType.label}</a>
                                         </li>
                                         <#assign firstRow = false>
                                     </#list>

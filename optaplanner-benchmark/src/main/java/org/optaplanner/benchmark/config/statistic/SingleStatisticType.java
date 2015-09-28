@@ -33,7 +33,7 @@ public enum SingleStatisticType implements StatisticType {
     PICKED_MOVE_TYPE_STEP_SCORE_DIFF;
 
     @Override
-    public String formattedName() {
+    public String getLabel() {
         return StringUtils.capitalize(name().replace('_', ' ').toLowerCase());
     }
 
