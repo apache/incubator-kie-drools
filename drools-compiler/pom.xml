@@ -214,7 +214,8 @@
           <excludeFilterFile>${project.basedir}/src/main/findbugs/findbugs-exclude.xml</excludeFilterFile>
         </configuration>
       </plugin>
-      
+     
+      <!--  Re-enable once https://issues.jboss.org/browse/BYTEMAN-296 is solved
       <plugin>
         <groupId>org.jboss.byteman</groupId>
         <artifactId>byteman-rulecheck-maven-plugin</artifactId>
@@ -235,6 +236,7 @@
           </execution>
         </executions>
       </plugin>
+       --> 
     </plugins>
   </build>
   

@@ -25,7 +25,7 @@ ENDRULE
 RULE store: first thread before get oldKieModule
 CLASS org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo
 METHOD store
-AFTER WRITE $oldReleaseIdKieModule
+AT SYNCHRONIZE
 BIND threadName = Thread.currentThread().getName();
 IF threadName.equals("one")
 DO 
@@ -37,7 +37,7 @@ ENDRULE
 RULE store: second thread before get oldKieModule
 CLASS org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo
 METHOD store
-AFTER WRITE $oldReleaseIdKieModule
+AT SYNCHRONIZE
 BIND threadName = Thread.currentThread().getName();
 IF threadName.equals("two")
 DO 
@@ -51,7 +51,7 @@ ENDRULE
 RULE store: first thread after put oldKieModule
 CLASS org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo
 METHOD store
-AFTER READ $artifactMap 3
+AT EXIT
 BIND threadName = Thread.currentThread().getName();
 IF threadName.equals("one")
 DO 
