@@ -523,20 +523,20 @@
                             <ul class="nav nav-tabs">
                                 <#if subSingleSummaryChartShown>
                                     <li class="active">
-                                        <a href="#problemBenchmarkSubSingleSummary_${problemBenchmarkResult.anchorId}" data-toggle="tab">Single Benchmark Runs Score Distribution</a>
+                                        <a href="#problemBenchmarkSubSingleSummary_${problemBenchmarkResult.anchorId}" data-toggle="tab">Single benchmark runs score distribution</a>
                                     </li>
                                 </#if>
                                 <#if problemBenchmarkResult.hasAnyStatistic()>
                                     <#assign firstRow = true>
                                     <#list problemBenchmarkResult.problemStatisticList as problemStatistic>
                                         <li<#if firstRow && !subSingleSummaryChartShown> class="active"</#if>>
-                                            <a href="#problemStatistic_${problemStatistic.anchorId}" data-toggle="tab">${problemStatistic.problemStatisticType}</a>
+                                            <a href="#problemStatistic_${problemStatistic.anchorId}" data-toggle="tab">${problemStatistic.problemStatisticType.label}</a>
                                         </li>
                                         <#assign firstRow = false>
                                     </#list>
                                     <#list problemBenchmarkResult.extractSingleStatisticTypeList() as singleStatisticType>
                                         <li<#if firstRow && !subSingleSummaryChartShown> class="active"</#if>>
-                                            <a href="#singleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}" data-toggle="tab">${singleStatisticType}</a>
+                                            <a href="#singleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}" data-toggle="tab">${singleStatisticType.label}</a>
                                         </li>
                                         <#assign firstRow = false>
                                     </#list>

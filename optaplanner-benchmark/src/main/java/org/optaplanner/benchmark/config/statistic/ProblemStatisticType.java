@@ -16,6 +16,7 @@
 
 package org.optaplanner.benchmark.config.statistic;
 
+import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.StatisticType;
@@ -33,6 +34,11 @@ public enum ProblemStatisticType implements StatisticType {
     BEST_SOLUTION_MUTATION,
     MOVE_COUNT_PER_STEP,
     MEMORY_USE;
+
+    @Override
+    public String getLabel() {
+        return StringUtils.capitalize(name().replace('_', ' ').toLowerCase());
+    }
 
     public ProblemStatistic buildProblemStatistic(ProblemBenchmarkResult problemBenchmarkResult) {
         // Keep in sync with ProblemStatistic XStreamInclude list
