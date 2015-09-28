@@ -71,7 +71,7 @@ ENDRULE
 RULE remove: after [kieModules.remove(ga)]
 CLASS org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo
 METHOD remove
-AT READ org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo.oldKieModules 1
+AT EXIT
 BIND threadName = Thread.currentThread().getName();
 IF TRUE
 DO 

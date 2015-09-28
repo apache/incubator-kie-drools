@@ -23,6 +23,7 @@ import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.common.ResourceProvider;
 import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.jboss.byteman.contrib.bmunit.BMUnitConfig;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -198,6 +199,21 @@ public class KieModuleRepoTest {
     @Test(timeout=5000)
     @BMScript(value="byteman/removeStoreArtifactMapTest.btm")
     public void removeStoreArtifactMapTest() throws Exception {
+        // This test has been verified against 3.0.2-SNAPSHOT, due to a bug fixed in BYTEMAN-296 among others
+        // The problem (in short) is that byteman 3.0.1 has a problem "seeing" changes ConcurrentSkipListMap field
+        String bytemanJarName = BMScript.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm();
+        int index = bytemanJarName.lastIndexOf("/");
+        index = index > 0 ? index + 1 : 0;
+        bytemanJarName = bytemanJarName.substring(index);
+        index = "byteman-bmunit-".length();
+        String bytemanJarVersion = bytemanJarName.substring(index);
+        bytemanJarVersion = bytemanJarVersion.substring(0, bytemanJarVersion.lastIndexOf("."));
+        boolean bytemanVersionTooLow = bytemanJarVersion.equals("3.0.1");
+        logger.info( "Skipping " + Thread.currentThread().getStackTrace()[1].getMethodName() + " since byteman version is too low: " + bytemanJarVersion );
+        Assume.assumeFalse("Byteman version is too low to run test: " + bytemanJarVersion, bytemanVersionTooLow );
+        fail("Remove the code above that checks the byteman version, since byteman has been upgraded past 3.0.1 to " + bytemanJarVersion );
+
+        // actual test
         Thread.currentThread().setName("test");
 
         final ReleaseIdImpl releaseId = new ReleaseIdImpl("org", "redeploy", "2.0");
