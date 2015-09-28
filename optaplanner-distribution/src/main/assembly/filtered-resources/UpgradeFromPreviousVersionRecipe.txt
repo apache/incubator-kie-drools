@@ -2814,3 +2814,11 @@ After in *.java:
 
 [MINOR] If you're configuring the SolverFactory dynamically for each user request with differ settings,
 use SolverFactory.cloneSolverFactory() to avoid a race condition.
+
+[MINOR] The method TerminationConfig.clone() has been removed.
+The inherit() method now guarantees that afterwards changing the child or parent will not affect the other.
+Before in *.java:
+    TerminationConfig clone = terminationConfig.clone();
+After in *.java:
+    TerminationConfig clone = new TerminationConfig();
+    clone.inherit(terminationConfig);

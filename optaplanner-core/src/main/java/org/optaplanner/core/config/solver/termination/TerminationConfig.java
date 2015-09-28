@@ -39,7 +39,7 @@ import org.optaplanner.core.impl.solver.termination.UnimprovedStepCountTerminati
 import org.optaplanner.core.impl.solver.termination.UnimprovedTimeMillisSpentTermination;
 
 @XStreamAlias("termination")
-public class TerminationConfig extends AbstractConfig<TerminationConfig> implements Cloneable {
+public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     private Class<? extends Termination> terminationClass = null;
 
@@ -427,29 +427,6 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> impleme
                 inheritedConfig.getUnimprovedStepCountLimit());
         terminationConfigList = ConfigUtils.inheritMergeableListConfig(
                 terminationConfigList, inheritedConfig.getTerminationConfigList());
-    }
-
-    @Override
-    public TerminationConfig clone() {
-        TerminationConfig clone;
-        try {
-            clone = (TerminationConfig) super.clone();
-        } catch (CloneNotSupportedException e) {
-            throw new IllegalStateException("Impossible state because TerminationConfig implements Cloneable.", e);
-        }
-        // Deep clone terminationConfigList
-        if (terminationConfigList != null) {
-            List<TerminationConfig> clonedTerminationConfigList = new ArrayList<TerminationConfig>(
-                    terminationConfigList.size());
-            for (TerminationConfig terminationConfig : terminationConfigList) {
-                TerminationConfig clonedTerminationConfig = terminationConfig.clone();
-                clonedTerminationConfigList.add(clonedTerminationConfig);
-            }
-            clone.terminationConfigList = clonedTerminationConfigList;
-        } else {
-            clone.terminationConfigList = null;
-        }
-        return clone;
     }
 
 }

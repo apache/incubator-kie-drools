@@ -178,8 +178,10 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             SolverBenchmarkResult[] solverBenchmarkResultArray, long timeLeftPerSolverConfig) {
         for (SolverBenchmarkResult solverBenchmarkResult : solverBenchmarkResultArray) {
             TerminationConfig originalTerminationConfig = solverBenchmarkResult.getSolverConfig().getTerminationConfig();
-            TerminationConfig tmpTerminationConfig = originalTerminationConfig == null
-                    ? new TerminationConfig() : originalTerminationConfig.clone();
+            TerminationConfig tmpTerminationConfig = new TerminationConfig();
+            if (originalTerminationConfig != null) {
+                tmpTerminationConfig.inherit(originalTerminationConfig);
+            }
             tmpTerminationConfig.shortenTimeMillisSpentLimit(timeLeftPerSolverConfig);
             solverBenchmarkResult.getSolverConfig().setTerminationConfig(tmpTerminationConfig);
 
