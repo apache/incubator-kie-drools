@@ -615,7 +615,7 @@ public class BenchmarkAggregatorFrame extends JFrame {
                     finishDialog();
                 }
             };
-            openBrowserAction.setEnabled(desktop != null && desktop.isSupported(Desktop.Action.OPEN));
+            openFileAction.setEnabled(desktop != null && desktop.isSupported(Desktop.Action.OPEN));
             buttonPanel.add(new JButton(openFileAction));
 
             AbstractAction closeAction = new AbstractAction("Ok") {
