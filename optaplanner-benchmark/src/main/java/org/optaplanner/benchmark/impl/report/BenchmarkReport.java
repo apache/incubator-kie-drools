@@ -215,8 +215,8 @@ public class BenchmarkReport {
     }
 
     /**
-     * Needed for Freemarker Template Language.
-     * @param solverBenchmarkResult the solver benchmark result to get from the map
+     * Needed for the Freemarker Template Language.
+     * @param problemBenchmarkResult the problem benchmark result for which we get the chart files from the map
      * @return see {@link Map#get(Object)}
      */
     public List<File> getSubSingleBenchmarkAggregationChartFileMapEntry(ProblemBenchmarkResult problemBenchmarkResult) {
