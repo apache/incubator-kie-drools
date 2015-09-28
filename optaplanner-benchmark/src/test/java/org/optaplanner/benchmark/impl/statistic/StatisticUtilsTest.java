@@ -72,7 +72,7 @@ public class StatisticUtilsTest {
         assertEquals(null, StatisticUtils.getStandardDeviationString(null));
         assertEquals("2.0", StatisticUtils.getStandardDeviationString(new double[]{2d}));
         assertEquals("1.41", StatisticUtils.getStandardDeviationString(new double[]{Math.sqrt(2)}));
-        assertEquals("1.60E8", StatisticUtils.getStandardDeviationString(new double[]{160338212.294d}));
+        assertEquals("1.6E8", StatisticUtils.getStandardDeviationString(new double[]{160338212.294d}));
         assertEquals("2.0E9", StatisticUtils.getStandardDeviationString(new double[]{2000000000d}));
         assertEquals("2.0E10", StatisticUtils.getStandardDeviationString(new double[]{20000000000d}));
     }
