@@ -51,8 +51,12 @@ public class TaskSummaryImpl implements InternalTaskSummary {
     private String deploymentId;
     private SubTasksStrategy subTaskStrategy;
     private long parentId;
-    private List<String> potentialOwners;
     private boolean quickTaskSummary;
+
+    // JPQL does not accept collections in constructor arguments
+    // In short, this means that this field will never be filled
+    @Deprecated // remove in 7.0
+    private List<String> potentialOwners;
 
     public TaskSummaryImpl(long id,
             String name,
@@ -100,7 +104,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.deploymentId = deploymentId;
         this.subTaskStrategy = subTaskStrategy;
         this.parentId = parentId;
-        
+
         this.quickTaskSummary = false;
     }
 
@@ -124,16 +128,16 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         }
         this.priority = priority;
         this.skipable = skipable;
-        
+
         this.actualOwnerId = actualOwnerId;
-        if( this.actualOwnerId != null && ! this.actualOwnerId.isEmpty() ) { 
+        if( this.actualOwnerId != null && ! this.actualOwnerId.isEmpty() ) {
             this.actualOwner = TaskModelProvider.getFactory().newUser(this.actualOwnerId);
         }
         this.createdById = createdById;
-        if( this.createdById != null && ! this.createdById.isEmpty() ) { 
+        if( this.createdById != null && ! this.createdById.isEmpty() ) {
             this.createdBy = TaskModelProvider.getFactory().newUser(this.createdById);
         }
-        
+
         this.createdOn = createdOn;
         this.activationTime = activationTime;
         this.expirationTime = expirationTime;
@@ -143,10 +147,10 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.deploymentId = deploymentId;
         this.subTaskStrategy = subTaskStrategy;
         this.parentId = parentId;
-        
+
         this.quickTaskSummary = false;
     }
-    
+
     /*
      * Construct a QuickTaskSummary
      */
@@ -276,28 +280,28 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         } else {
             out.writeBoolean(false);
         }
-        
+
         if (actualOwnerId != null) {
             out.writeBoolean(true);
             out.writeUTF(actualOwnerId);
         } else {
             out.writeBoolean(false);
         }
-        
+
         if (createdById != null) {
             out.writeBoolean(true);
             out.writeUTF(createdById);
         } else {
             out.writeBoolean(false);
         }
-        
+
         if (statusId != null) {
             out.writeBoolean(true);
             out.writeUTF(statusId);
         } else {
             out.writeBoolean(false);
         }
-        
+
         out.writeBoolean(quickTaskSummary);
     }
 
@@ -358,19 +362,19 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         if (in.readBoolean()) {
             subTaskStrategy = SubTasksStrategy.valueOf(in.readUTF());
         }
-        
+
         if (in.readBoolean()) {
             actualOwnerId = in.readUTF();
         }
-        
+
         if (in.readBoolean()) {
             createdById = in.readUTF();
         }
-        
+
         if (in.readBoolean()) {
             statusId = in.readUTF();
         }
-        
+
         quickTaskSummary = in.readBoolean();
     }
 
@@ -516,10 +520,12 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.parentId = parentId;
     }
 
+    @Deprecated // remove in 7.0
     public List<String> getPotentialOwners() {
         return potentialOwners;
     }
 
+    @Deprecated // remove in 7.0
     public void setPotentialOwners(List<String> potentialOwners) {
         this.potentialOwners = potentialOwners;
     }
@@ -683,7 +689,7 @@ public class TaskSummaryImpl implements InternalTaskSummary {
     public String toString() {
         return "TaskSummaryImpl{" + "id=" + id + ", name=" + name + ", subject=" + subject + ", description=" + description + ", statusId=" + statusId + ", priority=" + priority + ", skipable=" + skipable + ", actualOwnerId=" + actualOwnerId + ", createdById=" + createdById + ", createdOn=" + createdOn + ", activationTime=" + activationTime + ", expirationTime=" + expirationTime + ", processInstanceId=" + processInstanceId + ", processId=" + processId + ", processSessionId=" + processSessionId + ", deploymentId=" + deploymentId + ", parentId=" + parentId + ", potentialOwners=" + potentialOwners + ", quickTaskSummary=" + quickTaskSummary + '}';
     }
-    
-    
+
+
 
 }
