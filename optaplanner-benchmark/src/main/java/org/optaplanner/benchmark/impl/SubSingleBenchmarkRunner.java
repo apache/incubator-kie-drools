@@ -32,7 +32,7 @@ import org.slf4j.MDC;
 
 public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunner> {
 
-    public static final String NAME_MDC = "singleBenchmark.name";
+    public static final String NAME_MDC = "subSingleBenchmark.name";
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
