@@ -76,7 +76,7 @@ public class StatisticUtils {
             // Abbreviate to 2 decimals
             // We don't use DecimalFormat to abbreviate because it's written locale insensitive (like java literals)
             int dotIndex = abbreviated.lastIndexOf('.');
-            StringBuilder result = new StringBuilder().append(abbreviated.substring(0, dotIndex < 0 ? abbreviated.length() : dotIndex));
+            StringBuilder result = new StringBuilder().append(abbreviated, 0, dotIndex < 0 ? abbreviated.length() : dotIndex);
             if (dotIndex >= 0) {
                 char[] abbreviatedChars = abbreviated.toCharArray();
                 for (int i = 0; i < 3; i++) {
@@ -85,12 +85,12 @@ public class StatisticUtils {
                     }
                     char currentChar = abbreviatedChars[dotIndex + i];
                     if (Character.isDigit(currentChar) || currentChar == '.') {
-                        result = result.append(currentChar);
+                        result.append(currentChar);
                     }
                 }
                 int expIndex = abbreviated.lastIndexOf('E');
                 if (expIndex >= 0) {
-                    result = result.append(abbreviated.substring(expIndex));
+                    result.append(abbreviated.substring(expIndex));
                 }
             }
             standardDeviationString.append(result.toString());
