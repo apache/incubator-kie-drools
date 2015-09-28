@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.testdata.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-
-@XStreamAlias("TestdataValue")
 public class TestdataValue extends TestdataObject {
 
     public TestdataValue() {

@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.testdata.domain;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -24,7 +23,6 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
 @PlanningEntity
-@XStreamAlias("TestdataEntity")
 public class TestdataEntity extends TestdataObject {
 
     public static EntityDescriptor buildEntityDescriptor() {
