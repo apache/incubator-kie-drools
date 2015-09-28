@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.core.api.score.Score;
 
 /**
  * This ranking {@link Comparator} orders a {@link SolverBenchmarkResult} by its worst {@link Score}.
