@@ -41,7 +41,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     protected static final Logger log = LoggerFactory.getLogger(SegmentMemory.class);
     protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
 
-    private          NetworkNode        rootNode;
+    private final    NetworkNode        rootNode;
     private          NetworkNode        tipNode;
     private          LinkedList<Memory> nodeMemories;
     private          AtomicBitwiseLong  linkedNodeMask;
@@ -359,6 +359,11 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.dirtyNodeMask.set(0);
         this.linkedNodeMask.set( prototype != null ? prototype.linkedNodeMask : 0 );
         stagedLeftTuples.resetAll();
+    }
+
+    @Override
+    public String toString() {
+        return "Segment from " + rootNode + " to " + tipNode;
     }
 
     public static class Prototype {

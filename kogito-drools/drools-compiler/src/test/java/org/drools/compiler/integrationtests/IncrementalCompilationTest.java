@@ -18,6 +18,7 @@ package org.drools.compiler.integrationtests;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
 import org.drools.compiler.Message;
+import org.drools.compiler.Person;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.ClockType;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
@@ -1954,5 +1955,49 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
             }
             return solvers;
         }
+    }
+
+    @Test
+    public void testSegmentSplitOnIncrementalCompilation() throws Exception {
+        // DROOLS-930
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule R1 when\n" +
+                "  $s : String()" +
+                "  Person( name == $s ) \n" +
+                "then\n" +
+                "  System.out.println(\"Triggered: R1\");\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "  $s : String()" +
+                "  Person( name == $s ) \n" +
+                "then\n" +
+                "  System.out.println(\"Triggered: R2\");\n" +
+                "end\n" +
+                "rule R3 when\n" +
+                "  $s : String()" +
+                "  Person( name != $s ) \n" +
+                "then\n" +
+                "  System.out.println(\"Triggered: R3\");\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.1");
+        KieModule km = createAndDeployJar(ks, releaseId1);
+
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        kc.updateToVersion(releaseId1);
+        ksession.insert(new Person("John", 26));
+        ksession.insert( "John" );
+        ksession.fireAllRules();
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        km = createAndDeployJar(ks, releaseId2, drl);
+
+        kc.updateToVersion(releaseId2);
+        ksession.fireAllRules();
     }
 }
