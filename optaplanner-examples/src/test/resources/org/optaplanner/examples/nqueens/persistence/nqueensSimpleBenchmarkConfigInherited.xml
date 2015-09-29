@@ -1,0 +1,38 @@
+<plannerBenchmark xStreamId="1">
+  <benchmarkDirectory>local/data/nqueens</benchmarkDirectory>
+  <inheritedSolverBenchmark xStreamId="2">
+    <solver xStreamId="3">
+      <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
+      <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
+      <scoreDirectorFactory xStreamId="4">
+        <scoreDefinitionType>SIMPLE</scoreDefinitionType>
+        <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+      <termination xStreamId="5">
+        <secondsSpentLimit>20</secondsSpentLimit>
+      </termination>
+    </solver>
+    <problemBenchmarks xStreamId="6">
+      <xStreamAnnotatedClass>org.optaplanner.examples.nqueens.domain.NQueens</xStreamAnnotatedClass>
+      <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
+    </problemBenchmarks>
+    <subSingleCount>2</subSingleCount>
+  </inheritedSolverBenchmark>
+  <solverBenchmark xStreamId="7">
+    <name>Entity Tabu Search</name>
+    <solver xStreamId="8">
+      <constructionHeuristic xStreamId="9">
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch xStreamId="10">
+        <changeMoveSelector xStreamId="11">
+          <selectionOrder>ORIGINAL</selectionOrder>
+        </changeMoveSelector>
+        <acceptor xStreamId="12">
+          <entityTabuSize>5</entityTabuSize>
+        </acceptor>
+        <forager xStreamId="13"/>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>
