@@ -37,6 +37,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * The planning solution class must implement this interface which is needed to get/set state.
  * But the planning solution class must also be annotated with {@link PlanningSolution}
  * describes declarative properties.
+ * @param <S> the {@link Score} type used by this use case
  */
 public interface Solution<S extends Score> {
 
