@@ -33,6 +33,7 @@ public interface TaskSummary extends QuickTaskSummary {
     
     Long getProcessSessionId();
 
+    @Deprecated // remove in 7.0 since this field is never filled
     List<String> getPotentialOwners();
     
     Boolean isQuickTaskSummary();

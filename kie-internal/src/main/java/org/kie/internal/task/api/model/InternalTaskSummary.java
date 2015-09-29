@@ -62,6 +62,7 @@ public interface InternalTaskSummary extends TaskSummary {
 
     void setParentId(long parentId);
 
+    @Deprecated // remove in 7.0 since this field is never filled
     void setPotentialOwners(List<String> potentialOwners);
     
 }
