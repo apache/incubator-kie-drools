@@ -568,7 +568,7 @@ public class BenchmarkReport {
         renderer.setUseOutlinePaintForWhiskers(true);
         renderer.setMedianVisible(true);
         renderer.setMeanVisible(false);
-        renderer.setItemMargin(0.0d);
+        renderer.setItemMargin(0.0);
 
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
             List<? extends BoxAndWhiskerCategoryDataset> datasetList = generateSubSingleBenchmarkScoreSummary(problemBenchmarkResult);

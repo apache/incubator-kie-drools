@@ -79,7 +79,7 @@ public class StatisticUtils {
             }
             // See http://docs.oracle.com/javase/7/docs/api/java/lang/Double.html#toString%28double%29
             String abbreviated;
-            if (0.001d <= standardDeviationDouble && standardDeviationDouble <= 10000000d) {
+            if (0.001 <= standardDeviationDouble && standardDeviationDouble <= 10000000.0) {
                 abbreviated = decimalFormat.format(standardDeviationDouble);
             } else {
                 abbreviated = exponentialFormat.format(standardDeviationDouble);

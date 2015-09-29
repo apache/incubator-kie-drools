@@ -37,16 +37,16 @@ import static org.mockito.Mockito.*;
 
 public class StatisticUtilsTest {
 
-    private static final double DELTA = 0.001d;
+    private static final double DELTA = 0.001;
 
     @Test
-    public void testSingleDetermineStandardDeviationDoubles() throws Exception {
+    public void singleDetermineStandardDeviationDoubles() throws Exception {
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = Arrays.asList(createSubSingleBenchmarkResult(SimpleScore.valueOf(0), 0));
         assertArrayEquals(new double[]{0d}, StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, SimpleScore.valueOf(0), subSingleBenchmarkResultList.size()), DELTA);
     }
 
     @Test
-    public void testMultipleDetermineStandardDeviationDoubles() throws Exception {
+    public void multipleDetermineStandardDeviationDoubles() throws Exception {
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<SubSingleBenchmarkResult>(2);
         subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(SimpleScore.valueOf(-2), 0));
         subSingleBenchmarkResultList.add(createSubSingleBenchmarkResult(SimpleScore.valueOf(-4), 1));
@@ -54,7 +54,7 @@ public class StatisticUtilsTest {
     }
 
     @Test
-    public void testLargeDetermineStandardDeviationDoubles() throws Exception {
+    public void largeDetermineStandardDeviationDoubles() throws Exception {
         long[] subSingleBenchmarkScores = new long[]{-19289560268L, -19345935795L, -19715516752L, -19589259253L, -19390707618L, -19641410518L};
         List<SubSingleBenchmarkResult> subSingleBenchmarkResultList = new ArrayList<SubSingleBenchmarkResult>(6);
         SimpleLongScore averageScore = SimpleLongScore.valueOf(0);
@@ -64,17 +64,17 @@ public class StatisticUtilsTest {
             averageScore = averageScore.add(current);
         }
         averageScore = averageScore.divide(subSingleBenchmarkScores.length);
-        assertArrayEquals(new double[]{160338212.294d}, StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, averageScore, subSingleBenchmarkResultList.size()), DELTA);
+        assertArrayEquals(new double[]{160338212.294}, StatisticUtils.determineStandardDeviationDoubles(subSingleBenchmarkResultList, averageScore, subSingleBenchmarkResultList.size()), DELTA);
     }
 
     @Test
-    public void testGetStandardDeviationString() throws Exception {
+    public void getStandardDeviationString() throws Exception {
         assertEquals(null, StatisticUtils.getStandardDeviationString(null));
-        assertEquals("2.0", StatisticUtils.getStandardDeviationString(new double[]{2d}));
-        assertEquals("1.41", StatisticUtils.getStandardDeviationString(new double[]{Math.sqrt(2)}));
-        assertEquals("1.6E8", StatisticUtils.getStandardDeviationString(new double[]{160338212.294d}));
-        assertEquals("2.0E9", StatisticUtils.getStandardDeviationString(new double[]{2000000000d}));
-        assertEquals("2.0E10", StatisticUtils.getStandardDeviationString(new double[]{20000000000d}));
+        assertEquals("2.0", StatisticUtils.getStandardDeviationString(new double[]{2.0}));
+        assertEquals("1.41", StatisticUtils.getStandardDeviationString(new double[]{Math.sqrt(2.0)}));
+        assertEquals("1.6E8", StatisticUtils.getStandardDeviationString(new double[]{160338212.294}));
+        assertEquals("2.0E9", StatisticUtils.getStandardDeviationString(new double[]{2000000000.0}));
+        assertEquals("2.0E10", StatisticUtils.getStandardDeviationString(new double[]{20000000000.0}));
     }
 
     private SubSingleBenchmarkResult createSubSingleBenchmarkResult(Score score, int index) {
