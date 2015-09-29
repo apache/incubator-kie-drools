@@ -182,6 +182,10 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
         return segmentMemories;
     }
 
+    public void setSegmentMemory(int index, SegmentMemory sm) {
+        this.segmentMemories[index] = sm;
+    }
+
     public void setSegmentMemories(SegmentMemory[] segmentMemories) {
         this.segmentMemories = segmentMemories;
     }
