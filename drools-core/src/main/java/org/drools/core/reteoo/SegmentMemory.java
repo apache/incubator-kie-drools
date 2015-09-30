@@ -49,7 +49,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private          long               allLinkedMaskTest;
     private          List<PathMemory>   pathMemories;
     private          long               segmentPosMaskBit;
-    private          int                pos;
+    private          int                pos = -1;
     private volatile LeftTupleSets      stagedLeftTuples;
     private          boolean            active;
     private          SegmentMemory      previous;
@@ -323,21 +323,12 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = prime * rootNode.getId();
-        return result;
+        return rootNode.getId();
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) { return true; }
-        if (!super.equals(obj)) { return false; }
-        if (getClass() != obj.getClass()) { return false; }
-        SegmentMemory other = (SegmentMemory) obj;
-        if (rootNode == null) {
-            if (other.rootNode != null) { return false; }
-        } else if (rootNode.getId() != other.rootNode.getId()) { return false; }
-        return true;
+        return this == obj || (obj instanceof SegmentMemory && rootNode.getId() == ((SegmentMemory) obj).rootNode.getId());
     }
 
     public Prototype asPrototype() {
@@ -460,7 +451,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             BetaMemory betaMemory = (BetaMemory)memory;
             betaMemory.setNodePosMaskBit(nodePosMaskBit);
             if (riaNode != null) {
-                RightInputAdapterNode.RiaNodeMemory riaMem = (RightInputAdapterNode.RiaNodeMemory)wm.getNodeMemory(riaNode);
+                RightInputAdapterNode.RiaNodeMemory riaMem = wm.getNodeMemory(riaNode);
                 betaMemory.setRiaRuleMemory(riaMem.getRiaPathMemory());
             }
         }

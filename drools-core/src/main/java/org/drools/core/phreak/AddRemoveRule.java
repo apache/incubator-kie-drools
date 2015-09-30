@@ -298,7 +298,6 @@ public class AddRemoveRule {
         if (smems[0] == null) {
             return false; // segment has not yet been initialized
         }
-        int smemIndex = sm.getPos();
 
         LeftTupleSink sink;
         Memory mem;
@@ -318,7 +317,7 @@ public class AddRemoveRule {
         }
 
         new RuleNetworkEvaluator().outerEval( ( LeftInputAdapterNode ) smems[0].getRootNode(),
-                                              pmem, sink, bit, mem, smems, smemIndex, leftTupleSets, wm,
+                                              pmem, sink, bit, mem, smems, sm.getPos(), leftTupleSets, wm,
                                               new LinkedList<StackEntry>(),
                                               true, pmem.getOrCreateRuleAgendaItem(wm).getRuleExecutor() );
         return true;
