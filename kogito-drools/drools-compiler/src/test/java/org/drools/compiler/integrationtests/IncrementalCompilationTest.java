@@ -1962,23 +1962,24 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         // DROOLS-930
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
                 "rule R1 when\n" +
                 "  $s : String()" +
                 "  Person( name == $s ) \n" +
                 "then\n" +
-                "  System.out.println(\"Triggered: R1\");\n" +
+                "  list.add(\"R1\");\n" +
                 "end\n" +
                 "rule R2 when\n" +
                 "  $s : String()" +
                 "  Person( name == $s ) \n" +
                 "then\n" +
-                "  System.out.println(\"Triggered: R2\");\n" +
+                "  list.add(\"R2\");\n" +
                 "end\n" +
                 "rule R3 when\n" +
                 "  $s : String()" +
                 "  Person( name != $s ) \n" +
                 "then\n" +
-                "  System.out.println(\"Triggered: R3\");\n" +
+                "  list.add(\"R3\");\n" +
                 "end\n";
 
         KieServices ks = KieServices.Factory.get();
@@ -1990,7 +1991,8 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         KieSession ksession = kc.newKieSession();
 
         kc.updateToVersion(releaseId1);
-        ksession.insert(new Person("John", 26));
+
+        ksession.insert( new Person( "John", 26 ) );
         ksession.insert( "John" );
         ksession.fireAllRules();
 
@@ -1998,6 +2000,12 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         km = createAndDeployJar(ks, releaseId2, drl);
 
         kc.updateToVersion(releaseId2);
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
         ksession.fireAllRules();
+
+        assertEquals(2, list.size());
+        assertTrue( list.containsAll( asList("R1", "R2") ) );
     }
 }

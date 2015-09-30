@@ -311,6 +311,7 @@ public class SegmentUtilities {
             Memory memory = wm.getNodeMemory((MemoryFactory) sink);
 
             SegmentMemory childSmem = createChildSegment(wm, sink, memory);
+            childSmem.setPos( smem.getPos()+1 );
             smem.add(childSmem);
         }
     }
