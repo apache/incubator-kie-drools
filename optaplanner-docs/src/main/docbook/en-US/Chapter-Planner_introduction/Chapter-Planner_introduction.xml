@@ -525,7 +525,7 @@ $ mvn exec:java
           role="bold">org.optaplanner.core.api</emphasis> are 100% <emphasis role="bold">backwards compatible</emphasis>
           in future releases (especially minor and hotfix releases). In rare circumstances, if the major version number
           changes, a few specific classes might have a few backwards incompatible changes, but those will be clearly
-          documented in <link xlink:href="http://www.optaplanner.org/download/upgradeRecipe/upgradeRecipeArchive.html">
+          documented in <link xlink:href="http://www.optaplanner.org/download/upgradeRecipe">
           the upgrade recipe</link>.</para>
         </listitem>
 
@@ -540,7 +540,7 @@ $ mvn exec:java
           <para><emphasis role="bold">Implementation classes</emphasis>: All classes in the package namespace <emphasis
           role="bold">org.optaplanner.core.impl</emphasis> are <emphasis>not</emphasis> backwards compatible: they will
           change in future major or minor releases (but probably not in hotfix releases). The
-          <link xlink:href="http://www.optaplanner.org/download/upgradeRecipe/upgradeRecipeArchive.html">upgrade recipe
+          <link xlink:href="http://www.optaplanner.org/download/upgradeRecipe">upgrade recipe
           </link> describes every such relevant change and on how to quickly deal with it when upgrading to a newer
           version. That recipe file is included in every release zip.</para>
         </listitem>

@@ -65,5 +65,5 @@ Known problems
 
 OptaPlanner is not backward compatible with previous versions
 and future versions might not be backward compatible either,
-but the upgrade recipe (http://www.optaplanner.org/download/upgradeRecipe/upgradeRecipeArchive.html) makes it easy
+but the upgrade recipe (http://www.optaplanner.org/download/upgradeRecipe) makes it easy
 to upgrade your code to every new version as they are released.
