@@ -148,6 +148,10 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
 	private LifeCycleManager getMvelLifeCycleManager() { 
         return new MVELLifeCycleManager(this, persistenceContext, getTaskContentService(), taskEventSupport);
 	}
+	
+	public TaskEventSupport getTaskEventSupport() {
+	    return this.taskEventSupport;
+	}
 	/*
 	 * currently not used methods 
 	 */

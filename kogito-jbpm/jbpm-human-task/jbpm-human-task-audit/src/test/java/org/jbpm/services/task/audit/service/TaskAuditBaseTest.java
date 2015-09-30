@@ -36,7 +36,6 @@ import org.jbpm.services.task.audit.commands.DeleteBAMTaskSummariesCommand;
 import org.jbpm.services.task.audit.commands.GetAuditEventsCommand;
 import org.jbpm.services.task.audit.commands.GetBAMTaskSummariesCommand;
 import org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl;
-import org.jbpm.services.task.audit.service.TaskAuditService;
 import org.jbpm.services.task.impl.model.I18NTextImpl;
 import org.jbpm.services.task.utils.TaskFluent;
 import org.junit.Test;
@@ -491,5 +490,6 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
     public void testDueDateUpdateToNull() {
         testDueDateUpdate(getToday(), null, true);
     }
+
 
 }

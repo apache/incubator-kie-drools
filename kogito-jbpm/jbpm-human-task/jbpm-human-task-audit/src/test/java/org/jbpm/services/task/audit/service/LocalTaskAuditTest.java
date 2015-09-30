@@ -44,7 +44,7 @@ public class LocalTaskAuditTest extends TaskAuditBaseTest {
 												.listener(new BAMTaskEventListener(true))
 												.getTaskService();
                 
-                this.taskAuditService = TaskAuditServiceFactory.newTaskAuditServiceConfigurator().setTaskService(taskService).getTaskAuditService();
+        this.taskAuditService = TaskAuditServiceFactory.newTaskAuditServiceConfigurator().setTaskService(taskService).getTaskAuditService();
 	}
 	
 	@After

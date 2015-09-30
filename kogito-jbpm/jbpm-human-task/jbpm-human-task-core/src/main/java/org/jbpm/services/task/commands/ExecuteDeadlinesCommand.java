@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.jbpm.services.task.deadlines.NotificationListener;
 import org.jbpm.services.task.deadlines.notifications.impl.email.EmailNotificationListener;
+import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.task.model.Content;
@@ -131,6 +132,8 @@ public class ExecuteDeadlinesCommand extends TaskCommand<Void> {
 	                if (deadline == null || deadline.getEscalations() == null ) {
 	                    return null;
 	                }
+	                
+	                TaskEventSupport taskEventSupport = ctx.getTaskEventSupport();
 	
 	                for (Escalation escalation : deadline.getEscalations()) {
 	
@@ -139,6 +142,9 @@ public class ExecuteDeadlinesCommand extends TaskCommand<Void> {
 	
 	                    // run reassignment first to allow notification to be send to new potential owners
 	                    if (!escalation.getReassignments().isEmpty()) {
+	                        
+	                        taskEventSupport.fireBeforeTaskReassigned(task, ctx);
+	                        
 	                        // get first and ignore the rest.
 	                        Reassignment reassignment = escalation.getReassignments().get(0);
 	                        logger.debug("Reassigning to {}", reassignment.getPotentialOwners());
@@ -148,11 +154,16 @@ public class ExecuteDeadlinesCommand extends TaskCommand<Void> {
 	                        ((InternalPeopleAssignments) task.getPeopleAssignments()).setPotentialOwners(potentialOwners);
 	                        ((InternalTaskData) task.getTaskData()).setActualOwner(null);
 	
+	                        taskEventSupport.fireAfterTaskReassigned(task, ctx);
 	                    }
 	                    for (Notification notification : escalation.getNotifications()) {
 	                        if (notification.getNotificationType() == NotificationType.Email) {
+	                            
+	                            taskEventSupport.fireBeforeTaskNotified(task, ctx);
 	                            logger.debug("Sending an Email");
 	                            notificationListener.onNotification(new NotificationEvent(notification, task, variables));
+	                            
+	                            taskEventSupport.fireAfterTaskNotified(task, ctx);
 	                        }
 	                    }
 	                }

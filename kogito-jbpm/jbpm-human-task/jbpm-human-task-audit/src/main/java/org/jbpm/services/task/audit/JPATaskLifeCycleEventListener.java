@@ -19,9 +19,7 @@
  */
 package org.jbpm.services.task.audit;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
@@ -31,11 +29,9 @@ import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.persistence.PersistableEventListener;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.kie.api.task.TaskEvent;
-import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
-import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -699,5 +695,51 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
 	        cleanup(persistenceContext);
 		}
 	}
+
+    @Override
+    public void beforeTaskReassignedEvent(TaskEvent event) {
+
+    }
+
+    @Override
+    public void afterTaskReassignedEvent(TaskEvent event) {
+        String userId = "";
+        Task ti = event.getTask();
+        TaskPersistenceContext persistenceContext = getPersistenceContext(((TaskContext)event.getTaskContext()).getPersistenceContext());
+        try {
+            if (ti.getTaskData().getActualOwner() != null) {
+                userId = ti.getTaskData().getActualOwner().getId();
+            }
+            persistenceContext.persist(new TaskEventImpl(ti.getId(), org.kie.internal.task.api.model.TaskEvent.TaskEventType.DELEGATED, ti.getTaskData().getProcessInstanceId(), ti.getTaskData().getWorkItemId(), userId));
+            
+    
+            AuditTaskImpl auditTaskImpl = getAuditTask(event, persistenceContext, ti);
+            if (auditTaskImpl == null) {
+                logger.warn("Unable find audit task entry for task id {} '{}', skipping audit task update", ti.getId(), ti.getName());
+                return;
+            }
+            auditTaskImpl.setDescription(ti.getDescription());
+            auditTaskImpl.setName(ti.getName());  
+            auditTaskImpl.setActivationTime(ti.getTaskData().getActivationTime());
+            auditTaskImpl.setPriority(ti.getPriority());
+            auditTaskImpl.setDueDate(ti.getTaskData().getExpirationTime());
+            auditTaskImpl.setStatus(ti.getTaskData().getStatus().name());
+            auditTaskImpl.setActualOwner(userId);
+                
+            persistenceContext.merge(auditTaskImpl);
+        } finally {
+            cleanup(persistenceContext);
+        }
+    }
+
+    @Override
+    public void beforeTaskNotificationEvent(TaskEvent event) {
+
+    }
+
+    @Override
+    public void afterTaskNotificationEvent(TaskEvent event) {
+
+    }
   
 }
