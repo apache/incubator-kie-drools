@@ -15,10 +15,11 @@
 
 package org.kie.scanner;
 
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.core.rule.TypeMetaInfo;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 
 import java.io.File;
 import java.util.Collection;
@@ -28,29 +29,42 @@ public interface KieModuleMetaData {
 
     Collection<String> getPackages();
 
-    Collection<String> getClasses(String packageName);
+    Collection<String> getClasses( String packageName );
 
-    Class<?> getClass(String pkgName, String className);
-    
+    Class<?> getClass( String pkgName, String className );
+
     Map<String, String> getProcesses();
 
-    TypeMetaInfo getTypeMetaInfo(Class<?> clazz);
+    TypeMetaInfo getTypeMetaInfo( Class<?> clazz );
 
-    Collection<String> getRuleNamesInPackage(String packageName);
+    Collection<String> getRuleNamesInPackage( String packageName );
 
     ClassLoader getClassLoader();
 
-    public static class Factory {
-        public static KieModuleMetaData newKieModuleMetaData(KieModule kieModule) {
-            return new KieModuleMetaDataImpl((InternalKieModule) kieModule);
+    class Factory {
+        public static KieModuleMetaData newKieModuleMetaData( KieModule kieModule ) {
+            return newKieModuleMetaData( kieModule, DependencyFilter.TAKE_ALL_FILTER );
         }
 
-        public static KieModuleMetaData newKieModuleMetaData(ReleaseId releaseId) {
-            return new KieModuleMetaDataImpl(releaseId);
+        public static KieModuleMetaData newKieModuleMetaData( ReleaseId releaseId ) {
+            return newKieModuleMetaData( releaseId, DependencyFilter.TAKE_ALL_FILTER );
         }
 
-        public static KieModuleMetaData newKieModuleMetaData(File pomFile) {
-            return new KieModuleMetaDataImpl(pomFile);
+        public static KieModuleMetaData newKieModuleMetaData( File pomFile ) {
+            return newKieModuleMetaData( pomFile, DependencyFilter.TAKE_ALL_FILTER );
+        }
+
+        public static KieModuleMetaData newKieModuleMetaData( KieModule kieModule, DependencyFilter dependencyFilter ) {
+            return new KieModuleMetaDataImpl( (InternalKieModule) kieModule, dependencyFilter );
+        }
+
+        public static KieModuleMetaData newKieModuleMetaData( ReleaseId releaseId, DependencyFilter dependencyFilter ) {
+            return new KieModuleMetaDataImpl( releaseId, dependencyFilter );
+        }
+
+        public static KieModuleMetaData newKieModuleMetaData( File pomFile, DependencyFilter dependencyFilter ) {
+            return new KieModuleMetaDataImpl( pomFile, dependencyFilter );
         }
     }
 }
+

@@ -24,6 +24,7 @@ import org.drools.compiler.kie.builder.impl.KieModuleCache.KModuleCache;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.builder.conf.impl.DecisionTableConfigurationImpl;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
@@ -121,13 +122,13 @@ public abstract class AbstractKieModule
         kieDependencies.put(dependency.getReleaseId(), dependency);
     }
 
-    public Collection<ReleaseId> getJarDependencies() {
+    public Collection<ReleaseId> getJarDependencies(DependencyFilter filter) {
         if( pomModel == null ) {
             getPomModel();
         }
         Collection<ReleaseId> deps = null;
         if( pomModel != null ) {
-            deps = pomModel.getDependencies();
+            deps = pomModel.getDependencies(filter);
         }
         return deps == null ? Collections.<ReleaseId> emptyList() : deps;
     }

@@ -15,9 +15,9 @@
 
 package org.kie.scanner;
 
-import junit.framework.TestCase;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.core.rule.TypeMetaInfo;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -25,33 +25,36 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
-import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.type.Role;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static junit.framework.TestCase.assertFalse;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.generatePomXml;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class KieModuleMetaDataTest extends AbstractKieCiTest {
 
     @Test
-    @Ignore
     public void testKieModuleMetaData() throws Exception {
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId( "org.drools", "drools-core", "5.5.0.Final" );
         KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( releaseId );
         checkDroolsCoreDep( kieModuleMetaData );
+        assertTrue( ("" + kieModuleMetaData.getPackages()).contains( "junit" ) );
+    }
+
+    @Test
+    public void testKieModuleMetaDataWithoutTestDependencies() throws Exception {
+        ReleaseId releaseId = KieServices.Factory.get().newReleaseId( "org.drools", "drools-core", "5.5.0.Final" );
+        KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( releaseId, new DependencyFilter.ExcludeScopeFilter("test") );
+        checkDroolsCoreDep( kieModuleMetaData );
+        assertFalse( ( "" + kieModuleMetaData.getPackages() ).contains( "junit" ) );
     }
 
     @Test
@@ -116,7 +119,52 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( kieModule );
 
         assertFalse( kieModuleMetaData.getPackages().isEmpty() );
-        TestCase.assertTrue( kieModuleMetaData.getPackages().contains( "org.test" ) );
+        assertTrue( kieModuleMetaData.getPackages().contains( "org.test" ) );
+    }
+
+    @Test
+    public void testIncludeAllDeps() {
+        final KieServices ks = KieServices.Factory.get();
+
+        final KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.writePomXML( getPomWithTestDependency() );
+
+        final KieModule kieModule = ks.newKieBuilder( kfs ).getKieModule();
+        final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( kieModule );
+        assertTrue( ("" + kieModuleMetaData.getPackages()).contains( "junit" ) );
+    }
+
+    @Test
+    public void testExcludeTestDeps() {
+        final KieServices ks = KieServices.Factory.get();
+
+        final KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.writePomXML( getPomWithTestDependency() );
+
+        final KieModule kieModule = ks.newKieBuilder( kfs ).getKieModule();
+        final KieModuleMetaData kieModuleMetaData = KieModuleMetaData.Factory.newKieModuleMetaData( kieModule, new DependencyFilter.ExcludeScopeFilter("test") );
+        assertFalse( ( "" + kieModuleMetaData.getPackages() ).contains( "junit" ) );
+    }
+
+    private String getPomWithTestDependency() {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+               "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+               "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
+               "  <modelVersion>4.0.0</modelVersion>\n" +
+               "\n" +
+               "  <groupId>org.kie</groupId>\n" +
+               "  <artifactId>test</artifactId>\n" +
+               "  <version>1.0</version>\n" +
+               "\n" +
+               "    <dependencies>\n" +
+               "      <dependency>\n" +
+               "        <groupId>junit</groupId>\n" +
+               "        <artifactId>junit</artifactId>\n" +
+               "        <version>4.11</version>\n" +
+               "        <scope>test</scope>\n" +
+               "      </dependency>\n" +
+               "    </dependencies>\n" +
+               "</project>";
     }
 
     @Test
@@ -136,10 +184,10 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
                            "end\n" );
         kfs.write( "src/main/resources/test2.drl",
                    "package org.test\n" +
-                           "rule C\n" +
-                           " when\n" +
-                           "then\n" +
-                           "end\n" );
+                   "rule C\n" +
+                   " when\n" +
+                   "then\n" +
+                   "end\n" );
 
         final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
         final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();

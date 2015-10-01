@@ -15,6 +15,7 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.core.common.ResourceProvider;
 import org.kie.api.builder.KieModule;
@@ -58,7 +59,7 @@ public interface InternalKieModule extends KieModule {
     
     void addKieDependency(InternalKieModule dependency);
 
-    Collection<ReleaseId> getJarDependencies();
+    Collection<ReleaseId> getJarDependencies(DependencyFilter filter);
 
     Collection<ReleaseId> getUnresolvedDependencies();
     void setUnresolvedDependencies(Collection<ReleaseId> unresolvedDependencies);
