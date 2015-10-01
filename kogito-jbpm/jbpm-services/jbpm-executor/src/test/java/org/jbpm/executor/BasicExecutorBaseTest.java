@@ -567,6 +567,25 @@ public abstract class BasicExecutorBaseTest {
         allRequests = executorService.getAllRequests(new QueryContext());
         assertEquals(0, allRequests.size());
     }
+    
+    @Test
+    public void testReturnNullCommand() throws InterruptedException {
+        CommandContext ctxCMD = new CommandContext();
+        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
+
+        executorService.scheduleRequest("org.jbpm.executor.test.ReturnNullCommand", ctxCMD);
+
+        Thread.sleep(4000);
+
+        List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
+        assertEquals(0, inErrorRequests.size());
+        List<RequestInfo> queuedRequests = executorService.getQueuedRequests(new QueryContext());
+        assertEquals(0, queuedRequests.size());
+        List<RequestInfo> executedRequests = executorService.getCompletedRequests(new QueryContext());
+        assertEquals(1, executedRequests.size());
+
+
+    }
 
     private void compareRequestsAreNotSame(RequestInfo firstRequest, RequestInfo secondRequest) {
         assertNotNull(firstRequest);

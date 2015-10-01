@@ -239,6 +239,41 @@ public class AsyncWorkItemHandlerTest extends AbstractExecutorBaseTest {
         assertNull(processInstance);
     }
     
+    @Test
+    public void testRunProcessWithAsyncHandlerAndReturnNullCommand() throws Exception {
+
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-ScriptTask.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory() {
+
+                    @Override
+                    public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
+
+                        Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
+                        handlers.put("async", new AsyncWorkItemHandler(executorService, "org.jbpm.executor.test.ReturnNullCommand"));
+                        return handlers;
+                    }
+                    
+                })
+                .get();
+        
+        manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
+        assertNotNull(manager);
+        
+        RuntimeEngine runtime = manager.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession = runtime.getKieSession();
+        assertNotNull(ksession);       
+        
+        ProcessInstance processInstance = ksession.startProcess("ScriptTask");
+        assertEquals(ProcessInstance.STATE_ACTIVE, processInstance.getState());
+        
+        Thread.sleep(3000);
+        
+        processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
+        assertNull(processInstance);
+    }
+    
     private ExecutorService buildExecutorService() {        
         emf = Persistence.createEntityManagerFactory("org.jbpm.executor");
 
