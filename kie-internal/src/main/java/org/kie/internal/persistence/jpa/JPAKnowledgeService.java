@@ -29,35 +29,35 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
  * manager (for development/testing purposes we recommend Bitronix as it's simple to setup and works
  * embedded, but for production the use of JBoss Transactions is recommended).
  * </p>
- * 
+ *
  * <pre>
  * Environment env = KnowledgeBaseFactory.newEnvironment();
  * env.set( EnvironmentName.ENTITY_MANAGER_FACTORY, Persistence.createEntityManagerFactory( "emf-name" ) );
  * env.set( EnvironmentName.TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
- *          
+ *
  * StatefulKnowledgeSession ksession = JPAKnowledgeService.newKieSession( kbase, null, env ); // KnowledgeSessionConfiguration may be null, and a default will be used
  * int sessionId = ksession.getId();
- * 
+ *
  * ksession.insert( data1 );
  * ksession.insert( data2 );
  * ksession.startProcess( "process1" );
  * </pre>
- * 
+ *
  * <p>
- * To use a JPA the Environment must be set with both the EntityManagerFactory and the TransactionManager. If rollback occurs the ksession state is also rolled back, so you 
+ * To use a JPA the Environment must be set with both the EntityManagerFactory and the TransactionManager. If rollback occurs the ksession state is also rolled back, so you
  * can continue to use it after a rollback. To load a previous persisted StatefulKnowledgeSession you'll need the id, as shown below:
  * </p>
- * 
+ *
  * <pre>
  * StatefulKnowledgeSession ksession = JPAKnowledgeService.loadKieSession( sessionId, kbase, null, env );
  * </pre>
- * 
+ *
  * <p>
  * If you do not define any transaction boundaries, each command (i.e. each invocation of a method of
  * the session) will be executed inside its own transaction.  You can define the transaction boundaries
  * yourself using a JTA UserTransaction.
  * </p>
- * 
+ *
  * <pre>
  * UserTransaction ut = (UserTransaction) new InitialContext().lookup( "java:comp/UserTransaction" );
  * ut.begin();
@@ -66,11 +66,11 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
  * ksession.startProcess( "process1" );
  * ut.commit();
  * </pre>
- * 
+ *
  * <p>
  * To enable persistence the following classes must be added to your persistence.xml, as in the example below:
  * </p>
- * 
+ *
  * <pre>
  * &lt;persistence-unit name="org.jbpm.persistence.jpa" transaction-type="JTA"&gt;
  *    &lt;provider&gt;org.hibernate.ejb.HibernatePersistence&lt;/provider&gt;
@@ -87,7 +87,7 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
  *    &lt;/properties&gt;
  * &lt;/persistence-unit&gt;
  * </pre>
- * 
+ *
  * <p>
  * The jdbc JTA data source would need to be previously bound, Bitronix provides a number of ways of doing this and it's docs shoud be contacted for more details, however
  * for quick start help here is the programmatic approach:
@@ -103,11 +103,11 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
  * ds.getDriverProperties().put( "URL", "jdbc:h2:mem:mydb" );
  * ds.init();
  * </pre>
- * 
+ *
  * <p>
  * Bitronix also provides a simple embedded JNDI service, ideal for testing, to use it add a jndi.properties file at the root of your classpath and add the following line to it:
  * </p>
- * 
+ *
  * <pre>
  * java.naming.factory.initial=bitronix.tm.jndi.BitronixInitialContextFactory
  * </pre>
@@ -136,7 +136,7 @@ public class JPAKnowledgeService {
                 configuration,
                 environment);
     }
-    
+
     public static StatefulKnowledgeSession loadStatefulKnowledgeSession(Long id,
             KieBase kbase,
             KieSessionConfiguration configuration,
@@ -160,13 +160,12 @@ public class JPAKnowledgeService {
 
     @SuppressWarnings("unchecked")
     private static void loadProvider() {
+        String className = System.getProperty( "org.kie.store.services.class",  "org.drools.persistence.jpa.KnowledgeStoreServiceImpl" );
         try {
-            // we didn't find anything in properties so lets try and us reflection
-            Class<KieStoreServices> cls = (Class<KieStoreServices>) Class.forName( "org.drools.persistence.jpa.KnowledgeStoreServiceImpl" );
+            Class<KieStoreServices> cls = (Class<KieStoreServices>) Class.forName( className );
             setJPAKnowledgeServiceProvider( cls.newInstance() );
         } catch ( Exception e ) {
-            throw new RuntimeException( "Provider org.drools.persistence.jpa.KnowledgeStoreServiceImpl could not be set.",
-                                        e );
+            throw new RuntimeException( "Provider " + className + " could not be set.", e );
         }
     }
 
