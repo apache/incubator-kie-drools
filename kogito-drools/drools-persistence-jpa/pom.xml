@@ -218,6 +218,7 @@
     <maven.jdbc.username></maven.jdbc.username>
     <maven.jdbc.password></maven.jdbc.password>
     <maven.jdbc.url>jdbc:h2:</maven.jdbc.url>
+    <maven.jdbc.schema>public</maven.jdbc.schema>
   </properties>
 
   <profiles>

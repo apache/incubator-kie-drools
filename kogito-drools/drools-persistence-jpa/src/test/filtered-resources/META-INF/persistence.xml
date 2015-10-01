@@ -21,6 +21,7 @@
         <property name="hibernate.show_sql" value="false" />
                         
         <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
+        <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
          
         <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
         <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
