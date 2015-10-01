@@ -27,6 +27,7 @@ public class DependencyDescriptor {
     private final String artifactId;
     private final String version;
     private final String type;
+    private final String scope;
 
     private ArtifactVersion artifactVersion;
 
@@ -37,7 +38,8 @@ public class DependencyDescriptor {
              dependency.getArtifactId(),
              dependency.getVersion(),
              dependency.getType(),
-             dependency.getVersion());
+             dependency.getVersion(),
+             dependency.getScope());
     }
 
     public DependencyDescriptor(Artifact artifact) {
@@ -45,7 +47,8 @@ public class DependencyDescriptor {
              artifact.getArtifactId(),
              artifact.isSnapshot() ? artifact.getBaseVersion() : artifact.getVersion(),
              artifact.getExtension(),
-             artifact.getVersion());
+             artifact.getVersion(),
+             "");
         if (artifact.getFile() != null) {
             artifactTimestamp = artifact.getFile().lastModified();
         }
@@ -56,7 +59,8 @@ public class DependencyDescriptor {
              releaseId.getArtifactId(),
              releaseId.getVersion(),
              "jar",
-             releaseId.getVersion());
+             releaseId.getVersion(),
+             "");
     }
 
     public DependencyDescriptor(ReleaseId releaseId, long artifactTimestamp) {
@@ -64,11 +68,12 @@ public class DependencyDescriptor {
         this.artifactTimestamp = artifactTimestamp;
     }
 
-    public DependencyDescriptor(String groupId, String artifactId, String version, String type, String currentVersion) {
+    private DependencyDescriptor(String groupId, String artifactId, String version, String type, String currentVersion, String scope) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
         this.type = type;
+        this.scope = scope;
         setArtifactVersion(currentVersion);
     }
 
@@ -98,6 +103,10 @@ public class DependencyDescriptor {
 
     public String getType() {
         return type;
+    }
+
+    public String getScope() {
+        return scope;
     }
 
     public boolean isFixedVersion() {
