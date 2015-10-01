@@ -16,6 +16,7 @@
 package org.kie.scanner;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.eclipse.aether.artifact.Artifact;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
@@ -61,7 +62,7 @@ public class MavenClassLoaderResolver implements ClassLoaderResolver {
         }
 
         InternalKieModule internalKModule = (InternalKieModule)kmodule;
-        Collection<ReleaseId> jarDependencies = internalKModule.getJarDependencies();
+        Collection<ReleaseId> jarDependencies = internalKModule.getJarDependencies( DependencyFilter.COMPILE_FILTER );
 
         if (jarDependencies.isEmpty()) {
             return parent;

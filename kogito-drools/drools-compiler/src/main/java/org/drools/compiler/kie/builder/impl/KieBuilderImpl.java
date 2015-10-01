@@ -15,18 +15,6 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.commons.jci.compilers.CompilationResult;
 import org.drools.compiler.commons.jci.compilers.EclipseJavaCompiler;
@@ -38,6 +26,7 @@ import org.drools.compiler.commons.jci.readers.ResourceReader;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.drools.compiler.rule.builder.dialect.java.JavaDialectConfiguration;
 import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
@@ -61,6 +50,18 @@ import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
 import org.kie.internal.io.ResourceTypeImpl;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class KieBuilderImpl
         implements
@@ -143,7 +144,7 @@ public class KieBuilderImpl
 
             // add all the pom dependencies to this builder ... not sure this is a good idea (?)
             KieRepositoryImpl repository = (KieRepositoryImpl) ks.getRepository();
-            for ( ReleaseId dep : pomModel.getDependencies() ) {
+            for ( ReleaseId dep : pomModel.getDependencies( DependencyFilter.COMPILE_FILTER ) ) {
                 KieModule depModule = repository.getKieModule( dep, pomModel );
                 if ( depModule != null ) {
                     addKieDependency( depModule );

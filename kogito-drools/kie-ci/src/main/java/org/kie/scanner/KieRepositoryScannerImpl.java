@@ -23,6 +23,7 @@ import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kie.builder.impl.ZipKieModule;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.compiler.kproject.xml.PomModel;
 import org.eclipse.aether.artifact.Artifact;
 import org.kie.api.KieServices;
@@ -153,7 +154,7 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
         }
 
         MemoryKieModule kieModule = new MemoryKieModule(releaseId);
-        addDependencies(kieModule, resolver, resolver.getPomDirectDependencies());
+        addDependencies(kieModule, resolver, resolver.getPomDirectDependencies( DependencyFilter.COMPILE_FILTER ));
         build(kieModule);
         return kieModule;
     }

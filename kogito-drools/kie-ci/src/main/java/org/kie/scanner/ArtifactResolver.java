@@ -17,14 +17,15 @@ package org.kie.scanner;
 
 import org.apache.maven.project.MavenProject;
 import org.drools.compiler.kie.builder.impl.InternalKieContainer;
+import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.compiler.kproject.xml.MinimalPomParser;
 import org.drools.compiler.kproject.xml.PomModel;
+import org.eclipse.aether.artifact.Artifact;
 import org.kie.api.builder.KieScanner;
-import org.kie.scanner.embedder.EmbeddedPomParser;
 import org.kie.api.builder.ReleaseId;
+import org.kie.scanner.embedder.EmbeddedPomParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.eclipse.aether.artifact.Artifact;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -71,15 +72,23 @@ class ArtifactResolver {
         return mavenRepository.getArtifactDependecies(artifactName);
     }
 
-    List<DependencyDescriptor> getPomDirectDependencies() {
-        return pomParser.getPomDirectDependencies();
+    List<DependencyDescriptor> getPomDirectDependencies(DependencyFilter filter) {
+        return pomParser.getPomDirectDependencies(filter);
     }
 
     Collection<DependencyDescriptor> getAllDependecies() {
+        return getAllDependecies( DependencyFilter.TAKE_ALL_FILTER );
+    }
+
+    Collection<DependencyDescriptor> getAllDependecies( DependencyFilter dependencyFilter ) {
         Set<DependencyDescriptor> dependencies = new HashSet<DependencyDescriptor>();
-        for (DependencyDescriptor dep : getPomDirectDependencies()) {
-            dependencies.add(dep);
-            dependencies.addAll(getArtifactDependecies(dep.toString()));
+        for (DependencyDescriptor dep : getPomDirectDependencies(dependencyFilter)) {
+            dependencies.add( dep );
+            for (DependencyDescriptor transitiveDep : getArtifactDependecies( dep.toString() )) {
+                if (dependencyFilter.accept( dep.getReleaseId(), dep.getScope() )) {
+                    dependencies.add( transitiveDep );
+                }
+            }
         }
         return dependencies;
     }
@@ -164,9 +173,9 @@ class ArtifactResolver {
         }
 
         @Override
-        public List<DependencyDescriptor> getPomDirectDependencies() {
+        public List<DependencyDescriptor> getPomDirectDependencies( DependencyFilter filter ) {
             List<DependencyDescriptor> deps = new ArrayList<DependencyDescriptor>();
-            for (ReleaseId rId : pomModel.getDependencies()) {
+            for (ReleaseId rId : pomModel.getDependencies(filter)) {
                 deps.add(new DependencyDescriptor(rId));
             }
             return deps;

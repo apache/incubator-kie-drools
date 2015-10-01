@@ -15,8 +15,10 @@
 
 package org.kie.scanner;
 
+import org.drools.compiler.kproject.xml.DependencyFilter;
+
 import java.util.List;
 
 public interface PomParser {
-    List<DependencyDescriptor> getPomDirectDependencies();
+    List<DependencyDescriptor> getPomDirectDependencies(DependencyFilter filter);
 }

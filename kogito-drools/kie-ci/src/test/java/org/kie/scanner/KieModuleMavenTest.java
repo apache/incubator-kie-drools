@@ -20,6 +20,7 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
+import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
@@ -150,7 +151,9 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         expectedDependencies.add(ks.newReleaseId("org.mvel", "mvel2", "2.1.3.Final"));
         expectedDependencies.add(ks.newReleaseId("org.slf4j", "slf4j-api", "1.6.4"));
 
-        Collection<ReleaseId> dependencies = ((InternalKieModule)((KieContainerImpl) kieContainer).getKieModuleForKBase("KBase1")).getJarDependencies();
+        Collection<ReleaseId> dependencies = ((InternalKieModule)((KieContainerImpl) kieContainer)
+                .getKieModuleForKBase( "KBase1" ))
+                .getJarDependencies( DependencyFilter.TAKE_ALL_FILTER );
         assertNotNull(dependencies);
         assertEquals(5, dependencies.size());
 

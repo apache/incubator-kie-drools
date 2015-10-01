@@ -17,6 +17,7 @@ package org.kie.scanner.embedder;
 
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
+import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.kie.scanner.DependencyDescriptor;
 import org.kie.scanner.PomParser;
 
@@ -37,11 +38,11 @@ public class EmbeddedPomParser implements PomParser {
         this.mavenProject = mavenProject;
     }
 
-    public List<DependencyDescriptor> getPomDirectDependencies() {
+    public List<DependencyDescriptor> getPomDirectDependencies(DependencyFilter filter) {
         List<DependencyDescriptor> deps = new ArrayList<DependencyDescriptor>();
         for (Dependency dep : mavenProject.getDependencies()) {
             DependencyDescriptor depDescr = new DependencyDescriptor(dep);
-            if (depDescr.isValid()) {
+            if (depDescr.isValid() && filter.accept(depDescr.getReleaseId(), depDescr.getScope())) {
                 deps.add(depDescr);
             }
         }

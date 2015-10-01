@@ -17,6 +17,7 @@ package org.kie.scanner;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
+import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
@@ -57,26 +58,31 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     private final Map<String, Set<String>> rulesByPackage = new HashMap<String, Set<String>>();
     private final Set<String> packages = new HashSet<String>();
 
+    private final DependencyFilter dependencyFilter;
+
     private ProjectClassLoader classLoader;
 
     private ReleaseId releaseId;
 
     private InternalKieModule kieModule;
 
-    public KieModuleMetaDataImpl(ReleaseId releaseId) {
+    public KieModuleMetaDataImpl(ReleaseId releaseId, DependencyFilter dependencyFilter) {
         this.artifactResolver = getResolverFor(releaseId, false);
         this.releaseId = releaseId;
+        this.dependencyFilter = dependencyFilter;
         init();
     }
 
-    public KieModuleMetaDataImpl(File pomFile) {
+    public KieModuleMetaDataImpl(File pomFile, DependencyFilter dependencyFilter) {
         this.artifactResolver = getResolverFor(pomFile);
+        this.dependencyFilter = dependencyFilter;
         init();
     }
 
-    public KieModuleMetaDataImpl(InternalKieModule kieModule) {
+    public KieModuleMetaDataImpl(InternalKieModule kieModule, DependencyFilter dependencyFilter) {
         this.kieModule = kieModule;
         this.artifactResolver = getResolverFor( kieModule.getPomModel() );
+        this.dependencyFilter = dependencyFilter;
         for (String file : kieModule.getFileNames()) {
             if (!indexClass(file)) {
                 if (file.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH)) {
@@ -144,11 +150,11 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
             addArtifact(artifactResolver.resolveArtifact(releaseId));
         }
         if ( kieModule != null ) {
-            for ( ReleaseId releaseId : kieModule.getPomModel().getDependencies() ) {
+            for ( ReleaseId releaseId : kieModule.getPomModel().getDependencies(dependencyFilter) ) {
                 addArtifact( artifactResolver.resolveArtifact( releaseId ) );
             }
         } else {
-            for ( DependencyDescriptor dep : artifactResolver.getAllDependecies() ) {
+            for ( DependencyDescriptor dep : artifactResolver.getAllDependecies(dependencyFilter) ) {
                 addArtifact( artifactResolver.resolveArtifact( dep.getReleaseId() ) );
             }
         }
