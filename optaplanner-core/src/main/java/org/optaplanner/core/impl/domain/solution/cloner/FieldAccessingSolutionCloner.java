@@ -409,8 +409,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
             try {
                 return field.get(bean);
             } catch (IllegalAccessException e) {
-                throw new IllegalStateException("The class (" + bean.getClass()
-                        + ") has a field (" + field
+                throw new IllegalStateException("The class (" + bean.getClass() + ") has a field (" + field
                         + ") which can not be read to create a clone.", e);
             }
         }

@@ -80,8 +80,8 @@ public class PlannerAssert extends Assert {
     }
 
     public static <E> void assertCollectionContainsExactly(Collection<E> collection, E... elements) {
-        assertEquals(elements.length, collection.size());
         assertCollectionContains(collection, elements);
+        assertEquals(elements.length, collection.size());
     }
 
     public static <E> void assertCollectionContains(Collection<E> collection, E... elements) {
