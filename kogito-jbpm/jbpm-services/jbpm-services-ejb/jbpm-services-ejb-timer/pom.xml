@@ -55,6 +55,12 @@
       <groupId>org.wildfly.arquillian</groupId>
       <artifactId>wildfly-arquillian-container-managed</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.jboss.remoting3</groupId>
+          <artifactId>jboss-remoting</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.protocol</groupId>

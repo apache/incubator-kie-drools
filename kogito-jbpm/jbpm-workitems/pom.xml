@@ -83,6 +83,13 @@
       <groupId>rome</groupId>
       <artifactId>rome</artifactId>
       <optional>true</optional>
+      <exclusions>
+        <!-- jbpm-workitems already depend on org.jdom:jdom-->
+        <exclusion>
+          <groupId>jdom</groupId>
+          <artifactId>jdom</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- FTP -->
     <dependency>
@@ -94,6 +101,13 @@
       <groupId>org.apache.ftpserver</groupId>
       <artifactId>ftpserver-core</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <!-- All classes from org.apache.ftpserver:ftplet-api are already present in org.apache.ftpserver:ftpserver-core-->
+        <exclusion>
+          <groupId>org.apache.ftpserver</groupId>
+          <artifactId>ftplet-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jdom</groupId>
@@ -108,8 +122,8 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- JaxWS dependencies -->
 
+    <!-- JaxWS dependencies -->
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-core</artifactId>
@@ -167,11 +181,12 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http-jetty</artifactId>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>asm</groupId>
-      <artifactId>asm</artifactId>
-      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>javax.servlet-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.servlet</groupId>
@@ -211,6 +226,12 @@
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-frontend-jaxrs</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>javax.annotation-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>
@@ -242,7 +263,6 @@
       <scope>provided</scope>
     </dependency>
 
-
     <!-- JTA -->
     <dependency>
       <groupId>org.jboss.spec.javax.transaction</groupId>
@@ -268,5 +288,35 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>ban-duplicated-classes</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <banDuplicateClasses>
+                    <ignoreClasses combine.children="append">
+                      <!-- Bundled in jivesoftware:smack with little chance to get removed -->
+                      <ignoreClass>org.xmlpull.mxp1.MXParser</ignoreClass>
+                    </ignoreClasses>
+                  </banDuplicateClasses>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 </project>

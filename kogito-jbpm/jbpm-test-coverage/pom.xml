@@ -4,8 +4,8 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>jbpm</artifactId>
     <groupId>org.jbpm</groupId>
+    <artifactId>jbpm</artifactId>
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
@@ -85,6 +85,12 @@
       <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.transaction</groupId>
+          <artifactId>jta</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 

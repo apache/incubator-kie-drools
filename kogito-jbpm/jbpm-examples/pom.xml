@@ -104,8 +104,8 @@
           <artifactId>commons-logging</artifactId>
         </exclusion>
     	  <exclusion>
-    	    <artifactId>log4j</artifactId>
-    	    <groupId>log4j</groupId>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
     	  </exclusion>
     	</exclusions>
     </dependency>

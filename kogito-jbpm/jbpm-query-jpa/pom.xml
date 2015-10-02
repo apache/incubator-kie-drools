@@ -132,6 +132,6 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <scope>test</scope>
-    </dependency> 
+    </dependency>
   </dependencies>
 </project>

@@ -87,6 +87,16 @@
     <dependency>
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.el</groupId>
+          <artifactId>javax.el-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.interceptor</groupId>
+          <artifactId>javax.interceptor-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.ejb</groupId>
@@ -106,12 +116,6 @@
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>org.slf4j</groupId>
-          <artifactId>slf4j-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.junit</groupId>

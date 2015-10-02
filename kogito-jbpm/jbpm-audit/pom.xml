@@ -121,35 +121,20 @@
     <!-- Test: jms -->
     <dependency>
       <groupId>org.hornetq</groupId>
-      <artifactId>hornetq-server</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>io.netty</groupId>
-          <artifactId>netty</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hornetq</groupId>
-      <artifactId>hornetq-jms-client</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>io.netty</groupId>
-          <artifactId>netty</artifactId>
-        </exclusion>
-      </exclusions>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.netty</groupId>
-      <artifactId>netty</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hornetq</groupId>
       <artifactId>hornetq-jms-server</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <!-- Not needed for tests. It also introduces circular dependency on hornetq-journal and hornetq-commons which
+             confuses the enforcer-ban-duplicated-classes rule. -->
+        <exclusion>
+          <groupId>org.jboss.jbossts.jts</groupId>
+          <artifactId>jbossjts-jacorb</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.jboss.spec.javax.transaction</groupId>
+          <artifactId>jboss-transaction-api_1.1_spec</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     
     <!-- Test: logging -->
@@ -178,7 +163,7 @@
               otherwise we get tests failing because of leftover db's -->
         <artifactId>maven-clean-plugin</artifactId>
         <configuration>
-         <filesets>
+          <filesets>
             <fileset>
               <directory>${basedir}</directory>
               <includes>
@@ -186,7 +171,7 @@
                 <include>*.db</include>
               </includes>
             </fileset>
-         </filesets>
+          </filesets>
         </configuration>
       </plugin>
 
@@ -217,7 +202,7 @@
           </annotationProcessors>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>

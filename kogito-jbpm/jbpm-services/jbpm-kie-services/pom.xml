@@ -86,6 +86,12 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>javax.annotation</groupId>
+          <artifactId>jsr250-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>  
   
     <dependency>

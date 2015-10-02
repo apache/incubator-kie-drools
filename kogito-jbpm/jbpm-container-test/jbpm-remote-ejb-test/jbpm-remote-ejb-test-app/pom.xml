@@ -52,6 +52,16 @@
 			<groupId>javax.enterprise</groupId>
 			<artifactId>cdi-api</artifactId>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.el</groupId>
+					<artifactId>javax.el-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.interceptor</groupId>
+					<artifactId>javax.interceptor-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.spec.javax.servlet</groupId>
@@ -76,6 +86,12 @@
     <dependency>
       <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.transaction</groupId>
+					<artifactId>jta</artifactId>
+				</exclusion>
+			</exclusions>
     </dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
