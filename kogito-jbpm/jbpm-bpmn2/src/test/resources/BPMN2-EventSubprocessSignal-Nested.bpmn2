@@ -32,7 +32,7 @@
       </bpmn2:subProcess>
       <bpmn2:sequenceFlow id="SequenceFlow_8" name="" sourceRef="_2-2" targetRef="_2-3"/>
 
-      <bpmn2:endEvent id="_2-3" name="Sub End " />
+      <bpmn2:endEvent id="_2-3" name="Sub End" />
     </bpmn2:subProcess>
     <bpmn2:sequenceFlow id="SequenceFlow_6" name="" sourceRef="_2" targetRef="_3"/>
 

@@ -585,7 +585,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 "sub-script",
                 "end-sub",
                 "Sub Sub End",
-                "Sub End ",
+                "Sub End",
                 "End"
         };
         runTestEventSubprocessSignal("BPMN2-EventSubprocessSignal-Nested.bpmn2", nodes);
