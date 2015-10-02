@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.codec.binary.Base64;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
+import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
@@ -147,7 +148,9 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     	        	processResources(depModule, files, kieContainer, kmoduleUnit, deployedUnit, depModule.getReleaseId());
     	        }
             }
-            if (module.getJarDependencies() != null && !module.getJarDependencies().isEmpty()) {
+            Collection<ReleaseId> dependencies = module.getJarDependencies(new DependencyFilter.ExcludeScopeFilter("test"));
+            
+            if (dependencies != null && !dependencies.isEmpty()) {
             	processClassloader(kieContainer, deployedUnit);
             }
                    
