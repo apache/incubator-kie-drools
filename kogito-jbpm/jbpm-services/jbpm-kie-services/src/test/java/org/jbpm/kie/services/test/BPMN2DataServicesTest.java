@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
+import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.ProcessDefinition;
@@ -110,11 +111,15 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         assertEquals(procDef.getPackageName(), "defaultPackage");
         assertEquals(procDef.getType(), "RuleFlow");
         assertEquals(procDef.getVersion(), "3");
+        assertNotNull(((ProcessAssetDesc)procDef).getEncodedProcessSource());
 
         Collection<UserTaskDefinition> processTasks = bpmn2Service.getTasksDefinitions(deploymentUnit.getIdentifier(), processId);
         
         assertEquals(3, processTasks.size());
         Map<String, String> processData = bpmn2Service.getProcessVariables(deploymentUnit.getIdentifier(), processId);
+        assertEquals("String", processData.get("approval_document"));
+        assertEquals("String", processData.get("approval_translatedDocument"));
+        assertEquals("String", processData.get("approval_reviewComment"));
         
         assertEquals(3, processData.keySet().size());
         Map<String, String> taskInputMappings = bpmn2Service.getTaskInputMappings(deploymentUnit.getIdentifier(), processId, "Write a Document" );

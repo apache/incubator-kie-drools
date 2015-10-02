@@ -15,13 +15,17 @@
 
 package org.jbpm.process.builder.dialect.mvel;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.compiler.BoundIdentifiers;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.rule.builder.PackageBuildContext;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
-
-import java.util.Map;
+import org.jbpm.process.builder.ProcessBuildContext;
 
 public class AbstractMVELBuilder {
 
@@ -105,5 +109,20 @@ public class AbstractMVELBuilder {
         }
         
         return analysis;
+    }
+    
+    protected void collectTypes(String key, AnalysisResult analysis, ProcessBuildContext context) {
+        if (context.getProcess() != null) {
+            Set<String> referencedTypes = new HashSet<String>();
+            
+            MVELAnalysisResult mvelAnalysis = (MVELAnalysisResult) analysis;
+            
+            for( Class<?> varClass : mvelAnalysis.getMvelVariables().values() ) { 
+                referencedTypes.add(varClass.getCanonicalName());
+            }
+            
+            context.getProcess().getMetaData().put(key + "ReferencedTypes", referencedTypes);
+        }
+        
     }
 }

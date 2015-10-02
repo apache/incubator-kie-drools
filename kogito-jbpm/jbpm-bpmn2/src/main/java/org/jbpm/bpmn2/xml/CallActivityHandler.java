@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.drools.compiler.compiler.xml.XmlDumper;
 import org.drools.core.xml.ExtensibleXmlParser;
+import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
@@ -134,6 +135,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
         
         NodeContainer nodeContainer = (NodeContainer) parser.getParent();
         nodeContainer.addNode(node);
+        ((ProcessBuildData) parser.getData()).addNode(node);
         return node;
     }
 

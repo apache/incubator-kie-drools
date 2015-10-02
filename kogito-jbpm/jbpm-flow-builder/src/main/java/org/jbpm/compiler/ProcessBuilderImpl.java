@@ -286,6 +286,8 @@ public class ProcessBuilderImpl implements org.drools.compiler.compiler.ProcessB
                 // stop null pointers
                 for (Process process : processes) {
                     buildProcess(process, resource);
+                    
+                    xmlReader.getProcessBuildData().onBuildComplete(process);
                 }
             } else {
                 // @TODO could we maybe add something a bit more informative about what is wrong with the XML ?

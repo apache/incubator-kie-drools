@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 JBoss by Red Hat.
+ * Copyright 2015 JBoss by Red Hat.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package org.jbpm.kie.services.impl.bpmn2;
 
+import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Comparator;
@@ -36,9 +37,11 @@ import org.slf4j.LoggerFactory;
  * This is a package level class that is used by different BPMN2 handlers ( in this package) to store information
  * about a BPMN2 process.
  */
-public class ProcessDescRepoHelper {
+public class ProcessDescriptor implements Serializable {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProcessDescRepoHelper.class);
+    private static final long serialVersionUID = -6304675827486128074L;
+
+    private static final Logger logger = LoggerFactory.getLogger(ProcessDescriptor.class);
             
     private ProcessAssetDesc process;
     private Map<String, UserTaskDefinition> tasks = new HashMap<String, UserTaskDefinition>();
@@ -57,7 +60,7 @@ public class ProcessDescRepoHelper {
     
     private Queue<String> unresolvedReusableSubProcessNames = new ArrayDeque<String>();
     
-    public ProcessDescRepoHelper() {
+    public ProcessDescriptor() {
     }
 
     public void setProcess(ProcessAssetDesc process) {

@@ -22,6 +22,7 @@ import org.drools.compiler.rule.builder.dialect.mvel.MVELAnalysisResult;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.rule.MVELDialectRuntimeData;
+import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.builder.ReturnValueEvaluatorBuilder;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.context.variable.VariableScope;
@@ -103,7 +104,7 @@ public class MVELReturnValueEvaluatorBuilder extends AbstractMVELBuilder
                                   context.getDialect().getTypeResolver().resolveType(variableScope.findVariable(variableName).getType().getStringType()));
                 }
             }
-        }
+        }              
 
         MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                    analysis,
@@ -128,5 +129,7 @@ public class MVELReturnValueEvaluatorBuilder extends AbstractMVELBuilder
                               expr );
         
         expr.compile( data );
+        
+        collectTypes("MVELReturnValue", analysis, (ProcessBuildContext) context);
     }
 }

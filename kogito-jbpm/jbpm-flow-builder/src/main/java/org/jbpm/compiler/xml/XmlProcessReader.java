@@ -97,4 +97,8 @@ public class XmlProcessReader {
     public List<Process> getProcess() {
         return this.processes;
     }
+    
+    public ProcessBuildData getProcessBuildData() {
+        return (ProcessBuildData) this.parser.getData();
+    }
 }

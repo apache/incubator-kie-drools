@@ -17,11 +17,15 @@ package org.jbpm.process.builder.dialect.java;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.drools.compiler.compiler.AnalysisResult;
 import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.rule.builder.dialect.java.JavaAnalysisResult;
+import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
 import org.drools.core.util.StringUtils;
 import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.core.ContextResolver;
@@ -147,5 +151,32 @@ public class AbstractJavaProcessBuilder {
                 invokerLookup);
         context.getDescrLookups().put(invokerClassName,
                 descrLookup);
+    }
+    
+    protected void collectTypes(String key, AnalysisResult analysis, ProcessBuildContext context) {
+        if (context.getProcess() != null) {
+            Set<String> referencedTypes = new HashSet<String>();
+            Set<String> unqualifiedClasses = new HashSet<String>();
+            
+            JavaAnalysisResult javaAnalysis = (JavaAnalysisResult) analysis;
+            LOCAL_VAR: for( JavaLocalDeclarationDescr localDeclDescr : javaAnalysis.getLocalVariablesMap().values() ) { 
+                String type = localDeclDescr.getRawType();
+                 
+                if( type.contains(".") ) { 
+                    referencedTypes.add(type);
+                } else { 
+                    for( String alreadyRefdType : referencedTypes ) { 
+                        String alreadyRefdSimpleName = alreadyRefdType.substring(alreadyRefdType.lastIndexOf(".") + 1);
+                       if( type.equals(alreadyRefdSimpleName) ) { 
+                           continue LOCAL_VAR;
+                       }
+                    }
+                    unqualifiedClasses.add(type);
+                }
+            }
+        
+            context.getProcess().getMetaData().put(key + "ReferencedTypes", referencedTypes);
+            context.getProcess().getMetaData().put(key + "UnqualifiedTypes", unqualifiedClasses);
+        }
     }
 }

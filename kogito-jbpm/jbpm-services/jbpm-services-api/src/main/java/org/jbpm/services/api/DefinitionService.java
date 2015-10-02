@@ -50,6 +50,8 @@ public interface DefinitionService {
 	 */
 	ProcessDefinition buildProcessDefinition(String deploymentId, String bpmn2Content,
 			KieContainer kieContainer, boolean cache) throws IllegalArgumentException;
+	
+	void addProcessDefinition(String deploymentId, String processId, Object processDescriptor, KieContainer kieContainer);
 
 	/**
 	 * Returns previously built <code>ProcessDefinition</code>. 

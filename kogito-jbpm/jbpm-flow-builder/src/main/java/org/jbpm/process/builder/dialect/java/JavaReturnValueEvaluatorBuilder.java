@@ -106,5 +106,7 @@ public class JavaReturnValueEvaluatorBuilder extends AbstractJavaProcessBuilder
                 map,
                 constraintNode,
                 descr );
+        
+        collectTypes("JavaReturnValue", analysis, (ProcessBuildContext)context);
     }
 }

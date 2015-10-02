@@ -23,6 +23,7 @@ import org.drools.compiler.rule.builder.dialect.mvel.MVELDialect;
 import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.jbpm.process.builder.ActionBuilder;
+import org.jbpm.process.builder.ProcessBuildContext;
 import org.jbpm.process.core.ContextResolver;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.impl.MVELAction;
@@ -146,6 +147,8 @@ public class MVELActionBuilder extends AbstractMVELBuilder implements ActionBuil
                 }
             }
         }
+        
+        
 
         MVELCompilationUnit unit = dialect.getMVELCompilationUnit( text,
                                                                    analysis,
@@ -165,6 +168,8 @@ public class MVELActionBuilder extends AbstractMVELBuilder implements ActionBuil
         data.addCompileable( action, expr );  
 
         expr.compile( data );
+        
+        collectTypes("MVELDialect", analysis, (ProcessBuildContext) context);
     }
     
 }

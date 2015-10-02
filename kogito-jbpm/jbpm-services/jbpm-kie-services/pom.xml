@@ -241,27 +241,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.jboss.byteman</groupId>
-        <artifactId>byteman-rulecheck-maven-plugin</artifactId>
-        <version>${version.org.jboss.byteman}</version>
-        <executions>
-          <execution>
-            <id>rulecheck-test</id>
-            <goals>
-              <goal>rulecheck</goal>
-            </goals>
-            <phase>test-compile</phase>
-            <configuration>
-              <includes>
-                <include>**/*.btm</include>
-              </includes>
-              <verbose>true</verbose>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      
-      <plugin>
         <!-- we need to fork always as we have mixture of both arquillian tests and regular
              and to avoid clashing between them as both need to setup data source and bound it to JNDI -->
         <artifactId>maven-surefire-plugin</artifactId>
@@ -272,31 +251,7 @@
               ${project.build.testOutputDirectory}/jbpm-kie-services-tests-custom-settings.xml
             </kie.maven.settings.custom>
           </systemProperties>
-        </configuration>
-        <executions>
-          <execution>
-            <id>byteman-tests</id>
-            <configuration>
-              <includes>
-                <include>org/jbpm/kie/services/test/BPMN2DataServiceImplMultiThreadBytemanTest.java</include>
-              </includes>
-              <useSystemClassLoader>true</useSystemClassLoader>
-              <useManifestOnlyJar>true</useManifestOnlyJar>
-              <forkMode>always</forkMode>
-              <parallel>false</parallel>
-              <!-- ensure we don't inherit a byteman jar form any env settings -->
-              <environmentVariables>
-                <BYTEMAN_HOME></BYTEMAN_HOME>
-              </environmentVariables>
-              <systemProperties>
-                <property>
-                  <name>org.jboss.byteman.home</name>
-                  <value></value>
-                </property>
-              </systemProperties>
-            </configuration>
-          </execution>
-        </executions>
+        </configuration>        
       </plugin>
       
       <plugin>

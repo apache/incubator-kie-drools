@@ -90,6 +90,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 				NodeContainer nodeContainer = (NodeContainer) parser
 						.getParent();
 				nodeContainer.addNode(linkNode);
+				((ProcessBuildData) parser.getData()).addNode(node);
 				// we break the while and stop the execution of this method.
 				return linkNode;
 			}

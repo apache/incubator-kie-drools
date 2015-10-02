@@ -18,6 +18,7 @@ package org.jbpm.kie.services.impl;
 
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -30,6 +31,10 @@ import java.util.Set;
 
 import javax.persistence.EntityManagerFactory;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.codec.binary.Base64;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
@@ -39,6 +44,7 @@ import org.drools.core.common.ProjectClassLoader;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.drools.core.util.StringUtils;
+import org.jbpm.kie.services.impl.bpmn2.ProcessDescriptor;
 import org.jbpm.kie.services.impl.model.ProcessAssetDesc;
 import org.jbpm.process.audit.event.AuditEventBuilder;
 import org.jbpm.runtime.manager.impl.KModuleRegisterableItemsFactory;
@@ -72,12 +78,14 @@ import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.xml.sax.InputSource;
 
 
 public class KModuleDeploymentService extends AbstractDeploymentService {
 
     private static Logger logger = LoggerFactory.getLogger(KModuleDeploymentService.class);
     private static final String DEFAULT_KBASE_NAME = "defaultKieBase";
+    private static final String PROCESS_ID_XPATH = "/*[local-name() = 'definitions']/*[local-name() = 'process']/@id";
     
     private DefinitionService bpmn2Service;
     
@@ -87,8 +95,18 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
  
     private ExecutorService executorService;
     
+    private XPathExpression processIdXPathExpression;
+    
+    public KModuleDeploymentService() {
+        try {
+            processIdXPathExpression = XPathFactory.newInstance().newXPath().compile(PROCESS_ID_XPATH);
+        } catch (XPathExpressionException e) {
+            logger.error("Unable to parse '{}' XPath expression due to {}", PROCESS_ID_XPATH, e.getMessage());
+        }
+    }
+    
     public void onInit() {
-    	EntityManagerFactoryManager.get().addEntityManagerFactory("org.jbpm.domain", getEmf());
+    	EntityManagerFactoryManager.get().addEntityManagerFactory("org.jbpm.domain", getEmf());    	
     }
     
     @Override
@@ -132,11 +150,15 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
             }
             
             KieBase kbase = kieContainer.getKieBase(kbaseName); 
+            Map<String, ProcessDescriptor> processDescriptors = new HashMap<String, ProcessDescriptor>();
+            for (org.kie.api.definition.process.Process process : kbase.getProcesses()) {
+                processDescriptors.put(process.getId(), (ProcessDescriptor) process.getMetaData().get("ProcessDescriptor"));
+            }
 
             //Map<String, String> formsData = new HashMap<String, String>();
             Collection<String> files = module.getFileNames();
             
-            processResources(module, files, kieContainer, kmoduleUnit, deployedUnit, releaseId);
+            processResources(module, files, kieContainer, kmoduleUnit, deployedUnit, releaseId, processDescriptors);
             
             if (module.getKieDependencies() != null) {
     	        Collection<InternalKieModule> dependencies = module.getKieDependencies().values();
@@ -145,7 +167,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     	        	logger.debug("Processing dependency module " + depModule.getReleaseId());
     	        	files = depModule.getFileNames();
 
-    	        	processResources(depModule, files, kieContainer, kmoduleUnit, deployedUnit, depModule.getReleaseId());
+    	        	processResources(depModule, files, kieContainer, kmoduleUnit, deployedUnit, depModule.getReleaseId(), processDescriptors);
     	        }
             }
             Collection<ReleaseId> dependencies = module.getJarDependencies(new DependencyFilter.ExcludeScopeFilter("test"));
@@ -296,21 +318,27 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     }
 
 	protected void processResources(InternalKieModule module, Collection<String> files,
-    		KieContainer kieContainer, DeploymentUnit unit, DeployedUnitImpl deployedUnit, ReleaseId releaseId) {
+    		KieContainer kieContainer, DeploymentUnit unit, DeployedUnitImpl deployedUnit, ReleaseId releaseId, Map<String, ProcessDescriptor> processes) {
         for (String fileName : files) {
             if(fileName.matches(".+bpmn[2]?$")) {
                 ProcessAssetDesc process;
                 try {
                     String processString = new String(module.getBytes(fileName), "UTF-8");
-                    process = (ProcessAssetDesc) bpmn2Service.buildProcessDefinition(unit.getIdentifier(), processString, kieContainer, true);
-                    if (process == null) {
-                    	throw new IllegalArgumentException("Unable to read process " + fileName);
+                    String processId = getProcessId(processString);
+                    ProcessDescriptor processDesriptor = processes.get(processId);
+                    if (processDesriptor != null) {
+                        process = processDesriptor.getProcess();
+                        if (process == null) {
+                            throw new IllegalArgumentException("Unable to read process " + fileName);
+                        }
+                        process.setEncodedProcessSource(Base64.encodeBase64String(processString.getBytes()));
+                        process.setDeploymentId(unit.getIdentifier());
+                        
+                        deployedUnit.addAssetLocation(process.getId(), process);
+                        bpmn2Service.addProcessDefinition(unit.getIdentifier(), processId, processDesriptor, kieContainer);
                     }
-                    process.setEncodedProcessSource(Base64.encodeBase64String(processString.getBytes()));
-                    process.setDeploymentId(unit.getIdentifier());
-                    deployedUnit.addAssetLocation(process.getId(), process);
                 } catch (UnsupportedEncodingException e) {
-                	throw new IllegalArgumentException("Unsupported encoding while processing process " + fileName);
+                    throw new IllegalArgumentException("Unsupported encoding while processing process " + fileName);
                 }
             } else if (fileName.matches(".+ftl$") || fileName.matches(".+form$")) {
                 try {
@@ -402,5 +430,18 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
 		}
 	}
 	
+	
+	protected String getProcessId(String processSource) {
+	    
+	    try {
+	        InputSource inputSource = new InputSource(new StringReader(processSource));
+	        String processId = (String) processIdXPathExpression.evaluate(inputSource, XPathConstants.STRING);
+            
+            return processId;
+        } catch (XPathExpressionException e) {
+            logger.error("Unable to find process id from process source due to {}", e.getMessage());
+            return null;
+        }
+	}
 	
 }

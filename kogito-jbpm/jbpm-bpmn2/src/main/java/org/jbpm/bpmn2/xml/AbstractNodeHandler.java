@@ -140,6 +140,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         handleNode(node, element, uri, localName, parser);
         NodeContainer nodeContainer = (NodeContainer) parser.getParent();
         nodeContainer.addNode(node);
+        ((ProcessBuildData) parser.getData()).addNode(node);
         return node;
     }
     

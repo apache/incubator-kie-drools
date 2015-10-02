@@ -97,6 +97,7 @@ public class EndEventHandler extends AbstractNodeHandler {
         }
         NodeContainer nodeContainer = (NodeContainer) parser.getParent();
         nodeContainer.addNode(node);
+        ((ProcessBuildData) parser.getData()).addNode(node);
         return node;
     }
     
