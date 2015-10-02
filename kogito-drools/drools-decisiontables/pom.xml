@@ -54,6 +54,17 @@
     <dependency>
       <groupId>org.apache.poi</groupId>
       <artifactId>poi-ooxml</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>stax</groupId>
+          <artifactId>stax-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- Replacement for stax:stax-api excluded from org.apache.poi:poi-ooxml -->
+    <dependency>
+      <groupId>javax.xml.stream</groupId>
+      <artifactId>stax-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.poi</groupId>

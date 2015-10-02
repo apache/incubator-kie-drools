@@ -18,6 +18,40 @@
   </description>
 
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>ban-duplicated-classes</id>
+              <phase>validate</phase>
+              <goals>
+                <goal>enforce</goal>
+              </goals>
+              <configuration>
+                <rules>
+                  <banDuplicateClasses>
+                    <dependencies>
+                      <!-- kie-ci-osgi is an uberjar intended for OSGi environment. It is being excluded from the check
+                           as it contains hundreds of other classes, but that is expected. -->
+                      <dependency>
+                        <groupId>org.kie</groupId>
+                        <artifactId>kie-ci-osgi</artifactId>
+                        <ignoreClasses>
+                          <ignoreClass>*</ignoreClass>
+                        </ignoreClasses>
+                      </dependency>
+                    </dependencies>
+                  </banDuplicateClasses>
+                </rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

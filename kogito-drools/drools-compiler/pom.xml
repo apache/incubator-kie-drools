@@ -90,12 +90,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.sun.codemodel</groupId>
-      <artifactId>codemodel</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
       <scope>provided</scope>
@@ -157,6 +151,16 @@
       <groupId>javax.enterprise</groupId>
       <artifactId>cdi-api</artifactId>
       <scope>provided</scope><!-- HACK for OSGi: should be <optional>true</optional> instead -->
+      <exclusions>
+        <exclusion>
+          <groupId>javax.el</groupId>
+          <artifactId>javax.el-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.interceptor</groupId>
+          <artifactId>javax.interceptor-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency><!-- It works in any CDI container, but the weld CDI container is used for testing -->
