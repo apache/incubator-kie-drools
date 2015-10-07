@@ -76,4 +76,9 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
             return stagedLeftTuples;
         }
     }
+
+    @Override
+    public String toString() {
+        return "[ReactiveFromNode(" + id + ") :: " + dataProvider + "]";
+    }
 }

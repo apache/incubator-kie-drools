@@ -60,9 +60,6 @@ public class BuildUtils {
 
     /**
      * Adds the given builder for the given target to the builders map
-     *
-     * @param target
-     * @param builder
      */
     public void addBuilder(final Class< ? > target,
                            final ReteooComponentBuilder builder) {
@@ -72,9 +69,6 @@ public class BuildUtils {
 
     /**
      * Returns a builder for the given target from the builders map
-     *
-     * @param target
-     * @return returns null if not found
      */
     public ReteooComponentBuilder getBuilderFor(final RuleConditionElement target) {
         return this.componentBuilders.get( target.getClass() );
@@ -178,10 +172,6 @@ public class BuildUtils {
 
     /**
      * Utility function to check if sharing is enabled for nodes of the given class
-     *
-     * @param context
-     * @param node
-     * @return
      */
     private boolean isSharingEnabledForNode(final BuildContext context,
                                             final BaseNode node) {
@@ -198,8 +188,6 @@ public class BuildUtils {
      *
      * @param context the current build context
      * @param list the list of constraints
-     *
-     * @return
      */
     public BetaConstraints createBetaNodeConstraint(final BuildContext context,
                                                     final List<BetaNodeFieldConstraint> list,

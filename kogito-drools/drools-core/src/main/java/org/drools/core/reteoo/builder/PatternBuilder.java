@@ -175,8 +175,8 @@ public class PatternBuilder
                 for (XpathConstraint.XpathChunk chunk : xpathConstraint.getChunks()) {
                     context.setAlphaConstraints(chunk.getAlphaConstraints());
                     context.setBetaconstraints(chunk.getBetaConstraints());
+                    context.setXpathConstraints(chunk.getXpathConstraints());
                     builder.build(context, utils, chunk.asFrom());
-                    context.incrementCurrentPatternOffset();
                 }
 
                 Declaration declaration = xpathConstraint.getDeclaration();

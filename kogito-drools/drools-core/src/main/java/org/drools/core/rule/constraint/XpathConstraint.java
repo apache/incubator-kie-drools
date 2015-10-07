@@ -60,7 +60,6 @@ public class XpathConstraint extends MutableTypeConstraint {
 
     private XpathConstraint(LinkedList<XpathChunk> chunks) {
         this.chunks = chunks;
-        setType(ConstraintType.XPATH);
     }
 
     public XpathChunk addChunck(Class<?> clazz, String field, int index, boolean iterate) {
@@ -69,6 +68,11 @@ public class XpathConstraint extends MutableTypeConstraint {
             chunks.add(chunk);
         }
         return chunk;
+    }
+
+    @Override
+    public ConstraintType getType() {
+        return ConstraintType.XPATH;
     }
 
     @Override
@@ -103,25 +107,21 @@ public class XpathConstraint extends MutableTypeConstraint {
     @Override
     public boolean isAllowedCachedLeft(ContextEntry context, InternalFactHandle handle) {
         throw new UnsupportedOperationException();
-
     }
 
     @Override
     public boolean isAllowedCachedRight(LeftTuple tuple, ContextEntry context) {
         throw new UnsupportedOperationException();
-
     }
 
     @Override
     public ContextEntry createContextEntry() {
         throw new UnsupportedOperationException();
-
     }
 
     @Override
     public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
         throw new UnsupportedOperationException();
-
     }
 
     @Override
@@ -168,6 +168,11 @@ public class XpathConstraint extends MutableTypeConstraint {
         Iterable<?> evaluate(InternalWorkingMemory workingMemory, LeftTuple leftTuple, Object object);
     }
 
+    @Override
+    public String toString() {
+        return chunks.toString();
+    }
+
     private static class SingleChunkXpathEvaluator implements XpathEvaluator {
         private final XpathChunk chunk;
 
@@ -197,6 +202,11 @@ public class XpathConstraint extends MutableTypeConstraint {
                 list.add(result);
             }
             return list;
+        }
+
+        @Override
+        public String toString() {
+            return chunk.toString();
         }
     }
 
@@ -294,30 +304,29 @@ public class XpathConstraint extends MutableTypeConstraint {
             return from;
         }
 
-        public List<BetaNodeFieldConstraint> getBetaConstraints() {
-            if (constraints == null) {
-                return Collections.emptyList();
-            }
-            List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<BetaNodeFieldConstraint>();
-            for (Constraint constraint : constraints) {
-                if (constraint.getType() == ConstraintType.BETA) {
-                    betaConstraints.add(((BetaNodeFieldConstraint) constraint));
-                }
-            }
-            return betaConstraints;
+        public List<AlphaNodeFieldConstraint> getAlphaConstraints() {
+            return getConstraintsByType(ConstraintType.ALPHA);
         }
 
-        public List<AlphaNodeFieldConstraint> getAlphaConstraints() {
+        public List<BetaNodeFieldConstraint> getBetaConstraints() {
+            return getConstraintsByType(ConstraintType.BETA);
+        }
+
+        public List<XpathConstraint> getXpathConstraints() {
+            return getConstraintsByType(ConstraintType.XPATH);
+        }
+
+        private <T> List<T> getConstraintsByType(ConstraintType constraintType) {
             if (constraints == null) {
                 return Collections.emptyList();
             }
-            List<AlphaNodeFieldConstraint> alphaConstraints = new ArrayList<AlphaNodeFieldConstraint>();
+            List<T> typedConstraints = new ArrayList<T>();
             for (Constraint constraint : constraints) {
-                if (constraint.getType() == ConstraintType.ALPHA) {
-                    alphaConstraints.add(((AlphaNodeFieldConstraint) constraint));
+                if (constraint.getType() == constraintType) {
+                    typedConstraints.add( (T) constraint );
                 }
             }
-            return alphaConstraints;
+            return typedConstraints;
         }
 
         @Override
@@ -384,6 +393,11 @@ public class XpathConstraint extends MutableTypeConstraint {
         @Override
         public void replaceDeclaration(Declaration declaration, Declaration resolved) {
             throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public String toString() {
+            return xpathEvaluator.toString();
         }
     }
 }
