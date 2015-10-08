@@ -186,6 +186,45 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceFinished(processInstance, ksession);
 
     }
+    
+    @Test
+    public void testSignalBoundaryEventOnTaskWithSignalName() throws Exception {
+        KieBase kbase = createKnowledgeBase("BPMN2-BoundarySignalWithNameEventOnTaskbpmn2.bpmn");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
+                new TestWorkItemHandler());
+        ksession.addEventListener(new DefaultProcessEventListener() {
+
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                logger.info("After node left {}", event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void afterNodeTriggered(ProcessNodeTriggeredEvent event) {
+                logger.info("After node triggered {}"
+                        , event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void beforeNodeLeft(ProcessNodeLeftEvent event) {
+                logger.info("Before node left {}"
+                        , event.getNodeInstance().getNodeName());
+            }
+
+            @Override
+            public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
+                logger.info("Before node triggered {}"
+                        , event.getNodeInstance().getNodeName());
+            }
+
+        });
+        ProcessInstance processInstance = ksession
+                .startProcess("BoundarySignalOnTask");
+        ksession.signalEvent("MySignal", "value");
+        assertProcessInstanceFinished(processInstance, ksession);
+
+    }
 
     @Test
     public void testSignalBoundaryEventOnTaskComplete() throws Exception {

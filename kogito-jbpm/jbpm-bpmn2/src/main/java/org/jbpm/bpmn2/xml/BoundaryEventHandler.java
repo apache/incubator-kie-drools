@@ -26,6 +26,7 @@ import org.jbpm.bpmn2.core.Error;
 import org.jbpm.bpmn2.core.Escalation;
 import org.jbpm.bpmn2.core.ItemDefinition;
 import org.jbpm.bpmn2.core.Message;
+import org.jbpm.bpmn2.core.Signal;
 import org.jbpm.compiler.xml.ProcessBuildData;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTransformerImpl;
@@ -338,6 +339,18 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             } else if ("signalEventDefinition".equals(nodeName)) {
                 String type = ((Element) xmlNode).getAttribute("signalRef");
                 if (type != null && type.trim().length() > 0) {
+                    
+                    Map<String, Signal> signals = (Map<String, Signal>) ((ProcessBuildData) parser
+                            .getData()).getMetaData("Signals");
+                    
+                    if (signals != null && signals.containsKey(type)) {
+                        Signal signal = signals.get(type);                      
+                        type = signal.getName();
+                        if (type == null) {
+                            throw new IllegalArgumentException("Signal definition must have a name attribute");
+                        }
+                    }
+                    
                     List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
                     eventFilter.setType(type);
