@@ -64,9 +64,9 @@ public class AndDescr extends AnnotatedBaseDescr
             AndDescr and = (AndDescr) baseDescr;
             for( BaseDescr descr : and.getDescrs() ) {
                 addDescr( descr );
-                for ( String annKey : and.getAnnotationNames() ) {
-                    addAnnotation( and.getAnnotation( annKey ) );
-                }
+            }
+            for ( String annKey : and.getAnnotationNames() ) {
+                addAnnotation(and.getAnnotation(annKey));
             }
         } else {
             addDescr( baseDescr );
