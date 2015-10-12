@@ -113,8 +113,12 @@
                 <phase>verify</phase>
                 <configuration>
                   <oldArtifacts>
-                    <artifact>${project.groupId}:${project.artifactId}:6.2.0.Final</artifact>
+                    <artifact>${project.groupId}:${project.artifactId}:6.3.0.Final</artifact>
                   </oldArtifacts>
+                  <newArtifacts>
+                    <!-- The special BUILD GAV is used to specify artifacts that were produced during the build of the current project.-->
+                    <artifact>BUILD</artifact>
+                  </newArtifacts>
                   <!-- In case some changes are expected, the following configuration example shows how to prevent a build
                        from failing.
                   <analysisConfiguration>
