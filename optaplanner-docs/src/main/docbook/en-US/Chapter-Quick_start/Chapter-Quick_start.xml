@@ -78,7 +78,7 @@
     <section xml:id="cloudBalancingProblemSize">
       <title>Problem Size</title>
 
-      <table id="cloudBalancingProblemTable">
+      <table>
         <title>Cloud Balancing Problem Size</title>
 
         <tgroup align="left" cols="4" colsep="1" rowsep="1">
