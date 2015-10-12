@@ -235,15 +235,15 @@ public class TransactionsTest extends JbpmTestCase {
         ut.commit();
 
         String timerNodeName = "timer";
-        assertTrue( "Node '" + timerNodeName + "' was not left on time!", process.waitForNodeToBeLeft(timerNodeName, 500));
+        assertTrue( "Node '" + timerNodeName + "' was not left on time!", process.waitForNodeToBeLeft(timerNodeName, 1500));
         Assertions.assertThat(process.wasNodeLeft(timerNodeName)).isTrue();
        
         String finishScriptNodeName = "Finish-Script";
-        assertTrue( "Node '" + finishScriptNodeName + "' was not triggered on time!", process.waitForNodeTobeTriggered(finishScriptNodeName, 500));
+        assertTrue( "Node '" + finishScriptNodeName + "' was not triggered on time!", process.waitForNodeTobeTriggered(finishScriptNodeName, 1500));
         
         ksession.signalEvent("finish", null, processId);
 
-        assertTrue( "Process did not complete on time!", process.waitForProcessToComplete(500));
+        assertTrue( "Process did not complete on time!", process.waitForProcessToComplete(1500));
         assertProcessInstanceCompleted(processId);
     }
 

@@ -20,9 +20,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.jbpm.executor.AsynchronousJobListener;
 import org.jbpm.executor.ExecutorNotStartedException;
 import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.RequeueAware;
+import org.jbpm.executor.impl.event.ExecutorEventSupport;
 import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ErrorInfo;
 import org.kie.api.executor.Executor;
@@ -50,11 +52,21 @@ public class ExecutorServiceImpl implements ExecutorService, RequeueAware {
     
     private ExecutorAdminService adminService;
     
+    private ExecutorEventSupport eventSupport = new ExecutorEventSupport();
+    
     public ExecutorServiceImpl(){
     	
     }
 
     public ExecutorServiceImpl(Executor executor) {
+    }
+    
+    public ExecutorEventSupport getEventSupport() {
+        return this.eventSupport;
+    }
+    
+    public void setEventSupport(ExecutorEventSupport eventSupport) {
+        this.eventSupport = eventSupport;
     }
 
     public Executor getExecutor() {
@@ -295,4 +307,15 @@ public class ExecutorServiceImpl implements ExecutorService, RequeueAware {
         return queryService.getFutureQueuedRequests(queryContext);
     }
 
+    public void addAsyncJobListener(AsynchronousJobListener listener) {
+        this.eventSupport.addEventListener(listener);
+    }
+    
+    public void removeAsyncJobListener(AsynchronousJobListener listener) {
+        this.eventSupport.removeEventListener(listener);
+    }
+    
+    public List<AsynchronousJobListener> getAsyncJobListeners() {
+        return this.eventSupport.getEventListeners();
+    }
 }

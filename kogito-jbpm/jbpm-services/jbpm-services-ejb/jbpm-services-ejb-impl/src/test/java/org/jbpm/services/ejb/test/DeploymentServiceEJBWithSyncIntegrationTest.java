@@ -37,6 +37,8 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.store.DeploymentStore;
+import org.jbpm.kie.services.test.objects.CoundDownDeploymentListener;
+import org.jbpm.services.api.ListenerSupport;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.ejb.api.DeploymentServiceEJBLocal;
@@ -75,7 +77,8 @@ public class DeploymentServiceEJBWithSyncIntegrationTest extends AbstractTestSup
 			throw new IllegalStateException("There is no archive yet generated, run maven build or mvn assembly:assembly");
 		}
 		WebArchive war = ShrinkWrap.createFromZipFile(WebArchive.class, archive);
-		war.addPackage("org.jbpm.services.ejb.test"); // test cases
+		war.addPackage("org.jbpm.services.ejb.test");
+		war.addClass("org.jbpm.kie.services.test.objects.CoundDownDeploymentListener");// test cases
 
 		// deploy test kjar
 		deployKjar();
@@ -123,6 +126,13 @@ public class DeploymentServiceEJBWithSyncIntegrationTest extends AbstractTestSup
 
         repository.deployArtifact(releaseIdSupport, kJar2, pom2);
 	}
+	
+    protected CoundDownDeploymentListener configureListener(int threads) {
+        CoundDownDeploymentListener countDownListener = new CoundDownDeploymentListener(threads);
+        ((ListenerSupport)deploymentService).addListener(countDownListener);
+        
+        return countDownListener;
+    }
     
     @EJB
 	private DeploymentServiceEJBLocal deploymentService;
@@ -132,6 +142,9 @@ public class DeploymentServiceEJBWithSyncIntegrationTest extends AbstractTestSup
     
     @Test
     public void testDeploymentOfProcessesBySync() throws Exception {
+        
+        CoundDownDeploymentListener countDownListener = configureListener(1);
+        
     	DeploymentStore store = new DeploymentStore();
 		store.setCommandService(commandService);
     	Collection<DeployedUnit> deployed = deploymentService.getDeployedUnits();
@@ -142,7 +155,7 @@ public class DeploymentServiceEJBWithSyncIntegrationTest extends AbstractTestSup
 		store.enableDeploymentUnit(unit);
 		units.add(unit);
 		
-		Thread.sleep(3000);
+		countDownListener.waitTillCompleted(10000);
 		
 		deployed = deploymentService.getDeployedUnits();
     	assertNotNull(deployed);
@@ -152,6 +165,8 @@ public class DeploymentServiceEJBWithSyncIntegrationTest extends AbstractTestSup
     
     @Test
     public void testUndeploymentOfProcessesBySync() throws Exception {
+        CoundDownDeploymentListener countDownListener = configureListener(2);
+        
     	DeploymentStore store = new DeploymentStore();
 		store.setCommandService(commandService);
     	Collection<DeployedUnit> deployed = deploymentService.getDeployedUnits();
@@ -166,9 +181,11 @@ public class DeploymentServiceEJBWithSyncIntegrationTest extends AbstractTestSup
     	assertNotNull(deployed);
     	assertEquals(1, deployed.size());
     	
-    	store.disableDeploymentUnit(unit);
+    	countDownListener.waitTillCompleted(1000);
+        
+        store.disableDeploymentUnit(unit);
 
-		Thread.sleep(3000);
+        countDownListener.waitTillCompleted(10000);
 		
 		deployed = deploymentService.getDeployedUnits();
     	assertNotNull(deployed);
@@ -177,6 +194,8 @@ public class DeploymentServiceEJBWithSyncIntegrationTest extends AbstractTestSup
     
     @Test
     public void testDeactivateAndActivateOfProcessesBySync() throws Exception {
+        CoundDownDeploymentListener countDownListener = configureListener(2);
+        
     	DeploymentStore store = new DeploymentStore();
 		store.setCommandService(commandService);
 		
@@ -192,11 +211,10 @@ public class DeploymentServiceEJBWithSyncIntegrationTest extends AbstractTestSup
     	assertNotNull(deployed);
     	assertEquals(1, deployed.size());
     	assertTrue(deployed.iterator().next().isActive());
-    	Thread.sleep(3000);
     	
     	store.deactivateDeploymentUnit(unit);
 
-		Thread.sleep(3000);
+    	countDownListener.waitTillCompleted(10000);
 		
 		deployed = deploymentService.getDeployedUnits();
     	assertNotNull(deployed);
@@ -205,7 +223,8 @@ public class DeploymentServiceEJBWithSyncIntegrationTest extends AbstractTestSup
     	
     	store.activateDeploymentUnit(unit);
 
-		Thread.sleep(3000);
+    	countDownListener.reset(1);
+        countDownListener.waitTillCompleted(10000);
 		
 		deployed = deploymentService.getDeployedUnits();
     	assertNotNull(deployed);

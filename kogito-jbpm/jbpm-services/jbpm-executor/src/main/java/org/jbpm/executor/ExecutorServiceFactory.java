@@ -26,6 +26,7 @@ import org.jbpm.executor.impl.ClassCacheManager;
 import org.jbpm.executor.impl.ExecutorImpl;
 import org.jbpm.executor.impl.ExecutorRunnable;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
+import org.jbpm.executor.impl.event.ExecutorEventSupport;
 import org.jbpm.executor.impl.jpa.ExecutorQueryServiceImpl;
 import org.jbpm.executor.impl.jpa.ExecutorRequestAdminServiceImpl;
 import org.jbpm.executor.impl.jpa.JPAExecutorStoreService;
@@ -82,7 +83,7 @@ public class ExecutorServiceFactory {
     }
 
     private static ExecutorService configure(EntityManagerFactory emf) {
-
+        ExecutorEventSupport eventSupport = new ExecutorEventSupport();
         // create instances of executor services
 
     	ExecutorQueryService queryService = new ExecutorQueryServiceImpl(true);
@@ -95,8 +96,10 @@ public class ExecutorServiceFactory {
         ExecutorStoreService storeService = new JPAExecutorStoreService(true);
         ((JPAExecutorStoreService)storeService).setCommandService(commandService);
         ((JPAExecutorStoreService)storeService).setEmf(emf);
+        ((JPAExecutorStoreService)storeService).setEventSupport(eventSupport);
         
         ((ExecutorImpl) executor).setExecutorStoreService(storeService);
+        ((ExecutorImpl) executor).setEventSupport(eventSupport);
         
         // set executor on all instances that requires it
         ((ExecutorQueryServiceImpl) queryService).setCommandService(commandService);        
@@ -108,21 +111,23 @@ public class ExecutorServiceFactory {
     	((ExecutorServiceImpl)service).setQueryService(queryService);
     	((ExecutorServiceImpl)service).setExecutor(executor);
         ((ExecutorServiceImpl)service).setAdminService(adminService);
-         
+        ((ExecutorServiceImpl)service).setEventSupport(eventSupport);
 
         return service;
     }
     
     private static ExecutorService configure() {
     	// create instances of executor services
-
+        ExecutorEventSupport eventSupport = new ExecutorEventSupport();
     	ExecutorQueryService queryService = new InMemoryExecutorQueryServiceImpl(true);
     	Executor executor = new ExecutorImpl();
     	ExecutorAdminService adminService = new InMemoryExecutorAdminServiceImpl(true);
 
     	InMemoryExecutorStoreService storeService = new InMemoryExecutorStoreService(true);
+    	((InMemoryExecutorStoreService)storeService).setEventSupport(eventSupport);
         
         ((ExecutorImpl) executor).setExecutorStoreService(storeService);
+        ((ExecutorImpl) executor).setEventSupport(eventSupport);
         
         // set executor on all instances that requires it
         ((InMemoryExecutorQueryServiceImpl) queryService).setStoreService(storeService);        
@@ -134,26 +139,27 @@ public class ExecutorServiceFactory {
     	((ExecutorServiceImpl)service).setQueryService(queryService);
     	((ExecutorServiceImpl)service).setExecutor(executor);
         ((ExecutorServiceImpl)service).setAdminService(adminService);
+        ((ExecutorServiceImpl)service).setEventSupport(eventSupport);        
          
 
         return service;
     }
 
-    public static ExecutorRunnable buildRunable(EntityManagerFactory emf) {
+    public static ExecutorRunnable buildRunable(EntityManagerFactory emf, ExecutorEventSupport eventSupport) {
         ExecutorRunnable runnable = new ExecutorRunnable();
         AvailableJobsExecutor jobExecutor = null;
 
         try {
             jobExecutor = InitialContext.doLookup("java:module/AvailableJobsExecutor");
         } catch (Exception e) {
-            jobExecutor = buildJobExecutor(emf);
+            jobExecutor = buildJobExecutor(emf, eventSupport);
         }
         runnable.setAvailableJobsExecutor(jobExecutor);
         return runnable;
     }
 
 
-    private static AvailableJobsExecutor buildJobExecutor(EntityManagerFactory emf) {
+    private static AvailableJobsExecutor buildJobExecutor(EntityManagerFactory emf, ExecutorEventSupport eventSupport) {
         AvailableJobsExecutor jobExecutor;
         jobExecutor = new AvailableJobsExecutor();
         ClassCacheManager classCacheManager = new ClassCacheManager();
@@ -168,6 +174,7 @@ public class ExecutorServiceFactory {
         jobExecutor.setClassCacheManager(classCacheManager);
         jobExecutor.setQueryService(queryService);
         jobExecutor.setExecutorStoreService(storeService);
+        jobExecutor.setEventSupport(eventSupport);
         // provide bean manager instance as context data as it might not be available to
         // be looked up from JNDI in non managed threads
         try {
@@ -179,7 +186,7 @@ public class ExecutorServiceFactory {
         return jobExecutor;
     }
     
-    public static ExecutorRunnable buildRunable() {
+    public static ExecutorRunnable buildRunable(ExecutorEventSupport eventSupport) {
     	ExecutorRunnable runnable = new ExecutorRunnable();
     	AvailableJobsExecutor jobExecutor = null;
     	try {
@@ -195,6 +202,7 @@ public class ExecutorServiceFactory {
 	        jobExecutor.setClassCacheManager(classCacheManager);
 	        jobExecutor.setQueryService(queryService);
 	        jobExecutor.setExecutorStoreService(storeService);
+	        jobExecutor.setEventSupport(eventSupport);
 	        // provide bean manager instance as context data as it might not be available to
 	        // be looked up from JNDI in non managed threads
 	        try {

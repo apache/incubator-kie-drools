@@ -40,21 +40,31 @@ import javax.xml.bind.Unmarshaller;
 import org.jbpm.persistence.util.PersistenceUtil;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.jbpm.services.task.impl.model.xml.JaxbContent;
+import org.jbpm.services.task.util.CountDownTaskEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.services.task.utils.MVELUtils;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.model.Content;
+import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public abstract class HumanTaskServicesBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(HumanTaskServicesBaseTest.class);
+    
+    static {
+        if (!TransactionManagerServices.isTransactionManagerRunning()) {
+            TransactionManagerServices.getConfiguration().setJournal("null");
+        }
+    }
     
     protected InternalTaskService taskService;
 
@@ -257,4 +267,9 @@ public abstract class HumanTaskServicesBaseTest {
         }
     }
 
+    protected void addCountDownListner(CountDownTaskEventListener countDownListener) {
+        if (taskService instanceof EventService) {
+            ((EventService<TaskLifeCycleEventListener>) taskService).registerTaskEventListener(countDownListener);
+        }
+    }
 }

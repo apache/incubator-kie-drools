@@ -23,7 +23,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -417,26 +416,6 @@ public class BasicExecutorIntegrationTest {
         List<RequestInfo> cancelledRequests = executorService.getCancelledRequests(new QueryContext());
         assertEquals(1, cancelledRequests.size());
 
-    }
-    
-    public void FIXMEfutureRequestTest() throws InterruptedException {
-        CommandContext ctxCMD = new CommandContext();
-        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
-
-        Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", new Date(new Date().getTime() + 10000), ctxCMD);
-        assertNotNull(requestId);
-        Thread.sleep(5000);
-        
-        List<RequestInfo> runningRequests = executorService.getRunningRequests(new QueryContext());
-        assertEquals(0, runningRequests.size());
-        
-        List<RequestInfo> futureQueuedRequests = executorService.getFutureQueuedRequests(new QueryContext());
-        assertEquals(1, futureQueuedRequests.size());
-        
-        Thread.sleep(10000);
-        
-        List<RequestInfo> completedRequests = executorService.getCompletedRequests(new QueryContext());
-        assertEquals(1, completedRequests.size());
     }
     
 }

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
@@ -36,6 +37,7 @@ import org.junit.BeforeClass;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.task.TaskLifeCycleEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -188,15 +190,20 @@ public abstract class TimerBaseTest extends AbstractBaseTest {
     }
     
     protected class TestRegisterableItemsFactory extends DefaultRegisterableItemsFactory {
-        private ProcessEventListener plistener;
-        private AgendaEventListener alistener;
+        private ProcessEventListener[] plistener;
+        private AgendaEventListener[] alistener;
+        private TaskLifeCycleEventListener[] tlistener;
         
-        public TestRegisterableItemsFactory(ProcessEventListener listener) {
+        public TestRegisterableItemsFactory(ProcessEventListener... listener) {
             this.plistener = listener;
         }
         
-        public TestRegisterableItemsFactory(AgendaEventListener listener) {
+        public TestRegisterableItemsFactory(AgendaEventListener... listener) {
             this.alistener = listener;
+        }
+        
+        public TestRegisterableItemsFactory(TaskLifeCycleEventListener... tlistener) {
+            this.tlistener = tlistener;
         }
 
         @Override
@@ -205,7 +212,7 @@ public abstract class TimerBaseTest extends AbstractBaseTest {
             
             List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
             if (plistener != null) {
-                listeners.add(plistener);
+                listeners.addAll(Arrays.asList(plistener));
             }
             
             return listeners;
@@ -216,9 +223,19 @@ public abstract class TimerBaseTest extends AbstractBaseTest {
             
             List<AgendaEventListener> listeners = super.getAgendaEventListeners(runtime);
             if (alistener != null) { 
-                listeners.add(alistener);
+                listeners.addAll(Arrays.asList(alistener));
             }
             
+            return listeners;
+        }
+
+        @Override
+        public List<TaskLifeCycleEventListener> getTaskListeners() {
+
+            List<TaskLifeCycleEventListener> listeners = super.getTaskListeners();
+            if (tlistener != null) {
+                listeners.addAll(Arrays.asList(tlistener));
+            }
             return listeners;
         } 
         

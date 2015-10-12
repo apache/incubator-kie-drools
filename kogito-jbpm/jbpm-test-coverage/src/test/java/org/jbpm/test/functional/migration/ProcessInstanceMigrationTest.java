@@ -356,8 +356,6 @@ public class ProcessInstanceMigrationTest extends JbpmTestCase {
             assertEquals(sPid, instance.getProcessId());
         }
 
-        Thread.sleep(400);
-
         manager.disposeRuntimeEngine(engine);
     }
 }

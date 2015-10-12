@@ -23,7 +23,6 @@ import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.junit.Test;
 import org.kie.api.KieBase;
-import org.kie.api.definition.process.WorkflowProcess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;

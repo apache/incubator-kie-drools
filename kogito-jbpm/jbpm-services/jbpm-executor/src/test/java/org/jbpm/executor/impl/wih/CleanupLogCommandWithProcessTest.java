@@ -28,6 +28,8 @@ import java.util.Properties;
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.executor.ExecutorServiceFactory;
+import org.jbpm.executor.impl.ExecutorServiceImpl;
+import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
@@ -87,10 +89,17 @@ public class CleanupLogCommandWithProcessTest extends AbstractExecutorBaseTest {
         }
         pds.close();
     }
+    
+    protected CountDownAsyncJobListener configureListener(int threads) {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(threads);
+        ((ExecutorServiceImpl) executorService).addAsyncJobListener(countDownListener);
+        
+        return countDownListener;
+    }
 
     @Test
     public void testRunProcessWithAsyncHandler() throws Exception {
-
+        CountDownAsyncJobListener countDownListener = configureListener(1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .entityManagerFactory(emf)
@@ -131,7 +140,7 @@ public class CleanupLogCommandWithProcessTest extends AbstractExecutorBaseTest {
         assertEquals(0, getVariableLogSize("ScriptTask"));
         
         scheduleLogCleanup(false, true, false, startDate, "ScriptTask", "yyyy-MM-dd", manager.getIdentifier());
-        Thread.sleep(5 * 1000);
+        countDownListener.waitTillCompleted();
         System.out.println("Aborting process instance " + processInstance.getId());
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNotNull(processInstance);
@@ -154,7 +163,8 @@ public class CleanupLogCommandWithProcessTest extends AbstractExecutorBaseTest {
         Thread.sleep(1000);
         
         scheduleLogCleanup(false, false, false, new Date(), "ScriptTask", "yyyy-MM-dd HH:mm:ss", manager.getIdentifier());
-        Thread.sleep(5 * 1000);
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
         
         assertEquals(0, getProcessLogSize("ScriptTask"));
         assertEquals(0, getNodeInstanceLogSize("ScriptTask"));

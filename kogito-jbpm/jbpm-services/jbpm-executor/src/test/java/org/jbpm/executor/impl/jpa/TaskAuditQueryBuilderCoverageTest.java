@@ -18,12 +18,19 @@ import org.kie.internal.runtime.manager.audit.query.RequestInfoQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 public class TaskAuditQueryBuilderCoverageTest {
    
     private static final Logger logger = LoggerFactory.getLogger(TaskAuditQueryBuilderCoverageTest.class);
-   
+    
+    static {
+        if (!TransactionManagerServices.isTransactionManagerRunning()) {
+            TransactionManagerServices.getConfiguration().setJournal("null");
+        }
+    }
+    
     private static PoolingDataSource pds;
     private static EntityManagerFactory emf;
     

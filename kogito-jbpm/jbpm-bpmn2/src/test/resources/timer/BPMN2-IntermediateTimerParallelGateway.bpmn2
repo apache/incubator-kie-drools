@@ -17,21 +17,21 @@
       <bpmn2:outgoing>_8C1D70CE-F9C0-4F57-8207-B12A58DE6382</bpmn2:outgoing>
       <bpmn2:outgoing>_AFAFA52E-A650-4ED3-B3BE-1DCFC8B39F94</bpmn2:outgoing>
     </bpmn2:parallelGateway>
-    <bpmn2:intermediateCatchEvent id="_FEC9BA6D-59EE-4021-A3AB-5914DB8C97AC" drools:selectable="true" drools:boundaryca="" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="">
+    <bpmn2:intermediateCatchEvent id="_FEC9BA6D-59EE-4021-A3AB-5914DB8C97AC" drools:selectable="true" drools:boundaryca="" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="Timer1">
       <bpmn2:incoming>_F21ED001-4BBD-4B51-B1B6-B39DA00CFDCB</bpmn2:incoming>
       <bpmn2:outgoing>_66620B54-5F94-444F-A0C7-1DBA38225800</bpmn2:outgoing>
       <bpmn2:timerEventDefinition id="_JFbG4e8mEeSJ57AWgqiH0Q">
         <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="_JFbG4u8mEeSJ57AWgqiH0Q">1s</bpmn2:timeDuration>
       </bpmn2:timerEventDefinition>
     </bpmn2:intermediateCatchEvent>
-    <bpmn2:intermediateCatchEvent id="_16B31D79-651F-42EF-A844-FBD1A383515B" drools:selectable="true" drools:boundaryca="" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="">
+    <bpmn2:intermediateCatchEvent id="_16B31D79-651F-42EF-A844-FBD1A383515B" drools:selectable="true" drools:boundaryca="" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="Timer2">
       <bpmn2:incoming>_8C1D70CE-F9C0-4F57-8207-B12A58DE6382</bpmn2:incoming>
       <bpmn2:outgoing>_2B39572A-D18F-4D8A-B104-6D75F77FBA9E</bpmn2:outgoing>
       <bpmn2:timerEventDefinition id="_JFbG4-8mEeSJ57AWgqiH0Q">
         <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="_JFbG5O8mEeSJ57AWgqiH0Q">2s</bpmn2:timeDuration>
       </bpmn2:timerEventDefinition>
     </bpmn2:intermediateCatchEvent>
-    <bpmn2:intermediateCatchEvent id="_36429FF5-1F2A-4952-8D33-6C6D00FACE75" drools:selectable="true" drools:boundaryca="" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="">
+    <bpmn2:intermediateCatchEvent id="_36429FF5-1F2A-4952-8D33-6C6D00FACE75" drools:selectable="true" drools:boundaryca="" color:background-color="#f5deb3" color:border-color="#a0522d" color:color="#000000" name="Timer3">
       <bpmn2:incoming>_AFAFA52E-A650-4ED3-B3BE-1DCFC8B39F94</bpmn2:incoming>
       <bpmn2:outgoing>_E27AAF01-9256-425F-9A3E-0F0ACE5EA556</bpmn2:outgoing>
       <bpmn2:timerEventDefinition id="_JFbG5e8mEeSJ57AWgqiH0Q">

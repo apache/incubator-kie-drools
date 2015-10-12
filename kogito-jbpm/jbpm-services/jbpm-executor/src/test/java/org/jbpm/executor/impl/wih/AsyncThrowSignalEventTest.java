@@ -20,18 +20,24 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.List;
 import java.util.Properties;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.jbpm.executor.ExecutorServiceFactory;
+import org.jbpm.executor.impl.ExecutorServiceImpl;
+import org.jbpm.executor.test.CountDownAsyncJobListener;
+import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractExecutorBaseTest;
+import org.jbpm.test.util.CountDownProcessEventListener;
 import org.jbpm.test.util.ExecutorTestUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.executor.ExecutorService;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -78,15 +84,23 @@ public class AsyncThrowSignalEventTest extends AbstractExecutorBaseTest {
         }
         pds.close();
     }
+    
+    protected CountDownAsyncJobListener configureListener(int threads) {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(threads);
+        ((ExecutorServiceImpl) executorService).addAsyncJobListener(countDownListener);
+        
+        return countDownListener;
+    }
 
-    @Test
+    @Test(timeout=10000)
     public void testAsyncThrowEndEvent() throws Exception {
 
+        CountDownAsyncJobListener countDownListener = configureListener(1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-WaitForEvent.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ThrowEventEnd.bpmn2"), ResourceType.BPMN2)
-                .addEnvironmentEntry("ExecutorService", executorService)
+                .addEnvironmentEntry("ExecutorService", executorService)                
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
@@ -105,20 +119,20 @@ public class AsyncThrowSignalEventTest extends AbstractExecutorBaseTest {
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNotNull(processInstance);
         
-        Thread.sleep(3000);
+        countDownListener.waitTillCompleted();
         
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNull(processInstance);
     } 
     
-    @Test
+    @Test(timeout=10000)
     public void testAsyncThrowIntermediateEvent() throws Exception {
-
+        CountDownAsyncJobListener countDownListener = configureListener(1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-WaitForEvent.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-ThrowEventIntermediate.bpmn2"), ResourceType.BPMN2)
-                .addEnvironmentEntry("ExecutorService", executorService)
+                .addEnvironmentEntry("ExecutorService", executorService)                
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
@@ -137,19 +151,19 @@ public class AsyncThrowSignalEventTest extends AbstractExecutorBaseTest {
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNotNull(processInstance);
         
-        Thread.sleep(3000);
+        countDownListener.waitTillCompleted();
         
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNull(processInstance);
     } 
     
-    @Test
+    @Test(timeout=10000)
     public void testAsyncThrowManualEvent() throws Exception {
-
+        CountDownAsyncJobListener countDownListener = configureListener(1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-WaitForEvent.bpmn2"), ResourceType.BPMN2)
-                .addEnvironmentEntry("ExecutorService", executorService)
+                .addEnvironmentEntry("ExecutorService", executorService)                
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newSingletonRuntimeManager(environment); 
@@ -168,7 +182,7 @@ public class AsyncThrowSignalEventTest extends AbstractExecutorBaseTest {
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNotNull(processInstance);
         
-        Thread.sleep(3000);
+        countDownListener.waitTillCompleted();
         
         processInstance = runtime.getKieSession().getProcessInstance(processInstance.getId());
         assertNull(processInstance);

@@ -39,6 +39,7 @@ import org.jbpm.executor.ExecutorServiceFactory;
 import org.jbpm.executor.impl.ClassCacheManager;
 import org.jbpm.executor.impl.ExecutorImpl;
 import org.jbpm.executor.impl.ExecutorServiceImpl;
+import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.test.util.ExecutorTestUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -50,6 +51,7 @@ import org.kie.api.runtime.query.QueryContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 import bitronix.tm.resource.jms.PoolingConnectionFactory;
 
@@ -57,6 +59,11 @@ public class JmsAvaiableJobExecutorTest  {
 
     private static final Logger logger = LoggerFactory.getLogger(JmsAvaiableJobExecutorTest.class);
     
+    static {
+        if (!TransactionManagerServices.isTransactionManagerRunning()) {
+            TransactionManagerServices.getConfiguration().setJournal("null");
+        }
+    }
     
     private ConnectionFactory factory;
     private Queue queue;
@@ -100,10 +107,17 @@ public class JmsAvaiableJobExecutorTest  {
         stopHornetQServer();
     }
     
+    protected CountDownAsyncJobListener configureListener(int threads) {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(threads);
+        ((ExecutorServiceImpl) executorService).addAsyncJobListener(countDownListener);
+        
+        return countDownListener;
+    }
     
     @Test
     public void testAsyncAuditProducer() throws Exception {
         
+        CountDownAsyncJobListener countDownListener = configureListener(1);
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
         UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
@@ -111,7 +125,7 @@ public class JmsAvaiableJobExecutorTest  {
         executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", ctxCMD);
         ut.commit();
         MessageReceiver receiver = new MessageReceiver();
-        receiver.receiveAndProcess(queue);
+        receiver.receiveAndProcess(queue, countDownListener);
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
@@ -153,7 +167,7 @@ public class JmsAvaiableJobExecutorTest  {
     
     private class MessageReceiver {
         
-        void receiveAndProcess(Queue queue) throws Exception {
+        void receiveAndProcess(Queue queue, CountDownAsyncJobListener countDownListener) throws Exception {
             
             Connection qconnetion = factory.createConnection();
             Session qsession = qconnetion.createSession(true, QueueSession.AUTO_ACKNOWLEDGE);
@@ -163,9 +177,10 @@ public class JmsAvaiableJobExecutorTest  {
             jmsExecutor.setClassCacheManager(new ClassCacheManager());
             jmsExecutor.setExecutorStoreService(((ExecutorImpl)((ExecutorServiceImpl)executorService).getExecutor()).getExecutorStoreService());
             jmsExecutor.setQueryService(((ExecutorServiceImpl)executorService).getQueryService());
+            jmsExecutor.setEventSupport(((ExecutorServiceImpl)executorService).getEventSupport());
             consumer.setMessageListener(jmsExecutor);
             // since we use message listener allow it to complete the async processing
-            Thread.sleep(2000);
+            countDownListener.waitTillCompleted();
             
             consumer.close();            
             qsession.close();            

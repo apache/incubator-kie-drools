@@ -26,6 +26,8 @@ import java.util.concurrent.TimeUnit;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.jbpm.executor.impl.ExecutorServiceImpl;
+import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.jbpm.test.util.ExecutorTestUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -35,6 +37,7 @@ import org.kie.api.executor.ExecutorService;
 import org.kie.api.executor.RequestInfo;
 import org.kie.api.runtime.query.QueryContext;
 
+import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 
@@ -43,6 +46,11 @@ public class ReconfiguredExecutorTest {
 	protected ExecutorService executorService;
     public static final Map<String, Object> cachedEntities = new HashMap<String, Object>();
     
+    static {
+        if (!TransactionManagerServices.isTransactionManagerRunning()) {
+            TransactionManagerServices.getConfiguration().setJournal("null");
+        }
+    }
     
 	private PoolingDataSource pds;
 	private EntityManagerFactory emf = null;
@@ -73,15 +81,23 @@ public class ReconfiguredExecutorTest {
         }
         pds.close();
     }
+    
+    protected CountDownAsyncJobListener configureListener(int threads) {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(threads);
+        ((ExecutorServiceImpl) executorService).addAsyncJobListener(countDownListener);
+        
+        return countDownListener;
+    }
    
     @Test
     public void simpleExcecutionTest() throws InterruptedException {
+        CountDownAsyncJobListener countDownListener = configureListener(1);
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
 
         executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", ctxCMD);
 
-        Thread.sleep(10000);
+        countDownListener.waitTillCompleted();
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());

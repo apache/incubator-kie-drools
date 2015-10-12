@@ -270,7 +270,6 @@ public class TaskHandler extends AbstractNodeHandler {
 				String uniqueId = (String) node.getMetaData().get("UniqueId");
 				forEachNode.setMetaData("UniqueId", uniqueId);
 				node.setMetaData("UniqueId", uniqueId + ":" + uniqueIdGen++);
-				node.setMetaData("hidden", true);
 				forEachNode.addNode(node);
 				forEachNode.linkIncomingConnections(NodeImpl.CONNECTION_DEFAULT_TYPE, node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE);
 				forEachNode.linkOutgoingConnections(node.getId(), NodeImpl.CONNECTION_DEFAULT_TYPE, NodeImpl.CONNECTION_DEFAULT_TYPE);

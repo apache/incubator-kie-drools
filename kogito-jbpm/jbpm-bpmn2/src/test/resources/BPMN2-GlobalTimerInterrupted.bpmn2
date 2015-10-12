@@ -33,7 +33,7 @@
 
     <bpmn2:sequenceFlow id="_2-3" sourceRef="_2" targetRef="_3"/>
 
-    <bpmn2:intermediateCatchEvent id="_3" drools:bgcolor="#ffffff" drools:boundaryca="false" name="">
+    <bpmn2:intermediateCatchEvent id="_3" drools:bgcolor="#ffffff" drools:boundaryca="false" name="timer">
       <bpmn2:incoming>_2-3</bpmn2:incoming>
       <bpmn2:outgoing>_3-4</bpmn2:outgoing>
       <bpmn2:timerEventDefinition id="_6">

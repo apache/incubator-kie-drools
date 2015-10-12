@@ -25,7 +25,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +33,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.impl.jpa.ExecutorJPAAuditService;
+import org.jbpm.executor.test.CountDownAsyncJobListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,10 +49,17 @@ import org.kie.api.runtime.query.QueryContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bitronix.tm.TransactionManagerServices;
+
 public abstract class BasicExecutorBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(BasicExecutorBaseTest.class);
 
+    static {
+        if (!TransactionManagerServices.isTransactionManagerRunning()) {
+            TransactionManagerServices.getConfiguration().setJournal("null");
+        }
+    }
     
     protected ExecutorService executorService;
     public static final Map<String, Object> cachedEntities = new HashMap<String, Object>();
@@ -72,15 +80,23 @@ public abstract class BasicExecutorBaseTest {
         System.clearProperty("org.kie.executor.msg.length");
     	System.clearProperty("org.kie.executor.stacktrace.length");
     }
+    
+    protected CountDownAsyncJobListener configureListener(int threads) {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(threads);
+        ((ExecutorServiceImpl) executorService).addAsyncJobListener(countDownListener);
+        
+        return countDownListener;
+    }
 
     @Test
     public void simpleExecutionTest() throws InterruptedException {
+        CountDownAsyncJobListener countDownListener = configureListener(1);
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
 
         executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", ctxCMD);
 
-        Thread.sleep(10000);
+        countDownListener.waitTillCompleted();
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
@@ -95,6 +111,7 @@ public abstract class BasicExecutorBaseTest {
     @Test
     public void callbackTest() throws InterruptedException {
 
+        CountDownAsyncJobListener countDownListener = configureListener(1);
         CommandContext commandContext = new CommandContext();
         commandContext.setData("businessKey", UUID.randomUUID().toString());
         cachedEntities.put((String) commandContext.getData("businessKey"), new AtomicLong(1));
@@ -102,7 +119,7 @@ public abstract class BasicExecutorBaseTest {
         commandContext.setData("callbacks", "org.jbpm.executor.SimpleIncrementCallback");
         executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", commandContext);
 
-        Thread.sleep(10000);
+        countDownListener.waitTillCompleted();
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
@@ -117,7 +134,7 @@ public abstract class BasicExecutorBaseTest {
     
     @Test
     public void addAnotherCallbackTest() throws InterruptedException {
-
+        CountDownAsyncJobListener countDownListener = configureListener(1);
         CommandContext commandContext = new CommandContext();
         commandContext.setData("businessKey", UUID.randomUUID().toString());
         cachedEntities.put((String) commandContext.getData("businessKey"), new AtomicLong(1));
@@ -125,7 +142,7 @@ public abstract class BasicExecutorBaseTest {
         commandContext.setData("callbacks", "org.jbpm.executor.SimpleIncrementCallback");
         executorService.scheduleRequest("org.jbpm.executor.test.AddAnotherCallbackCommand", commandContext);
 
-        Thread.sleep(10000);
+        countDownListener.waitTillCompleted();
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
@@ -162,7 +179,7 @@ public abstract class BasicExecutorBaseTest {
     
     @Test
     public void multipleCallbackTest() throws InterruptedException {
-
+        CountDownAsyncJobListener countDownListener = configureListener(1);
         CommandContext commandContext = new CommandContext();
         commandContext.setData("businessKey", UUID.randomUUID().toString());
         cachedEntities.put((String) commandContext.getData("businessKey"), new AtomicLong(1));
@@ -170,7 +187,7 @@ public abstract class BasicExecutorBaseTest {
         commandContext.setData("callbacks", "org.jbpm.executor.SimpleIncrementCallback, org.jbpm.executor.test.CustomCallback");
         executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", commandContext);
 
-        Thread.sleep(10000);
+        countDownListener.waitTillCompleted();
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
@@ -207,7 +224,7 @@ public abstract class BasicExecutorBaseTest {
 
     @Test
     public void executorExceptionTest() throws InterruptedException {
-
+        CountDownAsyncJobListener countDownListener = configureListener(1);
         CommandContext commandContext = new CommandContext();
         commandContext.setData("businessKey", UUID.randomUUID().toString());
         cachedEntities.put((String) commandContext.getData("businessKey"), new AtomicLong(1));
@@ -216,7 +233,8 @@ public abstract class BasicExecutorBaseTest {
         commandContext.setData("retries", 0);
         executorService.scheduleRequest("org.jbpm.executor.ThrowExceptionCommand", commandContext);
         logger.info("{} Sleeping for 10 secs", System.currentTimeMillis());
-        Thread.sleep(10000);
+        
+        countDownListener.waitTillCompleted();
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(1, inErrorRequests.size());
@@ -231,14 +249,13 @@ public abstract class BasicExecutorBaseTest {
 
     @Test
     public void defaultRequestRetryTest() throws InterruptedException {
+        CountDownAsyncJobListener countDownListener = configureListener(4);
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
 
         executorService.scheduleRequest("org.jbpm.executor.ThrowExceptionCommand", ctxCMD);
 
-        Thread.sleep(12000);
-
-
+        countDownListener.waitTillCompleted();
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(1, inErrorRequests.size());
@@ -278,6 +295,9 @@ public abstract class BasicExecutorBaseTest {
     public void executorExceptionTrimmingTest() throws InterruptedException {
     	System.setProperty("org.kie.executor.msg.length", "10");
     	System.setProperty("org.kie.executor.stacktrace.length", "20");
+    	
+    	CountDownAsyncJobListener countDownListener = configureListener(1);
+    	
         CommandContext commandContext = new CommandContext();
         commandContext.setData("businessKey", UUID.randomUUID().toString());
         cachedEntities.put((String) commandContext.getData("businessKey"), new AtomicLong(1));
@@ -286,7 +306,7 @@ public abstract class BasicExecutorBaseTest {
         commandContext.setData("retries", 0);
         executorService.scheduleRequest("org.jbpm.executor.ThrowExceptionCommand", commandContext);
         logger.info("{} Sleeping for 10 secs", System.currentTimeMillis());
-        Thread.sleep(10000);
+        countDownListener.waitTillCompleted();
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(1, inErrorRequests.size());
@@ -306,12 +326,14 @@ public abstract class BasicExecutorBaseTest {
     
     @Test
     public void reoccurringExecutionTest() throws InterruptedException {
+        CountDownAsyncJobListener countDownListener = configureListener(3);
+        
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
 
         executorService.scheduleRequest("org.jbpm.executor.commands.ReoccurringPrintOutCommand", ctxCMD);
 
-        Thread.sleep(9000);
+        countDownListener.waitTillCompleted();
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
@@ -325,12 +347,13 @@ public abstract class BasicExecutorBaseTest {
     
     @Test
     public void cleanupLogExecutionTest() throws InterruptedException {
+        CountDownAsyncJobListener countDownListener = configureListener(3);
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
         
         Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.ReoccurringPrintOutCommand", ctxCMD);
 
-        Thread.sleep(9000);
+        countDownListener.waitTillCompleted();
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
@@ -367,7 +390,8 @@ public abstract class BasicExecutorBaseTest {
         ctxCMD.setData("SkipTaskLog", "true");
         executorService.scheduleRequest("org.jbpm.executor.commands.LogCleanupCommand", ctxCMD);
         
-        Thread.sleep(5000);
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
         
         inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
@@ -379,6 +403,7 @@ public abstract class BasicExecutorBaseTest {
 
     @Test
     public void testCustomConstantRequestRetry() throws InterruptedException {
+        CountDownAsyncJobListener countDownListener = configureListener(3);
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
         ctxCMD.setData("retryDelay", "5s");
@@ -386,7 +411,7 @@ public abstract class BasicExecutorBaseTest {
 
         executorService.scheduleRequest("org.jbpm.executor.ThrowExceptionCommand", ctxCMD);
 
-        Thread.sleep(16000);
+        countDownListener.waitTillCompleted();
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(1, inErrorRequests.size());
@@ -410,6 +435,7 @@ public abstract class BasicExecutorBaseTest {
     
     @Test
     public void testCustomIncrementingRequestRetry() throws InterruptedException {
+        CountDownAsyncJobListener countDownListener = configureListener(3);
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
         ctxCMD.setData("retryDelay", "3s, 6s");
@@ -417,7 +443,7 @@ public abstract class BasicExecutorBaseTest {
 
         executorService.scheduleRequest("org.jbpm.executor.ThrowExceptionCommand", ctxCMD);
 
-        Thread.sleep(20000);
+        countDownListener.waitTillCompleted();
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(1, inErrorRequests.size());
@@ -440,6 +466,7 @@ public abstract class BasicExecutorBaseTest {
 
     @Test
     public void testCustomIncrementingRequestRetrySpecialValues() throws InterruptedException {
+        CountDownAsyncJobListener countDownListener = configureListener(2);
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
         ctxCMD.setData("retryDelay", "-1ms, 1m 80s");
@@ -447,7 +474,7 @@ public abstract class BasicExecutorBaseTest {
 
         executorService.scheduleRequest("org.jbpm.executor.ThrowExceptionCommand", ctxCMD);
 
-        Thread.sleep(10000);
+        countDownListener.waitTillCompleted();
 
         List<ErrorInfo> errors = executorService.getAllErrors(new QueryContext());
         // 2 executions in total 1(regular) + 1(retry)
@@ -570,12 +597,13 @@ public abstract class BasicExecutorBaseTest {
     
     @Test
     public void testReturnNullCommand() throws InterruptedException {
+        CountDownAsyncJobListener countDownListener = configureListener(1);
         CommandContext ctxCMD = new CommandContext();
         ctxCMD.setData("businessKey", UUID.randomUUID().toString());
 
         executorService.scheduleRequest("org.jbpm.executor.test.ReturnNullCommand", ctxCMD);
 
-        Thread.sleep(4000);
+        countDownListener.waitTillCompleted();
 
         List<RequestInfo> inErrorRequests = executorService.getInErrorRequests(new QueryContext());
         assertEquals(0, inErrorRequests.size());
@@ -592,25 +620,6 @@ public abstract class BasicExecutorBaseTest {
         assertNotNull(secondRequest);
         assertNotEquals("Requests are same!", firstRequest.getId(), secondRequest.getId());
     }
-    
-    public void FIXMEfutureRequestTest() throws InterruptedException {
-        CommandContext ctxCMD = new CommandContext();
-        ctxCMD.setData("businessKey", UUID.randomUUID().toString());
 
-        Long requestId = executorService.scheduleRequest("org.jbpm.executor.commands.PrintOutCommand", new Date(new Date().getTime() + 10000), ctxCMD);
-        assertNotNull(requestId);
-        Thread.sleep(5000);
-        
-        List<RequestInfo> runningRequests = executorService.getRunningRequests(new QueryContext());
-        assertEquals(0, runningRequests.size());
-        
-        List<RequestInfo> futureQueuedRequests = executorService.getFutureQueuedRequests(new QueryContext());
-        assertEquals(1, futureQueuedRequests.size());
-        
-        Thread.sleep(10000);
-        
-        List<RequestInfo> completedRequests = executorService.getCompletedRequests(new QueryContext());
-        assertEquals(1, completedRequests.size());
-    }
     
 }

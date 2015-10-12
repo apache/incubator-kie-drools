@@ -17,6 +17,7 @@ package org.jbpm.executor;
 
 import javax.persistence.Persistence;
 
+import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.test.util.ExecutorTestUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -35,6 +36,8 @@ public class NoCDISimpleExecutorTest extends BasicExecutorBaseTest{
         emf = Persistence.createEntityManagerFactory("org.jbpm.executor");
 
         executorService = ExecutorServiceFactory.newExecutorService(emf);
+        
+        
         
         executorService.init();
         super.setUp();

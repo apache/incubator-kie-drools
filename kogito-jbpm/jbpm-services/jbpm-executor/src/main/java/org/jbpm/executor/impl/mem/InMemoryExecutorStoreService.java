@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.jbpm.executor.ExecutorServiceFactory;
+import org.jbpm.executor.impl.event.ExecutorEventSupport;
 import org.kie.api.executor.ErrorInfo;
 import org.kie.api.executor.ExecutorStoreService;
 import org.kie.api.executor.RequestInfo;
@@ -41,9 +42,15 @@ public class InMemoryExecutorStoreService implements ExecutorStoreService {
 	private static ConcurrentNavigableMap<Long, RequestInfo> processedRequests = new ConcurrentSkipListMap<Long, RequestInfo>();
 	private static ConcurrentNavigableMap<Long, ErrorInfo> errors = new ConcurrentSkipListMap<Long, ErrorInfo>();
 
+	private ExecutorEventSupport eventSupport = new ExecutorEventSupport();
+	
 	public InMemoryExecutorStoreService(boolean active) {
 		
 	}
+	        
+    public void setEventSupport(ExecutorEventSupport eventSupport) {
+        this.eventSupport = eventSupport;
+    }
 	
 	@Override
 	public synchronized void persistRequest(RequestInfo request) {
@@ -121,7 +128,7 @@ public class InMemoryExecutorStoreService implements ExecutorStoreService {
 
 	@Override
 	public Runnable buildExecutorRunnable() {		
-		return ExecutorServiceFactory.buildRunable();
+		return ExecutorServiceFactory.buildRunable(eventSupport);
 	}
 	
 	public synchronized RequestInfo getAndLockFirst() {

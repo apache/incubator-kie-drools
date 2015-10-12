@@ -15,7 +15,9 @@
 
 package org.jbpm.services.task;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -24,13 +26,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import org.jbpm.services.task.impl.factories.TaskFactory;
+import org.jbpm.services.task.util.CountDownTaskEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -90,8 +92,11 @@ public class TaskReminderTest extends HumanTaskServicesBaseTest {
         }
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTaskReminderWithoutNotification() throws Exception {
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, false, true);
+        addCountDownListner(countDownListener);
+        
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
 
@@ -104,7 +109,7 @@ public class TaskReminderTest extends HumanTaskServicesBaseTest {
         long taskId = taskService.addTask(task, new HashMap<String, Object>());
 
         taskService.executeReminderForTask(taskId, "Luke Cage");
-        Thread.sleep(1000);
+        countDownListener.waitTillCompleted();
         assertEquals(1, wiser.getMessages().size());
 
         String receiver = wiser.getMessages().get(0).getEnvelopeReceiver();
@@ -115,8 +120,11 @@ public class TaskReminderTest extends HumanTaskServicesBaseTest {
 
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTaskReminderWithNotificationByTaskNostarted() throws Exception {
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, false, true);
+        addCountDownListner(countDownListener);
+        
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
 
@@ -131,11 +139,7 @@ public class TaskReminderTest extends HumanTaskServicesBaseTest {
         long taskId = taskService.addTask(task, new HashMap<String, Object>());
         taskService.executeReminderForTask(taskId, "Luke Cage");
 
-        long time = 0;
-        while (wiser.getMessages().size() < 2 && time < 5000) {
-            Thread.sleep(50);
-            time += 50;
-        }
+        countDownListener.waitTillCompleted();
         assertEquals(2, wiser.getMessages().size());
 
         final List<String> list = new ArrayList<String>(2);
@@ -154,8 +158,11 @@ public class TaskReminderTest extends HumanTaskServicesBaseTest {
         assertEquals("task is not started", msg.getContent());
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTaskReminderWithNotificationByTaskNoCompleted() throws Exception {
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, false, true);
+        addCountDownListner(countDownListener);
+        
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
 
@@ -169,11 +176,7 @@ public class TaskReminderTest extends HumanTaskServicesBaseTest {
         long taskId = taskService.addTask(task, new HashMap<String, Object>());
         taskService.executeReminderForTask(taskId, "Luke Cage");
 
-        long time = 0;
-        while (wiser.getMessages().size() < 2 && time < 5000) {
-            Thread.sleep(50);
-            time += 50;
-        }
+        countDownListener.waitTillCompleted();
         assertEquals(2, wiser.getMessages().size());
 
         List<String> list = new ArrayList<String>(2);

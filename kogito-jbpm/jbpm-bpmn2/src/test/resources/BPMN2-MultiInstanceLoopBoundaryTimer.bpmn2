@@ -1,117 +1,177 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-                   xmlns="http://www.omg.org/bpmn20" 
-                   xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" 
-                   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
-                   xmlns:bpsim="http://www.bpsim.org/schemas/1.0" 
-                   xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" 
-                   xmlns:di="http://www.omg.org/spec/DD/20100524/DI" 
-                   xmlns:drools="http://www.jboss.org/drools" 
-                   id="_TUjxkeM3EeSAPvUoIw8sWA" 
-                   xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd http://www.jboss.org/drools drools.xsd http://www.bpsim.org/schemas/1.0 bpsim.xsd" 
-                   expressionLanguage="http://www.mvel.org/2.0" 
-                   targetNamespace="http://www.omg.org/bpmn20" 
-                   typeLanguage="http://www.java.com/javaTypes">
+<?xml version="1.0" encoding="UTF-8"?> 
+<definitions id="Definition"
+             targetNamespace="http://www.omg.org/bpmn20"
+             typeLanguage="http://www.java.com/javaTypes"
+             expressionLanguage="http://www.mvel.org/2.0"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+             xmlns:g="http://www.jboss.org/drools/flow/gpd"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:tns="http://www.jboss.org/drools">
 
-  <bpmn2:itemDefinition id="_actorNameListItem" structureRef="java.util.List"/>
-  <bpmn2:itemDefinition id="_sub_multiInstanceItemType"/>
+  <itemDefinition id="_actorNameListItem" structureRef="java.util.List" />
 
-  <bpmn2:process id="boundaryTimerMultipleInstances" drools:packageName="org.jbpm" drools:version="1.0" name="BoundaryTimerMultipleInstances" isExecutable="true">
+  <itemDefinition id="_sub_multiInstanceItemType" />
 
-    <bpmn2:property id="actorNameList" itemSubjectRef="_actorNameListItem"/>
+  <process processType="Private" isExecutable="true" id="boundaryTimerMultipleInstances" name="BoundaryTimerMultipleInstances" tns:packageName="org.jbpm" tns:version="1.0" >
 
-    <bpmn2:startEvent id="_start" drools:bgcolor="#9acd32" drools:selectable="true" name="" />
-    <bpmn2:sequenceFlow id="_E50CACDF-FDBD-4B24-9D9E-21ECE8E273B3" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_start" targetRef="_script"/>
+    <!-- process variables -->
+    <property id="actorNameList" itemSubjectRef="_actorNameListItem"/>
 
-    <bpmn2:scriptTask id="_script" drools:selectable="true" name="Prepare" scriptFormat="http://www.java.com/java">
-      <bpmn2:script><![CDATA[java.util.ArrayList list = new java.util.ArrayList();
+    <!-- nodes -->
+    <startEvent id="_start" name=""  isInterrupting="true"/>
+    <scriptTask id="_script" name="Prepare" scriptFormat="http://www.java.com/java" >
+      <script>java.util.ArrayList list = new java.util.ArrayList();
 list.add("john");
 list.add("mary");
 list.add("krisv");
-kcontext.setVariable("actorNameList", list);]]></bpmn2:script>
-    </bpmn2:scriptTask>
-    <bpmn2:sequenceFlow id="_2A6CBEAB-6C6C-486F-B011-F29603957DC9" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_script" targetRef="_sub"/>
+kcontext.setVariable("actorNameList", list);</script>
+    </scriptTask>
+    <subProcess id="_sub" name=""  >
+      <ioSpecification>
+        <dataInput id="_sub_input" name="MultiInstanceInput" />
+        <inputSet/>
+        <outputSet/>
+      </ioSpecification>
+      <dataInputAssociation>
+        <sourceRef>actorNameList</sourceRef>
+        <targetRef>_sub_input</targetRef>
+      </dataInputAssociation>
+      <multiInstanceLoopCharacteristics>
+        <loopDataInputRef>_sub_input</loopDataInputRef>
+        <inputDataItem id="actorName" itemSubjectRef="_sub_multiInstanceItemType"/>
+      </multiInstanceLoopCharacteristics>
+    <!-- nodes -->
+    <startEvent id="_sub.start" name=""  isInterrupting="true"/>
+    <userTask id="_sub.task" name="Task1" >
+      <extensionElements>
+        <tns:onEntry-script scriptFormat="http://www.java.com/java">
+          <tns:script>System.out.println("Task1 entry");</tns:script>
+        </tns:onEntry-script>
+        <tns:onExit-script scriptFormat="http://www.java.com/java">
+          <tns:script>System.out.println("Task1 exit");</tns:script>
+        </tns:onExit-script>
+      </extensionElements>
+      <ioSpecification>
+        <dataInput id="_sub.task_TaskNameInput" name="TaskName" />
+        <dataInput id="_sub.task_NodeNameInput" name="NodeName" />
+        <inputSet>
+          <dataInputRefs>_sub.task_TaskNameInput</dataInputRefs>
+          <dataInputRefs>_sub.task_NodeNameInput</dataInputRefs>
+        </inputSet>
+        <outputSet>
+        </outputSet>
+      </ioSpecification>
+      <dataInputAssociation>
+        <targetRef>_sub.task_TaskNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Task1</from>
+          <to xsi:type="tFormalExpression">_sub.task_TaskNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <dataInputAssociation>
+        <targetRef>_sub.task_NodeNameInput</targetRef>
+        <assignment>
+          <from xsi:type="tFormalExpression">Task1</from>
+          <to xsi:type="tFormalExpression">_sub.task_NodeNameInput</to>
+        </assignment>
+      </dataInputAssociation>
+      <potentialOwner>
+        <resourceAssignmentExpression>
+          <formalExpression>#{actorName}</formalExpression>
+        </resourceAssignmentExpression>
+      </potentialOwner>
+    </userTask>
+    <endEvent id="_sub.end" name="" />
+    <boundaryEvent id="_sub.timer" name="timer" attachedToRef="_sub.task" cancelActivity="false" >
+      <timerEventDefinition>
+        <timeDuration xsi:type="tFormalExpression">500ms</timeDuration>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <scriptTask id="_sub.script" name="Email Notification" scriptFormat="http://www.java.com/java" >
+      <script>System.out.println("[" + (new java.util.Date()) + "] [" + java.lang.Thread.currentThread().getName() +"] Sending an email to " + kcontext.getVariable("actorName"));</script>
+    </scriptTask>
+    <endEvent id="_sub.end2" name="" />
 
-    <bpmn2:subProcess id="_sub" drools:selectable="true" name="">
-      <bpmn2:extensionElements>
-        <drools:onEntry-script scriptFormat="http://www.java.com/java">
-          <drools:script><![CDATA[System.out.println("MI entry");]]></drools:script>
-        </drools:onEntry-script>
-        <drools:onExit-script scriptFormat="http://www.java.com/java">
-          <drools:script><![CDATA[System.out.println("MI exit");]]></drools:script>
-        </drools:onExit-script>
-      </bpmn2:extensionElements>
+    <!-- connections -->
+    <sequenceFlow id="_sub.start-_sub.task" sourceRef="_sub.start" targetRef="_sub.task" />
+    <sequenceFlow id="_sub.task-_sub.end" sourceRef="_sub.task" targetRef="_sub.end" />
+    <sequenceFlow id="_sub.timer-_sub.script" sourceRef="_sub.timer" targetRef="_sub.script" />
+    <sequenceFlow id="_sub.script-_sub.end2" sourceRef="_sub.script" targetRef="_sub.end2" />
+    </subProcess>
+    <endEvent id="_end" name="" />
 
-      <bpmn2:ioSpecification id="_TUkYoOM3EeSAPvUoIw8sWA">
-        <bpmn2:dataInput id="_sub_input" name="actorNameList"/>
-        <bpmn2:inputSet id="_TUk_sOM3EeSAPvUoIw8sWA">
-          <bpmn2:dataInputRefs>_sub_input</bpmn2:dataInputRefs>
-        </bpmn2:inputSet>
-      </bpmn2:ioSpecification>
+    <!-- connections -->
+    <sequenceFlow id="_start-_script" sourceRef="_start" targetRef="_script" />
+    <sequenceFlow id="_script-_sub" sourceRef="_script" targetRef="_sub" />
+    <sequenceFlow id="_sub-_end" sourceRef="_sub" targetRef="_end" />
 
-      <bpmn2:dataInputAssociation id="_TUk_seM3EeSAPvUoIw8sWA">
-        <bpmn2:sourceRef>actorNameList</bpmn2:sourceRef>
-        <bpmn2:targetRef>_sub_input</bpmn2:targetRef>
-      </bpmn2:dataInputAssociation>
+  </process>
 
-      <bpmn2:multiInstanceLoopCharacteristics id="_TUk_suM3EeSAPvUoIw8sWA">
-        <bpmn2:loopDataInputRef>_sub_input</bpmn2:loopDataInputRef>
-        <bpmn2:inputDataItem xsi:type="bpmn2:tDataInput" id="actorName" itemSubjectRef="_sub_multiInstanceItemType"/>
-      </bpmn2:multiInstanceLoopCharacteristics>
+  <bpmndi:BPMNDiagram>
+    <bpmndi:BPMNPlane bpmnElement="boundaryTimerMultipleInstances" >
+      <bpmndi:BPMNShape bpmnElement="_start" >
+        <dc:Bounds x="16" y="67" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_script" >
+        <dc:Bounds x="96" y="67" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub" >
+        <dc:Bounds x="208" y="16" width="200" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub.start" >
+        <dc:Bounds x="208" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub.task" >
+        <dc:Bounds x="208" y="16" width="100" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub.end" >
+        <dc:Bounds x="208" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub.timer" >
+        <dc:Bounds x="208" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub.script" >
+        <dc:Bounds x="208" y="16" width="80" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_sub.end2" >
+        <dc:Bounds x="208" y="16" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="_end" >
+        <dc:Bounds x="440" y="67" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="_sub.start-_sub.task" >
+        <di:waypoint x="24" y="24" />
+        <di:waypoint x="50" y="24" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_sub.task-_sub.end" >
+        <di:waypoint x="50" y="24" />
+        <di:waypoint x="24" y="24" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_sub.timer-_sub.script" >
+        <di:waypoint x="24" y="24" />
+        <di:waypoint x="40" y="24" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_sub.script-_sub.end2" >
+        <di:waypoint x="40" y="24" />
+        <di:waypoint x="24" y="24" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_start-_script" >
+        <di:waypoint x="40" y="91" />
+        <di:waypoint x="136" y="91" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_script-_sub" >
+        <di:waypoint x="136" y="91" />
+        <di:waypoint x="308" y="91" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="_sub-_end" >
+        <di:waypoint x="308" y="91" />
+        <di:waypoint x="464" y="91" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
 
-      <bpmn2:startEvent id="_sub.start" drools:bgcolor="#9acd32" drools:selectable="true" name=""/>
-      <bpmn2:sequenceFlow id="_463A8CFF-6C3D-4057-9E15-B87F3CC40C53" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_sub.start" targetRef="_sub.task"/>
-      
-      <bpmn2:userTask id="_sub.task" drools:selectable="true" drools:scriptFormat="http://www.java.com/java" name="Task1">
-        <bpmn2:extensionElements>
-          <drools:onEntry-script scriptFormat="http://www.java.com/java">
-            <drools:script><![CDATA[System.out.println("Task1 entry");]]></drools:script>
-          </drools:onEntry-script>
-          <drools:onExit-script scriptFormat="http://www.java.com/java">
-            <drools:script><![CDATA[System.out.println("Task1 exit");]]></drools:script>
-          </drools:onExit-script>
-        </bpmn2:extensionElements>
-        <bpmn2:ioSpecification id="_TUk_s-M3EeSAPvUoIw8sWA">
-          <bpmn2:dataInput id="_sub.task_TaskNameInputX" name="TaskName"/>
-          <bpmn2:inputSet id="_TUk_tOM3EeSAPvUoIw8sWA"/>
-          <bpmn2:outputSet id="_TUk_teM3EeSAPvUoIw8sWA"/>
-        </bpmn2:ioSpecification>
-        <bpmn2:dataInputAssociation id="_TUk_tuM3EeSAPvUoIw8sWA">
-          <bpmn2:targetRef>_sub.task_TaskNameInputX</bpmn2:targetRef>
-          <bpmn2:assignment id="_TUk_t-M3EeSAPvUoIw8sWA">
-            <bpmn2:from xsi:type="bpmn2:tFormalExpression" id="_TUk_uOM3EeSAPvUoIw8sWA">Task1</bpmn2:from>
-            <bpmn2:to xsi:type="bpmn2:tFormalExpression" id="_TUk_ueM3EeSAPvUoIw8sWA">_sub.task_TaskNameInputX</bpmn2:to>
-          </bpmn2:assignment>
-        </bpmn2:dataInputAssociation>
-        <bpmn2:potentialOwner id="_TUk_uuM3EeSAPvUoIw8sWA">
-          <bpmn2:resourceAssignmentExpression id="_TUk_u-M3EeSAPvUoIw8sWA">
-            <bpmn2:formalExpression id="_TUk_vOM3EeSAPvUoIw8sWA">#{actorName}</bpmn2:formalExpression>
-          </bpmn2:resourceAssignmentExpression>
-        </bpmn2:potentialOwner>
-      </bpmn2:userTask>
-      <bpmn2:sequenceFlow id="_A655336D-A3AE-4F25-99CA-FA706492A3FD" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_sub.task" targetRef="_sub.end"/>
-
-      <bpmn2:endEvent id="_sub.end" drools:bgcolor="#ff6347" drools:selectable="true" name=""/>
-
-      <bpmn2:boundaryEvent id="_sub.timer" drools:bgcolor="#f5deb3" drools:selectable="true" drools:bordercolor="#a0522d" drools:boundaryca="false" name="timer" 
-                           attachedToRef="_sub.task" cancelActivity="false">
-        <bpmn2:timerEventDefinition id="_TUk_veM3EeSAPvUoIw8sWA">
-          <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression" id="_TUk_vuM3EeSAPvUoIw8sWA">500ms</bpmn2:timeDuration>
-        </bpmn2:timerEventDefinition>
-      </bpmn2:boundaryEvent>
-      <bpmn2:sequenceFlow id="_A94C63D1-F982-4059-B410-1F8B3EA03E92" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_sub.timer" targetRef="_sub.script"/>
-
-      <bpmn2:scriptTask id="_sub.script" drools:selectable="true" name="Email Notification" scriptFormat="http://www.java.com/java">
-        <bpmn2:script><![CDATA[System.out.println("[" + (new java.util.Date()) + "] [" + java.lang.Thread.currentThread().getName() +"] Sending an email to " + kcontext.getVariable("actorName"));]]></bpmn2:script>
-      </bpmn2:scriptTask>
-      <bpmn2:sequenceFlow id="_C9ACD148-456C-46D5-85EE-762D965C4790" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_sub.script" targetRef="_sub.end2"/>
-
-      <bpmn2:endEvent id="_sub.end2" drools:bgcolor="#ff6347" drools:selectable="true" name=""/>
-
-    </bpmn2:subProcess>
-    <bpmn2:sequenceFlow id="_0D59F164-0BCC-48D2-BA1D-419E6218AAD9" drools:bgcolor="#000000" drools:selectable="true" sourceRef="_sub" targetRef="_end"/>
-
-    <bpmn2:endEvent id="_end" drools:bgcolor="#ff6347" drools:selectable="true" name=""/>
-  </bpmn2:process>
-
-</bpmn2:definitions>
+</definitions>

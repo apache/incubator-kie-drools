@@ -45,6 +45,7 @@ import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.test.util.CountDownProcessEventListener;
 import org.jbpm.workflow.instance.node.DynamicNodeInstance;
 import org.jbpm.workflow.instance.node.DynamicUtils;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
@@ -553,11 +554,13 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ksession.dispose();
     }
 
-    @Test
+    @Test(timeout=10000)
     @RequirePersistence
     public void testProcesWithHumanTaskWithTimer() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Timer", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-SubProcessWithTimer.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(countDownListener);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -573,11 +576,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         Environment env = ksession.getEnvironment();
 
         ksession.dispose();
-        Thread.sleep(3000);
-
+       
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
                 kbase, null, env);
-        Thread.sleep(3000);
+        ksession.addEventListener(countDownListener);
+        countDownListener.waitTillCompleted();
         assertProcessInstanceFinished(processInstance, ksession);
 
     }
@@ -761,12 +764,14 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         logService.dispose();
     }
 
-    @Test
+    @Test(timeout=10000)
     @RequirePersistence
     public void testCallActivityWithTimer() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Timer", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-ParentProcess.bpmn2",
                 "BPMN2-SubProcessWithTimer.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(countDownListener);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -788,11 +793,11 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         logger.info("dispose");
         ksession.dispose();
-        Thread.sleep(3000);
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
                 kbase, null, env);
-        Thread.sleep(3000);
+        ksession.addEventListener(countDownListener);
+        countDownListener.waitTillCompleted();
         assertProcessInstanceFinished(processInstance, ksession);
 
     }
@@ -1378,18 +1383,20 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertTrue(list.size() == 1);
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testNullVariableInScriptTaskProcess() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("After Timer", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-NullVariableInScriptTaskProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(countDownListener);
         ProcessInstance processInstance = ksession
                 .startProcess("nullVariableInScriptAfterTimer");
 
         assertProcessInstanceActive(processInstance);
 
-        long sleep = 1000;
-        logger.debug("Sleeping {} seconds", sleep / 1000);
-        Thread.sleep(sleep);
+        countDownListener.waitTillCompleted();
+        ProcessInstance pi = ksession.getProcessInstance(processInstance.getId());
+        assertNull(pi);
 
         assertProcessInstanceFinished(processInstance, ksession);
     }
@@ -1407,10 +1414,12 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testCallActivityWithBoundaryEvent() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Boundary event", 1);
         KieBase kbase = createKnowledgeBase(
                 "BPMN2-CallActivityWithBoundaryEvent.bpmn2",
                 "BPMN2-CallActivitySubProcessWithBoundaryEvent.bpmn2");
         ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(countDownListener);
         TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task",
                 workItemHandler);
@@ -1419,7 +1428,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ProcessInstance processInstance = ksession.startProcess(
                 "ParentProcess", params);
 
-        Thread.sleep(3000);
+        countDownListener.waitTillCompleted();
 
         assertProcessInstanceFinished(processInstance, ksession);
         // assertEquals("new timer value",
@@ -1650,8 +1659,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
     
     @Test
-    public void testErrorBetweenProcessesProcess() throws Exception {
-        
+    public void testErrorBetweenProcessesProcess() throws Exception {        
         KieBase kbase = createKnowledgeBaseWithoutDumper("subprocess/ErrorsBetweenProcess-Process.bpmn2",
         		"subprocess/ErrorsBetweenProcess-SubProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);       
@@ -1661,9 +1669,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         variables.put("tipoEvento", "error");
         variables.put("pasoVariable", 3);
         ProcessInstance processInstance = ksession.startProcess("Principal", variables);
-        
-        Thread.sleep(1000l);                
-        
+
         assertProcessInstanceCompleted(processInstance.getId(), ksession);       
         assertProcessInstanceAborted(processInstance.getId()+1, ksession);
 

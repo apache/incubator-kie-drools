@@ -24,7 +24,7 @@
       <bpmn2:incoming>_85A5CC49-2B8B-440F-9F1D-145C7D807F6B</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="_85A5CC49-2B8B-440F-9F1D-145C7D807F6B" sourceRef="_E76AD186-6FA6-4378-B45B-C8F73E2C497C" targetRef="_7232FBCC-81DD-4DEF-91DD-5D1D415117F8"/>
-    <bpmn2:startEvent id="_F9AC8B12-8E75-49B5-B799-292F66270627" drools:bgcolor="#ffffff" name="">
+    <bpmn2:startEvent id="_F9AC8B12-8E75-49B5-B799-292F66270627" drools:bgcolor="#ffffff" name="start">
       <bpmn2:outgoing>_A3317C84-4084-4AD3-AEC2-B05731E3F8FB</bpmn2:outgoing>
       <bpmn2:timerEventDefinition id="_FNr5s2hrEeGMT7sG7hEI2w">
         <bpmn2:timeCycle xsi:type="bpmn2:tFormalExpression" id="_FNr5tGhrEeGMT7sG7hEI2w">2000</bpmn2:timeCycle>

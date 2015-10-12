@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 import org.jbpm.services.task.deadlines.NotificationListener;
 import org.jbpm.services.task.deadlines.notifications.impl.email.EmailNotificationListener;
+import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.runtime.EnvironmentName;
@@ -110,6 +111,7 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
 			
 			List<DeadlineSummary> resultList =null;
 			resultList = getAlldeadlines(persistenceContext, taskData);
+			TaskEventSupport taskEventSupport = ctx.getTaskEventSupport();
 			
 			if( resultList == null || resultList.size() == 0 ){
 				if ( taskData.getActualOwner() == null )
@@ -117,11 +119,15 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
         		if ( taskData != null ) {
         		    // check if task is still in valid status
         		    if ( DeadlineType.START.isValidStatus(taskData.getStatus()) || DeadlineType.END.isValidStatus(taskData.getStatus())) {
+        		        
+        		        taskEventSupport.fireBeforeTaskNotified(task, ctx);
         		    	logger.debug("Sending an Email");
         		    	Map<String, Object> variables = getVariables(ctx, persistenceContext, task,
         							taskData);
         		        Notification notification = buildDefaultNotification(taskData,task);
         		        notificationListener.onNotification(new NotificationEvent(notification, task, variables));
+        		        
+        		        taskEventSupport.fireAfterTaskNotified(task, ctx);
         		    }
         		}
         	}else{
@@ -170,15 +176,17 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
 		        if (deadline == null || deadline.getEscalations() == null ) {
 		            return null;
 		        }
-
+		        TaskEventSupport taskEventSupport = ctx.getTaskEventSupport();
+		        taskEventSupport.fireBeforeTaskNotified(task, ctx);
 		        for (Escalation escalation : deadline.getEscalations()) {
 		            for (Notification notification : escalation.getNotifications()) {
-		                if (notification.getNotificationType() == NotificationType.Email) {
+		                if (notification.getNotificationType() == NotificationType.Email) {		                    
 		                    logger.debug("Sending an Email");
 		                    notificationListener.onNotification(new NotificationEvent(notification, task, variables));
 		                }
 		            }
 		        }
+		        taskEventSupport.fireAfterTaskNotified(task, ctx);
 		    }
 		    
 		}

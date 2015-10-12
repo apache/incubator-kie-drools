@@ -21,6 +21,7 @@ import java.util.HashMap;
 import org.drools.core.time.TimeUtils;
 import org.jbpm.process.core.timer.BusinessCalendarImpl;
 import org.jbpm.test.JbpmTestCase;
+import org.jbpm.test.listener.CountDownProcessEventListener;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
@@ -36,8 +37,10 @@ public class BoundaryEventOnTaskWithCalendarTest extends JbpmTestCase {
         super(true, true);
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testProcess() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("deadline1", 1);
+        addProcessEventListener(countDownListener);
         createRuntimeManager("org/jbpm/test/functional/event/BoundaryEventWithCalendar.bpmn2");
         RuntimeEngine runtimeEngine = getRuntimeEngine();
         KieSession ksession = runtimeEngine.getKieSession();
@@ -53,15 +56,20 @@ public class BoundaryEventOnTaskWithCalendarTest extends JbpmTestCase {
 
         assertNodeTriggered(processInstance.getId(), "Start", "form1");
 
-        Thread.sleep(3000);
+        countDownListener.waitTillCompleted();
+        
+        ProcessInstance pi = ksession.getProcessInstance(processInstance.getId());
+        assertNull(pi);
 
         assertNodeTriggered(processInstance.getId(), "Koniec1");
         assertProcessInstanceCompleted(processInstance.getId());
     }
 
  
-    @Test
+    @Test(timeout=10000)
     public void testProcessWithTimeCycleISO() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("deadline1", 1);
+        addProcessEventListener(countDownListener);
         createRuntimeManager("org/jbpm/test/functional/event/BoundaryEventWithCycleCalendar.bpmn2");
         RuntimeEngine runtimeEngine = getRuntimeEngine();
         KieSession ksession = runtimeEngine.getKieSession();
@@ -90,7 +98,10 @@ public class BoundaryEventOnTaskWithCalendarTest extends JbpmTestCase {
 
         assertNodeTriggered(processInstance.getId(), "Start", "form1");
 
-        Thread.sleep(3000);
+        countDownListener.waitTillCompleted();
+        
+        ProcessInstance pi = ksession.getProcessInstance(processInstance.getId());
+        assertNull(pi);
 
         assertNodeTriggered(processInstance.getId(), "Koniec1");
         assertProcessInstanceCompleted(processInstance.getId());

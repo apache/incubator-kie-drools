@@ -20,6 +20,7 @@ import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.persistence.session.objects.TestWorkItemHandler;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
+import org.jbpm.test.util.CountDownProcessEventListener;
 import org.junit.Test;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -91,8 +92,9 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         ksession.dispose();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testBoundaryTimerTimeCycle() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("BoundaryTimerEvent", 1);
         RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
         factory
             // header
@@ -115,11 +117,12 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler testHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", testHandler);
+        ksession.addEventListener(countDownListener);
 
         ProcessInstance pi = ksession.startProcess("org.jbpm.process");
         assertProcessInstanceActive(pi);
 
-        Thread.sleep(2000); // wait for boundary timer firing
+        countDownListener.waitTillCompleted(); // wait for boundary timer firing
 
         assertNodeTriggered(pi.getId(), "End2");
         assertProcessInstanceActive(pi); // still active because CancelActivity = false
@@ -130,8 +133,9 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         ksession.dispose();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testBoundaryTimerTimeDuration() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("BoundaryTimerEvent", 1);
         RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.jbpm.process");
         factory
             // header
@@ -154,11 +158,12 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
         TestWorkItemHandler testHandler = new TestWorkItemHandler();
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", testHandler);
+        ksession.addEventListener(countDownListener);
 
         ProcessInstance pi = ksession.startProcess("org.jbpm.process");
         assertProcessInstanceActive(pi);
 
-        Thread.sleep(2000); // wait for boundary timer firing
+        countDownListener.waitTillCompleted(); // wait for boundary timer firing
 
         assertNodeTriggered(pi.getId(), "End2");
         assertProcessInstanceActive(pi); // still active because CancelActivity = false

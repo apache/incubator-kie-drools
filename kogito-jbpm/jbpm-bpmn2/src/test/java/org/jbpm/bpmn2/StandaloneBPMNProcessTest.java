@@ -40,6 +40,7 @@ import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.jbpm.test.util.CountDownProcessEventListener;
 import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -382,32 +383,39 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.signalEvent("No", "NoValue", processInstance.getId());
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testEventBasedSplit2() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 2);
         KieBase kbase = createKnowledgeBase("BPMN2-EventBasedSplit2.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         // Yes
         ProcessInstance processInstance = ksession.startProcess("com.sample.test");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         ksession = restoreSession(ksession, true);
+        ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         ksession.signalEvent("Yes", "YesValue", processInstance.getId());
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
-        Thread.sleep(800);
+        
         ksession = restoreSession(ksession, true);
+        ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         ksession = restoreSession(ksession, true);
+        ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         // Timer
         processInstance = ksession.startProcess("com.sample.test");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        Thread.sleep(800);
+        
+        countDownListener.waitTillCompleted();
         ksession = restoreSession(ksession, true);
+        ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("Email1", new SystemOutWorkItemHandler());
         ksession.getWorkItemManager().registerWorkItemHandler("Email2", new SystemOutWorkItemHandler());
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
@@ -546,25 +554,29 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTimerBoundaryEvent() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("TimerEvent", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventDuration.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        Thread.sleep(1000);
+        countDownListener.waitTillCompleted();
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTimerBoundaryEventInterrupting() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("TimerEvent", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-TimerBoundaryEventInterrupting.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("MyTask", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("TimerBoundaryEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
-        Thread.sleep(1000);
+        countDownListener.waitTillCompleted();
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
@@ -645,15 +657,17 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testIntermediateCatchEventTimer() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 1);
         KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerDuration.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         // now wait for 1 second for timer to trigger
-        Thread.sleep(1000);
+        countDownListener.waitTillCompleted();
         ksession = restoreSession(ksession, true);
         ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
         assertProcessInstanceCompleted(processInstance.getId(), ksession);
@@ -733,23 +747,23 @@ public class StandaloneBPMNProcessTest extends JbpmBpmn2TestCase {
         ksession.fireAllRules();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTimerStart() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("StartProcess", 5);
         KieBase kbase = createKnowledgeBase("BPMN2-TimerStart.bpmn2");
         KieSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(countDownListener);
         final List<Long> list = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() { 
             
-            public void afterProcessStarted(ProcessStartedEvent event) {
+            public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
             }
             
         });
-        Thread.sleep(250);
+        
         assertEquals(0, list.size());
-        for (int i = 0; i < 5; i++) {
-            Thread.sleep(500);
-        }
+        countDownListener.waitTillCompleted();
         assertEquals(5, list.size());
     }
 

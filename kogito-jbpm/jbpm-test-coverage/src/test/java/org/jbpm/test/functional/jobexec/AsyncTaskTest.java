@@ -20,9 +20,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.impl.wih.AsyncWorkItemHandler;
 import org.jbpm.test.JbpmAsyncJobTestCase;
-import org.junit.Ignore;
+import org.jbpm.test.listener.CountDownAsyncJobListener;
+import org.jbpm.test.listener.CountDownProcessEventListener;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -45,8 +47,10 @@ public class AsyncTaskTest extends JbpmAsyncJobTestCase {
     public static final String USER_COMMAND = "org.jbpm.test.jobexec.UserCommand";
     public static final String USER_FAILING_COMMAND = "org.jbpm.test.jobexec.UserFailingCommand";
 
-    @Test
+    @Test(timeout=10000)
     public void testTaskErrorHandling() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
+        addProcessEventListener(countDownListener);
         KieSession ksession = createKSession(ASYNC_EXECUTOR);
         WorkItemManager wim = ksession.getWorkItemManager();
         wim.registerWorkItemHandler("async", new AsyncWorkItemHandler(getExecutorService()));
@@ -61,7 +65,10 @@ public class AsyncTaskTest extends JbpmAsyncJobTestCase {
         assertNodeNotTriggered(pi.getId(), "Illegal Argument Error Handling");
 
         // Wait for the 4 retries to fail
-        Thread.sleep(10 * 1000);
+        countDownListener.waitTillCompleted();
+        
+        ProcessInstance processInstance = ksession.getProcessInstance(pi.getId());
+        assertNull(processInstance);
 
         assertNodeTriggered(pi.getId(), "Runtime Error Handling", "RuntimeErrorEnd");
         assertNodeNotTriggered(pi.getId(), "Output");
@@ -72,9 +79,11 @@ public class AsyncTaskTest extends JbpmAsyncJobTestCase {
         assertProcessInstanceCompleted(pi.getId());
     }
 
-    @Test
+    @Test(timeout=10000)
     @BZ("1121027")
     public void testTaskComplete() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Process async", 1);
+        addProcessEventListener(countDownListener);
         KieSession ksession = createKSession(ASYNC_DATA_EXECUTOR);
         WorkItemManager wim = ksession.getWorkItemManager();
         wim.registerWorkItemHandler("async", new AsyncWorkItemHandler(getExecutorService()));
@@ -87,16 +96,21 @@ public class AsyncTaskTest extends JbpmAsyncJobTestCase {
         assertNodeNotTriggered(pi.getId(), "Output");
 
         // Wait for the job to complete
-        Thread.sleep(10 * 1000);
+        countDownListener.waitTillCompleted();
+        
+        ProcessInstance processInstance = ksession.getProcessInstance(pi.getId());
+        assertNull(processInstance);
 
         assertNodeTriggered(pi.getId(), "Output", "EndProcess");
         Assertions.assertThat(getExecutorService().getCompletedRequests(new QueryContext())).hasSize(1);
         assertProcessInstanceCompleted(pi.getId());
     }
 
-    @Ignore
-    @Test
+    
+    @Test(timeout=10000)
     public void testTaskFail() throws Exception {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(4);
+        ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
         KieSession ksession = createKSession(ASYNC_DATA_EXECUTOR);
         WorkItemManager wim = ksession.getWorkItemManager();
         wim.registerWorkItemHandler("async", new AsyncWorkItemHandler(getExecutorService()));
@@ -109,11 +123,14 @@ public class AsyncTaskTest extends JbpmAsyncJobTestCase {
         assertNodeNotTriggered(pi.getId(), "Output");
 
         // Wait for the 4 retries to fail
-        Thread.sleep(10 * 1000);
+        countDownListener.waitTillCompleted();
+        
+        ProcessInstance processInstance = ksession.getProcessInstance(pi.getId());
+        assertNotNull(processInstance);
 
         assertNodeNotTriggered(pi.getId(), "Output");
         Assertions.assertThat(getExecutorService().getInErrorRequests(new QueryContext())).hasSize(1);
-        Assertions.assertThat(getExecutorService().getInErrorRequests(new QueryContext()).get(0).getExecutions()).isEqualTo(4);
+        Assertions.assertThat(getExecutorService().getInErrorRequests(new QueryContext()).get(0).getErrorInfo()).hasSize(4);
         Assertions.assertThat(getExecutorService().getInErrorRequests(new QueryContext()).get(0).getErrorInfo().get(0).getMessage())
                 .isEqualTo("Internal Error");
         assertProcessInstanceActive(pi.getId());

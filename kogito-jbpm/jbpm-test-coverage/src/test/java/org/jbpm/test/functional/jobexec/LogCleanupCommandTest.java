@@ -20,15 +20,18 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.assertj.core.api.Assertions;
+import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.services.task.audit.service.TaskJPAAuditService;
 import org.jbpm.test.JbpmAsyncJobTestCase;
+import org.jbpm.test.listener.CountDownAsyncJobListener;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.internal.executor.api.CommandContext;
+
 import qa.tools.ikeeper.annotation.BZ;
 
 /**
@@ -76,8 +79,10 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
         }
     }
 
-    @Test
+    @Test(timeout=10000)
     public void skipProcessLog() throws Exception {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
         // Generate data
         KieSession kieSession = createKSession(HELLO_WORLD);
         startProcess(kieSession, HELLO_WORLD_ID, 1);
@@ -88,7 +93,7 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
 
         // Schedule cleanup job
         scheduleLogCleanup(true, false, false, getTomorrow(), null, HELLO_WORLD_ID);
-        Thread.sleep(10 * 1000);
+        countDownListener.waitTillCompleted();
 
         // Verify that the process log has not been touched
         Assertions.assertThat(getProcessLogSize(HELLO_WORLD_ID)).isEqualTo(1);
@@ -96,12 +101,14 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
     }
 
     @Ignore
-    @Test
+    @Test(timeout=10000)
     public void skipTaskLog() throws Exception {
         KieSession kieSession = null;
         List<ProcessInstance> processInstanceList = null;
 
         try {
+            CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+            ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
             // Generate data
             kieSession = createKSession(LOG_CLEANUP);
 
@@ -122,7 +129,7 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
 
             // Schedule cleanup job
             scheduleLogCleanup(false, true, false, getTomorrow(), null, LOG_CLEANUP_ID);
-            Thread.sleep(10 * 1000);
+            countDownListener.waitTillCompleted();
 
             // Verify absence of data
             Assertions.assertThat(getProcessLogSize(LOG_CLEANUP_ID)).isZero();
@@ -136,11 +143,11 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
         }
     }
 
-    private void deleteAllLogsOlderThan(Date date) throws Exception {
-        deleteAllLogsOlderThan(date, HELLO_WORLD_ID, HELLO_WORLD_ID);
+    private void deleteAllLogsOlderThan(Date date, CountDownAsyncJobListener countDownListener) throws Exception {
+        deleteAllLogsOlderThan(date, HELLO_WORLD_ID, HELLO_WORLD_ID, countDownListener);
     }
 
-    private void deleteAllLogsOlderThan(Date date, String runProcess, String cleanProcess) throws Exception {
+    private void deleteAllLogsOlderThan(Date date, String runProcess, String cleanProcess, CountDownAsyncJobListener countDownListener) throws Exception {
         // Generate data
         KieSession kieSession = createKSession(HELLO_WORLD);
         startProcess(kieSession, runProcess, 1);
@@ -157,53 +164,63 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
 
         // Schedule cleanup job
         scheduleLogCleanup(false, false, false, date, null, cleanProcess);
-        Thread.sleep(10 * 1000);
+        countDownListener.waitTillCompleted();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void deleteAllLogsOlderThanYesterday() throws Exception {
-        deleteAllLogsOlderThan(getYesterday());
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
+        deleteAllLogsOlderThan(getYesterday(), countDownListener);
 
         Assertions.assertThat(getProcessLogSize(HELLO_WORLD_ID)).isPositive();
         Assertions.assertThat(getNodeInstanceLogSize(HELLO_WORLD_ID)).isPositive();
     }
 
     @Ignore
-    @Test
+    @Test(timeout=10000)
     @BZ("1190881")
     public void deleteAllLogsOlderThanNow() throws Exception {
-        deleteAllLogsOlderThan(null);
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
+        deleteAllLogsOlderThan(null, countDownListener);
 
         Assertions.assertThat(getProcessLogSize(HELLO_WORLD_ID)).isZero();
         Assertions.assertThat(getNodeInstanceLogSize(HELLO_WORLD_ID)).isZero();
     }
 
     @Ignore
-    @Test
+    @Test(timeout=10000)
     public void deleteAllLogsOlderThanTomorrow() throws Exception {
-        deleteAllLogsOlderThan(getTomorrow());
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
+        deleteAllLogsOlderThan(getTomorrow(), countDownListener);
 
         Assertions.assertThat(getProcessLogSize(HELLO_WORLD_ID)).isZero();
         Assertions.assertThat(getNodeInstanceLogSize(HELLO_WORLD_ID)).isZero();
     }
 
-    @Test
+    @Test(timeout=10000)
     public void deleteAllLogsOlderThanTomorrowDifferentProcess() throws Exception {
-        deleteAllLogsOlderThan(getTomorrow(), HELLO_WORLD_ID, ANOTHER_PROCESS);
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
+        deleteAllLogsOlderThan(getTomorrow(), HELLO_WORLD_ID, ANOTHER_PROCESS, countDownListener);
 
         Assertions.assertThat(getProcessLogSize(HELLO_WORLD_ID)).isPositive();
         Assertions.assertThat(getNodeInstanceLogSize(HELLO_WORLD_ID)).isPositive();
     }
 
     @Ignore
-    @Test
+    @Test(timeout=10000)
     @BZ("1190881")
     public void deleteAllLogsOlderThanPeriod() throws Exception {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
         // Generate data
         KieSession kieSession = createKSession(HELLO_WORLD);
         startProcess(kieSession, HELLO_WORLD_ID, 3);
 
-        Thread.sleep(10 * 1000);
+        countDownListener.waitTillCompleted();
 
         startProcess(kieSession, HELLO_WORLD_ID, 2);
 
@@ -213,7 +230,7 @@ public class LogCleanupCommandTest extends JbpmAsyncJobTestCase {
 
         // Schedule cleanup job
         scheduleLogCleanup(false, false, false, null, "8s", HELLO_WORLD_ID);
-        Thread.sleep(10 * 1000);
+        countDownListener.waitTillCompleted();
 
         // Verify absence of data
         Assertions.assertThat(getProcessLogSize(HELLO_WORLD_ID)).isEqualTo(2);

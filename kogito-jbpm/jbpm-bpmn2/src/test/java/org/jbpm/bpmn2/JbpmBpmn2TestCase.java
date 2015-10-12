@@ -116,6 +116,12 @@ import static org.kie.api.runtime.EnvironmentName.*;
 public abstract class JbpmBpmn2TestCase extends AbstractBaseTest {
     private static final Logger log = LoggerFactory.getLogger(JbpmBpmn2TestCase.class);
 
+    static {
+        if (!TransactionManagerServices.isTransactionManagerRunning()) {
+            TransactionManagerServices.getConfiguration().setJournal("null");
+        }
+    }
+    
     public static String[] txStateName = { "ACTIVE", "MARKED_ROLLBACK",
             "PREPARED", "COMMITTED", "ROLLEDBACK", "UNKNOWN", "NO_TRANSACTION",
             "PREPARING", "COMMITTING", "ROLLING_BACK" };

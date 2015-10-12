@@ -38,6 +38,7 @@ import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 import org.jbpm.services.task.impl.TaskDeadlinesServiceImpl;
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.jbpm.services.task.lifecycle.listeners.BAMTaskEventListener;
+import org.jbpm.services.task.util.CountDownTaskEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,8 +85,10 @@ public class LocalTaskAuditWithDeadlineTest extends HumanTaskServicesBaseTest {
 		}
 	}
 	  
-    @Test
+    @Test(timeout=10000)
     public void testDelayedReassignmentOnDeadline() throws Exception {
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, true, false);
+        addCountDownListner(countDownListener);
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
     
@@ -96,10 +99,6 @@ public class LocalTaskAuditWithDeadlineTest extends HumanTaskServicesBaseTest {
         
         taskService.claim(taskId, "Tony Stark");
     
-        // Shouldn't have re-assigned yet
-        Thread.sleep(1000);
-        
-        
         task = taskService.getTaskById(taskId);
         List<OrganizationalEntity> potentialOwners = (List<OrganizationalEntity>) task.getPeopleAssignments().getPotentialOwners();
         List<String> ids = new ArrayList<String>(potentialOwners.size());
@@ -117,7 +116,7 @@ public class LocalTaskAuditWithDeadlineTest extends HumanTaskServicesBaseTest {
         assertEquals("Tony Stark", auditTask.getActualOwner());
     
         // should have re-assigned by now
-        Thread.sleep(2000);
+        countDownListener.waitTillCompleted();
         
         task = taskService.getTaskById(taskId);
         assertNull(task.getTaskData().getActualOwner());

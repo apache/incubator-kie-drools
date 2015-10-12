@@ -40,6 +40,7 @@ import javax.naming.InitialContext;
 import org.drools.core.time.TimeUtils;
 import org.jbpm.executor.ExecutorNotStartedException;
 import org.jbpm.executor.entities.RequestInfo;
+import org.jbpm.executor.impl.event.ExecutorEventSupport;
 import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ExecutorStoreService;
 import org.kie.api.executor.STATUS;
@@ -92,8 +93,14 @@ public class ExecutorImpl implements Executor {
     private Queue queue;
 
 	private ScheduledExecutorService scheduler;
+	
+	private ExecutorEventSupport eventSupport = new ExecutorEventSupport();
 
     public ExecutorImpl() {
+    }
+    
+    public void setEventSupport(ExecutorEventSupport eventSupport) {
+        this.eventSupport = eventSupport;
     }
     
     public void setExecutorStoreService(ExecutorStoreService executorStoreService) {
@@ -295,7 +302,7 @@ public class ExecutorImpl implements Executor {
      */
     @Override
     public Long scheduleRequest(String commandId, Date date, CommandContext ctx) {
-
+        
         if (ctx == null) {
             throw new IllegalStateException("A Context Must Be Provided! ");
         }
@@ -335,23 +342,28 @@ public class ExecutorImpl implements Executor {
                 requestInfo.setRequestData(null);
             }
         }
-        
-        executorStoreService.persistRequest(requestInfo);
-
-        if (useJMS) {
-            // send JMS only for immediate job requests not for these that should be executed in future 
-            long currentTimestamp = System.currentTimeMillis();
-            
-            if (currentTimestamp >= date.getTime()) {
-                logger.debug("Sending JMS message to trigger job execution for job {}", requestInfo.getId());
-                // send JMS message to trigger processing
-                sendMessage(String.valueOf(requestInfo.getId()));
-            } else {
-                logger.debug("JMS message not sent for job {} as the job should not be executed immediately but at {}", requestInfo.getId(), date);
+        eventSupport.fireBeforeJobScheduled(requestInfo, null);
+        try {
+            executorStoreService.persistRequest(requestInfo);
+    
+            if (useJMS) {
+                // send JMS only for immediate job requests not for these that should be executed in future 
+                long currentTimestamp = System.currentTimeMillis();
+                
+                if (currentTimestamp >= date.getTime()) {
+                    logger.debug("Sending JMS message to trigger job execution for job {}", requestInfo.getId());
+                    // send JMS message to trigger processing
+                    sendMessage(String.valueOf(requestInfo.getId()));
+                } else {
+                    logger.debug("JMS message not sent for job {} as the job should not be executed immediately but at {}", requestInfo.getId(), date);
+                }
             }
+            
+            logger.debug("Scheduled request for Command: {} - requestId: {} with {} retries", commandId, requestInfo.getId(), requestInfo.getRetries());
+            eventSupport.fireAfterJobScheduled(requestInfo, null);
+        } catch (Throwable e) {
+            eventSupport.fireAfterJobScheduled(requestInfo, e);
         }
-        
-        logger.debug("Scheduled request for Command: {} - requestId: {} with {} retries", commandId, requestInfo.getId(), requestInfo.getRetries());
         return requestInfo.getId();
     }
 
@@ -360,8 +372,14 @@ public class ExecutorImpl implements Executor {
      */
     public void cancelRequest(Long requestId) {
         logger.debug("Before - Cancelling Request with Id: {}", requestId);
-
-        executorStoreService.removeRequest(requestId);
+        RequestInfo job = (RequestInfo) executorStoreService.findRequest(requestId);
+        eventSupport.fireBeforeJobCancelled(job, null);
+        try {
+            executorStoreService.removeRequest(requestId);
+            eventSupport.fireAfterJobCancelled(job, null);
+        } catch (Throwable e) {
+            eventSupport.fireAfterJobCancelled(job, e);
+        }
 
         logger.debug("After - Cancelling Request with Id: {}", requestId);
     }
@@ -412,5 +430,6 @@ public class ExecutorImpl implements Executor {
             }
         }
     }
+
 
 }

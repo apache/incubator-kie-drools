@@ -21,9 +21,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.impl.jpa.ExecutorJPAAuditService;
 import org.jbpm.executor.impl.wih.AsyncWorkItemHandler;
 import org.jbpm.test.JbpmAsyncJobTestCase;
+import org.jbpm.test.listener.CountDownAsyncJobListener;
 import org.junit.Test;
 import org.kie.api.executor.ErrorInfo;
 import org.kie.api.executor.STATUS;
@@ -66,6 +68,8 @@ public class ExecutorLogCleanTest extends JbpmAsyncJobTestCase {
 
     @Test
     public void deleteInfoLogsByStatus() throws Exception {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
         KieSession kieSession = createKSession(ASYNC_DATA_EXEC);
         WorkItemManager wim = kieSession.getWorkItemManager();
         wim.registerWorkItemHandler("async", new AsyncWorkItemHandler(getExecutorService()));
@@ -75,7 +79,7 @@ public class ExecutorLogCleanTest extends JbpmAsyncJobTestCase {
         ProcessInstance pi = kieSession.startProcess(ASYNC_DATA_EXEC_ID, pm);
 
         // Wait for the job to complete
-        Thread.sleep(10 * 1000);
+        countDownListener.waitTillCompleted();
 
         // Assert completion of the job
         Assertions.assertThat(getExecutorService().getCompletedRequests(new QueryContext())).hasSize(1);
@@ -94,6 +98,8 @@ public class ExecutorLogCleanTest extends JbpmAsyncJobTestCase {
     @Test
     @BZ("1188702")
     public void deleteErrorLogsByDate() throws Exception {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(2);
+        ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
         KieSession ksession = createKSession(ASYNC_DATA_EXEC);
         WorkItemManager wim = ksession.getWorkItemManager();
         wim.registerWorkItemHandler("async", new AsyncWorkItemHandler(getExecutorService()));
@@ -103,9 +109,9 @@ public class ExecutorLogCleanTest extends JbpmAsyncJobTestCase {
         ProcessInstance pi = ksession.startProcess(ASYNC_DATA_EXEC_ID, pm);
 
         // Wait for the all retries to fail
-        Thread.sleep(10 * 1000);
+        countDownListener.waitTillCompleted();
 
-        // Assert comletion of the job
+        // Assert completion of the job
         List<ErrorInfo> errorList = getExecutorService().getAllErrors(new QueryContext());
         Assertions.assertThat(errorList).hasSize(2);
 

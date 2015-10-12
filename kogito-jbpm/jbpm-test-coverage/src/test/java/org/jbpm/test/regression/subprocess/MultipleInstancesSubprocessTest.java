@@ -72,7 +72,7 @@ public class MultipleInstancesSubprocessTest extends JbpmTestCase {
        
         String lastNodeName = "main-end";
         assertTrue( "Node '" + lastNodeName + "' was not triggered on time!", 
-                processEvents.waitForNodeTobeTriggered(lastNodeName, 3000));
+                processEvents.waitForNodeTobeTriggered(lastNodeName, 4000));
 
         Assertions.assertThat(processEvents.wasNodeTriggered("main-script1")).isTrue();
         Assertions.assertThat(processEvents.wasNodeTriggered("main-multiinstance1")).isTrue();

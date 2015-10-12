@@ -29,6 +29,7 @@ import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
+import org.jbpm.test.listener.CountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -114,8 +115,7 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
     
     @Test
     public void testTimerStartManagerClose() throws Exception {
-        int badNumTimers = 4;
-        final CountDownLatch timerCompleted = new CountDownLatch(badNumTimers);
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("StartProcess", 3);
         QuartzSchedulerService additionalCopy = new QuartzSchedulerService();
         additionalCopy.initScheduler(null);
         // prepare listener to assert results
@@ -124,8 +124,7 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
 
             @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
-                timerExporations.add(event.getProcessInstance().getId());
-                timerCompleted.countDown();
+                timerExporations.add(event.getProcessInstance().getId());                
             }
 
         };
@@ -135,7 +134,7 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
     			.entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("org/jbpm/test/functional/timer/TimerStart2.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
-                .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener, countDownListener))
                 .get();
         
         manager = getManager(environment, false);
@@ -144,15 +143,14 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
         
         assertEquals(0, timerExporations.size());
        
-        boolean didNotWait = timerCompleted.await(3, TimeUnit.SECONDS);
-        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
+        countDownListener.waitTillCompleted();
         manager.disposeRuntimeEngine(runtime);
         int atDispose = timerExporations.size();
         assertTrue(atDispose > 0);
         
         ((AbstractRuntimeManager)manager).close(true);
-        didNotWait = timerCompleted.await(3, TimeUnit.SECONDS);
-        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted(3000);
         assertEquals(atDispose, timerExporations.size());
         additionalCopy.shutdown();
     }

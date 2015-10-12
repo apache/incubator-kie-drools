@@ -39,9 +39,9 @@ import org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.jbpm.process.workitem.webservice.WebServiceWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.jbpm.test.util.CountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSessionConfiguration;
@@ -89,11 +89,13 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testAsyncServiceInvocation() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Service Task", 1);
         KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
         KnowledgeBase kbase = readKnowledgeBase();
         StatefulKnowledgeSession ksession = createSession(kbase);
+        ksession.addEventListener(countDownListener);
         ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new ServiceTaskHandler(ksession));
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("s", "john");
@@ -101,7 +103,7 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
         
         WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("WebServiceTask", params);
         logger.info("Service invoked async...waiting to get reponse back");
-        Thread.sleep(5000);
+        countDownListener.waitTillCompleted();
         String variable = (String) processInstance.getVariable("s");
         assertEquals("Hello john", variable);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
@@ -122,8 +124,7 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
         String variable = (String) processInstance.getVariable("s");
         assertNull(variable);
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
-        // uncomment sleep to see that web service was in fact invoked
-        // Thread.sleep(5000);
+
     }
     
     @Test

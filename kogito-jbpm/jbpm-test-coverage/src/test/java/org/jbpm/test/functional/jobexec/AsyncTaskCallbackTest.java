@@ -24,6 +24,7 @@ import org.jbpm.executor.impl.wih.AsyncWorkItemHandler;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.test.JbpmAsyncJobTestCase;
+import org.jbpm.test.listener.CountDownProcessEventListener;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -71,8 +72,10 @@ public class AsyncTaskCallbackTest extends JbpmAsyncJobTestCase {
         }
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testTaskCallback() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Continue", 1);
+        addProcessEventListener(countDownListener);
         KieSession ksession = createKSession(ASYNC_EXECUTOR_CALLBACK, ASYNC_DATA_EXECUTOR);
         WorkItemManager wim = ksession.getWorkItemManager();
         wim.registerWorkItemHandler("async", new AsyncWorkItemHandler(getExecutorService()));
@@ -83,7 +86,10 @@ public class AsyncTaskCallbackTest extends JbpmAsyncJobTestCase {
 
         // Wait for the job to be picked up and processed. The job will send
         // the 'Continue' signal on OK or Fail. We expect OK. 
-        Thread.sleep(5 * 1000);
+        countDownListener.waitTillCompleted();
+        
+        ProcessInstance processInstance = ksession.getProcessInstance(pi.getId());
+        assertNull(processInstance);
 
         // Make sure the user registered callback was executed (a.k.a the "continue" signal was received by the process)
         assertNodeTriggered(pi.getId(), "Process async", "Continue");

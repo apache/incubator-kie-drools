@@ -16,13 +16,16 @@
 package org.jbpm.runtime.manager.concurrent;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.jbpm.test.util.CountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.manager.RuntimeEngine;
@@ -42,6 +45,7 @@ import org.kie.internal.task.api.UserGroupCallback;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -74,9 +78,9 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
 
   
     
-    @Test
+    @Test(timeout=10000)
     public void testExecuteProcessWithAsyncHandler() throws Exception {
-    	
+    	final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Log", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
     			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
@@ -89,6 +93,14 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
 						handlers.put("Log", new AsyncWorkItemHandler(runtime.getKieSession()));
 						return handlers;
 					}
+
+                    @Override
+                    public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
+
+                        List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+                        listeners.add(countDownListener);
+                        return listeners;
+                    }
                 	
                 })
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-CustomTask.bpmn2"), ResourceType.BPMN2)
@@ -114,7 +126,7 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
         logger.debug("Started process, committing...");
         ut.commit();
         
-        Thread.sleep(2000);
+        countDownListener.waitTillCompleted();
         
         processInstance = ksession.getProcessInstance(processInstance.getId());
         assertNull(processInstance);
@@ -126,9 +138,9 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
         manager.close();
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testExecuteHumanTaskWithAsyncHandler() throws Exception {
-    	
+        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Log", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
     			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback) 
@@ -142,6 +154,13 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
 						return handlers;
 					}
                 	
+					@Override
+                    public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
+
+                        List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+                        listeners.add(countDownListener);
+                        return listeners;
+                    }
                 })
                 .addAsset(ResourceFactory.newClassPathResource("BPMN2-CustomAndHumanTask.bpmn2"), ResourceType.BPMN2)
                 .get();
@@ -178,7 +197,7 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
         logger.debug("Task completed, committing...");
         ut.commit();
         ksession.fireAllRules();
-        Thread.sleep(2000);
+        countDownListener.waitTillCompleted();
         
         processInstance = ksession.getProcessInstance(processInstance.getId());
         assertNull(processInstance);

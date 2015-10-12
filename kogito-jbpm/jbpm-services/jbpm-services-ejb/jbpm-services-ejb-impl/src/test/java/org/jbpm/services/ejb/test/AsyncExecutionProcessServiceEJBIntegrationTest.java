@@ -31,6 +31,8 @@ import java.util.Map;
 import javax.ejb.EJB;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.core.command.impl.GenericCommand;
+import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -40,12 +42,15 @@ import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.ejb.api.DeploymentServiceEJBLocal;
 import org.jbpm.services.ejb.api.ProcessServiceEJBLocal;
 import org.jbpm.services.ejb.api.RuntimeDataServiceEJBLocal;
+import org.jbpm.test.util.CountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.internal.command.Context;
 import org.kie.scanner.MavenRepository;
 
 @RunWith(Arquillian.class)
@@ -59,7 +64,7 @@ public class AsyncExecutionProcessServiceEJBIntegrationTest extends AbstractTest
 		}
 		WebArchive war = ShrinkWrap.createFromZipFile(WebArchive.class, archive);
 		war.addPackage("org.jbpm.services.ejb.test"); // test cases
-
+		war.addClass("org.jbpm.test.util.CountDownProcessEventListener");
 		// deploy test kjar
 		deployKjar();
 		
@@ -115,9 +120,9 @@ public class AsyncExecutionProcessServiceEJBIntegrationTest extends AbstractTest
     @Test
     public void testStartProcessWithParms() throws Exception {
     	assertNotNull(deploymentService);
+    	final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Task 1", 1);
         
         KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
-        
 
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
@@ -127,6 +132,20 @@ public class AsyncExecutionProcessServiceEJBIntegrationTest extends AbstractTest
     	
     	assertNotNull(processService);
     	
+        
+        // register count down listener
+        processService.execute(deploymentUnit.getIdentifier(), new GenericCommand<Void>() {
+
+            private static final long serialVersionUID = -5416366832158798895L;
+
+            @Override
+            public Void execute(Context context) {
+                KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+                ksession.addEventListener(countDownListener);
+                return null;
+            }
+        });
+    	
     	Map<String, Object> params = new HashMap<String, Object>();
         params.put("command", "org.jbpm.executor.commands.PrintOutCommand");
     	
@@ -134,7 +153,7 @@ public class AsyncExecutionProcessServiceEJBIntegrationTest extends AbstractTest
     	assertNotNull(processInstanceId);
     	
     	// wait for the command to be executed
-    	Thread.sleep(4000);
+    	countDownListener.waitTillCompleted(10000);
     	
     	ProcessInstance pi = processService.getProcessInstance(processInstanceId);    	
     	assertNull(pi);

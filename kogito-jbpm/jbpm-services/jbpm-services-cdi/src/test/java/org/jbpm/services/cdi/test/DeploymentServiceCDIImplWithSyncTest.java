@@ -26,11 +26,13 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.kie.services.impl.store.DeploymentStore;
 import org.jbpm.kie.services.test.DeploymentServiceWithSyncTest;
+import org.jbpm.kie.services.test.objects.CoundDownDeploymentListener;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.UserTaskService;
+import org.jbpm.services.cdi.test.util.CountDownDeploymentListenerCDIImpl;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.junit.runner.RunWith;
 
@@ -100,6 +102,8 @@ public class DeploymentServiceCDIImplWithSyncTest extends DeploymentServiceWithS
                 .addPackage("org.jbpm.kie.services.test")
                 .addPackage("org.jbpm.services.cdi.test") // Identity Provider Test Impl here
                 .addClass("org.jbpm.services.cdi.test.util.CDITestHelperNoTaskService")
+                .addClass("org.jbpm.services.cdi.test.util.CountDownDeploymentListenerCDIImpl")
+                .addClass("org.jbpm.kie.services.test.objects.CoundDownDeploymentListener")
                 .addAsResource("jndi.properties", "jndi.properties")
                 .addAsManifestResource("META-INF/persistence.xml", ArchivePaths.create("persistence.xml"))
                 .addAsManifestResource("META-INF/beans.xml", ArchivePaths.create("beans.xml"));
@@ -115,14 +119,25 @@ public class DeploymentServiceCDIImplWithSyncTest extends DeploymentServiceWithS
 	protected void configureServices() {
 		// do nothing here and let CDI configure services 
 	}
-	
 
 	@Override
+    protected CoundDownDeploymentListener configureListener(int threads) {
+        countDownListner.reset(threads);
+	    
+        return countDownListner;
+    }
+
+    @Override
 	protected void configureDeploymentSync() {
 		store = new DeploymentStore();
 		store.setCommandService(commandService);
 	}
 
+    
+    @Inject
+    private CountDownDeploymentListenerCDIImpl countDownListner;
+    
+    
 	@Inject	
 	@Override
 	public void setDeploymentService(DeploymentService deploymentService) {

@@ -47,7 +47,7 @@
 				</script>
 			</scriptTask>
 
-			<intermediateCatchEvent id="main_block8_block57" >
+			<intermediateCatchEvent id="main_block8_block57" name="timer">
 			  <timerEventDefinition>
 					<timeDuration xsi:type="tFormalExpression">PT2S</timeDuration>
 			  </timerEventDefinition>

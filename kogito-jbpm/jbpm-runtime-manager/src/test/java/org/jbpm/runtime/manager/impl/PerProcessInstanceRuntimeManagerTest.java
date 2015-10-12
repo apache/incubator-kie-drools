@@ -34,9 +34,6 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.transaction.UserTransaction;
 
-import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
-import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
-import org.jbpm.runtime.manager.impl.PerProcessInstanceRuntimeManager;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.HumanTaskServiceFactory;
@@ -44,6 +41,7 @@ import org.jbpm.services.task.audit.JPATaskLifeCycleEventListener;
 import org.jbpm.services.task.events.DefaultTaskEventListener;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.jbpm.test.util.CountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -701,9 +699,10 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         assertTrue(customTaskServiceUsed.get());
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testRestoreTimersAfterManagerClose() throws Exception {
-    	 final List<Long> timerExpirations = new ArrayList<Long>();
+        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 2);
+    	final List<Long> timerExpirations = new ArrayList<Long>();
          
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
     			.newDefaultBuilder()
@@ -724,6 +723,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
 				             }
 				             
 				         });
+						listeners.add(countDownListener);
 						return listeners;
 					}                	
                 })
@@ -741,7 +741,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         assertEquals(ProcessInstance.STATE_ACTIVE, pi1.getState());
 
         // wait a bit for some timers to fire
-        Thread.sleep(2000);
+        countDownListener.waitTillCompleted();
         manager.disposeRuntimeEngine(runtime);
         ((AbstractRuntimeManager)manager).close(true);
         
@@ -749,14 +749,11 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);        
         assertNotNull(manager);
-        
-        Thread.sleep(2000);
+        countDownListener.reset(2);
+        countDownListener.waitTillCompleted();
         
         runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(pi1.getId()));
-        ksession = runtime.getKieSession();
-        
-        ksession.abortProcessInstance(pi1.getId());
-        Thread.sleep(2000);
+
         manager.disposeRuntimeEngine(runtime);
         manager.close();
         
@@ -1147,13 +1144,25 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         manager.close();
     }
     
-    @Test
+    @Test(timeout=10000)
     public void testReusableSubprocessWithWaitForCompletionFalse() throws Exception {
+        final CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("SLATimer", 1);
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
     			.newDefaultBuilder()
                 .userGroupCallback(userGroupCallback)
                 .addAsset(ResourceFactory.newClassPathResource("reusable-subprocess/parentprocess.bpmn2"), ResourceType.BPMN2)
                 .addAsset(ResourceFactory.newClassPathResource("reusable-subprocess/subprocess.bpmn2"), ResourceType.BPMN2)
+                .registerableItemsFactory(new DefaultRegisterableItemsFactory(){
+
+                    @Override
+                    public List<ProcessEventListener> getProcessEventListeners(RuntimeEngine runtime) {
+
+                        List<ProcessEventListener> listeners = super.getProcessEventListeners(runtime);
+                        listeners.add(countDownListener);
+                        return listeners;
+                    }
+                    
+                })
                 .get();
         
         manager = RuntimeManagerFactory.Factory.get().newPerProcessInstanceRuntimeManager(environment);        
@@ -1165,7 +1174,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         
         ksession.startProcess("Project01360830.parentprocess");
         
-        Thread.sleep(3000);
+        countDownListener.waitTillCompleted();
         
         manager.disposeRuntimeEngine(runtime);     
         manager.close();

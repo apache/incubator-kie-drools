@@ -23,8 +23,10 @@ import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
 
 import org.assertj.core.api.Assertions;
+import org.jbpm.executor.impl.ExecutorServiceImpl;
 import org.jbpm.executor.impl.wih.AsyncWorkItemHandler;
 import org.jbpm.test.JbpmAsyncJobTestCase;
+import org.jbpm.test.listener.CountDownAsyncJobListener;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessInstance;
@@ -42,8 +44,10 @@ public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
     public static final String USER_COMMAND = "org.jbpm.test.jobexec.UserCommand";
     public static final String USER_FAILING_COMMAND = "org.jbpm.test.jobexec.UserFailingCommand";
 
-    @Test
+    @Test(timeout=10000)
     public void testJobCommitInAsyncExec() throws Exception {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
         KieSession ksession = registerAsyncHandler(createKSession(ASYNC_EXECUTOR_2, ASYNC_DATA_EXECUTOR));
 
         UserTransaction ut = getUserTransaction();
@@ -57,7 +61,7 @@ public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
 
         assertProcessInstanceCompleted(pi.getId());
 
-        Thread.sleep(4 * 1000);
+        countDownListener.waitTillCompleted();
         Assertions.assertThat(getExecutorService().getCompletedRequests(new QueryContext())).hasSize(1);
     }
 
@@ -80,8 +84,10 @@ public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
         Assertions.assertThat(getExecutorService().getCompletedRequests(new QueryContext())).hasSize(0);
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testJobCommit() throws Exception {
+        CountDownAsyncJobListener countDownListener = new CountDownAsyncJobListener(1);
+        ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownListener);
         KieSession ksession = registerAsyncHandler(createKSession(ASYNC_DATA_EXECUTOR));
 
         UserTransaction ut = getUserTransaction();
@@ -93,7 +99,9 @@ public class AsyncTaskTransactionTest extends JbpmAsyncJobTestCase {
         // the JobExecutor will act on the job only after commit
         ut.commit();
 
-        Thread.sleep(4 * 1000);
+        countDownListener.waitTillCompleted();
+        ProcessInstance processInstance = ksession.getProcessInstance(pi.getId());
+        assertNull(processInstance);
         assertProcessInstanceCompleted(pi.getId());
     }
 

@@ -30,6 +30,7 @@ import org.apache.commons.io.input.ClassLoaderObjectInputStream;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.jbpm.executor.entities.ErrorInfo;
 import org.jbpm.executor.entities.RequestInfo;
+import org.jbpm.executor.impl.event.ExecutorEventSupport;
 import org.kie.api.executor.Command;
 import org.kie.api.executor.CommandCallback;
 import org.kie.api.executor.CommandContext;
@@ -61,6 +62,12 @@ public abstract class AbstractAvailableJobsExecutor {
     protected ClassCacheManager classCacheManager;
    
     protected ExecutorStoreService executorStoreService;
+    
+    protected ExecutorEventSupport eventSupport = new ExecutorEventSupport();
+
+    public void setEventSupport(ExecutorEventSupport eventSupport) {
+        this.eventSupport = eventSupport;
+    }
 
     public void setQueryService(ExecutorQueryService queryService) {
         this.queryService = queryService;
@@ -75,8 +82,9 @@ public abstract class AbstractAvailableJobsExecutor {
 	}
      
     public void executeGivenJob(RequestInfo request) {
-        
+        Throwable exception = null;
         try {
+            eventSupport.fireBeforeJobExecuted(request, null);
             if (request != null) {
             	boolean processReoccurring = false;
             	Command cmd = null;
@@ -140,11 +148,14 @@ public abstract class AbstractAvailableJobsExecutor {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 } catch (Throwable e) {
-                	callbacks = classCacheManager.buildCommandCallback(ctx, cl);  
+                    exception = e;
+                    callbacks = classCacheManager.buildCommandCallback(ctx, cl);  
                     
                 	processReoccurring = handleException(request, e, ctx, callbacks);
+                	
                 } finally {
                 	handleCompletion(processReoccurring, cmd, ctx);
+                	eventSupport.fireAfterJobExecuted(request, exception);
                 }
             }
         } catch (Exception e) {

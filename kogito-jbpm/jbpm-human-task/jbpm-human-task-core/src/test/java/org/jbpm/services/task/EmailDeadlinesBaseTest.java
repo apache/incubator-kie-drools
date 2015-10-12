@@ -16,7 +16,9 @@
 package org.jbpm.services.task;
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -25,7 +27,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.mail.Address;
 import javax.mail.internet.InternetAddress;
@@ -33,6 +34,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMessage.RecipientType;
 
 import org.jbpm.services.task.impl.factories.TaskFactory;
+import org.jbpm.services.task.util.CountDownTaskEventListener;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.Test;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -96,8 +98,11 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         return this.wiser;
     }
 
-    @Test    
-    public void testDelayedEmailNotificationOnDeadline() throws Exception {        
+    @Test(timeout=10000)    
+    public void testDelayedEmailNotificationOnDeadline() throws Exception {  
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, false, true);
+        addCountDownListner(countDownListener);
+        
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
 
@@ -121,16 +126,9 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
         // emails should not be set yet
         assertEquals(0, getWiser().getMessages().size());
-        Thread.sleep(100);
-
-        // nor yet
-        assertEquals(0, getWiser().getMessages().size());
-
-        long time = 0;
-        while (getWiser().getMessages().size() < 2 && time < 5000) {
-            Thread.sleep(50);
-            time += 50;
-        }
+        
+        countDownListener.waitTillCompleted();
+        
         for (WiserMessage msg : getWiser().getMessages()) {
             logger.info(msg.getEnvelopeReceiver());
         }
@@ -160,8 +158,11 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         assertTrue(list.contains("darth@domain.com"));
     }
     
-    @Test    
+    @Test(timeout=10000)     
     public void testDelayedEmailNotificationOnDeadlineContentSingleObject() throws Exception {
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, false, true);
+        addCountDownListner(countDownListener);
+        
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
 
@@ -184,14 +185,8 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
 
         // emails should not be set yet
         assertEquals(0, getWiser().getMessages().size());
-        Thread.sleep(100);
-        // nor yet
-        assertEquals(0, getWiser().getMessages().size());
-        long time = 0;
-        while (getWiser().getMessages().size() < 2 && time < 5000) {
-            Thread.sleep(500);
-            time += 500;
-        }
+        
+        countDownListener.waitTillCompleted();
 
         // 1 email with two recipients should now exist
         assertEquals(2, getWiser().getMessages().size());
@@ -218,8 +213,11 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         assertTrue(list.contains("darth@domain.com"));
     }
 
-    @Test    
+    @Test(timeout=10000)     
     public void testDelayedEmailNotificationOnDeadlineTaskCompleted() throws Exception {
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, false, true);
+        addCountDownListner(countDownListener);
+        
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
 
@@ -261,16 +259,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.complete(taskId, "Administrator", null);
         // emails should not be set yet
         assertEquals(0, getWiser().getMessages().size());
-        Thread.sleep(100);
-
-        // nor yet
-        assertEquals(0, getWiser().getMessages().size());
-
-        long time = 0;
-        while (getWiser().getMessages().size() < 2 && time < 5000) {
-            Thread.sleep(500);
-            time += 500;
-        }
+        countDownListener.waitTillCompleted();
 
         // no email should ne sent as task was completed before deadline was triggered
         assertEquals(0, getWiser().getMessages().size());
@@ -280,8 +269,11 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(0, task.getDeadlines().getEndDeadlines().size());       
     }
 
-    @Test    
+    @Test(timeout=10000)     
     public void testDelayedEmailNotificationOnDeadlineTaskFailed() throws Exception {
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, false, true);
+        addCountDownListner(countDownListener);
+        
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
 
@@ -324,16 +316,8 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.fail(taskId, "Administrator", null);
         // emails should not be set yet
         assertEquals(0, getWiser().getMessages().size());
-        Thread.sleep(100);
-
-        // nor yet
-        assertEquals(0, getWiser().getMessages().size());
-
-        long time = 0;
-        while (getWiser().getMessages().size() < 2 && time < 5000) {
-            Thread.sleep(500);
-            time += 500;
-        }
+        
+        countDownListener.waitTillCompleted();
 
         // no email should ne sent as task was completed before deadline was triggered
         assertEquals(0, getWiser().getMessages().size());
@@ -343,8 +327,11 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(0, task.getDeadlines().getEndDeadlines().size());
     }
 
-    @Test    
+    @Test(timeout=10000)     
     public void testDelayedEmailNotificationOnDeadlineTaskSkipped() throws Exception {
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, false, true);
+        addCountDownListner(countDownListener);
+        
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
 
@@ -384,16 +371,8 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.skip(taskId, "Administrator");
         // emails should not be set yet
         assertEquals(0, getWiser().getMessages().size());
-        Thread.sleep(100);
-
-        // nor yet
-        assertEquals(0, getWiser().getMessages().size());
-
-        long time = 0;
-        while (getWiser().getMessages().size() < 2 && time < 5000) {
-            Thread.sleep(500);
-            time += 500;
-        }
+        
+        countDownListener.waitTillCompleted();
 
         // no email should ne sent as task was completed before deadline was triggered
         assertEquals(0, getWiser().getMessages().size());
@@ -403,8 +382,11 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(0, task.getDeadlines().getEndDeadlines().size());
     }
 
-    @Test        
+    @Test(timeout=10000)         
     public void testDelayedEmailNotificationOnDeadlineTaskExited() throws Exception {
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, false, true);
+        addCountDownListner(countDownListener);
+        
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
 
@@ -444,16 +426,8 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.exit(taskId, "Administrator");
         // emails should not be set yet
         assertEquals(0, getWiser().getMessages().size());
-        Thread.sleep(100);
-
-        // nor yet
-        assertEquals(0, getWiser().getMessages().size());
-
-        long time = 0;
-        while (getWiser().getMessages().size() < 2 && time < 5000) {
-            Thread.sleep(500);
-            time += 500;
-        }
+        
+        countDownListener.waitTillCompleted();
 
         // no email should ne sent as task was completed before deadline was triggered
         assertEquals(0, getWiser().getMessages().size());
@@ -463,9 +437,11 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         assertEquals(0, task.getDeadlines().getEndDeadlines().size());
     }
 
-    @Test    
+    @Test(timeout=10000)     
     public void testDelayedReassignmentOnDeadline() throws Exception {
-
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(1, true, false);
+        addCountDownListner(countDownListener);
+        
 
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
@@ -475,10 +451,6 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         taskService.addTask(task, new HashMap<String, Object>());
         long taskId = task.getId();
 
-        // Shouldn't have re-assigned yet
-        Thread.sleep(1000);
-        
-        
         task = taskService.getTaskById(taskId);
         List<OrganizationalEntity> potentialOwners = (List<OrganizationalEntity>) task.getPeopleAssignments().getPotentialOwners();
         List<String> ids = new ArrayList<String>(potentialOwners.size());
@@ -489,11 +461,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         assertTrue(ids.contains("Luke Cage"));
 
         // should have re-assigned by now
-        long time = 0;
-        while (getWiser().getMessages().size() < 2 && time < 5000) {
-            Thread.sleep(500);
-            time += 500;
-        }
+        countDownListener.waitTillCompleted();
         
         task = taskService.getTaskById(taskId);
         assertEquals(Status.Ready, task.getTaskData().getStatus());
@@ -507,8 +475,11 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         assertTrue(ids.contains("Jabba Hutt"));
     }
 
-    @Test    
+    @Test(timeout=10000)     
     public void testDelayedEmailNotificationStartDeadlineStatusDoesNotMatch() throws Exception {
+        CountDownTaskEventListener countDownListener = new CountDownTaskEventListener(2, false, true);
+        addCountDownListner(countDownListener);
+        
         Map<String, Object> vars = new HashMap<String, Object>();
         vars.put("now", new Date());
 
@@ -549,15 +520,9 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         
         // emails should not be set yet
         assertEquals(0, getWiser().getMessages().size());
-        Thread.sleep(100);
-        // nor yet
-        assertEquals(0, getWiser().getMessages().size());
-
-        long time = 0;
-        while (getWiser().getMessages().size() < 2 && time < 5000) {
-            Thread.sleep(500);
-            time += 500;
-        }
+        // since we don't want the notification to be invoked we need to rely on timeout
+        countDownListener.waitTillCompleted(3000);
+        
         // no email should ne sent as task was completed before deadline was triggered
         assertEquals(0, getWiser().getMessages().size());
         task = (InternalTask) taskService.getTaskById(taskId);

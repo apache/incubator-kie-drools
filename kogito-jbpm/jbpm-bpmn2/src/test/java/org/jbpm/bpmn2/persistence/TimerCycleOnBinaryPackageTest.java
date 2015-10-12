@@ -24,6 +24,7 @@ import org.jbpm.bpmn2.JbpmBpmn2TestCase;
 import org.jbpm.process.audit.AuditLoggerFactory;
 import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.instance.event.listeners.TriggerRulesEventListener;
+import org.jbpm.test.util.CountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -64,18 +65,20 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
         }
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testStartTimerCycleFromDisc() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("start", 2);
         KieBase kbase = createKnowledgeBaseFromDisc("BPMN2-StartTimerCycle.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
-
+        ksession.addEventListener(countDownListener);
+        
         assertEquals(0, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
         long sessionId = ksession.getIdentifier();
         Environment env = ksession.getEnvironment();
 
         final List<Long> list = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() {
-            public void afterProcessStarted(ProcessStartedEvent event) {
+            public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
             }
         });
@@ -86,14 +89,17 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
 
         
 
-        Thread.sleep(5000);
+        countDownListener.waitTillCompleted();
 
         assertEquals(2, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
         logger.info("dispose");
         ksession.dispose();
+        
+        countDownListener = new CountDownProcessEventListener("start", 2);
 
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
                 kbase, null, env);
+        ksession.addEventListener(countDownListener);
         AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
 
         final List<Long> list2 = new ArrayList<Long>();
@@ -108,17 +114,17 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
                 .getCommandService().getContext())
         .getKieSession().addEventListener(new TriggerRulesEventListener(ksession));
 
-        
-
-        Thread.sleep(5000);
+        countDownListener.waitTillCompleted();
         ksession.dispose();
         assertEquals(4, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
     }
 
-    @Test
+    @Test(timeout=10000)
     public void testStartTimerCycleFromClassPath() throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("start", 2);
         KieBase kbase = createKnowledgeBase("BPMN2-StartTimerCycle.bpmn2");
         StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.addEventListener(countDownListener);
 
         assertEquals(0, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
         long sessionId = ksession.getIdentifier();
@@ -126,7 +132,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
 
         final List<Long> list = new ArrayList<Long>();
         ksession.addEventListener(new DefaultProcessEventListener() {
-            public void afterProcessStarted(ProcessStartedEvent event) {
+            public void beforeProcessStarted(ProcessStartedEvent event) {
                 list.add(event.getProcessInstance().getId());
             }
         });
@@ -136,14 +142,16 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
                 .getCommandService().getContext())
         .getKieSession().addEventListener(new TriggerRulesEventListener(ksession));
 
-        Thread.sleep(5000);
+        countDownListener.waitTillCompleted();
 
         assertEquals(2, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
         logger.info("dispose");
         ksession.dispose();
 
+        countDownListener = new CountDownProcessEventListener("start", 2);
         ksession = JPAKnowledgeService.loadStatefulKnowledgeSession(sessionId,
                 kbase, null, env);
+        ksession.addEventListener(countDownListener);
         AuditLoggerFactory.newInstance(Type.JPA, ksession, null);
 
         final List<Long> list2 = new ArrayList<Long>();
@@ -158,7 +166,7 @@ public class TimerCycleOnBinaryPackageTest extends JbpmBpmn2TestCase {
                 .getCommandService().getContext())
         .getKieSession().addEventListener(new TriggerRulesEventListener(ksession));
 
-        Thread.sleep(5000);
+        countDownListener.waitTillCompleted();
         ksession.dispose();
         assertEquals(4, getNumberOfProcessInstances("defaultPackage.TimerProcess"));
     }
