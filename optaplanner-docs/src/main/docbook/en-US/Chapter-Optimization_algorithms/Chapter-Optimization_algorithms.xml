@@ -701,8 +701,8 @@
     anyway. The only thing that matters is finding the best solution in the available time.</para>
 
     <important>
-      <para>If no termination is configured (and a metaheursitic algorithm is used), the <literal>Solver</literal> will
-      run forever, untill <link linkend="asynchronousTermination">terminateEarly()</link> is called from another thread.
+      <para>If no termination is configured (and a metaheuristic algorithm is used), the <literal>Solver</literal> will
+      run forever, until <link linkend="asynchronousTermination">terminateEarly()</link> is called from another thread.
       This is especially common during <link linkend="realTimePlanning">real-time planning</link>.</para>
     </important>
 

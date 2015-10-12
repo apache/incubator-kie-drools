@@ -1269,7 +1269,7 @@ end</programlisting>
         </listitem>
 
         <listitem>
-          <para>Both implementation approaches have limitations (feature compatiblity, disabling automatic performance
+          <para>Both implementation approaches have limitations (feature compatibility, disabling automatic performance
           optimizations, ...), as explained in their documentation.</para>
         </listitem>
       </itemizedlist>
