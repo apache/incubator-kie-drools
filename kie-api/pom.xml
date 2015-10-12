@@ -104,6 +104,37 @@
           <plugin>
             <groupId>org.revapi</groupId>
             <artifactId>revapi-maven-plugin</artifactId>
+            <configuration>
+              <oldArtifacts>
+                <artifact>${project.groupId}:${project.artifactId}:6.3.0.Final</artifact>
+              </oldArtifacts>
+              <newArtifacts>
+                <!-- The special BUILD GAV is used to specify artifacts that were produced during the build of the current project.-->
+                <artifact>BUILD</artifact>
+              </newArtifacts>
+              <!-- In case some changes are expected, the following configuration example shows how to prevent a build
+                   from failing.
+              <analysisConfiguration>
+                  {
+                    "revapi" : {
+                      "reclassify" : [
+                        {
+                          "regex" : true,
+                          "code" : "java.method.addedToInterface",
+                          "classify" : {
+                            "SOURCE": "POTENTIALLY_BREAKING"
+                          }
+                        }
+                      ]
+                    }
+                  }
+              </analysisConfiguration> -->
+            </configuration>
+            <!-- Running two executions is a workaround to make sure we get a HTML report in case revapi finds
+                 some incompatible changes. The "check" goal will simply fail the whole build before it could get
+                 to the report. To make sure we always get a HTML report, the "report" goal needs to be executed
+                 before the "check" goal.
+                 Once https://github.com/revapi/revapi/issues/11 is fixed it should be possible to use single execution. -->
             <executions>
               <execution>
                 <id>check</id>
@@ -111,32 +142,6 @@
                   <goal>check</goal>
                 </goals>
                 <phase>verify</phase>
-                <configuration>
-                  <oldArtifacts>
-                    <artifact>${project.groupId}:${project.artifactId}:6.3.0.Final</artifact>
-                  </oldArtifacts>
-                  <newArtifacts>
-                    <!-- The special BUILD GAV is used to specify artifacts that were produced during the build of the current project.-->
-                    <artifact>BUILD</artifact>
-                  </newArtifacts>
-                  <!-- In case some changes are expected, the following configuration example shows how to prevent a build
-                       from failing.
-                  <analysisConfiguration>
-                      {
-                        "revapi" : {
-                          "reclassify" : [
-                            {
-                              "regex" : true,
-                              "code" : "java.method.addedToInterface",
-                              "classify" : {
-                                "SOURCE": "POTENTIALLY_BREAKING"
-                              }
-                            }
-                          ]
-                        }
-                      }
-                  </analysisConfiguration> -->
-                </configuration>
               </execution>
               <execution>
                 <!-- report can be found in ${build.directory}/site/revapi-report.html -->
