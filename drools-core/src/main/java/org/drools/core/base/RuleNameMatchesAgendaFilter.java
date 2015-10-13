@@ -44,6 +44,14 @@ public class RuleNameMatchesAgendaFilter
         this.accept = accept;
     }
 
+    public Pattern getPattern() {
+        return pattern;
+    }
+
+    public boolean isAccept() {
+        return accept;
+    }
+
     public boolean accept( Match activation ) {
         Matcher matcher = pattern.matcher( activation.getRule().getName() );
         if ( matcher.matches() ) {

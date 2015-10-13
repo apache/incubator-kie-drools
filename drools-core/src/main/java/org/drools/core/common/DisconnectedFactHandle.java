@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -15,10 +15,13 @@
 
 package org.drools.core.common;
 
+import org.drools.core.base.ArrayElements;
+import org.drools.core.base.DroolsQuery;
 import org.drools.core.factmodel.traits.TraitFactory;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -28,6 +31,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlSeeAlso;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -35,6 +41,7 @@ import java.io.ObjectOutput;
 
 @XmlRootElement(name="disconnected-fact-handle")
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlSeeAlso({ArrayElements.class})
 public class DisconnectedFactHandle
         implements
         InternalFactHandle,
@@ -43,26 +50,30 @@ public class DisconnectedFactHandle
     @XmlElement
     @XmlSchemaType(name="int")
     private int    id;
-    
+
     @XmlElement
     @XmlSchemaType(name="int")
     private int    identityHashCode;
-    
+
     @XmlElement
     @XmlSchemaType(name="int")
     private int    objectHashCode;
-    
+
     @XmlElement
     @XmlSchemaType(name="long")
     private long   recency;
-    
+
+    /**
+     *  This could be a {@link DroolsQuery} object or other almost-impossible-to-serialize class
+     */
     @XmlElement
+    @XmlJavaTypeAdapter(value=JaxbUnknownAdapter.class)
     private Object object;
-    
+
     @XmlElement
     @XmlSchemaType(name="string")
     private String entryPointId;
-    
+
     @XmlElement
     private TraitTypeEnum traitType;
 
@@ -83,7 +94,11 @@ public class DisconnectedFactHandle
         this.objectHashCode = objectHashCode;
         this.recency = recency;
         this.entryPointId = entryPointId;
-        this.object = object;
+        if( object instanceof DroolsQuery ) {
+            this.object = (ArrayElements) object;
+        } else {
+            this.object = object;
+        }
         this.traitType = isTraitOrTraitable ? determineTraitType() : TraitTypeEnum.NON_TRAIT;
     }
 
@@ -93,11 +108,11 @@ public class DisconnectedFactHandle
                                   long recency,
                                   Object object,
                                   boolean isTraitOrTraitable ) {
-        this( id, 
-              identityHashCode, 
-              objectHashCode, 
-              recency, 
-              null, 
+        this( id,
+              identityHashCode,
+              objectHashCode,
+              recency,
+              null,
               object,
               isTraitOrTraitable );
     }
@@ -132,6 +147,7 @@ public class DisconnectedFactHandle
         this.recency = Long.parseLong( elements[4] );
         this.entryPointId = elements[5].trim();
         this.traitType = elements.length > 6 ? TraitTypeEnum.valueOf( elements[6] ) : TraitTypeEnum.NON_TRAIT;
+        // TODO: this method does NOT set the this.object field, which impacts the value of the toExternalForm() method!
     }
 
     @Override
@@ -242,7 +258,7 @@ public class DisconnectedFactHandle
     public void setRightTuple(RightTuple rightTuple) {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
-    
+
     public InternalFactHandle quickClone() {
         return new DisconnectedFactHandle(id, identityHashCode, objectHashCode, recency, entryPointId, object, traitType != TraitTypeEnum.NON_TRAIT );
     }
@@ -339,7 +355,7 @@ public class DisconnectedFactHandle
     public String getEntryPointId() {
         return entryPointId;
     }
-    
+
     public static DisconnectedFactHandle newFrom( FactHandle handle ) {
         if( handle instanceof DisconnectedFactHandle ) {
             return (DisconnectedFactHandle) handle;
@@ -377,4 +393,9 @@ public class DisconnectedFactHandle
     public TraitTypeEnum getTraitType() {
         return traitType;
     }
+
+    public String toString() {
+        return "[disconnected fact " + toExternalForm() + ":" + this.object + "]";
+    }
+
 }
