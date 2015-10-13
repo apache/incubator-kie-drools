@@ -23,11 +23,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.QueryRowWithSubruleIndex;
+import org.drools.core.base.ValueType;
 import org.drools.core.rule.Declaration;
+import org.drools.core.spi.InternalReadAccessor;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
@@ -57,15 +61,15 @@ public class QueryResultsImpl
         this.parameters = parameters;
 
     }
-    
+
     public Map<String, Declaration>[] getDeclarations() {
         return this.declarations;
     }
-    
+
     public Declaration[] getParameters() {
         return this.parameters;
     }
-    
+
     public Map<String, Declaration> getDeclarations(int subruleIndex) {
         if ( this.declarations == null || this.declarations.length == 0 ) {
             return Collections.<String, Declaration>emptyMap();
@@ -93,30 +97,18 @@ public class QueryResultsImpl
         }
         Declaration[] parameters = getParameters();
 
-        Set<String> set  = new HashSet<String>();
+        Set<String> idSet  = new HashSet<String>();
         for ( Declaration declr : parameters ) {
-            set.add( declr.getIdentifier() );
+            idSet.add( declr.getIdentifier() );
         }
 
-
-        Collection<Declaration> declrCollection = new ArrayList( getDeclarations(0).values() );
-
-        for ( Iterator<Declaration> it =  declrCollection.iterator(); it.hasNext(); ) {
-            Declaration declr = it.next();
-            if ( set.contains( declr.getIdentifier()  ) ) {
-                it.remove();
+        for ( Declaration declr : getDeclarations(0).values() ) {
+            if ( ! idSet.contains( declr.getIdentifier() ) ) {
+                idSet.add(declr.getIdentifier());
             }
         }
 
-        String[] declrs = new String[parameters.length + declrCollection.size() ];
-        int i = 0;
-        for ( Declaration declr : parameters ) {
-            declrs[i++] = declr.getIdentifier();
-        }
-        for ( Declaration declr : declrCollection ) {
-            declrs[i++] = declr.getIdentifier();
-        }
-        identifiers = declrs;
+        identifiers = idSet.toArray(new String[idSet.size()]);
         return identifiers;
     }
 

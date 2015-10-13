@@ -17,7 +17,6 @@
 package org.drools.core.command.runtime.rule;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -25,8 +24,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -39,75 +36,76 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.Context;
 
 @XmlAccessorType(XmlAccessType.NONE)
-public class ModifyCommand
-    implements
-    GenericCommand<Object> {
+public class ModifyCommand implements GenericCommand<Object> {
 
     /**
      * if this is true, modify can be any MVEL expressions. If false, it will only allow literal values.
      * (false should be use when taking input from an untrusted source, such as a web service).
      */
-    public static boolean ALLOW_MODIFY_EXPRESSIONS = true;
+    public boolean ALLOW_MODIFY_EXPRESSIONS = true;
 
+    private DisconnectedFactHandle handle;
 
-    private DisconnectedFactHandle       handle;
-
-
-    @XmlJavaTypeAdapter(JaxbSetterAdapter.class)
-    @XmlElement
+    // see getSetters()
     private List<Setter> setters;
 
     public ModifyCommand() {
+        // JAXB Constructor
     }
-    
+
     public ModifyCommand(FactHandle handle,
                          List<Setter> setters) {
         this.handle = DisconnectedFactHandle.newFrom( handle );
-        this.setters = setters;
-    }
-
-    public Object execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        EntryPoint wmep = ksession.getEntryPoint( handle.getEntryPointId() );
-        
-        Object object = wmep.getObject( this.handle );
-        MVELSafeHelper.getEvaluator().eval( getMvelExpr(),
-                   object );
-
-        wmep.update( handle,
-                        object );
-        return object;
+        setSetters(setters);
     }
 
     public FactHandle getFactHandle() {
         return this.handle;
     }
-    
-    @XmlAttribute(name="fact-handle", required=true)
+
+    public void setFactHandle(DisconnectedFactHandle factHandle) {
+        this.handle = factHandle;
+    }
+
+    @XmlElement(name="fact-handle", required=true)
     public void setFactHandleFromString(String factHandleId) {
         handle = new DisconnectedFactHandle(factHandleId);
     }
-    
+
     public String getFactHandleFromString() {
         return handle.toExternalForm();
     }
 
+    @XmlElement(type=SetterImpl.class)
     public List<Setter> getSetters() {
         if ( this.setters == null ) {
             this.setters = new ArrayList<Setter>();
         }
+        checkSetters();
         return this.setters;
     }
-    
+
     public void setSetters(List<Setter> setters) {
         this.setters = setters;
+        if( this.setters != null ) {
+            checkSetters();
+        }
+    }
+
+    private void checkSetters() {
+        for( int i = 0; i < setters.size(); ++i ) {
+           Setter setter = setters.get(i);
+           if( ! (setters instanceof SetterImpl) ) {
+              setters.set(i, new SetterImpl(setter.getAccessor(), setter.getValue()));
+           }
+        }
     }
 
     private String getMvelExpr() {
         StringBuilder sbuilder = new StringBuilder();
         sbuilder.append( "with (this) {\n" );
         int i = 0;
-        for ( Setter setter : this.setters ) {
+        for ( Setter setter : getSetters() ) {
             if ( i++ > 0 ) {
                 sbuilder.append( "," );
             }
@@ -121,24 +119,34 @@ public class ModifyCommand
         return sbuilder.toString();
     }
 
+    public Object execute(Context context) {
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        EntryPoint wmep = ksession.getEntryPoint( handle.getEntryPointId() );
+
+        Object object = wmep.getObject( this.handle );
+        MVELSafeHelper.getEvaluator().eval( getMvelExpr(), object );
+
+        wmep.update( handle,
+                        object );
+        return object;
+    }
+
     public String toString() {
         return "modify() " + getMvelExpr();
     }
 
-    @XmlRootElement(name="set")
-    public static class SetterImpl
-        implements
-        Setter {
+    @XmlRootElement(name="setter")
+    public static class SetterImpl implements Setter {
         @XmlAttribute
         private String accessor;
         @XmlAttribute
         private String value;
 
         public SetterImpl() {
+            // JAXB Constructor
         }
 
-        public SetterImpl(String accessor,
-                          String value) {
+        public SetterImpl(String accessor, String value) {
             this.accessor = accessor;
             this.value = value;
         }
@@ -150,46 +158,5 @@ public class ModifyCommand
         public String getValue() {
             return value;
         }
-    }
-    
-//    public static class JaxbSetterWrapper<SetterImpl> extends ArrayList<SetterImpl> {
-//
-//        public JaxbSetterWrapper() {
-//            super();
-//        }
-//
-//        public JaxbSetterWrapper(Collection<SetterImpl> c) {
-//            super(c);
-//        }
-//
-//        public JaxbSetterWrapper(int initialCapacity) {
-//            super(initialCapacity);
-//        }
-//
-//        @XmlElement(name="setters")
-//        public List<SetterImpl> getElements() {
-//            return this;
-//        }
-//        
-//        public void setElements(List<SetterImpl> elems) {
-//            clear();
-//            if (elems != null) {
-//                addAll(elems);
-//            }
-//        }
-//    }
-    
-    public static class JaxbSetterAdapter extends XmlAdapter<SetterImpl[], List<SetterImpl>> {
-
-        @Override
-        public SetterImpl[] marshal(List<SetterImpl> v) throws Exception {
-            return v.toArray( new SetterImpl[ v.size() ] );
-        }
-
-        @Override
-        public List<SetterImpl> unmarshal(SetterImpl[] v) throws Exception {
-            return Arrays.asList( v );
-        }
-
     }
 }

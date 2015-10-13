@@ -24,6 +24,7 @@ import com.thoughtworks.xstream.converters.collections.AbstractCollectionConvert
 import com.thoughtworks.xstream.io.ExtendedHierarchicalStreamWriterHelper;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
@@ -67,6 +68,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class XStreamXML {
     public static volatile boolean SORT_MAPS = false;
@@ -975,14 +978,21 @@ public class XStreamXML {
             for ( QueryResultsRow result : results ) {
                 writer.startNode( "row" );
                 for ( int i = 0; i < identifiers.length; i++ ) {
-                    Object value = result.get( identifiers[i] );
-                    FactHandle factHandle = result.getFactHandle( identifiers[i] );
+                    writer.startNode( "identifier" );
+                    String id = identifiers[i];
+                    writer.addAttribute("id", id );
+
+                    Object value = result.get( id );
                     writeItem( value,
                                context,
                                writer );
+
+                    FactHandle factHandle = result.getFactHandle( id );
                     writer.startNode( "fact-handle" );
                     writer.addAttribute( "external-form",
                                          ((FactHandle) factHandle).toExternalForm() );
+                    writer.endNode();
+
                     writer.endNode();
                 }
                 writer.endNode();
@@ -1000,31 +1010,32 @@ public class XStreamXML {
             }
             reader.moveUp();
 
-            HashMap<String, Integer> identifiers = new HashMap<String, Integer>();
+            Set<String> identifiers = new TreeSet<String>();
             for ( int i = 0; i < list.size(); i++ ) {
-                identifiers.put( list.get( i ),
-                                 i );
+                identifiers.add( list.get( i ) );
             }
 
-            ArrayList<ArrayList<Object>> results = new ArrayList();
-            ArrayList<ArrayList<FactHandle>> resultHandles = new ArrayList();
+            ArrayList<Map<String, Object>> results = new ArrayList<Map<String,Object>>();
+            ArrayList<Map<String, FactHandle>> resultHandles = new ArrayList<Map<String,FactHandle>>();
             while ( reader.hasMoreChildren() ) {
-                reader.moveDown();
-                ArrayList objects = new ArrayList();
-                ArrayList<FactHandle> handles = new ArrayList();
+                reader.moveDown(); // row
+                Map<String, Object> objects = new HashMap<String, Object>();
+                Map<String, FactHandle> handles = new HashMap<String, FactHandle>();
                 while ( reader.hasMoreChildren() ) {
-                    reader.moveDown();
+                    reader.moveDown(); // identifier node
+                    String identifier = reader.getAttribute("id");
+
                     Object object = readItem( reader,
                                               context,
                                               null );
-                    reader.moveUp();
 
                     reader.moveDown();
                     FactHandle handle = DefaultFactHandle.createFromExternalFormat( reader.getAttribute( "external-form" ) );
                     reader.moveUp();
 
-                    objects.add( object );
-                    handles.add( handle );
+                    objects.put( identifier, object );
+                    handles.put( identifier, handle );
+                    reader.moveUp();
                 }
                 results.add( objects );
                 resultHandles.add( handles );
@@ -1032,8 +1043,8 @@ public class XStreamXML {
             }
 
             return new FlatQueryResults( identifiers,
-                                         results,
-                                         resultHandles );
+                                         resultHandles,
+                                         results );
         }
 
         public boolean canConvert(Class clazz) {

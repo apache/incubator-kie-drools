@@ -29,6 +29,7 @@ import org.kie.internal.command.Context;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectInEntryPointCommand
@@ -63,11 +64,11 @@ public class GetObjectInEntryPointCommand
         this.outIdentifier = outIdentifier;
     }
 
-    @XmlAttribute(name="fact-handle", required=true)
+    @XmlElement(name="fact-handle", required=true)
     public void setFactHandleFromString(String factHandleId) {
         factHandle = DefaultFactHandle.createFromExternalFormat(factHandleId);
     }
-    
+
     public String getFactHandleFromString() {
         return factHandle.toExternalForm();
     }
@@ -77,15 +78,15 @@ public class GetObjectInEntryPointCommand
         EntryPoint ep = ksession.getEntryPoint(entryPoint);
 
         Object object = ep.getObject( factHandle );
-        
+
         if (this.outIdentifier != null) {
             ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult()
                 .getResults().put( this.outIdentifier, object );
         }
-        
+
         return object;
     }
-    
+
     public FactHandle getFactHandle() {
         return this.factHandle;
     }
