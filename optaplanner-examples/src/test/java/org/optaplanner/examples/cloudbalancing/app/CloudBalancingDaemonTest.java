@@ -35,6 +35,8 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.cloudbalancing.persistence.CloudBalancingGenerator;
 import org.optaplanner.examples.common.app.LoggingTest;
 
+import static org.junit.Assert.assertEquals;
+
 public class CloudBalancingDaemonTest extends LoggingTest {
 
     private Object stageLock = new Object();
@@ -49,7 +51,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
     public void daemon() throws InterruptedException {
         // In main thread
         Solver solver = buildSolver();
-        CloudBalance cloudBalance = buildPlanningProblem();
+        CloudBalance cloudBalance = buildPlanningProblem(4, 12);
         SolverThread solverThread = new SolverThread(solver, cloudBalance);
         solverThread.start();
         // Wait for the solver thread to start up
@@ -63,6 +65,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         }
         // Wait until those AddProcessChanges are processed
         waitForNextStage();
+        assertEquals(8, ((CloudBalance) solver.getBestSolution()).getProcessList().size());
 
         // Give the solver thread some time to solve, terminate and get into the daemon waiting state
         Thread.sleep(1000);
@@ -81,6 +84,8 @@ public class CloudBalancingDaemonTest extends LoggingTest {
             Thread.currentThread().interrupt();
             throw new IllegalStateException("SolverThread did not die yet due to an interruption.", e);
         }
+        assertEquals(true, solver.isEveryProblemFactChangeProcessed());
+        assertEquals(12, ((CloudBalance) solver.getBestSolution()).getProcessList().size());
     }
 
     private class SolverThread extends Thread implements SolverEventListener<CloudBalance> {
@@ -141,8 +146,8 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         return solverFactory.buildSolver();
     }
 
-    private CloudBalance buildPlanningProblem() {
-        CloudBalance cloudBalance = new CloudBalancingGenerator().createCloudBalance(4, 12);
+    private CloudBalance buildPlanningProblem(int computerListSize, int processListSize) {
+        CloudBalance cloudBalance = new CloudBalancingGenerator().createCloudBalance(computerListSize, processListSize);
         notYetAddedProcessQueue.addAll(cloudBalance.getProcessList());
         cloudBalance.setProcessList(new ArrayList<CloudProcess>(notYetAddedProcessQueue.size()));
         return cloudBalance;
