@@ -26,6 +26,7 @@ import org.kie.internal.command.Context;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class DeleteFromEntryPointCommand
@@ -54,7 +55,7 @@ public class DeleteFromEntryPointCommand
         return this.handle;
     }
 
-    @XmlAttribute(name="fact-handle", required=true)
+    @XmlElement(name="fact-handle", required=true)
     public void setFactHandleFromString(String factHandleId) {
         handle = new DisconnectedFactHandle(factHandleId);
     }

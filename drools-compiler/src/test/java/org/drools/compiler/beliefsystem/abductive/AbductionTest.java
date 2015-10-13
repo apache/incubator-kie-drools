@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -17,6 +17,7 @@ package org.drools.compiler.beliefsystem.abductive;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.core.BeliefSystemType;
+import org.drools.core.QueryResultsImpl;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.abductive.Abducible;
@@ -24,6 +25,7 @@ import org.drools.core.beliefsystem.defeasible.Defeasible;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -918,9 +920,9 @@ public class AbductionTest extends CommonTestMethodBase {
         assertNotNull( q1 );
         assertNotNull( q2 );
 
-        QueryResults q10res = session.getQueryResults( "foo", "foo" );
-        QueryResults q11res = session.getQueryResults( "foo", "foo", Variable.v );
-        QueryResults q20res = session.getQueryResults( "bar", "foo", Variable.v );
+        QueryResults q10res = new FlatQueryResults((QueryResultsImpl) session.getQueryResults( "foo", "foo" ));
+        QueryResults q11res = new FlatQueryResults((QueryResultsImpl) session.getQueryResults( "foo", "foo", Variable.v ));
+        QueryResults q20res = new FlatQueryResults((QueryResultsImpl) session.getQueryResults( "bar", "foo", Variable.v ));
 
         assertEquals( 1, q10res.size() );
         assertEquals( 1, q11res.size() );

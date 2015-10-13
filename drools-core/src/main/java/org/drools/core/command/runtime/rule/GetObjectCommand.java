@@ -16,39 +16,46 @@
 
 package org.drools.core.command.runtime.rule;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.DisconnectedFactHandle;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.Context;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class GetObjectCommand
     implements
     GenericCommand<Object>, IdentifiableResult {
 
-    private FactHandle factHandle;
+    private DisconnectedFactHandle disconnectedFactHandle;
+
+    private transient FactHandle factHandle;
+
+    @XmlAttribute(name="out-identifier", required=true)
+    @XmlSchemaType(name="string")
     private String     outIdentifier;
-    
+
     public GetObjectCommand() { }
 
     public GetObjectCommand(FactHandle factHandle) {
-        this.factHandle = factHandle;
+        setFactHandle(factHandle);
     }
-    
+
     public GetObjectCommand(FactHandle factHandle, String outIdentifier) {
-        this.factHandle = factHandle;
+        this(factHandle);
         this.outIdentifier = outIdentifier;
     }
 
-    @XmlAttribute(name="out-identifier", required=true)
     public String getOutIdentifier() {
         return outIdentifier;
     }
@@ -57,30 +64,40 @@ public class GetObjectCommand
         this.outIdentifier = outIdentifier;
     }
 
-    @XmlAttribute(name="fact-handle", required=true)
+    @XmlElement(name="fact-handle", required=true)
     public void setFactHandleFromString(String factHandleId) {
-        factHandle = DefaultFactHandle.createFromExternalFormat(factHandleId);
+        FactHandle factHandle = DefaultFactHandle.createFromExternalFormat(factHandleId);
+        setFactHandle(factHandle);
     }
-    
+
     public String getFactHandleFromString() {
         return factHandle.toExternalForm();
     }
 
+    public FactHandle getFactHandle() {
+        return this.factHandle;
+    }
+
+    public void setFactHandle(FactHandle factHandle) {
+        this.factHandle = factHandle;
+        this.disconnectedFactHandle = DisconnectedFactHandle.newFrom(factHandle);
+    }
+
     public Object execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        
+
+        FactHandle factHandle = this.factHandle;
+        if( factHandle == null ) {
+            factHandle = this.disconnectedFactHandle;
+        }
         Object object = ksession.getObject( factHandle );
-        
+
         if (this.outIdentifier != null) {
             ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult()
                 .getResults().put( this.outIdentifier, object );
         }
-        
+
         return object;
-    }
-    
-    public FactHandle getFactHandle() {
-        return this.factHandle;
     }
 
     public String toString() {
