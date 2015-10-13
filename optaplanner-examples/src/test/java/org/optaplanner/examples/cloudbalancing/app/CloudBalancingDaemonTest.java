@@ -128,6 +128,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         @Override
         public void doChange(ScoreDirector scoreDirector) { // In solver thread
             CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
+            // No need to clone the processList because planning cloning already does that
             scoreDirector.beforeEntityAdded(process);
             cloudBalance.getProcessList().add(process);
             scoreDirector.afterEntityAdded(process);
