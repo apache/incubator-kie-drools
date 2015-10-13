@@ -51,18 +51,7 @@ public class ReteDumper {
 
     private static void dumpNode(BaseNode node, String ident) {
         System.out.println(ident + node);
-        Sink[] sinks = null;
-        if (node instanceof EntryPointNode) {
-            EntryPointNode source = (EntryPointNode) node;
-            Collection<ObjectTypeNode> otns = source.getObjectTypeNodes().values();
-            sinks = otns.toArray(new Sink[otns.size()]);
-        } else if (node instanceof ObjectSource) {
-            ObjectSource source = (ObjectSource) node;
-            sinks = source.getSinkPropagator().getSinks();
-        } else if (node instanceof LeftTupleSource) {
-            LeftTupleSource source = (LeftTupleSource) node;
-            sinks = source.getSinkPropagator().getSinks();
-        }
+        Sink[] sinks = getSinks( node );
         if (sinks != null) {
             for (Sink sink : sinks) {
                 if (sink instanceof BaseNode) {
@@ -70,5 +59,21 @@ public class ReteDumper {
                 }
             }
         }
+    }
+
+    public static Sink[] getSinks( BaseNode node ) {
+        Sink[] sinks = null;
+        if (node instanceof EntryPointNode ) {
+            EntryPointNode source = (EntryPointNode) node;
+            Collection<ObjectTypeNode> otns = source.getObjectTypeNodes().values();
+            sinks = otns.toArray(new Sink[otns.size()]);
+        } else if (node instanceof ObjectSource ) {
+            ObjectSource source = (ObjectSource) node;
+            sinks = source.getSinkPropagator().getSinks();
+        } else if (node instanceof LeftTupleSource ) {
+            LeftTupleSource source = (LeftTupleSource) node;
+            sinks = source.getSinkPropagator().getSinks();
+        }
+        return sinks;
     }
 }
