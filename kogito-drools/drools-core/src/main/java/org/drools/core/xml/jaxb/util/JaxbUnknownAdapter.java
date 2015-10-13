@@ -16,6 +16,7 @@
 
 package org.drools.core.xml.jaxb.util;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,7 +32,7 @@ import java.util.Set;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.drools.core.QueryResultsImpl;
-import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.DisconnectedFactHandle;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.xml.jaxb.util.JaxbListWrapper.JaxbWrapperType;
 import org.kie.api.runtime.rule.FactHandle;
@@ -55,10 +56,19 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
 
     @Override
     public Object marshal( Object o ) throws Exception {
-        return recursiveMarshal(o, new IdentityHashMap<Object, Object>());
+        try {
+            return recursiveMarshal(o, new IdentityHashMap<Object, Object>());
+        } catch( Exception e ) {
+            // because exceptions are always swallowed by JAXB
+            logger.error("Unable to marshal " + o.getClass().getName() + " instance: " + e.getMessage(), e);
+            throw e;
+        }
     }
 
     private Object recursiveMarshal( Object o, Map<Object, Object> seenObjectsMap ) {
+        if( o == null ) {
+            return o;
+        }
         if( seenObjectsMap.put(o, PRESENT) != null ) {
             throw new UnsupportedOperationException("Serialization of recursive data structures is not supported!");
         }
@@ -84,11 +94,29 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
                         throw new UnsupportedOperationException("Only String keys for Map structures are supported [key was a "
                                 + key.getClass().getName() + "]");
                     }
-                    Object value = convertObjectToSerializableVariant(entry.getValue(), seenObjectsMap);
-                    pairList.add(new JaxbStringObjectPair((String) key, value));
+                    // There's already a @XmlJavaTypeAdapter(JaxbUnknownAdapter.class) anno on the JaxbStringObjectPair.value field
+                    pairList.add(new JaxbStringObjectPair((String) key, entry.getValue()));
                 }
 
                 return new JaxbListWrapper(pairList.toArray(new JaxbStringObjectPair[pairList.size()]), JaxbWrapperType.MAP);
+            } else if( o.getClass().isArray() ) {
+                // convert to serializable types
+                int length = Array.getLength(o);
+                Object [] serializedArr = new Object[length];
+                for( int i = 0; i < length; ++i ) {
+                    Object elem = convertObjectToSerializableVariant(Array.get(o, i), seenObjectsMap);
+                    serializedArr[i] = elem;
+                }
+
+                // convert to JaxbListWrapper
+                JaxbListWrapper wrapper =  new JaxbListWrapper(serializedArr, JaxbWrapperType.ARRAY);
+                Class componentType = o.getClass().getComponentType();
+                String componentTypeName = o.getClass().getComponentType().getCanonicalName();
+                if( componentTypeName == null ) {
+                   throw new UnsupportedOperationException("Local or anonymous classes are not supported for serialization: " + componentType.getName() );
+                }
+                wrapper.setComponentType(componentTypeName);
+                return wrapper;
             } else {
                 return o;
             }
@@ -113,7 +141,7 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
         if( obj instanceof QueryResultsImpl ) {
             obj = new FlatQueryResults((QueryResultsImpl) obj);
         } else if( obj instanceof FactHandle ) {
-            obj = ((InternalFactHandle) obj).toExternalForm();
+            obj = DisconnectedFactHandle.newFrom((FactHandle) obj);
         } else if( !(obj instanceof JaxbListWrapper) && (obj instanceof Collection || obj instanceof Map) ) {
             obj = recursiveMarshal(obj, seenObjectsMap);
         }
@@ -122,6 +150,16 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
 
     @Override
     public Object unmarshal( Object o ) throws Exception {
+        try {
+            return recursiveUnmarhsal(o);
+        } catch( Exception e ) {
+            // because exceptions are always swallowed by JAXB
+            logger.error("Unable to *un*marshal " + o.getClass().getName() + " instance: " + e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    public Object recursiveUnmarhsal( Object o ) throws Exception {
         if( o instanceof JaxbListWrapper ) {
             JaxbListWrapper wrapper = (JaxbListWrapper) o;
             Object[] elements = wrapper.getElements();
@@ -151,6 +189,19 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
                         }
                     }
                     return map;
+                case ARRAY:
+                    Object [] objArr = wrapper.getElements();
+                    int length = objArr.length;
+                    String componentTypeName = wrapper.getComponentType();
+                    Class realArrComponentType = null;
+                    realArrComponentType = getClass(componentTypeName);
+
+                    // create and fill array
+                    Object realArr = Array.newInstance(realArrComponentType, objArr.length);
+                    for( int i = 0; i < length; ++i ) {
+                        Array.set(realArr, i, objArr[i]);
+                    }
+                    return realArr;
                 default:
                     throw new IllegalArgumentException("Unknown JAXB collection wrapper type: " + wrapper.getType().toString());
                 }
@@ -169,6 +220,41 @@ public class JaxbUnknownAdapter extends XmlAdapter<Object, Object> {
             return r;
         } else {
             return o;
+        }
+    }
+
+    // idea stolen from org.apache.commons.lang3.ClassUtils
+    private static final Map<String, String> classToArrayTypeMap = new HashMap<String, String>();
+    static {
+        classToArrayTypeMap.put("int", "I");
+        classToArrayTypeMap.put("boolean", "Z");
+        classToArrayTypeMap.put("float", "F");
+        classToArrayTypeMap.put("long", "J");
+        classToArrayTypeMap.put("short", "S");
+        classToArrayTypeMap.put("byte", "B");
+        classToArrayTypeMap.put("double", "D");
+        classToArrayTypeMap.put("char", "C");
+    }
+
+    private static Class getClass(String className) throws Exception {
+        ClassLoader tccl = Thread.currentThread().getContextClassLoader();
+        ClassLoader loader = tccl == null ? JaxbUnknownAdapter.class.getClassLoader() : tccl;
+
+        try {
+            // String.contains() will be cheaper/faster than Map.contains()
+            if( className.contains(".") ) {
+                return Class.forName(className,true, loader);
+            } else {
+                // Thanks, org.apache.commons.lang3.ClassUtils!
+                String arrClassName = classToArrayTypeMap.get(className);
+                if( arrClassName == null ) {
+                    throw new IllegalStateException("Unexpected class type encountered during deserialization: " + arrClassName );
+                }
+                arrClassName = "[" + arrClassName;
+                return Class.forName(arrClassName, true, loader).getComponentType();
+            }
+        } catch( ClassNotFoundException cnfe ) {
+            throw new IllegalStateException("Class '" + className + "' could not be found during deserialization: " + cnfe.getMessage(), cnfe );
         }
     }
 

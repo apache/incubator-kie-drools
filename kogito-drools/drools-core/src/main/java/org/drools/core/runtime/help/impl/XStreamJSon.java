@@ -62,6 +62,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class XStreamJSon {
     public static volatile boolean SORT_MAPS = false;
@@ -154,6 +156,10 @@ public class XStreamJSon {
                             MarshallingContext context) {
             RowItemContainer container = (RowItemContainer) object;
 
+            writer.startNode( "identifier" );
+            writer.setValue( container.getIdentifier() );
+            writer.endNode();
+
             writer.startNode( "external-form" );
             writer.setValue( container.getFactHandle().toExternalForm() );
             writer.endNode();
@@ -168,12 +174,15 @@ public class XStreamJSon {
         @Override
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
+            String identifier = null;
             String externalForm = null;
             Object object = null;
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
                 String nodeName = reader.getNodeName();
-                if ( "external-form".equals( nodeName ) ) {
+                if ( "identifier".equals( nodeName ) ) {
+                    identifier = reader.getValue();
+                } else if ( "external-form".equals( nodeName ) ) {
                     externalForm = reader.getValue();
                 } else if ( "object".equals( nodeName ) ) {
                     reader.moveDown();
@@ -184,7 +193,8 @@ public class XStreamJSon {
                 }
                 reader.moveUp();
             }
-            return new RowItemContainer( DefaultFactHandle.createFromExternalFormat( externalForm ),
+            return new RowItemContainer( identifier,
+                                         DefaultFactHandle.createFromExternalFormat( externalForm ),
                                          object );
         }
 
@@ -268,7 +278,7 @@ public class XStreamJSon {
                 writer.setValue( Boolean.toString( cmd.isReturnObject() ) );
                 writer.endNode();
             }
-            
+
             if ( !StringUtils.isEmpty( cmd.getEntryPoint() ) ) {
                 writer.startNode( "entry-point" );
                 writer.setValue(  cmd.getEntryPoint() );
@@ -357,7 +367,7 @@ public class XStreamJSon {
                 writer.setValue( Integer.toString( cmd.getMax() ) );
                 writer.endNode();
             }
-            
+
             if ( cmd.getOutIdentifier() != null ) {
                 writer.startNode( "out-identifier" );
                 writer.setValue( cmd.getOutIdentifier() );
@@ -875,7 +885,7 @@ public class XStreamJSon {
                 writer.startNode( "out-identifier" );
                 writer.setValue( cmd.getOutIdentifier() );
                 writer.endNode();
-            } 
+            }
             writeValue( writer,
                         context,
                         "object",
@@ -1119,8 +1129,9 @@ public class XStreamJSon {
                 for ( String identifier : identifiers ) {
                     Object value = result.get( identifier );
                     FactHandle factHandle = result.getFactHandle( identifier );
-                    writeItem( new RowItemContainer( factHandle,
-                                                     value ),
+                    writeItem( new RowItemContainer( identifier,
+                                                     factHandle,
+                                                     value),
                                context,
                                writer );
                 }
@@ -1131,46 +1142,41 @@ public class XStreamJSon {
         public Object unmarshal(HierarchicalStreamReader reader,
                                 UnmarshallingContext context) {
             reader.moveDown();
-            List<String> list = new ArrayList<String>();
+            Set<String> identifiers = new TreeSet<String>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
-                list.add( (String) readItem( reader,
+                identifiers.add( (String) readItem( reader,
                                              context,
                                              null ) );
                 reader.moveUp();
             }
             reader.moveUp();
 
-            HashMap<String, Integer> identifiers = new HashMap<String, Integer>();
-            for ( int i = 0; i < list.size(); i++ ) {
-                identifiers.put( list.get( i ),
-                                 i );
-            }
-
-            ArrayList<ArrayList<Object>> results = new ArrayList<ArrayList<Object>>();
-            ArrayList<ArrayList<FactHandle>> resultHandles = new ArrayList<ArrayList<FactHandle>>();
+            ArrayList<Map<String, Object>> idResults = new ArrayList<Map<String,Object>>();
+            ArrayList<Map<String, FactHandle>> idHandles = new ArrayList<Map<String, FactHandle>>();
             while ( reader.hasMoreChildren() ) {
                 reader.moveDown();
-                ArrayList<Object> objects = new ArrayList<Object>();
-                ArrayList<FactHandle> handles = new ArrayList<FactHandle>();
+                Map<String, Object> idResultMap = new HashMap<String, Object>();
+                Map<String, FactHandle> idFactHandleMap = new HashMap<String, FactHandle>();
                 while ( reader.hasMoreChildren() ) {
                     reader.moveDown();
                     RowItemContainer container = (RowItemContainer) readItem( reader,
                                                                               context,
                                                                               null );
 
-                    objects.add( container.getObject() );
-                    handles.add( container.getFactHandle() );
+                    String id = container.getIdentifier();
+                    idResultMap.put(id, container.getObject());
+                    idFactHandleMap.put(id, container.getFactHandle());
                     reader.moveUp();
                 }
-                results.add( objects );
-                resultHandles.add( handles );
+                idResults.add( idResultMap );
+                idHandles.add( idFactHandleMap );
                 reader.moveUp();
             }
 
             return new FlatQueryResults( identifiers,
-                                         results,
-                                         resultHandles );
+                                         idHandles,
+                                         idResults );
         }
 
         public boolean canConvert(Class clazz) {
@@ -1193,7 +1199,7 @@ public class XStreamJSon {
             writer.startNode( "process-id" );
             writer.setValue( cmd.getProcessId() );
             writer.endNode();
-            
+
             if ( cmd.getOutIdentifier() != null ) {
                 writer.startNode( "out-identifier" );
                 writer.setValue( cmd.getOutIdentifier() );

@@ -71,7 +71,7 @@ public class ReteComparator {
                 throw new RuntimeException( node1 + " has no sinks while " + node2 + " has " + sinks2.length + " sinks" );
             }
         } else if (sinks2 == null) {
-            throw new RuntimeException( node1 + " has " + sinks1.length + " sinks while " + node2 + " has " + sinks2.length + " sinks" );
+            throw new RuntimeException( node1 + " has " + sinks1.length + " sinks while " + node2 + " has 0 sinks" );
         }
 
         if (sinks1.length != sinks2.length) {

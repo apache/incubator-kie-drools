@@ -19,9 +19,11 @@ package org.drools.core.command.runtime.rule;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.drools.core.base.RuleNameSerializationAgendaFilter;
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
@@ -37,10 +39,12 @@ public class FireAllRulesCommand implements GenericCommand<Integer>, Identifiabl
 
     @XmlAttribute
     private int          max          = -1;
-   
-    @XmlTransient // TODO: no easy/obvious way to serialize AgendaFilter instances at the moment
-    private AgendaFilter agendaFilter = null;
-    
+
+    @XmlElement(name="agendaFilter")
+    private RuleNameSerializationAgendaFilter serializableAgendaFilter = null;
+
+    private transient AgendaFilter agendaFilter = null;
+
     @XmlAttribute(name="out-identifier")
     private String       outIdentifier;
 
@@ -56,20 +60,19 @@ public class FireAllRulesCommand implements GenericCommand<Integer>, Identifiabl
     }
 
     public FireAllRulesCommand(AgendaFilter agendaFilter) {
-        this.agendaFilter = agendaFilter;
+        setAgendaFilter(agendaFilter);
     }
 
     public FireAllRulesCommand(AgendaFilter agendaFilter, int max) {
-        this.agendaFilter = agendaFilter;
+        this(agendaFilter);
         this.max = max;
     }
 
     public FireAllRulesCommand(String outIdentifier,
                                int max,
                                AgendaFilter agendaFilter) {
+        this(agendaFilter, max);
         this.outIdentifier = outIdentifier;
-        this.max = max;
-        this.agendaFilter = agendaFilter;
     }
 
     public int getMax() {
@@ -81,11 +84,27 @@ public class FireAllRulesCommand implements GenericCommand<Integer>, Identifiabl
     }
 
     public AgendaFilter getAgendaFilter() {
+        if( this.agendaFilter == null && this.serializableAgendaFilter != null ) {
+            this.agendaFilter = this.serializableAgendaFilter.getOriginal();
+        }
         return agendaFilter;
+    }
+
+    public AgendaFilter getSerializableAgendaFilter() {
+        return this.serializableAgendaFilter;
     }
 
     public void setAgendaFilter(AgendaFilter agendaFilter) {
         this.agendaFilter = agendaFilter;
+        RuleNameSerializationAgendaFilter newAgendaFilter = null;
+        if( agendaFilter != null ) {
+            if( agendaFilter instanceof RuleNameSerializationAgendaFilter ) {
+                newAgendaFilter = (RuleNameSerializationAgendaFilter) agendaFilter;
+            } else {
+                newAgendaFilter = new RuleNameSerializationAgendaFilter(agendaFilter);
+            }
+        }
+        this.serializableAgendaFilter = newAgendaFilter;
     }
 
     public String getOutIdentifier() {
@@ -97,6 +116,9 @@ public class FireAllRulesCommand implements GenericCommand<Integer>, Identifiabl
     }
 
     public Integer execute(Context context) {
+        // sets this.agendaFilter if null
+        getAgendaFilter();
+
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         int fired;
         if ( max != -1 && agendaFilter != null ) {
@@ -117,7 +139,7 @@ public class FireAllRulesCommand implements GenericCommand<Integer>, Identifiabl
     }
 
     public String toString() {
-        if ( max != -1 && agendaFilter != null ) {
+        if ( max != -1 && getAgendaFilter() != null ) {
             return "session.fireAllRules( " + agendaFilter + ", " + max + " );";
         } else if ( max != -1 ) {
             return "session.fireAllRules( " + max + " );";

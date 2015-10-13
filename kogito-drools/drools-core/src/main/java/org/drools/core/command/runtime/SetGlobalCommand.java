@@ -35,7 +35,7 @@ import org.kie.api.runtime.KieSession;
 @XmlAccessorType(XmlAccessType.NONE)
 public class SetGlobalCommand
     implements
-    GenericCommand<Object> , IdentifiableResult{
+    GenericCommand<Void> , IdentifiableResult{
 
     @XmlAttribute(required=true)
     private String  identifier;
@@ -46,7 +46,7 @@ public class SetGlobalCommand
 
     @XmlAttribute(name="out-identifier")
     private String  outIdentifier;
-    
+
     public SetGlobalCommand() {
     }
 
@@ -56,7 +56,7 @@ public class SetGlobalCommand
         this.object = object;
     }
 
-    public Object execute(Context context) {
+    public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
 
         if ( this.outIdentifier != null ) {
@@ -66,13 +66,13 @@ public class SetGlobalCommand
 
         ksession.setGlobal( this.identifier,
                             this.object );
-        return object;
+        return null;
     }
 
     public String getIdentifier() {
         return this.identifier;
     }
-    
+
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
     }
@@ -80,7 +80,7 @@ public class SetGlobalCommand
     public Object getObject() {
         return this.object;
     }
-    
+
     public void setObject( Object object ) {
         this.object = object;
     }

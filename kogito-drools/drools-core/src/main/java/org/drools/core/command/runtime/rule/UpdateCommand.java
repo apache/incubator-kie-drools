@@ -34,17 +34,16 @@ import org.kie.api.runtime.rule.FactHandle;
 public class UpdateCommand implements GenericCommand<Void> {
 
     private static final long serialVersionUID = 3255044102543531497L;
-    
-    @XmlElement
+
     private DisconnectedFactHandle handle;
-    
+
     @XmlElement
     private Object object;
-   
+
     @XmlElement
     @XmlSchemaType(name="string")
     private String entryPoint = "DEFAULT";
-    
+
     public UpdateCommand() {
     }
 
@@ -52,13 +51,6 @@ public class UpdateCommand implements GenericCommand<Void> {
                          Object object) {
         this.handle = DisconnectedFactHandle.newFrom( handle );
         this.object = object;
-    }
-
-    public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        
-        ksession.getEntryPoint( handle.getEntryPointId() ).update( handle, object );
-        return null;
     }
 
     public String getEntryPoint() {
@@ -72,15 +64,31 @@ public class UpdateCommand implements GenericCommand<Void> {
         this.entryPoint = entryPoint;
     }
 
-    public String toString() {
-        return "session.update( " + handle + ", " + object + " );";
-    }
-
-    public Object getObject() { 
+    public Object getObject() {
         return object;
     }
-    
-    public DisconnectedFactHandle getHandle() { 
+
+    public DisconnectedFactHandle getHandle() {
         return this.handle;
+    }
+
+    @XmlElement(name="fact-handle", required=true)
+    public void setFactHandleFromString(String factHandleId) {
+        handle = new DisconnectedFactHandle(factHandleId);
+    }
+
+    public String getFactHandleFromString() {
+        return handle.toExternalForm();
+    }
+
+    public Void execute(Context context) {
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+
+        ksession.getEntryPoint( handle.getEntryPointId() ).update( handle, object );
+        return null;
+    }
+
+    public String toString() {
+        return "session.update( " + handle + ", " + object + " );";
     }
 }

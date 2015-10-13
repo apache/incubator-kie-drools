@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -12,8 +12,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 package org.drools.compiler.integrationtests;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.xml.bind.JAXBContext;
 
 import org.drools.compiler.Address;
 import org.drools.compiler.Cheese;
@@ -23,6 +38,8 @@ import org.drools.compiler.InsertedObject;
 import org.drools.compiler.Interval;
 import org.drools.compiler.Person;
 import org.drools.compiler.Worker;
+import org.drools.core.QueryResultsImpl;
+import org.drools.core.QueryResultsRowImpl;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
@@ -30,9 +47,14 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
+import org.drools.core.rule.Declaration;
+import org.drools.core.runtime.rule.impl.FlatQueryResultRow;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.rules.TestName;
+import org.kie.api.KieBase;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
 import org.kie.api.definition.rule.Rule;
@@ -46,43 +68,122 @@ import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class QueryTest extends CommonTestMethodBase {
 
+    @org.junit.Rule
+    public TestName testName = new TestName();
+
+    @Before
+    public void before() {
+       System.out.println( "] " + testName.getMethodName());
+    }
+
+    private static QueryResults getQueryResults(KieSession session, String queryName, Object... arguments ) throws Exception {
+        QueryResultsImpl results = (QueryResultsImpl) session.getQueryResults( queryName, arguments );
+
+        FlatQueryResults flatResults = new FlatQueryResults(results);
+
+        assertEquals( "Query results size", results.size(), flatResults.size() );
+        assertEquals( "Query results identifiers", results.getIdentifiers().length, flatResults.getIdentifiers().length );
+        Set<String> resultIds = new TreeSet<String>(Arrays.asList(results.getIdentifiers()));
+        Set<String> flatIds = new TreeSet<String>(Arrays.asList(flatResults.getIdentifiers()));
+        assertArrayEquals("Flat query results identifiers", resultIds.toArray(), flatIds.toArray() );
+
+        FlatQueryResults copyFlatResults = roundTrip(flatResults);
+        String [] identifiers = results.getIdentifiers();
+        Iterator<QueryResultsRow> copyFlatIter = copyFlatResults.iterator();
+        for( int i = 0; i < results.size(); ++i ) {
+            QueryResultsRow row = results.get(i);
+            assertTrue( "Round-tripped flat query results contain less rows than original query results", copyFlatIter.hasNext());
+            QueryResultsRow copyRow = copyFlatIter.next();
+            for( String id : identifiers ) {
+                Object obj = row.get(id);
+                if( obj != null ) {
+                    Object copyObj = copyRow.get(id);
+                    assertTrue( "Flat query result [" + i + "] does not contain result: '" + id + "': " + obj + "/" + copyObj, obj != null && obj.equals(copyObj));
+                }
+                FactHandle fh = row.getFactHandle(id);
+                FactHandle copyFh = copyRow.getFactHandle(id);
+                if( fh != null ) {
+                    assertNotNull( "Flat query result [" + i + "] does not contain facthandle: '" + ((InternalFactHandle) fh).getId() + "'", copyFh);
+                    String fhStr = fh.toExternalForm();
+                    fhStr = fhStr.substring(0, fhStr.lastIndexOf(":"));
+                    String copyFhStr = copyFh.toExternalForm();
+                    copyFhStr = copyFhStr.substring(0, copyFhStr.lastIndexOf(":"));
+                    assertEquals( "Unequal fact handles for fact handle '" + ((InternalFactHandle) fh).getId() + "':",
+                                  fhStr, copyFhStr );
+                }
+            }
+        }
+
+        // check identifiers
+        Set<String> copyFlatIds = new TreeSet<String>(Arrays.asList(copyFlatResults.getIdentifiers()));
+        assertArrayEquals("Flat query results identifiers", flatIds.toArray(), copyFlatIds.toArray() );
+        return copyFlatResults;
+    }
+
+
+    private static <T> T roundTrip( Object obj ) throws Exception {
+        Class[] classes = { obj.getClass() };
+        JAXBContext ctx = getJaxbContext(classes);
+        String xmlOut = marshall(ctx, obj);
+        return unmarshall(ctx, xmlOut);
+    }
+
+    private static <T> T unmarshall( JAXBContext ctx, String xmlIn ) throws Exception {
+        ByteArrayInputStream xmlStrInputStream = new ByteArrayInputStream(xmlIn.getBytes(Charset.forName("UTF-8")));
+        Object out = ctx.createUnmarshaller().unmarshal(xmlStrInputStream);
+        return (T) out;
+    }
+
+    private static String marshall( JAXBContext ctx, Object obj ) throws Exception {
+        StringWriter writer = new StringWriter();
+        ctx.createMarshaller().marshal(obj, writer);
+        return writer.getBuffer().toString();
+    }
+
+    private static JAXBContext getJaxbContext( Class<?>... classes ) throws Exception {
+        List<Class<?>> jaxbClassList = new ArrayList<Class<?>>();
+        jaxbClassList.addAll(Arrays.asList(classes));
+        jaxbClassList.add(Cheese.class);
+        jaxbClassList.add(InsertedObject.class);
+        jaxbClassList.add(Person.class);
+        Class<?>[] jaxbClasses = jaxbClassList.toArray(new Class[jaxbClassList.size()]);
+        return JAXBContext.newInstance(jaxbClasses);
+    }
+
     @Test
     public void testQuery() throws Exception {
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("simple_query_test.drl"));
-        StatefulKnowledgeSession session = createKnowledgeSession( kbase );       
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("simple_query_test.drl"));
+        KieSession session = createKieSession( kbase );
 
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
-        session.insert( stilton );
+        FactHandle factHandle = session.insert( stilton );
         session = SerializationHelper.getSerialisedStatefulKnowledgeSession(session, true);
-        
-        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "simple query" );
+
+        String queryName = "simple query";
+        org.kie.api.runtime.rule.QueryResults results = getQueryResults(session, queryName);
         assertEquals( 1,
                       results.size() );
 
+        QueryResultsRow row = results.iterator().next();
+        if( row instanceof FlatQueryResultRow ) {
+            FlatQueryResultRow flatRow = (FlatQueryResultRow) row;
+            assertEquals( 0, flatRow.getIdentifiers().size() );
+        } else if( row instanceof QueryResultsRowImpl ) {
+            QueryResultsRowImpl rowImpl = (QueryResultsRowImpl) row;
+            assertEquals( 0, rowImpl.getDeclarations().size() );
+        }
     }
 
     @Test
     public void testQueryRemoval() throws Exception {
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("simple_query_test.drl"));
-        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("simple_query_test.drl"));
+        KieSession session = createKieSession( kbase );
 
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
@@ -92,15 +193,15 @@ public class QueryTest extends CommonTestMethodBase {
         assertEquals( 1,
                       results.size() );
 
-        Rule rule = kbase.getKnowledgePackage( "org.drools.compiler.test" ).getRules().iterator().next();
-        
+        Rule rule = kbase.getKiePackage( "org.drools.compiler.test" ).getRules().iterator().next();
+
         assertEquals( "simple query",
                       rule.getName());
 
         kbase.removeQuery( "org.drools.compiler.test",
                            "simple query" );
 
-        assertTrue( kbase.getKnowledgePackage( "org.drools.compiler.test" ).getRules().isEmpty() );
+        assertTrue( kbase.getKiePackage( "org.drools.compiler.test" ).getRules().isEmpty() );
 
         try {
             results = session.getQueryResults( "simple query" );
@@ -111,12 +212,12 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testQuery2() throws Exception {
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_Query.drl"));
-        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-        
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_Query.drl"));
+        KieSession session = createKieSession( kbase );
+
         session.fireAllRules();
 
-        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "assertedobjquery" );
+        QueryResults results = getQueryResults(session, "assertedobjquery" );
         assertEquals( 1,
                       results.size() );
         assertEquals( new InsertedObject( "value1" ),
@@ -125,30 +226,37 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testQueryWithParams() throws Exception {
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_QueryWithParams.drl"));
-        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-        
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_QueryWithParams.drl"));
+        KieSession session = createKieSession( kbase );
+
         session.fireAllRules();
 
-        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "assertedobjquery", new String[]{"value1"}  );
-        
+        String queryName = "assertedobjquery";
+        String [] arguments = new String[]{"value1"};
+        QueryResultsImpl resultsImpl = (QueryResultsImpl) session.getQueryResults( queryName, arguments );
+
+        QueryResults results = getQueryResults( session, queryName, arguments );
+
         assertEquals( 1,
                       results.size() );
-        assertEquals( new InsertedObject( "value1" ),
+        InsertedObject value = new InsertedObject( "value1" );
+        assertEquals( value,
                       ((InternalFactHandle) results.iterator().next().getFactHandle( "assertedobj" )).getObject()  );
+        assertEquals( value,
+                      results.iterator().next().get("assertedobj") );
 
-        results = session.getQueryResults( "assertedobjquery", new String[]{"value3"}  );
+        results = getQueryResults( session, "assertedobjquery", new String[]{"value3"}  );
 
         assertEquals( 0,
                       results.size() );
 
-        results = session.getQueryResults( "assertedobjquery2", new String[]{null, "value2"}  );
+        results = getQueryResults( session, "assertedobjquery2", new String[]{null, "value2"}  );
         assertEquals( 1,
                       results.size() );
         assertEquals( new InsertedObject( "value2" ),
                       ((InternalFactHandle) results.iterator().next().getFactHandle( "assertedobj" )).getObject() );
 
-        results = session.getQueryResults( "assertedobjquery2", new String[]{"value3", "value2"}  );
+        results = getQueryResults(session, "assertedobjquery2", new String[]{"value3", "value2"}  );
 
         assertEquals( 1,
                       results.size() );
@@ -165,11 +273,11 @@ public class QueryTest extends CommonTestMethodBase {
         str += "    stilton : Cheese(type == 'stilton') \n";
         str += "    cheddar : Cheese(type == 'cheddar', price == stilton.price) \n";
         str += "end\n";
-        
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        StatefulKnowledgeSession session = createKnowledgeSession( kbase );        
-        
-        
+
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
+        KieSession session = createKieSession( kbase );
+
+
         Cheese stilton1 = new Cheese( "stilton", 1 );
         Cheese cheddar1 = new Cheese( "cheddar", 1 );
         Cheese stilton2 = new Cheese( "stilton", 2 );
@@ -200,10 +308,10 @@ public class QueryTest extends CommonTestMethodBase {
         session.insert( cheddar2 );
         session.insert( cheddar3 );
 
-        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "cheeses" );
+        org.kie.api.runtime.rule.QueryResults results = getQueryResults(session, "cheeses" );
         assertEquals( 3, results.size() );
         assertEquals( 2, results.getIdentifiers().length );
-        
+
         Set newSet = new HashSet();
         for ( org.kie.api.runtime.rule.QueryResultsRow result : results ) {
             list = new ArrayList();
@@ -215,10 +323,7 @@ public class QueryTest extends CommonTestMethodBase {
                       newSet );
 
         FlatQueryResults flatResults = new FlatQueryResults( ((StatefulKnowledgeSessionImpl) session).getQueryResults( "cheeses" ) );
-        assertEquals( 3,
-                      flatResults.size() );
-        assertEquals( 2,
-                      flatResults.getIdentifiers().length );
+
         newSet = new HashSet();
         for ( org.kie.api.runtime.rule.QueryResultsRow result : flatResults ) {
             list = new ArrayList();
@@ -234,8 +339,8 @@ public class QueryTest extends CommonTestMethodBase {
     public void testTwoQuerries() throws Exception {
         // @see JBRULES-410 More than one Query definition causes an incorrect
         // Rete network to be built.
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_TwoQuerries.drl"));
-        StatefulKnowledgeSession session = createKnowledgeSession( kbase );   
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_TwoQuerries.drl"));
+        KieSession session = createKieSession( kbase );
 
         final Cheese stilton = new Cheese( "stinky",
                                            5 );
@@ -249,21 +354,21 @@ public class QueryTest extends CommonTestMethodBase {
 
         session.insert( per1 );
         session.insert( per2 );
-        
-        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "find stinky cheeses" );
+
+        QueryResults results = getQueryResults( session, "find stinky cheeses" );
         assertEquals( 1,
                       results.size() );
 
-        results = session.getQueryResults( "find pensioners" );
+        results = getQueryResults( session, "find pensioners" );
         assertEquals( 1,
                       results.size() );
     }
 
     @Test
     public void testDoubleQueryWithExists() throws Exception {
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_DoubleQueryWithExists.drl"));
-        StatefulKnowledgeSession session = createKnowledgeSession( kbase );        
-        
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_DoubleQueryWithExists.drl"));
+        KieSession session = createKieSession( kbase );
+
         final Person p1 = new Person( "p1",
                                       "stilton",
                                       20 );
@@ -308,7 +413,7 @@ public class QueryTest extends CommonTestMethodBase {
         session.update( c1FactHandle,
                               p1 );
         session.fireAllRules();
-        results = session.getQueryResults( "2 persons with the same status" );
+        results = getQueryResults( session, "2 persons with the same status" );
         assertEquals( 2,
                       results.size() );
 
@@ -317,7 +422,7 @@ public class QueryTest extends CommonTestMethodBase {
         session.update( c2FactHandle,
                               p2 );
         session.fireAllRules();
-        results = session.getQueryResults( "2 persons with the same status" );
+        results = getQueryResults( session, "2 persons with the same status" );
         assertEquals( 1,
                       results.size() );
 
@@ -342,11 +447,11 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testQueryWithCollect() throws Exception {
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_Query.drl"));
-        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_Query.drl"));
+        KieSession session = createKieSession( kbase );
         session.fireAllRules();
 
-        org.kie.api.runtime.rule.QueryResults results = session.getQueryResults( "collect objects" );
+        QueryResults results = getQueryResults( session, "collect objects" );
         assertEquals( 1,
                       results.size() );
 
@@ -359,10 +464,10 @@ public class QueryTest extends CommonTestMethodBase {
 
     @Test
     public void testDroolsQueryCleanup() throws Exception {
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_QueryMemoryLeak.drl"));
-        StatefulKnowledgeSession session = createKnowledgeSession( kbase );
-        
-        StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_QueryMemoryLeak.drl"));
+        KieSession session = createKieSession( kbase );
+
+        KieSession ksession = kbase.newKieSession();
 
         String workerId = "B1234";
         Worker worker = new Worker();
@@ -410,10 +515,10 @@ public class QueryTest extends CommonTestMethodBase {
         str += "query peeps( String $name, String $likes, int $age ) \n";
         str += "    $p : Person( $name := name, $likes := likes, $age := age ) \n";
         str += "end\n";
-        
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-        
+
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
+        KieSession ksession = createKieSession( kbase );
+
         Person p1 = new Person( "darth",
                                 "stilton",
                                 100 );
@@ -432,10 +537,8 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.insert( p3 );
         ksession.insert( p4 );
 
-        org.kie.api.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
-                                                                                 new Object[]{Variable.v, Variable.v, Variable.v} );
-        assertEquals( 4,
-                          results.size() );
+        QueryResults results = getQueryResults(ksession, "peeps", new Object[]{Variable.v, Variable.v, Variable.v} );
+        assertEquals( 4, results.size() );
         List names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
@@ -447,10 +550,8 @@ public class QueryTest extends CommonTestMethodBase {
         assertTrue( names.contains( "bobba" ) );
         assertTrue( names.contains( "darth" ) );
 
-        results = ksession.getQueryResults( "peeps",
-                                            new Object[]{Variable.v, Variable.v, 300} );
-        assertEquals( 3,
-                          results.size() );
+        results = getQueryResults(ksession, "peeps", new Object[]{Variable.v, Variable.v, 300} );
+        assertEquals( 3, results.size() );
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
@@ -461,10 +562,8 @@ public class QueryTest extends CommonTestMethodBase {
         assertTrue( names.contains( "yoda" ) );
         assertTrue( names.contains( "bobba" ) );
 
-        results = ksession.getQueryResults( "peeps",
-                                            new Object[]{Variable.v, "stilton", 300} );
-        assertEquals( 1,
-                          results.size() );
+        results = getQueryResults(ksession, "peeps", new Object[]{Variable.v, "stilton", 300} );
+        assertEquals( 1, results.size() );
         names = new ArrayList();
         for ( org.kie.api.runtime.rule.QueryResultsRow row : results ) {
             names.add( ((Person) row.get( "$p" )).getName() );
@@ -507,10 +606,10 @@ public class QueryTest extends CommonTestMethodBase {
         str += "query peeps( Person $p, String $name, String $likes, int $age ) \n";
         str += "    $p := Person( $name := name, $likes := likes, $age := age ) \n";
         str += "end\n";
-        
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-        
+
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
+        KieSession ksession = createKieSession( kbase );
+
         Person p1 = new Person( "darth",
                                 "stilton",
                                 100 );
@@ -566,9 +665,9 @@ public class QueryTest extends CommonTestMethodBase {
         str += "    $p : Person( $name := name, $likes := likes, $street := address.street ) \n";
         str += "end\n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-        
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
+        KieSession ksession = createKieSession( kbase );
+
         Person p1 = new Person( "darth",
                                 "stilton",
                                 100 );
@@ -582,8 +681,7 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.insert( p1 );
         ksession.insert( p2 );
 
-        org.kie.api.runtime.rule.QueryResults results = ksession.getQueryResults( "peeps",
-                                                                                 new Object[]{Variable.v, Variable.v, Variable.v} );
+        QueryResults results = getQueryResults( ksession, "peeps", new Object[]{Variable.v, Variable.v, Variable.v} );
         assertEquals( 2,
                       results.size() );
         List names = new ArrayList();
@@ -593,8 +691,7 @@ public class QueryTest extends CommonTestMethodBase {
         assertTrue( names.contains( "yoda" ) );
         assertTrue( names.contains( "darth" ) );
 
-        results = ksession.getQueryResults( "peeps",
-                                            new Object[]{Variable.v, Variable.v, "s1"} );
+        results = getQueryResults( ksession, "peeps", new Object[]{Variable.v, Variable.v, "s1"} );
         assertEquals( 1,
                       results.size() );
         names = new ArrayList();
@@ -617,9 +714,9 @@ public class QueryTest extends CommonTestMethodBase {
         str += "    cheddar : Cheese(type == $type2, $cprice : price == stilton.price) \n";
         str += "end\n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
-        
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
+        KieSession ksession = createKieSession( kbase );
+
         Cheese stilton1 = new Cheese( "stilton",
                                       1 );
         Cheese cheddar1 = new Cheese( "cheddar",
@@ -685,7 +782,7 @@ public class QueryTest extends CommonTestMethodBase {
                                                   listener );
 
         ksession.fireAllRules();
-        
+
         // Assert that on opening we have three rows added
         assertEquals( 3,
                       added.size() );
@@ -721,7 +818,7 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.update( c3Fh,
                          cheddar3 );
         ksession.fireAllRules();
-        
+
         assertEquals( 3,
                       added.size() );
         assertEquals( 1,
@@ -737,7 +834,7 @@ public class QueryTest extends CommonTestMethodBase {
         ksession.update( c3Fh,
                          cheddar3 );
         ksession.fireAllRules();
-        
+
         assertEquals( 4,
                       added.size() );
         assertEquals( 1,
@@ -752,7 +849,7 @@ public class QueryTest extends CommonTestMethodBase {
         cheddar3.setOldPrice( 0 );
         ksession.update( c3Fh,
                          cheddar3 );
-        ksession.fireAllRules();        
+        ksession.fireAllRules();
 
         assertEquals( 4,
                       added.size() );
@@ -766,7 +863,7 @@ public class QueryTest extends CommonTestMethodBase {
 
         // Check a standard retract
         ksession.retract( s1Fh );
-        ksession.fireAllRules();        
+        ksession.fireAllRules();
 
         assertEquals( 4,
                       added.size() );
@@ -782,7 +879,7 @@ public class QueryTest extends CommonTestMethodBase {
         query.close();
 
         ksession.fireAllRules();
-        
+
         assertEquals( 4,
                       added.size() );
         assertEquals( 4,
@@ -824,9 +921,9 @@ public class QueryTest extends CommonTestMethodBase {
         str += "    $cheese : Cheese(type == $type) \n";
         str += "end\n";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase, option );
-        
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
+        KieSession ksession = createKieSession( kbase, option );
+
         // insert some data into the session
         for ( int i = 0; i < 10000; i++ ) {
             ksession.insert( new Cheese( i % 2 == 0 ? "stilton" : "brie" ) );
@@ -858,8 +955,8 @@ public class QueryTest extends CommonTestMethodBase {
                      "    not DomainObject( id == $do.id, eval(interval.isAfter($do.getInterval())))\n" +
                      "end";
 
-        KnowledgeBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
-        StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
+        KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(str));
+        KieSession ksession = createKieSession( kbase );
 
         DomainObject do1 = new DomainObject();
         do1.setId( 1 );

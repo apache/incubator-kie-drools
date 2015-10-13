@@ -16,17 +16,17 @@
 
 package org.drools.core.command.runtime.rule;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.DisconnectedFactHandle;
-import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.kie.internal.command.Context;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -42,23 +42,27 @@ public class DeleteCommand
         this.handle = DisconnectedFactHandle.newFrom( handle );
     }
 
-    public Void execute(Context context) {
-        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        ksession.getEntryPoint( handle.getEntryPointId() ).retract( handle );
-        return null;
-    }
-
     public FactHandle getFactHandle() {
         return this.handle;
     }
 
-    @XmlAttribute(name="fact-handle", required=true)
+    public void setHandle(DisconnectedFactHandle factHandle) {
+        this.handle = factHandle;
+    }
+
+    @XmlElement(name="fact-handle", required=true)
     public void setFactHandleFromString(String factHandleId) {
         handle = new DisconnectedFactHandle(factHandleId);
     }
 
     public String getFactHandleFromString() {
         return handle.toExternalForm();
+    }
+
+    public Void execute(Context context) {
+        KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
+        ksession.getEntryPoint( handle.getEntryPointId() ).delete( handle );
+        return null;
     }
 
     public String toString() {

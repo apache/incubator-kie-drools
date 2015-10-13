@@ -26,6 +26,7 @@ import org.kie.api.runtime.rule.Match;
 public class RuleNameEndsWithAgendaFilter
     implements
     AgendaFilter {
+
     private final String  suffix;
 
     private final boolean accept;
@@ -39,6 +40,14 @@ public class RuleNameEndsWithAgendaFilter
                                         final boolean accept) {
         this.suffix = suffix;
         this.accept = accept;
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public boolean isAccept() {
+        return accept;
     }
 
     public boolean accept( Match activation ) {

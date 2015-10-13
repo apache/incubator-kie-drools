@@ -15,12 +15,16 @@
  */
 package org.drools.core.command.runtime.rule;
 
+import org.drools.core.QueryResultsImpl;
 import org.drools.core.QueryResultsRowImpl;
 import org.junit.*;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.QueryResults;
 import org.drools.core.command.GetVariableCommand;
 import org.drools.core.command.KnowledgeContextResolveFromContextCommand;
 import org.drools.core.command.ResolvingKnowledgeCommandContext;
@@ -28,6 +32,7 @@ import org.drools.core.command.SetVariableCommandFromCommand;
 import org.drools.core.command.impl.ContextImpl;
 import org.drools.core.command.impl.DefaultCommandService;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.world.impl.WorldImpl;
 import static org.junit.Assert.*;
 
@@ -38,34 +43,14 @@ import static org.junit.Assert.*;
 @Ignore("phreak")
 public class QueryCommandNoBatchTest {
 
-    private StatefulKnowledgeSession ksession;
     private DefaultCommandService commandService;
-
-    public QueryCommandNoBatchTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     @Test
     public void executeQueryNoBatch() {
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         ExecutionResultImpl localKresults = new ExecutionResultImpl();
         WorldImpl worldImpl = new WorldImpl();
         worldImpl.createContext("__TEMP__");
@@ -75,10 +60,10 @@ public class QueryCommandNoBatchTest {
         kContext.set("ksession", ksession);
 
         commandService = new DefaultCommandService(kContext);
-        
+
         QueryCommand queryCommand = new QueryCommand("out", "myQuery", new Object[]{});
         SetVariableCommandFromCommand setVariableCmd = new SetVariableCommandFromCommand("__TEMP__", "query123", queryCommand);
-        
+
         KnowledgeContextResolveFromContextCommand resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(setVariableCmd,
                                                                                                                             null, null, "ksession", "localResults");
         ExecutionResults results = (ExecutionResults) commandService.execute(resolveFromContextCommand);
@@ -89,11 +74,10 @@ public class QueryCommandNoBatchTest {
         GetVariableCommand getVariableCmd = new GetVariableCommand("query123", "__TEMP__");
         resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(getVariableCmd,
                 null, null, "ksession", "localResults");
-        QueryResultsRowImpl queryResults = (QueryResultsRowImpl) commandService.execute(resolveFromContextCommand);
+        QueryResultsRowImpl queryResultsRow = (QueryResultsRowImpl) commandService.execute(resolveFromContextCommand);
 
-        assertNotNull(queryResults);
+        assertNotNull(queryResultsRow);
 
-        assertEquals(0, queryResults.size());
-
+        assertEquals(0, queryResultsRow.size());
     }
 }

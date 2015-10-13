@@ -20,9 +20,11 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 @XmlAccessorType(XmlAccessType.NONE)
+@XmlSeeAlso({JaxbListWrapper.class})
 public class JaxbStringObjectPair {
 
     @XmlAttribute(name = "key")
@@ -44,16 +46,8 @@ public class JaxbStringObjectPair {
         return key;
     }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
-
     public Object getValue() {
         return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
     }
 
     @Override
@@ -87,8 +81,4 @@ public class JaxbStringObjectPair {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "JaxbPair [key=" + key + ", value=" + value + "]";
-    }
 }

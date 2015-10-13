@@ -18,6 +18,7 @@ package org.drools.core.xml.jaxb.util;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -33,12 +34,15 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class JaxbListWrapper  {
 
     public static enum JaxbWrapperType {
-        LIST, SET, MAP;
+        LIST, SET, MAP, ARRAY;
     }
 
     // set to null for backwards compatibility
     @XmlElement
     private JaxbWrapperType type = null;
+
+    @XmlAttribute
+    private String componentType = null;
 
     @XmlElement(name="element")
     private Object[] elements;
@@ -70,5 +74,13 @@ public class JaxbListWrapper  {
 
     public void setType( JaxbWrapperType type ) {
         this.type = type;
+    }
+
+    public String getComponentType() {
+        return componentType;
+    }
+
+    public void setComponentType( String componentType ) {
+        this.componentType = componentType;
     }
 }

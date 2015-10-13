@@ -18,16 +18,28 @@ package org.drools.core.base;
 
 import java.util.Arrays;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
+
+@XmlType(name="array-elements")
+@XmlAccessorType(XmlAccessType.NONE)
 public class ArrayElements {
+
+    @XmlElement
+    @XmlJavaTypeAdapter(JaxbUnknownAdapter.class)
     private Object[] elements;
-    
+
     private static final Object[] EMPTY_ELEMENTS = new Object[0];
-    
+
     public ArrayElements() {
         this(null);
     }
-    
+
     public ArrayElements(final Object[] elements) {
         if ( elements != null ) {
             this.elements = elements;
@@ -35,7 +47,7 @@ public class ArrayElements {
             this.elements = EMPTY_ELEMENTS;
         }
     }
-    
+
     public Object[] getElements() {
         return this.elements;
     }
@@ -62,6 +74,6 @@ public class ArrayElements {
                              other.elements ) ) return false;
         return true;
     }
-    
-    
+
+
 }

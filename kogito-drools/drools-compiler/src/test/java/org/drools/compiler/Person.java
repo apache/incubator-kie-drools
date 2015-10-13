@@ -26,7 +26,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+
 @Traitable
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Person
         implements
         Serializable,
@@ -50,13 +54,13 @@ public class Person
 
     private Address address;
     private Pet pet;
-    
+
     private List<Address> addresses = new ArrayList<Address>();
     private Map<Object, Address> namedAddresses = new HashMap<Object, Address>(0);
-    
+
 
     public Object object;
-    
+
     public Object notInEqualTestObject;
 
     public Person() {
@@ -91,10 +95,10 @@ public class Person
     public List<Address> getAddresses() {
         return addresses;
     }
-    
+
     public List getAddressesNoGenerics() {
         return addresses;
-    }    
+    }
 
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
@@ -353,6 +357,6 @@ public class Person
 
     public void setObject(Object object) {
         this.object = object;
-    }    
+    }
 
 }

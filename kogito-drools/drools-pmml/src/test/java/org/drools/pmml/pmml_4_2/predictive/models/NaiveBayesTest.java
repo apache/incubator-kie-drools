@@ -56,13 +56,13 @@ public class NaiveBayesTest extends DroolsAbstractPMMLTest {
 
         QueryResults q1 = kieSession.getQueryResults( "ProbabilityOf500", "NaiveBayesInsurance", Variable.v );
         assertEquals( 1, q1.size() );
-        Object a1 = q1.iterator().next().get( q1.getIdentifiers()[ 1 ] );
+        Object a1 = q1.iterator().next().get( "$result" );
         assertTrue( a1 instanceof Double );
         assertEquals( 0.034, (Double) a1, 4 );
 
         QueryResults q2 = kieSession.getQueryResults( "ChosenClass", "NaiveBayesInsurance", Variable.v );
         assertEquals( 1, q2.size() );
-        Object a2 = q2.iterator().next().get( q2.getIdentifiers()[ 1 ] );
+        Object a2 = q2.iterator().next().get( "$result" );
         assertTrue( a2 instanceof Integer );
         assertEquals( 100, a2 );
 
@@ -88,13 +88,13 @@ public class NaiveBayesTest extends DroolsAbstractPMMLTest {
 
         QueryResults q1 = kieSession.getQueryResults( "ProbabilityOf1000", "NaiveBayesInsurance", Variable.v );
         assertEquals( 1, q1.size() );
-        Object a1 = q1.iterator().next().get( q1.getIdentifiers()[ 1 ] );
+        Object a1 = q1.iterator().next().get( "$result" );
         assertTrue( a1 instanceof Double );
         assertEquals( 0.112, (Double) a1, 4 );
 
         QueryResults q2 = kieSession.getQueryResults( "ChosenClass", "NaiveBayesInsurance", Variable.v );
         assertEquals( 1, q2.size() );
-        Object a2 = q2.iterator().next().get( q2.getIdentifiers()[ 1 ] );
+        Object a2 = q2.iterator().next().get( "$result" );
         assertTrue( a2 instanceof Integer );
         assertEquals( 100, a2 );
 

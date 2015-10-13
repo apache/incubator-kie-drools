@@ -22,10 +22,12 @@ import org.drools.core.QueryResultsRowImpl;
 import org.junit.*;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.api.KieBase;
 import org.kie.api.command.*;
 import org.kie.internal.command.CommandFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.ExecutionResults;
+import org.kie.api.runtime.KieSession;
 import org.drools.core.command.ExecuteCommand;
 import org.drools.core.command.GetVariableCommand;
 import org.drools.core.command.KnowledgeContextResolveFromContextCommand;
@@ -40,114 +42,88 @@ import static org.junit.Assert.*;
 
 public class ExecuteCommandDisconnectedTest {
 
-    private StatefulKnowledgeSession ksession;
     private DefaultCommandService commandService;
-    
-    public ExecuteCommandDisconnectedTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
-    @Before
-    public void setUp() {
-        
-    }
-
-    @After
-    public void tearDown() {
-    }
 
     @Test
     public void executeDisconnected() {
-        
-       
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        
-
-        ksession = kbase.newStatefulKnowledgeSession();
+        KieSession ksession = kbase.newKieSession();
         ExecutionResultImpl localKresults = new ExecutionResultImpl();
-        
-        ResolvingKnowledgeCommandContext kContext 
+
+        ResolvingKnowledgeCommandContext kContext
             = new ResolvingKnowledgeCommandContext( new ContextImpl( "ksession", null ) );
         kContext.set("localResults", localKresults);
         kContext.set("ksession", ksession);
-        
+
         commandService = new DefaultCommandService(kContext);
-        
-        
-        
+
         List cmds = new ArrayList();
         cmds.add(new InsertObjectCommand(new String("Hi!"), "handle"));
-                                                                                                                 
+
         BatchExecutionCommand batchCmd = CommandFactory.newBatchExecution(cmds, "kresults");
         ExecuteCommand execCmd = new ExecuteCommand(batchCmd,true);
-        KnowledgeContextResolveFromContextCommand resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(execCmd,   
+        KnowledgeContextResolveFromContextCommand resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(execCmd,
                                                                                         null,null,"ksession","localResults");
         ExecutionResults results = (ExecutionResults)commandService.execute(resolveFromContextCommand);
-        
+
         assertNotNull(results);
-        
+
         assertNotNull(results.getFactHandle("handle"));
-        
+
         assertTrue(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
-        
-        
-        
+
         cmds = new ArrayList();
         cmds.add(new InsertObjectCommand(new String("Hi!"), "handle"));
         batchCmd = CommandFactory.newBatchExecution(cmds, "kresults");
         execCmd = new ExecuteCommand(batchCmd);
-        resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(execCmd,   
+        resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(execCmd,
                                                                                         null,null,"ksession","localResults");
         results = (ExecutionResults)commandService.execute(resolveFromContextCommand);
-        
-        assertNotNull(results);
-        
-        assertNotNull(results.getFactHandle("handle"));
-        
-        assertFalse(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
-        
-    }
-    
-    @Test @Ignore("phreak")
-    public void executeCmdContextPropagationCastTest() {
-         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
-        ksession = kbase.newStatefulKnowledgeSession();
+        assertNotNull(results);
+
+        assertNotNull(results.getFactHandle("handle"));
+
+        assertFalse(((DefaultFactHandle)results.getFactHandle("handle")).isDisconnected());
+
+    }
+
+    @Test
+    @Ignore("phreak")
+    public void executeCmdContextPropagationCastTest() {
+        final String CONTEXT_ID = "__TEMP__";
+        final String VARIABLE_ID = "query123";
+
+        KieBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+
+        KieSession ksession = kbase.newKieSession();
         ExecutionResultImpl localKresults = new ExecutionResultImpl();
         WorldImpl worldImpl = new WorldImpl();
         worldImpl.createContext("__TEMP__");
-        worldImpl.getContext("__TEMP__").set("__TEMP__", new ContextImpl("__TEMP__", null));
+        worldImpl.getContext(CONTEXT_ID).set(CONTEXT_ID, new ContextImpl(CONTEXT_ID, null));
         ResolvingKnowledgeCommandContext kContext = new ResolvingKnowledgeCommandContext(worldImpl);
         kContext.set("localResults", localKresults);
         kContext.set("ksession", ksession);
 
         commandService = new DefaultCommandService(kContext);
         List cmds = new ArrayList();
-        
+
         QueryCommand queryCommand = new QueryCommand("out", "myQuery", new Object[]{});
-        SetVariableCommandFromCommand setVariableCmd = new SetVariableCommandFromCommand("__TEMP__", "query123", queryCommand);
+        SetVariableCommandFromCommand setVariableCmd = new SetVariableCommandFromCommand(CONTEXT_ID, VARIABLE_ID, queryCommand);
         cmds.add(setVariableCmd);
-        
+
         BatchExecutionCommand batchCmd = CommandFactory.newBatchExecution(cmds, "kresults");
         ExecuteCommand execCmd = new ExecuteCommand(batchCmd,true);
-        
-        
-        KnowledgeContextResolveFromContextCommand resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(execCmd,
-                null, null, "ksession", "localResults");
+
+        KnowledgeContextResolveFromContextCommand resolveFromContextCommand
+            = new KnowledgeContextResolveFromContextCommand(execCmd, null, null, "ksession", "localResults");
         ExecutionResults results = (ExecutionResults) commandService.execute(resolveFromContextCommand);
 
         // I'm not expecting any results here
         assertNotNull(results);
 
-        GetVariableCommand getVariableCmd = new GetVariableCommand("query123", "__TEMP__");
+        GetVariableCommand getVariableCmd = new GetVariableCommand(VARIABLE_ID, CONTEXT_ID);
         resolveFromContextCommand = new KnowledgeContextResolveFromContextCommand(getVariableCmd,
                 null, null, "ksession", "localResults");
         QueryResultsRowImpl queryResults = (QueryResultsRowImpl) commandService.execute(resolveFromContextCommand);
@@ -155,7 +131,7 @@ public class ExecuteCommandDisconnectedTest {
         assertNotNull(queryResults);
 
         assertEquals(0, queryResults.size());
-        
-        
+
+
     }
 }

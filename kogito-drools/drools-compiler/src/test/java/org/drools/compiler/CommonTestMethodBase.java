@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -62,8 +62,18 @@ import java.util.Collection;
 public class CommonTestMethodBase extends Assert {
 	public static RuleEngineOption phreak = RuleEngineOption.PHREAK;
 
+	protected KieSession createKieSession(KieBase kbase) {
+		return kbase.newKieSession();
+	}
+
+	protected KieSession createKieSession(KieBase kbase, KieSessionOption option) {
+		KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+		ksconf.setOption(option);
+		return kbase.newKieSession(ksconf, null);
+	}
+
 	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
-		return kbase.newStatefulKnowledgeSession();
+	    return kbase.newStatefulKnowledgeSession();
 	}
 
 	protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase, KieSessionOption option) {
@@ -267,7 +277,7 @@ public class CommonTestMethodBase extends Assert {
 		return (InternalAgenda) session.getAgenda();
 	}
 
-	public static byte[] createJar(KieServices ks, 
+	public static byte[] createJar(KieServices ks,
 			                       ReleaseId releaseId,
 			                       String... drls) {
 		KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML(
@@ -278,7 +288,7 @@ public class CommonTestMethodBase extends Assert {
 			}
 		}
 		KieBuilder kb = ks.newKieBuilder(kfs).buildAll();
-		assertFalse( kb.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).toString(), 
+		assertFalse( kb.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR).toString(),
 		        kb.getResults().hasMessages(org.kie.api.builder.Message.Level.ERROR) );
 		InternalKieModule kieModule = (InternalKieModule) ks.getRepository()
 				.getKieModule(releaseId);

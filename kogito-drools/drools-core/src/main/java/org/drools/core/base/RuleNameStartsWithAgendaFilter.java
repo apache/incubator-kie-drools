@@ -41,6 +41,14 @@ public class RuleNameStartsWithAgendaFilter
         this.accept = accept;
     }
 
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public boolean isAccept() {
+        return accept;
+    }
+
     public boolean accept( Match activation ) {
         if ( activation.getRule().getName().startsWith( this.prefix ) ) {
             return this.accept;

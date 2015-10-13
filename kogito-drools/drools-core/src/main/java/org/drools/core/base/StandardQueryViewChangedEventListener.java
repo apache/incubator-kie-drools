@@ -16,68 +16,20 @@
 
 package org.drools.core.base;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.QueryTerminalNode;
-import org.drools.core.spi.PropagationContext;
 
 public class StandardQueryViewChangedEventListener
-    implements
-    InternalViewChangedEventListener {
+    extends AbstractQueryViewListener {
 
-    private List<Object> results;
-
-    public StandardQueryViewChangedEventListener() {
-        this.results = new ArrayList<Object>( 250 );
-    }
-
-    public List<? extends Object> getResults() {
-        return this.results;
-    }
-
-    public void rowAdded(final RuleImpl rule,
-                         final LeftTuple tuple,
-                         final PropagationContext context,
-                         final InternalWorkingMemory workingMemory) {
-        InternalFactHandle[] handles = new InternalFactHandle[tuple.getIndex() + 1];
-        LeftTuple entry = tuple;
-
-        // Add all the FactHandles
-        while ( entry != null) {
-            InternalFactHandle handle = entry.getLastHandle();
-            if ( handle != null ) {
-                // can be null for eval, not and exists that have no right input
-                handles[entry.getIndex()] = new DefaultFactHandle( handle.getId(),
-                                                                   ( handle.getEntryPoint() != null ) ?  handle.getEntryPoint().getEntryPointId() : null,
-                                                                   handle.getIdentityHashCode(),
-                                                                   handle.getObjectHashCode(),
-                                                                   handle.getRecency(),
-                                                                   handle.getObject() );
-            }
-            entry = entry.getParent();
-        }
-        
-        QueryTerminalNode node = ( QueryTerminalNode ) tuple.getLeftTupleSink();                 
-                              
-        this.results.add( new QueryRowWithSubruleIndex(handles, node.getSubruleIndex()) );
-    }
-    
-    public void rowRemoved(final RuleImpl rule,
-                           final LeftTuple tuple,
-                           final PropagationContext context,
-                           final InternalWorkingMemory workingMemory) {
-    }
-    
-    public void rowUpdated(final RuleImpl rule,
-                           final LeftTuple tuple,
-                               final PropagationContext context,
-            final InternalWorkingMemory workingMemory) {
+    public InternalFactHandle getHandle(InternalFactHandle originalHandle) {
+        // can be null for eval, not and exists that have no right input
+        return new DefaultFactHandle( originalHandle.getId(),
+                                      ( originalHandle.getEntryPoint() != null ) ?  originalHandle.getEntryPoint().getEntryPointId() : null,
+                                      originalHandle.getIdentityHashCode(),
+                                      originalHandle.getObjectHashCode(),
+                                      originalHandle.getRecency(),
+                                      originalHandle.getObject() );
     }
 
 }

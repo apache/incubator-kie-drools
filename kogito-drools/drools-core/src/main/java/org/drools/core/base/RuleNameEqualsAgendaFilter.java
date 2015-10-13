@@ -16,7 +16,6 @@
 
 package org.drools.core.base;
 
-import org.drools.core.spi.Activation;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
 
@@ -39,6 +38,14 @@ public class RuleNameEqualsAgendaFilter
                                       final boolean accept) {
         this.name = name;
         this.accept = accept;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isAccept() {
+        return accept;
     }
 
     public boolean accept( Match activation ) {

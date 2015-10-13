@@ -26,45 +26,49 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
-public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<String,Object>> {
+public class JaxbMapAdapter extends XmlAdapter<JaxbStringObjectPair[], Map<String,? extends Object>> {
 
-    private static final JaxbUnknownAdapter unknownAdapter = new JaxbUnknownAdapter();
-    
+    protected static Logger logger = LoggerFactory.getLogger(JaxbMapAdapter.class);
+
     @Override
-    public JaxbStringObjectPair[] marshal(Map<String, Object> value) throws Exception {
-        if (value == null || value.isEmpty()) {
-            return new JaxbStringObjectPair[0];
-        }
-
-        List<JaxbStringObjectPair> ret = new ArrayList<JaxbStringObjectPair>(value.size());
-        for (Map.Entry<String, Object> entry : value.entrySet()) {
-            Object obj = entry.getValue();
-            Class<? extends Object> vClass = obj.getClass();
-
-            if ( obj instanceof QueryResultsImpl) {
-                obj = new FlatQueryResults( (QueryResultsImpl)obj );
-            } else if (!JaxbListWrapper.class.equals(vClass)) {
-                obj = unknownAdapter.marshal(obj);
+    public JaxbStringObjectPair[] marshal(Map<String, ? extends Object> map) throws Exception {
+        try {
+            if (map == null || map.isEmpty()) {
+                return new JaxbStringObjectPair[0];
             }
-            ret.add(new JaxbStringObjectPair(entry.getKey(), obj));
-        }
 
-        return ret.toArray(new JaxbStringObjectPair[value.size()]);
+            List<JaxbStringObjectPair> ret = new ArrayList<JaxbStringObjectPair>(map.size());
+            for (Map.Entry<String, ? extends Object> entry : map.entrySet()) {
+                Object obj = entry.getValue();
+                // There's already a @XmlJavaTypeAdapter(JaxbUnknownAdapter.class) anno on the JaxbStringObjectPair.value field
+                ret.add(new JaxbStringObjectPair(entry.getKey(), obj));
+            }
+
+            return ret.toArray(new JaxbStringObjectPair[map.size()]);
+        } catch( Exception e ) {
+            // because exceptions are always swallowed by JAXB
+            logger.error("Unable to marshall " + map.getClass().getName() + " instance: " + e.getMessage(), e);
+            throw e;
+        }
     }
 
     @Override
     public Map<String, Object> unmarshal(JaxbStringObjectPair[] value) throws Exception {
-        Map<String, Object> r = new LinkedHashMap<String, Object>();
-        for( JaxbStringObjectPair p : value ) {
-            if ( p.getValue() instanceof JaxbListWrapper) {
-                r.put(p.getKey(), unknownAdapter.unmarshal(p.getValue()));
-            } else {
+        try {
+            Map<String, Object> r = new LinkedHashMap<String, Object>();
+            for( JaxbStringObjectPair p : value ) {
                 r.put(p.getKey(), p.getValue());
             }
+            return r;
+        } catch( Exception e ) {
+            // because exceptions are always swallowed by JAXB
+            logger.error("Unable to *un*marshal " + value.getClass().getName() + " instance: " + e.getMessage(), e);
+            throw e;
         }
-        return r;
     }
 
 }
