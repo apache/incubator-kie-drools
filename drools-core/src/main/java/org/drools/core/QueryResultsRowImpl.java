@@ -38,7 +38,7 @@ public class QueryResultsRowImpl implements QueryResultsRow {
         this.workingMemory = workingMemory;
         this.queryResults = queryResults;
     }
-    
+
     public int getSubruleIndex() {
         return this.row.getSubruleIndex();
     }
@@ -46,17 +46,17 @@ public class QueryResultsRowImpl implements QueryResultsRow {
     /**
      * Return a map of Declarations where the key is the identifier and the value
      * is the Declaration.
-     * 
+     *
      * @return
      *      The Map of Declarations.
-     */    
+     */
     public Map<String, Declaration> getDeclarations() {
         return this.queryResults.getDeclarations(row.getSubruleIndex());
     }
 
     /**
      * Returns the Object for int position in the Tuple
-     * 
+     *
      * @param i
      * @return
      *     The Object
@@ -65,12 +65,12 @@ public class QueryResultsRowImpl implements QueryResultsRow {
         return getObject( this.row.getHandles()[ i + 1]); // Add one, as we hide root DroolsQuery
     }
 
-    /** 
-     * Return the Object for the given Declaration identifier.
-     * @param identifier
-     * @return
-     *      The Object
+
+    /*
+     * (non-Javadoc)
+     * @see org.kie.api.runtime.rule.QueryResultsRow#get(java.lang.String)
      */
+    @Override
     public Object get(final String identifier) {
         Declaration decl = getDeclarations().get( identifier );
         if ( decl == null ) {
@@ -79,21 +79,26 @@ public class QueryResultsRowImpl implements QueryResultsRow {
         return get( decl );
     }
 
-    /** 
+    /**
      * Return the Object for the given Declaration.
      */
     public Object get(final Declaration declaration) {
         return declaration.getValue( (InternalWorkingMemory) workingMemory, getObject( getFactHandle( declaration ) ) );
     }
-    
+
+    /*
+     * (non-Javadoc)
+     * @see org.kie.api.runtime.rule.QueryResultsRow#getFactHandle(java.lang.String)
+     */
+    @Override
     public FactHandle getFactHandle(String identifier) {
         return getFactHandle( getDeclarations().get( identifier ) );
     }
-    
+
     public FactHandle getFactHandle(Declaration declr) {
         return this.row.getHandles()[  declr.getPattern().getOffset() ];
     }
-    
+
     public FactHandle getFactHandle(int i) {
         return this.row.getHandles()[ i + 1 ];
     }
@@ -105,7 +110,7 @@ public class QueryResultsRowImpl implements QueryResultsRow {
     public FactHandle[] getFactHandles() {
         int size = size();
         FactHandle[] subArray = new FactHandle[ size];
-        
+
         System.arraycopy( this.row.getHandles(), 1, subArray, 0, size );
         return subArray;
     }
@@ -117,7 +122,7 @@ public class QueryResultsRowImpl implements QueryResultsRow {
     public int size() {
         return this.row.getHandles().length -1;
     }
-    
+
     /**
      * Get the Object for the given FactHandle
      */
