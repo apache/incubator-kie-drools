@@ -7395,6 +7395,8 @@ public class Misc2Test extends CommonTestMethodBase {
         Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
         if ( errorNr > 0 ) {
             assertEquals( errorNr, results.getMessages().size() );
+        } else {
+            assertTrue( results.getMessages().size() > 0 );
         }
     }
 
@@ -8190,5 +8192,17 @@ public class Misc2Test extends CommonTestMethodBase {
         for (int i = 0; i < parallelThreads; ++i) {
             assertTrue( ecs.take().get() );
         }
+    }
+
+    @Test
+    public void testCompilationFailureWithNonExistingField() {
+        // BZ-1271534
+        String drl =
+                "rule R when\n" +
+                "  String( $var : lenght )\n" +
+                "then\n" +
+                "end\n";
+
+        assertDrlHasCompilationError( drl, 1 );
     }
 }
