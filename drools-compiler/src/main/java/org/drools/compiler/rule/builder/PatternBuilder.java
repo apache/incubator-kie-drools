@@ -1343,6 +1343,15 @@ public class PatternBuilder
                                                                      fieldBindingDescr.getBindingField(),
                                                                      declr,
                                                                      true );
+
+        if (extractor == null) {
+            context.addError(new DescrBuildError(context.getParentDescr(),
+                                                 patternDescr,
+                                                 null,
+                                                 "Field Reader does not exist for declaration '" + fieldBindingDescr.getVariable() + "' in '" + fieldBindingDescr + "' in the rule '" + context.getRule().getName() + "'"));
+            return;
+        }
+
         declr.setReadAccessor( extractor );
 
         if ( extractor instanceof ClassFieldReader ) {
