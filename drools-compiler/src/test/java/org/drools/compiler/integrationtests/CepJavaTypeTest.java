@@ -130,6 +130,7 @@ public class CepJavaTypeTest extends CommonTestMethodBase {
 
         Thread.sleep(2L);
         ksession.fireAllRules();
+        Thread.sleep(100);
         assertEquals( 0, ksession.getObjects().size() );
     }
 }
