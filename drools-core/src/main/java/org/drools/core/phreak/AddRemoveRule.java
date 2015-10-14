@@ -168,11 +168,11 @@ public class AddRemoveRule {
                  sink = ((LeftInputAdapterNode)sm.getRootNode()).getSinkPropagator().getFirstLeftTupleSink();
              } else {
                  // Sharing exists, get the root of the SegmentMemory after the split
-                 SegmentMemory sm =  removedPmem.getSegmentMemories()[s+1];
+                 SegmentMemory sm = removedPmem.getSegmentMemories()[s+1];
                  if ( sm == null ) {
                      continue; // this rule has not been initialized yet
                  }
-                 sink = (LeftTupleSink) removedPmem.getSegmentMemories()[s+1].getRootNode();
+                 sink = (LeftTupleSink) sm.getRootNode();
              }
              deleteFacts( sink, wm);
 
@@ -192,7 +192,8 @@ public class AddRemoveRule {
                          for (int i = 0; i < smems.length; i++ ) {
                              SegmentMemory sm = smems[i];
                              if ( sm == null ) {
-                                 continue; // SegmentMemory is not yet initialized
+                                 // if SegmentMemory has not been yet initialized enforce its creation here to allow merging
+                                 sm = SegmentUtilities.createSegmentMemory( splitStartNode, wm );
                              }
 
                              if ( i < s ) {
@@ -263,7 +264,7 @@ public class AddRemoveRule {
              mem = sm.getNodeMemories().get(1);
              bit = 2; // adjust bit to point to next node
          } else {
-             sm = smems[smemIndex+1]; // segment after the split being removed.
+             sm = smems[++smemIndex]; // segment after the split being removed.
              if ( sm == null ) {
                  return; // segment has not yet been initialized
              }
@@ -425,7 +426,11 @@ public class AddRemoveRule {
              pmem.setSegmentMemory( sm1.getPos(), sm1 );
 
              sm1.removePathMemory( removedPmem);
-             sm1.remove( removedPmem.getSegmentMemories()[sm1.getPos()+1]);
+             SegmentMemory oldSegment = removedPmem.getSegmentMemories()[sm1.getPos() + 1];
+             // sm1 may not be linked yet to oldSegment because oldSegment has been just created
+             if (sm1.contains( oldSegment )) {
+                 sm1.remove( oldSegment );
+             }
 
              sm1.notifyRuleLinkSegment(wm);
          } else {
@@ -985,7 +990,10 @@ public class AddRemoveRule {
      }
 
      public static void mergeSegment(SegmentMemory sm1, SegmentMemory sm2) {
-         sm1.remove( sm2 );
+         // sm1 may not be linked yet to sm2 because sm2 has been just created
+         if (sm1.contains( sm2 )) {
+             sm1.remove( sm2 );
+         }
 
          if ( sm2.getFirst() != null ) {
              for ( SegmentMemory sm = sm2.getFirst(); sm != null;) {
