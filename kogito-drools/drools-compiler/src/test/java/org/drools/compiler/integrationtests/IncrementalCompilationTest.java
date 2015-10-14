@@ -2008,4 +2008,39 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertEquals(2, list.size());
         assertTrue( list.containsAll( asList("R1", "R2") ) );
     }
+
+    @Test
+    public void testSegmentMergeOnRuleRemovalWithNotExistingSegment() throws Exception {
+        // DROOLS-950
+        String drl1 =
+                "rule R1 when\n" +
+                "    $i : Integer()\n" +
+                "    $s : String( length == $i )\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $i : Integer()\n" +
+                "    $l : Long( this > $i )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.1");
+        KieModule km = createAndDeployJar(ks, releaseId1, drl1);
+
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        kc.updateToVersion(releaseId1);
+
+        ksession.insert( "Test" );
+        ksession.insert( 4L );
+        ksession.fireAllRules();
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        km = createAndDeployJar(ks, releaseId2);
+
+        kc.updateToVersion(releaseId2);
+    }
 }
