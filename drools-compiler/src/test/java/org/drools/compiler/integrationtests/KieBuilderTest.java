@@ -197,4 +197,50 @@ public class KieBuilderTest extends CommonTestMethodBase {
         assertNotNull( kieBase );
     }
 
+    @Test
+    @Ignore("failing unit test")
+    //See https://bugzilla.redhat.com/show_bug.cgi?id=1271534
+    public void testParsingWithErroneousBoundField() throws Exception {
+        final String java = "package org.drools.compiler;\n" +
+                "public class JavaClass { }\n";
+
+        final String rule1 = "package org.drools.compiler;\n" +
+                "rule \"r1\"\n" +
+                "when\n" +
+                "JavaClass( duffField )\n" +
+                "then\n" +
+                "end\n";
+
+        final String rule2 = "package org.drools.compiler;\n" +
+                "rule \"r2\"\n" +
+                "when\n" +
+                "JavaClass( e : duffField )\n" +
+                "then\n" +
+                "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        //Rule1 correctly has a build error
+        final KieFileSystem kfs1 = ks.newKieFileSystem();
+        kfs1.write( "src/main/java/org/drools/compiler/JavaClass.java",
+                    java );
+        kfs1.write( "src/main/resources/org/drools/compiler/r1.drl",
+                    rule1 );
+
+        final Results results1 = ks.newKieBuilder( kfs1 ).buildAll().getResults();
+        assertEquals( 1,
+                      results1.getMessages().size() );
+
+        //Rule2 incorrectly has *no* build error
+        final KieFileSystem kfs2 = ks.newKieFileSystem();
+        kfs2.write( "src/main/java/org/drools/compiler/JavaClass.java",
+                    java );
+        kfs2.write( "src/main/resources/org/drools/compiler/r2.drl",
+                    rule2 );
+
+        final Results results2 = ks.newKieBuilder( kfs2 ).buildAll().getResults();
+        assertEquals( 1,
+                      results2.getMessages().size() );
+    }
+
 }
