@@ -3,12 +3,12 @@ Javascript libraries
 
 Twitter bootstrap version: 3.1.1
 Downloaded from: http://twitter.github.com/bootstrap/
-License: MIT (which can be used by Apache License v2.0 projects)
+License: MIT - this is compatible with ASL 2.0: http://www.apache.org/legal/resolved.html#category-a
 
 jQuery version: 1.11.0
 Downloaded from: http://jquery.com/
-License: MIT (which can be used by Apache License v2.0 projects)
+License: MIT - this is compatible with ASL 2.0: http://www.apache.org/legal/resolved.html#category-a
 
 Leaflet.js version: 0.7.3
 Downloaded from: http://leafletjs.com
-License: BSD (which can be used by Apache License v2.0 projects)
+License: BSD - this is compatible with ASL 2.0: http://www.apache.org/legal/resolved.html#category-a
