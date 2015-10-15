@@ -60,10 +60,10 @@ and follow these instructions:
   https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/README.md
 
 
-Known problems
---------------
+Backwards compatibility
+-----------------------
 
-OptaPlanner is not backward compatible with previous versions
-and future versions might not be backward compatible either,
-but the upgrade recipe (http://www.optaplanner.org/download/upgradeRecipe) makes it easy
-to upgrade your code to every new version as they are released.
+OptaPlanner's api packages are backwards compatible.
+The impl packages are not, apply the upgrade recipe if you use them:
+  http://www.optaplanner.org/download/upgradeRecipe/
+For more specific information, see the first chapter of the reference manual.

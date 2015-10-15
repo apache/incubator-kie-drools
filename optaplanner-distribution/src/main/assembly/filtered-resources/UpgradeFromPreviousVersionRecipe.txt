@@ -1,1 +1,3 @@
-The upgrade recipe has moved. See http://www.optaplanner.org/download/upgradeRecipe for more details.
+The upgrade recipe has moved to:
+  http://www.optaplanner.org/download/upgradeRecipe/
+It's now prettier too.
