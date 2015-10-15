@@ -211,7 +211,7 @@ public class ClasspathKieProject extends AbstractKieProject {
             rootPath = IoUtils.asSystemSpecificPath( rootPath, rootPath.lastIndexOf( ':' ) );
         }
 
-        if ( urlPathToAdd.endsWith( ".apk" ) || urlPathToAdd.endsWith( ".jar" ) || urlPathToAdd.endsWith( "/content" ) ) {
+        if ( urlPathToAdd.endsWith( ".apk" ) || isJarFile( urlPathToAdd, rootPath ) || urlPathToAdd.endsWith( "/content" ) ) {
             pomProperties = getPomPropertiesFromZipFile(rootPath);
         } else {
             pomProperties = getPomPropertiesFromFileSystem(rootPath);
@@ -231,6 +231,17 @@ public class ClasspathKieProject extends AbstractKieProject {
             log.warn( "Unable to load pom.properties from" + urlPathToAdd );
         }
         return pomProperties;
+    }
+
+    private static boolean isJarFile(String urlPathToAdd, String rootPath) {
+        boolean result = false;
+        if (urlPathToAdd.endsWith( ".jar" )) {
+            File actualZipFile = new File( rootPath );
+            if (actualZipFile.exists() && actualZipFile.isFile()) {
+                result = true;
+            }
+        }
+        return result;
     }
 
     private static String getPomPropertiesFromZipFile(String rootPath) {
