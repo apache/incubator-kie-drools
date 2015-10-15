@@ -86,15 +86,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     }
 
-    /**
-     *
-     * @param id
-     * @param source
-     * @param rule
-     * @param subrule
-     * @param subruleIndex
-     * @param context
-     */
     public RuleTerminalNode(final int id,
                             final LeftTupleSource source,
                             final RuleImpl rule,
@@ -105,8 +96,12 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                context.getPartitionId(),
                context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
                source );
+
         this.rule = rule;
         this.subrule = subrule;
+        this.consequenceName = context.getConsequenceName();
+        initDeclarations();
+
         this.subruleIndex = subruleIndex;
 
         setFireDirect( rule.getActivationListener().equals( "direct" ) );
@@ -154,15 +149,13 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     // Instance methods
     // ------------------------------------------------------------
     @SuppressWarnings("unchecked")
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         super.readExternal(in);
         rule = (RuleImpl) in.readObject();
         subrule = (GroupElement) in.readObject();
         subruleIndex = in.readInt();
         previousTupleSinkNode = (LeftTupleSinkNode) in.readObject();
         nextTupleSinkNode = (LeftTupleSinkNode) in.readObject();
-        declarations = ( Declaration[]) in.readObject();
 
         timerDeclarations = ( Declaration[][] ) in.readObject();
         salienceDeclarations = ( Declaration[]) in.readObject();
@@ -170,6 +163,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         consequenceName = (String) in.readObject();
 
         fireDirect = rule.getActivationListener().equals( "direct" );
+
+        initDeclarations();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -179,8 +174,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         out.writeInt( subruleIndex );
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
-        out.writeObject( declarations );
-        
+
         out.writeObject( timerDeclarations );
         out.writeObject( salienceDeclarations );
         out.writeObject( enabledDeclarations );
@@ -247,17 +241,18 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     }
 
     public Declaration[] getDeclarations() {
-        if ( this.declarations == null ) {
-            Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
-            String[] requiredDeclarations = rule.getRequiredDeclarationsForConsequence(getConsequenceName());
-            this.declarations = new Declaration[requiredDeclarations.length];
-            int i = 0;
-            for ( String str : requiredDeclarations ) {
-                declarations[i++] = decls.get( str );
-            }
-            Arrays.sort( this.declarations, SortDeclarations.instance );
-        }
         return this.declarations;
+    }
+
+    private void initDeclarations() {
+        Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
+        String[] requiredDeclarations = rule.getRequiredDeclarationsForConsequence(getConsequenceName());
+        this.declarations = new Declaration[requiredDeclarations.length];
+        int i = 0;
+        for ( String str : requiredDeclarations ) {
+            declarations[i++] = decls.get( str );
+        }
+        Arrays.sort( this.declarations, SortDeclarations.instance );
     }
     
     public Declaration[][] getTimerDeclarations() {
@@ -276,16 +271,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         return enabledDeclarations;
     }
 
-    public void setEnabledDeclarations(Declaration[] enabledDeclarations) {
-        this.enabledDeclarations = enabledDeclarations;
-    }
-
     public String getConsequenceName() {
         return consequenceName == null ? RuleImpl.DEFAULT_CONSEQUENCE_NAME : consequenceName;
-    }
-
-    public void setConsequenceName(String consequenceName) {
-        this.consequenceName = consequenceName;
     }
 
     public void cancelMatch(AgendaItem match, InternalWorkingMemoryActions workingMemory) {
