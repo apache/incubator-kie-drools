@@ -101,6 +101,8 @@ public class BuildContext {
 
     private final KieComponentFactory        componentFactory;
 
+    private String                           consequenceName;
+
     public BuildContext(final InternalKnowledgeBase kBase,
                         final ReteooBuilder.IdGenerator idGenerator) {
         this.kBase = kBase;
@@ -492,5 +494,13 @@ public class BuildContext {
 
     public void setTerminated(boolean terminated) {
         this.terminated = terminated;
+    }
+
+    public String getConsequenceName() {
+        return consequenceName;
+    }
+
+    public void setConsequenceName( String consequenceName ) {
+        this.consequenceName = consequenceName;
     }
 }
