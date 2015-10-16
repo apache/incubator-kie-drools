@@ -25,7 +25,7 @@ public class TimeMillisSpentTermination extends AbstractTermination {
 
     public TimeMillisSpentTermination(long timeMillisSpentLimit) {
         this.timeMillisSpentLimit = timeMillisSpentLimit;
-        if (timeMillisSpentLimit <= 0L) {
+        if (timeMillisSpentLimit < 0L) {
             throw new IllegalArgumentException("The timeMillisSpentLimit (" + timeMillisSpentLimit
                     + ") cannot be negative.");
         }

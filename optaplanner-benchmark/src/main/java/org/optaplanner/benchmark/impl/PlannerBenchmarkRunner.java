@@ -72,7 +72,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
 
     public PlannerBenchmarkRunner(PlannerBenchmarkResult plannerBenchmarkResult, ClassLoader classLoader) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
-        this.classLoader = classLoader != null ? classLoader : getClass().getClassLoader();
+        this.classLoader = classLoader;
     }
 
     public PlannerBenchmarkResult getPlannerBenchmarkResult() {

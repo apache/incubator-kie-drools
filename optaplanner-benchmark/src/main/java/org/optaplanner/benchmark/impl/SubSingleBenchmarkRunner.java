@@ -37,7 +37,6 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final SubSingleBenchmarkResult subSingleBenchmarkResult;
-
     private final ClassLoader classLoader;
 
     private Throwable failureThrowable = null;
@@ -48,7 +47,7 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
 
     public SubSingleBenchmarkRunner(SubSingleBenchmarkResult subSingleBenchmarkResult, ClassLoader classLoader) {
         this.subSingleBenchmarkResult = subSingleBenchmarkResult;
-        this.classLoader = classLoader != null ? classLoader : getClass().getClassLoader();
+        this.classLoader = classLoader;
     }
 
     public SubSingleBenchmarkResult getSubSingleBenchmarkResult() {
@@ -81,7 +80,7 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
                 subSingleBenchmarkResult);
 
         // Intentionally create a fresh solver for every SingleBenchmarkResult to reset Random, tabu lists, ...
-        Solver solver = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig().buildSolver(getClass().getClassLoader());
+        Solver solver = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig().buildSolver(classLoader);
 
         for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
             subSingleStatistic.open(solver);

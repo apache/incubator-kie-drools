@@ -20,12 +20,21 @@ import java.io.File;
 import java.io.IOException;
 
 import com.google.common.io.Files;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.optaplanner.core.api.solver.DivertingClassLoader;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class PlannerBenchmarkFactoryTest {
+
+    @BeforeClass
+    public static void setup() throws IOException {
+        File benchmarkTestDir = new File("target/benchmarkTest/");
+        benchmarkTestDir.mkdirs();
+        new File(benchmarkTestDir, "input.xml").createNewFile();
+        new File(benchmarkTestDir, "output/").mkdir();
+    }
 
     @Test
     public void testdataPlannerBenchmarkConfig() {
@@ -39,12 +48,9 @@ public class PlannerBenchmarkFactoryTest {
     public void testdataPlannerBenchmarkConfigBenchmark() {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
                 "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfig.xml");
-        File tempDir = Files.createTempDir();
-        plannerBenchmarkFactory.getPlannerBenchmarkConfig().setBenchmarkDirectory(tempDir);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);
         plannerBenchmark.benchmark();
-        tempDir.delete();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -53,6 +59,7 @@ public class PlannerBenchmarkFactoryTest {
                 "org/optaplanner/benchmark/api/nonExistingPlannerBenchmarkConfig.xml");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);
+        plannerBenchmark.benchmark();
     }
 
     @Test
@@ -63,20 +70,7 @@ public class PlannerBenchmarkFactoryTest {
                 "divertThroughClassLoader/org/optaplanner/benchmark/api/classloaderTestdataPlannerBenchmarkConfig.xml", classLoader);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);
-    }
-
-    @Test
-    public void testdataPlannerBenchmarkConfigWithClassLoaderBenchmark() throws ClassNotFoundException, IOException {
-        // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
-        ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
-        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
-                "divertThroughClassLoader/org/optaplanner/benchmark/api/classloaderTestdataPlannerBenchmarkConfig.xml", classLoader);
-        File tempDir = Files.createTempDir();
-        plannerBenchmarkFactory.getPlannerBenchmarkConfig().setBenchmarkDirectory(tempDir);
-        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
-        assertNotNull(plannerBenchmark);
         plannerBenchmark.benchmark();
-        tempDir.delete();
     }
 
 }

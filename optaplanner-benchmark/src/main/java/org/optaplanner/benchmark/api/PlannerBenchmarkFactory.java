@@ -273,6 +273,8 @@ public abstract class PlannerBenchmarkFactory {
     /**
      * Allows you to problematically change the {@link PlannerBenchmarkConfig} at runtime before building
      * the {@link PlannerBenchmark}.
+     * <p/>
+     * This method is not thread-safe.
      * @return never null
      */
     public abstract PlannerBenchmarkConfig getPlannerBenchmarkConfig();
