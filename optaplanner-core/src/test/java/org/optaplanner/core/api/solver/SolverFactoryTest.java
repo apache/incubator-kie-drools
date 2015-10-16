@@ -50,60 +50,54 @@ public class SolverFactoryTest {
 
     @Test
     public void testdataSolverConfigWithClassLoader() throws ClassNotFoundException, IOException {
-        ClassLoader classLoader = mockDivertingClassLoader();
+        // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
+        ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
         SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataSolverConfig.xml", classLoader);
         Solver solver = solverFactory.buildSolver();
         assertNotNull(solver);
     }
 
-    protected ClassLoader mockDivertingClassLoader() throws ClassNotFoundException, IOException {
+    private class DivertingClassLoader extends ClassLoader {
+
         final String divertedPrefix = "divertThroughClassLoader";
-        final ClassLoader realClassLoader = getClass().getClassLoader();
-        ClassLoader divertingClassLoader = mock(ClassLoader.class);
-        // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
-        when(divertingClassLoader.loadClass(anyString())).thenAnswer(new Answer<Class<?>>() {
-            @Override
-            public Class<?> answer(InvocationOnMock invocation) throws Throwable {
-                String className = (String) invocation.getArguments()[0];
-                if (className.startsWith(divertedPrefix + ".")) {
-                    className = className.substring(divertedPrefix.length() + 1);
-                }
-                return realClassLoader.loadClass(className);
+
+        public DivertingClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        public Class<?> loadClass(String className) throws ClassNotFoundException {
+            if (className.startsWith(divertedPrefix + ".")) {
+                className = className.substring(divertedPrefix.length() + 1);
             }
-        });
-        when(divertingClassLoader.getResource(anyString())).thenAnswer(new Answer<URL>() {
-            @Override
-            public URL answer(InvocationOnMock invocation) {
-                String resourceName = (String) invocation.getArguments()[0];
-                if (resourceName.startsWith(divertedPrefix + "/")) {
-                    resourceName = resourceName.substring(divertedPrefix.length() + 1);
-                }
-                return realClassLoader.getResource(resourceName);
+            return super.loadClass(className);
+        }
+
+        @Override
+        public URL getResource(String resourceName) {
+            if (resourceName.startsWith(divertedPrefix + "/")) {
+                resourceName = resourceName.substring(divertedPrefix.length() + 1);
             }
-        });
-        when(divertingClassLoader.getResourceAsStream(anyString())).thenAnswer(new Answer<InputStream>() {
-            @Override
-            public InputStream answer(InvocationOnMock invocation) {
-                String resourceName = (String) invocation.getArguments()[0];
-                if (resourceName.startsWith(divertedPrefix + "/")) {
-                    resourceName = resourceName.substring(divertedPrefix.length() + 1);
-                }
-                return realClassLoader.getResourceAsStream(resourceName);
+            return super.getResource(resourceName);
+        }
+
+        @Override
+        public InputStream getResourceAsStream(String resourceName) {
+            if (resourceName.startsWith(divertedPrefix + "/")) {
+                resourceName = resourceName.substring(divertedPrefix.length() + 1);
             }
-        });
-        when(divertingClassLoader.getResources(anyString())).thenAnswer(new Answer<Enumeration<URL>>() {
-            @Override
-            public Enumeration<URL> answer(InvocationOnMock invocation) throws Throwable {
-                String resourceName = (String) invocation.getArguments()[0];
-                if (resourceName.startsWith(divertedPrefix + "/")) {
-                    resourceName = resourceName.substring(divertedPrefix.length() + 1);
-                }
-                return realClassLoader.getResources(resourceName);
+            return super.getResourceAsStream(resourceName);
+        }
+
+        @Override
+        public Enumeration<URL> getResources(String resourceName) throws IOException {
+            if (resourceName.startsWith(divertedPrefix + "/")) {
+                resourceName = resourceName.substring(divertedPrefix.length() + 1);
             }
-        });
-        // Mocking divertingClassLoader.getParent() fails because it's a final method
-        return divertingClassLoader;
+            return super.getResources(resourceName);
+        }
+
     }
 
     @Test
