@@ -65,11 +65,11 @@ import org.xml.sax.SAXParseException;
 public abstract class AbstractNodeHandler extends BaseAbstractHandler implements Handler {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractNodeHandler.class);
-    
+
     static final String PROCESS_INSTANCE_SIGNAL_EVENT = "kcontext.getProcessInstance().signalEvent(";
     static final String RUNTIME_SIGNAL_EVENT = "kcontext.getKnowledgeRuntime().signalEvent(";
     static final String RUNTIME_MANAGER_SIGNAL_EVENT = "((org.kie.api.runtime.manager.RuntimeManager)kcontext.getKnowledgeRuntime().getEnvironment().get(\"RuntimeManager\")).signalEvent(";
-    
+
     protected final static String EOL = System.getProperty( "line.separator" );
     protected Map<String, String> dataInputs = new HashMap<String, String>();
     protected Map<String, String> dataOutputs = new HashMap<String, String>();
@@ -81,12 +81,12 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         initValidPeers();
         this.allowNesting = true;
     }
-    
+
     protected void initValidParents() {
         this.validParents = new HashSet<Class<?>>();
         this.validParents.add(NodeContainer.class);
     }
-    
+
     protected void initValidPeers() {
         this.validPeers = new HashSet<Class<?>>();
         this.validPeers.add(null);
@@ -112,7 +112,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 id = id.substring(1);
                 // remove ids of parent nodes
                 id = id.substring(id.lastIndexOf("-") + 1);
-                node.setId(new Integer(id));
+                node.setId(Integer.parseInt(id));
             } catch (NumberFormatException e) {
                 // id is not in the expected format, generating a new one
                 long newId = 0;
@@ -143,14 +143,14 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         ((ProcessBuildData) parser.getData()).addNode(node);
         return node;
     }
-    
+
     protected void handleNode(final Node node, final Element element, final String uri, 
                               final String localName, final ExtensibleXmlParser parser)
     	throws SAXException {
         final String x = element.getAttribute("x");
         if (x != null && x.length() != 0) {
             try {
-                node.setMetaData("x", new Integer(x));
+                node.setMetaData("x", Integer.parseInt(x));
             } catch (NumberFormatException exc) {
                 throw new SAXParseException("<" + localName + "> requires an Integer 'x' attribute", parser.getLocator());
             }
@@ -180,10 +180,10 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             }
         }
     }
-    
+
     public abstract void writeNode(final Node node, final StringBuilder xmlDump,
     		                       final int metaDataType);
-    
+
     protected void writeNode(final String name, final Node node, 
     		                 final StringBuilder xmlDump, int metaDataType) {
     	xmlDump.append("    <" + name + " "); 
@@ -210,7 +210,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             }
         }
     }
-    
+
     protected void endNode(final StringBuilder xmlDump) {
         xmlDump.append("/>" + EOL);
     }
@@ -218,7 +218,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     protected void endNode(final String name, final StringBuilder xmlDump) {
         xmlDump.append("    </" + name + ">" + EOL);
     }
-    
+
     protected void handleScript(final ExtendedNodeImpl node, final Element element, String type) {
         NodeList nodeList = element.getChildNodes();
         for (int i = 0; i < nodeList.getLength(); i++) {
@@ -264,15 +264,15 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     	}
 		return new DroolsConsequenceAction("mvel", "");
     }
-    
+
     protected void writeMetaData(final Node node, final StringBuilder xmlDump) {
     	XmlBPMNProcessDumper.writeMetaData(getMetaData(node), xmlDump);
     }
-    
+
     protected Map<String, Object> getMetaData(Node node) {
     	return XmlBPMNProcessDumper.getMetaData(node.getMetaData());
     }
-    
+
     protected void writeExtensionElements(Node node, final StringBuilder xmlDump) {
     	if (containsExtensionElements(node)) {
     		xmlDump.append("      <extensionElements>" + EOL);
@@ -284,7 +284,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     		xmlDump.append("      </extensionElements>" + EOL);
     	}
     }
-    
+
     protected boolean containsExtensionElements(Node node) {
     	if (!getMetaData(node).isEmpty()) {
     		return true;
@@ -294,7 +294,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     	}
     	return false;
     }
-    
+
     protected void writeScripts(final String type, List<DroolsAction> actions, final StringBuilder xmlDump) {
     	if (actions != null && actions.size() > 0) {
 	    	for (DroolsAction action: actions) {
@@ -302,7 +302,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 	    	}
     	}
     }
-    
+
     public static void writeScript(final DroolsAction action, String type, final StringBuilder xmlDump) {
     	if (action instanceof DroolsConsequenceAction) {
     		DroolsConsequenceAction consequenceAction = (DroolsConsequenceAction) action;
@@ -330,7 +330,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 				"Unknown action " + action);
     	}
     }
-    
+
     protected void readIoSpecification(org.w3c.dom.Node xmlNode, Map<String, String> dataInputs, Map<String, String> dataOutputs) {
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
         while (subNode instanceof Element) {
@@ -348,7 +348,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             subNode = subNode.getNextSibling();
         }
     }
-    
+
     protected void readDataInputAssociation(org.w3c.dom.Node xmlNode, Map<String, String> forEachNodeInputAssociation) {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
@@ -360,7 +360,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             forEachNodeInputAssociation.put(target, source);
         }
     }
-    
+
     protected void readDataOutputAssociation(org.w3c.dom.Node xmlNode, Map<String, String> forEachNodeOutputAssociation) {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
@@ -372,10 +372,10 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             forEachNodeOutputAssociation.put(source, target);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     protected void readMultiInstanceLoopCharacteristics(org.w3c.dom.Node xmlNode, ForEachNode forEachNode, ExtensibleXmlParser parser) {
-        
+
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
         while (subNode != null) {
@@ -387,7 +387,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
                     ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
                 dataType = getDataType(itemSubjectRef, itemDefinitions, parser.getClassLoader());
-                
+
                 if (variableName != null && variableName.trim().length() > 0) {
                     forEachNode.setVariable(variableName, dataType);
                 }
@@ -398,38 +398,38 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>)
                     ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
                 dataType = getDataType(itemSubjectRef, itemDefinitions, parser.getClassLoader());
-                
+
                 if (variableName != null && variableName.trim().length() > 0) {
                     forEachNode.setOutputVariable(variableName, dataType);
                 }
             } else if ("loopDataOutputRef".equals(nodeName)) {
-                
+
                 String outputDataRef = ((Element) subNode).getTextContent();
-                
+
                 if (outputDataRef != null && outputDataRef.trim().length() > 0) {
                     String collectionName = outputAssociation.get(outputDataRef);
                     if (collectionName == null) {
                         collectionName = dataOutputs.get(outputDataRef);
                     }
                     forEachNode.setOutputCollectionExpression(collectionName);
-                    
+
                 }
                 forEachNode.setMetaData("MICollectionOutput", outputDataRef);
-                
+
             } else if ("loopDataInputRef".equals(nodeName)) {
-                
+
                 String inputDataRef = ((Element) subNode).getTextContent();
-               
+
                 if (inputDataRef != null && inputDataRef.trim().length() > 0) {
                     String collectionName = inputAssociation.get(inputDataRef);
                     if (collectionName == null) {
                         collectionName = dataInputs.get(inputDataRef);
                     }
                     forEachNode.setCollectionExpression(collectionName);
-                    
+
                 }
                 forEachNode.setMetaData("MICollectionInput", inputDataRef);
-                
+
             } else if ("completionCondition".equals(nodeName)) {
         		String expression = subNode.getTextContent();
         		forEachNode.setCompletionConditionExpression(expression);
@@ -437,7 +437,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             subNode = subNode.getNextSibling();
         }
     }
-    
+
     protected DataType getDataType(String itemSubjectRef, Map<String, ItemDefinition> itemDefinitions, ClassLoader cl) {
         DataType dataType = new ObjectDataType();
         if (itemDefinitions == null) {
@@ -446,36 +446,36 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
         if (itemDefinition != null) {
             String structureRef = itemDefinition.getStructureRef();
-            
+
             if ("java.lang.Boolean".equals(structureRef) || "Boolean".equals(structureRef)) {
                 dataType = new BooleanDataType();
-                
+
             } else if ("java.lang.Integer".equals(structureRef) || "Integer".equals(structureRef)) {
                 dataType = new IntegerDataType();
-                
+
             } else if ("java.lang.Float".equals(structureRef) || "Float".equals(structureRef)) {
                 dataType = new FloatDataType();
-                
+
             } else if ("java.lang.String".equals(structureRef) || "String".equals(structureRef)) {
                 dataType = new StringDataType();
-                
+
             } else if ("java.lang.Object".equals(structureRef) || "Object".equals(structureRef)) {
                 dataType = new ObjectDataType(structureRef);
-                
+
             } else {
                 dataType = new ObjectDataType(structureRef, cl);
             }
-            
+
         }
         return dataType;
     }
-    
+
     protected String getErrorIdForErrorCode(String errorCode, Node node) { 
         org.kie.api.definition.process.NodeContainer parent = node.getNodeContainer();
-        while( ! (parent instanceof RuleFlowProcess) && parent instanceof Node ) { 
+        while( ! (parent instanceof RuleFlowProcess) && parent instanceof Node ) {
             parent = ((Node) parent).getNodeContainer();
         }
-        if( ! (parent instanceof RuleFlowProcess) ) { 
+        if( ! (parent instanceof RuleFlowProcess) ) {
            throw new RuntimeException( "This should never happen: !(parent instanceof RuleFlowProcess): parent is " + parent.getClass().getSimpleName() );
         }
         List<Error> errors = ((Definitions) ((RuleFlowProcess) parent).getMetaData("Definitions")).getErrors();
@@ -494,7 +494,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         }
         return error.getId();
     }
-    
+
     protected void handleThrowCompensationEventNode(final Node node, final Element element,
             final String uri, final String localName, final ExtensibleXmlParser parser) { 
         org.w3c.dom.Node xmlNode = element.getFirstChild();
@@ -503,7 +503,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         while (xmlNode != null) {
             if ("compensateEventDefinition".equals(xmlNode.getNodeName())) {
                 String activityRef = ((Element) xmlNode).getAttribute("activityRef");
-                if (activityRef == null ) { 
+                if (activityRef == null ) {
                     activityRef = "";
                 }
                 node.setMetaData("compensation-activityRef", activityRef);
@@ -519,14 +519,14 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 String nodeId = (String) node.getMetaData().get("UniqueId");
                 String waitForCompletionString = ((Element) xmlNode).getAttribute("waitForCompletion");
                 boolean waitForCompletion = true;
-                if( waitForCompletionString != null && waitForCompletionString.length() > 0 ) { 
+                if( waitForCompletionString != null && waitForCompletionString.length() > 0 ) {
                     waitForCompletion = Boolean.parseBoolean(waitForCompletionString);
                 }
-                if( ! waitForCompletion ) { 
-                    throw new IllegalArgumentException("Asynchronous compensation [" + nodeId + ", " + node.getName() 
+                if( ! waitForCompletion ) {
+                    throw new IllegalArgumentException("Asynchronous compensation [" + nodeId + ", " + node.getName()
                             + "] is not yet supported!");
                 }
-                
+
             }
             xmlNode = xmlNode.getNextSibling();
         }
@@ -545,7 +545,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 			xmlDump.append("      </outputSet>" + EOL);
 		}
 	}
-	
+
     protected String getSignalExpression(NodeImpl node, String signalName, String variable) {
         String signalExpression = RUNTIME_SIGNAL_EVENT;
         String scope = (String) node.getMetaData("customScope");
@@ -564,14 +564,12 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             "workItem.setParameter(\"SignalProcessInstanceId\", kcontext.getVariable(\"SignalProcessInstanceId\"));" + EOL +
             "workItem.setParameter(\"SignalWorkItemId\", kcontext.getVariable(\"SignalWorkItemId\"));" + EOL +
             "workItem.setParameter(\"SignalDeploymentId\", kcontext.getVariable(\"SignalDeploymentId\"));" + EOL +
-            (variable == null ? "" : "workItem.setParameter(\"Data\", " + variable + ");" + EOL) +            
+            (variable == null ? "" : "workItem.setParameter(\"Data\", " + variable + ");" + EOL) +
             "((org.drools.core.process.instance.WorkItemManager) kcontext.getKnowledgeRuntime().getWorkItemManager()).internalExecuteWorkItem(workItem);";
         } else {
             signalExpression = signalExpression +  "org.jbpm.process.instance.impl.util.VariableUtil.resolveVariable(\""+ signalName + "\", kcontext.getNodeInstance()), " + (variable == null ? "null" : variable) + ");";
         }
-        
-        return signalExpression;
-    }	
-    
 
+        return signalExpression;
+    }
 }

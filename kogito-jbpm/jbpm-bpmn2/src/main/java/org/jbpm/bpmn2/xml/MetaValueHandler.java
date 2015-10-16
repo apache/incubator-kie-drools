@@ -29,19 +29,19 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 public class MetaValueHandler extends BaseAbstractHandler implements Handler {
-	
+
     public MetaValueHandler() {
         if ( (this.validParents == null) && (this.validPeers == null) ) {
             this.validParents = new HashSet<Class<?>>();
             this.validParents.add( ValueObject.class );
 
-            this.validPeers = new HashSet<Class<?>>();         
-            this.validPeers.add( null );            
+            this.validPeers = new HashSet<Class<?>>();
+            this.validPeers.add( null );
 
             this.allowNesting = false;
         }
     }
-    
+
     public Object start(final String uri,
                         final String localName,
                         final Attributes attrs,
@@ -49,8 +49,8 @@ public class MetaValueHandler extends BaseAbstractHandler implements Handler {
         parser.startElementBuilder( localName,
                                     attrs );
         return null;
-    }    
-    
+    }
+
     public Object end(final String uri,
                       final String localName,
                       final ExtensibleXmlParser parser) throws SAXException {
@@ -58,7 +58,7 @@ public class MetaValueHandler extends BaseAbstractHandler implements Handler {
         ValueObject valueObject = (ValueObject) parser.getParent();
         String text = ((Text)element.getChildNodes().item( 0 )).getWholeText();
         if (text != null) {
-            text.trim();
+            text = text.trim();
             if ("".equals(text)) {
                 text = null;
             }
@@ -67,7 +67,7 @@ public class MetaValueHandler extends BaseAbstractHandler implements Handler {
         valueObject.setValue(value);
         return null;
     }
-    
+
     private Object restoreValue(String text, DataType dataType, ExtensibleXmlParser parser) throws SAXException {
         if (text == null || "".equals(text)) {
             return null;
