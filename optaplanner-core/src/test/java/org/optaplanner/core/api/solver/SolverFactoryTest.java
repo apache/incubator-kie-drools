@@ -58,9 +58,9 @@ public class SolverFactoryTest {
         assertNotNull(solver);
     }
 
-    private class DivertingClassLoader extends ClassLoader {
+    private static class DivertingClassLoader extends ClassLoader {
 
-        final String divertedPrefix = "divertThroughClassLoader";
+        private final String divertedPrefix = "divertThroughClassLoader";
 
         public DivertingClassLoader(ClassLoader parent) {
             super(parent);
