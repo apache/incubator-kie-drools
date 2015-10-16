@@ -32,16 +32,23 @@ import org.slf4j.MDC;
 
 public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunner> {
 
-    public static final String NAME_MDC = "singleBenchmark.name";
+    public static final String NAME_MDC = "subSingleBenchmark.name";
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     private final SubSingleBenchmarkResult subSingleBenchmarkResult;
 
+    private final ClassLoader classLoader;
+
     private Throwable failureThrowable = null;
 
     public SubSingleBenchmarkRunner(SubSingleBenchmarkResult subSingleBenchmarkResult) {
+        this(subSingleBenchmarkResult, null);
+    }
+
+    public SubSingleBenchmarkRunner(SubSingleBenchmarkResult subSingleBenchmarkResult, ClassLoader classLoader) {
         this.subSingleBenchmarkResult = subSingleBenchmarkResult;
+        this.classLoader = classLoader != null ? classLoader : getClass().getClassLoader();
     }
 
     public SubSingleBenchmarkResult getSubSingleBenchmarkResult() {
@@ -60,6 +67,7 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
     // Benchmark methods
     // ************************************************************************
 
+    @Override
     public SubSingleBenchmarkRunner call() {
         MDC.put(NAME_MDC, subSingleBenchmarkResult.getName());
         Runtime runtime = Runtime.getRuntime();
@@ -73,8 +81,7 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
                 subSingleBenchmarkResult);
 
         // Intentionally create a fresh solver for every SingleBenchmarkResult to reset Random, tabu lists, ...
-        // TODO PLANNER-440 Use a classLoader argument buildSolver()
-        Solver solver = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig().buildSolver();
+        Solver solver = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig().buildSolver(getClass().getClassLoader());
 
         for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
             subSingleStatistic.open(solver);

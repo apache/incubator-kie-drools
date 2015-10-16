@@ -53,6 +53,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             getClass().getName() + ".singleBenchmarkRunnerException");
 
     private final PlannerBenchmarkResult plannerBenchmarkResult;
+    private final ClassLoader classLoader;
 
     private File benchmarkDirectory = null;
     private BenchmarkReport benchmarkReport = null;
@@ -66,7 +67,12 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     private SubSingleBenchmarkRunner firstFailureSubSingleBenchmarkRunner = null;
 
     public PlannerBenchmarkRunner(PlannerBenchmarkResult plannerBenchmarkResult) {
+        this(plannerBenchmarkResult, null);
+    }
+
+    public PlannerBenchmarkRunner(PlannerBenchmarkResult plannerBenchmarkResult, ClassLoader classLoader) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
+        this.classLoader = classLoader != null ? classLoader : getClass().getClassLoader();
     }
 
     public PlannerBenchmarkResult getPlannerBenchmarkResult() {
@@ -190,7 +196,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             SingleBenchmarkResult singleBenchmarkResult
                     = solverBenchmarkResult.getSingleBenchmarkResultList().get(singleBenchmarkResultIndex);
             // Just take the first subSingle, we don't need to warm up each one
-            SubSingleBenchmarkRunner subSingleBenchmarkRunner = new SubSingleBenchmarkRunner(singleBenchmarkResult.getSubSingleBenchmarkResultList().get(0));
+            SubSingleBenchmarkRunner subSingleBenchmarkRunner = new SubSingleBenchmarkRunner(singleBenchmarkResult.getSubSingleBenchmarkResultList().get(0), classLoader);
             Future<SubSingleBenchmarkRunner> future = warmUpExecutorCompletionService.submit(subSingleBenchmarkRunner);
             futureMap.put(future, subSingleBenchmarkRunner);
             singleBenchmarkResultIndexMap.put(solverBenchmarkResult, singleBenchmarkResultIndex + 1);
@@ -252,7 +258,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
             for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                    SubSingleBenchmarkRunner subSingleBenchmarkRunner = new SubSingleBenchmarkRunner(subSingleBenchmarkResult);
+                    SubSingleBenchmarkRunner subSingleBenchmarkRunner = new SubSingleBenchmarkRunner(subSingleBenchmarkResult, classLoader);
                     Future<SubSingleBenchmarkRunner> future = executorService.submit(subSingleBenchmarkRunner);
                     futureMap.put(subSingleBenchmarkRunner, future);
                 }

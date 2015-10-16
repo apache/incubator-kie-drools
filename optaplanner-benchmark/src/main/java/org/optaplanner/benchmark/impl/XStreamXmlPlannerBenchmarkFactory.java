@@ -37,12 +37,25 @@ import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
  */
 public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
 
+    protected final ClassLoader classLoader;
     protected XStream xStream;
     protected PlannerBenchmarkConfig plannerBenchmarkConfig = null;
 
     public XStreamXmlPlannerBenchmarkFactory() {
+        this(null);
+    }
+
+    /**
+     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
+     *      null to use the default {@link ClassLoader}
+     */
+    public XStreamXmlPlannerBenchmarkFactory(ClassLoader classLoader) {
+        this.classLoader = classLoader;
         xStream = XStreamXmlSolverFactory.buildXStream();
         xStream.processAnnotations(PlannerBenchmarkConfig.class);
+        if (classLoader != null) {
+            xStream.setClassLoader(classLoader);
+        }
     }
 
     // ************************************************************************
@@ -67,10 +80,11 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
      * @return this
      */
     public XStreamXmlPlannerBenchmarkFactory configure(String benchmarkConfigResource) {
-        InputStream in = getClass().getClassLoader().getResourceAsStream(benchmarkConfigResource);
+        ClassLoader actualClassLoader = (classLoader != null) ? classLoader : getClass().getClassLoader();
+        InputStream in = actualClassLoader.getResourceAsStream(benchmarkConfigResource);
         if (in == null) {
             String errorMessage = "The benchmarkConfigResource (" + benchmarkConfigResource
-                    + ") does not exist in the classpath.";
+                    + ") does not exist as a classpath resource in the classLoader (" + actualClassLoader + ").";
             if (benchmarkConfigResource.startsWith("/")) {
                 errorMessage += "\nAs from 6.1, a classpath resource should not start with a slash (/)."
                         + " A benchmarkConfigResource now adheres to ClassLoader.getResource(String)."
@@ -130,7 +144,7 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
             throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") is null," +
                     " call configure(...) first.");
         }
-        return plannerBenchmarkConfig.buildPlannerBenchmark();
+        return plannerBenchmarkConfig.buildPlannerBenchmark(classLoader);
     }
 
 }

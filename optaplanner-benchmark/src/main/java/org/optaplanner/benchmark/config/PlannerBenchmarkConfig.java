@@ -186,6 +186,11 @@ public class PlannerBenchmarkConfig {
     // ************************************************************************
 
     public PlannerBenchmark buildPlannerBenchmark() {
+        return buildPlannerBenchmark(null);
+    }
+
+    public PlannerBenchmark buildPlannerBenchmark(ClassLoader classLoader) {
+        ClassLoader actualClassLoader = classLoader != null ? classLoader : getClass().getClassLoader();
         validate();
         generateSolverBenchmarkConfigNames();
         List<SolverBenchmarkConfig> effectiveSolverBenchmarkConfigList = buildEffectiveSolverBenchmarkConfigList();
@@ -193,7 +198,7 @@ public class PlannerBenchmarkConfig {
         PlannerBenchmarkResult plannerBenchmarkResult = new PlannerBenchmarkResult();
         plannerBenchmarkResult.setName(name);
         plannerBenchmarkResult.setAggregation(false);
-        PlannerBenchmarkRunner plannerBenchmarkRunner = new PlannerBenchmarkRunner(plannerBenchmarkResult);
+        PlannerBenchmarkRunner plannerBenchmarkRunner = new PlannerBenchmarkRunner(plannerBenchmarkResult, actualClassLoader);
         plannerBenchmarkRunner.setBenchmarkDirectory(benchmarkDirectory);
         plannerBenchmarkResult.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
         plannerBenchmarkResult.setWarmUpTimeMillisSpentLimit(calculateWarmUpTimeMillisSpentLimit());
