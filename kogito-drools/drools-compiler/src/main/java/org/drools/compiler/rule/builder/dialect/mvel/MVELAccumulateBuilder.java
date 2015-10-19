@@ -186,8 +186,7 @@ public class MVELAccumulateBuilder
 
         accumulators = new Accumulator[functions.size()];
         // creating the custom array reader
-        InternalReadAccessor arrayReader = new SelfReferenceClassFieldReader( Object[].class,
-                                                                              "this" );
+        InternalReadAccessor arrayReader = new SelfReferenceClassFieldReader( Object[].class );
 
         int index = 0;
         Pattern pattern = (Pattern) context.getDeclarationResolver().peekBuildStack();
@@ -247,7 +246,7 @@ public class MVELAccumulateBuilder
                                                            context.getDeclarationResolver().getDeclaration( context.getRule(), func.getBind() ),
                                                            accumDescr.isMultiFunction()
                                                                 ? new ArrayElementReader( arrayReader, index, function.getResultType() )
-                                                                : new SelfReferenceClassFieldReader( function.getResultType(), "this" ),
+                                                                : new SelfReferenceClassFieldReader( function.getResultType() ),
                                                            true);
                         ((MutableTypeConstraint) c).setType( Constraint.ConstraintType.BETA );
                         pattern.addConstraint( c );
@@ -258,7 +257,7 @@ public class MVELAccumulateBuilder
                     if (accumDescr.isMultiFunction()) {
                         declr.setReadAccessor(new ArrayElementReader(arrayReader, index, function.getResultType()));
                     } else {
-                        declr.setReadAccessor(new SelfReferenceClassFieldReader( function.getResultType(), "this" ));
+                        declr.setReadAccessor(new SelfReferenceClassFieldReader( function.getResultType() ));
                     }
                 }
             }

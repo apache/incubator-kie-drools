@@ -93,8 +93,7 @@ public class ClassFieldAccessorFactory {
             // if it is a self reference
             if ( SELF_REFERENCE_FIELD.equals( fieldName ) ) {
                 // then just create an instance of the special class field extractor
-                return new SelfReferenceClassFieldReader( clazz,
-                                                          fieldName );
+                return new SelfReferenceClassFieldReader( clazz );
             } else {
                 // otherwise, bytecode generate a specific extractor
                 ClassFieldInspector inspector = inspectors.get( clazz );

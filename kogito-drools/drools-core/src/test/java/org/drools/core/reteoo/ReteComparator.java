@@ -29,6 +29,16 @@ public class ReteComparator {
 
     private ReteComparator() { }
 
+    public static boolean areEqual(KieBase kbase1, KieBase kbase2) {
+        try {
+            compare( kbase1, kbase2 );
+            return true;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return false;
+        }
+    }
+
     public static void compare(KieBase kbase1, KieBase kbase2) {
         compare( (InternalKnowledgeBase) kbase1, (InternalKnowledgeBase) kbase2 );
     }

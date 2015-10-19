@@ -21,6 +21,7 @@ import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.reteoo.InitialFactImpl;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;
+import org.drools.core.util.ClassUtils;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.Match;
 
@@ -115,10 +116,12 @@ public class ClassObjectType
         } else {
             try {
                 Class<?> clazz = in instanceof DroolsObjectInput ?
-                                 Class.forName( clsName, false, ( (DroolsObjectInput) in ).getClassLoader() ) :
-                                 Class.forName( clsName );
+                                 ClassUtils.getClassFromName( clsName, false, ( (DroolsObjectInput) in ).getClassLoader() ) :
+                                 ClassUtils.getClassFromName( clsName );
                 setClassType( clazz );
-            } catch (ClassNotFoundException e) { }
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException( e );
+            }
         }
 
         this.isEvent = in.readBoolean();

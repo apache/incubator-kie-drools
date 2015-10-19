@@ -59,16 +59,15 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
     
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
+        super.readExternal( in );
         this.className = ( String ) in.readObject();
         this.expr = ( String ) in.readObject();
         this.typesafe = in.readBoolean();
         this.evaluationContext = in.readObject();
-        setIndex( -1 );
-        
-        // field (returns) type and value type are set during compile        
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
         out.writeObject( this.className );
         out.writeObject(this.expr );
         out.writeBoolean(this.typesafe);
@@ -144,8 +143,7 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
         if ( expr == null ) {
             if ( other.expr != null ) return false;
         } else if ( !expr.equals( other.expr ) ) return false;
-        if ( typesafe != other.typesafe ) return false;
-        return true;
+        return typesafe == other.typesafe;
     }
 
     /**

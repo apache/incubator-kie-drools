@@ -90,8 +90,7 @@ public class QueryElementBuilder
         List<Declaration> requiredDeclarations = new ArrayList<Declaration>();
 
         ObjectType argsObjectType = ClassObjectType.ObjectArray_ObjectType;
-        InternalReadAccessor arrayReader = new SelfReferenceClassFieldReader( Object[].class,
-                                                                              "this" );
+        InternalReadAccessor arrayReader = new SelfReferenceClassFieldReader( Object[].class );
         Pattern pattern = new Pattern( context.getNextPatternId(),
                                        0,
                                        argsObjectType,
@@ -199,8 +198,7 @@ public class QueryElementBuilder
                                 requiredDeclarations,
                                 arrayReader,
                                 pattern,
-                                bind,
-                                result );
+                                bind );
             }
 
         }
@@ -252,8 +250,7 @@ public class QueryElementBuilder
                                  List<Declaration> requiredDeclarations,
                                  InternalReadAccessor arrayReader,
                                  Pattern pattern,
-                                 BindingDescr bind,
-                                 ConstraintConnectiveDescr result ) {
+                                 BindingDescr bind ) {
         Declaration declr = context.getDeclarationResolver().getDeclaration( context.getRule(),
                                                                              bind.getVariable() );
         if ( declr != null ) {
@@ -499,11 +496,7 @@ public class QueryElementBuilder
             }
         }
 
-        if ( str.endsWith( ".class" ) ) {
-            return false;
-        }
-
-        return true;
+        return !str.endsWith( ".class" );
     }
 
 }

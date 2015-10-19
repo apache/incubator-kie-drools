@@ -75,34 +75,34 @@ public class BuildUtilsTest {
                                                   evals.getEvaluator( ValueType.OBJECT_TYPE,
                                                                       AfterEvaluatorDefinition.AFTER,
                                                                       "-2,2"),
-                                                  new SelfReferenceClassFieldReader( StockTick.class, "this" ) ) );
+                                                  new SelfReferenceClassFieldReader( StockTick.class ) ) );
 
         Pattern c = new Pattern( 2, ot, "$c" );
         c.addConstraint( new EvaluatorConstraint( new Declaration[] { a.getDeclaration() },
                                                   evals.getEvaluator( ValueType.OBJECT_TYPE,
                                                                       AfterEvaluatorDefinition.AFTER,
                                                                       "-3,4"),
-                                                  new SelfReferenceClassFieldReader( StockTick.class, "this" ) ) );
+                                                  new SelfReferenceClassFieldReader( StockTick.class ) ) );
 
         Pattern d = new Pattern( 3, ot, "$d" );
         d.addConstraint( new EvaluatorConstraint( new Declaration[] { b.getDeclaration() },
                                                   evals.getEvaluator( ValueType.OBJECT_TYPE,
                                                                       AfterEvaluatorDefinition.AFTER,
                                                                       "1,2"),
-                                                  new SelfReferenceClassFieldReader( StockTick.class, "this" ) ) );
+                                                  new SelfReferenceClassFieldReader( StockTick.class ) ) );
 
         d.addConstraint( new EvaluatorConstraint( new Declaration[] { c.getDeclaration() },
                                                   evals.getEvaluator( ValueType.OBJECT_TYPE,
                                                                       AfterEvaluatorDefinition.AFTER,
                                                                       "2,3"),
-                                                  new SelfReferenceClassFieldReader( StockTick.class, "this" ) ) );
+                                                  new SelfReferenceClassFieldReader( StockTick.class ) ) );
 
         Pattern e = new Pattern( 4, ot, "$e" );
         e.addConstraint(new EvaluatorConstraint(new Declaration[]{d.getDeclaration()},
                 evals.getEvaluator(ValueType.OBJECT_TYPE,
                         AfterEvaluatorDefinition.AFTER,
                         "1,10"),
-                new SelfReferenceClassFieldReader(StockTick.class, "this")));
+                new SelfReferenceClassFieldReader(StockTick.class)));
 
         GroupElement not = new GroupElement( Type.NOT );
         not.addChild( e );

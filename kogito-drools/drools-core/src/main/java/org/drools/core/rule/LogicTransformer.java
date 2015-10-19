@@ -232,7 +232,7 @@ public class LogicTransformer {
                     declr = pattern.addDeclaration( declr.getIdentifier() );
 
                     // this bit is different, notice its the ArrayElementReader that we wire up to, not the declaration.
-                    ArrayElementReader reader = new ArrayElementReader( new SelfReferenceClassFieldReader(Object[].class, "this"),
+                    ArrayElementReader reader = new ArrayElementReader( new SelfReferenceClassFieldReader(Object[].class),
                                                                         qe.getDeclIndexes()[i],
                                                                         resolved.getDeclarationClass() );
                     declr.setReadAccessor( reader );

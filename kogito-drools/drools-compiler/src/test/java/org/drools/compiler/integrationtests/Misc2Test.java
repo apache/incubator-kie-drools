@@ -47,6 +47,7 @@ import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateImpl;
 import org.drools.core.facttemplates.FieldTemplate;
 import org.drools.core.facttemplates.FieldTemplateImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.reteoo.AlphaNode;
@@ -56,10 +57,10 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
+import org.drools.core.reteoo.ReteComparator;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
-import org.drools.core.util.FileManager;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -104,7 +105,6 @@ import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -115,11 +115,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -264,32 +259,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "       insert( new Person( $christianName, null ) );\n" +
                 "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            throw new RuntimeException( "" + kbuilder.getErrors() );
-        }
-
-        FileManager fileManager = new FileManager().setUp();
-
-        try {
-            File root = fileManager.getRootDirectory();
-
-            ObjectOutputStream out = new ObjectOutputStream( new FileOutputStream( new File( root, "test.drl.compiled" ) ) );
-            out.writeObject( kbuilder.getKnowledgePackages() );
-            out.close();
-
-            KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-            kconf.setOption( RuleEngineOption.PHREAK );
-            KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( kconf );
-
-            ObjectInputStream in = new ObjectInputStream( new FileInputStream( new File( root, "test.drl.compiled" ) ) );
-            kbase.addKnowledgePackages( (Collection<KnowledgePackage>) in.readObject() );
-            in.close();
-        } finally {
-            fileManager.tearDown();
-        }
+        KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL ).build();
+        KieBase kbase2 = SerializationHelper.serializeObject( kbase1, ( (InternalKnowledgeBase) kbase1 ).getRootClassLoader() );
+        assertTrue( ReteComparator.areEqual(kbase1, kbase2) );
     }
 
     @Test
@@ -8072,9 +8044,9 @@ public class Misc2Test extends CommonTestMethodBase {
         FactHandle fh3 = ksession.insert("test");
         ksession.fireAllRules();
 
-        ksession.delete(fh1);
-        ksession.delete(fh2);
-        ksession.delete(fh3);
+        ksession.delete( fh1 );
+        ksession.delete( fh2 );
+        ksession.delete( fh3 );
         ksession.fireAllRules();
 
         NodeMemories nodeMemories = ((InternalWorkingMemory) ksession).getNodeMemories();
@@ -8204,5 +8176,37 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end\n";
 
         assertDrlHasCompilationError( drl, 1 );
+    }
+
+    @Test
+    public void testKieBaseSerialization() throws Exception {
+        // DROOLS-944
+        String drl =
+                "import " + Container.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "    Container($offer : objects[\"1-CZ26IQW\"] != null)\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    Container($offer : objects[\"1-CZ26IR8\"] != null)\n" +
+                "then\n" +
+                "end\n";
+
+        KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL ).build();
+        KieBase kbase2 = SerializationHelper.serializeObject( kbase1, ((InternalKnowledgeBase)kbase1).getRootClassLoader() );
+        assertTrue( ReteComparator.areEqual( kbase1, kbase2) );
+    }
+
+    public static class Container {
+        private Map<String, Object> objects = new HashMap<String, Object>();
+
+        public Map<String, Object> getObjects() {
+            return objects;
+        }
+
+        public void setObjects(Map<String, Object> objects) {
+            this.objects = objects;
+        }
     }
 }
