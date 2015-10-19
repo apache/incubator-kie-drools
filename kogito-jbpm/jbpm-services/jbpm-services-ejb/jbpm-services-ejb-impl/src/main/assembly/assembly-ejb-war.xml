@@ -15,6 +15,10 @@
       <source>${project.basedir}/src/test/resources/META-INF/beans.xml</source>
       <outputDirectory>WEB-INF/classes/META-INF</outputDirectory>
     </file>
+    <file>
+      <source>${project.basedir}/src/test/resources/jbpm-executor.properties</source>
+      <outputDirectory>WEB-INF/classes</outputDirectory>
+    </file>
   </files>
   <dependencySets>
     <dependencySet>
