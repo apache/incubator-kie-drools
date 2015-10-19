@@ -16,17 +16,17 @@
 
 package org.drools.core.spi;
 
+import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.extractors.BaseObjectClassFieldReader;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.facttemplates.Fact;
+import org.drools.core.util.ClassUtils;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
-
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.extractors.BaseObjectClassFieldReader;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.util.ClassUtils;
-import org.drools.core.facttemplates.Fact;
 
 public class SelfEventExtractor extends BaseObjectClassFieldReader
     implements
@@ -82,20 +82,15 @@ public class SelfEventExtractor extends BaseObjectClassFieldReader
     }
 
     public String getExtractToClassName() {
-        Class<?> clazz = null;
-        // @todo : this is a bit nasty, but does the trick
-        if ( this.objectType instanceof ClassObjectType ) {
-            clazz = ((ClassObjectType) this.objectType).getClassType();
-        } else {
-            clazz = Fact.class;
-        }
+        Class<?> clazz = this.objectType instanceof ClassObjectType ?
+                         ((ClassObjectType) this.objectType).getClassType() :
+                         Fact.class;
         return ClassUtils.canonicalName( clazz );
     }
 
     public Method getNativeReadMethod() {
         try {
-            return this.getClass().getDeclaredMethod( "getValue",
-                                                      new Class[]{InternalWorkingMemory.class, Object.class} );
+            return this.getClass().getDeclaredMethod( "getValue", InternalWorkingMemory.class, Object.class );
         } catch ( final Exception e ) {
             throw new RuntimeException( "This is a bug. Please report to development team: " + e.getMessage(),
                                         e );

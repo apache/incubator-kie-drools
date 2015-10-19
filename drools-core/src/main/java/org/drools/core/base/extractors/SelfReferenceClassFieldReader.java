@@ -16,13 +16,10 @@
 
 package org.drools.core.base.extractors;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.core.base.ValueType;
 import org.drools.core.common.InternalWorkingMemory;
+
+import java.io.Externalizable;
 
 /**
  * A special field extractor for the self reference "this".
@@ -35,8 +32,7 @@ public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader im
         
     }
 
-    public SelfReferenceClassFieldReader(final Class<?> clazz,
-                                         final String fieldName) {
+    public SelfReferenceClassFieldReader(final Class<?> clazz) {
         super( -1, // index
                clazz, // fieldType
                ValueType.determineValueType( clazz ) ); // value type
@@ -53,16 +49,5 @@ public class SelfReferenceClassFieldReader extends BaseObjectClassFieldReader im
     @Override
     public boolean isSelfReference() {
         return true;
-    }
-    public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject( getExtractToClass() );
-        out.writeObject( getValueType() );
-    }
-
-    public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
-        setIndex( -1 );
-        setFieldType( (Class< ? >) in.readObject() );
-        setValueType( (ValueType) in.readObject() );
     }
 }
