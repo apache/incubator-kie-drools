@@ -8205,4 +8205,55 @@ public class Misc2Test extends CommonTestMethodBase {
 
         assertDrlHasCompilationError( drl, 1 );
     }
+
+    @Test
+    public void testKieBaseSerialization() throws Exception {
+        // DROOLS-944
+        String drl =
+                "import " + Container.class.getCanonicalName() + ";" +
+                "rule R1 when\n" +
+                "    Container($offer : objects[\"1-CZ26IQW\"] != null)\n" +
+                "then\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    Container($offer : objects[\"1-CZ26IR8\"] != null)\n" +
+                "then\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ).build();
+
+        byte[] serialized = null;
+        ObjectOutputStream oos = null;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            oos = new ObjectOutputStream(out);
+            oos.writeObject(kbase);
+            oos.flush();
+            serialized = out.toByteArray();
+        } finally {
+            oos.close();
+            out.close();
+        }
+
+        ObjectInputStream in = null;
+        try {
+            in = new ObjectInputStream( new ByteArrayInputStream( serialized ) );
+            kbase = (KieBase) in.readObject();
+        } finally {
+            in.close();
+        }
+    }
+
+    public static class Container {
+        private Map<String, Object> objects = new HashMap<String, Object>();
+
+        public Map<String, Object> getObjects() {
+            return objects;
+        }
+
+        public void setObjects(Map<String, Object> objects) {
+            this.objects = objects;
+        }
+    }
 }

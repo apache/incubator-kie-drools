@@ -146,7 +146,7 @@ public class JavaAccumulateBuilder
             Accumulator[] accumulators = new Accumulator[funcCalls.size()];
 
             // creating the custom array reader
-            InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class, "this" );
+            InternalReadAccessor reader = new SelfReferenceClassFieldReader( Object[].class );
 
             int index = 0;
             for ( AccumulateFunctionCallDescr fc : funcCalls ) {
@@ -169,7 +169,7 @@ public class JavaAccumulateBuilder
                 return null;
             }
 
-            bindReaderToDeclaration(context, accumDescr, pattern, fc, new SelfReferenceClassFieldReader( function.getResultType(), "this" ), function.getResultType(), -1);
+            bindReaderToDeclaration(context, accumDescr, pattern, fc, new SelfReferenceClassFieldReader( function.getResultType() ), function.getResultType(), -1);
             Accumulator accumulator = buildAccumulator(context, accumDescr, declsInScope, declCls, readLocalsFromTuple, sourceDeclArr, requiredDecl, fc, function);
 
             return new SingleAccumulate( source,
