@@ -193,8 +193,8 @@ public class ReteooBuilder
         while ( node != null ) {
             removeNode(node, removedSources, alphaStack, betaStack, stillInUse, processRian, workingMemories, context);
             if ( !betaStack.isEmpty() ) {
-                node = betaStack.removeLast();
                 processRian = node.getType() == NodeTypeEnums.RightInputAdaterNode;
+                node = betaStack.removeLast();
             } else if ( !alphaStack.isEmpty() ) {
                 node = alphaStack.removeLast();
             } else {
