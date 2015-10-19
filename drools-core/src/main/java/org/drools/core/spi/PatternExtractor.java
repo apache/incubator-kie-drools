@@ -50,10 +50,14 @@ public class PatternExtractor extends BaseObjectClassFieldReader
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         objectType = (ObjectType) in.readObject();
+        setIndex( in.readInt() );
+        setFieldType( ((ClassObjectType) objectType).getClassType() );
+        setValueType( objectType.getValueType() );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeObject( objectType );
+        out.writeInt( getIndex() );
     }
     
     public void setClassObjectType(ClassObjectType objectType) {
@@ -82,13 +86,9 @@ public class PatternExtractor extends BaseObjectClassFieldReader
     }
 
     public String getExtractToClassName() {
-        Class<?> clazz = null;
-        // @todo : this is a bit nasty, but does the trick
-        if ( this.objectType instanceof ClassObjectType ) {
-            clazz = ((ClassObjectType) this.objectType).getClassType();
-        } else {
-            clazz = Fact.class;
-        }
+        Class<?> clazz = this.objectType instanceof ClassObjectType ?
+                         ((ClassObjectType) this.objectType).getClassType() :
+                         Fact.class;
         return ClassUtils.canonicalName( clazz );
     }
 
