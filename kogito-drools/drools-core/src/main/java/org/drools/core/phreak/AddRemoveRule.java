@@ -94,6 +94,7 @@ public class AddRemoveRule {
                     int p = 0;
                     SegmentMemory splitSmem = null;
                     for (PathMemory pmem : pathMems) {
+                        pmem.setlinkedSegmentMask(0);
                         SegmentMemory[] smems = previousSmems.get(p);
 
                         for (int i = 0; i < smems.length; i++) {
@@ -187,6 +188,7 @@ public class AddRemoveRule {
                      // can only be two if the removing node causes the split to be removed
                      int p = 0;
                      for ( PathMemory pmem : pathMems) {
+                         pmem.setlinkedSegmentMask(0);
                          SegmentMemory[] smems = previousSmems.get(p);
 
                          for (int i = 0; i < smems.length; i++ ) {

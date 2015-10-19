@@ -201,7 +201,6 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         }
 
         pmem.setAllLinkedMaskTest( allLinkedTestMask );
-        pmem.setlinkedSegmentMask(0);
         pmem.setSegmentMemories( new SegmentMemory[counter + 1] ); // +1 as arras are zero based.
     }
 

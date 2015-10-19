@@ -20,6 +20,7 @@ import org.drools.compiler.FactA;
 import org.drools.compiler.Message;
 import org.drools.compiler.Person;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
+import org.drools.core.ClassObjectFilter;
 import org.drools.core.ClockType;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -2078,5 +2079,110 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         for (ObjectTypeNode otns : entryPointNode.getObjectTypeNodes().values()) {
             assertEquals( 0, otns.getSinkPropagator().getSinks().length );
         }
+    }
+
+    public void testRetractLogicalAssertedObjectOnRuleRemoval() throws Exception {
+        // DROOLS-951
+        String drl1 =
+                "rule R1 when\n" +
+                "    exists( Integer() )\n" +
+                "then\n" +
+                "    insertLogical( \"found1\" );" +
+                "end\n";
+        String drl2 = "package org.drools.compiler\n" +
+                "rule R2 when\n" +
+                "    exists( Integer() )\n" +
+                "then\n" +
+                "    insertLogical( \"found2\" );" +
+                "end\n";
+        String drl3 = "package org.drools.compiler\n" +
+                "rule R3 when\n" +
+                "    exists( Integer() )\n" +
+                "then\n" +
+                "    insertLogical( \"found3\");" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.1");
+        KieModule km = createAndDeployJar(ks, releaseId1, drl1, drl2, drl3);
+
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        ksession.insert( 4 );
+        ksession.fireAllRules();
+        assertEquals( 3, ksession.getObjects( new ClassObjectFilter( String.class ) ).size() );
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        km = createAndDeployJar(ks, releaseId2, drl1, drl2);
+        kc.updateToVersion(releaseId2);
+        ksession.fireAllRules();
+        assertEquals( 2, ksession.getObjects( new ClassObjectFilter( String.class ) ).size() );
+
+        ReleaseId releaseId3 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.3");
+        km = createAndDeployJar(ks, releaseId3, drl1);
+        kc.updateToVersion(releaseId3);
+        ksession.fireAllRules();
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( String.class ) ).size() );
+
+        ReleaseId releaseId4 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.4");
+        km = createAndDeployJar(ks, releaseId4);
+        kc.updateToVersion(releaseId4);
+        ksession.fireAllRules();
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( String.class ) ).size() );
+    }
+
+    @Test
+    public void testRetractLogicalAssertedObjectOnRuleRemovalWithSameObject() throws Exception {
+        // DROOLS-951
+        String drl1 =
+                "rule R1 when\n" +
+                "    exists( Integer() )\n" +
+                "then\n" +
+                "    insertLogical( \"found\" );" +
+                "end\n";
+        String drl2 = "package org.drools.compiler\n" +
+                "rule R2 when\n" +
+                "    exists( Integer() )\n" +
+                "then\n" +
+                "    insertLogical( \"found\" );" +
+                "end\n";
+        String drl3 = "package org.drools.compiler\n" +
+                "rule R3 when\n" +
+                "    exists( Integer() )\n" +
+                "then\n" +
+                "    insertLogical( \"found\");" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.1");
+        KieModule km = createAndDeployJar(ks, releaseId1, drl1, drl2, drl3);
+
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        ksession.insert( 4 );
+        ksession.fireAllRules();
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( String.class ) ).size() );
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        km = createAndDeployJar(ks, releaseId2, drl1, drl2);
+        kc.updateToVersion(releaseId2);
+        ksession.fireAllRules();
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( String.class ) ).size() );
+
+        ReleaseId releaseId3 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.3");
+        km = createAndDeployJar(ks, releaseId3, drl1);
+        kc.updateToVersion(releaseId3);
+        ksession.fireAllRules();
+        assertEquals( 1, ksession.getObjects( new ClassObjectFilter( String.class ) ).size() );
+
+        ReleaseId releaseId4 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.4");
+        km = createAndDeployJar(ks, releaseId4);
+        kc.updateToVersion(releaseId4);
+        ksession.fireAllRules();
+        assertEquals( 0, ksession.getObjects( new ClassObjectFilter( String.class ) ).size() );
     }
 }
