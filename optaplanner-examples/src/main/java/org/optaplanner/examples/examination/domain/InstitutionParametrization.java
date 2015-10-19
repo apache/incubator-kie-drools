@@ -21,6 +21,9 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 /**
  * Institutional weightings.
+ * Allows the ser to recalibrate score weights.
+ * <p>
+ * Each {@link Examination} has only 1 instance of this class.
  */
 @XStreamAlias("InstitutionParametrization")
 public class InstitutionParametrization extends AbstractPersistable {

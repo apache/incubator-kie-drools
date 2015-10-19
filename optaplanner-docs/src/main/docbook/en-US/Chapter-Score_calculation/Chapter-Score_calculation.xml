@@ -36,11 +36,11 @@
       <itemizedlist>
         <listitem>
           <para><emphasis role="bold">Score signum (positive or negative)</emphasis>: maximize or minimize a constraint
-          type.</para>
+          type</para>
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">Score weight</emphasis>: put a cost/profit on a constraint type.</para>
+          <para><emphasis role="bold">Score weight</emphasis>: put a cost/profit on a constraint type</para>
         </listitem>
 
         <listitem>
@@ -58,7 +58,7 @@
 
       <para>All score techniques are based on constraints. Such a constraint can be a simple pattern (such as
       <emphasis>Maximize the apple harvest in the solution</emphasis>) or a more complex pattern. A positive constraint
-      is a constraint you're trying to maximize. A negative constraint is a constraint you're trying to minimize.</para>
+      is a constraint you want to maximize. A negative constraint is a constraint you want to minimize.</para>
 
       <mediaobject>
         <imageobject>
@@ -66,13 +66,13 @@
         </imageobject>
       </mediaobject>
 
-      <para>Notice in the image above, that the optimal solution always has the highest score, regardless if the
-      constraints are positive or negative.</para>
+      <para>Notice in the image above, that <emphasis role="bold">the optimal solution always has the highest
+      score</emphasis>, regardless if the constraints are positive or negative.</para>
 
       <para>Most planning problems have only negative constraints and therefore have a negative score. In that case, the
-      score is usually the sum of the weight of the negative constraints being broken, with a perfect score of 0. This
-      explains why the score of a solution of 4 queens is the negative (and not the positive!) of the number of queen
-      pairs which can attack each other.</para>
+      score is the sum of the weight of the negative constraints being broken, with a perfect score of 0. This explains
+      why the score of a solution of 4 queens is the negative of the number of queen pairs which can attack each
+      other.</para>
 
       <para>Negative and positive constraints can be combined, even in the same score level.</para>
 
@@ -101,11 +101,12 @@
 
       <para>Score weighting is often used in use cases where you can put a price tag on everything. In that case, the
       positive constraints maximize revenue and the negative constraints minimize expenses: together they maximize
-      profit. Alternatively, score weighting is also often used to create social fairness. For example: a nurse that
-      requests a free day pays a higher weight on New Year's eve than on a normal day.</para>
+      profit. Alternatively, score weighting is also often used to create social <link
+      linkend="fairnessScoreConstraints">fairness</link>. For example: a nurse that requests a free day pays a higher
+      weight on New Year's eve than on a normal day.</para>
 
       <para>Put a good weight on a constraint can be a difficult analytical decision, because it's about making choices
-      and tradeoffs with other constraints. However, a non-accurate weight is less damaging than not good
+      and tradeoffs with other constraints. However, a non-accurate weight is less damaging than mediocre
       algorithms:</para>
 
       <mediaobject>
@@ -114,16 +115,19 @@
         </imageobject>
       </mediaobject>
 
-      <para>Furthermore, it is often useful to allow the planning end-user to recalibrate penalty weights in his/her
-      user interface, as demonstrated in the exam timetabling example.</para>
-
       <para>The weight of a constraint match can be dynamically based on the planning entities involved. For example in
       cloud balance: the weight of the soft constraint match for an active <literal>Computer</literal> is the
-      <literal>cost</literal> of that <literal>Computer</literal>.</para>
+      <literal>cost</literal> of that <literal>Computer</literal> (which differs per computer).</para>
+
+      <note>
+        <para>Furthermore, it is often useful to allow the planning end-user to recalibrate constraint weights in the
+        user interface, as demonstrated in the exam timetabling example with the
+        <literal>InstitutionParametrization</literal> class.</para>
+      </note>
     </section>
 
     <section xml:id="scoreLevel">
-      <title>Score Level</title>
+      <title>Score Constraint Level (hard, soft, ...)</title>
 
       <para>Sometimes a score constraint outranks another score constraint, no matter how many times the other is
       broken. In that case, those score constraints are in different levels. For example: a nurse cannot do 2 shifts at
@@ -131,8 +135,9 @@
 
       <para>Most use cases have only 2 score levels: hard and soft. When comparing 2 scores, they are compared
       lexicographically: the first score level gets compared first. If those differ, the others score levels are
-      ignored. For example: a score that breaks 0 hard constraints and 1000000 soft constraints is better than a score
-      that breaks 1 hard constraint and 0 soft constraints.</para>
+      ignored. For example: a score that breaks <literal>0</literal> hard constraints and <literal>1000000</literal>
+      soft constraints is better than a score that breaks <literal>1</literal> hard constraint and <literal>0</literal>
+      soft constraints.</para>
 
       <mediaobject>
         <imageobject>
@@ -140,11 +145,19 @@
         </imageobject>
       </mediaobject>
 
-      <para>Score levels often employ score weighting per level. In such case, the hard constraint level usually makes
-      the solution feasible and the soft constraint level maximizes profit by weighting the constraints on price.</para>
+      <para>If there are 2 (or more) score levels, for example a hard and soft level, then a score is feasible if no
+      hard constraints are broken.</para>
 
-      <para>Don't use a big constraint weight when your business actually wants different score levels. That hack, known
-      as <emphasis>score folding</emphasis>, is broken:</para>
+      <note>
+        <para>By default, Planner will always assign all planning variables a planning value. If there is no feasible
+        solution, this means the best solution will be unfeasible. To instead leave some of the planning entities
+        unassigned, apply <link linkend="overconstrainedPlanning">overconstrained planning</link>.</para>
+      </note>
+
+      <para>For each constraint, you need to pick a score level, a score weight and a score signum. For example:
+      <literal>-1soft</literal> which has score level of <literal>soft</literal>, a weight of <literal>1</literal> and a
+      negative signum. Don't use a big constraint weight when your business actually wants different score levels. That
+      hack, known as <emphasis>score folding</emphasis>, is broken:</para>
 
       <mediaobject>
         <imageobject>
@@ -153,16 +166,18 @@
       </mediaobject>
 
       <note>
-        <para>Your business will probably tell you that your hard constraints all have the same weight, because they
-        cannot be broken (so their weight does not matter). This is not true and it could create a <link
-        linkend="scoreTrap">score trap</link>. For example in cloud balance: if a <literal>Computer</literal> has 7 CPU
-        too little for its <literal>Process</literal>es, then it must be weighted 7 times as much as if it had only 1
-        CPU too little. This way, there is an incentive to move a <literal>Process</literal> with 6 CPU or less away
-        from that Computer.</para>
+        <para>Your business might tell you that your hard constraints all have the same weight, because they cannot be
+        broken (so the weight does not matter). This is not true because if no feasible solution exists for a specific
+        dataset, the least infeasible solution allows the business to estimate how many business resources they are
+        lacking. For example in cloud balancing, how many new computers to buy.</para>
+
+        <para>Furthermore, it will likely create a <link linkend="scoreTrap">score trap</link>. For example in cloud
+        balance: if a <literal>Computer</literal> has 7 CPU too little for its <literal>Process</literal>es, then it
+        must be weighted 7 times as much as if it had only 1 CPU too little.</para>
       </note>
 
-      <para>Three or more score levels are also supported. For example: a company might decide that profit outranks
-      employee satisfaction (or visa versa), while both are outranked by the constraints of physical reality.</para>
+      <para>Three or more score levels are supported. For example: a company might decide that profit outranks employee
+      satisfaction (or visa versa), while both are outranked by the constraints of physical reality.</para>
 
       <note>
         <para>To model fairness or load balancing, there is <link linkend="fairnessScoreConstraints">no need to use lots
