@@ -63,11 +63,48 @@ public class PlannerBenchmarkFactoryTest {
     }
 
     @Test
-    public void testdataPlannerBenchmarkConfigWithClassLoader() throws ClassNotFoundException, IOException {
+    public void testdataPlannerBenchmarkConfigWithClassLoader() {
         // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
         ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
                 "divertThroughClassLoader/org/optaplanner/benchmark/api/classloaderTestdataPlannerBenchmarkConfig.xml", classLoader);
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        assertNotNull(plannerBenchmark);
+        plannerBenchmark.benchmark();
+    }
+
+    @Test
+    public void testdataPlannerBenchmarkConfigTemplate() {
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
+                "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfigTemplate.xml.ftl");
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        assertNotNull(plannerBenchmark);
+    }
+
+    @Test
+    public void testdataPlannerBenchmarkConfigBenchmarkTemplate() {
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
+                "org/optaplanner/benchmark/api/testdataPlannerBenchmarkConfigTemplate.xml.ftl");
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        assertNotNull(plannerBenchmark);
+        plannerBenchmark.benchmark();
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void nonExistingPlannerBenchmarkConfigTemplate() {
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
+                "org/optaplanner/benchmark/api/nonExistingPlannerBenchmarkConfigTemplate.xml.ftl");
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
+        assertNotNull(plannerBenchmark);
+        plannerBenchmark.benchmark();
+    }
+
+    @Test
+    public void testdataPlannerBenchmarkConfigTemplateWithClassLoader() {
+        // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
+        ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
+        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
+                "divertThroughClassLoader/org/optaplanner/benchmark/api/classloaderTestdataPlannerBenchmarkConfigTemplate.xml.ftl", classLoader);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertNotNull(plannerBenchmark);
         plannerBenchmark.benchmark();

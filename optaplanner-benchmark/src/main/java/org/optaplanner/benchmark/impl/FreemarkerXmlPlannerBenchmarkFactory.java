@@ -75,8 +75,7 @@ public class FreemarkerXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactor
      */
     public FreemarkerXmlPlannerBenchmarkFactory configure(String templateResource, Object model) {
         ClassLoader actualClassLoader = (classLoader != null) ? classLoader : getClass().getClassLoader();
-        InputStream in = actualClassLoader.getResourceAsStream(templateResource);
-        InputStream templateIn = getClass().getClassLoader().getResourceAsStream(templateResource);
+        InputStream templateIn = actualClassLoader.getResourceAsStream(templateResource);
         if (templateIn == null) {
             String errorMessage = "The templateResource (" + templateResource
                     + ") does not exist as a classpath resource in the classLoader (" + actualClassLoader + ").";
