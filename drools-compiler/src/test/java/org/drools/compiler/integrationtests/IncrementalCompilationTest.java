@@ -23,7 +23,11 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.ClockType;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.junit.Ignore;
@@ -2042,5 +2046,37 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         km = createAndDeployJar(ks, releaseId2);
 
         kc.updateToVersion(releaseId2);
+    }
+
+    @Test
+    public void testRemoveRuleWithRia() throws Exception {
+        // DROOLS-954
+        String drl1 =
+                "import " + List.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    $list : List()\n" +
+                "    exists Integer( this == 1 ) from $list\n" +
+                "    exists Integer( this == 2 ) from $list\n" +
+                "then \n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.1");
+        KieModule km = createAndDeployJar(ks, releaseId1, drl1);
+
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        km = createAndDeployJar(ks, releaseId2);
+
+        kc.updateToVersion(releaseId2);
+
+        Rete rete = ( (InternalKnowledgeBase) (InternalKnowledgeBase) ksession.getKieBase() ).getRete();
+        EntryPointNode entryPointNode = rete.getEntryPointNodes().values().iterator().next();
+        for (ObjectTypeNode otns : entryPointNode.getObjectTypeNodes().values()) {
+            assertEquals( 0, otns.getSinkPropagator().getSinks().length );
+        }
     }
 }
