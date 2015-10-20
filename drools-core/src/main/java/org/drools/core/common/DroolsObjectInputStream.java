@@ -16,43 +16,19 @@
 
 package org.drools.core.common;
 
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.util.ClassUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
 import java.io.ObjectInputStream;
 import java.io.ObjectStreamClass;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.drools.core.impl.InternalKnowledgeBase;
 
 public class DroolsObjectInputStream extends ObjectInputStream
     implements
     DroolsObjectInput {
-    private static final Map<String, Class> primClasses = new HashMap<String, Class>( 8,
-                                                                                      1.0F );
-    static {
-        primClasses.put( "boolean",
-                         boolean.class );
-        primClasses.put( "byte",
-                         byte.class );
-        primClasses.put( "char",
-                         char.class );
-        primClasses.put( "short",
-                         short.class );
-        primClasses.put( "int",
-                         int.class );
-        primClasses.put( "long",
-                         long.class );
-        primClasses.put( "float",
-                         float.class );
-        primClasses.put( "double",
-                         double.class );
-        primClasses.put( "void",
-                         void.class );
-    }
 
-    private ClassLoader                     parentClassLoader;
     private ClassLoader                     classLoader;
     private InternalKnowledgeBase           kBase;
     private InternalWorkingMemory           workingMemory;
@@ -74,22 +50,11 @@ public class DroolsObjectInputStream extends ObjectInputStream
         }
 
         this.classLoader = classLoader;
-        this.parentClassLoader = classLoader;
 
     }
 
     protected Class resolveClass(String className) throws ClassNotFoundException {
-        try {
-            Class clazz = primClasses.get( className );
-            if ( clazz == null ) {
-                clazz = Class.forName( className,
-                                       true,
-                                       this.classLoader );
-            }
-            return clazz;
-        } catch ( ClassNotFoundException e ) {
-            throw e;
-        }
+        return ClassUtils.getClassFromName( className, true, this.classLoader );
     }
 
     protected Class< ? > resolveClass(ObjectStreamClass desc) throws IOException,

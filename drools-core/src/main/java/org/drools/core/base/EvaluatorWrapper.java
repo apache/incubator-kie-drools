@@ -43,8 +43,7 @@ public class EvaluatorWrapper
 
     private static final long                          serialVersionUID = 520L;
 
-    private static final SelfReferenceClassFieldReader extractor        = new SelfReferenceClassFieldReader( Object.class,
-                                                                                                             "dummy" );
+    private static final SelfReferenceClassFieldReader extractor        = new SelfReferenceClassFieldReader( Object.class );
 
     private Evaluator                                  evaluator;
     private transient InternalWorkingMemory            workingMemory;

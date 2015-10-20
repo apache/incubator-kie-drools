@@ -26,7 +26,6 @@ import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 import org.mvel2.compiler.ExecutableStatement;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -35,7 +34,7 @@ import java.io.ObjectOutput;
  * A class field extractor that uses MVEL engine to extract the actual value for a given
  * expression. We use MVEL to resolve nested accessor expressions.
  */
-public class MVELObjectClassFieldReader extends BaseObjectClassFieldReader implements Externalizable, MVELCompileable, MVELClassFieldReader {
+public class MVELObjectClassFieldReader extends BaseObjectClassFieldReader implements MVELCompileable, MVELClassFieldReader {
 
     private static final long  serialVersionUID = 510l;
 
@@ -62,16 +61,15 @@ public class MVELObjectClassFieldReader extends BaseObjectClassFieldReader imple
     
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
+        super.readExternal( in );
         this.className = ( String ) in.readObject();
         this.expr = ( String ) in.readObject();
         this.typesafe = in.readBoolean();
         this.evaluationContext = in.readObject();
-        setIndex( -1 );
-        
-        // field (returns) type and value type are set during compile        
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
+        super.writeExternal( out );
         out.writeObject( this.className );
         out.writeObject( this.expr );
         out.writeBoolean(this.typesafe);
@@ -111,7 +109,7 @@ public class MVELObjectClassFieldReader extends BaseObjectClassFieldReader imple
     }
 
     public static void doCompile(MVELClassFieldReader target, MVELDialectRuntimeData runtimeData, Object evaluationContext) {
-        Class cls = null;
+        Class cls;
         try {            
             cls = runtimeData.getRootClassLoader().loadClass( target.getClassName() );
         } catch ( ClassNotFoundException e ) {
@@ -171,8 +169,7 @@ public class MVELObjectClassFieldReader extends BaseObjectClassFieldReader imple
         if ( expr == null ) {
             if ( other.expr != null ) return false;
         } else if ( !expr.equals( other.expr ) ) return false;
-        if ( typesafe != other.typesafe ) return false;
-        return true;
+        return typesafe == other.typesafe;
     }
 
     /**
