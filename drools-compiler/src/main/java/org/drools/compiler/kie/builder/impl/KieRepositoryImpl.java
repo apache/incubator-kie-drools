@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -37,15 +37,20 @@ import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.NavigableMap;
 import java.util.Properties;
 import java.util.Stack;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
@@ -149,7 +154,7 @@ public class KieRepositoryImpl
         public void start(long pollingInterval) { }
 
         public void stop() { }
-        
+
         public void shutdown() { }
 
         public void scanNow() { }
@@ -237,28 +242,125 @@ public class KieRepositoryImpl
         }
     }
 
-    private static class KieModuleRepo {
+    // package scope so that we can test it
+    static class KieModuleRepo {
 
         private final InternalKieScanner kieScanner;
-        private final Map<String, TreeMap<ComparableVersion, KieModule>> kieModules = new ConcurrentHashMap<String, TreeMap<ComparableVersion, KieModule>>();
-        private final Map<ReleaseId, KieModule> oldKieModules = new ConcurrentHashMap<ReleaseId, KieModule>();
 
-        private KieModuleRepo(InternalKieScanner kieScanner) {
+        private final ConcurrentHashMap<String, ConcurrentSkipListMap<ComparableVersion, KieModule>> kieModules
+            = new ConcurrentHashMap<String, ConcurrentSkipListMap<ComparableVersion, KieModule>>();
+        private final ConcurrentHashMap<ReleaseId, KieModule> oldKieModules
+            = new ConcurrentHashMap<ReleaseId, KieModule>();
+
+        /**
+         * The gaLocks map:
+         * - A LRU cache (based on *access* order, not insertion order) for locks per GA
+         *
+         * We lock on the basis of these objects (instead of on the artifactMap) because
+         * the artifactMap can be removed and then readded,
+         * whereas these lock objects will only be removed
+         * when there MAX_UNIQUE_GAs objects that have been more recently accessed than the lock to be removed
+         *
+         * These objects are used to safeguard:
+         * - modifications to and reads of a GA artifactMap,
+         *   especially when the logic depends on multiple reads
+         * - modifications to the oldKieModules map
+         */
+        private static final String UNIQUE_PROJECT_GA_MAX_PROPERTY = "org.kie.repository.project.ga.unique.max";
+        private static final int MAX_UNIQUE_GAs
+            = Integer.parseInt(System.getProperty(UNIQUE_PROJECT_GA_MAX_PROPERTY, "100"));
+        private final HashMap<String,Object> gaLocks = new LinkedHashMap<String, Object>(16, 0.75f, true) {
+            @Override
+            protected boolean removeEldestEntry( Entry<String, Object> eldest ) {
+                return size() > MAX_UNIQUE_GAs;
+            }
+        };
+
+        // This value *must* always be smaller than MAX_UNIQUE_GAs
+        public static final String GA_ARTIFACT_MAP_REPLACEMENT_MAX_PROPERTY = "org.kie.repository.project.ga.replacement.max";
+        private static final int EMPTY_ARTIFACT_MAP_REMOVAL_QUEUE_SIZE
+            = Integer.parseInt(System.getProperty(GA_ARTIFACT_MAP_REPLACEMENT_MAX_PROPERTY, "20"));
+
+        static {
+            if( EMPTY_ARTIFACT_MAP_REMOVAL_QUEUE_SIZE > MAX_UNIQUE_GAs + 1 ) {
+               throw new IllegalStateException("The " + GA_ARTIFACT_MAP_REPLACEMENT_MAX_PROPERTY + " property [" +
+                       EMPTY_ARTIFACT_MAP_REMOVAL_QUEUE_SIZE + "] may not be larger than the  "
+                       + UNIQUE_PROJECT_GA_MAX_PROPERTY + " [" + MAX_UNIQUE_GAs + "] property!");
+            }
+        }
+
+        /**
+         * The removeArtifactMapQueue:
+         * - A LRU cache based on insertion order that triggers artifactMap removal when the object is discarded
+         *
+         * When the max size[1] for the removeArtifactMapQueue map has been reached,
+         * the removeEldestEntry logic below checks to see if the artifactMap (value) from the last (inserted) entry is still empty.
+         * If the artifactMap entry is empty, the empty artifactMap s removed from the kieModules map.
+         * Regardless of whether the artifactMap is empty, the entry is then removed from the removeArtifactMapQueue map,
+         * so that it's not checked twice.
+         *
+         * [1] The max size her is the KIE_MODULES_REMOVE_EMPTY_ARTIFACT_MAP_QUEUE_SIZE constant
+         *
+         * The idea here is that we need a mechanism that
+         *   1. removes the artifactMap from the kieModules map field
+         *   2. but delays it,
+         * this is in order to avoid a race condition for situations in which operations with ga-single version deployments
+         * (i.e. one thread removes while the next thread stores) would cause different threads to use different artifactMap instances
+         * for the same GA
+         *
+         * Of couse, if the user is doing this for enough[2] ga-single versions modules, then there will be a race condition.
+         * However, that situation is unlikely.
+         *
+         * [2] where "enough" > the max-size of the cache or KIE_MODULES_REMOVE_EMPTY_ARTIFACT_MAP_QUEUE_SIZE
+         */
+        private final Map<String, NavigableMap<ComparableVersion, KieModule>> removeArtifactMapQueue = new LinkedHashMap<String, NavigableMap<ComparableVersion, KieModule>>() {
+            @Override
+            protected boolean removeEldestEntry( Entry<String, NavigableMap<ComparableVersion, KieModule>> eldest ) {
+                boolean remove = size() > EMPTY_ARTIFACT_MAP_REMOVAL_QUEUE_SIZE;
+                if( remove ) {
+                    String ga = eldest.getKey();
+                    NavigableMap<ComparableVersion, KieModule> artifactMap = eldest.getValue();
+                    Object gaLock = getGALockObject(ga);
+                    synchronized(gaLock) {
+                        // if the artifact map is empty (and it's the one still in the kieModules map!), then remove it
+                        if( artifactMap.isEmpty() ) {
+                            kieModules.remove(ga, artifactMap);
+                            // the remove above can fail if the artifactMap value was somehow replaced,
+                            // but that's what we want for that case
+                        }
+                    }
+                }
+                return remove;
+            }
+        };
+
+
+        KieModuleRepo(InternalKieScanner kieScanner) {
             this.kieScanner = kieScanner;
         }
 
         KieModule remove(ReleaseId releaseId) {
             KieModule removedKieModule = null;
             String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
-            TreeMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
-            if (artifactMap != null) {
-                ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());
-                removedKieModule = artifactMap.remove(comparableVersion);
-                if (artifactMap.isEmpty()) {
-                    kieModules.remove(ga);
+            NavigableMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
+            ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());
+
+            // synchronize on the GA, otherwise we might be removing what another thread is adding
+            Object gaLock = getGALockObject(ga);
+            synchronized(gaLock) {
+                if (artifactMap != null) {
+                    removedKieModule = artifactMap.remove(comparableVersion);
+                    if (artifactMap.isEmpty()) {
+                        // add the KieModule artifactMap to the queue to be deleted
+                        // (otherwise, if we remove it immediately, there's a possible race condition
+                        //  for users that remove and add ga-single version (as opposed to ga-multiple versions)
+                        //  kie modules)
+                        removeArtifactMapQueue.put(ga, artifactMap);
+                    }
                 }
+                oldKieModules.remove(releaseId);
             }
-            oldKieModules.remove(releaseId);
+
             return removedKieModule;
         }
 
@@ -266,23 +368,53 @@ public class KieRepositoryImpl
             ReleaseId releaseId = kieModule.getReleaseId();
             String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
 
-            TreeMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
-            if (artifactMap == null) {
-                artifactMap = new TreeMap<ComparableVersion, KieModule>();
-                kieModules.put(ga, artifactMap);
-            }
-            ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());
-            if (oldKieModules.get(releaseId) == null) {
-                KieModule oldKieModule = artifactMap.get( comparableVersion);
-                if (oldKieModule != null) {
-                    oldKieModules.put( releaseId, oldKieModule );
+            // doing a kieModules.get(ga) first is more performant than always creating a possibly new map for the putIfAbsent operation
+            ConcurrentSkipListMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
+            if( artifactMap == null ) {
+                artifactMap = new ConcurrentSkipListMap<ComparableVersion, KieModule>();
+                ConcurrentSkipListMap<ComparableVersion, KieModule> existingArtifactMap = kieModules.putIfAbsent(ga, artifactMap);
+                if( existingArtifactMap != null ) {
+                    artifactMap = existingArtifactMap;
                 }
             }
-            artifactMap.put(comparableVersion, kieModule);
+
+            ComparableVersion comparableVersion = new ComparableVersion(releaseId.getVersion());
+
+            // synchronize on the GA, otherwise we might be adding what another thread is removing
+            // Also, without a synchronize, Thread A's oldKieModule value can be Thread B's kieModule value
+            Object gaLock = getGALockObject(ga);
+            synchronized(gaLock) {
+                KieModule oldReleaseIdKieModule = oldKieModules.get(releaseId);
+                // variable used in order to test race condition
+                if (oldReleaseIdKieModule == null) {
+                    KieModule oldKieModule = artifactMap.get(comparableVersion);
+                    if (oldKieModule != null) {
+                        oldKieModules.put( releaseId, oldKieModule );
+                    }
+                }
+                artifactMap.put(comparableVersion, kieModule);
+            }
         }
 
-        private KieModule loadOldAndRemove(ReleaseId releaseId) {
-            return oldKieModules.remove(releaseId);
+        private Object getGALockObject(String ga) {
+            Object lock = new Object();
+            synchronized(gaLocks) {
+                Object existingLock = gaLocks.get(ga);
+                if( existingLock == null ) {
+                    gaLocks.put(ga, lock);
+                } else {
+                    lock = existingLock;
+                }
+            }
+            return lock;
+        }
+
+        KieModule loadOldAndRemove(ReleaseId releaseId) {
+            String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
+            Object gaLock = getGALockObject(ga);
+            synchronized(gaLock) {
+                return oldKieModules.remove(releaseId);
+            }
         }
 
         KieModule load(ReleaseId releaseId) {
@@ -291,13 +423,19 @@ public class KieRepositoryImpl
 
         KieModule load(ReleaseId releaseId, VersionRange versionRange) {
             String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
-            TreeMap<ComparableVersion, KieModule> artifactMap = kieModules.get(ga);
-            if ( artifactMap == null ) {
-                return null;
+            Object gaLock = getGALockObject(ga);
+
+            KieModule kieModule = null;
+            NavigableMap<ComparableVersion, KieModule> artifactMap;
+            synchronized(gaLock) {
+                artifactMap = kieModules.get(ga);
+                if ( artifactMap == null || artifactMap.isEmpty() ) {
+                    return null;
+                }
+                kieModule = artifactMap.get(new ComparableVersion(releaseId.getVersion()));
             }
 
             if (versionRange.fixed) {
-                KieModule kieModule = artifactMap.get(new ComparableVersion(releaseId.getVersion()));
                 if ( kieModule != null && releaseId.isSnapshot() ) {
                     String oldSnapshotVersion = ((ReleaseIdImpl)kieModule.getReleaseId()).getSnapshotVersion();
                     if ( oldSnapshotVersion != null ) {
@@ -313,6 +451,7 @@ public class KieRepositoryImpl
                 return kieModule;
             }
 
+            // no need for a ga lock here, since this is one-time read
             Map.Entry<ComparableVersion, KieModule> entry =
                     versionRange.upperBound == null ?
                     artifactMap.lastEntry() :
