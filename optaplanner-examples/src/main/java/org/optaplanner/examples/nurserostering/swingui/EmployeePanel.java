@@ -36,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.nurserostering.domain.Employee;
@@ -103,14 +104,13 @@ public class EmployeePanel extends JPanel {
         labelAndDeletePanel.add(employeeLabel, BorderLayout.CENTER);
         if (employee != null) {
             JPanel deletePanel = new JPanel(new BorderLayout());
-            deleteButton = new JButton(nurseRosteringPanel.getDeleteEmployeeIcon());
+            deleteButton = SwingUtils.makeSmallButton(new JButton(nurseRosteringPanel.getDeleteEmployeeIcon()));
             deleteButton.setToolTipText("Delete");
             deleteButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     nurseRosteringPanel.deleteEmployee(employee);
                 }
             });
-            deleteButton.setMargin(new Insets(0, 0, 0, 0));
             deletePanel.add(deleteButton, BorderLayout.NORTH);
             labelAndDeletePanel.add(deletePanel, BorderLayout.EAST);
         }
@@ -190,9 +190,8 @@ public class EmployeePanel extends JPanel {
     public void addShiftAssignment(ShiftAssignment shiftAssignment) {
         Shift shift = shiftAssignment.getShift();
         JPanel shiftPanel = shiftPanelMap.get(shift);
-        JButton shiftAssignmentButton = new JButton(new ShiftAssignmentAction(shiftAssignment));
+        JButton shiftAssignmentButton = SwingUtils.makeSmallButton(new JButton(new ShiftAssignmentAction(shiftAssignment)));
         shiftAssignmentButton.setEnabled(shiftPanel.isEnabled());
-        shiftAssignmentButton.setMargin(new Insets(0, 0, 0, 0));
         if (employee != null) {
             if (employee.getDayOffRequestMap().containsKey(shift.getShiftDate())
                     || employee.getShiftOffRequestMap().containsKey(shift)) {
@@ -204,13 +203,6 @@ public class EmployeePanel extends JPanel {
         shiftPanel.add(shiftAssignmentButton);
         shiftPanel.repaint();
         shiftAssignmentButtonMap.put(shiftAssignment, shiftAssignmentButton);
-    }
-
-    public void removeShiftAssignment(ShiftAssignment shiftAssignment) {
-        JPanel shiftPanel = shiftPanelMap.get(shiftAssignment.getShift());
-        JButton shiftAssignmentButton = shiftAssignmentButtonMap.remove(shiftAssignment);
-        shiftPanel.remove(shiftAssignmentButton);
-        shiftPanel.repaint();
     }
 
     public void clearShiftAssignments() {

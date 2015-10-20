@@ -34,6 +34,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.CommonIcons;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
@@ -97,8 +98,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
     }
 
     private void defineGrid(CourseSchedule courseSchedule) {
-        JButton footprint = new JButton("LinLetGre1-0");
-        footprint.setMargin(new Insets(0, 0, 0, 0));
+        JButton footprint = SwingUtils.makeSmallButton(new JButton("LinLetGre1-0"));
         int footprintWidth = footprint.getPreferredSize().width;
 
         roomsPanel.defineColumnHeaderByKey(HEADER_COLUMN_GROUP1); // Day header
@@ -222,8 +222,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
     }
 
     private JButton createButton(Lecture lecture, Color color) {
-        JButton button = new JButton(new LectureAction(lecture));
-        button.setMargin(new Insets(0, 0, 0, 0));
+        JButton button = SwingUtils.makeSmallButton(new JButton(new LectureAction(lecture)));
         button.setBackground(color);
         if (lecture.isLocked()) {
             button.setIcon(CommonIcons.LOCKED_ICON);

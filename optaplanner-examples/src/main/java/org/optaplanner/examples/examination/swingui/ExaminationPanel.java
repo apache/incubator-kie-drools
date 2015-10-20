@@ -37,6 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
@@ -145,8 +146,7 @@ public class ExaminationPanel extends SolutionPanel {
     }
 
     private void defineGrid(Examination examination) {
-        JButton footprint = new JButton("99999999");
-        footprint.setMargin(new Insets(0, 0, 0, 0));
+        JButton footprint = SwingUtils.makeSmallButton(new JButton("99999999"));
         int footprintWidth = footprint.getPreferredSize().width;
 
         roomsPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Period header
@@ -211,8 +211,7 @@ public class ExaminationPanel extends SolutionPanel {
     }
 
     private JButton createButton(Exam exam, Color color) {
-        JButton button = new JButton(new ExamAction(exam));
-        button.setMargin(new Insets(0, 0, 0, 0));
+        JButton button = SwingUtils.makeSmallButton(new JButton(new ExamAction(exam)));
         button.setBackground(color);
         if (exam instanceof FollowingExam) {
             button.setForeground(TangoColorFactory.ALUMINIUM_5);

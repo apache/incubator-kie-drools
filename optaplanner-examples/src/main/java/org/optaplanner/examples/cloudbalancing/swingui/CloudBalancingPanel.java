@@ -38,6 +38,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.commons.lang3.ObjectUtils;
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
@@ -126,7 +127,7 @@ public class CloudBalancingPanel extends SolutionPanel {
     private JPanel createHeaderPanel() {
         JPanel headerPanel = new JPanel(new GridLayout(0, 5));
         JPanel addPanel = new JPanel(new GridLayout());
-        JButton addComputerButton = new JButton(addCloudComputerIcon);
+        JButton addComputerButton = SwingUtils.makeSmallButton(new JButton(addCloudComputerIcon));
         addComputerButton.setToolTipText("Add computer");
         addComputerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -138,9 +139,8 @@ public class CloudBalancingPanel extends SolutionPanel {
                 addComputer(computer);
             }
         });
-        addComputerButton.setMargin(new Insets(0, 0, 0, 0));
         addPanel.add(addComputerButton);
-        JButton addProcessButton = new JButton(addCloudProcessIcon);
+        JButton addProcessButton = SwingUtils.makeSmallButton(new JButton(addCloudProcessIcon));
         addProcessButton.setToolTipText("Add process");
         addProcessButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -151,7 +151,6 @@ public class CloudBalancingPanel extends SolutionPanel {
                 addProcess(process);
             }
         });
-        addProcessButton.setMargin(new Insets(0, 0, 0, 0));
         addPanel.add(addProcessButton);
         JPanel cornerPanel = new JPanel(new BorderLayout());
         cornerPanel.add(addPanel, BorderLayout.EAST);
@@ -341,9 +340,7 @@ public class CloudBalancingPanel extends SolutionPanel {
     }
 
     public JButton createButton(CloudProcess process) {
-        JButton button = new JButton(new CloudProcessAction(process));
-        button.setMargin(new Insets(0, 0, 0, 0));
-        return button;
+        return SwingUtils.makeSmallButton(new JButton(new CloudProcessAction(process)));
     }
 
     private class CloudProcessAction extends AbstractAction {

@@ -32,6 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
@@ -85,8 +86,7 @@ public class TravelingTournamentPanel extends SolutionPanel {
     }
 
     private void defineGrid(TravelingTournament travelingTournament) {
-        JButton footprint = new JButton("MMMMM");
-        footprint.setMargin(new Insets(0, 0, 0, 0));
+        JButton footprint = SwingUtils.makeSmallButton(new JButton("MMMMM"));
         int footprintWidth = footprint.getPreferredSize().width;
 
         teamsPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Day header
@@ -150,8 +150,7 @@ public class TravelingTournamentPanel extends SolutionPanel {
     }
 
     private JButton createButton(Match match, Color color, String label) {
-        JButton button = new JButton(new MatchAction(match, label));
-        button.setMargin(new Insets(0, 0, 0, 0));
+        JButton button = SwingUtils.makeSmallButton(new JButton(new MatchAction(match, label)));
         button.setBackground(color);
         return button;
     }

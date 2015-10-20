@@ -36,6 +36,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
@@ -173,8 +174,7 @@ public class DinnerPartyPanel extends SolutionPanel {
                 add(new JLabel("Empty seat"), BorderLayout.CENTER);
                 return;
             }
-            JButton button = new JButton(new SeatDesignationAction(seatDesignation));
-            button.setMargin(new Insets(0, 0, 0, 0));
+            JButton button = SwingUtils.makeSmallButton(new JButton(new SeatDesignationAction(seatDesignation)));
             add(button, BorderLayout.WEST);
             JPanel infoPanel = new JPanel(new GridLayout(0, 1));
             infoPanel.setOpaque(false);

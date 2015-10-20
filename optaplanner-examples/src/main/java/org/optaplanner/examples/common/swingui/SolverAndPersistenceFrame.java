@@ -53,6 +53,7 @@ import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileFilter;
 
 import org.apache.commons.io.FilenameUtils;
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
@@ -195,9 +196,8 @@ public class SolverAndPersistenceFrame extends JFrame {
             for (File file : fileList) {
                 Action quickOpenAction = new QuickOpenAction(file);
                 quickOpenActionList.add(quickOpenAction);
-                JButton quickOpenButton = new JButton(quickOpenAction);
+                JButton quickOpenButton = SwingUtils.makeSmallButton(new JButton(quickOpenAction));
                 quickOpenButton.setHorizontalAlignment(SwingConstants.LEFT);
-                quickOpenButton.setMargin(new Insets(0, 0, 0, 0));
                 panel.add(quickOpenButton);
             }
         }

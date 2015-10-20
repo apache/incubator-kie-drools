@@ -38,6 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.CommonIcons;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
@@ -95,8 +96,7 @@ public class TennisPanel extends SolutionPanel {
     }
 
     private void defineGrid(TennisSolution tennisSolution) {
-        JButton footprint = new JButton("999999");
-        footprint.setMargin(new Insets(0, 0, 0, 0));
+        JButton footprint = SwingUtils.makeSmallButton(new JButton("999999"));
         int footprintWidth = footprint.getPreferredSize().width;
 
         datesPanel.defineColumnHeaderByKey(HEADER_COLUMN);
@@ -245,8 +245,7 @@ public class TennisPanel extends SolutionPanel {
     }
 
     private JButton createButton(TeamAssignment teamAssignment, Color color) {
-        JButton button = new JButton(new TeamAssignmentAction(teamAssignment));
-        button.setMargin(new Insets(0, 0, 0, 0));
+        JButton button = SwingUtils.makeSmallButton(new JButton(new TeamAssignmentAction(teamAssignment)));
         button.setBackground(color);
         if (teamAssignment.isLocked()) {
             button.setIcon(CommonIcons.LOCKED_ICON);

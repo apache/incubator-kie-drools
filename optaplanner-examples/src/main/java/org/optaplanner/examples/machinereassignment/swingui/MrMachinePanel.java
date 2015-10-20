@@ -37,6 +37,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
@@ -91,7 +92,7 @@ public class MrMachinePanel extends JPanel {
         machineLabel.setEnabled(false);
         labelAndDeletePanel.add(machineLabel, BorderLayout.CENTER);
         if (machine != null) {
-            JButton deleteButton = new JButton("X");
+            JButton deleteButton = SwingUtils.makeSmallButton(new JButton("X"));
             deleteButton.setToolTipText("Delete");
             deleteButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -99,7 +100,6 @@ public class MrMachinePanel extends JPanel {
                 }
             });
             deleteButton.setToolTipText("Delete");
-            deleteButton.setMargin(new Insets(0, 0, 0, 0));
             labelAndDeletePanel.add(deleteButton, BorderLayout.EAST);
         }
         add(labelAndDeletePanel, BorderLayout.WEST);

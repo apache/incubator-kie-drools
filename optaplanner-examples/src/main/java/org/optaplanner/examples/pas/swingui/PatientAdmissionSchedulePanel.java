@@ -36,6 +36,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
@@ -98,8 +99,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
     }
 
     private void defineGrid(PatientAdmissionSchedule patientAdmissionSchedule) {
-        JButton footprint = new JButton("Patient9999");
-        footprint.setMargin(new Insets(0, 0, 0, 0));
+        JButton footprint = SwingUtils.makeSmallButton(new JButton("Patient9999"));
         int footprintWidth = footprint.getPreferredSize().width;
         timeTablePanel.defineColumnHeaderByKey(HEADER_COLUMN_GROUP2); // Department Header
         timeTablePanel.defineColumnHeaderByKey(HEADER_COLUMN_GROUP1); // Room Header
@@ -156,8 +156,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
 
     private void fillBedDesignationCells(PatientAdmissionSchedule patientAdmissionSchedule) {
         for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
-            JButton button = new JButton(new BedDesignationAction(bedDesignation));
-            button.setMargin(new Insets(0, 0, 0, 0));
+            JButton button = SwingUtils.makeSmallButton(new JButton(new BedDesignationAction(bedDesignation)));
             AdmissionPart admissionPart = bedDesignation.getAdmissionPart();
             timeTablePanel.addCell(admissionPart.getFirstNight(), bedDesignation.getBed(),
                     admissionPart.getLastNight(), bedDesignation.getBed(), button);

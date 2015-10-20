@@ -33,6 +33,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
@@ -124,8 +125,7 @@ public class InvestmentPanel extends SolutionPanel {
     }
 
     private void defineGrid(InvestmentSolution solution) {
-        JButton footprint = new JButton("99999999");
-        footprint.setMargin(new Insets(0, 0, 0, 0));
+        JButton footprint = SwingUtils.makeSmallButton(new JButton("99999999"));
         int footprintWidth = footprint.getPreferredSize().width;
 
         assetClassPanel.defineColumnHeaderByKey(HEADER_COLUMN);

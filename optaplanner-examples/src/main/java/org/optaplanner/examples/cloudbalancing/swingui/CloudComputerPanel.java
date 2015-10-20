@@ -38,6 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
+import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
 import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
 import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.common.swingui.TangoColorFactory;
@@ -107,14 +108,13 @@ public class CloudComputerPanel extends JPanel {
         labelAndDeletePanel.add(computerLabel, BorderLayout.CENTER);
         if (computer != null) {
             JPanel deletePanel = new JPanel(new BorderLayout());
-            JButton deleteButton = new JButton(cloudBalancingPanel.getDeleteCloudComputerIcon());
+            JButton deleteButton = SwingUtils.makeSmallButton(new JButton(cloudBalancingPanel.getDeleteCloudComputerIcon()));
             deleteButton.setToolTipText("Delete");
             deleteButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     cloudBalancingPanel.deleteComputer(computer);
                 }
             });
-            deleteButton.setMargin(new Insets(0, 0, 0, 0));
             deletePanel.add(deleteButton, BorderLayout.NORTH);
             labelAndDeletePanel.add(deletePanel, BorderLayout.EAST);
         }
@@ -328,7 +328,7 @@ public class CloudComputerPanel extends JPanel {
                 processLabel.setForeground(TangoColorFactory.SEQUENCE_1[colorIndex]);
                 labelAndDeletePanel.add(processLabel, BorderLayout.CENTER);
                 JPanel deletePanel = new JPanel(new BorderLayout());
-                JButton deleteButton = new JButton(cloudBalancingPanel.getDeleteCloudProcessIcon());
+                JButton deleteButton = SwingUtils.makeSmallButton(new JButton(cloudBalancingPanel.getDeleteCloudProcessIcon()));
                 deleteButton.setToolTipText("Delete");
                 deleteButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
@@ -336,7 +336,6 @@ public class CloudComputerPanel extends JPanel {
                         CloudProcessListDialog.this.dispose();
                     }
                 });
-                deleteButton.setMargin(new Insets(0, 0, 0, 0));
                 deletePanel.add(deleteButton, BorderLayout.NORTH);
                 labelAndDeletePanel.add(deletePanel, BorderLayout.EAST);
                 assignmentsPanel.add(labelAndDeletePanel);
