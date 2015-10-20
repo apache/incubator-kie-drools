@@ -919,7 +919,7 @@ public class KnowledgeBaseImpl
             byte [] def = runtime.getClassDefinition(convertClassToResourcePath(className));
             Class<?> definedKlass = registerAndLoadTypeDefinition( className, def );
 
-            if ( definedKlass == null && typeDeclaration.isNovel() ) {
+            if ( definedKlass == null && newDecl.isNovel() ) {
                 throw new RuntimeException( "Registering null bytes for class " + className );
             }
 
