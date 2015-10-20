@@ -18,79 +18,81 @@ package org.drools.core.runtime.rule.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.QueryResultsRowImpl;
+import org.drools.core.common.DisconnectedFactHandle;
 import org.drools.core.rule.Declaration;
-import org.drools.core.xml.jaxb.util.JaxbFlatQueryResultsAdapter;
+import org.drools.core.xml.jaxb.util.JaxbListAdapter;
+import org.drools.core.xml.jaxb.util.JaxbListWrapper;
 import org.drools.core.xml.jaxb.util.JaxbMapAdapter;
+import org.drools.core.xml.jaxb.util.JaxbObjectObjectPair;
+import org.drools.core.xml.jaxb.util.JaxbStringObjectPair;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 
-@XmlAccessorType( XmlAccessType.FIELD )
+@XmlAccessorType( XmlAccessType.NONE )
 @XmlType(name="query-results")
 @XmlRootElement
-public class FlatQueryResults
-    implements
-    QueryResults {
-    
-    
-    @XmlJavaTypeAdapter(JaxbMapAdapter.class)
-    @XmlElement(name="identifiers")    
-    private Map<String, Integer> identifiers;
-    
-    @XmlElement(name="results")
-    @XmlJavaTypeAdapter(JaxbFlatQueryResultsAdapter.class)
-    private ArrayList<ArrayList<Object>>           results;
-    
-    
-    @XmlJavaTypeAdapter(JaxbFlatQueryResultsAdapter.class)
-    @XmlElement(name="fact-handles")
-    private ArrayList<ArrayList<FactHandle>> factHandles;
-    
+@XmlSeeAlso(value={DisconnectedFactHandle.class, JaxbListWrapper.class, JaxbStringObjectPair.class})
+public class FlatQueryResults implements QueryResults {
+
+    @XmlElement
+    @XmlJavaTypeAdapter(JaxbListAdapter.class)
+    private ArrayList<Map<String, FactHandle>> idFactHandleMaps;
+
+    @XmlElement
+    @XmlJavaTypeAdapter(JaxbListAdapter.class)
+    private ArrayList<Map<String, Object>> idResultMaps;
+
+    @XmlElement
+    @XmlJavaTypeAdapter(JaxbListAdapter.class)
+    private Set<String> identifiers = null;
+
     public FlatQueryResults() {
-
+        // JAXB constructor
     }
 
-    public FlatQueryResults(Map<String, Integer> identifiers,
-                            ArrayList<ArrayList<Object>> results,
-                            ArrayList<ArrayList<FactHandle>> factHandles) {
+    public FlatQueryResults(Set<String> identifiers,
+                            ArrayList<Map<String, FactHandle>> idFactHandleMaps,
+                            ArrayList<Map<String, Object>> factHandleResultMaps) {
         this.identifiers = identifiers;
-        this.results = results;
-        this.factHandles = factHandles;
+        this.idFactHandleMaps = idFactHandleMaps;
+        this.idResultMaps = factHandleResultMaps;
     }
-    
+
     public FlatQueryResults(QueryResultsImpl results) {
         Declaration[] parameters = results.getParameters();
-        
-        Set<String> set  = new HashSet<String>();
+
+        identifiers  = new HashSet<String>();
         for ( Declaration declr : parameters ) {
-            set.add( declr.getIdentifier() );
+            identifiers.add( declr.getIdentifier() );
         }
-        
-        
+
         Collection<Declaration> declrCollection = new ArrayList( results.getDeclarations(0).values() );
-        
         for ( Iterator<Declaration> it =  declrCollection.iterator(); it.hasNext(); ) {
             Declaration declr = it.next();
-            if ( set.contains( declr.getIdentifier()  ) ) {
+            if ( ! identifiers.add( declr.getIdentifier()  ) ) {
                 it.remove();
             }
-        }   
-        
+        }
+
         Declaration[] declrs = new Declaration[parameters.length + declrCollection.size() ];
         int i = 0;
         for ( Declaration declr : parameters ) {
@@ -98,64 +100,59 @@ public class FlatQueryResults
         }
         for ( Declaration declr : declrCollection ) {
             declrs[i++] = declr;
-        }       
-        
-
-        this.results = new ArrayList<ArrayList<Object>>( results.size() );
-        this.factHandles = new ArrayList<ArrayList<FactHandle>> ( results.size() );
+        }
 
         int length = declrs.length;
-        
-        identifiers = new LinkedHashMap<String, Integer>( length );
-        for ( i = 0; i < length; i++ ) {
-            identifiers.put( declrs[i].getIdentifier(),
-                             i );
-        }
-        
-        
+        idFactHandleMaps = new ArrayList<Map<String,FactHandle>>();
+        idResultMaps = new ArrayList<Map<String,Object>>();
+
         for ( QueryResultsRow result : results ) {
-            ArrayList<Object> row = new ArrayList<Object>();
-            ArrayList<FactHandle> rowHandle = new ArrayList<FactHandle>();
+            QueryResultsRowImpl resultImpl = (QueryResultsRowImpl) result;
+            Map<String, FactHandle> idFactHandleMap = new HashMap<String, FactHandle>(length);
+            Map<String, Object> idResultMap = new HashMap<String, Object>(length);
 
-            for ( i = 0; i < length; i++ ) {
-                Declaration declr = declrs[i];
-                row.add( ((QueryResultsRowImpl)result).get( declr ) );
-                rowHandle.add( ((QueryResultsRowImpl)result).getFactHandle( declr ) );
+            for( i = 0; i < length; ++i ) {
+                String id = declrs[i].getIdentifier();
+                FactHandle factHandle = resultImpl.getFactHandle(id);
+                Object obj = null;
+                if( ! id.equals("") ) {
+                    // no result value "" because "abducibl/retrieved facts are hidden
+                    obj = resultImpl.get(id);
+                }
+                factHandle = DisconnectedFactHandle.newFrom(factHandle);
+
+                idFactHandleMap.put(id, factHandle);
+                idResultMap.put(id, obj);
             }
-
-            this.results.add( row );
-            this.factHandles.add( rowHandle );
+            idFactHandleMaps.add(idFactHandleMap);
+            idResultMaps.add(idResultMap);
         }
-
-
-
     }
 
     public String[] getIdentifiers() {
-        return identifiers.keySet().toArray( new String[identifiers.size()] );
+        if( identifiers == null ) {
+            return new String[0];
+        }
+        return identifiers.toArray(new String[identifiers.size()]);
     }
 
     public int size() {
-        return this.results.size();
+        return this.idFactHandleMaps.size();
     }
 
     public Iterator<QueryResultsRow> iterator() {
-        return new QueryResultsIterator( identifiers,
-                                         this.results.iterator(),
-                                         this.factHandles.iterator() );
+        return new QueryResultsIterator( idFactHandleMaps.iterator(),
+                                         idResultMaps.iterator() );
     }
 
-    private class QueryResultsIterator implements Iterator<QueryResultsRow> {
-        private Map<String, Integer> identifiers;
-        private Iterator<ArrayList<Object>> iterator;
-        private Iterator<ArrayList<FactHandle>> handleIterator;
+    private static class QueryResultsIterator implements Iterator<QueryResultsRow> {
+        private Iterator<Map<String, FactHandle>> handleIterator;
+        private Iterator<Map<String, Object>> iterator;
 
-        public QueryResultsIterator(Map<String, Integer> identifiers,
-                                    final Iterator<ArrayList<Object>> iterator,
-                                    final Iterator<ArrayList<FactHandle>> handleIterator) {
-            this.identifiers = identifiers;
-            this.iterator = iterator;
+        public QueryResultsIterator(final Iterator<Map<String, FactHandle>> handleIterator,
+                                    final Iterator<Map<String, Object>> iterator) {
             this.handleIterator = handleIterator;
+            this.iterator = iterator;
         }
 
         public boolean hasNext() {
@@ -163,9 +160,8 @@ public class FlatQueryResults
         }
 
         public QueryResultsRow next() {
-            return new FlatQueryResultRow( identifiers,
-                                           this.iterator.next(),
-                                           this.handleIterator.next() );
+            return new FlatQueryResultRow( handleIterator.next(),
+                                           iterator.next() );
         }
 
         public void remove() {
