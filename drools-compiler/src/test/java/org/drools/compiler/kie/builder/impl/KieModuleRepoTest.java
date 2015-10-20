@@ -2,6 +2,7 @@ package org.drools.compiler.kie.builder.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
@@ -11,7 +12,9 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
@@ -23,7 +26,6 @@ import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.common.ResourceProvider;
 import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.jboss.byteman.contrib.bmunit.BMUnitConfig;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,12 +35,18 @@ import org.kie.api.builder.ReleaseId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This test contains
+ * - byteman tests (for concurrency related issues)
+ * - normal tests that test for memory leaks (that the KieModuleRepo
+ * functions as a LRU cache, and evicts old {@link KieModule} instances )
+ */
 @RunWith(org.jboss.byteman.contrib.bmunit.BMUnitRunner.class)
 @BMUnitConfig(loadDirectory="target/test-classes") // set "debug=true to see debug output
 @SuppressWarnings("unchecked")
 public class KieModuleRepoTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(KnowledgeBuilderConfigurationImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(KieModuleRepoTest.class);
 
     private KieModuleRepo kieModuleRepo;
 
@@ -73,25 +81,6 @@ public class KieModuleRepoTest {
         }
     }
 
-    private static Map<ComparableVersion, KieModule> getArtifactMapFromKieModuleRepoInstance(KieModuleRepo kieModuleRepo, String ga)
-                throws Exception {
-        Field kieModulesField = KieModuleRepo.class.getDeclaredField("kieModules");
-        kieModulesField.setAccessible(true);
-        Object kieModulesObj = kieModulesField.get(kieModuleRepo);
-
-        Map<ComparableVersion, KieModule> artifactMap = (Map<ComparableVersion, KieModule>) ((Map) kieModulesObj).get(ga);
-        return artifactMap;
-    }
-
-    private static Map<ReleaseId, KieModule> getOldKieModulesMapFromKieModuleRepoInstance(KieModuleRepo kieModuleRepo)
-            throws Exception {
-        Field oldKieModulesField = KieModuleRepo.class.getDeclaredField("oldKieModules");
-        oldKieModulesField.setAccessible(true);
-        Object kieModulesObj = oldKieModulesField.get(kieModuleRepo);
-
-        return (Map<ReleaseId, KieModule>) kieModulesObj;
-    }
-
     private static KieContainerImpl createMockKieContainer(ReleaseId projectReleaseId, KieModuleRepo kieModuleRepo) throws Exception {
 
         // kie module
@@ -118,12 +107,30 @@ public class KieModuleRepoTest {
         return kieContainerImpl;
     }
 
-    private void continueTest() {
-       // placeholder for byteman rule to signal other threads
-    }
-
     private static void checkRules() {
        // placeholder for byteman rule to check test
+    }
+
+    private static int countKieModules( Map<String, NavigableMap<ComparableVersion, KieModule>> kieModulesCache ) {
+       int numKieModules = 0;
+       for( NavigableMap<ComparableVersion, KieModule> map : kieModulesCache.values() ) {
+           numKieModules += map.size();
+       }
+       return numKieModules;
+    }
+
+    private static void setFinalField(Field field, Object fieldObject, Object newValue) throws Exception {
+        // make accessible
+        field.setAccessible(true);
+
+        // make non-final
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL );
+
+        field.set(null, newValue);
+
+        field.set(fieldObject, newValue);
     }
 
     /**
@@ -183,7 +190,7 @@ public class KieModuleRepoTest {
         checkRules();
 
         String ga = groupId + ":" + artifactId;
-        Map<ComparableVersion, KieModule> artifactMap = getArtifactMapFromKieModuleRepoInstance(kieModuleRepo, ga);
+        Map<ComparableVersion, KieModule> artifactMap = kieModuleRepo.kieModules.get(ga);
 
         ComparableVersion normalVersion = new ComparableVersion(firstVersion);
         KieModule normalKieModule = artifactMap.get(normalVersion);
@@ -199,31 +206,22 @@ public class KieModuleRepoTest {
     @Test(timeout=5000)
     @BMScript(value="byteman/removeStoreArtifactMapTest.btm")
     public void removeStoreArtifactMapTest() throws Exception {
-        // This test has been verified against 3.0.2-SNAPSHOT, due to a bug fixed in BYTEMAN-296 among others
-        // The problem (in short) is that byteman 3.0.1 has a problem "seeing" changes ConcurrentSkipListMap field
-        String bytemanJarName = BMScript.class.getProtectionDomain().getCodeSource().getLocation().toExternalForm();
-        int index = bytemanJarName.lastIndexOf("/");
-        index = index > 0 ? index + 1 : 0;
-        bytemanJarName = bytemanJarName.substring(index);
-        index = "byteman-bmunit-".length();
-        String bytemanJarVersion = bytemanJarName.substring(index);
-        bytemanJarVersion = bytemanJarVersion.substring(0, bytemanJarVersion.lastIndexOf("."));
-        boolean bytemanVersionTooLow = bytemanJarVersion.equals("3.0.1");
-        logger.info( "Skipping " + Thread.currentThread().getStackTrace()[1].getMethodName() + " since byteman version is too low: " + bytemanJarVersion );
-        Assume.assumeFalse("Byteman version is too low to run test: " + bytemanJarVersion, bytemanVersionTooLow );
-        fail("Remove the code above that checks the byteman version, since byteman has been upgraded past 3.0.1 to " + bytemanJarVersion );
-
         // actual test
         Thread.currentThread().setName("test");
 
         final ReleaseIdImpl releaseId = new ReleaseIdImpl("org", "redeploy", "2.0");
-        final KieModule redeployKieModule = mock(KieModule.class);
+        final InternalKieModule originalKieModule = mock(InternalKieModule.class);
+        when(originalKieModule.getReleaseId()).thenReturn(releaseId);
+        when(originalKieModule.getCreationTimestamp()).thenReturn(0l);
+
+        final InternalKieModule redeployKieModule = mock(InternalKieModule.class);
         when(redeployKieModule.getReleaseId()).thenReturn(releaseId);
+        when(redeployKieModule.getCreationTimestamp()).thenReturn(1l);
 
         final CountDownLatch initialDeploy = new CountDownLatch(1);
 
         // 1. initial deploy ("long ago")
-        kieModuleRepo.store(redeployKieModule);
+        kieModuleRepo.store(originalKieModule);
         initialDeploy.countDown();
 
         final CyclicBarrier storeAndRemoveThreadsToFinish = new CyclicBarrier(3);
@@ -260,8 +258,6 @@ public class KieModuleRepoTest {
         removeThread.setName("remove");
         removeThread.start();
 
-//        continueTest(); // test development, because there are race conditions in the *test* :/
-
         redeployThread.setName("store");
         redeployThread.start();
 
@@ -269,16 +265,18 @@ public class KieModuleRepoTest {
         checkRules();
 
         String ga = releaseId.getGroupId() + ":" + releaseId.getArtifactId();
-        Map<ComparableVersion, KieModule> artifactMap = getArtifactMapFromKieModuleRepoInstance(kieModuleRepo, ga);
+        Map<ComparableVersion, KieModule> artifactMap = kieModuleRepo.kieModules.get(ga);
 
         assertNotNull( "Artifact Map for GA '" + ga + "' not in KieModuleRepo!", artifactMap);
 
         // never gets this far, but this is a good check
         KieModule redployedKieModule = artifactMap.get(new ComparableVersion(releaseId.getVersion()));
         assertNotNull( "Redeployed module has disappeared from KieModuleRepo!", redployedKieModule);
+        assertEquals( "Original module retrieved instead of redeployed module!",
+                      1l, ((InternalKieModule) redeployKieModule).getCreationTimestamp() );
     }
 
-    // 2. duplicate deploy request
+    // 2. simultaneous deploy requests
     // - multitenant UI
     // - duplicate REST requests
     @Test(timeout=5000)
@@ -340,14 +338,141 @@ public class KieModuleRepoTest {
         waitFor(bothStoreThreadsToFinish);
         checkRules();
 
-        Map<ReleaseId, KieModule> oldKieModules = getOldKieModulesMapFromKieModuleRepoInstance(kieModuleRepo);
-
         // never gets this far, but this is a good check
-        KieModule oldKieModule = oldKieModules.get(releaseId);
+        KieModule oldKieModule = kieModuleRepo.oldKieModules.get(releaseId);
         long oldKieModuleTimeStamp = ((InternalKieModule) oldKieModule).getCreationTimestamp();
         long originalKieModuleTimestamp = ((InternalKieModule) originalOldKieModule).getCreationTimestamp();
         assertEquals( "The old kie module in the repo is not the originally deployed module!",
                       originalKieModuleTimestamp, oldKieModuleTimeStamp);
+    }
+
+    @Test
+    public void storingNewProjectsCausesOldProjectEvictionFromKieModuleRepoTest() throws Exception {
+        // setup
+        Field maxSizeGaCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_CACHE");
+        setFinalField(maxSizeGaCacheField, null, 3);
+        Field maxSizeGaVersionsCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_VERSIONS_CACHE");
+        setFinalField(maxSizeGaVersionsCacheField, null, 2); // to test oldKieModules caching
+
+        ReleaseIdImpl [] releaseIds = new ReleaseIdImpl[7];
+        for( int i = 0; i < releaseIds.length; ++i ) {
+            String artifactId = Character.toString((char)('A'+i));
+            releaseIds[i] =  new ReleaseIdImpl("org", artifactId, "1.0");
+        }
+
+        // store
+        for( int i = 0; i < releaseIds.length; ++i ) {
+            InternalKieModule kieModule = mock(InternalKieModule.class);
+            when(kieModule.getReleaseId()).thenReturn(releaseIds[i]);
+            when(kieModule.getCreationTimestamp()).thenReturn(10l);
+            kieModuleRepo.store(kieModule);
+            kieModuleRepo.store(kieModule); // store module 2 times to trigger storage to oldKieModules
+        }
+
+        int numKieModules = countKieModules(kieModuleRepo.kieModules);
+        assertEquals( "KieModuleRepo cache should not grow past " + KieModuleRepo.MAX_SIZE_GA_CACHE + ": ",
+                      KieModuleRepo.MAX_SIZE_GA_CACHE, numKieModules );
+
+        int oldKieModulesSize = kieModuleRepo.oldKieModules.size();
+        int max = KieModuleRepo.MAX_SIZE_GA_CACHE * KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE;
+        assertTrue( "KieModuleRepot old KieModules map is not limited in it's growth: " + oldKieModulesSize + " > " + max,
+                     oldKieModulesSize <= max );
+    }
+
+    @Test
+    public void storingNewProjectVersionsCausesOldVersionEvictionFromKieModuleRepoTest() throws Exception {
+        // setup
+        Field maxSizeGaCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_CACHE");
+        setFinalField(maxSizeGaCacheField, null, 2); // to test oldKieModules caching
+        Field maxSizeGaVersionsCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_VERSIONS_CACHE");
+        setFinalField(maxSizeGaVersionsCacheField, null, 3);;
+
+        ReleaseIdImpl [] releaseIds = new ReleaseIdImpl[7];
+        for( int i = 0; i < releaseIds.length; ++i ) {
+            releaseIds[i] =  new ReleaseIdImpl("org", "test", "1." + i);
+        }
+
+        // store
+        for( int i = 0; i < releaseIds.length; ++i ) {
+            InternalKieModule kieModule = mock(InternalKieModule.class);
+            when(kieModule.getReleaseId()).thenReturn(releaseIds[i]);
+            when(kieModule.getCreationTimestamp()).thenReturn(10l);
+            kieModuleRepo.store(kieModule);
+            kieModuleRepo.store(kieModule); // in order to trigger storage to oldKieModules
+        }
+
+        int numKieModules = countKieModules(kieModuleRepo.kieModules);
+        assertEquals( "KieModuleRepo cache should not grow past " + KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE + ": ",
+                      KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE, numKieModules );
+
+        int oldKieModulesSize = kieModuleRepo.oldKieModules.size();
+        int maxOldKieModules = KieModuleRepo.MAX_SIZE_GA_CACHE * KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE;
+        assertTrue( "KieModuleRepo old KieModules map is not limited in it's growth: " + oldKieModulesSize + " > " + maxOldKieModules,
+                     oldKieModulesSize <= maxOldKieModules );
+
+        // store
+        for( int o = 0; o < 2; ++o ) {
+            // loop 2 times in order to trigger storage to oldKieModules
+            for( int i = 0; i < releaseIds.length; ++i ) {
+                InternalKieModule kieModule = mock(InternalKieModule.class);
+                when(kieModule.getReleaseId()).thenReturn(releaseIds[i]);
+                when(kieModule.getCreationTimestamp()).thenReturn(10l);
+                kieModuleRepo.store(kieModule);
+            }
+        }
+
+        numKieModules = countKieModules(kieModuleRepo.kieModules);
+        assertEquals( "KieModuleRepo cache should not grow past " + KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE + ": ",
+                      KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE, numKieModules );
+
+        oldKieModulesSize = kieModuleRepo.oldKieModules.size();
+        assertTrue( "KieModuleRepo old KieModules map is not limited in it's growth: " + oldKieModulesSize + " > " + maxOldKieModules,
+                     oldKieModulesSize <= maxOldKieModules );
+    }
+
+    @Test
+    public void testOldKieModulesLRUCache() throws Exception {
+        // setup
+        Field maxSizeGaCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_CACHE");
+        setFinalField(maxSizeGaCacheField, null, 2);
+        Field maxSizeGaVersionsCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_VERSIONS_CACHE");
+        setFinalField(maxSizeGaVersionsCacheField, null, 4);
+
+        ReleaseIdImpl [] releaseIds = new ReleaseIdImpl[9];
+        for( int i = 0; i < releaseIds.length; ++i ) {
+            String artifactId = Character.toString((char)('A'+i/2));
+            releaseIds[i] =  new ReleaseIdImpl("org", artifactId, "1." + i);
+        }
+
+        // store
+        for( int i = 0; i < releaseIds.length; ++i ) {
+            InternalKieModule kieModule = mock(InternalKieModule.class);
+            when(kieModule.getReleaseId()).thenReturn(releaseIds[i]);
+            when(kieModule.getCreationTimestamp()).thenReturn(10l);
+            kieModuleRepo.store(kieModule);
+            kieModuleRepo.store(kieModule); // in order to trigger storage to oldKieModules
+        }
+
+        int maxSameGAModules = 0;
+        int maxGAs = 0;
+        for( Map<ComparableVersion, KieModule> artifactMap : kieModuleRepo.kieModules.values() ) {
+            maxGAs++;
+            if( artifactMap.size() > maxSameGAModules ) {
+                maxSameGAModules = artifactMap.size();
+            }
+        }
+
+        assertTrue( "The maximum of artifacts per GA should not grow past " + KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE + ": "
+                    + KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE + " < " + maxSameGAModules,
+                      KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE >= maxSameGAModules );
+        assertTrue( "The number of GAs not grow past " + KieModuleRepo.MAX_SIZE_GA_CACHE + ": "
+                    + KieModuleRepo.MAX_SIZE_GA_CACHE + " > " + maxGAs,
+                      KieModuleRepo.MAX_SIZE_GA_CACHE >= maxGAs );
+
+        int oldKieModulesSize = kieModuleRepo.oldKieModules.size();
+        int maxOldKieModules = KieModuleRepo.MAX_SIZE_GA_CACHE * KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE;
+        assertTrue( "KieModuleRepo old KieModules map is not limited in it's growth: " + oldKieModulesSize + " > " + maxOldKieModules,
+                     oldKieModulesSize <= maxOldKieModules );
     }
 
 }

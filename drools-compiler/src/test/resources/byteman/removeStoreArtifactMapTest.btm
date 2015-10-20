@@ -1,6 +1,10 @@
 # Byteman Rule for 
 # org.drools.compiler.kie.builder.KieModuleRepoTest.artifactMapTest
 
+# The rules below contain out-of-date documentation in order to document
+# the race conditions that would happen 
+# if the KieModuleRepo methods were NOT synchronized
+
 RULE test setup
 CLASS org.drools.compiler.kie.builder.impl.KieModuleRepoTest
 METHOD removeStoreArtifactMapTest
@@ -9,8 +13,8 @@ BIND threadName = Thread.currentThread().getName();
 IF TRUE
 DO 
 # traceln(">>>> " + threadName + ": create rendezvous's");
-createRendezvous("get artifactMap", 2);
-createRendezvous("remove artifactMap", 2);
+createRendezvous("start store", 2);
+createRendezvous("end remove", 2);
 createRendezvous("continue test", 2);
 flag("0");
 ENDRULE
@@ -27,56 +31,53 @@ ENDRULE
 # ENDRULE
 
 RULE store: after [artifactMap = kieModules.get(ga)]
-CLASS org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo
-METHOD store
-AFTER WRITE $artifactMap
+CLASS org.drools.compiler.kie.builder.impl.KieModuleRepoTest$4
+METHOD run()
+AT INVOKE org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo.store(org.kie.api.builder.KieModule)
 BIND threadName = Thread.currentThread().getName();
 IF threadName.equals("store")
 DO 
-# traceln(">>>> " + threadName + ": rendezvous [get artifactMap]");
-rendezvous("get artifactMap");
-# traceln(">>>> " + threadName + ": rendezvous [remove artifactMap]");
-rendezvous("remove artifactMap");
+# traceln(">>>> " + threadName + ": rendezvous start store [start store]");
+rendezvous("start store");
+# traceln(">>>> " + threadName + ": rendezvous start store [end remove]");
+rendezvous("end remove");
 flag("2");
 ENDRULE
 
 # If this rule FIRES, then your test is BROKEN!
-RULE store: 2nd kieModule read
-CLASS org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo
-METHOD store
-AT READ org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo.kieModules 2
-BIND threadName = Thread.currentThread().getName();
-IF threadName.equals("store")
-DO 
-throw new IllegalStateException("A new artifactMap was added to the KieModuleRepo.kieModules field! That action invalidates this test.");
-ENDRULE
+# RULE store: 2nd kieModule read
+# CLASS org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo
+# METHOD store
+# AT READ org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo.kieModules 2
+# BIND threadName = Thread.currentThread().getName();
+# IF threadName.equals("store")
+# DO 
+# throw new IllegalStateException("A new artifactMap was added to the KieModuleRepo.kieModules field! That action invalidates this test.");
+# ENDRULE
 
 RULE remove: after [artifactMap = kieModules.get(ga)]
-CLASS org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo
-METHOD remove
-AFTER WRITE $artifactMap 
+CLASS org.drools.compiler.kie.builder.impl.KieModuleRepoTest$3
+METHOD run()
+AT INVOKE org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo.remove(org.kie.api.builder.ReleaseId)
 BIND threadName = Thread.currentThread().getName();
 IF TRUE
 DO 
 # traceln(">>>> " + threadName + ": rendezvous [continue test]");
 # rendezvous("continue test");
-# traceln(">>>> " + threadName + ": rendezvous [get artifactMap]");
-rendezvous("get artifactMap");
+# traceln(">>>> " + threadName + ": rendezvous start remove [start store]");
+rendezvous("start store");
 flag("1");
 ENDRULE
 
-# we do AT READ oldKieModules 
-# because AFTER READ kieModules 
-# does *not* guarantee that kieModules.remove(ga) has been called!
 RULE remove: after [kieModules.remove(ga)]
-CLASS org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo
-METHOD remove
-AT EXIT
+CLASS org.drools.compiler.kie.builder.impl.KieModuleRepoTest$3
+METHOD run()
+AFTER INVOKE org.drools.compiler.kie.builder.impl.KieRepositoryImpl$KieModuleRepo.remove(org.kie.api.builder.ReleaseId)
 BIND threadName = Thread.currentThread().getName();
 IF TRUE
 DO 
-# traceln(">>>> " + threadName + ": rendezvous [remove artifactMap]");
-rendezvous("remove artifactMap");
+# traceln(">>>> " + threadName + ": rendezvous exit remove [end remove]");
+rendezvous("end remove");
 flag("2");
 ENDRULE
 

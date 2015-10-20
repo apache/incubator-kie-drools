@@ -215,7 +215,6 @@
         </configuration>
       </plugin>
      
-      <!--  Re-enable once we upgrade byteman to 3.0.2
       <plugin>
         <groupId>org.jboss.byteman</groupId>
         <artifactId>byteman-rulecheck-maven-plugin</artifactId>
@@ -236,7 +235,6 @@
           </execution>
         </executions>
       </plugin>
-       --> 
     </plugins>
   </build>
   
