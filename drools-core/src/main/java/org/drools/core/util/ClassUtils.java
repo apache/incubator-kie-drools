@@ -60,6 +60,26 @@ public final class ClassUtils {
 
     private static final String STAR    = "*";
 
+    private static final Map<String, String> abbreviationMap;
+
+    static {
+        final Map<String, String> m = new HashMap<String, String>();
+        m.put("int", "I");
+        m.put("boolean", "Z");
+        m.put("float", "F");
+        m.put("long", "J");
+        m.put("short", "S");
+        m.put("byte", "B");
+        m.put("double", "D");
+        m.put("char", "C");
+        m.put("void", "V");
+        final Map<String, String> r = new HashMap<String, String>();
+        for (final Map.Entry<String, String> e : m.entrySet()) {
+            r.put(e.getValue(), e.getKey());
+        }
+        abbreviationMap = Collections.unmodifiableMap(m);
+    }
+
     static {
         PROTECTION_DOMAIN = (ProtectionDomain) AccessController.doPrivileged( new PrivilegedAction() {
 
@@ -719,5 +739,56 @@ public final class ClassUtils {
             }
         }
         return c1;
+    }
+
+    public static Class<?> getClassFromName(String className) throws ClassNotFoundException {
+        return getClassFromName( className, true, ClassUtils.class.getClassLoader() );
+    }
+
+    public static Class<?> getClassFromName(String className, boolean initialize, ClassLoader classLoader) throws ClassNotFoundException {
+        try {
+            Class<?> clazz;
+            if (abbreviationMap.containsKey(className)) {
+                final String clsName = "[" + abbreviationMap.get(className);
+                clazz = Class.forName(clsName, initialize, classLoader).getComponentType();
+            } else {
+                clazz = Class.forName(toCanonicalName( className ), initialize, classLoader);
+            }
+            return clazz;
+        } catch (final ClassNotFoundException ex) {
+            // allow path separators (.) as inner class name separators
+            final int lastDotIndex = className.lastIndexOf('.');
+
+            if (lastDotIndex != -1) {
+                try {
+                    return getClassFromName( className.substring( 0, lastDotIndex ) + '$' + className.substring( lastDotIndex + 1 ),
+                                             initialize, classLoader);
+                } catch (final ClassNotFoundException ex2) { // NOPMD
+                    // ignore exception
+                }
+            }
+
+            throw ex;
+        }
+    }
+
+    private static String toCanonicalName(String className) {
+        if (className == null) {
+            throw new NullPointerException("className must not be null.");
+        } else if (className.endsWith("[]")) {
+            final StringBuilder classNameBuffer = new StringBuilder();
+            while (className.endsWith("[]")) {
+                className = className.substring(0, className.length() - 2);
+                classNameBuffer.append("[");
+            }
+            final String abbreviation = abbreviationMap.get(className);
+            if (abbreviation != null) {
+                classNameBuffer.append(abbreviation);
+            } else {
+                classNameBuffer.append("L").append(className).append(";");
+            }
+            className = classNameBuffer.toString();
+        }
+        return className;
     }
 }

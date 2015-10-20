@@ -29,9 +29,10 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.util.FileManager;
+import org.drools.core.reteoo.ReteComparator;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -65,25 +66,19 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
@@ -173,32 +168,9 @@ public class Misc2Test extends CommonTestMethodBase {
                 "       insert( new Person( $christianName, null ) );\n" +
                 "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            throw new RuntimeException("" + kbuilder.getErrors());
-        }
-
-        FileManager fileManager = new FileManager().setUp();
-
-        try {
-            File root = fileManager.getRootDirectory();
-
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(root, "test.drl.compiled")));
-            out.writeObject( kbuilder.getKnowledgePackages());
-            out.close();
-
-            KieBaseConfiguration kconf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-            kconf.setOption( RuleEngineOption.PHREAK );
-            KnowledgeBase kbase  = KnowledgeBaseFactory.newKnowledgeBase(kconf);
-
-            ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(root, "test.drl.compiled")));
-            kbase.addKnowledgePackages((Collection<KnowledgePackage>) in.readObject());
-            in.close();
-        } finally {
-            fileManager.tearDown();
-        }
+        KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL ).build();
+        KieBase kbase2 = SerializationHelper.serializeObject( kbase1, ( (InternalKnowledgeBase) kbase1 ).getRootClassLoader() );
+        ReteComparator.compare( kbase1, kbase2 );
     }
 
     @Test

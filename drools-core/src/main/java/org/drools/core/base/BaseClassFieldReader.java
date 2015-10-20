@@ -204,8 +204,10 @@ abstract public class BaseClassFieldReader
 
         try {
             fieldType = in instanceof DroolsObjectInput ?
-                        Class.forName( clsName, false, ( (DroolsObjectInput) in ).getClassLoader() ) :
-                        Class.forName( clsName );
-        } catch (ClassNotFoundException e) { }
+                        ClassUtils.getClassFromName( clsName, false, ( (DroolsObjectInput) in ).getClassLoader() ) :
+                        ClassUtils.getClassFromName( clsName );
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException( e );
+        }
     }
 }
