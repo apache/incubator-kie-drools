@@ -122,7 +122,7 @@ public final class BeanPropertyMemberAccessor implements MemberAccessor {
 
     @Override
     public String toString() {
-        return "bean property " + propertyName + " on class " + getterMethod.getDeclaringClass();
+        return "bean property " + propertyName + " on " + getterMethod.getDeclaringClass();
     }
 
 }

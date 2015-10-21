@@ -110,7 +110,7 @@ public final class MethodMemberAccessor implements MemberAccessor {
 
     @Override
     public String toString() {
-        return "method " + methodName + " on class " + readMethod.getDeclaringClass();
+        return "method " + methodName + " on " + readMethod.getDeclaringClass();
     }
 
 }
