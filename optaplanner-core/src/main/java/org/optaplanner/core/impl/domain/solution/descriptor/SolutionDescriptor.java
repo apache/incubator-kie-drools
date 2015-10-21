@@ -220,7 +220,7 @@ public class SolutionDescriptor {
         }
         if (noEntityPropertyAnnotation) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") should have at least 1 getter with a PlanningEntityCollection or PlanningEntityProperty"
+                    + ") should have at least 1 getter with a PlanningEntityCollectionProperty or PlanningEntityProperty"
                     + " annotation.");
         }
     }
