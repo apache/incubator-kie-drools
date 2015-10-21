@@ -322,12 +322,12 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                         errors.add(new ProcessValidationErrorImpl(process,
                                 "Action node '" + node.getName() + "' [" + node.getId() + "] has empty action."));
                     } else if( "mvel".equals( droolsAction.getDialect() ) ) {
-                        try {
-                            ExpressionCompiler compiler = new ExpressionCompiler(actionString);
-                            compiler.setVerifying(true);
+                        try {                                                      
                             ParserContext parserContext = new ParserContext();
                             //parserContext.setStrictTypeEnforcement(true);
-                            compiler.compile(parserContext);
+                            ExpressionCompiler compiler = new ExpressionCompiler(actionString, parserContext);
+                            compiler.setVerifying(true);
+                            compiler.compile();
                             List<ErrorDetail> mvelErrors = parserContext.getErrorList();
                             if (mvelErrors != null) {
                                 for (Iterator<ErrorDetail> iterator = mvelErrors.iterator(); iterator.hasNext(); ) {
