@@ -42,6 +42,7 @@ public class ModifyCommand implements GenericCommand<Object> {
      * if this is true, modify can be any MVEL expressions. If false, it will only allow literal values.
      * (false should be use when taking input from an untrusted source, such as a web service).
      */
+    @XmlAttribute(name="allow-modify-expr")
     public boolean ALLOW_MODIFY_EXPRESSIONS = true;
 
     private DisconnectedFactHandle handle;

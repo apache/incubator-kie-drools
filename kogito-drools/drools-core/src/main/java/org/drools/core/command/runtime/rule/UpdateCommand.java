@@ -30,7 +30,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 @XmlRootElement(name="update-command")
-@XmlAccessorType(XmlAccessType.FIELD)
+@XmlAccessorType(XmlAccessType.NONE)
 public class UpdateCommand implements GenericCommand<Void> {
 
     private static final long serialVersionUID = 3255044102543531497L;
