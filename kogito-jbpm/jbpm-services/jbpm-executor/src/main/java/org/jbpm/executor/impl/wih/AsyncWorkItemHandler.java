@@ -147,6 +147,11 @@ public class AsyncWorkItemHandler implements WorkItemHandler {
     }
     
     protected String buildBusinessKey(WorkItem workItem) {
+        String businessKeyIn = (String) workItem.getParameter("BusinessKey");
+        if (businessKeyIn != null && !businessKeyIn.isEmpty()) {
+            return businessKeyIn;
+        }
+        
         StringBuffer businessKey = new StringBuffer();
         businessKey.append(getProcessInstanceId(workItem));
         businessKey.append(":");
