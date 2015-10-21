@@ -27,6 +27,7 @@ import org.apache.maven.artifact.handler.manager.DefaultArtifactHandlerManager;
 import org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout;
 import org.apache.maven.artifact.repository.layout.DefaultRepositoryLayout;
 import org.apache.maven.artifact.repository.layout.FlatRepositoryLayout;
+import org.apache.maven.bridge.MavenRepositorySystem;
 import org.apache.maven.eventspy.EventSpy;
 import org.apache.maven.eventspy.internal.EventSpyDispatcher;
 import org.apache.maven.execution.DefaultMavenExecutionRequestPopulator;
@@ -74,6 +75,7 @@ import org.apache.maven.project.DefaultProjectDependenciesResolver;
 import org.apache.maven.project.ProjectBuilder;
 import org.apache.maven.project.ProjectBuildingHelper;
 import org.apache.maven.project.ProjectDependenciesResolver;
+import org.apache.maven.project.RepositorySessionDecorator;
 import org.apache.maven.repository.DefaultMirrorSelector;
 import org.apache.maven.repository.MirrorSelector;
 import org.apache.maven.repository.RepositorySystem;
@@ -91,8 +93,10 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.logging.console.ConsoleLogger;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
+import org.eclipse.aether.impl.ArtifactResolver;
 import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.impl.RemoteRepositoryManager;
+import org.eclipse.aether.internal.impl.DefaultArtifactResolver;
 import org.eclipse.aether.internal.impl.DefaultRemoteRepositoryManager;
 import org.eclipse.aether.internal.impl.DefaultRepositorySystem;
 import org.eclipse.aether.internal.impl.DefaultTransporterProvider;
@@ -110,6 +114,7 @@ import org.sonatype.plexus.components.sec.dispatcher.SecDispatcher;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class WiredComponentProvider implements ComponentProvider {
@@ -127,6 +132,8 @@ public class WiredComponentProvider implements ComponentProvider {
 
         locator.setServices( SettingsBuilder.class, new DefaultSettingsBuilderFactory().newInstance() );
         locator.addService( RepositorySystem.class, LegacyRepositorySystem.class );
+        locator.addService( MavenRepositorySystem.class, MavenRepositorySystem.class );
+
         locator.addService( org.eclipse.aether.RepositorySystem.class, DefaultRepositorySystem.class );
         locator.addService( PlexusCipher.class, DefaultPlexusCipher.class );
         locator.addService( SecDispatcher.class, DefaultSecDispatcher.class );
@@ -190,7 +197,14 @@ public class WiredComponentProvider implements ComponentProvider {
         inject( ProjectBuilder.class, ProjectBuildingHelper.class, "projectBuildingHelper" );
         inject( ProjectBuildingHelper.class, RepositorySystem.class, "repositorySystem" );
 
-        inject( ProjectBuilder.class, RepositorySystem.class, "repositorySystem" );
+        inject( MavenRepositorySystem.class, Logger.class, "logger");
+        inject( MavenRepositorySystem.class, ArtifactHandlerManager.class, "artifactHandlerManager" );
+        inject( MavenRepositorySystem.class, ArtifactResolver.class, "artifactResolver" );
+        inject( MavenRepositorySystem.class, layouts, "layouts" );
+        inject( MavenRepositorySystem.class, PlexusContainer.class, "plexus" );
+        inject( MavenRepositorySystem.class, SettingsDecrypter.class, "settingsDecrypter" );
+
+        inject( ProjectBuilder.class, MavenRepositorySystem.class, "repositorySystem" );
         inject( ProjectBuilder.class, ProjectBuildingHelper.class, "projectBuildingHelper" );
         inject( ProjectBuilder.class, ModelBuilder.class, "modelBuilder" );
         inject( ProjectBuilder.class, org.eclipse.aether.RepositorySystem.class, "repoSystem" );
@@ -199,6 +213,8 @@ public class WiredComponentProvider implements ComponentProvider {
 
         inject( ProjectDependenciesResolver.class, Logger.class, "logger" );
         inject( ProjectDependenciesResolver.class, org.eclipse.aether.RepositorySystem.class, "repoSystem" );
+        List<RepositorySessionDecorator> decorators = new ArrayList<RepositorySessionDecorator>();
+        inject( ProjectDependenciesResolver.class, decorators, "decorators" );
 
         inject( SuperPomProvider.class, ModelProcessor.class, "modelProcessor" );
         inject( ModelUrlNormalizer.class, UrlNormalizer.class, "urlNormalizer" );
