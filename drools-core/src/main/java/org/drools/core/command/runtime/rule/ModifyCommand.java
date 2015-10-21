@@ -43,7 +43,7 @@ public class ModifyCommand implements GenericCommand<Object> {
      * (false should be use when taking input from an untrusted source, such as a web service).
      */
     @XmlAttribute(name="allow-modify-expr")
-    public boolean allowModifyExpressions = true;
+    public boolean ALLOW_MODIFY_EXPRESSIONS = true;
 
     private DisconnectedFactHandle handle;
 
@@ -110,7 +110,7 @@ public class ModifyCommand implements GenericCommand<Object> {
             if ( i++ > 0 ) {
                 sbuilder.append( "," );
             }
-            if (allowModifyExpressions) {
+            if (ALLOW_MODIFY_EXPRESSIONS) {
                 sbuilder.append( setter.getAccessor() + " = '" + setter.getValue() + "'\n" );
             } else {
                 sbuilder.append( setter.getAccessor() + " = '" + setter.getValue().replace("\"", "") + "'\n" );
