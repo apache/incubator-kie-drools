@@ -35,7 +35,7 @@ import org.kie.api.runtime.KieSession;
 @XmlAccessorType(XmlAccessType.NONE)
 public class SetGlobalCommand
     implements
-    GenericCommand<Void> , IdentifiableResult{
+    GenericCommand<Object> , IdentifiableResult{
 
     @XmlAttribute(required=true)
     private String  identifier;
@@ -56,7 +56,7 @@ public class SetGlobalCommand
         this.object = object;
     }
 
-    public Void execute(Context context) {
+    public Object execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
 
         if ( this.outIdentifier != null ) {
@@ -66,7 +66,9 @@ public class SetGlobalCommand
 
         ksession.setGlobal( this.identifier,
                             this.object );
-        return null;
+
+        // returning the object is necessary for drools-simulator
+        return this.object;
     }
 
     public String getIdentifier() {
