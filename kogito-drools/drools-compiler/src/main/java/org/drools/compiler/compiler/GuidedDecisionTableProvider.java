@@ -11,13 +11,35 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- */
+*/
 
 package org.drools.compiler.compiler;
 
 import org.kie.api.Service;
 
-public interface GuidedRuleTemplateConverter extends Service {
-    byte[] convert( byte[] input );
+import java.io.IOException;
+import java.io.InputStream;
+
+public interface GuidedDecisionTableProvider extends Service {
+
+    ConversionResult loadFromInputStream(InputStream is) throws IOException;
+
+    class ConversionResult {
+        private final String drl;
+        private final boolean containsDsl;
+
+        public ConversionResult(String drl, boolean containsDsl) {
+            this.drl = drl;
+            this.containsDsl = containsDsl;
+        }
+
+        public String getDrl() {
+            return drl;
+        }
+
+        public boolean containsDsl() {
+            return containsDsl;
+        }
+    }
+
 }

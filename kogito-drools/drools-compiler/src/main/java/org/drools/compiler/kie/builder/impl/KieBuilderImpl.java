@@ -263,14 +263,7 @@ public class KieBuilderImpl
         byte[] bytes = srcMfs.getBytes( fileName );
         String trgFileName = fileName.substring( RESOURCES_ROOT.length() );
         if ( bytes != null ) {
-            FormatConverter formatConverter = FormatsManager.get().getConverterFor( trgFileName );
-            if ( formatConverter != null ) {
-                FormatConversionResult result = formatConverter.convert( trgFileName, bytes );
-                trgFileName = result.getConvertedName();
-                trgMfs.write( trgFileName, result.getContent(), true );
-            } else if ( getResourceType( fileName ) != null ) {
-                trgMfs.write( trgFileName, bytes, true );
-            }
+            trgMfs.write( trgFileName, bytes, true );
         } else {
             trgMfs.remove( trgFileName );
         }
@@ -300,8 +293,8 @@ public class KieBuilderImpl
     }
 
     private void addMetaInfBuilder() {
-        for ( String fileName : srcMfs.getFileNames() ) {
-            if ( fileName.startsWith( RESOURCES_ROOT ) && !FormatsManager.isKieExtension( fileName ) ) {
+        for ( String fileName : srcMfs.getFileNames()) {
+            if ( fileName.startsWith( RESOURCES_ROOT ) && !isKieExtension( fileName ) ) {
                 byte[] bytes = srcMfs.getBytes( fileName );
                 trgMfs.write( fileName.substring( RESOURCES_ROOT.length() - 1 ),
                               bytes,
@@ -323,7 +316,11 @@ public class KieBuilderImpl
                                              KieBaseModel kieBase,
                                              String fileName ) {
         return isFileInKieBase( kieBase, fileName ) &&
-                ( FormatsManager.isKieExtension( fileName ) || getResourceType( kieModule, fileName ) != null );
+                ( isKieExtension( fileName ) || getResourceType( kieModule, fileName ) != null );
+    }
+
+    private static boolean isKieExtension(String fileName) {
+        return !fileName.endsWith(".java") && ResourceType.determineResourceType(fileName) != null;
     }
 
     private static boolean isFileInKieBase( KieBaseModel kieBase,

@@ -15,22 +15,20 @@
 
 package org.drools.workbench.models.guided.scorecard.backend;
 
-import org.drools.compiler.kie.builder.impl.FormatConversionResult;
-import org.drools.compiler.kie.builder.impl.FormatConverter;
+import org.drools.compiler.compiler.GuidedScoreCardProvider;
 import org.drools.core.util.IoUtils;
-import org.drools.workbench.models.commons.backend.BaseConverter;
 import org.drools.workbench.models.guided.scorecard.shared.ScoreCardModel;
 
-public class GuidedScoreCardConverter extends BaseConverter implements FormatConverter {
+import java.io.IOException;
+import java.io.InputStream;
+
+public class GuidedScoreCardProviderImpl implements GuidedScoreCardProvider {
 
     @Override
-    public FormatConversionResult convert( String name,
-                                           byte[] input ) {
-        String xml = new String( input, IoUtils.UTF8_CHARSET );
+    public String loadFromInputStream(InputStream is) throws IOException {
+        String xml = new String( IoUtils.readBytesFromInputStream(is), IoUtils.UTF8_CHARSET );
         ScoreCardModel model = GuidedScoreCardXMLPersistence.getInstance().unmarshall( xml );
 
-        String drl = new StringBuilder().append( GuidedScoreCardDRLPersistence.marshal( model ) ).toString();
-
-        return new FormatConversionResult( getDestinationName( name ), drl.getBytes( IoUtils.UTF8_CHARSET ) );
+        return GuidedScoreCardDRLPersistence.marshal( model );
     }
 }
