@@ -83,24 +83,31 @@ public final class TestPersistenceContext {
      * @throws IOException
      */
     public void executeScripts(final File scriptsRootFolder) throws IOException, SQLException {
+        executeScripts(scriptsRootFolder, null);
+    }
+    
+    public void executeScripts(final File scriptsRootFolder, String type) throws IOException, SQLException {
         testIsInitialized();
         final File[] sqlScripts = TestsUtil.getDDLScriptFilesByDatabaseType(scriptsRootFolder, databaseType, true);
         final Connection connection = ((PoolingDataSource) context.get(PersistenceUtil.DATASOURCE)).getConnection();
         connection.setAutoCommit(false);
         try {
             for (File script : sqlScripts) {
-                final List<String> scriptCommands = SQLScriptUtil.getCommandsFromScript(script, databaseType);
-                for (String command : scriptCommands) {
-                    System.out.println(command);
-                    final PreparedStatement statement;
-                    if (databaseType == DatabaseType.SQLSERVER || databaseType == DatabaseType.SQLSERVER2008) {
-                        statement = connection.prepareStatement(
-                                SQLCommandUtil.preprocessCommandSqlServer(command, dataSourceProperties));
-                    } else {
-                        statement = connection.prepareStatement(command);
+                if (type == null || script.getName().startsWith(type)) {
+                    System.out.println("Executing script " + script.getName());
+                    final List<String> scriptCommands = SQLScriptUtil.getCommandsFromScript(script, databaseType);
+                    for (String command : scriptCommands) {
+                        System.out.println(command);
+                        final PreparedStatement statement;
+                        if (databaseType == DatabaseType.SQLSERVER || databaseType == DatabaseType.SQLSERVER2008) {
+                            statement = connection.prepareStatement(
+                                    SQLCommandUtil.preprocessCommandSqlServer(command, dataSourceProperties));
+                        } else {
+                            statement = connection.prepareStatement(command);
+                        }
+                        statement.execute();
+                        statement.close();
                     }
-                    statement.execute();
-                    statement.close();
                 }
             }
             connection.commit();

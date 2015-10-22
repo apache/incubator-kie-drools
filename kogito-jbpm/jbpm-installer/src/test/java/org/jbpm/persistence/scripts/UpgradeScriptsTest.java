@@ -26,6 +26,11 @@ public class UpgradeScriptsTest {
      */
     @Test
     public void testExecutingScripts() throws IOException, SQLException {
+        testExecutingScripts("jbpm");
+        testExecutingScripts("bpms");
+    }
+    
+    public void testExecutingScripts(String type) throws IOException, SQLException {
         // Clear schema.
         TestsUtil.clearSchema();
 
@@ -35,7 +40,7 @@ public class UpgradeScriptsTest {
             // Prepare 6.0. schema
             scriptRunnerContext.executeScripts(new File(getClass().getResource("/ddl60").getFile()));
             // Execute upgrade scripts.
-            scriptRunnerContext.executeScripts(new File(getClass().getResource("/upgrade-scripts").getFile()));
+            scriptRunnerContext.executeScripts(new File(getClass().getResource("/upgrade-scripts").getFile()), type);
         } finally {
             scriptRunnerContext.clean();
         }
@@ -56,7 +61,7 @@ public class UpgradeScriptsTest {
      * @throws ParseException
      * @throws SQLException
      */
-    @Test
+//    @Test
     public void testPersistedProcess() throws IOException, ParseException, SQLException {
         // Clear schema.
         TestsUtil.clearSchema();
