@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common.swingui;
+package org.optaplanner.swing.impl;
 
 import java.awt.BasicStroke;
 import java.awt.Color;

@@ -19,8 +19,8 @@ package org.optaplanner.examples.common.app;
 import java.awt.Component;
 import javax.swing.WindowConstants;
 
-import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUncaughtExceptionHandler;
-import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
+import org.optaplanner.swing.impl.SwingUncaughtExceptionHandler;
+import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;

@@ -18,7 +18,6 @@ package org.optaplanner.examples.travelingtournament.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.swing.AbstractAction;
@@ -32,10 +31,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
-import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
+import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.travelingtournament.domain.Day;

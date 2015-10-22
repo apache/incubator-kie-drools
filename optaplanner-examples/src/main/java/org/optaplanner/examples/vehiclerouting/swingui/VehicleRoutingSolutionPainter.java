@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.geom.CubicCurve2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.text.DecimalFormat;
@@ -28,7 +27,7 @@ import java.text.NumberFormat;
 import javax.swing.ImageIcon;
 
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
-import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;

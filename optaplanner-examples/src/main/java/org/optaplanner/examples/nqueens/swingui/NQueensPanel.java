@@ -34,7 +34,7 @@ import javax.swing.JPanel;
 
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;

@@ -19,7 +19,7 @@ package org.optaplanner.examples.common.swingui.latitudelongitude;
 import java.awt.Graphics2D;
 import java.awt.geom.CubicCurve2D;
 
-import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.swing.impl.TangoColorFactory;
 
 public class LatitudeLongitudeTranslator {
 

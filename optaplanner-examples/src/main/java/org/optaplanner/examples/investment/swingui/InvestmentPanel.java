@@ -18,7 +18,6 @@ package org.optaplanner.examples.investment.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Insets;
 import java.util.List;
 import java.util.Map;
 import javax.swing.BorderFactory;
@@ -33,12 +32,12 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
+import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.investment.domain.AssetClass;
 import org.optaplanner.examples.investment.domain.AssetClassAllocation;

@@ -75,6 +75,8 @@ import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
+import org.optaplanner.swing.impl.SwingUncaughtExceptionHandler;
+import org.optaplanner.swing.impl.SwingUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

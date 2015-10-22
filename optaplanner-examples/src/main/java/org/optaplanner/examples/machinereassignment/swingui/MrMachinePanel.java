@@ -20,7 +20,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -37,8 +36,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
-import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.swing.impl.SwingUtils;
+import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrMachineCapacity;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;

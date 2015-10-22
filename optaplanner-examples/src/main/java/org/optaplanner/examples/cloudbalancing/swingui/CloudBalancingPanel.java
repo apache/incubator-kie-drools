@@ -18,7 +18,6 @@ package org.optaplanner.examples.cloudbalancing.swingui;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import org.apache.commons.lang3.ObjectUtils;
-import org.optaplanner.benchmark.impl.aggregator.swingui.SwingUtils;
+import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;

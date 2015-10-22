@@ -47,7 +47,7 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionDao;
 import org.optaplanner.examples.common.swingui.OpenBrowserAction;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
-import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.dinnerparty.app.DinnerPartyApp;
 import org.optaplanner.examples.examination.app.ExaminationApp;

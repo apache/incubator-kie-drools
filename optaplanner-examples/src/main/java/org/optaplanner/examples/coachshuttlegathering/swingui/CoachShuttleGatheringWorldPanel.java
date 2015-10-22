@@ -28,13 +28,12 @@ import javax.swing.JPanel;
 
 import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
-import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
 import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
 import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
-import org.optaplanner.examples.common.swingui.TangoColorFactory;
+import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 
 public class CoachShuttleGatheringWorldPanel extends JPanel {
