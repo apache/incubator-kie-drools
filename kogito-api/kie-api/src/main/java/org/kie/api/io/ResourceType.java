@@ -203,6 +203,16 @@ public class ResourceType
                                                                      "src/main/resources",
                                                                      "drt");
 
+    public static final ResourceType GDST = addResourceTypeToRegistry("GDST",
+                                                                      "Guided Decision Table",
+                                                                      "src/main/resources",
+                                                                      "gdst");
+
+    public static final ResourceType SCGD = addResourceTypeToRegistry("SCGD",
+                                                                      "Guided Score Card",
+                                                                      "src/main/resources",
+                                                                      "scgd");
+
     public static ResourceType getResourceType(final String resourceType) {
         ResourceType resource = CACHE.get(resourceType);
         if (resource == null) {
