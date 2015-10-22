@@ -16,17 +16,20 @@
 
 package org.drools.workbench.models.guided.template.backend;
 
-import org.drools.compiler.compiler.GuidedRuleTemplateConverter;
+import org.drools.compiler.compiler.GuidedRuleTemplateProvider;
 import org.drools.core.util.IoUtils;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
 
-public class GuidedRuleTemplateConverterImpl implements GuidedRuleTemplateConverter {
+import java.io.IOException;
+import java.io.InputStream;
+
+public class GuidedRuleTemplateProviderImpl implements GuidedRuleTemplateProvider {
 
     @Override
-    public byte[] convert( byte[] input ) {
-        String xml = new String( input, IoUtils.UTF8_CHARSET );
-        TemplateModel model = (TemplateModel) RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal( xml );
-        String drl = new StringBuilder().append( RuleTemplateModelDRLPersistenceImpl.getInstance().marshal( model ) ).toString();
-        return drl.getBytes( IoUtils.UTF8_CHARSET );
+    public String loadFromInputStream(InputStream is) throws IOException {
+        String xml = new String(IoUtils.readBytesFromInputStream(is), IoUtils.UTF8_CHARSET);
+        TemplateModel model = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal(xml);
+        return RuleTemplateModelDRLPersistenceImpl.getInstance().marshal(model);
     }
+
 }
