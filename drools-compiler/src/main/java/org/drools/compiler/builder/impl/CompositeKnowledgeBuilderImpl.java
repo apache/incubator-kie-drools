@@ -304,6 +304,8 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResource(packages, ResourceType.SCARD, SCARD_TO_PKG_DESCR);
         buildResource(packages, ResourceType.TDRL, DRL_TO_PKG_DESCR);
         buildResource(packages, ResourceType.TEMPLATE, TEMPLATE_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.GDST, GUIDED_DTABLE_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.SCGD, GUIDED_SCARD_TO_PKG_DESCR);
         this.resourcesByType.remove(ResourceType.DRT); // drt is a template for dtables but doesn't have to be built on its own
         return packages.values();
     }
@@ -423,6 +425,18 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private static final ResourceToPkgDescrMapper SCARD_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
         public PackageDescr map(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception {
             return kBuilder.scoreCardToPackageDescr(resourceDescr.resource, resourceDescr.configuration);
+        }
+    };
+
+    private static final ResourceToPkgDescrMapper GUIDED_DTABLE_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
+        public PackageDescr map(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception {
+            return kBuilder.guidedDecisionTableToPackageDescr(resourceDescr.resource);
+        }
+    };
+
+    private static final ResourceToPkgDescrMapper GUIDED_SCARD_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
+        public PackageDescr map(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception {
+            return kBuilder.guidedScoreCardToPackageDescr(resourceDescr.resource);
         }
     };
 }

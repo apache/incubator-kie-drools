@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,25 +11,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ *
+ */
 
-package org.drools.compiler.kie.builder.impl;
+package org.drools.compiler.compiler;
 
-public class FormatConversionResult {
+import org.kie.api.Service;
 
-    private final String convertedName;
-    private final byte[] content;
+import java.io.IOException;
+import java.io.InputStream;
 
-    public FormatConversionResult(String convertedName, byte[] content) {
-        this.convertedName = convertedName;
-        this.content = content;
-    }
+public interface GuidedRuleTemplateProvider extends Service {
 
-    public String getConvertedName() {
-        return convertedName;
-    }
-
-    public byte[] getContent() {
-        return content;
-    }
+    String loadFromInputStream(InputStream is) throws IOException;
 }

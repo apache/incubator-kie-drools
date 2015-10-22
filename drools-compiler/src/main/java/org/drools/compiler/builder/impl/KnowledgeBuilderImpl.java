@@ -32,8 +32,10 @@ import org.drools.compiler.compiler.DroolsWarningWrapper;
 import org.drools.compiler.compiler.DuplicateFunction;
 import org.drools.compiler.compiler.DuplicateRule;
 import org.drools.compiler.compiler.GlobalError;
-import org.drools.compiler.compiler.GuidedRuleTemplateConverter;
-import org.drools.compiler.compiler.GuidedRuleTemplateConverterFactory;
+import org.drools.compiler.compiler.GuidedDecisionTableFactory;
+import org.drools.compiler.compiler.GuidedDecisionTableProvider;
+import org.drools.compiler.compiler.GuidedRuleTemplateFactory;
+import org.drools.compiler.compiler.GuidedScoreCardFactory;
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLCompilerFactory;
 import org.drools.compiler.compiler.PackageBuilderErrors;
@@ -128,7 +130,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -152,7 +153,6 @@ import java.util.Stack;
 import java.util.UUID;
 
 import static org.drools.core.util.ClassUtils.convertClassToResourcePath;
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.drools.core.util.StringUtils.isEmpty;
 import static org.drools.core.util.StringUtils.ucFirst;
 
@@ -403,6 +403,26 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return generatedDrlToPackageDescr( resource, generatedDrl );
     }
 
+    public void addPackageFromGuidedDecisionTable(Resource resource) throws DroolsParserException,
+                                                                            IOException {
+        this.resource = resource;
+        addPackage( guidedDecisionTableToPackageDescr( resource ) );
+        this.resource = null;
+    }
+
+    PackageDescr guidedDecisionTableToPackageDescr(Resource resource) throws DroolsParserException,
+                                                                             IOException {
+        GuidedDecisionTableProvider.ConversionResult conversionResult = GuidedDecisionTableFactory.getGuidedDecisionTableProvider().loadFromInputStream(resource.getInputStream());
+        String drl = conversionResult.getDrl();
+        // in case there are DSL sentences used in Guided DTable, we need to make sure the Drools parser is aware
+        // and will be able to correctly process them
+        if (conversionResult.containsDsl()) {
+            return generatedDslrToPackageDescr(resource, drl);
+        } else {
+            return generatedDrlToPackageDescr(resource, drl);
+        }
+    }
+
     private PackageDescr generatedDrlToPackageDescr( Resource resource, String generatedDrl ) throws DroolsParserException {
         // dump the generated DRL if the dump dir was configured
         if (this.configuration.getDumpDir() != null) {
@@ -418,6 +438,10 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             pkg.setResource(resource);
         }
         return parser.hasErrors() ? null : pkg;
+    }
+
+    PackageDescr generatedDslrToPackageDescr(Resource resource, String dslr) throws DroolsParserException {
+        return dslrReaderToPackageDescr(resource, new StringReader(dslr));
     }
 
     private void dumpDrlGeneratedFromDTable(File dumpDir, String generatedDrl, String srcPath) {
@@ -458,6 +482,19 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         return generatedDrlToPackageDescr( resource, string );
     }
 
+    public void addPackageFromGuidedScoreCard(Resource resource) throws DroolsParserException,
+                                                                                          IOException {
+        this.resource = resource;
+        addPackage( guidedScoreCardToPackageDescr(resource) );
+        this.resource = null;
+    }
+
+    PackageDescr guidedScoreCardToPackageDescr(Resource resource) throws DroolsParserException,
+                                                                         IOException {
+        String drl = GuidedScoreCardFactory.loadFromInputStream(resource.getInputStream());
+        return generatedDrlToPackageDescr(resource, drl);
+    }
+
     public void addPackageFromTemplate(Resource resource) throws DroolsParserException,
                                                                  IOException {
         this.resource = resource;
@@ -467,23 +504,8 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     PackageDescr templateToPackageDescr(Resource resource) throws DroolsParserException,
                                                                   IOException {
-        GuidedRuleTemplateConverter converter = GuidedRuleTemplateConverterFactory.getGuidedRuleTemplateConverter();
-        if (converter == null) {
-            return null;
-        }
-
-        byte[] template = readBytesFromInputStream(resource.getInputStream());
-        byte[] drl = converter.convert( template );
-
-        final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
-        PackageDescr pkg = parser.parse(resource, new ByteArrayInputStream( drl ));
-        this.results.addAll(parser.getErrors());
-        if (pkg == null) {
-            addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
-        } else {
-            pkg.setResource(resource);
-        }
-        return parser.hasErrors() ? null : pkg;
+        String drl = GuidedRuleTemplateFactory.getGuidedRuleTemplateProvider().loadFromInputStream(resource.getInputStream());
+        return generatedDrlToPackageDescr(resource, drl);
     }
 
     public void addPackageFromDrl(Resource resource) throws DroolsParserException,
@@ -596,20 +618,23 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         this.resource = null;
     }
 
-    PackageDescr dslrToPackageDescr(Resource resource) throws DroolsParserException {
+    PackageDescr dslrToPackageDescr(Resource resource) throws DroolsParserException,
+                                                              IOException {
+        return dslrReaderToPackageDescr(resource, resource.getReader());
+    }
+
+    private PackageDescr dslrReaderToPackageDescr(Resource resource, Reader dslrReader) throws DroolsParserException {
         boolean hasErrors;
         PackageDescr pkg;
 
         DrlParser parser = new DrlParser(configuration.getLanguageLevel());
         DefaultExpander expander = getDslExpander();
 
-        Reader reader = null;
         try {
             if (expander == null) {
                 expander = new DefaultExpander();
             }
-            reader = resource.getReader();
-            String str = expander.expand(reader);
+            String str = expander.expand(dslrReader);
             if (expander.hasErrors()) {
                 for (ExpanderException error : expander.getErrors()) {
                     error.setResource(resource);
@@ -623,9 +648,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            if (reader != null) {
+            if (dslrReader != null) {
                 try {
-                    reader.close();
+                    dslrReader.close();
                 } catch (IOException e) {
                 }
             }
@@ -744,6 +769,10 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
                 addPackageFromDrl(resource);
             } else if (ResourceType.TEMPLATE.equals(type)) {
                 addPackageFromTemplate(resource);
+            } else if (ResourceType.GDST.equals(type)) {
+                addPackageFromGuidedDecisionTable(resource);
+            } else if (ResourceType.SCGD.equals(type)) {
+                addPackageFromGuidedScoreCard(resource);
             } else {
                 addPackageForExternalType(resource, type, configuration);
             }
