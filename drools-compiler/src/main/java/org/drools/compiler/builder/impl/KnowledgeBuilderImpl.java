@@ -466,17 +466,28 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     PackageDescr templateToPackageDescr(Resource resource) throws DroolsParserException,
-                                                                  IOException {
+            IOException {
         GuidedRuleTemplateConverter converter = GuidedRuleTemplateConverterFactory.getGuidedRuleTemplateConverter();
         if (converter == null) {
             return null;
         }
 
         byte[] template = readBytesFromInputStream(resource.getInputStream());
-        byte[] drl = converter.convert( template );
+        byte[] drlBytes = converter.convert( template );
+
+        DefaultExpander expander = getDslExpander();
+
+        String drl = expander.expand(new StringReader(new String(drlBytes)));
+
+        if (expander.hasErrors()) {
+            for (ExpanderException error : expander.getErrors()) {
+                error.setResource(resource);
+                addBuilderResult(error);
+            }
+        }
 
         final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
-        PackageDescr pkg = parser.parse(resource, new ByteArrayInputStream( drl ));
+        PackageDescr pkg = parser.parse(resource, new StringReader( drl ));
         this.results.addAll(parser.getErrors());
         if (pkg == null) {
             addBuilderResult(new ParserError(resource, "Parser returned a null Package", 0, 0));
