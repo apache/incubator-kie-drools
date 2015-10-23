@@ -27,6 +27,7 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.valuerange.AbstractCountableValueRange;
 import org.optaplanner.core.impl.domain.valuerange.AbstractUncountableValueRange;
 import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.solver.random.RandomUtils;
 
 /**
  * A ValueRange is a set of a values for a {@link PlanningVariable}.
@@ -66,7 +67,7 @@ public interface ValueRange<T> {
      * Each element might be selected multiple times.
      * Scales well because it does not require caching.
      * @param workingRandom never null, the {@link Random} to use when any random number is needed,
-     * so {@link EnvironmentMode#REPRODUCIBLE} works correctly
+     * so {@link EnvironmentMode#REPRODUCIBLE} works correctly. {@link RandomUtils} can be useful too.
      * @return never null
      */
     Iterator<T> createRandomIterator(Random workingRandom);
