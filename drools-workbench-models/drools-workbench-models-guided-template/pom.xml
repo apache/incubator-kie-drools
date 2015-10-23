@@ -44,6 +44,13 @@
     </dependency>
 
     <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-core</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.mvel</groupId>
       <artifactId>mvel2</artifactId>
       <scope>test</scope>
