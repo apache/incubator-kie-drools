@@ -84,7 +84,6 @@ public class OptimisticLockRetryInterceptor extends AbstractInterceptor {
             } catch (RuntimeException ex) {
                 // in case there is another interceptor of this type in the stack don't handle it here
                 if (hasInterceptorInStack()) {
-                    System.out.print("###################");
                     throw ex;
                 }
 
