@@ -169,7 +169,7 @@ public class TravelingTournamentPanel extends SolutionPanel {
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox dayListField = new JComboBox(
                     dayList.toArray(new Object[dayList.size() + 1]));
-            dayListField.setRenderer(new LabeledComboBoxRenderer());
+            LabeledComboBoxRenderer.applyToComboBox(dayListField);
             dayListField.setSelectedItem(match.getDay());
             int result = JOptionPane.showConfirmDialog(TravelingTournamentPanel.this.getRootPane(), dayListField,
                     "Select day", JOptionPane.OK_CANCEL_OPTION);

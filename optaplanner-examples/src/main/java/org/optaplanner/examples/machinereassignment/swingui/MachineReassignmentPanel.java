@@ -186,7 +186,7 @@ public class MachineReassignmentPanel extends SolutionPanel {
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox machineListField = new JComboBox(
                     machineList.toArray(new Object[machineList.size() + 1]));
-            machineListField.setRenderer(new LabeledComboBoxRenderer());
+            LabeledComboBoxRenderer.applyToComboBox(machineListField);
             machineListField.setSelectedItem(processAssignment.getMachine());
             int result = JOptionPane.showConfirmDialog(MachineReassignmentPanel.this.getRootPane(), machineListField,
                     "Select machine", JOptionPane.OK_CANCEL_OPTION);

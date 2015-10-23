@@ -238,7 +238,7 @@ public class EmployeePanel extends JPanel {
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox employeeListField = new JComboBox(
                     employeeList.toArray(new Object[employeeList.size() + 1]));
-            employeeListField.setRenderer(new LabeledComboBoxRenderer());
+            LabeledComboBoxRenderer.applyToComboBox(employeeListField);
             employeeListField.setSelectedItem(shiftAssignment.getEmployee());
             int result = JOptionPane.showConfirmDialog(EmployeePanel.this.getRootPane(), employeeListField,
                     "Select employee", JOptionPane.OK_CANCEL_OPTION);

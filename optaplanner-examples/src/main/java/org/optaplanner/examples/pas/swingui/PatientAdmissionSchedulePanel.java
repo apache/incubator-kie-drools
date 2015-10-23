@@ -196,7 +196,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox bedListField = new JComboBox(
                     bedList.toArray(new Object[bedList.size() + 1]));
-            bedListField.setRenderer(new LabeledComboBoxRenderer());
+            LabeledComboBoxRenderer.applyToComboBox(bedListField);
             bedListField.setSelectedItem(bedDesignation.getBed());
             listFieldsPanel.add(bedListField);
             int result = JOptionPane.showConfirmDialog(PatientAdmissionSchedulePanel.this.getRootPane(),

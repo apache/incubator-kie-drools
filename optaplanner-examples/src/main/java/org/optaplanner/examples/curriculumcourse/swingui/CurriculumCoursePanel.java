@@ -245,7 +245,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox periodListField = new JComboBox(
                     periodList.toArray(new Object[periodList.size() + 1]));
-            periodListField.setRenderer(new LabeledComboBoxRenderer());
+            LabeledComboBoxRenderer.applyToComboBox(periodListField);
             periodListField.setSelectedItem(lecture.getPeriod());
             listFieldsPanel.add(periodListField);
             listFieldsPanel.add(new JLabel("Room:"));
@@ -253,7 +253,7 @@ public class CurriculumCoursePanel extends SolutionPanel {
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox roomListField = new JComboBox(
                     roomList.toArray(new Object[roomList.size() + 1]));
-            roomListField.setRenderer(new LabeledComboBoxRenderer());
+            LabeledComboBoxRenderer.applyToComboBox(roomListField);
             roomListField.setSelectedItem(lecture.getRoom());
             listFieldsPanel.add(roomListField);
             listFieldsPanel.add(new JLabel("Locked:"));

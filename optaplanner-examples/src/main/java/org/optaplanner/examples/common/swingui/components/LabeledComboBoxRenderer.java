@@ -17,29 +17,33 @@
 package org.optaplanner.examples.common.swingui.components;
 
 import java.awt.Component;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
+import javax.swing.JComboBox;
 import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 /**
  * Display the user-friendly {@link Labeled#getLabel()} instead of the developer-friendly {@link Object#toString()}.
  */
-public class LabeledComboBoxRenderer extends BasicComboBoxRenderer {
+public class LabeledComboBoxRenderer implements ListCellRenderer {
+
+    public static void applyToComboBox(JComboBox comboBox) {
+        comboBox.setRenderer(new LabeledComboBoxRenderer(comboBox.getRenderer()));
+    }
+
+    private final ListCellRenderer originalListCellRenderer;
+
+    public LabeledComboBoxRenderer(ListCellRenderer originalListCellRenderer) {
+        this.originalListCellRenderer = originalListCellRenderer;
+    }
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index,
             boolean isSelected, boolean cellHasFocus) {
-        if (isSelected) {
-            setBackground(list.getSelectionBackground());
-            setForeground(list.getSelectionForeground());
-        } else {
-            setBackground(list.getBackground());
-            setForeground(list.getForeground());
-        }
-        setFont(list.getFont());
-
-        setText((value == null) ? "" : ((Labeled) value).getLabel());
-        return this;
+        String label = (value == null) ? "" : ((Labeled) value).getLabel();
+        return originalListCellRenderer.getListCellRendererComponent(list, label, index, isSelected, cellHasFocus);
     }
 
 }

@@ -113,7 +113,7 @@ public class NQueensPanel extends SolutionPanel {
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox rowListField = new JComboBox(
                     rowList.toArray(new Object[rowList.size() + 1]));
-            rowListField.setRenderer(new LabeledComboBoxRenderer());
+            LabeledComboBoxRenderer.applyToComboBox(rowListField);
             rowListField.setSelectedItem(queen.getRow());
             messagePanel.add(rowListField, BorderLayout.CENTER);
             int result = JOptionPane.showConfirmDialog(NQueensPanel.this.getRootPane(), messagePanel,

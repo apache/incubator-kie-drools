@@ -232,7 +232,7 @@ public class DinnerPartyPanel extends SolutionPanel {
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox seatDesignationListField = new JComboBox(
                     seatDesignationList.toArray(new Object[seatDesignationList.size() + 1]));
-            seatDesignationListField.setRenderer(new LabeledComboBoxRenderer());
+            LabeledComboBoxRenderer.applyToComboBox(seatDesignationListField);
             seatDesignationListField.setSelectedItem(seatDesignation);
             int result = JOptionPane.showConfirmDialog(DinnerPartyPanel.this.getRootPane(), seatDesignationListField,
                     "Select seat designation to switch with", JOptionPane.OK_CANCEL_OPTION);
