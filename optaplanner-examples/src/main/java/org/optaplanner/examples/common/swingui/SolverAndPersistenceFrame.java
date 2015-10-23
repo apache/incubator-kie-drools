@@ -22,6 +22,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -33,6 +35,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -43,6 +46,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -225,28 +229,27 @@ public class SolverAndPersistenceFrame extends JFrame {
     }
 
     private JComponent createToolBar() {
-        JToolBar toolBar = new JToolBar("File operations");
-        toolBar.setFloatable(false);
+        // JToolBar looks ugly in Nimbus LookAndFeel
+        JPanel toolBar = new JPanel();
+        GroupLayout toolBarLayout = new GroupLayout(toolBar);
+        toolBar.setLayout(toolBarLayout);
 
         importAction = new ImportAction();
         importAction.setEnabled(solutionBusiness.hasImporter());
-        toolBar.add(new JButton(importAction));
+        JButton importButton = new JButton(importAction);
         openAction = new OpenAction();
         openAction.setEnabled(true);
-        toolBar.add(new JButton(openAction));
+        JButton openButton = new JButton(openAction);
         saveAction = new SaveAction();
         saveAction.setEnabled(false);
-        toolBar.add(new JButton(saveAction));
+        JButton saveButton = new JButton(saveAction);
         exportAction = new ExportAction();
         exportAction.setEnabled(false);
-        toolBar.add(new JButton(exportAction));
-        toolBar.addSeparator();
+        JButton exportButton = new JButton(exportAction);
 
         progressBar = new JProgressBar(0, 100);
-        progressBar.setMaximumSize(new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE));
-        toolBar.add(progressBar);
-        toolBar.addSeparator();
 
+        JPanel solvePanel = new JPanel(new CardLayout());
         solveAction = new SolveAction();
         solveAction.setEnabled(false);
         solveButton = new JButton(solveAction);
@@ -254,10 +257,26 @@ public class SolverAndPersistenceFrame extends JFrame {
         terminateSolvingEarlyAction.setEnabled(false);
         terminateSolvingEarlyButton = new JButton(terminateSolvingEarlyAction);
         terminateSolvingEarlyButton.setVisible(false);
-        toolBar.add(solveButton, "solveAction");
-        toolBar.add(terminateSolvingEarlyButton, "terminateSolvingEarlyAction");
+        solvePanel.add(solveButton, "solveAction");
+        solvePanel.add(terminateSolvingEarlyButton, "terminateSolvingEarlyAction");
         solveButton.setMinimumSize(terminateSolvingEarlyButton.getMinimumSize());
         solveButton.setPreferredSize(terminateSolvingEarlyButton.getPreferredSize());
+
+        toolBarLayout.setHorizontalGroup(toolBarLayout.createSequentialGroup()
+                .addComponent(importButton)
+                .addComponent(openButton)
+                .addComponent(saveButton)
+                .addComponent(exportButton)
+                .addGap(10)
+                .addComponent(solvePanel, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addComponent(progressBar, 20, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE));
+        toolBarLayout.setVerticalGroup(toolBarLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                .addComponent(importButton)
+                .addComponent(openButton)
+                .addComponent(saveButton)
+                .addComponent(exportButton)
+                .addComponent(solvePanel)
+                .addComponent(progressBar));
         return toolBar;
     }
 
@@ -531,7 +550,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     }
 
     private JPanel createScorePanel() {
-        JPanel scorePanel = new JPanel(new BorderLayout());
+        JPanel scorePanel = new JPanel(new BorderLayout(5, 0));
         scorePanel.setBorder(BorderFactory.createEtchedBorder());
         showConstraintMatchesDialogAction = new ShowConstraintMatchesDialogAction();
         showConstraintMatchesDialogAction.setEnabled(false);
@@ -563,10 +582,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     private void setSolutionLoaded() {
         setTitle(solutionBusiness.getAppName() + " - " + solutionBusiness.getSolutionFileName());
         ((CardLayout) middlePanel.getLayout()).show(middlePanel, "solutionPanel");
-        solveAction.setEnabled(true);
-        saveAction.setEnabled(true);
-        exportAction.setEnabled(solutionBusiness.hasExporter());
-        showConstraintMatchesDialogAction.setEnabled(true);
+        setSolvingState(false);
         resetScreen();
     }
 
@@ -585,12 +601,16 @@ public class SolverAndPersistenceFrame extends JFrame {
         solveButton.setVisible(!solving);
         terminateSolvingEarlyAction.setEnabled(solving);
         terminateSolvingEarlyButton.setVisible(solving);
+        if (solving) {
+            terminateSolvingEarlyButton.requestFocus();
+        } else {
+            solveButton.requestFocus();
+        }
         solutionPanel.setEnabled(!solving);
         progressBar.setIndeterminate(solving);
         progressBar.setStringPainted(solving);
         progressBar.setString(solving ? "Solving..." : null);
         showConstraintMatchesDialogAction.setEnabled(!solving);
-        solutionPanel.setSolvingState(solving);
     }
 
     public void resetScreen() {
