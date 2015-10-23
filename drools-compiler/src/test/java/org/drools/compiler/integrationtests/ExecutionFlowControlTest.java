@@ -43,12 +43,46 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.conf.RuleEngineOption;
 
+import com.answers.kie.layoutmode.LayoutModeInput;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
+  @Test
+  public void testActivationGroupIssue() throws Exception {
+        KieBase kbase = loadKnowledgeBase("test_ActivationGroupIssue.drl");
+        KieSession ksession = kbase.newKieSession();
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+        
+        final LayoutModeInput input = new LayoutModeInput();
+        input.setCity("mountain view");
+        final String ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)";
+        input.setUser_agent(ua);
+        
+        int loop = 10;
+        
+        for (int i = 0; i < loop; i++) {
+          ksession.insert(input);
+          ksession.fireAllRules();
+          System.out.println("i="+i);
+          System.out.println(list.size());
+          System.out.println(list);
+          for (Object obj : ksession.getObjects()) {
+            ksession.delete(ksession.getFactHandle(obj));
+          }
+        }
+//      assertEquals( "Three rules should have been fired", 3, list.size() );
+//      assertEquals( "Rule 4 should have been fired first", "Rule 4",
+//                    list.get( 0 ) );
+//      assertEquals( "Rule 2 should have been fired second", "Rule 2",
+//                    list.get( 1 ) );
+//      assertEquals( "Rule 3 should have been fired third", "Rule 3",
+//                    list.get( 2 ) );
+  }
     @Test(timeout = 10000)
     public void testSalienceIntegerAndLoadOrder() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_salienceIntegerRule.drl");
