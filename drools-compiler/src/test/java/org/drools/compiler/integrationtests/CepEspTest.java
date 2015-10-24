@@ -5574,8 +5574,8 @@ public class CepEspTest extends CommonTestMethodBase {
 
         FactHandle key = DefaultFactHandle.createFromExternalFormat( helloHandle.toExternalForm() );
         assertTrue("FactHandle not deserialized as EventFactHandle", key instanceof EventFactHandle);
-        assertEquals("hello",
-                ksession.getObject(key));
+        assertEquals( "hello",
+                      ksession.getObject(key));
 
         key = DefaultFactHandle.createFromExternalFormat( goodbyeHandle.toExternalForm() );
         assertTrue("FactHandle not deserialized as EventFactHandle", key instanceof EventFactHandle);
