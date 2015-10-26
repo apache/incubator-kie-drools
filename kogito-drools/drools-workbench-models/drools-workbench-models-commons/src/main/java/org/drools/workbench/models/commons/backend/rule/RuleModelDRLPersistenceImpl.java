@@ -16,6 +16,17 @@
 
 package org.drools.workbench.models.commons.backend.rule;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.drools.compiler.compiler.DrlParser;
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.compiler.lang.descr.AccumulateDescr;
@@ -112,18 +123,7 @@ import org.drools.workbench.models.datamodel.workitems.PortableWorkDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static org.drools.core.util.StringUtils.splitArgumentsList;
+import static org.drools.core.util.StringUtils.*;
 import static org.drools.workbench.models.commons.backend.rule.RuleModelPersistenceHelper.*;
 
 /**
@@ -3291,7 +3291,7 @@ public class RuleModelDRLPersistenceImpl
                             final boolean isJavaDialect,
                             final Map<String, String> boundParams,
                             final PackageDataModelOracle dmo ) {
-        if (expr.startsWith( "eval(" ) ) {
+        if ( expr.startsWith( "eval(" ) ) {
             return new EvalExpr( unwrapParenthesis( expr ) );
         }
         List<String> splittedExpr = splitExpression( expr );
@@ -3537,7 +3537,8 @@ public class RuleModelDRLPersistenceImpl
                                           fieldConstraint.getFieldName() );
 
             if ( field != null && ( fieldConstraint.getFieldType() == null || fieldConstraint.getFieldType().trim().length() == 0 ) ) {
-                fieldConstraint.setFieldType( field.getType() );
+                fieldConstraint.setFieldType( getSimpleFactType( field.getType(),
+                                                                 dmo ) );
             }
             return fieldConstraint;
         }
