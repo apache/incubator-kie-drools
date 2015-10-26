@@ -81,8 +81,8 @@ public class NodeSegmentUnlinkingTest {
             }
         }
 
-        mockObjectSource.attach();
-        betaNode.attach();
+        mockObjectSource.attach(buildContext);
+        betaNode.attach(buildContext);
 
         return betaNode;
     }
@@ -118,7 +118,7 @@ public class NodeSegmentUnlinkingTest {
                                                       rule1.getLhs(),
                                                       0,
                                                       buildContext );
-        rtn1.attach();
+        rtn1.attach(buildContext);
         
         
         n3 = createBetaNode( 12, type[2], n1 );
@@ -131,7 +131,7 @@ public class NodeSegmentUnlinkingTest {
                                                       rule2.getLhs(),
                                                       0,
                                                       buildContext );
-        rtn2.attach();       
+        rtn2.attach(buildContext);
 
         n7 = createBetaNode( 16, type[6], n6 );
         n8 = createBetaNode( 17, type[7], n7 );
@@ -141,7 +141,7 @@ public class NodeSegmentUnlinkingTest {
                                                       rule3.getLhs(),
                                                       0,
                                                       buildContext );
-        rtn3.attach(); 
+        rtn3.attach(buildContext);
         
         // n1 -> n2 -> r1
         //  \ 
@@ -208,13 +208,13 @@ public class NodeSegmentUnlinkingTest {
         n4.addAssociation( rule2, null );
         n5.addAssociation( rule3, null );
 
-        mockObjectSource.attach();
-        mockTupleSource.attach();
-        n1.attach();
-        n2.attach();
-        n3.attach();
-        n4.attach();
-        n5.attach();
+        mockObjectSource.attach(buildContext);
+        mockTupleSource.attach(buildContext);
+        n1.attach(buildContext);
+        n2.attach(buildContext);
+        n3.attach(buildContext);
+        n4.attach(buildContext);
+        n5.attach(buildContext);
 
         StatefulKnowledgeSessionImpl ksession = (StatefulKnowledgeSessionImpl)kBase.newStatefulKnowledgeSession();
         createSegmentMemory( n2, ksession );
