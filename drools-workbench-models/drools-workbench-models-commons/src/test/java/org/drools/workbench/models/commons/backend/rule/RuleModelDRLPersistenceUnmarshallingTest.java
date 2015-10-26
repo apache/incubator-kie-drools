@@ -7895,11 +7895,11 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     public void testStringReplaceExpression() throws Exception {
         //https://bugzilla.redhat.com/show_bug.cgi?id=1264321
         String drl = "rule \"Replace_condition_Issue\"\n" +
-                     "dialect \"mvel\"\n" +
-                     "when\n" +
-                     "  MyType( myString.replace(\"a\",\"b\"))\n" +
-                     "then\n" +
-                     "end";
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  MyType( myString.replace(\"a\",\"b\"))\n" +
+                "then\n" +
+                "end";
 
         addModelField( "org.test.MyType",
                        "this",
@@ -7992,13 +7992,13 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
     public void testBoundListConstraint() throws Exception {
         //https://bugzilla.redhat.com/show_bug.cgi?id=1264339
         String drl = "package org.test;\n" +
-                     "rule \"List_Of_Values_Issue\"\n" +
-                     "dialect \"mvel\"\n" +
-                     "when\n" +
-                     "  MyTransactionVO( $myData : myData )\n" +
-                     "  MyDataList( myDataList contains $myData )\n" +
-                     "     then\n" +
-                     "end";
+                "rule \"List_Of_Values_Issue\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  MyTransactionVO( $myData : myData )\n" +
+                "  MyDataList( myDataList contains $myData )\n" +
+                "     then\n" +
+                "end";
 
         addModelField( "org.test.MyTransactionVO",
                        "this",
@@ -8006,8 +8006,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                        DataType.TYPE_THIS );
         addModelField( "org.test.MyTransactionVO",
                        "myData",
-                       List.class.getName(),
-                       DataType.TYPE_COLLECTION );
+                       "org.test.MyDataList",
+                       "org.test.MyDataList" );
 
         addModelField( "org.test.MyDataList",
                        "this",
@@ -8052,6 +8052,8 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       fp0sfc0.getFieldName() );
         assertEquals( "$myData",
                       fp0sfc0.getFieldBinding() );
+        assertEquals( "MyDataList",
+                      fp0sfc0.getFieldType() );
         assertNull( fp0sfc0.getOperator() );
         assertNull( fp0sfc0.getValue() );
 
