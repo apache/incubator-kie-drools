@@ -122,7 +122,7 @@ public class TimerNode extends LeftTupleSource
      * @return The debug string.
      */
     public String toString() {
-        return "[TimeNodeNode: cond=" + this.timer + " calendars=" + ((calendarNames == null) ? "null" : Arrays.asList(calendarNames)) + "]";
+        return "[TimerNode(" + this.id + "): cond=" + this.timer + " calendars=" + ((calendarNames == null) ? "null" : Arrays.asList(calendarNames)) + "]";
     }
 
     public int hashCode() {

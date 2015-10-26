@@ -99,10 +99,6 @@ public abstract class BaseNode
         this.streamMode = streamMode;
     }
 
-    public void attach() {
-        attach(null);
-    }
-
     /**
      * Attaches the node into the network. Usually to the parent <code>ObjectSource</code> or <code>TupleSource</code>
      */

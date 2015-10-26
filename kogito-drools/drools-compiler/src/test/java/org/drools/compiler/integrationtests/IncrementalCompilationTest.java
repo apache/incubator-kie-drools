@@ -64,6 +64,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -2184,5 +2185,107 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         kc.updateToVersion(releaseId4);
         ksession.fireAllRules();
         assertEquals( 0, ksession.getObjects( new ClassObjectFilter( String.class ) ).size() );
+    }
+
+    @Test
+    public void testDrlRenamingWithEvents() throws Exception {
+        // DROOLS-965
+        String drl1 =
+                "import " + SimpleEvent.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "global java.util.concurrent.atomic.AtomicInteger counter1;\n" +
+                "global java.util.concurrent.atomic.AtomicInteger counter2;\n" +
+                "\n" +
+                "declare SimpleEvent\n" +
+                "    @role( event )\n" +
+                "    @timestamp( timestamp )\n" +
+                "    @expires( 2d )\n" +
+                "end\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $s:SimpleEvent(code==\"MY_CODE\")\n" +
+                "then\n" +
+                "    counter1.incrementAndGet();\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 when\n" +
+                "    $s:SimpleEvent(code==\"MY_CODE\")\n" +
+                "    not SimpleEvent(this != $s, this after [0,10s] $s)\n" +
+                "then\n" +
+                "    counter2.incrementAndGet();\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel( "KBase1" ).setDefault( true )
+                                          .setEventProcessingMode(EventProcessingOption.STREAM);
+        KieSessionModel ksession1 = kieBaseModel1.newKieSessionModel("KSession1").setDefault(true)
+                                                 .setType(KieSessionModel.KieSessionType.STATEFUL)
+                                                 .setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.1" );
+        KieModule km = deployJar( ks, createKJar( ks, kproj, releaseId1, null, drl1 ) );
+
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        AtomicInteger counter1 = new AtomicInteger( 0 );
+        AtomicInteger counter2 = new AtomicInteger( 0 );
+        ksession.setGlobal( "counter1", counter1 );
+        ksession.setGlobal( "counter2", counter2 );
+
+        ksession.insert( new SimpleEvent("1", "MY_CODE", 0) );
+        ksession.fireAllRules();
+        clock.advanceTime(5, TimeUnit.SECONDS);
+        ksession.insert( new SimpleEvent("2", "MY_CODE", 5) );
+        ksession.fireAllRules();
+
+        assertEquals( 2, counter1.get() );
+        assertEquals( 0, counter2.get() );
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        // the null drl placeholder is used to have the same drl with a different file name
+        // this causes the removal and readdition of both rules
+        km = deployJar( ks, createKJar( ks, kproj, releaseId2, null, (String)null, drl1 ) );
+        kc.updateToVersion(releaseId2);
+
+        clock = ksession.getSessionClock();
+        clock.advanceTime(16, TimeUnit.SECONDS);
+        ksession.insert( new SimpleEvent("3", "MY_CODE", 21) );
+        ksession.fireAllRules();
+
+        assertEquals( 5, counter1.get() );
+        assertEquals( 1, counter2.get() );
+    }
+
+    public static class SimpleEvent {
+        private final String id;
+        private final String code;
+        private final long timestamp;
+
+        public SimpleEvent(String eventId, String code, long timestamp) {
+            this.id = eventId;
+            this.code = code;
+            this.timestamp = timestamp * 1000L;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public String getCode() {
+            return code;
+        }
+
+        public Date getTimestamp() {
+            return new Date(timestamp);
+        }
+
+        @Override
+        public String toString() {
+            return "SimpleEvent(" + id + ")";
+        }
     }
 }

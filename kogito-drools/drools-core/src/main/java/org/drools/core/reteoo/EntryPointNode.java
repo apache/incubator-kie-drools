@@ -386,6 +386,10 @@ public class EntryPointNode extends ObjectSource
         return false;
     }
 
+    public void attach() {
+        attach(null);
+    }
+
     public void attach( BuildContext context ) {
         this.source.addObjectSink( this );
         if (context == null ) {

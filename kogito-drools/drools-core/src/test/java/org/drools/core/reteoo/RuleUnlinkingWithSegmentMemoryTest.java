@@ -95,9 +95,9 @@ public class RuleUnlinkingWithSegmentMemoryTest {
 
         mockObjectSource.attach();
         if ( NodeTypeEnums.isLeftTupleSource( networkNode ) ) {
-            ((LeftTupleSource)networkNode).attach();
+            ((LeftTupleSource)networkNode).attach(buildContext);
         } else {
-            ((RuleTerminalNode)networkNode).attach();
+            ((RuleTerminalNode)networkNode).attach(buildContext);
         }
 
         return networkNode;

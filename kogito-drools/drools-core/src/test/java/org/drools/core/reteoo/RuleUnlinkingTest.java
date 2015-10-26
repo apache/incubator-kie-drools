@@ -15,11 +15,6 @@
 
 package org.drools.core.reteoo;
 
-import static org.junit.Assert.*;
-
-import java.util.List;
-
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EmptyBetaConstraints;
@@ -38,6 +33,10 @@ import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.conf.RuleEngineOption;
+
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class RuleUnlinkingTest {
     InternalKnowledgeBase kBase;
@@ -97,9 +96,9 @@ public class RuleUnlinkingTest {
 
         mockObjectSource.attach();
         if ( NodeTypeEnums.isLeftTupleSource( networkNode ) ) {
-            ((LeftTupleSource) networkNode).attach();
+            ((LeftTupleSource) networkNode).attach(buildContext);
         } else {
-            ((RuleTerminalNode) networkNode).attach();
+            ((RuleTerminalNode) networkNode).attach(buildContext);
         }
 
         return networkNode;

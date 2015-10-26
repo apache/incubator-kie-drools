@@ -219,7 +219,7 @@ public class AlphaNodeTest extends DroolsTestCase {
                                                    source,
                                                    buildContext ); // no memory
 
-        alphaNode.attach();
+        alphaNode.attach(buildContext);
 
         final MockObjectSink sink1 = new MockObjectSink();
         alphaNode.addObjectSink( sink1 );
