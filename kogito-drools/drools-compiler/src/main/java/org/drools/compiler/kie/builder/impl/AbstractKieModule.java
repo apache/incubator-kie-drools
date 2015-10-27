@@ -283,6 +283,10 @@ public abstract class AbstractKieModule
     }
 
     public final boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName) {
+        return addResourceToCompiler(ckbuilder, kieBaseModel, fileName, null);
+    }
+
+    public final boolean addResourceToCompiler(CompositeKnowledgeBuilder ckbuilder, KieBaseModel kieBaseModel, String fileName, ResourceChangeSet rcs) {
         ResourceConfiguration conf = getResourceConfiguration(fileName);
         Resource resource = getResource(fileName);
         if (resource != null) {
@@ -302,9 +306,9 @@ public abstract class AbstractKieModule
             }
 
             if (conf == null) {
-                ckbuilder.add(resource, resourceType);
+                ckbuilder.add(resource, resourceType, rcs);
             } else {
-                ckbuilder.add(resource, resourceType, conf);
+                ckbuilder.add(resource, resourceType, conf, rcs);
             }
             return true;
         }

@@ -334,7 +334,7 @@ public class KieContainerImpl
                             Resource resource = currentKM.getResource(resourceName);
                             kbuilder.removeObjectsGeneratedFromResource(resource);
                         }
-                        fileCount += newKM.addResourceToCompiler(ckbuilder, kieBaseModel, resourceName) ? 1 : 0;
+                        fileCount += newKM.addResourceToCompiler(ckbuilder, kieBaseModel, resourceName, rcs) ? 1 : 0;
                     }
                 }
             }

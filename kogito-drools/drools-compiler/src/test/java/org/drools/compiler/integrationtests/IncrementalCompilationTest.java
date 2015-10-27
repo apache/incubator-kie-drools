@@ -2288,4 +2288,59 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
             return "SimpleEvent(" + id + ")";
         }
     }
+
+    @Test
+    public void testUpdateWithNewDrlAndChangeInOldOne() throws Exception {
+        // BZ-1275378
+        String drl1 = "package org.kie.test\n" +
+                      "global java.util.List list\n" +
+                      "rule rule1\n" +
+                      "when\n" +
+                      "then\n" +
+                      "list.add( drools.getRule().getName() );\n" +
+                      "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.1" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+
+        KieContainer kc = ks.newKieContainer( km.getReleaseId() );
+        KieSession ksession = kc.newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertTrue( list.contains( "rule1" ) );
+
+        drl1 = "package org.kie.test\n" +
+               "global java.util.List list\n" +
+               "rule rule1\n" +
+               "when\n" +
+               "Object()\n" +
+               "then\n" +
+               "list.add( drools.getRule().getName() );\n" +
+               "end\n";
+
+        String drl2 = "package org.kie.test\n" +
+                      "global java.util.List list\n" +
+                      "rule rule2\n" +
+                      "when\n" +
+                      "then\n" +
+                      "list.add( drools.getRule().getName() );\n" +
+                      "end\n";
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        km = createAndDeployJar( ks, releaseId2, drl1, drl2 );
+        kc.updateToVersion(releaseId2);
+
+        list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertTrue( list.contains( "rule2" ) );
+    }
 }
