@@ -570,6 +570,38 @@ public class CepEspTest extends CommonTestMethodBase {
     }
 
     @Test(timeout=10000)
+    public void testDeleteExpiredEvent() throws Exception {
+        // BZ-1274696
+        // read in the source
+        final KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        conf.setOption( EventProcessingOption.STREAM );
+        final KnowledgeBase kbase = loadKnowledgeBase( conf, "test_CEP_DeleteExpiredEvent.drl" );
+
+        final KieSessionConfiguration sconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sconf.setOption( ClockTypeOption.get( "pseudo" ) );
+
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase, sconf);
+
+        EntryPoint eventStream = ksession.getEntryPoint( "Event Stream" );
+
+        SessionPseudoClock clock = (SessionPseudoClock) ksession.<SessionClock>getSessionClock();
+
+        EventFactHandle handle1 = (EventFactHandle) eventStream.insert( new StockTick( 1,
+                "ACME",
+                50,
+                System.currentTimeMillis(),
+                3 ) );
+
+        ksession.fireAllRules();
+
+        clock.advanceTime( 2, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        assertTrue( handle1.isExpired() );
+        assertFalse( ksession.getFactHandles().contains( handle1 ) );
+    }
+
+    @Test(timeout=10000)
     public void testTimeRelationalOperators() throws Exception {
         // read in the source
         KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
