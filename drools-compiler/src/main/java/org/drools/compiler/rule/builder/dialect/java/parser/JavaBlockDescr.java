@@ -21,7 +21,7 @@ import java.util.Map;
 public interface JavaBlockDescr {
     
     public static enum BlockType {
-        MODIFY, UPDATE, INSERT, RETRACT, DELETE, ENTRY, EXIT, CHANNEL, TRY, CATCH, FINAL, IF, ELSE, FOR, SWITCH, WHILE, THROW
+        MODIFY, UPDATE, INSERT, DELETE, ENTRY, EXIT, CHANNEL, TRY, CATCH, FINAL, IF, ELSE, FOR, SWITCH, WHILE, THROW
     }
 
     public BlockType getType();

@@ -1,39 +1,31 @@
-/*
- * Copyright 2015 JBoss Inc
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * 
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
-*/
-
-// $ANTLR 3.5 src/main/resources/org/drools/compiler/semantics/java/parser/Java.g 2014-11-07 09:17:19
+// $ANTLR 3.5 src/main/resources/org/drools/compiler/semantics/java/parser/Java.g 2015-10-27 17:56:25
 
     package org.drools.compiler.rule.builder.dialect.java.parser;
-    import java.util.Iterator;
-    import java.util.Queue;
-    import java.util.LinkedList;   
-    import java.util.Stack; 
-    
-    import org.drools.compiler.rule.builder.dialect.java.parser.JavaLocalDeclarationDescr;
-    import org.drools.compiler.rule.builder.dialect.java.parser.JavaRootBlockDescr;
-    import org.drools.compiler.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
-    import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
-    
+    import org.antlr.runtime.BaseRecognizer;
+import org.antlr.runtime.BitSet;
+import org.antlr.runtime.CommonToken;
+import org.antlr.runtime.DFA;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.FailedPredicateException;
+import org.antlr.runtime.IntStream;
+import org.antlr.runtime.MismatchedNotSetException;
+import org.antlr.runtime.MismatchedSetException;
+import org.antlr.runtime.MismatchedTokenException;
+import org.antlr.runtime.MismatchedTreeNodeException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.Parser;
+import org.antlr.runtime.ParserRuleReturnScope;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.RecognizerSharedState;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.TokenStream;
 
-
-import org.antlr.runtime.*;
-import java.util.Stack;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Stack;
 
 /** A Java 1.5 grammar for ANTLR v3 derived from the spec
  *
@@ -7624,7 +7616,7 @@ public class JavaParser extends Parser {
 			if (state.failed) return;
 			c=(Token)match(input,32,FOLLOW_32_in_retractStatement4115); if (state.failed) return;
 			if ( state.backtracking==0 ) {	
-			        JavaStatementBlockDescr d = new JavaStatementBlockDescr( (expression9!=null?input.toString(expression9.start,expression9.stop):null), JavaBlockDescr.BlockType.RETRACT );
+			        JavaStatementBlockDescr d = new JavaStatementBlockDescr( (expression9!=null?input.toString(expression9.start,expression9.stop):null), JavaBlockDescr.BlockType.DELETE );
 			        d.setStart( ((CommonToken)s).getStartIndex() );
 			        this.addBlockDescr( d );
 			        d.setEnd( ((CommonToken)c).getStopIndex() );
