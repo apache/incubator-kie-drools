@@ -5605,4 +5605,42 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 0, ksession.getObjects().size() );
     }
+
+    @Test
+    public void testDeleteExpiredEvent() throws Exception {
+        // BZ-1274696
+        String drl =
+                "import " + StockTick.class.getCanonicalName() + "\n" +
+                "declare StockTick\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule \"TestEventReceived\"\n" +
+                "no-loop\n" +
+                "when\n" +
+                "  $st1 : StockTick( company == \"ACME\" )\n" +
+                "  not ( StockTick( this != $st1, this after[0s, 1s] $st1) )\n" +
+                "then\n" +
+                "  delete($st1);\n" +
+                "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        EventFactHandle handle1 = (EventFactHandle) ksession.insert( new StockTick( 1, "ACME", 50 ) );
+
+        ksession.fireAllRules();
+
+        clock.advanceTime( 2, TimeUnit.SECONDS );
+        ksession.fireAllRules();
+
+        assertTrue( handle1.isExpired() );
+        assertFalse( ksession.getFactHandles().contains( handle1 ) );
+    }
 }

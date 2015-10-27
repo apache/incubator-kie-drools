@@ -158,7 +158,7 @@ public final class DialectUtil {
             switch (block.getType()) {
                 case MODIFY:
                 case UPDATE:
-                case RETRACT:
+                case DELETE:
                     rewriteDescr(context,
                             originalCode,
                             mvel,
@@ -583,8 +583,8 @@ public final class DialectUtil {
             case UPDATE:
                 rewriteUpdateDescr(context, d, consequence, declr, obj);
                 break;
-            case RETRACT:
-                rewriteRetractDescr( context, d, consequence, declr, obj );
+            case DELETE:
+                rewriteDeleteDescr( context, d, consequence, declr, obj );
                 break;
         }
 
@@ -838,11 +838,11 @@ public final class DialectUtil {
         return function == null ? null : findClassByName(context, function.getReturnType());
     }
 
-    private static boolean rewriteRetractDescr(RuleBuildContext context,
+    private static boolean rewriteDeleteDescr( RuleBuildContext context,
                                                JavaBlockDescr d,
                                                StringBuilder consequence,
                                                Declaration declr,
-                                               String obj) {
+                                               String obj ) {
         Class<?> typeClass = findModifiedClass(context, d, declr);
         if (typeClass != null) {
             ConsequenceMetaData.Statement statement = new ConsequenceMetaData.Statement(ConsequenceMetaData.Statement.Type.RETRACT, typeClass);
@@ -850,9 +850,9 @@ public final class DialectUtil {
         }
 
         if (declr != null && !declr.isInternalFact()) {
-            consequence.append("drools.retract( ").append(obj).append("__Handle__ ); }");
+            consequence.append("drools.delete( ").append(obj).append("__Handle__ ); }");
         } else {
-            consequence.append("drools.retract( ").append(obj).append("__Handle2__ ); }");
+            consequence.append("drools.delete( ").append(obj).append("__Handle2__ ); }");
         }
 
         return declr != null;
