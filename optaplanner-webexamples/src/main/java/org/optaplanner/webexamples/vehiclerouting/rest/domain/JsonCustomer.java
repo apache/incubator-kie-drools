@@ -16,6 +16,9 @@
 
 package org.optaplanner.webexamples.vehiclerouting.rest.domain;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class JsonCustomer {
 
     protected String locationName;

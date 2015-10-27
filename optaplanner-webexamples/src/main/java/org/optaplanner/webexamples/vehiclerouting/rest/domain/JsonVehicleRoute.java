@@ -17,7 +17,9 @@
 package org.optaplanner.webexamples.vehiclerouting.rest.domain;
 
 import java.util.List;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
 public class JsonVehicleRoute {
 
     protected String depotLocationName;
