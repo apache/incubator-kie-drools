@@ -16,6 +16,7 @@
 package org.drools.workbench.models.guided.dtable.backend;
 
 import org.drools.compiler.compiler.GuidedDecisionTableProvider;
+import org.drools.compiler.compiler.ResourceConversionResult;
 import org.drools.core.util.IoUtils;
 import org.drools.workbench.models.datamodel.rule.DSLSentence;
 import org.drools.workbench.models.datamodel.rule.IAction;
@@ -26,6 +27,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn
 import org.drools.workbench.models.guided.dtable.shared.model.BaseColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.kie.api.io.ResourceType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,12 +35,15 @@ import java.io.InputStream;
 public class GuidedDecisionTableProviderImpl implements GuidedDecisionTableProvider {
 
     @Override
-    public ConversionResult loadFromInputStream(InputStream is) throws IOException {
+    public ResourceConversionResult loadFromInputStream(InputStream is) throws IOException {
         String xml = new String(IoUtils.readBytesFromInputStream(is), IoUtils.UTF8_CHARSET);
         GuidedDecisionTable52 model = GuidedDTXMLPersistence.getInstance().unmarshal(xml);
-        boolean containsDsl = hasDSLSentences(model);
-        String drl = GuidedDTDRLPersistence.getInstance().marshal(model);
-        return new ConversionResult(drl, containsDsl);
+        String content = GuidedDTDRLPersistence.getInstance().marshal(model);
+        if (hasDSLSentences(model)) {
+            return new ResourceConversionResult(content, ResourceType.DSLR);
+        } else {
+            return new ResourceConversionResult(content, ResourceType.DRL);
+        }
     }
 
     // Check if the model uses DSLSentences and hence requires expansion. This code is copied from GuidedDecisionTableUtils.

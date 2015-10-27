@@ -22,24 +22,6 @@ import java.io.InputStream;
 
 public interface GuidedDecisionTableProvider extends Service {
 
-    ConversionResult loadFromInputStream(InputStream is) throws IOException;
-
-    class ConversionResult {
-        private final String drl;
-        private final boolean containsDsl;
-
-        public ConversionResult(String drl, boolean containsDsl) {
-            this.drl = drl;
-            this.containsDsl = containsDsl;
-        }
-
-        public String getDrl() {
-            return drl;
-        }
-
-        public boolean containsDsl() {
-            return containsDsl;
-        }
-    }
+    ResourceConversionResult loadFromInputStream(InputStream is) throws IOException;
 
 }
