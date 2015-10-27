@@ -73,10 +73,10 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 @SuppressWarnings("deprecation")
 public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
-    
+
     private PoolingDataSource pds;
     private EntityManagerFactory emf;
-    
+
     @Before
     public void setup() {
         pds = setupPoolingDataSource();
@@ -86,7 +86,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
                                                 .entityManagerFactory(emf)
                                                 .getTaskService();
     }
-    
+
     @After
     public void clean() {
         super.tearDown();
@@ -97,10 +97,10 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             pds.close();
         }
     }
- 
+
     private static final String stakeHolder = "vampire";
-    
-    private TaskImpl addTask( long workItemId, long procInstId, String busAdmin, String potOwner, String name, String deploymentId) { 
+
+    private TaskImpl addTask( long workItemId, long procInstId, String busAdmin, String potOwner, String name, String deploymentId) {
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { "
                 + "taskStakeholders = [new User('" + stakeHolder + "')],"
@@ -116,13 +116,13 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         assertNotNull( "Null task id", taskImpl.getId());
         return (TaskImpl) taskImpl;
     }
-   
+
     @Test
     public void testTaskQueryBuilderSimply() {
         TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder);
         queryBuilder.build().getResultList();
     }
-    
+
     @Test
     public void testGetTasksByVariousFields() {
         Task [] tasks = new Task[12];
@@ -131,9 +131,9 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         List<Long> taskIds = new ArrayList<Long>();
         List<String> busAdmins = new ArrayList<String>();
         List<String> potOwners = new ArrayList<String>();
-        List<Status> statuses = new ArrayList<Status>();      
+        List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Reserved);
-   
+
         TaskImpl taskImpl;
         Long firstTaskId;
         {
@@ -153,10 +153,10 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             busAdmins.add(busAdmin);
             potOwners.add(potOwner);
         }
-      
+
         List<TaskSummary> results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, null, null, null, false);
         assertFalse("No tasks retrieved!", results.isEmpty());
-        
+
         results = taskService.getTasksByVariousFields(stakeHolder, workItemIds, null, null, null, null, null, null, null, false);
         assertEquals("List of tasks: work item id", 1, results.size());
 
@@ -189,7 +189,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             String deploymentId = "armitage";
             String name = "Koude Bevel";
             taskImpl = addTask(workItemId, procInstId, busAdmin, potOwner, name, deploymentId);
-        
+
             assertEquals( potOwner, taskImpl.getTaskData().getActualOwner().getId() );
             taskService.start(taskImpl.getId(), potOwner);
             taskService.fail(taskImpl.getId(), busAdmin, null);
@@ -199,7 +199,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, null, null, null, false);
         assertEquals("List of tasks: everything", 3, results.size());
         testOrderByTaskIdAscending(results);
-        
+
         // max results
         GetTasksByVariousFieldsCommand queryCmd = new GetTasksByVariousFieldsCommand();
         queryCmd.setUserId(stakeHolder);
@@ -209,7 +209,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         assertEquals("List of tasks: max results", 2, results.size());
         testOrderByTaskIdAscending(results);
         assertEquals( "Did not order when returning tasks (first task id: " + results.get(0).getId(), firstTaskId.longValue(), results.get(0).getId().longValue());
-        
+
         // single param tests
         results = taskService.getTasksByVariousFields(stakeHolder, workItemIds, null, null, null, null, null, null, null, false);
         assertEquals("List of tasks: work item ids", 2, results.size());
@@ -232,8 +232,8 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, null, statuses, null, false);
         assertEquals("List of tasks: status", 2, results.size());
         testOrderByTaskIdAscending(results);
-        
-        // work item id and/or task id 
+
+        // work item id and/or task id
         List<Long> testLongList = new ArrayList<Long>();
         testLongList.add(workItemIds.get(0));
         List<Long> testLongListTwo = new ArrayList<Long>();
@@ -243,8 +243,8 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         results = taskService.getTasksByVariousFields(stakeHolder, testLongList, testLongListTwo, null, null, null, null, null, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        
-        // task id and/or process instance id 
+
+        // task id and/or process instance id
         testLongList.clear();
         testLongList.add(procInstIds.get(1));
         results = taskService.getTasksByVariousFields(stakeHolder, null, testLongListTwo, testLongList, null, null, null, null, null, true);
@@ -253,8 +253,8 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         results = taskService.getTasksByVariousFields(stakeHolder, null, testLongListTwo, testLongList, null, null, null, null, null, false);
         assertEquals("List of tasks", 1, results.size());
         testOrderByTaskIdAscending(results);
-        
-        // process instance id and/or bus admin 
+
+        // process instance id and/or bus admin
         List<String> testStringList = new ArrayList<String>();
         testStringList.add(busAdmins.get(0));
         results = taskService.getTasksByVariousFields(stakeHolder, null, testLongListTwo, null, testStringList, null, null, null, null, false);
@@ -262,8 +262,8 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         results = taskService.getTasksByVariousFields(stakeHolder, null, testLongListTwo, null, testStringList, null, null, null, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-    
-        // bus admin and/or pot owner 
+
+        // bus admin and/or pot owner
         testStringList.clear();
         testStringList.add(busAdmins.get(1));
         List<String> testStringListTwo = new ArrayList<String>();
@@ -273,7 +273,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, testStringList, testStringListTwo, null, null, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        
+
         // pot owner and/or task owner
         testStringList.clear();
         testStringList.add(tasks[1].getTaskData().getActualOwner().getId());
@@ -282,7 +282,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, testStringListTwo, testStringList, null, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        
+
         // task owner and/or status
         List<Status> testStatusList = new ArrayList<Status>();
         testStatusList.add(statuses.get(0));
@@ -291,25 +291,25 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, testStringList, testStatusList, null, true);
         assertEquals("List of tasks", 2, results.size());
         testOrderByTaskIdAscending(results);
-        
+
         // deploymentId
         testStatusList.add(statuses.get(0));
         results = taskService.getTasksByVariousFields(stakeHolder, null, null, null, null, null, testStringList, testStatusList, null, false);
-        
+
     }
-    
-    private void testOrderByTaskIdAscending(List<TaskSummary> results) { 
-        for( int i = 1; i < results.size(); ++i ) { 
+
+    private void testOrderByTaskIdAscending(List<TaskSummary> results) {
+        for( int i = 1; i < results.size(); ++i ) {
             assertTrue("Tasks not correctly ordered: " + results.get(0).getId() + " ? " + results.get(1).getId(),
                     results.get(i-1).getId() < results.get(i).getId());
         }
     }
-    
+
     @Test
     public void testGetTasksByVariousFieldsWithUserGroupCallback() {
-        
+
         String potOwner = "Bobba Fet";
-        List<String> potOwners = new ArrayList<String>();                     
+        List<String> potOwners = new ArrayList<String>();
         potOwners.add(potOwner);
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { "
@@ -321,21 +321,21 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         ((InternalTaskData) task.getTaskData()).setWorkItemId(1);
         ((InternalTaskData) task.getTaskData()).setProcessInstanceId(1);
         taskService.addTask(task, new HashMap<String, Object>());
-        
+
         List<TaskSummary> results = taskService.getTasksByVariousFields("Administrator", null, null, null, null, potOwners,  null, null, null, false);
-       
+
         assertNotNull(results);
         assertEquals(1, results.size());
         TaskSummary resultTask = results.get(0);
-       
+
         // "Wintermute" does not have the proper permissions
         results = taskService.getTasksByVariousFields("Wintermute", null, null, null, null, potOwners,  null, null, null, false);
         assertEquals(0, results.size());
     }
-    
+
     @Test
     public void testGetTasksByVariousFieldsWithUserGroupCallbackAdmin() {
-        
+
         String potOwner = "Administrator";
         List<String> busAdmins = new ArrayList<String>();
         busAdmins.add(potOwner);
@@ -349,18 +349,18 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         ((InternalTaskData) task.getTaskData()).setWorkItemId(1);
         ((InternalTaskData) task.getTaskData()).setProcessInstanceId(1);
         taskService.addTask(task, new HashMap<String, Object>());
-        
+
         List<TaskSummary> results = taskService.getTasksByVariousFields(potOwner, null, null, null, busAdmins, null, null, null, null, false);
-        
+
         assertNotNull(results);
         assertEquals(1, results.size());
     }
-    
+
     @Test
     public void testGetTasksByVariousFieldsWithUserGroupCallbackByParams() {
         Map<String, List<?>> parameters = new HashMap<String, List<?>>();
         String potOwner = "Bobba Fet";
-        List<String> potOwners = new ArrayList<String>();                     
+        List<String> potOwners = new ArrayList<String>();
         potOwners.add(potOwner);
         String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
         str += "peopleAssignments = (with ( new PeopleAssignments() ) { "
@@ -374,11 +374,11 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         taskService.addTask(task, new HashMap<String, Object>());
         parameters.put(QueryParameterIdentifiers.POTENTIAL_OWNER_ID_LIST, potOwners);
         List<TaskSummary> results = taskService.getTasksByVariousFields("Administrator", parameters, false);
-        
+
         assertNotNull(results);
         assertEquals(1, results.size());
     }
-    
+
     @Test
     public void testGetTasksByVariousFieldsWithUserGroupCallbackAdminByParams() {
         Map<String, List<?>> parameters = new HashMap<String, List<?>>();
@@ -395,14 +395,14 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         ((InternalTaskData) task.getTaskData()).setWorkItemId(1);
         ((InternalTaskData) task.getTaskData()).setProcessInstanceId(1);
         taskService.addTask(task, new HashMap<String, Object>());
-        
+
         parameters.put(QueryParameterIdentifiers.BUSINESS_ADMIN_ID_LIST, busAdmins);
         List<TaskSummary> results = taskService.getTasksByVariousFields("Crusaders", parameters, false);
-        
+
         assertNotNull(results);
         assertEquals(1, results.size());
     }
-  
+
     @Test
     public void testTaskQueryBuilder() {
         Task [] tasks = new Task[12];
@@ -411,9 +411,9 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         List<Long> taskIds = new ArrayList<Long>();
         List<String> busAdmins = new ArrayList<String>();
         List<String> potOwners = new ArrayList<String>();
-        List<Status> statuses = new ArrayList<Status>();      
+        List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Reserved);
-   
+
         TaskImpl taskImpl;
         Long firstTaskId;
         {
@@ -433,7 +433,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             workItemIds.add(workItemId);
             busAdmins.add(busAdmin);
             potOwners.add(potOwner);
-         
+
             // as much as possible
             TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder)
                     .intersect()
@@ -441,15 +441,16 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
                     .processInstanceId(procInstId)
                     .businessAdmin(busAdmin)
                     .potentialOwner(potOwner)
-                    .taskId(taskImpl.getId());
+                    .taskId(taskImpl.getId())
+                    .ascending(OrderBy.taskId);
             List<TaskSummary> results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
-            
+
             queryBuilder.clear();
             results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
         }
-            
+
 
         {
             long workItemId = 251;
@@ -469,7 +470,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             workItemIds.add(workItemId);
             busAdmins.add(busAdmin);
             potOwners.add(potOwner);
-            
+
             // as much as possible
             TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder)
                     .intersect()
@@ -480,35 +481,35 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
                     .taskId(taskImpl.getId());
             List<TaskSummary> results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
-            
+
             queryBuilder.clear();
             results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 2, results.size());
-           
+
             queryBuilder.clear();
             queryBuilder.workItemId(workItemId);
             results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
             assertEquals("Incorrect task retrieved", tasks[1].getId(), results.get(0).getId() );
-            
+
             queryBuilder.clear();
             queryBuilder.processInstanceId(procInstId);
             results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
             assertEquals("Incorrect task retrieved", tasks[1].getId(), results.get(0).getId() );
-            
+
             queryBuilder.clear();
             queryBuilder.businessAdmin(busAdmin);
             results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
             assertEquals("Incorrect task retrieved", tasks[1].getId(), results.get(0).getId() );
-            
+
             queryBuilder.clear();
             queryBuilder.potentialOwner(potOwner);
             results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
             assertEquals("Incorrect task retrieved", tasks[1].getId(), results.get(0).getId() );
-            
+
             queryBuilder.clear();
             queryBuilder.taskId(taskImpl.getId());
             results = queryBuilder.build().getResultList();
@@ -525,12 +526,12 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             String deploymentId = "armitage";
             String name = "Koude Bevel";
             taskImpl = addTask(workItemId, procInstId, busAdmin, potOwner, name, deploymentId);
-       
+
             procInstIds.add(procInstId);
             workItemIds.add(workItemId);
             busAdmins.add(busAdmin);
             potOwners.add(potOwner);
-            
+
             assertEquals( potOwner, taskImpl.getTaskData().getActualOwner().getId() );
             taskService.start(taskImpl.getId(), potOwner);
             taskService.fail(taskImpl.getId(), busAdmin, null);
@@ -549,7 +550,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             queryBuilder.descending(OrderBy.processInstanceId);
             results = queryBuilder.build().getResultList();
             assertFalse("List of tasks too small", results.isEmpty() || results.size() == 1);
-            for( int i = 1; i < results.size(); ++i ) { 
+            for( int i = 1; i < results.size(); ++i ) {
                 Long aVal = results.get(i-1).getProcessInstanceId();
                 Long bVal = results.get(i).getProcessInstanceId();
                 assertTrue("Tasks not correctly ordered: " + aVal + " ?>? " + bVal, aVal > bVal);
@@ -561,12 +562,12 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             assertEquals("List of tasks", 1, results.size());
             assertEquals("Task id", taskImpl.getId(), results.get(0).getId());
         }
-       
+
         TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder);
-                
+
         List<TaskSummary> results = queryBuilder.businessAdmin(busAdmins.toArray(new String[busAdmins.size()])).build().getResultList();
         assertEquals( 3, results.size() );
-        
+
         // pagination
         {
             // Add two more tasks, in order to have a quorum
@@ -577,7 +578,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             String deploymentId = "Dixie Flatline";
             String name = "Complete Mission";
             taskImpl = addTask(workItemId, procInstId, busAdmin, potOwner, name, deploymentId);
-            
+
             // Add two more tasks, in order to have a quorum
             ++workItemId;
             ++procInstId;
@@ -587,19 +588,19 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             name = "Resurrect";
             taskImpl = addTask(workItemId, procInstId, busAdmin, potOwner, name, deploymentId);
         }
-            
+
         results = queryBuilder.clear().build().getResultList();
         assertTrue("Result list too small to test: " + results.size(), results.size() == 5 );
-        
+
         results = queryBuilder.clear().offset(1).build().getResultList();
         assertTrue("Expected 4, not " + results.size() + " results", results.size() == 4 );
-        
+
         results = queryBuilder.clear().offset(1).maxResults(3).build().getResultList();
         assertTrue("Expected 3, not " + results.size() + " results", results.size() == 3 );
-        
+
         results = queryBuilder.clear().offset(3).maxResults(3).build().getResultList();
         assertTrue("Expected 2, not " + results.size() + " results", results.size() == 2 );
-       
+
         // pot owner (and no "user-group limiting" clause)
         {
             // Add two more tasks, in order to have a quorum
@@ -611,7 +612,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             String name = "Interview";
             taskImpl = addTask(workItemId, procInstId, busAdmin, potOwner, name, deploymentId);
         }
-        
+
         queryBuilder.clear();
         queryBuilder = taskService.taskQuery(stakeHolder)
                 .intersect()

@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -57,28 +57,28 @@ import org.kie.internal.task.api.model.SubTasksStrategy;
 import org.kie.internal.task.query.TaskQueryBuilder;
 
 /**
- * Main Implementation of the {@link TaskQueryBuilder}. See the {@link TaskQueryBuilder} interface 
+ * Main Implementation of the {@link TaskQueryBuilder}. See the {@link TaskQueryBuilder} interface
  * for more information.
  * </p>
- * This implementation defaults to an ascending orderby of "Id". It's important to 
- * have a default ordering of results so that optional ({@link QueryContext}) offset and count 
+ * This implementation defaults to an ascending orderby of "Id". It's important to
+ * have a default ordering of results so that optional ({@link QueryContext}) offset and count
  * parameters then will actually be useful. Without an ordering, subsequent queries can retrieve
- * different randomly ordered lists. 
+ * different randomly ordered lists.
  */
 public class TaskQueryBuilderImpl extends AbstractQueryBuilderImpl<TaskQueryBuilder> implements TaskQueryBuilder {
 
-    private final CommandService executor; 
+    private final CommandService executor;
     private final String userId;
-   
+
     public TaskQueryBuilderImpl(String userId, CommandService taskCmdService) {
         this.executor = taskCmdService;
         this.userId = userId;
-        
+
         this.queryWhere.setAscending(QueryParameterIdentifiers.TASK_ID_LIST);
     }
-   
+
     // Task query builder methods
-    
+
     @Override
     public TaskQueryBuilder activationTime( Date... activationTime ) {
         addObjectParameter(TASK_ACTIVATION_TIME_LIST, "activation time", activationTime);
@@ -137,6 +137,11 @@ public class TaskQueryBuilderImpl extends AbstractQueryBuilderImpl<TaskQueryBuil
     @Override
     public TaskQueryBuilder description( String... description ) {
         addObjectParameter(TASK_DESCRIPTION_LIST, "description", description);
+        for( String desc : description ) {
+            if( desc.length() > 255 ) {
+                throw new IllegalArgumentException("String argument is longer than 255 characters: [" + desc + "]");
+            }
+        }
         return this;
     }
 
@@ -171,8 +176,13 @@ public class TaskQueryBuilderImpl extends AbstractQueryBuilderImpl<TaskQueryBuil
     }
 
     @Override
-    public TaskQueryBuilder name( String... name ) {
-        addObjectParameter(TASK_NAME_LIST, "task name", name);
+    public TaskQueryBuilder name( String... names ) {
+        addObjectParameter(TASK_NAME_LIST, "task name", names);
+        for( String name : names ) {
+            if( name.length() > 255 ) {
+                throw new IllegalArgumentException("String argument is longer than 255 characters: [" + name + "]");
+            }
+        }
         return this;
     }
 
@@ -219,8 +229,13 @@ public class TaskQueryBuilderImpl extends AbstractQueryBuilderImpl<TaskQueryBuil
     }
 
     @Override
-    public TaskQueryBuilder subject( String... subject ) {
-        addObjectParameter(TASK_SUBJECT_LIST, "subject", subject);
+    public TaskQueryBuilder subject( String... subjects ) {
+        addObjectParameter(TASK_SUBJECT_LIST, "subject", subjects);
+        for( String subject : subjects ) {
+            if( subject.length() > 255 ) {
+                throw new IllegalArgumentException("String argument is longer than 255 characters: [" + subject + "]");
+            }
+        }
         return this;
     }
 
@@ -253,7 +268,7 @@ public class TaskQueryBuilderImpl extends AbstractQueryBuilderImpl<TaskQueryBuil
         addObjectParameter(TYPE_LIST, "created on", taskType);
         return this;
     }
-    
+
     @Override
     public TaskQueryBuilder workItemId( long... workItemId ) {
         addLongParameter(WORK_ITEM_ID_LIST, "work item id", workItemId);
@@ -261,7 +276,7 @@ public class TaskQueryBuilderImpl extends AbstractQueryBuilderImpl<TaskQueryBuil
     }
 
     // Other methods
-    
+
     @Override
     public TaskQueryBuilder clear() {
         super.clear();
@@ -284,11 +299,11 @@ public class TaskQueryBuilderImpl extends AbstractQueryBuilderImpl<TaskQueryBuil
     }
 
     private String getOrderByListId( OrderBy field ) {
-        if( field == null ) { 
+        if( field == null ) {
             throw new IllegalArgumentException( "A null order by criteria is invalid." );
         }
         String orderByString;
-        switch( field ) { 
+        switch( field ) {
         case taskId:
             orderByString = QueryParameterIdentifiers.TASK_ID_LIST;
             break;

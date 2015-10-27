@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -15,7 +15,6 @@
 
 package org.jbpm.services.task.persistence;
 
-import static org.jbpm.query.jpa.impl.QueryCriteriaUtil.convertListToInterfaceList;
 import static org.jbpm.services.task.persistence.TaskQueryManager.adaptQueryString;
 import static org.kie.internal.query.QueryParameterIdentifiers.FILTER;
 import static org.kie.internal.query.QueryParameterIdentifiers.FIRST_RESULT;
@@ -56,7 +55,6 @@ import org.jbpm.services.task.impl.model.TaskDataImpl_;
 import org.jbpm.services.task.impl.model.TaskImpl;
 import org.jbpm.services.task.impl.model.TaskImpl_;
 import org.jbpm.services.task.impl.model.UserImpl;
-import org.jbpm.services.task.query.TaskSummaryImpl;
 import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
@@ -75,42 +73,42 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 
     // logger set to public for test reasons, see the org.jbpm.services.task.TaskQueryBuilderLocalTest
 	public final static Logger logger = LoggerFactory.getLogger(JPATaskPersistenceContext.class);
-	
+
 	private static TaskQueryManager querymanager = TaskQueryManager.get();
-	
+
 	protected EntityManager em;
     protected final boolean isJTA;
     protected final boolean pessimisticLocking;
-    
+
     public JPATaskPersistenceContext(EntityManager em) {
         this(em, true, false);
     }
-    
+
     public JPATaskPersistenceContext(EntityManager em, boolean isJTA) {
-       this(em, isJTA, false); 
+       this(em, isJTA, false);
     }
-    
+
     public JPATaskPersistenceContext(EntityManager em, boolean isJTA, boolean locking) {
         this.em = em;
         this.isJTA = isJTA;
         this.pessimisticLocking = locking;
-        
+
         logger.debug("TaskPersistenceManager configured with em {}, isJTA {}, pessimistic locking {}", em, isJTA, locking);
-    }	
+    }
 
     // Package level getters ------------------------------------------------------------------------------------------------------
-   
-    EntityManager getEntityManager() { 
+
+    EntityManager getEntityManager() {
         return this.em;
     }
-    
+
     // Interface methods ----------------------------------------------------------------------------------------------------------
-    
+
 	@Override
 	public Task findTask(Long taskId) {
 		check();
 		Task task = null;
-		if( this.pessimisticLocking ) { 
+		if( this.pessimisticLocking ) {
 			task = this.em.find( TaskImpl.class, taskId, LockModeType.PESSIMISTIC_FORCE_INCREMENT );
         }
 		task = this.em.find( TaskImpl.class, taskId );
@@ -121,7 +119,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public Task persistTask(Task task) {
 		check();
 		this.em.persist( task );
-        if( this.pessimisticLocking ) { 
+        if( this.pessimisticLocking ) {
         	this.em.flush();
             return this.em.find(TaskImpl.class, task.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT );
         }
@@ -138,14 +136,14 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public Task removeTask(Task task) {
 		check();
 		em.remove( task );
-		
+
 		return task;
 	}
 
 	@Override
 	public Group findGroup(String groupId) {
 		check();
-		if( this.pessimisticLocking ) { 
+		if( this.pessimisticLocking ) {
             return this.em.find( GroupImpl.class, groupId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( GroupImpl.class, groupId );
@@ -156,12 +154,12 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		try {
 			this.em.persist( group );
-	        if( this.pessimisticLocking ) { 
+	        if( this.pessimisticLocking ) {
 	        	this.em.flush();
 	            return this.em.find(GroupImpl.class, group.getId(), LockModeType.PESSIMISTIC_WRITE );
 	        }
 		} catch (EntityExistsException e) {
-    		throw new RuntimeException("Group already exists with " + group 
+    		throw new RuntimeException("Group already exists with " + group
     				+ " id, please check that there is no group and user with same id");
     	}
         return group;
@@ -183,7 +181,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	@Override
 	public User findUser(String userId) {
 		check();
-		if( this.pessimisticLocking ) { 
+		if( this.pessimisticLocking ) {
             return this.em.find( UserImpl.class, userId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( UserImpl.class, userId );
@@ -194,12 +192,12 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		try {
 			this.em.persist( user );
-	        if( this.pessimisticLocking ) { 
+	        if( this.pessimisticLocking ) {
 	        	this.em.flush();
 	            return this.em.find(UserImpl.class, user.getId(), LockModeType.PESSIMISTIC_WRITE );
 	        }
 		} catch (EntityExistsException e) {
-    		throw new RuntimeException("User already exists with " + user 
+    		throw new RuntimeException("User already exists with " + user
     				+ " id, please check that there is no group and user with same id");
     	}
         return user;
@@ -221,7 +219,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	@Override
 	public OrganizationalEntity findOrgEntity(String orgEntityId) {
 		check();
-		if( this.pessimisticLocking ) { 
+		if( this.pessimisticLocking ) {
             return this.em.find( OrganizationalEntityImpl.class, orgEntityId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( OrganizationalEntityImpl.class, orgEntityId );
@@ -230,20 +228,20 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	@Override
 	public OrganizationalEntity persistOrgEntity(OrganizationalEntity orgEntity) {
 		check();
-	    	
+
         if (!StringUtils.isEmpty(orgEntity.getId())) {
         	try {
 	        	this.em.persist( orgEntity );
-	            if( this.pessimisticLocking ) { 
+	            if( this.pessimisticLocking ) {
 	            	this.em.flush();
 	                return this.em.find(OrganizationalEntityImpl.class, orgEntity.getId(), LockModeType.PESSIMISTIC_WRITE );
 	            }
         	} catch (EntityExistsException e) {
-        		throw new RuntimeException("Organizational entity already exists with " + orgEntity 
+        		throw new RuntimeException("Organizational entity already exists with " + orgEntity
         				+ " id, please check that there is no group and user with same id");
         	}
-        } 
-		
+        }
+
         return orgEntity;
 	}
 
@@ -263,7 +261,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	@Override
 	public Content findContent(Long contentId) {
 		check();
-		if( this.pessimisticLocking ) { 
+		if( this.pessimisticLocking ) {
             return this.em.find( ContentImpl.class, contentId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( ContentImpl.class, contentId );
@@ -273,7 +271,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public Content persistContent(Content content) {
 		check();
 		this.em.persist( content );
-        if( this.pessimisticLocking ) { 
+        if( this.pessimisticLocking ) {
         	this.em.flush();
             return this.em.find(ContentImpl.class, content.getId(), LockModeType.PESSIMISTIC_WRITE );
         }
@@ -296,7 +294,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	@Override
 	public Attachment findAttachment(Long attachmentId) {
 		check();
-		if( this.pessimisticLocking ) { 
+		if( this.pessimisticLocking ) {
             return this.em.find( AttachmentImpl.class, attachmentId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( AttachmentImpl.class, attachmentId );
@@ -306,7 +304,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public Attachment persistAttachment(Attachment attachment) {
 		check();
 		this.em.persist( attachment );
-        if( this.pessimisticLocking ) { 
+        if( this.pessimisticLocking ) {
         	this.em.flush();
             return this.em.find(AttachmentImpl.class, attachment.getId(), LockModeType.PESSIMISTIC_WRITE );
         }
@@ -329,7 +327,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	@Override
 	public Comment findComment(Long commentId) {
 		check();
-		if( this.pessimisticLocking ) { 
+		if( this.pessimisticLocking ) {
             return this.em.find( CommentImpl.class, commentId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( CommentImpl.class, commentId );
@@ -339,7 +337,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public Comment persistComment(Comment comment) {
 		check();
 		this.em.persist( comment );
-        if( this.pessimisticLocking ) { 
+        if( this.pessimisticLocking ) {
         	this.em.flush();
             return this.em.find(CommentImpl.class, comment.getId(), LockModeType.PESSIMISTIC_WRITE );
         }
@@ -362,7 +360,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	@Override
 	public Deadline findDeadline(Long deadlineId) {
 		check();
-		if( this.pessimisticLocking ) { 
+		if( this.pessimisticLocking ) {
             return this.em.find( DeadlineImpl.class, deadlineId, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( DeadlineImpl.class, deadlineId );
@@ -372,7 +370,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	public Deadline persistDeadline(Deadline deadline) {
 		check();
 		this.em.persist( deadline );
-        if( this.pessimisticLocking ) { 
+        if( this.pessimisticLocking ) {
         	this.em.flush();
             return this.em.find(DeadlineImpl.class, deadline.getId(), LockModeType.PESSIMISTIC_WRITE );
         }
@@ -380,7 +378,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	}
 
 	@Override
-	public Deadline updateDeadline(Deadline deadline) {	
+	public Deadline updateDeadline(Deadline deadline) {
 		check();
 		return this.em.merge(deadline);
 	}
@@ -407,7 +405,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		Query query = getQueryByName(queryName, params);
 		return queryStringWithParameters(params, singleResult, LockModeType.NONE, clazz, query);
 	}
-        
+
 	@Override
 	public <T> T queryAndLockWithParametersInTransaction(String queryName,
 			Map<String, Object> params, boolean singleResult, Class<T> clazz) {
@@ -435,43 +433,43 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 			Map<String, Object> params, Class<T> clazz) {
 		check();
 		String newQueryString = adaptQueryString(new StringBuilder(queryString), params);
-		if( newQueryString != null ) { 
+		if( newQueryString != null ) {
 		    queryString = newQueryString;
 		}
-		
+
 		// logging
 		logger.debug("QUERY:\n {}", queryString);
 		if( logger.isDebugEnabled() ) {
 		    StringBuilder paramsStr = new StringBuilder("PARAMS:");
 		    Map<String, Object> orderedParams = new TreeMap<String, Object>(params);
-		    for( Entry<String, Object> entry : orderedParams.entrySet() ) { 
+		    for( Entry<String, Object> entry : orderedParams.entrySet() ) {
 		        paramsStr.append("\n " + entry.getKey() + " : '" + entry.getValue() + "'");
 		    }
 		    logger.debug(paramsStr.toString());
 		}
-		
+
 		Query query = this.em.createQuery(queryString);
-				
+
 		return queryStringWithParameters(params, false, LockModeType.NONE, clazz, query);
 	}
-	
+
 	@Override
 	public <T> T queryStringWithParametersInTransaction(String queryString, boolean singleResult,
 			Map<String, Object> params, Class<T> clazz) {
 		check();
 		Query query = this.em.createQuery(queryString);
-				
+
 		return queryStringWithParameters(params, singleResult, LockModeType.NONE, clazz, query);
 	}
 
-	
-	@Override	
+
+	@Override
 	public <T> T queryAndLockStringWithParametersInTransaction(
 			String queryName, Map<String, Object> params, boolean singleResult,
 			Class<T> clazz) {
 		check();
 		Query query = getQueryByName(queryName, params);
-		return queryStringWithParameters(params, singleResult, LockModeType.PESSIMISTIC_WRITE, clazz, query);	
+		return queryStringWithParameters(params, singleResult, LockModeType.PESSIMISTIC_WRITE, clazz, query);
 	}
 
 	@Override
@@ -482,34 +480,34 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	}
 
 	private TaskQueryCriteriaUtil queryUtil = new TaskQueryCriteriaUtil(this);
-	
-    @Override   
-    public List<TaskSummary> doTaskSummaryCriteriaQuery(String userId, UserGroupCallback userGroupCallback, Object queryWhere) { 
+
+    @Override
+    public List<TaskSummary> doTaskSummaryCriteriaQuery(String userId, UserGroupCallback userGroupCallback, Object queryWhere) {
         check();
-        List<TaskSummaryImpl> result = queryUtil.doCriteriaQuery(userId, userGroupCallback, (QueryWhere) queryWhere);
-        return convertListToInterfaceList(result, TaskSummary.class);
-    } 
-    
-	
+        List<TaskSummary> result = queryUtil.doCriteriaQuery(userId, userGroupCallback, (QueryWhere) queryWhere);
+        return result;
+    }
+
+
 	@Override
 	public HashMap<String, Object> addParametersToMap(Object... parameterValues) {
 		HashMap<String, Object> parameters = new HashMap<String, Object>();
-        
-        if( parameterValues.length % 2 != 0 ) { 
+
+        if( parameterValues.length % 2 != 0 ) {
             throw new RuntimeException("Expected an even number of parameters, not " + parameterValues.length);
         }
-        
+
         for( int i = 0; i < parameterValues.length; ++i ) {
             String parameterName = null;
-            if( parameterValues[i] instanceof String ) { 
+            if( parameterValues[i] instanceof String ) {
                 parameterName = (String) parameterValues[i];
-            } else { 
+            } else {
                 throw new RuntimeException("Expected a String as the parameter name, not a " + parameterValues[i].getClass().getSimpleName());
             }
             ++i;
             parameters.put(parameterName, parameterValues[i]);
         }
-        
+
         return parameters;
 	}
 
@@ -517,10 +515,10 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	@Override
 	public <T> T persist(T object) {
 		check();
-		this.em.persist( object ); 
-		if( this.pessimisticLocking ) { 
+		this.em.persist( object );
+		if( this.pessimisticLocking ) {
 			this.em.flush();
-			Object primaryKey = getFieldValueWithAnnotation(object, Id.class);			
+			Object primaryKey = getFieldValueWithAnnotation(object, Id.class);
             return (T) this.em.find( object.getClass(), primaryKey, LockModeType.PESSIMISTIC_WRITE );
         }
         return object;
@@ -529,7 +527,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 	@Override
 	public <T> T find(Class<T> entityClass, Object primaryKey) {
 		check();
-		if( this.pessimisticLocking ) { 
+		if( this.pessimisticLocking ) {
             return this.em.find( entityClass, primaryKey, LockModeType.PESSIMISTIC_WRITE );
         }
         return this.em.find( entityClass, primaryKey );
@@ -550,7 +548,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 
 	private <T> T queryStringWithParameters(Map<String, Object> params, boolean singleResult, LockModeType lockMode,
 			Class<T> clazz, Query query) {
-		
+
 		if (lockMode != null) {
 			query.setLockMode(lockMode);
 		}
@@ -568,7 +566,7 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 				} else if (FLUSH_MODE.equals(name)) {
 					query.setFlushMode(FlushModeType.valueOf((String) paramEntry.getValue()));
 					continue;
-				} 
+				}
 				// skip control parameters
 				else if ( ORDER_TYPE.equals(name)
 				        || ORDER_BY.equals(name)
@@ -608,13 +606,13 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		check();
 		this.em.close();
 	}
-	
+
 	protected void check() {
 		if (em == null || !em.isOpen()) {
 			throw new IllegalStateException("Entity manager is null or is closed, exiting...");
 		}
 	}
-	
+
 	protected Query getQueryByName(String queryName, Map<String, Object> params) {
 		String queryStr = querymanager.getQuery(queryName, params);
 		Query query = null;
@@ -623,14 +621,14 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		} else {
 			query = this.em.createNamedQuery(queryName);
 		}
-		
+
 		return query;
 	}
-	
+
 	private Object getFieldValueWithAnnotation(Object object, Class<? extends Annotation> annotation) {
 		try {
 			Field[] fields = object.getClass().getDeclaredFields();
-			
+
 			for (Field f : fields) {
 				if (f.isAnnotationPresent(annotation)) {
 					f.setAccessible(true);
@@ -648,20 +646,20 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
         check();
         CriteriaBuilder builder = this.em.getCriteriaBuilder();
         CriteriaQuery<Long> query = builder.createQuery(Long.class);
-       
+
         Root<TaskImpl> taskRoot = query.from(TaskImpl.class);
         Root<ContentImpl> contentRoot = query.from(ContentImpl.class);
         query.select(taskRoot.get(TaskImpl_.id));
-       
+
         Predicate taskContentJoinPred = builder.equal(
-                contentRoot.get(ContentImpl_.id), 
+                contentRoot.get(ContentImpl_.id),
                 taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.outputContentId));
-      
+
         Predicate contentIdPred = builder.equal(
-                contentRoot.get(ContentImpl_.id), 
+                contentRoot.get(ContentImpl_.id),
                 contentId);
         query.where(builder.and(taskContentJoinPred, contentIdPred));
-        
+
         Query choppedLiver = em.createQuery(query);
         return (Long) choppedLiver.getSingleResult();
     }

@@ -29,6 +29,7 @@ import static org.kie.internal.query.QueryParameterIdentifiers.TYPE_LIST;
 import static org.kie.internal.query.QueryParameterIdentifiers.WORK_ITEM_ID_LIST;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
@@ -73,7 +75,10 @@ import org.jbpm.services.task.impl.model.UserImpl;
 import org.jbpm.services.task.impl.model.UserImpl_;
 import org.jbpm.services.task.query.TaskSummaryImpl;
 import org.kie.api.task.UserGroupCallback;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryParameterIdentifiers;
+import org.kie.internal.task.api.model.SubTasksStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,42 +179,39 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
     // Implementation specific methods --------------------------------------------------------------------------------------------
 
     @SuppressWarnings("unchecked")
-    public List<TaskSummaryImpl> doCriteriaQuery(String userId, UserGroupCallback userGroupCallback, QueryWhere queryWhere) {
+    public List<TaskSummary> doCriteriaQuery(String userId, UserGroupCallback userGroupCallback, QueryWhere queryWhere) {
 
         // 1. create builder and query instances
         CriteriaBuilder builder = getCriteriaBuilder();
-        CriteriaQuery<TaskSummaryImpl> criteriaQuery = builder.createQuery(TaskSummaryImpl.class);
+        CriteriaQuery<Tuple> criteriaQuery = builder.createTupleQuery();
 
         // 2. query base
         Root<TaskImpl> taskRoot = criteriaQuery.from(TaskImpl.class);
-        Selection select = builder.construct(TaskSummaryImpl.class,
-                taskRoot.get(TaskImpl_.id),
-                taskRoot.get(TaskImpl_.name),
-                taskRoot.get(TaskImpl_.subject),
-                taskRoot.get(TaskImpl_.description),
+        criteriaQuery = criteriaQuery.multiselect(
+                taskRoot.get(TaskImpl_.id),                                                         // 0
+                taskRoot.get(TaskImpl_.name),                                                       // 1
+                taskRoot.get(TaskImpl_.subject),                                                    // 2
+                taskRoot.get(TaskImpl_.description),                                                // 3
 
-                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.status),
-                taskRoot.get(TaskImpl_.priority),
+                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.status),                         // 4
+                taskRoot.get(TaskImpl_.priority),                                                   // 5
+                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.skipable),                       // 6
 
-                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.skipable),
+                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.actualOwner).get(UserImpl_.id),  // 7
+                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.createdBy).get(UserImpl_.id),    // 8
 
-                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.actualOwner).get(UserImpl_.id),
-                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.createdBy).get(UserImpl_.id),
+                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.createdOn),                      // 9
+                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.activationTime),                 // 10
+                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.expirationTime),                 // 11
 
-                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.createdOn),
+                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.processId),                      // 12
+                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.processSessionId),               // 13
+                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.processInstanceId),              // 14
+                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.deploymentId),                   // 15
 
-                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.activationTime),
-                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.expirationTime),
-
-                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.processId),
-                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.processSessionId),
-                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.processInstanceId),
-                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.deploymentId),
-
-                taskRoot.get(TaskImpl_.subTaskStrategy),
-                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.parentId)
+                taskRoot.get(TaskImpl_.subTaskStrategy),                                            // 16
+                taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.parentId)                        // 17
                 );
-        criteriaQuery.select(select);
         taskRoot.join(TaskImpl_.taskData); // added for convienence sake, since other logic expects to find this join
 
         checkExistingCriteriaForUserBasedLimit(queryWhere, userId, userGroupCallback);
@@ -218,9 +220,32 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
         fillCriteriaQuery(criteriaQuery, queryWhere, builder, TaskImpl.class);
 
         // 5. retrieve result (after also applying meta-criteria)
-        List<TaskSummaryImpl> result = createQueryAndCallApplyMetaCriteriaAndGetResult(queryWhere, criteriaQuery, builder);
+        List<Tuple> result = createQueryAndCallApplyMetaCriteriaAndGetResult(queryWhere, criteriaQuery, builder);
 
-        return result;
+        List<TaskSummary> taskSummaryList = new ArrayList<TaskSummary>(result.size());
+        for( Tuple tupleRow : result ) {
+            int i = 0;
+            //@formatter:off
+            TaskSummaryImpl taskSummaryImpl = new TaskSummaryImpl(
+               // id
+               tupleRow.get(i++, Long.class),
+               // name, subject, description
+               tupleRow.get(i++, String.class), tupleRow.get(i++, String.class), tupleRow.get(i++, String.class),
+               // status, prio, skippable
+               tupleRow.get(i++, Status.class), tupleRow.get(i++, Integer.class), tupleRow.get(i++, Boolean.class),
+               // actual owner, created by
+               tupleRow.get(i++, String.class), tupleRow.get(i++, String.class),
+               // created on, activation time, expiration time
+               tupleRow.get(i++, Date.class), tupleRow.get(i++, Date.class), tupleRow.get(i++, Date.class),
+               // process id, process session id, process inst id, deployment id
+               tupleRow.get(i++, String.class), tupleRow.get(i++, Long.class), tupleRow.get(i++, Long.class), tupleRow.get(i++, String.class),
+               tupleRow.get(i++, SubTasksStrategy.class),
+               tupleRow.get(i++, Long.class) );
+            //@formatter:on
+            taskSummaryList.add(taskSummaryImpl);
+
+        }
+        return taskSummaryList;
     }
 
     /**
@@ -361,9 +386,9 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
                     || listId.equals(TASK_NAME_LIST)
                     || listId.equals(TASK_SUBJECT_LIST) ) {
 
-                // TODO: optimization if string input < shortText length
-                // task -> (descr/names/subjects) I18NText ->  text
-                entityField = getJoinedEntityField(taskRoot, (Attribute<TaskImpl, I18NTextImpl>) attr, I18NTextImpl_.text);
+                // we can *not* query on @LOB annotated fields (and it would be inefficient for a query api to do this?)
+                // so we query on the (max 255 char length) string equivalent fields
+                entityField = getJoinedEntityField(taskRoot, (Attribute<TaskImpl, I18NTextImpl>) attr, I18NTextImpl_.shortText);
             } else if( listId.equals(ACTUAL_OWNER_ID_LIST)
                     || listId.equals(CREATED_BY_LIST) ) {
                 if( taskDataJoin == null ) {
@@ -498,6 +523,15 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
         Root<TaskImpl> taskRoot = getRoot(criteriaQuery, TaskImpl.class);
         assert taskRoot != null : "TaskImpl Root instance could not be found in query!";
 
+        boolean groupIdsPresent = (groupIds.size() > 0);
+
+        int numPredicates = groupIdsPresent ? 5 : 2;
+
+        // joins that apply to the user id's
+        Predicate [] userGroupLimitingPredicates = new Predicate[numPredicates];
+        userGroupLimitingPredicates[0] = builder.equal(taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.actualOwner).get(UserImpl_.id), userId);
+        userGroupLimitingPredicates[1] = builder.equal(taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.createdBy).get(UserImpl_.id), userId);
+
         Join<TaskImpl,TaskDataImpl> taskDataJoin = null;
         Join<TaskImpl,PeopleAssignmentsImpl> peopleAssignJoin = null;
         if( taskRoot != null ) {
@@ -507,26 +541,25 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
                 } else if( join.getJavaType().equals(TaskDataImpl.class) ) {
                     taskDataJoin = (Join<TaskImpl,TaskDataImpl>) join;
                 }
-
             }
         }
         assert taskDataJoin != null : "TaskImpl -> TaskDataImpl join could not be found in query!";
 
-        if( peopleAssignJoin == null ) {
-            peopleAssignJoin = taskRoot.join(TaskImpl_.peopleAssignments);
-        }
+        // joins that apply to the group id's
+        if( groupIdsPresent ) {
+            if( peopleAssignJoin == null ) {
+                peopleAssignJoin = taskRoot.join(TaskImpl_.peopleAssignments);
+            }
 
-        ListJoin<PeopleAssignmentsImpl,OrganizationalEntityImpl> [] groupJoins
-            = getPeopleAssignmentsJoins(peopleAssignJoin);
+            ListJoin<PeopleAssignmentsImpl,OrganizationalEntityImpl> [] groupJoins
+                = getPeopleAssignmentsJoins(peopleAssignJoin);
 
-        Predicate [] userGroupLimitingPredicates = new Predicate[5];
-        userGroupLimitingPredicates[0] = builder.equal(taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.actualOwner).get(UserImpl_.id), userId);
-        userGroupLimitingPredicates[1] = builder.equal(taskRoot.get(TaskImpl_.taskData).get(TaskDataImpl_.createdBy).get(UserImpl_.id), userId);
-
-        for( int i = 0; i < groupJoins.length; ++i ) {
-            userGroupLimitingPredicates[i+2] = builder.or(
-                    builder.equal( groupJoins[i].get(OrganizationalEntityImpl_.id), userId ),
-                    groupJoins[i].get(OrganizationalEntityImpl_.id).in(groupIds) );
+            for( int i = 0; i < groupJoins.length; ++i ) {
+                userGroupLimitingPredicates[i+2] =
+                        builder.or(
+                                builder.equal( groupJoins[i].get(OrganizationalEntityImpl_.id), userId ),
+                                groupJoins[i].get(OrganizationalEntityImpl_.id).in(groupIds) );
+            }
         }
 
         return builder.or(userGroupLimitingPredicates);
@@ -566,15 +599,13 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
 
     @Override
     protected <T> List<T> createQueryAndCallApplyMetaCriteriaAndGetResult(QueryWhere queryWhere, CriteriaQuery<T> criteriaQuery, CriteriaBuilder builder) {
-        groupTaskIdWhenLefOuterJoinsPresent(criteriaQuery);
+        useDistinctWhenLefOuterJoinsPresent(criteriaQuery);
 
         EntityManager em = getEntityManager();
         joinTransaction();
         Query query = em.createQuery(criteriaQuery);
 
         applyMetaCriteriaToQuery(query, queryWhere);
-
-
 
         // execute query
         List<T> result = query.getResultList();
@@ -584,30 +615,52 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
         return result;
     }
 
-    private <T> void groupTaskIdWhenLefOuterJoinsPresent(CriteriaQuery<T> criteriaQuery) {
-        boolean groupByNecessaryBecauseOfLeftOuterJoin = false;
+    private <T> void useDistinctWhenLefOuterJoinsPresent(CriteriaQuery<T> criteriaQuery) {
+        boolean useDistinct = false;
         Root<TaskImpl> taskRoot = null;
-        for( Root root : criteriaQuery.getRoots() ) {
+        ROOTS_FOR: for( Root root : criteriaQuery.getRoots() ) {
            if( TaskImpl.class.equals(root.getJavaType()) ) {
                taskRoot = (Root<TaskImpl>) root;
-               for( Join<TaskImpl, ?> join : taskRoot.getJoins() ) {
-                  if( PeopleAssignmentsImpl.class.equals(join.getJavaType()) )  {
-                      Join<TaskImpl, PeopleAssignmentsImpl> peopAssignJoin = (Join<TaskImpl, PeopleAssignmentsImpl>) join;
-                      groupByNecessaryBecauseOfLeftOuterJoin = ! peopAssignJoin.getJoins().isEmpty();
-                      break;
+               for( Join<TaskImpl, ?> taskJoin : taskRoot.getJoins() ) {
+                  if( PeopleAssignmentsImpl.class.equals(taskJoin.getJavaType()) )  {
+                      Join<TaskImpl, PeopleAssignmentsImpl> peopleAssignJoin = (Join<TaskImpl, PeopleAssignmentsImpl>) taskJoin;
+                      if( JoinType.LEFT.equals(peopleAssignJoin.getJoinType()) ) {
+                          useDistinct = true;
+                          break ROOTS_FOR;
+                      }
+                      for( Join peopleAssignJoinJoin : peopleAssignJoin.getJoins() ) {
+                          if( JoinType.LEFT.equals(peopleAssignJoinJoin.getJoinType()) ) {
+                             useDistinct = true;
+                             break ROOTS_FOR;
+                          }
+                      }
                   }
                }
             }
         }
-        if( groupByNecessaryBecauseOfLeftOuterJoin ) {
-            criteriaQuery.groupBy(taskRoot.get(TaskImpl_.id));
+        if( useDistinct ) {
+            criteriaQuery.distinct(true);
         }
     }
 
     @Override
     protected <T,R> Expression getOrderByExpression(CriteriaQuery<R> query, Class<T> queryType, String orderByListId) {
-        Attribute attr = getCriteriaAttributes().get(queryType).get(orderByListId);
-        return getEntityField(query, orderByListId, attr);
+        List<Selection<?>> selections = query.getSelection().getCompoundSelectionItems();
+        Selection orderBySelection = null;
+        if( orderByListId.equals(QueryParameterIdentifiers.TASK_ID_LIST) ) {
+           orderBySelection = selections.get(0);
+        } else if( orderByListId.equals(QueryParameterIdentifiers.TASK_NAME_LIST) ) {
+           orderBySelection = selections.get(1);
+        } else if( orderByListId.equals(QueryParameterIdentifiers.TASK_STATUS_LIST) ) {
+           orderBySelection = selections.get(4);
+        } else if( orderByListId.equals(QueryParameterIdentifiers.CREATED_BY_LIST) ) {
+           orderBySelection = selections.get(8);
+        } else if( orderByListId.equals(QueryParameterIdentifiers.CREATED_ON_LIST) ) {
+           orderBySelection = selections.get(9);
+        } else if( orderByListId.equals(QueryParameterIdentifiers.PROCESS_INSTANCE_ID_LIST) ) {
+           orderBySelection = selections.get(14);
+        }
+        return (Expression<?>) orderBySelection;
     }
 
 }
