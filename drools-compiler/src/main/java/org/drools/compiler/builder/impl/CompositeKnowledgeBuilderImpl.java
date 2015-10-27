@@ -28,6 +28,7 @@ import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
@@ -349,18 +350,25 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         final ResourceConfiguration configuration;
         final ResourceChangeSet changes;
         final Map<String, ResourceChange> changeMap;
+        final ChangeType globalChangeType;
 
         private ResourceDescr(ResourceConfiguration configuration, Resource resource, ResourceChangeSet changes) {
             this.configuration = configuration;
             this.resource = resource;
             this.changes = changes;
-            if( changes != null ) {
+            if ( changes != null ) {
                 changeMap = new HashMap<String, ResourceChange>();
-                for( ResourceChange c : changes.getChanges() ) {
-                    changeMap.put( assetId(c.getType(), c.getName()), c) ;
+                if (!changes.getChanges().isEmpty()) {
+                    for ( ResourceChange c : changes.getChanges() ) {
+                        changeMap.put( assetId( c.getType(), c.getName() ), c );
+                    }
+                    globalChangeType = null;
+                } else {
+                    globalChangeType = changes.getChangeType();
                 }
             } else {
                 changeMap = null;
+                globalChangeType = null;
             }
         }
         
@@ -371,13 +379,18 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         private class ChangeSetAssetFilter implements KnowledgeBuilderImpl.AssetFilter {
             @Override
             public Action accept(ResourceChange.Type type, String pkgName, String assetName) {
+                if (globalChangeType != null) {
+                    return toFilterAction( globalChangeType );
+                }
                 ResourceChange change = changeMap.get( assetId(type, assetName) );
-                if ( change != null ) {
-                    switch (change.getChangeType()) {
-                        case ADDED: return Action.ADD;
-                        case REMOVED: return Action.REMOVE;
-                        case UPDATED: return Action.UPDATE;
-                    }
+                return change != null ? toFilterAction( change.getChangeType() ) : Action.DO_NOTHING;
+            }
+
+            private Action toFilterAction( ChangeType changeType ) {
+                switch (changeType) {
+                    case ADDED: return Action.ADD;
+                    case REMOVED: return Action.REMOVE;
+                    case UPDATED: return Action.UPDATE;
                 }
                 return Action.DO_NOTHING;
             }
