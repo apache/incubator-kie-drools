@@ -23,5 +23,6 @@ import java.io.InputStream;
 
 public interface GuidedRuleTemplateProvider extends Service {
 
-    String loadFromInputStream(InputStream is) throws IOException;
+    ResourceConversionResult loadFromInputStream(InputStream is) throws IOException;
+
 }
