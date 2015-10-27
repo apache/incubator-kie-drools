@@ -9,11 +9,15 @@ import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.Match;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @XmlRootElement(name="agenda-filter")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class RuleNameSerializationAgendaFilter implements AgendaFilter {
+
+    protected static final transient Logger logger = LoggerFactory.getLogger(RuleNameSerializationAgendaFilter.class);
 
     @XmlElement
     @XmlSchemaType(name="string")
@@ -60,7 +64,7 @@ public class RuleNameSerializationAgendaFilter implements AgendaFilter {
            this.accept = ((RuleNameStartsWithAgendaFilter) originalAgendaFilter).isAccept();
            this.type = AgendaFilterType.STARTS_WITH;
         } else {
-            throw new UnsupportedOperationException("Unsupported " + AgendaFilter.class.getSimpleName() + " implementation: " + originalAgendaFilter.getClass().getName());
+            logger.warn( originalAgendaFilter.getClass().getName() + " instance will not be serialized!");
         }
     }
 
