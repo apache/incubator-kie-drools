@@ -16,6 +16,9 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 
 public class VariableListenerNotifiable implements Comparable<VariableListenerNotifiable> {
@@ -23,9 +26,12 @@ public class VariableListenerNotifiable implements Comparable<VariableListenerNo
     protected final VariableListener variableListener;
     protected final int globalOrder;
 
+    protected final Set<VariableListenerNotification> notificationQueue;
+
     public VariableListenerNotifiable(VariableListener variableListener, int globalOrder) {
         this.variableListener = variableListener;
         this.globalOrder = globalOrder;
+        notificationQueue = new LinkedHashSet<VariableListenerNotification>();
     }
 
     public VariableListener getVariableListener() {
@@ -34,6 +40,10 @@ public class VariableListenerNotifiable implements Comparable<VariableListenerNo
 
     public int getGlobalOrder() {
         return globalOrder;
+    }
+
+    public Set<VariableListenerNotification> getNotificationQueue() {
+        return notificationQueue;
     }
 
     @Override

@@ -17,13 +17,13 @@
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -43,23 +43,23 @@ public class VariableListenerSupport implements SupplyManager {
 
     protected final InnerScoreDirector scoreDirector;
 
+    protected final List<VariableListenerNotifiable> notifiableList;
     protected final Map<VariableDescriptor, List<VariableListenerNotifiable>> sourceVariableToNotifiableMap;
     protected final Map<EntityDescriptor, List<VariableListenerNotifiable>> sourceEntityToNotifiableMap;
     protected final Map<Demand, Supply> supplyMap;
     protected int nextGlobalOrder = 0;
 
-    protected SortedMap<VariableListenerNotifiable, Set<VariableListenerNotification>> notificationQueueMap;
     protected boolean notificationQueuesAreEmpty;
 
     public VariableListenerSupport(InnerScoreDirector scoreDirector) {
         this.scoreDirector = scoreDirector;
+        notifiableList = new ArrayList<VariableListenerNotifiable>();
         sourceVariableToNotifiableMap = new LinkedHashMap<VariableDescriptor, List<VariableListenerNotifiable>>();
         sourceEntityToNotifiableMap = new LinkedHashMap<EntityDescriptor, List<VariableListenerNotifiable>>();
         supplyMap = new LinkedHashMap<Demand, Supply>();
     }
 
     public void linkVariableListeners() {
-        notificationQueueMap = new TreeMap<VariableListenerNotifiable, Set<VariableListenerNotification>>();
         notificationQueuesAreEmpty = true;
         for (EntityDescriptor entityDescriptor : scoreDirector.getSolutionDescriptor().getEntityDescriptors()) {
             for (VariableDescriptor variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
@@ -87,11 +87,11 @@ public class VariableListenerSupport implements SupplyManager {
                             entityNotifiableList.add(notifiable);
                         }
                     }
-                    Set<VariableListenerNotification> notificationQueue = new LinkedHashSet<VariableListenerNotification>();
-                    notificationQueueMap.put(notifiable, notificationQueue);
+                    notifiableList.add(notifiable);
                 }
             }
         }
+        Collections.sort(notifiableList);
     }
 
     public <S extends Supply> S demand(Demand<S> demand) {
@@ -110,8 +110,8 @@ public class VariableListenerSupport implements SupplyManager {
                 if (!entityNotifiableList.contains(notifiable)) {
                     entityNotifiableList.add(notifiable);
                 }
-                Set<VariableListenerNotification> notificationQueue = new LinkedHashSet<VariableListenerNotification>();
-                notificationQueueMap.put(notifiable, notificationQueue);
+                notifiableList.add(notifiable);
+                // No need to sort notifiableList again because notifiable's globalOrder is highest
             }
             supplyMap.put(demand, supply);
         }
@@ -123,7 +123,7 @@ public class VariableListenerSupport implements SupplyManager {
     // ************************************************************************
 
     public void resetWorkingSolution() {
-        for (VariableListenerNotifiable notifiable : notificationQueueMap.keySet()) {
+        for (VariableListenerNotifiable notifiable : notifiableList) {
             VariableListener variableListener = notifiable.getVariableListener();
             if (variableListener instanceof StatefulVariableListener) {
                 ((StatefulVariableListener) variableListener).resetWorkingSolution(scoreDirector);
@@ -132,7 +132,7 @@ public class VariableListenerSupport implements SupplyManager {
     }
 
     public void clearWorkingSolution() {
-        for (VariableListenerNotifiable notifiable : notificationQueueMap.keySet()) {
+        for (VariableListenerNotifiable notifiable : notifiableList) {
             VariableListener variableListener = notifiable.getVariableListener();
             if (variableListener instanceof StatefulVariableListener) {
                 ((StatefulVariableListener) variableListener).clearWorkingSolution(scoreDirector);
@@ -143,7 +143,7 @@ public class VariableListenerSupport implements SupplyManager {
     public void beforeEntityAdded(EntityDescriptor entityDescriptor, Object entity) {
         List<VariableListenerNotifiable> notifiableList = sourceEntityToNotifiableMap.get(entityDescriptor);
         for (VariableListenerNotifiable notifiable : notifiableList) {
-            Set<VariableListenerNotification> notificationQueue = notificationQueueMap.get(notifiable);
+            Set<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
             boolean added = notificationQueue.add(
                     new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_ADDED));
             if (added) {
@@ -160,7 +160,7 @@ public class VariableListenerSupport implements SupplyManager {
     public void beforeVariableChanged(VariableDescriptor variableDescriptor, Object entity) {
         List<VariableListenerNotifiable> notifiableList = sourceVariableToNotifiableMap.get(variableDescriptor);
         for (VariableListenerNotifiable notifiable : notifiableList) {
-            Set<VariableListenerNotification> notificationQueue = notificationQueueMap.get(notifiable);
+            Set<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
             boolean added = notificationQueue.add(
                     new VariableListenerNotification(entity, VariableListenerNotificationType.VARIABLE_CHANGED));
             if (added) {
@@ -177,7 +177,7 @@ public class VariableListenerSupport implements SupplyManager {
     public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
         List<VariableListenerNotifiable> notifiableList = sourceEntityToNotifiableMap.get(entityDescriptor);
         for (VariableListenerNotifiable notifiable : notifiableList) {
-            Set<VariableListenerNotification> notificationQueue = notificationQueueMap.get(notifiable);
+            Set<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
             boolean added = notificationQueue.add(
                     new VariableListenerNotification(entity, VariableListenerNotificationType.ENTITY_REMOVED));
             if (added) {
@@ -192,9 +192,8 @@ public class VariableListenerSupport implements SupplyManager {
     }
 
     public void triggerVariableListenersInNotificationQueues() {
-        for (Map.Entry<VariableListenerNotifiable, Set<VariableListenerNotification>> entry : notificationQueueMap.entrySet()) {
-            VariableListenerNotifiable notifiable = entry.getKey();
-            Set<VariableListenerNotification> notificationQueue = entry.getValue();
+        for (VariableListenerNotifiable notifiable : notifiableList) {
+            Set<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
             VariableListener variableListener = notifiable.getVariableListener();
             for (Iterator<VariableListenerNotification> it = notificationQueue.iterator(); it.hasNext(); ) {
                 VariableListenerNotification notification = it.next();
