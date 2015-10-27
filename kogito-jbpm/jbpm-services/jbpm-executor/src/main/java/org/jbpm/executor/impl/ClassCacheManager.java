@@ -57,7 +57,7 @@ public class ClassCacheManager {
                     Command commandInstance = (Command) Class.forName(name, true, cl).newInstance();
                     commandCache.put(name, commandInstance);
                 } catch (Exception ex) {
-                    throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
+                    throw new IllegalArgumentException("Unknown Command implementation with name '" + name + "'");
                 }
     
             } else {
@@ -68,7 +68,7 @@ public class ClassCacheManager {
                         Command commandInstance = (Command) Class.forName(name, true, cl).newInstance();
                         commandCache.put(name, commandInstance);
                     } catch (Exception ex) {
-                        throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
+                        throw new IllegalArgumentException("Unknown Command implementation with name '" + name + "'");
                     } 
                 }
             }
@@ -93,7 +93,7 @@ public class ClassCacheManager {
                     return commandCallbackInstance;
                     //                            callbackCache.put(name, commandCallbackInstance);
                 } catch (Exception ex) {
-                    throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
+                    throw new IllegalArgumentException("Unknown Command implementation with name '" + name + "'");
                 }
 
             } else {
@@ -104,7 +104,7 @@ public class ClassCacheManager {
                         CommandCallback commandCallbackInstance = (CommandCallback) Class.forName(name, true, cl).newInstance();
                         callbackCache.put(name, commandCallbackInstance);
                     } catch (Exception ex) {
-                        throw new IllegalArgumentException("Unknown Command implemenation with name '" + name + "'");
+                        throw new IllegalArgumentException("Unknown Command implementation with name '" + name + "'");
                     }
                 }
             }

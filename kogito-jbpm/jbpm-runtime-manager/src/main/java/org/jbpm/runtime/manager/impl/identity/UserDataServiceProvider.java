@@ -48,7 +48,7 @@ import org.kie.internal.task.api.UserInfo;
  * </ul>
  * </li>
  * 	<li>
- * org.jbpm.ht.userinfo - specify what implemenation of UserInfo shall be used, one of:
+ * org.jbpm.ht.userinfo - specify what implementation of UserInfo shall be used, one of:
  * <ul>
  * 	<li>ldap - backed by ldap - requires configuration via jbpm-user.info.properties file</li>
  * 	<li>db - backed by data base - requires configuration via jbpm-user.info.properties file</li>

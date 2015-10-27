@@ -54,7 +54,7 @@ public class MVELProcessDialect implements ProcessDialect {
     /**
      * These methods are necessary for code in the jbpm-kie-services, that has
      * it's own {@link ReturnValueEvaluatorBuilder}, {@link ActionBuilder} and
-     * {@link ProcessClassBuilder} implemenations.
+     * {@link ProcessClassBuilder} implementations.
      */
 	
     public static void setActionbuilder( ActionBuilder actionbuilder ) {
