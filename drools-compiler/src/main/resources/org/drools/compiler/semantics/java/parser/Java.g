@@ -952,7 +952,7 @@ retractStatement
     expression
     c = ')'
         {	
-        JavaStatementBlockDescr d = new JavaStatementBlockDescr( $expression.text, JavaBlockDescr.BlockType.RETRACT );
+        JavaStatementBlockDescr d = new JavaStatementBlockDescr( $expression.text, JavaBlockDescr.BlockType.DELETE );
         d.setStart( ((CommonToken)$s).getStartIndex() );
         this.addBlockDescr( d );
         d.setEnd( ((CommonToken)$c).getStopIndex() );
