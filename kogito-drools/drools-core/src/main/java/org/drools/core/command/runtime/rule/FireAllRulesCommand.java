@@ -40,10 +40,9 @@ public class FireAllRulesCommand implements GenericCommand<Integer>, Identifiabl
     @XmlAttribute
     private int          max          = -1;
 
-    @XmlElement(name="agendaFilter")
-    private RuleNameSerializationAgendaFilter serializableAgendaFilter = null;
-
-    private transient AgendaFilter agendaFilter = null;
+    @XmlTransient
+    // TODO: make sure that all drools AgendaFilter implementations are serializable
+    private AgendaFilter agendaFilter = null;
 
     @XmlAttribute(name="out-identifier")
     private String       outIdentifier;
@@ -60,7 +59,7 @@ public class FireAllRulesCommand implements GenericCommand<Integer>, Identifiabl
     }
 
     public FireAllRulesCommand(AgendaFilter agendaFilter) {
-        setAgendaFilter(agendaFilter);
+        this.agendaFilter = agendaFilter;
     }
 
     public FireAllRulesCommand(AgendaFilter agendaFilter, int max) {
@@ -84,27 +83,11 @@ public class FireAllRulesCommand implements GenericCommand<Integer>, Identifiabl
     }
 
     public AgendaFilter getAgendaFilter() {
-        if( this.agendaFilter == null && this.serializableAgendaFilter != null ) {
-            this.agendaFilter = this.serializableAgendaFilter.getOriginal();
-        }
         return agendaFilter;
-    }
-
-    public AgendaFilter getSerializableAgendaFilter() {
-        return this.serializableAgendaFilter;
     }
 
     public void setAgendaFilter(AgendaFilter agendaFilter) {
         this.agendaFilter = agendaFilter;
-        RuleNameSerializationAgendaFilter newAgendaFilter = null;
-        if( agendaFilter != null ) {
-            if( agendaFilter instanceof RuleNameSerializationAgendaFilter ) {
-                newAgendaFilter = (RuleNameSerializationAgendaFilter) agendaFilter;
-            } else {
-                newAgendaFilter = new RuleNameSerializationAgendaFilter(agendaFilter);
-            }
-        }
-        this.serializableAgendaFilter = newAgendaFilter;
     }
 
     public String getOutIdentifier() {
@@ -116,9 +99,6 @@ public class FireAllRulesCommand implements GenericCommand<Integer>, Identifiabl
     }
 
     public Integer execute(Context context) {
-        // sets this.agendaFilter if null
-        getAgendaFilter();
-
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
         int fired;
         if ( max != -1 && agendaFilter != null ) {
@@ -139,7 +119,7 @@ public class FireAllRulesCommand implements GenericCommand<Integer>, Identifiabl
     }
 
     public String toString() {
-        if ( max != -1 && getAgendaFilter() != null ) {
+        if ( max != -1 && agendaFilter != null ) {
             return "session.fireAllRules( " + agendaFilter + ", " + max + " );";
         } else if ( max != -1 ) {
             return "session.fireAllRules( " + max + " );";
