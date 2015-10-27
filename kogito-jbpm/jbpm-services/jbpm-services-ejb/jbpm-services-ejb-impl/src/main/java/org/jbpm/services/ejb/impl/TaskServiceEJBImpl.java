@@ -408,9 +408,7 @@ public class TaskServiceEJBImpl implements InternalTaskService, TaskService, Tas
 
 	@Override
 	public <T> T execute(Command<T> command) {
-        String methodName = "execute";
-        throw new UnsupportedOperationException(methodName + " is not supported on the TaskService EJB implementation, " 
-                + "please use the " + UserTaskService.class + " implementation instead!");
+	    return delegate.execute(command);
     }
 
 	@Override

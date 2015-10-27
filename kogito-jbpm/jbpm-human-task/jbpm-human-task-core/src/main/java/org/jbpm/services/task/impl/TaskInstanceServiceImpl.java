@@ -113,11 +113,13 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     	if (params != null) {
     	    resolveTaskDetails(params, task);
     	    
-			ContentData contentData = ContentMarshallerHelper.marshal(params, TaskContentRegistry.get().getMarshallerContext(task).getEnvironment());
+    	    ContentData contentData = ContentMarshallerHelper.marshal(params, TaskContentRegistry.get().getMarshallerContext(task).getEnvironment());
 			Content content = TaskModelProvider.getFactory().newContent();
 			((InternalContent) content).setContent(contentData.getContent());
 			persistenceContext.persistContent(content);
 			((InternalTaskData) task.getTaskData()).setDocument(content.getId(), contentData);
+			
+			taskEventSupport.fireAfterTaskInputVariablesChanged(task, context, params);
 		}
 
 		
@@ -210,6 +212,8 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
         persistenceContext.removeContent(content);
         
         ((InternalTaskData) task.getTaskData()).setOutput(0, data);
+        
+        taskEventSupport.fireAfterTaskOutputVariablesChanged(task, context, null);
     }
 
     public void exit(long taskId, String userId) {
@@ -400,7 +404,7 @@ public class TaskInstanceServiceImpl implements TaskInstanceService {
     public long addOutputContentFromUser( long taskId, String userId, Map<String, Object> params ) {
         // check permissions
         this.lifeCycleManager.taskOperation(Operation.Modify, taskId, userId, null, null, toGroups(null));
-        return new TaskContentServiceImpl(this.persistenceContext).addOutputContent(taskId, params);
+        return new TaskContentServiceImpl(context, this.persistenceContext, taskEventSupport).addOutputContent(taskId, params);
     }
    
     @Override

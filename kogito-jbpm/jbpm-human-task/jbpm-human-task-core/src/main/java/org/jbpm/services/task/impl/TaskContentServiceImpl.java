@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Task;
@@ -36,16 +37,25 @@ import org.kie.internal.task.api.model.InternalTaskData;
 public class TaskContentServiceImpl implements TaskContentService {
 
     private TaskPersistenceContext persistenceContext;
+    private TaskEventSupport taskEventSupport;
+    
+    private org.kie.internal.task.api.TaskContext context;
 
     public TaskContentServiceImpl() {
     }
     
-    public TaskContentServiceImpl(TaskPersistenceContext persistenceContext) {
-    	this.persistenceContext = persistenceContext;
+    public TaskContentServiceImpl(org.kie.internal.task.api.TaskContext context, TaskPersistenceContext persistenceContext, TaskEventSupport taskEventSupport) {
+    	this.context = context;    	
+        this.persistenceContext = persistenceContext;
+    	this.taskEventSupport = taskEventSupport;
     }
 
     public void setPersistenceContext(TaskPersistenceContext persistenceContext) {
         this.persistenceContext = persistenceContext;
+    }
+    
+    public void setTaskEventSupport(TaskEventSupport taskEventSupport) {
+        this.taskEventSupport = taskEventSupport;
     }
     
     @SuppressWarnings("unchecked")
@@ -53,7 +63,7 @@ public class TaskContentServiceImpl implements TaskContentService {
         Task task = persistenceContext.findTask(taskId);
         long outputContentId = task.getTaskData().getOutputContentId();
         Content outputContent = persistenceContext.findContent(outputContentId);
-        
+
         long contentId = -1;
         if (outputContent == null) { 
             ContentMarshallerContext context = getMarshallerContext(task);
@@ -76,6 +86,9 @@ public class TaskContentServiceImpl implements TaskContentService {
             persistenceContext.persistContent(outputContent);
             contentId = outputContentId;
         }
+        
+        taskEventSupport.fireAfterTaskOutputVariablesChanged(task, context, params);
+        
         return contentId;
     }
 

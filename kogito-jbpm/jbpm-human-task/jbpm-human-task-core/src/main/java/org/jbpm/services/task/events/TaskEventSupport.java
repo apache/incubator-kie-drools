@@ -16,6 +16,7 @@
 package org.jbpm.services.task.events;
 
 import java.util.Iterator;
+import java.util.Map;
 
 import org.drools.core.event.AbstractEventSupport;
 import org.kie.api.task.TaskLifeCycleEventListener;
@@ -194,6 +195,7 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
             } while (iter.hasNext());
         }
     }
+
     
     // after methods
     
@@ -363,6 +365,31 @@ public class TaskEventSupport extends AbstractEventSupport<TaskLifeCycleEventLis
                 TaskLifeCycleEventListener listener = iter.next();
                 if (listener instanceof org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener) {
                     ((org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener)listener).afterTaskNotificationEvent(new TaskEventImpl(task, context));
+                }
+            } while (iter.hasNext());
+        }
+    }
+    
+    public void fireAfterTaskInputVariablesChanged(final Task task, TaskContext context, Map<String, Object> variables) {
+        final Iterator<TaskLifeCycleEventListener> iter = getEventListenersIterator();
+        if (iter.hasNext()) {
+            do{
+                TaskLifeCycleEventListener listener = iter.next();
+                if (listener instanceof org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener) {
+                    ((org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener)listener).afterTaskInputVariableChangedEvent(new TaskEventImpl(task, context), variables);
+                }
+            } while (iter.hasNext());
+        }
+    }
+    
+    
+    public void fireAfterTaskOutputVariablesChanged(final Task task, TaskContext context, Map<String, Object> variables) {
+        final Iterator<TaskLifeCycleEventListener> iter = getEventListenersIterator();
+        if (iter.hasNext()) {
+            do{
+                TaskLifeCycleEventListener listener = iter.next();
+                if (listener instanceof org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener) {
+                    ((org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener)listener).afterTaskOutputVariableChangedEvent(new TaskEventImpl(task, context), variables);
                 }
             } while (iter.hasNext());
         }

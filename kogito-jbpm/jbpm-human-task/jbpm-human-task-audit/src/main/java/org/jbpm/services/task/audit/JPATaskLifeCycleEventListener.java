@@ -20,11 +20,14 @@
 package org.jbpm.services.task.audit;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.services.task.audit.impl.model.AuditTaskImpl;
 import org.jbpm.services.task.audit.impl.model.TaskEventImpl;
+import org.jbpm.services.task.audit.variable.TaskIndexerManager;
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
 import org.jbpm.services.task.persistence.PersistableEventListener;
 import org.jbpm.services.task.utils.ClassUtil;
@@ -32,6 +35,8 @@ import org.kie.api.task.TaskEvent;
 import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.TaskContext;
 import org.kie.internal.task.api.TaskPersistenceContext;
+import org.kie.internal.task.api.TaskVariable;
+import org.kie.internal.task.api.TaskVariable.VariableType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -740,6 +745,55 @@ public class JPATaskLifeCycleEventListener extends PersistableEventListener impl
     @Override
     public void afterTaskNotificationEvent(TaskEvent event) {
 
+    }
+
+    @Override
+    public void afterTaskOutputVariableChangedEvent(TaskEvent event, Map<String, Object> variables) {
+
+        Task task = event.getTask();        
+        TaskPersistenceContext persistenceContext = getPersistenceContext(((TaskContext)event.getTaskContext()).getPersistenceContext());
+        // first cleanup previous values if any
+        int removed = persistenceContext.executeUpdateString("delete TaskVariableImpl where type = " + VariableType.OUTPUT.ordinal() +" and taskId = " + task.getId());
+        logger.debug("Deleted {} output variables logs for task id {}", removed, task.getId());
+        
+        if (variables == null || variables.isEmpty()) {
+            return;
+        }
+        
+        indexAndPersistVariables(task, variables, persistenceContext, VariableType.OUTPUT);
+    }
+
+    @Override
+    public void afterTaskInputVariableChangedEvent(TaskEvent event, Map<String, Object> variables) {
+        if (variables == null || variables.isEmpty()) {
+            return;
+        }
+        
+        Task task = event.getTask();        
+        TaskPersistenceContext persistenceContext = getPersistenceContext(((TaskContext)event.getTaskContext()).getPersistenceContext());
+        // first cleanup previous values if any
+        int removed = persistenceContext.executeUpdateString("delete TaskVariableImpl where type = " + VariableType.INPUT.ordinal() +" and taskId = " + task.getId());
+        logger.debug("Deleted {} input variables logs for task id {}", removed, task.getId());
+        
+        indexAndPersistVariables(task, variables, persistenceContext, VariableType.INPUT);
+    }
+    
+    protected void indexAndPersistVariables(Task task, Map<String, Object> variables, TaskPersistenceContext persistenceContext, VariableType type) {
+        TaskIndexerManager manager = TaskIndexerManager.get();
+        
+        for (Map.Entry<String, Object> variable : variables.entrySet()) {
+            if (variable.getValue() == null) {
+                continue;
+            }
+            List<TaskVariable> taskVars = manager.index(task, variable.getKey(), variable.getValue());
+            
+            if (taskVars != null) {
+                for (TaskVariable tVariable : taskVars) {
+                    tVariable.setType(type);
+                    persistenceContext.persist(tVariable);
+                }
+            }
+        }
     }
   
 }

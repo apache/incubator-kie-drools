@@ -510,5 +510,27 @@ public interface RuntimeDataService {
      * @return
      */
     List<TaskEvent> getTaskEvents(long taskId, QueryFilter filter); 
+    
+    /**
+     * Returns task summaries found for tasks that have defined given variable
+     * @param userId user id that is eligible to see tasks 
+     * @param variableName name of the variable that task should have should have
+     * @param states A list of possible state (Status) values that the {@link Task} can have. If null will return only active tasks (ready, reserver, in progress)
+     * @param queryFilter control parameters for the result e.g. sorting, paging
+     * @returnA list of {@link TaskSummary} instances representing the tasks that have defined given variable
+     */
+    List<TaskSummary> getTasksByVariable(String userId, String variableName, List<Status> states, QueryFilter queryFilter);
+    
+    /**
+     * Returns task summaries found for tasks that have defined given variable and its value matches given variableValue
+     * @param userId user id that is eligible to see tasks
+     * @param variableName name of the variable that task should have should have
+     * @param variableValue value of the variable to match
+     * @param states A list of possible state (Status) values that the {@link Task} can have. If null will return only active tasks (ready, reserver, in progress)
+     * @param queryFilter control parameters for the result e.g. sorting, paging
+     * @returnA list of {@link TaskSummary} instances representing the tasks that have defined given variable with given value
+     */
+    List<TaskSummary> getTasksByVariableAndValue(String userId, String variableName, String variableValue, List<Status> states, QueryFilter queryFilter);
+    
 	    
 }

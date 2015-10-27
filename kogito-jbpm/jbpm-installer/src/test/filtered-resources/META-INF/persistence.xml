@@ -92,6 +92,7 @@
     <class>org.jbpm.services.task.audit.impl.model.AuditTaskImpl</class>
     <class>org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl</class>
     <class>org.jbpm.services.task.audit.impl.model.TaskEventImpl</class>
+    <class>org.jbpm.services.task.audit.impl.model.TaskVariableImpl</class>
     <!-- jbpm-executor -->
     <class>org.jbpm.executor.entities.ErrorInfo</class>
     <class>org.jbpm.executor.entities.RequestInfo</class>
@@ -162,6 +163,7 @@
     <class>org.jbpm.services.task.audit.impl.model.AuditTaskImpl</class>
     <class>org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl</class>
     <class>org.jbpm.services.task.audit.impl.model.TaskEventImpl</class>
+    <class>org.jbpm.services.task.audit.impl.model.TaskVariableImpl</class>
     <!-- jbpm-executor -->
     <class>org.jbpm.executor.entities.ErrorInfo</class>
     <class>org.jbpm.executor.entities.RequestInfo</class>

@@ -799,6 +799,28 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 		applyQueryFilter(params, filter);
 		return (List<TaskSummary>) commandService.execute(new QueryNameCommand<List<TaskSummary>>("TasksByStatusByProcessId", params));
 	}
+	
+
+    @Override
+    public List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId,
+                                                                             List<Status> statuses,
+                                                                             QueryFilter filter) {
+        return ((InternalTaskService)taskService).getTasksAssignedAsBusinessAdministratorByStatus(userId, filter.getLanguage(), statuses);
+    }
+
+
+    @Override
+    public List<TaskSummary> getTasksByVariable(String userId, String variableName, List<Status> states, QueryFilter queryFilter) {
+
+        return taskAuditService.getTasksByVariableName(userId, variableName, states, queryFilter);
+    }
+
+    @Override
+    public List<TaskSummary> getTasksByVariableAndValue(String userId, String variableName, String variableValue, List<Status> states, QueryFilter queryFilter) {
+
+        return taskAuditService.getTasksByVariableNameAndValue(userId, variableName, variableValue, states, queryFilter);
+    }
+
 	/*
      * end
      * task methods
@@ -1035,14 +1057,6 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         }
         
     }
-
-    @Override
-    public List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId,
-                                                                             List<Status> statuses,
-                                                                             QueryFilter filter) {
-        return ((InternalTaskService)taskService).getTasksAssignedAsBusinessAdministratorByStatus(userId, filter.getLanguage(), statuses);
-    }
-
 
 
     /*

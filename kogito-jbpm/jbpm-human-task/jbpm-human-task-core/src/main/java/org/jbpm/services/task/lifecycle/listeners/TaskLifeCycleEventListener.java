@@ -15,6 +15,8 @@
  */
 package org.jbpm.services.task.lifecycle.listeners;
 
+import java.util.Map;
+
 import org.kie.api.task.TaskEvent;
 
 /**
@@ -34,4 +36,8 @@ public interface TaskLifeCycleEventListener extends org.kie.api.task.TaskLifeCyc
     public void beforeTaskNotificationEvent(TaskEvent event);
     
     public void afterTaskNotificationEvent(TaskEvent event); 
+    
+    public void afterTaskInputVariableChangedEvent(TaskEvent event, Map<String, Object> variables);
+    
+    public void afterTaskOutputVariableChangedEvent(TaskEvent event, Map<String, Object> variables); 
 }

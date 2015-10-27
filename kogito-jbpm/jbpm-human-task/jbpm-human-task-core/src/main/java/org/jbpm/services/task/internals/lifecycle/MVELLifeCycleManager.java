@@ -383,7 +383,6 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                         taskContentService.addOutputContent(taskId, data);
                         
                     }
-
                     taskEventSupport.fireAfterTaskCompleted(task, context);
                     break;
                 }

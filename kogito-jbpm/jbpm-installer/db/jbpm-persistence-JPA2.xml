@@ -40,6 +40,7 @@
      
     <!-- Task Audit Classes --> 
     <class>org.jbpm.services.task.audit.impl.model.AuditTaskImpl</class>
+    <class>org.jbpm.services.task.audit.impl.model.TaskVariableImpl</class>
       
     <!--BAM for task service -->
     <class>org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl</class>

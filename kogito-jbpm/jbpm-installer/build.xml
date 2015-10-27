@@ -43,6 +43,7 @@
       <include name="antlr-2.7.7.jar"/>
       <include name="hibernate-jpa-2.0-api*.jar"/>
       <include name="jta-1.1.jar"/>
+	  <include name="jboss-transaction-api*.jar"/>
       <include name="javassist-*.jar"/>
     </fileset>
   </path>
@@ -699,7 +700,7 @@
 	  <hibernatetool destdir="db/export-jbpm">
 	    <jpaconfiguration persistenceunit="org.jbpm.persistence.jpa.ddl" />
 	    <classpath>
-    	    <pathelement path="${runtime.class.path}"/>
+    	    <pathelement path="${generate.ddl.JPA2.class.path}"/>
 	    	<dirset dir="db/export-jbpm/">
 	        </dirset>
 	    </classpath>

@@ -1112,4 +1112,78 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
         processInstanceId = null;
         
     }
+    
+    
+    @Test
+    public void testGetTasksByVariable() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("approval_document", "initial content");
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
+        assertNotNull(processInstanceId);
+        
+        List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("salaboy", new QueryFilter());
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());
+        
+        List<TaskSummary> tasksByVariable = runtimeDataService.getTasksByVariable("salaboy", "TaskName", null, new QueryFilter());
+        assertNotNull(tasksByVariable);
+        assertEquals(1, tasksByVariable.size());
+
+        tasksByVariable = runtimeDataService.getTasksByVariable("salaboy", "ReviewComment", null, new QueryFilter());
+        assertNotNull(tasksByVariable);
+        assertEquals(0, tasksByVariable.size());
+        
+        
+        long taskId = tasks.get(0).getId();
+        
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put("ReviewComment", "document reviewed");
+        userTaskService.saveContent(taskId, output);
+        
+        tasksByVariable = runtimeDataService.getTasksByVariable("salaboy", "ReviewComment", null, new QueryFilter());
+        assertNotNull(tasksByVariable);
+        assertEquals(1, tasksByVariable.size());
+        
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+    }
+    
+    @Test
+    public void testGetTasksByVariableAndValue() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("approval_document", "initial content");
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument", params);
+        assertNotNull(processInstanceId);
+        
+        List<TaskSummary> tasks = runtimeDataService.getTasksAssignedAsPotentialOwner("salaboy", new QueryFilter());
+        assertNotNull(tasks);
+        assertEquals(1, tasks.size());
+        
+        List<TaskSummary> tasksByVariable = runtimeDataService.getTasksByVariableAndValue("salaboy", "TaskName", "Write a Document",  null, new QueryFilter());
+        assertNotNull(tasksByVariable);
+        assertEquals(1, tasksByVariable.size());
+
+        tasksByVariable = runtimeDataService.getTasksByVariableAndValue("salaboy", "TaskName", "Write",  null, new QueryFilter());
+        assertNotNull(tasksByVariable);
+        assertEquals(0, tasksByVariable.size());
+        
+        
+        long taskId = tasks.get(0).getId();
+        
+        Map<String, Object> output = new HashMap<String, Object>();
+        output.put("ReviewComment", "document reviewed");
+        userTaskService.saveContent(taskId, output);
+        
+        tasksByVariable = runtimeDataService.getTasksByVariableAndValue("salaboy", "ReviewComment", "document reviewed",  null, new QueryFilter());
+        assertNotNull(tasksByVariable);
+        assertEquals(1, tasksByVariable.size());
+        
+        tasksByVariable = runtimeDataService.getTasksByVariableAndValue("salaboy", "ReviewComment", "document%",  null, new QueryFilter());
+        assertNotNull(tasksByVariable);
+        assertEquals(1, tasksByVariable.size());
+        
+        processService.abortProcessInstance(processInstanceId);
+        processInstanceId = null;
+        
+    }
 }

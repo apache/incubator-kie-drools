@@ -44,6 +44,7 @@ import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.UserTaskService;
 import org.jbpm.services.task.HumanTaskServiceFactory;
+import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -58,6 +59,7 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.task.TaskService;
 import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,11 +123,14 @@ public abstract class AbstractKieServicesBaseTest {
 		((KModuleDeploymentService)deploymentService).setManagerFactory(new RuntimeManagerFactoryImpl());
 		((KModuleDeploymentService)deploymentService).setFormManagerService(new FormManagerServiceImpl());
 
+		TaskService taskService = HumanTaskServiceFactory.newTaskServiceConfigurator().entityManagerFactory(emf).getTaskService();
+		
 		// build runtime data service
 		runtimeDataService = new RuntimeDataServiceImpl();
 		((RuntimeDataServiceImpl) runtimeDataService).setCommandService(new TransactionalCommandService(emf));
 		((RuntimeDataServiceImpl) runtimeDataService).setIdentityProvider(identityProvider);
-		((RuntimeDataServiceImpl) runtimeDataService).setTaskService(HumanTaskServiceFactory.newTaskServiceConfigurator().entityManagerFactory(emf).getTaskService());
+		((RuntimeDataServiceImpl) runtimeDataService).setTaskService(taskService);
+		((RuntimeDataServiceImpl) runtimeDataService).setTaskAuditService(TaskAuditServiceFactory.newTaskAuditServiceConfigurator().setTaskService(taskService).getTaskAuditService());
 		((KModuleDeploymentService)deploymentService).setRuntimeDataService(runtimeDataService);
 
 		// set runtime data service as listener on deployment service

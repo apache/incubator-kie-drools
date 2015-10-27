@@ -82,7 +82,7 @@ public class TaskContext implements org.kie.internal.task.api.TaskContext {
     }
 
     public TaskContentService getTaskContentService() {
-        return new TaskContentServiceImpl(persistenceContext);
+        return new TaskContentServiceImpl(this, persistenceContext, taskEventSupport);
     }
     
     public TaskCommentService getTaskCommentService() {

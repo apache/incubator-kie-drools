@@ -17,18 +17,25 @@
 package org.jbpm.services.task.audit.service;
 
 import java.util.List;
+
 import org.jbpm.services.task.audit.commands.GetAllAdminAuditTasksByUserCommand;
 import org.jbpm.services.task.audit.commands.GetAllAuditTasksByStatusCommand;
 import org.jbpm.services.task.audit.commands.GetAllGroupAuditTasksByUserCommand;
-
 import org.jbpm.services.task.audit.commands.GetAllHistoryAuditTasksByUserCommand;
 import org.jbpm.services.task.audit.commands.GetAllHistoryAuditTasksCommand;
 import org.jbpm.services.task.audit.commands.GetAuditEventsByProcessInstanceIdCommand;
 import org.jbpm.services.task.audit.commands.GetAuditEventsCommand;
-import org.kie.internal.task.api.AuditTask;
+import org.jbpm.services.task.audit.commands.GetTaskInputVariablesCommand;
+import org.jbpm.services.task.audit.commands.GetTaskOutputVariablesCommand;
+import org.jbpm.services.task.audit.commands.GetTasksByVariableNameAndValueCommand;
+import org.jbpm.services.task.audit.commands.GetTasksByVariableNameCommand;
 import org.kie.api.task.TaskService;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
+import org.kie.internal.task.api.AuditTask;
 import org.kie.internal.task.api.InternalTaskService;
+import org.kie.internal.task.api.TaskVariable;
 import org.kie.internal.task.api.model.TaskEvent;
 
 /**
@@ -79,6 +86,30 @@ import org.kie.internal.task.api.model.TaskEvent;
     @Override
     public List<AuditTask> getAllAuditTasksByStatus(String userId, QueryFilter filter) {
         return taskService.execute(new GetAllAuditTasksByStatusCommand(userId, filter));
+    }
+
+
+    @Override
+    public List<TaskVariable> getTaskInputVariables(long taskId, QueryFilter filter) {
+        return taskService.execute(new GetTaskInputVariablesCommand(taskId, filter));
+    }
+
+
+    @Override
+    public List<TaskVariable> getTaskOutputVariables(long taskId, QueryFilter filter) {
+        return taskService.execute(new GetTaskOutputVariablesCommand(taskId, filter));
+    }
+
+
+    @Override
+    public List<TaskSummary> getTasksByVariableName(String userId, String variableName, List<Status> statuses, QueryFilter filter) {
+        return taskService.execute(new GetTasksByVariableNameCommand(userId, variableName, statuses, filter));
+    }
+
+
+    @Override
+    public List<TaskSummary> getTasksByVariableNameAndValue(String userId, String variableName, String variableValue, List<Status> statuses, QueryFilter filter) {
+        return taskService.execute(new GetTasksByVariableNameAndValueCommand(userId, variableName, variableValue, statuses, filter));
     }
     
      

@@ -163,6 +163,7 @@ public class RuntimeDataServiceCDIImplTest extends RuntimeDataServiceImplTest {
         deleted += commandService.execute(new UpdateStringCommand("delete from  VariableInstanceLog vsd"));
         deleted += commandService.execute(new UpdateStringCommand("delete from  AuditTaskImpl at"));
         deleted += commandService.execute(new UpdateStringCommand("delete from  TaskEventImpl te"));
+        deleted += commandService.execute(new UpdateStringCommand("delete from  TaskVariableImpl te"));
         System.out.println("Deleted " + deleted);
 	}
 }

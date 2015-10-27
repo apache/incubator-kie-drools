@@ -57,6 +57,7 @@
 
     <!-- Task Audit Classes -->
     <class>org.jbpm.services.task.audit.impl.model.AuditTaskImpl</class>
+    <class>org.jbpm.services.task.audit.impl.model.TaskVariableImpl</class>
 
     <class>org.jbpm.test.entity.DocumentVariable</class>
 
@@ -134,6 +135,7 @@
     
       <!-- Task Audit Classes -->
       <class>org.jbpm.services.task.audit.impl.model.AuditTaskImpl</class>
+      <class>org.jbpm.services.task.audit.impl.model.TaskVariableImpl</class>
     
       <exclude-unlisted-classes>true</exclude-unlisted-classes>
     

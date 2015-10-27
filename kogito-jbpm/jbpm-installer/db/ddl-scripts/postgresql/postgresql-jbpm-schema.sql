@@ -348,6 +348,18 @@
         primary key (id)
     );
 
+    create table TaskVariableImpl (
+        id int8 not null,
+        modificationDate timestamp,
+        name varchar(255),
+        processId varchar(255),
+        processInstanceId int8,
+        taskId int8,
+        type int4,
+        value varchar(255),
+        primary key (id)
+    );
+
     create table VariableInstanceLog (
         id int8 not null,
         log_date timestamp,
@@ -671,6 +683,8 @@
     create sequence TASK_EVENT_ID_SEQ;
 
     create sequence TASK_ID_SEQ;
+
+    create sequence TASK_VAR_ID_SEQ;
 
     create sequence VAR_INST_LOG_ID_SEQ;
 

@@ -1,5 +1,6 @@
 package org.jbpm.services.task.util;
 
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -261,6 +262,14 @@ public class CountDownTaskEventListener implements TaskLifeCycleEventListener {
         if (notificationAware) {
             latch.countDown();
         }
+        
+    }
+    @Override
+    public void afterTaskInputVariableChangedEvent(TaskEvent event, Map<String, Object> variables) {
+        
+    }
+    @Override
+    public void afterTaskOutputVariableChangedEvent(TaskEvent event, Map<String, Object> variables) {
         
     }
 }
