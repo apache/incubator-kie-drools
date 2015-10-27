@@ -17,8 +17,10 @@
 package org.drools.workbench.models.guided.template.backend;
 
 import org.drools.compiler.compiler.GuidedRuleTemplateProvider;
+import org.drools.compiler.compiler.ResourceConversionResult;
 import org.drools.core.util.IoUtils;
 import org.drools.workbench.models.guided.template.shared.TemplateModel;
+import org.kie.api.io.ResourceType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,10 +28,15 @@ import java.io.InputStream;
 public class GuidedRuleTemplateProviderImpl implements GuidedRuleTemplateProvider {
 
     @Override
-    public String loadFromInputStream(InputStream is) throws IOException {
+    public ResourceConversionResult loadFromInputStream(InputStream is) throws IOException {
         String xml = new String(IoUtils.readBytesFromInputStream(is), IoUtils.UTF8_CHARSET);
         TemplateModel model = RuleTemplateModelXMLPersistenceImpl.getInstance().unmarshal(xml);
-        return RuleTemplateModelDRLPersistenceImpl.getInstance().marshal(model);
+        String content = RuleTemplateModelDRLPersistenceImpl.getInstance().marshal(model);
+        if (model.hasDSLSentences()) {
+            return new ResourceConversionResult(content, ResourceType.DSLR);
+        } else {
+            return new ResourceConversionResult(content, ResourceType.DRL);
+        }
     }
 
 }
