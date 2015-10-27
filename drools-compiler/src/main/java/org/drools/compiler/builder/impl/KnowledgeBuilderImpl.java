@@ -35,6 +35,7 @@ import org.drools.compiler.compiler.GlobalError;
 import org.drools.compiler.compiler.GuidedDecisionTableFactory;
 import org.drools.compiler.compiler.GuidedDecisionTableProvider;
 import org.drools.compiler.compiler.GuidedRuleTemplateFactory;
+import org.drools.compiler.compiler.GuidedRuleTemplateProvider;
 import org.drools.compiler.compiler.GuidedScoreCardFactory;
 import org.drools.compiler.compiler.PMMLCompiler;
 import org.drools.compiler.compiler.PMMLCompilerFactory;
@@ -45,6 +46,7 @@ import org.drools.compiler.compiler.ParserError;
 import org.drools.compiler.compiler.ProcessBuilder;
 import org.drools.compiler.compiler.ProcessBuilderFactory;
 import org.drools.compiler.compiler.ProcessLoadError;
+import org.drools.compiler.compiler.ResourceConversionResult;
 import org.drools.compiler.compiler.ResourceTypeDeclarationWarning;
 import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.compiler.ScoreCardFactory;
@@ -412,15 +414,9 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     PackageDescr guidedDecisionTableToPackageDescr(Resource resource) throws DroolsParserException,
                                                                              IOException {
-        GuidedDecisionTableProvider.ConversionResult conversionResult = GuidedDecisionTableFactory.getGuidedDecisionTableProvider().loadFromInputStream(resource.getInputStream());
-        String drl = conversionResult.getDrl();
-        // in case there are DSL sentences used in Guided DTable, we need to make sure the Drools parser is aware
-        // and will be able to correctly process them
-        if (conversionResult.containsDsl()) {
-            return generatedDslrToPackageDescr(resource, drl);
-        } else {
-            return generatedDrlToPackageDescr(resource, drl);
-        }
+        GuidedDecisionTableProvider guidedDecisionTableProvider = GuidedDecisionTableFactory.getGuidedDecisionTableProvider();
+        ResourceConversionResult conversionResult = guidedDecisionTableProvider.loadFromInputStream(resource.getInputStream());
+        return conversionResultToPackageDescr(resource, conversionResult);
     }
 
     private PackageDescr generatedDrlToPackageDescr( Resource resource, String generatedDrl ) throws DroolsParserException {
@@ -504,8 +500,21 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
     PackageDescr templateToPackageDescr(Resource resource) throws DroolsParserException,
                                                                   IOException {
-        String drl = GuidedRuleTemplateFactory.getGuidedRuleTemplateProvider().loadFromInputStream(resource.getInputStream());
-        return generatedDrlToPackageDescr(resource, drl);
+        GuidedRuleTemplateProvider guidedRuleTemplateProvider = GuidedRuleTemplateFactory.getGuidedRuleTemplateProvider();
+        ResourceConversionResult conversionResult = guidedRuleTemplateProvider.loadFromInputStream(resource.getInputStream());
+        return conversionResultToPackageDescr(resource, conversionResult);
+    }
+
+    private PackageDescr conversionResultToPackageDescr(Resource resource, ResourceConversionResult resourceConversionResult)
+            throws DroolsParserException {
+        ResourceType resourceType = resourceConversionResult.getType();
+        if (ResourceType.DSLR.equals(resourceType)) {
+            return generatedDslrToPackageDescr(resource, resourceConversionResult.getContent());
+        } else if (ResourceType.DRL.equals(resourceType)) {
+            return generatedDrlToPackageDescr(resource, resourceConversionResult.getContent());
+        } else {
+            throw new RuntimeException("Converting generated " + resourceType + " into PackageDescr is not supported!");
+        }
     }
 
     public void addPackageFromDrl(Resource resource) throws DroolsParserException,
