@@ -265,7 +265,7 @@ public class ReteQueryElementNode extends QueryElementNode {
                              InternalWorkingMemory workingMemory) {
 
             QueryTerminalNode node = (QueryTerminalNode) resultLeftTuple.getLeftTupleSink();
-            Declaration[] decls = node.getDeclarations();
+            Declaration[] decls = node.getRequiredDeclarations();
             DroolsQuery dquery = (DroolsQuery) this.factHandle.getObject();
             Object[] objects = new Object[dquery.getElements().length];
 
@@ -356,7 +356,7 @@ public class ReteQueryElementNode extends QueryElementNode {
 
             // We need to recopy everything back again, as we don't know what has or hasn't changed
             QueryTerminalNode node = (QueryTerminalNode) resultLeftTuple.getLeftTupleSink();
-            Declaration[] decls = node.getDeclarations();
+            Declaration[] decls = node.getRequiredDeclarations();
             InternalFactHandle rootHandle = resultLeftTuple.get(0);
             DroolsQuery dquery = (DroolsQuery) rootHandle.getObject();
 
