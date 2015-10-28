@@ -44,6 +44,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.Os;
 import org.eclipse.aether.RepositorySystemSession;
 import org.kie.scanner.MavenRepositoryConfiguration;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +56,10 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+
 public class MavenEmbedder {
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(MavenEmbedder.class);
 
     public static final File DEFAULT_GLOBAL_SETTINGS_FILE =
             new File( System.getProperty( "maven.home", System.getProperty( "user.dir", "" ) ), "conf/settings.xml" );
@@ -64,6 +68,8 @@ public class MavenEmbedder {
     private final ComponentProvider componentProvider;
 
     private MavenExecutionRequest mavenExecutionRequest;
+
+    private MavenSession mavenSession;
 
     public MavenEmbedder( MavenRequest mavenRequest ) throws MavenEmbedderException {
         this( Thread.currentThread().getContextClassLoader(), null, mavenRequest );
@@ -85,12 +91,14 @@ public class MavenEmbedder {
 
             RepositorySystemSession rss = ( (DefaultMaven) componentProvider.lookup( Maven.class ) ).newRepositorySession( mavenExecutionRequest );
 
-            MavenSession mavenSession = new MavenSession( componentProvider.getPlexusContainer(), rss, mavenExecutionRequest, new DefaultMavenExecutionResult() );
+            mavenSession = new MavenSession( componentProvider.getPlexusContainer(), rss, mavenExecutionRequest, new DefaultMavenExecutionResult() );
 
             componentProvider.lookup( LegacySupport.class ).setSession( mavenSession );
         } catch ( MavenEmbedderException e ) {
+            log.error( "Unable to build MavenEmbedder", e );
             throw new MavenEmbedderException( e.getMessage(), e );
         } catch ( ComponentLookupException e ) {
+            log.error( "Unable to build MavenEmbedder", e );
             throw new MavenEmbedderException( e.getMessage(), e );
         }
     }
@@ -331,5 +339,9 @@ public class MavenEmbedder {
         projectBuildingRequest.setProcessPlugins( this.mavenRequest.isProcessPlugins() );
         projectBuildingRequest.setResolveDependencies( this.mavenRequest.isResolveDependencies() );
         return projectBuildingRequest;
+    }
+
+    public MavenSession getMavenSession() {
+        return mavenSession;
     }
 }
