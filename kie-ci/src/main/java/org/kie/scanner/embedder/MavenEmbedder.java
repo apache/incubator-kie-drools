@@ -65,6 +65,8 @@ public class MavenEmbedder {
 
     private MavenExecutionRequest mavenExecutionRequest;
 
+    private MavenSession mavenSession;
+
     public MavenEmbedder( MavenRequest mavenRequest ) throws MavenEmbedderException {
         this( Thread.currentThread().getContextClassLoader(), null, mavenRequest );
     }
@@ -85,7 +87,7 @@ public class MavenEmbedder {
 
             RepositorySystemSession rss = ( (DefaultMaven) componentProvider.lookup( Maven.class ) ).newRepositorySession( mavenExecutionRequest );
 
-            MavenSession mavenSession = new MavenSession( componentProvider.getPlexusContainer(), rss, mavenExecutionRequest, new DefaultMavenExecutionResult() );
+            mavenSession = new MavenSession( componentProvider.getPlexusContainer(), rss, mavenExecutionRequest, new DefaultMavenExecutionResult() );
 
             componentProvider.lookup( LegacySupport.class ).setSession( mavenSession );
         } catch ( MavenEmbedderException e ) {
@@ -331,5 +333,9 @@ public class MavenEmbedder {
         projectBuildingRequest.setProcessPlugins( this.mavenRequest.isProcessPlugins() );
         projectBuildingRequest.setResolveDependencies( this.mavenRequest.isResolveDependencies() );
         return projectBuildingRequest;
+    }
+
+    public MavenSession getMavenSession() {
+        return mavenSession;
     }
 }
