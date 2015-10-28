@@ -208,8 +208,10 @@ public class OptaPlannerExamplesApp extends JFrame {
     private JPanel createDescriptionPanel() {
         JPanel descriptionPanel = new JPanel(new BorderLayout(2, 2));
         descriptionPanel.add(new JLabel("Description"), BorderLayout.NORTH);
-        descriptionTextArea = new JTextArea(8, 70);
+        descriptionTextArea = new JTextArea(8, 65);
         descriptionTextArea.setEditable(false);
+        descriptionTextArea.setLineWrap(true);
+        descriptionTextArea.setWrapStyleWord(true);
         descriptionPanel.add(new JScrollPane(descriptionTextArea,
                 JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
         return descriptionPanel;
@@ -217,6 +219,7 @@ public class OptaPlannerExamplesApp extends JFrame {
 
     private JPanel createExtraPanel() {
         JPanel extraPanel = new JPanel(new GridLayout(0, 1, 5, 5));
+        extraPanel.add(new JPanel());
         webExamplesDialog = new WebExamplesDialog();
         Action webExamplesAction = new AbstractAction("Show web examples") {
             @Override
@@ -226,8 +229,7 @@ public class OptaPlannerExamplesApp extends JFrame {
             }
         };
         extraPanel.add(new JButton(webExamplesAction));
-        extraPanel.add(new JPanel());
-        Action homepageAction = new OpenBrowserAction("Homepage", "http://www.optaplanner.org");
+        Action homepageAction = new OpenBrowserAction("www.optaplanner.org", "http://www.optaplanner.org");
         extraPanel.add(new JButton(homepageAction));
         Action documentationAction = new OpenBrowserAction("Documentation", "http://www.optaplanner.org/learn/documentation.html");
         extraPanel.add(new JButton(documentationAction));
