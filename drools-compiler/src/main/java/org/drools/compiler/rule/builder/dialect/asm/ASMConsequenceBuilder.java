@@ -74,7 +74,7 @@ public class ASMConsequenceBuilder extends AbstractASMConsequenceBuilder {
                 invokeInterface(Activation.class, "getTuple", LeftTuple.class);
                 invokeInterface(LeftTuple.class, "getLeftTupleSink", LeftTupleSink.class);
                 cast(RuleTerminalNode.class);
-                invokeVirtual(RuleTerminalNode.class, "getDeclarations", Declaration[].class);
+                invokeVirtual(RuleTerminalNode.class, "getRequiredDeclarations", Declaration[].class);
                 mv.visitVarInsn(ASTORE, 4);
 
                 final String[] globals = data.getGlobals();
