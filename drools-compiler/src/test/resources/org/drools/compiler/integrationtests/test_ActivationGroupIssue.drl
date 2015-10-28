@@ -6,7 +6,7 @@ import com.answers.kie.layoutmode.VisitorClass;
 global java.util.List list;
 
 rule "Global_VisitorClassification_type_crawler"
-        
+        ruleflow-group "ruleflow-group-visitor-classification"
         activation-group "activation-group-visitor-classification-root"
         salience 2
         dialect "mvel"
@@ -23,7 +23,7 @@ end
 rule "LMI_default_null"
         salience -1
         activation-group "visitor_classification"
-        
+        ruleflow-group "ruleflow-group-visitor-classification"
         dialect "mvel"
         when
                 exists (LayoutModeInput( )) 
@@ -34,7 +34,7 @@ end
 rule "VisitorClassification_lowperf_10004"
         salience 10004
         activation-group "visitor_classification"
-        
+        ruleflow-group "ruleflow-group-visitor-classification"
         dialect "mvel"
         when
                 LayoutModeInput( city == "mountain view" )
@@ -48,7 +48,7 @@ end
 rule "VisitorClassification_type_4_7000"
         salience 7000
         activation-group "visitor_classification"
-        
+        ruleflow-group "ruleflow-group-visitor-classification"
         dialect "mvel"
         when
                 lmi : LayoutModeInput( user_agent matches ".*Safari.*" )

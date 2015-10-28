@@ -15,6 +15,8 @@
 
 package org.drools.compiler.integrationtests;
 
+import static org.junit.Assert.fail;
+
 import org.drools.compiler.Cell;
 import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
@@ -39,9 +41,16 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import com.answers.kie.layoutmode.LayoutModeInput;
 
@@ -53,10 +62,44 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
   @Test
   public void testActivationGroupIssue() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_ActivationGroupIssue.drl");
-        KieSession ksession = kbase.newKieSession();
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
+//    KieBase kbase = loadKnowledgeBase(ResourceType.DRL, null, null,
+//        "test_ActivationGroupIssue.drl");
+//        String [] rules={"test_ActivationGroupIssue.drl","test_salienceIntegerRule.drl"};
+//        KieBase kbase = loadKnowledgeBase(rules);
+//        KieSession ksession = kbase.newKieSession();
+    
+    String rule1 = "package org.drools.compiler.test\n"
+        +"global java.util.List list;\n"
+        +"rule \"Global_VisitorClassification_type_crawler\"\n"
+        +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
+        +"        activation-group \"activation-group-visitor-classification-root\"\n"
+        +"        salience 2\n"
+        +"        dialect \"mvel\"\n"
+        +"        when\n"
+        +"                LayoutModeInput( user_agent matches \".*Googlebot.*\" )\n"
+        +"                not (VisitorClass( classLevel == \"type_crawler\" )) \n"
+        +"        then\n"
+        +"                list.add( \"Global_VisitorClassification_type_crawler\" );\n"
+        +"                VisitorClass fact0 = new VisitorClass();\n"
+        +"                fact0.setClassLevel( \"type_crawler\" );\n"
+        +"                insert( fact0 );\n"
+        +"end\n";
+    System.out.println(rule1);
+    KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    kbuilder
+        .batch()
+        .add(ResourceFactory.newByteArrayResource(rule1.getBytes()),
+            ResourceType.RDRL);
+    
+    if (kbuilder.hasErrors()) {
+      fail(kbuilder.getErrors().toString());
+    }
+    
+    KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+    kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+    StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+    final List list = new ArrayList();
+    ksession.setGlobal("list", list);
         
         final LayoutModeInput input = new LayoutModeInput();
         input.setCity("mountain view");

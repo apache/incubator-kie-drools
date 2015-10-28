@@ -150,6 +150,24 @@ public class CommonTestMethodBase extends Assert {
 		}
 		return kbase;
 	}
+	
+	protected KnowledgeBase loadKnowledgeBase(ResourceType resourceType, KnowledgeBuilderConfiguration kbuilderConf, KieBaseConfiguration kbaseConf, String... classPathResources) {
+    Collection<KnowledgePackage> knowledgePackages = loadKnowledgePackages(
+        resourceType, kbuilderConf, true, classPathResources);
+
+    if (kbaseConf == null) {
+      kbaseConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+    }
+    kbaseConf.setOption(phreak);
+    KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbaseConf);
+    kbase.addKnowledgePackages(knowledgePackages);
+    try {
+      kbase = SerializationHelper.serializeObject(kbase);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+    return kbase;
+  }
 
 	protected KnowledgeBase loadKnowledgeBase(PackageDescr descr) {
 		return loadKnowledgeBase(null, null, descr);
@@ -223,6 +241,33 @@ public class CommonTestMethodBase extends Assert {
         }
 		return knowledgePackages;
 	}
+	
+	public Collection<KnowledgePackage> loadKnowledgePackages( ResourceType resourceType,KnowledgeBuilderConfiguration kbuilderConf, boolean serialize, String... classPathResources) {
+    if (kbuilderConf == null) {
+      kbuilderConf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration();
+    }
+
+    KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(kbuilderConf);
+    for (String classPathResource : classPathResources) {
+      kbuilder.add(ResourceFactory.newClassPathResource(classPathResource, getClass()), resourceType);
+    }
+
+    if (kbuilder.hasErrors()) {
+      fail(kbuilder.getErrors().toString());
+    }
+
+    Collection<KnowledgePackage> knowledgePackages = null;
+        if ( serialize ) {
+            try {
+                knowledgePackages = SerializationHelper.serializeObject(kbuilder.getKnowledgePackages(),  ((KnowledgeBuilderConfigurationImpl)kbuilderConf).getClassLoader() );
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            knowledgePackages = kbuilder.getKnowledgePackages();
+        }
+    return knowledgePackages;
+  }
 
 	public Collection<KnowledgePackage> loadKnowledgePackagesFromString(String... content) {
 		return loadKnowledgePackagesFromString(null, content);
