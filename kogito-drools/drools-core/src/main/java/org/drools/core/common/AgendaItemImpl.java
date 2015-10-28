@@ -16,13 +16,8 @@
 
 package org.drools.core.common;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
@@ -36,7 +31,6 @@ import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
-import org.kie.internal.runtime.beliefs.Mode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -427,7 +421,7 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
 
     @Override
     public List<String> getDeclarationIds() {
-        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) this.tuple.getLeftTupleSink()).getDeclarations();
+        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) this.tuple.getLeftTupleSink()).getAllDeclarations();
         List<String> declarations = new ArrayList<String>();
         for (Declaration decl : declArray) {
             declarations.add(decl.getIdentifier());

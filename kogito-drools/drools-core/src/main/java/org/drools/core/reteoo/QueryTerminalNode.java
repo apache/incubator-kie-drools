@@ -50,8 +50,9 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     /** The rule to invoke upon match. */
     protected QueryImpl query;
     private GroupElement      subrule;
-    private int               subruleIndex;    
-    private Declaration[]     declarations;
+    private int               subruleIndex;
+    private Declaration[]     allDeclarations;
+    private Declaration[]     requiredDeclarations;
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
@@ -88,7 +89,8 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         this.subruleIndex = subruleIndex;
         
         initDeclaredMask(context);        
-        initInferredMask();        
+        initInferredMask();
+        initDeclarations();
     }
 
     // ------------------------------------------------------------
@@ -99,7 +101,8 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         super.readExternal( in );
         query = (QueryImpl) in.readObject();
         subrule = (GroupElement) in.readObject();
-        subruleIndex = in.readInt();        
+        subruleIndex = in.readInt();
+        initDeclarations();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -132,11 +135,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         return false;
     }
 
-    public void updateNewNode(final InternalWorkingMemory workingMemory,
-                              final PropagationContext context) {
-        // There are no child nodes to update, do nothing.
-    }
-
     public boolean isLeftTupleMemoryEnabled() {
         return false;
     }
@@ -155,18 +153,25 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
     @Override
     public boolean isFireDirect() {
         return false;
-    }    
-    
-    public Declaration[] getDeclarations() {     
-        if ( declarations == null ) {
-            declarations = new Declaration[ query.getParameters().length ];
-            Map<String, Declaration> declMap = subrule.getOuterDeclarations();
-            int i = 0;
-            for ( Declaration declr : query.getParameters() ) {
-                declarations[i++] =  declMap.get( declr.getIdentifier() );
-            }
+    }
+
+    public Declaration[] getAllDeclarations() {
+        return this.allDeclarations;
+    }
+
+    public Declaration[] getRequiredDeclarations() {
+        return this.requiredDeclarations;
+    }
+
+    private void initDeclarations() {
+        Map<String, Declaration> declMap = subrule.getOuterDeclarations();
+        this.allDeclarations = declMap.values().toArray( new Declaration[declMap.size()] );
+
+        this.requiredDeclarations = new Declaration[ query.getParameters().length ];
+        int i = 0;
+        for ( Declaration declr : query.getParameters() ) {
+            this.requiredDeclarations[i++] =  declMap.get( declr.getIdentifier() );
         }
-        return declarations;
     }
     
     public int getSubruleIndex() {

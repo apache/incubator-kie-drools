@@ -88,7 +88,7 @@ public class MVELConsequence
     public void evaluate(final KnowledgeHelper knowledgeHelper,
                          final WorkingMemory workingMemory) throws Exception {
         
-        VariableResolverFactory factory = unit.getFactory( knowledgeHelper,  ((AgendaItem)knowledgeHelper.getMatch()).getTerminalNode().getDeclarations(),
+        VariableResolverFactory factory = unit.getFactory( knowledgeHelper,  ((AgendaItem)knowledgeHelper.getMatch()).getTerminalNode().getRequiredDeclarations(),
                                                            knowledgeHelper.getRule(), (LeftTuple) knowledgeHelper.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
         
         // do we have any functions for this namespace?

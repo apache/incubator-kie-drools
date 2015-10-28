@@ -64,7 +64,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
      */
     protected GroupElement                  subrule;
     protected int                           subruleIndex;
-    protected Declaration[]                 declarations;
+    protected Declaration[]                 allDeclarations;
+    protected Declaration[]                 requiredDeclarations;
 
     protected Declaration[][]               timerDeclarations;
     protected Declaration[]                 salienceDeclarations;
@@ -241,19 +242,26 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     }
 
-    public Declaration[] getDeclarations() {
-        return this.declarations;
+    public Declaration[] getAllDeclarations() {
+        return this.allDeclarations;
+    }
+
+    public Declaration[] getRequiredDeclarations() {
+        return this.requiredDeclarations;
     }
 
     private void initDeclarations() {
         Map<String, Declaration> decls = this.subrule.getOuterDeclarations();
-        String[] requiredDeclarations = rule.getRequiredDeclarationsForConsequence(getConsequenceName());
-        this.declarations = new Declaration[requiredDeclarations.length];
+        this.allDeclarations = decls.values().toArray( new Declaration[decls.size()] );
+        Arrays.sort( this.allDeclarations, SortDeclarations.instance );
+
+        String[] requiredDeclarationNames = rule.getRequiredDeclarationsForConsequence(getConsequenceName());
+        this.requiredDeclarations = new Declaration[requiredDeclarationNames.length];
         int i = 0;
-        for ( String str : requiredDeclarations ) {
-            declarations[i++] = decls.get( str );
+        for ( String str : requiredDeclarationNames ) {
+            this.requiredDeclarations[i++] = decls.get( str );
         }
-        Arrays.sort( this.declarations, SortDeclarations.instance );
+        Arrays.sort( this.requiredDeclarations, SortDeclarations.instance );
     }
     
     public Declaration[][] getTimerDeclarations() {

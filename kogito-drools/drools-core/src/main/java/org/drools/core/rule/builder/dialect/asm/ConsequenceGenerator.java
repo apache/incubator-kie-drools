@@ -49,7 +49,7 @@ public class ConsequenceGenerator {
 
     public static void generate(final ConsequenceStub stub, KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
         RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getMatch().getTuple().getLeftTupleSink();
-        final Declaration[] declarations = rtn.getDeclarations();
+        final Declaration[] declarations = rtn.getRequiredDeclarations();
         final LeftTuple tuple = (LeftTuple)knowledgeHelper.getTuple();
 
         // Sort declarations based on their offset, so it can ascend the tuple's parents stack only once
@@ -76,7 +76,7 @@ public class ConsequenceGenerator {
                 invokeInterface(Activation.class, "getTuple", LeftTuple.class);
                 invokeInterface(LeftTuple.class, "getLeftTupleSink", LeftTupleSink.class);
                 cast(RuleTerminalNode.class);
-                invokeVirtual(RuleTerminalNode.class, "getDeclarations", Declaration[].class);
+                invokeVirtual(RuleTerminalNode.class, "getRequiredDeclarations", Declaration[].class);
                 mv.visitVarInsn(ASTORE, 4);
 
                 

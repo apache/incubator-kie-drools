@@ -2206,7 +2206,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private Map getActivationParameters(LeftTuple tuple) {
         Map result = new HashMap();
-        Declaration[] declarations = ((RuleTerminalNode) tuple.getLeftTupleSink()).getDeclarations();
+        Declaration[] declarations = ((RuleTerminalNode) tuple.getLeftTupleSink()).getAllDeclarations();
 
         for (int i = 0; i < declarations.length; i++) {
             FactHandle handle = tuple.get(declarations[i]);
