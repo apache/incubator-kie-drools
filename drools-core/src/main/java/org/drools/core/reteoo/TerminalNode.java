@@ -51,7 +51,8 @@ public interface TerminalNode
 
     boolean isFireDirect();
 
-    Declaration[] getDeclarations();
+    Declaration[] getAllDeclarations();
+    Declaration[] getRequiredDeclarations();
 
     Declaration[] getSalienceDeclarations();
 

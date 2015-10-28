@@ -16,14 +16,6 @@
 
 package org.drools.core.event.rule.impl;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.AgendaItemImpl;
 import org.drools.core.common.InternalFactHandle;
@@ -34,6 +26,14 @@ import org.kie.api.definition.rule.Rule;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.api.runtime.rule.PropagationContext;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class SerializableActivation
     implements
@@ -54,7 +54,7 @@ public class SerializableActivation
         this.factHandles = activation.getFactHandles();
         this.propgationContext = ((Activation)activation).getPropagationContext();
         if ( activation instanceof AgendaItemImpl) {
-            declarations = ((org.drools.core.reteoo.RuleTerminalNode)((AgendaItem)activation).getTuple().getLeftTupleSink()).getDeclarations();
+            declarations = ((org.drools.core.reteoo.RuleTerminalNode)((AgendaItem)activation).getTuple().getLeftTupleSink()).getAllDeclarations();
         } else if ( activation instanceof SerializableActivation ) {
             this.declarations = ((SerializableActivation)activation).declarations;
         } else {
