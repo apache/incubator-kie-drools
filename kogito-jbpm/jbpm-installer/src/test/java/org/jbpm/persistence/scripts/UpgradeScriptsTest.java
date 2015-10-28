@@ -61,8 +61,13 @@ public class UpgradeScriptsTest {
      * @throws ParseException
      * @throws SQLException
      */
-//    @Test
+    @Test
     public void testPersistedProcess() throws IOException, ParseException, SQLException {
+        testPersistedProcess("jbpm");
+        testPersistedProcess("bpms");
+    }
+    
+    public void testPersistedProcess(String type) throws IOException, ParseException, SQLException {
         // Clear schema.
         TestsUtil.clearSchema();
 
@@ -74,7 +79,7 @@ public class UpgradeScriptsTest {
             scriptRunnerContext.executeScripts(new File(getClass().getResource("/ddl60").getFile()));
             scriptRunnerContext.persistOldProcessAndSession(TEST_SESSION_ID, TEST_PROCESS_ID, TEST_PROCESS_INSTANCE_ID);
             // Execute upgrade scripts.
-            scriptRunnerContext.executeScripts(new File(getClass().getResource("/upgrade-scripts").getFile()));
+            scriptRunnerContext.executeScripts(new File(getClass().getResource("/upgrade-scripts").getFile()), type);
         } finally {
             scriptRunnerContext.clean();
         }

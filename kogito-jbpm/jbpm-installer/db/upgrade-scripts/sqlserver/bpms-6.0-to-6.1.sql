@@ -21,7 +21,37 @@ create table AuditTaskImpl (
         taskId numeric(19,0),
         primary key (id));
 
-ALTER TABLE SessionInfo ALTER COLUMN id numeric(19,0);
+-- If exist drop the procedure 'alter_table_session_info'
+IF EXISTS (SELECT * FROM sys.objects WHERE type ='P' AND name = 'alter_table_session_info')
+DROP PROCEDURE alter_table_session_info
+-- Creating the procedure to delete the constraint from SessionInfo table
+GO
+CREATE PROCEDURE alter_table_session_info
+AS
+	DECLARE @const_name VARCHAR(255)
+	DECLARE @sqlDroppingConstraint VARCHAR(255)
+	DECLARE @sqlAlterTableSessionInfo VARCHAR(255)
+	DECLARE @sqlRecriateConstraint VARCHAR(255)
+
+	SELECT @const_name = (SELECT CONSTRAINT_NAME from INFORMATION_SCHEMA.TABLE_CONSTRAINTS where TABLE_NAME='SessionInfo')
+	BEGIN
+		SELECT @sqlDroppingConstraint = 'ALTER TABLE SessionInfo DROP CONSTRAINT ' + @const_name
+		EXEC (@sqlDroppingConstraint)
+
+		SELECT @sqlAlterTableSessionInfo = 'ALTER TABLE SessionInfo ALTER COLUMN id numeric(19,0)'
+		EXEC (@sqlAlterTableSessionInfo)
+
+		SELECT @sqlRecriateConstraint = 'ALTER TABLE SessionInfo ADD CONSTRAINT ' + @const_name + ' PRIMARY KEY CLUSTERED ([id] ASC)'
+		EXEC (@sqlRecriateConstraint)
+	END
+GO
+-- Executing the procedure
+EXECUTE alter_table_session_info
+-- Deleting the procedure to clean it from database
+DROP PROCEDURE alter_table_session_info
+-- Recriating the Index
+ALTER INDEX ALL ON SessionInfo REORGANIZE;
+
 ALTER TABLE AuditTaskImpl ALTER COLUMN processSessionId numeric(19,0);
 ALTER TABLE AuditTaskImpl ALTER COLUMN activationTime datetime;
 ALTER TABLE AuditTaskImpl ALTER COLUMN createdOn datetime;
@@ -48,9 +78,9 @@ ALTER TABLE Task ADD name varchar(255);
 ALTER TABLE Task ADD subject varchar(255);
 
 -- update all tasks with its name, subject and description
-UPDATE Task t SET name = (SELECT shortText FROM I18NText WHERE Task_Names_Id = t.id);
-UPDATE Task t SET subject = (SELECT shortText FROM I18NText WHERE Task_Subjects_Id = t.id);
-UPDATE Task t SET description = (SELECT shortText FROM I18NText WHERE Task_Descriptions_Id = t.id);
+UPDATE Task SET name = (SELECT shortText FROM I18NText WHERE I18NText.Task_Names_Id = Task.id);
+UPDATE Task SET subject = (SELECT shortText FROM I18NText WHERE I18NText.Task_Subjects_Id = Task.id);
+UPDATE Task SET description = (SELECT shortText FROM I18NText WHERE I18NText.Task_Descriptions_Id = Task.id);
 
 INSERT INTO AuditTaskImpl (activationTime, actualOwner, createdBy, createdOn, deploymentId, description, dueDate, name, parentId, priority, processId, processInstanceId, processSessionId, status, taskId)
 SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id 
@@ -58,5 +88,5 @@ FROM Task;
 
 ALTER TABLE TaskEvent ADD workItemId numeric(19,0);
 ALTER TABLE TaskEvent ADD processInstanceId numeric(19,0);
-UPDATE TaskEvent t SET workItemId = (SELECT workItemId FROM Task WHERE id = t.taskId);
-UPDATE TaskEvent t SET processInstanceId = (SELECT processInstanceId FROM Task WHERE id = t.taskId);
+UPDATE TaskEvent SET workItemId = (SELECT workItemId FROM Task WHERE Task.id = TaskEvent.taskId);
+UPDATE TaskEvent SET processInstanceId = (SELECT processInstanceId FROM Task WHERE Task.id = TaskEvent.taskId);
