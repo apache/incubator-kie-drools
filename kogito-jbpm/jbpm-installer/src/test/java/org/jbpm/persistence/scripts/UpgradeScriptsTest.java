@@ -78,6 +78,7 @@ public class UpgradeScriptsTest {
             // Prepare 6.0. schema
             scriptRunnerContext.executeScripts(new File(getClass().getResource("/ddl60").getFile()));
             scriptRunnerContext.persistOldProcessAndSession(TEST_SESSION_ID, TEST_PROCESS_ID, TEST_PROCESS_INSTANCE_ID);
+            scriptRunnerContext.createSomeTask();
             // Execute upgrade scripts.
             scriptRunnerContext.executeScripts(new File(getClass().getResource("/upgrade-scripts").getFile()), type);
         } finally {

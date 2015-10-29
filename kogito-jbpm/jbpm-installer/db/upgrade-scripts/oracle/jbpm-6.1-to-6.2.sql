@@ -31,8 +31,8 @@ update Task t set name = (select shortText from I18NText where Task_Names_Id = t
 update Task t set subject = (select shortText from I18NText where Task_Subjects_Id = t.id);
 update Task t set description = (select shortText from I18NText where Task_Descriptions_Id = t.id);
 
-INSERT INTO AuditTaskImpl (activationTime, actualOwner, createdBy, createdOn, deploymentId, description, dueDate, name, parentId, priority, processId, processInstanceId, processSessionId, status, taskId)
-SELECT activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id 
+INSERT INTO AuditTaskImpl (id, activationTime, actualOwner, createdBy, createdOn, deploymentId, description, dueDate, name, parentId, priority, processId, processInstanceId, processSessionId, status, taskId)
+SELECT AUDIT_ID_SEQ.nextval, activationTime, actualOwner_id, createdBy_id, createdOn, deploymentId, description, expirationTime, name, parentId, priority,processId, processInstanceId, processSessionId, status, id
 FROM Task;
 
 alter table TaskEvent add workItemId number(19,0);

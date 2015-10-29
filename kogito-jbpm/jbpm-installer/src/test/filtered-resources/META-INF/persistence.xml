@@ -11,6 +11,22 @@
 
     <class>org.jbpm.persistence.scripts.oldentities.ProcessInstanceInfo</class>
     <class>org.jbpm.persistence.scripts.oldentities.SessionInfo</class>
+    <class>org.jbpm.persistence.scripts.oldentities.TaskImpl</class>
+    <class>org.jbpm.services.task.impl.model.AttachmentImpl</class>
+    <class>org.jbpm.services.task.impl.model.BooleanExpressionImpl</class>
+    <class>org.jbpm.services.task.impl.model.CommentImpl</class>
+    <class>org.jbpm.services.task.impl.model.ContentImpl</class>
+    <class>org.jbpm.services.task.impl.model.DeadlineImpl</class>
+    <class>org.jbpm.services.task.impl.model.EmailNotificationHeaderImpl</class>
+    <class>org.jbpm.services.task.impl.model.EmailNotificationImpl</class>
+    <class>org.jbpm.services.task.impl.model.EscalationImpl</class>
+    <class>org.jbpm.services.task.impl.model.GroupImpl</class>
+    <class>org.jbpm.services.task.impl.model.I18NTextImpl</class>
+    <class>org.jbpm.services.task.impl.model.NotificationImpl</class>
+    <class>org.jbpm.services.task.impl.model.OrganizationalEntityImpl</class>
+    <class>org.jbpm.services.task.impl.model.ReassignmentImpl</class>
+    <class>org.jbpm.services.task.impl.model.TaskDefImpl</class>
+    <class>org.jbpm.services.task.impl.model.UserImpl</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="hibernate.max_fetch_depth" value="3"/>

@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,12 +18,12 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.persistence.map.impl.ProcessCreatorForHelp;
 import org.jbpm.persistence.scripts.oldentities.ProcessInstanceInfo;
 import org.jbpm.persistence.scripts.oldentities.SessionInfo;
+import org.jbpm.persistence.scripts.oldentities.TaskImpl;
 import org.jbpm.persistence.scripts.util.SQLCommandUtil;
 import org.jbpm.persistence.scripts.util.SQLScriptUtil;
 import org.jbpm.persistence.scripts.util.TestsUtil;
@@ -30,10 +31,19 @@ import org.jbpm.persistence.util.PersistenceUtil;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.task.model.I18NText;
+import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.task.api.TaskModelProvider;
+import org.kie.internal.task.api.model.InternalI18NText;
+import org.kie.internal.task.api.model.InternalOrganizationalEntity;
+import org.kie.internal.task.api.model.InternalPeopleAssignments;
+import org.kie.internal.task.api.model.InternalTaskData;
+
+import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 /**
  * Central context that hides persistence from tests, so there is no need to work with persistence in the tests
@@ -131,6 +141,47 @@ public final class TestPersistenceContext {
 
         session = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, null, environment);
         session.startProcess(processId);
+    }
+    
+    public void createSomeTask() {
+        testIsInitialized();
+        TaskImpl task = new TaskImpl();
+        InternalI18NText name = (InternalI18NText) TaskModelProvider.getFactory().newI18NText();
+        name.setText("Some Task");
+        List<I18NText> names = new ArrayList<I18NText>();
+        names.add(name);
+        task.setNames(names);
+        InternalTaskData taskData = (InternalTaskData) TaskModelProvider.getFactory().newTaskData();        
+        taskData.setWorkItemId(12);
+        taskData.setProcessInstanceId(1);
+        taskData.setProcessId("someprocess");
+        taskData.setDeploymentId("org.jbpm.test:someprocess:1.0");
+        taskData.setProcessSessionId(1);
+        task.setTaskData(taskData);
+        InternalPeopleAssignments peopleAssignments = 
+            (InternalPeopleAssignments) TaskModelProvider.getFactory().newPeopleAssignments();
+        peopleAssignments.setPotentialOwners(new ArrayList<OrganizationalEntity>());
+        peopleAssignments.setBusinessAdministrators(new ArrayList<OrganizationalEntity>());
+        peopleAssignments.setExcludedOwners(new ArrayList<OrganizationalEntity>());
+        peopleAssignments.setRecipients(new ArrayList<OrganizationalEntity>());
+        peopleAssignments.setTaskStakeholders(new ArrayList<OrganizationalEntity>());
+        InternalOrganizationalEntity jdoe = 
+            (InternalOrganizationalEntity) TaskModelProvider.getFactory().newUser();
+        jdoe.setId("jdoe");
+        peopleAssignments.getPotentialOwners().add(jdoe);
+        peopleAssignments.getBusinessAdministrators().add(jdoe);
+        task.setPeopleAssignments(peopleAssignments);
+        final boolean txOwner = transactionManager.begin();
+        try {
+            EntityManager em = entityManagerFactory.createEntityManager();
+            em.persist(jdoe);
+            em.persist(task);
+            transactionManager.commit(txOwner);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            transactionManager.rollback(txOwner);
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
     }
 
     /**
