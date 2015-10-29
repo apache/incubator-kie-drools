@@ -203,23 +203,32 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                                            String rightValue,
                                                            LiteralRestrictionDescr restrictionDescr) {
         if (vtype == ValueType.DATE_TYPE) {
-            Date date = (Date)field.getValue();
-            return leftValue + " " + operator + (date != null ? " new java.util.Date(" + date.getTime() + ")" : " null");
+            return normalizeDate( field, leftValue, operator );
         }
         if (operator.equals("str")) {
-            String method = restrictionDescr.getParameterText();
-            if (method.equals("length")) {
-                return leftValue + ".length()" + (restrictionDescr.isNegated() ? " != " : " == ") + rightValue;
-            }
-            return (restrictionDescr.isNegated() ? "!" : "") + leftValue + "." + method + "(" + rightValue + ")";
+            return normalizeStringOperator( leftValue, rightValue, restrictionDescr );
         }
-
         // resolve ambiguity between mvel's "empty" keyword and constraints like: List(empty == ...)
-        if (expr.startsWith("empty") && (operator.equals("==") || operator.equals("!=")) && !Character.isJavaIdentifierPart(expr.charAt(5))) {
-            expr = "isEmpty()" + expr.substring(5);
-        }
+        return normalizeEmptyKeyword( expr, operator );
+    }
 
-        return expr;
+    protected static String normalizeDate( FieldValue field, String leftValue, String operator ) {
+        Date date = (Date)field.getValue();
+        return leftValue + " " + operator + (date != null ? " new java.util.Date(" + date.getTime() + ")" : " null");
+    }
+
+    protected static String normalizeStringOperator( String leftValue, String rightValue, LiteralRestrictionDescr restrictionDescr ) {
+        String method = restrictionDescr.getParameterText();
+        if (method.equals("length")) {
+            return leftValue + ".length()" + (restrictionDescr.isNegated() ? " != " : " == ") + rightValue;
+        }
+        return (restrictionDescr.isNegated() ? "!" : "") + leftValue + "." + method + "(" + rightValue + ")";
+    }
+
+    protected static String normalizeEmptyKeyword( String expr, String operator ) {
+        return expr.startsWith("empty") && (operator.equals("==") || operator.equals("!=")) && !Character.isJavaIdentifierPart(expr.charAt(5)) ?
+               "isEmpty()" + expr.substring(5) :
+               expr;
     }
 
     protected static String normalizeMVELVariableExpression(String expr,
