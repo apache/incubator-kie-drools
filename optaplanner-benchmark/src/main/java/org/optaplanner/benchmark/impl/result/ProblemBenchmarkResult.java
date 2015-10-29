@@ -273,6 +273,14 @@ public class ProblemBenchmarkResult {
         }
     }
 
+    public int getTotalSubSingleCount() {
+        int totalSubSingleCount = 0;
+        for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
+            totalSubSingleCount += singleBenchmarkResult.getTotalSubSingleCount();
+        }
+        return totalSubSingleCount;
+    }
+
     public Solution readPlanningProblem() {
         return solutionFileIO.read(inputSolutionFile);
     }

@@ -280,6 +280,14 @@ public class PlannerBenchmarkResult {
         }
     }
 
+    public int getTotalSubSingleCount() {
+        int totalSubSingleCount = 0;
+        for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
+            totalSubSingleCount += problemBenchmarkResult.getTotalSubSingleCount();
+        }
+        return totalSubSingleCount;
+    }
+
     public void accumulateResults(BenchmarkReport benchmarkReport) {
         for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
             problemBenchmarkResult.accumulateResults(benchmarkReport);

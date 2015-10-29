@@ -319,6 +319,10 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         }
     }
 
+    public int getTotalSubSingleCount() {
+        return subSingleBenchmarkResultList.size();
+    }
+
     public void accumulateResults(BenchmarkReport benchmarkReport) {
         for (SubSingleBenchmarkResult subSingleBenchmarkResult : subSingleBenchmarkResultList) {
             subSingleBenchmarkResult.accumulateResults(benchmarkReport);

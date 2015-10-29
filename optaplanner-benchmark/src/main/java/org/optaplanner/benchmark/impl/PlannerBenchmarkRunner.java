@@ -123,8 +123,12 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         warmUpExecutorCompletionService = new ExecutorCompletionService<SubSingleBenchmarkRunner>(warmUpExecutorService);
         executorService = Executors.newFixedThreadPool(plannerBenchmarkResult.getParallelBenchmarkCount());
         benchmarkResultIO = new BenchmarkResultIO();
-        logger.info("Benchmarking started: solverBenchmarkResultList size ({}), parallelBenchmarkCount ({}).",
-                solverBenchmarkResultList.size(), plannerBenchmarkResult.getParallelBenchmarkCount());
+        logger.info("Benchmarking started: parallelBenchmarkCount ({})"
+                + " for problemCount ({}), solverCount ({}), totalSubSingleCount ({}).",
+                plannerBenchmarkResult.getParallelBenchmarkCount(),
+                plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList().size(),
+                solverBenchmarkResultList.size(),
+                plannerBenchmarkResult.getTotalSubSingleCount());
     }
 
     private void initBenchmarkDirectoryAndSubdirs() {
