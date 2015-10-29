@@ -61,6 +61,7 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(JaxWSServiceTaskTest.class);
     
     private Endpoint endpoint;
+    private Endpoint endpoint2;
     private SimpleService service;
 
     @Before
@@ -211,10 +212,12 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
     private void startWebService() {
         this.service = new SimpleService();
         this.endpoint = Endpoint.publish("http://127.0.0.1:9876/HelloService/greeting", service);
+        this.endpoint2 = Endpoint.publish("http://127.0.0.1:9877/SecondService/greeting", service);
     }
 
     private void stopWebService() {
         this.endpoint.stop();
+        this.endpoint2.stop();
     }
     
     private static KnowledgeBase readKnowledgeBase() throws Exception {
