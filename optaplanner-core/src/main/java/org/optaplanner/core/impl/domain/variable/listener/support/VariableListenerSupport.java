@@ -194,9 +194,9 @@ public class VariableListenerSupport implements SupplyManager {
     public void triggerVariableListenersInNotificationQueues() {
         for (VariableListenerNotifiable notifiable : notifiableList) {
             Set<VariableListenerNotification> notificationQueue = notifiable.getNotificationQueue();
+            int notifiedCount = 0;
             VariableListener variableListener = notifiable.getVariableListener();
-            for (Iterator<VariableListenerNotification> it = notificationQueue.iterator(); it.hasNext(); ) {
-                VariableListenerNotification notification = it.next();
+            for (VariableListenerNotification notification : notificationQueue) {
                 Object entity = notification.getEntity();
                 switch (notification.getType()) {
                     case ENTITY_ADDED:
@@ -212,8 +212,16 @@ public class VariableListenerSupport implements SupplyManager {
                         throw new IllegalStateException("The variableListenerNotificationType ("
                                 + notification.getType() + ") is not implemented.");
                 }
-                it.remove();
+                notifiedCount++;
             }
+            if (notifiedCount != notificationQueue.size()) {
+                throw new IllegalStateException("The variableListener (" + variableListener.getClass()
+                        + ") has been notified with notifiedCount (" + notifiedCount
+                        + ") but after notification it has different size (" + notificationQueue.size() + ").\n"
+                        + "Maybe that variableListener (" + variableListener.getClass()
+                        + ") changed an upstream shadow variable (which is illegal).");
+            }
+            notificationQueue.clear();
         }
         notificationQueuesAreEmpty = true;
     }

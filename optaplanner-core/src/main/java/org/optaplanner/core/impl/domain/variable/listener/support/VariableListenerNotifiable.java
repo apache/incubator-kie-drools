@@ -31,7 +31,7 @@ public class VariableListenerNotifiable implements Comparable<VariableListenerNo
     public VariableListenerNotifiable(VariableListener variableListener, int globalOrder) {
         this.variableListener = variableListener;
         this.globalOrder = globalOrder;
-        notificationQueue = new LinkedHashSet<VariableListenerNotification>();
+        notificationQueue = new SmallScalingOrderedSet<VariableListenerNotification>();
     }
 
     public VariableListener getVariableListener() {
