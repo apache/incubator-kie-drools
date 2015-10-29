@@ -31,9 +31,9 @@ import java.util.Set;
  * because no {@link Object#hashCode()} need to be calculated.
  * @param <E>
  */
-public class SmallScalingOrderedSet<E> implements Set<E> {
+public final class SmallScalingOrderedSet<E> implements Set<E> {
 
-    private static final int LIST_SIZE_THRESHOLD = 16;
+    protected static final int LIST_SIZE_THRESHOLD = 16;
 
     private boolean belowThreshold;
     private List<E> list;
