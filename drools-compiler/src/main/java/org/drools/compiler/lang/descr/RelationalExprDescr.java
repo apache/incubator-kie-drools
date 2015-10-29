@@ -28,6 +28,8 @@ public class RelationalExprDescr extends BaseDescr {
     private BaseDescr         right;
     private OperatorDescr     operator;
 
+    private String            expression;
+
     public RelationalExprDescr() { }
 
     public RelationalExprDescr(String operator,
@@ -56,6 +58,14 @@ public class RelationalExprDescr extends BaseDescr {
 
     public void setRight( BaseDescr right ) {
         this.right = right;
+    }
+
+    public String getExpression() {
+        return expression;
+    }
+
+    public void setExpression( String expression ) {
+        this.expression = expression;
     }
 
     public String getOperator() {

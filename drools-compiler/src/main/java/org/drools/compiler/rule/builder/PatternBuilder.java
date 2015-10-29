@@ -118,7 +118,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 
-import static org.drools.compiler.rule.builder.MVELConstraintBuilder.normalizeMVELLiteralExpression;
+import static org.drools.compiler.rule.builder.MVELConstraintBuilder.*;
 import static org.drools.core.util.StringUtils.isIdentifier;
 
 /**
@@ -889,31 +889,38 @@ public class PatternBuilder
     }
 
     private String rewriteOrExpressions(RuleBuildContext context, Pattern pattern, BaseDescr d, String expr) {
-        if ( !( d instanceof ConstraintConnectiveDescr ) || ( (ConstraintConnectiveDescr) d ).getConnective() != ConnectiveType.OR ) {
-            return expr;
-        }
-        return rewriteCompositeExpressions( context, pattern, (ConstraintConnectiveDescr)d, expr );
+        return !( d instanceof ConstraintConnectiveDescr ) || ( (ConstraintConnectiveDescr) d ).getConnective() != ConnectiveType.OR ?
+               expr :
+               rewriteCompositeExpressions( context, pattern, (ConstraintConnectiveDescr)d );
     }
 
-    private String rewriteCompositeExpressions(RuleBuildContext context, Pattern pattern, ConstraintConnectiveDescr d, String expr) {
-        String[] subExprs = expr.split("\\Q" + d.getConnective().getConnective() + "\\E");
-        if (subExprs.length != d.getDescrs().size()) {
-            return expr;
-        }
-
+    private String rewriteCompositeExpressions(RuleBuildContext context, Pattern pattern, ConstraintConnectiveDescr d) {
         int i = 0;
         StringBuilder sb = new StringBuilder();
         for (BaseDescr subDescr : d.getDescrs()) {
-            if (i > 0) {
+            if (subDescr instanceof BindingDescr) {
+                continue;
+            }
+            if (i++ > 0) {
                 sb.append( " " ).append( d.getConnective().getConnective() ).append( " " );
             }
+
             String normalizedExpr;
             if (subDescr instanceof RelationalExprDescr && isSimpleExpr( (RelationalExprDescr)subDescr )) {
-                normalizedExpr = normalizeExpression( context, pattern, (RelationalExprDescr) subDescr, subExprs[i++] );
+                RelationalExprDescr relDescr = (RelationalExprDescr) subDescr;
+                if (relDescr.getExpression() != null) {
+                    normalizedExpr = normalizeExpression( context, pattern, relDescr, relDescr.getExpression() );
+                } else {
+                    i--;
+                    normalizedExpr = "";
+                }
             } else if (subDescr instanceof ConstraintConnectiveDescr) {
-                normalizedExpr = "(" + rewriteCompositeExpressions(context, pattern, (ConstraintConnectiveDescr)subDescr, subExprs[i++]) + ")";
+                normalizedExpr = "(" + rewriteCompositeExpressions(context, pattern, (ConstraintConnectiveDescr)subDescr) + ")";
+            } else if (subDescr instanceof AtomicExprDescr) {
+                normalizedExpr = ( (AtomicExprDescr) subDescr ).getRewrittenExpression();
             } else {
-                normalizedExpr = subExprs[i++];
+                //normalizedExpr = subExprs[i++];
+                throw new RuntimeException(  );
             }
             sb.append(normalizedExpr);
         }
@@ -922,33 +929,30 @@ public class PatternBuilder
     }
 
     private String normalizeExpression( RuleBuildContext context, Pattern pattern, RelationalExprDescr subDescr, String subExpr ) {
-        String[] values = new String[2];
-        findExpressionValues( subDescr, values);
-        String normalizedExpr;
-
-        if (!getExprBindings(context, pattern, values[1]).isConstant()) {
-            normalizedExpr = subExpr;
-        } else {
-            InternalReadAccessor extractor = getFieldReadAccessor( context, subDescr, pattern, values[0], null, true );
-            if (extractor == null) {
-                normalizedExpr = subExpr;
-            } else {
-                ValueType vtype = extractor.getValueType();
-                LiteralRestrictionDescr restrictionDescr = new LiteralRestrictionDescr( subDescr.getOperator(),
-                                                                                        subDescr.isNegated(),
-                                                                                        subDescr.getParameters(),
-                                                                                        values[1],
-                                                                                        LiteralRestrictionDescr.TYPE_STRING );
-                normalizedExpr = normalizeMVELLiteralExpression( vtype,
-                                                                 getFieldValue(context, vtype, restrictionDescr),
-                                                                 subExpr,
-                                                                 values[0],
-                                                                 subDescr.getOperator(),
-                                                                 values[1],
-                                                                 restrictionDescr );
-            }
+        String leftValue = findLeftExpressionValue(subDescr);
+        InternalReadAccessor extractor = getFieldReadAccessor( context, subDescr, pattern, leftValue, null, true );
+        if (extractor == null) {
+            return subExpr;
         }
-        return normalizedExpr;
+
+        ValueType vtype = extractor.getValueType();
+        String operator = subDescr.getOperator();
+
+        if (vtype == ValueType.DATE_TYPE) {
+            String rightValue = findRightExpressionValue( subDescr );
+            FieldValue fieldValue = getFieldValue(context, vtype, rightValue);
+            return fieldValue != null ? normalizeDate( fieldValue, leftValue, operator ) : subExpr;
+        }
+        if (operator.equals( "str" )) {
+            String rightValue = findRightExpressionValue( subDescr );
+            return normalizeStringOperator( leftValue, rightValue, new LiteralRestrictionDescr( operator,
+                                                                                                subDescr.isNegated(),
+                                                                                                subDescr.getParameters(),
+                                                                                                rightValue,
+                                                                                                LiteralRestrictionDescr.TYPE_STRING ) );
+        }
+        // resolve ambiguity between mvel's "empty" keyword and constraints like: List(empty == ...)
+        return normalizeEmptyKeyword( subExpr, operator );
     }
 
     protected Constraint buildRelationalExpression( final RuleBuildContext context,
@@ -982,26 +986,23 @@ public class PatternBuilder
     }
 
     private boolean findExpressionValues(RelationalExprDescr relDescr, String[] values) {
-        boolean usesThisRef;
-        //FIXME use regexp for 'this'?
-        if ( relDescr.getRight() instanceof AtomicExprDescr ) {
-            AtomicExprDescr rdescr = ((AtomicExprDescr) relDescr.getRight());
-            values[1] = rdescr.getRewrittenExpression().trim();
-            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.") || values[1].contains( ")this)." );
-        } else {
-            BindingDescr rdescr = ((BindingDescr) relDescr.getRight());
-            values[1] = rdescr.getExpression().trim();
-            usesThisRef = "this".equals( values[1] ) || values[1].startsWith("this.") || values[1].contains( ")this)." );
-        }
-        if ( relDescr.getLeft() instanceof AtomicExprDescr ) {
-            AtomicExprDescr ldescr = (AtomicExprDescr) relDescr.getLeft();
-            values[0] = ldescr.getRewrittenExpression();
-            usesThisRef = usesThisRef || "this".equals( values[0] ) || values[0].startsWith("this.") || values[0].contains( ")this)." );
-        } else {
-            values[0] = ((BindingDescr) relDescr.getLeft()).getExpression();
-            usesThisRef = usesThisRef || "this".equals( values[ 0 ] ) || values[0].startsWith( "this." ) || values[0].contains( ")this)." );
-        }
-        return usesThisRef;
+        values[0] = findLeftExpressionValue( relDescr );
+        values[1] = findRightExpressionValue(relDescr);
+
+        return "this".equals( values[1] ) || values[1].startsWith("this.") || values[1].contains( ")this)." ) ||
+               "this".equals( values[0] ) || values[0].startsWith("this.") || values[0].contains( ")this)." );
+    }
+
+    private String findLeftExpressionValue(RelationalExprDescr relDescr) {
+        return relDescr.getLeft() instanceof AtomicExprDescr ?
+               ((AtomicExprDescr) relDescr.getLeft()).getRewrittenExpression() :
+               ((BindingDescr) relDescr.getLeft()).getExpression();
+    }
+
+    private String findRightExpressionValue(RelationalExprDescr relDescr) {
+        return relDescr.getRight() instanceof AtomicExprDescr ?
+               ((AtomicExprDescr) relDescr.getRight()).getRewrittenExpression().trim() :
+               ((BindingDescr) relDescr.getRight()).getExpression().trim();
     }
 
     protected Constraint buildConstraintForPattern( final RuleBuildContext context,
@@ -1033,7 +1034,7 @@ public class PatternBuilder
         LiteralRestrictionDescr restrictionDescr = buildLiteralRestrictionDescr(context, relDescr, value2, operator, isConstant);
 
         if (restrictionDescr != null) {
-            FieldValue field = getFieldValue(context, vtype, restrictionDescr);
+            FieldValue field = getFieldValue(context, vtype, restrictionDescr.getText().trim());
             if (field != null) {
                 Constraint constraint = getConstraintBuilder( context ).buildLiteralConstraint(context, pattern, vtype, field, expr, value1, operator, value2, extractor, restrictionDescr);
                 if (constraint != null) {
@@ -1284,7 +1285,6 @@ public class PatternBuilder
                 }
             }
         }
-
     }
 
     public static class ExprBindings {
@@ -1664,12 +1664,10 @@ public class PatternBuilder
         return declaration;
     }
 
-    protected FieldValue getFieldValue(RuleBuildContext context,
-                                       ValueType vtype,
-                                       LiteralRestrictionDescr literalRestrictionDescr) {
-        FieldValue field = null;
+    private FieldValue getFieldValue( RuleBuildContext context,
+                                      ValueType vtype,
+                                      String value) {
         try {
-            String value = literalRestrictionDescr.getText().trim();
             MVEL.COMPILER_OPT_ALLOW_NAKED_METH_CALL = true;
             MVEL.COMPILER_OPT_ALLOW_OVERRIDE_ALL_PROPHANDLING = true;
             MVEL.COMPILER_OPT_ALLOW_RESOLVE_INNERCLASSES_WITH_DOTNOTATION = true;
@@ -1685,12 +1683,11 @@ public class PatternBuilder
                 vtype = ValueType.determineValueType( o.getClass() );
             }
 
-            field = context.getCompilerFactory().getFieldFactory().getFieldValue(o,
-                                                                                 vtype);
+            return context.getCompilerFactory().getFieldFactory().getFieldValue(o, vtype);
         } catch ( final Exception e ) {
             // we will fallback to regular preducates, so don't raise an error
         }
-        return field;
+        return null;
     }
 
     public static void registerReadAccessor( final RuleBuildContext context,
