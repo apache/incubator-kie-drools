@@ -32,6 +32,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Temporal;
 
 import org.jbpm.services.task.utils.CollectionUtils;
@@ -103,10 +104,12 @@ public class TaskDataImpl implements InternalTaskData {
 
     @OneToMany(cascade = CascadeType.ALL, targetEntity=CommentImpl.class)
     @JoinColumn(name = "TaskData_Comments_Id", nullable = true)
+    @OrderBy("id ASC")
     private List<Comment> comments = Collections.emptyList();
 
     @OneToMany(cascade = CascadeType.ALL, targetEntity=AttachmentImpl.class)
     @JoinColumn(name = "TaskData_Attachments_Id", nullable = true)
+    @OrderBy("id ASC")
     private List<Attachment> attachments = Collections.emptyList();
 
     public void writeExternal(ObjectOutput out) throws IOException {

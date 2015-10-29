@@ -20,7 +20,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertThat;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 import java.io.StringReader;
@@ -29,8 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.equalTo;
+
 import org.jbpm.services.task.impl.factories.TaskFactory;
 import org.junit.After;
 import org.junit.Before;
@@ -122,9 +120,8 @@ public class TaskCommentTest extends HumanTaskServicesBaseTest{
             assertEquals(2, allCommentList.size());
 
             //check id
-            for(Comment c : allCommentList) {
-                assertThat(c.getId(), anyOf(equalTo(commentId), equalTo(commentId2)));
-            }
+            assertEquals(commentId, allCommentList.get(0).getId());
+            assertEquals(commentId2, allCommentList.get(1).getId());
 
             taskService.deleteComment(taskSum.getId(), commentId2);
             assertFalse(taskService.getAllCommentsByTaskId(taskSum.getId()).isEmpty());
