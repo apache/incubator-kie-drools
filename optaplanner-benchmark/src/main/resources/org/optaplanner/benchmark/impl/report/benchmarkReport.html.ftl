@@ -232,6 +232,13 @@
                             <div class="tab-pane active" id="summary_bestScoreDistribution">
                                 <h3>Best score distribution summary</h3>
                                 <p>Useful for visualizing the reliability of each solver configuration.</p>
+                                <#assign maximumSubSingleCount = benchmarkReport.plannerBenchmarkResult.getMaximumSubSingleCount()>
+                                <p>Maximum subSingle count: ${maximumSubSingleCount!""}<br/></p>
+                                <#if maximumSubSingleCount lte 1>
+                                    <div class="alert alert-error">
+                                        <p>The benchmarker did not run multiple subSingles, so there is no distribution and therefore no reliability indication.</p>
+                                    </div>
+                                </#if>
                                 <@addScoreLevelChartList chartFileList=benchmarkReport.bestScoreDistributionSummaryChartFileList idPrefix="summary_bestScoreDistribution" />
                             </div>
                             <div class="tab-pane" id="summary_winningScoreDifference">

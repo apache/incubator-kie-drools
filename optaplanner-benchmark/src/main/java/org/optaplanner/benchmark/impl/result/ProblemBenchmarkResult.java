@@ -226,10 +226,6 @@ public class ProblemBenchmarkResult {
         return false;
     }
 
-    public boolean isMaximumSubSingleCountMultiple() {
-        return maximumSubSingleCount != null ? maximumSubSingleCount > 1 : false;
-    }
-
     public Collection<SingleStatisticType> extractSingleStatisticTypeList() {
         Set<SingleStatisticType> singleStatisticTypeSet = new LinkedHashSet<SingleStatisticType>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {

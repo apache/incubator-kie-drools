@@ -217,6 +217,17 @@ public class PlannerBenchmarkResult {
         return failureCount > 0;
     }
 
+    public int getMaximumSubSingleCount() {
+        int maximumSubSingleCount = 0;
+        for (ProblemBenchmarkResult problemBenchmarkResult : unifiedProblemBenchmarkResultList) {
+            int problemMaximumSubSingleCount = problemBenchmarkResult.getMaximumSubSingleCount();
+            if (problemMaximumSubSingleCount > maximumSubSingleCount) {
+                maximumSubSingleCount = problemMaximumSubSingleCount;
+            }
+        }
+        return maximumSubSingleCount;
+    }
+
     // ************************************************************************
     // Accumulate methods
     // ************************************************************************
