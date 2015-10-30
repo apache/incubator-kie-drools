@@ -319,7 +319,7 @@ public class SingleBenchmarkResult implements BenchmarkResult {
         }
     }
 
-    public int getTotalSubSingleCount() {
+    public int getSubSingleCount() {
         return subSingleBenchmarkResultList.size();
     }
 

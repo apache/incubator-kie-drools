@@ -89,6 +89,7 @@ public class BenchmarkReport {
     private File summaryDirectory = null;
     private List<File> bestScoreSummaryChartFileList = null;
     private List<File> bestScoreScalabilitySummaryChartFileList = null;
+    private List<File> bestScoreDistributionSummaryChartFileList = null;
     private List<File> winningScoreDifferenceSummaryChartFileList = null;
     private List<File> worstScoreDifferencePercentageSummaryChartFileList = null;
     private File averageCalculateCountSummaryChartFile = null;
@@ -144,6 +145,10 @@ public class BenchmarkReport {
 
     public List<File> getBestScoreScalabilitySummaryChartFileList() {
         return bestScoreScalabilitySummaryChartFileList;
+    }
+
+    public List<File> getBestScoreDistributionSummaryChartFileList() {
+        return bestScoreDistributionSummaryChartFileList;
     }
 
     public List<File> getWinningScoreDifferenceSummaryChartFileList() {
@@ -233,10 +238,11 @@ public class BenchmarkReport {
         summaryDirectory.mkdir();
         plannerBenchmarkResult.accumulateResults(this);
         fillWarningList();
-        writeBestScoreSummaryCharts();
+        writeBestScoreSummaryChart();
         writeBestScoreScalabilitySummaryChart();
         writeWinningScoreDifferenceSummaryChart();
         writeWorstScoreDifferencePercentageSummaryChart();
+        writeBestScoreDistributionSummaryChart();
         writeAverageCalculateCountPerSecondSummaryChart();
         writeTimeSpentSummaryChart();
         writeTimeSpentScalabilitySummaryChart();
@@ -313,7 +319,7 @@ public class BenchmarkReport {
         }
     }
 
-    private void writeBestScoreSummaryCharts() {
+    private void writeBestScoreSummaryChart() {
         // Each scoreLevel has it's own dataset and chartFile
         List<DefaultCategoryDataset> datasetList = new ArrayList<DefaultCategoryDataset>(CHARTED_SCORE_LEVEL_SIZE);
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
@@ -380,6 +386,48 @@ public class BenchmarkReport {
                     JFreeChart.DEFAULT_TITLE_FONT, plot, true);
             bestScoreScalabilitySummaryChartFileList.add(
                     writeChartToImageFile(chart, "bestScoreScalabilitySummaryLevel" + scoreLevelIndex));
+            scoreLevelIndex++;
+        }
+    }
+
+    private void writeBestScoreDistributionSummaryChart() {
+        // Each scoreLevel has it's own dataset and chartFile
+        List<DefaultBoxAndWhiskerCategoryDataset> datasetList = new ArrayList<DefaultBoxAndWhiskerCategoryDataset>(CHARTED_SCORE_LEVEL_SIZE);
+        for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
+            String solverLabel = solverBenchmarkResult.getNameWithFavoriteSuffix();
+            for (SingleBenchmarkResult singleBenchmarkResult : solverBenchmarkResult.getSingleBenchmarkResultList()) {
+                String planningProblemLabel = singleBenchmarkResult.getProblemBenchmarkResult().getName();
+                if (singleBenchmarkResult.hasAllSuccess()) {
+                    List<List<Double>> distributionLevelList = new ArrayList<List<Double>>(CHARTED_SCORE_LEVEL_SIZE);
+                    for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
+                        double[] levelValues = ScoreUtils.extractLevelDoubles(subSingleBenchmarkResult.getAverageScore());
+                        for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
+                            if (i >= distributionLevelList.size()) {
+                                distributionLevelList.add(new ArrayList<Double>(singleBenchmarkResult.getSubSingleCount()));
+                            }
+                            distributionLevelList.get(i).add(levelValues[i]);
+                        }
+                    }
+                    for (int i = 0; i < distributionLevelList.size() && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
+                        if (i >= datasetList.size()) {
+                            datasetList.add(new DefaultBoxAndWhiskerCategoryDataset());
+                        }
+                        datasetList.get(i).add(
+                                distributionLevelList.get(i),
+                                solverLabel,
+                                planningProblemLabel);
+                    }
+                }
+            }
+        }
+        bestScoreDistributionSummaryChartFileList = new ArrayList<File>(datasetList.size());
+        int scoreLevelIndex = 0;
+        for (DefaultBoxAndWhiskerCategoryDataset dataset : datasetList) {
+            CategoryPlot plot = createBoxAndWhiskerChartPlot(dataset,
+                    "Score level " + scoreLevelIndex, NumberFormat.getInstance(locale));
+            JFreeChart chart = new JFreeChart("Best score distribution level " + scoreLevelIndex + " summary (higher is better)",
+                    JFreeChart.DEFAULT_TITLE_FONT, plot, true);
+            bestScoreDistributionSummaryChartFileList.add(writeChartToImageFile(chart, "bestScoreDistributionSummaryLevel" + scoreLevelIndex));
             scoreLevelIndex++;
         }
     }
@@ -552,6 +600,7 @@ public class BenchmarkReport {
         }
     }
 
+    @Deprecated
     private void writeSubSingleBenchmarkScoreCharts() {
         subSingleBenchmarkAggregationChartFileMap = new HashMap<ProblemBenchmarkResult, List<File>>();
         CategoryAxis xAxis = new CategoryAxis("Solver Configurations");
@@ -585,6 +634,7 @@ public class BenchmarkReport {
         }
     }
 
+    @Deprecated
     private List<? extends BoxAndWhiskerCategoryDataset> generateSubSingleBenchmarkScoreSummary(ProblemBenchmarkResult problemBenchmarkResult) {
         List<DefaultBoxAndWhiskerCategoryDataset> datasetList = new ArrayList<DefaultBoxAndWhiskerCategoryDataset>(CHARTED_SCORE_LEVEL_SIZE);
         for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
@@ -694,6 +744,21 @@ public class BenchmarkReport {
                 1.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 1.0f, new float[] {2.0f, 6.0f}, 0.0f
         ));
         return renderer;
+    }
+
+    private CategoryPlot createBoxAndWhiskerChartPlot(DefaultBoxAndWhiskerCategoryDataset dataset,
+            String yAxisLabel, NumberFormat yAxisNumberFormat) {
+        CategoryAxis xAxis = new CategoryAxis("Data");
+        NumberAxis yAxis = new NumberAxis(yAxisLabel);
+        yAxis.setNumberFormatOverride(yAxisNumberFormat);
+        BoxAndWhiskerRenderer renderer = new BoxAndWhiskerRenderer();
+        renderer.setItemMargin(0.10);
+        renderer.setMeanVisible(false);
+        // Improve readability by avoiding low contrast with light colors
+        renderer.setUseOutlinePaintForWhiskers(true);
+        CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis, renderer);
+        plot.setOrientation(PlotOrientation.VERTICAL);
+        return plot;
     }
 
     private File writeChartToImageFile(JFreeChart chart, String fileNameBase) {

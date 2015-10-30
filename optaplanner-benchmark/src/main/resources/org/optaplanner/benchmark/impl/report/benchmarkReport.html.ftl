@@ -147,6 +147,9 @@
                                 <a href="#summary_bestScoreScalability" data-toggle="tab">Best score scalability</a>
                             </li>
                             <li>
+                                <a href="#summary_bestScoreDistribution" data-toggle="tab">Best score distribution</a>
+                            </li>
+                            <li>
                                 <a href="#summary_winningScoreDifference" data-toggle="tab">Winning score difference</a>
                             </li>
                             <li>
@@ -225,6 +228,11 @@
                                 <h3>Best score scalability summary</h3>
                                 <p>Useful for visualizing the scalability of each solver configuration.</p>
                                 <@addScoreLevelChartList chartFileList=benchmarkReport.bestScoreScalabilitySummaryChartFileList idPrefix="summary_bestScoreScalability" />
+                            </div>
+                            <div class="tab-pane active" id="summary_bestScoreDistribution">
+                                <h3>Best score distribution summary</h3>
+                                <p>Useful for visualizing the reliability of each solver configuration.</p>
+                                <@addScoreLevelChartList chartFileList=benchmarkReport.bestScoreDistributionSummaryChartFileList idPrefix="summary_bestScoreDistribution" />
                             </div>
                             <div class="tab-pane" id="summary_winningScoreDifference">
                                 <h3>Winning score difference summary</h3>
@@ -310,6 +318,9 @@
                             </li>
                             <li>
                                 <a href="#summary_bestScoreScalability" data-toggle="tab">Best score scalability</a>
+                            </li>
+                            <li>
+                                <a href="#summary_bestScoreDistribution" data-toggle="tab">Best score distribution</a>
                             </li>
                             <li>
                                 <a href="#summary_winningScoreDifference" data-toggle="tab">Winning score difference</a>

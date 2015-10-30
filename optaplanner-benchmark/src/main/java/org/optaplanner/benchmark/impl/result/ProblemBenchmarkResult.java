@@ -276,7 +276,7 @@ public class ProblemBenchmarkResult {
     public int getTotalSubSingleCount() {
         int totalSubSingleCount = 0;
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            totalSubSingleCount += singleBenchmarkResult.getTotalSubSingleCount();
+            totalSubSingleCount += singleBenchmarkResult.getSubSingleCount();
         }
         return totalSubSingleCount;
     }
