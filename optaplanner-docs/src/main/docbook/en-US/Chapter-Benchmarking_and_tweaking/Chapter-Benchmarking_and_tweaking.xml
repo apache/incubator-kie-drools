@@ -132,12 +132,11 @@
         <title>Inherited solver benchmark</title>
 
         <para>To lower verbosity, the common parts of multiple <literal>&lt;solverBenchmark&gt;</literal> elements are
-          extracted to the <literal>&lt;inheritedSolverBenchmark&gt;</literal> element. Every property can still be
-          overwritten per <literal>&lt;solverBenchmark&gt;</literal> element. Note that inherited solver phases such as
-          <literal>&lt;constructionHeuristic&gt;</literal> or <literal>&lt;localSearch&gt;</literal> are not overwritten but
-          instead are added to the tail of the solver phases list.</para>
+        extracted to the <literal>&lt;inheritedSolverBenchmark&gt;</literal> element. Every property can still be
+        overwritten per <literal>&lt;solverBenchmark&gt;</literal> element. Note that inherited solver phases such as
+        <literal>&lt;constructionHeuristic&gt;</literal> or <literal>&lt;localSearch&gt;</literal> are not overwritten
+        but instead are added to the tail of the solver phases list.</para>
       </section>
-
     </section>
 
     <section xml:id="solutionFileIO">
@@ -479,7 +478,7 @@
 
         <mediaobject>
           <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/summaryStatistic.png"/>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestScoreSummary.png"/>
           </imageobject>
         </mediaobject>
       </figure>
@@ -497,6 +496,27 @@
         signature returns ValueRange (instead of <literal>CountableValueRange</literal> or
         <literal>Collection</literal>).</para>
       </note>
+    </section>
+
+    <section xml:id="benchmarkReportBestScoreDistributionSummary">
+      <title>Best Score Distribution Summary (Graph)</title>
+
+      <para>Shows the best score distribution per <literal>inputSolutionFile</literal> for each solver
+      configuration.</para>
+
+      <para>Useful for visualizing the reliability of each solver configuration.</para>
+
+      <figure>
+        <title>Best Score Distribution Summary Statistic</title>
+
+        <mediaobject>
+          <imageobject>
+            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestScoreDistributionSummary.png"/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+
+      <para>Enable <link linkend="statisticalBenchmarking">statistical benchmarking</link> to use this summary.</para>
     </section>
 
     <section xml:id="benchmarkReportWinningScoreDifferenceSummary">
@@ -982,24 +1002,14 @@
     <section xml:id="statisticalBenchmarking">
       <title>Statistical Benchmarking</title>
 
-      <para>If you want to minimize the influence of your environment on the benchmark results, you
-        can configure the number of times each single benchmark run is repeated. The results of
-        those runs will get statistically aggregated and are even visible in the report
-        individually.</para>
+      <para>To minimize the influence of your environment and the Random Number Generator on the benchmark results,
+      configure the number of times each single benchmark run is repeated. The results of those runs are statistically
+      aggregated. Each individual result is also visible in the report, as well as plotted in <link
+      linkend="benchmarkReportBestScoreDistributionSummary">the best score distribution summary</link>.</para>
 
-      <figure>
-        <title>Sub Single Benchmark Summary Statistic</title>
-
-        <mediaobject>
-          <imageobject>
-            <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/subSingleBenchmarkSummaryStatistic.png"/>
-          </imageobject>
-        </mediaobject>
-      </figure>
-
-      <para>To configure this in your benchmarks, add a <literal>&lt;subSingleCount&gt;</literal> element to an
-        <link linkend="inheritedSolverBenchmark"><literal>&lt;inheritedSolverBenchmark&gt;</literal></link>
-        element:</para>
+      <para>Just add a <literal>&lt;subSingleCount&gt;</literal> element to an <link
+      linkend="inheritedSolverBenchmark"><literal>&lt;inheritedSolverBenchmark&gt;</literal></link> element or in
+      <literal>&lt;solverBenchmark&gt;</literal> element:</para>
 
       <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;plannerBenchmark&gt;
@@ -1007,6 +1017,7 @@
   &lt;inheritedSolverBenchmark&gt;
     ...
     &lt;solver&gt;
+      &lt;environmentMode&gt;PRODUCTION&lt;/environmentMode&gt;
       ...
     &lt;/solver&gt;
     &lt;subSingleCount&gt;10&lt;subSingleCount&gt;
@@ -1014,11 +1025,15 @@
   ...
 &lt;/plannerBenchmark&gt;</programlisting>
 
-      <para>You can also configure <literal>subSingleCount</literal> in the individual
-        <literal>&lt;solverBenchmark&gt;</literal> elements. This will override the configuration in the
-        <literal>&lt;inheritedSolverBenchmark&gt;</literal> element. <literal>subSingleCount</literal> is by default
-        set to 1.
-      </para>
+      <para>The <literal>subSingleCount</literal> defaults to <literal>1</literal> (so no statistical
+      benchmarking).</para>
+
+      <note>
+        <para>By default, Planner will always use the same <literal>Random</literal> seed because it defaults to <link
+        linkend="environmentMode">EnvironmentMode</link> <literal>REPRODUCIBLE</literal>. Use <link
+        linkend="environmentMode">EnvironmentMode</link> <literal>PRODUCTION</literal> instead to use a different
+        <literal>Random</literal> seed for each sub single run.</para>
+      </note>
     </section>
 
     <section xml:id="templateBasedBenchmarking">
