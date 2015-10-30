@@ -96,7 +96,6 @@ public class BenchmarkReport {
     private File timeSpentSummaryChartFile = null;
     private File timeSpentScalabilitySummaryChartFile = null;
     private List<File> bestScorePerTimeSpentSummaryChartFileList = null;
-    private Map<ProblemBenchmarkResult, List<File>> subSingleBenchmarkAggregationChartFileMap = null;
 
     private Integer defaultShownScoreLevelIndex = null;
     private List<String> warningList = null;
@@ -175,10 +174,6 @@ public class BenchmarkReport {
         return bestScorePerTimeSpentSummaryChartFileList;
     }
 
-    public Map<ProblemBenchmarkResult, List<File>> getSubSingleBenchmarkAggregationChartFileMap() {
-        return subSingleBenchmarkAggregationChartFileMap;
-    }
-
     public Integer getDefaultShownScoreLevelIndex() {
         return defaultShownScoreLevelIndex;
     }
@@ -219,15 +214,6 @@ public class BenchmarkReport {
         return solverRankingClass == null ? null : solverRankingClass.getName();
     }
 
-    /**
-     * Needed for the Freemarker Template Language.
-     * @param problemBenchmarkResult the problem benchmark result for which we get the chart files from the map
-     * @return see {@link Map#get(Object)}
-     */
-    public List<File> getSubSingleBenchmarkAggregationChartFileMapEntry(ProblemBenchmarkResult problemBenchmarkResult) {
-        return subSingleBenchmarkAggregationChartFileMap.get(problemBenchmarkResult);
-    }
-
     // ************************************************************************
     // Write methods
     // ************************************************************************
@@ -247,7 +233,6 @@ public class BenchmarkReport {
         writeTimeSpentSummaryChart();
         writeTimeSpentScalabilitySummaryChart();
         writeBestScorePerTimeSpentSummaryChart();
-        writeSubSingleBenchmarkScoreCharts();
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
             for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
@@ -598,67 +583,6 @@ public class BenchmarkReport {
                     writeChartToImageFile(chart, "bestScorePerTimeSpentSummaryLevel" + scoreLevelIndex));
             scoreLevelIndex++;
         }
-    }
-
-    @Deprecated
-    private void writeSubSingleBenchmarkScoreCharts() {
-        subSingleBenchmarkAggregationChartFileMap = new HashMap<ProblemBenchmarkResult, List<File>>();
-        CategoryAxis xAxis = new CategoryAxis("Solver Configurations");
-        NumberAxis yAxis = new NumberAxis("Scores distribution of single benchmark runs");
-        yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-        yAxis.setAutoRangeIncludesZero(false);
-        BoxAndWhiskerRenderer renderer = new BoxAndWhiskerRenderer(){
-            @Override
-            public int getRowCount() { // TODO: HACK for https://issues.jboss.org/browse/PLANNER-429 center plotted boxes to x axis labels
-                return 1;
-            }
-        };
-        renderer.setFillBox(true);
-        renderer.setUseOutlinePaintForWhiskers(true);
-        renderer.setMedianVisible(true);
-        renderer.setMeanVisible(false);
-        renderer.setItemMargin(0.0);
-
-        for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
-            List<? extends BoxAndWhiskerCategoryDataset> datasetList = generateSubSingleBenchmarkScoreSummary(problemBenchmarkResult);
-            List<File> chartFileList = new ArrayList<File>(datasetList.size());
-            int scoreLevelIndex = 0;
-            for (BoxAndWhiskerCategoryDataset dataset : datasetList) {
-                CategoryPlot plot = new CategoryPlot(dataset, xAxis, yAxis, renderer);
-                plot.setOrientation(PlotOrientation.VERTICAL);
-                JFreeChart chart = new JFreeChart(problemBenchmarkResult + " (level " + scoreLevelIndex + ") single benchmark runs score distribution", JFreeChart.DEFAULT_TITLE_FONT, plot, true);
-                chartFileList.add(writeChartToImageFile(chart, "SubSingleSummary" + problemBenchmarkResult.getAnchorId() + "Level" + scoreLevelIndex));
-                scoreLevelIndex++;
-            }
-            subSingleBenchmarkAggregationChartFileMap.put(problemBenchmarkResult, chartFileList);
-        }
-    }
-
-    @Deprecated
-    private List<? extends BoxAndWhiskerCategoryDataset> generateSubSingleBenchmarkScoreSummary(ProblemBenchmarkResult problemBenchmarkResult) {
-        List<DefaultBoxAndWhiskerCategoryDataset> datasetList = new ArrayList<DefaultBoxAndWhiskerCategoryDataset>(CHARTED_SCORE_LEVEL_SIZE);
-        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
-            List<List<Double>> valueListList = new ArrayList<List<Double>>(CHARTED_SCORE_LEVEL_SIZE);
-            for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                if (subSingleBenchmarkResult.hasAllSuccess() && subSingleBenchmarkResult.isInitialized()) {
-                    double[] levelValues = ScoreUtils.extractLevelDoubles(subSingleBenchmarkResult.getAverageScore());
-                    for (int i = 0; i < levelValues.length && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
-                        if (i >= valueListList.size()) {
-                            valueListList.add(new ArrayList<Double>(singleBenchmarkResult.getSuccessCount()));
-                        }
-                        valueListList.get(i).add(levelValues[i]);
-                    }
-                }
-            }
-            for (int i = 0; i < valueListList.size() && i < CHARTED_SCORE_LEVEL_SIZE; i++) {
-                if (i >= datasetList.size()) {
-                    datasetList.add(new DefaultBoxAndWhiskerCategoryDataset());
-                }
-                SolverBenchmarkResult solverBenchmarkResult = singleBenchmarkResult.getSolverBenchmarkResult();
-                datasetList.get(i).add(valueListList.get(i), solverBenchmarkResult.getName(), solverBenchmarkResult + " - " + solverBenchmarkResult.getSubSingleCount() + " run(s)");
-            }
-        }
-        return datasetList;
     }
 
     // ************************************************************************
