@@ -54,6 +54,7 @@ public class MavenProjectLoader {
         try {
             return mavenEmbedder.readProject( pomStream );
         } catch (Exception e) {
+            log.error("Unable to create MavenProject from InputStream", e);
             throw new RuntimeException(e);
         }
     }
@@ -64,7 +65,7 @@ public class MavenProjectLoader {
             try {
                 mavenEmbedder = new MavenEmbedder( mavenRequest );
             } catch (MavenEmbedderException e) {
-                e.printStackTrace();
+                log.error("Unable to create new MavenEmbedder", e);
                 throw new RuntimeException(e);
             }
         return mavenEmbedder;

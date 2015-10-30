@@ -44,6 +44,7 @@ import org.codehaus.plexus.logging.Logger;
 import org.codehaus.plexus.util.Os;
 import org.eclipse.aether.RepositorySystemSession;
 import org.kie.scanner.MavenRepositoryConfiguration;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +56,10 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+
 public class MavenEmbedder {
+
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(MavenEmbedder.class);
 
     public static final File DEFAULT_GLOBAL_SETTINGS_FILE =
             new File( System.getProperty( "maven.home", System.getProperty( "user.dir", "" ) ), "conf/settings.xml" );
@@ -91,8 +95,10 @@ public class MavenEmbedder {
 
             componentProvider.lookup( LegacySupport.class ).setSession( mavenSession );
         } catch ( MavenEmbedderException e ) {
+            log.error( "Unable to build MavenEmbedder", e );
             throw new MavenEmbedderException( e.getMessage(), e );
         } catch ( ComponentLookupException e ) {
+            log.error( "Unable to build MavenEmbedder", e );
             throw new MavenEmbedderException( e.getMessage(), e );
         }
     }
