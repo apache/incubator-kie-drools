@@ -20,7 +20,7 @@
     <maven.jdbc.username>jbpm</maven.jdbc.username>
     <maven.jdbc.password>jbpm</maven.jdbc.password>
     <maven.jdbc.url>jdbc:oracle:thin:@localhost:1521/jbpm</maven.jdbc.url>
-    <maven.jdbc.db.server>db04.mw.lab.eng.bos.redhat.com</maven.jdbc.db.server>
+    <maven.jdbc.db.server>localhost</maven.jdbc.db.server>
     <maven.jdbc.db.port>1521</maven.jdbc.db.port>
     <maven.jdbc.schema>jbpm</maven.jdbc.schema>
      -->
