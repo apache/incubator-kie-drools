@@ -1,6 +1,6 @@
 image:https://jenkins-kieci.rhcloud.com/buildStatus/icon?job=optaplanner["Build Status", link="https://jenkins-kieci.rhcloud.com/job/optaplanner"]
 
-== Developing Drools and jBPM
+== Developing Drools, OptaPlanner and jBPM
 
 *If you want to build or contribute to a droolsjbpm project, https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/README.md[read this document].*
 
