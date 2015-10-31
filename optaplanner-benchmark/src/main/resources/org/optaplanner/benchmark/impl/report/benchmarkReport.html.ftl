@@ -229,7 +229,7 @@
                                 <p>Useful for visualizing the scalability of each solver configuration.</p>
                                 <@addScoreLevelChartList chartFileList=benchmarkReport.bestScoreScalabilitySummaryChartFileList idPrefix="summary_bestScoreScalability" />
                             </div>
-                            <div class="tab-pane active" id="summary_bestScoreDistribution">
+                            <div class="tab-pane" id="summary_bestScoreDistribution">
                                 <h3>Best score distribution summary</h3>
                                 <p>Useful for visualizing the reliability of each solver configuration.</p>
                                 <#assign maximumSubSingleCount = benchmarkReport.plannerBenchmarkResult.getMaximumSubSingleCount()>
