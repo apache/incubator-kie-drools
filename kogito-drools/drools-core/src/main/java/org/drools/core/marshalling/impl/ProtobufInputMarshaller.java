@@ -244,6 +244,9 @@ public class ProtobufInputMarshaller {
                              _ep,
                              ((InternalWorkingMemoryEntryPoint) wmep).getObjectStore(),
                              pctxs );
+
+            context.filter.fireRNEAs( context.wm );
+
             readTruthMaintenanceSystem( context,
                                         wmep,
                                         _ep,
@@ -611,6 +614,7 @@ public class ProtobufInputMarshaller {
             }
             tms.put( key );
 
+            context.filter.fireRNEAs( context.wm );
             readBeliefSet( context, tms, key, _key );
         }
 

@@ -33,7 +33,6 @@ import org.drools.core.common.SingleNonIndexSkipBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
 import org.drools.core.common.TripleNonIndexSkipBetaConstraints;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -291,16 +290,7 @@ public abstract class BetaNode extends LeftTupleSource
             memory.setNodeDirty( wm, !rightInputIsPassive );
         }
 
-        if (flushLeftTupleIfNecessary(wm, memory.getSegmentMemory(), null, isStreamMode())) {
-            return;
-        }
-
-        if( pctx.getReaderContext() != null ) {
-            // we are deserializing a session, so we might need to evaluate
-            // rule activations immediately
-            MarshallerReaderContext mrc = pctx.getReaderContext();
-            mrc.filter.fireRNEAs( wm );
-        }
+        flushLeftTupleIfNecessary(wm, memory.getSegmentMemory(), null, isStreamMode());
     }
 
     public void modifyObject(InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory wm) {

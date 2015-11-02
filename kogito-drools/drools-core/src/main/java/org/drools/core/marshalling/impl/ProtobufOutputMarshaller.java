@@ -375,7 +375,7 @@ public class ProtobufOutputMarshaller {
                     }
                     case NodeTypeEnums.RightInputAdaterNode : {
 
-                        _node = writeRIANodeMemory( i, context, context.sinks.get(i), memories, memory );
+                        _node = writeRIANodeMemory( i, context.sinks.get(i), memories );
                         break;
                     }
                     case NodeTypeEnums.FromNode : {
@@ -429,10 +429,8 @@ public class ProtobufOutputMarshaller {
     }
 
     private static ProtobufMessages.NodeMemory writeRIANodeMemory(final int nodeId,
-                                                                  final MarshallerWriteContext context, 
                                                                   final BaseNode node,
-                                                                  final NodeMemories memories,
-                                                                  final Memory memory) {
+                                                                  final NodeMemories memories) {
         RightInputAdapterNode riaNode = (RightInputAdapterNode) node;
 
         ObjectSink[] sinks = riaNode.getSinkPropagator().getSinks();

@@ -5645,4 +5645,160 @@ public class CepEspTest extends CommonTestMethodBase {
         assertTrue( handle1.isExpired() );
         assertFalse( ksession.getFactHandles().contains( handle1 ) );
     }
+
+    @Test
+    public void testSerializationWithWindowLength() throws Exception {
+        // DROOLS-953
+        String drl =
+                "import " + StockTick.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "declare StockTick\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule ReportLastEvent when\n" +
+                "    $e : StockTick() over window:length(1)\n" +
+                "then\n" +
+                "    list.add($e.getCompany());\n" +
+                "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new StockTick( 1, "ACME", 50 ) );
+        ksession.insert( new StockTick( 2, "DROO", 50 ) );
+        ksession.insert( new StockTick( 3, "JBPM", 50 ) );
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("JBPM", list.get(0));
+
+        try {
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true, false );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
+
+        list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        System.out.println(list);
+        assertEquals(0, list.size());
+    }
+
+    @Test
+    public void testSerializationWithWindowLengthAndLiaSharing() throws Exception {
+        // DROOLS-953
+        String drl =
+                "import " + StockTick.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "declare StockTick\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule ReportLastEvent when\n" +
+                "    $e : StockTick() over window:length(1)\n" +
+                "then\n" +
+                "    list.add($e.getCompany());\n" +
+                "end\n" +
+                "\n" +
+                "rule ReportEventInserted when\n" +
+                "   $e : StockTick()\n" +
+                "then\n" +
+                "   System.out.println(\"Event Insert : \" + $e);\n" +
+                "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new StockTick( 1, "ACME", 50 ) );
+        ksession.insert( new StockTick( 2, "DROO", 50 ) );
+        ksession.insert( new StockTick( 3, "JBPM", 50 ) );
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("JBPM", list.get(0));
+
+        try {
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true, false );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
+
+        list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        System.out.println(list);
+        assertEquals(0, list.size());
+    }
+
+    @Test
+    public void testSerializationBeforeFireWithWindowLength() throws Exception {
+        // DROOLS-953
+        String drl =
+                "import " + StockTick.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "declare StockTick\n" +
+                "    @role( event )\n" +
+                "end\n" +
+                "\n" +
+                "rule ReportLastEvent when\n" +
+                "    $e : StockTick() over window:length(1)\n" +
+                "then\n" +
+                "    list.add($e.getCompany());\n" +
+                "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new StockTick( 1, "ACME", 50 ) );
+        ksession.insert( new StockTick( 2, "DROO", 50 ) );
+        ksession.insert( new StockTick( 3, "JBPM", 50 ) );
+
+        try {
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true, false );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
+
+        list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        System.out.println(list);
+        assertEquals(1, list.size());
+        assertEquals("JBPM", list.get(0));
+    }
 }
