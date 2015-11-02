@@ -743,7 +743,9 @@ public class PatternBuilder
     }
 
     private boolean isXPathDescr(BaseDescr descr) {
-        return descr instanceof ExpressionDescr && ((ExpressionDescr)descr).getExpression().startsWith("/");
+        return descr instanceof ExpressionDescr &&
+               ( ((ExpressionDescr)descr).getExpression().startsWith("/") ||
+                 ((ExpressionDescr)descr).getExpression().startsWith("?/") );
     }
 
     private Constraint buildXPathDescr( RuleBuildContext context,
@@ -755,11 +757,11 @@ public class PatternBuilder
         String expression = ((ExpressionDescr)descr).getExpression();
         XpathAnalysis xpathAnalysis = XpathAnalysis.analyze(expression);
 
-        if (xpathAnalysis == null) {
+        if (xpathAnalysis.hasError()) {
             context.addError(new DescrBuildError(context.getParentDescr(),
                                                  descr,
                                                  null,
-                                                 "Invalid xpath expression '" + expression + "'"));
+                                                 "Invalid xpath expression '" + expression + "': " + xpathAnalysis.getError()));
             return null;
         }
 
@@ -777,7 +779,7 @@ public class PatternBuilder
 
         try {
             for ( XpathAnalysis.XpathPart part : xpathAnalysis ) {
-                XpathConstraint.XpathChunk xpathChunk = xpathConstraint.addChunck( patternClass, part.getField(), part.getIndex(), part.isIterate() );
+                XpathConstraint.XpathChunk xpathChunk = xpathConstraint.addChunck( patternClass, part.getField(), part.getIndex(), part.isIterate(), part.isLazy() );
 
                 if ( xpathChunk == null ) {
                     context.addError( new DescrBuildError( context.getParentDescr(),
