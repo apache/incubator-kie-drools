@@ -25,10 +25,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
+import org.drools.core.QueryResultsImpl;
 import org.drools.core.command.IdentifiableResult;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
+import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.kie.internal.command.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
@@ -43,13 +45,13 @@ public class QueryCommand  implements GenericCommand<QueryResults>, Identifiable
     private String outIdentifier;
     @XmlAttribute(required = true)
     private String name;
-    
+
     @XmlElement
     private List<Object> arguments;
 
     public QueryCommand() {
     }
-    
+
     public QueryCommand(String outIdentifier, String name, Object... arguments) {
         this.outIdentifier = outIdentifier;
         this.name = name;
@@ -59,7 +61,7 @@ public class QueryCommand  implements GenericCommand<QueryResults>, Identifiable
             this.arguments = Collections.EMPTY_LIST;
         }
     }
-    
+
     public String getOutIdentifier() {
         return outIdentifier;
     }
@@ -89,11 +91,11 @@ public class QueryCommand  implements GenericCommand<QueryResults>, Identifiable
 
     public QueryResults execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        
+
         if ( this.arguments == null || this.arguments.isEmpty() ) {
             this.arguments = Collections.emptyList();
         }
-        
+
         for (int j = 0; j < arguments.size(); j++) {
             if (arguments.get(j) instanceof Variable) {
                 arguments.set(j, Variable.v);
@@ -101,11 +103,11 @@ public class QueryCommand  implements GenericCommand<QueryResults>, Identifiable
         }
 
         QueryResults results = ksession.getQueryResults( name, this.arguments.toArray() );
-        
+
         if ( this.outIdentifier != null ) {
             if(((StatefulKnowledgeSessionImpl)ksession).getExecutionResult() != null){
-                ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult().getResults().put( this.outIdentifier, results );
-            }    
+                ((StatefulKnowledgeSessionImpl)ksession).getExecutionResult().getResults().put( this.outIdentifier, new FlatQueryResults((QueryResultsImpl) results) );
+            }
         }
 
         return results;
