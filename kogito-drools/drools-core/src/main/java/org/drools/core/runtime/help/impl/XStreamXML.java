@@ -51,6 +51,7 @@ import org.drools.core.command.runtime.rule.QueryCommand;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.rule.Declaration;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
+import org.drools.core.runtime.rule.impl.FlatQueryResultRow;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
 import org.kie.api.command.Command;
@@ -65,6 +66,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -950,7 +952,7 @@ public class XStreamXML {
 
             // write out identifiers
             List<String> originalIds = Arrays.asList( results.getIdentifiers() );
-            List<String> actualIds = new ArrayList();
+            Set<String> actualIds = new HashSet<String>();
             if ( results instanceof QueryResultsImpl) {
                 for ( String identifier : originalIds ) {
                     // we don't want to marshall the query parameters
@@ -962,6 +964,16 @@ public class XStreamXML {
                         }
                     }
                     actualIds.add( identifier );
+                }
+            } else if( results instanceof FlatQueryResults ) {
+                for( String identifier : results.getIdentifiers() ) {
+                    for( QueryResultsRow row : ((FlatQueryResults) results) ) {
+                       Object rowObj = row.get(identifier);
+                       if( rowObj != null && rowObj instanceof DroolsQuery ) {
+                          continue;
+                       }
+                       actualIds.add( identifier );
+                    }
                 }
             }
 
