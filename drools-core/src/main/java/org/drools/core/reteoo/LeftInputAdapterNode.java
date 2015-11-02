@@ -25,7 +25,6 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.UpdateContext;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.ObjectTypeNode.Id;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -218,13 +217,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
                 // link without notify, when driven by a query, as we don't want it, placed on the agenda
                 lm.linkNodeWithoutRuleNotify();
             }
-        }
-
-        if( context.getReaderContext() != null /*&& sm != null*/ ) {
-            // we are deserializing a session, so we might need to evaluate
-            // rule activations immediately
-            MarshallerReaderContext mrc = context.getReaderContext();
-            mrc.filter.fireRNEAs( wm );
         }
     }
 
