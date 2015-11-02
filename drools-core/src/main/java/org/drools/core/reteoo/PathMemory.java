@@ -126,7 +126,14 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
             log.trace("    UnlinkRule name={}", rtn.getRule().getName());
         }
 
-        queueRuleAgendaItem(wm);
+        agendaItem.getRuleExecutor().setDirty(true);
+        if ( !agendaItem.isQueued() ) {
+            if ( isLogTraceEnabled ) {
+                log.trace("Queue RuleAgendaItem {}", agendaItem);
+            }
+            InternalAgendaGroup ag = agendaItem.getAgendaGroup();
+            ag.add( agendaItem );
+        }
     }
 
     public void queueRuleAgendaItem(InternalWorkingMemory wm) {

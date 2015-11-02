@@ -261,7 +261,7 @@ public class Misc2Test extends CommonTestMethodBase {
 
         KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL ).build();
         KieBase kbase2 = SerializationHelper.serializeObject( kbase1, ( (InternalKnowledgeBase) kbase1 ).getRootClassLoader() );
-        assertTrue( ReteComparator.areEqual(kbase1, kbase2) );
+        assertTrue( ReteComparator.areEqual( kbase1, kbase2 ) );
     }
 
     @Test
@@ -7977,9 +7977,9 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        FactHandle fh1 = ksession.insert(1);
-        FactHandle fh2 = ksession.insert(3);
-        FactHandle fh3 = ksession.insert("test");
+        FactHandle fh1 = ksession.insert( 1 );
+        FactHandle fh2 = ksession.insert( 3 );
+        FactHandle fh3 = ksession.insert( "test" );
         ksession.fireAllRules();
 
         ksession.delete( fh1 );
@@ -7987,8 +7987,8 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.delete( fh3 );
         ksession.fireAllRules();
 
-        NodeMemories nodeMemories = ((InternalWorkingMemory) ksession).getNodeMemories();
-        for (int i = 0; i < nodeMemories.length(); i++) {
+        NodeMemories nodeMemories = ( (InternalWorkingMemory) ksession ).getNodeMemories();
+        for ( int i = 0; i < nodeMemories.length(); i++ ) {
             Memory memory = nodeMemories.peekNodeMemory( i );
             if ( memory != null && memory.getSegmentMemory() != null ) {
                 SegmentMemory segmentMemory = memory.getSegmentMemory();
@@ -8004,7 +8004,8 @@ public class Misc2Test extends CommonTestMethodBase {
         }
     }
 
-    @Test @Ignore
+    @Test
+    @Ignore
     public void testBetaMemoryLeakOnSegmentUnlinking() {
         // DROOLS-915
         String drl =
@@ -8025,22 +8026,22 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .build()
                                              .newKieSession();
 
-        FactHandle fh1 = ksession.insert(1);
-        FactHandle fh2 = ksession.insert(2);
-        FactHandle fh3 = ksession.insert(3);
-        FactHandle fhtest = ksession.insert("test");
+        FactHandle fh1 = ksession.insert( 1 );
+        FactHandle fh2 = ksession.insert( 2 );
+        FactHandle fh3 = ksession.insert( 3 );
+        FactHandle fhtest = ksession.insert( "test" );
         ksession.fireAllRules();
 
-        ksession.delete(fh3);
+        ksession.delete( fh3 );
         ksession.fireAllRules();
 
-        ksession.delete(fh1);
-        ksession.delete(fh2);
-        ksession.delete(fhtest);
+        ksession.delete( fh1 );
+        ksession.delete( fh2 );
+        ksession.delete( fhtest );
         ksession.fireAllRules();
 
-        NodeMemories nodeMemories = ((InternalWorkingMemory) ksession).getNodeMemories();
-        for (int i = 0; i < nodeMemories.length(); i++) {
+        NodeMemories nodeMemories = ( (InternalWorkingMemory) ksession ).getNodeMemories();
+        for ( int i = 0; i < nodeMemories.length(); i++ ) {
             Memory memory = nodeMemories.peekNodeMemory( i );
             if ( memory != null && memory.getSegmentMemory() != null ) {
                 SegmentMemory segmentMemory = memory.getSegmentMemory();
@@ -8086,7 +8087,7 @@ public class Misc2Test extends CommonTestMethodBase {
                     List<Integer> list = new ArrayList<Integer>();
                     ksession.setGlobal( "list", list );
 
-                    for (int i = 0; i < 100; i++) {
+                    for ( int i = 0; i < 100; i++ ) {
                         ksession.insert( i );
                     }
                     ksession.fireAllRules();
@@ -8095,11 +8096,11 @@ public class Misc2Test extends CommonTestMethodBase {
             } );
         }
 
-        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
-        for (Callable<Boolean> s : solvers) {
-            ecs.submit(s);
+        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>( executor );
+        for ( Callable<Boolean> s : solvers ) {
+            ecs.submit( s );
         }
-        for (int i = 0; i < parallelThreads; ++i) {
+        for ( int i = 0; i < parallelThreads; ++i ) {
             assertTrue( ecs.take().get() );
         }
     }
@@ -8132,8 +8133,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "end\n";
 
         KieBase kbase1 = new KieHelper().addContent( drl, ResourceType.DRL ).build();
-        KieBase kbase2 = SerializationHelper.serializeObject( kbase1, ((InternalKnowledgeBase)kbase1).getRootClassLoader() );
-        assertTrue( ReteComparator.areEqual( kbase1, kbase2) );
+        KieBase kbase2 = SerializationHelper.serializeObject( kbase1, ( (InternalKnowledgeBase) kbase1 ).getRootClassLoader() );
+        assertTrue( ReteComparator.areEqual( kbase1, kbase2 ) );
     }
 
     public static class Container {
@@ -8143,7 +8144,7 @@ public class Misc2Test extends CommonTestMethodBase {
             return objects;
         }
 
-        public void setObjects(Map<String, Object> objects) {
+        public void setObjects( Map<String, Object> objects ) {
             this.objects = objects;
         }
     }
