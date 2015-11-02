@@ -62,8 +62,8 @@ public class XpathConstraint extends MutableTypeConstraint {
         this.chunks = chunks;
     }
 
-    public XpathChunk addChunck(Class<?> clazz, String field, int index, boolean iterate) {
-        XpathChunk chunk = XpathChunk.get(clazz, field, index, iterate);
+    public XpathChunk addChunck(Class<?> clazz, String field, int index, boolean iterate, boolean lazy) {
+        XpathChunk chunk = XpathChunk.get(clazz, field, index, iterate, lazy);
         if (chunk != null) {
             chunks.add(chunk);
         }
@@ -186,12 +186,12 @@ public class XpathConstraint extends MutableTypeConstraint {
 
         private List<Object> evaluateObject(InternalWorkingMemory workingMemory, LeftTuple leftTuple, XpathChunk chunk, List<Object> list, Object object) {
             Object result = chunk.evaluate(object);
-            if (result instanceof ReactiveObject) {
+            if (!chunk.lazy && result instanceof ReactiveObject) {
                 ((ReactiveObject) result).addLeftTuple(leftTuple);
             }
             if (chunk.iterate && result instanceof Iterable) {
                 for (Object value : (Iterable<?>) result) {
-                    if (value instanceof ReactiveObject) {
+                    if (!chunk.lazy && value instanceof ReactiveObject) {
                         ((ReactiveObject) value).addLeftTuple(leftTuple);
                     }
                     if (value != null) {
@@ -216,16 +216,18 @@ public class XpathConstraint extends MutableTypeConstraint {
         private final String field;
         private final int index;
         private final boolean iterate;
+        private final boolean lazy;
         private final Method accessor;
         private List<Constraint> constraints;
         private Declaration declaration;
         private Class<?> returnedClass;
 
-        private XpathChunk(Class<?> clazz, String field, int index, boolean iterate, Method accessor) {
+        private XpathChunk(Class<?> clazz, String field, int index, boolean iterate, boolean lazy, Method accessor) {
             this.clazz = clazz;
             this.field = field;
             this.index = index;
             this.iterate = iterate;
+            this.lazy = lazy;
             this.accessor = accessor;
             this.accessor.setAccessible(true);
 
@@ -269,12 +271,12 @@ public class XpathConstraint extends MutableTypeConstraint {
             }
         }
 
-        private static XpathChunk get(Class<?> clazz, String field, int index, boolean iterate) {
+        private static XpathChunk get(Class<?> clazz, String field, int index, boolean iterate, boolean lazy) {
             Method accessor = getAccessor(clazz, field);
             if (accessor == null) {
                 return null;
             }
-            return new XpathChunk(clazz, field, index, iterate, accessor);
+            return new XpathChunk(clazz, field, index, iterate, lazy, accessor);
         }
 
         public Class<?> getReturnedClass() {
@@ -331,7 +333,7 @@ public class XpathConstraint extends MutableTypeConstraint {
 
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder( clazz.getSimpleName() );
+            StringBuilder sb = new StringBuilder( (lazy ? "?" : "") + clazz.getSimpleName() );
             if (iterate) {
                 sb.append( "/" );
             } else {

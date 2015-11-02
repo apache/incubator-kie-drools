@@ -467,7 +467,7 @@ public class XpathTest {
                 "\n" +
                 "rule R when\n" +
                 "  $i : Integer()\n" +
-                "  Man( $toy: /wife/children{age > $i}/toys )\n" +
+                "  Man( $toy: /wife/children{age > $i}?/toys )\n" +
                 "then\n" +
                 "  list.add( $toy.getName() );\n" +
                 "end\n";
@@ -847,5 +847,115 @@ public class XpathTest {
         assertEquals( 2, list.size() );
         assertTrue( list.contains( "ball" ) );
         assertTrue( list.contains( "guitar" ) );
+    }
+
+    @Test
+    public void testNonReactivePart() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  Man( $toy: /wife/children{age > 10}?/toys )\n" +
+                "then\n" +
+                "  list.add( $toy.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        Woman alice = new Woman( "Alice", 38 );
+        Man bob = new Man( "Bob", 40 );
+        bob.setWife( alice );
+
+        Child charlie = new Child( "Charles", 12 );
+        Child debbie = new Child( "Debbie", 10 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        charlie.addToy( new Toy( "car" ) );
+        charlie.addToy( new Toy( "ball" ) );
+        debbie.addToy( new Toy( "doll" ) );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "car" ) );
+        assertTrue( list.contains( "ball" ) );
+
+        list.clear();
+        charlie.addToy( new Toy( "robot" ) );
+        ksession.fireAllRules();
+
+        assertEquals( 0, list.size() );
+    }
+
+    @Test
+    public void testAllNonReactiveAfterNonReactivePart() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  Man( $toy: ?/wife/children{age > 10}/toys )\n" +
+                "then\n" +
+                "  list.add( $toy.getName() );\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        Woman alice = new Woman( "Alice", 38 );
+        Man bob = new Man( "Bob", 40 );
+        bob.setWife( alice );
+
+        Child charlie = new Child( "Charles", 12 );
+        Child debbie = new Child( "Debbie", 10 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        charlie.addToy( new Toy( "car" ) );
+        charlie.addToy( new Toy( "ball" ) );
+        debbie.addToy( new Toy( "doll" ) );
+
+        ksession.insert( bob );
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "car" ) );
+        assertTrue( list.contains( "ball" ) );
+
+        list.clear();
+        charlie.addToy( new Toy( "robot" ) );
+        ksession.fireAllRules();
+
+        assertEquals( 0, list.size() );
+    }
+
+    @Test
+    public void testInvalidDoubleNonReactivePart() {
+        String drl =
+                "import org.drools.compiler.xpath.*;\n" +
+                "global java.util.List list\n" +
+                "\n" +
+                "rule R when\n" +
+                "  Man( $toy: /wife?/children{age > 10}?/toys )\n" +
+                "then\n" +
+                "  list.add( $toy.getName() );\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", drl );
+        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        assertTrue( results.hasMessages( Message.Level.ERROR ) );
     }
 }

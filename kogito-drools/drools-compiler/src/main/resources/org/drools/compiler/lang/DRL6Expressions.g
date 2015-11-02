@@ -510,7 +510,7 @@ unaryExpressionNotPlusMinus returns [BaseDescr result]
                 { hasBindings = true; helper.emit($var, DroolsEditorType.IDENTIFIER_VARIABLE); helper.emit($UNIFY, DroolsEditorType.SYMBOL); if( buildDescr ) { bind = new BindingDescr($var.text, null, true); helper.setStart( bind, $var ); } } ))
         )?
 
-        ( (DIV ID)=>left2=xpathPrimary { if( buildDescr ) { $result = $left2.result; } }
+        ( (xpathSeparator ID)=>left2=xpathPrimary { if( buildDescr ) { $result = $left2.result; } }
           | left1=primary { if( buildDescr ) { $result = $left1.result; } }
         )
 
@@ -556,12 +556,17 @@ primitiveType
     |	double_key
     ;
 
+xpathSeparator
+    :   DIV
+    |	QUESTION_DIV
+    ;
+
 xpathPrimary returns [BaseDescr result]
     : xpathChunk+
     ;
 
 xpathChunk returns [BaseDescr result]
-    : (DIV ID)=> DIV ID (DOT ID)* (LEFT_SQUARE DECIMAL RIGHT_SQUARE)? (LEFT_CURLY xpathExpressionList RIGHT_CURLY)?
+    : (xpathSeparator ID)=> xpathSeparator ID (DOT ID)* (LEFT_SQUARE DECIMAL RIGHT_SQUARE)? (LEFT_CURLY xpathExpressionList RIGHT_CURLY)?
     ;
 
 xpathExpressionList returns [java.util.List<String> exprs]
