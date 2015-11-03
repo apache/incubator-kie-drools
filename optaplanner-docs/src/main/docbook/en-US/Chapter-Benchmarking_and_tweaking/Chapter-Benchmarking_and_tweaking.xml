@@ -1008,7 +1008,7 @@
       linkend="benchmarkReportBestScoreDistributionSummary">the best score distribution summary</link>.</para>
 
       <para>Just add a <literal>&lt;subSingleCount&gt;</literal> element to an <link
-      linkend="inheritedSolverBenchmark"><literal>&lt;inheritedSolverBenchmark&gt;</literal></link> element or in
+      linkend="inheritedSolverBenchmark"><literal>&lt;inheritedSolverBenchmark&gt;</literal></link> element or in a
       <literal>&lt;solverBenchmark&gt;</literal> element:</para>
 
       <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -1017,7 +1017,6 @@
   &lt;inheritedSolverBenchmark&gt;
     ...
     &lt;solver&gt;
-      &lt;environmentMode&gt;PRODUCTION&lt;/environmentMode&gt;
       ...
     &lt;/solver&gt;
     &lt;subSingleCount&gt;10&lt;subSingleCount&gt;
@@ -1029,10 +1028,11 @@
       benchmarking).</para>
 
       <note>
-        <para>By default, Planner will always use the same <literal>Random</literal> seed because it defaults to <link
-        linkend="environmentMode">EnvironmentMode</link> <literal>REPRODUCIBLE</literal>. Use <link
-        linkend="environmentMode">EnvironmentMode</link> <literal>PRODUCTION</literal> instead to use a different
-        <literal>Random</literal> seed for each sub single run.</para>
+        <para>If <literal>subSingleCount</literal> is higher than <literal>1</literal>, the benchmarker will
+        automatically use a <emphasis>different</emphasis> <link
+        linkend="randomNumberGenerator"><literal>Random</literal> seed</link> for every sub single run, without losing
+        reproducibility (for each sub single index) in <link linkend="environmentMode">EnvironmentMode</link>
+        <literal>REPRODICBLE</literal> and lower.</para>
       </note>
     </section>
 

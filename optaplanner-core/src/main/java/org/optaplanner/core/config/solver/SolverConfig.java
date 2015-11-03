@@ -75,6 +75,13 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     @XStreamImplicit()
     protected List<PhaseConfig> phaseConfigList = null;
 
+    public SolverConfig() {
+    }
+
+    public SolverConfig(SolverConfig inheritedConfig) {
+        inherit(inheritedConfig);
+    }
+
     public EnvironmentMode getEnvironmentMode() {
         return environmentMode;
     }
@@ -174,6 +181,14 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     // ************************************************************************
     // Builder methods
     // ************************************************************************
+
+    public void offerRandomSeedFromSubSingleIndex(long subSingleIndex) {
+        if (environmentMode == null || environmentMode.isReproducible()) {
+            if (randomFactoryClass == null && randomSeed == null) {
+                randomSeed = subSingleIndex;
+            }
+        }
+    }
 
     /**
      * @deprecated Use {@link SolverFactory#buildSolver()} or {@link #buildSolver(ClassLoader)} instead.

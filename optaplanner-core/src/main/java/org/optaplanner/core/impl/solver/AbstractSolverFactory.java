@@ -56,8 +56,7 @@ public class AbstractSolverFactory extends SolverFactory {
             throw new IllegalStateException("The solverConfig (" + solverConfig + ") is null," +
                     " call configure(...) first.");
         }
-        SolverConfig solverConfigClone = new SolverConfig();
-        solverConfigClone.inherit(solverConfig);
+        SolverConfig solverConfigClone = new SolverConfig(solverConfig);
         return new EmptySolverFactory(classLoader, solverConfigClone);
     }
 

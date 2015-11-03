@@ -139,4 +139,18 @@ public enum EnvironmentMode {
         }
     }
 
+    public boolean isReproducible() {
+        switch (this) {
+            case FULL_ASSERT:
+            case NON_INTRUSIVE_FULL_ASSERT:
+            case FAST_ASSERT:
+            case REPRODUCIBLE:
+                return true;
+            case PRODUCTION:
+                return false;
+            default:
+                throw new IllegalStateException("The environmentMode (" + this + ") is not implemented.");
+        }
+    }
+
 }
