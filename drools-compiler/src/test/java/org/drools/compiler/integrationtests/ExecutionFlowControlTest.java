@@ -36,30 +36,61 @@ import org.drools.core.spi.AgendaGroup;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.BeforeMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import com.answers.kie.layoutmode.LayoutModeInput;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
-
+  public static class TrackingAgendaEventListener extends
+      DefaultAgendaEventListener {
+    private List<String> rulesFiredList = new ArrayList<String>();
+    
+    @Override
+    public void beforeMatchFired(BeforeMatchFiredEvent event) {}
+    
+    @Override
+    public void afterMatchFired(AfterMatchFiredEvent event) {
+      Rule rule = event.getMatch().getRule();
+      rulesFiredList.add(rule.getName());
+    }
+    
+    /**
+     * @return the rulesFiredList
+     */
+    public List<String> getRulesFiredList() {
+      return rulesFiredList;
+    }
+    
+    public void reset() {
+      rulesFiredList.clear();
+    }
+  }
   @Test
   public void testActivationGroupIssue() throws Exception {
 //    KieBase kbase = loadKnowledgeBase(ResourceType.DRL, null, null,
@@ -68,8 +99,12 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 //        KieBase kbase = loadKnowledgeBase(rules);
 //        KieSession ksession = kbase.newKieSession();
     
-    String rule1 = "package org.drools.compiler.test\n"
-        +"global java.util.List list;\n"
+    String prefix="package com.answers.kie.layoutmode\n"
+        //"package org.drools.compiler.test\n"
+        +"import com.answers.kie.layoutmode.LayoutModeInput;\n"
+        +"import com.answers.kie.layoutmode.VisitorClass;\n"
+        +"global java.util.List list;\n";
+    String rule1 = prefix
         +"rule \"Global_VisitorClassification_type_crawler\"\n"
         +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
         +"        activation-group \"activation-group-visitor-classification-root\"\n"
@@ -84,22 +119,79 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         +"                fact0.setClassLevel( \"type_crawler\" );\n"
         +"                insert( fact0 );\n"
         +"end\n";
-    System.out.println(rule1);
-    KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-    kbuilder
-        .batch()
-        .add(ResourceFactory.newByteArrayResource(rule1.getBytes()),
-            ResourceType.RDRL);
     
+    String rule2 = prefix
+        +"rule \"LMI_default_null\"\n"
+        +"        salience -1\n"
+        +"        activation-group \"visitor_classification\"\n"
+        +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
+        +"        dialect \"mvel\"\n"
+        +"        when\n"
+        +"                exists (LayoutModeInput( ))\n" 
+        +"        then\n"
+        +"                list.add( \"LMI_default_null\" );\n"        
+        +"end\n";
+    
+    String rule3 = prefix
+        +"rule \"VisitorClassification_lowperf_10004\"\n"
+        +"        salience 10004\n"
+        +"        activation-group \"visitor_classification\"\n"
+        +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
+        +"        dialect \"mvel\"\n"
+        +"        when\n"
+        +"                LayoutModeInput( city == \"mountain view\" )\n"
+        +"        then\n"
+        +"                list.add( \"VisitorClassification_lowperf_10004\" );\n"
+        +"                VisitorClass fact0 = new VisitorClass();\n"
+        +"                fact0.setClassLevel( \"low_perf\" );\n"
+        +"                insert( fact0 );\n"
+        +"end\n";
+    
+    String rule4 = prefix
+        +"rule \"VisitorClassification_type_4_7000\"\n"
+        +"        salience 7000\n"
+        +"        activation-group \"visitor_classification\"\n"
+        +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
+        +"        dialect \"mvel\"\n"
+        +"        when\n"
+        +"                lmi : LayoutModeInput( user_agent matches \".*Safari.*\" )\n"
+        +"                LayoutModeInput(source == null)\n"
+        +"        then\n"
+        +"                list.add( \"VisitorClassification_type_4_7000\" );\n"
+        +"                VisitorClass fact0 = new VisitorClass();\n"
+        +"                fact0.setClassLevel( \"type_4\" );\n"
+        +"                insert( fact0 );\n"
+        +"end\n";
+    
+    String [] drlContentStrings={rule1,rule2,rule3,rule4};
+    System.out.println(Arrays.toString(drlContentStrings));
+    
+    KieBaseConfiguration kBaseConfig=KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+    KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+    for (String drlContentString : drlContentStrings) {
+      Resource resource = ResourceFactory.newByteArrayResource(drlContentString
+          .getBytes());
+      kbuilder.add(resource, ResourceType.RDRL);
+    }
+
     if (kbuilder.hasErrors()) {
       fail(kbuilder.getErrors().toString());
     }
-    
-    KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+    if (kBaseConfig == null) {
+      kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+    }
+    kBaseConfig.setOption(phreak);
+    KnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
+    System.out.println("getKnowledgePackages "+kbuilder.getKnowledgePackages());
     kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-    StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+    
+    //KieBase kbase = loadKnowledgeBaseFromString(rule1);
+    KieSession ksession = kbase.newKieSession();
     final List list = new ArrayList();
     ksession.setGlobal("list", list);
+    TrackingAgendaEventListener listener=new TrackingAgendaEventListener();
+    ksession.addEventListener(listener);
+    
         
         final LayoutModeInput input = new LayoutModeInput();
         input.setCity("mountain view");
@@ -110,13 +202,18 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         
         for (int i = 0; i < loop; i++) {
           ksession.insert(input);
-          ksession.fireAllRules();
+          ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("ruleflow-group-visitor-classification");
+          int fired=ksession.fireAllRules();
           System.out.println("i="+i);
+          System.out.println("fired rules "+fired);
+          System.out.println(listener.getRulesFiredList());
           System.out.println(list.size());
           System.out.println(list);
           for (Object obj : ksession.getObjects()) {
             ksession.delete(ksession.getFactHandle(obj));
           }
+          listener.reset();
+          list.clear();
         }
 //      assertEquals( "Three rules should have been fired", 3, list.size() );
 //      assertEquals( "Rule 4 should have been fired first", "Rule 4",
