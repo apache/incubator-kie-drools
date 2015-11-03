@@ -390,16 +390,45 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     private static String getPathForVFS(URL url) {
+        Method m = null;
+        try {
+            m = Class.forName("org.jboss.vfs.VirtualFile").getMethod("getPhysicalFile");
+        } catch (Exception e) {
+            try {
+                // Try to retrieve the VirtualFile class also on TCCL
+                m = Class.forName("org.jboss.vfs.VirtualFile", true, Thread.currentThread().getContextClassLoader()).getMethod("getPhysicalFile");
+            } catch (Exception e1) {
+                // VirtualFile is not available on the classpath - ignore
+                log.warn( "Found virtual file " + url + " but org.jboss.vfs.VirtualFile is not available on the classpath" );
+            }
+        }
+
+        if (m == null) {
+            return url.getPath();
+        }
+
+        String path = null;
+        try {
+            Object content = url.openConnection().getContent();
+            File f = (File)m.invoke(content);
+            path = f.getPath();
+        } catch (Exception e) {
+            log.error( "Error when reading virtual file from " + url.toString(), e );
+        }
+
+        if (path == null) {
+            return url.getPath();
+        }
+
         String urlString = url.toString();
+        if (!urlString.contains( "/" + KieModuleModelImpl.KMODULE_JAR_PATH )) {
+            return path;
+        }
+
         int kModulePos = urlString.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length();
         boolean isInJar = urlString.substring(kModulePos - 4, kModulePos).equals(".jar");
 
         try {
-            Method m = Class.forName("org.jboss.vfs.VirtualFile").getMethod("getPhysicalFile");
-            Object content = url.openConnection().getContent();
-            File f = (File)m.invoke(content);
-            String path = f.getPath();
-
             if (isInJar && path.contains("contents" + File.separator)) {
                 String jarName = urlString.substring(0, kModulePos);
                 jarName = jarName.substring(jarName.lastIndexOf('/')+1);
