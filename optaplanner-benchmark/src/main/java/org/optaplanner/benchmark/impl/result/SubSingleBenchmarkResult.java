@@ -49,8 +49,7 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
 
     @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
     private SingleBenchmarkResult singleBenchmarkResult;
-
-    private int subSingleBenchmarkIndex = -1;
+    private final int subSingleBenchmarkIndex;
 
     @XStreamImplicit(itemFieldName = "pureSubSingleStatistic")
     private List<PureSubSingleStatistic> pureSubSingleStatisticList = null;
@@ -113,10 +112,6 @@ public class SubSingleBenchmarkResult implements BenchmarkResult {
 
     public int getSubSingleBenchmarkIndex() {
         return subSingleBenchmarkIndex;
-    }
-
-    public void setSubSingleBenchmarkIndex(int subSingleBenchmarkIndex) {
-        this.subSingleBenchmarkIndex = subSingleBenchmarkIndex;
     }
 
     public Map<StatisticType, SubSingleStatistic> getEffectiveSubSingleStatisticMap() {
