@@ -1032,7 +1032,7 @@
         automatically use a <emphasis>different</emphasis> <link
         linkend="randomNumberGenerator"><literal>Random</literal> seed</link> for every sub single run, without losing
         reproducibility (for each sub single index) in <link linkend="environmentMode">EnvironmentMode</link>
-        <literal>REPRODICBLE</literal> and lower.</para>
+        <literal>REPRODUCIBLE</literal> and lower.</para>
       </note>
     </section>
 
