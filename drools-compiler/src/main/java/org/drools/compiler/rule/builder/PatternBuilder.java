@@ -882,7 +882,8 @@ public class PatternBuilder
         if ( simple && // simple means also relDescr is != null
                 !ClassObjectType.Map_ObjectType.isAssignableFrom( pattern.getObjectType() ) &&
                 !ClassObjectType.Match_ObjectType.isAssignableFrom( pattern.getObjectType() ) ) {
-            return buildRelationalExpression(context, pattern, relDescr, expr, aliases);
+            String normalizedExpr = normalizeExpression( context, pattern, relDescr, expr );
+            return buildRelationalExpression(context, pattern, relDescr, normalizedExpr, aliases);
         }
 
         // Either it's a complex expression, so do as predicate
@@ -932,19 +933,14 @@ public class PatternBuilder
 
     private String normalizeExpression( RuleBuildContext context, Pattern pattern, RelationalExprDescr subDescr, String subExpr ) {
         String leftValue = findLeftExpressionValue(subDescr);
-        InternalReadAccessor extractor = getFieldReadAccessor( context, subDescr, pattern, leftValue, null, true );
-        if (extractor == null) {
-            return subExpr;
-        }
-
-        ValueType vtype = extractor.getValueType();
         String operator = subDescr.getOperator();
 
-        if (vtype == ValueType.DATE_TYPE) {
+        if ( isDateType( context, pattern, leftValue ) ) {
             String rightValue = findRightExpressionValue( subDescr );
-            FieldValue fieldValue = getFieldValue(context, vtype, rightValue);
+            FieldValue fieldValue = getFieldValue(context, ValueType.DATE_TYPE, rightValue);
             return fieldValue != null ? normalizeDate( fieldValue, leftValue, operator ) : subExpr;
         }
+
         if (operator.equals( "str" )) {
             String rightValue = findRightExpressionValue( subDescr );
             return normalizeStringOperator( leftValue, rightValue, new LiteralRestrictionDescr( operator,
@@ -953,8 +949,24 @@ public class PatternBuilder
                                                                                                 rightValue,
                                                                                                 LiteralRestrictionDescr.TYPE_STRING ) );
         }
+
         // resolve ambiguity between mvel's "empty" keyword and constraints like: List(empty == ...)
         return normalizeEmptyKeyword( subExpr, operator );
+    }
+
+    private boolean isDateType( RuleBuildContext context, Pattern pattern, String leftValue ) {
+        Declaration declaration = pattern.getDeclarations().get( leftValue );
+        if (declaration != null) {
+            return declaration.getValueType() == ValueType.DATE_TYPE;
+        }
+
+        if (pattern.getObjectType() instanceof FactTemplateObjectType) {
+            return ( (FactTemplateObjectType) pattern.getObjectType() ).getFactTemplate().getFieldTemplate( leftValue ).getValueType() == ValueType.DATE_TYPE;
+        }
+
+        Class<?> clazz = ((ClassObjectType) pattern.getObjectType()).getClassType();
+        Class<?> fieldType = context.getPkg().getClassFieldAccessorStore().getFieldType(clazz, leftValue);
+        return fieldType != null && ValueType.isDateType( fieldType );
     }
 
     protected Constraint buildRelationalExpression( final RuleBuildContext context,

@@ -119,7 +119,7 @@ public class TypeDeclarationFactory {
                                     kbuilder.addBuilderResult(new TypeDeclarationError(typeDescr, "New declaration of "+typeDescr.getType().getFullName() +
                                                                                                   " does not include field " + existingFieldName ) );
                                 } else {
-                                    String fldType = cfi.getFieldTypes().get( existingFieldName ).getName();
+                                    String fldType = cfi.getFieldType( existingFieldName ).getName();
                                     fldType = TypeDeclarationUtils.toBuildableType( fldType, kbuilder.getRootClassLoader() );
                                     TypeFieldDescr declaredField = typeDescr.getFields().get( existingFieldName );
                                     if ( ! fldType.equals( type.getTypeClassDef().getField( existingFieldName ).getTypeName() ) ) {
