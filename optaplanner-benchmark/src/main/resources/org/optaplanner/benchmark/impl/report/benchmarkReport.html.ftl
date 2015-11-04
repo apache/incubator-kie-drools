@@ -536,6 +536,9 @@
                         </#if>
                     </p>
                     <#if problemBenchmarkResult.hasAnySuccess() && problemBenchmarkResult.hasAnyStatistic()>
+                        <#if problemBenchmarkResult.getMaximumSubSingleCount() gt 1 >
+                             <p>Only the median sub single run of each solver is shown in the statistics below.</p>
+                        </#if>
                         <div class="tabbable">
                             <ul class="nav nav-tabs">
                                 <#assign firstRow = true>
