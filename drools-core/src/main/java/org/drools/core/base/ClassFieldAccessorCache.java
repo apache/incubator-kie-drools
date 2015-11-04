@@ -84,8 +84,7 @@ public class ClassFieldAccessorCache {
             if ( cls == null ) {
                 if ( other.cls != null ) return false;
             } else if ( !cls.equals( other.cls ) ) return false;
-            if ( event != other.event ) return false;
-            return true;
+            return event == other.event;
         }
 
     }
@@ -168,9 +167,9 @@ public class ClassFieldAccessorCache {
                                                     Class cls) {
             BaseClassFieldReader reader = this.readCache.get( key );
             if ( reader == null ) {
-                reader = ClassFieldAccessorFactory.getInstance().getClassFieldReader( cls,
-                                                                                      key.getFieldName(),
-                                                                                      this );
+                reader = ClassFieldAccessorFactory.getClassFieldReader( cls,
+                                                                        key.getFieldName(),
+                                                                        this );
                 if ( reader != null ) {
                     BaseClassFieldReader existingReader = this.readCache.putIfAbsent( key,
                                                                                       reader );
@@ -188,9 +187,9 @@ public class ClassFieldAccessorCache {
                                                      Class cls) {
             BaseClassFieldWriter writer = this.writeCache.get( key );
             if ( writer == null ) {
-                writer = ClassFieldAccessorFactory.getInstance().getClassFieldWriter( cls,
-                                                                                      key.getFieldName(),
-                                                                                      this );
+                writer = ClassFieldAccessorFactory.getClassFieldWriter( cls,
+                                                                        key.getFieldName(),
+                                                                        this );
                 if ( writer != null ) {
                     BaseClassFieldWriter existingWriter = this.writeCache.putIfAbsent( key,
                                                                                        writer );
