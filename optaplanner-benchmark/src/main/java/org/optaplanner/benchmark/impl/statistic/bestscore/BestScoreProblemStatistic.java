@@ -94,7 +94,7 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
                 // TODO if startingSolution is initialized and no improvement is made, a horizontal line should be shown
                 // Draw a horizontal line from the last new best step to how long the solver actually ran
                 long timeMillisSpent = singleBenchmarkResult.getTimeMillisSpent();
-                double[] bestScoreLevels = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getAverageScore());
+                double[] bestScoreLevels = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getMedian().getScore());
                 for (int i = 0; i < bestScoreLevels.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {
                     if (i >= seriesList.size()) {
                         seriesList.add(new XYSeries(
