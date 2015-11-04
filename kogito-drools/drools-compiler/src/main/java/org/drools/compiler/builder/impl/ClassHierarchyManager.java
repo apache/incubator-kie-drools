@@ -190,7 +190,7 @@ public class ClassHierarchyManager {
                             TypeFieldDescr inheritedFlDescr = new TypeFieldDescr(
                                     name,
                                     new PatternDescr(
-                                            inspector.getFieldTypes().get(name).getName()));
+                                            inspector.getFieldType(name).getName()));
                             inheritedFlDescr.setInherited(!Modifier.isAbstract( inspector.getGetterMethods().get( name ).getModifiers() ));
 
                             if (!tDescr.getFields().containsKey(inheritedFlDescr.getFieldName()))
@@ -346,7 +346,7 @@ public class ClassHierarchyManager {
                             TypeFieldDescr inheritedFlDescr = new TypeFieldDescr(
                                     name,
                                     new PatternDescr(
-                                            inspector.getFieldTypes().get(name).getName()));
+                                            inspector.getFieldType(name).getName()));
                             inheritedFlDescr.setInherited(!Modifier.isAbstract(inspector.getGetterMethods().get(name).getModifiers()));
 
                             if (!fieldMap.containsKey(inheritedFlDescr.getFieldName()))

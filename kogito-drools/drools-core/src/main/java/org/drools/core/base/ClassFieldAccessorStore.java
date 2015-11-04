@@ -102,9 +102,8 @@ public class ClassFieldAccessorStore
                                            accessorType );
         FieldLookupEntry entry = (FieldLookupEntry) this.lookup.get( key );
 
-        boolean exists = true;
-        if ( entry == null ) {
-            exists = false;
+        boolean exists = entry != null;
+        if ( !exists ) {
             entry = new FieldLookupEntry( new ClassFieldReader( className,
                                                                 fieldName ) );
         }
@@ -293,6 +292,10 @@ public class ClassFieldAccessorStore
         if ( reader  instanceof ClassFieldReader ) {
             ((ClassFieldReader)reader).setReadAccessor( cache.getReadAcessor( (ClassFieldReader) reader ) );
         }
+    }
+
+    public Class<?> getFieldType(Class<?> clazz, String fieldName) {
+        return ClassFieldAccessorFactory.getFieldType( clazz, fieldName, cache.getCacheEntry(clazz) );
     }
 
     public void wire(ClassFieldWriter writer) {

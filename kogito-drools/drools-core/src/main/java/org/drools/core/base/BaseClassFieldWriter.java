@@ -59,7 +59,7 @@ abstract public class BaseClassFieldWriter
         try {
             final ClassFieldInspector inspector = new ClassFieldInspector( clazz );
             this.index = inspector.getFieldNames().get( fieldName );
-            this.fieldType = inspector.getFieldTypes().get( fieldName );
+            this.fieldType = inspector.getFieldType( fieldName );
             this.valueType = ValueType.determineValueType( this.fieldType );
         } catch ( final Exception e ) {
             throw new RuntimeException( e );

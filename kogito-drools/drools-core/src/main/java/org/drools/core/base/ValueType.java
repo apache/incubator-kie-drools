@@ -16,6 +16,11 @@
 
 package org.drools.core.base;
 
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.factmodel.traits.Thing;
+import org.drools.core.factmodel.traits.Trait;
+import org.drools.core.facttemplates.FactTemplate;
+
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -23,11 +28,6 @@ import java.io.ObjectOutput;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
-
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.factmodel.traits.Thing;
-import org.drools.core.factmodel.traits.Trait;
-import org.drools.core.facttemplates.FactTemplate;
 
 public class ValueType
     implements
@@ -241,7 +241,7 @@ public class ValueType
         
         
         // Other Object types
-        if ( Date.class.isAssignableFrom( clazz ) ) {
+        if ( isDateType( clazz ) ) {
             return ValueType.DATE_TYPE;
         } else if ( clazz.isArray() ) {
             return ValueType.ARRAY_TYPE;
@@ -257,6 +257,10 @@ public class ValueType
         } else {
             return ValueType.OBJECT_TYPE;
         }
+    }
+
+    public static boolean isDateType( Class<?> clazz ) {
+        return Date.class.isAssignableFrom( clazz );
     }
 
     public String toString() {

@@ -47,6 +47,7 @@ import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Opcodes;
 import org.mvel2.asm.Type;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -78,17 +79,7 @@ public class ClassFieldAccessorFactory {
         } );
     }
     
-    private static ClassFieldAccessorFactory instance = new ClassFieldAccessorFactory();
-    
-    public static ClassFieldAccessorFactory getInstance() {
-        return instance;
-    }
-
-    public BaseClassFieldReader getClassFieldReader(final Class< ? > clazz,
-                                                    final String fieldName,
-                                                    CacheEntry cache) {
-        ByteArrayClassLoader byteArrayClassLoader = cache.getByteArrayClassLoader();
-        Map<Class< ? >, ClassFieldInspector> inspectors = cache.getInspectors();
+    public static BaseClassFieldReader getClassFieldReader(Class< ? > clazz, String fieldName, CacheEntry cache) {
         try {
             // if it is a self reference
             if ( SELF_REFERENCE_FIELD.equals( fieldName ) ) {
@@ -96,19 +87,15 @@ public class ClassFieldAccessorFactory {
                 return new SelfReferenceClassFieldReader( clazz );
             } else {
                 // otherwise, bytecode generate a specific extractor
-                ClassFieldInspector inspector = inspectors.get( clazz );
-                if ( inspector == null ) {
-                    inspector = new ClassFieldInspector( clazz );
-                    inspectors.put( clazz,
-                                    inspector );
-                }
-                Class< ? > fieldType = inspector.getFieldTypes().get( fieldName );
+                ClassFieldInspector inspector = getClassFieldInspector( clazz, cache );
                 Method getterMethod = inspector.getGetterMethods().get( fieldName );
                 Integer index = inspector.getFieldNames().get( fieldName );
+
+                Class< ? > fieldType = inspector.getFieldType( fieldName );
                 if ( fieldType == null && fieldName.length() > 1 && Character.isLowerCase( fieldName.charAt( 0 ) ) && Character.isUpperCase( fieldName.charAt(1) ) ) {
                     // it might be that odd case of javabeans naming conventions that does not use lower case first letters if the second is uppercase
                     String altFieldName = Character.toUpperCase( fieldName.charAt( 0 ) ) + fieldName.substring( 1 );
-                    fieldType = inspector.getFieldTypes().get( altFieldName );
+                    fieldType = inspector.getFieldType( altFieldName );
                     if( fieldType != null ) {
                         // it seems it is the corner case indeed.
                         getterMethod = inspector.getGetterMethods().get( altFieldName );
@@ -122,10 +109,9 @@ public class ClassFieldAccessorFactory {
                     final byte[] bytes = dumpReader( clazz,
                                                      className,
                                                      getterMethod,
-                                                     fieldType,
-                                                     clazz.isInterface() );
+                                                     fieldType );
                     // use bytes to get a class 
-
+                    ByteArrayClassLoader byteArrayClassLoader = cache.getByteArrayClassLoader();
                     final Class< ? > newClass = byteArrayClassLoader.defineClass( className.replace( '/',
                                                                                                      '.' ),
                                                                                   bytes,
@@ -146,9 +132,32 @@ public class ClassFieldAccessorFactory {
         }
     }
 
-    public BaseClassFieldWriter getClassFieldWriter(final Class< ? > clazz,
-                                                    final String fieldName,
-                                                    final CacheEntry cache) {
+    public static Class<?> getFieldType(Class<?> clazz, String fieldName, CacheEntry cache) {
+        ClassFieldInspector inspector;
+        try {
+            inspector = getClassFieldInspector( clazz, cache );
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
+        Class< ? > fieldType = inspector.getFieldType( fieldName );
+        if ( fieldType == null && fieldName.length() > 1 && Character.isLowerCase( fieldName.charAt( 0 ) ) && Character.isUpperCase( fieldName.charAt(1) ) ) {
+            String altFieldName = Character.toUpperCase( fieldName.charAt( 0 ) ) + fieldName.substring( 1 );
+            fieldType = inspector.getFieldType( altFieldName );
+        }
+        return fieldType;
+    }
+
+    private static ClassFieldInspector getClassFieldInspector( Class<?> clazz, CacheEntry cache ) throws IOException {
+        Map<Class< ? >, ClassFieldInspector> inspectors = cache.getInspectors();
+        ClassFieldInspector inspector = inspectors.get( clazz );
+        if ( inspector == null ) {
+            inspector = new ClassFieldInspector( clazz );
+            inspectors.put( clazz, inspector );
+        }
+        return inspector;
+    }
+
+    public static BaseClassFieldWriter getClassFieldWriter(Class< ? > clazz, String fieldName, CacheEntry cache) {
         ByteArrayClassLoader byteArrayClassLoader = cache.getByteArrayClassLoader();
         Map<Class< ? >, ClassFieldInspector> inspectors = cache.getInspectors();
         
@@ -176,8 +185,7 @@ public class ClassFieldAccessorFactory {
                 final byte[] bytes = dumpWriter( clazz,
                                                  className,
                                                  setterMethod,
-                                                 fieldType,
-                                                 clazz.isInterface() );
+                                                 fieldType );
                 // use bytes to get a class 
 
                 final Class< ? > newClass = byteArrayClassLoader.defineClass( className.replace( '/',
@@ -209,18 +217,13 @@ public class ClassFieldAccessorFactory {
         }
     }
 
-    private byte[] dumpReader(final Class< ? > originalClass,
-                              final String className,
-                              final Method getterMethod,
-                              final Class< ? > fieldType,
-                              final boolean isInterface) throws Exception {
+    private static byte[] dumpReader(final Class< ? > originalClass,
+                                     final String className,
+                                     final Method getterMethod,
+                                     final Class< ? > fieldType) throws Exception {
 
         final Class< ? > superClass = getReaderSuperClassFor( fieldType );
         final ClassWriter cw = buildClassHeader( superClass, className );
-
-        //        buildConstructor( superClass,
-        //                          className,
-        //                          cw );
 
         build3ArgConstructor( superClass,
                               className,
@@ -237,11 +240,10 @@ public class ClassFieldAccessorFactory {
         return cw.toByteArray();
     }
 
-    private byte[] dumpWriter(final Class< ? > originalClass,
-                              final String className,
-                              final Method getterMethod,
-                              final Class< ? > fieldType,
-                              final boolean isInterface) throws Exception {
+    private static byte[] dumpWriter(final Class< ? > originalClass,
+                                     final String className,
+                                     final Method getterMethod,
+                                     final Class< ? > fieldType) throws Exception {
 
 
         final Class< ? > superClass = getWriterSuperClassFor( fieldType );
@@ -266,7 +268,7 @@ public class ClassFieldAccessorFactory {
     /**
      * Builds the class header
      */
-    protected ClassWriter buildClassHeader(Class< ? > superClass, String className) {
+    protected static ClassWriter buildClassHeader(Class< ? > superClass, String className) {
 
         ClassWriter cw = createClassWriter( superClass.getClassLoader(),
                                             Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
@@ -285,9 +287,9 @@ public class ClassFieldAccessorFactory {
      * Creates a constructor for the field extractor receiving
      * the index, field type and value type
      */
-    private void build3ArgConstructor(final Class< ? > superClazz,
-                                      final String className,
-                                      final ClassWriter cw) {
+    private static void build3ArgConstructor(final Class< ? > superClazz,
+                                             final String className,
+                                             final ClassWriter cw) {
         MethodVisitor mv;
         {
             mv = cw.visitMethod( Opcodes.ACC_PUBLIC,
@@ -350,11 +352,11 @@ public class ClassFieldAccessorFactory {
     /**
      * Creates the proxy reader method for the given method
      */
-    protected void buildGetMethod(final Class< ? > originalClass,
-                                  final String className,
-                                  final Class< ? > superClass,
-                                  final Method getterMethod,
-                                  final ClassWriter cw) {
+    protected static void buildGetMethod(final Class< ? > originalClass,
+                                         final String className,
+                                         final Class< ? > superClass,
+                                         final Method getterMethod,
+                                         final ClassWriter cw) {
 
         final Class< ? > fieldType = getterMethod.getReturnType();
         Method overridingMethod;
@@ -420,12 +422,12 @@ public class ClassFieldAccessorFactory {
     /**
      * Creates the set method for the given field definition
      */
-    protected void buildSetMethod(final Class< ? > originalClass,
-                                  final String className,
-                                  final Class< ? > superClass,
-                                  final Method setterMethod,
-                                  final Class< ? > fieldType,
-                                  final ClassWriter cw) {
+    protected static void buildSetMethod(final Class< ? > originalClass,
+                                         final String className,
+                                         final Class< ? > superClass,
+                                         final Method setterMethod,
+                                         final Class< ? > fieldType,
+                                         final ClassWriter cw) {
         MethodVisitor mv;
         // set method
         {
@@ -502,7 +504,7 @@ public class ClassFieldAccessorFactory {
         }
     }
 
-    private String getOverridingGetMethodName(final Class< ? > fieldType) {
+    private static String getOverridingGetMethodName(final Class< ? > fieldType) {
         String ret = null;
         if ( fieldType.isPrimitive() ) {
             if ( fieldType == char.class ) {
@@ -528,7 +530,7 @@ public class ClassFieldAccessorFactory {
         return ret;
     }
 
-    private String getOverridingSetMethodName(final Class< ? > fieldType) {
+    private static String getOverridingSetMethodName(final Class< ? > fieldType) {
         String ret = null;
         if ( fieldType.isPrimitive() ) {
             if ( fieldType == char.class ) {
@@ -558,7 +560,7 @@ public class ClassFieldAccessorFactory {
      * Returns the appropriate Base class field extractor class
      * for the given fieldType
      */
-    private Class< ? > getReaderSuperClassFor(final Class< ? > fieldType) {
+    private static Class< ? > getReaderSuperClassFor(final Class< ? > fieldType) {
         Class< ? > ret = null;
         if ( fieldType.isPrimitive() ) {
             if ( fieldType == char.class ) {
@@ -592,7 +594,7 @@ public class ClassFieldAccessorFactory {
      * Returns the appropriate Base class field extractor class
      * for the given fieldType
      */
-    private Class< ? > getWriterSuperClassFor(final Class< ? > fieldType) {
+    private static Class< ? > getWriterSuperClassFor(final Class< ? > fieldType) {
         Class< ? > ret = null;
         if ( fieldType.isPrimitive() ) {
             if ( fieldType == char.class ) {
