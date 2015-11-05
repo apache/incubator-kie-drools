@@ -171,6 +171,9 @@ public class AddRemoveRule {
                  // Sharing exists, get the root of the SegmentMemory after the split
                  SegmentMemory sm = removedPmem.getSegmentMemories()[s+1];
                  if ( sm == null ) {
+                     List<PathMemory> pathMems = new ArrayList<PathMemory>();
+                     collectRtnPathMemories(splitStartNode, wm, pathMems, tn); // get all PathMemories, except current
+                     reInitPathMemories(wm, pathMems, tn.getRule() );
                      continue; // this rule has not been initialized yet
                  }
                  sink = (LeftTupleSink) sm.getRootNode();
@@ -179,7 +182,6 @@ public class AddRemoveRule {
 
              if ( splitStartNode.getAssociations().size() > 1 ) {
                  List<PathMemory> pathMems = new ArrayList<PathMemory>();
-
                  collectRtnPathMemories(splitStartNode, wm, pathMems, tn); // get all PathMemories, except current
 
                  List<SegmentMemory[]> previousSmems = reInitPathMemories(wm, pathMems, tn.getRule() );

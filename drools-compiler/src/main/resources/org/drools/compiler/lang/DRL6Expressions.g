@@ -585,7 +585,7 @@ primary returns [BaseDescr result]
         (
             ( (DOT ID)=>d=DOT i2=ID { helper.emit($d, DroolsEditorType.SYMBOL); helper.emit($i2, DroolsEditorType.IDENTIFIER); } )
             |
-            ( (DOT LEFT_PAREN)=>d=DOT LEFT_PAREN { helper.emit($d, DroolsEditorType.SYMBOL); helper.emit($LEFT_PAREN, DroolsEditorType.SYMBOL); }
+            ( ((DOT|NULL_SAFE_DOT) LEFT_PAREN)=>d=(DOT|NULL_SAFE_DOT) LEFT_PAREN { helper.emit($d, DroolsEditorType.SYMBOL); helper.emit($LEFT_PAREN, DroolsEditorType.SYMBOL); }
                                     expression (COMMA { helper.emit($COMMA, DroolsEditorType.SYMBOL); } expression)*
                                     RIGHT_PAREN { helper.emit($RIGHT_PAREN, DroolsEditorType.SYMBOL); }
             )

@@ -139,7 +139,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
      * Creates and return the node memory
      */
     public static void initPathMemory(PathMemory pmem, LeftTupleSource tupleSource, LeftTupleSource startTupleSource, InternalWorkingMemory wm, RuleImpl removingRule) {
-        int counter = 0;
+        int counter = 1;
         long allLinkedTestMask = 0;
 
 
@@ -201,7 +201,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         }
 
         pmem.setAllLinkedMaskTest( allLinkedTestMask );
-        pmem.setSegmentMemories( new SegmentMemory[counter + 1] ); // +1 as arras are zero based.
+        pmem.setSegmentMemories( new SegmentMemory[counter] );
     }
 
     private static ConditionalBranchNode getConditionalBranchNode(LeftTupleSource tupleSource) {

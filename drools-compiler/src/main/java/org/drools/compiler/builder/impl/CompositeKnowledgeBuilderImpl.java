@@ -28,6 +28,7 @@ import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.internal.builder.ChangeType;
 import org.kie.internal.builder.CompositeKnowledgeBuilder;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
@@ -304,6 +305,8 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         buildResource(packages, ResourceType.SCARD, SCARD_TO_PKG_DESCR);
         buildResource(packages, ResourceType.TDRL, DRL_TO_PKG_DESCR);
         buildResource(packages, ResourceType.TEMPLATE, TEMPLATE_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.GDST, GUIDED_DTABLE_TO_PKG_DESCR);
+        buildResource(packages, ResourceType.SCGD, GUIDED_SCARD_TO_PKG_DESCR);
         this.resourcesByType.remove(ResourceType.DRT); // drt is a template for dtables but doesn't have to be built on its own
         return packages.values();
     }
@@ -347,18 +350,25 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         final ResourceConfiguration configuration;
         final ResourceChangeSet changes;
         final Map<String, ResourceChange> changeMap;
+        final ChangeType globalChangeType;
 
         private ResourceDescr(ResourceConfiguration configuration, Resource resource, ResourceChangeSet changes) {
             this.configuration = configuration;
             this.resource = resource;
             this.changes = changes;
-            if( changes != null ) {
+            if ( changes != null ) {
                 changeMap = new HashMap<String, ResourceChange>();
-                for( ResourceChange c : changes.getChanges() ) {
-                    changeMap.put( assetId(c.getType(), c.getName()), c) ;
+                if (!changes.getChanges().isEmpty()) {
+                    for ( ResourceChange c : changes.getChanges() ) {
+                        changeMap.put( assetId( c.getType(), c.getName() ), c );
+                    }
+                    globalChangeType = null;
+                } else {
+                    globalChangeType = changes.getChangeType();
                 }
             } else {
                 changeMap = null;
+                globalChangeType = null;
             }
         }
         
@@ -369,13 +379,18 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
         private class ChangeSetAssetFilter implements KnowledgeBuilderImpl.AssetFilter {
             @Override
             public Action accept(ResourceChange.Type type, String pkgName, String assetName) {
+                if (globalChangeType != null) {
+                    return toFilterAction( globalChangeType );
+                }
                 ResourceChange change = changeMap.get( assetId(type, assetName) );
-                if ( change != null ) {
-                    switch (change.getChangeType()) {
-                        case ADDED: return Action.ADD;
-                        case REMOVED: return Action.REMOVE;
-                        case UPDATED: return Action.UPDATE;
-                    }
+                return change != null ? toFilterAction( change.getChangeType() ) : Action.DO_NOTHING;
+            }
+
+            private Action toFilterAction( ChangeType changeType ) {
+                switch (changeType) {
+                    case ADDED: return Action.ADD;
+                    case REMOVED: return Action.REMOVE;
+                    case UPDATED: return Action.UPDATE;
                 }
                 return Action.DO_NOTHING;
             }
@@ -423,6 +438,18 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private static final ResourceToPkgDescrMapper SCARD_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
         public PackageDescr map(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception {
             return kBuilder.scoreCardToPackageDescr(resourceDescr.resource, resourceDescr.configuration);
+        }
+    };
+
+    private static final ResourceToPkgDescrMapper GUIDED_DTABLE_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
+        public PackageDescr map(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception {
+            return kBuilder.guidedDecisionTableToPackageDescr(resourceDescr.resource);
+        }
+    };
+
+    private static final ResourceToPkgDescrMapper GUIDED_SCARD_TO_PKG_DESCR = new ResourceToPkgDescrMapper() {
+        public PackageDescr map(KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr) throws Exception {
+            return kBuilder.guidedScoreCardToPackageDescr(resourceDescr.resource);
         }
     };
 }

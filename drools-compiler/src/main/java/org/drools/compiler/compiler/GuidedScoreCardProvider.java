@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -13,17 +13,15 @@
  * limitations under the License.
 */
 
-package org.drools.workbench.models.commons.backend;
+package org.drools.compiler.compiler;
 
-import org.drools.compiler.kie.builder.impl.FormatConverter;
+import org.kie.api.Service;
 
-public abstract class BaseConverter implements FormatConverter {
+import java.io.IOException;
+import java.io.InputStream;
 
-    protected String getDestinationName(String name) {
-        return getDestinationName(name, false);
-    }
+public interface GuidedScoreCardProvider extends Service {
 
-    protected String getDestinationName(String name, boolean hasDsl) {
-        return name.substring(0, name.lastIndexOf('.')) + (hasDsl ? ".dslr" : ".drl");
-    }
+    String loadFromInputStream(InputStream is) throws IOException;
+
 }

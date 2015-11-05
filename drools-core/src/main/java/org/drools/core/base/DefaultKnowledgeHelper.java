@@ -367,13 +367,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public InternalFactHandle getFactHandle(Object object) {
-        InternalFactHandle handle = null;
-
-        if ( handle != null ) {
-            return handle;
-        }
-        
-        handle = getFactHandleFromWM( object );
+        InternalFactHandle handle = getFactHandleFromWM( object );
 
         if ( handle == null ) {
             if ( object instanceof CoreWrapper ) {
@@ -387,8 +381,8 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
     
     public InternalFactHandle getFactHandle(InternalFactHandle handle) {
-        Object object = ((InternalFactHandle)handle).getObject();
-        handle = (InternalFactHandle) getFactHandleFromWM( object );
+        Object object = handle.getObject();
+        handle = getFactHandleFromWM( object );
         if ( handle == null ) {
             throw new RuntimeException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
         }

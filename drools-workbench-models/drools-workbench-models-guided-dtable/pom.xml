@@ -18,6 +18,10 @@
 
     <!-- Internal dependencies -->
     <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
@@ -36,6 +40,12 @@
     <dependency>
       <groupId>com.thoughtworks.xstream</groupId>
       <artifactId>xstream</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 

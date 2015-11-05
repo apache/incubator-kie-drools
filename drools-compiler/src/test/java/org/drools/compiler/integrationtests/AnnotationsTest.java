@@ -615,4 +615,31 @@ public class AnnotationsTest  extends CommonTestMethodBase {
     }
 
 
+    @Test
+    public void testAnnotationOnLHSAndMerging() throws Exception {
+        final DrlParser parser = new DrlParser( LanguageLevelOption.DRL6 );
+
+        final KnowledgeBuilderImpl kBuilder = new KnowledgeBuilderImpl();
+
+        String ruleDrl =
+                "package org.drools.compiler; " +
+                " " +
+                "import " + Annot.class.getCanonicalName() + "; " +
+                " " +
+                "rule \"test collect with annotation\" " +
+                "    when " +
+                "       ( and @Annot " +
+                "         String() " +
+                "         Integer() ) " +
+                "    then " +
+                "end " +
+                "";
+
+        final PackageDescr pkgDescr = parser.parse( new StringReader( ruleDrl ) );
+
+        kBuilder.addPackage(pkgDescr);
+
+        assertTrue(kBuilder.getErrors().toString(),
+                   kBuilder.getErrors().isEmpty());
+    }
 }

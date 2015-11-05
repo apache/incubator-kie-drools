@@ -49,12 +49,12 @@ import static org.kie.scanner.MavenRepository.getMavenRepository;
 @RunWith(Parameterized.class)
 public class KieRepositoryScannerTest extends AbstractKieCiTest {
 
-    private final boolean uesWiredComponentProvider;
+    private final boolean useWiredComponentProvider;
 
     private FileManager fileManager;
     private File kPom;
 
-    @Parameterized.Parameters
+    @Parameterized.Parameters(name = "Manually wired component provider={0}")
     public static Collection modes() {
         Object[][] locking = new Object[][] {
                 { true },
@@ -63,13 +63,13 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         return Arrays.asList(locking);
     }
 
-    public KieRepositoryScannerTest( boolean uesWiredComponentProvider ) {
-        this.uesWiredComponentProvider = uesWiredComponentProvider;
+    public KieRepositoryScannerTest( boolean useWiredComponentProvider) {
+        this.useWiredComponentProvider = useWiredComponentProvider;
     }
 
     @Before
     public void setUp() throws Exception {
-        MavenEmbedderUtils.enforceWiredComponentProvider = uesWiredComponentProvider;
+        MavenEmbedderUtils.enforceWiredComponentProvider = useWiredComponentProvider;
         this.fileManager = new FileManager();
         this.fileManager.setUp();
         ReleaseId releaseId = KieServices.Factory.get().newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");

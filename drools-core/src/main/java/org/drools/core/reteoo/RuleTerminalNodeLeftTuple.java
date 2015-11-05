@@ -18,7 +18,6 @@ package org.drools.core.reteoo;
 
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.AgendaItem;
@@ -34,9 +33,8 @@ import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
-import org.kie.internal.runtime.beliefs.Mode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -388,7 +386,7 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     }
 
     public List<String> getDeclarationIds() {
-        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) getLeftTupleSink()).getDeclarations();
+        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) getLeftTupleSink()).getAllDeclarations();
         List<String> declarations = new ArrayList<String>();
         for (Declaration decl : declArray) {
             declarations.add(decl.getIdentifier());
