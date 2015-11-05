@@ -46,14 +46,8 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.TransactionManagerServices;
-
 public class UnmarshallingOverdueTimersTest extends AbstractBaseTest {
-    static {
-        if (!TransactionManagerServices.isTransactionManagerRunning()) {
-            TransactionManagerServices.getConfiguration().setJournal("null");
-        }
-    }
+
     private static final Logger logger = LoggerFactory.getLogger(MultipleProcessesPerThreadTest.class);
 
     private HashMap<String, Object> context;
