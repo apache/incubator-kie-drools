@@ -30,16 +30,16 @@ import org.kie.internal.task.api.model.SubTasksStrategy;
 
 /**
  * The Task Instance Service is in charge of
- *  handling all the actions required to interact with a 
+ *  handling all the actions required to interact with a
  *  Task Instance. All the operations described in the WS-HT specification
  *  related with the Task Lifecycle are implemented here.
  */
 public interface TaskInstanceService extends CommandExecutor {
 
-    /**
+    /*
      * LIFECYCLE METHODS
-     *
      */
+
     long addTask(Task task, Map<String, Object> params);
 
     long addTask(Task task, ContentData data);
@@ -89,37 +89,37 @@ public interface TaskInstanceService extends CommandExecutor {
     void deleteOutput(long taskId, String userId);
 
     void setPriority(long taskId, int priority);
-    
+
     void setTaskNames(long taskId, List<I18NText> taskNames);
-    
+
     void setExpirationDate(long taskId, Date date);
-    
+
     public void setDescriptions(long taskId, List<I18NText> descriptions);
-    
+
     public void setSkipable(long taskId, boolean skipable);
-    
+
     void setSubTaskStrategy(long taskId, SubTasksStrategy strategy);
-    
+
     int getPriority(long taskId);
-    
+
     Date getExpirationDate(long taskId);
-    
+
     List<I18NText> getDescriptions(long taskId);
-    
+
     boolean isSkipable(long taskId);
-    
+
     SubTasksStrategy getSubTaskStrategy(long taskId);
-    
+
     void setName(long taskId, String name);
-    
+
     void setDescription(long taskId, String description);
-    
+
     void setSubject(long taskId, String subject);
 
     long addOutputContentFromUser(long taskId, String userId, Map<String, Object> params);
-    
+
     Content getContentByIdForUser( long contentId, String userId );
 
     Map<String, Object> getContentMapForUser( Long taskId, String userId );
-    
+
 }

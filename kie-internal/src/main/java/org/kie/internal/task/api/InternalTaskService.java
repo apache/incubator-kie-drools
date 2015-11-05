@@ -36,7 +36,7 @@ import org.kie.internal.task.api.model.FaultData;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 import org.kie.internal.task.api.model.TaskDef;
 import org.kie.internal.task.api.model.TaskEvent;
-import org.kie.internal.task.query.TaskQueryBuilder;
+import org.kie.internal.task.query.TaskSummaryQueryBuilder;
 
 /**
  * The Task Service Entry Point serves as 
@@ -209,7 +209,7 @@ public interface InternalTaskService extends TaskService {
     
     ContentMarshallerContext getMarshallerContext(Task task);
     
-    TaskQueryBuilder taskQuery(String userId);
+    TaskSummaryQueryBuilder taskSummaryQuery(String userId);
     
     List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, String language ,List<Status> statuses);
     

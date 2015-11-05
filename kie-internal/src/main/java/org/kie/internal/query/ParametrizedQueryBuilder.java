@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -17,38 +17,62 @@ package org.kie.internal.query;
 
 
 /**
- * This is the base interface for all {@link ParametrizedQueryBuilder} implementations. 
+ * This is the base interface for all {@link ParametrizedQueryBuilder} implementations.
  * </p>
  * It includes the basic query functions.
  *
  * @param <T> The type of {@link ParametrizedQueryBuilder} instance being implemented. This type
- * is here to facilitate the building of a fluent interface. 
+ * is here to facilitate the building of a fluent interface.
  */
 public interface ParametrizedQueryBuilder<T> {
 
     /**
+     * Synonym for {@link #or()}
+     * </p>
      * Query criteria which are added to the query after this method
-     * are "OR" or "union" criteria. 
+     * are "OR" or "union" criteria.
      * </p>
      * Since this is based on SQL, please remember that intersection operands
-     * have precedence over union operands. 
+     * have precedence over union operands.
      * </p>
      * In other words, <ul>
      * <li><code>A or B and C == A or (B and C)</code></li>
      * <li><code>A and B or C == (A and B) or C</code></li>
      * </ul>
      * </p>
-     * This is the default mode for all query builders. 
+     * <b>This is the default mode for all query builders</b>.
      * @return the current query builder instance
      */
     public T union();
-    
+
+
     /**
+     * Synonym for {@link #union()}
+     * </p>
      * Query criteria which are added to the query after this method
-     * are "AND" or "intersection" criteria. 
+     * are "OR" or "union" criteria.
      * </p>
      * Since this is based on SQL, please remember that intersection operands
-     * have precedence over union operands. 
+     * have precedence over union operands.
+     * </p>
+     * In other words, <ul>
+     * <li><code>A or B and C == A or (B and C)</code></li>
+     * <li><code>A and B or C == (A and B) or C</code></li>
+     * </ul>
+     * </p>
+     * <b>This is the default mode for all query builders</b>.
+     * @return the current query builder instance
+     */
+    public T or();
+
+    /**
+     * Synonym for {@link #and()}
+     * </p>
+     * Query criteria which are added to the query after this method
+     * are "AND" or "intersection" criteria.
+     * </p>
+     * Since this is based on SQL, please remember that intersection operands
+     * have precedence over union operands.
      * </p>
      * In other words, <ul>
      * <li><code>A or B and C == A or (B and C)</code></li>
@@ -60,14 +84,31 @@ public interface ParametrizedQueryBuilder<T> {
     public T intersect();
 
     /**
+     * Synonym for {@link #intersect()}
+     * </p>
+     * Query criteria which are added to the query after this method
+     * are "AND" or "intersection" criteria.
+     * </p>
+     * Since this is based on SQL, please remember that intersection operands
+     * have precedence over union operands.
+     * </p>
+     * In other words, <ul>
+     * <li><code>A or B and C == A or (B and C)</code></li>
+     * <li><code>A and B or C == (A and B) or C</code></li>
+     * </ul>
+     * </p>
+     * @return the current query builder instance
+     */
+    public T and();
+
     /**
      * Query criteria which are added to the query after this method
-     * are regular expression (a.k.a "regex") criteria. In other words, 
+     * are regular expression (a.k.a "regex") criteria. In other words,
      * the query will return results which match the regular expressions
-     * specified. 
+     * specified.
      * </p>
-     * Only String criteria may be added after using this method. In order 
-     * to go back to adding normal or non-regex criteria, use the {@link #equals()} 
+     * Only String criteria may be added after using this method. In order
+     * to go back to adding normal or non-regex criteria, use the {@link #equals()}
      * method.
      * </p>
      * The following characters may be used:<ul>
@@ -78,29 +119,57 @@ public interface ParametrizedQueryBuilder<T> {
      *    <li>This character matches <em>zero or more</em> characters.</li>
      *   </ul></li>
      *   </ul>
+     *
+     * @deprecated will be deleted in 7.0
+     * @see {@code #regex()}
      * @return the current query builder instance
      */
+    @Deprecated
     public T like();
-    
+
+    /**
+     * Query criteria which are added to the query after this method
+     * are regular expression (a.k.a "regex") criteria. In other words,
+     * the query will return results which match the regular expressions
+     * specified.
+     * </p>
+     * Only String criteria may be added after using this method. In order
+     * to go back to adding normal or non-regex criteria, use the {@link #equals()}
+     * method.
+     * </p>
+     * The following characters may be used:<ul>
+     *  <li>.<ul>
+     *    <li>This character matches any <em>single</em> character.</li>
+     *   </ul></li>
+     *   <li>*<ul>
+     *    <li>This character matches <em>zero or more</em> characters.</li>
+     *   </ul></li>
+     *   </ul>
+     *
+     * @see {@code #like()}
+     * @return the current query builder instance
+     */
+    public T regex();
+
     /**
      * Results retrieved using query criteria added after this method
-     * is used, must <em>exactly</em> match the criteria given. 
+     * is used, must <em>exactly</em> match the criteria given.
      * </p>
      * If the {@link #like()} method has been used, using this method
      * will ensure that criteria added after this method are literally
      * interpreted, and <em>not</em> seen as regular expressions.
      * </p>
-     * This is the default mode for all query builders. 
+     * This is the default mode for all query builders.
      * @return the current query builder instance
      */
     public T equals();
-    
+
     /**
      * Clear all parameters and meta-criteria
      * @return the current query builder instance
      */
     public T clear();
-    
+
     /**
      * Limit the number of results returned by the query to the specified maximum.
      * @param maxResults The maximum number of results to return
@@ -108,12 +177,12 @@ public interface ParametrizedQueryBuilder<T> {
      * @return the current query builder instance
      */
     public T maxResults(int maxResults);
-   
+
     /**
      * Limit the results returned by excluding the specified number of results (the offset),
-     * from the start of the result list. 
+     * from the start of the result list.
      * </p>
-     * Which results are excluded (offset) is dependent on the order of the results returned. 
+     * Which results are excluded (offset) is dependent on the order of the results returned.
      * See the orderBy(enum) methods as well as {@link #ascending()} and {@link #descending()}.
      * @param offset The number of elements skipped before the first element in the result
      * @return the current query builder instance
