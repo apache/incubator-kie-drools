@@ -2082,6 +2082,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         }
     }
 
+    @Test
     public void testRetractLogicalAssertedObjectOnRuleRemoval() throws Exception {
         // DROOLS-951
         String drl1 =
