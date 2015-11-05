@@ -145,6 +145,27 @@ public class FlatQueryResults implements QueryResults {
                                          idResultMaps.iterator() );
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if ( this == o ) return true;
+        if ( !(o instanceof FlatQueryResults) ) return false;
+
+        FlatQueryResults that = (FlatQueryResults) o;
+
+        if ( idFactHandleMaps != null ? !idFactHandleMaps.equals( that.idFactHandleMaps ) : that.idFactHandleMaps != null ) return false;
+        if ( idResultMaps != null ? !idResultMaps.equals( that.idResultMaps ) : that.idResultMaps != null ) return false;
+        return !(identifiers != null ? !identifiers.equals( that.identifiers ) : that.identifiers != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = idFactHandleMaps != null ? idFactHandleMaps.hashCode() : 0;
+        result = 31 * result + (idResultMaps != null ? idResultMaps.hashCode() : 0);
+        result = 31 * result + (identifiers != null ? identifiers.hashCode() : 0);
+        return result;
+    }
+
     private static class QueryResultsIterator implements Iterator<QueryResultsRow> {
         private Iterator<Map<String, FactHandle>> handleIterator;
         private Iterator<Map<String, Object>> iterator;
