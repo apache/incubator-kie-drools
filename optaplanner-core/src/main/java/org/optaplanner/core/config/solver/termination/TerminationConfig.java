@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.solver.termination.AbstractCompositeTermination
 import org.optaplanner.core.impl.solver.termination.AndCompositeTermination;
 import org.optaplanner.core.impl.solver.termination.BestScoreFeasibleTermination;
 import org.optaplanner.core.impl.solver.termination.BestScoreTermination;
+import org.optaplanner.core.impl.solver.termination.CalculateCountTermination;
 import org.optaplanner.core.impl.solver.termination.OrCompositeTermination;
 import org.optaplanner.core.impl.solver.termination.StepCountTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
@@ -61,6 +62,8 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
 
     private Integer stepCountLimit = null;
     private Integer unimprovedStepCountLimit = null;
+
+    private Long calculateCountLimit = null;
 
     @XStreamImplicit(itemFieldName = "termination")
     private List<TerminationConfig> terminationConfigList = null;
@@ -193,6 +196,14 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         this.unimprovedStepCountLimit = unimprovedStepCountLimit;
     }
 
+    public Long getCalculateCountLimit() {
+        return calculateCountLimit;
+    }
+
+    public void setCalculateCountLimit(Long calculateCountLimit) {
+        this.calculateCountLimit = calculateCountLimit;
+    }
+
     public List<TerminationConfig> getTerminationConfigList() {
         return terminationConfigList;
     }
@@ -263,6 +274,9 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
         }
         if (stepCountLimit != null) {
             terminationList.add(new StepCountTermination(stepCountLimit));
+        }
+        if (calculateCountLimit != null) {
+            terminationList.add(new CalculateCountTermination(calculateCountLimit));
         }
         if (unimprovedStepCountLimit != null) {
             terminationList.add(new UnimprovedStepCountTermination(unimprovedStepCountLimit));
@@ -425,6 +439,8 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
                 inheritedConfig.getStepCountLimit());
         unimprovedStepCountLimit = ConfigUtils.inheritOverwritableProperty(unimprovedStepCountLimit,
                 inheritedConfig.getUnimprovedStepCountLimit());
+        calculateCountLimit = ConfigUtils.inheritOverwritableProperty(calculateCountLimit,
+                inheritedConfig.getCalculateCountLimit());
         terminationConfigList = ConfigUtils.inheritMergeableListConfig(
                 terminationConfigList, inheritedConfig.getTerminationConfigList());
     }

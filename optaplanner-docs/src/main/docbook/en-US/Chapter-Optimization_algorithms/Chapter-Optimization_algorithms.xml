@@ -716,7 +716,7 @@
     <section xml:id="timeMillisSpentTermination">
       <title>TimeMillisSpentTermination</title>
 
-      <para>Terminates when an amount of time has been used:</para>
+      <para>Terminates when an amount of time has been used.</para>
 
       <programlisting language="xml">  &lt;termination&gt;
     &lt;millisecondsSpentLimit&gt;500&lt;/millisecondsSpentLimit&gt;
@@ -774,7 +774,7 @@
     <section xml:id="unimprovedTimeMillisSpentTermination">
       <title>UnimprovedTimeMillisSpentTermination</title>
 
-      <para>Terminates when the best score hasn't improved in an amount of time:</para>
+      <para>Terminates when the best score hasn't improved in an amount of time.</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     &lt;termination&gt;
@@ -832,9 +832,8 @@
     <section xml:id="bestScoreTermination">
       <title>BestScoreTermination</title>
 
-      <para>Terminates when a certain score has been reached. You can use this <literal>Termination</literal> if you
-      know the perfect score, for example for 4 queens (which uses a <link
-      linkend="simpleScore">SimpleScore</link>):</para>
+      <para>Terminates when a certain score has been reached. Use this <literal>Termination</literal> if you know the
+      perfect score, for example for 4 queens (which uses a <link linkend="simpleScore">SimpleScore</link>):</para>
 
       <programlisting language="xml">  &lt;termination&gt;
     &lt;bestScoreLimit&gt;0&lt;/bestScoreLimit&gt;
@@ -875,7 +874,8 @@
     <section xml:id="stepCountTermination">
       <title>StepCountTermination</title>
 
-      <para>Terminates when an amount of steps has been reached:</para>
+      <para>Terminates when a number of steps has been reached. This is useful for hardware performance independent
+      runs.</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     &lt;termination&gt;
@@ -890,7 +890,8 @@
     <section xml:id="unimprovedStepCountTermination">
       <title>UnimprovedStepCountTermination</title>
 
-      <para>Terminates when the best score hasn't improved in a number of steps:</para>
+      <para>Terminates when the best score hasn't improved in a number of steps. This is useful for hardware performance
+      independent runs.</para>
 
       <programlisting language="xml">  &lt;localSearch&gt;
     &lt;termination&gt;
@@ -904,6 +905,20 @@
 
       <para>This <literal>Termination</literal> can only be used for a <literal>Phase</literal> (such as
       <literal>&lt;localSearch&gt;</literal>), not for the <literal>Solver</literal> itself.</para>
+    </section>
+
+    <section xml:id="calculateCountTermination">
+      <title>CalculateCountTermination</title>
+
+      <para>Terminates when a number of score calculations (which is usually the sum of the number of moves and the
+      number of steps) have been reached. This is useful for benchmarking.</para>
+
+      <programlisting language="xml">  &lt;termination&gt;
+    &lt;calculateCountLimit&gt;100000&lt;/calculateCountLimit&gt;
+  &lt;/termination&gt;</programlisting>
+
+      <para>Switching <link linkend="environmentMode">EnvironmentMode</link> can heavily impact when this termination
+      ends.</para>
     </section>
 
     <section xml:id="combiningMultipleTerminations">
