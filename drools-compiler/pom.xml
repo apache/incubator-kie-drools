@@ -7,6 +7,7 @@
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
     <version>6.3.1-SNAPSHOT</version>
+    <!--<version>6.3.0.Final</version>-->
   </parent>
 
   <artifactId>drools-compiler</artifactId>
@@ -19,6 +20,15 @@
   </properties>
 
   <dependencies>
+  	<dependency>
+		<groupId>com.answers.kie</groupId>
+		<artifactId>layoutmode</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+	<dependency>
+			<groupId>org.kie</groupId>
+			<artifactId>kie-ci</artifactId>
+	</dependency>
     <!-- Internal dependencies -->
     <dependency>
       <groupId>org.drools</groupId>

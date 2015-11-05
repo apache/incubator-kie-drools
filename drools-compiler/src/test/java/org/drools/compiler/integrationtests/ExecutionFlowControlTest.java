@@ -37,6 +37,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieScanner;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
@@ -46,6 +49,7 @@ import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
@@ -91,6 +95,59 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
       rulesFiredList.clear();
     }
   }
+  
+  
+  
+  @Test
+  public void testActivationGroupIssueFromJar() throws Exception {
+    final String groupId = "com.answers.kie";
+    final String artifactId = "layoutmode";
+    final String version = "0.0.1-SNAPSHOT";
+    KieServices ks = KieServices.Factory.get();
+    KieBaseConfiguration kbaseConf = ks.newKieBaseConfiguration();
+    ReleaseId releaseId = ks.newReleaseId(groupId, artifactId, version);
+    KieContainer container = ks.newKieContainer(releaseId);
+    KieScanner kScanner = ks.newKieScanner(container);
+    // Start the KieScanner polling the Maven repository
+    kScanner.start(180 * 1000);
+    kScanner.scanNow();
+//    KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory
+//        .newKnowledgeBaseConfiguration();
+
+    KieBase kbase = container.newKieBase(kbaseConf);
+    
+    //KieBase kbase = loadKnowledgeBaseFromString(rule1);
+    KieSession ksession = kbase.newKieSession();
+    final List list = new ArrayList();
+    ksession.setGlobal("list", list);
+    TrackingAgendaEventListener listener=new TrackingAgendaEventListener();
+    ksession.addEventListener(listener);
+    
+        
+        final LayoutModeInput input = new LayoutModeInput();
+        input.setCity("mountain view");
+        final String ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)";
+        input.setUser_agent(ua);
+        
+        int loop = 10;
+        
+        for (int i = 0; i < loop; i++) {
+          ksession.insert(input);
+          //((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("ruleflow-group-visitor-classification");
+          int fired=ksession.fireAllRules();
+          System.out.println("i="+i);
+          System.out.println("fired rules "+fired);
+          System.out.println(listener.getRulesFiredList());
+          System.out.println(list.size());
+          System.out.println(list);
+          for (Object obj : ksession.getObjects()) {
+            ksession.delete(ksession.getFactHandle(obj));
+          }
+          listener.reset();
+          list.clear();
+        }
+  }
+  
   @Test
   public void testActivationGroupIssue() throws Exception {
 //    KieBase kbase = loadKnowledgeBase(ResourceType.DRL, null, null,
@@ -163,7 +220,20 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         +"                insert( fact0 );\n"
         +"end\n";
     
-    String [] drlContentStrings={rule1,rule2,rule3,rule4};
+    String rule5 = prefix
+        +"rule \"start_lmi_ruleflow\"\n"
+        +"        salience 10000000\n"
+        +"        activation-group \"visitor_classification\"\n"
+        +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
+        +"        dialect \"mvel\"\n"
+        +"        when\n"
+        +"                LayoutModeInput( )\n"
+        +"        then\n"
+        +"                list.add( \"start_lmi_ruleflow\" );\n"
+        +"                drools.getWorkingMemory().startProcess(\"layoutmode.test_rule_flow\");;\n"
+        +"end\n";
+    
+    String [] drlContentStrings={rule1,rule2,rule3,rule4,rule5};
     System.out.println(Arrays.toString(drlContentStrings));
     
     KieBaseConfiguration kBaseConfig=KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
@@ -173,7 +243,10 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
           .getBytes());
       kbuilder.add(resource, ResourceType.RDRL);
     }
-
+    //add process file
+    Resource resource = ResourceFactory.newClassPathResource("test_rule_flow.bpmn2");
+    kbuilder.add(resource, ResourceType.BPMN2);
+    
     if (kbuilder.hasErrors()) {
       fail(kbuilder.getErrors().toString());
     }
