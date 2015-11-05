@@ -57,7 +57,7 @@
 
       <programlisting language="java">        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
                 "org/optaplanner/examples/nqueens/benchmark/nqueensBenchmarkConfig.xml");
-        PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         plannerBenchmark.benchmark();</programlisting>
 
       <para>A benchmark configuration file looks like this:</para>
@@ -247,7 +247,7 @@
       reliable</emphasis>, because they will have lost CPU time on HotSpot JIT compilation (and possibly DRL compilation
       too).</para>
 
-      <para>The avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time,
+      <para>To avoid that distortion, the benchmarker can run some of the benchmarks for a specified amount of time,
       before running the real benchmarks. Generally, a warm up of 30 seconds suffices:</para>
 
       <programlisting language="xml">&lt;plannerBenchmark&gt;
@@ -843,8 +843,8 @@
 
       <para>Requires the score calculation to support <link linkend="explainingTheScore">constraint matches</link>.
       <link linkend="droolsScoreCalculation">Drools score calculation</link> supports constraint matches automatically,
-      but <link linkend="incrementalJavaScoreCalculation">incremental Java score calculation</link> requires requires
-      more work.</para>
+      but <link linkend="incrementalJavaScoreCalculation">incremental Java score calculation</link> requires more work.
+      </para>
 
       <warning>
         <para>The constraint match total statistics has been seen to affect the solver noticeably.</para>
@@ -873,8 +873,8 @@
 
       <para>Requires the score calculation to support <link linkend="explainingTheScore">constraint matches</link>.
       <link linkend="droolsScoreCalculation">Drools score calculation</link> supports constraint matches automatically,
-      but <link linkend="incrementalJavaScoreCalculation">incremental Java score calculation</link> requires requires
-      more work.</para>
+      but <link linkend="incrementalJavaScoreCalculation">incremental Java score calculation</link> requires more work.
+      </para>
 
       <warning>
         <para>The constraint match total statistics has been seen to affect the solver noticeably.</para>
@@ -1081,7 +1081,7 @@
 
       <programlisting language="java">        PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlResource(
                 "org/optaplanner/examples/cloudbalancing/benchmark/cloudBalancingBenchmarkConfigTemplate.xml.ftl");
-        PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark();</programlisting>
+        PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();</programlisting>
     </section>
 
     <section xml:id="benchmarkReportAggregation">
