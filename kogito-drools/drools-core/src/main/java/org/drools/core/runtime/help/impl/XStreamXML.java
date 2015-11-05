@@ -1037,9 +1037,11 @@ public class XStreamXML {
                     reader.moveDown(); // identifier node
                     String identifier = reader.getAttribute("id");
 
+                    reader.moveDown();
                     Object object = readItem( reader,
                                               context,
                                               null );
+                    reader.moveUp();
 
                     reader.moveDown();
                     FactHandle handle = DefaultFactHandle.createFromExternalFormat( reader.getAttribute( "external-form" ) );
