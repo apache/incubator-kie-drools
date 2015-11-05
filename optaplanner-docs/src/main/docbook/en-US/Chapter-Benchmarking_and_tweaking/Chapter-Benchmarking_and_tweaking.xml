@@ -843,8 +843,8 @@
 
       <para>Requires the score calculation to support <link linkend="explainingTheScore">constraint matches</link>.
       <link linkend="droolsScoreCalculation">Drools score calculation</link> supports constraint matches automatically,
-      but <link linkend="incrementalJavaScoreCalculation">incremental Java score calculation</link> requires more work.
-      </para>
+      but <link linkend="incrementalJavaScoreCalculation">incremental Java score calculation</link> requires more
+      work.</para>
 
       <warning>
         <para>The constraint match total statistics has been seen to affect the solver noticeably.</para>
@@ -873,8 +873,8 @@
 
       <para>Requires the score calculation to support <link linkend="explainingTheScore">constraint matches</link>.
       <link linkend="droolsScoreCalculation">Drools score calculation</link> supports constraint matches automatically,
-      but <link linkend="incrementalJavaScoreCalculation">incremental Java score calculation</link> requires more work.
-      </para>
+      but <link linkend="incrementalJavaScoreCalculation">incremental Java score calculation</link> requires more
+      work.</para>
 
       <warning>
         <para>The constraint match total statistics has been seen to affect the solver noticeably.</para>
