@@ -208,11 +208,6 @@ public class IoUtils {
         byte[] buffer = new byte[Math.max(length, 8192)];
         ByteArrayOutputStream output = new ByteArrayOutputStream(buffer.length);
 
-        if (length > 0) {
-            int n = input.read(buffer);
-            output.write(buffer, 0, n);
-        }
-
         int n = 0;
         while (-1 != (n = input.read(buffer))) {
             output.write(buffer, 0, n);
