@@ -36,7 +36,9 @@ public class CompositePackageDescr extends PackageDescr {
 
     public void addPackageDescr(Resource resource, PackageDescr packageDescr) {
         if (!getNamespace().equals(packageDescr.getNamespace())) {
-            throw new RuntimeException("Composing PackageDescr in different namespaces");
+            throw new RuntimeException("Composing PackageDescr (" + packageDescr.getName()
+                + ") in different namespaces (namespace=" + getNamespace()
+                + " packageDescr=" + packageDescr.getNamespace() + ")" );
         }
         internalAdd(resource, packageDescr);
     }
