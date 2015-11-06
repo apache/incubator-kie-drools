@@ -9,4 +9,11 @@ public interface ExtendedKieCommands extends KieCommands {
 
     public Command newEnableAuditLog( String filename );
 
+    public Command newClearActivationGroup(String name);
+
+    public Command newClearAgenda();
+
+    public Command newClearAgendaGroup(String name);
+
+    public Command newClearRuleFlowGroup(String name);
 }
