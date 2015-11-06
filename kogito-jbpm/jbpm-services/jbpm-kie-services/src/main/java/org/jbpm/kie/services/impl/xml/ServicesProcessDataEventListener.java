@@ -277,7 +277,14 @@ public class ServicesProcessDataEventListener implements ProcessDataEventListene
         // process variables
         if (variables != null) {
             for (Variable data : variables) {
-                processDescriptor.getInputs().put(data.getName(), data.getType().getStringType());
+                String type = data.getType().getStringType();
+                String itemSubjectRef = (String) data.getMetaData("ItemSubjectRef");
+                if (itemSubjectRef != null) {
+                    ItemDefinition itemDef = itemDefinitions.get(itemSubjectRef);
+                    type = itemDef.getStructureRef();
+                }
+                
+                processDescriptor.getInputs().put(data.getName(), type);
             }
         }
     }

@@ -61,6 +61,7 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         processes.add("repo/processes/general/callactivity.bpmn");
         processes.add("repo/processes/general/BPMN2-UserTask.bpmn2");
         processes.add("repo/processes/itemrefissue/itemrefissue.bpmn");
+        processes.add("repo/processes/general/ObjectVariableProcess.bpmn2");
         
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
@@ -153,7 +154,7 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         
         assertEquals(4, processTasks.size());
         Map<String, String> processData = bpmn2Service.getProcessVariables(deploymentUnit.getIdentifier(), processId);
-        
+
         assertEquals(9, processData.keySet().size());
         Map<String, String> taskInputMappings = bpmn2Service.getTaskInputMappings(deploymentUnit.getIdentifier(), processId, "HR Interview" );
         
@@ -277,5 +278,33 @@ public class BPMN2DataServicesTest extends AbstractKieServicesBaseTest {
         
         procDef = bpmn2Service.getProcessDefinition(deploymentUnit.getIdentifier(), processId);
         assertNull(procDef);
+    }
+
+    @Test
+    public void testObjectVariable() throws IOException {
+        assertNotNull(deploymentService);
+
+        DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+
+        String processId = "ObjectVariableProcess";
+
+        ProcessDefinition procDef = bpmn2Service.getProcessDefinition(deploymentUnit.getIdentifier(), processId);
+        assertNotNull(procDef);
+
+        assertEquals(procDef.getId(), "ObjectVariableProcess");
+        assertEquals(procDef.getName(), "ObjectVariableProcess");
+        assertEquals(procDef.getKnowledgeType(), "PROCESS");
+        assertEquals(procDef.getPackageName(), "defaultPackage");
+        assertEquals(procDef.getType(), "RuleFlow");
+        assertEquals(procDef.getVersion(), "1");
+
+        Map<String, String> processData = bpmn2Service.getProcessVariables(deploymentUnit.getIdentifier(), processId);
+
+        assertEquals("String", processData.get("type"));
+        assertEquals("Object", processData.get("myobject"));
+        assertEquals(2, processData.keySet().size());
     }
 }
