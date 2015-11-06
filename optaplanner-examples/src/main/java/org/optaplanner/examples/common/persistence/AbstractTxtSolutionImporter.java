@@ -137,6 +137,24 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             }
         }
 
+        public boolean readOptionalConstantLine(String constantRegex) throws IOException {
+            bufferedReader.mark(1024);
+            boolean valid = true;
+            String line = bufferedReader.readLine();
+            if (line == null) {
+                valid = false;
+            } else {
+                String value = line.trim();
+                if (!value.matches(constantRegex)) {
+                    valid = false;
+                }
+            }
+            if (!valid) {
+                bufferedReader.reset();
+            }
+            return valid;
+        }
+
         public void readUntilConstantLine(String constantRegex) throws IOException {
             String line;
             String value;
@@ -195,6 +213,7 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
                         + value + ").", e);
             }
         }
+
         public String readStringValue() throws IOException {
             return readStringValue("");
         }
@@ -211,6 +230,7 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             }
             return removePrefixSuffixFromLine(line, prefixRegex, suffixRegex);
         }
+
         public String readOptionalStringValue(String defaultValue) throws IOException {
             return readOptionalStringValue("", defaultValue);
         }

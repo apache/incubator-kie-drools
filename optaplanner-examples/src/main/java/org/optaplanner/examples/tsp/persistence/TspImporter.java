@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.tsp.domain.Domicile;
+import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
 import org.optaplanner.examples.tsp.domain.location.AirLocation;
@@ -101,8 +103,9 @@ public class TspImporter extends AbstractTxtSolutionImporter {
         private void readTspLibFormat() throws IOException {
             readTspLibHeaders();
             readTspLibCityList();
-            readConstantLine("EOF");
             createVisitList();
+            readTspLibSolution();
+            readConstantLine("EOF");
         }
 
         private void readTspLibHeaders() throws IOException {
@@ -196,6 +199,35 @@ public class TspImporter extends AbstractTxtSolutionImporter {
                 count++;
             }
             travelingSalesmanTour.setVisitList(visitList);
+        }
+
+        private void readTspLibSolution() throws IOException {
+            boolean enabled = readOptionalConstantLine("TOUR_SECTION");
+            if (!enabled) {
+                return;
+            }
+            long domicileId = readLongValue();
+            Domicile domicile = travelingSalesmanTour.getDomicile();
+            if (!domicile.getId().equals(domicileId)) {
+                throw new IllegalStateException("The domicileId (" + domicileId
+                        + ") is not the domicile's id (" + domicile.getId() + ").");
+            }
+            int visitListSize = travelingSalesmanTour.getVisitList().size();
+            Map<Long, Visit> idToVisitMap = new HashMap<Long, Visit>(visitListSize);
+            for (Visit visit : travelingSalesmanTour.getVisitList()) {
+                idToVisitMap.put(visit.getId(), visit);
+            }
+            Standstill previousStandstill = domicile;
+            for (int i = 0; i < visitListSize; i++) {
+                long visitId = readLongValue();
+                Visit visit = idToVisitMap.get(visitId);
+                if (visit == null) {
+                    throw new IllegalStateException("The visitId (" + visitId
+                            + ") is does not exist.");
+                }
+                visit.setPreviousStandstill(previousStandstill);
+                previousStandstill = visit;
+            }
         }
 
         // ************************************************************************
