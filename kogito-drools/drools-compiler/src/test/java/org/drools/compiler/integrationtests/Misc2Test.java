@@ -8148,4 +8148,38 @@ public class Misc2Test extends CommonTestMethodBase {
             this.objects = objects;
         }
     }
+
+    @Test
+    public void testPatternMatchingWithFakeImplicitCast() {
+        // DROOLS-966
+        String drl =
+                "rule R1 when\n" +
+                "    String( this == \"\\\"#\")\n" +
+                "then \n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        ksession.insert( "\"#" );
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testPatternMatchingWithFakeNullSafe() {
+        // DROOLS-966
+        String drl =
+                "rule R1 when\n" +
+                "    String( this == \"\\\"!.\")\n" +
+                "then \n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        ksession.insert( "\"!." );
+        assertEquals( 1, ksession.fireAllRules());
+    }
 }
