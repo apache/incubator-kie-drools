@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.answers.kie</groupId>
+  <artifactId>layoutmode</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>layoutmode</name>
+  <description>To deploy a PRODUCTION RELEASE version:
+Change the version to 0.0.1-SNAPSHOT then save, and build&amp;deploy
+
+To deploy a RELEASE CANDIDATE version:
+Change the version to 9.9.9-SNAPSHOT then save, and build&amp;deploy
+
+Please don't change the Group ID and Artifact ID.</description>
+  
+</project>
