@@ -15,7 +15,10 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.fail;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.compiler.Cell;
 import org.drools.compiler.Cheese;
@@ -38,7 +41,6 @@ import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieScanner;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
@@ -55,22 +57,15 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.RuleEngineOption;
-import org.kie.internal.definition.KnowledgePackage;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.scanner.MavenRepository;
 
 import com.answers.kie.layoutmode.LayoutModeInput;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class ExecutionFlowControlTest extends CommonTestMethodBase {
+  
   public static class TrackingAgendaEventListener extends
       DefaultAgendaEventListener {
     private List<String> rulesFiredList = new ArrayList<String>();
@@ -96,34 +91,31 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
     }
   }
   
-  
-  
   @Test
   public void testActivationGroupIssueFromJar() throws Exception {
-    final String groupId = "com.answers.kie";
-    final String artifactId = "layoutmode";
-    final String version = "0.0.1-SNAPSHOT";
-    KieServices ks = KieServices.Factory.get();
-    KieBaseConfiguration kbaseConf = ks.newKieBaseConfiguration();
-    ReleaseId releaseId = ks.newReleaseId(groupId, artifactId, version);
-    KieContainer container = ks.newKieContainer(releaseId);
-    KieScanner kScanner = ks.newKieScanner(container);
-    // Start the KieScanner polling the Maven repository
-    kScanner.start(180 * 1000);
-    kScanner.scanNow();
-//    KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory
-//        .newKnowledgeBaseConfiguration();
-
-    KieBase kbase = container.newKieBase(kbaseConf);
-    
-    //KieBase kbase = loadKnowledgeBaseFromString(rule1);
-    KieSession ksession = kbase.newKieSession();
-    final List list = new ArrayList();
-    ksession.setGlobal("list", list);
-    TrackingAgendaEventListener listener=new TrackingAgendaEventListener();
-    ksession.addEventListener(listener);
-    
+        final String groupId = "com.answers.kie";
+        final String artifactId = "layoutmode";
+        final String version = "1.0-SNAPSHOT";
         
+        java.io.File jar = new java.io.File("target/test-classes/com/answers/kie/layoutmode/0.0.1-SNAPSHOT/layoutmode-0.0.1-SNAPSHOT.jar");
+        java.io.File pom = new java.io.File("target/test-classes/com/answers/kie/layoutmode/0.0.1-SNAPSHOT/layoutmode-0.0.1-SNAPSHOT.pom");
+        
+        MavenRepository repository = MavenRepository.getMavenRepository();
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId(groupId, artifactId, version);
+        // deploy to m2 repository
+        repository.deployArtifact(releaseId, jar, pom);
+        
+        KieBaseConfiguration kbaseConf = ks.newKieBaseConfiguration();
+        KieContainer container = ks.newKieContainer(releaseId);
+        KieBase kbase = container.newKieBase(kbaseConf);
+        
+        KieSession ksession = kbase.newKieSession();
+        final List list = new ArrayList();
+        //ksession.setGlobal("list", list);
+        TrackingAgendaEventListener listener=new TrackingAgendaEventListener();
+        ksession.addEventListener(listener);
+
         final LayoutModeInput input = new LayoutModeInput();
         input.setCity("mountain view");
         final String ua = "Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A5376e Safari/8536.25 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)";
@@ -133,13 +125,14 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         
         for (int i = 0; i < loop; i++) {
           ksession.insert(input);
-          //((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("ruleflow-group-visitor-classification");
-          int fired=ksession.fireAllRules();
-          System.out.println("i="+i);
-          System.out.println("fired rules "+fired);
-          System.out.println(listener.getRulesFiredList());
-          System.out.println(list.size());
-          System.out.println(list);
+          int fired = ksession.fireAllRules();
+          System.out.println("i=" + i);
+          System.out.println(fired + " rules fired");
+          List<String> firedRules = listener.getRulesFiredList();
+          System.out.println("firedRules " + firedRules);
+          if (firedRules.contains("VisitorClassification_type_4_7000")) {
+            fail("Activation group issue happenes!");
+          }
           for (Object obj : ksession.getObjects()) {
             ksession.delete(ksession.getFactHandle(obj));
           }
@@ -150,120 +143,111 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
   
   @Test
   public void testActivationGroupIssue() throws Exception {
-//    KieBase kbase = loadKnowledgeBase(ResourceType.DRL, null, null,
-//        "test_ActivationGroupIssue.drl");
-//        String [] rules={"test_ActivationGroupIssue.drl","test_salienceIntegerRule.drl"};
-//        KieBase kbase = loadKnowledgeBase(rules);
-//        KieSession ksession = kbase.newKieSession();
-    
-    String prefix="package com.answers.kie.layoutmode\n"
-        //"package org.drools.compiler.test\n"
-        +"import com.answers.kie.layoutmode.LayoutModeInput;\n"
-        +"import com.answers.kie.layoutmode.VisitorClass;\n"
-        +"global java.util.List list;\n";
-    String rule1 = prefix
-        +"rule \"Global_VisitorClassification_type_crawler\"\n"
-        +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
-        +"        activation-group \"activation-group-visitor-classification-root\"\n"
-        +"        salience 2\n"
-        +"        dialect \"mvel\"\n"
-        +"        when\n"
-        +"                LayoutModeInput( user_agent matches \".*Googlebot.*\" )\n"
-        +"                not (VisitorClass( classLevel == \"type_crawler\" )) \n"
-        +"        then\n"
-        +"                list.add( \"Global_VisitorClassification_type_crawler\" );\n"
-        +"                VisitorClass fact0 = new VisitorClass();\n"
-        +"                fact0.setClassLevel( \"type_crawler\" );\n"
-        +"                insert( fact0 );\n"
-        +"end\n";
-    
-    String rule2 = prefix
-        +"rule \"LMI_default_null\"\n"
-        +"        salience -1\n"
-        +"        activation-group \"visitor_classification\"\n"
-        +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
-        +"        dialect \"mvel\"\n"
-        +"        when\n"
-        +"                exists (LayoutModeInput( ))\n" 
-        +"        then\n"
-        +"                list.add( \"LMI_default_null\" );\n"        
-        +"end\n";
-    
-    String rule3 = prefix
-        +"rule \"VisitorClassification_lowperf_10004\"\n"
-        +"        salience 10004\n"
-        +"        activation-group \"visitor_classification\"\n"
-        +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
-        +"        dialect \"mvel\"\n"
-        +"        when\n"
-        +"                LayoutModeInput( city == \"mountain view\" )\n"
-        +"        then\n"
-        +"                list.add( \"VisitorClassification_lowperf_10004\" );\n"
-        +"                VisitorClass fact0 = new VisitorClass();\n"
-        +"                fact0.setClassLevel( \"low_perf\" );\n"
-        +"                insert( fact0 );\n"
-        +"end\n";
-    
-    String rule4 = prefix
-        +"rule \"VisitorClassification_type_4_7000\"\n"
-        +"        salience 7000\n"
-        +"        activation-group \"visitor_classification\"\n"
-        +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
-        +"        dialect \"mvel\"\n"
-        +"        when\n"
-        +"                lmi : LayoutModeInput( user_agent matches \".*Safari.*\" )\n"
-        +"                LayoutModeInput(source == null)\n"
-        +"        then\n"
-        +"                list.add( \"VisitorClassification_type_4_7000\" );\n"
-        +"                VisitorClass fact0 = new VisitorClass();\n"
-        +"                fact0.setClassLevel( \"type_4\" );\n"
-        +"                insert( fact0 );\n"
-        +"end\n";
-    
-    String rule5 = prefix
-        +"rule \"start_lmi_ruleflow\"\n"
-        +"        salience 10000000\n"
-        +"        activation-group \"visitor_classification\"\n"
-        +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
-        +"        dialect \"mvel\"\n"
-        +"        when\n"
-        +"                LayoutModeInput( )\n"
-        +"        then\n"
-        +"                list.add( \"start_lmi_ruleflow\" );\n"
-        +"                drools.getWorkingMemory().startProcess(\"layoutmode.test_rule_flow\");;\n"
-        +"end\n";
-    
-    String [] drlContentStrings={rule1,rule2,rule3,rule4,rule5};
-    System.out.println(Arrays.toString(drlContentStrings));
-    
-    KieBaseConfiguration kBaseConfig=KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-    KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-    for (String drlContentString : drlContentStrings) {
-      Resource resource = ResourceFactory.newByteArrayResource(drlContentString
-          .getBytes());
-      kbuilder.add(resource, ResourceType.RDRL);
-    }
-    //add process file
-    Resource resource = ResourceFactory.newClassPathResource("test_rule_flow.bpmn2");
-    kbuilder.add(resource, ResourceType.BPMN2);
-    
-    if (kbuilder.hasErrors()) {
-      fail(kbuilder.getErrors().toString());
-    }
-    if (kBaseConfig == null) {
-      kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-    }
-    kBaseConfig.setOption(phreak);
-    KnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
-    System.out.println("getKnowledgePackages "+kbuilder.getKnowledgePackages());
-    kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-    
-    //KieBase kbase = loadKnowledgeBaseFromString(rule1);
-    KieSession ksession = kbase.newKieSession();
-    final List list = new ArrayList();
-    ksession.setGlobal("list", list);
-    TrackingAgendaEventListener listener=new TrackingAgendaEventListener();
-    ksession.addEventListener(listener);
+        String prefix="package com.answers.kie.layoutmode\n"
+            +"import com.answers.kie.layoutmode.LayoutModeInput;\n"
+            +"import com.answers.kie.layoutmode.VisitorClass;\n"
+            +"global java.util.List list;\n";
+        String rule1 = prefix
+            +"rule \"Global_VisitorClassification_type_crawler\"\n"
+            +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
+            +"        activation-group \"activation-group-visitor-classification-root\"\n"
+            +"        salience 2\n"
+            +"        dialect \"mvel\"\n"
+            +"        when\n"
+            +"                LayoutModeInput( user_agent matches \".*Googlebot.*\" )\n"
+            +"                not (VisitorClass( classLevel == \"type_crawler\" )) \n"
+            +"        then\n"
+            +"                list.add( \"Global_VisitorClassification_type_crawler\" );\n"
+            +"                VisitorClass fact0 = new VisitorClass();\n"
+            +"                fact0.setClassLevel( \"type_crawler\" );\n"
+            +"                insert( fact0 );\n"
+            +"end\n";
+        
+        String rule2 = prefix
+            +"rule \"LMI_default_null\"\n"
+            +"        salience -1\n"
+            +"        activation-group \"visitor_classification\"\n"
+            +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
+            +"        dialect \"mvel\"\n"
+            +"        when\n"
+            +"                exists (LayoutModeInput( ))\n" 
+            +"        then\n"
+            +"                list.add( \"LMI_default_null\" );\n"        
+            +"end\n";
+        
+        String rule3 = prefix
+            +"rule \"VisitorClassification_lowperf_10004\"\n"
+            +"        salience 10004\n"
+            +"        activation-group \"visitor_classification\"\n"
+            +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
+            +"        dialect \"mvel\"\n"
+            +"        when\n"
+            +"                LayoutModeInput( city == \"mountain view\" )\n"
+            +"        then\n"
+            +"                list.add( \"VisitorClassification_lowperf_10004\" );\n"
+            +"                VisitorClass fact0 = new VisitorClass();\n"
+            +"                fact0.setClassLevel( \"low_perf\" );\n"
+            +"                insert( fact0 );\n"
+            +"end\n";
+        
+        String rule4 = prefix
+            +"rule \"VisitorClassification_type_4_7000\"\n"
+            +"        salience 7000\n"
+            +"        activation-group \"visitor_classification\"\n"
+            +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
+            +"        dialect \"mvel\"\n"
+            +"        when\n"
+            +"                lmi : LayoutModeInput( user_agent matches \".*Safari.*\" )\n"
+            +"                LayoutModeInput(source == null)\n"
+            +"        then\n"
+            +"                list.add( \"VisitorClassification_type_4_7000\" );\n"
+            +"                VisitorClass fact0 = new VisitorClass();\n"
+            +"                fact0.setClassLevel( \"type_4\" );\n"
+            +"                insert( fact0 );\n"
+            +"end\n";
+        
+        String rule5 = prefix
+            +"rule \"start_lmi_ruleflow\"\n"
+            +"        salience 10000000\n"
+            +"        activation-group \"visitor_classification\"\n"
+            +"        ruleflow-group \"ruleflow-group-visitor-classification\"\n"
+            +"        dialect \"mvel\"\n"
+            +"        when\n"
+            +"                LayoutModeInput( )\n"
+            +"        then\n"
+            +"                list.add( \"start_lmi_ruleflow\" );\n"
+            +"                drools.getWorkingMemory().startProcess(\"layoutmode.test_rule_flow\");;\n"
+            +"end\n";
+        
+        String [] drlContentStrings={rule1,rule2,rule3,rule4,rule5};
+        System.out.println(Arrays.toString(drlContentStrings));
+        
+        KieBaseConfiguration kBaseConfig=KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        for (String drlContentString : drlContentStrings) {
+          Resource resource = ResourceFactory.newByteArrayResource(drlContentString
+              .getBytes());
+          kbuilder.add(resource, ResourceType.RDRL);
+        }
+        //add process file
+        Resource resource = ResourceFactory.newClassPathResource("test_rule_flow.bpmn2");
+        kbuilder.add(resource, ResourceType.BPMN2);
+        
+        if (kbuilder.hasErrors()) {
+          fail(kbuilder.getErrors().toString());
+        }
+        if (kBaseConfig == null) {
+          kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
+        }
+        kBaseConfig.setOption(phreak);
+        KnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        
+        KieSession ksession = kbase.newKieSession();
+        final List list = new ArrayList();
+        ksession.setGlobal("list", list);
+        TrackingAgendaEventListener listener=new TrackingAgendaEventListener();
+        ksession.addEventListener(listener);
     
         
         final LayoutModeInput input = new LayoutModeInput();
@@ -276,25 +260,21 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
         for (int i = 0; i < loop; i++) {
           ksession.insert(input);
           ((InternalAgenda)ksession.getAgenda()).activateRuleFlowGroup("ruleflow-group-visitor-classification");
-          int fired=ksession.fireAllRules();
-          System.out.println("i="+i);
-          System.out.println("fired rules "+fired);
-          System.out.println(listener.getRulesFiredList());
-          System.out.println(list.size());
-          System.out.println(list);
+          int fired = ksession.fireAllRules();
+          System.out.println("i=" + i);
+          System.out.println(fired + " rules fired");
+          List<String> firedRules = listener.getRulesFiredList();
+          System.out.println("firedRules " + firedRules);
+          System.out.println("list "+list);
+          if (firedRules.contains("VisitorClassification_type_4_7000")) {
+            fail("Activation group issue happenes!");
+          }
           for (Object obj : ksession.getObjects()) {
             ksession.delete(ksession.getFactHandle(obj));
           }
           listener.reset();
           list.clear();
         }
-//      assertEquals( "Three rules should have been fired", 3, list.size() );
-//      assertEquals( "Rule 4 should have been fired first", "Rule 4",
-//                    list.get( 0 ) );
-//      assertEquals( "Rule 2 should have been fired second", "Rule 2",
-//                    list.get( 1 ) );
-//      assertEquals( "Rule 3 should have been fired third", "Rule 3",
-//                    list.get( 2 ) );
   }
     @Test(timeout = 10000)
     public void testSalienceIntegerAndLoadOrder() throws Exception {
