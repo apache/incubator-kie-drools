@@ -279,7 +279,7 @@ public class ServicesProcessDataEventListener implements ProcessDataEventListene
             for (Variable data : variables) {
                 String type = data.getType().getStringType();
                 String itemSubjectRef = (String) data.getMetaData("ItemSubjectRef");
-                if (itemSubjectRef != null) {
+                if (itemSubjectRef != null && itemDefinitions != null) {
                     ItemDefinition itemDef = itemDefinitions.get(itemSubjectRef);
                     type = itemDef.getStructureRef();
                 }
