@@ -18,8 +18,10 @@ package org.jbpm.test.regression.event;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.assertj.core.api.Assertions;
 import org.jbpm.test.JbpmTestCase;
@@ -47,6 +49,11 @@ public class TimerEventTest extends JbpmTestCase {
 
     private static final String TIMER_AND_GATEWAY = "org/jbpm/test/regression/event/TimerEvent-timerAndGateway.bpmn";
     private static final String TIMER_AND_GATEWAY_ID = "org.jbpm.test.regression.event.TimerEvent-timerAndGateway";
+
+    public static final String BOUNDARY_MULTIPLE_INSTANCES =
+            "org/jbpm/test/regression/event/TimerEvent-boundaryMultipleInstances.bpmn2";
+    public static final String BOUNDARY_MULTIPLE_INSTANCES_ID =
+            "org.jbpm.test.regression.event.TimerEvent-boundaryMultipleInstances";
 
     @Test
     @BZ({"958390", "1167738"})
@@ -138,6 +145,29 @@ public class TimerEventTest extends JbpmTestCase {
         // Join, and since it is an AND join, it never reaches task2. It fails after the next assertion
         Assertions.assertThat(workItem2).isNotNull();
         Assertions.assertThat(handler1.getWorkItem()).isNull();
+    }
+
+    @Test
+    @BZ("1213209")
+    public void testBoundaryTimerInMultipleInstancesSubprocess() throws InterruptedException {
+        KieSession ksession = createKSession(BOUNDARY_MULTIPLE_INSTANCES);
+        ksession.setGlobal("counter", 0);
+
+        Set<Integer> runList = new HashSet<Integer>();
+        runList.add(1);
+        runList.add(2);
+        runList.add(3);
+
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("runList", runList);
+
+        ksession.startProcess(BOUNDARY_MULTIPLE_INSTANCES_ID, parameters);
+
+        // wait for 3x 50ms timers to be triggered
+        Thread.sleep(1000);
+
+        Integer counter = (Integer) ksession.getGlobal("counter");
+        Assertions.assertThat(counter).isEqualTo(3);
     }
 
     private static class TestAsyncWorkItemHandler implements WorkItemHandler {
