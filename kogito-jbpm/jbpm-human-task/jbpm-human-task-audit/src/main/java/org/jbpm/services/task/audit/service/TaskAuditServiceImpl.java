@@ -25,39 +25,34 @@ import org.jbpm.services.task.audit.commands.GetAllHistoryAuditTasksByUserComman
 import org.jbpm.services.task.audit.commands.GetAllHistoryAuditTasksCommand;
 import org.jbpm.services.task.audit.commands.GetAuditEventsByProcessInstanceIdCommand;
 import org.jbpm.services.task.audit.commands.GetAuditEventsCommand;
-import org.jbpm.services.task.audit.commands.GetTaskInputVariablesCommand;
-import org.jbpm.services.task.audit.commands.GetTaskOutputVariablesCommand;
-import org.jbpm.services.task.audit.commands.GetTasksByVariableNameAndValueCommand;
-import org.jbpm.services.task.audit.commands.GetTasksByVariableNameCommand;
 import org.kie.api.task.TaskService;
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.AuditTask;
 import org.kie.internal.task.api.InternalTaskService;
-import org.kie.internal.task.api.TaskVariable;
 import org.kie.internal.task.api.model.TaskEvent;
+import org.kie.internal.task.query.AuditTaskQueryBuilder;
+import org.kie.internal.task.query.TaskEventQueryBuilder;
+import org.kie.internal.task.query.TaskVariableQueryBuilder;
 
 /**
  *
- * @author salaboy
  */
   public class TaskAuditServiceImpl implements TaskAuditService {
-    
+
     private InternalTaskService taskService;
-    
+
     @Override
     public List<TaskEvent> getAllTaskEvents(long taskId, QueryFilter filter) {
         return taskService.execute(new GetAuditEventsCommand(taskId, filter));
     }
-    
-    
+
+
     @Override
     public List<TaskEvent> getAllTaskEventsByProcessInstanceId(long processInstanceId, QueryFilter filter) {
         return taskService.execute(new GetAuditEventsByProcessInstanceIdCommand(processInstanceId, filter));
     }
-    
-   
+
+
     @Override
     public List<AuditTask> getAllAuditTasks( QueryFilter filter) {
         return taskService.execute(new GetAllHistoryAuditTasksCommand(filter));
@@ -67,7 +62,7 @@ import org.kie.internal.task.api.model.TaskEvent;
     public List<AuditTask> getAllAuditTasksByUser(String userId, QueryFilter filter) {
         return taskService.execute(new GetAllHistoryAuditTasksByUserCommand(userId, filter));
     }
-    
+
     @Override
     public void setTaskService(TaskService taskService) {
         this.taskService = (InternalTaskService) taskService;
@@ -82,35 +77,24 @@ import org.kie.internal.task.api.model.TaskEvent;
     public List<AuditTask> getAllAdminAuditTasksByUser(String userId, QueryFilter filter) {
         return taskService.execute(new GetAllAdminAuditTasksByUserCommand(userId, filter));
     }
-    
+
     @Override
     public List<AuditTask> getAllAuditTasksByStatus(String userId, QueryFilter filter) {
         return taskService.execute(new GetAllAuditTasksByStatusCommand(userId, filter));
     }
 
-
-    @Override
-    public List<TaskVariable> getTaskInputVariables(long taskId, QueryFilter filter) {
-        return taskService.execute(new GetTaskInputVariablesCommand(taskId, filter));
+    public TaskVariableQueryBuilder taskVariableQuery()  {
+        return new TaskVariableQueryBuilderImpl(taskService);
     }
 
-
     @Override
-    public List<TaskVariable> getTaskOutputVariables(long taskId, QueryFilter filter) {
-        return taskService.execute(new GetTaskOutputVariablesCommand(taskId, filter));
+    public TaskEventQueryBuilder taskEventQuery() {
+        return new TaskEventQueryBuilderImpl(taskService);
     }
 
-
     @Override
-    public List<TaskSummary> getTasksByVariableName(String userId, String variableName, List<Status> statuses, QueryFilter filter) {
-        return taskService.execute(new GetTasksByVariableNameCommand(userId, variableName, statuses, filter));
+    public AuditTaskQueryBuilder auditTaskQuery() {
+        return new AuditTaskQueryBuilderImpl(taskService);
     }
 
-
-    @Override
-    public List<TaskSummary> getTasksByVariableNameAndValue(String userId, String variableName, String variableValue, List<Status> statuses, QueryFilter filter) {
-        return taskService.execute(new GetTasksByVariableNameAndValueCommand(userId, variableName, variableValue, statuses, filter));
-    }
-    
-     
 }

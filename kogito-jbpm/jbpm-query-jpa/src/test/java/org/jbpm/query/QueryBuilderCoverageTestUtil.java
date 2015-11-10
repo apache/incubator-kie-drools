@@ -89,7 +89,8 @@ public abstract class QueryBuilderCoverageTestUtil {
     public static void queryBuilderCoverageTest(
             ExtendedParametrizedQueryBuilder queryBuilder,
             Class builderClass,
-            ModuleSpecificInputFiller inputFiller) {
+            ModuleSpecificInputFiller inputFiller,
+            String... skipMethodName) {
        Set<Method> queryMethodSet = new HashSet<Method>();
        while( builderClass != null && ! builderClass.equals(ExtendedParametrizedQueryBuilder.class) ) {
            queryMethodSet.addAll(Arrays.asList(builderClass.getMethods()));
@@ -101,11 +102,13 @@ public abstract class QueryBuilderCoverageTestUtil {
                "newGroup", "endGroup",
                "equals", "identity",
                "intersect", "union",
-               "like", "equal",
+               "and", "or",
+               "like", "regex", "equal",
                "build", "clear",
                "notify", "notifyAll", "wait"
        };
        Set<String> specialMethods = new HashSet<String>(Arrays.asList(specialMethodsArr));
+       specialMethods.addAll(Arrays.asList(skipMethodName));
 
        Iterator<Method> iter = queryMethods.iterator();
        while( iter.hasNext() ) {
@@ -136,19 +139,19 @@ public abstract class QueryBuilderCoverageTestUtil {
                Object [] inputA = fillInput(methodA.getParameterTypes(), inputFiller);
                Object [] inputB = fillInput(methodB.getParameterTypes(), inputFiller);
 
-               // build query
-               StringBuffer testName = new StringBuffer(methodA.getName());
-               callMethod(methodA, queryBuilder, inputA);
-
-               testName.append(" | ");
-               queryBuilder.union();
-
-               testName.append(methodB.getName());
-               callMethod(methodB, queryBuilder, inputB);
-
-               logger.debug(testName.toString());
-
                try {
+                   // build query
+                   StringBuffer testName = new StringBuffer(methodA.getName());
+                   callMethod(methodA, queryBuilder, inputA);
+
+                   testName.append(" | ");
+                   queryBuilder.union();
+
+                   testName.append(methodB.getName());
+                   callMethod(methodB, queryBuilder, inputB);
+
+                   logger.debug(testName.toString());
+
                    // try queryT
                    queryBuilder.build().getResultList();
                    queryBuilder.clear();

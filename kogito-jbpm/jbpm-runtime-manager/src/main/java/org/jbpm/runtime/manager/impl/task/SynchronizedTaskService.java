@@ -45,22 +45,22 @@ import org.kie.internal.task.api.model.FaultData;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 import org.kie.internal.task.api.model.TaskDef;
 import org.kie.internal.task.api.model.TaskEvent;
-import org.kie.internal.task.query.TaskQueryBuilder;
+import org.kie.internal.task.query.TaskSummaryQueryBuilder;
 /**
  * Fully synchronized <code>TaskService</code> implementation used by the <code>SingletonRuntimeManager</code>.
- * Synchronization is done on <code>CommandService</code> of the <code>KieSession</code> to ensure correctness 
+ * Synchronization is done on <code>CommandService</code> of the <code>KieSession</code> to ensure correctness
  * until transaction completion.
  *
  * TODO: use the java {@link InvocationHandler}/proxy mechanism to make this class *much* shorter..
  */
 // TODO: use the Ink
-public class SynchronizedTaskService 
+public class SynchronizedTaskService
             implements InternalTaskService, EventService<TaskLifeCycleEventListener> {
-	
-	
+
+
 	private Object ksession;
 	private InternalTaskService taskService;
-	
+
 	public SynchronizedTaskService(KieSession ksession, InternalTaskService taskService) {
 	    if (ksession instanceof CommandBasedStatefulKnowledgeSession) {
 	        this.ksession = (SingleSessionCommandService) ((CommandBasedStatefulKnowledgeSession) ksession).getCommandService();
@@ -431,7 +431,7 @@ public class SynchronizedTaskService
             return  taskService.getTasksAssignedAsPotentialOwnerByProcessId(userId, processId);
         }
     }
-    
+
     @Override
     public User getUserById(String userId) {
         synchronized (ksession) {
@@ -477,7 +477,7 @@ public class SynchronizedTaskService
     @Override
     public void removeGroup(String groupId) {
         synchronized (ksession) {
-            taskService.removeGroup(groupId);            
+            taskService.removeGroup(groupId);
         }
     }
 
@@ -534,7 +534,7 @@ public class SynchronizedTaskService
     public void skip(long taskId, String userId) {
         synchronized (ksession) {
             taskService.skip(taskId, userId);
-        } 
+        }
     }
 
     @Override
@@ -561,7 +561,7 @@ public class SynchronizedTaskService
     @Override
     public void undeployTaskDef(String id) {
         synchronized (ksession) {
-            taskService.undeployTaskDef(id);            
+            taskService.undeployTaskDef(id);
         }
     }
 
@@ -865,26 +865,26 @@ public class SynchronizedTaskService
 			return taskService.execute(command);
 		}
 	}
-    
+
     @Override
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(String userId, List<Status> statuses, Date expirationDate) {
        synchronized (ksession) {
             return  taskService.getTasksAssignedAsPotentialOwnerByExpirationDate(userId, statuses, expirationDate);
-       } 
+       }
     }
 
     @Override
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDateOptional(String userId, List<Status> statuses, Date expirationDate) {
        synchronized (ksession) {
             return  taskService.getTasksAssignedAsPotentialOwnerByExpirationDateOptional(userId, statuses, expirationDate);
-       } 
+       }
     }
 
     @Override
     public Map<Long, List<OrganizationalEntity>> getPotentialOwnersForTaskIds(List<Long> taskIds) {
        synchronized (ksession) {
             return  taskService.getPotentialOwnersForTaskIds(taskIds);
-       } 
+       }
     }
 
 
@@ -894,14 +894,14 @@ public class SynchronizedTaskService
            if (taskService != null) {
                taskService.addMarshallerContext(ownerId, context);
            }
-       }   
+       }
     }
 
 
     @Override
     public void removeMarshallerContext(String ownerId) {
        synchronized (ksession) {
-           if (taskService != null) { 
+           if (taskService != null) {
                taskService.removeMarshallerContext(ownerId);
            }
        }
@@ -914,7 +914,7 @@ public class SynchronizedTaskService
             if (taskService != null) {
                 return taskService.getMarshallerContext(task);
             }
-            
+
             return null;
         }
     }
@@ -941,7 +941,7 @@ public class SynchronizedTaskService
             if (taskService != null) {
                 return taskService.getTasksByVariousFields(userId, parameters, union);
             }
-            
+
             return null;
         }
 	}
@@ -957,8 +957,8 @@ public class SynchronizedTaskService
 	}
 
     @Override
-    public TaskQueryBuilder taskQuery( String userId ) {
-        return taskService.taskQuery(userId);
+    public TaskSummaryQueryBuilder taskSummaryQuery( String userId ) {
+        return taskService.taskSummaryQuery(userId);
     }
 
     @Override

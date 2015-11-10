@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -58,8 +58,8 @@ import org.jbpm.services.task.commands.GetAttachmentCommand;
 import org.jbpm.services.task.commands.GetCommentCommand;
 import org.jbpm.services.task.commands.GetCompletedTasksByUserCommand;
 import org.jbpm.services.task.commands.GetCompletedTasksCommand;
-import org.jbpm.services.task.commands.GetContentByIdForUserCommand;
 import org.jbpm.services.task.commands.GetContentByIdCommand;
+import org.jbpm.services.task.commands.GetContentByIdForUserCommand;
 import org.jbpm.services.task.commands.GetContentMapForUserCommand;
 import org.jbpm.services.task.commands.GetGroupCommand;
 import org.jbpm.services.task.commands.GetGroupsCommand;
@@ -105,8 +105,9 @@ import org.jbpm.services.task.commands.SuspendTaskCommand;
 import org.jbpm.services.task.commands.UndeployTaskDefCommand;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.impl.TaskContentRegistry;
-import org.jbpm.services.task.impl.TaskQueryBuilderImpl;
+import org.jbpm.services.task.impl.TaskSummaryQueryBuilderImpl;
 import org.kie.api.command.Command;
+import org.kie.api.runtime.CommandExecutor;
 import org.kie.api.task.TaskLifeCycleEventListener;
 import org.kie.api.task.model.Attachment;
 import org.kie.api.task.model.Comment;
@@ -128,15 +129,15 @@ import org.kie.internal.task.api.model.FaultData;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 import org.kie.internal.task.api.model.TaskDef;
 import org.kie.internal.task.api.model.TaskEvent;
-import org.kie.internal.task.query.TaskQueryBuilder;
+import org.kie.internal.task.query.TaskSummaryQueryBuilder;
 
 public class CommandBasedTaskService implements InternalTaskService, EventService<TaskLifeCycleEventListener> {
 
 	private CommandService executor;
 	private TaskEventSupport taskEventSupport;
 
-	private QueryFilter addLanguageFilter(String language) { 
-	   if( language == null ) { 
+	private QueryFilter addLanguageFilter(String language) {
+	   if( language == null ) {
 	       return null;
 	   }
 	   QueryFilter filter = new QueryFilter();
@@ -150,12 +151,12 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 		this.executor = executor;
 		this.taskEventSupport = taskEventSupport;
 	}
-	
+
 	@Override
 	public <T> T execute(Command<T> command) {
 		return executor.execute(command);
 	}
-	
+
 	public void activate(long taskId, String userId) {
 		executor.execute(new ActivateTaskCommand(taskId, userId));
 	}
@@ -208,38 +209,38 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	public List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, String language) {
 		return executor.execute(new GetTaskAssignedAsBusinessAdminCommand(userId));
 	}
-    
+
 	// TODO: does not filter on language
 	public List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, String language ,List<Status> statuses) {
         return executor.execute(new GetTaskAssignedAsBusinessAdminCommand(userId,statuses));
     }
-	
+
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, String language) {
 	    QueryFilter filter = addLanguageFilter(language);
 		return getTasksAssignedAsPotentialOwner(userId, null, null, filter);
 	}
-        
+
 	@Override
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds) {
 	    return getTasksAssignedAsPotentialOwner(userId, groupIds, null, null);
 	}
-        
+
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, List<Status> status, QueryFilter filter) {
 		return executor.execute(new GetTaskAssignedAsPotentialOwnerCommand(userId, groupIds, status, filter));
 	}
-        
+
 	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByStatus(
 			String userId, List<Status> status, String language) {
 	    QueryFilter filter = addLanguageFilter(language);
 		return getTasksAssignedAsPotentialOwner(userId, null, status, filter);
 	}
-        
+
 	@Override
 	public List<TaskSummary> getTasksAssignedAsPotentialOwnerByExpirationDate(
-			String userId, List<Status> statuses, Date expirationDate) {	
+			String userId, List<Status> statuses, Date expirationDate) {
                         Map<String, Object> params = new HashMap<String, Object>();
                         params.put("expirationDate", expirationDate);
-		return getTasksAssignedAsPotentialOwner(userId, null, statuses, 
+		return getTasksAssignedAsPotentialOwner(userId, null, statuses,
                         new QueryFilter( "t.taskData.expirationTime = :expirationDate", params, "t.id", false));
 	}
 
@@ -248,10 +249,10 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 			String userId, List<Status> statuses, Date expirationDate) {
             Map<String, Object> params = new HashMap<String, Object>();
             params.put("expirationDate", expirationDate);
-		return getTasksAssignedAsPotentialOwner(userId, null, statuses, 
+		return getTasksAssignedAsPotentialOwner(userId, null, statuses,
                         new QueryFilter( "(t.taskData.expirationTime = :expirationDate or t.taskData.expirationTime is null)", params, "t.id", false));
 	}
-        
+
 	@Override
 	// TODO: does not filter on language
 	public List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds, String language, int firstResult, int maxResults) {
@@ -268,7 +269,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 			List<Status> status, QueryFilter filter) {
 		return executor.execute(new GetTasksOwnedCommand(userId, status, filter));
 	}
-        
+
 	public List<TaskSummary> getTasksOwned(String userId, String language) {
 	    QueryFilter filter = addLanguageFilter(language);
 		return getTasksOwned(userId, null, filter);
@@ -289,7 +290,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	public List<Long> getTasksByProcessInstanceId(long processInstanceId) {
 		return executor.execute(new GetTasksByProcessInstanceIdCommand(processInstanceId));
 	}
-	
+
     @Override
     /**
      *  This method should be deleted in jBPM 7.x
@@ -299,11 +300,11 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
     public List<TaskSummary> getTasksByVariousFields(String userId, List<Long> workItemIds, List<Long> taskIds, List<Long> procInstIds,
             List<String> busAdmins, List<String> potOwners, List<String> taskOwners, List<Status> statuses, List<String> languages,
             boolean union) {
-        GetTasksByVariousFieldsCommand cmd = new GetTasksByVariousFieldsCommand(workItemIds, taskIds, procInstIds, 
-		        busAdmins, potOwners, taskOwners, 
+        GetTasksByVariousFieldsCommand cmd = new GetTasksByVariousFieldsCommand(workItemIds, taskIds, procInstIds,
+		        busAdmins, potOwners, taskOwners,
 		        statuses, union);
         cmd.setUserId(userId);
-        
+
 		return executor.execute(cmd);
     }
 
@@ -320,8 +321,8 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
     }
 
 	@Override
-    public TaskQueryBuilder taskQuery(String userId) {
-        return new TaskQueryBuilderImpl(userId, executor);
+    public TaskSummaryQueryBuilder taskSummaryQuery(String userId) {
+        return new TaskSummaryQueryBuilderImpl(userId, this);
     }
 
     public long addTask(Task task, Map<String, Object> params) {
@@ -333,7 +334,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
 
 	public void resume(long taskId, String userId) {
-		executor.execute(new ResumeTaskCommand(taskId, userId));		
+		executor.execute(new ResumeTaskCommand(taskId, userId));
 	}
 
 	public void skip(long taskId, String userId) {
@@ -480,7 +481,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	@Override
 	public List<TaskSummary> getTasksOwnedByExpirationDate(String userId,
 			List<Status> statuses, Date expirationDate) {
-		
+
                 Map<String, Object> params = new HashMap<String, Object>();
                 params.put("expirationDate", expirationDate);
                 return getTasksOwned(userId, statuses, new QueryFilter("t.taskData.expirationTime = :expirationDate", params, "t.id", false));
@@ -529,7 +530,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 
 	@Override
     public List<TaskSummary> getTasksAssignedAsPotentialOwnerByProcessId( String userId, String processId ) {
-	    return this.taskQuery(userId).intersect().potentialOwner(userId).processId(processId)
+	    return this.taskSummaryQuery(userId).intersect().potentialOwner(userId).processId(processId)
 	            .build().getResultList();
     }
 
@@ -642,7 +643,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
         cmd.setOutputContentMap(params);
 		return executor.execute(cmd);
     }
-    
+
 	@Override
 	public void deleteContent(long taskId, long contentId) {
 		executor.execute(new DeleteContentCommand(taskId, contentId));
@@ -660,12 +661,12 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
         cmd.setUserId(userId);
         return executor.execute(cmd);
     }
-    
+
     @Override
     public Map<String, Object> getOutputContentMapForUser( long taskId, String userId ) {
         return executor.execute(new GetContentMapForUserCommand(taskId, userId));
     }
-    
+
 	@Override
 	public long addAttachment(long taskId, Attachment attachment, Content content) {
 		return executor.execute(new AddAttachmentCommand(taskId, attachment, content));
@@ -750,7 +751,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
 
 	@Override
-	public List<TaskSummary> getTasksAssignedByGroup(String groupId) {		
+	public List<TaskSummary> getTasksAssignedByGroup(String groupId) {
 		return executor.execute(new GetTaskAssignedByGroupsCommand(Collections.singletonList(groupId)));
 	}
 
@@ -788,7 +789,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	public Map<String, Object> getTaskContent(long taskId) {
 		return executor.execute(new GetTaskContentCommand(taskId));
 	}
-	
+
 	// marshaller context methods
 
 	@Override
@@ -802,24 +803,24 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	}
 
 	@Override
-	public ContentMarshallerContext getMarshallerContext(Task task) {		
+	public ContentMarshallerContext getMarshallerContext(Task task) {
 		return TaskContentRegistry.get().getMarshallerContext(task);
 	}
 
 	@Override
 	public void removeTaskEventsById(long taskId) {
-		throw new UnsupportedOperationException(Thread.currentThread().getStackTrace()[1].getMethodName() + " is not supported on the " + 
+		throw new UnsupportedOperationException(Thread.currentThread().getStackTrace()[1].getMethodName() + " is not supported on the " +
 		        this.getClass().getSimpleName());
-	}	
+	}
 
 	@Override
 	public List<TaskEvent> getTaskEventsById(long taskId) {
-		throw new UnsupportedOperationException(Thread.currentThread().getStackTrace()[1].getMethodName() + " is not supported on the " + 
+		throw new UnsupportedOperationException(Thread.currentThread().getStackTrace()[1].getMethodName() + " is not supported on the " +
 		        this.getClass().getSimpleName());
 	}
 
 	// notification service methods
-	
+
 	@Override
 	public void registerTaskEventListener(TaskLifeCycleEventListener listener) {
 		taskEventSupport.addEventListener(listener);
@@ -839,7 +840,7 @@ public class CommandBasedTaskService implements InternalTaskService, EventServic
 	public void removeTaskEventListener(TaskLifeCycleEventListener listener) {
 		taskEventSupport.removeEventListener(listener);
 	}
-	
+
 	public void executeReminderForTask(long taskId,String fromUser){
 		executor.execute(new ExecuteReminderCommand(taskId,fromUser));
 	}

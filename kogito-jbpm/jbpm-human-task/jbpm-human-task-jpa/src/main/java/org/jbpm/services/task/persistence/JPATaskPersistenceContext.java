@@ -479,14 +479,6 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 		return query.executeUpdate();
 	}
 
-	private TaskQueryCriteriaUtil queryUtil = new TaskQueryCriteriaUtil(this);
-
-    @Override
-    public List<TaskSummary> doTaskSummaryCriteriaQuery(String userId, UserGroupCallback userGroupCallback, Object queryWhere) {
-        check();
-        List<TaskSummary> result = queryUtil.doCriteriaQuery(userId, userGroupCallback, (QueryWhere) queryWhere);
-        return result;
-    }
 
 
 	@Override
@@ -662,6 +654,15 @@ public class JPATaskPersistenceContext implements TaskPersistenceContext {
 
         Query choppedLiver = em.createQuery(query);
         return (Long) choppedLiver.getSingleResult();
+    }
+
+    private TaskSummaryQueryCriteriaUtil queryUtil = new TaskSummaryQueryCriteriaUtil(this);
+
+    @Override
+    public List<TaskSummary> doTaskSummaryCriteriaQuery(String userId, UserGroupCallback userGroupCallback, Object queryWhere) {
+        check();
+        List<TaskSummary> result = queryUtil.doCriteriaQuery(userId, userGroupCallback, (QueryWhere) queryWhere);
+        return result;
     }
 
 }

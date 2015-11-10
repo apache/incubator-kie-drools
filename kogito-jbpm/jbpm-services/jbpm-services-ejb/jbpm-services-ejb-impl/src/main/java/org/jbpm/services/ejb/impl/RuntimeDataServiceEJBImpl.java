@@ -43,6 +43,7 @@ import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.kie.api.task.TaskService;
 import org.kie.internal.identity.IdentityProvider;
+import org.kie.internal.task.query.TaskSummaryQueryBuilder;
 
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
@@ -51,11 +52,11 @@ public class RuntimeDataServiceEJBImpl extends RuntimeDataServiceImpl implements
 
 	@Inject
 	private Instance<IdentityProvider> identityProvider;
-	
+
 	@Resource
 	private EJBContext context;
 	// inject resources
-	
+
 	@PostConstruct
 	public void configure() {
 		if (identityProvider.isUnsatisfied()) {
@@ -63,8 +64,8 @@ public class RuntimeDataServiceEJBImpl extends RuntimeDataServiceImpl implements
 		} else {
 			setIdentityProvider(identityProvider.get());
 		}
-	}	
-	
+	}
+
 	@EJB(beanInterface=AuditTransactionalCommandServiceEJBImpl.class)
 	@Override
 	public void setCommandService(TransactionalCommandService commandService) {
@@ -76,7 +77,7 @@ public class RuntimeDataServiceEJBImpl extends RuntimeDataServiceImpl implements
 	@Override
 	public void setTaskService(TaskService taskService) {
 		super.setTaskService(taskService);
-		
+
 		setTaskAuditService(TaskAuditServiceFactory.newTaskAuditServiceConfigurator().setTaskService(taskService).getTaskAuditService());
 	}
 
@@ -109,5 +110,11 @@ public class RuntimeDataServiceEJBImpl extends RuntimeDataServiceImpl implements
 	public void onDeactivate(DeploymentEvent event) {
 		super.onDeactivate(event);
 	}
+
+    @Override
+    public TaskSummaryQueryBuilder taskSummaryQuery( String userId ) {
+        throw new UnsupportedOperationException("The " + RuntimeDataService.class.getSimpleName() + "." + Thread.currentThread().getStackTrace()[0].getMethodName()
+                + " method is not support in the EJB API");
+    }
 
 }

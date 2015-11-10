@@ -18,39 +18,37 @@ package org.jbpm.services.task.audit.service;
 
 import java.util.List;
 
-import org.kie.internal.task.api.AuditTask;
-import org.kie.internal.task.api.TaskVariable;
 import org.kie.api.task.TaskService;
-import org.kie.api.task.model.Status;
-import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
+import org.kie.internal.task.api.AuditTask;
 import org.kie.internal.task.api.model.TaskEvent;
+import org.kie.internal.task.query.AuditTaskQueryBuilder;
+import org.kie.internal.task.query.TaskEventQueryBuilder;
+import org.kie.internal.task.query.TaskVariableQueryBuilder;
 
 
 public interface TaskAuditService {
-    
+
     void setTaskService(TaskService taskService);
-    
+
     List<TaskEvent> getAllTaskEvents(long taskId, QueryFilter filter);
-    
+
     List<TaskEvent> getAllTaskEventsByProcessInstanceId(long processInstanceId, QueryFilter filter);
-    
+
     List<AuditTask> getAllAuditTasks( QueryFilter filter);
-    
+
     List<AuditTask> getAllAuditTasksByUser(String userId, QueryFilter filter);
-    
+
     List<AuditTask> getAllGroupAuditTasksByUser(String userId, QueryFilter filter);
-    
+
     List<AuditTask> getAllAdminAuditTasksByUser(String userId, QueryFilter filter);
-    
+
     List<AuditTask> getAllAuditTasksByStatus(String userId, QueryFilter filter);
-    
-    List<TaskVariable> getTaskInputVariables(long taskId, QueryFilter filter);
-    
-    List<TaskVariable> getTaskOutputVariables(long taskId, QueryFilter filter);
-    
-    List<TaskSummary> getTasksByVariableName(String userId, String variableName, List<Status> statuses, QueryFilter filter);
-    
-    List<TaskSummary> getTasksByVariableNameAndValue(String userId, String variableName, String variableValue, List<Status> statuses, QueryFilter filter);
-      
+
+    TaskEventQueryBuilder taskEventQuery();
+
+    TaskVariableQueryBuilder taskVariableQuery();
+
+    AuditTaskQueryBuilder auditTaskQuery();
+
 }

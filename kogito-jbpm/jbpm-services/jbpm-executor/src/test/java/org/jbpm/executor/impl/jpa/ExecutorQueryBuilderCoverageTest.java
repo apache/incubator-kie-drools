@@ -21,9 +21,9 @@ import org.slf4j.LoggerFactory;
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
-public class TaskAuditQueryBuilderCoverageTest {
+public class ExecutorQueryBuilderCoverageTest {
    
-    private static final Logger logger = LoggerFactory.getLogger(TaskAuditQueryBuilderCoverageTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExecutorQueryBuilderCoverageTest.class);
     
     static {
         if (!TransactionManagerServices.isTransactionManagerRunning()) {

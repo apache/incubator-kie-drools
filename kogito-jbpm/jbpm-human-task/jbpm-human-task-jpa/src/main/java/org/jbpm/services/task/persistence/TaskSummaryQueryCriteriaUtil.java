@@ -33,11 +33,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -60,7 +59,7 @@ import org.jbpm.query.jpa.data.QueryCriteria;
 import org.jbpm.query.jpa.data.QueryParameterIdentifiersUtil;
 import org.jbpm.query.jpa.data.QueryWhere;
 import org.jbpm.query.jpa.data.QueryWhere.QueryCriteriaType;
-import org.jbpm.query.jpa.impl.QueryCriteriaUtil;
+import org.jbpm.query.jpa.service.QueryModificationService;
 import org.jbpm.services.task.impl.model.I18NTextImpl;
 import org.jbpm.services.task.impl.model.I18NTextImpl_;
 import org.jbpm.services.task.impl.model.OrganizationalEntityImpl;
@@ -78,18 +77,21 @@ import org.kie.api.task.UserGroupCallback;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryParameterIdentifiers;
+import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.SubTasksStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
+public class TaskSummaryQueryCriteriaUtil extends AbstractTaskQueryCriteriaUtil {
 
-    public final static Logger logger = LoggerFactory.getLogger(TaskQueryCriteriaUtil.class);
+    public final static Logger logger = LoggerFactory.getLogger(TaskSummaryQueryCriteriaUtil.class);
 
     // Query Field Info -----------------------------------------------------------------------------------------------------------
 
     public final static Map<Class, Map<String, Attribute>> criteriaAttributes
         = new ConcurrentHashMap<Class, Map<String, Attribute>>();
+
+    private ServiceLoader<QueryModificationService> queryModificationServiceLoader = ServiceLoader.load(QueryModificationService.class);
 
     @Override
     protected synchronized boolean initializeCriteriaAttributes() {
@@ -135,6 +137,7 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
         addCriteria(criteriaAttributes, STAKEHOLDER_ID_LIST,        TaskImpl.class, PeopleAssignmentsImpl_.taskStakeholders);
         addCriteria(criteriaAttributes, EXCLUDED_OWNER_ID_LIST,     TaskImpl.class, PeopleAssignmentsImpl_.excludedOwners);
 
+
         return true;
     }
 
@@ -147,38 +150,17 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
         taskUserRoleLimitingListIds.add(STAKEHOLDER_ID_LIST);
     }
 
-    private JPATaskPersistenceContext taskQueryService;
-
-    public TaskQueryCriteriaUtil(JPATaskPersistenceContext persistenceContext) {
-        super(criteriaAttributes);
-        this.taskQueryService = persistenceContext;
+    public TaskSummaryQueryCriteriaUtil(TaskPersistenceContext persistenceContext) {
+        super(persistenceContext);
+        initialize(criteriaAttributes);
     }
 
-    /**
-     * This protected constructor (and the following persistence-related) protected methods are used in the
-     * kie-remote-services module
-     *
-     * @param criteriaAttributes
-     */
-    protected TaskQueryCriteriaUtil(Map<Class, Map<String, Attribute>> criteriaAttributes) {
-        super(criteriaAttributes);
-    }
-
-    protected EntityManager getEntityManager() {
-        return this.taskQueryService.getEntityManager();
-    }
-
-    protected void joinTransaction() {
-        this.taskQueryService.joinTransaction();
-    }
-
-    protected CriteriaBuilder getCriteriaBuilder() {
-        return getEntityManager().getCriteriaBuilder();
+    public TaskSummaryQueryCriteriaUtil() {
+        initialize(criteriaAttributes);
     }
 
     // Implementation specific methods --------------------------------------------------------------------------------------------
 
-    @SuppressWarnings("unchecked")
     public List<TaskSummary> doCriteriaQuery(String userId, UserGroupCallback userGroupCallback, QueryWhere queryWhere) {
 
         // 1. create builder and query instances
@@ -215,11 +197,15 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
         taskRoot.join(TaskImpl_.taskData); // added for convienence sake, since other logic expects to find this join
 
         checkExistingCriteriaForUserBasedLimit(queryWhere, userId, userGroupCallback);
+        for( QueryModificationService queryModificationService : queryModificationServiceLoader ) {
+            queryModificationService.optimizeCriteria(queryWhere);
+        }
 
         // 4. process query criteria
         fillCriteriaQuery(criteriaQuery, queryWhere, builder, TaskImpl.class);
 
         // 5. retrieve result (after also applying meta-criteria)
+        useDistinctWhenLefOuterJoinsPresent(criteriaQuery);
         List<Tuple> result = createQueryAndCallApplyMetaCriteriaAndGetResult(queryWhere, criteriaQuery, builder);
 
         List<TaskSummary> taskSummaryList = new ArrayList<TaskSummary>(result.size());
@@ -338,6 +324,7 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
         queryWhere.setCriteria(newBaseCriteriaList);
     }
 
+
     /*
      * (non-Javadoc)
      * @see org.jbpm.query.jpa.impl.QueryCriteriaUtil#getEntityField(javax.persistence.criteria.CriteriaQuery, java.lang.Class, java.lang.String)
@@ -350,6 +337,7 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
         Root<TaskImpl> taskRoot = null;
         Join<TaskImpl, TaskDataImpl> taskDataJoin = null;
         Join<TaskImpl, PeopleAssignmentsImpl> peopAssignJoin = null;
+
         for( Root root : query.getRoots() ) {
             if( TaskImpl.class.equals(root.getJavaType()) ) {
                taskRoot = (Root<TaskImpl>) root;
@@ -368,8 +356,8 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
         }
         assert taskDataJoin != null : "Unable to find TaskDataImpl Join in query!";
 
-        return taskImplSpecificGetEntityField(query,
-                taskRoot, taskDataJoin, peopAssignJoin,
+        return taskImplSpecificGetEntityField(query, taskRoot,
+                taskDataJoin, peopAssignJoin,
                 listId, attr);
     }
 
@@ -498,17 +486,16 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
             QueryCriteria criteria,
             QueryWhere queryWhere) {
 
-        return taskSpecificCreatePredicateFromSingleCriteria(query, builder, criteria);
-    }
-
-    public static <Q,T> Predicate taskSpecificCreatePredicateFromSingleCriteria(
-            CriteriaQuery<Q> query,
-            CriteriaBuilder builder,
-            QueryCriteria criteria) {
         Predicate predicate = null;
-        if( TASK_USER_ROLES_LIMIT_LIST.equals(criteria.getListId()) ) {
+        String listId = criteria.getListId();
+        if( TASK_USER_ROLES_LIMIT_LIST.equals(listId) ) {
             predicate = createTaskUserRolesLimitPredicate(criteria, query, builder);
         } else {
+            for( QueryModificationService queryModService : queryModificationServiceLoader ) {
+                if( queryModService.accepts(listId) ) {
+                    return queryModService.createPredicate(criteria, query, builder);
+                }
+            }
             throw new IllegalStateException("List id " + QueryParameterIdentifiersUtil.getQueryParameterIdNameMap().get(Integer.parseInt(criteria.getListId()))
                     + " is not supported for queries on " + TaskImpl.class.getSimpleName() + ".");
         }
@@ -595,24 +582,6 @@ public class TaskQueryCriteriaUtil extends QueryCriteriaUtil {
         assert joins[2] != null : "Could not find task stakeholders join!";
 
         return joins;
-    }
-
-    @Override
-    protected <T> List<T> createQueryAndCallApplyMetaCriteriaAndGetResult(QueryWhere queryWhere, CriteriaQuery<T> criteriaQuery, CriteriaBuilder builder) {
-        useDistinctWhenLefOuterJoinsPresent(criteriaQuery);
-
-        EntityManager em = getEntityManager();
-        joinTransaction();
-        Query query = em.createQuery(criteriaQuery);
-
-        applyMetaCriteriaToQuery(query, queryWhere);
-
-        // execute query
-        List<T> result = query.getResultList();
-
-        // close em and end tx? This is done *outside* of this class
-
-        return result;
     }
 
     private <T> void useDistinctWhenLefOuterJoinsPresent(CriteriaQuery<T> criteriaQuery) {

@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.jbpm.services.task.commands;
+package org.jbpm.services.task.audit.commands;
 
 import java.util.List;
 
@@ -23,27 +23,32 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.jbpm.query.jpa.data.QueryWhere;
-import org.kie.api.task.model.TaskSummary;
+import org.jbpm.query.jpa.impl.QueryCriteriaUtil;
+import org.jbpm.services.task.audit.impl.model.AuditTaskImpl;
+import org.jbpm.services.task.audit.impl.model.BAMTaskSummaryImpl;
+import org.jbpm.services.task.audit.service.TaskAuditQueryCriteriaUtil;
+import org.jbpm.services.task.commands.TaskCommand;
+import org.jbpm.services.task.commands.TaskContext;
 import org.kie.internal.command.Context;
+import org.kie.internal.task.api.AuditTask;
 
-@XmlRootElement(name="task-query-where-command")
+@XmlRootElement(name="audit-task-query-command")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class TaskQueryWhereCommand extends TaskCommand<List<TaskSummary>> {
+public class BAMTaskSummaryQueryCommand extends TaskCommand<List<BAMTaskSummaryImpl>> {
 
-    /** generated serial version UID */
-    private static final long serialVersionUID = -6879337395030142688L;
+    private static final long serialVersionUID = -6567926743616254900L;
 
     @XmlElement
     private QueryWhere queryWhere;
-    
-    public TaskQueryWhereCommand() { 
+
+    public BAMTaskSummaryQueryCommand() {
         // JAXB constructor
     }
-    
-    public TaskQueryWhereCommand(QueryWhere queryWhere) { 
+
+    public BAMTaskSummaryQueryCommand(QueryWhere queryWhere) {
         this.queryWhere = queryWhere;
     }
-    
+
     public QueryWhere getQueryWhere() {
         return queryWhere;
     }
@@ -53,9 +58,10 @@ public class TaskQueryWhereCommand extends TaskCommand<List<TaskSummary>> {
     }
 
     @Override
-    public List<TaskSummary> execute(Context cntxt) {
+    public List<BAMTaskSummaryImpl> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
-        return context.getTaskQueryService().query(userId, queryWhere);
+        TaskAuditQueryCriteriaUtil queryCriteriaUtil = new TaskAuditQueryCriteriaUtil(context.getPersistenceContext());
+        return queryCriteriaUtil.doCriteriaQuery(getQueryWhere(), BAMTaskSummaryImpl.class);
     }
-   
+
 }

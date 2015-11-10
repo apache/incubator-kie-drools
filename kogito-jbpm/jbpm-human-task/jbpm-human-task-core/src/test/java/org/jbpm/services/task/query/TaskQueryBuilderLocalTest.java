@@ -66,8 +66,8 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryParameterIdentifiers;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.model.InternalTaskData;
-import org.kie.internal.task.query.TaskQueryBuilder;
-import org.kie.internal.task.query.TaskQueryBuilder.OrderBy;
+import org.kie.internal.task.query.TaskSummaryQueryBuilder;
+import org.kie.internal.task.query.TaskSummaryQueryBuilder.OrderBy;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
@@ -119,7 +119,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
 
     @Test
     public void testTaskQueryBuilderSimply() {
-        TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder);
+        TaskSummaryQueryBuilder queryBuilder = taskService.taskSummaryQuery(stakeHolder);
         queryBuilder.build().getResultList();
     }
 
@@ -435,7 +435,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             potOwners.add(potOwner);
 
             // as much as possible
-            TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder)
+            TaskSummaryQueryBuilder queryBuilder = taskService.taskSummaryQuery(stakeHolder)
                     .intersect()
                     .workItemId(workItemId)
                     .processInstanceId(procInstId)
@@ -472,7 +472,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             potOwners.add(potOwner);
 
             // as much as possible
-            TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder)
+            TaskSummaryQueryBuilder queryBuilder = taskService.taskSummaryQuery(stakeHolder)
                     .intersect()
                     .workItemId(workItemId)
                     .processInstanceId(procInstId)
@@ -536,7 +536,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             taskService.start(taskImpl.getId(), potOwner);
             taskService.fail(taskImpl.getId(), busAdmin, null);
 
-            TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder)
+            TaskSummaryQueryBuilder queryBuilder = taskService.taskSummaryQuery(stakeHolder)
                     .maxResults(1);
             List<TaskSummary> results = queryBuilder.build().getResultList();
             assertEquals("List of tasks", 1, results.size());
@@ -563,7 +563,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
             assertEquals("Task id", taskImpl.getId(), results.get(0).getId());
         }
 
-        TaskQueryBuilder queryBuilder = taskService.taskQuery(stakeHolder);
+        TaskSummaryQueryBuilder queryBuilder = taskService.taskSummaryQuery(stakeHolder);
 
         List<TaskSummary> results = queryBuilder.businessAdmin(busAdmins.toArray(new String[busAdmins.size()])).build().getResultList();
         assertEquals( 3, results.size() );
@@ -614,7 +614,7 @@ public class TaskQueryBuilderLocalTest extends HumanTaskServicesBaseTest {
         }
 
         queryBuilder.clear();
-        queryBuilder = taskService.taskQuery(stakeHolder)
+        queryBuilder = taskService.taskSummaryQuery(stakeHolder)
                 .intersect()
                 .potentialOwner(stakeHolder);
         results = queryBuilder.build().getResultList();

@@ -48,7 +48,9 @@ import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.AuditTask;
 import org.kie.internal.task.api.TaskVariable;
+import org.kie.internal.task.api.TaskVariable.VariableType;
 import org.kie.internal.task.api.model.TaskEvent;
+import org.kie.internal.task.query.TaskVariableQueryBuilder;
 
 public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
 
@@ -153,7 +155,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         List<AuditTask> allHistoryAuditTasks = taskAuditService.getAllAuditTasks(new QueryFilter(0, 0));
         assertEquals(2, allHistoryAuditTasks.size());
     }
-    
+
     @Test
     public void testOnlyActiveTasks() {
         Task task = new TaskFluent().setName("This is my task name")
@@ -176,7 +178,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
                 queryFilter);
         assertEquals(1, allActiveAuditTasksByUser.size());
         assertTrue(allActiveAuditTasksByUser.get(0).getStatus().equals("Reserved"));
-        
+
         statuses = new ArrayList<String>();
         statuses.add(Status.Completed.toString());
         params.put("statuses", statuses);
@@ -184,7 +186,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         allActiveAuditTasksByUser = taskAuditService.getAllAuditTasksByStatus("salaboy",
                 queryFilter);
         assertEquals(0, allActiveAuditTasksByUser.size());
-        
+
     }
 
     @Test
@@ -317,7 +319,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         testDescriptionUpdate("old description", "new description", true);
     }
 
-   
+
     @Test
     public void testDescriptionUpdateToNull() {
         testDescriptionUpdate("old description", null, true);
@@ -377,7 +379,7 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         testNameUpdate("old name", "new name", true);
     }
 
-    
+
     @Test
     public void testNameUpdateToNull() {
         testNameUpdate("old name", null, true);
@@ -488,12 +490,12 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         testDueDateUpdate(null, getTomorrow(), true);
     }
 
-    
+
     @Test
     public void testDueDateUpdateToNull() {
         testDueDateUpdate(getToday(), null, true);
     }
-    
+
     @Test
     public void testVariableIndexInputAndOutput() {
         Task task = new TaskFluent().setName("This is my task name")
@@ -504,23 +506,24 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         Map<String, Object> inputVariables = new HashMap<String, Object>();
         inputVariables.put("firstVariable", "string content");
         inputVariables.put("number", 1234);
-        
+
         taskService.addTask(task, inputVariables);
         long taskId = task.getId();
 
         List<TaskSummary> allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
         assertEquals(1, allGroupAuditTasks.size());
         assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Ready"));
-        
-        List<TaskVariable> inputVars = taskAuditService.getTaskInputVariables(taskId, new QueryFilter());
+
+        List<TaskVariable> inputVars = taskAuditService.taskVariableQuery()
+                .taskId(taskId).intersect().type(VariableType.INPUT).build().getResultList();
         assertNotNull(inputVars);
         assertEquals(2, inputVars.size());
-        
+
         Map<String, String> vars = collectVariableNameAndValue(inputVars);
-        
+
         assertTrue(vars.containsKey("firstVariable"));
         assertTrue(vars.containsKey("number"));
-        
+
         assertEquals("string content", vars.get("firstVariable"));
         assertEquals("1234", vars.get("number"));
 
@@ -532,13 +535,13 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("Darth Vader", null, null, null);
         assertEquals(1, allGroupAuditTasks.size());
         assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Reserved"));
-        
+
         taskService.start(taskId, "Darth Vader");
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
         assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
-        
+
         Map<String, Object> outputVariables = new HashMap<String, Object>();
         outputVariables.put("reply", "updated content");
         outputVariables.put("age", 25);
@@ -546,15 +549,16 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         // Check is Complete
         taskService.complete(taskId, "Darth Vader", outputVariables);
 
-        List<TaskVariable> outputVars = taskAuditService.getTaskOutputVariables(taskId, new QueryFilter());
+        List<TaskVariable> outputVars = taskAuditService.taskVariableQuery()
+                .taskId(taskId).intersect().type(VariableType.OUTPUT).build().getResultList();
         assertNotNull(outputVars);
         assertEquals(2, outputVars.size());
-        
+
         Map<String, String> outvars = collectVariableNameAndValue(outputVars);
-        
+
         assertTrue(outvars.containsKey("reply"));
         assertTrue(outvars.containsKey("age"));
-        
+
         assertEquals("updated content", outvars.get("reply"));
         assertEquals("25", outvars.get("age"));
     }
@@ -569,23 +573,24 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         Map<String, Object> inputVariables = new HashMap<String, Object>();
         inputVariables.put("firstVariable", "string content");
         inputVariables.put("number", 1234);
-        
+
         taskService.addTask(task, inputVariables);
         long taskId = task.getId();
 
         List<TaskSummary> allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
         assertEquals(1, allGroupAuditTasks.size());
         assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Ready"));
-        
-        List<TaskVariable> inputVars = taskAuditService.getTaskInputVariables(taskId, new QueryFilter());
+
+        List<TaskVariable> inputVars = taskAuditService.taskVariableQuery()
+                .taskId(taskId).intersect().type(VariableType.INPUT).build().getResultList();
         assertNotNull(inputVars);
         assertEquals(2, inputVars.size());
-        
+
         Map<String, String> vars = collectVariableNameAndValue(inputVars);
-        
+
         assertTrue(vars.containsKey("firstVariable"));
         assertTrue(vars.containsKey("number"));
-        
+
         assertEquals("string content", vars.get("firstVariable"));
         assertEquals("1234", vars.get("number"));
 
@@ -597,55 +602,57 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("Darth Vader", null, null, null);
         assertEquals(1, allGroupAuditTasks.size());
         assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Reserved"));
-        
+
         taskService.start(taskId, "Darth Vader");
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
         assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
-        
+
         // update task output
         Map<String, Object> outputVariables = new HashMap<String, Object>();
         outputVariables.put("reply", "updated content");
         outputVariables.put("age", 25);
-        
+
         taskService.addOutputContentFromUser(taskId, "Darth Vader", outputVariables);
-        
-        List<TaskVariable> outputVars = taskAuditService.getTaskOutputVariables(taskId, new QueryFilter());
+
+        List<TaskVariable> outputVars = taskAuditService.taskVariableQuery()
+                .taskId(taskId).intersect().type(VariableType.OUTPUT).build().getResultList();
         assertNotNull(outputVars);
         assertEquals(2, outputVars.size());
-        
+
         Map<String, String> outvars = collectVariableNameAndValue(outputVars);
-        
+
         assertTrue(outvars.containsKey("reply"));
         assertTrue(outvars.containsKey("age"));
-        
+
         assertEquals("updated content", outvars.get("reply"));
         assertEquals("25", outvars.get("age"));
-        
+
         // Check is Complete
         outputVariables = new HashMap<String, Object>();
         outputVariables.put("reply", "completed content");
         outputVariables.put("age", 44);
         outputVariables.put("reason", "rework, please");
-        
+
         taskService.complete(taskId, "Darth Vader", outputVariables);
 
-        outputVars = taskAuditService.getTaskOutputVariables(taskId, new QueryFilter());
+        outputVars = taskAuditService.taskVariableQuery()
+                .taskId(taskId).intersect().type(VariableType.OUTPUT).build().getResultList();
         assertNotNull(outputVars);
         assertEquals(3, outputVars.size());
-        
+
         outvars = collectVariableNameAndValue(outputVars);
-        
+
         assertTrue(outvars.containsKey("reply"));
         assertTrue(outvars.containsKey("age"));
         assertTrue(outvars.containsKey("reason"));
-        
+
         assertEquals("completed content", outvars.get("reply"));
         assertEquals("44", outvars.get("age"));
         assertEquals("rework, please", outvars.get("reason"));
     }
-    
+
     @Test
     public void testVariableIndexInputAndOutputWithCustomIdexer() {
         Task task = new TaskFluent().setName("This is my task name")
@@ -656,24 +663,25 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         Map<String, Object> inputVariables = new HashMap<String, Object>();
         inputVariables.put("firstVariable", "string content");
         inputVariables.put("person", new Person("john", 25));
-        
+
         taskService.addTask(task, inputVariables);
         long taskId = task.getId();
 
         List<TaskSummary> allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
         assertEquals(1, allGroupAuditTasks.size());
         assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Ready"));
-        
-        List<TaskVariable> inputVars = taskAuditService.getTaskInputVariables(taskId, new QueryFilter());
+
+        List<TaskVariable> inputVars = taskAuditService.taskVariableQuery()
+                .taskId(taskId).intersect().type(VariableType.INPUT).build().getResultList();
         assertNotNull(inputVars);
         assertEquals(3, inputVars.size());
-        
+
         Map<String, String> vars = collectVariableNameAndValue(inputVars);
-        
+
         assertTrue(vars.containsKey("firstVariable"));
         assertTrue(vars.containsKey("person.name"));
         assertTrue(vars.containsKey("person.age"));
-        
+
         assertEquals("string content", vars.get("firstVariable"));
         assertEquals("john", vars.get("person.name"));
         assertEquals("25", vars.get("person.age"));
@@ -686,13 +694,13 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("Darth Vader", null, null, null);
         assertEquals(1, allGroupAuditTasks.size());
         assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Reserved"));
-        
+
         taskService.start(taskId, "Darth Vader");
 
         Task task1 = taskService.getTaskById(taskId);
         assertEquals(Status.InProgress, task1.getTaskData().getStatus());
         assertEquals("Darth Vader", task1.getTaskData().getActualOwner().getId());
-        
+
         Map<String, Object> outputVariables = new HashMap<String, Object>();
         outputVariables.put("reply", "updated content");
         outputVariables.put("person", new Person("mary", 28));
@@ -700,21 +708,22 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         // Check is Complete
         taskService.complete(taskId, "Darth Vader", outputVariables);
 
-        List<TaskVariable> outputVars = taskAuditService.getTaskOutputVariables(taskId, new QueryFilter());
+        List<TaskVariable> outputVars = taskAuditService.taskVariableQuery()
+                .taskId(taskId).intersect().type(VariableType.OUTPUT).build().getResultList();
         assertNotNull(outputVars);
         assertEquals(3, outputVars.size());
-        
+
         Map<String, String> outvars = collectVariableNameAndValue(outputVars);
-        
+
         assertTrue(outvars.containsKey("reply"));
         assertTrue(vars.containsKey("person.name"));
         assertTrue(vars.containsKey("person.age"));
-        
+
         assertEquals("updated content", outvars.get("reply"));
         assertEquals("mary", outvars.get("person.name"));
         assertEquals("28", outvars.get("person.age"));
     }
-    
+
     @Test
     public void testSearchTasksByVariable() {
         Task task = new TaskFluent().setName("This is my task name")
@@ -725,46 +734,52 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
         Map<String, Object> inputVariables = new HashMap<String, Object>();
         inputVariables.put("firstVariable", "string content");
         inputVariables.put("number", 1234);
-        
+
         taskService.addTask(task, inputVariables);
         long taskId = task.getId();
 
         List<TaskSummary> allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
         assertEquals(1, allGroupAuditTasks.size());
         assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Ready"));
-        
-        List<TaskVariable> inputVars = taskAuditService.getTaskInputVariables(taskId, new QueryFilter());
+
+        List<TaskVariable> inputVars = taskAuditService.taskVariableQuery()
+                .taskId(taskId).intersect().type(VariableType.INPUT).build().getResultList();
         assertNotNull(inputVars);
         assertEquals(2, inputVars.size());
-        
+
         Map<String, String> vars = collectVariableNameAndValue(inputVars);
-        
+
         assertTrue(vars.containsKey("firstVariable"));
         assertTrue(vars.containsKey("number"));
-        
+
         assertEquals("string content", vars.get("firstVariable"));
         assertEquals("1234", vars.get("number"));
 
-        List<TaskSummary> tasksByVariable = taskAuditService.getTasksByVariableName("salaboy", "firstVariable", null, new QueryFilter());
+        List<TaskSummary> tasksByVariable = taskService.taskSummaryQuery("salaboy")
+                .variableName("firstVariable").build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
-        
+
         // search by unauthorized user
-        tasksByVariable = taskAuditService.getTasksByVariableName("Wintermute", "firstVariable", null, new QueryFilter());
+        tasksByVariable = taskService.taskSummaryQuery("WinterMute")
+                .variableName("fistVariable").build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(0, tasksByVariable.size());
-        
+
         // search by not existing variable
-        tasksByVariable = taskAuditService.getTasksByVariableName("salaboy", "notexistingVariable", null, new QueryFilter());
+        tasksByVariable = taskService.taskSummaryQuery("salaboy")
+                .variableName("notexistingVariable").build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(0, tasksByVariable.size());
-        
+
         // search by variable name with wildcard
-        tasksByVariable = taskAuditService.getTasksByVariableName("salaboy", "first%", null, new QueryFilter());
+        tasksByVariable = taskService.taskSummaryQuery("salaboy").regex()
+                .variableName("first*").build().getResultList();
+        assertNotNull(tasksByVariable);
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
     }
-    
+
     @Test
     public void testSearchTasksByVariableNameAndValue() {
         Task task = new TaskFluent().setName("This is my task name")
@@ -773,65 +788,77 @@ public abstract class TaskAuditBaseTest extends HumanTaskServicesBaseTest {
                 .getTask();
 
         Map<String, Object> inputVariables = new HashMap<String, Object>();
-        inputVariables.put("firstVariable", "string content");
+
+        String userId = "salaboy";
+        String varName = "firstVariable";
+        String varValue = "string content";
+        inputVariables.put(varName, varValue);
         inputVariables.put("number", 1234);
-        
+
         taskService.addTask(task, inputVariables);
         long taskId = task.getId();
 
-        List<TaskSummary> allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner("salaboy", null, null, null);
+        List<TaskSummary> allGroupAuditTasks = taskService.getTasksAssignedAsPotentialOwner(userId, null, null, null);
         assertEquals(1, allGroupAuditTasks.size());
         assertTrue(allGroupAuditTasks.get(0).getStatusId().equals("Ready"));
-        
-        List<TaskVariable> inputVars = taskAuditService.getTaskInputVariables(taskId, new QueryFilter());
+
+        List<TaskVariable> inputVars = taskAuditService.taskVariableQuery()
+                .taskId(taskId).build().getResultList();
         assertNotNull(inputVars);
         assertEquals(2, inputVars.size());
-        
+
         Map<String, String> vars = collectVariableNameAndValue(inputVars);
-        
-        assertTrue(vars.containsKey("firstVariable"));
+
+        assertTrue(vars.containsKey(varName));
         assertTrue(vars.containsKey("number"));
-        
-        assertEquals("string content", vars.get("firstVariable"));
+
+        assertEquals(varValue, vars.get(varName));
         assertEquals("1234", vars.get("number"));
 
-        List<TaskSummary> tasksByVariable = taskAuditService.getTasksByVariableNameAndValue("salaboy", "firstVariable", "string content", null, new QueryFilter());
+        List<TaskSummary> tasksByVariable = taskService.taskSummaryQuery(userId)
+                .variableName(varName).and().variableValue(varValue).build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
-        
+
         // search with value wild card
-        tasksByVariable = taskAuditService.getTasksByVariableNameAndValue("salaboy", "firstVariable", "string%", null, new QueryFilter());
+        tasksByVariable = taskService.taskSummaryQuery(userId)
+                .variableName(varName).and().regex().variableValue("string*").build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
-        
+
         //search with name and value wild card
-        tasksByVariable = taskAuditService.getTasksByVariableNameAndValue("salaboy", "first%", "string%", null, new QueryFilter());
+        tasksByVariable = taskService.taskSummaryQuery(userId)
+                .regex().variableName("first*").and().variableValue("string*").build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
-        
+
         // search with unauthorized user
-        tasksByVariable = taskAuditService.getTasksByVariableNameAndValue("Wintermute", "firstVariable", "string content", null, new QueryFilter());
+        tasksByVariable = taskService.taskSummaryQuery("WinterMute")
+                .regex().variableName(varName).and().variableValue(varValue).build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(0, tasksByVariable.size());
-        
+
         // search with non existing variable
-        tasksByVariable = taskAuditService.getTasksByVariableNameAndValue("salaboy", "nonexistingVariable", "string content", null, new QueryFilter());
+        tasksByVariable = taskService.taskSummaryQuery(userId)
+                .regex().variableName("nonexistingvariable").and().variableValue(varValue).build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(0, tasksByVariable.size());
-        
+
         // search with not matching value
-        tasksByVariable = taskAuditService.getTasksByVariableNameAndValue("salaboy", "firstVariable", "updated content", null, new QueryFilter());
+        tasksByVariable = taskService.taskSummaryQuery(userId)
+                .regex().variableName(varName).and().variableValue("updated content").build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(0, tasksByVariable.size());
     }
 
     protected Map<String, String> collectVariableNameAndValue(List<TaskVariable> variables) {
         Map<String, String> nameValue = new HashMap<String, String>();
-        
+
         for (TaskVariable taskVar : variables) {
             nameValue.put(taskVar.getName(), taskVar.getValue());
         }
-        
+
         return nameValue;
     }
+
 }

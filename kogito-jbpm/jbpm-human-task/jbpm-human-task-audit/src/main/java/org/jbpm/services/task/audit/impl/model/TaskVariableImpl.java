@@ -25,96 +25,99 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.jbpm.services.task.impl.model.TaskImpl;
 import org.kie.internal.task.api.TaskVariable;
 
 @Entity
 @SequenceGenerator(name = "taskVarIdSeq", sequenceName = "TASK_VAR_ID_SEQ", allocationSize = 1)
 public class TaskVariableImpl implements TaskVariable, Serializable {
-    
+
     private static final long serialVersionUID = 5388016330549830048L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "taskVarIdSeq")
     private Long id;
-    
+
     private Long taskId;
-    
+
     private Long processInstanceId;
-    
+
     private String processId;
-    
+
     private String name;
-    
+
     private String value;
-    
+
     @Enumerated(EnumType.ORDINAL)
     private VariableType type;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date modificationDate;
-        
+
     public Long getId() {
         return id;
     }
-    
+
     @Override
-    public Long getTaskId() {        
+    public Long getTaskId() {
         return taskId;
     }
 
     @Override
-    public Long getProcessInstanceId() {        
+    public Long getProcessInstanceId() {
         return processInstanceId;
     }
 
     @Override
-    public String getProcessId() {        
+    public String getProcessId() {
         return processId;
     }
 
     @Override
-    public String getName() {        
+    public String getName() {
         return name;
     }
 
     @Override
-    public String getValue() {        
+    public String getValue() {
         return value;
     }
 
     @Override
-    public Date getModificationDate() {        
+    public Date getModificationDate() {
         return modificationDate;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
-    
+
     public void setTaskId(Long taskId) {
         this.taskId = taskId;
     }
-    
+
     public void setProcessInstanceId(Long processInstanceId) {
         this.processInstanceId = processInstanceId;
     }
-    
+
     public void setProcessId(String processId) {
         this.processId = processId;
     }
-    
+
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public void setValue(String value) {
         this.value = value;
     }
-    
+
     public void setModificationDate(Date modificationDate) {
         this.modificationDate = modificationDate;
     }
@@ -129,7 +132,7 @@ public class TaskVariableImpl implements TaskVariable, Serializable {
 
     @Override
     public String toString() {
-        return "TaskVariableImpl [taskId=" + taskId + ", name='" + name + "', value='" + value + "', type=" + type 
+        return "TaskVariableImpl [taskId=" + taskId + ", name='" + name + "', value='" + value + "', type=" + type
                 + " (processInstanceId=" + processInstanceId + ", processId=" + processId + ")]";
     }
 

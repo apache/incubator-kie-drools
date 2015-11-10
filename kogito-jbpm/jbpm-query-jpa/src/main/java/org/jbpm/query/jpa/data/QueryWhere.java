@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Stack;
 
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Subquery;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -36,12 +37,12 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
  * THIS CLASS SHOULD NEVER BE EXPOSED IN THE PUBLIC API!!
- * </p> 
+ * </p>
  * EXTERNAL USE OF THIS CLASS IS **NOT** SUPPORTED!
  * </p>
- * 
- * This object can be seen as a (dynamic) representation of the <code>WHERE</code> part of a query. 
- * </p> 
+ *
+ * This object can be seen as a (dynamic) representation of the <code>WHERE</code> part of a query.
+ * </p>
  * It has the following responsibilities: <ol>
  * <li>Hold a list of the added query criteria </li>
  * <li>Keep track of the criteria preferences:<ul>
@@ -58,17 +59,17 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
                        "addedJoins"})
 @JsonAutoDetect(fieldVisibility=Visibility.ANY,
                 getterVisibility=Visibility.NONE,
-                setterVisibility=Visibility.NONE, 
+                setterVisibility=Visibility.NONE,
                 isGetterVisibility=Visibility.NONE)
 // @formatter:on
 public class QueryWhere {
 
     @XmlEnum
-    public static enum QueryCriteriaType { 
+    public static enum QueryCriteriaType {
         @XmlEnumValue("N") NORMAL,
-        @XmlEnumValue("L") REGEXP, 
-        @XmlEnumValue("R") RANGE, 
-        @XmlEnumValue("R") GROUP, 
+        @XmlEnumValue("L") REGEXP,
+        @XmlEnumValue("R") RANGE,
+        @XmlEnumValue("R") GROUP,
     }
 
     @XmlElement(name="queryCriteria")
@@ -94,22 +95,22 @@ public class QueryWhere {
 
     @JsonIgnore
     private transient List<QueryCriteria> currentCriteria = criteria;
-    
+
     @JsonIgnore
     private transient Stack<Object> ancestry = new Stack<Object>();
-    
+
     @JsonIgnore
     private transient Object currentParent = this;
-   
+
     @JsonIgnore
     private transient Map<String, Predicate> joinPredicates = null;
-    
-    public QueryWhere() { 
+
+    public QueryWhere() {
         // JAXB constructor
     }
-    
+
     // add logic
-   
+
     /**
      * This method should be used for<ol>
      * <li>Normal parameters</li>
@@ -126,12 +127,12 @@ public class QueryWhere {
         if( param.length == 0 ) {
             return null;
         }
-        if( QueryCriteriaType.REGEXP.equals(this.type) && ! (param[0] instanceof String) ) { 
+        if( QueryCriteriaType.REGEXP.equals(this.type) && ! (param[0] instanceof String) ) {
             throw new IllegalArgumentException("Only String parameters may be used in regular expressions.");
         }
         QueryCriteria criteria =  new QueryCriteria(listId, this.union, this.type, param.length);
-        for( T paramElem : param ) { 
-           criteria.addParameter(paramElem); 
+        for( T paramElem : param ) {
+           criteria.addParameter(paramElem);
         }
         addCriteria(criteria);
         return criteria;
@@ -147,7 +148,7 @@ public class QueryWhere {
         addCriteria(criteria);
         this.type = origType;
     }
- 
+
     public <T> void addRangeParameters( String listId, T paramMin, T paramMax ) {
         QueryCriteriaType origType = this.type;
         this.type = QueryCriteriaType.RANGE;
@@ -157,41 +158,41 @@ public class QueryWhere {
         criteria.addParameter(paramMax);
         addCriteria(criteria);
         this.type = origType;
-    } 
-        
-    private void addCriteria(QueryCriteria criteria) { 
-        if( this.currentCriteria.isEmpty() ) {  
-            criteria.setFirst(true); 
-        } else if( this.currentCriteria.size() == 1 ) { 
-           this.currentCriteria.get(0).setUnion(criteria.isUnion()); 
+    }
+
+    private void addCriteria(QueryCriteria criteria) {
+        if( this.currentCriteria.isEmpty() ) {
+            criteria.setFirst(true);
+        } else if( this.currentCriteria.size() == 1 ) {
+           this.currentCriteria.get(0).setUnion(criteria.isUnion());
         }
         this.currentCriteria.add(criteria);
     }
-    
+
     // group management
-    
-    public void newGroup() { 
+
+    public void newGroup() {
         // create parent
         QueryCriteria newCriteriaGroupParent = new QueryCriteria(this.union);
         addCriteria(newCriteriaGroupParent);
-        
+
         //  add parent to parent stack
         ancestry.push(currentParent);
         currentParent = newCriteriaGroupParent;
-        
+
         // set group criteria list to new list
         currentCriteria = newCriteriaGroupParent.getCriteria();
     }
 
-    public void endGroup() { 
-       if( ancestry.isEmpty() ) { 
+    public void endGroup() {
+       if( ancestry.isEmpty() ) {
            throw new IllegalStateException("Can not end group: no group has been started!");
        }
        // set current group criteria to point to correct list
        Object grandparent = ancestry.pop();
        if( grandparent instanceof QueryWhere ) {
            currentCriteria = ((QueryWhere) grandparent).getCriteria();
-       } else { 
+       } else {
            currentCriteria = ((QueryCriteria) grandparent).getCriteria();
        }
        currentParent = grandparent;
@@ -213,9 +214,8 @@ public class QueryWhere {
         return currentCriteria;
     }
 
-    
     // getters & setters
-  
+
     public List<QueryCriteria> getCriteria() {
         return criteria;
     }
@@ -227,7 +227,7 @@ public class QueryWhere {
     public void setParameters( List<QueryCriteria> parameters ) {
         this.criteria = parameters;
     }
-    
+
     public void setAscOrDesc( Boolean ascendingOrDescending ) {
         this.ascOrDesc = ascendingOrDescending;
     }
@@ -235,7 +235,7 @@ public class QueryWhere {
     public Boolean getAscOrDesc() {
         return this.ascOrDesc;
     }
-    
+
     public void setOrderByListId( String listId ) {
         this.orderByListId = listId;
     }
@@ -243,12 +243,12 @@ public class QueryWhere {
     public String getOrderByListId() {
         return this.orderByListId;
     }
-    
+
     public void setCount( Integer maxResults ) {
         this.maxResults = maxResults;
     }
 
-    public Integer getCount() { 
+    public Integer getCount() {
         return this.maxResults;
     }
 
@@ -260,19 +260,19 @@ public class QueryWhere {
         return this.offset;
     }
 
-    public QueryCriteriaType getCriteriaType() { 
+    public QueryCriteriaType getCriteriaType() {
        return this.type;
-    } 
-       
+    }
+
     public void setToUnion() {
         this.union = true;
     }
-    
+
     public void setToIntersection() {
         this.union = false;
     }
 
-    public boolean isUnion() { 
+    public boolean isUnion() {
        return this.union;
     }
 
@@ -295,38 +295,38 @@ public class QueryWhere {
     public boolean isRange() {
         return this.type.equals(QueryCriteriaType.RANGE);
     }
-  
+
     public void setToGroup() {
         this.type = QueryCriteriaType.GROUP;
     }
-    
-    public Map<String, Predicate> getJoinPredicates() { 
-        if( this.joinPredicates == null ) { 
-          this.joinPredicates = new HashMap<String, Predicate>(3);  
+
+    public Map<String, Predicate> getJoinPredicates() {
+        if( this.joinPredicates == null ) {
+          this.joinPredicates = new HashMap<String, Predicate>(3);
         }
         return this.joinPredicates;
     }
-    
+
     // clear & clone
 
-    public void clear() { 
+    public void clear() {
         this.union = true;
         this.type = QueryCriteriaType.NORMAL;
         this.ancestry.clear();
-        if( this.criteria != null ) { 
+        if( this.criteria != null ) {
             this.criteria.clear();
         }
         this.currentCriteria = this.criteria;
-        
+
         this.maxResults = null;
         this.offset = null;
         this.orderByListId = null;
         this.ascOrDesc = null;
-        
+
        this.joinPredicates = null;
     }
-    
-    public QueryWhere(QueryWhere queryWhere) { 
+
+    public QueryWhere(QueryWhere queryWhere) {
        this.union = queryWhere.union;
        this.type = queryWhere.type;
        if( queryWhere.criteria != null )  {
@@ -336,9 +336,9 @@ public class QueryWhere {
        this.orderByListId = queryWhere.orderByListId;
        this.maxResults = queryWhere.maxResults;
        this.offset = queryWhere.offset;
-       
+
        this.joinPredicates = queryWhere.joinPredicates;
     }
 
-    
+
 }
