@@ -15,12 +15,12 @@
 
 package org.drools.compiler.xpath;
 
-import org.drools.core.phreak.ReactiveObject;
+import org.drools.core.phreak.AbstractReactiveObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class School extends ReactiveObject {
+public class School extends AbstractReactiveObject {
 
     private final String name;
 

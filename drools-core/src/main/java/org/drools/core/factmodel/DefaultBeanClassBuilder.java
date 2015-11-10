@@ -21,9 +21,16 @@ import org.drools.core.factmodel.traits.TraitFieldTMS;
 import org.drools.core.factmodel.traits.TraitFieldTMSImpl;
 import org.drools.core.factmodel.traits.TraitTypeMap;
 import org.drools.core.factmodel.traits.TraitableBean;
-import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
+import org.drools.core.phreak.ReactiveObject;
 import org.kie.api.definition.type.FactField;
-import org.mvel2.asm.*;
+import org.mvel2.asm.AnnotationVisitor;
+import org.mvel2.asm.ClassVisitor;
+import org.mvel2.asm.ClassWriter;
+import org.mvel2.asm.FieldVisitor;
+import org.mvel2.asm.Label;
+import org.mvel2.asm.MethodVisitor;
+import org.mvel2.asm.Opcodes;
+import org.mvel2.asm.Type;
 
 import java.beans.IntrospectionException;
 import java.io.IOException;
@@ -85,8 +92,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
         ClassWriter cw = this.buildClassHeader( classLoader, classDef );
 
-        this.buildFields( cw,
-                classDef );
+        this.buildFields( cw, classDef );
 
         if ( classDef.isTraitable() ) {
             this.buildDynamicPropertyMap( cw, classDef );
@@ -94,22 +100,21 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
             this.buildFieldTMS( cw, classDef );
         }
 
-        this.buildConstructors( cw,
-                classDef );
+        this.buildConstructors( cw, classDef );
 
-        this.buildGettersAndSetters( cw,
-                classDef );
+        this.buildGettersAndSetters( cw, classDef );
 
-        this.buildEqualityMethods( cw,
-                classDef );
+        this.buildEqualityMethods( cw, classDef );
 
-        this.buildToString( cw,
-                classDef );
+        this.buildToString( cw, classDef );
 
         if ( classDef.isTraitable() ) {
             // must guarantee serialization order when enhancing fields are present
-            this.buildSerializationMethods(cw,
-                    classDef);
+            this.buildSerializationMethods(cw, classDef);
+        }
+
+        if ( classDef.isReactive() ) {
+            implementReactivity( cw, classDef );
         }
 
         cw.visitEnd();
@@ -282,8 +287,90 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         // Building fields
         for ( FieldDefinition fieldDef : classDef.getFieldsDefinitions() ) {
             if (! fieldDef.isInherited())
-                this.buildField( cw,
-                        fieldDef );
+                this.buildField( cw, fieldDef );
+        }
+    }
+
+    private void implementReactivity(ClassWriter cw, ClassDefinition classDef) {
+        final String LEFT_TUPLES_FIELD_NAME = "_lts";
+        final String TYPE_NAME = BuildUtils.getInternalType( classDef.getClassName() );
+
+        FieldVisitor fv;
+        {
+            fv = cw.visitField( ACC_PRIVATE, LEFT_TUPLES_FIELD_NAME, "Ljava/util/List;", "Ljava/util/List<Lorg/drools/core/reteoo/LeftTuple;>;", null );
+            fv.visitEnd();
+        }
+
+        MethodVisitor mv;
+        {
+            mv = cw.visitMethod( ACC_PUBLIC, "addLeftTuple", "(Lorg/drools/core/reteoo/LeftTuple;)V", null, null );
+            mv.visitCode();
+            Label l0 = new Label();
+            mv.visitLabel( l0 );
+            mv.visitLineNumber( 28, l0 );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/List;" );
+            Label l1 = new Label();
+            mv.visitJumpInsn( IFNONNULL, l1 );
+            Label l2 = new Label();
+            mv.visitLabel( l2 );
+            mv.visitLineNumber( 29, l2 );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitTypeInsn( NEW, "java/util/ArrayList" );
+            mv.visitInsn( DUP );
+            mv.visitMethodInsn( INVOKESPECIAL, "java/util/ArrayList", "<init>", "()V", false );
+            mv.visitFieldInsn( PUTFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/List;" );
+            mv.visitLabel( l1 );
+            mv.visitLineNumber( 31, l1 );
+            mv.visitFrame( Opcodes.F_SAME, 0, null, 0, null );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/List;" );
+            mv.visitVarInsn( ALOAD, 1 );
+            mv.visitMethodInsn( INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true );
+            mv.visitInsn( POP );
+            Label l3 = new Label();
+            mv.visitLabel( l3 );
+            mv.visitLineNumber( 32, l3 );
+            mv.visitInsn( RETURN );
+            Label l4 = new Label();
+            mv.visitLabel( l4 );
+            mv.visitLocalVariable( "this", "L" + TYPE_NAME + ";", null, l0, l4, 0 );
+            mv.visitLocalVariable( "leftTuple", "Lorg/drools/core/reteoo/LeftTuple;", null, l0, l4, 1 );
+            mv.visitMaxs( 3, 2 );
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod( ACC_PUBLIC, "getLeftTuples", "()Ljava/util/List;", "()Ljava/util/List<Lorg/drools/core/reteoo/LeftTuple;>;", null );
+            mv.visitCode();
+            Label l0 = new Label();
+            mv.visitLabel( l0 );
+            mv.visitLineNumber( 32, l0 );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitFieldInsn( GETFIELD, TYPE_NAME, LEFT_TUPLES_FIELD_NAME, "Ljava/util/List;" );
+            mv.visitInsn( ARETURN );
+            Label l1 = new Label();
+            mv.visitLabel( l1 );
+            mv.visitLocalVariable( "this", "L" + TYPE_NAME + ";", null, l0, l1, 0 );
+            mv.visitMaxs( 1, 1 );
+            mv.visitEnd();
+        }
+        {
+            mv = cw.visitMethod( ACC_PROTECTED, "notifyModification", "()V", null, null );
+            mv.visitCode();
+            Label l0 = new Label();
+            mv.visitLabel( l0 );
+            mv.visitLineNumber( 36, l0 );
+            mv.visitVarInsn( ALOAD, 0 );
+            mv.visitMethodInsn( INVOKESTATIC, "org/drools/core/phreak/ReactiveObjectUtil", "notifyModification", "(Lorg/drools/core/phreak/ReactiveObject;)V", false );
+            Label l1 = new Label();
+            mv.visitLabel( l1 );
+            mv.visitLineNumber( 37, l1 );
+            mv.visitInsn( RETURN );
+            Label l2 = new Label();
+            mv.visitLabel( l2 );
+            mv.visitLocalVariable( "this", "L" + TYPE_NAME + ";", null, l0, l2, 0 );
+            mv.visitMaxs( 1, 1 );
+            mv.visitEnd();
         }
     }
 
@@ -697,12 +784,18 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
      */
     protected ClassWriter buildClassHeader(ClassLoader classLoader,
                                            ClassDefinition classDef) {
+        boolean reactive = classDef.isReactive();
+
         String[] original = classDef.getInterfaces();
-        String[] interfaces = new String[original.length + 1];
+        int interfacesNr = original.length + (reactive ? 2 : 1);
+        String[] interfaces = new String[interfacesNr];
         for ( int i = 0; i < original.length; i++ ) {
             interfaces[i] = BuildUtils.getInternalType( original[i] );
         }
         interfaces[original.length] = BuildUtils.getInternalType( GeneratedFact.class.getName() );
+        if (reactive) {
+            interfaces[original.length+1] = BuildUtils.getInternalType( ReactiveObject.class.getName() );
+        }
 
         int classModifiers = Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER;
         if ( classDef.isAbstrakt() ) {
@@ -1116,6 +1209,11 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                                     false );
             }
 
+            if (classDef.isReactive()) {
+                mv.visitVarInsn( ALOAD, 0 );
+                mv.visitMethodInsn( INVOKEVIRTUAL, BuildUtils.getInternalType( classDef.getClassName() ), "notifyModification", "()V", false );
+            }
+
             mv.visitInsn( Opcodes.RETURN );
             Label l1 = null;
             if ( this.debug ) {
@@ -1128,8 +1226,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                         l1,
                         0 );
             }
-            mv.visitMaxs( 0,
-                    0 );
+            mv.visitMaxs( 0, 0 );
             mv.visitEnd();
         }
     }
@@ -1669,7 +1766,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
         // buf.append(attrValue)
         if (field.isRecursive()) {
-            appendToStringBuilder(mv, field.getTypeName() + " [recursive]");
+            appendToStringBuilder( mv, field.getTypeName() + " [recursive]");
         } else {
             mv.visitVarInsn(Opcodes.ALOAD,
                             0);
@@ -1681,8 +1778,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
                         Type.getInternalName( StringBuilder.class ),
                         "append",
-                        Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
-                                new Type[]{Type.getType( BuildUtils.getTypeDescriptor( type ) )} ) );
+                        Type.getMethodDescriptor( Type.getType( StringBuilder.class ), Type.getType( BuildUtils.getTypeDescriptor( type ) ) ) );
             } else if ( BuildUtils.isArray( field.getTypeName() ) && BuildUtils.arrayDimSize( field.getTypeName() ) == 1 ) {
 
 
@@ -1700,8 +1796,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
                 mv.visitMethodInsn( Opcodes.INVOKEVIRTUAL,
                         Type.getInternalName( StringBuilder.class ),
                         "append",
-                        Type.getMethodDescriptor( Type.getType( StringBuilder.class ),
-                                new Type[]{Type.getType( Object.class )} ) );
+                        Type.getMethodDescriptor( Type.getType( StringBuilder.class ), Type.getType( Object.class ) ) );
             }
         }
     }
@@ -1716,60 +1811,58 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
 
     protected void buildClassAnnotations(ClassDefinition classDef, ClassVisitor cw) {
-        if (classDef.getAnnotations() != null) {
-            for (AnnotationDefinition ad : classDef.getAnnotations()) {
-                AnnotationVisitor av = cw.visitAnnotation("L"+BuildUtils.getInternalType(ad.getName())+";", true);
-                for (String key : ad.getValues().keySet()) {
-                    AnnotationDefinition.AnnotationPropertyVal apv = ad.getValues().get(key);
+        for (AnnotationDefinition ad : classDef.getAnnotations()) {
+            AnnotationVisitor av = cw.visitAnnotation("L"+BuildUtils.getInternalType(ad.getName())+";", true);
+            for (String key : ad.getValues().keySet()) {
+                AnnotationDefinition.AnnotationPropertyVal apv = ad.getValues().get(key);
 
-                    switch (apv.getValType()) {
-                        case STRINGARRAY:
-                            AnnotationVisitor subAv = av.visitArray(apv.getProperty());
-                            Object[] array = (Object[]) apv.getValue();
-                            for (Object o : array) {
-                                subAv.visit(null,o);
-                            }
-                            subAv.visitEnd();
-                            break;
-                        case PRIMARRAY:
-                            av.visit(apv.getProperty(),apv.getValue());
-                            break;
-                        case ENUMARRAY:
-                            AnnotationVisitor subEnav = av.visitArray(apv.getProperty());
-                            Enum[] enArray = (Enum[]) apv.getValue();
-                            String aenumType = "L" + BuildUtils.getInternalType(enArray[0].getClass().getName()) + ";";
-                            for (Enum enumer : enArray) {
-                                subEnav.visitEnum(null,aenumType,enumer.name());
-                            }
-                            subEnav.visitEnd();
-                            break;
-                        case CLASSARRAY:
-                            AnnotationVisitor subKlav = av.visitArray(apv.getProperty());
-                            Class[] klarray = (Class[]) apv.getValue();
-                            for (Class klass : klarray) {
-                                subKlav.visit(null,Type.getType("L"+BuildUtils.getInternalType(klass.getName())+";"));
-                            }
-                            subKlav.visitEnd();
-                            break;
-                        case ENUMERATION:
-                            String enumType = "L" + BuildUtils.getInternalType(apv.getType().getName()) + ";";
-                            av.visitEnum(apv.getProperty(),enumType,((Enum) apv.getValue()).name());
-                            break;
-                        case KLASS:
-                            String klassName = BuildUtils.getInternalType(((Class) apv.getValue()).getName());
-                            av.visit(apv.getProperty(),Type.getType("L"+klassName+";"));
-                            break;
-                        case PRIMITIVE:
-                            av.visit(apv.getProperty(),apv.getValue());
-                            break;
-                        case STRING:
-                            av.visit(apv.getProperty(),apv.getValue());
-                            break;
-                    }
-
+                switch (apv.getValType()) {
+                    case STRINGARRAY:
+                        AnnotationVisitor subAv = av.visitArray(apv.getProperty());
+                        Object[] array = (Object[]) apv.getValue();
+                        for (Object o : array) {
+                            subAv.visit(null,o);
+                        }
+                        subAv.visitEnd();
+                        break;
+                    case PRIMARRAY:
+                        av.visit(apv.getProperty(),apv.getValue());
+                        break;
+                    case ENUMARRAY:
+                        AnnotationVisitor subEnav = av.visitArray(apv.getProperty());
+                        Enum[] enArray = (Enum[]) apv.getValue();
+                        String aenumType = "L" + BuildUtils.getInternalType(enArray[0].getClass().getName()) + ";";
+                        for (Enum enumer : enArray) {
+                            subEnav.visitEnum(null,aenumType,enumer.name());
+                        }
+                        subEnav.visitEnd();
+                        break;
+                    case CLASSARRAY:
+                        AnnotationVisitor subKlav = av.visitArray(apv.getProperty());
+                        Class[] klarray = (Class[]) apv.getValue();
+                        for (Class klass : klarray) {
+                            subKlav.visit(null,Type.getType("L"+BuildUtils.getInternalType(klass.getName())+";"));
+                        }
+                        subKlav.visitEnd();
+                        break;
+                    case ENUMERATION:
+                        String enumType = "L" + BuildUtils.getInternalType(apv.getType().getName()) + ";";
+                        av.visitEnum(apv.getProperty(),enumType,((Enum) apv.getValue()).name());
+                        break;
+                    case KLASS:
+                        String klassName = BuildUtils.getInternalType(((Class) apv.getValue()).getName());
+                        av.visit(apv.getProperty(),Type.getType("L"+klassName+";"));
+                        break;
+                    case PRIMITIVE:
+                        av.visit(apv.getProperty(),apv.getValue());
+                        break;
+                    case STRING:
+                        av.visit(apv.getProperty(),apv.getValue());
+                        break;
                 }
-                av.visitEnd();
+
             }
+            av.visitEnd();
         }
     }
 

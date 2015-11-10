@@ -15,9 +15,9 @@
 
 package org.drools.compiler.xpath;
 
-import org.drools.core.phreak.ReactiveObject;
+import org.drools.core.phreak.AbstractReactiveObject;
 
-public abstract class Person extends ReactiveObject {
+public abstract class Person extends AbstractReactiveObject {
 
     private final String name;
     private int age;

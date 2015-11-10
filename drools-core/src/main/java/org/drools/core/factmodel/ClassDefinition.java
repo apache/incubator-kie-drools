@@ -16,6 +16,7 @@
 
 package org.drools.core.factmodel;
 
+import org.drools.core.phreak.Reactive;
 import org.kie.api.definition.type.Annotation;
 import org.kie.api.definition.type.FactField;
 import org.kie.api.definition.type.FactType;
@@ -53,7 +54,7 @@ public class ClassDefinition
 
     private LinkedHashMap<String, FieldDefinition> fields = new LinkedHashMap<String, FieldDefinition>();
 
-    private List<AnnotationDefinition> annotations;
+    private Map<String, AnnotationDefinition> annotations;
 
     private Map<String, List<String>> modifiedPropsByMethod;
 
@@ -103,7 +104,7 @@ public class ClassDefinition
         this.superClass = (String) in.readObject();
         this.interfaces = (String[]) in.readObject();
         this.fields = (LinkedHashMap<String, FieldDefinition>) in.readObject();
-        this.annotations = (List<AnnotationDefinition>) in.readObject();
+        this.annotations = (Map<String, AnnotationDefinition>) in.readObject();
         this.modifiedPropsByMethod = (Map<String, List<String>>) in.readObject();
         this.traitable = (ClassDefinition.TRAITING_MODE) in.readObject();
         this.abstrakt = in.readBoolean();
@@ -293,17 +294,21 @@ public class ClassDefinition
 
     public void addAnnotation(AnnotationDefinition annotationDefinition) {
         if (this.annotations == null) {
-            this.annotations = new ArrayList<AnnotationDefinition>();
+            this.annotations = new HashMap<String, AnnotationDefinition>();
         }
-        this.annotations.add(annotationDefinition);
+        this.annotations.put( annotationDefinition.getName(), annotationDefinition );
     }
 
-    public List<AnnotationDefinition> getAnnotations() {
-        return annotations;
+    public Collection<AnnotationDefinition> getAnnotations() {
+        return annotations != null ? annotations.values() : Collections.<AnnotationDefinition>emptyList();
+    }
+
+    public AnnotationDefinition getAnnotation(Class<?> annotationClass) {
+        return annotations != null ? annotations.get(annotationClass.getName()) : null;
     }
 
     public List<Annotation> getClassAnnotations() {
-        return Collections.unmodifiableList( new ArrayList( annotations ) );
+        return Collections.unmodifiableList( new ArrayList( getAnnotations() ) );
     }
 
     public Map<String, Object> getMetaData() {
@@ -332,6 +337,10 @@ public class ClassDefinition
 
     public List<String> getModifiedPropsByMethod(String methodName) {
         return modifiedPropsByMethod == null ? null : modifiedPropsByMethod.get(methodName);
+    }
+
+    public boolean isReactive() {
+        return getAnnotation( Reactive.class ) != null;
     }
 
     public boolean isTraitable() {

@@ -25,6 +25,7 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.From;
 import org.drools.core.rule.MutableTypeConstraint;
+import org.drools.core.spi.AcceptsClassObjectType;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
@@ -32,6 +33,7 @@ import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.util.ClassUtils;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -40,12 +42,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import static org.drools.core.util.ClassUtils.getAccessor;
 
 public class XpathConstraint extends MutableTypeConstraint {
 
@@ -210,31 +211,45 @@ public class XpathConstraint extends MutableTypeConstraint {
         }
     }
 
-    public static class XpathChunk {
-        
-        private final Class<?> clazz;
+    public static class XpathChunk implements AcceptsClassObjectType {
+
         private final String field;
         private final int index;
         private final boolean iterate;
         private final boolean lazy;
-        private final Method accessor;
+        private final boolean array;
+
         private List<Constraint> constraints;
         private Declaration declaration;
-        private Class<?> returnedClass;
+        private ClassObjectType classObjectType;
+        private ClassObjectType returnedType;
+        private Method accessor;
 
-        private XpathChunk(Class<?> clazz, String field, int index, boolean iterate, boolean lazy, Method accessor) {
-            this.clazz = clazz;
+        private XpathChunk(String field, int index, boolean iterate, boolean lazy, boolean array) {
             this.field = field;
             this.index = index;
             this.iterate = iterate;
             this.lazy = lazy;
-            this.accessor = accessor;
-            this.accessor.setAccessible(true);
+            this.array = array;
+        }
 
-            Class<?> lastReturnedClass = accessor.getReturnType();
-            this.returnedClass = iterate && Iterable.class.isAssignableFrom(lastReturnedClass) ?
-                                 getParametricType() :
-                                 lastReturnedClass;
+        private static XpathChunk get(Class<?> clazz, String field, int index, boolean iterate, boolean lazy) {
+            Method accessor = ClassUtils.getAccessor( clazz, field );
+            if (accessor == null) {
+                return null;
+            }
+            return new XpathChunk(accessor.getName(), index, iterate, lazy, iterate && accessor.getReturnType().isArray());
+        }
+
+        private Method getAccessor() {
+            if (accessor == null) {
+                try {
+                    accessor = classObjectType.getClassType().getMethod( field );
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException( e );
+                }
+            }
+            return accessor;
         }
 
         public void addConstraint(Constraint constraint) {
@@ -259,11 +274,14 @@ public class XpathConstraint extends MutableTypeConstraint {
             constraint.setType(type);
         }
 
-        public <T> T evaluate(Object obj) {
+        public Object evaluate(Object obj) {
             try {
-                T result = (T) accessor.invoke(obj);
+                Object result = getAccessor().invoke( obj );
+                if (array) {
+                    result = Arrays.asList( (Object[]) result );
+                }
                 if (index >= 0) {
-                    result = (T) ((List)result).subList( index, index+1 );
+                    result = ((List)result).subList( index, index+1 );
                 }
                 return result;
             } catch (Exception e) {
@@ -271,23 +289,34 @@ public class XpathConstraint extends MutableTypeConstraint {
             }
         }
 
-        private static XpathChunk get(Class<?> clazz, String field, int index, boolean iterate, boolean lazy) {
-            Method accessor = getAccessor(clazz, field);
-            if (accessor == null) {
-                return null;
-            }
-            return new XpathChunk(clazz, field, index, iterate, lazy, accessor);
-        }
-
         public Class<?> getReturnedClass() {
-            return returnedClass;
+            if (returnedType != null) {
+                return returnedType.getClassType();
+            }
+            try {
+                Method accessor = classObjectType.getClassType().getMethod( field );
+                return iterate ? getItemClass(accessor) : accessor.getReturnType();
+            } catch (NoSuchMethodException e) {
+                throw new RuntimeException( e );
+            }
         }
 
-        public void setReturnedClass( Class<?> returnedClass ) {
-            this.returnedClass = returnedClass;
+        public void setReturnedType( ClassObjectType returnedType ) {
+            this.returnedType = returnedType;
         }
 
-        public Class<?> getParametricType() {
+        private Class<?> getItemClass(Method accessor) {
+            Class<?> lastReturnedClass = accessor.getReturnType();
+            if (Iterable.class.isAssignableFrom(lastReturnedClass)) {
+                return getParametricType(accessor);
+            }
+            if (lastReturnedClass.isArray()) {
+                return lastReturnedClass.getComponentType();
+            }
+            return lastReturnedClass;
+        }
+
+        private Class<?> getParametricType(Method accessor) {
             Type returnedType = accessor.getGenericReturnType();
             if (returnedType instanceof ParameterizedType) {
                 Type[] parametricType = ((ParameterizedType) returnedType).getActualTypeArguments();
@@ -333,7 +362,7 @@ public class XpathConstraint extends MutableTypeConstraint {
 
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder( (lazy ? "?" : "") + clazz.getSimpleName() );
+            StringBuilder sb = new StringBuilder( (lazy ? "?" : "") + classObjectType.getClassType().getSimpleName() );
             if (iterate) {
                 sb.append( "/" );
             } else {
@@ -352,6 +381,11 @@ public class XpathConstraint extends MutableTypeConstraint {
                 sb.append( "}" );
             }
             return sb.toString();
+        }
+
+        @Override
+        public void setClassObjectType( ClassObjectType classObjectType ) {
+            this.classObjectType = classObjectType;
         }
     }
 
