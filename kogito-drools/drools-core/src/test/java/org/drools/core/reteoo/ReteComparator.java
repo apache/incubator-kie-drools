@@ -17,11 +17,15 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.BaseNode;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.KnowledgeRuntime;
+
+import java.util.Arrays;
+import java.util.Comparator;
 
 import static org.drools.core.reteoo.ReteDumper.getSinks;
 
@@ -88,10 +92,21 @@ public class ReteComparator {
             throw new RuntimeException( node1 + " has " + sinks1.length + " sinks while " + node2 + " has no sinks" );
         }
 
+        Arrays.sort(sinks1, NODE_SORTER);
+        Arrays.sort(sinks2, NODE_SORTER);
+
         for (int i = 0; i < sinks1.length; i++) {
             if (sinks1[i] instanceof BaseNode) {
                 compareNodes( (BaseNode) sinks1[i], (BaseNode) sinks2[i] );
             }
+        }
+    }
+
+    public static final NetworkNodeComparator NODE_SORTER = new NetworkNodeComparator();
+    public static class NetworkNodeComparator implements Comparator<NetworkNode> {
+        @Override
+        public int compare( NetworkNode n1, NetworkNode n2 ) {
+            return n1.getId() - n2.getId();
         }
     }
 }
