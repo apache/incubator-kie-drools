@@ -19,19 +19,27 @@ package org.kie.internal.runtime.conf;
 import javax.xml.bind.annotation.XmlType;
 
 /**
- * Defines merging strategy of two descriptors:
- * <ul>
- * 	<li>KEEP_ALL mean the 'master' descriptor is kept</li>
- * 	<li>OVERRIDE_ALL means the 'slave' descriptor is returned</li>
- * 	<li>OVERRIDE_EMPTY mean the 'slave' non empty value override corresponding values of the master, including collections</li>
- * 	<li>MERGE_COLLECTIONS means same as OVERRIDE_EMPTY but merges collections instead of overriding them</li>
- * </ul>
- *
+ * Defines merging strategy of two descriptors
  */
 @XmlType
 public enum MergeMode {
-	KEEP_ALL,
-	OVERRIDE_ALL,
-	OVERRIDE_EMPTY,
-	MERGE_COLLECTIONS;
+    /**
+     * The 'master' descriptor values are all kept
+     */
+    KEEP_ALL,
+
+	/**
+	 * The 'slave' descriptor values are all used
+	 */
+    OVERRIDE_ALL,
+
+	/**
+	 * The 'slave' non-empty values override corresponding values of the master, including collections
+	 */
+    OVERRIDE_EMPTY,
+
+	/**
+	 * The same as OVERRIDE_EMPTY except that collections are merged instead of being overridden
+	 */
+    MERGE_COLLECTIONS;
 }
