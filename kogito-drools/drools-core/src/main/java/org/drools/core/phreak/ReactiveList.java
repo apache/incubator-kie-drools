@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-public class ReactiveList<T> extends ReactiveObject implements List<T> {
+public class ReactiveList<T> extends AbstractReactiveObject implements List<T> {
 
     private final List<T> list;
 
@@ -36,7 +36,7 @@ public class ReactiveList<T> extends ReactiveObject implements List<T> {
     @Override
     public boolean add(T t) {
         boolean result = list.add(t);
-        notifyModification(t);
+        ReactiveObjectUtil.notifyModification(t, getLeftTuples());
         return result;
     }
 

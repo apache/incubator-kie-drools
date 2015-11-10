@@ -1,0 +1,95 @@
+/*
+ * Copyright 2015 JBoss Inc
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package org.drools.example.api.reactivekiesession
+
+import org.drools.core.phreak.Reactive
+
+global java.util.List list
+
+declare Person @Reactive
+    name : String
+    age : int
+end
+
+declare Adult extends Person
+    children : Child[]
+end
+
+declare Man extends Adult
+    wife : Woman
+end
+
+declare Woman extends Adult
+    husband : Man
+end
+
+declare Child extends Person
+    toys : Toy[]
+end
+
+declare Toy
+    name : String
+end
+
+rule Init when then
+    Woman alice = new Woman( );
+    alice.setName("Alice");
+    alice.setAge(38);
+    Man bob = new Man( );
+    bob.setName("Bob");
+    bob.setAge(40);
+    bob.setWife( alice );
+
+    Child charlie = new Child( );
+    charlie.setName("Charles");
+    charlie.setAge(12);
+    Child debbie = new Child( );
+    debbie.setName("Debbie");
+    debbie.setAge(10);
+    alice.setChildren( new Child[] { charlie, debbie } );
+
+    charlie.setToys( new Toy[] { new Toy( "car" ), new Toy( "ball" ) } );
+    debbie.setToys( new Toy[] { new Toy( "doll" ) } );
+
+    insert( bob );
+end
+
+rule R when
+    Man( $toy: /wife/children{age > 10}/toys )
+then
+    list.add( $toy.getName() );
+end
+
+/*
+rule R when
+    Man( $wife : wife )
+    $child : Child(age > 10) from $wife.getChildren();
+    $toy : Toy() from $child.getToys();
+then
+    list.add( $toy.getName() );
+end
+*/
+rule ChildBirthday when
+    $name : String()
+    $man : Man()
+then
+    for (Child child : $man.getWife().getChildren()) {
+        if ($name.equals(child.getName())) {
+            child.setAge(child.getAge()+1);
+        }
+    }
+    delete($name);
+end

@@ -16,7 +16,7 @@
 
 package org.drools.compiler.xpath.graph;
 
-import org.drools.core.phreak.ReactiveObject;
+import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.core.reteoo.ReteDumper;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
@@ -218,7 +218,7 @@ public class XpathOnGraphTest {
         }
     }
 
-    public static class Person extends ReactiveObject {
+    public static class Person extends AbstractReactiveObject {
         private final String name;
         private int age;
 

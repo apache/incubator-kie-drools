@@ -16,12 +16,12 @@
 
 package org.drools.compiler.xpath.graph;
 
+import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.core.phreak.ReactiveList;
-import org.drools.core.phreak.ReactiveObject;
 
 import java.util.List;
 
-public class Vertex<T> extends ReactiveObject {
+public class Vertex<T> extends AbstractReactiveObject {
 
     private static int ID_GENERATOR = 1;
 

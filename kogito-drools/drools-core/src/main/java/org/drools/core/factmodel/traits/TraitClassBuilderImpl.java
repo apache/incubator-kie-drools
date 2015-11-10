@@ -19,18 +19,14 @@ package org.drools.core.factmodel.traits;
 import org.drools.core.factmodel.AnnotationDefinition;
 import org.drools.core.factmodel.BuildUtils;
 import org.drools.core.factmodel.ClassDefinition;
-import org.drools.core.factmodel.DefaultBeanClassBuilder;
 import org.drools.core.factmodel.FieldDefinition;
 import org.drools.core.factmodel.GeneratedFact;
-import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.mvel2.asm.AnnotationVisitor;
 import org.mvel2.asm.ClassWriter;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.asm.Type;
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
 
 import static org.drools.core.rule.builder.dialect.asm.ClassGenerator.createClassWriter;
 
@@ -74,19 +70,15 @@ public class TraitClassBuilderImpl implements TraitClassBuilder, Serializable {
             {
                 if ( classDef.getDefinedClass() == null || classDef.getDefinedClass().getAnnotation( Trait.class ) == null ) {
                     AnnotationVisitor av0 = cw.visitAnnotation( Type.getDescriptor( Trait.class ), true);
-                    List<AnnotationDefinition> annotations = classDef.getAnnotations();
-                    if ( annotations != null && ! annotations.isEmpty() ) {
-                        for ( Iterator<AnnotationDefinition> iter = annotations.iterator(); iter.hasNext(); ) {
-                            AnnotationDefinition adef = iter.next();
-                            if ( Trait.class.getName().equals( adef.getName() ) ) {
-                                if ( adef.getPropertyValue( "logical" ) != null ) {
-                                    av0.visit( "logical", (Boolean) adef.getPropertyValue( "logical" ) );
-                                }
-                                if ( adef.getPropertyValue( "impl" ) != null ) {
-                                    av0.visit( "impl", Type.getType( (Class) adef.getPropertyValue( "impl" ) ) );
-                                }
-                                break;
+                    for ( AnnotationDefinition adef : classDef.getAnnotations() ) {
+                        if ( Trait.class.getName().equals( adef.getName() ) ) {
+                            if ( adef.getPropertyValue( "logical" ) != null ) {
+                                av0.visit( "logical", adef.getPropertyValue( "logical" ) );
                             }
+                            if ( adef.getPropertyValue( "impl" ) != null ) {
+                                av0.visit( "impl", Type.getType( (Class) adef.getPropertyValue( "impl" ) ) );
+                            }
+                            break;
                         }
                     }
                     av0.visitEnd();

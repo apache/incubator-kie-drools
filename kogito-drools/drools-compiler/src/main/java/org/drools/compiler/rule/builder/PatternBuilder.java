@@ -279,17 +279,21 @@ public class PatternBuilder
     }
 
     private ObjectType getObjectType(RuleBuildContext context, PatternDescr patternDescr) {
-        final FactTemplate factTemplate = context.getPkg().getFactTemplate( patternDescr.getObjectType() );
+        return getObjectType(context, patternDescr, patternDescr.getObjectType());
+    }
+
+    private ObjectType getObjectType(RuleBuildContext context, PatternDescr patternDescr, String objectType) {
+        final FactTemplate factTemplate = context.getPkg().getFactTemplate( objectType );
         if ( factTemplate != null ) {
             return new FactTemplateObjectType( factTemplate );
         } else {
             try {
-                final Class< ? > userProvidedClass = context.getDialect().getTypeResolver().resolveType( patternDescr.getObjectType() );
+                final Class< ? > userProvidedClass = context.getDialect().getTypeResolver().resolveType( objectType );
                 if ( !Modifier.isPublic(userProvidedClass.getModifiers()) ) {
                     context.addError(new DescrBuildError(context.getParentDescr(),
                                                          patternDescr,
                                                          null,
-                                                         "The class '" + patternDescr.getObjectType() + "' is not public"));
+                                                         "The class '" + objectType + "' is not public"));
                     return null;
                 }
                 PackageRegistry pkgr = context.getKnowledgeBuilder().getPackageRegistry( ClassUtils.getPackage( userProvidedClass ) );
@@ -775,11 +779,15 @@ public class PatternBuilder
         pattern.setBackRefDeclarations( backRef );
 
         ObjectType originalType = pattern.getObjectType();
+        ObjectType currentObjectType = originalType;
         mvelCtx.setInXpath( true );
 
         try {
             for ( XpathAnalysis.XpathPart part : xpathAnalysis ) {
                 XpathConstraint.XpathChunk xpathChunk = xpathConstraint.addChunck( patternClass, part.getField(), part.getIndex(), part.isIterate(), part.isLazy() );
+
+                // make sure the Pattern is wired up to correct ClassObjectType and set as a target for rewiring
+                context.getPkg().getClassFieldAccessorStore().getClassObjectType( ((ClassObjectType) currentObjectType), xpathChunk );
 
                 if ( xpathChunk == null ) {
                     context.addError( new DescrBuildError( context.getParentDescr(),
@@ -801,12 +809,14 @@ public class PatternBuilder
                         return null;
                     }
                     part.addInlineCastConstraint( patternClass );
-                    xpathChunk.setReturnedClass( patternClass );
+                    currentObjectType = getObjectType(context, patternDescr, patternClass.getName());
+                    xpathChunk.setReturnedType( (ClassObjectType) currentObjectType );
                 } else {
                     patternClass = xpathChunk.getReturnedClass();
+                    currentObjectType = getObjectType(context, patternDescr, patternClass.getName());
                 }
 
-                pattern.setObjectType( new ClassObjectType( patternClass ) );
+                pattern.setObjectType( currentObjectType );
                 backReferenceClasses.add( 0, patternClass );
                 backRef.reset();
 
