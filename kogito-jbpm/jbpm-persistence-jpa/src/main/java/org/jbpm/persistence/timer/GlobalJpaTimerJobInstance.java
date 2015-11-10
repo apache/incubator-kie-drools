@@ -23,9 +23,9 @@ import org.drools.core.time.JobHandle;
 import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.DefaultJobHandle;
 import org.drools.persistence.TransactionManager;
+import org.drools.persistence.TransactionManagerFactory;
 import org.drools.persistence.jpa.JDKCallableJobCommand;
 import org.drools.persistence.jpa.JpaTimerJobInstance;
-import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.persistence.jta.ContainerManagedTransactionManager;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
@@ -60,7 +60,7 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
     @Override
     public Void call() throws Exception {
         CommandService commandService = null;
-        JtaTransactionManager jtaTm = null;
+        TransactionManager jtaTm = null;
         boolean success = false;
         try { 
             JDKCallableJobCommand command = new JDKCallableJobCommand( this );
@@ -109,13 +109,13 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
     	if (txm != null && txm instanceof TransactionManager) {
     		transactionManager = (TransactionManager) txm;
     	} else {    	
-    		transactionManager = new JtaTransactionManager(null, null, null);
+    		transactionManager = TransactionManagerFactory.get().newTransactionManager();
     	}
     	int status = transactionManager.getStatus();
 
-    	if (status != JtaTransactionManager.STATUS_NO_TRANSACTION
-                && status != JtaTransactionManager.STATUS_ROLLEDBACK
-                && status != JtaTransactionManager.STATUS_COMMITTED) {
+    	if (status != TransactionManager.STATUS_NO_TRANSACTION
+                && status != TransactionManager.STATUS_ROLLEDBACK
+                && status != TransactionManager.STATUS_COMMITTED) {
     		return false;
     	}
     	
@@ -130,17 +130,17 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
     	return value.equals(envEntry);
     }
     
-    protected JtaTransactionManager startTxIfNeeded(Environment environment) {
+    protected TransactionManager startTxIfNeeded(Environment environment) {
 
     	try {	    	
 	    	if (hasEnvironmentEntry(environment, "IS_TIMER_CMT", true)) {
         		return null;
         	}
     		if (environment.get(EnvironmentName.TRANSACTION_MANAGER) instanceof ContainerManagedTransactionManager) {
-    			JtaTransactionManager jtaTm = new JtaTransactionManager(null, null, null);
+    			TransactionManager tm = TransactionManagerFactory.get().newTransactionManager();
     			
-    			if (jtaTm.begin()) {    			
-    				return jtaTm;
+    			if (tm.begin()) {    			
+    				return tm;
     			}
     		}
 	    	
@@ -151,7 +151,7 @@ public class GlobalJpaTimerJobInstance extends JpaTimerJobInstance {
     	return null;
     }
     
-    protected void closeTansactionIfNeeded(JtaTransactionManager jtaTm, boolean commit) {
+    protected void closeTansactionIfNeeded(TransactionManager jtaTm, boolean commit) {
     	if (jtaTm != null) {
     		if (commit) {
     			jtaTm.commit(true);

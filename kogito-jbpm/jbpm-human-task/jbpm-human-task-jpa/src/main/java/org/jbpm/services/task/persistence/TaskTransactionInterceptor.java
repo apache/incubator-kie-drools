@@ -23,8 +23,8 @@ import org.drools.core.command.Interceptor;
 import org.drools.core.command.impl.AbstractInterceptor;
 import org.drools.persistence.OrderedTransactionSynchronization;
 import org.drools.persistence.TransactionManager;
+import org.drools.persistence.TransactionManagerFactory;
 import org.drools.persistence.TransactionManagerHelper;
-import org.drools.persistence.jta.JtaTransactionManager;
 import org.kie.api.command.Command;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
@@ -180,9 +180,7 @@ public class TaskTransactionInterceptor extends AbstractInterceptor {
                 }
             } else {
                 logger.debug( "Instantiating JtaTransactionManager" );
-                this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
-                                                      env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
-                                                      tm );
+                this.txm = TransactionManagerFactory.get().newTransactionManager(env);
                 env.set( EnvironmentName.TRANSACTION_MANAGER, this.txm );
                 try {
                      this.tpm = new JPATaskPersistenceContextManager( env );

@@ -19,7 +19,8 @@ import javax.persistence.EntityManagerFactory;
 
 import org.drools.core.command.CommandService;
 import org.drools.core.command.impl.GenericCommand;
-import org.drools.persistence.jta.JtaTransactionManager;
+import org.drools.persistence.TransactionManager;
+import org.drools.persistence.TransactionManagerFactory;
 import org.kie.api.command.Command;
 import org.kie.internal.command.Context;
 import org.slf4j.Logger;
@@ -31,11 +32,15 @@ public class TransactionalCommandService implements CommandService {
 	
 	private EntityManagerFactory emf;	
     private Context context;
-    private JtaTransactionManager txm;
+    private TransactionManager txm;
     
+    public TransactionalCommandService(EntityManagerFactory emf, TransactionManager txm) {
+        this.emf = emf;
+        this.txm = txm;
+    }
+
 	public TransactionalCommandService(EntityManagerFactory emf) {
-		this.emf = emf;
-		this.txm = new JtaTransactionManager(null, null, null);
+	    this(emf, TransactionManagerFactory.get().newTransactionManager());
 	}
 
     public Context getContext() {

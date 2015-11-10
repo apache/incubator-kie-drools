@@ -27,7 +27,6 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.persistence.OrderedTransactionSynchronization;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerHelper;
-import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.runtime.manager.impl.mapper.EnvironmentAwareProcessInstanceContext;
 import org.jbpm.runtime.manager.impl.mapper.InMemoryMapper;
@@ -403,9 +402,9 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             	return null;
         	}
             
-            if (tm != null && tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
-                    && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
-                    && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
+            if (tm != null && tm.getStatus() != TransactionManager.STATUS_NO_TRANSACTION
+                    && tm.getStatus() != TransactionManager.STATUS_ROLLEDBACK
+                    && tm.getStatus() != TransactionManager.STATUS_COMMITTED) {
             	TransactionManagerHelper.registerTransactionSyncInContainer(tm, new OrderedTransactionSynchronization(5, "PPIRM-"+initialKsession.getIdentifier()) {
 					
                     @Override
@@ -448,9 +447,9 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             	return null;
         	}
             TransactionManager tm = (TransactionManager) initialKsession.getEnvironment().get(EnvironmentName.TRANSACTION_MANAGER);
-            if (tm != null && tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
-                    && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
-                    && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
+            if (tm != null && tm.getStatus() != TransactionManager.STATUS_NO_TRANSACTION
+                    && tm.getStatus() != TransactionManager.STATUS_ROLLEDBACK
+                    && tm.getStatus() != TransactionManager.STATUS_COMMITTED) {
             	TransactionManagerHelper.registerTransactionSyncInContainer(tm, new OrderedTransactionSynchronization(5, "PPIRM-"+initialKsession.getIdentifier()) {
 					
                     @Override

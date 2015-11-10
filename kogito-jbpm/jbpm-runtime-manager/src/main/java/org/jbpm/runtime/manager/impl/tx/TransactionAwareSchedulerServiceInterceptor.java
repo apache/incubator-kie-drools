@@ -21,6 +21,7 @@ import org.drools.core.time.SelfRemovalJobContext;
 import org.drools.core.time.impl.TimerJobInstance;
 import org.drools.persistence.OrderedTransactionSynchronization;
 import org.drools.persistence.TransactionManager;
+import org.drools.persistence.TransactionManagerFactory;
 import org.drools.persistence.TransactionManagerHelper;
 import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
@@ -63,9 +64,9 @@ public class TransactionAwareSchedulerServiceInterceptor extends DelegateSchedul
     	}
     	
         TransactionManager tm = getTransactionManager(timerJobInstance.getJobContext());
-        if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
-                && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
-                && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
+        if (tm.getStatus() != TransactionManager.STATUS_NO_TRANSACTION
+                && tm.getStatus() != TransactionManager.STATUS_ROLLEDBACK
+                && tm.getStatus() != TransactionManager.STATUS_COMMITTED) {
             TransactionManagerHelper.registerTransactionSyncInContainer(tm, 
             		new ScheduleTimerTransactionSynchronization(timerJobInstance, delegate));
             
@@ -126,7 +127,7 @@ public class TransactionAwareSchedulerServiceInterceptor extends DelegateSchedul
     		return (TransactionManager) txm;
     	}
     	
-    	return new JtaTransactionManager(null, null, null);
+    	return TransactionManagerFactory.get().newTransactionManager();
     }
     
     protected Environment getEnvironment(JobContext jobContext) {

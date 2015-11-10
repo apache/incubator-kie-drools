@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import org.drools.core.time.TimerService;
 import org.drools.persistence.OrderedTransactionSynchronization;
 import org.drools.persistence.TransactionManager;
+import org.drools.persistence.TransactionManagerFactory;
 import org.drools.persistence.TransactionManagerHelper;
 import org.drools.persistence.TransactionSynchronization;
 import org.drools.persistence.jta.JtaTransactionManager;
@@ -151,9 +152,9 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     	}
         // register it if there is an active transaction as we assume then to be running in a managed environment e.g CMT       
         TransactionManager tm = getTransactionManager(runtime.getKieSession().getEnvironment());
-        if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
-                && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
-                && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
+        if (tm.getStatus() != TransactionManager.STATUS_NO_TRANSACTION
+                && tm.getStatus() != TransactionManager.STATUS_ROLLEDBACK
+                && tm.getStatus() != TransactionManager.STATUS_COMMITTED) {
             TransactionManagerHelper.registerTransactionSyncInContainer(tm, (OrderedTransactionSynchronization) sync);
         }
     }
@@ -164,9 +165,9 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
         }
         // register it if there is an active transaction as we assume then to be running in a managed environment e.g CMT       
         TransactionManager tm = getTransactionManager(runtime.getKieSession().getEnvironment());
-        if (tm.getStatus() != JtaTransactionManager.STATUS_NO_TRANSACTION
-                && tm.getStatus() != JtaTransactionManager.STATUS_ROLLEDBACK
-                && tm.getStatus() != JtaTransactionManager.STATUS_COMMITTED) {
+        if (tm.getStatus() != TransactionManager.STATUS_NO_TRANSACTION
+                && tm.getStatus() != TransactionManager.STATUS_ROLLEDBACK
+                && tm.getStatus() != TransactionManager.STATUS_COMMITTED) {
             return false;
         }
         
@@ -262,8 +263,8 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     		return false;
     	}
         TransactionManager tm = getTransactionManager(runtime.getKieSession().getEnvironment());
-        if (tm.getStatus() == JtaTransactionManager.STATUS_NO_TRANSACTION ||
-                tm.getStatus() == JtaTransactionManager.STATUS_ACTIVE) {
+        if (tm.getStatus() == TransactionManager.STATUS_NO_TRANSACTION ||
+                tm.getStatus() == TransactionManager.STATUS_ACTIVE) {
             return true;
         }
         return false;
@@ -286,7 +287,7 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     		return (TransactionManager) txm;
     	}
     	
-    	return new JtaTransactionManager(null, null, null);
+    	return TransactionManagerFactory.get().newTransactionManager();
     }
     
     @Override
