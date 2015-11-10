@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +81,7 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	@XmlElement(name="global")
 	@XmlElementWrapper(name="globals")
 	private Set<NamedObjectModel> globals = new LinkedHashSet<NamedObjectModel>();
+	
 	
 	@XmlElement(name="work-item-handler")
 	@XmlElementWrapper(name="work-item-handlers")
@@ -180,37 +182,37 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 
 	@Override
 	public List<ObjectModel> getMarshallingStrategies() {		
-		return new ArrayList<ObjectModel>(marshallingStrategies);
+		return new ArrayList<ObjectModel>(cleanSet(marshallingStrategies));
 	}
 
 	@Override
 	public List<ObjectModel> getEventListeners() {		
-		return new ArrayList<ObjectModel>(eventListeners);
+		return new ArrayList<ObjectModel>(cleanSet(eventListeners));
 	}
 
 	@Override
 	public List<NamedObjectModel> getGlobals() {		
-		return new ArrayList<NamedObjectModel>(globals);
+		return new ArrayList<NamedObjectModel>(cleanNamedSet(globals));
 	}
 
 	@Override
 	public List<NamedObjectModel> getWorkItemHandlers() {		
-		return new ArrayList<NamedObjectModel>(workItemHandlers);
+		return new ArrayList<NamedObjectModel>(cleanNamedSet(workItemHandlers));
 	}
 
 	@Override
 	public List<ObjectModel> getTaskEventListeners() {		
-		return new ArrayList<ObjectModel>(taskEventListeners);
+		return new ArrayList<ObjectModel>(cleanSet(taskEventListeners));
 	}
 
 	@Override
 	public List<NamedObjectModel> getEnvironmentEntries() {		
-		return new ArrayList<NamedObjectModel>(environmentEntries);
+		return new ArrayList<NamedObjectModel>(cleanNamedSet(environmentEntries));
 	}
 
 	@Override
 	public List<NamedObjectModel> getConfiguration() {		
-		return new ArrayList<NamedObjectModel>(configuration);
+		return new ArrayList<NamedObjectModel>(cleanNamedSet(configuration));
 	}
 	
 	@Override
@@ -310,9 +312,64 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 			this.classes = new ArrayList<String>(classes);
 		}
 	}
+	
+    protected Set<NamedObjectModel> cleanNamedSet(Set<NamedObjectModel> input) {
+        input.remove(null);
+        
+        return input;
+	}
+    
+    protected Set<ObjectModel> cleanSet(Set<ObjectModel> input) {
+        input.remove(null);
+        
+        return input;
+    }
+    
+    protected void removeTransient(Set<?> input) {
+        Iterator<?> it = input.iterator();
+        
+        while (it.hasNext()) {
+            Object object = (Object) it.next();
+            if (object instanceof TransientNamedObjectModel 
+                    || object instanceof TransientObjectModel) {
+                it.remove();
+            }
+        }
+    }
+	
+	
+    public DeploymentDescriptor clearClone() throws CloneNotSupportedException {
+	    DeploymentDescriptorImpl clone = new DeploymentDescriptorImpl();
+	    
+	     clone.getBuilder()
+	    .setClasses(getClasses())
+	    .setConfiguration(getConfiguration())
+	    .setEnvironmentEntries(getEnvironmentEntries())
+	    .setEventListeners(getEventListeners())
+	    .setGlobals(getGlobals())
+	    .setMarshalingStrategies(getMarshallingStrategies())
+	    .setRequiredRoles(getRequiredRoles())
+	    .setTaskEventListeners(getTaskEventListeners())
+	    .setWorkItemHandlers(getWorkItemHandlers())
+	    .auditMode(getAuditMode())
+	    .auditPersistenceUnit(getAuditPersistenceUnit())
+	    .persistenceMode(getPersistenceMode())
+	    .persistenceUnit(getPersistenceUnit())
+	    .runtimeStrategy(getRuntimeStrategy());
+	     
+	     removeTransient(clone.configuration);
+	     removeTransient(clone.environmentEntries);
+	     removeTransient(clone.eventListeners);
+	     removeTransient(clone.globals);
+	     removeTransient(clone.marshallingStrategies);
+	     removeTransient(clone.taskEventListeners);
+	     removeTransient(clone.workItemHandlers);
+	     
+	     return clone;
+    }
 
 
-	@Override
+    @Override
 	public DeploymentDescriptorBuilder getBuilder() {
 		
 		return new DeploymentDescriptorBuilder() {

@@ -50,6 +50,10 @@ public class DeploymentStore {
 	
 	private TransactionalCommandService commandService;
 	
+	public DeploymentStore() {
+	    this.xstream.registerConverter(new TransientObjectConverter());
+	}
+	
 	public void setCommandService(TransactionalCommandService commandService) {
         this.commandService = commandService;
     }

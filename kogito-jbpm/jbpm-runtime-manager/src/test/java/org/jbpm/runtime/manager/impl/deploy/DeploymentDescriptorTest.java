@@ -276,4 +276,39 @@ public class DeploymentDescriptorTest {
 		assertTrue(toVerify.contains("managers"));
 		assertTrue(toVerify.contains("employees"));
 	}
+	
+	@Test
+    public void testWriteDeploymentDescriptorXmlWithTransientElements() {
+        DeploymentDescriptor descriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+        
+        descriptor.getBuilder()
+        .addMarshalingStrategy(new TransientObjectModel("org.jbpm.testCustomStrategy", 
+                new Object[]{
+                new ObjectModel("java.lang.String", new Object[]{"param1"}),
+                "param2"}))
+        .addWorkItemHandler(new TransientNamedObjectModel("mvel", "Log", "new org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler()"))
+        .addRequiredRole("experts");
+        
+        String deploymentDescriptorXml = descriptor.toXml();
+        assertNotNull(deploymentDescriptorXml);
+        logger.info(deploymentDescriptorXml);
+        
+        ByteArrayInputStream stream = new ByteArrayInputStream(deploymentDescriptorXml.getBytes());
+        DeploymentDescriptor fromXml = DeploymentDescriptorIO.fromXml(stream);
+        
+        assertNotNull(fromXml);
+        assertEquals("org.jbpm.domain", fromXml.getPersistenceUnit());
+        assertEquals("org.jbpm.domain", fromXml.getAuditPersistenceUnit());
+        assertEquals(AuditMode.JPA, fromXml.getAuditMode());
+        assertEquals(PersistenceMode.JPA, fromXml.getPersistenceMode());
+        assertEquals(RuntimeStrategy.SINGLETON, fromXml.getRuntimeStrategy());
+        assertEquals(0, fromXml.getMarshallingStrategies().size());
+        assertEquals(0, fromXml.getConfiguration().size());
+        assertEquals(0, fromXml.getEnvironmentEntries().size());
+        assertEquals(0, fromXml.getEventListeners().size());
+        assertEquals(0, fromXml.getGlobals().size());       
+        assertEquals(0, fromXml.getTaskEventListeners().size());
+        assertEquals(0, fromXml.getWorkItemHandlers().size());
+        assertEquals(1, fromXml.getRequiredRoles().size());
+    }
 }

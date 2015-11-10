@@ -73,8 +73,11 @@ public class DeploymentDescriptorIO {
 	        marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.jboss.org/jbpm deployment-descriptor.xsd");
 	        marshaller.setSchema(schema);
 	        StringWriter stringWriter = new StringWriter();
+	        
+	        // clone the object and cleanup transients
+	        DeploymentDescriptor clone = ((DeploymentDescriptorImpl)descriptor).clearClone();
 	
-	        marshaller.marshal(descriptor, stringWriter);
+	        marshaller.marshal(clone, stringWriter);
 	        String output = stringWriter.toString();
 	        
 	        return output;

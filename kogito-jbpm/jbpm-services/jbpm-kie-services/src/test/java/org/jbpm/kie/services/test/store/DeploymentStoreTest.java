@@ -17,6 +17,7 @@ package org.jbpm.kie.services.test.store;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.Date;
@@ -25,12 +26,16 @@ import java.util.HashSet;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.services.impl.store.DeploymentStore;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
+import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
+import org.jbpm.runtime.manager.impl.deploy.TransientNamedObjectModel;
+import org.jbpm.runtime.manager.impl.deploy.TransientObjectModel;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
 
 public class DeploymentStoreTest extends AbstractKieServicesBaseTest {
 
@@ -126,4 +131,41 @@ public class DeploymentStoreTest extends AbstractKieServicesBaseTest {
 		assertNotNull(unitsDisabled);
 		assertEquals(1, unitsDisabled.size());
 	}
+	
+	@Test
+    public void testEnableAndGetActiveDeploymentsWithTransientNamedObject() {
+        Collection<DeploymentUnit> enabled = store.getEnabledDeploymentUnits();
+        assertNotNull(enabled);
+        assertEquals(0, enabled.size());
+        
+        KModuleDeploymentUnit unit = new KModuleDeploymentUnit("org.jbpm", "test", "1.0");
+        
+        DeploymentDescriptor descriptor = unit.getDeploymentDescriptor();
+        if (descriptor == null) {
+            descriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+        }
+        // add transient named object model that should not be persisted
+        descriptor.getBuilder()
+        .addWorkItemHandler(new TransientNamedObjectModel("ejb", "async", "org.jbpm.executor.impl.wih.AsyncWorkItemHandler", 
+                    new Object[]{"jndi:java:module/ExecutorServiceEJBImpl", "org.jbpm.executor.commands.PrintOutCommand"}))
+        .addEventListener(new TransientObjectModel("ejb", "not.existing.listener"));
+        
+        unit.setDeploymentDescriptor(descriptor);
+        
+        store.enableDeploymentUnit(unit);
+        
+        enabled = store.getEnabledDeploymentUnits();
+        assertNotNull(enabled);
+        assertEquals(1, enabled.size());
+        
+        DeploymentUnit unitEnabled = enabled.iterator().next();
+        assertTrue(unitEnabled instanceof KModuleDeploymentUnit);
+        
+        DeploymentDescriptor descriptorEnabled = ((KModuleDeploymentUnit) unitEnabled).getDeploymentDescriptor();
+        assertNotNull(descriptorEnabled);
+        
+        assertEquals(0, descriptorEnabled.getWorkItemHandlers().size());
+        assertEquals(0, descriptorEnabled.getEventListeners().size());
+        
+    }
 }
