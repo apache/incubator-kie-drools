@@ -96,6 +96,62 @@ public class DateComparisonTest extends CommonTestMethodBase {
         assertTrue( results.contains( "test date greater than" ) );
         assertTrue( results.contains( "test date less than" ) );
     }
+    
+    @Test
+    public void testDateComparisonAfter() throws Exception {
+        List<String> results = new ArrayList<String>();
+        // load up the knowledge base
+        String str = "";
+        str += "package org.drools.compiler;\n";
+        str += "dialect \"mvel\"\n";
+        str += "global java.util.List results;\n";
+        str += "rule \"test date greater than\"\n";
+        str += "     when\n";
+        str += "         $c : Cheese(type == \"Yesterday\", $some: this)\n";
+        str += "         Cheese(type == \"Tomorrow\",  $some.usedBy before usedBy)\n";
+        str += "     then\n";
+        str += "         results.add( \"test date greater than\" );\n";
+        str += "end\n";
+
+        str += "rule \"test date less than\"\n";
+        str += "    when\n";
+        str += "        $c : Cheese(type == \"Tomorrow\", $some: this)\n";
+        str += "        Cheese(type == \"Yesterday\", $some.usedBy after usedBy);\n";
+        str += "    then\n";
+        str += "        results.add( \"test date less than\" );\n";
+        str += "end\n";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
+                      ResourceType.DRL );
+        KnowledgeBuilderErrors errors = kbuilder.getErrors();
+        if ( kbuilder.hasErrors() ) {
+            fail( kbuilder.getErrors().toString() );
+        }
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        
+        StatefulKnowledgeSession ksession = createKnowledgeSession(kbase);
+        ksession.setGlobal( "results",
+                            results );
+        File testTmpDir = new File("target/test-tmp/");
+        testTmpDir.mkdirs();
+        KnowledgeRuntimeLogger logger = KnowledgeRuntimeLoggerFactory.newFileLogger(ksession,
+                "target/test-tmp/testDateComparisonThan");
+        // go !
+        Cheese yesterday = new Cheese( "Yesterday" );
+        yesterday.setUsedBy( yesterday() );
+        Cheese tomorrow = new Cheese( "Tomorrow" );
+        tomorrow.setUsedBy( tomorrow() );
+        ksession.insert( yesterday );
+        ksession.insert( tomorrow );
+        ksession.fireAllRules();
+        logger.close();
+        assertEquals( 2,
+                      results.size() );
+        assertTrue( results.contains( "test date greater than" ) );
+        assertTrue( results.contains( "test date less than" ) );
+    }
 
     private Date yesterday() {
         Calendar c = new GregorianCalendar();
