@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Abstract factory for creating {@link org.drools.persistence.TransactionManager} instances..
  * 
- * The implementation class can be specified using the {@code opt.kie.tmfactory.class} system property.
+ * The implementation class can be specified using the {@code org.kie.txm.factory.class} system property.
  * 
  */
 public abstract class TransactionManagerFactory {
@@ -31,25 +31,16 @@ public abstract class TransactionManagerFactory {
     private static volatile TransactionManagerFactory INSTANCE;
 
     static {
-        String factoryClassName = System.getProperty("opt.kie.tmfactory.class", JtaTransactionManagerFactory.class.getName());
+        String factoryClassName = System.getProperty("org.kie.txm.factory.class", JtaTransactionManagerFactory.class.getName());
         try {            
             TransactionManagerFactory factory = Class.forName(factoryClassName).asSubclass(TransactionManagerFactory.class).newInstance();
-            set(factory);
+            INSTANCE = factory;
+            logger.info("Using "+factory);
         } catch (Exception e) {
             logger.error("Unable to instantiate "+factoryClassName, e);
         }
     }
     
-    /**
-     * Sets the factory used for creating {@link TransactionManager}s.
-     * 
-     * @param factory
-     */
-    public static final void set(TransactionManagerFactory factory) {
-        INSTANCE = factory;
-        logger.info("Using "+factory);
-    }
-
     /**
      * Retrieves the factory for creating {@link TransactionManager}s.
      * 

@@ -34,7 +34,7 @@ public class TransactionManagerFactoryTest {
 
     @Before
     public void clearFactoryClassProperty() {
-        System.clearProperty("opt.kie.tmfactory.class");
+        System.clearProperty("org.kie.txm.factory.class");
     }
     
     @Test
@@ -44,7 +44,7 @@ public class TransactionManagerFactoryTest {
 
     @Test
     public void createsSystemPropertySpecifiedFactory() throws Exception {
-        System.setProperty("opt.kie.tmfactory.class", TestTransactionManagerFactory.class.getName());
+        System.setProperty("org.kie.txm.factory.class", TestTransactionManagerFactory.class.getName());
         assertEquals(TestTransactionManagerFactory.class.getName(), loadNewTransactionManagerFactory().getClass().getName());
 
     }
