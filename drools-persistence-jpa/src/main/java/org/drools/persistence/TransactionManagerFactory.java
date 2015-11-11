@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class TransactionManagerFactory {
     private static final Logger logger = LoggerFactory.getLogger(TransactionManagerFactory.class);
-    private static volatile TransactionManagerFactory INSTANCE;
+    private static TransactionManagerFactory INSTANCE;
 
     static {
         String factoryClassName = System.getProperty("org.kie.txm.factory.class", JtaTransactionManagerFactory.class.getName());
