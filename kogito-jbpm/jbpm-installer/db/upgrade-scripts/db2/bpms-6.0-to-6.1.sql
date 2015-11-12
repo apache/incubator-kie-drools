@@ -37,7 +37,7 @@ BEGIN
   DECLARE queryDrop VARCHAR(255);
   DECLARE queryAlterSessionInfo VARCHAR(255);
   DECLARE queryGenerateIdentity VARCHAR(255);
-  SET (counter) = (SELECT MAX(id) AS id FROM SessionInfo);
+  SET (counter) = (SELECT NVL(MAX(id), 0) AS id FROM SessionInfo);
   SET queryDrop = ('ALTER TABLE SessionInfo ALTER COLUMN id DROP IDENTITY');
   EXECUTE IMMEDIATE queryDrop;
   SET queryAlterSessionInfo = ('ALTER TABLE SessionInfo ALTER COLUMN id SET DATA TYPE BIGINT');
