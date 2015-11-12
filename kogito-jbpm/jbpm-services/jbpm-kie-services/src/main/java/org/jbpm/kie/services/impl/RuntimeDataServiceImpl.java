@@ -59,7 +59,6 @@ import org.kie.internal.task.api.AuditTask;
 import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.model.TaskEvent;
 import org.kie.internal.task.query.TaskSummaryQueryBuilder;
-import org.kie.internal.task.query.TaskSummaryQueryBuilder.OrderBy;
 
 
 public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEventListener {
@@ -817,16 +816,6 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
     }
 
     @Override
-    public List<TaskSummary> getTasksByVariable( String userId, String variableName, Status... statuses ) {
-        TaskSummaryQueryBuilder queryBuilder = new TaskSummaryQueryBuilderImpl(userId, taskService).intersect();
-        addVariableNameAndVariableValueParameters(queryBuilder, variableName);
-        if( statuses != null && statuses.length > 0 ) {
-            queryBuilder.status(statuses);
-        }
-        return queryBuilder.build().getResultList();
-    }
-
-    @Override
     public List<TaskSummary> getTasksByVariable( String userId, String variableName, List<Status> statuses,
             QueryContext queryContext ) {
         TaskSummaryQueryBuilder queryBuilder = new TaskSummaryQueryBuilderImpl(userId, taskService).intersect();
@@ -838,16 +827,6 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
         return queryBuilder.build().getResultList();
     }
 
-    @Override
-    public List<TaskSummary> getTasksByVariableAndValue( String userId, String variableName, String variableValue,
-            Status... statuses ) {
-        TaskSummaryQueryBuilder queryBuilder = new TaskSummaryQueryBuilderImpl(userId, taskService).intersect();
-        addVariableNameAndVariableValueParameters(queryBuilder, variableName, variableValue);
-        if( statuses != null && statuses.length > 0 ) {
-            queryBuilder.status(statuses);
-        }
-        return queryBuilder.build().getResultList();
-    }
 
     @Override
     public List<TaskSummary> getTasksByVariableAndValue( String userId, String variableName, String variableValue,

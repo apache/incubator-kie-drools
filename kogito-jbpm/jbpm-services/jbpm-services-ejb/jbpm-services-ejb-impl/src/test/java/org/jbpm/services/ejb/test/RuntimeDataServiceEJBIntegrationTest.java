@@ -1131,7 +1131,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
 
-        tasksByVariable = runtimeDataService.getTasksByVariable("salaboy", "ReviewComment");
+        tasksByVariable = runtimeDataService.getTasksByVariable("salaboy", "ReviewComment", null, new QueryContext());
         assertNotNull(tasksByVariable);
         assertEquals(0, tasksByVariable.size());
 
@@ -1142,7 +1142,7 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
         output.put("ReviewComment", "document reviewed");
         userTaskService.saveContent(taskId, output);
 
-        tasksByVariable = runtimeDataService.getTasksByVariable("salaboy", "ReviewComment");
+        tasksByVariable = runtimeDataService.getTasksByVariable("salaboy", "ReviewComment", null, new QueryContext());
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
 
@@ -1161,11 +1161,11 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
         assertNotNull(tasks);
         assertEquals(1, tasks.size());
 
-        List<TaskSummary> tasksByVariable = runtimeDataService.getTasksByVariableAndValue("salaboy", "TaskName", "Write a Document");
+        List<TaskSummary> tasksByVariable = runtimeDataService.getTasksByVariableAndValue("salaboy", "TaskName", "Write a Document", null, new QueryContext());
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
 
-        tasksByVariable = runtimeDataService.getTasksByVariableAndValue("salaboy", "TaskName", "Write");
+        tasksByVariable = runtimeDataService.getTasksByVariableAndValue("salaboy", "TaskName", "Write", null, new QueryContext());
         assertNotNull(tasksByVariable);
         assertEquals(0, tasksByVariable.size());
 
@@ -1176,11 +1176,11 @@ public class RuntimeDataServiceEJBIntegrationTest extends AbstractTestSupport {
         output.put("ReviewComment", "document reviewed");
         userTaskService.saveContent(taskId, output);
 
-        tasksByVariable = runtimeDataService.getTasksByVariableAndValue("salaboy", "ReviewComment", "document reviewed");
+        tasksByVariable = runtimeDataService.getTasksByVariableAndValue("salaboy", "ReviewComment", "document reviewed", null, new QueryContext());
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
 
-        tasksByVariable = runtimeDataService.getTasksByVariableAndValue("salaboy", "ReviewComment", "document%");
+        tasksByVariable = runtimeDataService.getTasksByVariableAndValue("salaboy", "ReviewComment", "document%", null, new QueryContext());
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
 

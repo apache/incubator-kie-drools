@@ -1291,14 +1291,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
                 .variableName(varName).build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
-        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariable(userId, varName));
+        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariable(userId, varName, null, new QueryContext()));
 
         varName = "ReviewComment";
         tasksByVariable = runtimeDataService.taskSummaryQuery(userId)
                 .variableName(varName).build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(0, tasksByVariable.size());
-        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariable(userId, varName));
+        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariable(userId, varName, null, new QueryContext()));
 
 
         long taskId = tasks.get(0).getId();
@@ -1311,7 +1311,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
                 .variableName(varName).build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
-        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariable(userId, varName));
+        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariable(userId, varName, null, new QueryContext()));
 
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;
@@ -1335,14 +1335,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
                 .variableName(varName).and().variableValue(varValue).build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
-        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariableAndValue(userId, varName, varValue));
+        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariableAndValue(userId, varName, varValue, null, new QueryContext()));
 
         varValue = "Write";
         tasksByVariable = runtimeDataService.taskSummaryQuery(userId)
                 .variableName(varName).and().variableValue(varValue).build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(0, tasksByVariable.size());
-        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariableAndValue(userId, varName, varValue));
+        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariableAndValue(userId, varName, varValue, null, new QueryContext()));
 
 
         long taskId = tasks.get(0).getId();
@@ -1357,14 +1357,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
                 .variableName(varName).and().variableValue(varValue).build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
-        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariableAndValue(userId, varName, varValue));
+        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariableAndValue(userId, varName, varValue, null, new QueryContext()));
 
         varValue = "document*";
         tasksByVariable = runtimeDataService.taskSummaryQuery(userId)
                 .variableName(varName).and().regex().variableValue(varValue).build().getResultList();
         assertNotNull(tasksByVariable);
         assertEquals(1, tasksByVariable.size());
-        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariableAndValue(userId, varName, varValue));
+        compareTaskSummaryLists(tasksByVariable, runtimeDataService.getTasksByVariableAndValue(userId, varName, varValue, null, new QueryContext()));
 
         processService.abortProcessInstance(processInstanceId);
         processInstanceId = null;

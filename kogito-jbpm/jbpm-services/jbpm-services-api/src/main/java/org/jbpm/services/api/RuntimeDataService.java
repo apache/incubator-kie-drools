@@ -28,13 +28,12 @@ import org.jbpm.services.api.model.VariableDesc;
 import org.kie.api.definition.process.Process;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.model.Status;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.query.QueryFilter;
 import org.kie.internal.task.api.AuditTask;
-import org.kie.internal.task.api.InternalTaskService;
 import org.kie.internal.task.api.model.TaskEvent;
 import org.kie.internal.task.query.TaskSummaryQueryBuilder;
 
@@ -525,30 +524,11 @@ public interface RuntimeDataService {
      * @param userId The id of the user associated with the tasks
      * @param variableName The name of the task variable
      * @param statuses The list of {@link Status}'s that the task can have
-     * @return a {@link List} of {@link TaskSummary} instances.
-     */
-    List<TaskSummary> getTasksByVariable(String userId, String variableName, Status... statuses);
-
-    /**
-     * Gets a list of {@link TaskSummary} instances for the given arguments
-     * @param userId The id of the user associated with the tasks
-     * @param variableName The name of the task variable
-     * @param statuses The list of {@link Status}'s that the task can have
      * @param offset The index of the first result returned.
      * @param total The number of results to return in total.
      * @return a {@link List} of {@link TaskSummary} instances.
      */
     List<TaskSummary> getTasksByVariable(String userId, String variableName, List<Status> statuses, QueryContext queryContext);
-
-    /**
-     * Gets a list of {@link TaskSummary} instances for the given arguments
-     * @param userId The id of the user associated with the tasks
-     * @param variableName The name of the task variable
-     * @param variableValue The value of the task variable
-     * @param statuses The list of {@link Status}'s that the task can have
-     * @return a {@link List} of {@link TaskSummary} instances.
-     */
-    List<TaskSummary> getTasksByVariableAndValue(String userId, String variableName, String variableValue, Status... statuses);
 
     /**
      * Gets a list of {@link TaskSummary} instances for the given arguments
