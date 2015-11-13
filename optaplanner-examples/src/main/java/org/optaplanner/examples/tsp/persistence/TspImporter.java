@@ -44,7 +44,10 @@ public class TspImporter extends AbstractTxtSolutionImporter {
     public static final String INPUT_FILE_SUFFIX = "tsp";
 
     public static void main(String[] args) {
-        new TspImporter().convertAll();
+        TspImporter importer = new TspImporter();
+        importer.convert("other/air/europe40.tsp", "europe40.xml");
+        importer.convert("cook/air/dj38.tsp", "dj38.xml");
+        importer.convert("cook/air/lu980.tsp", "lu980.xml");
     }
 
     public TspImporter() {
@@ -58,12 +61,6 @@ public class TspImporter extends AbstractTxtSolutionImporter {
     @Override
     public String getInputFileSuffix() {
         return INPUT_FILE_SUFFIX;
-    }
-
-    @Override
-    public boolean acceptInputFileDuringBulkConvert(File inputFile) {
-        // Blacklist: too slow to write as XML
-        return !Arrays.asList("ch71009.tsp").contains(inputFile.getName());
     }
 
     public TxtInputBuilder createTxtInputBuilder() {
