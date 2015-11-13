@@ -44,14 +44,14 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
     public static void main(String[] args) {
         VehicleRoutingImporter importer = new VehicleRoutingImporter();
-        importer.convert("capacitated/vrpweb/A-n33-k6.vrp", "cvrp-32customers.xml");
-        importer.convert("capacitated/vrpweb/A-n55-k9.vrp", "cvrp-54customers.xml");
-        importer.convert("capacitated/vrpweb/F-n72-k4.vrp", "cvrp-72customers.xml");
-        importer.convert("timewindowed/Solomon_025_C101.vrp", "cvrptw-25customers.xml");
-        importer.convert("timewindowed/Solomon_100_R101.vrp", "cvrptw-100customers-A.xml");
-        importer.convert("timewindowed/Solomon_100_R201.vrp", "cvrptw-100customers-B.xml");
-        importer.convert("timewindowed/Homberger_0400_R1_4_1.vrp", "cvrptw-400customers.xml");
-        importer.convert("roaddistance/capacitated/vrpweb/bays-n29-k5.vrp", "road-cvrp-29customers.xml");
+        importer.convert("vrpweb/basic/air/A-n33-k6.vrp", "cvrp-32customers.xml");
+        importer.convert("vrpweb/basic/air/A-n55-k9.vrp", "cvrp-54customers.xml");
+        importer.convert("vrpweb/basic/air/F-n72-k4.vrp", "cvrp-72customers.xml");
+        importer.convert("vrpweb/timewindowed/air/Solomon_025_C101.vrp", "cvrptw-25customers.xml");
+        importer.convert("vrpweb/timewindowed/air/Solomon_100_R101.vrp", "cvrptw-100customers-A.xml");
+        importer.convert("vrpweb/timewindowed/air/Solomon_100_R201.vrp", "cvrptw-100customers-B.xml");
+        importer.convert("vrpweb/timewindowed/air/Homberger_0400_R1_4_1.vrp", "cvrptw-400customers.xml");
+        importer.convert("vrpweb/basic/road-unknown/bays-n29-k5.vrp", "road-cvrp-29customers.xml");
     }
 
     public VehicleRoutingImporter() {

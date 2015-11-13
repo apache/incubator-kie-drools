@@ -7,9 +7,9 @@
   <inheritedSolverBenchmark>
     <problemBenchmarks>
       <solutionFileIOClass>org.optaplanner.examples.tsp.persistence.TspFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/tsp/import/dj38.tsp</inputSolutionFile>
-      <inputSolutionFile>data/tsp/import/europe40.tsp</inputSolutionFile>
-      <inputSolutionFile>data/tsp/import/lu980.tsp</inputSolutionFile>
+      <inputSolutionFile>data/tsp/import/other/air/europe40.tsp</inputSolutionFile>
+      <inputSolutionFile>data/tsp/import/cook/air/dj38.tsp</inputSolutionFile>
+      <inputSolutionFile>data/tsp/import/cook/air/lu980.tsp</inputSolutionFile>
       <problemStatisticType>BEST_SCORE</problemStatisticType>
       <!--<problemStatisticType>STEP_SCORE</problemStatisticType>-->
       <!--<problemStatisticType>CALCULATE_COUNT_PER_SECOND</problemStatisticType>-->
