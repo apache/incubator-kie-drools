@@ -69,6 +69,31 @@ public class DRLExprParserTest extends TestCase {
                       right.getExpression() );
     }
 
+    public void testNestedExpression() throws Exception {
+        // Tests DROOLS-982 issue.
+        String source = "(((((((((((((((((((((((((((((((((((((((((((((((((( a > b ))))))))))))))))))))))))))))))))))))))))))))))))))";
+        ConstraintConnectiveDescr result = parser.parse( source );
+        assertFalse( parser.getErrors().toString(),
+                parser.hasErrors() );
+
+        assertEquals( ConnectiveType.AND,
+                result.getConnective() );
+        assertEquals( 1,
+                result.getDescrs().size() );
+
+        RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
+        assertEquals( ">",
+                expr.getOperator() );
+
+        AtomicExprDescr left = (AtomicExprDescr) expr.getLeft();
+        AtomicExprDescr right = (AtomicExprDescr) expr.getRight();
+
+        assertEquals( "a",
+                left.getExpression() );
+        assertEquals( "b",
+                right.getExpression() );
+    }
+
     public void testAndConnective() throws Exception {
         String source = "a > b && 10 != 20";
         ConstraintConnectiveDescr result = parser.parse( source );
