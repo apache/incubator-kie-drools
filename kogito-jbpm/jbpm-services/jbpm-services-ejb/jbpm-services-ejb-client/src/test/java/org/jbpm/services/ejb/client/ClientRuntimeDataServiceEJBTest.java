@@ -25,6 +25,8 @@ import org.jbpm.services.ejb.api.RuntimeDataServiceEJBRemote;
 import org.jbpm.services.ejb.api.UserTaskServiceEJBRemote;
 import org.jbpm.services.ejb.client.helper.DeploymentServiceWrapper;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 public class ClientRuntimeDataServiceEJBTest extends RuntimeDataServiceImplTest {
 	
@@ -63,5 +65,17 @@ public class ClientRuntimeDataServiceEJBTest extends RuntimeDataServiceImplTest 
 		} catch (Exception e) {
 			throw new RuntimeException("Unable to configure services", e);
 		}
+	}
+	
+	@Ignore("not supported for remote ejb")
+	@Test
+    public void testGetTasksByVariableAndValueWithTaskQueryBuilder() {
+	    
+	}
+	
+	@Ignore("not supported for remote ejb")
+	@Test
+    public void testGetTasksByVariableWithTaskQueryBuilder() {
+	    
 	}
 }

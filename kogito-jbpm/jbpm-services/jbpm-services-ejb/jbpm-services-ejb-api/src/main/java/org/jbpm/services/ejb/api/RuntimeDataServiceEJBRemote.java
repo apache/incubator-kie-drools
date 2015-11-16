@@ -20,8 +20,14 @@ import javax.ejb.Remote;
 
 import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.RuntimeDataService;
+import org.kie.internal.task.query.TaskSummaryQueryBuilder;
 
 @Remote
 public interface RuntimeDataServiceEJBRemote extends RuntimeDataService, DeploymentEventListener {
 
+    /**
+     * This method is not supported in EJB remote api as <code>TaskSummaryQueryBuilder<code> is not remote capable object
+     */    
+    @Override    
+    TaskSummaryQueryBuilder taskSummaryQuery(String userId);
 }
