@@ -1568,11 +1568,7 @@ public class PatternBuilder
                 declaration = context.getDeclarationResolver().getDeclaration( context.getRule(), part1 );
                 // if a declaration exists, then it may be a variable direct property access
                 if ( declaration != null ) {
-                    if ( declaration.isPatternDeclaration() ) {
-                        declaration = createDeclarationObject(context, part2, declaration.getPattern());
-                    } else {
-                        declaration = null;
-                    }
+                    declaration = createDeclarationObject(context, part2, declaration.getPattern());
                 }
             }
         }
