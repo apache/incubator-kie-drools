@@ -462,4 +462,7 @@ public class AgendaItemImpl<T extends ModedAssertion<T>>  implements  AgendaItem
         return false;
     }
 
+    public boolean isRuleInUse() {
+        return rtn.getLeftTupleSource() != null;
+    }
 }

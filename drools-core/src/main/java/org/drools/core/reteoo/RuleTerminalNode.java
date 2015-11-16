@@ -27,7 +27,6 @@ import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.ScheduledAgendaItem;
 import org.drools.core.common.TruthMaintenanceSystemHelper;
-import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.PhreakRuleTerminalNode;
 import org.drools.core.reteoo.RuleRemovalContext.CleanupAdapter;
@@ -224,22 +223,6 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     public void attach( BuildContext context ) {
         getLeftTupleSource().addTupleSink(this, context);
         addAssociation( context.getRule(), context.peekRuleComponent() );
-    }
-
-    public void networkUpdated(UpdateContext updateContext) {
-        getLeftTupleSource().networkUpdated(updateContext);
-    }
-
-    public boolean isInUse() {
-        return false;
-    }
-
-    public boolean isLeftTupleMemoryEnabled() {
-        return false;
-    }
-
-    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-
     }
 
     public Declaration[] getAllDeclarations() {
