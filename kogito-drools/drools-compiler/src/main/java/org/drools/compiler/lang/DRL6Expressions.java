@@ -1,4 +1,4 @@
-// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/DRL6Expressions.g 2015-11-02 10:08:41
+// $ANTLR 3.5 src/main/resources/org/drools/compiler/lang/DRL6Expressions.g 2015-11-16 15:53:56
 
     package org.drools.compiler.lang;
 
@@ -4316,7 +4316,7 @@ public class DRL6Expressions extends DRLExpressions {
 
 
 	// $ANTLR start "primary"
-	// src/main/resources/org/drools/compiler/lang/DRL6Expressions.g:578:1: primary returns [BaseDescr result] : ( ( parExpression )=>expr= parExpression | ( nonWildcardTypeArguments )=> nonWildcardTypeArguments ( explicitGenericInvocationSuffix | this_key arguments ) | ( literal )=> literal | ( super_key )=> super_key superSuffix | ( new_key )=> new_key creator | ( primitiveType )=> primitiveType ( LEFT_SQUARE RIGHT_SQUARE )* DOT class_key | ( inlineMapExpression )=> inlineMapExpression | ( inlineListExpression )=> inlineListExpression | ( ID )=>i1= ID ( ( ( DOT ID )=>d= DOT i2= ID ) | ( ( ( DOT | NULL_SAFE_DOT ) LEFT_PAREN )=>d= ( DOT | NULL_SAFE_DOT ) LEFT_PAREN expression ( COMMA expression )* RIGHT_PAREN ) | ( ( HASH ID )=>h= HASH i2= ID ) | ( ( NULL_SAFE_DOT ID )=>n= NULL_SAFE_DOT i2= ID ) )* ( ( identifierSuffix )=> identifierSuffix )? );
+	// src/main/resources/org/drools/compiler/lang/DRL6Expressions.g:578:1: primary returns [BaseDescr result] : ( ( LEFT_PAREN )=>expr= parExpression | ( nonWildcardTypeArguments )=> nonWildcardTypeArguments ( explicitGenericInvocationSuffix | this_key arguments ) | ( literal )=> literal | ( super_key )=> super_key superSuffix | ( new_key )=> new_key creator | ( primitiveType )=> primitiveType ( LEFT_SQUARE RIGHT_SQUARE )* DOT class_key | ( inlineMapExpression )=> inlineMapExpression | ( inlineListExpression )=> inlineListExpression | ( ID )=>i1= ID ( ( ( DOT ID )=>d= DOT i2= ID ) | ( ( ( DOT | NULL_SAFE_DOT ) LEFT_PAREN )=>d= ( DOT | NULL_SAFE_DOT ) LEFT_PAREN expression ( COMMA expression )* RIGHT_PAREN ) | ( ( HASH ID )=>h= HASH i2= ID ) | ( ( NULL_SAFE_DOT ID )=>n= NULL_SAFE_DOT i2= ID ) )* ( ( identifierSuffix )=> identifierSuffix )? );
 	public final BaseDescr primary() throws RecognitionException {
 		BaseDescr result = null;
 
@@ -4333,7 +4333,7 @@ public class DRL6Expressions extends DRLExpressions {
 		ParserRuleReturnScope literal11 =null;
 
 		try {
-			// src/main/resources/org/drools/compiler/lang/DRL6Expressions.g:579:5: ( ( parExpression )=>expr= parExpression | ( nonWildcardTypeArguments )=> nonWildcardTypeArguments ( explicitGenericInvocationSuffix | this_key arguments ) | ( literal )=> literal | ( super_key )=> super_key superSuffix | ( new_key )=> new_key creator | ( primitiveType )=> primitiveType ( LEFT_SQUARE RIGHT_SQUARE )* DOT class_key | ( inlineMapExpression )=> inlineMapExpression | ( inlineListExpression )=> inlineListExpression | ( ID )=>i1= ID ( ( ( DOT ID )=>d= DOT i2= ID ) | ( ( ( DOT | NULL_SAFE_DOT ) LEFT_PAREN )=>d= ( DOT | NULL_SAFE_DOT ) LEFT_PAREN expression ( COMMA expression )* RIGHT_PAREN ) | ( ( HASH ID )=>h= HASH i2= ID ) | ( ( NULL_SAFE_DOT ID )=>n= NULL_SAFE_DOT i2= ID ) )* ( ( identifierSuffix )=> identifierSuffix )? )
+			// src/main/resources/org/drools/compiler/lang/DRL6Expressions.g:579:5: ( ( LEFT_PAREN )=>expr= parExpression | ( nonWildcardTypeArguments )=> nonWildcardTypeArguments ( explicitGenericInvocationSuffix | this_key arguments ) | ( literal )=> literal | ( super_key )=> super_key superSuffix | ( new_key )=> new_key creator | ( primitiveType )=> primitiveType ( LEFT_SQUARE RIGHT_SQUARE )* DOT class_key | ( inlineMapExpression )=> inlineMapExpression | ( inlineListExpression )=> inlineListExpression | ( ID )=>i1= ID ( ( ( DOT ID )=>d= DOT i2= ID ) | ( ( ( DOT | NULL_SAFE_DOT ) LEFT_PAREN )=>d= ( DOT | NULL_SAFE_DOT ) LEFT_PAREN expression ( COMMA expression )* RIGHT_PAREN ) | ( ( HASH ID )=>h= HASH i2= ID ) | ( ( NULL_SAFE_DOT ID )=>n= NULL_SAFE_DOT i2= ID ) )* ( ( identifierSuffix )=> identifierSuffix )? )
 			int alt69=9;
 			int LA69_0 = input.LA(1);
 			if ( (LA69_0==LEFT_PAREN) && (synpred25_DRL6Expressions())) {
@@ -4428,7 +4428,7 @@ public class DRL6Expressions extends DRLExpressions {
 
 			switch (alt69) {
 				case 1 :
-					// src/main/resources/org/drools/compiler/lang/DRL6Expressions.g:579:7: ( parExpression )=>expr= parExpression
+					// src/main/resources/org/drools/compiler/lang/DRL6Expressions.g:579:7: ( LEFT_PAREN )=>expr= parExpression
 					{
 					pushFollow(FOLLOW_parExpression_in_primary3062);
 					expr=parExpression();
@@ -7428,13 +7428,10 @@ public class DRL6Expressions extends DRLExpressions {
 
 	// $ANTLR start synpred25_DRL6Expressions
 	public final void synpred25_DRL6Expressions_fragment() throws RecognitionException {
-		// src/main/resources/org/drools/compiler/lang/DRL6Expressions.g:579:7: ( parExpression )
-		// src/main/resources/org/drools/compiler/lang/DRL6Expressions.g:579:8: parExpression
+		// src/main/resources/org/drools/compiler/lang/DRL6Expressions.g:579:7: ( LEFT_PAREN )
+		// src/main/resources/org/drools/compiler/lang/DRL6Expressions.g:579:8: LEFT_PAREN
 		{
-		pushFollow(FOLLOW_parExpression_in_synpred25_DRL6Expressions3056);
-		parExpression();
-		state._fsp--;
-		if (state.failed) return;
+		match(input,LEFT_PAREN,FOLLOW_LEFT_PAREN_in_synpred25_DRL6Expressions3056); if (state.failed) return;
 		}
 
 	}
@@ -8825,7 +8822,7 @@ public class DRL6Expressions extends DRLExpressions {
 	public static final BitSet FOLLOW_type_in_synpred21_DRL6Expressions2747 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_HASH_in_synpred24_DRL6Expressions3002 = new BitSet(new long[]{0x0000000080000000L});
 	public static final BitSet FOLLOW_ID_in_synpred24_DRL6Expressions3004 = new BitSet(new long[]{0x0000000000000002L});
-	public static final BitSet FOLLOW_parExpression_in_synpred25_DRL6Expressions3056 = new BitSet(new long[]{0x0000000000000002L});
+	public static final BitSet FOLLOW_LEFT_PAREN_in_synpred25_DRL6Expressions3056 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_nonWildcardTypeArguments_in_synpred26_DRL6Expressions3075 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_literal_in_synpred27_DRL6Expressions3100 = new BitSet(new long[]{0x0000000000000002L});
 	public static final BitSet FOLLOW_super_key_in_synpred28_DRL6Expressions3122 = new BitSet(new long[]{0x0000000000000002L});
