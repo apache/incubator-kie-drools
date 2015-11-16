@@ -155,7 +155,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -217,9 +216,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     protected AtomicLong propagationIdCounter;
 
     private boolean sequential;
-
-    /** Flag to determine if a rule is currently being fired. */
-    protected volatile AtomicBoolean firing;
 
     private WorkItemManager workItemManager;
 
@@ -365,8 +361,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         this.lock = new ReentrantLock();
 
         timerService = TimerServiceFactory.getTimerService(this.config);
-
-        this.firing = new AtomicBoolean(false);
 
         initTransient();
 
@@ -1252,8 +1246,27 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void halt() {
-        this.agenda.halt();
-        notifyHalt();
+        synchronized (agenda) {
+            // only attempt halt an engine that is currently firing
+            // This will place a halt command on the propagation queue
+            // that will allow the engine to halt safely
+            if ( agenda.isFiring() ) {
+                propagationList.addEntry(new Halt());
+            }
+        }
+    }
+
+    private static class Halt extends PropagationEntry.AbstractPropagationEntry {
+
+        @Override
+        public void execute( InternalWorkingMemory wm ) {
+            wm.getAgenda().halt();
+        }
+
+        @Override
+        public String toString() {
+            return "Halt";
+        }
     }
 
     public int fireAllRules() {
@@ -1274,17 +1287,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public int fireAllRules(final AgendaFilter agendaFilter,
                             int fireLimit) {
         checkAlive();
-        if ( this.firing.compareAndSet( false,
-                                        true ) ) {
-            try {
-                startOperation();
-                return internalFireAllRules(agendaFilter, fireLimit);
-            } finally {
-                endOperation();
-                this.firing.set( false );
-            }
+        try {
+            startOperation();
+            return internalFireAllRules(agendaFilter, fireLimit);
+        } finally {
+            endOperation();
         }
-        return 0;
     }
 
     private int internalFireAllRules(AgendaFilter agendaFilter, int fireLimit) {
@@ -1329,14 +1337,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             throw new IllegalStateException( "fireUntilHalt() can not be called in sequential mode." );
         }
 
-        if ( this.firing.compareAndSet( false, true ) ) {
-            try {
-                startOperation();
-                agenda.fireUntilHalt( agendaFilter );
-            } finally {
-                endOperation();
-                this.firing.set( false );
-            }
+        try {
+            startOperation();
+            agenda.fireUntilHalt( agendaFilter );
+        } finally {
+            endOperation();
         }
     }
 
@@ -1994,13 +1999,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         executeQueuedActionsForRete();
     }
 
-    public void flushPropagationsOnFireUntilHalt(boolean fired) {
-        propagationList.flushOnFireUntilHalt( fired );
-        executeQueuedActionsForRete();
-    }
-
-    public void flushPropagationsOnFireUntilHalt( boolean fired, PropagationEntry propagationEntry ) {
-        propagationList.flushOnFireUntilHalt( fired, propagationEntry );
+    @Override
+    public void flushPropagations(PropagationEntry propagationEntry) {
+        propagationList.flush(propagationEntry);
         executeQueuedActionsForRete();
     }
 
@@ -2008,8 +2009,24 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return propagationList.takeAll();
     }
 
-    public void notifyHalt() {
-        propagationList.notifyHalt();
+    @Override
+    public PropagationEntry handleRestOnFireUntilHalt(DefaultAgenda.ExecutionState currentState) {
+        // this must use the same sync target as takeAllPropagations, to ensure this entire block is atomic, up to the point of wait
+        synchronized (propagationList) {
+            PropagationEntry head = takeAllPropagations();
+
+            // if halt() has called, the thread should not be put into a wait state
+            // instead this is just a safe way to make sure the queue is flushed before exiting the loop
+            if (head == null && currentState == DefaultAgenda.ExecutionState.FIRING_UNTIL_HALT) {
+                propagationList.waitOnRest();
+                head = takeAllPropagations();
+            }
+            return head;
+        }
+    }
+
+    public void notifyWaitOnRest() {
+        propagationList.notifyWaitOnRest();
     }
 
     public void flushNonMarshallablePropagations() {

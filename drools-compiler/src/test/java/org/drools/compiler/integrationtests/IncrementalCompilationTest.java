@@ -2344,4 +2344,45 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
         assertTrue( list.contains( "rule2" ) );
     }
+
+    @Test
+    public void testIncrementalCompilationWithEagerRules() throws Exception {
+        // DROOLS-978
+        String drl1 =
+                "rule R1 when\n" +
+                "then\n" +
+                "  insert(\"test\");\n" +
+                "end\n" +
+                "\n" +
+                "rule R2\n" +
+                "no-loop true\n" +
+                "when\n" +
+                "then\n" +
+                "  insert(1);\n" +
+                "end\n";
+
+        String drl2 =
+                "rule R3\n" +
+                "no-loop true\n" +
+                "when\n" +
+                "then\n" +
+                "  insert(1);\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.1" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        ksession.fireAllRules();
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        km = createAndDeployJar( ks, releaseId2, drl2 );
+        kc.updateToVersion(releaseId2);
+
+        ksession.fireAllRules();
+    }
 }

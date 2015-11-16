@@ -484,7 +484,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             i++;
         }
 
-        workingMemory.notifyHalt();
+        workingMemory.notifyWaitOnRest();
 
         return i;
     }
@@ -520,7 +520,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             if ( isFiringActivation ) {
                 mustNotifyHalt = true;
             } else {
-                workingMemory.notifyHalt();
+                workingMemory.notifyWaitOnRest();
             }
         }
     }
@@ -1345,7 +1345,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
             isFiringActivation = false;
             if ( mustNotifyHalt ) {
                 mustNotifyHalt = false;
-                workingMemory.notifyHalt();
+                workingMemory.notifyWaitOnRest();
             }
             this.workingMemory.endOperation();
         }
@@ -1479,7 +1479,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
     public void halt() {
         this.halt.set( true );
-        workingMemory.notifyHalt();
+        workingMemory.notifyWaitOnRest();
     }
 
     public ConsequenceExceptionHandler getConsequenceExceptionHandler() {

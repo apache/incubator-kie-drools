@@ -40,16 +40,20 @@ public class SynchronizedBypassPropagationList extends SynchronizedPropagationLi
                        flush();
                    }
                } else {
-                   internalAddEntry( propagationEntry );
+                   doAdd();
                }
            }
 
            @Override
            public void enqueue() {
-               internalAddEntry( propagationEntry );
+               doAdd();
+           }
+
+            private void doAdd() {
+                internalAddEntry( propagationEntry );
            }
         });
-        notifyHalt();
+        notifyWaitOnRest();
     }
 
     @Override

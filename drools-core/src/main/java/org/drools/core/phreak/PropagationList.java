@@ -23,13 +23,9 @@ public interface PropagationList {
     PropagationEntry takeAll();
 
     void flush();
+    void flush( PropagationEntry currentHead );
 
     void flushNonMarshallable();
-
-    void flushOnFireUntilHalt( boolean fired );
-    void flushOnFireUntilHalt( boolean fired, PropagationEntry currentHead );
-
-    void onEngineInactive();
 
     void reset();
 
@@ -37,5 +33,9 @@ public interface PropagationList {
 
     Iterator<PropagationEntry> iterator();
 
-    void notifyHalt();
+    void waitOnRest();
+
+    void notifyWaitOnRest();
+
+    void onEngineInactive();
 }

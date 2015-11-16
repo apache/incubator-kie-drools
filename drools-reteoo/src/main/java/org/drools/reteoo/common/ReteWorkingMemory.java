@@ -51,6 +51,9 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
 
     private AtomicBoolean evaluatingActionQueue = new AtomicBoolean(false);
 
+    /** Flag to determine if a rule is currently being fired. */
+    private volatile AtomicBoolean firing = new AtomicBoolean(false);
+
     public ReteWorkingMemory() {
     }
 
@@ -216,7 +219,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
         try {
             startOperation();
             actionQueue.add(action);
-            notifyHalt();
+            notifyWaitOnRest();
         } finally {
             endOperation();
         }

@@ -203,8 +203,7 @@ public interface InternalWorkingMemory
     void addPropagation(PropagationEntry propagationEntry);
 
     void flushPropagations();
-    void flushPropagationsOnFireUntilHalt( boolean fired );
-    void flushPropagationsOnFireUntilHalt( boolean fired, PropagationEntry propagationEntry );
+    void flushPropagations(PropagationEntry propagationEntry);
     void flushNonMarshallablePropagations();
 
     void notifyEngineInactive();
@@ -216,5 +215,7 @@ public interface InternalWorkingMemory
 
     void removeGlobal(String identifier);
 
-    void notifyHalt();
+    void notifyWaitOnRest();
+
+    PropagationEntry handleRestOnFireUntilHalt(DefaultAgenda.ExecutionState currentState);
 }
