@@ -18,7 +18,6 @@ package org.drools.core.reteoo;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Declaration;
@@ -126,22 +125,6 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         return "[QueryTerminalNode(" + this.getId() + "): query=" + this.query.getName() + "]";
     }
 
-
-    public void networkUpdated(UpdateContext updateContext) {
-        getLeftTupleSource().networkUpdated(updateContext);
-    }
-
-    public boolean isInUse() {
-        return false;
-    }
-
-    public boolean isLeftTupleMemoryEnabled() {
-        return false;
-    }
-
-    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
-        // do nothing, this can only ever be false
-    }
 
     /**
      * @return the subrule

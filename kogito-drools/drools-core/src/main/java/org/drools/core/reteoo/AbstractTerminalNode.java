@@ -22,6 +22,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
@@ -261,5 +262,21 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     public void setNegativeMask(BitMask mask) {
         negativeMask = mask;
+    }
+
+    public void networkUpdated(UpdateContext updateContext) {
+        getLeftTupleSource().networkUpdated(updateContext);
+    }
+
+    public boolean isInUse() {
+        return false;
+    }
+
+    public boolean isLeftTupleMemoryEnabled() {
+        return false;
+    }
+
+    public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
+        // do nothing, this can only ever be false
     }
 }

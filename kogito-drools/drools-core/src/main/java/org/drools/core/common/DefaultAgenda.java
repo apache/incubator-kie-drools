@@ -999,9 +999,11 @@ public class DefaultAgenda
     public void evaluateEagerList() {
         while ( !eager.isEmpty() ) {
             RuleAgendaItem item = eager.removeFirst();
-            evaluateQueriesForRule(item);
-            RuleExecutor ruleExecutor = item.getRuleExecutor();
-            ruleExecutor.evaluateNetwork(this.workingMemory);
+            if (item.isRuleInUse()) { // this rule could have been removed by an incremental compilation
+                evaluateQueriesForRule( item );
+                RuleExecutor ruleExecutor = item.getRuleExecutor();
+                ruleExecutor.evaluateNetwork( this.workingMemory );
+            }
         }
     }
 
