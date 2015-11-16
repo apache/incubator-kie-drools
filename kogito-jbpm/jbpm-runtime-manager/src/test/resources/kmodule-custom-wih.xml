@@ -1,0 +1,12 @@
+<kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://jboss.org/kie/6.0.0/kmodule">
+
+	<kbase name="defaultKieBase" default="true">
+		<ksession name="defaultKieSession">
+			<workItemHandlers>
+				<workItemHandler name="Log"
+					type="new org.jbpm.runtime.manager.handler.MvelPropertiesWorkItemHandler(ksession,taskService,runtimeManager,classLoader)" />
+			</workItemHandlers>
+		</ksession>
+	</kbase>
+</kmodule>

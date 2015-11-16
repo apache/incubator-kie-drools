@@ -80,7 +80,7 @@ public class KModuleRegisterableItemsFactory extends DefaultRegisterableItemsFac
         }
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("ksession", runtime.getKieSession());
-        parameters.put("taskService", runtime.getKieSession());
+        parameters.put("taskService", runtime.getTaskService());
         parameters.put("runtimeManager", ((RuntimeEngineImpl)runtime).getManager());
         if (getRuntimeManager().getKieContainer() != null) {
         	parameters.put("kieContainer", getRuntimeManager().getKieContainer());
