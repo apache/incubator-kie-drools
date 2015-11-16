@@ -17,14 +17,14 @@
 package org.drools.compiler.lang;
 
 import junit.framework.TestCase;
-
-import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.compiler.compiler.DrlExprParser;
 import org.drools.compiler.lang.descr.AtomicExprDescr;
 import org.drools.compiler.lang.descr.BindingDescr;
 import org.drools.compiler.lang.descr.ConnectiveType;
 import org.drools.compiler.lang.descr.ConstraintConnectiveDescr;
 import org.drools.compiler.lang.descr.RelationalExprDescr;
+import org.drools.core.base.evaluators.EvaluatorRegistry;
+import org.junit.Test;
 import org.kie.internal.builder.conf.LanguageLevelOption;
 
 /**
@@ -37,7 +37,7 @@ public class DRLExprParserTest extends TestCase {
     protected void setUp() throws Exception {
         super.setUp();
         new EvaluatorRegistry();
-        this.parser = new DrlExprParser(LanguageLevelOption.DRL5);
+        this.parser = new DrlExprParser(LanguageLevelOption.DRL6);
     }
 
     protected void tearDown() throws Exception {
@@ -45,6 +45,7 @@ public class DRLExprParserTest extends TestCase {
         super.tearDown();
     }
 
+    @Test
     public void testSimpleExpression() throws Exception {
         String source = "a > b";
         ConstraintConnectiveDescr result = parser.parse( source );
@@ -69,6 +70,7 @@ public class DRLExprParserTest extends TestCase {
                       right.getExpression() );
     }
 
+    @Test
     public void testAndConnective() throws Exception {
         String source = "a > b && 10 != 20";
         ConstraintConnectiveDescr result = parser.parse( source );
@@ -101,6 +103,7 @@ public class DRLExprParserTest extends TestCase {
                       right.getExpression() );
     }
 
+    @Test
     public void testConnective2() throws Exception {
         String source = "(a > b || 10 != 20) && someMethod(10) == 20";
         ConstraintConnectiveDescr result = parser.parse( source );
@@ -150,6 +153,7 @@ public class DRLExprParserTest extends TestCase {
 
     }
 
+    @Test
     public void testBinding() throws Exception {
         String source = "$x : property";
         ConstraintConnectiveDescr result = parser.parse( source );
@@ -168,6 +172,7 @@ public class DRLExprParserTest extends TestCase {
                       bind.getExpression() );
     }
 
+    @Test
     public void testBindingConstraint() throws Exception {
         String source = "$x : property > value";
         ConstraintConnectiveDescr result = parser.parse( source );
@@ -194,6 +199,7 @@ public class DRLExprParserTest extends TestCase {
                       right.getExpression() );
     }
 
+    @Test
     public void testBindingWithRestrictions() throws Exception {
         String source = "$x : property > value && < 20";
         ConstraintConnectiveDescr result = parser.parse( source );
@@ -232,6 +238,7 @@ public class DRLExprParserTest extends TestCase {
                       right.getExpression() );
     }
 
+    @Test
     public void testDoubleBinding() throws Exception {
         String source = "$x : x.m( 1, a ) && $y : y[z].foo";
         ConstraintConnectiveDescr result = parser.parse( source );
@@ -256,6 +263,7 @@ public class DRLExprParserTest extends TestCase {
                       bind.getExpression() );
     }
 
+    @Test
     public void testDeepBinding() throws Exception {
         String source = "($a : a > $b : b[10].prop || 10 != 20) && $x : someMethod(10) == 20";
         ConstraintConnectiveDescr result = parser.parse( source );
@@ -311,4 +319,29 @@ public class DRLExprParserTest extends TestCase {
 
     }
 
+    @Test(timeout = 10000L)
+    public void testNestedExpression() throws Exception {
+        // DROOLS-982
+        String source = "(((((((((((((((((((((((((((((((((((((((((((((((((( a > b ))))))))))))))))))))))))))))))))))))))))))))))))))";
+        ConstraintConnectiveDescr result = parser.parse( source );
+        assertFalse( parser.getErrors().toString(),
+                     parser.hasErrors() );
+
+        assertEquals( ConnectiveType.AND,
+                      result.getConnective() );
+        assertEquals( 1,
+                      result.getDescrs().size() );
+
+        RelationalExprDescr expr = (RelationalExprDescr) result.getDescrs().get( 0 );
+        assertEquals( ">",
+                      expr.getOperator() );
+
+        AtomicExprDescr left = (AtomicExprDescr) expr.getLeft();
+        AtomicExprDescr right = (AtomicExprDescr) expr.getRight();
+
+        assertEquals( "a",
+                      left.getExpression() );
+        assertEquals( "b",
+                      right.getExpression() );
+    }
 }

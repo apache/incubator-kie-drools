@@ -576,7 +576,7 @@ xpathExpressionList returns [java.util.List<String> exprs]
   ;
 
 primary returns [BaseDescr result]
-    :	(parExpression)=> expr=parExpression {  if( buildDescr  ) { $result = $expr.result; }  }
+    :	(LEFT_PAREN)=> expr=parExpression {  if( buildDescr  ) { $result = $expr.result; }  }
     |   (nonWildcardTypeArguments)=> nonWildcardTypeArguments (explicitGenericInvocationSuffix | this_key arguments)
     |   (literal)=> literal { if( buildDescr  ) { $result = new AtomicExprDescr( $literal.text, true ); }  }
     //|   this_key ({!helper.validateSpecialID(2)}?=> DOT ID)* ({helper.validateIdentifierSufix()}?=> identifierSuffix)?
