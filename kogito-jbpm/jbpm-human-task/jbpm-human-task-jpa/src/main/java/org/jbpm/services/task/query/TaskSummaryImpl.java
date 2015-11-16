@@ -95,9 +95,9 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         if (createdBy != null) {
             this.createdById = createdBy.getId();
         }
-        this.createdOn = createdOn;
-        this.activationTime = activationTime;
-        this.expirationTime = expirationTime;
+        this.createdOn = createdOn == null ? null : new Date(createdOn.getTime());
+        this.activationTime = activationTime == null ? null : new Date(activationTime.getTime());
+        this.expirationTime = expirationTime == null ? null : new Date(expirationTime.getTime());
         this.processInstanceId = processInstanceId;
         this.processId = processId;
         this.processSessionId = processSessionId;
@@ -138,9 +138,9 @@ public class TaskSummaryImpl implements InternalTaskSummary {
             this.createdBy = TaskModelProvider.getFactory().newUser(this.createdById);
         }
 
-        this.createdOn = createdOn;
-        this.activationTime = activationTime;
-        this.expirationTime = expirationTime;
+        this.createdOn = createdOn == null ? null : new Date(createdOn.getTime());
+        this.activationTime = activationTime == null ? null : new Date(activationTime.getTime());
+        this.expirationTime = expirationTime == null ? null : new Date(expirationTime.getTime());
         this.processInstanceId = processInstanceId;
         this.processId = processId;
         this.processSessionId = processSessionId;
@@ -180,9 +180,9 @@ public class TaskSummaryImpl implements InternalTaskSummary {
         this.priority = priority;
         this.actualOwnerId = actualOwner;
         this.createdById = createdBy;
-        this.createdOn = createdOn;
-        this.activationTime = activationTime;
-        this.expirationTime = expirationTime;
+        this.createdOn = createdOn == null ? null : new Date(createdOn.getTime());
+        this.activationTime = activationTime == null ? null : new Date(activationTime.getTime());
+        this.expirationTime = expirationTime == null ? null : new Date(expirationTime.getTime());
         this.processId = processId;
         this.parentId = parentId;
         this.deploymentId = deploymentId;

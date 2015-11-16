@@ -86,7 +86,7 @@ public class TaskEventImpl implements TaskEvent, Externalizable {
     this.taskId = taskId;
     this.type = type;
     this.userId = userId;
-    this.logTime = logTime;
+    this.logTime = logTime == null ? null : new Date(logTime.getTime());
   }
 
   public TaskEventImpl(Long taskId, TaskEventType type, Long processInstanceId, Long workItemId, String userId, Date logTime) {
@@ -95,7 +95,7 @@ public class TaskEventImpl implements TaskEvent, Externalizable {
     this.processInstanceId = processInstanceId;
     this.workItemId = workItemId;
     this.userId = userId;
-    this.logTime = logTime;
+    this.logTime = logTime == null ? null : new Date(logTime.getTime());
   }
 
   public TaskEventImpl(Long taskId, TaskEventType type, Long processInstanceId, Long workItemId, String userId) {
