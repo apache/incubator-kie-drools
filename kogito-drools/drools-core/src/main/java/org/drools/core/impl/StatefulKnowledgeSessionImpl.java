@@ -1252,8 +1252,21 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void halt() {
-        this.agenda.halt();
-        notifyHalt();
+        propagationList.addEntryToTop( new Halt() );
+    }
+
+    private static class Halt extends PropagationEntry.AbstractPropagationEntry {
+
+        @Override
+        public void execute( InternalWorkingMemory wm ) {
+            wm.getAgenda().halt();
+            wm.notifyHalt();
+        }
+
+        @Override
+        public String toString() {
+            return "Halt";
+        }
     }
 
     public int fireAllRules() {

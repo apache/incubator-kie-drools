@@ -1261,9 +1261,6 @@ public class DefaultAgenda
             PropagationEntry head = tryHalt();
             while (head != null) {
                 workingMemory.flushPropagationsOnFireUntilHalt( fireNextItem( agendaFilter, 0, -1 ) > 0, head );
-                if (currentState == ExecutionState.FORCE_HALTING) {
-                    break;
-                }
                 head = workingMemory.takeAllPropagations();
             }
 
@@ -1300,6 +1297,9 @@ public class DefaultAgenda
             while (head != null) {
                 fireCount += fireNextItem( agendaFilter, fireCount, fireLimit );
                 SynchronizedPropagationList.flush(workingMemory, head);
+                if (currentState == ExecutionState.FORCE_HALTING) {
+                    break;
+                }
                 head = workingMemory.takeAllPropagations();
             }
 
