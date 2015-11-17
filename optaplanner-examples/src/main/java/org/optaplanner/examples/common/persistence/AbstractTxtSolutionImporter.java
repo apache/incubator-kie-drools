@@ -155,6 +155,13 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             return valid;
         }
 
+        public void skipOptionalConstantLines(String constantRegex) throws IOException {
+            boolean valid = true;
+            while (valid) {
+                valid = readOptionalConstantLine(constantRegex);
+            }
+        }
+
         public void readUntilConstantLine(String constantRegex) throws IOException {
             String line;
             String value;

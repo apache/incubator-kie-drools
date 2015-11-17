@@ -75,6 +75,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
         private VehicleRoutingSolution solution;
 
+        private boolean timewindowed;
         private int customerListSize;
         private int vehicleListSize;
         private int capacity;
@@ -84,11 +85,13 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         public Solution readSolution() throws IOException {
             String firstLine = readStringValue();
             if (firstLine.matches("\\s*NAME\\s*:.*")) {
+                // Might be replaced by TimeWindowedVehicleRoutingSolution later on
                 solution = new VehicleRoutingSolution();
                 solution.setId(0L);
                 solution.setName(removePrefixSuffixFromLine(firstLine, "\\s*NAME\\s*:", ""));
                 readVrpWebFormat();
             } else if (splitBySpacesOrTabs(firstLine).length == 3) {
+                timewindowed = false;
                 solution = new VehicleRoutingSolution();
                 solution.setId(0L);
                 solution.setName(FilenameUtils.getBaseName(inputFile.getName()));
@@ -98,6 +101,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
                 capacity = Integer.parseInt(tokens[2]);
                 readCourseraFormat();
             } else {
+                timewindowed = true;
                 solution = new TimeWindowedVehicleRoutingSolution();
                 solution.setId(0L);
                 solution.setName(firstLine);
@@ -128,7 +132,20 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         }
 
         private void readVrpWebHeaders() throws IOException {
-            readUntilConstantLine("TYPE *: CVRP");
+            skipOptionalConstantLines("COMMENT *:.*");
+            String vrpType = readStringValue("TYPE *:");
+            if (vrpType.equals("CVRP")) {
+                timewindowed = false;
+            } else if (vrpType.equals("CVRPTW")) {
+                timewindowed = true;
+                Long solutionId = solution.getId();
+                String solutionName = solution.getName();
+                solution = new TimeWindowedVehicleRoutingSolution();
+                solution.setId(solutionId);
+                solution.setName(solutionName);
+            } else {
+                throw new IllegalArgumentException("The vrpType (" + vrpType + ") is not supported.");
+            }
             customerListSize = readIntegerValue("DIMENSION *:");
             String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE *:");
             if (edgeWeightType.equalsIgnoreCase("EUC_2D")) {
@@ -275,47 +292,70 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
 
         private void readVrpWebCustomerList() throws IOException {
             readConstantLine("DEMAND_SECTION");
+            depotList = new ArrayList<Depot>(customerListSize);
             List<Customer> customerList = new ArrayList<Customer>(customerListSize);
             for (int i = 0; i < customerListSize; i++) {
                 String line = bufferedReader.readLine();
-                String[] lineTokens = splitBySpacesOrTabs(line.trim(), 2);
-                Customer customer = new Customer();
+                String[] lineTokens = splitBySpacesOrTabs(line.trim(), timewindowed ? 5 : 2);
                 long id = Long.parseLong(lineTokens[0]);
-                customer.setId(id);
-                Location location = locationMap.get(id);
-                if (location == null) {
-                    throw new IllegalArgumentException("The customer with id (" + id
-                            + ") has no location (" + location + ").");
-                }
-                customer.setLocation(location);
                 int demand = Integer.parseInt(lineTokens[1]);
-                customer.setDemand(demand);
-                // Notice that we leave the PlanningVariable properties on null
-                // Do not add a customer that has no demand
-                if (demand != 0) {
+                // Depots have no demand
+                if (demand == 0) {
+                    Depot depot = timewindowed ? new TimeWindowedDepot() : new Depot();
+                    depot.setId(id);
+                    Location location = locationMap.get(id);
+                    if (location == null) {
+                        throw new IllegalArgumentException("The depot with id (" + id
+                                + ") has no location (" + location + ").");
+                    }
+                    depot.setLocation(location);
+                    if (timewindowed) {
+                        TimeWindowedDepot timeWindowedDepot = (TimeWindowedDepot) depot;
+                        timeWindowedDepot.setReadyTime(Long.parseLong(lineTokens[2]));
+                        timeWindowedDepot.setDueTime(Long.parseLong(lineTokens[3]));
+                        long serviceDuration = Long.parseLong(lineTokens[4]);
+                        if (serviceDuration != 0L) {
+                            throw new IllegalArgumentException("The depot with id (" + id
+                                    + ") has a serviceDuration (" + serviceDuration + ") that is not 0.");
+                        }
+                    }
+                    depotList.add(depot);
+                } else {
+                    Customer customer = timewindowed ? new TimeWindowedCustomer() : new Customer();
+                    customer.setId(id);
+                    Location location = locationMap.get(id);
+                    if (location == null) {
+                        throw new IllegalArgumentException("The customer with id (" + id
+                                + ") has no location (" + location + ").");
+                    }
+                    customer.setLocation(location);
+                    customer.setDemand(demand);
+                    if (timewindowed) {
+                        TimeWindowedCustomer timeWindowedCustomer = (TimeWindowedCustomer) customer;
+                        timeWindowedCustomer.setReadyTime(Long.parseLong(lineTokens[2]));
+                        timeWindowedCustomer.setDueTime(Long.parseLong(lineTokens[3]));
+                        timeWindowedCustomer.setServiceDuration(Long.parseLong(lineTokens[4]));
+                    }
+                    // Notice that we leave the PlanningVariable properties on null
                     customerList.add(customer);
                 }
             }
             solution.setCustomerList(customerList);
+            solution.setDepotList(depotList);
         }
 
         private void readVrpWebDepotList() throws IOException {
             readConstantLine("DEPOT_SECTION");
-            depotList = new ArrayList<Depot>(customerListSize);
+            int depotCount = 0;
             long id = readLongValue();
             while (id != -1) {
-                Depot depot = new Depot();
-                depot.setId(id);
-                Location location = locationMap.get(id);
-                if (location == null) {
-                    throw new IllegalArgumentException("The depot with id (" + id
-                            + ") has no location (" + location + ").");
-                }
-                depot.setLocation(location);
-                depotList.add(depot);
+                depotCount++;
                 id = readLongValue();
             }
-            solution.setDepotList(depotList);
+            if (depotCount != depotList.size()) {
+                throw new IllegalStateException("The number of demands with 0 demand (" + depotList.size()
+                        + ") differs from the number of depots (" + depotCount + ").");
+            }
         }
 
         private void createVrpWebVehicleList() throws IOException {
