@@ -53,6 +53,8 @@ public class VehicleRoutingSolutionPainter {
 
     private BufferedImage canvas = null;
     private LatitudeLongitudeTranslator translator = null;
+    private Long minimumTimeWindowTime = null;
+    private Long maximumTimeWindowTime = null;
 
     public VehicleRoutingSolutionPainter() {
         depotImageIcon = new ImageIcon(getClass().getResource(IMAGE_PATH_PREFIX + "depot.png"));
@@ -83,8 +85,7 @@ public class VehicleRoutingSolutionPainter {
         for (Location location : solution.getLocationList()) {
             translator.addCoordinates(location.getLatitude(), location.getLongitude());
         }
-
-        long maximumTimeWindowTime = determineMaximumTimeWindowTime(solution);
+        determineMinimumAndMaximumTimeWindowTime(solution);
 
         double width = size.getWidth();
         double height = size.getHeight();
@@ -108,9 +109,9 @@ public class VehicleRoutingSolutionPainter {
                 int circleY = y + 5;
                 g.drawOval(circleX, circleY, TIME_WINDOW_DIAMETER, TIME_WINDOW_DIAMETER);
                 g.fillArc(circleX, circleY, TIME_WINDOW_DIAMETER, TIME_WINDOW_DIAMETER,
-                        90 - calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getReadyTime()),
-                        calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getReadyTime())
-                                - calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getDueTime()));
+                        90 - calculateTimeWindowDegree(timeWindowedCustomer.getReadyTime()),
+                        calculateTimeWindowDegree(timeWindowedCustomer.getReadyTime())
+                                - calculateTimeWindowDegree(timeWindowedCustomer.getDueTime()));
                 if (timeWindowedCustomer.getArrivalTime() != null) {
                     if (timeWindowedCustomer.isArrivalAfterDueTime()) {
                         g.setColor(TangoColorFactory.SCARLET_2);
@@ -121,7 +122,7 @@ public class VehicleRoutingSolutionPainter {
                     }
                     g.setStroke(TangoColorFactory.THICK_STROKE);
                     int circleCenterY = y + 5 + TIME_WINDOW_DIAMETER / 2;
-                    int angle = calculateTimeWindowDegree(maximumTimeWindowTime, timeWindowedCustomer.getArrivalTime());
+                    int angle = calculateTimeWindowDegree(timeWindowedCustomer.getArrivalTime());
                     g.drawLine(x, circleCenterY,
                             x + (int) (Math.sin(Math.toRadians(angle)) * (TIME_WINDOW_DIAMETER / 2 + 3)),
                             circleCenterY - (int) (Math.cos(Math.toRadians(angle)) * (TIME_WINDOW_DIAMETER / 2 + 3)));
@@ -230,29 +231,39 @@ public class VehicleRoutingSolutionPainter {
         }
     }
 
-    private long determineMaximumTimeWindowTime(VehicleRoutingSolution solution) {
-        long maximumTimeWindowTime = 0L;
+    private void determineMinimumAndMaximumTimeWindowTime(VehicleRoutingSolution solution) {
+        minimumTimeWindowTime = Long.MAX_VALUE;
+        maximumTimeWindowTime = Long.MIN_VALUE;
         for (Depot depot : solution.getDepotList()) {
             if (depot instanceof TimeWindowedDepot) {
-                long timeWindowTime = ((TimeWindowedDepot) depot).getDueTime();
-                if (timeWindowTime > maximumTimeWindowTime) {
-                    maximumTimeWindowTime = timeWindowTime;
+                TimeWindowedDepot timeWindowedDepot = (TimeWindowedDepot) depot;
+                long readyTime = timeWindowedDepot.getReadyTime();
+                if (readyTime < minimumTimeWindowTime) {
+                    minimumTimeWindowTime = readyTime;
+                }
+                long dueTime = timeWindowedDepot.getDueTime();
+                if (dueTime > maximumTimeWindowTime) {
+                    maximumTimeWindowTime = dueTime;
                 }
             }
         }
         for (Customer customer : solution.getCustomerList()) {
             if (customer instanceof TimeWindowedCustomer) {
-                long timeWindowTime = ((TimeWindowedCustomer) customer).getDueTime();
-                if (timeWindowTime > maximumTimeWindowTime) {
-                    maximumTimeWindowTime = timeWindowTime;
+                TimeWindowedCustomer timeWindowedCustomer = (TimeWindowedCustomer) customer;
+                long readyTime = timeWindowedCustomer.getReadyTime();
+                if (readyTime < minimumTimeWindowTime) {
+                    minimumTimeWindowTime = readyTime;
+                }
+                long dueTime = timeWindowedCustomer.getDueTime();
+                if (dueTime > maximumTimeWindowTime) {
+                    maximumTimeWindowTime = dueTime;
                 }
             }
         }
-        return maximumTimeWindowTime;
     }
 
-    private int calculateTimeWindowDegree(long maximumTimeWindowTime, long timeWindowTime) {
-        return (int) (360L * timeWindowTime / maximumTimeWindowTime);
+    private int calculateTimeWindowDegree(long timeWindowTime) {
+        return (int) (360L * (timeWindowTime - minimumTimeWindowTime) / (maximumTimeWindowTime - minimumTimeWindowTime));
     }
 
     public Graphics2D createCanvas(double width, double height) {
