@@ -1,5 +1,5 @@
 NAME: belgium-n50-k10
-COMMENT: Generated for OptaPlanner Examples with GraphHopper by Geoffrey De Smet.
+COMMENT: Generated for OptaPlanner Examples by Geoffrey De Smet.
 TYPE: CVRP
 DIMENSION: 50
 EDGE_WEIGHT_TYPE: EUC_2D

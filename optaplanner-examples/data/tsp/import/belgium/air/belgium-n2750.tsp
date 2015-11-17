@@ -1,5 +1,5 @@
 NAME: belgium-n2750
-COMMENT: Generated for OptaPlanner Examples with GraphHopper by Geoffrey De Smet.
+COMMENT: Generated for OptaPlanner Examples by Geoffrey De Smet.
 TYPE: TSP
 DIMENSION: 2750
 EDGE_WEIGHT_TYPE: EUC_2D
