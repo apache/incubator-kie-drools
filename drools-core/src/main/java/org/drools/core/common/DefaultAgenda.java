@@ -1300,6 +1300,9 @@ public class DefaultAgenda
             while (head != null) {
                 fireCount += fireNextItem( agendaFilter, fireCount, fireLimit );
                 SynchronizedPropagationList.flush(workingMemory, head);
+                if (currentState == ExecutionState.FORCE_HALTING) {
+                    break;
+                }
                 head = workingMemory.takeAllPropagations();
             }
 

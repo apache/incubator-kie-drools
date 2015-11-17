@@ -37,6 +37,11 @@ public class RetePropagationList implements PropagationList {
     }
 
     @Override
+    public void addEntryToTop(PropagationEntry propagationEntry) {
+        addEntry(propagationEntry);
+    }
+
+    @Override
     public PropagationEntry takeAll() {
         return null;
     }

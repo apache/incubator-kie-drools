@@ -49,6 +49,20 @@ public class SynchronizedPropagationList implements PropagationList {
         }
     }
 
+    @Override
+    public synchronized void addEntryToTop(final PropagationEntry entry) {
+        boolean wasEmpty = head == null;
+        if ( !wasEmpty ) {
+            entry.setNext( head );
+            tail = head;
+        }
+        head = entry;
+
+        if ( wasEmpty ) {
+            notifyHalt();
+        }
+    }
+
     protected synchronized void internalAddEntry( PropagationEntry entry ) {
         boolean wasEmpty = head == null;
         if ( wasEmpty ) {
