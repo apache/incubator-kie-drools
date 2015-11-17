@@ -19,6 +19,7 @@ import java.util.Iterator;
 
 public interface PropagationList {
     void addEntry(PropagationEntry propagationEntry);
+    void addEntryToTop(PropagationEntry propagationEntry);
 
     PropagationEntry takeAll();
 
