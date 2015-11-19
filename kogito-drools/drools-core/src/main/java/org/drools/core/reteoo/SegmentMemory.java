@@ -16,11 +16,11 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
-import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.TupleSets;
+import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.QueryElementNode.QueryElementNodeMemory;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.util.AtomicBitwiseLong;
@@ -50,7 +50,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     private          List<PathMemory>   pathMemories;
     private          long               segmentPosMaskBit;
     private          int                pos = -1;
-    private volatile LeftTupleSets      stagedLeftTuples;
+    private volatile TupleSets<LeftTuple> stagedLeftTuples;
     private          boolean            active;
     private          SegmentMemory      previous;
     private          SegmentMemory      next;
@@ -63,7 +63,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.dirtyNodeMask = new AtomicBitwiseLong();
         this.pathMemories = new ArrayList<PathMemory>(1);
         this.nodeMemories = new LinkedList<Memory>();
-        this.stagedLeftTuples = new LeftTupleSetsImpl();
+        this.stagedLeftTuples = new TupleSetsImpl<LeftTuple>();
     }
 
     public NetworkNode getRootNode() {
@@ -292,11 +292,11 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.pos = pos;
     }
 
-    public LeftTupleSets getStagedLeftTuples() {
+    public TupleSets<LeftTuple> getStagedLeftTuples() {
         return stagedLeftTuples;
     }
 
-    public void setStagedTuples(LeftTupleSets stagedTuples) {
+    public void setStagedTuples(TupleSets<LeftTuple> stagedTuples) {
         this.stagedLeftTuples = stagedTuples;
     }
 

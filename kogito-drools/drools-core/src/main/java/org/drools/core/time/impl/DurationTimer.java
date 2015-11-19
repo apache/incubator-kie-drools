@@ -18,10 +18,10 @@ package org.drools.core.time.impl;
 
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.Tuple;
 import org.drools.core.time.Trigger;
 import org.drools.core.util.NumberUtils;
 import org.kie.api.runtime.Calendars;
@@ -70,7 +70,7 @@ public class DurationTimer extends BaseTimer
     public Trigger createTrigger(Activation item, InternalWorkingMemory wm) {
         long timestamp;
         if (eventFactHandle != null) {
-            LeftTuple leftTuple = item.getTuple();
+            Tuple leftTuple = item.getTuple();
             EventFactHandle  fh = (EventFactHandle) leftTuple.get(eventFactHandle);
             timestamp = fh.getStartTimestamp();
         } else {
@@ -82,7 +82,7 @@ public class DurationTimer extends BaseTimer
     }
 
     public Trigger createTrigger(long timestamp,
-                                 LeftTuple leftTuple,
+                                 Tuple leftTuple,
                                  DefaultJobHandle jh,
                                  String[] calendarNames,
                                  Calendars calendars,
@@ -91,7 +91,7 @@ public class DurationTimer extends BaseTimer
         return createTrigger(getEventTimestamp(leftTuple, timestamp), calendarNames, calendars);
     }
 
-    long getEventTimestamp(LeftTuple leftTuple, long timestamp) {
+    long getEventTimestamp(Tuple leftTuple, long timestamp) {
         return eventFactHandle != null ?
                ((EventFactHandle) leftTuple.get(eventFactHandle)).getStartTimestamp() :
                timestamp;

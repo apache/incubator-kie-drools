@@ -22,7 +22,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.CompiledInvoker;
@@ -207,15 +206,15 @@ public final class GeneratorHelper {
             return store(registry, declarationType);
         }
 
-        protected LeftTuple traverseTuplesUntilDeclaration(LeftTuple currentLeftTuple, int declarOffset, int tupleReg) {
-            while ( currentLeftTuple.getLastHandle() == null || currentLeftTuple.getIndex() > declarOffset ) {
-                // FactHandle is null for eval, not and join nodes as it ahs no right input
+        protected Tuple traverseTuplesUntilDeclaration(Tuple currentTuple, int declarOffset, int tupleReg) {
+            while ( currentTuple.getFactHandle() == null || currentTuple.getIndex() > declarOffset ) {
+                // FactHandle is null for eval, not and join nodes as it has no right input
                 mv.visitVarInsn(ALOAD, tupleReg);
-                invokeInterface(LeftTuple.class, "getParent", LeftTuple.class);
+                invokeInterface(Tuple.class, "getParent", Tuple.class);
                 mv.visitVarInsn(ASTORE, tupleReg); // tuple = tuple.getParent()
-                currentLeftTuple = currentLeftTuple.getParent();
+                currentTuple = currentTuple.getParent();
             }
-            return currentLeftTuple;
+            return currentTuple;
         }
 
         protected void traverseTuplesUntilDeclarationWithOr(int declarIndex, int declarReg, int tupleReg, int declarOffsetReg) {
@@ -231,11 +230,11 @@ public final class GeneratorHelper {
             Label whileExit = new Label();
             mv.visitLabel(whileStart);
             mv.visitVarInsn(ALOAD, tupleReg);
-            invokeInterface(LeftTuple.class, "getIndex", Integer.TYPE); // tuple.getIndex()
+            invokeInterface(Tuple.class, "getIndex", Integer.TYPE); // tuple.getIndex()
             mv.visitVarInsn(ILOAD, declarOffsetReg); // declarations[i].getPattern().getOffset()
             mv.visitJumpInsn(IF_ICMPLE, whileExit); // if tuple.getQueueIndex() <= declarations[i].getPattern().getOffset() jump to whileExit
             mv.visitVarInsn(ALOAD, tupleReg);
-            invokeInterface(LeftTuple.class, "getParent", LeftTuple.class);
+            invokeInterface(Tuple.class, "getParent", Tuple.class);
             mv.visitVarInsn(ASTORE, tupleReg); // tuple = tuple.getParent()
             mv.visitJumpInsn(GOTO, whileStart);
             mv.visitLabel(whileExit);

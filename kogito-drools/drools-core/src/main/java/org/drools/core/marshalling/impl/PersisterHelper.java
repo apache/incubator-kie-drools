@@ -30,9 +30,9 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteAssert
 import org.drools.core.impl.StatefulKnowledgeSessionImpl.WorkingMemoryReteExpireAction;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header.StrategyIndex.Builder;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PropagationQueuingNode.PropagateAction;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorExpireWMAction;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.Drools;
 import org.drools.core.util.KeyStoreHelper;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -130,17 +130,17 @@ public class PersisterHelper {
 
     public static ProtobufInputMarshaller.ActivationKey createActivationKey(final String pkgName,
                                                                             final String ruleName,
-                                                                            final LeftTuple leftTuple) {
+                                                                            final Tuple leftTuple) {
         int[] tuple = createTupleArray( leftTuple );
         return new ProtobufInputMarshaller.ActivationKey( pkgName, ruleName, tuple );
     }
 
-    public static ProtobufMessages.Tuple createTuple( final LeftTuple leftTuple ) {
+    public static ProtobufMessages.Tuple createTuple( final Tuple leftTuple ) {
         ProtobufMessages.Tuple.Builder _tuple = ProtobufMessages.Tuple.newBuilder();
-        for( LeftTuple entry = leftTuple; entry != null ; entry = entry.getParent() ) {
-            if ( entry.getLastHandle() != null ) {
+        for( Tuple entry = leftTuple; entry != null ; entry = entry.getParent() ) {
+            if ( entry.getFactHandle() != null ) {
                 // can be null for eval, not and exists that have no right input
-                _tuple.addHandleId( entry.getLastHandle().getId() );
+                _tuple.addHandleId( entry.getFactHandle().getId() );
             }
         }
         return _tuple.build();
@@ -155,16 +155,16 @@ public class PersisterHelper {
         return tuple;
     }
 
-    public static int[] createTupleArray(final LeftTuple leftTuple) {
+    public static int[] createTupleArray(final Tuple leftTuple) {
         if( leftTuple != null ) {
             int[] tuple = new int[leftTuple.size()];
             // tuple iterations happens backwards
             int i = tuple.length;
-            for( LeftTuple entry = leftTuple; entry != null && i > 0; entry = entry.getParent() ) {
-                if ( entry.getLastHandle() != null ) {
+            for( Tuple entry = leftTuple; entry != null && i > 0; entry = entry.getParent() ) {
+                if ( entry.getFactHandle() != null ) {
                     // can be null for eval, not and exists that have no right input
                     // have to decrement i before assignment
-                    tuple[--i] = entry.getLastHandle().getId();
+                    tuple[--i] = entry.getFactHandle().getId();
                 }
             }
             return tuple;
@@ -177,13 +177,13 @@ public class PersisterHelper {
         return new ProtobufInputMarshaller.TupleKey( createTupleArray( _tuple ) );
     }
     
-    public static ProtobufInputMarshaller.TupleKey createTupleKey(final LeftTuple leftTuple) {
+    public static ProtobufInputMarshaller.TupleKey createTupleKey(final Tuple leftTuple) {
         return new ProtobufInputMarshaller.TupleKey( createTupleArray( leftTuple ) );
     }
     
     public static ProtobufMessages.Activation createActivation(final String packageName,
                                                                final String ruleName,
-                                                               final LeftTuple tuple) {
+                                                               final Tuple tuple) {
         return ProtobufMessages.Activation.newBuilder()
                         .setPackageName( packageName )
                         .setRuleName( ruleName )

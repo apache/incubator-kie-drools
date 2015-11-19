@@ -17,10 +17,10 @@
 package org.drools.core.time.impl;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.Tuple;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
 
@@ -75,7 +75,7 @@ public class CompositeMaxDurationTimer extends BaseTimer
     }
 
     public Trigger createTrigger(long timestamp,
-                                 LeftTuple leftTuple,
+                                 Tuple leftTuple,
                                  DefaultJobHandle jh,
                                  String[] calendarNames,
                                  Calendars calendars,
@@ -99,7 +99,7 @@ public class CompositeMaxDurationTimer extends BaseTimer
                                                                                      calendars ) : null );
     }
 
-    private long getMaxTimestamp(LeftTuple leftTuple, long timestamp) {
+    private long getMaxTimestamp(Tuple leftTuple, long timestamp) {
         if (timer != null) {
             return timestamp;
         }

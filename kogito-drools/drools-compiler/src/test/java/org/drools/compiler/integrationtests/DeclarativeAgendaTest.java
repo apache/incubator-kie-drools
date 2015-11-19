@@ -205,7 +205,7 @@ public class DeclarativeAgendaTest extends CommonTestMethodBase {
         assertTrue( list.contains( "rule1:go1" ) );
     }
 
-    @Test//(timeout=10000)
+    @Test(timeout=10000)
     public void testApplyBlockerSecond() {
         StatefulKnowledgeSession ksession = getStatefulKnowledgeSession();
 

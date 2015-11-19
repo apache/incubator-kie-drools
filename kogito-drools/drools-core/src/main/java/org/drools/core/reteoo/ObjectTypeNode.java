@@ -322,7 +322,7 @@ public class ObjectTypeNode extends ObjectSource
                                        final InternalWorkingMemory workingMemory) {
         for (RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; ) {
             RightTuple nextRightTuple = rightTuple.getHandleNext();
-            rightTuple.getRightTupleSink().retractRightTuple(rightTuple,
+            rightTuple.getTupleSink().retractRightTuple(rightTuple,
                                                              context,
                                                              workingMemory);
             rightTuple = nextRightTuple;
@@ -331,7 +331,7 @@ public class ObjectTypeNode extends ObjectSource
 
         for (LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext()) {
             // must go via the LiaNode, so that the fact counter is updated, for linking
-            ((LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource()).retractLeftTuple(leftTuple,
+            ((LeftInputAdapterNode) leftTuple.getTupleSink().getLeftTupleSource()).retractLeftTuple(leftTuple,
                                                                                                         context,
                                                                                                         workingMemory);
         }

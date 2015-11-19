@@ -18,21 +18,21 @@ package org.drools.core.runtime.rule.impl;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
+import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Row;
 
 public class RowAdapter implements Row {
 
-    private RuleImpl                 rule;
-    private LeftTuple            leftTuple;
+    private RuleImpl             rule;
+    private Tuple                tuple;
     private InternalFactHandle[] factHandles;
 
     public RowAdapter(final RuleImpl rule,
-                      final LeftTuple leftTuple) {
+                      final Tuple leftTuple) {
         this.rule = rule;
-        this.leftTuple = leftTuple;
+        this.tuple = leftTuple;
     }
 
     private InternalFactHandle getFactHandle(Declaration declr) {
@@ -41,7 +41,7 @@ public class RowAdapter implements Row {
 
     public Object get(String identifier) {
         if ( factHandles == null ) {
-            this.factHandles = this.leftTuple.toFactHandles();
+            this.factHandles = this.tuple.toFactHandles();
         }
         Declaration declr = this.rule.getDeclaration( identifier );
         if ( declr == null ) {
@@ -53,7 +53,7 @@ public class RowAdapter implements Row {
 
     public FactHandle getFactHandle(String identifier) {
         if ( factHandles == null ) {
-            this.factHandles = this.leftTuple.toFactHandles();
+            this.factHandles = this.tuple.toFactHandles();
         }
         Declaration declr = this.rule.getDeclaration( identifier );
         if ( declr == null ) {
@@ -65,14 +65,14 @@ public class RowAdapter implements Row {
 
     public FactHandle getFactHandle(int i) {
         if ( factHandles == null ) {
-            this.factHandles = this.leftTuple.toFactHandles();
+            this.factHandles = this.tuple.toFactHandles();
         }
         return null;
     }
 
     public int size() {
         if ( factHandles == null ) {
-            this.factHandles = this.leftTuple.toFactHandles();
+            this.factHandles = this.tuple.toFactHandles();
         }
         return 0;
     }
@@ -82,7 +82,7 @@ public class RowAdapter implements Row {
         final int prime = 31;
         int result = 1;
         result = prime * result
-                + ((this.leftTuple == null) ? 0 : this.leftTuple.hashCode());
+                + ((this.tuple == null) ? 0 : this.tuple.hashCode());
         return result;
     }
 
@@ -95,17 +95,17 @@ public class RowAdapter implements Row {
         if (getClass() != obj.getClass())
             return false;
         RowAdapter other = (RowAdapter) obj;
-        if (this.leftTuple == null) {
-            if (other.leftTuple != null)
+        if (this.tuple == null) {
+            if (other.tuple != null)
                 return false;
-        } else if (!this.leftTuple.equals(other.leftTuple))
+        } else if (!this.tuple.equals(other.tuple ))
             return false;
         return true;
     }
     
     public String toString() {
         if ( factHandles == null ) {
-            this.factHandles = this.leftTuple.toFactHandles();
+            this.factHandles = this.tuple.toFactHandles();
         }
         StringBuilder sbuilder = new StringBuilder();
         for ( int i = 0, length = this.factHandles.length -1; i < length; i++ ) {

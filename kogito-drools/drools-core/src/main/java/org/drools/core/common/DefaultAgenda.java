@@ -42,9 +42,10 @@ import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.StringUtils;
-import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.util.index.TupleList;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.rule.AgendaFilter;
@@ -240,7 +241,7 @@ public class DefaultAgenda
                           salience,
                           context,
                           ruleAgendaItem, agendaGroup);
-        rtnLeftTuple.setObject(rtnLeftTuple);
+        rtnLeftTuple.setContextObject( rtnLeftTuple );
         return rtnLeftTuple;
     }
 
@@ -354,7 +355,7 @@ public class DefaultAgenda
 
         InternalFactHandle factHandle = workingMemory.getFactHandleFactory().newFactHandle( activation, activationObjectTypeConf, workingMemory, workingMemory );
         workingMemory.getEntryPointNode().assertActivation( factHandle, activation.getPropagationContext(), workingMemory );
-        activation.setFactHandle( factHandle );
+        activation.setActivationFactHandle( factHandle );
     }
 
     public boolean addActivation(final AgendaItem activation) {
@@ -372,7 +373,7 @@ public class DefaultAgenda
     public void modifyActivation(final AgendaItem activation,
                                  boolean previouslyActive) {
         // in Phreak this is only called for declarative agenda, on rule instances
-        InternalFactHandle factHandle = activation.getFactHandle();
+        InternalFactHandle factHandle = activation.getActivationFactHandle();
         if ( factHandle != null ) {
             // removes the declarative rule instance for the real rule instance
             workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
@@ -402,7 +403,7 @@ public class DefaultAgenda
                                (InternalAgendaGroup) agendaGroup );
     }
 
-    public boolean createActivation(final LeftTuple tuple,
+    public boolean createActivation(final Tuple tuple,
                                     final PropagationContext context,
                                     final InternalWorkingMemory workingMemory,
                                     final TerminalNode rtn) {
@@ -420,7 +421,7 @@ public class DefaultAgenda
         return isRuleInstanceAgendaItem(ruleflowGroupName, ruleName, processInstanceId);
     }
 
-    public void cancelActivation(final LeftTuple leftTuple,
+    public void cancelActivation(final Tuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory,
                                  final Activation activation,
@@ -428,12 +429,12 @@ public class DefaultAgenda
         AgendaItem item = (AgendaItem) activation;
         item.removeAllBlockersAndBlocked( this );
 
-        if ( isDeclarativeAgenda() && activation.getFactHandle() == null ) {
+        if ( isDeclarativeAgenda() && activation.getActivationFactHandle() == null ) {
             // This a control rule activation, nothing to do except update counters. As control rules are not in agenda-groups etc.
             return;
         } else if (isDeclarativeAgenda()) {
             // we are cancelling an actual Activation, so also it's handle from the WM.
-            workingMemory.getEntryPointNode().retractActivation( activation.getFactHandle(), activation.getPropagationContext(), workingMemory );
+            workingMemory.getEntryPointNode().retractActivation( activation.getActivationFactHandle(), activation.getPropagationContext(), workingMemory );
 
             if ( activation.getActivationGroupNode() != null ) {
                 activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
@@ -442,7 +443,7 @@ public class DefaultAgenda
 
         if ( activation.isQueued() ) {
             // on fact expiration, we don't remove the activation, but let it fire
-            if ( context.getType() != PropagationContext.EXPIRATION || context.getFactHandleOrigin() == null ) {
+            if ( context.getType() != PropagationContext.EXPIRATION || context.getFactHandle() == null ) {
                 if ( activation.getActivationGroupNode() != null ) {
                     activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
                 }
@@ -1088,18 +1089,18 @@ public class DefaultAgenda
                     throw new RuntimeException( e );
                 }
             } finally {
-                if ( activation.getFactHandle() != null ) {
+                if ( activation.getActivationFactHandle() != null ) {
                     // update the Activation in the WM
-                    InternalFactHandle factHandle = activation.getFactHandle();
+                    InternalFactHandle factHandle = activation.getActivationFactHandle();
                     workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
                     activation.getPropagationContext().evaluateActionQueue( workingMemory );
                 }
                 // if the tuple contains expired events
-                for ( LeftTuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
-                    if ( tuple.getLastHandle() != null &&  tuple.getLastHandle().isEvent() ) {
+                for ( Tuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
+                    if ( tuple.getFactHandle() != null &&  tuple.getFactHandle().isEvent() ) {
                         // can be null for eval, not and exists that have no right input
 
-                        EventFactHandle handle = (EventFactHandle) tuple.getLastHandle();
+                        EventFactHandle handle = (EventFactHandle) tuple.getFactHandle();
                         // decrease the activation count for the event
                         handle.decreaseActivationsCount();
                         // handles "expire" only in stream mode.
@@ -1154,9 +1155,9 @@ public class DefaultAgenda
                     throw new RuntimeException( e );
                 }
             } finally {
-                if ( activation.getFactHandle() != null ) {
+                if ( activation.getActivationFactHandle() != null ) {
                     // update the Activation in the WM
-                    InternalFactHandle factHandle = activation.getFactHandle();
+                    InternalFactHandle factHandle = activation.getActivationFactHandle();
                     workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
                     activation.getPropagationContext().evaluateActionQueue( workingMemory );
                 }
@@ -1187,7 +1188,7 @@ public class DefaultAgenda
                 RuleAgendaItem ruleAgendaItem = (RuleAgendaItem) act;
                 ruleAgendaItem.getRuleExecutor().evaluateNetwork(workingMemory);
                 workingMemory.flushPropagations();
-                LeftTupleList list = ruleAgendaItem.getRuleExecutor().getLeftTupleList();
+                TupleList list = ruleAgendaItem.getRuleExecutor().getLeftTupleList();
                 for (RuleTerminalNodeLeftTuple lt = (RuleTerminalNodeLeftTuple) list.getFirst(); lt != null; lt = (RuleTerminalNodeLeftTuple) lt.getNext()) {
                     if ( ruleName.equals( lt.getRule().getName() ) ) {
                         if ( checkProcessInstance( lt, processInstanceId ) ) {

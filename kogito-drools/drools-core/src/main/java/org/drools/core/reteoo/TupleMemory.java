@@ -1,9 +1,8 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -12,16 +11,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.InternalFactHandle;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 
-public interface RightTupleMemory {
+public interface TupleMemory {
 
     enum IndexType {
         NONE, EQUAL, COMPARISON, RANGE;
@@ -36,21 +36,21 @@ public interface RightTupleMemory {
      * node memories. This is because the memory on the opposite side would not have yet memory.removeAdd the fact, so it
      * could potentially be in the wrong bucket. So the bucket matches check always checks to ignore the first facthandle if it's
      * the same as the context fact.
-     * 
-     * @param leftTuple
-     * @param factHandle
-     * @return
      */
-    RightTuple getFirst(LeftTuple leftTuple, InternalFactHandle factHandle, FastIterator rightTupleIterator);
+    Tuple getFirst( Tuple leftTuple );
     
-    void removeAdd(RightTuple rightTuple);
+    void removeAdd( Tuple rightTuple );
 
-    void add(RightTuple rightTuple);
+    void add( Tuple rightTuple );
 
-    void remove(RightTuple rightTuple);
+    void remove( Tuple rightTuple );
 
-    boolean contains(RightTuple rightTuple);
-    
+    boolean contains( Tuple rightTuple );
+
+    boolean isIndexed();
+
+    int size();
+
     Iterator iterator();
     
     FastIterator fastIterator();
@@ -66,13 +66,9 @@ public interface RightTupleMemory {
      * @param rightTuple
      * @return
      */
-    FastIterator fullFastIterator(RightTuple rightTuple);
-
-    boolean isIndexed();
+    FastIterator fullFastIterator( Tuple rightTuple );
 
     Entry[] toArray();
-
-    int size();
 
     IndexType getIndexType();
 

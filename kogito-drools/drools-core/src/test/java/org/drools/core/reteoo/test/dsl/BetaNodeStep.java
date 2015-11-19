@@ -16,22 +16,22 @@
 
 package org.drools.core.reteoo.test.dsl;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.ObjectSource;
-import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.spi.PropagationContext;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import static org.mockito.Mockito.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import static org.mockito.Mockito.any;
 
 public class BetaNodeStep
     implements
@@ -57,7 +57,7 @@ public class BetaNodeStep
                     InternalFactHandle handle = (InternalFactHandle) args[0];
                     BetaNode node = (BetaNode) invocation.getMock();
                     // creating child RightTuple
-                    new RightTuple(handle, node);
+                    new RightTupleImpl(handle, node);
                     return null;
                 }
             }).when( betaNode ).assertObject( any(InternalFactHandle.class), 

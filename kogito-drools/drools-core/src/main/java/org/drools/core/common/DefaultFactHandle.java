@@ -413,7 +413,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     public void addLeftTupleInPosition( LeftTuple leftTuple ) {
-        ObjectTypeNode.Id otnId = leftTuple.getLeftTupleSink() == null ? null : leftTuple.getLeftTupleSink().getLeftInputOtnId();
+        ObjectTypeNode.Id otnId = leftTuple.getTupleSink() == null ? null : leftTuple.getTupleSink().getLeftInputOtnId();
         if (otnId == null) { // can happen only in tests
             addLastLeftTuple( leftTuple );
             return;
@@ -427,7 +427,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
             setFirstLeftTuple( leftTuple );
             setLastLeftTuple( leftTuple );
             return;
-        } else if ( previous.getLeftTupleSink() == null || !otnId.before( previous.getLeftTupleSink().getLeftInputOtnId() ) ) {
+        } else if ( previous.getTupleSink() == null || !otnId.before( previous.getTupleSink().getLeftInputOtnId() ) ) {
             // the last LeftTuple comes before the new one so just add it at the end
             leftTuple.setLeftParentPrevious( previous );
             leftTuple.setLeftParentNext( null );
@@ -438,7 +438,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
         LeftTuple next = previous;
         previous = previous.getLeftParentPrevious();
-        while (previous != null && otnId.before( previous.getLeftTupleSink().getLeftInputOtnId() ) ) {
+        while (previous != null && otnId.before( previous.getTupleSink().getLeftInputOtnId() ) ) {
             next = previous;
             previous = previous.getLeftParentPrevious();
         }
@@ -507,7 +507,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     }
 
     public void addRightTupleInPosition( RightTuple rightTuple ) {
-        ObjectTypeNode.Id otnId = rightTuple.getRightTupleSink() == null ? null : rightTuple.getRightTupleSink().getRightInputOtnId();
+        ObjectTypeNode.Id otnId = rightTuple.getTupleSink() == null ? null : rightTuple.getTupleSink().getRightInputOtnId();
         if (otnId == null) { // can happen only in tests
             addLastRightTuple( rightTuple );
             return;
@@ -521,7 +521,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
             setFirstRightTuple( rightTuple );
             setLastRightTuple( rightTuple );
             return;
-        } else if ( previous.getRightTupleSink() == null || !otnId.before( previous.getRightTupleSink().getRightInputOtnId() ) ) {
+        } else if ( previous.getTupleSink() == null || !otnId.before( previous.getTupleSink().getRightInputOtnId() ) ) {
             // the last RightTuple comes before the new one so just add it at the end
             rightTuple.setHandlePrevious( previous );
             rightTuple.setHandleNext( null );
@@ -532,7 +532,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
 
         RightTuple next = previous;
         previous = previous.getHandlePrevious();
-        while (previous != null && otnId.before( previous.getRightTupleSink().getRightInputOtnId() ) ) {
+        while (previous != null && otnId.before( previous.getTupleSink().getRightInputOtnId() ) ) {
             next = previous;
             previous = previous.getHandlePrevious();
         }

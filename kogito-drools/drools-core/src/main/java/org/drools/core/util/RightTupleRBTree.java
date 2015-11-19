@@ -16,7 +16,7 @@
 
 package org.drools.core.util;
 
-import org.drools.core.util.index.RightTupleList;
+import org.drools.core.util.index.TupleList;
 
 public class RightTupleRBTree<K extends Comparable< ? super K>> {
 
@@ -512,7 +512,7 @@ public class RightTupleRBTree<K extends Comparable< ? super K>> {
         RED, BLACK
     }
 
-    public static class Node<K extends Comparable< ? super K>> extends RightTupleList implements Entry, Comparable<Node<K>> {
+    public static class Node<K extends Comparable< ? super K>> extends TupleList implements Entry, Comparable<Node<K>> {
         public  K       key;
         private Node<K> left;
         private Node<K> right;

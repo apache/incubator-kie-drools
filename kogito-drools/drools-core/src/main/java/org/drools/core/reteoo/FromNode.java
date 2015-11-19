@@ -28,13 +28,13 @@ import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
 import org.drools.core.marshalling.impl.ProtobufMessages.FactHandle;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.From;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.util.index.TupleList;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -132,10 +132,10 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
                                         final PropagationContext context,
                                         final InternalWorkingMemory workingMemory,
                                         final Object object ) {
-        return new RightTuple( createFactHandle( leftTuple, context, workingMemory, object ) );
+        return new RightTupleImpl( createFactHandle( leftTuple, context, workingMemory, object ) );
     }
 
-    public InternalFactHandle createFactHandle( LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory, Object object ) {
+    public InternalFactHandle createFactHandle( Tuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory, Object object ) {
         FactHandle _handle = null;
         if ( objectTypeConf == null ) {
             // use default entry point and object class. Notice that at this point object is assignable to resultClass
@@ -194,7 +194,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
 
 
     public T createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
-        BetaMemory beta = new BetaMemory( new LeftTupleList(),
+        BetaMemory beta = new BetaMemory( new TupleList(),
                                           null,
                                           this.betaConstraints.createContext(),
                                           NodeTypeEnums.FromNode );
@@ -269,7 +269,6 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         private DataProvider      dataProvider;
 
         private final BetaMemory         betaMemory;
-        private final ContextEntry[]     alphaContexts;
         public Object                    providerContext;
 
         public FromMemory(BetaMemory betaMemory,
@@ -278,10 +277,6 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
             this.betaMemory = betaMemory;
             this.dataProvider = dataProvider;
             this.providerContext = dataProvider.createContext();
-            this.alphaContexts = new ContextEntry[constraints.length];
-            for ( int i = 0; i < constraints.length; i++ ) {
-                this.alphaContexts[i] = constraints[i].createContextEntry();
-            }
         }
 
         public short getNodeType() {
@@ -300,10 +295,6 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
             return betaMemory;
         }
 
-        public ContextEntry[] getAlphaContexts() {
-            return alphaContexts;
-        }
-
         public void reset() {
             this.betaMemory.reset();
             this.providerContext = dataProvider.createContext();
@@ -311,19 +302,19 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final LeftTupleSink sink) {
+                                     final Sink sink) {
         return new FromNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(leftTuple, sink, pctx,
                                      leftTupleMemoryEnabled );
@@ -331,7 +322,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     LeftTupleSink sink) {
+                                     Sink sink) {
         return new FromNodeLeftTuple(leftTuple, rightTuple, sink );
     }   
     
@@ -339,7 +330,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }

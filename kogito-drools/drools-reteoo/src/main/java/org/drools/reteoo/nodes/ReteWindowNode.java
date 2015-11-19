@@ -30,11 +30,11 @@ import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.RightTupleSink;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Behavior;
-import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.SlidingLengthWindow;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
@@ -120,12 +120,12 @@ public class ReteWindowNode extends WindowNode
         try {
             int index = 0;
             for (AlphaNodeFieldConstraint constraint : getConstraints()) {
-                if (!constraint.isAllowed(evFh, workingMemory, memory.context[index++])) {
+                if (!constraint.isAllowed(evFh, workingMemory)) {
                     return;
                 }
             }
 
-            RightTuple rightTuple = new RightTuple(evFh, this);
+            RightTuple rightTuple = new RightTupleImpl(evFh, this);
             rightTuple.setPropagationContext(pctx);
 
             InternalFactHandle clonedFh = evFh.cloneAndLink();  // this is cloned, as we need to separate the child RightTuple references
@@ -174,8 +174,7 @@ public class ReteWindowNode extends WindowNode
             boolean isAllowed = true;
             for (AlphaNodeFieldConstraint constraint : getConstraints()) {
                 if (!constraint.isAllowed(cloneFactHandle,
-                                          workingMemory,
-                                          memory.context[index++])) {
+                                          workingMemory)) {
                     isAllowed = false;
                     break;
                 }
@@ -241,11 +240,6 @@ public class ReteWindowNode extends WindowNode
     @Override
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         ReteWindowMemory memory = new ReteWindowMemory();
-        memory.context = new ContextEntry[getConstraints().size()];
-        int index = 0;
-        for (AlphaNodeFieldConstraint alpha : getConstraints()) {
-            memory.context[index++] = alpha.createContextEntry();
-        }
         memory.behaviorContext = this.behavior.createBehaviorContext();
         memory.gate = new ReentrantLock();
         return memory;

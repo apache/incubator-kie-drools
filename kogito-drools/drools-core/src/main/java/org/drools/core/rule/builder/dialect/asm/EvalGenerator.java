@@ -46,7 +46,6 @@ public class EvalGenerator {
                                 final Declaration[] declarations,
                                 final WorkingMemory workingMemory) {
 
-        final LeftTuple leftTuple = (LeftTuple)tuple;
         final String[] globals = stub.getGlobals();
         final String[] globalTypes = stub.getGlobalTypes();
 
@@ -78,12 +77,12 @@ public class EvalGenerator {
                 cast(LeftTuple.class);
                 mv.visitVarInsn(ASTORE, 5); // LeftTuple
 
-                LeftTuple currentLeftTuple = leftTuple;
+                Tuple currentTuple = tuple;
                 for (DeclarationMatcher matcher : declarationMatchers) {
                     int i = matcher.getOriginalIndex();
                     declarationsParamsPos[i] = objAstorePos;
 
-                    currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, matcher.getRootDistance(), 5);
+                    currentTuple = traverseTuplesUntilDeclaration(currentTuple, matcher.getRootDistance(), 5);
 
                     mv.visitVarInsn(ALOAD, 2);
                     push(i);
@@ -91,8 +90,8 @@ public class EvalGenerator {
                     mv.visitVarInsn(ALOAD, 3); // workingMemory
 
                     mv.visitVarInsn(ALOAD, 5);
-                    invokeInterface(LeftTuple.class, "getHandle", InternalFactHandle.class);
-                    invokeInterface(InternalFactHandle.class, "getObject", Object.class); // tuple.getHandle().getObject()
+                    invokeInterface(LeftTuple.class, "getFactHandle", InternalFactHandle.class);
+                    invokeInterface(InternalFactHandle.class, "getObject", Object.class); // tuple.getFactHandle().getObject()
 
                     storeObjectFromDeclaration(declarations[i], expectedDeclarations[i]);
                 }

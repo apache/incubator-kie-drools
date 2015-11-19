@@ -59,7 +59,7 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     private           InternalAgendaGroup                            agendaGroup;
     private           ActivationGroupNode                            activationGroupNode;
     private           ActivationNode                                 activationNode;
-    private           InternalFactHandle                             factHandle;
+    private           InternalFactHandle                             activationFactHandle;
     private transient boolean                                        canceled;
     private           boolean                                        matched;
     private           boolean                                        active;
@@ -74,7 +74,7 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     // Constructors
     // ------------------------------------------------------------
     public RuleTerminalNodeLeftTuple(final InternalFactHandle factHandle,
-                                     final LeftTupleSink sink,
+                                     final Sink sink,
                                      final boolean leftTupleMemoryEnabled) {
         super(factHandle,
               sink,
@@ -83,12 +83,12 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
 
     public RuleTerminalNodeLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final LeftTupleSink sink) {
+                                     final Sink sink) {
         super(factHandle, leftTuple, sink);
     }
 
     public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
-                                     final LeftTupleSink sink,
+                                     final Sink sink,
                                      final PropagationContext pctx,
                                      final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
@@ -99,7 +99,7 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
 
     public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     LeftTupleSink sink) {
+                                     Sink sink) {
         super(leftTuple,
               rightTuple,
               sink);
@@ -107,21 +107,21 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
 
     public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
                                      final RightTuple rightTuple,
-                                     final LeftTupleSink sink,
+                                     final Sink sink,
                                      final boolean leftTupleMemoryEnabled) {
-        this(leftTuple,
-             rightTuple,
-             null,
-             null,
-             sink,
-             leftTupleMemoryEnabled);
+        this( leftTuple,
+              rightTuple,
+              null,
+              null,
+              sink,
+              leftTupleMemoryEnabled );
     }
 
     public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
                                      final RightTuple rightTuple,
                                      final LeftTuple currentLeftChild,
                                      final LeftTuple currentRightChild,
-                                     final LeftTupleSink sink,
+                                     final Sink sink,
                                      final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
               rightTuple,
@@ -183,12 +183,12 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
         this.salience = salience;
     }
 
-    public InternalFactHandle getFactHandle() {
-        return factHandle;
+    public InternalFactHandle getActivationFactHandle() {
+        return activationFactHandle;
     }
 
-    public void setFactHandle(InternalFactHandle factHandle) {
-        this.factHandle = factHandle;
+    public void setActivationFactHandle( InternalFactHandle factHandle ) {
+        this.activationFactHandle = factHandle;
     }
 
     public RuleAgendaItem getRuleAgendaItem() {
@@ -339,7 +339,7 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     }
 
     public TerminalNode getTerminalNode() {
-        return (TerminalNode) getLeftTupleSink();
+        return (TerminalNode) getTupleSink();
     }
 
     public ActivationUnMatchListener getActivationUnMatchListener() {
@@ -386,7 +386,7 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
     }
 
     public List<String> getDeclarationIds() {
-        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) getLeftTupleSink()).getAllDeclarations();
+        Declaration[] declArray = ((org.drools.core.reteoo.RuleTerminalNode) getTupleSink()).getAllDeclarations();
         List<String> declarations = new ArrayList<String>();
         for (Declaration decl : declArray) {
             declarations.add(decl.getIdentifier());

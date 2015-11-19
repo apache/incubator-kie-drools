@@ -116,7 +116,7 @@ public class ReteBetaNodeUtils {
                     if (context.getCleanupAdapter() != null) {
                         LeftTuple child;
                         while ((child = leftTuple.getFirstChild()) != null) {
-                            if (child.getLeftTupleSink() == betaNode) {
+                            if (child.getTupleSink() == betaNode) {
                                 // this is a match tuple on collect and accumulate nodes, so just unlink it
                                 child.unlinkFromLeftParent();
                                 child.unlinkFromRightParent();
@@ -181,18 +181,18 @@ public class ReteBetaNodeUtils {
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
         while (rightTuple != null &&
-               ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId().before(betaNode.getRightInputOtnId())) {
+               ((BetaNode) rightTuple.getTupleSink()).getRightInputOtnId().before(betaNode.getRightInputOtnId())) {
             modifyPreviousTuples.removeRightTuple();
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext(context);
-            rightTuple.getRightTupleSink().retractRightTuple(rightTuple,
+            rightTuple.getTupleSink().retractRightTuple(rightTuple,
                                                              context,
                                                              wm);
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
 
-        if (rightTuple != null && ((BetaNode) rightTuple.getRightTupleSink()).getRightInputOtnId().equals(betaNode.getRightInputOtnId())) {
+        if (rightTuple != null && ((BetaNode) rightTuple.getTupleSink()).getRightInputOtnId().equals(betaNode.getRightInputOtnId())) {
             modifyPreviousTuples.removeRightTuple();
             rightTuple.reAdd();
             if (rightTuple.getStagedType() != LeftTuple.INSERT) {

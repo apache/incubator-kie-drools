@@ -25,7 +25,6 @@ import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.reteoo.AlphaNode.AlphaMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.MvelConstraintTestUtil;
 import org.drools.core.rule.constraint.MvelConstraint;
@@ -91,9 +90,6 @@ public class AlphaNodeTest extends DroolsTestCase {
         // check sink is empty
         assertLength( 0,
                       sink.getAsserted() );
-
-        // check alpha memory is empty 
-        final AlphaMemory memory = (AlphaMemory) ksession.getNodeMemory( alphaNode );
 
         // object should assert as it passes text
         alphaNode.assertObject( f0,

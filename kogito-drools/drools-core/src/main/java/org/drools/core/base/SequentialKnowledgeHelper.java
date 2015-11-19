@@ -39,7 +39,6 @@ import org.kie.internal.runtime.beliefs.Mode;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 public class SequentialKnowledgeHelper
@@ -132,11 +131,11 @@ public class SequentialKnowledgeHelper
     //    }
     
     public Object get(final Declaration declaration) {
-        return declaration.getValue( workingMemory, this.tuple.get( declaration ).getObject() );
+        return declaration.getValue( workingMemory, this.tuple.getObject( declaration ) );
     }
 
     public Declaration getDeclaration(final String identifier) {
-        return (Declaration) this.subrule.getOuterDeclarations().get( identifier );
+        return this.subrule.getOuterDeclarations().get( identifier );
     }
     
     public void halt() {
@@ -144,7 +143,7 @@ public class SequentialKnowledgeHelper
     }
 
     public EntryPoint getEntryPoint(String id) {
-        return ((StatefulKnowledgeSessionImpl) this.workingMemory).getEntryPoint( id );
+        return this.workingMemory.getEntryPoint( id );
     }
 
     public Channel getChannel(String id) {

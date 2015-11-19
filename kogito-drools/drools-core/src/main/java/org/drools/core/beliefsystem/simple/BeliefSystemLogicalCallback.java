@@ -63,7 +63,7 @@ public class BeliefSystemLogicalCallback
     public BeliefSystemLogicalCallback(MarshallerReaderContext context) throws IOException {
         this.handle = context.handles.get( context.readInt() );
         this.context = context.propagationContexts.get( context.readLong() );
-        this.activation = (Activation) context.terminalTupleMap.get( context.readInt() ).getObject();
+        this.activation = (Activation) context.terminalTupleMap.get( context.readInt() ).getContextObject();
     }
 
     public BeliefSystemLogicalCallback(MarshallerReaderContext context,
@@ -74,7 +74,7 @@ public class BeliefSystemLogicalCallback
         this.activation = (Activation) context.filter
                                               .getTuplesCache().get( PersisterHelper.createActivationKey(_retract.getActivation().getPackageName(),
                                                                                                          _retract.getActivation().getRuleName(),
-                                                                                                         _retract.getActivation().getTuple()) ).getObject();
+                                                                                                         _retract.getActivation().getTuple()) ).getContextObject();
         this.context = this.activation.getPropagationContext();
         this.fullyRetract = _retract.getFullyRetract();
         this.update = _retract.getUpdate();

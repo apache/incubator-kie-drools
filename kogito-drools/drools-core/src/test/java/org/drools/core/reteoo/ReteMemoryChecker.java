@@ -45,10 +45,6 @@ public class ReteMemoryChecker {
                 if ( !( memory instanceof LeftInputAdapterNode.LiaNodeMemory ) ) {
                     throw new RuntimeException( "Invalid memory type. Node: " + node + " has memory " + memory );
                 }
-            } else if ( NodeTypeEnums.AlphaNode == node.getType() ) {
-                if ( !( memory instanceof AlphaNode.AlphaMemory ) ) {
-                    throw new RuntimeException( "Invalid memory type. Node: " + node + " has memory " + memory );
-                }
             } else if ( NodeTypeEnums.isBetaNode( node ) ) {
                 if ( NodeTypeEnums.AccumulateNode == node.getType() ) {
                     if ( !( memory instanceof AccumulateNode.AccumulateMemory ) ) {

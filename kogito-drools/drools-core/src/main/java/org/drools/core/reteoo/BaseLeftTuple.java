@@ -16,13 +16,9 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.util.Entry;
-import org.drools.core.util.index.LeftTupleList;
-import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
+import org.drools.core.util.index.TupleList;
 
 import java.util.Arrays;
 
@@ -31,15 +27,10 @@ import java.util.Arrays;
  * @author etirelli
  *
  */
-public class BaseLeftTuple
-    implements
-    Tuple,
-    Entry, LeftTuple {
+public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     private static final long  serialVersionUID = 540l;
 
     private int                index;
-
-    private InternalFactHandle handle;
 
     private LeftTuple          parent;
 
@@ -56,21 +47,9 @@ public class BaseLeftTuple
     private LeftTuple          firstChild;
     private LeftTuple          lastChild;
 
-    private LeftTupleSink      sink;
-    
-    private PropagationContext   propagationContext;    
-    
     // node memory
-    protected LeftTupleList      memory;
-    protected Entry              next;
-    protected Entry              previous;
+    protected TupleList        memory;
 
-    private volatile short       stagedType;
-    private LeftTuple            stagedNext;
-    private LeftTuple            stagedPrevious;
-
-    private Object               object;
-    
     private LeftTuple            peer;
 
     public BaseLeftTuple() {
@@ -80,33 +59,32 @@ public class BaseLeftTuple
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
-    public BaseLeftTuple(final InternalFactHandle factHandle,
-                             final LeftTupleSink sink,
-                             final boolean leftTupleMemoryEnabled) {
-        this.handle = factHandle;
+    public BaseLeftTuple(InternalFactHandle factHandle,
+                         Sink sink,
+                         boolean leftTupleMemoryEnabled) {
+        setFactHandle( factHandle );
         this.sink = sink;
         if ( leftTupleMemoryEnabled ) {
-            this.handle.addLeftTupleInPosition( this );
+            factHandle.addLeftTupleInPosition( this );
         }
     }
     
-    public BaseLeftTuple(final InternalFactHandle factHandle,
-                         final LeftTuple leftTuple,
-                         final LeftTupleSink sink) {
-        this.handle = factHandle;
+    public BaseLeftTuple(InternalFactHandle factHandle,
+                         LeftTuple leftTuple,
+                         Sink sink) {
+        setFactHandle( factHandle );
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple;
         this.sink = sink;
     }
 
-    public BaseLeftTuple(final LeftTuple leftTuple,
-                         final LeftTupleSink sink,
-                         final PropagationContext pctx,
-                         final boolean leftTupleMemoryEnabled) {
+    public BaseLeftTuple(LeftTuple leftTuple,
+                         Sink sink,
+                         PropagationContext pctx,
+                         boolean leftTupleMemoryEnabled) {
         this.index = leftTuple.getIndex();
         this.parent = leftTuple;
-        this.handle = null;
-        this.propagationContext = pctx;
+        setPropagationContext( pctx );
 
         if ( leftTupleMemoryEnabled ) {
             this.leftParent = leftTuple;
@@ -122,13 +100,13 @@ public class BaseLeftTuple
         this.sink = sink;
     }
     
-    public BaseLeftTuple(final LeftTuple leftTuple,
-                             RightTuple rightTuple,
-                             LeftTupleSink sink) {
+    public BaseLeftTuple(LeftTuple leftTuple,
+                         RightTuple rightTuple,
+                         Sink sink) {
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple;
-        this.handle = rightTuple.getFactHandle();
-        this.propagationContext = rightTuple.getPropagationContext();
+        setFactHandle( rightTuple.getFactHandle() );
+        setPropagationContext( rightTuple.getPropagationContext() );
 
         this.leftParent = leftTuple;
         // insert at the end f the list
@@ -142,20 +120,20 @@ public class BaseLeftTuple
         
         // insert at the end of the list
         this.rightParent = rightTuple;
-        if ( rightTuple.lastChild != null ) {
-            this.rightParentPrevious = rightTuple.lastChild;
+        if ( rightTuple.getLastChild() != null ) {
+            this.rightParentPrevious = rightTuple.getLastChild();
             this.rightParentPrevious.setRightParentNext( this );
         } else {
-            rightTuple.firstChild = this;
+            rightTuple.setFirstChild( this );
         }
-        rightTuple.lastChild = this;        
+        rightTuple.setLastChild( this );
         this.sink = sink;
     }    
 
-    public BaseLeftTuple(final LeftTuple leftTuple,
-                             final RightTuple rightTuple,
-                             final LeftTupleSink sink,
-                             final boolean leftTupleMemoryEnabled) {
+    public BaseLeftTuple(LeftTuple leftTuple,
+                         RightTuple rightTuple,
+                         Sink sink,
+                         boolean leftTupleMemoryEnabled) {
         this( leftTuple,
               rightTuple,
               null,
@@ -164,16 +142,16 @@ public class BaseLeftTuple
               leftTupleMemoryEnabled );
     }
     
-    public BaseLeftTuple(final LeftTuple leftTuple,
-                             final RightTuple rightTuple,
-                             final LeftTuple currentLeftChild,
-                             final LeftTuple currentRightChild,
-                             final LeftTupleSink sink,
-                             final boolean leftTupleMemoryEnabled) {
-        this.handle = rightTuple.getFactHandle();
+    public BaseLeftTuple(LeftTuple leftTuple,
+                         RightTuple rightTuple,
+                         LeftTuple currentLeftChild,
+                         LeftTuple currentRightChild,
+                         Sink sink,
+                         boolean leftTupleMemoryEnabled) {
+        setFactHandle( rightTuple.getFactHandle() );
         this.index = leftTuple.getIndex() + 1;
         this.parent = leftTuple;
-        this.propagationContext = rightTuple.getPropagationContext();
+        setPropagationContext( rightTuple.getPropagationContext() );
 
         if ( leftTupleMemoryEnabled ) {
             this.leftParent = leftTuple;
@@ -201,20 +179,20 @@ public class BaseLeftTuple
             
             if( currentRightChild == null ) {
                 // insert at the end of the list
-                if ( rightTuple.lastChild != null ) {
-                    this.rightParentPrevious = rightTuple.lastChild;
+                if ( rightTuple.getLastChild() != null ) {
+                    this.rightParentPrevious = rightTuple.getLastChild();
                     this.rightParentPrevious.setRightParentNext( this );
                 } else {
-                    rightTuple.firstChild = this;
+                    rightTuple.setFirstChild( this );
                 }
-                rightTuple.lastChild = this;
+                rightTuple.setLastChild( this );
             } else {
                 // insert before current child
                 this.rightParentNext = currentRightChild;
                 this.rightParentPrevious = currentRightChild.getRightParentPrevious();
                 currentRightChild.setRightParentPrevious( this );
                 if( this.rightParentPrevious == null ) {
-                    this.rightParent.firstChild = this;
+                    this.rightParent.setFirstChild( this );
                 } else {
                     this.rightParentPrevious.setRightParentNext( this );
                 }
@@ -224,16 +202,12 @@ public class BaseLeftTuple
         this.sink = sink;
     }
     
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#reAdd()
-     */
+    @Override
     public void reAdd() {
-        handle.addLastLeftTuple( this );
+        getFactHandle().addLastLeftTuple( this );
     }
-    
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#reAddLeft()
-     */
+
+    @Override
     public void reAddLeft() {
         // The parent can never be the FactHandle (root LeftTuple) as that is handled by reAdd()
         // make sure we aren't already at the end
@@ -256,10 +230,8 @@ public class BaseLeftTuple
             this.leftParentNext = null;
         }
     }
-    
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#reAddRight()
-     */
+
+    @Override
     public void reAddRight() {
         // make sure we aren't already at the end        
         if ( this.rightParentNext != null ) {
@@ -268,23 +240,21 @@ public class BaseLeftTuple
                 this.rightParentPrevious.setRightParentNext( this.rightParentNext );
                 this.rightParentNext.setRightParentPrevious( this.rightParentPrevious );
             } else {
-                if( this.rightParent.firstChild == this ) {
+                if( this.rightParent.getFirstChild() == this ) {
                     // remove the current LeftTuple from the start of the chain
-                    this.rightParent.firstChild = this.rightParentNext;
+                    this.rightParent.setFirstChild( this.rightParentNext );
                 }
                 this.rightParentNext.setRightParentPrevious( null );
             }
             // re-add to end            
-            this.rightParentPrevious = this.rightParent.lastChild;
+            this.rightParentPrevious = this.rightParent.getLastChild();
             this.rightParentPrevious.setRightParentNext( this );
-            this.rightParent.lastChild = this;
+            this.rightParent.setLastChild( this );
             this.rightParentNext = null;
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#unlinkFromLeftParent()
-     */
+    @Override
     public void unlinkFromLeftParent() {
         LeftTuple previousParent = this.leftParentPrevious;
         LeftTuple nextParent = this.leftParentNext;
@@ -299,7 +269,7 @@ public class BaseLeftTuple
                 this.leftParent.setFirstChild( nextParent );
             } else {
                 // This is relevant to the root node and only happens at rule removal time
-                this.handle.removeLeftTuple( this );
+                getFactHandle().removeLeftTuple( this );
             }
             nextParent.setLeftParentPrevious( null );
         } else if ( previousParent != null ) {
@@ -308,7 +278,7 @@ public class BaseLeftTuple
                 this.leftParent.setLastChild( previousParent );
             } else {
                 // relevant to the root node, as here the parent is the FactHandle, only happens at rule removal time
-                this.handle.removeLeftTuple( this );
+                getFactHandle().removeLeftTuple( this );
             }
             previousParent.setLeftParentNext(  null );
         } else {
@@ -318,7 +288,7 @@ public class BaseLeftTuple
                 this.leftParent.setLastChild( null );
             } else {
                 // it is a root tuple - only happens during rule removal
-                this.handle.removeLeftTuple( this );
+                getFactHandle().removeLeftTuple( this );
             }
         }
 
@@ -327,9 +297,7 @@ public class BaseLeftTuple
         this.leftParentNext = null;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#unlinkFromRightParent()
-     */
+    @Override
     public void unlinkFromRightParent() {
         if ( this.rightParent == null ) {
             // no right parent;
@@ -345,248 +313,178 @@ public class BaseLeftTuple
             this.rightParentNext.setRightParentPrevious( this.rightParentPrevious );
         } else if ( nextParent != null ) {
             // remove from the start
-            this.rightParent.firstChild = nextParent;
+            this.rightParent.setFirstChild( nextParent );
             nextParent.setRightParentPrevious( null );
         } else if ( previousParent != null ) {
             // remove from end     
-            this.rightParent.lastChild = previousParent;
-            previousParent.setRightParentNext(  null );
+            this.rightParent.setLastChild( previousParent );
+            previousParent.setRightParentNext( null );
         } else {
             // single remaining item, no previous or next
-            this.rightParent.firstChild = null;
-            this.rightParent.lastChild = null;
+            this.rightParent.setFirstChild( null );
+            this.rightParent.setLastChild( null );
         }
 
         this.rightParent = null;
         this.rightParentPrevious = null;
         this.rightParentNext = null;
     }
-    
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getQueueIndex()
-     */
+
+    @Override
     public int getIndex() {
         return this.index;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getLeftTupleSink()
-     */
-    public LeftTupleSink getLeftTupleSink() {
-        return sink;
+    @Override
+    public LeftTupleSink getTupleSink() {
+        return (LeftTupleSink)sink;
     }
     
     /* Had to add the set method because sink adapters must override 
      * the tuple sink set when the tuple was created.
      */
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setLeftTupleSink(org.kie.reteoo.LeftTupleSink)
-     */
+    @Override
     public void setLeftTupleSink( LeftTupleSink sink ) {
         this.sink = sink;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getLeftParent()
-     */
+    @Override
     public LeftTuple getLeftParent() {
         return leftParent;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setLeftParent(org.kie.reteoo.LeftTuple)
-     */
+    @Override
     public void setLeftParent(LeftTuple leftParent) {
         this.leftParent = leftParent;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getLeftParentPrevious()
-     */
+    @Override
     public LeftTuple getLeftParentPrevious() {
         return leftParentPrevious;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setLeftParentPrevious(org.kie.reteoo.LeftTuple)
-     */
+    @Override
     public void setLeftParentPrevious(LeftTuple leftParentLeft) {
         this.leftParentPrevious = leftParentLeft;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getLeftParentNext()
-     */
+    @Override
     public LeftTuple getLeftParentNext() {
         return leftParentNext;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setLeftParentNext(org.kie.reteoo.LeftTuple)
-     */
+    @Override
     public void setLeftParentNext(LeftTuple leftParentright) {
         this.leftParentNext = leftParentright;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getRightParent()
-     */
+    @Override
     public RightTuple getRightParent() {
         return rightParent;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setRightParent(org.kie.reteoo.RightTuple)
-     */
+    @Override
     public void setRightParent(RightTuple rightParent) {
         this.rightParent = rightParent;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getRightParentPrevious()
-     */
+    @Override
     public LeftTuple getRightParentPrevious() {
         return rightParentPrevious;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setRightParentPrevious(org.kie.reteoo.LeftTuple)
-     */
+    @Override
     public void setRightParentPrevious(LeftTuple rightParentLeft) {
         this.rightParentPrevious = rightParentLeft;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getRightParentNext()
-     */
+    @Override
     public LeftTuple getRightParentNext() {
         return rightParentNext;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setRightParentNext(org.kie.reteoo.LeftTuple)
-     */
+    @Override
     public void setRightParentNext(LeftTuple rightParentRight) {
         this.rightParentNext = rightParentRight;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#get(int)
-     */
-    public InternalFactHandle get(final int index) {
+    @Override
+    public InternalFactHandle get(int index) {
         LeftTuple entry = this;
-        while ( entry != null && ( entry.getIndex() != index || entry.getLastHandle() == null ) ) {
+        while ( entry != null && ( entry.getIndex() != index || entry.getFactHandle() == null ) ) {
             entry = entry.getParent();
         }
-        return entry == null ? null : entry.getHandle();
-    }
-    
-    public void setFactHandle(InternalFactHandle handle) {
-        this.handle = handle;
+        return entry == null ? null : entry.getFactHandle();
     }
 
-    /* (non-Javadoc)
-
-     * @see org.kie.reteoo.LeftTuple#getLastHandle()
-     */
-    public InternalFactHandle getLastHandle() {
-        return this.handle;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#get(org.kie.rule.Declaration)
-     */
-    public InternalFactHandle get(final Declaration declaration) {
-        return get( declaration.getPattern().getOffset() );
-    }
-
-     /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#toFactHandles()
-     */
     public InternalFactHandle[] toFactHandles() {
         InternalFactHandle[] handles = new InternalFactHandle[this.index + 1];
         LeftTuple entry = this;
         while ( entry != null ) {
-            if ( entry.getHandle() != null ) {
+            if ( entry.getFactHandle() != null ) {
                 // eval, not, exists have no right input
-                handles[entry.getIndex()] = entry.getHandle();
+                handles[entry.getIndex()] = entry.getFactHandle();
             }
             entry = entry.getParent();
         }
         return handles;
     }
-    
+
+    public Object[] toObjects() {
+        Object[] objs = new Object[this.index + 1];
+        LeftTuple entry = this;
+        while ( entry != null ) {
+            if ( entry.getFactHandle() != null ) {
+                // eval, not, exists have no right input
+                objs[entry.getIndex()] = entry.getFactHandle().getObject();
+            }
+            entry = entry.getParent();
+        }
+        return objs;
+    }
 
     public void clearBlocker() {
         throw new UnsupportedOperationException();
-    }    
+    }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setBlocker(org.kie.reteoo.RightTuple)
-     */
+    @Override
     public void setBlocker(RightTuple blocker) {
         throw new UnsupportedOperationException();
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getBlocker()
-     */
+    @Override
     public RightTuple getBlocker() {
         throw new UnsupportedOperationException();
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getBlockedPrevious()
-     */
+    @Override
     public LeftTuple getBlockedPrevious() {
         throw new UnsupportedOperationException();
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setBlockedPrevious(org.kie.reteoo.LeftTuple)
-     */
+    @Override
     public void setBlockedPrevious(LeftTuple blockerPrevious) {
         throw new UnsupportedOperationException();
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getBlockedNext()
-     */
+    @Override
     public LeftTuple getBlockedNext() {
         throw new UnsupportedOperationException();
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setBlockedNext(org.kie.reteoo.LeftTuple)
-     */
+    @Override
     public void setBlockedNext(LeftTuple blockerNext) {
         throw new UnsupportedOperationException();
     }
-    
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getObject()
-     */
-    public final Object getObject() {
-        return this.object;
-    }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setObject(java.lang.Object)
-     */
-    public final void setObject(final Object object) {
-        this.object = object;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#toString()
-     */
+    @Override
     public String toString() {
         final StringBuilder buffer = new StringBuilder();
 
         LeftTuple entry = this;
         while ( entry != null ) {
             //buffer.append( entry.handle );
-            buffer.append(entry.getHandle());
+            buffer.append(entry.getFactHandle());
             if ( entry.getParent() != null ) {
                 buffer.append("\n");
             }
@@ -595,17 +493,12 @@ public class BaseLeftTuple
         return buffer.toString();
     }
 
-    
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#hashCode()
-     */
+    @Override
     public int hashCode() {
-        return handle == null ? 0 : handle.hashCode();
+        return getFactHandle() == null ? 0 : getFactHandle().hashCode();
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#equals(org.kie.reteoo.LeftTuple)
-     */
+    @Override
     public boolean equals(final LeftTuple other) {
         // we know the object is never null and always of the  type LeftTuple
         if ( other == this ) {
@@ -619,7 +512,7 @@ public class BaseLeftTuple
             return false;
         }
 
-        if ( this.handle != other.getHandle() ) {
+        if ( getFactHandle() != other.getFactHandle() ) {
             return false;
         }
         
@@ -630,183 +523,105 @@ public class BaseLeftTuple
         }
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#equals(java.lang.Object)
-     */
+    @Override
     public boolean equals(final Object object) {
-        if( object instanceof LeftTuple ) { 
-            return equals( (LeftTuple) object );
-        } else { 
-            return false;
-        }
+        return object instanceof LeftTuple && equals( (LeftTuple) object );
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#size()
-     */
+    @Override
     public int size() {
         return this.index + 1;
     }
-    
-    
 
-    public InternalFactHandle getHandle() {
-        return handle;
-    }
-
-    public void setHandle(InternalFactHandle handle) {
-        this.handle = handle;
-    }
-
+    @Override
     public LeftTuple getFirstChild() {
         return firstChild;
     }
 
+    @Override
     public void setFirstChild(LeftTuple firstChild) {
         this.firstChild = firstChild;
     }
 
+    @Override
     public LeftTuple getLastChild() {
         return lastChild;
     }
 
+    @Override
     public void setLastChild(LeftTuple lastChild) {
         this.lastChild = lastChild;
     }
 
-    public LeftTupleSink getSink() {
-        return sink;
-    }
-
-    public void setSink(LeftTupleSink sink) {
-        this.sink = sink;
-    }
-
+    @Override
     public void setIndex(int index) {
         this.index = index;
     }
 
+    @Override
     public void setParent(LeftTuple parent) {
         this.parent = parent;
     }
-    
-    
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getMemory()
-     */
-    public LeftTupleList getMemory() {
+
+    @Override
+    public TupleList getMemory() {
         return this.memory;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setMemory(org.kie.core.util.LeftTupleList)
-     */
-    public void setMemory(LeftTupleList memory) {
+    @Override
+    public void setMemory(TupleList memory) {
         this.memory = memory;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getPrevious()
-     */
-    public Entry getPrevious() {
-        return previous;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setPrevious(org.kie.core.util.Entry)
-     */
-    public void setPrevious(Entry previous) {
-        this.previous = previous;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setNext(org.kie.core.util.Entry)
-     */
-    public void setNext(final Entry next) {
-        this.next = next;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#remove()
-     */
-    public Entry getNext() {
-        return this.next;
-    }               
-
-    public short getStagedType() {
-        return stagedType;
-    }
-
-    public void setStagedType(short stagedType) {
-        this.stagedType = stagedType;
-    }
-
+    @Override
     public LeftTuple getStagedNext() {
-        return stagedNext;
+        return (LeftTuple) stagedNext;
     }
 
-    public void setStagedNext(LeftTuple stageNext) {
-        this.stagedNext = stageNext;
-    }
-
+    @Override
     public LeftTuple getStagedPrevious() {
-        return stagedPrevious;
+        return (LeftTuple) stagedPrevious;
     }
 
-    public void setStagePrevious(LeftTuple stagePrevious) {
-        this.stagedPrevious = stagePrevious;
-    }
-    
+    @Override
     public void clearStaged() {
-        stagedType = LeftTuple.NONE;
-        stagedNext = null;
-        stagedPrevious = null;
-        if (object == Boolean.TRUE) {
-            object = null;
+        super.clearStaged();
+        if (getContextObject() == Boolean.TRUE) {
+            setContextObject( null );
         }
     }
 
+    @Override
     public LeftTuple getPeer() {
         return peer;
     }
 
+    @Override
     public void setPeer(LeftTuple peer) {
         this.peer = peer;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getSubTuple(int)
-     */
+    @Override
     public LeftTuple getSubTuple(final int elements) {
         LeftTuple entry = this;
         if ( elements <= this.size() ) {
             final int lastindex = elements - 1;
 
-            while ( entry.getIndex() != lastindex || entry.getLastHandle() == null ) {
+            while ( entry.getIndex() != lastindex || entry.getFactHandle() == null ) {
                 entry = entry.getParent();
             }
         }
         return entry;
     }
 
-    public LeftTuple skipEmptyHandles() {
-        LeftTuple entry = this;
-        while ( entry != null && entry.getLastHandle() == null ) {
-            entry = entry.getParent();
-        }
-        return entry;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#toObjectArray()
-     */
+    @Override
     public Object[] toObjectArray() {
         Object[] objects = new Object[this.index + 1];
         LeftTuple entry = this;
         while ( entry != null ) {
-            if ( entry.getLastHandle() != null ) {
+            if ( entry.getFactHandle() != null ) {
                 // can be null for eval, not and exists that have no right input
-                Object object = entry.getLastHandle().getObject();
+                Object object = entry.getFactHandle().getObject();
                 objects[entry.getIndex()] = object;
             }
             entry = entry.getParent();
@@ -814,28 +629,12 @@ public class BaseLeftTuple
         return objects;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getParent()
-     */
+    @Override
     public LeftTuple getParent() {
         return parent;
     }
 
-    public LeftTuple getRootLeftTuple() {
-        if ( parent == null ) {
-            return this;
-        }
-
-        LeftTuple currentLt = parent;
-        while (currentLt.getParent() != null ) {
-            currentLt = currentLt.getParent();
-        }
-        return currentLt;
-    }
-    
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#toTupleTree(int)
-     */
+    @Override
     public String toTupleTree(int indent) {
         StringBuilder buf = new StringBuilder();
         char[] spaces = new char[indent];
@@ -856,7 +655,7 @@ public class BaseLeftTuple
         int[] ids = new int[this.index+1];
         LeftTuple entry = this;
         while( entry != null ) {
-            ids[entry.getIndex()] = entry.getLastHandle().getId();
+            ids[entry.getIndex()] = entry.getFactHandle().getId();
             entry = entry.getParent();
         }
         builder.append( Arrays.toString( ids ) )
@@ -866,41 +665,9 @@ public class BaseLeftTuple
         return  builder.toString();
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#increaseActivationCountForEvents()
-     */
-    public void increaseActivationCountForEvents() {
-        for ( LeftTuple entry = this; entry != null; entry = entry.getParent() ) {
-            if(entry.getLastHandle() != null &&  entry.getLastHandle().isEvent() ) {
-                // can be null for eval, not and exists that have no right input
-                ((EventFactHandle)entry.getLastHandle()).increaseActivationsCount();
-            }
-        }
-    }
-    
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#decreaseActivationCountForEvents()
-     */
-    public void decreaseActivationCountForEvents() {
-        for ( LeftTuple entry = this; entry != null; entry = entry.getParent() ) {
-            if( entry.getLastHandle() != null &&  entry.getLastHandle().isEvent() ) {
-                // can be null for eval, not and exists that have no right input
-                ((EventFactHandle)entry.getLastHandle()).decreaseActivationsCount();
-            }
-        }
-    }  
-    
-    public PropagationContext getPropagationContext() {
-        return propagationContext;
-    }
-
-    public void setPropagationContext(PropagationContext propagationContext) {
-        this.propagationContext = propagationContext;
-    }
-
+    @Override
     public void clear() {
-        this.previous = null;
-        this.next = null;
+        super.clear();
         this.memory = null;
     }   
     
@@ -908,11 +675,13 @@ public class BaseLeftTuple
         this.index = original.index;
         this.parent = original.parent;
         
-        this.handle = original.handle;
-        this.propagationContext = original.propagationContext;      
+        setFactHandle( original.getFactHandle() );
+        setPropagationContext( original.getPropagationContext() );
         this.sink = sink;
-
     }
 
-    
+    @Override
+    public Object getObject(int index) {
+        return get(index).getObject();
+    }
 }

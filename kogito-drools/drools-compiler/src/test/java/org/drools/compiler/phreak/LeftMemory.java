@@ -15,19 +15,17 @@
 
 package org.drools.compiler.phreak;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PhreakPropagationContext;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleMemory;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TupleMemory;
 
-import static org.junit.Assert.fail;
+import java.util.ArrayList;
+import java.util.List;
 
 public class LeftMemory {
 
@@ -41,7 +39,7 @@ public class LeftMemory {
     public List<LeftTuple> getLeftTuples(Object... objects) {
         BetaNode node = scenario.getBetaNode();
         BetaMemory bm = scenario.getBm();
-        LeftTupleMemory ltm = bm.getLeftTupleMemory();
+        TupleMemory ltm = bm.getLeftTupleMemory();
         InternalWorkingMemory wm = scenario.getWorkingMemory();
         
         if ( objects == null ) {

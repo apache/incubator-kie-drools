@@ -18,17 +18,13 @@ package org.drools.core.spi;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.ContextEntry;
 
 public interface AlphaNodeFieldConstraint
     extends
     Constraint {
     
-    ContextEntry createContextEntry();
+    boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory);
 
-    boolean isAllowed(InternalFactHandle handle,
-                             InternalWorkingMemory workingMemory,
-                             ContextEntry context);
     /**
      * Clone this constraints only if it is already used by a different node, otherwise returns this
      */

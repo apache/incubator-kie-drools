@@ -31,6 +31,7 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 
@@ -236,26 +237,26 @@ public class QueryRiaFixerNode extends LeftTupleSource
     }
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return this.betaNode.createLeftTuple( factHandle, this.betaNode, leftTupleMemoryEnabled  );
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final LeftTupleSink sink) {
+                                     final Sink sink) {
         return this.betaNode.createLeftTuple(factHandle,leftTuple, sink );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return this.betaNode.createLeftTuple( leftTuple, this.betaNode, pctx, leftTupleMemoryEnabled);
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     LeftTupleSink sink) {
+                                     Sink sink) {
         return this.betaNode.createLeftTuple( leftTuple, rightTuple, this.betaNode );
     }   
     
@@ -263,7 +264,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return this.betaNode.createLeftTuple( leftTuple, rightTuple, currentLeftChild, currentRightChild,  this.betaNode, leftTupleMemoryEnabled  );        
     }      
@@ -350,7 +351,7 @@ public class QueryRiaFixerNode extends LeftTupleSource
 
                 Object node = workingMemory.getNodeMemory(this.node);
 
-                RightTupleMemory rightMemory = null;
+                TupleMemory rightMemory = null;
                 if (node instanceof BetaMemory) {
                     rightMemory = ((BetaMemory) node).getRightTupleMemory();
                 } else if (node instanceof AccumulateMemory) {
@@ -363,8 +364,8 @@ public class QueryRiaFixerNode extends LeftTupleSource
                 contextEntry.updateFromTuple(workingMemory, leftTuple);
 
                 FastIterator rightIt = rightMemory.fastIterator();
-                for (RightTuple rightTuple = rightMemory.getFirst(leftTuple, (InternalFactHandle) context.getFactHandle(), rightIt); rightTuple != null; ) {
-                    RightTuple temp = (RightTuple) rightIt.next(rightTuple);
+                for (Tuple rightTuple = rightMemory.getFirst(leftTuple); rightTuple != null; ) {
+                    Tuple temp = (Tuple) rightIt.next(rightTuple);
 
                     if (constraint.isAllowedCachedLeft(contextEntry, rightTuple.getFactHandle())) {
                         rightMemory.remove(rightTuple);

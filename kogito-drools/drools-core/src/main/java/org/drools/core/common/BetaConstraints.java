@@ -18,10 +18,10 @@ package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 
 import java.io.Externalizable;
@@ -34,18 +34,18 @@ public interface BetaConstraints
     ContextEntry[] createContext();
 
     void updateFromTuple(ContextEntry[] context,
-                                InternalWorkingMemory workingMemory,
-                                LeftTuple tuple);
+                         InternalWorkingMemory workingMemory,
+                         Tuple tuple);
 
     void updateFromFactHandle(ContextEntry[] context,
                                      InternalWorkingMemory workingMemory,
                                      InternalFactHandle handle);
 
     boolean isAllowedCachedLeft(ContextEntry[] context,
-                                       InternalFactHandle handle);
+                                InternalFactHandle handle);
 
     boolean isAllowedCachedRight(ContextEntry[] context,
-                                        LeftTuple tuple);
+                                 Tuple tuple);
 
     BetaNodeFieldConstraint[] getConstraints();
 

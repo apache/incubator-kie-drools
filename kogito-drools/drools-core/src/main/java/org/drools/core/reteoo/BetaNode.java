@@ -27,11 +27,11 @@ import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.QuadroupleBetaConstraints;
 import org.drools.core.common.QuadroupleNonIndexSkipBetaConstraints;
-import org.drools.core.common.RightTupleSets;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.common.SingleNonIndexSkipBetaConstraints;
 import org.drools.core.common.TripleBetaConstraints;
 import org.drools.core.common.TripleNonIndexSkipBetaConstraints;
+import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
@@ -41,6 +41,7 @@ import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
@@ -280,9 +281,12 @@ public abstract class BetaNode extends LeftTupleSource
 
         RightTuple rightTuple = createRightTuple( factHandle, this, pctx );
 
+        if ( memory.getStagedRightTuples().isEmpty() ) {
+            memory.setNodeDirtyWithoutNotify();
+        }
         boolean stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert(rightTuple);
         if ( isLogTraceEnabled ) {
-            log.trace("BetaNode insert={} stagedInsertWasEmpty={}",  memory.getStagedRightTuples().insertSize(), stagedInsertWasEmpty );
+            log.trace("BetaNode stagedInsertWasEmpty={}", stagedInsertWasEmpty );
         }
         if ( memory.getAndIncCounter() == 0 ) {
             memory.linkNode(wm, !rightInputIsPassive);
@@ -298,17 +302,17 @@ public abstract class BetaNode extends LeftTupleSource
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
         while ( rightTuple != null &&
-                rightTuple.getRightTupleSink().getRightInputOtnId().before(getRightInputOtnId()) ) {
+                rightTuple.getTupleSink().getRightInputOtnId().before(getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple();
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
-            BetaMemory bm  = getBetaMemory( (BetaNode) rightTuple.getRightTupleSink(), wm );
-            (( BetaNode ) rightTuple.getRightTupleSink()).doDeleteRightTuple( rightTuple, wm, bm );
+            BetaMemory bm  = getBetaMemory( (BetaNode) rightTuple.getTupleSink(), wm );
+            (( BetaNode ) rightTuple.getTupleSink()).doDeleteRightTuple( rightTuple, wm, bm );
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
 
-        if ( rightTuple != null && rightTuple.getRightTupleSink().getRightInputOtnId().equals(getRightInputOtnId()) ) {
+        if ( rightTuple != null && rightTuple.getTupleSink().getRightInputOtnId().equals(getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple();
             rightTuple.reAdd();
             if ( context.getModificationMask().intersects(getRightInferredMask()) ) {
@@ -334,8 +338,11 @@ public abstract class BetaNode extends LeftTupleSource
     public void doDeleteRightTuple(final RightTuple rightTuple,
                                    final InternalWorkingMemory wm,
                                    final BetaMemory memory) {
-        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+        TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
 
+        if ( stagedRightTuples.isEmpty() ) {
+            memory.setNodeDirtyWithoutNotify();
+        }
         boolean stagedDeleteWasEmpty = stagedRightTuples.addDelete(rightTuple);
 
         if ( memory.getAndDecCounter() == 1 ) {
@@ -349,9 +356,11 @@ public abstract class BetaNode extends LeftTupleSource
     public void doUpdateRightTuple(final RightTuple rightTuple,
                                     final InternalWorkingMemory wm,
                                     final BetaMemory memory) {
-        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+        TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
 
-
+        if ( stagedRightTuples.isEmpty() ) {
+            memory.setNodeDirtyWithoutNotify();
+        }
         boolean stagedUpdateWasEmpty = stagedRightTuples.addUpdate( rightTuple );
 
         if ( stagedUpdateWasEmpty  ) {
@@ -371,7 +380,7 @@ public abstract class BetaNode extends LeftTupleSource
         return this.rightInput;
     }
 
-    public FastIterator getRightIterator(RightTupleMemory memory) {
+    public FastIterator getRightIterator(TupleMemory memory) {
         if ( !this.indexedUnificationJoin ) {
             return memory.fastIterator();
         } else {
@@ -379,7 +388,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public FastIterator getRightIterator(RightTupleMemory memory, RightTuple rightTuple) {
+    public FastIterator getRightIterator(TupleMemory memory, RightTuple rightTuple) {
         if ( !this.indexedUnificationJoin ) {
             return memory.fastIterator();
         } else {
@@ -387,7 +396,7 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public FastIterator getLeftIterator(LeftTupleMemory memory) {
+    public FastIterator getLeftIterator(TupleMemory memory) {
         if ( !this.indexedUnificationJoin ) {
             return memory.fastIterator();
         } else {
@@ -395,40 +404,40 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public RightTuple getFirstRightTuple(final LeftTuple leftTuple,
-                                         final RightTupleMemory memory,
+    public RightTuple getFirstRightTuple(final Tuple leftTuple,
+                                         final TupleMemory memory,
                                          final InternalFactHandle factHandle,
                                          final FastIterator it) {
         if ( !this.indexedUnificationJoin ) {
-            return memory.getFirst(leftTuple, factHandle, it);
+            return (RightTuple) memory.getFirst(leftTuple);
         } else {
             return (RightTuple) it.next( null );
         }
     }
 
     public LeftTuple getFirstLeftTuple(final RightTuple rightTuple,
-                                       final LeftTupleMemory memory,
+                                       final TupleMemory memory,
                                        final FastIterator it) {
         if ( !this.indexedUnificationJoin ) {
-            return memory.getFirst(rightTuple);
+            return (LeftTuple) memory.getFirst(rightTuple);
         } else {
             return (LeftTuple) it.next( null );
         }
     }
 
-    public static RightTuple getFirstRightTuple(final RightTupleMemory memory,
+    public static RightTuple getFirstRightTuple(final TupleMemory memory,
                                                 final FastIterator it) {
         if ( !memory.isIndexed() ) {
-            return memory.getFirst(null, null, it);
+            return (RightTuple) memory.getFirst(null);
         } else {
             return (RightTuple) it.next( null );
         }
     }
 
-    public static LeftTuple getFirstLeftTuple(final LeftTupleMemory memory,
+    public static LeftTuple getFirstLeftTuple(final TupleMemory memory,
                                               final FastIterator it) {
         if ( !memory.isIndexed() ) {
-            return memory.getFirst( null );
+            return (LeftTuple) memory.getFirst( null );
         } else {
             return (LeftTuple) it.next( null );
         }
@@ -655,7 +664,7 @@ public abstract class BetaNode extends LeftTupleSource
     public RightTuple createRightTuple(InternalFactHandle handle,
                                        RightTupleSink sink,
                                        PropagationContext context) {
-        RightTuple rightTuple = new RightTuple( handle, sink );
+        RightTuple rightTuple = new RightTupleImpl( handle, sink );
         rightTuple.setPropagationContext( context );
         return rightTuple;
     }

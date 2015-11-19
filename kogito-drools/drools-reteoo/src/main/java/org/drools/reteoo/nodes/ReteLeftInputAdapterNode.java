@@ -70,7 +70,7 @@ public class ReteLeftInputAdapterNode extends LeftInputAdapterNode {
     public void retractLeftTuple(LeftTuple leftTuple,
                                  PropagationContext context,
                                  InternalWorkingMemory workingMemory) {
-        leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple,
+        leftTuple.getTupleSink().retractLeftTuple( leftTuple,
                                                        context,
                                                        workingMemory );
 

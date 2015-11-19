@@ -144,7 +144,7 @@ public class From extends ConditionalElement
         }
 
         @Override
-        public Iterator getResults(final LeftTuple tuple,
+        public Iterator getResults(final Tuple tuple,
                                    final InternalWorkingMemory wm,
                                    final PropagationContext ctx,
                                    final Object providerContext) {

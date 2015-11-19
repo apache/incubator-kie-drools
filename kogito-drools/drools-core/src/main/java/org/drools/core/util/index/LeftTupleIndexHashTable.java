@@ -1,9 +1,8 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -12,13 +11,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package org.drools.core.util.index;
 
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleMemory;
-import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.TupleMemory;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
@@ -29,9 +28,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class LeftTupleIndexHashTable extends AbstractHashTable
-    implements
-    LeftTupleMemory {
+public class LeftTupleIndexHashTable extends AbstractHashTable implements TupleMemory {
 
     private static final long                         serialVersionUID = 510l;
 
@@ -40,7 +37,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
     private int                                       startResult;
 
     private transient FieldIndexHashTableFullIterator tupleValueFullIterator;
-    
+
     private transient FullFastIterator                fullFastIterator;
 
     private int                                       factSize;
@@ -51,15 +48,15 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         // constructor for serialisation
     }
 
-    public LeftTupleIndexHashTable(final FieldIndex[] index) {
+    public LeftTupleIndexHashTable( final FieldIndex[] index ) {
         this( 128,
               0.75f,
               index );
     }
 
-    public LeftTupleIndexHashTable(final int capacity,
-                                   final float loadFactor,
-                                   final FieldIndex[] index) {
+    public LeftTupleIndexHashTable( final int capacity,
+                                    final float loadFactor,
+                                    final FieldIndex[] index ) {
         super( capacity,
                loadFactor );
 
@@ -109,7 +106,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         this.factSize = factSize;
     }    
 
-    public Iterator<LeftTuple> iterator() {
+    public Iterator<Tuple> iterator() {
         if ( this.tupleValueFullIterator == null ) {
             this.tupleValueFullIterator = new FieldIndexHashTableFullIterator( this );
         } else {
@@ -131,7 +128,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         return fullFastIterator;
     }
 
-    public FastIterator fullFastIterator(LeftTuple leftTuple) {
+    public FastIterator fullFastIterator(Tuple leftTuple) {
         fullFastIterator.resume(leftTuple.getMemory(), this.table);
         return fullFastIterator;
     }
@@ -158,10 +155,10 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         }
 
         public Entry next(Entry object) {
-            LeftTuple leftTuple = ( LeftTuple ) object;
-            LeftTupleList list = null;
-            if ( leftTuple != null ) {
-                list = leftTuple.getMemory(); // assumes you do not pass in a null RightTuple
+            Tuple tuple = ( Tuple ) object;
+            TupleList list = null;
+            if ( tuple != null ) {
+                list = tuple.getMemory(); // assumes you do not pass in a null RightTuple
             }
 
             int length = table.length;
@@ -171,7 +168,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
                 while ( list == null ) {
                     if ( this.row < length ) {
                         // iterate while there is no current bucket, trying each array position
-                        list = (LeftTupleList) this.table[this.row];
+                        list = (TupleList) this.table[this.row];
                         this.row++;
                     } else {
                         // we've scanned the whole table and nothing is left, so return null
@@ -180,22 +177,22 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
                     
                     if ( list != null ) {
                         // we have a bucket so assign the frist LeftTuple and return
-                        leftTuple = list.getFirst( );
-                        return leftTuple;
+                        tuple = list.getFirst( );
+                        return tuple;
                     }                    
                 }
 
-                leftTuple = (LeftTuple) leftTuple.getNext();
-                if ( leftTuple != null ) {
+                tuple = (Tuple) tuple.getNext();
+                if ( tuple != null ) {
                     // we have a next tuple so return
-                    return leftTuple;
+                    return tuple;
                 } else {
-                    list = (LeftTupleList) list.getNext();
+                    list = (TupleList) list.getNext();
                     // try the next bucket if we have a shared array position
                     if ( list != null ) {
                         // if we have another bucket, assign the first LeftTuple and return
-                        leftTuple = list.getFirst( );
-                        return leftTuple;
+                        tuple = list.getFirst( );
+                        return tuple;
                     }
                 }
             }
@@ -213,17 +210,8 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
 
     }
 
-    public LeftTuple getFirst(final RightTuple rightTuple) {
-        LeftTupleList bucket = get( rightTuple );
-        if ( bucket != null ) {
-            return bucket.getFirst( );
-        } else {
-            return null;
-        }
-    }
-
-    public LeftTuple getFirst(final LeftTuple leftTuple) {
-        final LeftTupleList bucket = get( leftTuple );
+    public Tuple getFirst(final Tuple rightTuple) {
+        TupleList bucket = get( rightTuple );
         if ( bucket != null ) {
             return bucket.getFirst( );
         } else {
@@ -255,29 +243,26 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
 
     public static class FieldIndexHashTableFullIterator
         implements
-        Iterator<LeftTuple> {
+        Iterator<Tuple> {
         private final AbstractHashTable hashTable;
         private Entry[]                 table;
         private int                     row;
         private int                     length;
-        private LeftTupleList           list;
-        private LeftTuple               leftTuple;
+        private TupleList               list;
+        private Tuple                   tuple;
 
         public FieldIndexHashTableFullIterator(final AbstractHashTable hashTable) {
             this.hashTable = hashTable;
             reset();
         }
 
-        /* (non-Javadoc)
-         * @see org.kie.util.Iterator#next()
-         */
-        public LeftTuple next() {
+        public Tuple next() {
             while ( this.row <= this.length ) {
                 // check if there is a current bucket
                 while ( this.list == null ) {
                     if ( this.row < length ) {
                         // iterate while there is no current bucket, trying each array position
-                        this.list = (LeftTupleList) this.table[this.row];
+                        this.list = (TupleList) this.table[this.row];
                         this.row++;
                     } else {
                         // we've scanned the whole table and nothing is left, so return null
@@ -286,22 +271,22 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
                     
                     if ( this.list != null ) {
                         // we have a bucket so assign the first LeftTuple and return
-                        this.leftTuple = this.list.getFirst( );
-                        return this.leftTuple;
+                        this.tuple = this.list.getFirst( );
+                        return this.tuple;
                     }                    
                 }
 
-                this.leftTuple = (LeftTuple) this.leftTuple.getNext();
-                if ( this.leftTuple != null ) {
+                this.tuple = (Tuple) this.tuple.getNext();
+                if ( this.tuple != null ) {
                     // we have a next tuple so return
-                    return this.leftTuple;
+                    return this.tuple;
                 } else {
-                    this.list = (LeftTupleList) this.list.getNext();
+                    this.list = (TupleList) this.list.getNext();
                     // try the next bucket if we have a shared array position
                     if ( this.list != null ) {
                         // if we have another bucket, assign the first LeftTuple and return
-                        this.leftTuple = this.list.getFirst( );
-                        return this.leftTuple;
+                        this.tuple = this.list.getFirst( );
+                        return this.tuple;
                     }
                 }
             }
@@ -320,35 +305,35 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
             this.length = this.table.length;
             this.row = 0;
             this.list = null;
-            this.leftTuple = null;
+            this.tuple = null;
         }
     }
 
-    public LeftTuple[] toArray() {
-        LeftTuple[] result = new LeftTuple[this.factSize];
+    public Tuple[] toArray() {
+        Tuple[] result = new Tuple[this.factSize];
         int index = 0;
         for (Entry aTable : this.table) {
-            LeftTupleList bucket = (LeftTupleList) aTable;
+            TupleList bucket = (TupleList) aTable;
             while (bucket != null) {
-                LeftTuple entry = bucket.getFirst();
+                Tuple entry = bucket.getFirst();
                 while (entry != null) {
                     result[index++] = entry;
-                    entry = (LeftTuple) entry.getNext();
+                    entry = (Tuple) entry.getNext();
                 }
-                bucket = (LeftTupleList) bucket.getNext();
+                bucket = (TupleList) bucket.getNext();
             }
         }
         return result;
     }
     
-    public void removeAdd(LeftTuple leftTuple) {
-        LeftTupleList memory = leftTuple.getMemory();
-        memory.remove( leftTuple );
+    public void removeAdd(Tuple tuple) {
+        TupleList memory = tuple.getMemory();
+        memory.remove( tuple );
         
-        final int newHashCode = this.index.hashCodeOf( leftTuple );
+        final int newHashCode = this.index.hashCodeOf( tuple );
         if ( newHashCode == memory.hashCode() ) {
             // it's the same bucket, so re-use and return
-            memory.add( leftTuple );
+            memory.add( tuple );
             return;
         }
            
@@ -357,11 +342,11 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         if ( memory.first == null ) {
             final int index = indexOf( memory.hashCode(),
                                        this.table.length );
-            LeftTupleList previous = null;
-            LeftTupleList current = (LeftTupleList) this.table[index];
+            TupleList previous = null;
+            TupleList current = (TupleList) this.table[index];
             while ( current != memory ) {
                 previous = current;
-                current = (LeftTupleList) current.getNext();
+                current = (TupleList) current.getNext();
             }
 
             if ( previous != null ) {
@@ -372,27 +357,27 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
             this.size--;
         }
 
-        add( leftTuple );
+        add( tuple );
     }    
 
-    public void add(final LeftTuple tuple) {
-        final LeftTupleList entry = getOrCreate( tuple );
+    public void add(final Tuple tuple) {
+        final TupleList entry = getOrCreate( tuple );
         entry.add( tuple );
         this.factSize++;
     }
 
-    public void remove(final LeftTuple leftTuple) {
-        LeftTupleList memory = leftTuple.getMemory();
-        memory.remove( leftTuple );
+    public void remove(final Tuple tuple) {
+        TupleList memory = tuple.getMemory();
+        memory.remove( tuple );
         this.factSize--;
         if ( memory.first == null ) {
             final int index = indexOf( memory.hashCode(),
                                        this.table.length );
-            LeftTupleList previous = null;
-            LeftTupleList current = (LeftTupleList) this.table[index];
+            TupleList previous = null;
+            TupleList current = (TupleList) this.table[index];
             while ( current != memory ) {
                 previous = current;
-                current = (LeftTupleList) current.getNext();
+                current = (TupleList) current.getNext();
             }
 
             if ( previous != null ) {
@@ -402,40 +387,38 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
             }
             this.size--;
         }
-        leftTuple.clear();
+        tuple.clear();
     }
 
-    public boolean contains(final LeftTuple tuple) {
+    public boolean contains(final Tuple tuple) {
         final int hashCode = this.index.hashCodeOf( tuple );
 
         final int index = indexOf( hashCode,
                                    this.table.length );
 
-        LeftTupleList current = (LeftTupleList) this.table[index];
+        TupleList current = (TupleList) this.table[index];
         while ( current != null ) {
-            if ( current.matches( tuple,
-                                  hashCode ) ) {
+            if ( current.matches( tuple, hashCode, true ) ) {
                 return true;
             }
-            current = (LeftTupleList) current.next;
+            current = (TupleList) current.next;
         }
         return false;
     }
 
-    public LeftTupleList get(final RightTuple rightTuple) {
+    public TupleList get(final Tuple rightTuple) {
         final Object object = rightTuple.getFactHandle().getObject();
         final int hashCode = this.index.hashCodeOf( object );
 
         final int index = indexOf( hashCode,
                                    this.table.length );
-        LeftTupleList entry = (LeftTupleList) this.table[index];
+        TupleList entry = (TupleList) this.table[index];
 
         while ( entry != null ) {
-            if ( entry.matches( object,
-                                hashCode ) ) {
+            if ( entry.matches( object, hashCode, true ) ) {
                 return entry;
             }
-            entry = (LeftTupleList) entry.getNext();
+            entry = (TupleList) entry.getNext();
         }
 
         return null;
@@ -445,25 +428,23 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
      * We use this method to aviod to table lookups for the same hashcode; which is what we would have to do if we did
      * a get and then a create if the value is null.
      */
-    private LeftTupleList getOrCreate(final LeftTuple tuple) {
+    private TupleList getOrCreate(final Tuple tuple) {
         final int hashCode = this.index.hashCodeOf( tuple );
 
         final int index = indexOf( hashCode,
                                    this.table.length );
-        LeftTupleList entry = (LeftTupleList) this.table[index];
+        TupleList entry = (TupleList) this.table[index];
 
         // search to find an existing entry
         while ( entry != null ) {
-            if ( entry.matches( tuple,
-                                hashCode ) ) {
+            if ( entry.matches( tuple, hashCode, false ) ) {
                 return entry;
             }
-            entry = (LeftTupleList) entry.next;
+            entry = (TupleList) entry.next;
         }
 
         // entry does not exist, so create
-        entry = new LeftTupleList( this.index,
-                                   hashCode );
+        entry = new TupleList( this.index, hashCode );
         entry.next = this.table[index];
         this.table[index] = entry;
 
@@ -473,24 +454,6 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         return entry;
     }
 
-    private LeftTupleList get(final LeftTuple tuple) {
-        final int hashCode = this.index.hashCodeOf( tuple );
-
-        final int index = indexOf( hashCode,
-                                   this.table.length );
-        LeftTupleList entry = (LeftTupleList) this.table[index];
-
-        // search to find an existing entry
-        while ( entry != null ) {
-            if ( entry.matches( tuple,
-                                hashCode ) ) {
-                return entry;
-            }
-            entry = (LeftTupleList) entry.next;
-        }
-        return null;
-    }
-
     public int size() {
         return this.factSize;
     }
@@ -498,7 +461,7 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
     public String toString() {
         StringBuilder builder = new StringBuilder();
         Iterator it = iterator();
-        for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
+        for ( Tuple leftTuple = (Tuple) it.next(); leftTuple != null; leftTuple = (Tuple) it.next() ) {
             builder.append(leftTuple).append("\n");
         }
 
@@ -511,5 +474,9 @@ public class LeftTupleIndexHashTable extends AbstractHashTable
         this.factSize = 0;
         this.fullFastIterator = null;
         this.tupleValueFullIterator = null;
+    }
+
+    public TupleMemory.IndexType getIndexType() {
+        return TupleMemory.IndexType.EQUAL;
     }
 }

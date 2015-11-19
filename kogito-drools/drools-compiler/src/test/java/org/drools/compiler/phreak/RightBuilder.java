@@ -18,15 +18,16 @@ package org.drools.compiler.phreak;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PhreakPropagationContext;
-import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.RightTupleSink;
 import org.drools.core.reteoo.SegmentMemory;
 
 public class RightBuilder {
     private InternalWorkingMemory      wm;
     private RightTupleSink             sink;
-    private RightTupleSets rightTuples;
+    private TupleSets<RightTuple>      rightTuples;
     private Scenario                   scenario;
 
     public RightBuilder(Scenario scenario) {
@@ -39,7 +40,7 @@ public class RightBuilder {
     public RightBuilder insert(Object... objects) {
         for (Object object : objects) {
             InternalFactHandle fh = (InternalFactHandle) wm.insert(object);
-            RightTuple rightTuple = new RightTuple( fh, sink );
+            RightTuple rightTuple = new RightTupleImpl( fh, sink );
             rightTuple.setPropagationContext( new PhreakPropagationContext() );
             rightTuples.addInsert( rightTuple );
         }
@@ -66,7 +67,7 @@ public class RightBuilder {
         return this;
     }
 
-    RightTupleSets get() {
+    TupleSets<RightTuple> get() {
         return this.rightTuples;
     }
 

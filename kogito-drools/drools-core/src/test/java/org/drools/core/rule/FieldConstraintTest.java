@@ -27,7 +27,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.LeftTupleImpl;
-import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.rule.PredicateConstraint.PredicateContextEntry;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.InternalReadAccessor;
@@ -85,8 +85,6 @@ public class FieldConstraintTest {
                                                                       FieldFactory.getInstance().getFieldValue( "cheddar" ),
                                                                       extractor );
 
-        final ContextEntry context = constraint.createContextEntry();
-
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
 
@@ -94,8 +92,7 @@ public class FieldConstraintTest {
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle,
-                                          ksession,
-                                          context ) );
+                                          ksession ) );
 
         final Cheese stilton = new Cheese( "stilton",
                                            5 );
@@ -104,8 +101,7 @@ public class FieldConstraintTest {
 
         // check constraint
         assertFalse( constraint.isAllowed( stiltonHandle,
-                                           ksession,
-                                           context ) );
+                                           ksession ) );
     }
 
     /**
@@ -130,8 +126,6 @@ public class FieldConstraintTest {
         final MvelConstraint constraint = new MvelConstraintTestUtil( "price == 5",
                                                                       FieldFactory.getInstance().getFieldValue( 5 ),
                                                                       extractor );
-        final ContextEntry context = constraint.createContextEntry();
-
         final Cheese cheddar = new Cheese( "cheddar",
                                            5 );
 
@@ -139,8 +133,7 @@ public class FieldConstraintTest {
 
         // check constraint
         assertTrue( constraint.isAllowed( cheddarHandle,
-                                          ksession,
-                                          context ) );
+                                          ksession ) );
 
         final Cheese stilton = new Cheese( "stilton",
                                            10 );
@@ -149,8 +142,7 @@ public class FieldConstraintTest {
 
         // check constraint
         assertFalse(constraint.isAllowed(stiltonHandle,
-                                         ksession,
-                context));
+                                         ksession));
     }
 
     /**
@@ -202,7 +194,7 @@ public class FieldConstraintTest {
                                     WorkingMemory workingMemory,
                                     Object context) {
                 int price1 = previousDeclarations[0].getIntValue( (InternalWorkingMemory) workingMemory,
-                                                                  workingMemory.getObject( tuple.get( previousDeclarations[0] ) ) );
+                                                                  tuple.getObject( previousDeclarations[0] ) );
                 int price2 = localDeclarations[0].getIntValue( (InternalWorkingMemory) workingMemory,
                                                                handle.getObject() );
 
@@ -240,8 +232,7 @@ public class FieldConstraintTest {
         final InternalFactHandle f1 = (InternalFactHandle) ksession.insert( cheddar1 );
 
         tuple = new LeftTupleImpl( tuple,
-                               new RightTuple( f1,
-                                               null ),
+                               new RightTupleImpl( f1, null ),
                                null,
                                true );
 

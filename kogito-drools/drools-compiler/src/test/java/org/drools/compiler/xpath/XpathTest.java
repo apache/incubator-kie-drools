@@ -21,9 +21,9 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleMemory;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReactiveFromNode;
+import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.Iterator;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -437,11 +437,11 @@ public class XpathTest {
         assertTrue( list.contains( "ball" ) );
         assertTrue( list.contains( "doll" ) );
 
-        LeftTupleMemory tupleMemory = betaMemory.getLeftTupleMemory();
+        TupleMemory tupleMemory = betaMemory.getLeftTupleMemory();
         assertEquals( 2, betaMemory.getLeftTupleMemory().size() );
         Iterator<LeftTuple> it = tupleMemory.iterator();
         for ( LeftTuple next = it.next(); next != null; next = it.next() ) {
-            Object obj = next.getHandle().getObject();
+            Object obj = next.getFactHandle().getObject();
             assertTrue( obj == charlie || obj == debbie );
         }
 
@@ -454,7 +454,7 @@ public class XpathTest {
         assertEquals( 1, betaMemory.getLeftTupleMemory().size() );
         it = tupleMemory.iterator();
         for ( LeftTuple next = it.next(); next != null; next = it.next() ) {
-            Object obj = next.getHandle().getObject();
+            Object obj = next.getFactHandle().getObject();
             assertTrue( obj == charlie );
         }
     }

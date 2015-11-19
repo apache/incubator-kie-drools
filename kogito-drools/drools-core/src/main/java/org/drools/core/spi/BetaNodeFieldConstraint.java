@@ -17,7 +17,6 @@
 package org.drools.core.spi;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 
 public interface BetaNodeFieldConstraint
@@ -27,7 +26,7 @@ public interface BetaNodeFieldConstraint
     boolean isAllowedCachedLeft(ContextEntry context,
                                 InternalFactHandle handle);
 
-    boolean isAllowedCachedRight(LeftTuple tuple,
+    boolean isAllowedCachedRight(Tuple tuple,
                                  ContextEntry context);
 
     ContextEntry createContextEntry();

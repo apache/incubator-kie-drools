@@ -16,13 +16,12 @@
 
 package org.drools.core.spi;
 
-import java.io.Externalizable;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
+
+import java.io.Externalizable;
 
 public interface Restriction
     extends
@@ -38,7 +37,7 @@ public interface Restriction
     public boolean isAllowedCachedLeft(ContextEntry context,
                                        InternalFactHandle handle);
 
-    public boolean isAllowedCachedRight(LeftTuple tuple,
+    public boolean isAllowedCachedRight(Tuple tuple,
                                         ContextEntry context);
 
     public ContextEntry createContextEntry();

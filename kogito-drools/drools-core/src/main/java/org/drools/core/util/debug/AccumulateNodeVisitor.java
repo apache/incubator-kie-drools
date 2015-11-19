@@ -52,7 +52,7 @@ public class AccumulateNodeVisitor extends AbstractNetworkNodeVisitor {
             
             int i = 0;
             for ( LeftTuple leftTuple = BetaNode.getFirstLeftTuple( memory.getBetaMemory().getLeftTupleMemory(), it ); leftTuple != null; leftTuple = ( LeftTuple) it.next( leftTuple  )) {
-                AccumulateContext ctx = (AccumulateContext) leftTuple.getObject();
+                AccumulateContext ctx = (AccumulateContext) leftTuple.getContextObject();
                 if ( ctx != null && ctx.result != null ) {
                     i++;
                 }

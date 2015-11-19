@@ -16,15 +16,16 @@
 
 package org.drools.core.common;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.Tuple;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 
 /**
  * InstanceEqualsConstraint
@@ -86,9 +87,9 @@ public class InstanceEqualsConstraint
         return ((InstanceEqualsConstraintContextEntry) context).left == handle.getObject();
     }
 
-    public boolean isAllowedCachedRight(final LeftTuple tuple,
+    public boolean isAllowedCachedRight(final Tuple tuple,
                                         final ContextEntry context) {
-        return tuple.get( this.otherPattern.getOffset() ).getObject() == ((InstanceEqualsConstraintContextEntry) context).right;
+        return tuple.getObject( this.otherPattern.getOffset() ) == ((InstanceEqualsConstraintContextEntry) context).right;
     }
 
     public String toString() {
@@ -159,8 +160,8 @@ public class InstanceEqualsConstraint
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final LeftTuple tuple) {
-            this.left = tuple.get( this.pattern.getOffset() ).getObject();
+                                    final Tuple tuple) {
+            this.left = tuple.getObject( this.pattern.getOffset() );
         }
 
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,

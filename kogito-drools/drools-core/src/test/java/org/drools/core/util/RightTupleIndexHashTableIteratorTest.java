@@ -30,6 +30,7 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MvelConstraintTestUtil;
 import org.drools.core.rule.Pattern;
@@ -37,7 +38,7 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.util.index.RightTupleIndexHashTable;
 import org.drools.core.util.index.RightTupleIndexHashTable.FieldIndexHashTableFullIterator;
-import org.drools.core.util.index.RightTupleList;
+import org.drools.core.util.index.TupleList;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
@@ -88,26 +89,26 @@ public class RightTupleIndexHashTableIteratorTest {
         InternalFactHandle fh12 = (InternalFactHandle) ss.insert( new Foo( "snicker", 0) );
         InternalFactHandle fh13 = (InternalFactHandle) ss.insert( new Foo( "snicker", 0) );
         
-        betaMemory.getRightTupleMemory().add( new RightTuple( fh1, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTuple( fh2, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTuple( fh3, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTuple( fh4, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTuple( fh5, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTuple( fh6, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTuple( fh7, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTuple( fh8, null ) );
-        betaMemory.getRightTupleMemory().add( new RightTuple( fh9, null ) );
+        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh1, null ) );
+        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh2, null ) );
+        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh3, null ) );
+        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh4, null ) );
+        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh5, null ) );
+        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh6, null ) );
+        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh7, null ) );
+        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh8, null ) );
+        betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh9, null ) );
         
         RightTupleIndexHashTable hashTable = (RightTupleIndexHashTable) betaMemory.getRightTupleMemory();
         // can't create a 0 hashCode, so forcing 
-        RightTupleList rightTupleList = new RightTupleList();
-        rightTupleList.add( new RightTuple( fh10, null) );
+        TupleList rightTupleList = new TupleList();
+        rightTupleList.add( new RightTupleImpl( fh10, null) );
         hashTable.getTable()[0] = rightTupleList;
-        rightTupleList = new RightTupleList();
-        rightTupleList.add( new RightTuple( fh11, null ) );
-        rightTupleList.add( new RightTuple( fh12, null ) );
-        rightTupleList.add( new RightTuple( fh13, null ) );
-        ((RightTupleList)hashTable.getTable()[0]).setNext( rightTupleList );
+        rightTupleList = new TupleList();
+        rightTupleList.add( new RightTupleImpl( fh11, null ) );
+        rightTupleList.add( new RightTupleImpl( fh12, null ) );
+        rightTupleList.add( new RightTupleImpl( fh13, null ) );
+        ((TupleList)hashTable.getTable()[0]).setNext( rightTupleList );
         
         Entry[] table = hashTable.getTable();
         List list = new ArrayList();
@@ -164,21 +165,21 @@ public class RightTupleIndexHashTableIteratorTest {
         // setup the entry array with an element in the first bucket, one 
         // in the middle and one in the last bucket
         Entry[] entries = new Entry[10];
-        entries[0] = mock( RightTupleList.class );
-        entries[5] = mock( RightTupleList.class );
-        entries[9] = mock( RightTupleList.class );
+        entries[0] = mock( TupleList.class );
+        entries[5] = mock( TupleList.class );
+        entries[9] = mock( TupleList.class );
 
         RightTuple[] tuples = new RightTuple[]{mock( RightTuple.class ), mock( RightTuple.class ), mock( RightTuple.class )};
 
         // set return values for methods
         when( entries[0].getNext() ).thenReturn( null );
-        when( ((RightTupleList) entries[0]).getFirst() ).thenReturn( tuples[0] );
+        when( ((TupleList) entries[0]).getFirst() ).thenReturn( tuples[0] );
         
         when( entries[5].getNext() ).thenReturn( null );
-        when( ((RightTupleList) entries[5]).getFirst(  ) ).thenReturn( tuples[1] );
+        when( ((TupleList) entries[5]).getFirst(  ) ).thenReturn( tuples[1] );
 
         when( entries[9].getNext() ).thenReturn( null );
-        when( ((RightTupleList) entries[9]).getFirst( ) ).thenReturn( tuples[2] );
+        when( ((TupleList) entries[9]).getFirst( ) ).thenReturn( tuples[2] );
 
         // create the mock table for the iterator
         AbstractHashTable table = mock( AbstractHashTable.class );

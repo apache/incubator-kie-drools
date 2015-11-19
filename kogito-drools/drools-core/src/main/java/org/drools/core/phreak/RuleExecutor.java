@@ -23,13 +23,13 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.conflict.PhreakConflictResolver;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.BinaryHeapQueue;
-import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.util.index.TupleList;
 import org.kie.api.event.rule.MatchCancelledCause;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.slf4j.Logger;
@@ -43,7 +43,7 @@ public class RuleExecutor {
     private static final RuleNetworkEvaluator NETWORK_EVALUATOR = new RuleNetworkEvaluator();
     private final PathMemory                  pmem;
     private final RuleAgendaItem              ruleAgendaItem;
-    private final LeftTupleList               tupleList;
+    private final TupleList                   tupleList;
     private BinaryHeapQueue                   queue;
     private volatile boolean                  dirty;
     private final boolean                     declarativeAgendaEnabled;
@@ -54,7 +54,7 @@ public class RuleExecutor {
             boolean declarativeAgendaEnabled) {
         this.pmem = pmem;
         this.ruleAgendaItem = ruleAgendaItem;
-        this.tupleList = new LeftTupleList();
+        this.tupleList = new TupleList();
         this.declarativeAgendaEnabled = declarativeAgendaEnabled;
         if (ruleAgendaItem.getRule().getSalience().isDynamic()) {
             queue = new BinaryHeapQueue(SalienceComparator.INSTANCE);
@@ -97,22 +97,22 @@ public class RuleExecutor {
 
             RuleTerminalNode rtn = (RuleTerminalNode) pmem.getNetworkNode();
             RuleImpl rule = rtn.getRule();
-            LeftTuple leftTuple = getNextLeftTuple();
+            Tuple tuple = getNextTuple();
             
             if (rule.isAllMatches()) {
-                agenda.fireConsequenceEvent((AgendaItem) leftTuple, DefaultAgenda.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
+                agenda.fireConsequenceEvent((AgendaItem) tuple, DefaultAgenda.ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME);
             }
 
-            LeftTuple lastLeftTuple = null;
-            for (; leftTuple != null; lastLeftTuple = leftTuple, leftTuple = getNextLeftTuple()) {
+            Tuple lastTuple = null;
+            for (; tuple != null; lastTuple = tuple, tuple = getNextTuple()) {
 
                 //check if the rule is not effective or
                 // if the current Rule is no-loop and the origin rule is the same then return
-                if (cancelAndContinue(wm, rtn, rule, leftTuple, filter)) {
+                if (cancelAndContinue(wm, rtn, rule, tuple, filter)) {
                     continue;
                 }
 
-                AgendaItem item = (AgendaItem) leftTuple;
+                AgendaItem item = (AgendaItem) tuple;
                 if (agenda.getActivationsFilter() != null && !agenda.getActivationsFilter().accept(item, wm, rtn)) {
                     // only relevant for seralization, to not refire Matches already fired
                     continue;
@@ -145,7 +145,7 @@ public class RuleExecutor {
             }
 
             if (rule.isAllMatches()) {
-                agenda.fireConsequenceEvent((AgendaItem) lastLeftTuple, DefaultAgenda.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
+                agenda.fireConsequenceEvent((AgendaItem) lastTuple, DefaultAgenda.ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME);
             }
         }
 
@@ -155,13 +155,13 @@ public class RuleExecutor {
         return localFireCount;
     }
 
-    private LeftTuple getNextLeftTuple() {
+    private Tuple getNextTuple() {
         if (tupleList.isEmpty()) {
             return null;
         }
-        LeftTuple leftTuple;
+        Tuple leftTuple;
         if (queue != null) {
-            leftTuple = (LeftTuple) queue.dequeue();
+            leftTuple = (Tuple) queue.dequeue();
             tupleList.remove(leftTuple);
         } else {
             leftTuple = tupleList.removeFirst();
@@ -202,7 +202,7 @@ public class RuleExecutor {
     private boolean cancelAndContinue(InternalWorkingMemory wm,
             RuleTerminalNode rtn,
             RuleImpl rule,
-            LeftTuple leftTuple,
+            Tuple leftTuple,
             AgendaFilter filter) {
         // NB. stopped setting the LT.object to Boolean.TRUE, that Reteoo did.
         if ( !rule.isEffective(leftTuple, rtn, wm) ) {
@@ -240,35 +240,35 @@ public class RuleExecutor {
         return PhreakConflictResolver.doCompare(ruleAgendaItem,nextRule) >= 0;
     }
 
-    public LeftTupleList getLeftTupleList() {
+    public TupleList getLeftTupleList() {
         return tupleList;
     }
 
-    public void addLeftTuple(LeftTuple leftTuple) {
-        ((AgendaItem) leftTuple).setQueued(true);
-        this.tupleList.add(leftTuple);
+    public void addLeftTuple(Tuple tuple) {
+        ((AgendaItem) tuple).setQueued(true);
+        this.tupleList.add(tuple);
         if (queue != null) {
-            addQueuedLeftTuple(leftTuple);
+            addQueuedLeftTuple(tuple);
         }
     }
 
-    public void addQueuedLeftTuple(LeftTuple leftTuple) {
+    public void addQueuedLeftTuple(Tuple tuple) {
         int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
-        queue.enqueue((Activation) leftTuple);
+        queue.enqueue((Activation) tuple);
         updateSalience(currentSalience);
     }
 
-    public void removeLeftTuple(LeftTuple leftTuple) {
-        ((AgendaItem) leftTuple).setQueued(false);
-        this.tupleList.remove(leftTuple);
+    public void removeLeftTuple(Tuple tuple) {
+        ((AgendaItem) tuple).setQueued(false);
+        this.tupleList.remove(tuple);
         if (queue != null) {
-            removeQueuedLeftTuple(leftTuple);
+            removeQueuedLeftTuple(tuple);
         }
     }
 
-    private void removeQueuedLeftTuple(LeftTuple leftTuple) {
+    private void removeQueuedLeftTuple(Tuple tuple) {
         int currentSalience = queue.isEmpty() ? 0 : queue.peek().getSalience();
-        queue.dequeue(((Activation) leftTuple));
+        queue.dequeue(((Activation) tuple));
         updateSalience(currentSalience);
     }
 

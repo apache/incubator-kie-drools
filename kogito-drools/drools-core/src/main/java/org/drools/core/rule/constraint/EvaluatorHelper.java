@@ -18,8 +18,8 @@ package org.drools.core.rule.constraint;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
+import org.drools.core.spi.Tuple;
 import org.mvel2.util.Soundex;
 
 import java.util.Collection;
@@ -30,24 +30,24 @@ public class EvaluatorHelper {
 
     private EvaluatorHelper() { }
 
-    public static Map<String, Object> valuesAsMap(Object object, InternalWorkingMemory workingMemory, LeftTuple leftTuple, Declaration[] declarations) {
+    public static Map<String, Object> valuesAsMap(Object object, InternalWorkingMemory workingMemory, Tuple tuple, Declaration[] declarations) {
         if (declarations.length == 0) {
             return null;
         }
         Map<String, Object> map = new HashMap<String, Object>();
         for (Declaration declaration : declarations) {
-            if (leftTuple == null) {
+            if (tuple == null) {
                 map.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, object));
             } else {
-                InternalFactHandle fact = leftTuple.get(declaration);
-                map.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, fact != null ? fact.getObject() : object));
+                Object fact = tuple.getObject(declaration);
+                map.put(declaration.getBindingName(), declaration.getExtractor().getValue(workingMemory, fact != null ? fact : object));
             }
         }
         return map;
     }
 
-    public static void initOperators(InternalFactHandle handle, InternalWorkingMemory workingMemory, LeftTuple leftTuple, EvaluatorWrapper[] operators) {
-        InternalFactHandle[] handles = leftTuple != null ? leftTuple.toFactHandles() : new InternalFactHandle[0];
+    public static void initOperators(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple, EvaluatorWrapper[] operators) {
+        InternalFactHandle[] handles = tuple != null ? tuple.toFactHandles() : new InternalFactHandle[0];
         for (EvaluatorWrapper operator : operators) {
             operator.loadHandles(workingMemory, handles, handle);
         }

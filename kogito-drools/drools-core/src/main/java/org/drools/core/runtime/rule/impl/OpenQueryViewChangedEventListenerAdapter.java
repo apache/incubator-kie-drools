@@ -41,7 +41,7 @@ public class OpenQueryViewChangedEventListenerAdapter
                          final InternalWorkingMemory workingMemory) {
         RowAdapter rowAdapter = new RowAdapter(rule,
                                                leftTuple);
-        leftTuple.setObject( rowAdapter );
+        leftTuple.setContextObject( rowAdapter );
         this.viewEventListener.rowInserted( rowAdapter );
     }
 
@@ -49,7 +49,7 @@ public class OpenQueryViewChangedEventListenerAdapter
                            final LeftTuple leftTuple,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        RowAdapter rowAdapter = (RowAdapter) leftTuple.getObject();
+        RowAdapter rowAdapter = (RowAdapter) leftTuple.getContextObject();
         this.viewEventListener.rowDeleted( rowAdapter );
     }
 
@@ -57,7 +57,7 @@ public class OpenQueryViewChangedEventListenerAdapter
                            final LeftTuple leftTuple,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        RowAdapter rowAdapter = (RowAdapter) leftTuple.getObject();
+        RowAdapter rowAdapter = (RowAdapter) leftTuple.getContextObject();
         this.viewEventListener.rowUpdated( rowAdapter );
     }
 

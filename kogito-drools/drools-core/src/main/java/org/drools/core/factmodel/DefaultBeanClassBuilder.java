@@ -303,7 +303,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
 
         MethodVisitor mv;
         {
-            mv = cw.visitMethod( ACC_PUBLIC, "addLeftTuple", "(Lorg/drools/core/reteoo/LeftTuple;)V", null, null );
+            mv = cw.visitMethod( ACC_PUBLIC, "addLeftTuple", "(Lorg/drools/core/spi/Tuple;)V", null, null );
             mv.visitCode();
             Label l0 = new Label();
             mv.visitLabel( l0 );

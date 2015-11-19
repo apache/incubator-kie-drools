@@ -36,10 +36,9 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NodeMemories;
-import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.TupleSets;
 import org.drools.core.conflict.SalienceConflictResolver;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -58,6 +57,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteComparator;
+import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Salience;
@@ -881,11 +881,11 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert( new A( 2, 2, 2, 2 ) );
 
         LeftTuple leftTuple = ( (DefaultFactHandle) fh ).getFirstLeftTuple();
-        ObjectTypeNode.Id letTupleOtnId = leftTuple.getLeftTupleSink().getLeftInputOtnId();
+        ObjectTypeNode.Id letTupleOtnId = leftTuple.getTupleSink().getLeftInputOtnId();
         leftTuple = leftTuple.getLeftParentNext();
         while ( leftTuple != null ) {
-            assertTrue( letTupleOtnId.before( leftTuple.getLeftTupleSink().getLeftInputOtnId() ) );
-            letTupleOtnId = leftTuple.getLeftTupleSink().getLeftInputOtnId();
+            assertTrue( letTupleOtnId.before( leftTuple.getTupleSink().getLeftInputOtnId() ) );
+            letTupleOtnId = leftTuple.getTupleSink().getLeftInputOtnId();
             leftTuple = leftTuple.getLeftParentNext();
         }
     }
@@ -5173,10 +5173,8 @@ public class Misc2Test extends CommonTestMethodBase {
         assertNotNull( joinNode );
         InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
         BetaMemory memory = (BetaMemory) wm.getNodeMemory( joinNode );
-        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
-        assertEquals( 0, stagedRightTuples.deleteSize() );
+        TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
         assertNull( stagedRightTuples.getDeleteFirst() );
-        assertEquals( 0, stagedRightTuples.insertSize() );
         assertNull( stagedRightTuples.getInsertFirst() );
     }
 
@@ -5323,7 +5321,7 @@ public class Misc2Test extends CommonTestMethodBase {
         assertNotNull( liaNode );
         InternalWorkingMemory wm = (InternalWorkingMemory) ksession;
         LeftInputAdapterNode.LiaNodeMemory memory = (LeftInputAdapterNode.LiaNodeMemory) wm.getNodeMemory( liaNode );
-        LeftTupleSets stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();
+        TupleSets<LeftTuple> stagedLeftTuples = memory.getSegmentMemory().getStagedLeftTuples();
         assertNull( stagedLeftTuples.getDeleteFirst() );
         assertNull( stagedLeftTuples.getInsertFirst() );
     }
@@ -7791,7 +7789,6 @@ public class Misc2Test extends CommonTestMethodBase {
     }
 
     @Test
-    @Ignore("Requires mvel 2.2.7.Final")
     public void testVariableMatchesField() throws Exception {
         // DROOLS-882
         String drl =

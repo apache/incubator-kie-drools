@@ -1,14 +1,14 @@
 package org.drools.core.base;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.spi.PropagationContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractQueryViewListener implements InternalViewChangedEventListener {
 
@@ -33,14 +33,14 @@ public abstract class AbstractQueryViewListener implements InternalViewChangedEv
 
         // Add all the FactHandles
         while ( entry != null ) {
-            InternalFactHandle handle = entry.getLastHandle();
+            InternalFactHandle handle = entry.getFactHandle();
             if ( handle != null ) {
                 handles[entry.getIndex()] = getHandle(handle);
             }
             entry = entry.getParent();
         }
 
-        QueryTerminalNode node = ( QueryTerminalNode ) tuple.getLeftTupleSink();
+        QueryTerminalNode node = ( QueryTerminalNode ) tuple.getTupleSink();
         this.results.add( new QueryRowWithSubruleIndex(handles, node.getSubruleIndex()) );
     }
 

@@ -43,7 +43,6 @@ import org.drools.core.phreak.PhreakTimerNode.Scheduler;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.process.instance.WorkItem;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
@@ -51,6 +50,7 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.CompositeMaxDurationTrigger;
 import org.drools.core.time.impl.CronTrigger;
@@ -635,7 +635,7 @@ public class ProtobufInputMarshaller {
                     Activation activation = (Activation) context.filter.getTuplesCache().get(
                                                                                               PersisterHelper.createActivationKey( _activation.getPackageName(),
                                                                                                                                    _activation.getRuleName(),
-                                                                                                                                   _activation.getTuple() ) ).getObject();
+                                                                                                                                   _activation.getTuple() ) ).getContextObject();
 
                     Object object = null;
                     ObjectMarshallingStrategy strategy = null;
@@ -775,13 +775,13 @@ public class ProtobufInputMarshaller {
             AgendaFilter {
         private Map<ActivationKey, ProtobufMessages.Activation> dormantActivations;
         private Map<ActivationKey, ProtobufMessages.Activation> rneActivations;
-        private Map<ActivationKey, LeftTuple>                   tuplesCache;
+        private Map<ActivationKey, Tuple>                       tuplesCache;
         private Queue<RuleAgendaItem>                           rneaToFire;
 
         public PBActivationsFilter() {
             this.dormantActivations = new HashMap<ProtobufInputMarshaller.ActivationKey, ProtobufMessages.Activation>();
             this.rneActivations = new HashMap<ProtobufInputMarshaller.ActivationKey, ProtobufMessages.Activation>();
-            this.tuplesCache = new HashMap<ProtobufInputMarshaller.ActivationKey, LeftTuple>();
+            this.tuplesCache = new HashMap<ProtobufInputMarshaller.ActivationKey, Tuple>();
             this.rneaToFire = new ConcurrentLinkedQueue<RuleAgendaItem>();
         }
 
@@ -807,7 +807,7 @@ public class ProtobufInputMarshaller {
             }
         }
 
-        public Map<ActivationKey, LeftTuple> getTuplesCache() {
+        public Map<ActivationKey, Tuple> getTuplesCache() {
             return tuplesCache;
         }
 
@@ -826,7 +826,7 @@ public class ProtobufInputMarshaller {
 
         @Override
         public boolean accept(Match match) {
-            LeftTuple tuple = ((Activation)match).getTuple();
+            Tuple tuple = ((Activation)match).getTuple();
             ActivationKey key = PersisterHelper.createActivationKey( match.getRule().getPackageName(), 
                                                                      match.getRule().getName(),
                                                                      tuple );

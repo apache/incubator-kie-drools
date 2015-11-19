@@ -227,7 +227,7 @@ public class AgendaTest extends DroolsTestCase {
             public void evaluate(final KnowledgeHelper knowledgeHelper,
                                  final WorkingMemory workingMemory) {
                 AgendaItem item = (AgendaItem) knowledgeHelper.getMatch();
-                final Cheese cheese = (Cheese) item.getTuple().getHandle().getObject();
+                final Cheese cheese = (Cheese) item.getTuple().getFactHandle().getObject();
                 final int oldPrice = cheese.getPrice();
                 cheese.setPrice(100);
 

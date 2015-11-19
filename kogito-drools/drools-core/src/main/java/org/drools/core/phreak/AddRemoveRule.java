@@ -19,12 +19,11 @@ package org.drools.core.phreak;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
-import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.TupleSets;
+import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AbstractTerminalNode;
@@ -37,7 +36,6 @@ import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.RightTupleSinkAdapter;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleMemory;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -49,9 +47,9 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleMemory;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
@@ -134,7 +132,7 @@ public class AddRemoveRule {
 
      public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalKnowledgeBase kBase) {
          if ( log.isTraceEnabled() ) {
-             log.trace("Removing Rule {}", tn.getRule().getName() );
+             log.trace( "Removing Rule {}", tn.getRule().getName() );
          }
 
          LeftTupleSource splitStartNode = getNetworkSplitPoint(tn);
@@ -252,7 +250,7 @@ public class AddRemoveRule {
     }
 
     private static void flushStagedTuples(LeftTupleSource splitStartNode, PathMemory pmem, InternalWorkingMemory wm, boolean removeTuples) {
-         int smemIndex = getSegmentPos(splitStartNode, null); // index before the segments are merged
+         int smemIndex = getSegmentPos( splitStartNode, null ); // index before the segments are merged
          SegmentMemory[] smems = pmem.getSegmentMemories();
          SegmentMemory sm;
          LeftTupleSink sink;
@@ -316,7 +314,7 @@ public class AddRemoveRule {
             mem = sm.getNodeMemories().get(0);
         }
 
-        LeftTupleSets leftTupleSets = new LeftTupleSetsImpl();
+        TupleSets<LeftTuple> leftTupleSets = new TupleSetsImpl<LeftTuple>();
         if (leftTuple != null) {
             leftTupleSets.addInsert( leftTuple);
         }
@@ -546,7 +544,7 @@ public class AddRemoveRule {
             for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; ) {
                 LeftTuple next = childLt.getLeftParentNext();
                 //stagedLeftTuples
-                if ( childLt.getSink() == lian ) {
+                if ( childLt.getTupleSink() == lian ) {
                     fh.removeLeftTuple(childLt);
                 }
                 childLt = next;
@@ -567,7 +565,7 @@ public class AddRemoveRule {
                         bm = ( BetaMemory ) wm.getNodeMemory( bn );
                     }
 
-                    RightTupleMemory rtm = bm.getRightTupleMemory();
+                    TupleMemory rtm = bm.getRightTupleMemory();
                     FastIterator it = rtm.fullFastIterator();
                     for (RightTuple rightTuple = BetaNode.getFirstRightTuple(rtm, it); rightTuple != null; ) {
                         RightTuple next = (RightTuple) it.next(rightTuple);
@@ -576,7 +574,11 @@ public class AddRemoveRule {
                         rightTuple = next;
                     }
 
-                    RightTupleSets srcRightTuples = bm.getStagedRightTuples().takeAll();
+                    if ( !bm.getStagedRightTuples().isEmpty() ) {
+                        bm.setNodeDirtyWithoutNotify();
+                    }
+                    TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
+
                     unlinkRightTuples(srcRightTuples.getInsertFirst());
                     unlinkRightTuples(srcRightTuples.getUpdateFirst());
                     unlinkRightTuples(srcRightTuples.getDeleteFirst());
@@ -600,7 +602,7 @@ public class AddRemoveRule {
             for (EventFactHandle factHandle : memory.getFactHandles()) {
                 for (RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; ) {
                     RightTuple nextRightTuple = rightTuple.getHandleNext();
-                    if (source.equals( rightTuple.getRightTupleSink() )) {
+                    if (source.equals( rightTuple.getTupleSink() )) {
                         rightTuple.unlinkFromRightParent();
                     }
                     rightTuple = nextRightTuple;
@@ -657,7 +659,7 @@ public class AddRemoveRule {
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
                     LeftTuple lt = BetaNode.getFirstLeftTuple(bm.getLeftTupleMemory(), it);
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
-                        AccumulateContext accctx = (AccumulateContext) lt.getObject();
+                        AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
                         followPeer(accctx.getResultLeftTuple(), smem, sinks,  sinks.size()-1, insert);
                     }
                 } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
@@ -684,9 +686,9 @@ public class AddRemoveRule {
                 return;
             } else if (NodeTypeEnums.FromNode == node.getType()) {
                 FromMemory fm = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
-                LeftTupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
+                TupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
                 FastIterator it = ltm.fullFastIterator();
-                for (LeftTuple lt = ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
+                for (LeftTuple lt = (LeftTuple)ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
                     if ( lt.getFirstChild() != null ) {
                         followPeerFromLeftInput(lt.getFirstChild(), smem, sinks, insert);
                     }
@@ -719,7 +721,7 @@ public class AddRemoveRule {
             InternalFactHandle fh = it.next();
             if (fh.getFirstLeftTuple() != null ) {
                 for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; childLt = childLt.getLeftParentNext()) {
-                    if ( childLt.getSink() == firstLiaSink ) {
+                    if ( childLt.getTupleSink() == firstLiaSink ) {
                         followPeer(childLt, smem, sinks,  sinks.size()-1, insert);
                     }
                 }
@@ -763,12 +765,12 @@ public class AddRemoveRule {
             }
         } else {
             LeftTuple peer = lt;
-            while (peer.getSink() != sink) {
+            while (peer.getTupleSink() != sink) {
                 peer = peer.getPeer();
             }
 
-            if (NodeTypeEnums.AccumulateNode == peer.getLeftTupleSink().getType()) {
-                AccumulateContext accctx = (AccumulateContext) peer.getObject();
+            if (NodeTypeEnums.AccumulateNode == peer.getTupleSink().getType()) {
+                AccumulateContext accctx = (AccumulateContext) peer.getContextObject();
                 followPeer(accctx.getResultLeftTuple(), smem, sinks,  i-1, insert);
             } else if ( peer.getFirstChild() != null ) {
                 for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getLeftParentNext()) {
@@ -784,7 +786,7 @@ public class AddRemoveRule {
     private static void deletePeerLeftTuple(LeftTuple lt, LeftTupleSink newNode, SegmentMemory smem) {
         LeftTuple peer = lt;
         LeftTuple previousPeer = null;
-        while (peer.getSink() != newNode) {
+        while (peer.getTupleSink() != newNode) {
             previousPeer = peer;
             peer = peer.getPeer();
         }
@@ -831,7 +833,7 @@ public class AddRemoveRule {
     }
 
     private static void replaceChildLeftTuple(LeftTuple peer, LeftTuple leftPrevious, LeftTuple leftNext, LeftTuple rightPrevious, LeftTuple rightNext, LeftTuple newPeer) {boolean isHandle = peer.getLeftParent() == null;
-        InternalFactHandle fh = peer.getLastHandle();
+        InternalFactHandle fh = peer.getFactHandle();
         LeftTuple leftParent = peer.getLeftParent();
         RightTuple rightParent = peer.getRightParent();
 

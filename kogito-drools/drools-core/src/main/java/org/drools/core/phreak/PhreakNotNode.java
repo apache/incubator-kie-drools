@@ -17,15 +17,13 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
-import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleMemory;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleMemory;
+import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.util.FastIterator;
 
@@ -36,10 +34,13 @@ public class PhreakNotNode {
                        LeftTupleSink sink,
                        BetaMemory bm,
                        InternalWorkingMemory wm,
-                       LeftTupleSets srcLeftTuples,
-                       LeftTupleSets trgLeftTuples,
-                       LeftTupleSets stagedLeftTuples) {
-        RightTupleSets srcRightTuples = bm.getStagedRightTuples().takeAll();
+                       TupleSets<LeftTuple> srcLeftTuples,
+                       TupleSets<LeftTuple> trgLeftTuples,
+                       TupleSets<LeftTuple> stagedLeftTuples) {
+        if ( !bm.getStagedRightTuples().isEmpty() ) {
+            bm.setNodeDirtyWithoutNotify();
+        }
+        TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             // left deletes must come before right deletes. Otherwise right deletes could
@@ -93,10 +94,10 @@ public class PhreakNotNode {
                               LeftTupleSink sink,
                               BetaMemory bm,
                               InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples,
-                              LeftTupleSets trgLeftTuples) {
-        LeftTupleMemory ltm = bm.getLeftTupleMemory();
-        RightTupleMemory rtm = bm.getRightTupleMemory();
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples) {
+        TupleMemory ltm = bm.getLeftTupleMemory();
+        TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = notNode.getRawConstraints();
 
@@ -133,12 +134,12 @@ public class PhreakNotNode {
     public void doRightInserts(NotNode notNode,
                                BetaMemory bm,
                                InternalWorkingMemory wm,
-                               RightTupleSets srcRightTuples,
-                               LeftTupleSets trgLeftTuples,
-                               LeftTupleSets stagedLeftTuples ) {
+                               TupleSets<RightTuple> srcRightTuples,
+                               TupleSets<LeftTuple> trgLeftTuples,
+                               TupleSets<LeftTuple> stagedLeftTuples ) {
 
-        LeftTupleMemory ltm = bm.getLeftTupleMemory();
-        RightTupleMemory rtm = bm.getRightTupleMemory();
+        TupleMemory ltm = bm.getLeftTupleMemory();
+        TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = notNode.getRawConstraints();
 
@@ -209,11 +210,11 @@ public class PhreakNotNode {
                               LeftTupleSink sink,
                               BetaMemory bm,
                               InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples,
-                              LeftTupleSets trgLeftTuples,
-                              LeftTupleSets stagedLeftTuples) {
-        LeftTupleMemory ltm = bm.getLeftTupleMemory();
-        RightTupleMemory rtm = bm.getRightTupleMemory();
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples,
+                              TupleSets<LeftTuple> stagedLeftTuples) {
+        TupleMemory ltm = bm.getLeftTupleMemory();
+        TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = notNode.getRawConstraints();
         boolean leftUpdateOptimizationAllowed = notNode.isLeftUpdateOptimizationAllowed();
@@ -306,11 +307,11 @@ public class PhreakNotNode {
                                LeftTupleSink sink,
                                BetaMemory bm,
                                InternalWorkingMemory wm,
-                               RightTupleSets srcRightTuples,
-                               LeftTupleSets trgLeftTuples,
-                               LeftTupleSets stagedLeftTuples) {
-        LeftTupleMemory ltm = bm.getLeftTupleMemory();
-        RightTupleMemory rtm = bm.getRightTupleMemory();
+                               TupleSets<RightTuple> srcRightTuples,
+                               TupleSets<LeftTuple> trgLeftTuples,
+                               TupleSets<LeftTuple> stagedLeftTuples) {
+        TupleMemory ltm = bm.getLeftTupleMemory();
+        TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = notNode.getRawConstraints();
 
@@ -430,10 +431,10 @@ public class PhreakNotNode {
     }
 
     public void doLeftDeletes(BetaMemory bm,
-                              LeftTupleSets srcLeftTuples,
-                              LeftTupleSets trgLeftTuples,
-                              LeftTupleSets stagedLeftTuples) {
-        LeftTupleMemory ltm = bm.getLeftTupleMemory();
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples,
+                              TupleSets<LeftTuple> stagedLeftTuples) {
+        TupleMemory ltm = bm.getLeftTupleMemory();
 
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
@@ -462,10 +463,10 @@ public class PhreakNotNode {
                                LeftTupleSink sink,
                                BetaMemory bm,
                                InternalWorkingMemory wm,
-                               RightTupleSets srcRightTuples,
-                               LeftTupleSets trgLeftTuples) {
-        LeftTupleMemory ltm = bm.getLeftTupleMemory();
-        RightTupleMemory rtm = bm.getRightTupleMemory();
+                               TupleSets<RightTuple> srcRightTuples,
+                               TupleSets<LeftTuple> trgLeftTuples) {
+        TupleMemory ltm = bm.getLeftTupleMemory();
+        TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = notNode.getRawConstraints();
 
@@ -500,7 +501,7 @@ public class PhreakNotNode {
                                                 leftTuple);
 
                     if (useComparisonIndex) {
-                        rootBlocker = rtm.getFirst(leftTuple, null, it);
+                        rootBlocker = (RightTuple) rtm.getFirst(leftTuple);
                     }
 
                     // we know that older tuples have been checked so continue next
@@ -527,7 +528,7 @@ public class PhreakNotNode {
                 }
             }
 
-            rightTuple.nullBlocked();
+            rightTuple.setBlocked(null);
             rightTuple.clearStaged();
             rightTuple = next;
         }

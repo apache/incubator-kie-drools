@@ -15,10 +15,11 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
+import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.SegmentMemory;
@@ -40,7 +41,7 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
     private Memory               nodeMem;
     private SegmentMemory[]      smems;
     private int                  smemIndex;
-    private LeftTupleSets        trgTuples;
+    private TupleSets<LeftTuple> trgTuples;
     private boolean              resumeFromNextNode;
     private boolean              processRian;
 
@@ -53,7 +54,7 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
                       Memory nodeMem,
                       SegmentMemory[] smems,
                       int smemIndex,
-                      LeftTupleSets trgTuples,
+                      TupleSets<LeftTuple> trgTuples,
                       boolean resumeFromNextNode,
                       boolean processRian) {
         this.liaNode = liaNode;
@@ -99,7 +100,7 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
         return smemIndex;
     }
 
-    public LeftTupleSets getTrgTuples() {
+    public TupleSets<LeftTuple> getTrgTuples() {
         return trgTuples;
     }
 

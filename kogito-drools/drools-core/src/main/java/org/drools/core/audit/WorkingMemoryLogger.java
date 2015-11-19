@@ -347,7 +347,7 @@ public abstract class WorkingMemoryLogger
     }
 
     private String extractFactHandleIds(Activation activation) {
-        InternalFactHandle activatingFact = (InternalFactHandle)activation.getPropagationContext().getFactHandleOrigin();
+        InternalFactHandle activatingFact = (InternalFactHandle)activation.getPropagationContext().getFactHandle();
         StringBuilder sb = new StringBuilder();
         if (activatingFact != null) {
             sb.append(activatingFact.getId());

@@ -17,15 +17,13 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
-import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleMemory;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleMemory;
+import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.util.FastIterator;
 
@@ -34,11 +32,14 @@ public class PhreakJoinNode {
                        LeftTupleSink sink,
                        BetaMemory bm,
                        InternalWorkingMemory wm,
-                       LeftTupleSets srcLeftTuples,
-                       LeftTupleSets trgLeftTuples,
-                       LeftTupleSets stagedLeftTuples) {
+                       TupleSets<LeftTuple> srcLeftTuples,
+                       TupleSets<LeftTuple> trgLeftTuples,
+                       TupleSets<LeftTuple> stagedLeftTuples) {
 
-        RightTupleSets srcRightTuples = bm.getStagedRightTuples().takeAll();
+        if ( !bm.getStagedRightTuples().isEmpty() ) {
+            bm.setNodeDirtyWithoutNotify();
+        }
+        TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
         if (srcRightTuples.getDeleteFirst() != null) {
             doRightDeletes(bm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
@@ -82,10 +83,10 @@ public class PhreakJoinNode {
                               LeftTupleSink sink,
                               BetaMemory bm,
                               InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples,
-                              LeftTupleSets trgLeftTuples) {
-        LeftTupleMemory ltm = bm.getLeftTupleMemory();
-        RightTupleMemory rtm = bm.getRightTupleMemory();
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples) {
+        TupleMemory ltm = bm.getLeftTupleMemory();
+        TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = joinNode.getRawConstraints();
 
@@ -129,10 +130,10 @@ public class PhreakJoinNode {
                                LeftTupleSink sink,
                                BetaMemory bm,
                                InternalWorkingMemory wm,
-                               RightTupleSets srcRightTuples,
-                               LeftTupleSets trgLeftTuples) {
-        LeftTupleMemory ltm = bm.getLeftTupleMemory();
-        RightTupleMemory rtm = bm.getRightTupleMemory();
+                               TupleSets<RightTuple> srcRightTuples,
+                               TupleSets<LeftTuple> trgLeftTuples) {
+        TupleMemory ltm = bm.getLeftTupleMemory();
+        TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = joinNode.getRawConstraints();
 
@@ -174,10 +175,10 @@ public class PhreakJoinNode {
                               LeftTupleSink sink,
                               BetaMemory bm,
                               InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples,
-                              LeftTupleSets trgLeftTuples,
-                              LeftTupleSets stagedLeftTuples) {
-        RightTupleMemory rtm = bm.getRightTupleMemory();
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples,
+                              TupleSets<LeftTuple> stagedLeftTuples) {
+        TupleMemory rtm = bm.getRightTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = joinNode.getRawConstraints();
 
@@ -221,12 +222,12 @@ public class PhreakJoinNode {
     public LeftTuple doLeftUpdatesProcessChildren(LeftTuple childLeftTuple,
                                                   LeftTuple leftTuple,
                                                   RightTuple rightTuple,
-                                                  LeftTupleSets stagedLeftTuples,
+                                                  TupleSets<LeftTuple> stagedLeftTuples,
                                                   ContextEntry[] contextEntry,
                                                   BetaConstraints constraints,
                                                   LeftTupleSink sink,
                                                   FastIterator it,
-                                                  LeftTupleSets trgLeftTuples) {
+                                                  TupleSets<LeftTuple> trgLeftTuples) {
         if (childLeftTuple == null) {
             // either we are indexed and changed buckets or
             // we had no children before, but there is a bucket to potentially match, so try as normal assert
@@ -279,10 +280,10 @@ public class PhreakJoinNode {
                                LeftTupleSink sink,
                                BetaMemory bm,
                                InternalWorkingMemory wm,
-                               RightTupleSets srcRightTuples,
-                               LeftTupleSets trgLeftTuples,
-                               LeftTupleSets stagedLeftTuples) {
-        LeftTupleMemory ltm = bm.getLeftTupleMemory();
+                               TupleSets<RightTuple> srcRightTuples,
+                               TupleSets<LeftTuple> trgLeftTuples,
+                               TupleSets<LeftTuple> stagedLeftTuples) {
+        TupleMemory ltm = bm.getLeftTupleMemory();
         ContextEntry[] contextEntry = bm.getContext();
         BetaConstraints constraints = joinNode.getRawConstraints();
 
@@ -325,12 +326,12 @@ public class PhreakJoinNode {
     public LeftTuple doRightUpdatesProcessChildren(LeftTuple childLeftTuple,
                                                    LeftTuple leftTuple,
                                                    RightTuple rightTuple,
-                                                   LeftTupleSets stagedLeftTuples,
+                                                   TupleSets<LeftTuple> stagedLeftTuples,
                                                    ContextEntry[] contextEntry,
                                                    BetaConstraints constraints,
                                                    LeftTupleSink sink,
                                                    FastIterator it,
-                                                   LeftTupleSets trgLeftTuples) {
+                                                   TupleSets<LeftTuple> trgLeftTuples) {
         if (childLeftTuple == null) {
             // either we are indexed and changed buckets or
             // we had no children before, but there is a bucket to potentially match, so try as normal assert
@@ -390,10 +391,10 @@ public class PhreakJoinNode {
     }
 
     public void doLeftDeletes(BetaMemory bm,
-                              LeftTupleSets srcLeftTuples,
-                              LeftTupleSets trgLeftTuples,
-                              LeftTupleSets stagedLeftTuples) {
-        LeftTupleMemory ltm = bm.getLeftTupleMemory();
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples,
+                              TupleSets<LeftTuple> stagedLeftTuples) {
+        TupleMemory ltm = bm.getLeftTupleMemory();
 
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
@@ -417,10 +418,10 @@ public class PhreakJoinNode {
     }
 
     public void doRightDeletes(BetaMemory bm,
-                               RightTupleSets srcRightTuples,
-                               LeftTupleSets trgLeftTuples,
-                               LeftTupleSets stagedLeftTuples) {
-        RightTupleMemory rtm = bm.getRightTupleMemory();
+                               TupleSets<RightTuple> srcRightTuples,
+                               TupleSets<LeftTuple> trgLeftTuples,
+                               TupleSets<LeftTuple> stagedLeftTuples) {
+        TupleMemory rtm = bm.getRightTupleMemory();
 
         for (RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
@@ -444,8 +445,8 @@ public class PhreakJoinNode {
     }
 
     public static void updateChildLeftTuple(LeftTuple childLeftTuple,
-                                            LeftTupleSets stagedLeftTuples,
-                                            LeftTupleSets trgLeftTuples) {
+                                            TupleSets<LeftTuple> stagedLeftTuples,
+                                            TupleSets<LeftTuple> trgLeftTuples) {
         switch (childLeftTuple.getStagedType()) {
             // handle clash with already staged entries
             case LeftTuple.INSERT:

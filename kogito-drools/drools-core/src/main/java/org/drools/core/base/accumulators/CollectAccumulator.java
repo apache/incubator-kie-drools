@@ -16,13 +16,6 @@
 
 package org.drools.core.base.accumulators;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.util.Collection;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -31,6 +24,13 @@ import org.drools.core.rule.Collect;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * An accumulator to execute "collect" CEs
@@ -92,7 +92,7 @@ public class CollectAccumulator
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
                            WorkingMemory workingMemory) throws Exception {
-        Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getLastHandle().getObject() : handle.getObject();
+        Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getFactHandle().getObject() : handle.getObject();
         ((CollectContext) context).result.add( value );
     }
 
@@ -103,7 +103,7 @@ public class CollectAccumulator
                         Declaration[] declarations,
                         Declaration[] innerDeclarations,
                         WorkingMemory workingMemory) throws Exception {
-        Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getLastHandle().getObject() : handle.getObject();
+        Object value = this.unwrapHandle ? ((LeftTuple) handle.getObject()).getFactHandle().getObject() : handle.getObject();
         ((CollectContext) context).result.remove( value );
     }
 

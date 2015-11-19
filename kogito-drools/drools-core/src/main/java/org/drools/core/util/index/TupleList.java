@@ -1,9 +1,8 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -12,30 +11,28 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package org.drools.core.util.index;
 
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.TupleMemory;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractHashTable.Index;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleMemory;
-import org.drools.core.reteoo.RightTuple;
 
-public class LeftTupleList
-    implements
-    LeftTupleMemory,
-        Entry {
+public class TupleList implements TupleMemory, Entry {
 
     public static final long       serialVersionUID = 510l;
-    //      private Entry             previous;
+
     public Entry                   next;
 
-    public LeftTuple               first;
-    public LeftTuple               last;
+    public Tuple                   first;
+    public Tuple                   last;
 
     private int                    hashCode;
     private Index                  index;
@@ -44,23 +41,23 @@ public class LeftTupleList
 
     private int                    size;
 
-    public LeftTupleList() {
-        // this is not an index bucket        
+    public TupleList() {
+        // this is not an index bucket
         this.hashCode = 0;
         this.index = null;
     }
-    
-    public LeftTupleList(LeftTuple first, LeftTuple last, int size) {
-        // this is not an index bucket        
+
+    public TupleList( Tuple first, Tuple last, int size ) {
+        // this is not an index bucket
         this.hashCode = 0;
         this.index = null;
         this.first = first;
         this.last = last;
         this.size = size;
-    }    
+    }
 
-    public LeftTupleList(final Index index,
-                         final int hashCode) {
+    public TupleList( final Index index,
+                      final int hashCode ) {
         this.index = index;
         this.hashCode = hashCode;
     }
@@ -69,22 +66,16 @@ public class LeftTupleList
         return size == 0;
     }
 
-    public LeftTuple getFirst(RightTuple rightTuple) {
+    public Tuple getFirst(Tuple rightTuple) {
         return this.first;
     }
     
-    public LeftTuple getFirst() {
+    public Tuple getFirst() {
         return this.first;
     }
     
-    public LeftTuple getLast() {
+    public Tuple getLast() {
         return this.last;
-    }
-    
-    public void split(final LeftTuple leftTuple, int count) {
-        this.first = leftTuple;
-        leftTuple.setPrevious( null );
-        size = size - count;
     }
     
     public void clear() {
@@ -93,56 +84,28 @@ public class LeftTupleList
         size = 0;
     }    
     
-    public void removeAdd(LeftTuple tuple) {
+    public void removeAdd(Tuple tuple) {
         remove(tuple);
         add(tuple);
     }
 
-    public void add(final LeftTuple leftTuple) {
+    public void add(final Tuple tuple) {
         if ( this.last != null ) {
-            this.last.setNext( leftTuple );
-            leftTuple.setPrevious( this.last );
-            this.last = leftTuple;
+            this.last.setNext( tuple );
+            tuple.setPrevious( this.last );
+            this.last = tuple;
         } else {
-            this.first = leftTuple;
-            this.last = leftTuple;
+            this.first = tuple;
+            this.last = tuple;
         }
-        leftTuple.setMemory( this );
+        tuple.setMemory( this );
         this.size++;
 
     }
 
-    public void insertAfter(LeftTuple leftTuple, LeftTuple previous) {
-        LeftTuple next = (LeftTuple) previous.getNext();
-        previous.setNext(leftTuple);
-        leftTuple.setPrevious(previous);
-        if (next != null) {
-            next.setPrevious(leftTuple);
-            leftTuple.setNext(next);
-        } else {
-            this.last = leftTuple;
-        }
-        leftTuple.setMemory( this );
-        this.size++;
-    }
-
-    public void insertBefore(LeftTuple leftTuple, LeftTuple next) {
-        LeftTuple previous = (LeftTuple) next.getPrevious();
-        next.setPrevious(leftTuple);
-        leftTuple.setNext(next);
-        if (previous != null) {
-            previous.setNext(leftTuple);
-            leftTuple.setPrevious(previous);
-        } else {
-            this.first = leftTuple;
-        }
-        leftTuple.setMemory( this );
-        this.size++;
-    }
-
-    public void remove(final LeftTuple leftTuple) {
-        LeftTuple previous = (LeftTuple) leftTuple.getPrevious();
-        LeftTuple next = (LeftTuple) leftTuple.getNext();
+    public void remove(final Tuple tuple) {
+        Tuple previous = (Tuple) tuple.getPrevious();
+        Tuple next = (Tuple) tuple.getNext();
 
         if ( previous != null && next != null ) {
             // remove from middle
@@ -161,37 +124,48 @@ public class LeftTupleList
             this.last = null;
             this.first = null;
         }        
-        leftTuple.clear();
+        tuple.clear();
         this.size--;
     }
 
-    public LeftTuple removeFirst() {
-        LeftTuple leftTuple = this.first;
-        if ( this.last == leftTuple ) {
+    public Tuple removeFirst() {
+        Tuple tuple = this.first;
+        if ( this.last == tuple ) {
             this.last = null;
             this.first = null;
         }  else {
-            this.first = (LeftTuple) leftTuple.getNext();
+            this.first = (Tuple) tuple.getNext();
             if ( this.first != null ) {
                 this.first.setPrevious(null);
             }
         }
-        leftTuple.clear();
+        tuple.clear();
         this.size--;
-        return leftTuple;
+        return tuple;
     }
 
-    public boolean contains(final LeftTuple leftTuple) {
-        return get( leftTuple ) != null;
+    public boolean contains(final Tuple tuple) {
+        return get( tuple ) != null;
     }
 
-    public Object get(final LeftTuple leftTtuple) {
-        LeftTuple current = this.first;
+    public Tuple get(final Tuple tuple) {
+        Tuple current = this.first;
         while ( current != null ) {
-            if ( leftTtuple.equals( current ) ) {
+            if ( tuple.equals( current ) ) {
                 return current;
             }
-            current = (LeftTuple) current.getNext();
+            current = (Tuple) current.getNext();
+        }
+        return null;
+    }
+
+    public Tuple get(final InternalFactHandle handle) {
+        Tuple current = this.first;
+        while ( current != null ) {
+            if ( handle == current.getFactHandle() ) {
+                return current;
+            }
+            current = (Tuple) current.getNext();
         }
         return null;
     }
@@ -200,16 +174,21 @@ public class LeftTupleList
         return this.size;
     }
 
-    public LeftTuple[] toArray() {
-        LeftTuple[] tuples = new LeftTuple[this.size];
+    public Tuple[] toArray() {
+        Tuple[] tuples = new Tuple[this.size];
 
-        LeftTuple current = first;
+        Tuple current = first;
         for ( int i = 0; i < this.size; i++ ) {
             tuples[i] = current;
-            current = (LeftTuple) current.getNext();
+            current = (Tuple) current.getNext();
         }
 
         return tuples;
+    }
+
+    @Override
+    public IndexType getIndexType() {
+        return TupleMemory.IndexType.NONE;
     }
 
     public FastIterator fastIterator() {
@@ -221,11 +200,11 @@ public class LeftTupleList
     }
     
 
-    public FastIterator fullFastIterator(LeftTuple leftTuple) {
+    public FastIterator fullFastIterator(Tuple tuple) {
         return LinkedList.fastIterator; // contains no state, so ok to be static
     }    
 
-    public Iterator<LeftTuple> iterator() {
+    public Iterator<Tuple> iterator() {
         if ( this.iterator == null ) {
             this.iterator = new TupleHashTableIterator();
         }
@@ -235,17 +214,17 @@ public class LeftTupleList
 
     public static class TupleHashTableIterator
         implements
-        Iterator<LeftTuple> {
-        private LeftTuple current;
+        Iterator<Tuple> {
+        private Tuple current;
 
-        public void reset(LeftTuple first) {
+        public void reset(Tuple first) {
             this.current = first;
         }
 
-        public LeftTuple next() {
+        public Tuple next() {
             if ( this.current != null ) {
-                LeftTuple returnValue = this.current;
-                this.current = (LeftTuple) current.getNext();
+                Tuple returnValue = this.current;
+                this.current = (Tuple) current.getNext();
                 return returnValue;
             } else {
                 return null;
@@ -261,16 +240,24 @@ public class LeftTupleList
         return false;
     }
 
-    public boolean matches(final Object object,
-                           final int objectHashCode) {
-        return this.hashCode == objectHashCode && this.index.equal( object,
-                                                                    this.first );
+    boolean matches(Object object, int objectHashCode, boolean left) {
+        if ( this.hashCode != objectHashCode ) {
+            return false;
+        }
+
+        return left ?
+               this.index.equal( object, this.first ) :
+               this.index.equal( this.first.getFactHandle().getObject(), object );
     }
 
-    public boolean matches(final LeftTuple tuple,
-                           final int tupleHashCode) {
-        return this.hashCode == tupleHashCode && this.index.equal( this.first,
-                                                                   tuple );
+    boolean matches(Tuple tuple, int tupleHashCode, boolean left) {
+        if ( this.hashCode != tupleHashCode ) {
+            return false;
+        }
+
+        return left ?
+               this.index.equal( this.first.getFactHandle().getObject(), tuple ) :
+               this.index.equal( this.first, tuple );
     }
 
     public int hashCode() {
@@ -278,7 +265,7 @@ public class LeftTupleList
     }
 
     public boolean equals(final Object object) {
-        final LeftTupleList other = (LeftTupleList) object;
+        final TupleList other = (TupleList) object;
         return this.hashCode == other.hashCode && this.index == other.index;
     }
 
@@ -293,14 +280,14 @@ public class LeftTupleList
     public String toString() {
         StringBuilder builder = new StringBuilder();
         Iterator it = iterator();
-        for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
-            builder.append(leftTuple).append("\n");
+        for ( Tuple tuple = (Tuple) it.next(); tuple != null; tuple = (Tuple) it.next() ) {
+            builder.append(tuple).append("\n");
         }
 
         return builder.toString();
     }
 
-    protected void copyStateInto(LeftTupleList other) {
+    protected void copyStateInto(TupleList other) {
         other.next = next;
         other.first = first;
         other.last = last;
@@ -309,7 +296,7 @@ public class LeftTupleList
         other.iterator = iterator;
         other.size = size;
 
-        for ( LeftTuple current = first; current != null; current = (LeftTuple)current.getNext()) {
+        for ( Tuple current = first; current != null; current = (Tuple)current.getNext()) {
             current.setMemory(other);
         }
     }

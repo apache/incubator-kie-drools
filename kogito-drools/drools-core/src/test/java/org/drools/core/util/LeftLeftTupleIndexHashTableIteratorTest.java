@@ -28,7 +28,7 @@ import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.util.index.LeftTupleIndexHashTable;
 import org.drools.core.util.index.LeftTupleIndexHashTable.FieldIndexHashTableFullIterator;
-import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.util.index.TupleList;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.NodeTypeEnums;
@@ -51,7 +51,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class LeftTupleIndexHashTableIteratorTest {
+public class LeftLeftTupleIndexHashTableIteratorTest {
 
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
 
@@ -133,12 +133,12 @@ public class LeftTupleIndexHashTableIteratorTest {
 
         LeftTupleIndexHashTable hashTable = (LeftTupleIndexHashTable) betaMemory.getLeftTupleMemory();
         // can't create a 0 hashCode, so forcing 
-        LeftTupleList leftTupleList = new LeftTupleList();
+        TupleList leftTupleList = new TupleList();
         leftTupleList.add( new LeftTupleImpl( fh10,
                                           null,
                                           true ) );
         hashTable.getTable()[0] = leftTupleList;
-        leftTupleList = new LeftTupleList();
+        leftTupleList = new TupleList();
         leftTupleList.add( new LeftTupleImpl( fh11,
                                           null,
                                           true ) );
@@ -148,7 +148,7 @@ public class LeftTupleIndexHashTableIteratorTest {
         leftTupleList.add( new LeftTupleImpl( fh13,
                                           null,
                                           true ) );
-        ((LeftTupleList) hashTable.getTable()[0]).setNext( leftTupleList );
+        ((TupleList) hashTable.getTable()[0]).setNext( leftTupleList );
 
         Entry[] table = hashTable.getTable();
         List list = new ArrayList();
@@ -218,21 +218,21 @@ public class LeftTupleIndexHashTableIteratorTest {
         // setup the entry array with an element in the first bucket, one 
         // in the middle and one in the last bucket
         Entry[] entries = new Entry[10];
-        entries[0] = mock( LeftTupleList.class );
-        entries[5] = mock( LeftTupleList.class );
-        entries[9] = mock( LeftTupleList.class );
+        entries[0] = mock( TupleList.class );
+        entries[5] = mock( TupleList.class );
+        entries[9] = mock( TupleList.class );
 
         LeftTupleImpl[] tuples = new LeftTupleImpl[]{mock( LeftTupleImpl.class ), mock( LeftTupleImpl.class ), mock( LeftTupleImpl.class )};
 
         // set return values for methods
         when( entries[0].getNext() ).thenReturn( null );
-        when( ((LeftTupleList) entries[0]).getFirst() ).thenReturn( tuples[0] );
+        when( ((TupleList) entries[0]).getFirst() ).thenReturn( tuples[0] );
         
         when( entries[5].getNext() ).thenReturn( null );
-        when( ((LeftTupleList) entries[5]).getFirst( ) ).thenReturn( tuples[1] );
+        when( ((TupleList) entries[5]).getFirst( ) ).thenReturn( tuples[1] );
 
         when( entries[9].getNext() ).thenReturn( null );
-        when( ((LeftTupleList) entries[9]).getFirst( ) ).thenReturn( tuples[2] );
+        when( ((TupleList) entries[9]).getFirst( ) ).thenReturn( tuples[2] );
 
         // create the mock table for the iterator
         AbstractHashTable table = mock( AbstractHashTable.class );

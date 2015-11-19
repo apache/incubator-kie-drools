@@ -22,7 +22,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
 import org.drools.core.spi.MvelAccumulator;
@@ -118,14 +117,14 @@ public class MVELAccumulator
      */
     public void init(Object workingMemoryContext,
                      Object context,
-                     Tuple leftTuple,
+                     Tuple tuple,
                      Declaration[] declarations,
                      WorkingMemory workingMemory) throws Exception {
         Object[] localVars = new Object[initUnit.getOtherIdentifiers().length];
         
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
         VariableResolverFactory factory = factoryContext.getInitFactory();
-        initUnit.updateFactory( null, null, null, (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );
+        initUnit.updateFactory( null, null, null, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );
 
         InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage( "MAIN" );
         if ( pkg != null ) {
@@ -153,7 +152,7 @@ public class MVELAccumulator
      */
     public void accumulate(Object workingMemoryContext,
                            Object context,
-                           Tuple leftTuple,
+                           Tuple tuple,
                            InternalFactHandle handle,
                            Declaration[] declarations,
                            Declaration[] innerDeclarations,
@@ -161,7 +160,7 @@ public class MVELAccumulator
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
         VariableResolverFactory factory = factoryContext.getActionFactory();
-        actionUnit.updateFactory( null, null, handle, (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );
+        actionUnit.updateFactory( null, null, handle, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );
 
         DroolsVarFactory df = ( DroolsVarFactory ) factory.getNextFactory();
         
@@ -236,14 +235,14 @@ public class MVELAccumulator
      */
     public Object getResult(Object workingMemoryContext,
                             Object context,
-                            Tuple leftTuple,
+                            Tuple tuple,
                             Declaration[] declarations,
                             WorkingMemory workingMemory) throws Exception {
         Object[]  localVars = ((MVELAccumulatorContext) context).getVariables();
         
         MVELAccumulatorFactoryContext factoryContext = (MVELAccumulatorFactoryContext)workingMemoryContext;
         VariableResolverFactory factory = factoryContext.getResultFactory();
-        resultUnit.updateFactory( null, null, null, (LeftTuple) leftTuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );        
+        resultUnit.updateFactory( null, null, null, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory  );
 
         final Object result = MVELSafeHelper.getEvaluator().executeExpression( this.result,
                                                       null,

@@ -1494,7 +1494,7 @@ public class PatternBuilder
         final List<Declaration> factDeclarations = new ArrayList<Declaration>();
 
         for ( String id : usedIdentifiers.getDeclrClasses().keySet() ) {
-            final Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(), id );
+            Declaration decl = context.getDeclarationResolver().getDeclaration( context.getRule(), id );
             if ( decl.getPattern() == pattern ) {
                 factDeclarations.add( decl );
             } else {

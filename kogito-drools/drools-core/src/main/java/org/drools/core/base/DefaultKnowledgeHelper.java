@@ -16,14 +16,12 @@
 
 package org.drools.core.base;
 
-import org.drools.core.beliefsystem.BeliefSystem;
-import org.drools.core.beliefsystem.ModedAssertion;
-import org.drools.core.beliefsystem.simple.SimpleMode;
-import org.drools.core.rule.EntryPointId;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
+import org.drools.core.beliefsystem.BeliefSystem;
+import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
+import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalAgenda;
@@ -40,9 +38,11 @@ import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
@@ -57,6 +57,7 @@ import org.kie.api.runtime.process.ProcessContext;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 import org.kie.internal.runtime.KnowledgeRuntime;
 import org.kie.internal.runtime.beliefs.Mode;
@@ -103,7 +104,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
         activation = (Activation) in.readObject();
-        tuple = (Tuple) in.readObject();
+        tuple = (LeftTuple) in.readObject();
         workingMemory = (InternalWorkingMemoryActions) in.readObject();
     }
 
@@ -140,7 +141,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         // iterate to find previous equal logical insertion
         LogicalDependency<SimpleMode> dep = null;
         if ( this.previousBlocked != null ) {
-            for ( dep = (LogicalDependency<SimpleMode> ) this.previousBlocked.getFirst(); dep != null; dep = dep.getNext() ) {
+            for ( dep = this.previousBlocked.getFirst(); dep != null; dep = dep.getNext() ) {
                 if ( targetMatch ==  dep.getJustified() ) {
                     this.previousBlocked.remove( dep );
                     break;
@@ -187,7 +188,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         
         if ( wasBlocked ) {
             RuleAgendaItem ruleAgendaItem = targetMatch.getRuleAgendaItem();
-            InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+            InternalAgenda agenda = workingMemory.getAgenda();
             agenda.stageLeftTuple(ruleAgendaItem, targetMatch);
         }
     }
@@ -199,13 +200,12 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     public InternalFactHandle insert(final Object object,
                                      final boolean dynamic) {
-        InternalFactHandle handle = (InternalFactHandle) this.workingMemory.insert( object,
-                                                                                    null,
-                                                                                    dynamic,
-                                                                                    false,
-                                                                                    this.activation.getRule(),
-                                                                                    this.activation );
-        return handle;
+        return (InternalFactHandle) this.workingMemory.insert( object,
+                                                               null,
+                                                               dynamic,
+                                                               false,
+                                                               this.activation.getRule(),
+                                                               this.activation );
     }
 
     @Override
@@ -299,7 +299,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         NamedEntryPoint ep = (NamedEntryPoint) workingMemory.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() );
         ObjectTypeConf otc = ep.getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(), object );
 
-        Object mode = value;
         BeliefSystem beliefSystem;
         if ( value == null ) {
             beliefSystem = workingMemory.getTruthMaintenanceSystem().getBeliefSystem();
@@ -309,7 +308,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                 beliefSystem = (BeliefSystem) m.getBeliefSystem();
             } else {
                 beliefSystem = workingMemory.getTruthMaintenanceSystem().getBeliefSystem();
-                mode = value;
             }
         }
 
@@ -354,7 +352,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
                 justified.getBlockers().remove( (SimpleMode) dep.getMode());
                 if (justified.getBlockers().isEmpty() ) {
                     RuleAgendaItem ruleAgendaItem = justified.getRuleAgendaItem();
-                    ((InternalAgenda) workingMemory.getAgenda()).stageLeftTuple(ruleAgendaItem, justified);
+                    workingMemory.getAgenda().stageLeftTuple(ruleAgendaItem, justified);
                 }
                 dep = tmp;
             }
@@ -483,14 +481,10 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     public Object get(final Declaration declaration) {
         InternalWorkingMemoryEntryPoint wmTmp = ((InternalWorkingMemoryEntryPoint) (this.tuple.get( declaration )).getEntryPoint());
-
-        if ( wmTmp != null ) {
-            Object object = declaration.getValue( wmTmp.getInternalWorkingMemory(),
-                                                  this.tuple.get( declaration ).getObject() );
-            
-            return object;
-        }
-        return null;
+        return wmTmp != null ?
+               declaration.getValue( wmTmp.getInternalWorkingMemory(),
+                                                     this.tuple.getObject( declaration ) )
+                             : null;
     }
 
     public Declaration getDeclaration(final String identifier) {

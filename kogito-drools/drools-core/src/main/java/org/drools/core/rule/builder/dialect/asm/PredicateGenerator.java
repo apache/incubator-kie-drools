@@ -46,7 +46,6 @@ public class PredicateGenerator {
                                 final Declaration[] localDeclarations,
                                 final WorkingMemory workingMemory) {
 
-        final LeftTuple leftTuple = (LeftTuple)tuple;
         final String[] globals = stub.getGlobals();
         final String[] globalTypes = stub.getGlobalTypes();
 
@@ -76,12 +75,12 @@ public class PredicateGenerator {
                 cast(LeftTuple.class);
                 mv.visitVarInsn(ASTORE, 7); // LeftTuple
 
-                LeftTuple currentLeftTuple = leftTuple;                
+                Tuple currentTuple = tuple;
                 for (DeclarationMatcher matcher : declarationMatchers) {
                     int i = matcher.getOriginalIndex();
                     previousDeclarationsParamsPos[i] = objAstorePos;
 
-                    currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, matcher.getRootDistance(), 7);
+                    currentTuple = traverseTuplesUntilDeclaration(currentTuple, matcher.getRootDistance(), 7);
 
                     mv.visitVarInsn(ALOAD, 3);
                     push(i);
@@ -89,8 +88,8 @@ public class PredicateGenerator {
                     mv.visitVarInsn(ALOAD, 5); // workingMemory
 
                     mv.visitVarInsn(ALOAD, 7);
-                    invokeInterface(LeftTuple.class, "getHandle", InternalFactHandle.class);
-                    invokeInterface(InternalFactHandle.class, "getObject", Object.class); // tuple.getHandle().getObject()
+                    invokeInterface(LeftTuple.class, "getFactHandle", InternalFactHandle.class);
+                    invokeInterface(InternalFactHandle.class, "getObject", Object.class); // tuple.getFactHandle().getObject()
 
                     storeObjectFromDeclaration(previousDeclarations[i], previousDeclarations[i].getTypeName());
                 }

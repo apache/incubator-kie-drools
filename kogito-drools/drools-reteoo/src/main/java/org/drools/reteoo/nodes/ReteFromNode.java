@@ -81,7 +81,7 @@ public class ReteFromNode extends FromNode {
         if ( useLeftMemory ) {
             memory.getBetaMemory().getLeftTupleMemory().add( leftTuple );
             matches = new LinkedHashMap<Object, RightTuple>();
-            leftTuple.setObject( matches );
+            leftTuple.setContextObject( matches );
         }
 
         this.betaConstraints.updateFromTuple( memory.getBetaMemory().getContext(),
@@ -126,9 +126,9 @@ public class ReteFromNode extends FromNode {
 
         memory.getBetaMemory().getLeftTupleMemory().removeAdd( leftTuple );
 
-        final Map<Object, RightTuple> previousMatches = (Map<Object, RightTuple>) leftTuple.getObject();
+        final Map<Object, RightTuple> previousMatches = (Map<Object, RightTuple>) leftTuple.getContextObject();
         final Map<Object, RightTuple> newMatches = new HashMap<Object, RightTuple>();
-        leftTuple.setObject( newMatches );
+        leftTuple.setContextObject( newMatches );
 
         this.betaConstraints.updateFromTuple( memory.getBetaMemory().getContext(),
                                               workingMemory,
@@ -195,8 +195,7 @@ public class ReteFromNode extends FromNode {
             // First alpha node filters
             for ( int i = 0, length = this.alphaConstraints.length; i < length; i++ ) {
                 if ( !this.alphaConstraints[i].isAllowed( rightTuple.getFactHandle(),
-                                                          workingMemory,
-                                                          memory.getAlphaContexts()[i] ) ) {
+                                                          workingMemory ) ) {
                     // next iteration
                     isAllowed = false;
                     break;
@@ -207,7 +206,7 @@ public class ReteFromNode extends FromNode {
         if ( isAllowed && this.betaConstraints.isAllowedCachedLeft( memory.getBetaMemory().getContext(),
                                                                     rightTuple.getFactHandle() ) ) {
 
-            if ( rightTuple.firstChild == null ) {
+            if ( rightTuple.getFirstChild() == null ) {
                 // this is a new match, so propagate as assert
                 this.sink.propagateAssertLeftTuple( leftTuple,
                                                     rightTuple,
@@ -218,7 +217,7 @@ public class ReteFromNode extends FromNode {
                                                     useLeftMemory );
             } else {
                 // this is an existing match, so propagate as a modify
-                this.sink.propagateModifyChildLeftTuple( rightTuple.firstChild,
+                this.sink.propagateModifyChildLeftTuple( rightTuple.getFirstChild(),
                                                          leftTuple,
                                                          context,
                                                          workingMemory,
@@ -236,9 +235,9 @@ public class ReteFromNode extends FromNode {
                                 final RightTuple rightTuple,
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
-        if ( rightTuple.firstChild != null ) {
+        if ( rightTuple.getFirstChild() != null ) {
             // there was a previous match, so need to retract
-            this.sink.propagateRetractChildLeftTuple( rightTuple.firstChild,
+            this.sink.propagateRetractChildLeftTuple( rightTuple.getFirstChild(),
                                                       leftTuple,
                                                       context,
                                                       workingMemory );
@@ -255,9 +254,7 @@ public class ReteFromNode extends FromNode {
         this.sink.propagateRetractLeftTuple( leftTuple,
                                              context,
                                              workingMemory );
-        unlinkCreatedHandles( workingMemory,
-                              memory,
-                              leftTuple );
+        unlinkCreatedHandles( leftTuple );
     }
 
     protected boolean doRemove(final RuleRemovalContext context,
@@ -269,9 +266,7 @@ public class ReteFromNode extends FromNode {
                 FromMemory memory = (FromMemory) workingMemory.getNodeMemory( this );
                 Iterator it = memory.getBetaMemory().getLeftTupleMemory().iterator();
                 for ( LeftTuple leftTuple = (LeftTuple) it.next(); leftTuple != null; leftTuple = (LeftTuple) it.next() ) {
-                    unlinkCreatedHandles( workingMemory,
-                                          memory,
-                                          leftTuple );
+                    unlinkCreatedHandles( leftTuple );
                     leftTuple.unlinkFromLeftParent();
                     leftTuple.unlinkFromRightParent();
                 }
@@ -284,10 +279,8 @@ public class ReteFromNode extends FromNode {
     }
 
     @SuppressWarnings("unchecked")
-    private void unlinkCreatedHandles(final InternalWorkingMemory workingMemory,
-                                      final FromMemory memory,
-                                      final LeftTuple leftTuple) {
-        Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
+    private void unlinkCreatedHandles(final LeftTuple leftTuple) {
+        Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getContextObject();
         FastIterator rightIt = LinkedList.fastIterator;
         for ( RightTuple rightTuple : matches.values() ) {
             for ( RightTuple current = rightTuple; current != null; ) {
@@ -313,7 +306,7 @@ public class ReteFromNode extends FromNode {
                                                   workingMemory,
                                                   leftTuple );
 
-            Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getObject();
+            Map<Object, RightTuple> matches = (Map<Object, RightTuple>) leftTuple.getContextObject();
             for ( RightTuple rightTuples : matches.values() ) {
                 for ( RightTuple rightTuple = rightTuples; rightTuple != null; rightTuple = (RightTuple) rightIter.next( rightTuple ) ) {
                     boolean isAllowed = true;
@@ -321,8 +314,7 @@ public class ReteFromNode extends FromNode {
                         // First alpha node filters
                         for ( int i = 0, length = this.alphaConstraints.length; i < length; i++ ) {
                             if ( !this.alphaConstraints[i].isAllowed( rightTuple.getFactHandle(),
-                                                                      workingMemory,
-                                                                      memory.getAlphaContexts()[i] ) ) {
+                                                                      workingMemory ) ) {
                                 // next iteration
                                 isAllowed = false;
                                 break;

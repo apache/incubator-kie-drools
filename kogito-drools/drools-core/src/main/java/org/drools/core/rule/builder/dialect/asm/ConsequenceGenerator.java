@@ -15,42 +15,34 @@
 
 package org.drools.core.rule.builder.dialect.asm;
 
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
-import org.drools.core.rule.builder.dialect.asm.GeneratorHelper.DeclarationMatcher;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.Sink;
 import org.drools.core.rule.Declaration;
+import org.drools.core.rule.builder.dialect.asm.GeneratorHelper.DeclarationMatcher;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.Tuple;
+import org.kie.api.runtime.rule.FactHandle;
 import org.mvel2.asm.MethodVisitor;
 
 import java.util.List;
 
 import static org.drools.core.rule.builder.dialect.asm.GeneratorHelper.createInvokerClassGenerator;
 import static org.drools.core.rule.builder.dialect.asm.GeneratorHelper.matchDeclarationsToTuple;
-
-import static org.mvel2.asm.Opcodes.AALOAD;
-import static org.mvel2.asm.Opcodes.ACC_PUBLIC;
-import static org.mvel2.asm.Opcodes.ALOAD;
-import static org.mvel2.asm.Opcodes.ARETURN;
-import static org.mvel2.asm.Opcodes.ASTORE;
-import static org.mvel2.asm.Opcodes.CHECKCAST;
-import static org.mvel2.asm.Opcodes.INVOKESTATIC;
-import static org.mvel2.asm.Opcodes.RETURN;
+import static org.mvel2.asm.Opcodes.*;
 
 public class ConsequenceGenerator {
 
     public static void generate(final ConsequenceStub stub, KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
-        RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getMatch().getTuple().getLeftTupleSink();
+        RuleTerminalNode rtn = (RuleTerminalNode) knowledgeHelper.getMatch().getTuple().getTupleSink();
         final Declaration[] declarations = rtn.getRequiredDeclarations();
-        final LeftTuple tuple = (LeftTuple)knowledgeHelper.getTuple();
+        final Tuple tuple = knowledgeHelper.getTuple();
 
         // Sort declarations based on their offset, so it can ascend the tuple's parents stack only once
         final List<DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarations);
@@ -70,17 +62,17 @@ public class ConsequenceGenerator {
                 cast(LeftTuple.class);
                 mv.visitVarInsn(ASTORE, 3); // LeftTuple
 
-                // Declaration[] declarations = ((RuleTerminalNode)knowledgeHelper.getMatch().getTuple().getLeftTupleSink()).getDeclarations();
+                // Declaration[] declarations = ((RuleTerminalNode)knowledgeHelper.getMatch().getTuple().getTupleSink()).getDeclarations();
                 mv.visitVarInsn(ALOAD, 1);
                 invokeInterface(KnowledgeHelper.class, "getMatch", Activation.class);
-                invokeInterface(Activation.class, "getTuple", LeftTuple.class);
-                invokeInterface(LeftTuple.class, "getLeftTupleSink", LeftTupleSink.class);
+                invokeInterface(Activation.class, "getTuple", Tuple.class);
+                invokeInterface(Tuple.class, "getTupleSink", Sink.class);
                 cast(RuleTerminalNode.class);
                 invokeVirtual(RuleTerminalNode.class, "getRequiredDeclarations", Declaration[].class);
                 mv.visitVarInsn(ASTORE, 4);
 
                 
-                LeftTuple currentLeftTuple = tuple;
+                Tuple currentTuple = tuple;
                 objAstorePos = 6; // astore start position for objects to store in loop
                 int[] paramsPos = new int[declarations.length];
                 // declarationMatchers is already sorted by offset with tip declarations now first
@@ -90,11 +82,11 @@ public class ConsequenceGenerator {
                     int objPos = ++objAstorePos;
                     paramsPos[i] = handlePos;
 
-                    currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, matcher.getRootDistance(), 3);
+                    currentTuple = traverseTuplesUntilDeclaration(currentTuple, matcher.getRootDistance(), 3);
 
-                    // handle = tuple.getHandle()
+                    // handle = tuple.getFactHandle()
                     mv.visitVarInsn(ALOAD, 3);
-                    invokeInterface(LeftTuple.class, "getHandle", InternalFactHandle.class);
+                    invokeInterface(LeftTuple.class, "getFactHandle", InternalFactHandle.class);
                     mv.visitVarInsn(ASTORE, handlePos);
 
                     String declarationType = declarations[i].getTypeName();

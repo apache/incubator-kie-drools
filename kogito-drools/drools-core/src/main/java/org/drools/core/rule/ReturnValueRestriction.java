@@ -16,14 +16,6 @@
 
 package org.drools.core.rule;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -40,6 +32,14 @@ import org.drools.core.spi.ReturnValueExpression.SafeReturnValueExpression;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.kie.internal.security.KiePolicyHelper;
+
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class ReturnValueRestriction
     implements
@@ -266,7 +266,7 @@ public class ReturnValueRestriction
         try {
             ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
             FieldValue value = this.expression.evaluate( handle,
-                                                         ctx.leftTuple,
+                                                         ctx.tuple,
                                                          this.previousDeclarations,
                                                          this.localDeclarations,
                                                          ctx.workingMemory,
@@ -280,7 +280,7 @@ public class ReturnValueRestriction
         }
     }
 
-    public boolean isAllowedCachedRight(final LeftTuple tuple,
+    public boolean isAllowedCachedRight(final Tuple tuple,
                                         final ContextEntry context) {
         try {
             ReturnValueContextEntry ctx = (ReturnValueContextEntry) context;
@@ -403,7 +403,7 @@ public class ReturnValueRestriction
 
         public ReadAccessor          fieldExtractor;
         public InternalFactHandle    handle;
-        public LeftTuple             leftTuple;
+        public Tuple                 tuple;
         public InternalWorkingMemory workingMemory;
         public Declaration[]         previousDeclarations;
         public Declaration[]         localDeclarations;
@@ -427,7 +427,7 @@ public class ReturnValueRestriction
                                                 ClassNotFoundException {
             fieldExtractor = (ReadAccessor) in.readObject();
             handle = (InternalFactHandle) in.readObject();
-            leftTuple = (LeftTuple) in.readObject();
+            tuple = (LeftTuple) in.readObject();
             workingMemory = (InternalWorkingMemory) in.readObject();
             previousDeclarations = (Declaration[]) in.readObject();
             localDeclarations = (Declaration[]) in.readObject();
@@ -438,7 +438,7 @@ public class ReturnValueRestriction
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeObject( fieldExtractor );
             out.writeObject( handle );
-            out.writeObject( leftTuple );
+            out.writeObject( tuple );
             out.writeObject( workingMemory );
             out.writeObject( previousDeclarations );
             out.writeObject( localDeclarations );
@@ -461,9 +461,9 @@ public class ReturnValueRestriction
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final LeftTuple tuple) {
+                                    final Tuple tuple) {
             this.workingMemory = workingMemory;
-            this.leftTuple = tuple;
+            this.tuple = tuple;
         }
 
         /* (non-Javadoc)
@@ -471,13 +471,6 @@ public class ReturnValueRestriction
          */
         public ReadAccessor getFieldExtractor() {
             return this.fieldExtractor;
-        }
-
-        /* (non-Javadoc)
-         * @see org.kie.rule.ReturnValueContextEntry#getTuple()
-         */
-        public LeftTuple getTuple() {
-            return this.leftTuple;
         }
 
         /* (non-Javadoc)
@@ -506,7 +499,7 @@ public class ReturnValueRestriction
         }
 
         public void resetTuple() {
-            this.leftTuple = null;
+            this.tuple = null;
         }
 
         public void resetFactHandle() {

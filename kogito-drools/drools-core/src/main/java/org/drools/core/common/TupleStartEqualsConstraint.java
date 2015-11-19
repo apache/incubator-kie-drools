@@ -20,6 +20,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.Tuple;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -90,11 +91,11 @@ public class TupleStartEqualsConstraint
                                        final InternalFactHandle handle) {
         // object MUST be a ReteTuple
         int size = ((TupleStartEqualsConstraintContextEntry) context).compareSize;
-        final LeftTuple tuple = ((LeftTuple) handle.getObject()).getSubTuple( size );
-        return ((TupleStartEqualsConstraintContextEntry) context).left.getSubTuple( size ).equals( tuple );
+        final Tuple tuple = ((Tuple) handle.getObject()).getSubTuple( size );
+        return ((TupleStartEqualsConstraintContextEntry) context).tuple.getSubTuple( size ).equals( tuple );
     }
 
-    public boolean isAllowedCachedRight(final LeftTuple tuple,
+    public boolean isAllowedCachedRight(final Tuple tuple,
                                         final ContextEntry context) {
         return tuple.skipEmptyHandles().equals( ((TupleStartEqualsConstraintContextEntry) context).right.getSubTuple( tuple.size() ) );
     }
@@ -124,8 +125,8 @@ public class TupleStartEqualsConstraint
 
         private static final long serialVersionUID = 510l;
 
-        public LeftTuple          left;
-        public LeftTuple          right;
+        public Tuple     tuple;
+        public Tuple     right;
 
         // the size of the tuple to compare
         public int                compareSize;
@@ -136,14 +137,14 @@ public class TupleStartEqualsConstraint
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            left        = (LeftTuple)in.readObject();
-            right       = (LeftTuple)in.readObject();
+            tuple        = (Tuple)in.readObject();
+            right       = (Tuple)in.readObject();
             compareSize = in.readInt();
             entry       = (ContextEntry)in.readObject();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(left);
+            out.writeObject(tuple);
             out.writeObject(right);
             out.writeInt(compareSize);
             out.writeObject(entry);
@@ -158,8 +159,8 @@ public class TupleStartEqualsConstraint
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final LeftTuple tuple) {
-            this.left = tuple;
+                                    final Tuple tuple) {
+            this.tuple = tuple;
             this.compareSize = tuple.size();
         }
 
@@ -171,7 +172,7 @@ public class TupleStartEqualsConstraint
         }
 
         public void resetTuple() {
-            this.left = null;
+            this.tuple = null;
         }
 
         public void resetFactHandle() {

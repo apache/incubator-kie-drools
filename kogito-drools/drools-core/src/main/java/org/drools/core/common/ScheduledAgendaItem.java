@@ -18,20 +18,18 @@ package org.drools.core.common;
 
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.phreak.RuleAgendaItem;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.time.JobHandle;
 import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.LinkedListNode;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.event.rule.ActivationUnMatchListener;
-import org.kie.internal.runtime.beliefs.Mode;
 
 import java.util.List;
 
@@ -102,12 +100,12 @@ public class ScheduledAgendaItem<T extends ModedAssertion<T>>
         agendaItem.setBlocked(justified);
     }
 
-    public InternalFactHandle getFactHandle() {
-        return agendaItem.getFactHandle();
+    public InternalFactHandle getActivationFactHandle() {
+        return agendaItem.getActivationFactHandle();
     }
 
-    public void setFactHandle(InternalFactHandle factHandle) {
-        agendaItem.setFactHandle(factHandle);
+    public void setActivationFactHandle( InternalFactHandle factHandle ) {
+        agendaItem.setActivationFactHandle( factHandle );
     }
 
     public ActivationGroupNode getActivationGroupNode() {
@@ -186,7 +184,7 @@ public class ScheduledAgendaItem<T extends ModedAssertion<T>>
         return agendaItem.getRuleAgendaItem();
     }
 
-    public LeftTuple getTuple() {
+    public Tuple getTuple() {
         return agendaItem.getTuple();
     }
 

@@ -72,27 +72,27 @@ public interface LeftTupleSink
     LeftTuple createPeer(LeftTuple original);
     
     LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                              LeftTupleSink sink,
+                              Sink sink,
                               boolean leftTupleMemoryEnabled);
 
     LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                               final LeftTuple leftTuple,
-                              final LeftTupleSink sink);
+                              final Sink sink);
 
     LeftTuple createLeftTuple(LeftTuple leftTuple,
-                              LeftTupleSink sink,
+                              Sink sink,
                               PropagationContext pctx,
                               boolean leftTupleMemoryEnabled);
     
     LeftTuple createLeftTuple(LeftTuple leftTuple,
                               RightTuple rightTuple,
-                              LeftTupleSink sink);
+                              Sink sink);
     
     LeftTuple createLeftTuple(LeftTuple leftTuple,
                               RightTuple rightTuple,
                               LeftTuple currentLeftChild,
                               LeftTuple currentRightChild,
-                              LeftTupleSink sink,
+                              Sink sink,
                               boolean leftTupleMemoryEnabled);
 
     ObjectTypeNode.Id getLeftInputOtnId();

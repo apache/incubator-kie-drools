@@ -16,24 +16,23 @@
 
 package org.drools.core.time.impl;
 
-import java.io.Serializable;
-
-import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.RuleComponent;
+import org.drools.core.spi.Tuple;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
+
+import java.io.Serializable;
 
 public interface Timer extends Serializable, RuleComponent, RuleConditionElement {
 
     Trigger createTrigger( long timestamp, String[] calendarNames, Calendars calendars);
 
     public Trigger createTrigger(long timestamp,
-                                 LeftTuple leftTuple,
+                                 Tuple leftTuple,
                                  DefaultJobHandle jh,
                                  String[] calendarNames,
                                  Calendars calendars,

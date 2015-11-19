@@ -944,14 +944,18 @@ public class LinkingTest {
         assertNotNull( amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst().getStagedNext() );
         assertNotNull( amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext() );
         assertNull( amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext() );
-        assertEquals( 3, bmem.getStagedRightTuples().insertSize() );
-        assertEquals( 29, cmem.getStagedRightTuples().insertSize()  );
-        
+
+        //assertEquals( 3, bmem.getStagedRightTuples().insertSize() );
+        assertNotNull( bmem.getStagedRightTuples().getInsertFirst() );
+        assertNotNull( bmem.getStagedRightTuples().getInsertFirst().getStagedNext() );
+        assertNotNull( bmem.getStagedRightTuples().getInsertFirst().getStagedNext().getStagedNext() );
+        assertNull( bmem.getStagedRightTuples().getInsertFirst().getStagedNext().getStagedNext().getStagedNext() );
+
         wm.fireAllRules();
         
         assertNull( amem.getSegmentMemory().getStagedLeftTuples().getInsertFirst() );
-        assertEquals( 0, bmem.getStagedRightTuples().insertSize() );
-        assertEquals( 0, cmem.getStagedRightTuples().insertSize()  );        
+        assertNull( bmem.getStagedRightTuples().getInsertFirst() );
+        assertNull( cmem.getStagedRightTuples().getInsertFirst() );
         
         assertEquals( 261, list.size() );
         

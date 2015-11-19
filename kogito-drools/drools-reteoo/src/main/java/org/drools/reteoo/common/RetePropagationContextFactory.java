@@ -22,6 +22,7 @@ import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 
 import java.io.Serializable;
@@ -37,7 +38,7 @@ public class RetePropagationContextFactory implements PropagationContextFactory,
     public PropagationContext createPropagationContext(final long number,
                                                        final int type,
                                                        final RuleImpl rule,
-                                                       final LeftTuple leftTuple,
+                                                       final Tuple leftTuple,
                                                        final InternalFactHandle factHandle,
                                                        final EntryPointId entryPoint,
                                                        final BitMask modificationMask,
@@ -49,7 +50,7 @@ public class RetePropagationContextFactory implements PropagationContextFactory,
     public PropagationContext createPropagationContext(final long number,
                                                        final int type,
                                                        final RuleImpl rule,
-                                                       final LeftTuple leftTuple,
+                                                       final Tuple leftTuple,
                                                        final InternalFactHandle factHandle,
                                                        final EntryPointId entryPoint,
                                                        final MarshallerReaderContext readerContext) {
@@ -59,7 +60,7 @@ public class RetePropagationContextFactory implements PropagationContextFactory,
     public PropagationContext createPropagationContext(final long number,
                                                        final int type,
                                                        final RuleImpl rule,
-                                                       final LeftTuple leftTuple,
+                                                       final Tuple leftTuple,
                                                        final InternalFactHandle factHandle,
                                                        final int activeActivations,
                                                        final int dormantActivations,
@@ -71,7 +72,7 @@ public class RetePropagationContextFactory implements PropagationContextFactory,
     public PropagationContext createPropagationContext(final long number,
                                                        final int type,
                                                        final RuleImpl rule,
-                                                       final LeftTuple leftTuple,
+                                                       final Tuple leftTuple,
                                                        final InternalFactHandle factHandle,
                                                        final EntryPointId entryPoint) {
         return new RetePropagationContext(number, type, rule, leftTuple, factHandle, entryPoint);
@@ -80,7 +81,7 @@ public class RetePropagationContextFactory implements PropagationContextFactory,
     public PropagationContext createPropagationContext(final long number,
                                                        final int type,
                                                        final RuleImpl rule,
-                                                       final LeftTuple leftTuple,
+                                                       final Tuple leftTuple,
                                                        final InternalFactHandle factHandle) {
         return new RetePropagationContext(number, type, rule, leftTuple, factHandle);
     }

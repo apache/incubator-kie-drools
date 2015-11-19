@@ -24,6 +24,7 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 
 import java.io.IOException;
@@ -83,7 +84,7 @@ public class SingleNonIndexSkipBetaConstraints
 
     public void updateFromTuple(ContextEntry[] context,
                                 InternalWorkingMemory workingMemory,
-                                LeftTuple tuple) {
+                                Tuple tuple) {
         constraints.updateFromTuple( context,
                                      workingMemory,
                                      tuple );
@@ -146,7 +147,7 @@ public class SingleNonIndexSkipBetaConstraints
     }
 
     public boolean isAllowedCachedRight(ContextEntry[] context,
-                                        LeftTuple tuple) {
+                                        Tuple tuple) {
         return this.constraints.isAllowedCachedRight( context, tuple );
     }
 

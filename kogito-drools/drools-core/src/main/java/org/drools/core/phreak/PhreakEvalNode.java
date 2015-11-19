@@ -16,7 +16,7 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.EvalConditionNode;
 import org.drools.core.reteoo.EvalConditionNode.EvalMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -38,9 +38,9 @@ public class PhreakEvalNode {
                        EvalMemory em,
                        LeftTupleSink sink,
                        InternalWorkingMemory wm,
-                       LeftTupleSets srcLeftTuples,
-                       LeftTupleSets trgLeftTuples,
-                       LeftTupleSets stagedLeftTuples) {
+                       TupleSets<LeftTuple> srcLeftTuples,
+                       TupleSets<LeftTuple> trgLeftTuples,
+                       TupleSets<LeftTuple> stagedLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(srcLeftTuples, trgLeftTuples, stagedLeftTuples);
@@ -61,8 +61,8 @@ public class PhreakEvalNode {
                               EvalMemory em,
                               LeftTupleSink sink,
                               InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples,
-                              LeftTupleSets trgLeftTuples) {
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples) {
         EvalCondition condition = evalNode.getCondition();
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
@@ -88,20 +88,20 @@ public class PhreakEvalNode {
                               EvalMemory em,
                               LeftTupleSink sink,
                               InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples,
-                              LeftTupleSets trgLeftTuples,
-                              LeftTupleSets stagedLeftTuples) {
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples,
+                              TupleSets<LeftTuple> stagedLeftTuples) {
         EvalCondition condition = evalNode.getCondition();
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            boolean wasPropagated = leftTuple.getFirstChild() != null && leftTuple.getObject() != EVAL_LEFT_TUPLE_DELETED;
+            boolean wasPropagated = leftTuple.getFirstChild() != null && leftTuple.getContextObject() != EVAL_LEFT_TUPLE_DELETED;
 
             boolean allowed = condition.isAllowed(leftTuple,
                                                   wm,
                                                   em.context);
             if (allowed) {
-                leftTuple.setObject(null);
+                leftTuple.setContextObject( null );
 
                 if (wasPropagated) {
                     // update
@@ -127,7 +127,7 @@ public class PhreakEvalNode {
             } else {
                 if (wasPropagated) {
                     // retract
-                    leftTuple.setObject(EVAL_LEFT_TUPLE_DELETED);
+                    leftTuple.setContextObject( EVAL_LEFT_TUPLE_DELETED );
 
                     LeftTuple childLeftTuple = leftTuple.getFirstChild();
                     childLeftTuple.setPropagationContext( leftTuple.getPropagationContext());
@@ -141,9 +141,9 @@ public class PhreakEvalNode {
         }
     }
 
-    public void doLeftDeletes(LeftTupleSets srcLeftTuples,
-                              LeftTupleSets trgLeftTuples,
-                              LeftTupleSets stagedLeftTuples) {
+    public void doLeftDeletes(TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples,
+                              TupleSets<LeftTuple> stagedLeftTuples) {
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 

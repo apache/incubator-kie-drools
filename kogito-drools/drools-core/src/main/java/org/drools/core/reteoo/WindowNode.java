@@ -27,7 +27,6 @@ import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.BehaviorManager;
-import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.SlidingTimeWindow;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
@@ -161,23 +160,22 @@ public class WindowNode extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext pctx,
                              final InternalWorkingMemory workingMemory) {
-        final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
-
         EventFactHandle evFh = ( EventFactHandle ) factHandle;
         int index = 0;
         for (AlphaNodeFieldConstraint constraint : constraints) {
-            if (!constraint.isAllowed(evFh, workingMemory, memory.context[index++])) {
+            if (!constraint.isAllowed(evFh, workingMemory)) {
                 return;
             }
         }
 
-        RightTuple rightTuple = new RightTuple( evFh, this );
+        RightTuple rightTuple = new RightTupleImpl( evFh, this );
         rightTuple.setPropagationContext( pctx );
 
         InternalFactHandle clonedFh = evFh.cloneAndLink();  // this is cloned, as we need to separate the child RightTuple references
         rightTuple.setObject( clonedFh );
 
         // process the behavior
+        final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
         if (!behavior.assertFact(memory.behaviorContext, clonedFh, pctx, workingMemory)) {
             return;
         }
@@ -200,8 +198,6 @@ public class WindowNode extends ObjectSource
 
     @Override
     public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
-        final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
-
         EventFactHandle originalFactHandle = ( EventFactHandle ) rightTuple.getFactHandle();
         EventFactHandle cloneFactHandle  = ( EventFactHandle ) rightTuple.getObject();
         originalFactHandle.quickCloneUpdate( cloneFactHandle ); // make sure all fields are updated
@@ -211,8 +207,7 @@ public class WindowNode extends ObjectSource
         boolean isAllowed = true;
         for (AlphaNodeFieldConstraint constraint : constraints) {
             if (!constraint.isAllowed(cloneFactHandle,
-                                      workingMemory,
-                                      memory.context[index++])) {
+                                      workingMemory)) {
                 isAllowed = false;
                 break;
             }
@@ -241,16 +236,16 @@ public class WindowNode extends ObjectSource
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
         while ( rightTuple != null &&
-                rightTuple.getRightTupleSink().getRightInputOtnId().before( getRightInputOtnId() ) ) {
+                rightTuple.getTupleSink().getRightInputOtnId().before( getRightInputOtnId() ) ) {
             modifyPreviousTuples.removeRightTuple();
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
-            rightTuple.getRightTupleSink().retractRightTuple( rightTuple, context, wm );
+            rightTuple.getTupleSink().retractRightTuple( rightTuple, context, wm );
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
 
-        if ( rightTuple != null && rightTuple.getRightTupleSink().getRightInputOtnId().equals(getRightInputOtnId()) ) {
+        if ( rightTuple != null && rightTuple.getTupleSink().getRightInputOtnId().equals(getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple();
             rightTuple.reAdd();
             modifyRightTuple( rightTuple, context, wm );
@@ -283,11 +278,6 @@ public class WindowNode extends ObjectSource
      */
     public Memory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
         WindowMemory memory = new WindowMemory();
-        memory.context = new ContextEntry[this.constraints.size()];
-        int index = 0;
-        for (AlphaNodeFieldConstraint alpha : constraints) {
-            memory.context[index++] = alpha.createContextEntry();
-        }
         memory.behaviorContext = this.behavior.createBehaviorContext();
         return memory;
     }
@@ -373,7 +363,6 @@ public class WindowNode extends ObjectSource
     }
 
     public static class WindowMemory implements Memory {
-        public ContextEntry[] context;
         public Behavior.Context[] behaviorContext;
 
         public short getNodeType() {

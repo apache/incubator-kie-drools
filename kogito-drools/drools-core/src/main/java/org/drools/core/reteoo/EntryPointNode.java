@@ -253,7 +253,7 @@ public class EntryPointNode extends ObjectSource
             if (i < cachedNodes.length - 1) {
                 RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
                 while ( rightTuple != null &&
-                        ((BetaNode) rightTuple.getRightTupleSink()).getObjectTypeNode() == cachedNodes[i] ) {
+                        ((BetaNode) rightTuple.getTupleSink()).getObjectTypeNode() == cachedNodes[i] ) {
                     modifyPreviousTuples.removeRightTuple();
 
                     doRightDelete(pctx, wm, rightTuple);
@@ -268,7 +268,7 @@ public class EntryPointNode extends ObjectSource
                     leftTuple = modifyPreviousTuples.peekLeftTuple();
                     otn = null;
                     if (leftTuple != null) {
-                        LeftTupleSink leftTupleSink = leftTuple.getLeftTupleSink();
+                        LeftTupleSink leftTupleSink = leftTuple.getTupleSink();
                         if (leftTupleSink instanceof LeftTupleSource) {
                             otn = leftTupleSink.getLeftTupleSource().getObjectTypeNode();
                         } else if (leftTupleSink instanceof RuleTerminalNode) {
@@ -287,14 +287,14 @@ public class EntryPointNode extends ObjectSource
     }
 
     public void doDeleteObject(PropagationContext pctx, InternalWorkingMemory wm, LeftTuple leftTuple) {
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource();
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getTupleSink().getLeftTupleSource();
         LiaNodeMemory lm = ( LiaNodeMemory )  wm.getNodeMemory( liaNode );
         LeftInputAdapterNode.doDeleteObject(leftTuple, pctx, lm.getSegmentMemory(), wm, liaNode, true, lm);
     }
 
     public void doRightDelete(PropagationContext pctx, InternalWorkingMemory wm, RightTuple rightTuple) {
         rightTuple.setPropagationContext( pctx );
-        rightTuple.getRightTupleSink().retractRightTuple(rightTuple, pctx, wm);
+        rightTuple.getTupleSink().retractRightTuple(rightTuple, pctx, wm);
     }
 
     public void modifyObject(InternalFactHandle factHandle,

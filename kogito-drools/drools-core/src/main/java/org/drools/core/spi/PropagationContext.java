@@ -20,7 +20,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.util.bitmask.BitMask;
@@ -38,11 +37,9 @@ public interface PropagationContext
 
     TerminalNode getTerminalNodeOrigin();
     
-    FactHandle getFactHandleOrigin();
-    
     void setFactHandle(FactHandle factHandle);
 
-    LeftTuple getLeftTupleOrigin();
+    Tuple getLeftTupleOrigin();
 
     /**
      * Returns the offset of the fact that initiated this propagation

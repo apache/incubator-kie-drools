@@ -20,10 +20,10 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
+import org.drools.core.common.TupleSets;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.ObjectTypeNode.Id;
@@ -281,7 +281,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private static void doDeleteSegmentMemory(LeftTuple leftTuple, PropagationContext pctx, final LiaNodeMemory lm,
                                               SegmentMemory sm, InternalWorkingMemory wm, boolean linkOrNotify) {
-        LeftTupleSets leftTuples = sm.getStagedLeftTuples();
+        TupleSets<LeftTuple> leftTuples = sm.getStagedLeftTuples();
         leftTuple.setPropagationContext( pctx );
 
         boolean stagedDeleteWasEmpty = leftTuples.addDelete(leftTuple);
@@ -309,7 +309,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
             sm = sm.getFirst(); // repoint to the child sm
         }
 
-        LeftTupleSets leftTuples = sm.getStagedLeftTuples();
+        TupleSets<LeftTuple> leftTuples = sm.getStagedLeftTuples();
 
         doUpdateSegmentMemory(leftTuple, context, wm, linkOrNotify, lm, leftTuples );
 
@@ -326,7 +326,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
     }
 
     private static void doUpdateSegmentMemory( LeftTuple leftTuple, PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify,
-                                               final LiaNodeMemory lm, LeftTupleSets leftTuples ) {
+                                               final LiaNodeMemory lm, TupleSets<LeftTuple> leftTuples ) {
         if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
             // if LeftTuple is already staged, leave it there
             leftTuple.setPropagationContext( pctx );
@@ -367,13 +367,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
             SegmentUtilities.createSegmentMemory( this, workingMemory );
         }
 
-        if ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId().equals( otnId ) ) {
+        if ( leftTuple != null && leftTuple.getTupleSink().getLeftInputOtnId().equals( otnId ) ) {
             modifyPreviousTuples.removeLeftTuple();
             leftTuple.reAdd();
             LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
             BitMask mask = sink.getLeftInferredMask();
             if ( context.getModificationMask().intersects( mask) ) {
-                doUpdateObject( leftTuple, context, workingMemory, (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource(), true, lm, lm.getSegmentMemory() );
+                doUpdateObject( leftTuple, context, workingMemory, (LeftInputAdapterNode) leftTuple.getTupleSink().getLeftTupleSource(), true, lm, lm.getSegmentMemory() );
                 if (leftTuple instanceof Activation) {
                     ((Activation)leftTuple).setActive(true);
                 }
@@ -392,10 +392,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private static LeftTuple processDeletesFromModify(ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory, Id otnId) {
         LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
-        while ( leftTuple != null && leftTuple.getLeftTupleSink().getLeftInputOtnId().before( otnId ) ) {
+        while ( leftTuple != null && leftTuple.getTupleSink().getLeftInputOtnId().before( otnId ) ) {
             modifyPreviousTuples.removeLeftTuple();
 
-            LeftInputAdapterNode prevLiaNode = (LeftInputAdapterNode) leftTuple.getLeftTupleSink().getLeftTupleSource();
+            LeftInputAdapterNode prevLiaNode = (LeftInputAdapterNode) leftTuple.getTupleSink().getLeftTupleSource();
             LiaNodeMemory prevLm = workingMemory.getNodeMemory( prevLiaNode );
             SegmentMemory prevSm = prevLm.getSegmentMemory();
             doDeleteObject( leftTuple, context, prevSm, workingMemory, prevLiaNode, true, prevLm );

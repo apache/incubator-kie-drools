@@ -19,7 +19,7 @@ package org.drools.core.reteoo;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RightTupleSets;
+import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 
@@ -89,26 +89,26 @@ public class NotNode extends BetaNode {
     }    
 
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new NotNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final LeftTupleSink sink) {
+                                     final Sink sink) {
         return new NotNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return new NotNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     LeftTupleSink sink) {
+                                     Sink sink) {
         return new NotNodeLeftTuple(leftTuple, rightTuple, sink );
     }   
     
@@ -116,7 +116,7 @@ public class NotNode extends BetaNode {
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new NotNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }       
@@ -145,6 +145,9 @@ public class NotNode extends BetaNode {
         // strangely we link here, this is actually just to force a network evaluation
         // The assert is then processed and the rule unlinks then.
         // This is because we need the first RightTuple to link with it's blocked
+        if ( memory.getStagedRightTuples().isEmpty() ) {
+            memory.setNodeDirtyWithoutNotify();
+        }
         boolean stagedInsertWasEmpty = memory.getStagedRightTuples().addInsert( rightTuple );
 
         if (  memory.getAndIncCounter() == 0 && isEmptyBetaConstraints()  ) {
@@ -171,7 +174,10 @@ public class NotNode extends BetaNode {
     public void doDeleteRightTuple(final RightTuple rightTuple,
                                    final InternalWorkingMemory wm,
                                    final BetaMemory memory) {
-        RightTupleSets stagedRightTuples = memory.getStagedRightTuples();
+        TupleSets<RightTuple> stagedRightTuples = memory.getStagedRightTuples();
+        if ( stagedRightTuples.isEmpty() ) {
+            memory.setNodeDirtyWithoutNotify();
+        }
         boolean stagedDeleteWasEmpty = stagedRightTuples.addDelete( rightTuple );
 
         if (  memory.getAndDecCounter() == 1 && isEmptyBetaConstraints()  ) {
