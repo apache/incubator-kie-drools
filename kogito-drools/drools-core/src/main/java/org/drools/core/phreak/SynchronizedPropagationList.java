@@ -55,6 +55,8 @@ public class SynchronizedPropagationList implements PropagationList {
         if ( !wasEmpty ) {
             entry.setNext( head );
             tail = head;
+        } else {
+            tail = entry;
         }
         head = entry;
 
