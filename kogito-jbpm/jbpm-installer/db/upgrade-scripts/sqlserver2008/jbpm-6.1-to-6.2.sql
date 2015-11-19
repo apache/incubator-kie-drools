@@ -23,9 +23,9 @@ AS
 	END
 GO
 -- Executing the procedure
-EXECUTE alter_table_session_info
+EXECUTE alter_table_session_info;
 -- Deleting the procedure to clean it from database
-DROP PROCEDURE alter_table_session_info
+DROP PROCEDURE alter_table_session_info;
 -- Recriating the Index
 ALTER INDEX ALL ON SessionInfo REORGANIZE;
 
