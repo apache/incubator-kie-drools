@@ -30,6 +30,7 @@ import org.drools.core.spi.ConsequenceException;
 import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
+import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 
@@ -166,16 +167,16 @@ public interface InternalAgenda
                                 RuleAgendaItem ruleAgendaItem,
                                 InternalAgendaGroup agendaGroup);
 
-    boolean createActivation(final LeftTuple tuple,
-                                    final PropagationContext context,
-                                    final InternalWorkingMemory workingMemory,
-                                    final TerminalNode rtn );
+    boolean createActivation(final Tuple tuple,
+                             final PropagationContext context,
+                             final InternalWorkingMemory workingMemory,
+                             final TerminalNode rtn );
 
-    void cancelActivation(final LeftTuple leftTuple,
-                                 final PropagationContext context,
-                                 final InternalWorkingMemory workingMemory,
-                                 final Activation activation,
-                                 final TerminalNode rtn );
+    void cancelActivation(final Tuple leftTuple,
+                          final PropagationContext context,
+                          final InternalWorkingMemory workingMemory,
+                          final Activation activation,
+                          final TerminalNode rtn );
 
     /**
      * Adds the activation to the agenda. Depending on the mode the agenda is running,

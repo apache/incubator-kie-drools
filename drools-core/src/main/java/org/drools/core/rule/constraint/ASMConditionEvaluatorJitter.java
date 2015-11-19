@@ -18,7 +18,6 @@ package org.drools.core.rule.constraint;
 import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.builder.dialect.asm.ClassGenerator;
 import org.drools.core.rule.builder.dialect.asm.GeneratorHelper;
@@ -43,6 +42,7 @@ import org.drools.core.rule.constraint.ConditionAnalyzer.MapAccessInvocation;
 import org.drools.core.rule.constraint.ConditionAnalyzer.MethodInvocation;
 import org.drools.core.rule.constraint.ConditionAnalyzer.SingleCondition;
 import org.drools.core.rule.constraint.ConditionAnalyzer.VariableExpression;
+import org.drools.core.spi.Tuple;
 import org.mvel2.asm.Label;
 import org.mvel2.asm.MethodVisitor;
 import org.mvel2.util.NullType;
@@ -76,7 +76,7 @@ public class ASMConditionEvaluatorJitter {
                                                   Declaration[] declarations,
                                                   EvaluatorWrapper[] operators,
                                                   ClassLoader classLoader,
-                                                  LeftTuple leftTuple) {
+                                                  Tuple tuple) {
         ClassGenerator generator = new ClassGenerator(getUniqueClassName(), classLoader)
                 .setInterfaces( ConditionEvaluator.class )
                 .addStaticField( ACC_PRIVATE | ACC_FINAL, "EXPRESSION", String.class, expression )
@@ -84,8 +84,8 @@ public class ASMConditionEvaluatorJitter {
 
         generator.addMethod(ACC_PUBLIC,
                             "evaluate",
-                            generator.methodDescr(boolean.class, InternalFactHandle.class, InternalWorkingMemory.class, LeftTuple.class),
-                            new EvaluateMethodGenerator(condition, declarations, operators, leftTuple));
+                            generator.methodDescr(boolean.class, InternalFactHandle.class, InternalWorkingMemory.class, Tuple.class),
+                            new EvaluateMethodGenerator(condition, declarations, operators, tuple));
 
         if (operators.length == 0) {
             generator.addDefaultConstructor( new ClassGenerator.MethodBody() {
@@ -126,16 +126,16 @@ public class ASMConditionEvaluatorJitter {
 
         private final Condition condition;
         private final Declaration[] declarations;
-        private final LeftTuple leftTuple;
+        private final Tuple tuple;
         private final EvaluatorWrapper[] operators;
 
         private int[] declPositions;
 
-        public EvaluateMethodGenerator(Condition condition, Declaration[] declarations, EvaluatorWrapper[] operators, LeftTuple leftTuple) {
+        public EvaluateMethodGenerator(Condition condition, Declaration[] declarations, EvaluatorWrapper[] operators, Tuple leftTuple) {
             this.condition = condition;
             this.declarations = declarations;
             this.operators = operators;
-            this.leftTuple = leftTuple;
+            this.tuple = leftTuple;
         }
 
         public void body(MethodVisitor mv) {
@@ -153,14 +153,14 @@ public class ASMConditionEvaluatorJitter {
             declPositions = new int[declarations.length];
             List<GeneratorHelper.DeclarationMatcher> declarationMatchers = matchDeclarationsToTuple(declarations);
 
-            LeftTuple currentLeftTuple = leftTuple;
+            Tuple currentTuple = tuple;
             mv.visitVarInsn(ALOAD, 3);
-            store(4, LeftTuple.class);
+            store(4, Tuple.class);
 
             int decPos = ARGUMENTS;
             for (GeneratorHelper.DeclarationMatcher declarationMatcher : declarationMatchers) {
                 int i = declarationMatcher.getOriginalIndex();
-                if (currentLeftTuple == null || declarationMatcher.getRootDistance() > currentLeftTuple.getIndex()) {
+                if (currentTuple == null || declarationMatcher.getRootDistance() > currentTuple.getIndex()) {
                     getFieldFromThis("declarations", Declaration[].class);
                     push(i);
                     mv.visitInsn(AALOAD); // declarations[i]
@@ -172,15 +172,15 @@ public class ASMConditionEvaluatorJitter {
                     continue;
                 }
 
-                currentLeftTuple = traverseTuplesUntilDeclaration(currentLeftTuple, declarationMatcher.getRootDistance(), 4);
+                currentTuple = traverseTuplesUntilDeclaration(currentTuple, declarationMatcher.getRootDistance(), 4);
 
                 getFieldFromThis("declarations", Declaration[].class);
                 push(i);
                 mv.visitInsn(AALOAD); // declarations[i]
                 mv.visitVarInsn(ALOAD, 2); // InternalWorkingMemory
                 load(4);
-                invokeInterface(LeftTuple.class, "getHandle", InternalFactHandle.class);
-                invokeInterface(InternalFactHandle.class, "getObject", Object.class); // leftTuple.getHandle().getObject()
+                invokeInterface(Tuple.class, "getFactHandle", InternalFactHandle.class);
+                invokeInterface(InternalFactHandle.class, "getObject", Object.class); // tuple.getFactHandle().getObject()
 
                 declPositions[i] = decPos;
                 decPos += storeObjectFromDeclaration(declarationMatcher.getDeclaration(), decPos);
@@ -194,9 +194,9 @@ public class ASMConditionEvaluatorJitter {
 
             mv.visitVarInsn(ALOAD, 1); // InternalFactHandle
             mv.visitVarInsn(ALOAD, 2); // InternalWorkingMemory
-            mv.visitVarInsn(ALOAD, 3); // LeftTuple
+            mv.visitVarInsn(ALOAD, 3); // Tuple
             getFieldFromThis("operators", EvaluatorWrapper[].class);
-            invokeStatic(EvaluatorHelper.class, "initOperators", void.class, InternalFactHandle.class, InternalWorkingMemory.class, LeftTuple.class, EvaluatorWrapper[].class);
+            invokeStatic(EvaluatorHelper.class, "initOperators", void.class, InternalFactHandle.class, InternalWorkingMemory.class, Tuple.class, EvaluatorWrapper[].class);
         }
 
         private void jitCondition(Condition condition) {

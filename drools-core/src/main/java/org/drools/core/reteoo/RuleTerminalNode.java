@@ -35,6 +35,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.time.impl.BaseTimer;
 import org.kie.api.event.rule.MatchCancelledCause;
 
@@ -195,10 +196,9 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     }
 
 
-    public static PropagationContext findMostRecentPropagationContext(final LeftTuple leftTuple,
-                                                                PropagationContext context) {
+    public static PropagationContext findMostRecentPropagationContext(Tuple leftTuple, PropagationContext context) {
         // Find the most recent PropagationContext, as this caused this rule to elegible for firing
-        LeftTuple lt = leftTuple;
+        Tuple lt = leftTuple;
         while ( lt != null ) {
             if ( lt.getPropagationContext() != null && lt.getPropagationContext().getPropagationNumber() > context.getPropagationNumber() ) {
                 context = lt.getPropagationContext();
@@ -270,7 +270,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     public void cancelMatch(AgendaItem match, InternalWorkingMemoryActions workingMemory) {
         match.cancel();
         if ( match.isQueued() ) {
-            LeftTuple leftTuple = match.getTuple();
+            Tuple leftTuple = match.getTuple();
             if ( match.getRuleAgendaItem() != null ) {
                 // phreak must also remove the LT from the rule network evaluator
                 if ( leftTuple.getMemory() != null ) {
@@ -361,11 +361,11 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
         public void cleanUp(final LeftTuple leftTuple,
                             final InternalWorkingMemory workingMemory) {
-            if ( leftTuple.getLeftTupleSink() != node ) {
+            if ( leftTuple.getTupleSink() != node ) {
                 return;
             }
 
-            final Activation activation = (Activation) leftTuple.getObject();
+            final Activation activation = (Activation) leftTuple.getContextObject();
 
             // this is to catch a race condition as activations are activated and unactivated on timers
             if ( activation instanceof ScheduledAgendaItem ) {
@@ -393,18 +393,18 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final LeftTupleSink sink) {
+                                     final Sink sink) {
         return new RuleTerminalNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new RuleTerminalNodeLeftTuple( factHandle, sink, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
         return new RuleTerminalNodeLeftTuple( leftTuple, sink, pctx, leftTupleMemoryEnabled );
@@ -412,7 +412,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     LeftTupleSink sink) {
+                                     Sink sink) {
         return new RuleTerminalNodeLeftTuple( leftTuple, rightTuple, sink );
     }
 
@@ -420,7 +420,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new RuleTerminalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
 

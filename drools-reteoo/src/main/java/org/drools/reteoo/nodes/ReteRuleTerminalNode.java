@@ -48,7 +48,7 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
                                       this,
                                       workingMemory )) ||
              (this.rule.isNoLoop() && this.equals( context.getTerminalNodeOrigin() )) ) {
-            leftTuple.setObject( Boolean.TRUE );
+            leftTuple.setContextObject( Boolean.TRUE );
             return;
         }
 
@@ -57,7 +57,7 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
         boolean fire = agenda.createActivation( leftTuple,  context,
                                                 workingMemory,  this );
         if( fire && !fireDirect ) {
-            agenda.addActivation( (AgendaItem) leftTuple.getObject() );
+            agenda.addActivation( (AgendaItem) leftTuple.getContextObject() );
         }
     }
 
@@ -67,7 +67,7 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
         InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
 
         // we need the inserted facthandle so we can update the network with new Activation
-        Object o = leftTuple.getObject();
+        Object o = leftTuple.getContextObject();
         if ( o != Boolean.TRUE) {  // would be true due to lock-on-active blocking activation creation
             AgendaItem match = (AgendaItem) o;
             if ( match != null && match.isQueued() ) {
@@ -89,18 +89,18 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
         // o (AgendaItem) could be null, if this was staged as an insert but not processed, then pushed as a update
         if ( o == null || o  == Boolean.TRUE ) {
             // set to Boolean.TRUE when lock-on-active stops an Activation being created
-            leftTuple.setObject( null );
+            leftTuple.setContextObject( null );
         }
         boolean fire = agenda.createActivation( leftTuple, context, workingMemory, this );
         if ( fire && !isFireDirect() ) {
-            agenda.modifyActivation( (AgendaItem) leftTuple.getObject(), false );
+            agenda.modifyActivation( (AgendaItem) leftTuple.getContextObject(), false );
         }
     }
 
     public void retractLeftTuple(final LeftTuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory) {
-        Object obj = leftTuple.getObject();
+        Object obj = leftTuple.getContextObject();
 
 
         // activation can be null if the LeftTuple previous propagated into a no-loop
@@ -126,8 +126,8 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
     public void cancelMatch(AgendaItem match, InternalWorkingMemoryActions workingMemory) {
         match.cancel();
         if ( match.isQueued() ) {
-            LeftTuple leftTuple = match.getTuple();
-            leftTuple.getLeftTupleSink().retractLeftTuple( leftTuple, (PropagationContext) match.getPropagationContext(), workingMemory );
+            LeftTuple leftTuple = (LeftTuple)match.getTuple();
+            leftTuple.getTupleSink().retractLeftTuple( leftTuple, (PropagationContext) match.getPropagationContext(), workingMemory );
         }
     }
 

@@ -25,6 +25,7 @@ import org.drools.core.reteoo.QueryTerminalNode;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 
 public class ReteQueryTerminalNode extends QueryTerminalNode {
 
@@ -39,9 +40,9 @@ public class ReteQueryTerminalNode extends QueryTerminalNode {
                                 final PropagationContext context,
                                 final InternalWorkingMemory workingMemory) {
         // find the DroolsQuery object
-        LeftTuple entry = leftTuple.getRootLeftTuple();
+        Tuple entry = leftTuple.getRootTuple();
 
-        DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
+        DroolsQuery query = (DroolsQuery) entry.getFactHandle().getObject();
         query.setQuery( this.query );
 
         // Add results to the adapter
@@ -56,9 +57,9 @@ public class ReteQueryTerminalNode extends QueryTerminalNode {
                                  final InternalWorkingMemory workingMemory) {
         // find the DroolsQuery object
 
-        LeftTuple entry = leftTuple.getRootLeftTuple();
+        Tuple entry = leftTuple.getRootTuple();
 
-        DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
+        DroolsQuery query = (DroolsQuery) entry.getFactHandle().getObject();
         query.setQuery( this.query );
 
         // Add results to the adapter
@@ -72,9 +73,9 @@ public class ReteQueryTerminalNode extends QueryTerminalNode {
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         // find the DroolsQuery object
-        LeftTuple entry = leftTuple.getRootLeftTuple();
+        Tuple entry = leftTuple.getRootTuple();
 
-        DroolsQuery query = (DroolsQuery) entry.getLastHandle().getObject();
+        DroolsQuery query = (DroolsQuery) entry.getFactHandle().getObject();
         query.setQuery( this.query );
 
         // Add results to the adapter

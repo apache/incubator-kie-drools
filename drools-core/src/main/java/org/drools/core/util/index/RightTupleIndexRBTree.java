@@ -15,7 +15,8 @@
 
 package org.drools.core.util.index;
 
-import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.TupleMemory;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
@@ -24,9 +25,6 @@ import org.drools.core.util.RightTupleRBTree;
 import org.drools.core.util.RightTupleRBTree.Boundary;
 import org.drools.core.util.RightTupleRBTree.Node;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleMemory;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -35,7 +33,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
+public class RightTupleIndexRBTree implements TupleMemory, Externalizable {
 
     private RightTupleRBTree<Comparable<Comparable>> tree;
 
@@ -68,15 +66,15 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
         size = in.readInt();
     }
 
-    public void add(RightTuple tuple) {
-        Comparable key = getIndexedValue(tuple);
-        RightTupleList list = tree.insert(key);
+    public void add(Tuple tuple) {
+        Comparable key = getRightIndexedValue( tuple );
+        TupleList list = tree.insert(key);
         list.add(tuple);
         size++;
     }
 
-    public void remove(RightTuple tuple) {
-        RightTupleList list = tuple.getMemory();
+    public void remove(Tuple tuple) {
+        TupleList list = tuple.getMemory();
         list.remove(tuple);
         if (list.getFirst() == null) {
             tree.delete(((RightTupleRBTree.Node<Comparable<Comparable>>)list).key);
@@ -84,7 +82,7 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
         size--;
     }
 
-    public void removeAdd(RightTuple tuple) {
+    public void removeAdd(Tuple tuple) {
         remove(tuple);
         add(tuple);
     }
@@ -104,33 +102,33 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
         }
 
         List<Comparable> toBeRemoved = new ArrayList<Comparable>();
-        List<RightTuple> result = new ArrayList<RightTuple>();
+        List<Tuple> result = new ArrayList<Tuple>();
 
-        RightTupleList list = null;
-        while ( (list = (RightTupleList) it.next( list )) != null ) {
-            RightTuple entry = list.getFirst();
+        TupleList list = null;
+        while ( (list = (TupleList) it.next( list )) != null ) {
+            Tuple entry = list.getFirst();
             while (entry != null) {
                 result.add(entry);
-                entry = (RightTuple) entry.getNext();
+                entry = (Tuple) entry.getNext();
             }
         }
 
-        return result.toArray(new LeftTuple[result.size()]);
+        return result.toArray(new Tuple[result.size()]);
     }
 
-    public RightTuple getFirst(LeftTuple tuple, InternalFactHandle factHandle, FastIterator rightTupleIterator) {
-        Comparable key = getIndexedValue(tuple);
+    public Tuple getFirst(Tuple tuple) {
+        Comparable key = getLeftIndexedValue( tuple );
         return getNext(key, true);
     }
 
     public Iterator iterator() {
-        RightTupleList list = tree.first();
-        RightTuple firstTuple = list != null ? list.first : null;
+        TupleList list = tree.first();
+        Tuple firstTuple = list != null ? list.first : null;
         return new FastIterator.IteratorAdapter(fastIterator(), firstTuple);
     }
 
-    public boolean contains(RightTuple tuple) {
-        Comparable key = getIndexedValue(tuple);
+    public boolean contains(Tuple tuple) {
+        Comparable key = getRightIndexedValue( tuple );
         return tree.lookup(key) != null;
     }
 
@@ -142,9 +140,9 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
         return new RightTupleFastIterator();
     }
 
-    public FastIterator fullFastIterator(RightTuple tuple) {
+    public FastIterator fullFastIterator(Tuple tuple) {
         FastIterator fastIterator = fullFastIterator();
-        Comparable key = getIndexedValue(tuple);
+        Comparable key = getRightIndexedValue( tuple );
         fastIterator.next(getNext(key, true));
         return fastIterator;
     }
@@ -153,15 +151,15 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
         return IndexType.COMPARISON;
     }
 
-    private Comparable getIndexedValue(LeftTuple leftTuple) {
+    private Comparable getLeftIndexedValue( Tuple leftTuple ) {
         return (Comparable) index.getDeclaration().getExtractor().getValue(leftTuple.get(index.getDeclaration()).getObject());
     }
 
-    private Comparable getIndexedValue(RightTuple rightTuple) {
+    private Comparable getRightIndexedValue( Tuple rightTuple ) {
         return (Comparable) index.getExtractor().getValue( rightTuple.getFactHandle().getObject() );
     }
 
-    private RightTuple getNext(Comparable key, boolean first) {
+    private Tuple getNext(Comparable key, boolean first) {
         Node<Comparable<Comparable>> firstNode;
         switch (constraintType) {
             case LESS_THAN:
@@ -188,12 +186,12 @@ public class RightTupleIndexRBTree implements RightTupleMemory, Externalizable {
                 Node<Comparable<Comparable>> firstNode = tree.first();
                 return firstNode == null ? null : firstNode.getFirst();
             }
-            RightTuple rightTuple = (RightTuple) object;
-            RightTuple next = (RightTuple) rightTuple.getNext();
+            Tuple rightTuple = (Tuple) object;
+            Tuple next = (Tuple) rightTuple.getNext();
             if (next != null) {
                 return next;
             }
-            Comparable key = getIndexedValue(rightTuple);
+            Comparable key = getRightIndexedValue( rightTuple );
             return getNext(key, false);
         }
 

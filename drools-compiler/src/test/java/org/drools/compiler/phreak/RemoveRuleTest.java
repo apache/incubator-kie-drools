@@ -92,7 +92,7 @@ public class RemoveRuleTest {
         assertEquals( 1, eMem.getRightTupleMemory().size() );
 
         NodeMemories nms = wm.getNodeMemories();
-        assertEquals( 13, countNodeMemories(nms));
+        assertEquals( 12, countNodeMemories(nms));
 
         assertNull(sm.getStagedLeftTuples().getInsertFirst());
         assertEquals(1, list.size() );
@@ -180,7 +180,7 @@ public class RemoveRuleTest {
         wm.insert(new E(1));
         wm.fireAllRules();
 
-        assertEquals( 8, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 7, countNodeMemories(wm.getNodeMemories()));
 
         kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   a : A() B() C(2;) D() E()\n") );
         wm.fireAllRules();
@@ -209,7 +209,7 @@ public class RemoveRuleTest {
 
 
         kbase1.removeRule("org.kie", "r2");
-        assertEquals( 11, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 10, countNodeMemories(wm.getNodeMemories()));
 
         assertNull( sm.getFirst());
 
@@ -243,7 +243,7 @@ public class RemoveRuleTest {
         wm.insert(new E(1));
         wm.fireAllRules();
 
-        assertEquals( 8, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 7, countNodeMemories(wm.getNodeMemories()));
 
         kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   a:A() B() eval(1==1) eval(1==1) C(2;) \n") );
         wm.fireAllRules();
@@ -275,7 +275,7 @@ public class RemoveRuleTest {
 
 
         kbase1.removeRule("org.kie", "r2");
-        assertEquals( 9, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 8, countNodeMemories(wm.getNodeMemories()));
 
         assertNull( sm.getFirst());
 
@@ -309,11 +309,11 @@ public class RemoveRuleTest {
 
         wm.fireAllRules();
         assertEquals( 3, list.size() );
-        assertEquals( 8, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 7, countNodeMemories(wm.getNodeMemories()));
 
         kbase1.addKnowledgePackages( buildKnowledgePackage("r2", "   a : A() B(2;) C() D() E()\n") );
         wm.fireAllRules();
-        assertEquals( 19, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 17, countNodeMemories(wm.getNodeMemories()));
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase1, A.class );
         LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
@@ -342,10 +342,10 @@ public class RemoveRuleTest {
 
         wm.fireAllRules();
         assertEquals(6, list.size() );
-        assertEquals( 19, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 17, countNodeMemories(wm.getNodeMemories()));
 
         kbase1.removeRule("org.kie", "r2");
-        assertEquals( 13, countNodeMemories(wm.getNodeMemories()));
+        assertEquals( 12, countNodeMemories(wm.getNodeMemories()));
 
         assertSame( sm, b1Mem.getSegmentMemory());
         assertSame( sm, c1Mem.getSegmentMemory());

@@ -23,7 +23,6 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleMemory;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
@@ -32,6 +31,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.kie.api.KieBase;
@@ -47,11 +47,8 @@ import java.util.Set;
 public class PhreakActivationIterator
     implements
     Iterator {
-    private InternalWorkingMemory wm;
 
     private java.util.Iterator<AgendaItem> agendaItemIter;
-
-    private LeftTuple currentLeftTuple;
 
     List<AgendaItem> agendaItems;
 
@@ -61,7 +58,6 @@ public class PhreakActivationIterator
 
     private PhreakActivationIterator(InternalWorkingMemory wm,
                                      KieBase kbase) {
-        this.wm = wm;
         agendaItems = collectAgendaItems((InternalKnowledgeBase) kbase, wm);
         agendaItemIter =  agendaItems.iterator();
     }
@@ -139,7 +135,7 @@ public class PhreakActivationIterator
                         FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
                         LeftTuple lt = BetaNode.getFirstLeftTuple(bm.getLeftTupleMemory(), it);
                         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
-                            AccumulateContext accctx = (AccumulateContext) lt.getObject();
+                            AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
                             collectFromPeers(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
                         }
                     } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
@@ -166,9 +162,9 @@ public class PhreakActivationIterator
                     return;
                 } else if (NodeTypeEnums.FromNode == node.getType()) {
                     FromMemory fm = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
-                    LeftTupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
+                    TupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
                     FastIterator it = ltm.fullFastIterator();
-                    for (LeftTuple lt = ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
+                    for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
                         if ( lt.getFirstChild() != null ) {
                             collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);
                         }
@@ -201,7 +197,7 @@ public class PhreakActivationIterator
             InternalFactHandle fh = it.next();
             if (fh.getFirstLeftTuple() != null ) {
                 for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; childLt = childLt.getLeftParentNext()) {
-                    if ( childLt.getSink() == firstLiaSink ) {
+                    if ( childLt.getTupleSink() == firstLiaSink ) {
                         collectFromLeftInput(childLt, agendaItems, nodeSet, wm);
                     }
                 }
@@ -217,8 +213,8 @@ public class PhreakActivationIterator
 
     private static void collectFromPeers(LeftTuple peer, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
         while (peer != null) {
-            if ( peer.getLeftTupleSink().getType() == NodeTypeEnums.AccumulateNode ) {
-                AccumulateContext accctx = (AccumulateContext) peer.getObject();
+            if ( peer.getTupleSink().getType() == NodeTypeEnums.AccumulateNode ) {
+                AccumulateContext accctx = (AccumulateContext) peer.getContextObject();
                 if (accctx != null) {
                     // the accumulate context can be null if the lefttuple hasn't been evaluated yet
                     collectFromLeftInput(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
@@ -227,9 +223,9 @@ public class PhreakActivationIterator
                 for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getLeftParentNext()) {
                     collectFromLeftInput(childLt, agendaItems, nodeSet, wm);
                 }
-            } else if ( peer.getLeftTupleSink().getType() == NodeTypeEnums.RuleTerminalNode ) {
+            } else if ( peer.getTupleSink().getType() == NodeTypeEnums.RuleTerminalNode ) {
                 agendaItems.add((AgendaItem) peer);
-                nodeSet.remove(peer.getLeftTupleSink()); // remove this RuleTerminalNode, as we know we've visited it already
+                nodeSet.remove(peer.getTupleSink()); // remove this RuleTerminalNode, as we know we've visited it already
             }
             peer = peer.getPeer();
         }

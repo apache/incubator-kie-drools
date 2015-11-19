@@ -16,17 +16,17 @@
 
 package org.drools.core.rule;
 
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
+import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.Constraint;
+import org.drools.core.spi.Tuple;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Arrays;
-
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.BetaNodeFieldConstraint;
-import org.drools.core.spi.Constraint;
 
 /**
  * A superclass for all composite constraints, like "OR" and "AND"
@@ -229,7 +229,6 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
 
         private static final long    serialVersionUID = 510l;
 
-        public ContextEntry[]        alphas;
         public ContextEntry[]        betas;
         public ContextEntry          next;
         public InternalWorkingMemory workingMemory;
@@ -240,10 +239,6 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
 
         public MultiFieldConstraintContextEntry(final AlphaNodeFieldConstraint[] alphas,
                                                 final BetaNodeFieldConstraint[] betas) {
-            this.alphas = new ContextEntry[alphas.length];
-            for ( int i = 0; i < alphas.length; i++ ) {
-                this.alphas[i] = alphas[i].createContextEntry();
-            }
             this.betas = new ContextEntry[betas.length];
             for ( int i = 0; i < betas.length; i++ ) {
                 this.betas[i] = betas[i].createContextEntry();
@@ -251,7 +246,6 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
         }
 
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-            alphas  = (ContextEntry[])in.readObject();
             betas   = (ContextEntry[])in.readObject();
             next  = (ContextEntry)in.readObject();
             workingMemory  = (InternalWorkingMemory)in.readObject();
@@ -259,7 +253,6 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject(alphas);
             out.writeObject(betas);
             out.writeObject(next);
             out.writeObject(workingMemory);
@@ -278,24 +271,14 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
                                          InternalFactHandle handle) {
             this.workingMemory = workingMemory;
             this.handle = handle;
-            for (ContextEntry alpha : alphas) {
-                if (alpha != null) {
-                    alpha.updateFromFactHandle(workingMemory, handle);
-                }
-            }
             for (ContextEntry beta : betas) {
                 beta.updateFromFactHandle(workingMemory, handle);
             }
         }
 
         public void updateFromTuple(InternalWorkingMemory workingMemory,
-                                    LeftTuple tuple) {
+                                    Tuple tuple) {
             this.workingMemory = workingMemory;
-            for (ContextEntry alpha : alphas) {
-                if (alpha != null) {
-                    alpha.updateFromTuple(workingMemory, tuple);
-                }
-            }
             for (ContextEntry beta : betas) {
                 beta.updateFromTuple(workingMemory, tuple);
             }
@@ -303,11 +286,6 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
 
         public void resetTuple() {
             this.workingMemory = null;
-            for ( int i = 0, length = this.alphas.length; i < length; i++ ) {
-                if ( alphas[i] != null ) {
-                    this.alphas[i].resetTuple();
-                }
-            }
             for ( int i = 0, length = this.betas.length; i < length; i++ ) {
                 this.betas[i].resetTuple();
             }
@@ -316,11 +294,6 @@ public abstract class AbstractCompositeConstraint extends MutableTypeConstraint 
         public void resetFactHandle() {
             this.workingMemory = null;
             this.handle = null;
-            for ( int i = 0, length = this.alphas.length; i < length; i++ ) {
-                if ( alphas[i] != null ) {
-                    this.alphas[i].resetFactHandle();
-                }
-            }
             for ( int i = 0, length = this.betas.length; i < length; i++ ) {
                 this.betas[i].resetFactHandle();
             }

@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,18 +11,18 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ *
+ */
 
 package org.drools.core.util.index;
 
+import org.drools.core.reteoo.TupleMemory;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.RBTree;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleMemory;
-import org.drools.core.reteoo.RightTuple;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -31,18 +31,18 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizable {
+public class LeftTupleIndexRangeRBTree implements Externalizable, TupleMemory {
 
-    private RBTree<Comparable<Comparable>, RBTree<Comparable<Comparable>, LeftTupleList>> tree;
+    private RBTree<Comparable<Comparable>, RBTree<Comparable<Comparable>, TupleList>> tree;
 
     private AbstractHashTable.FieldIndex ascendingIndex;
     private IndexUtil.ConstraintType ascendingConstraintType;
 
     private AbstractHashTable.FieldIndex descendingIndex;
     private IndexUtil.ConstraintType descendingConstraintType;
-    
-    
-    private transient LeftTupleFastIterator leftTupleFastIterator;
+
+
+    private transient TupleFastIterator tupleFastIterator;
 
     private int size;
 
@@ -50,13 +50,13 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
         // constructor for serialisation
     }
 
-    public LeftTupleIndexRangeRBTree(IndexUtil.ConstraintType ascendingConstraintType, AbstractHashTable.FieldIndex ascendingIndex,
-                                      IndexUtil.ConstraintType descendingConstraintType, AbstractHashTable.FieldIndex descendingIndex) {
+    public LeftTupleIndexRangeRBTree( IndexUtil.ConstraintType ascendingConstraintType, AbstractHashTable.FieldIndex ascendingIndex,
+                                      IndexUtil.ConstraintType descendingConstraintType, AbstractHashTable.FieldIndex descendingIndex ) {
         this.ascendingIndex = ascendingIndex;
         this.ascendingConstraintType = ascendingConstraintType;
         this.descendingIndex = descendingIndex;
         this.descendingConstraintType = descendingConstraintType;
-        tree = new RBTree<Comparable<Comparable>, RBTree<Comparable<Comparable>, LeftTupleList>>();
+        tree = new RBTree<Comparable<Comparable>, RBTree<Comparable<Comparable>, TupleList>>();
     }
 
 
@@ -70,7 +70,7 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        tree = (RBTree<Comparable<Comparable>, RBTree<Comparable<Comparable>, LeftTupleList>>) in.readObject();
+        tree = (RBTree<Comparable<Comparable>, RBTree<Comparable<Comparable>, TupleList>>) in.readObject();
         ascendingIndex = (AbstractHashTable.FieldIndex) in.readObject();
         ascendingConstraintType = (IndexUtil.ConstraintType) in.readObject();
         descendingIndex = (AbstractHashTable.FieldIndex) in.readObject();
@@ -78,31 +78,31 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
         size = in.readInt();
     }
 
-    public void add(LeftTuple leftTuple) {
-        Comparable lowerBound = getLeftAscendingIndexedValue(leftTuple);
-        Comparable upperBound = getLeftDescendingIndexedValue(leftTuple);
-        RBTree<Comparable<Comparable>, LeftTupleList> nestedTree = tree.lookup(lowerBound);
+    public void add(Tuple tuple) {
+        Comparable lowerBound = getLeftAscendingIndexedValue(tuple);
+        Comparable upperBound = getLeftDescendingIndexedValue(tuple);
+        RBTree<Comparable<Comparable>, TupleList> nestedTree = tree.lookup(lowerBound);
         if (nestedTree == null) {
-            nestedTree = new RBTree<Comparable<Comparable>, LeftTupleList>();
+            nestedTree = new RBTree<Comparable<Comparable>, TupleList>();
             tree.insert(lowerBound, nestedTree);
         }
-        LeftTupleList list = nestedTree.lookup(upperBound);
+        TupleList list = nestedTree.lookup(upperBound);
         if (list == null) {
-            list = new LeftTupleList();
+            list = new TupleList();
             nestedTree.insert(upperBound, list);
         }
-        list.add(leftTuple);
+        list.add(tuple);
         size++;
     }
 
-    public void remove(LeftTuple tuple) {
+    public void remove(Tuple tuple) {
         tuple.getMemory().remove(tuple);
         size--;
     }
 
-    public void removeAdd(LeftTuple tuple) {
-        remove(tuple);
-        add(tuple);
+    public void removeAdd(Tuple tuple) {
+        remove( tuple );
+        add( tuple );
     }
 
     public boolean isIndexed() {
@@ -121,26 +121,26 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
 
         List<Comparable> toBeRemoved = new ArrayList<Comparable>();
         List<Comparable> nestedToBeRemoved = new ArrayList<Comparable>();
-        List<LeftTuple> result = new ArrayList<LeftTuple>();
+        List<Tuple> result = new ArrayList<Tuple>();
 
-        RBTree.Node<Comparable<Comparable>, RBTree<Comparable<Comparable>, LeftTupleList>> node = null;
-        RBTree.Node<Comparable<Comparable>, LeftTupleList> nestedNode = null;
+        RBTree.Node<Comparable<Comparable>, RBTree<Comparable<Comparable>, TupleList>> node = null;
+        RBTree.Node<Comparable<Comparable>, TupleList> nestedNode = null;
 
-        while ( (node = (RBTree.Node<Comparable<Comparable>, RBTree<Comparable<Comparable>, LeftTupleList>>) it.next( node )) != null ) {
+        while ( (node = (RBTree.Node<Comparable<Comparable>, RBTree<Comparable<Comparable>, TupleList>>) it.next( node )) != null ) {
             nestedToBeRemoved.clear();
-            RBTree<Comparable<Comparable>, LeftTupleList> nestedTree = node.value;
+            RBTree<Comparable<Comparable>, TupleList> nestedTree = node.value;
             FastIterator nestedIt = nestedTree.fastIterator();
 
-            while ( (nestedNode = (RBTree.Node<Comparable<Comparable>, LeftTupleList>) nestedIt.next( nestedNode )) != null ) {
-                LeftTupleList list = nestedNode.value;
+            while ( (nestedNode = (RBTree.Node<Comparable<Comparable>, TupleList>) nestedIt.next( nestedNode )) != null ) {
+                TupleList list = nestedNode.value;
                 int listSize = list.size();
                 if (listSize == 0) {
                     nestedToBeRemoved.add(nestedNode.key);
                 } else {
-                    LeftTuple entry = list.getFirst();
+                    Tuple entry = list.getFirst();
                     while (entry != null) {
                         result.add(entry);
-                        entry = (LeftTuple) entry.getNext();
+                        entry = (Tuple) entry.getNext();
                     }
                 }
             }
@@ -158,61 +158,61 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
             tree.delete(key);
         }
 
-        return result.toArray(new LeftTuple[result.size()]);
+        return result.toArray(new Tuple[result.size()]);
     }
 
-    public LeftTuple getFirst(RightTuple rightTuple) {
-        Comparable key = getRightIndexedValue(rightTuple);
+    public Tuple getFirst(Tuple tuple) {
+        Comparable key = getRightIndexedValue(tuple);
         return getFirst(key);
     }
 
-    public Iterator<LeftTuple> iterator() {
-        LeftTupleList list = tree.first().value.first().value;
-        LeftTuple firstTuple = list != null ? list.first : null;
+    public Iterator<Tuple> iterator() {
+        TupleList list = tree.first().value.first().value;
+        Tuple firstTuple = list != null ? list.first : null;
         return new FastIterator.IteratorAdapter(fastIterator(), firstTuple);
     }
 
-    public boolean contains(LeftTuple leftTuple) {
-        Comparable lowerBound = getLeftAscendingIndexedValue(leftTuple);
-        RBTree<Comparable<Comparable>, LeftTupleList> nestedTree = tree.lookup(lowerBound);
-        return nestedTree == null ? false : nestedTree.lookup(getLeftDescendingIndexedValue(leftTuple)) != null;
+    public boolean contains(Tuple tuple) {
+        Comparable lowerBound = getLeftAscendingIndexedValue(tuple);
+        RBTree<Comparable<Comparable>, TupleList> nestedTree = tree.lookup(lowerBound);
+        return nestedTree == null ? false : nestedTree.lookup(getLeftDescendingIndexedValue(tuple)) != null;
     }
 
     public FastIterator fastIterator() {
-        if ( leftTupleFastIterator == null ) {
-            leftTupleFastIterator = new LeftTupleFastIterator();
+        if ( tupleFastIterator == null ) {
+            tupleFastIterator = new TupleFastIterator();
         }
-        return leftTupleFastIterator;
+        return tupleFastIterator;
     }
 
     public FastIterator fullFastIterator() {
-        if ( leftTupleFastIterator == null ) {
-            leftTupleFastIterator = new LeftTupleFastIterator();
+        if ( tupleFastIterator == null ) {
+            tupleFastIterator = new TupleFastIterator();
         }
-        return leftTupleFastIterator;
+        return tupleFastIterator;
     }
 
-    public FastIterator fullFastIterator(LeftTuple leftTuple) {
+    public FastIterator fullFastIterator(Tuple tuple) {
         FastIterator fastIterator = fullFastIterator();
-        fastIterator.next(getNext(leftTuple));
+        fastIterator.next(getNext(tuple));
         return fastIterator;
     }
 
-    private Comparable getLeftAscendingIndexedValue(LeftTuple leftTuple) {
-        return (Comparable) ascendingIndex.getDeclaration().getExtractor().getValue(leftTuple.get(ascendingIndex.getDeclaration()).getObject());
+    private Comparable getLeftAscendingIndexedValue(Tuple tuple) {
+        return (Comparable) ascendingIndex.getDeclaration().getExtractor().getValue( tuple.get( ascendingIndex.getDeclaration() ).getObject() );
     }
 
-    private Comparable getLeftDescendingIndexedValue(LeftTuple leftTuple) {
-        return (Comparable) descendingIndex.getDeclaration().getExtractor().getValue(leftTuple.get(descendingIndex.getDeclaration()).getObject());
+    private Comparable getLeftDescendingIndexedValue(Tuple tuple) {
+        return (Comparable) descendingIndex.getDeclaration().getExtractor().getValue( tuple.get( descendingIndex.getDeclaration() ).getObject() );
     }
 
-    private Comparable getRightIndexedValue(RightTuple rightTuple) {
-        return (Comparable) ascendingIndex.getExtractor().getValue( rightTuple.getFactHandle().getObject() );
+    private Comparable getRightIndexedValue(Tuple tuple) {
+        return (Comparable) ascendingIndex.getExtractor().getValue( tuple.getFactHandle().getObject() );
     }
 
-    private LeftTuple getFirst(Comparable key) {
-        RBTree.Node<Comparable<Comparable>, RBTree<Comparable<Comparable>, LeftTupleList>> nestedNode = null;
-        RBTree.Node<Comparable<Comparable>, LeftTupleList> firstNode;
+    private Tuple getFirst(Comparable key) {
+        RBTree.Node<Comparable<Comparable>, RBTree<Comparable<Comparable>, TupleList>> nestedNode = null;
+        RBTree.Node<Comparable<Comparable>, TupleList> firstNode;
 
         boolean findNextNestedNode = true;
         while (true) {
@@ -238,7 +238,7 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
                 continue;
             }
 
-            RBTree<Comparable<Comparable>, LeftTupleList> nestedTree = nestedNode.value;
+            RBTree<Comparable<Comparable>, TupleList> nestedTree = nestedNode.value;
             while (true) {
                 switch (descendingConstraintType) {
                     case LESS_THAN:
@@ -270,19 +270,19 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
         }
     }
 
-    private Entry getNext(LeftTuple leftTuple) {
-        LeftTuple next = (LeftTuple) leftTuple.getNext();
+    private Entry getNext(Tuple tuple) {
+        Tuple next = (Tuple) tuple.getNext();
         if (next != null) {
             return next;
         }
 
-        Comparable ascendingKey = getLeftAscendingIndexedValue(leftTuple);
-        Comparable descendingKey = getLeftDescendingIndexedValue(leftTuple);
+        Comparable ascendingKey = getLeftAscendingIndexedValue(tuple);
+        Comparable descendingKey = getLeftDescendingIndexedValue(tuple);
 
-        RBTree<Comparable<Comparable>, LeftTupleList> nestedTree = tree.lookup(ascendingKey);
+        RBTree<Comparable<Comparable>, TupleList> nestedTree = tree.lookup(ascendingKey);
         while (nestedTree != null) {
             while (true) {
-                RBTree.Node<Comparable<Comparable>, LeftTupleList> nextNode = nestedTree.findNearestNode(descendingKey, false, RBTree.Boundary.LOWER);
+                RBTree.Node<Comparable<Comparable>, TupleList> nextNode = nestedTree.findNearestNode(descendingKey, false, RBTree.Boundary.LOWER);
                 if (nextNode == null) {
                     break;
                 }
@@ -293,16 +293,16 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
                 }
             }
 
-            RBTree.Node<Comparable<Comparable>, RBTree<Comparable<Comparable>, LeftTupleList>> nextNode = tree.findNearestNode(ascendingKey, false, RBTree.Boundary.UPPER);
+            RBTree.Node<Comparable<Comparable>, RBTree<Comparable<Comparable>, TupleList>> nextNode = tree.findNearestNode(ascendingKey, false, RBTree.Boundary.UPPER);
             nestedTree = nextNode == null ? null : nextNode.value;
         }
 
         return null;
     }
 
-    public class LeftTupleFastIterator implements FastIterator {
+    public class TupleFastIterator implements FastIterator {
         public Entry next(Entry object) {
-            return object == null ? null : getNext((LeftTuple) object);
+            return object == null ? null : getNext((Tuple) object);
         }
 
         public boolean isFullIterator() {
@@ -311,6 +311,10 @@ public class LeftTupleIndexRangeRBTree implements LeftTupleMemory, Externalizabl
     }
 
     public void clear() {
-        tree = new RBTree<Comparable<Comparable>, RBTree<Comparable<Comparable>, LeftTupleList>>();
+        tree = new RBTree<Comparable<Comparable>, RBTree<Comparable<Comparable>, TupleList>>();
+    }
+
+    public TupleMemory.IndexType getIndexType() {
+        return TupleMemory.IndexType.COMPARISON;
     }
 }

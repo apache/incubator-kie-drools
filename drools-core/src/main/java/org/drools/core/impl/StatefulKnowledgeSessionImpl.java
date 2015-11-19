@@ -99,10 +99,11 @@ import org.drools.core.spi.AsyncExceptionHandler;
 import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.spi.GlobalResolver;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.time.TimerService;
 import org.drools.core.time.TimerServiceFactory;
 import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.util.index.TupleList;
 import org.kie.api.command.Command;
 import org.kie.api.event.KieRuntimeEventManager;
 import org.kie.api.event.kiebase.KieBaseEventListener;
@@ -913,7 +914,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.kBase.readLock();
             this.lock.lock();
 
-            LeftInputAdapterNode lian = ( LeftInputAdapterNode ) factHandle.getFirstLeftTuple().getLeftTupleSink().getLeftTupleSource();
+            LeftInputAdapterNode lian = ( LeftInputAdapterNode ) factHandle.getFirstLeftTuple().getTupleSink().getLeftTupleSource();
             LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory(lian);
             SegmentMemory lsmem = lmem.getSegmentMemory();
 
@@ -1626,9 +1627,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         private final boolean            updateEqualsMap;
 
-        private RuleImpl               ruleOrigin;
+        private RuleImpl                 ruleOrigin;
 
-        private LeftTuple          leftTuple;
+        private Tuple                    tuple;
 
         public WorkingMemoryReteAssertAction(MarshallerReaderContext context) throws IOException {
             this.factHandle = context.handles.get( context.readInt() );
@@ -1642,7 +1643,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 this.ruleOrigin = pkg.getRule( ruleName );
             }
             if ( context.readBoolean() ) {
-                this.leftTuple = context.terminalTupleMap.get( context.readInt() );
+                this.tuple = context.terminalTupleMap.get( context.readInt() );
             }
         }
 
@@ -1658,7 +1659,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 String ruleName = _assert.getOriginRuleName();
                 InternalKnowledgePackage pkg = context.kBase.getPackage( pkgName );
                 this.ruleOrigin = pkg.getRule( ruleName );
-                this.leftTuple = context.filter.getTuplesCache().get( PersisterHelper.createActivationKey(pkgName, ruleName, _assert.getTuple()) );
+                this.tuple = context.filter.getTuplesCache().get( PersisterHelper.createActivationKey(pkgName, ruleName, _assert.getTuple()) );
             }
         }
 
@@ -1668,12 +1669,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                    .setRemoveLogical( this.removeLogical )
                    .setUpdateEqualsMap( this.updateEqualsMap );
 
-            if ( this.leftTuple != null ) {
+            if ( this.tuple != null ) {
                 ProtobufMessages.Tuple.Builder _tuple = ProtobufMessages.Tuple.newBuilder();
-                for( LeftTuple entry = this.leftTuple; entry != null; entry = entry.getParent() ) {
-                    if ( entry.getLastHandle() != null ) {
+                for( Tuple entry = this.tuple; entry != null; entry = entry.getParent() ) {
+                    if ( entry.getFactHandle() != null ) {
                         // can be null for eval, not and exists that have no right input
-                        _tuple.addHandleId( entry.getLastHandle().getId() );
+                        _tuple.addHandleId( entry.getFactHandle().getId() );
                     }
                 }
                 _assert.setOriginPkgName( ruleOrigin.getPackageName() )
@@ -1690,7 +1691,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
 
             final PropagationContext context = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.INSERTION,
-                                                                                    this.ruleOrigin, this.leftTuple, this.factHandle);
+                                                                                    this.ruleOrigin, this.tuple, this.factHandle);
             workingMemory.getKnowledgeBase().assertObject(this.factHandle,
                                                           this.factHandle.getObject(),
                                                           context,
@@ -2208,10 +2209,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     public Map getActivationParameters(Activation activation) {
         if (activation instanceof RuleAgendaItem) {
             RuleAgendaItem ruleAgendaItem = (RuleAgendaItem)activation;
-            LeftTupleList tupleList = ruleAgendaItem.getRuleExecutor().getLeftTupleList();
+            TupleList tupleList = ruleAgendaItem.getRuleExecutor().getLeftTupleList();
             Map result = new TreeMap();
             int i = 0;
-            for (LeftTuple tuple = tupleList.getFirst(); tuple != null; tuple = (LeftTuple) tuple.getNext()) {
+            for (Tuple tuple = tupleList.getFirst(); tuple != null; tuple = (LeftTuple) tuple.getNext()) {
                 Map params = getActivationParameters(tuple);
                 result.put("Parameters set [" + i++ + "]", (Map.Entry[]) params.entrySet().toArray(new Map.Entry[params.size()]));
             }
@@ -2221,9 +2222,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    private Map getActivationParameters(LeftTuple tuple) {
+    private Map getActivationParameters(Tuple tuple) {
         Map result = new HashMap();
-        Declaration[] declarations = ((RuleTerminalNode) tuple.getLeftTupleSink()).getAllDeclarations();
+        Declaration[] declarations = ((RuleTerminalNode) tuple.getTupleSink()).getAllDeclarations();
 
         for (int i = 0; i < declarations.length; i++) {
             FactHandle handle = tuple.get(declarations[i]);

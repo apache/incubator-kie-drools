@@ -182,7 +182,7 @@ class MockActivation<T extends ModedAssertion<T>>
         return null;
     }
 
-    public InternalFactHandle getFactHandle() {
+    public InternalFactHandle getActivationFactHandle() {
         return null;
     }
 

@@ -27,6 +27,7 @@ import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -51,7 +52,7 @@ public class PhreakPropagationContext
 
     private TerminalNode                    terminalNodeOrigin;
 
-    private LeftTuple                       leftTuple;
+    private Tuple                           leftTuple;
 
     private InternalFactHandle              factHandle;
 
@@ -80,7 +81,7 @@ public class PhreakPropagationContext
     public PhreakPropagationContext(final long number,
                                     final int type,
                                     final RuleImpl rule,
-                                    final LeftTuple leftTuple,
+                                    final Tuple leftTuple,
                                     final InternalFactHandle factHandle) {
         this( number,
               type,
@@ -97,7 +98,7 @@ public class PhreakPropagationContext
     public PhreakPropagationContext(final long number,
                                     final int type,
                                     final RuleImpl rule,
-                                    final LeftTuple leftTuple,
+                                    final Tuple leftTuple,
                                     final InternalFactHandle factHandle,
                                     final EntryPointId entryPoint) {
         this( number,
@@ -114,7 +115,7 @@ public class PhreakPropagationContext
     public PhreakPropagationContext(final long number,
                                     final int type,
                                     final RuleImpl rule,
-                                    final LeftTuple leftTuple,
+                                    final Tuple leftTuple,
                                     final InternalFactHandle factHandle,
                                     final int activeActivations,
                                     final int dormantActivations,
@@ -134,7 +135,7 @@ public class PhreakPropagationContext
     public PhreakPropagationContext(final long number,
                                     final int type,
                                     final RuleImpl rule,
-                                    final LeftTuple leftTuple,
+                                    final Tuple leftTuple,
                                     final InternalFactHandle factHandle,
                                     final EntryPointId entryPoint,
                                     final MarshallerReaderContext readerContext) {
@@ -152,7 +153,7 @@ public class PhreakPropagationContext
     public PhreakPropagationContext(final long number,
                                     final int type,
                                     final RuleImpl rule,
-                                    final LeftTuple leftTuple,
+                                    final Tuple leftTuple,
                                     final InternalFactHandle factHandle,
                                     final EntryPointId entryPoint,
                                     final BitMask modificationMask,
@@ -161,7 +162,7 @@ public class PhreakPropagationContext
         this.type = type;
         this.rule = rule;
         this.leftTuple = leftTuple;
-        this.terminalNodeOrigin = leftTuple != null ? (TerminalNode)leftTuple.getSink() : null;
+        this.terminalNodeOrigin = leftTuple != null ? (TerminalNode)leftTuple.getTupleSink() : null;
         this.factHandle = factHandle;
         this.propagationNumber = number;
         this.entryPoint = entryPoint;
@@ -218,12 +219,8 @@ public class PhreakPropagationContext
         return this.rule;
     }
 
-    public LeftTuple getLeftTupleOrigin() {
+    public Tuple getLeftTupleOrigin() {
         return this.leftTuple;
-    }
-
-    public InternalFactHandle getFactHandleOrigin() {
-        return this.factHandle;
     }
 
     public FactHandle getFactHandle() {

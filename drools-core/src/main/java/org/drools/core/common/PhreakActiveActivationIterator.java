@@ -19,8 +19,9 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.util.index.TupleList;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 
 import java.util.ArrayList;
@@ -45,8 +46,8 @@ public class PhreakActiveActivationIterator
         for ( InternalAgendaGroup group : agenda.getAgendaGroupsMap().values() ) {
             for ( Activation act : group.getActivations() ) {
                 RuleAgendaItem item = ( RuleAgendaItem ) act;
-                LeftTupleList list =  item.getRuleExecutor().getLeftTupleList();
-                for ( LeftTuple lt = list.getFirst(); lt != null; lt = (LeftTuple) lt.getNext() ) {
+                TupleList list =  item.getRuleExecutor().getLeftTupleList();
+                for ( Tuple lt = list.getFirst(); lt != null; lt = (LeftTuple) lt.getNext() ) {
                     items.add( (AgendaItem) lt );
                 }
             }

@@ -19,9 +19,9 @@ package org.drools.core.base.mvel;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.MVELDialectRuntimeData;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.MVELSafeHelper;
 import org.kie.api.definition.rule.Rule;
 import org.mvel2.integration.VariableResolverFactory;
@@ -76,7 +76,7 @@ public class MVELObjectExpression
         expr = unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() );
     }
 
-    public Object getValue(final LeftTuple leftTuple,
+    public Object getValue(final Tuple leftTuple,
                            final Declaration[] declrs,
                            final Rule rule,
                            final InternalWorkingMemory wm) {

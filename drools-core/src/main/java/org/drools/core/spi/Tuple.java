@@ -16,25 +16,39 @@
 
 package org.drools.core.spi;
 
-import java.io.Serializable;
-
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.Sink;
 import org.drools.core.rule.Declaration;
+import org.drools.core.util.Entry;
+import org.drools.core.util.index.TupleList;
+
+import java.io.Serializable;
 
 /**
  * Partial matches are propagated through the Rete network as <code>Tuple</code>s. Each <code>Tuple</code>
  * Is able to return the <code>FactHandleImpl</code> members of the partial match for the requested pattern.
  * The pattern refers to the index position of the <code>FactHandleImpl</code> in the underlying implementation.
  * 
- * @see FactHandle;
+ * @see org.drools.core.marshalling.impl.ProtobufMessages.FactHandle
  */
-public interface Tuple
-    extends
-    Serializable {
+public interface Tuple extends Serializable, Entry {
+
+    short NONE   = 0;
+    short INSERT = 1;
+    short UPDATE = 2;
+    short DELETE = 3;
+    short NORMALIZED_DELETE = 4;
+
+    Object getObject(int pattern);
+
+    Object getObject(Declaration declaration);
+
+    Object[] toObjects();
+
     /**
      * Returns the <code>FactHandle</code> for the given pattern index. If the pattern is empty
      * It returns null.
-     * 
+     *
      * @param pattern
      *      The index of the pattern from which the <code>FactHandleImpl</code> is to be returned
      * @return
@@ -45,7 +59,7 @@ public interface Tuple
     /**
      * Returns the <code>FactHandle</code> for the given <code>Declaration</code>, which in turn
      * specifcy the <code>Pattern</code> that they depend on.
-     * 
+     *
      * @param declaration
      *      The <code>Declaration</code> which specifies the <code>Pattern</code>
      * @return
@@ -64,4 +78,62 @@ public interface Tuple
      */
     int size();
 
+    int getIndex();
+
+    Tuple getParent();
+
+    InternalFactHandle getFactHandle();
+    void setFactHandle( InternalFactHandle handle );
+
+    /**
+     * Returns the ReteTuple that contains the "elements"
+     * first elements in this tuple.
+     * <p/>
+     * Use carefully as no cloning is made during this process.
+     * <p/>
+     * This method is used by TupleStartEqualsConstraint when
+     * joining a subnetwork tuple into the main network tuple;
+     *
+     * @param elements the number of elements to return, starting from
+     *                 the begining of the tuple
+     * @return a ReteTuple containing the "elements" first elements
+     *         of this tuple or null if "elements" is greater than size;
+     */
+    Tuple getSubTuple(final int elements);
+
+    Object getContextObject();
+
+    void setContextObject( final Object object );
+
+    short getStagedType();
+    void setStagedType(short stagedType);
+
+    Tuple getStagedPrevious();
+    void setStagedPrevious( Tuple stagePrevious );
+
+    Tuple getStagedNext();
+    void setStagedNext( Tuple stageNext );
+
+    void clear();
+    void clearStaged();
+
+    void reAdd();
+    void unlinkFromRightParent();
+
+    PropagationContext getPropagationContext();
+    void setPropagationContext( PropagationContext propagationContext );
+
+    Entry getPrevious();
+    void setPrevious( Entry previous );
+
+    Sink getTupleSink();
+
+    TupleList getMemory();
+    void setMemory( TupleList memory );
+
+    void increaseActivationCountForEvents();
+    void decreaseActivationCountForEvents();
+
+    Tuple getRootTuple();
+    Tuple skipEmptyHandles();
 }

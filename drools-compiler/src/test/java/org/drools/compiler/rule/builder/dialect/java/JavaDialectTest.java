@@ -15,17 +15,8 @@
 
 package org.drools.compiler.rule.builder.dialect.java;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.StringReader;
-import java.util.List;
-
 import org.drools.compiler.Person;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.mvel.MVELPredicateExpression;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
@@ -38,13 +29,18 @@ import org.drools.core.spi.CompiledInvoker;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.PredicateExpression;
 import org.junit.Test;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderErrors;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.io.ResourceType;
+
+import java.io.StringReader;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class JavaDialectTest {
     
@@ -86,8 +82,7 @@ public class JavaDialectTest {
         PredicateConstraint c = ( PredicateConstraint ) alphanode.getConstraint();
         assertTrue( c.getPredicateExpression() instanceof PredicateExpression );
         assertTrue( c.getPredicateExpression() instanceof CompiledInvoker );
-        assertTrue( !(c.getPredicateExpression() instanceof MVELPredicateExpression ) );
-        
+
         alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
@@ -139,6 +134,5 @@ public class JavaDialectTest {
         PredicateConstraint c = ( PredicateConstraint ) constraint[0];
         assertTrue( c.getPredicateExpression() instanceof PredicateExpression );
         assertTrue( c.getPredicateExpression() instanceof CompiledInvoker );
-        assertTrue( !(c.getPredicateExpression() instanceof MVELPredicateExpression ) );
     }
 }

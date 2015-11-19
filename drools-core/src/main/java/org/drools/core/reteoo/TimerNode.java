@@ -27,7 +27,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.time.impl.Timer;
 import org.drools.core.util.AbstractBaseLinkedListNode;
-import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.util.index.TupleList;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -233,26 +233,26 @@ public class TimerNode extends LeftTupleSource
     }
 
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new EvalNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled);
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final LeftTupleSink sink) {
+                                     final Sink sink) {
         return new EvalNodeLeftTuple(factHandle, leftTuple, sink);
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return new EvalNodeLeftTuple(leftTuple, sink, pctx, leftTupleMemoryEnabled);
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     LeftTupleSink sink) {
+                                     Sink sink) {
         return new EvalNodeLeftTuple(leftTuple, rightTuple, sink);
     }
 
@@ -260,7 +260,7 @@ public class TimerNode extends LeftTupleSource
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new EvalNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
     }
@@ -274,22 +274,22 @@ public class TimerNode extends LeftTupleSource
             Memory {
 
         private static final long serialVersionUID = 510l;
-        private LeftTupleList insertOrUpdateLeftTuples;
-        private LeftTupleList deleteLeftTuples;
+        private TupleList insertOrUpdateLeftTuples;
+        private TupleList deleteLeftTuples;
         private SegmentMemory memory;
         private long          nodePosMaskBit;
 
 
         public TimerNodeMemory() {
-            this.insertOrUpdateLeftTuples = new LeftTupleList();
-            this.deleteLeftTuples = new LeftTupleList();
+            this.insertOrUpdateLeftTuples = new TupleList();
+            this.deleteLeftTuples = new TupleList();
         }
 
-        public LeftTupleList getInsertOrUpdateLeftTuples() {
+        public TupleList getInsertOrUpdateLeftTuples() {
             return this.insertOrUpdateLeftTuples;
         }
 
-        public LeftTupleList getDeleteLeftTuples() {
+        public TupleList getDeleteLeftTuples() {
             return this.deleteLeftTuples;
         }
 

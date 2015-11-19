@@ -15,8 +15,6 @@
 
 package org.drools.core.util;
 
-import org.drools.core.util.index.RightTupleList;
-
 public interface FastIterator {
     Entry next(Entry object);
     

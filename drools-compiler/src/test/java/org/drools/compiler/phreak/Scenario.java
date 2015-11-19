@@ -16,10 +16,8 @@
 package org.drools.compiler.phreak;
 
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
-import org.drools.core.common.LeftTupleSetsImpl;
-import org.drools.core.common.RightTupleSets;
-import org.drools.core.common.RightTupleSetsImpl;
+import org.drools.core.common.TupleSets;
+import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.phreak.PhreakExistsNode;
 import org.drools.core.phreak.PhreakJoinNode;
 import org.drools.core.phreak.PhreakNotNode;
@@ -29,12 +27,12 @@ import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleMemory;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleMemory;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TupleMemory;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.junit.Assert;
 
@@ -54,14 +52,14 @@ public class Scenario {
     BetaMemory            bm;
     InternalWorkingMemory wm;
 
-    LeftTupleSets              leftTuples;
-    RightTupleSets rightRuples;
+    TupleSets<LeftTuple>  leftTuples;
+    TupleSets<RightTuple> rightRuples;
 
     StagedBuilder expectedResultBuilder;
 
-    LeftTupleSetsImpl actualResultLeftTuples;
+    TupleSets<LeftTuple> actualResultLeftTuples;
 
-    LeftTupleSets previousResultTuples;
+    TupleSets<LeftTuple> previousResultTuples;
 
     List<StagedBuilder> preStagedBuilders;
     List<StagedBuilder> postStagedBuilders;
@@ -82,8 +80,8 @@ public class Scenario {
         this.sinkNode = sinkNode;
         this.bm = bm;
         this.wm = wm;
-        this.leftTuples = new LeftTupleSetsImpl();
-        this.rightRuples = new RightTupleSetsImpl(bm);
+        this.leftTuples = new TupleSetsImpl<LeftTuple>();
+        this.rightRuples = new TupleSetsImpl<RightTuple>();
         this.preStagedBuilders = new ArrayList<StagedBuilder>();
         this.postStagedBuilders = new ArrayList<StagedBuilder>();
 
@@ -117,7 +115,7 @@ public class Scenario {
         this.testRightMemory = testRightMemory;
     }
 
-    public LeftTupleSets getActualResultLeftTuples() {
+    public TupleSets<LeftTuple> getActualResultLeftTuples() {
         return actualResultLeftTuples;
     }  
     
@@ -153,15 +151,15 @@ public class Scenario {
         return wm;
     }
 
-    public RightTupleSets getRightRuples() {
+    public TupleSets<RightTuple> getRightRuples() {
         return rightRuples;
     }
 
-    public LeftTupleSets getLeftTuples() {
+    public TupleSets<LeftTuple> getLeftTuples() {
         return leftTuples;
     }
 
-    public RightTupleSets getRightTuples() {
+    public TupleSets<RightTuple> getRightTuples() {
         return rightRuples;
     }
 
@@ -175,7 +173,7 @@ public class Scenario {
 
     public Scenario run() {
         previousResultTuples = bm.getSegmentMemory().getFirst().getStagedLeftTuples();
-        actualResultLeftTuples = new LeftTupleSetsImpl();
+        actualResultLeftTuples = new TupleSetsImpl<LeftTuple>();
         
         if ( phreakNode == PhreakJoinNode.class ) {
             new PhreakJoinNode().doNode( (JoinNode) betaNode, sinkNode,
@@ -196,8 +194,8 @@ public class Scenario {
         
         if ( !preStagedBuilders.isEmpty() ) {
             for ( StagedBuilder stagedBuilder : preStagedBuilders ) {
-                LeftTupleSets expected = stagedBuilder.get();
-                LeftTupleSets actual = stagedBuilder.getSegmentMemory().getStagedLeftTuples();
+                TupleSets<LeftTuple> expected = stagedBuilder.get();
+                TupleSets<LeftTuple> actual = stagedBuilder.getSegmentMemory().getStagedLeftTuples();
                 
                 assertEquals( expected, actual, stagedBuilder.isTestStagedInsert(), stagedBuilder.isTestStagedDelete(), stagedBuilder.isTestStagedUpdate() );    
             }
@@ -214,8 +212,8 @@ public class Scenario {
         
         if ( !postStagedBuilders.isEmpty() ) {
             for ( StagedBuilder stagedBuilder : postStagedBuilders ) {
-                LeftTupleSets expected = stagedBuilder.get();
-                LeftTupleSets actual = stagedBuilder.getSegmentMemory().getStagedLeftTuples();
+                TupleSets<LeftTuple> expected = stagedBuilder.get();
+                TupleSets<LeftTuple> actual = stagedBuilder.getSegmentMemory().getStagedLeftTuples();
                 
                 assertEquals( expected, actual, stagedBuilder.isTestStagedInsert(), stagedBuilder.isTestStagedDelete(), stagedBuilder.isTestStagedUpdate() );    
             }
@@ -242,14 +240,14 @@ public class Scenario {
         return stagedBuilder;        
     }      
 
-    public void assertEquals(LeftTupleSets expected,
-                             LeftTupleSets actual,
+    public void assertEquals(TupleSets<LeftTuple> expected,
+                             TupleSets<LeftTuple> actual,
                              boolean testInsert,
                              boolean testDelete,
                              boolean testUpdate) {
 
-        LeftTuple expectedTuple = null;
-        LeftTuple actualTuple = null;
+        Tuple expectedTuple = null;
+        Tuple actualTuple = null;
         
         if ( testInsert ) {
             if ( expected.getInsertFirst() != null ) {
@@ -301,7 +299,7 @@ public class Scenario {
 
     }
 
-    public boolean equals(final LeftTuple expected, LeftTuple actual) {
+    public boolean equals(final Tuple expected, Tuple actual) {
         // we know the object is never null and always of the  type LeftTuple
         if ( expected == actual ) {
             return true;
@@ -321,7 +319,7 @@ public class Scenario {
             }
         }
 
-        while ( actual.getLastHandle() == null ) {
+        while ( actual.getFactHandle() == null ) {
             // skip exists, not, evals
             actual = actual.getParent();
         }
@@ -331,7 +329,7 @@ public class Scenario {
             return false;
         }
 
-        if ( expected.getLastHandle() != actual.getLastHandle() ) {
+        if ( expected.getFactHandle() != actual.getFactHandle() ) {
             return false;
         }
 
@@ -339,7 +337,7 @@ public class Scenario {
     }
 
     public void equalsLeftMemory(List<LeftTuple> leftTuples) {
-        LeftTupleMemory ltm = bm.getLeftTupleMemory();
+        TupleMemory ltm = bm.getLeftTupleMemory();
 
         int length = 0;
         for ( LeftTuple expectedLeftTuple : leftTuples ) {
@@ -361,7 +359,7 @@ public class Scenario {
     }
 
     public void equalsRightMemory(List<RightTuple> rightTuples) {
-        RightTupleMemory rtm = bm.getRightTupleMemory();
+        TupleMemory rtm = bm.getRightTupleMemory();
 
         int length = 0;
         for ( RightTuple expectedRightTuple : rightTuples ) {

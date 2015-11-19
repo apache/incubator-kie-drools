@@ -28,6 +28,7 @@ import org.drools.core.marshalling.impl.ProtobufOutputMarshaller;
 import org.drools.core.marshalling.impl.TimersInputMarshaller;
 import org.drools.core.marshalling.impl.TimersOutputMarshaller;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.spi.Tuple;
 import org.drools.core.time.Job;
 import org.drools.core.time.JobContext;
 import org.drools.core.time.JobHandle;
@@ -83,22 +84,22 @@ public final class Scheduler {
 
             LeftTuple postponedTuple;
             if ( item.getTuple().getParent() != null ) {
-                LeftTuple lt = item.getTuple();
+                LeftTuple lt = (LeftTuple) item.getTuple();
                 if ( lt.getRightParent() != null ) {
-                    postponedTuple = item.getTerminalNode().createLeftTuple( item.getTuple().getLeftParent(), item.getTuple().getRightParent(), null, null, item.getTuple().getSink(), true );                  
+                    postponedTuple = item.getTerminalNode().createLeftTuple( lt.getLeftParent(), lt.getRightParent(), null, null, item.getTuple().getTupleSink(), true );
                 } else {
                     // eval nodes have no right parent
-                    postponedTuple = item.getTerminalNode().createLeftTuple( item.getTuple().getParent(), item.getTuple().getSink(), item.getTuple().getPropagationContext(), true);
+                    postponedTuple = item.getTerminalNode().createLeftTuple( lt.getParent(), item.getTuple().getTupleSink(), item.getTuple().getPropagationContext(), true);
                 }
             } else {
-                postponedTuple = item.getTerminalNode().createLeftTuple( item.getTuple().getHandle(), item.getTuple().getSink(), true );
+                postponedTuple = item.getTerminalNode().createLeftTuple( item.getTuple().getFactHandle(), item.getTuple().getTupleSink(), true );
             }
 
             agenda.createPostponedActivation( postponedTuple,
                                               item.getPropagationContext(),
                                               agenda.getWorkingMemory(),
                                               item.getTerminalNode() );
-            agenda.addActivation( (AgendaItem) postponedTuple.getObject() );
+            agenda.addActivation( (AgendaItem) postponedTuple.getContextObject() );
             
         }
     }
@@ -178,7 +179,7 @@ public final class Scheduler {
                                 Timer _timer) throws ClassNotFoundException {
             ActivationTimer _activation = _timer.getActivation();
 
-            LeftTuple leftTuple = inCtx.filter.getTuplesCache().get( PersisterHelper.createActivationKey( _activation.getActivation().getPackageName(), 
+            Tuple leftTuple = inCtx.filter.getTuplesCache().get( PersisterHelper.createActivationKey( _activation.getActivation().getPackageName(),
                                                                                                           _activation.getActivation().getRuleName(), 
                                                                                                           _activation.getActivation().getTuple() ) );
             if (leftTuple == null) {
@@ -186,7 +187,7 @@ public final class Scheduler {
                 return;
             }
 
-            ScheduledAgendaItem item = (ScheduledAgendaItem) leftTuple.getObject();
+            ScheduledAgendaItem item = (ScheduledAgendaItem) leftTuple.getContextObject();
             
             Trigger trigger = ProtobufInputMarshaller.readTrigger( inCtx,
                                                                    _activation.getTrigger() );

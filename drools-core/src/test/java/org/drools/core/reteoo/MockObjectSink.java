@@ -44,7 +44,7 @@ public class MockObjectSink
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        new RightTuple( factHandle, this );
+        new RightTupleImpl( factHandle, this );
         this.asserted.add( new Object[]{factHandle, context, workingMemory} );
     }
 

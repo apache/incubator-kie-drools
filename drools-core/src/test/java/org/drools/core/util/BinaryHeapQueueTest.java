@@ -367,7 +367,7 @@ public class BinaryHeapQueueTest {
             return null;
         }
 
-        public InternalFactHandle getFactHandle() {
+        public InternalFactHandle getActivationFactHandle() {
             return null;
         }
 

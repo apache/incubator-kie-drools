@@ -17,8 +17,6 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.util.Entry;
-import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.spi.PropagationContext;
 
 public class JoinNodeLeftTuple extends BaseLeftTuple {
@@ -33,19 +31,19 @@ public class JoinNodeLeftTuple extends BaseLeftTuple {
     // Constructors
     // ------------------------------------------------------------
     public JoinNodeLeftTuple(final InternalFactHandle factHandle,
-                             final LeftTupleSink sink,
+                             final Sink sink,
                              final boolean leftTupleMemoryEnabled) {
         super(factHandle, sink, leftTupleMemoryEnabled);
     }
 
     public JoinNodeLeftTuple(final InternalFactHandle factHandle,
                              final LeftTuple leftTuple,
-                             final LeftTupleSink sink) {
+                             final Sink sink) {
         super( factHandle, leftTuple, sink );
     }
 
     public JoinNodeLeftTuple(final LeftTuple leftTuple,
-                             final LeftTupleSink sink,
+                             final Sink sink,
                              final PropagationContext pctx,
                              final boolean leftTupleMemoryEnabled) {
         super(leftTuple, sink, pctx, leftTupleMemoryEnabled);
@@ -53,13 +51,13 @@ public class JoinNodeLeftTuple extends BaseLeftTuple {
 
     public JoinNodeLeftTuple(final LeftTuple leftTuple,
                              final RightTuple rightTuple,
-                             final LeftTupleSink sink) {
+                             final Sink sink) {
         super(leftTuple, rightTuple, sink);
     }
 
     public JoinNodeLeftTuple(final LeftTuple leftTuple,
                              final RightTuple rightTuple,
-                             final LeftTupleSink sink,
+                             final Sink sink,
                              final boolean leftTupleMemoryEnabled) {
         this(leftTuple,
              rightTuple,
@@ -73,7 +71,7 @@ public class JoinNodeLeftTuple extends BaseLeftTuple {
                              final RightTuple rightTuple,
                              final LeftTuple currentLeftChild,
                              final LeftTuple currentRightChild,
-                             final LeftTupleSink sink,
+                             final Sink sink,
                              final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
               rightTuple,
@@ -82,47 +80,4 @@ public class JoinNodeLeftTuple extends BaseLeftTuple {
               sink,
               leftTupleMemoryEnabled);
     }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getMemory()
-     */
-    public LeftTupleList getMemory() {
-        return this.memory;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setMemory(org.kie.core.util.index.LeftTupleList)
-     */
-    public void setMemory( LeftTupleList memory ) {
-        this.memory = memory;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#getPrevious()
-     */
-    public Entry getPrevious() {
-        return previous;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setPrevious(org.kie.core.util.Entry)
-     */
-    public void setPrevious( Entry previous ) {
-        this.previous = previous;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#setNext(org.kie.core.util.Entry)
-     */
-    public void setNext( final Entry next ) {
-        this.next = next;
-    }
-
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.LeftTuple#remove()
-     */
-    public Entry getNext() {
-        return this.next;
-    }
-
 }

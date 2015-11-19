@@ -19,13 +19,13 @@ package org.drools.core.reteoo;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
-import org.drools.core.common.LeftTupleSetsImpl;
+import org.drools.core.common.TupleSets;
+import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.From;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.DataProvider;
-import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.util.index.TupleList;
 
 public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemory> {
     public ReactiveFromNode() { }
@@ -42,7 +42,7 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
     }
 
     public ReactiveFromMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
-        BetaMemory beta = new BetaMemory( new LeftTupleList(),
+        BetaMemory beta = new BetaMemory( new TupleList(),
                                           null,
                                           this.betaConstraints.createContext(),
                                           NodeTypeEnums.FromNode );
@@ -59,20 +59,20 @@ public class ReactiveFromNode extends FromNode<ReactiveFromNode.ReactiveFromMemo
 
         private static final long serialVersionUID = 510l;
 
-        private final LeftTupleSets stagedLeftTuples;
+        private final TupleSets<LeftTuple> stagedLeftTuples;
 
         public ReactiveFromMemory(BetaMemory betaMemory,
                                   DataProvider dataProvider,
                                   AlphaNodeFieldConstraint[] constraints) {
             super(betaMemory, dataProvider, constraints);
-            stagedLeftTuples = new LeftTupleSetsImpl();
+            stagedLeftTuples = new TupleSetsImpl<LeftTuple>();
         }
 
         public short getNodeType() {
             return NodeTypeEnums.ReactiveFromNode;
         }
 
-        public LeftTupleSets getStagedLeftTuples() {
+        public TupleSets<LeftTuple> getStagedLeftTuples() {
             return stagedLeftTuples;
         }
     }

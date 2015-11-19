@@ -16,10 +16,10 @@
 
 package org.drools.core.reteoo;
 
-import java.util.Arrays;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.spi.PropagationContext;
+
+import java.util.Arrays;
 
 public class LeftTupleImpl extends BaseLeftTuple {
     private static final long serialVersionUID = 540l;
@@ -36,7 +36,7 @@ public class LeftTupleImpl extends BaseLeftTuple {
     // Constructors
     // ------------------------------------------------------------
     public LeftTupleImpl(final InternalFactHandle factHandle,
-                         LeftTupleSink sink,
+                         Sink sink,
                          boolean leftTupleMemoryEnabled) {
         super(factHandle,
               sink,
@@ -45,12 +45,12 @@ public class LeftTupleImpl extends BaseLeftTuple {
 
     public LeftTupleImpl(final InternalFactHandle factHandle,
                          final LeftTuple leftTuple,
-                         final LeftTupleSink sink) {
+                         final Sink sink) {
         super( factHandle, leftTuple, sink );
     }
 
     public LeftTupleImpl(final LeftTuple leftTuple,
-                         final LeftTupleSink sink,
+                         final Sink sink,
                          final PropagationContext pctx,
                          final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
@@ -61,7 +61,7 @@ public class LeftTupleImpl extends BaseLeftTuple {
 
     public LeftTupleImpl(final LeftTuple leftTuple,
                          RightTuple rightTuple,
-                         LeftTupleSink sink) {
+                         Sink sink) {
         super(leftTuple,
               rightTuple,
               sink);
@@ -69,7 +69,7 @@ public class LeftTupleImpl extends BaseLeftTuple {
 
     public LeftTupleImpl(final LeftTuple leftTuple,
                          final RightTuple rightTuple,
-                         final LeftTupleSink sink,
+                         final Sink sink,
                          final boolean leftTupleMemoryEnabled) {
         this(leftTuple,
              rightTuple,
@@ -83,7 +83,7 @@ public class LeftTupleImpl extends BaseLeftTuple {
                          final RightTuple rightTuple,
                          final LeftTuple currentLeftChild,
                          final LeftTuple currentRightChild,
-                         final LeftTupleSink sink,
+                         final Sink sink,
                          final boolean leftTupleMemoryEnabled) {
         super(leftTuple,
               rightTuple,
@@ -162,18 +162,18 @@ public class LeftTupleImpl extends BaseLeftTuple {
         int[] ids = new int[getIndex() + 1];
         LeftTuple entry = this;
         while (entry != null) {
-            if ( entry.getLastHandle() != null ) {
+            if ( entry.getFactHandle() != null ) {
                 // can be null for eval, not and exists that have no right input
-                ids[entry.getIndex()] = entry.getLastHandle().getId();
+                ids[entry.getIndex()] = entry.getFactHandle().getId();
             }
             entry = entry.getParent();
         }
         builder.append(Arrays.toString(ids))
                .append(" activation=")
-               .append(getObject() != null ? getObject() : "null")
+               .append( getContextObject() != null ? getContextObject() : "null")
                .append(" sink=")
-               .append(getSink().getClass().getSimpleName())
-               .append("(").append(getSink().getId()).append(")");
+               .append( getTupleSink().getClass().getSimpleName())
+               .append("(").append( getTupleSink().getId()).append(")");
         return builder.toString();
     }
 

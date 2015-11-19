@@ -27,6 +27,7 @@ import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.Tuple;
 import org.drools.core.time.Interval;
 
 import java.io.IOException;
@@ -60,7 +61,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         return declarations.length == 0;
     }
 
-    public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
+    public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory) {
         if (isLiteral()) {
             return evaluator.evaluate(workingMemory, rightReadAccessor, handle, field);
         }
@@ -85,7 +86,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
                                              handle );
     }
 
-    public boolean isAllowedCachedRight(LeftTuple tuple, ContextEntry context) {
+    public boolean isAllowedCachedRight(Tuple tuple, ContextEntry context) {
         if (isLiteral()) {
             return evaluator.evaluate( ((LiteralContextEntry) context).workingMemory,
                                        ((LiteralContextEntry) context).getFieldExtractor(),
@@ -217,7 +218,7 @@ public class EvaluatorConstraint extends MutableTypeConstraint implements Interv
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final LeftTuple tuple) {
+                                    final Tuple tuple) {
             this.workingMemory = workingMemory;
         }
 

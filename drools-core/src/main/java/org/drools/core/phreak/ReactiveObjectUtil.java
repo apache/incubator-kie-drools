@@ -23,15 +23,14 @@ import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.ReactiveFromNode;
-import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 
 import java.util.List;
 
-import static org.drools.core.phreak.PhreakFromNode.deleteChildLeftTuple;
-import static org.drools.core.phreak.PhreakFromNode.isAllowed;
-import static org.drools.core.phreak.PhreakFromNode.propagate;
+import static org.drools.core.phreak.PhreakFromNode.*;
 
 public class ReactiveObjectUtil {
 
@@ -39,13 +38,13 @@ public class ReactiveObjectUtil {
         notifyModification( reactiveObject, reactiveObject.getLeftTuples() );
     }
 
-    public static void notifyModification(Object object, List<LeftTuple> leftTuples) {
+    public static void notifyModification(Object object, List<Tuple> leftTuples) {
         if (leftTuples == null) {
             return;
         }
-        for (LeftTuple leftTuple : leftTuples) {
+        for (Tuple leftTuple : leftTuples) {
             PropagationContext propagationContext = leftTuple.getPropagationContext();
-            ReactiveFromNode node = (ReactiveFromNode)leftTuple.getSink();
+            ReactiveFromNode node = (ReactiveFromNode)leftTuple.getTupleSink();
 
             LeftTupleSinkNode sink = node.getSinkPropagator().getFirstLeftTupleSink();
             InternalWorkingMemory wm = getInternalWorkingMemory(propagationContext);
@@ -55,19 +54,19 @@ public class ReactiveObjectUtil {
     }
 
     private static InternalWorkingMemory getInternalWorkingMemory(PropagationContext propagationContext) {
-        InternalFactHandle fh = (InternalFactHandle) propagationContext.getFactHandleOrigin();
+        InternalFactHandle fh = (InternalFactHandle) propagationContext.getFactHandle();
         return ((InternalWorkingMemoryEntryPoint) fh.getEntryPoint()).getInternalWorkingMemory();
     }
 
     static class ReactivePropagation extends PropagationEntry.AbstractPropagationEntry {
 
         private final Object object;
-        private final LeftTuple leftTuple;
+        private final Tuple leftTuple;
         private final PropagationContext propagationContext;
         private final ReactiveFromNode node;
         private final LeftTupleSinkNode sink;
 
-        ReactivePropagation( Object object, LeftTuple leftTuple, PropagationContext propagationContext, ReactiveFromNode node, LeftTupleSinkNode sink ) {
+        ReactivePropagation( Object object, Tuple leftTuple, PropagationContext propagationContext, ReactiveFromNode node, LeftTupleSinkNode sink ) {
             this.object = object;
             this.leftTuple = leftTuple;
             this.propagationContext = propagationContext;
@@ -89,7 +88,7 @@ public class ReactiveObjectUtil {
 
                 propagate( sink,
                            leftTuple,
-                           new RightTuple( factHandle ),
+                           new RightTupleImpl( factHandle ),
                            betaConstraints,
                            propagationContext,
                            context,
@@ -97,10 +96,10 @@ public class ReactiveObjectUtil {
                            mem.getStagedLeftTuples(),
                            null );
             } else {
-                LeftTuple childLeftTuple = leftTuple.getFirstChild();
+                LeftTuple childLeftTuple = ((LeftTuple)leftTuple).getFirstChild();
                 while (childLeftTuple != null) {
                     LeftTuple next = childLeftTuple.getLeftParentNext();
-                    if ( object == childLeftTuple.getHandle().getObject() ) {
+                    if ( object == childLeftTuple.getFactHandle().getObject() ) {
                         deleteChildLeftTuple( propagationContext, mem.getStagedLeftTuples(), null, childLeftTuple );
                     }
                     childLeftTuple = next;

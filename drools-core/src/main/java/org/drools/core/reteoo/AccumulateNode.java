@@ -199,10 +199,6 @@ public class AccumulateNode extends BetaNode {
 
         memory.workingMemoryContext = this.accumulate.createWorkingMemoryContext();
         memory.resultsContext = this.resultBinder.createContext();
-        memory.alphaContexts = new ContextEntry[this.resultConstraints.length];
-        for ( int i = 0; i < this.resultConstraints.length; i++ ) {
-            memory.alphaContexts[i] = this.resultConstraints[i].createContextEntry();
-        }
         return memory;
     }
 
@@ -213,7 +209,6 @@ public class AccumulateNode extends BetaNode {
         public Object             workingMemoryContext;
         private final BetaMemory  betaMemory;
         public ContextEntry[]     resultsContext;
-        public ContextEntry[]     alphaContexts;
 
         protected AccumulateMemory( BetaMemory betaMemory ) {
             this.betaMemory = betaMemory;
@@ -331,19 +326,19 @@ public class AccumulateNode extends BetaNode {
     }
 
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled);
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final LeftTupleSink sink) {
+                                     final Sink sink) {
         return new FromNodeLeftTuple(factHandle, leftTuple, sink);
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(leftTuple, sink, pctx, leftTupleMemoryEnabled);
@@ -351,7 +346,7 @@ public class AccumulateNode extends BetaNode {
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     LeftTupleSink sink) {
+                                     Sink sink) {
         return new FromNodeLeftTuple(leftTuple, rightTuple, sink);
     }
 
@@ -359,7 +354,7 @@ public class AccumulateNode extends BetaNode {
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new FromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
     }

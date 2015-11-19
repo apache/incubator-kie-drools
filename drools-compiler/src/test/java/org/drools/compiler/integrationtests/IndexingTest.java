@@ -38,10 +38,9 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.index.LeftTupleIndexHashTable;
-import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.util.index.RightTupleIndexHashTable;
-import org.drools.core.util.index.RightTupleList;
+import org.drools.core.util.index.LeftTupleIndexHashTable;
+import org.drools.core.util.index.TupleList;
 import org.junit.Test;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.rule.Row;
@@ -132,7 +131,7 @@ public class IndexingTest extends CommonTestMethodBase {
         assertEquals( "$name", ((IndexableConstraint)c.getConstraint()).getFieldIndex().getDeclaration().getIdentifier() );
         assertTrue( c.isIndexed() );        
         BetaMemory bm = ( BetaMemory ) wm.getNodeMemory( j2 );
-        assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable);
+        assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );
         
         c = ( SingleBetaConstraints ) j3.getRawConstraints();
@@ -146,15 +145,15 @@ public class IndexingTest extends CommonTestMethodBase {
         assertEquals("$p1", c.getConstraint().getRequiredDeclarations()[0].getIdentifier());
         assertFalse( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j4 );
-        assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleList );
-        assertTrue( bm.getRightTupleMemory() instanceof RightTupleList );
+        assertTrue( bm.getLeftTupleMemory() instanceof TupleList );
+        assertTrue( bm.getRightTupleMemory() instanceof TupleList );
         
         c = ( SingleBetaConstraints ) j5.getRawConstraints();
         assertEquals("name", ((IndexableConstraint)c.getConstraint()).getFieldIndex().getDeclaration().getIdentifier());
         assertTrue( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j5 );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
-        assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );   
+        assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );
         
         // won't compile
 //        c = ( SingleBetaConstraints ) j6.getRawConstraints();
@@ -169,35 +168,35 @@ public class IndexingTest extends CommonTestMethodBase {
         assertTrue( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j7 );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
-        assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );   
+        assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );
         
         c = ( SingleBetaConstraints ) j8.getRawConstraints();
         assertEquals("name", ((IndexableConstraint)c.getConstraint()).getFieldIndex().getDeclaration().getIdentifier());
         assertTrue( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j8 );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
-        assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );     
+        assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );
         
         c = ( SingleBetaConstraints ) j9.getRawConstraints();
         assertEquals("$p1", c.getConstraint().getRequiredDeclarations()[0].getIdentifier());
         assertFalse( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j9 );
-        assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleList );
-        assertTrue( bm.getRightTupleMemory() instanceof RightTupleList );  
+        assertTrue( bm.getLeftTupleMemory() instanceof TupleList );
+        assertTrue( bm.getRightTupleMemory() instanceof TupleList );
         
         c = ( SingleBetaConstraints ) j10.getRawConstraints();
         assertEquals("name", ((IndexableConstraint)c.getConstraint()).getFieldIndex().getDeclaration().getIdentifier());
         assertTrue( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j10 );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
-        assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );  
+        assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );
         
         c = ( SingleBetaConstraints ) j11.getRawConstraints();
         assertEquals("$p1", c.getConstraint().getRequiredDeclarations()[0].getIdentifier());
         assertFalse( c.isIndexed() );   
         bm = ( BetaMemory ) wm.getNodeMemory( j11 );
-        assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleList);
-        assertTrue( bm.getRightTupleMemory() instanceof RightTupleList );          
+        assertTrue( bm.getLeftTupleMemory() instanceof TupleList);
+        assertTrue( bm.getRightTupleMemory() instanceof TupleList );
     }
     
     @Test(timeout=10000)
@@ -231,7 +230,7 @@ public class IndexingTest extends CommonTestMethodBase {
         assertTrue( c.isIndexed() );        
         BetaMemory bm = ( BetaMemory ) wm.getNodeMemory( j );
         assertTrue( bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
-        assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );        
+        assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );
     }
 
     @Test(timeout=10000)
@@ -267,7 +266,7 @@ public class IndexingTest extends CommonTestMethodBase {
         BetaMemory bm = ( BetaMemory ) wm.getNodeMemory( n );
         System.out.println( bm.getLeftTupleMemory().getClass() );
         System.out.println( bm.getRightTupleMemory().getClass() );
-        assertTrue(bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable);
+        assertTrue(bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );
 
 
@@ -409,7 +408,7 @@ public class IndexingTest extends CommonTestMethodBase {
         BetaMemory bm = ( BetaMemory ) wm.getNodeMemory( n );
         System.out.println( bm.getLeftTupleMemory().getClass() );
         System.out.println( bm.getRightTupleMemory().getClass() );
-        assertTrue(bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable);
+        assertTrue(bm.getLeftTupleMemory() instanceof LeftTupleIndexHashTable );
         assertTrue( bm.getRightTupleMemory() instanceof RightTupleIndexHashTable );
 
 

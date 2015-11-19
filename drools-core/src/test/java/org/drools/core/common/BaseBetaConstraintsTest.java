@@ -22,15 +22,6 @@ import org.drools.core.base.ClassFieldAccessorStore;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.base.evaluators.Operator;
-import org.drools.core.util.AbstractHashTable.FieldIndex;
-import org.drools.core.util.AbstractHashTable.Index;
-import org.drools.core.util.index.IndexUtil.ConstraintType;
-import org.drools.core.util.index.LeftTupleIndexHashTable;
-import org.drools.core.util.index.LeftTupleList;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
-import org.drools.core.util.index.RightTupleIndexHashTable;
-import org.drools.core.util.index.RightTupleList;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.rule.Declaration;
@@ -39,14 +30,19 @@ import org.drools.core.rule.MvelConstraintTestUtil;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.util.AbstractHashTable.FieldIndex;
+import org.drools.core.util.AbstractHashTable.Index;
+import org.drools.core.util.LinkedList;
+import org.drools.core.util.LinkedListEntry;
+import org.drools.core.util.index.IndexUtil.ConstraintType;
+import org.drools.core.util.index.RightTupleIndexHashTable;
+import org.drools.core.util.index.LeftTupleIndexHashTable;
+import org.drools.core.util.index.TupleList;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public abstract class BaseBetaConstraintsTest {
 
@@ -139,10 +135,10 @@ public abstract class BaseBetaConstraintsTest {
 
             }
         } else {
-            LeftTupleList tupleHashTable = (LeftTupleList) betaMemory.getLeftTupleMemory();
+            TupleList tupleHashTable = (TupleList) betaMemory.getLeftTupleMemory();
             assertFalse( tupleHashTable.isIndexed() );
 
-            RightTupleList factHashTable = (RightTupleList) betaMemory.getRightTupleMemory();
+            TupleList factHashTable = (TupleList) betaMemory.getRightTupleMemory();
             assertFalse( factHashTable.isIndexed() );
         }
     }

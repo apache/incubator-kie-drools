@@ -54,6 +54,7 @@ import org.drools.core.spi.InternalActivationGroup;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.RuleFlowGroup;
+import org.drools.core.spi.Tuple;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.Trigger;
 import org.drools.core.time.impl.ExpressionIntervalTimer;
@@ -229,18 +230,18 @@ public class ReteAgenda<M extends ModedAssertion<M>>
                           salience,
                           context,
                           ruleAgendaItem, agendaGroup);
-        rtnLeftTuple.setObject( rtnLeftTuple );
+        rtnLeftTuple.setContextObject( rtnLeftTuple );
         return rtnLeftTuple;
     }
 
-    public ScheduledAgendaItem createScheduledAgendaItem(final LeftTuple tuple,
+    public ScheduledAgendaItem createScheduledAgendaItem(final Tuple tuple,
                                                          final PropagationContext context,
                                                          final TerminalNode rtn,
                                                          InternalAgendaGroup agendaGroup) {
         RuleTerminalNodeLeftTuple rtnLeftTuple = ( RuleTerminalNodeLeftTuple ) tuple;
         rtnLeftTuple.init(activationCounter++, 0, context, null, agendaGroup );
         ScheduledAgendaItem item =  new ScheduledAgendaItem( rtnLeftTuple, this );
-        tuple.setObject( item );
+        tuple.setContextObject( item );
         return item;
     }
 
@@ -375,7 +376,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
         InternalFactHandle factHandle = workingMemory.getFactHandleFactory().newFactHandle( activation, activationObjectTypeConf, workingMemory, workingMemory );
         workingMemory.getEntryPointNode().assertActivation( factHandle, activation.getPropagationContext(), workingMemory );
-        activation.setFactHandle( factHandle );
+        activation.setActivationFactHandle( factHandle );
 
         if ( !activation.isCanceled() && (activation.getBlockers() == null || activation.getBlockers().isEmpty()) ) {
             // All activations started off staged, they are unstaged if they are blocked or
@@ -400,7 +401,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
     public void removeActivation(final AgendaItem activation) {
         if ( declarativeAgenda ) {
-            workingMemory.getEntryPointNode().retractActivation( activation.getFactHandle(), activation.getPropagationContext(), workingMemory );
+            workingMemory.getEntryPointNode().retractActivation( activation.getActivationFactHandle(), activation.getPropagationContext(), workingMemory );
 
             if ( activation.getActivationGroupNode() != null ) {
                 activation.getActivationGroupNode().getActivationGroup().removeActivation( activation );
@@ -414,7 +415,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
     public void modifyActivation(final AgendaItem activation,
                                  boolean previouslyActive) {
         if ( declarativeAgenda ) {
-            InternalFactHandle factHandle = activation.getFactHandle();
+            InternalFactHandle factHandle = activation.getActivationFactHandle();
             workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
 
             if ( previouslyActive ) {
@@ -544,7 +545,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
                                (InternalAgendaGroup) agendaGroup );
     }
 
-    public boolean createActivation(final LeftTuple tuple,
+    public boolean createActivation(final Tuple tuple,
                                     final PropagationContext context,
                                     final InternalWorkingMemory workingMemory,
                                     final TerminalNode rtn) {
@@ -554,7 +555,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         if ( rtn.isFireDirect() ) {
             // Fire RunLevel == 0 straight away. agenda-groups, rule-flow groups, salience are ignored
             AgendaItem item = createAgendaItem( (RuleTerminalNodeLeftTuple)tuple, 0, context, null, null );
-            tuple.setObject( item );
+            tuple.setContextObject( item );
             if ( activationsFilter != null && !activationsFilter.accept( item,
                                                                          workingMemory,
                                                                          rtn ) ) {
@@ -590,8 +591,8 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
             if ( rule.isLockOnActive() && agendaGroup.isActive()  && agendaGroup.getAutoFocusActivator() != context ) {
                 // do not add the activation if the rule is "lock-on-active" and the AgendaGroup is active
-                if ( tuple.getObject() == null ) {
-                    tuple.setObject( Boolean.TRUE ); // this is so we can do a check with a bit more intent than a null check on modify
+                if ( tuple.getContextObject() == null ) {
+                    tuple.setContextObject( Boolean.TRUE ); // this is so we can do a check with a bit more intent than a null check on modify
                 }
                 return false;
             }
@@ -670,7 +671,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         return isRuleInstanceAgendaItem(ruleflowGroupName, ruleName, processInstanceId);
     }
 
-    public void cancelActivation(final LeftTuple leftTuple,
+    public void cancelActivation(final Tuple leftTuple,
                                  final PropagationContext context,
                                  final InternalWorkingMemory workingMemory,
                                  final Activation activation,
@@ -678,7 +679,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
         AgendaItem item = (AgendaItem) activation;
         item.removeAllBlockersAndBlocked( this );
 
-        if ( isDeclarativeAgenda() && activation.getFactHandle() == null ) {
+        if ( isDeclarativeAgenda() && activation.getActivationFactHandle() == null ) {
             // This a control rule activation, nothing to do except update counters. As control rules are not in agenda-groups etc.
             return;
         } else {
@@ -688,7 +689,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
         if ( activation.isQueued() ) {
             // on fact expiration, we don't remove the activation, but let it fire
-            if ( context.getType() != PropagationContext.EXPIRATION || context.getFactHandleOrigin() == null ) {
+            if ( context.getType() != PropagationContext.EXPIRATION || context.getFactHandle() == null ) {
                 activation.remove();
 
                 if ( activation.getActivationGroupNode() != null ) {
@@ -1310,20 +1311,20 @@ public class ReteAgenda<M extends ModedAssertion<M>>
                     throw new RuntimeException( e );
                 }
             } finally {
-                if ( activation.getFactHandle() != null ) {
+                if ( activation.getActivationFactHandle() != null ) {
                     // update the Activation in the WM
-                    InternalFactHandle factHandle = activation.getFactHandle();
+                    InternalFactHandle factHandle = activation.getActivationFactHandle();
                     workingMemory.getEntryPointNode().modifyActivation( factHandle, activation.getPropagationContext(), workingMemory );
                     activation.getPropagationContext().evaluateActionQueue( workingMemory );
                 }
                 // if the tuple contains expired events
-                for ( LeftTuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
-                    if ( tuple.getLastHandle() == null ) {
+                for ( Tuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
+                    if ( tuple.getFactHandle() == null ) {
                         // can be null for eval, not and exists that have no right input
                         continue;
                     }
-                    if ( tuple.getLastHandle().isEvent() ) {
-                        EventFactHandle handle = (EventFactHandle) tuple.getLastHandle();
+                    if ( tuple.getFactHandle().isEvent() ) {
+                        EventFactHandle handle = (EventFactHandle) tuple.getFactHandle();
                         // decrease the activation count for the event
                         handle.decreaseActivationsCount();
                         // handles "expire" only in stream mode.

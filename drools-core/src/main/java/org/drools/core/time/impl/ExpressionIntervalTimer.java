@@ -16,15 +16,14 @@
 
 package org.drools.core.time.impl;
 
-import org.drools.core.base.mvel.MVELCompilationUnit;
 import org.drools.core.base.mvel.MVELObjectExpression;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.ScheduledAgendaItem;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ConditionalElement;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.Tuple;
 import org.drools.core.time.Trigger;
 import org.kie.api.runtime.Calendars;
 
@@ -127,7 +126,7 @@ public class ExpressionIntervalTimer  extends BaseTimer
     }
 
     public Trigger createTrigger(long timestamp,
-                                 LeftTuple leftTuple,
+                                 Tuple leftTuple,
                                  DefaultJobHandle jh,
                                  String[] calendarNames,
                                  Calendars calendars,

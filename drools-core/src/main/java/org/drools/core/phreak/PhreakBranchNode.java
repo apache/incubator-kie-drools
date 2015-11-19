@@ -17,7 +17,7 @@ package org.drools.core.phreak;
 
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.ConditionalBranchEvaluator;
 import org.drools.core.reteoo.ConditionalBranchEvaluator.ConditionalExecution;
 import org.drools.core.reteoo.ConditionalBranchNode;
@@ -26,6 +26,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.spi.Salience;
+import org.drools.core.spi.Tuple;
 
 
 public class PhreakBranchNode {
@@ -33,9 +34,9 @@ public class PhreakBranchNode {
                        ConditionalBranchMemory cbm,
                        LeftTupleSink sink,
                        InternalWorkingMemory wm,
-                       LeftTupleSets srcLeftTuples,
-                       LeftTupleSets trgLeftTuples,
-                       LeftTupleSets stagedLeftTuples,
+                       TupleSets<LeftTuple> srcLeftTuples,
+                       TupleSets<LeftTuple> trgLeftTuples,
+                       TupleSets<LeftTuple> stagedLeftTuples,
                        RuleExecutor executor) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
@@ -57,8 +58,8 @@ public class PhreakBranchNode {
                               ConditionalBranchMemory cbm,
                               LeftTupleSink sink,
                               InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples,
-                              LeftTupleSets trgLeftTuples,
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples,
                               RuleExecutor executor) {
         ConditionalBranchEvaluator branchEvaluator = branchNode.getBranchEvaluator();
 
@@ -103,9 +104,9 @@ public class PhreakBranchNode {
                               ConditionalBranchMemory cbm,
                               LeftTupleSink sink,
                               InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples,
-                              LeftTupleSets trgLeftTuples,
-                              LeftTupleSets stagedLeftTuples,
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples,
+                              TupleSets<LeftTuple> stagedLeftTuples,
                               RuleExecutor executor) {
         ConditionalBranchEvaluator branchEvaluator = branchNode.getBranchEvaluator();
         RuleAgendaItem ruleAgendaItem = executor.getRuleAgendaItem();
@@ -125,14 +126,14 @@ public class PhreakBranchNode {
             LeftTuple child = leftTuple.getFirstChild();
             if ( child != null ) {
                 // assigns the correct main or rtn LeftTuple based on the identified sink
-                if ( child.getSink() == sink ) {
+                if ( child.getTupleSink() == sink ) {
                     mainLeftTuple = child;
                 } else {
                     rtnLeftTuple = child;
                 }
                 child = child.getLeftParentNext();
                 if ( child != null ) {
-                    if ( child.getSink() == sink ) {
+                    if ( child.getTupleSink() == sink ) {
                         mainLeftTuple = child;
                     } else {
                         rtnLeftTuple = child;
@@ -142,7 +143,7 @@ public class PhreakBranchNode {
 
             RuleTerminalNode oldRtn = null;
             if (rtnLeftTuple != null) {
-                oldRtn = (RuleTerminalNode) rtnLeftTuple.getSink();
+                oldRtn = (RuleTerminalNode) rtnLeftTuple.getTupleSink();
             }
 
             ConditionalExecution conditionalExecution = branchEvaluator.evaluate(leftTuple, wm, cbm.context);
@@ -223,14 +224,14 @@ public class PhreakBranchNode {
     public void doLeftDeletes(ConditionalBranchNode branchNode,
                               ConditionalBranchMemory cbm,
                               InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples,
-                              LeftTupleSets trgLeftTuples,
-                              LeftTupleSets stagedLeftTuples,
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples,
+                              TupleSets<LeftTuple> stagedLeftTuples,
                               RuleExecutor executor) {
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            LeftTuple rtnLeftTuple = (LeftTuple) leftTuple.getObject();
+            Tuple rtnLeftTuple = (Tuple) leftTuple.getContextObject();
             LeftTuple mainLeftTuple = leftTuple.getFirstChild();
 
             if (rtnLeftTuple != null) {

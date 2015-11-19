@@ -16,24 +16,19 @@
 
 package org.drools.core.spi;
 
-import java.io.Serializable;
-
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.ActivationGroupNode;
 import org.drools.core.common.ActivationNode;
 import org.drools.core.common.InternalAgendaGroup;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalRuleFlowGroup;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.util.LinkedList;
-import org.drools.core.util.LinkedListEntry;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.GroupElement;
-import org.kie.api.runtime.rule.AgendaGroup;
+import org.drools.core.util.LinkedList;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.runtime.beliefs.Mode;
+
+import java.io.Serializable;
 
 /**
  * When a <code>Tuple</code> fully matches a rule it is added to the <code>Agenda</code>
@@ -79,7 +74,7 @@ public interface Activation<T extends ModedAssertion<T>>
      * 
      * @return The tuple.
      */
-    LeftTuple getTuple();
+    Tuple getTuple();
 
     /**
      * Retrieve the <code>PropagationContext</code> for the <code>Activation</code>
@@ -121,7 +116,7 @@ public interface Activation<T extends ModedAssertion<T>>
 
     public void setActivationNode(ActivationNode ruleFlowGroupNode);
     
-    InternalFactHandle getFactHandle();   
+    InternalFactHandle getActivationFactHandle();
 
     public boolean isMatched();
 

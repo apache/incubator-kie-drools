@@ -42,13 +42,13 @@ public class ReteEntryPointNode extends EntryPointNode {
     }
 
     public void doRightDelete(PropagationContext pctx, InternalWorkingMemory wm, RightTuple rightTuple) {
-        ((BetaNode) rightTuple.getRightTupleSink()).retractRightTuple(rightTuple,
+        ((BetaNode) rightTuple.getTupleSink()).retractRightTuple(rightTuple,
                                                                       pctx,
                                                                       wm);
     }
 
     public void doDeleteObject(PropagationContext pctx, InternalWorkingMemory wm, LeftTuple leftTuple) {
-        leftTuple.getLeftTupleSink().retractLeftTuple(leftTuple,
+        leftTuple.getTupleSink().retractLeftTuple(leftTuple,
                                                       pctx,
                                                       wm);
     }

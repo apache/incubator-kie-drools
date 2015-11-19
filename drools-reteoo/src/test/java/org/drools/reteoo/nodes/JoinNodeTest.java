@@ -29,7 +29,6 @@ import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.JoinNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.LeftTupleSinkPropagator;
 import org.drools.core.reteoo.LeftTupleSource;
@@ -45,10 +44,11 @@ import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.bitmask.EmptyBitMask;
 import org.drools.core.util.bitmask.LongBitMask;
-import org.drools.core.util.index.LeftTupleList;
+import org.drools.core.util.index.TupleList;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -219,7 +219,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals( 2,
                       this.memory.getLeftTupleMemory().size() );
 
-        LeftTuple leftTuple = ( (LeftTupleList) this.memory.getLeftTupleMemory() ).getFirst();
+        Tuple leftTuple = ( (TupleList) this.memory.getLeftTupleMemory() ).getFirst();
 
         assertEquals( tuple0,
                       leftTuple );
@@ -315,7 +315,7 @@ public class JoinNodeTest extends DroolsTestCase {
         assertEquals( 2,
                       this.memory.getRightTupleMemory().size() );
 
-        RightTuple rightTuple = this.memory.getRightTupleMemory().getFirst( new LeftTupleImpl( f0, this.node, true ), null, null );
+        Tuple rightTuple = this.memory.getRightTupleMemory().getFirst( new LeftTupleImpl( f0, this.node, true ) );
 
         final InternalFactHandle rf0 = rightTuple.getFactHandle();
         final InternalFactHandle rf1 = ( (RightTuple) rightTuple.getNext() )

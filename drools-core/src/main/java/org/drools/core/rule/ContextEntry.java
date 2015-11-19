@@ -16,11 +16,11 @@
 
 package org.drools.core.rule;
 
-import java.io.Externalizable;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.spi.Tuple;
+
+import java.io.Externalizable;
 
 public interface ContextEntry
     extends
@@ -31,7 +31,7 @@ public interface ContextEntry
     public void setNext(ContextEntry entry);
 
     public void updateFromTuple(InternalWorkingMemory workingMemory,
-                                LeftTuple tuple);
+                                Tuple tuple);
 
     public void updateFromFactHandle(InternalWorkingMemory workingMemory,
                                      InternalFactHandle handle);

@@ -25,6 +25,7 @@ import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.rule.MutableTypeConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.IndexUtil;
 import org.kie.internal.conf.IndexPrecedenceOption;
@@ -35,8 +36,8 @@ import java.io.ObjectOutput;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.util.index.IndexUtil.compositeAllowed;
 import static org.drools.core.util.index.IndexUtil.isIndexableForNode;
 
@@ -145,7 +146,7 @@ public class DefaultBetaConstraints
      */
     public void updateFromTuple(final ContextEntry[] context,
                                 final InternalWorkingMemory workingMemory,
-                                final LeftTuple tuple) {
+                                final Tuple tuple) {
         for (ContextEntry aContext : context) {
             aContext.updateFromTuple(workingMemory, tuple);
         }
@@ -191,7 +192,7 @@ public class DefaultBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#isAllowedCachedRight(org.kie.reteoo.ReteTuple)
      */
     public boolean isAllowedCachedRight(final ContextEntry[] context,
-                                        final LeftTuple tuple) {
+                                        final Tuple tuple) {
         for (int i = indexed; i < constraints.length; i++) {
             if ( !constraints[i].isAllowedCachedRight(tuple, context[i]) ) {
                 return false;

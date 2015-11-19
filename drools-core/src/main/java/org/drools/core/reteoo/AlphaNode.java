@@ -16,15 +16,11 @@
 
 package org.drools.core.reteoo;
 
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.evaluators.IsAEvaluatorDefinition;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.Memory;
-import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.reteoo.builder.BuildContext;
-import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
@@ -52,8 +48,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
  */
 public class AlphaNode extends ObjectSource
     implements
-    ObjectSinkNode,
-    MemoryFactory<AlphaNode.AlphaMemory> {
+    ObjectSinkNode {
 
     private static final long        serialVersionUID = 510l;
 
@@ -137,10 +132,8 @@ public class AlphaNode extends ObjectSource
     public void assertObject(final InternalFactHandle factHandle,
                              final PropagationContext context,
                              final InternalWorkingMemory workingMemory) {
-        final AlphaMemory memory = workingMemory.getNodeMemory( this );
         if ( this.constraint.isAllowed( factHandle,
-                                        workingMemory,
-                                        memory.context ) ) {
+                                        workingMemory)) {
 
             this.sink.propagateAssertObject( factHandle,
                                              context,
@@ -154,10 +147,7 @@ public class AlphaNode extends ObjectSource
                              final InternalWorkingMemory workingMemory) {
         if ( context.getModificationMask().intersects( inferredMask ) ) {
 
-            final AlphaMemory memory = workingMemory.getNodeMemory( this );
-            if ( this.constraint.isAllowed( factHandle,
-                    workingMemory,
-                    memory.context ) ) {
+            if ( this.constraint.isAllowed( factHandle, workingMemory ) ) {
                 this.sink.propagateModifyObject( factHandle,
                         modifyPreviousTuples,
                         context,
@@ -179,24 +169,12 @@ public class AlphaNode extends ObjectSource
     public void updateSink(final ObjectSink sink,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory) {
-        final AlphaMemory memory = workingMemory.getNodeMemory( this );
-
         // get the objects from the parent
         ObjectSinkUpdateAdapter adapter = new ObjectSinkUpdateAdapter( sink,
-                                                                       this.constraint,
-                                                                       memory.context );
+                                                                       this.constraint );
         this.source.updateSink( adapter,
                                 context,
                                 workingMemory );
-    }
-
-    /**
-     * Creates a HashSet for the AlphaNode's memory.
-     */
-    public AlphaMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
-        AlphaMemory memory = new AlphaMemory();
-        memory.context = this.constraint.createContextEntry();
-        return memory;
     }
 
     public String toString() {
@@ -269,48 +247,6 @@ public class AlphaNode extends ObjectSource
         this.previousRightTupleSinkNode = previous;
     }
 
-    public static class AlphaMemory
-        implements
-        Memory {
-        private static final long serialVersionUID = 510l;
-
-        public ContextEntry       context;
-        
-        public short getNodeType() {
-            return NodeTypeEnums.AlphaNode;
-        }
-
-        public SegmentMemory getSegmentMemory() {
-            return null;
-        }
-
-        public void setSegmentMemory(SegmentMemory segmentMemory) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Memory getPrevious() {
-            throw new UnsupportedOperationException();
-        }
-
-        public void setPrevious(Memory previous) {
-            throw new UnsupportedOperationException();
-        }
-
-        public void setNext(Memory next) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Memory getNext() {
-            throw new UnsupportedOperationException();
-        }
-
-        public void nullPrevNext() {
-            throw new UnsupportedOperationException();
-        }
-
-        public void reset() { }
-    }
-
     /**
      * Used with the updateSink method, so that the parent ObjectSource
      * can  update the  TupleSink
@@ -320,14 +256,11 @@ public class AlphaNode extends ObjectSource
         ObjectSink {
         private final ObjectSink               sink;
         private final AlphaNodeFieldConstraint constraint;
-        private final ContextEntry             contextEntry;
 
         public ObjectSinkUpdateAdapter(final ObjectSink sink,
-                                       final AlphaNodeFieldConstraint constraint,
-                                       final ContextEntry contextEntry) {
+                                       final AlphaNodeFieldConstraint constraint) {
             this.sink = sink;
             this.constraint = constraint;
-            this.contextEntry = contextEntry;
         }
 
         public void assertObject(final InternalFactHandle handle,
@@ -335,8 +268,7 @@ public class AlphaNode extends ObjectSource
                                  final InternalWorkingMemory workingMemory) {
 
             if ( this.constraint.isAllowed( handle,
-                                            workingMemory,
-                                            this.contextEntry ) ) {
+                                            workingMemory ) ) {
                 this.sink.assertObject( handle,
                                         propagationContext,
                                         workingMemory );

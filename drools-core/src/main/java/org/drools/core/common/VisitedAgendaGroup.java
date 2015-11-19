@@ -140,7 +140,7 @@ public class VisitedAgendaGroup implements Activation {
     }
 
     @Override
-    public InternalFactHandle getFactHandle() {
+    public InternalFactHandle getActivationFactHandle() {
         return null;
     }
 

@@ -17,7 +17,6 @@ package org.drools.core.rule.constraint;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.Constraint;
@@ -44,12 +43,7 @@ public class NegConstraint implements AlphaNodeFieldConstraint {
     }
 
     @Override
-    public ContextEntry createContextEntry() {
-        return null;
-    }
-
-    @Override
-    public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
+    public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory) {
         return ( !operator && !handle.isNegated() ) || ( operator && handle.isNegated() );
     }
 

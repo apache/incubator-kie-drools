@@ -20,7 +20,6 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.phreak.ReactiveObject;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.From;
@@ -33,6 +32,7 @@ import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PatternExtractor;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.ClassUtils;
 
 import java.io.IOException;
@@ -111,7 +111,7 @@ public class XpathConstraint extends MutableTypeConstraint {
     }
 
     @Override
-    public boolean isAllowedCachedRight(LeftTuple tuple, ContextEntry context) {
+    public boolean isAllowedCachedRight(Tuple tuple, ContextEntry context) {
         throw new UnsupportedOperationException();
     }
 
@@ -121,7 +121,7 @@ public class XpathConstraint extends MutableTypeConstraint {
     }
 
     @Override
-    public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory, ContextEntry context) {
+    public boolean isAllowed(InternalFactHandle handle, InternalWorkingMemory workingMemory) {
         throw new UnsupportedOperationException();
     }
 
@@ -166,7 +166,7 @@ public class XpathConstraint extends MutableTypeConstraint {
     }
 
     private interface XpathEvaluator {
-        Iterable<?> evaluate(InternalWorkingMemory workingMemory, LeftTuple leftTuple, Object object);
+        Iterable<?> evaluate(InternalWorkingMemory workingMemory, Tuple leftTuple, Object object);
     }
 
     @Override
@@ -181,11 +181,11 @@ public class XpathConstraint extends MutableTypeConstraint {
             this.chunk = chunk;
         }
 
-        public Iterable<?> evaluate(InternalWorkingMemory workingMemory, LeftTuple leftTuple, Object object) {
+        public Iterable<?> evaluate(InternalWorkingMemory workingMemory, Tuple leftTuple, Object object) {
             return evaluateObject(workingMemory, leftTuple, chunk, new ArrayList<Object>(), object);
         }
 
-        private List<Object> evaluateObject(InternalWorkingMemory workingMemory, LeftTuple leftTuple, XpathChunk chunk, List<Object> list, Object object) {
+        private List<Object> evaluateObject(InternalWorkingMemory workingMemory, Tuple leftTuple, XpathChunk chunk, List<Object> list, Object object) {
             Object result = chunk.evaluate(object);
             if (!chunk.lazy && result instanceof ReactiveObject) {
                 ((ReactiveObject) result).addLeftTuple(leftTuple);
@@ -410,8 +410,8 @@ public class XpathConstraint extends MutableTypeConstraint {
         }
 
         @Override
-        public Iterator getResults(LeftTuple leftTuple, InternalWorkingMemory wm, PropagationContext ctx, Object providerContext) {
-            InternalFactHandle fh = leftTuple.getHandle();
+        public Iterator getResults(Tuple leftTuple, InternalWorkingMemory wm, PropagationContext ctx, Object providerContext) {
+            InternalFactHandle fh = leftTuple.getFactHandle();
             Object obj = fh.getObject();
 
             if (obj instanceof DroolsQuery) {

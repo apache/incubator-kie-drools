@@ -16,11 +16,11 @@
 
 package org.drools.core.util;
 
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.IndexEvaluator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ReadAccessor;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.index.LeftTupleIndexHashTable;
 
 import java.io.Externalizable;
@@ -409,15 +409,15 @@ public abstract class AbstractHashTable
         Externalizable {
         public FieldIndex getFieldIndex(int index);
 
-        public int hashCodeOf(LeftTuple tuple);
+        public int hashCodeOf(Tuple tuple);
 
         public int hashCodeOf(Object object);
 
         public boolean equal(Object object,
-                             LeftTuple tuple);
+                             Tuple tuple);
 
-        public boolean equal(LeftTuple tuple1,
-                             LeftTuple tuple2);
+        public boolean equal(Tuple tuple1,
+                             Tuple tuple2);
 
         public boolean equal(Object object1,
                              Object object2);
@@ -479,16 +479,16 @@ public abstract class AbstractHashTable
             return rehash( hashCode );
         }
 
-        public int hashCodeOf(final LeftTuple tuple) {
+        public int hashCodeOf(final Tuple tuple) {
             int hashCode = this.startResult;
             hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.declaration.getHashCode( null,
-                                                                                                tuple.get( this.declaration ).getObject() );
+                                                                                                tuple.getObject( this.declaration ) );
             return rehash( hashCode );
         }
 
         public boolean equal(final Object right,
-                             final LeftTuple tuple) {
-            final Object left = tuple.get( this.declaration ).getObject();
+                             final Tuple tuple) {
+            final Object left = tuple.getObject( this.declaration );
 
             return this.evaluator.evaluate( null,
                                             this.declaration.getExtractor(),
@@ -507,10 +507,10 @@ public abstract class AbstractHashTable
                                             object2 );
         }
 
-        public boolean equal(final LeftTuple tuple1,
-                             final LeftTuple tuple2) {
-            final Object object1 = tuple1.get( this.declaration ).getObject();
-            final Object object2 = tuple2.get( this.declaration ).getObject();
+        public boolean equal(final Tuple tuple1,
+                             final Tuple tuple2) {
+            final Object object1 = tuple1.getObject( this.declaration );
+            final Object object2 = tuple2.getObject( this.declaration );
             return this.evaluator.evaluate( null,
                                             this.declaration.getExtractor(),
                                             object1,
@@ -577,21 +577,21 @@ public abstract class AbstractHashTable
             return rehash( hashCode );
         }
 
-        public int hashCodeOf(final LeftTuple tuple) {
+        public int hashCodeOf(final Tuple tuple) {
             int hashCode = this.startResult;
 
             hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index0.declaration.getHashCode( null,
-                                                                                                       tuple.get( this.index0.declaration ).getObject() );
+                                                                                                       tuple.getObject( this.index0.declaration ) );
             hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index1.declaration.getHashCode( null,
-                                                                                                       tuple.get( this.index1.declaration ).getObject() );
+                                                                                                       tuple.getObject( this.index1.declaration ) );
 
             return rehash( hashCode );
         }
 
         public boolean equal(final Object right,
-                             final LeftTuple tuple) {
-            final Object left1 = tuple.get( this.index0.declaration ).getObject();
-            final Object left2 = tuple.get( this.index1.declaration ).getObject();
+                             final Tuple tuple) {
+            final Object left1 = tuple.getObject( this.index0.declaration );
+            final Object left2 = tuple.getObject( this.index1.declaration );
 
             return this.index0.evaluator.evaluate( null,
                                                    this.index0.declaration.getExtractor(),
@@ -604,13 +604,13 @@ public abstract class AbstractHashTable
                                                                                               right );
         }
 
-        public boolean equal(final LeftTuple tuple1,
-                             final LeftTuple tuple2) {
-            final Object object11 = tuple1.get( this.index0.declaration ).getObject();
-            final Object object12 = tuple2.get( this.index0.declaration ).getObject();
+        public boolean equal(final Tuple tuple1,
+                             final Tuple tuple2) {
+            final Object object11 = tuple1.getObject( this.index0.declaration );
+            final Object object12 = tuple2.getObject( this.index0.declaration );
 
-            final Object object21 = tuple1.get( this.index1.declaration ).getObject();
-            final Object object22 = tuple2.get( this.index1.declaration ).getObject();
+            final Object object21 = tuple1.getObject( this.index1.declaration );
+            final Object object22 = tuple2.getObject( this.index1.declaration );
 
             return this.index0.evaluator.evaluate( null,
                                                    this.index0.declaration.getExtractor(),
@@ -703,24 +703,24 @@ public abstract class AbstractHashTable
             return rehash( hashCode );
         }
 
-        public int hashCodeOf(final LeftTuple tuple) {
+        public int hashCodeOf(final Tuple tuple) {
             int hashCode = this.startResult;
 
             hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index0.declaration.getHashCode( null,
-                                                                                                       tuple.get( this.index0.declaration ).getObject() );
+                                                                                                       tuple.getObject( this.index0.declaration ) );
             hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index1.declaration.getHashCode( null,
-                                                                                                       tuple.get( this.index1.declaration ).getObject() );
+                                                                                                       tuple.getObject( this.index1.declaration ) );
             hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index2.declaration.getHashCode( null,
-                                                                                                       tuple.get( this.index2.declaration ).getObject() );
+                                                                                                       tuple.getObject( this.index2.declaration ) );
 
             return rehash( hashCode );
         }
 
         public boolean equal(final Object right,
-                             final LeftTuple tuple) {
-            final Object left1 = tuple.get( this.index0.declaration ).getObject();
-            final Object left2 = tuple.get( this.index1.declaration ).getObject();
-            final Object left3 = tuple.get( this.index2.declaration ).getObject();
+                             final Tuple tuple) {
+            final Object left1 = tuple.getObject( this.index0.declaration );
+            final Object left2 = tuple.getObject( this.index1.declaration );
+            final Object left3 = tuple.getObject( this.index2.declaration );
 
             return this.index0.evaluator.evaluate( null,
                                                    this.index0.declaration.getExtractor(),
@@ -737,14 +737,14 @@ public abstract class AbstractHashTable
                                                                                                                                          right );
         }
 
-        public boolean equal(final LeftTuple tuple1,
-                             final LeftTuple tuple2) {
-            final Object object11 = tuple1.get( this.index0.declaration ).getObject();
-            final Object object12 = tuple2.get( this.index0.declaration ).getObject();
-            final Object object21 = tuple1.get( this.index1.declaration ).getObject();
-            final Object object22 = tuple2.get( this.index1.declaration ).getObject();
-            final Object object31 = tuple1.get( this.index2.declaration ).getObject();
-            final Object object32 = tuple2.get( this.index2.declaration ).getObject();
+        public boolean equal(final Tuple tuple1,
+                             final Tuple tuple2) {
+            final Object object11 = tuple1.getObject( this.index0.declaration );
+            final Object object12 = tuple2.getObject( this.index0.declaration );
+            final Object object21 = tuple1.getObject( this.index1.declaration );
+            final Object object22 = tuple2.getObject( this.index1.declaration );
+            final Object object31 = tuple1.getObject( this.index2.declaration );
+            final Object object32 = tuple2.getObject( this.index2.declaration );
 
             return this.index0.evaluator.evaluate( null,
                                                    this.index0.declaration.getExtractor(),

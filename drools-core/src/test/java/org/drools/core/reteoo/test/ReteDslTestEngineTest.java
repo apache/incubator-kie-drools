@@ -16,19 +16,6 @@
 
 package org.drools.core.reteoo.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
@@ -37,12 +24,9 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.test.model.Person;
-import org.drools.core.util.index.LeftTupleList;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.builder.BuildContext;
@@ -54,9 +38,21 @@ import org.drools.core.reteoo.test.dsl.NodeTestCaseResult.Result;
 import org.drools.core.reteoo.test.dsl.NodeTestDef;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
+import org.drools.core.test.model.Person;
+import org.drools.core.util.index.TupleList;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.KnowledgeBaseFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
 
 @Ignore("phreak")
 public class ReteDslTestEngineTest {
@@ -369,7 +365,7 @@ public class ReteDslTestEngineTest {
         assertEquals( 2,
                       memory.getLeftTupleMemory().size() );
 
-        LeftTuple leftTuple = ((LeftTupleList)memory.getLeftTupleMemory()).getFirst( );
+        Tuple leftTuple = ((TupleList)memory.getLeftTupleMemory()).getFirst( );
         assertEquals( tuple0,
                       leftTuple );
         assertEquals( tuple1,

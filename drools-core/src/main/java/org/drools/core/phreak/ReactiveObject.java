@@ -15,11 +15,11 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.spi.Tuple;
 
 import java.util.List;
 
 public interface ReactiveObject {
-    void addLeftTuple(LeftTuple leftTuple);
-    List<LeftTuple> getLeftTuples();
+    void addLeftTuple(Tuple leftTuple);
+    List<Tuple> getLeftTuples();
 }

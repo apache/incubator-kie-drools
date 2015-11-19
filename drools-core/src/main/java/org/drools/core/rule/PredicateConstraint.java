@@ -16,19 +16,6 @@
 
 package org.drools.core.rule;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.io.Serializable;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-import java.security.PrivilegedExceptionAction;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
@@ -41,6 +28,19 @@ import org.drools.core.spi.Restriction;
 import org.drools.core.spi.Tuple;
 import org.drools.core.spi.Wireable;
 import org.kie.internal.security.KiePolicyHelper;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.io.Serializable;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A predicate can be written as a top level constraint or be nested
@@ -300,15 +300,14 @@ public class PredicateConstraint extends MutableTypeConstraint
     }
 
     public boolean isAllowed(final InternalFactHandle handle,
-                             final InternalWorkingMemory workingMemory,
-                             final ContextEntry ctx) {
+                             final InternalWorkingMemory workingMemory) {
         try {
             return this.expression.evaluate( handle,
                                              null,
                                              this.previousDeclarations,
                                              this.localDeclarations,
                                              workingMemory,
-                                             ((PredicateContextEntry) ctx).dialectContext );
+                                             null ); //((PredicateContextEntry) ctx).dialectContext );
         } catch ( final Exception e ) {
             throw new RuntimeException( "Exception executing predicate " + this.expression,
                                          e );
@@ -327,7 +326,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         try {
             final PredicateContextEntry ctx = (PredicateContextEntry) context;
             return this.expression.evaluate( handle,
-                                             ctx.leftTuple,
+                                             ctx.tuple,
                                              this.previousDeclarations,
                                              this.localDeclarations,
                                              ctx.workingMemory,
@@ -338,7 +337,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
     }
 
-    public boolean isAllowedCachedRight(final LeftTuple tuple,
+    public boolean isAllowedCachedRight(final Tuple tuple,
                                         final ContextEntry context) {
         try {
             final PredicateContextEntry ctx = (PredicateContextEntry) context;
@@ -387,7 +386,7 @@ public class PredicateConstraint extends MutableTypeConstraint
 
         private static final long    serialVersionUID = 510l;
 
-        public LeftTuple             leftTuple;
+        public Tuple                 tuple;
         public InternalFactHandle    rightHandle;
         public InternalWorkingMemory workingMemory;
 
@@ -400,7 +399,7 @@ public class PredicateConstraint extends MutableTypeConstraint
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            leftTuple = (LeftTuple) in.readObject();
+            tuple = (LeftTuple) in.readObject();
             rightHandle = (InternalFactHandle) in.readObject();
             workingMemory = (InternalWorkingMemory) in.readObject();
             dialectContext = in.readObject();
@@ -408,7 +407,7 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( leftTuple );
+            out.writeObject( tuple );
             out.writeObject( rightHandle );
             out.writeObject( workingMemory );
             out.writeObject( dialectContext );
@@ -430,13 +429,13 @@ public class PredicateConstraint extends MutableTypeConstraint
         }
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
-                                    final LeftTuple tuple) {
+                                    final Tuple tuple) {
             this.workingMemory = workingMemory;
-            this.leftTuple = tuple;
+            this.tuple = tuple;
         }
 
         public void resetTuple() {
-            this.leftTuple = null;
+            this.tuple = null;
         }
 
         public void resetFactHandle() {

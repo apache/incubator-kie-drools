@@ -739,26 +739,26 @@ public class CompositeObjectSinkAdapterTest {
         }
 
         public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                         LeftTupleSink sink,
+                                         Sink sink,
                                          boolean leftTupleMemoryEnabled) {
             return new LeftTupleImpl(factHandle, sink, leftTupleMemoryEnabled );
         }    
         
         public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                         LeftTupleSink sink,
+                                         Sink sink,
                                          PropagationContext pctx, boolean leftTupleMemoryEnabled) {
             return new LeftTupleImpl(leftTuple,sink, pctx, leftTupleMemoryEnabled );
         }
 
         public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                          final LeftTuple leftTuple,
-                                         final LeftTupleSink sink) {
+                                         final Sink sink) {
             return new LeftTupleImpl(factHandle,leftTuple, sink );
         }
 
         public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                          RightTuple rightTuple,
-                                         LeftTupleSink sink) {
+                                         Sink sink) {
             return new LeftTupleImpl(leftTuple, rightTuple, sink );
         }   
         
@@ -766,7 +766,7 @@ public class CompositeObjectSinkAdapterTest {
                                          RightTuple rightTuple,
                                          LeftTuple currentLeftChild,
                                          LeftTuple currentRightChild,
-                                         LeftTupleSink sink,
+                                         Sink sink,
                                          boolean leftTupleMemoryEnabled) {
             return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
         }

@@ -25,12 +25,12 @@ import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl.MODE;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
-import org.drools.core.common.LeftTupleSets;
-import org.drools.core.common.LeftTupleSetsImpl;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.QueryElementFactHandle;
+import org.drools.core.common.TupleSets;
+import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.impl.PersisterHelper;
@@ -183,7 +183,7 @@ public class QueryElementNode extends LeftTupleSource
                                          StackEntry stackEntry,
                                          final List<PathMemory> pmems,
                                          QueryElementNodeMemory qmem,
-                                         LeftTupleSets trgLeftTuples,
+                                         TupleSets<LeftTuple> trgLeftTuples,
                                          LeftTupleSink sink,
                                          InternalWorkingMemory workingMemory) {
         Object[] args = new Object[argsTemplate.length]; // the actual args, to be created from the  template
@@ -253,7 +253,7 @@ public class QueryElementNode extends LeftTupleSource
 
         handle.setObject( queryObject );
 
-        leftTuple.setObject( handle ); // so it can be retracted later and destroyed
+        leftTuple.setContextObject( handle ); // so it can be retracted later and destroyed
 
         return queryObject;
     }
@@ -350,7 +350,7 @@ public class QueryElementNode extends LeftTupleSource
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
 
-            QueryTerminalNode node = (QueryTerminalNode) resultLeftTuple.getLeftTupleSink();
+            QueryTerminalNode node = (QueryTerminalNode) resultLeftTuple.getTupleSink();
             QueryImpl query = node.getQuery();
             Declaration[] decls = node.getRequiredDeclarations();
             DroolsQuery dquery = (DroolsQuery) this.factHandle.getObject();
@@ -436,10 +436,10 @@ public class QueryElementNode extends LeftTupleSource
         }
 
         protected RightTuple createResultRightTuple( QueryElementFactHandle resultHandle, LeftTuple resultLeftTuple, boolean open ) {
-            RightTuple rightTuple = new RightTuple( resultHandle );
+            RightTuple rightTuple = new RightTupleImpl( resultHandle );
             if ( open ) {
-                rightTuple.setLeftTuple( resultLeftTuple );
-                resultLeftTuple.setObject( rightTuple );
+                rightTuple.setBlocked( resultLeftTuple );
+                resultLeftTuple.setContextObject( rightTuple );
 
             }
             rightTuple.setPropagationContext( resultLeftTuple.getPropagationContext() );
@@ -474,12 +474,12 @@ public class QueryElementNode extends LeftTupleSource
                                final LeftTuple resultLeftTuple,
                                final PropagationContext context,
                                final InternalWorkingMemory workingMemory) {
-            RightTuple rightTuple = (RightTuple) resultLeftTuple.getObject();
-            rightTuple.setLeftTuple( null );
-            resultLeftTuple.setObject( null );
+            RightTuple rightTuple = (RightTuple) resultLeftTuple.getContextObject();
+            rightTuple.setBlocked( null );
+            resultLeftTuple.setContextObject( null );
 
             DroolsQuery query = (DroolsQuery) this.factHandle.getObject();
-            LeftTupleSets leftTuples = query.getResultLeftTupleSets();
+            TupleSets<LeftTuple> leftTuples = query.getResultLeftTupleSets();
             LeftTuple childLeftTuple = rightTuple.getFirstChild();
 
             RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, leftTuples, leftTuples );
@@ -489,17 +489,17 @@ public class QueryElementNode extends LeftTupleSource
                                final LeftTuple resultLeftTuple,
                                final PropagationContext context,
                                final InternalWorkingMemory workingMemory) {
-            RightTuple rightTuple = (RightTuple) resultLeftTuple.getObject();
+            RightTuple rightTuple = (RightTuple) resultLeftTuple.getContextObject();
             if ( rightTuple.getMemory() != null ) {
                 // Already sheduled as an insert
                 return;
             }
 
-            rightTuple.setLeftTuple( null );
-            resultLeftTuple.setObject( null );
+            rightTuple.setBlocked( null );
+            resultLeftTuple.setContextObject( null );
 
             // We need to recopy everything back again, as we don't know what has or hasn't changed
-            QueryTerminalNode node = (QueryTerminalNode) resultLeftTuple.getLeftTupleSink();
+            QueryTerminalNode node = (QueryTerminalNode) resultLeftTuple.getTupleSink();
             Declaration[] decls = node.getRequiredDeclarations();
             InternalFactHandle rootHandle = resultLeftTuple.get( 0 );
             DroolsQuery dquery = (DroolsQuery) rootHandle.getObject();
@@ -519,11 +519,11 @@ public class QueryElementNode extends LeftTupleSource
             handle.setObject( objects );
 
             if ( dquery.isOpen() ) {
-                rightTuple.setLeftTuple( resultLeftTuple );
-                resultLeftTuple.setObject( rightTuple );
+                rightTuple.setBlocked( resultLeftTuple );
+                resultLeftTuple.setContextObject( rightTuple );
             }
 
-            LeftTupleSets leftTuples = dquery.getResultLeftTupleSets();
+            TupleSets<LeftTuple> leftTuples = dquery.getResultLeftTupleSets();
             LeftTuple childLeftTuple = rightTuple.getFirstChild();
             switch ( childLeftTuple.getStagedType() ) {
                 // handle clash with already staged entries
@@ -548,7 +548,7 @@ public class QueryElementNode extends LeftTupleSource
     }
 
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new QueryElementNodeLeftTuple( factHandle,
                                               sink,
@@ -557,12 +557,12 @@ public class QueryElementNode extends LeftTupleSource
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
-                                     final LeftTupleSink sink) {
+                                     final Sink sink) {
         return new QueryElementNodeLeftTuple(factHandle,leftTuple, sink );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      PropagationContext pctx, boolean leftTupleMemoryEnabled) {
         return new QueryElementNodeLeftTuple( leftTuple,
                                               sink,
@@ -572,7 +572,7 @@ public class QueryElementNode extends LeftTupleSource
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
-                                     LeftTupleSink sink) {
+                                     Sink sink) {
         return new QueryElementNodeLeftTuple( leftTuple,
                                               rightTuple,
                                               sink );
@@ -582,7 +582,7 @@ public class QueryElementNode extends LeftTupleSource
                                      RightTuple rightTuple,
                                      LeftTuple currentLeftChild,
                                      LeftTuple currentRightChild,
-                                     LeftTupleSink sink,
+                                     Sink sink,
                                      boolean leftTupleMemoryEnabled) {
         return new QueryElementNodeLeftTuple( leftTuple,
                                               rightTuple,
@@ -630,14 +630,14 @@ public class QueryElementNode extends LeftTupleSource
 
         private SegmentMemory querySegmentMemory;
 
-        private LeftTupleSets resultLeftTuples;
+        private TupleSets<LeftTuple> resultLeftTuples;
 
         private long          nodePosMaskBit;
 
         public QueryElementNodeMemory(QueryElementNode node) {
             this.node = node;
             // @FIXME I don't think this is thread safe
-            this.resultLeftTuples = new LeftTupleSetsImpl();
+            this.resultLeftTuples = new TupleSetsImpl<LeftTuple>();
         }
 
         public QueryElementNode getNode() {
@@ -664,7 +664,7 @@ public class QueryElementNode extends LeftTupleSource
             this.querySegmentMemory = querySegmentMemory;
         }
 
-        public LeftTupleSets getResultLeftTuples() {
+        public TupleSets<LeftTuple> getResultLeftTuples() {
             return resultLeftTuples;
         }
 

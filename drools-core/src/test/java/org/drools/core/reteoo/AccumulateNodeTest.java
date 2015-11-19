@@ -190,7 +190,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
         assertTrue( "An empty matching objects list should be propagated",
                            this.accumulator.getMatchingObjects().isEmpty() );
 
-        final LeftTupleMemory memory = this.memory.getLeftTupleMemory();
+        final TupleMemory memory = this.memory.getLeftTupleMemory();
         assertTrue( memory.contains( tuple0 ) );
         assertTrue( memory.contains( tuple1 ) );
 
@@ -247,7 +247,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                              2,
                              this.accumulator.getMatchingObjects().size() );
 
-        final LeftTupleMemory memory = this.memory.getLeftTupleMemory();
+        final TupleMemory memory = this.memory.getLeftTupleMemory();
         assertTrue( memory.contains( tuple0 ) );
         assertTrue( memory.contains( tuple1 ) );
 

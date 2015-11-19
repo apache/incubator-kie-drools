@@ -120,7 +120,7 @@ public class ReteConditionalBranchNode extends ConditionalBranchNode {
 
         if ( wasPropagated ) {
             LeftTupleSink mainSink = this.sink.getSinks()[0];
-            LeftTupleSink oldSink = leftTuple.getFirstChild().getSink();
+            LeftTupleSink oldSink = leftTuple.getFirstChild().getTupleSink();
 
             if ( conditionalExecution != null ) {
                 LeftTupleSink newSink = conditionalExecution.getSink().getSinks()[0];

@@ -19,6 +19,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.Iterator;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
@@ -34,7 +35,7 @@ public class ActivationIterator
     
     private Iterator<LeftTuple>   leftTupleIter;
 
-    private LeftTuple             currentLeftTuple;
+    private Tuple                 currentTuple;
 
     ActivationIterator() {
 
@@ -47,12 +48,12 @@ public class ActivationIterator
         nodeIter = TerminalNodeIterator.iterator( kbase );
 
         // Find the first node with Activations an set it.
-        while ( currentLeftTuple == null && (node = (TerminalNode) nodeIter.next()) != null ) {
+        while ( currentTuple == null && (node = (TerminalNode) nodeIter.next()) != null ) {
             if ( !(node instanceof RuleTerminalNode) ) {
                 continue;
             }
             leftTupleIter = LeftTupleIterator.iterator( wm, node );            
-            this.currentLeftTuple = leftTupleIter.next();
+            this.currentTuple = leftTupleIter.next();
         }
     }
 
@@ -82,17 +83,17 @@ public class ActivationIterator
 
     public Object next() {
         Activation acc = null;
-        if ( this.currentLeftTuple != null ) {
-            Object obj = currentLeftTuple.getObject();
+        if ( this.currentTuple != null ) {
+            Object obj = currentTuple.getContextObject();
             acc = obj == Boolean.TRUE ? null : (Activation)obj;
-            currentLeftTuple = leftTupleIter.next();
+            currentTuple = leftTupleIter.next();
 
-            while ( currentLeftTuple == null && (node = (TerminalNode) nodeIter.next()) != null ) {
+            while ( currentTuple == null && (node = (TerminalNode) nodeIter.next()) != null ) {
                 if ( !(node instanceof RuleTerminalNode) ) {
                     continue;
                 }                    
                 leftTupleIter = LeftTupleIterator.iterator( wm, node );            
-                this.currentLeftTuple = leftTupleIter.next();
+                this.currentTuple = leftTupleIter.next();
             }
         }
 

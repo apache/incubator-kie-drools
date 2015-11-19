@@ -1490,7 +1490,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
             return null;
         }
 
-        public InternalFactHandle getFactHandle() {
+        public InternalFactHandle getActivationFactHandle() {
             return null;
         }
 

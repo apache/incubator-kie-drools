@@ -132,8 +132,10 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         boolean isUnification = requiredDeclaration != null &&
                                 requiredDeclaration.getPattern().getObjectType().equals( new ClassObjectType( DroolsQuery.class ) ) &&
                                 Operator.EQUAL.getOperatorString().equals( operatorDescr.getOperator() );
-        if (isUnification) {
+        boolean canBuildCompilationUnit = true;
+        if (isUnification && leftValue.equals(rightValue)) {
             expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
+            canBuildCompilationUnit = false; // TODO: expression rewriting doesn't allow to create a compilation unit
         }
 
         expression = normalizeMVELVariableExpression(expression, leftValue, rightValue, relDescr);
@@ -200,16 +202,13 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
     protected static String resolveUnificationAmbiguity(String expr, Declaration[] declrations, String leftValue, String rightValue) {
         // resolve ambiguity between variable and bound value with the same name in unifications
-        if (leftValue.equals(rightValue)) {
-            rightValue = rightValue + "__";
-            for (Declaration declaration : declrations) {
-                if (declaration.getIdentifier().equals(leftValue)) {
-                    declaration.setBindingName(rightValue);
-                }
+        rightValue = rightValue + "__";
+        for (Declaration declaration : declrations) {
+            if (declaration.getIdentifier().equals(leftValue)) {
+                declaration.setBindingName(rightValue);
             }
-            expr = leftValue + " == " + rightValue;
         }
-        return expr;
+        return leftValue + " == " + rightValue;
     }
 
     protected static String normalizeMVELLiteralExpression(ValueType vtype,

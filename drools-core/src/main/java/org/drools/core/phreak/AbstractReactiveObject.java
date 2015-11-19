@@ -16,22 +16,22 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.spi.Tuple;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AbstractReactiveObject implements ReactiveObject {
-    private List<LeftTuple> lts;
+    private List<Tuple> lts;
 
-    public void addLeftTuple(LeftTuple leftTuple) {
+    public void addLeftTuple(Tuple leftTuple) {
         if (lts == null) {
-            lts = new ArrayList<LeftTuple>();
+            lts = new ArrayList<Tuple>();
         }
         lts.add(leftTuple);
     }
 
-    public List<LeftTuple> getLeftTuples() {
+    public List<Tuple> getLeftTuples() {
         return lts;
     }
 

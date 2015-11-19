@@ -21,7 +21,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleMemory;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.LeftTupleSourceUtils;
@@ -30,14 +29,16 @@ import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleMemory;
 import org.drools.core.reteoo.RuleRemovalContext;
+import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.index.RightTupleList;
+import org.drools.core.util.index.RightTupleIndexHashTable;
+import org.drools.core.util.index.TupleList;
 
 public class ReteNotNode extends NotNode {
 
@@ -81,7 +82,7 @@ public class ReteNotNode extends NotNode {
                                 final InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
 
-        RightTupleMemory rightMemory = memory.getRightTupleMemory();
+        TupleMemory rightMemory = memory.getRightTupleMemory();
 
         ContextEntry[] contextEntry = memory.getContext();
 
@@ -155,7 +156,7 @@ public class ReteNotNode extends NotNode {
         this.constraints.updateFromFactHandle( memory.getContext(),
                                                workingMemory,
                                                rightTuple.getFactHandle() );
-        LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
+        TupleMemory leftMemory = memory.getLeftTupleMemory();
         FastIterator it = getLeftIterator( leftMemory );
         for (LeftTuple leftTuple = getFirstLeftTuple( rightTuple, leftMemory, it );  leftTuple != null; ) {
             // preserve next now, in case we remove this leftTuple
@@ -188,10 +189,10 @@ public class ReteNotNode extends NotNode {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
         rightTuple.setPropagationContext( context );
 
-        RightTupleMemory rtm = memory.getRightTupleMemory();
+        TupleMemory rtm = memory.getRightTupleMemory();
         if ( rightTuple.getBlocked() != null ) {
             updateLeftTupleToNewBlocker(rightTuple, context, workingMemory, memory, memory.getLeftTupleMemory(), rightTuple.getBlocked(), rtm, false);
-            rightTuple.nullBlocked();
+            rightTuple.setBlocked(null);
         } else {
             // it's also removed in the updateLeftTupleToNewBlocker
             rtm.remove(rightTuple);
@@ -220,7 +221,7 @@ public class ReteNotNode extends NotNode {
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
         final BetaMemory memory = (BetaMemory) workingMemory.getNodeMemory( this );
-        RightTupleMemory rightMemory = memory.getRightTupleMemory();
+        TupleMemory rightMemory = memory.getRightTupleMemory();
 
         FastIterator rightIt = getRightIterator( rightMemory );
         RightTuple firstRightTuple = getFirstRightTuple(leftTuple, rightMemory, (InternalFactHandle) context.getFactHandle(), rightIt);
@@ -324,14 +325,14 @@ public class ReteNotNode extends NotNode {
                                                workingMemory,
                                                rightTuple.getFactHandle() );
 
-        LeftTupleMemory leftMemory = memory.getLeftTupleMemory();
+        TupleMemory leftMemory = memory.getLeftTupleMemory();
 
         FastIterator leftIt = getLeftIterator( leftMemory );
         LeftTuple firstLeftTuple = getFirstLeftTuple( rightTuple, leftMemory, leftIt );
 
         LeftTuple firstBlocked = rightTuple.getBlocked();
         // we now have  reference to the first Blocked, so null it in the rightTuple itself, so we can rebuild
-        rightTuple.nullBlocked();
+        rightTuple.setBlocked(null);
 
 
         // first process non-blocked tuples, as we know only those ones are in the left memory.
@@ -357,7 +358,7 @@ public class ReteNotNode extends NotNode {
             leftTuple = temp;
         }
 
-        RightTupleMemory rightTupleMemory = memory.getRightTupleMemory();
+        TupleMemory rightTupleMemory = memory.getRightTupleMemory();
         if ( firstBlocked != null ) {
             updateLeftTupleToNewBlocker(rightTuple, context, workingMemory, memory, leftMemory, firstBlocked, rightTupleMemory, true);
 
@@ -371,13 +372,13 @@ public class ReteNotNode extends NotNode {
         this.constraints.resetTuple( memory.getContext() );
     }
 
-    private void updateLeftTupleToNewBlocker(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory, BetaMemory memory, LeftTupleMemory leftMemory, LeftTuple firstBlocked, RightTupleMemory rightTupleMemory, boolean removeAdd) {// will attempt to resume from the last blocker, if it's not a comparison or unification index.
+    private void updateLeftTupleToNewBlocker(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory, BetaMemory memory, TupleMemory leftMemory, LeftTuple firstBlocked, TupleMemory rightTupleMemory, boolean removeAdd) {// will attempt to resume from the last blocker, if it's not a comparison or unification index.
         boolean resumeFromCurrent =  !(indexedUnificationJoin || rightTupleMemory.getIndexType().isComparison());
 
         FastIterator rightIt;
         RightTuple rootBlocker = null;
         if ( resumeFromCurrent ) {
-            RightTupleList currentRtm = rightTuple.getMemory();
+            TupleList currentRtm = rightTuple.getMemory();
             rightIt = currentRtm.fastIterator(); // only needs to iterate the current bucket, works for equality indexed and non indexed.
             rootBlocker = (RightTuple) rightTuple.getNext();
 
@@ -480,6 +481,20 @@ public class ReteNotNode extends NotNode {
                                                         context, true),
                                   context,
                                   workingMemory );
+        }
+    }
+
+    @Override
+    public RightTuple getFirstRightTuple(final Tuple leftTuple,
+                                         final TupleMemory memory,
+                                         final InternalFactHandle factHandle,
+                                         final FastIterator it) {
+        if ( !this.indexedUnificationJoin ) {
+            return memory instanceof RightTupleIndexHashTable ?
+                   (RightTuple) ((RightTupleIndexHashTable)memory).getFirst( leftTuple, factHandle ) :
+                   (RightTuple) memory.getFirst(leftTuple);
+        } else {
+            return (RightTuple) it.next( null );
         }
     }
 }

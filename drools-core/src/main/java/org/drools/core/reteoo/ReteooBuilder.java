@@ -219,6 +219,7 @@ public class ReteooBuilder
         }
 
         if ( node.getType() != NodeTypeEnums.ObjectTypeNode &&
+             node.getType() != NodeTypeEnums.AlphaNode &&
              !node.isInUse() && kBase.getConfiguration().isPhreakEnabled() ) {
             // phreak must clear node memories, although this should ideally be pushed into AddRemoveRule
             for (InternalWorkingMemory workingMemory : workingMemories) {

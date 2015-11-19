@@ -22,9 +22,9 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.BetaNodeFieldConstraint;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.util.index.LeftTupleList;
-import org.drools.core.util.index.RightTupleList;
+import org.drools.core.util.index.TupleList;
 
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -63,7 +63,7 @@ public class EmptyBetaConstraints
      */
     public void updateFromTuple(final ContextEntry[] context,
                                 final InternalWorkingMemory workingMemory,
-                                final LeftTuple tuple) {
+                                final Tuple tuple) {
     }
 
     /* (non-Javadoc)
@@ -92,7 +92,7 @@ public class EmptyBetaConstraints
      * @see org.kie.common.BetaNodeConstraints#isAllowedCachedRight(org.kie.reteoo.ReteTuple)
      */
     public boolean isAllowedCachedRight(final ContextEntry[] context,
-                                        final LeftTuple tuple) {
+                                        final Tuple tuple) {
         return true;
     }
 
@@ -110,8 +110,8 @@ public class EmptyBetaConstraints
 
     public BetaMemory createBetaMemory(final RuleBaseConfiguration config,
                                        final short nodeType) {
-        final BetaMemory memory = new BetaMemory( config.isSequential() ? null : new LeftTupleList(),
-                                                  new RightTupleList(),
+        final BetaMemory memory = new BetaMemory( config.isSequential() ? null : new TupleList(),
+                                                  new TupleList(),
                                                   this.createContext(),
                                                   nodeType );
 

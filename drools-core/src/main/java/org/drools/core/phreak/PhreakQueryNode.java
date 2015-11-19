@@ -19,7 +19,7 @@ import org.drools.core.base.DroolsQuery;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.LeftTupleSets;
+import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -36,9 +36,9 @@ public class PhreakQueryNode {
                        QueryElementNodeMemory qmem,
                        StackEntry stackEntry,
                        InternalWorkingMemory wm,
-                       LeftTupleSets srcLeftTuples,
-                       LeftTupleSets trgLeftTuples,
-                       LeftTupleSets stagedLeftTuples) {
+                       TupleSets<LeftTuple> srcLeftTuples,
+                       TupleSets<LeftTuple> trgLeftTuples,
+                       TupleSets<LeftTuple> stagedLeftTuples) {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             doLeftDeletes(qmem, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
@@ -59,7 +59,7 @@ public class PhreakQueryNode {
                               QueryElementNodeMemory qmem,
                               StackEntry stackEntry,
                               InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples) {
+                              TupleSets<LeftTuple> srcLeftTuples) {
         for (LeftTuple leftTuple = srcLeftTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
@@ -87,11 +87,11 @@ public class PhreakQueryNode {
     public void doLeftUpdates(QueryElementNode queryNode,
                               QueryElementNodeMemory qmem,
                               InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples) {
+                              TupleSets<LeftTuple> srcLeftTuples) {
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            InternalFactHandle fh = (InternalFactHandle) leftTuple.getObject();
+            InternalFactHandle fh = (InternalFactHandle) leftTuple.getContextObject();
             DroolsQuery dquery = (DroolsQuery) fh.getObject();
 
             Object[] argTemplate = queryNode.getQueryElement().getArgTemplate(); // an array of declr, variable and literals
@@ -163,13 +163,13 @@ public class PhreakQueryNode {
 
     public void doLeftDeletes(QueryElementNodeMemory qmem,
                               InternalWorkingMemory wm,
-                              LeftTupleSets srcLeftTuples,
-                              LeftTupleSets trgLeftTuples,
-                              LeftTupleSets stagedLeftTuples) {
+                              TupleSets<LeftTuple> srcLeftTuples,
+                              TupleSets<LeftTuple> trgLeftTuples,
+                              TupleSets<LeftTuple> stagedLeftTuples) {
         for (LeftTuple leftTuple = srcLeftTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            InternalFactHandle fh = (InternalFactHandle) leftTuple.getObject();
+            InternalFactHandle fh = (InternalFactHandle) leftTuple.getContextObject();
             DroolsQuery dquery = (DroolsQuery) fh.getObject();
             if (dquery.isOpen()) {
                 LeftInputAdapterNode lian = (LeftInputAdapterNode) qmem.getQuerySegmentMemory().getRootNode();

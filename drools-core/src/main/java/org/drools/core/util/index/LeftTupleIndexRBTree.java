@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -11,20 +11,20 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-*/
+ *
+ */
 
 package org.drools.core.util.index;
 
+import org.drools.core.reteoo.TupleMemory;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LeftTupleRBTree;
-import org.drools.core.util.LeftTupleRBTree.Node;
 import org.drools.core.util.LeftTupleRBTree.Boundary;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleMemory;
-import org.drools.core.reteoo.RightTuple;
+import org.drools.core.util.LeftTupleRBTree.Node;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -33,7 +33,7 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LeftTupleIndexRBTree implements LeftTupleMemory, Externalizable {
+public class LeftTupleIndexRBTree implements Externalizable, TupleMemory {
 
     private LeftTupleRBTree<Comparable<Comparable>> tree;
 
@@ -46,7 +46,7 @@ public class LeftTupleIndexRBTree implements LeftTupleMemory, Externalizable {
         // constructor for serialisation
     }
 
-    public LeftTupleIndexRBTree(IndexUtil.ConstraintType constraintType, AbstractHashTable.FieldIndex index) {
+    public LeftTupleIndexRBTree( IndexUtil.ConstraintType constraintType, AbstractHashTable.FieldIndex index ) {
         this.index = index;
         this.constraintType = constraintType;
         tree = new LeftTupleRBTree<Comparable<Comparable>>();
@@ -66,15 +66,15 @@ public class LeftTupleIndexRBTree implements LeftTupleMemory, Externalizable {
         size = in.readInt();
     }
 
-    public void add(LeftTuple tuple) {
-        Comparable key = getIndexedValue(tuple);
-        LeftTupleList list = tree.insert(key);
+    public void add(Tuple tuple) {
+        Comparable key = getLeftIndexedValue( tuple );
+        TupleList list = tree.insert(key);
         list.add(tuple);
         size++;
     }
 
-    public void remove(LeftTuple tuple) {
-        LeftTupleList list = tuple.getMemory();
+    public void remove(Tuple tuple) {
+        TupleList list = tuple.getMemory();
         list.remove(tuple);
         if (list.getFirst() == null) {
             tree.delete(((Node<Comparable<Comparable>>)list).key);
@@ -82,7 +82,7 @@ public class LeftTupleIndexRBTree implements LeftTupleMemory, Externalizable {
         size--;
     }
 
-    public void removeAdd(LeftTuple tuple) {
+    public void removeAdd(Tuple tuple) {
         remove(tuple);
         add(tuple);
     }
@@ -102,33 +102,33 @@ public class LeftTupleIndexRBTree implements LeftTupleMemory, Externalizable {
         }
 
         List<Comparable> toBeRemoved = new ArrayList<Comparable>();
-        List<LeftTuple> result = new ArrayList<LeftTuple>();
+        List<Tuple> result = new ArrayList<Tuple>();
 
-        LeftTupleList list = null;
-        while ( (list = (LeftTupleList) it.next( list )) != null ) {
-            LeftTuple entry = list.getFirst();
+        TupleList list = null;
+        while ( (list = (TupleList) it.next( list )) != null ) {
+            Tuple entry = list.getFirst();
             while (entry != null) {
                 result.add(entry);
-                entry = (LeftTuple) entry.getNext();
+                entry = (Tuple) entry.getNext();
             }
         }
 
-        return result.toArray(new LeftTuple[result.size()]);
+        return result.toArray(new Tuple[result.size()]);
     }
 
-    public LeftTuple getFirst(RightTuple rightTuple) {
-        Comparable key = getIndexedValue(rightTuple);
-        return getNext(key, true);
+    public Tuple getFirst(Tuple rightTuple) {
+        Comparable key = getRightIndexedValue( rightTuple );
+        return (Tuple)getNext(key, true);
     }
 
-    public Iterator<LeftTuple> iterator() {
-        LeftTupleList list = tree.first();
-        LeftTuple firstTuple = list != null ? list.first : null;
+    public Iterator<Tuple> iterator() {
+        TupleList list = tree.first();
+        Tuple firstTuple = list != null ? list.first : null;
         return new FastIterator.IteratorAdapter(fastIterator(), firstTuple);
     }
 
-    public boolean contains(LeftTuple leftTuple) {
-        Comparable key = getIndexedValue(leftTuple);
+    public boolean contains(Tuple leftTuple) {
+        Comparable key = getLeftIndexedValue( leftTuple );
         return tree.lookup(key) != null;
     }
 
@@ -140,22 +140,22 @@ public class LeftTupleIndexRBTree implements LeftTupleMemory, Externalizable {
         return new LeftTupleFastIterator();
     }
 
-    public FastIterator fullFastIterator(LeftTuple leftTuple) {
+    public FastIterator fullFastIterator(Tuple leftTuple) {
         FastIterator fastIterator = fullFastIterator();
-        Comparable key = getIndexedValue(leftTuple);
+        Comparable key = getLeftIndexedValue( leftTuple );
         fastIterator.next(getNext(key, true));
         return fastIterator;
     }
 
-    private Comparable getIndexedValue(LeftTuple leftTuple) {
-        return (Comparable) index.getDeclaration().getExtractor().getValue( leftTuple.get( index.getDeclaration() ).getObject() );
+    private Comparable getLeftIndexedValue( Tuple tuple ) {
+        return (Comparable) index.getDeclaration().getExtractor().getValue( tuple.getObject( index.getDeclaration() ) );
     }
 
-    private Comparable getIndexedValue(RightTuple rightTuple) {
-        return (Comparable) index.getExtractor().getValue( rightTuple.getFactHandle().getObject() );
+    private Comparable getRightIndexedValue( Tuple tuple ) {
+        return (Comparable) index.getExtractor().getValue( tuple.getFactHandle().getObject() );
     }
 
-    private LeftTuple getNext(Comparable key, boolean first) {
+    private Tuple getNext(Comparable key, boolean first) {
         Node<Comparable<Comparable>> firstNode;
         switch (constraintType) {
             case LESS_THAN:
@@ -182,12 +182,12 @@ public class LeftTupleIndexRBTree implements LeftTupleMemory, Externalizable {
                 Node<Comparable<Comparable>> firstNode = tree.first();
                 return firstNode == null ? null : firstNode.getFirst();
             }
-            LeftTuple leftTuple = (LeftTuple) object;
-            LeftTuple next = (LeftTuple) leftTuple.getNext();
+            Tuple tuple = (Tuple) object;
+            Tuple next = (Tuple) tuple.getNext();
             if (next != null) {
                 return next;
             }
-            Comparable key = getIndexedValue(leftTuple);
+            Comparable key = getLeftIndexedValue( tuple );
             return getNext(key, false);
         }
 
@@ -198,5 +198,9 @@ public class LeftTupleIndexRBTree implements LeftTupleMemory, Externalizable {
 
     public void clear() {
         tree = new LeftTupleRBTree<Comparable<Comparable>>();
+    }
+
+    public TupleMemory.IndexType getIndexType() {
+        return TupleMemory.IndexType.COMPARISON;
     }
 }
