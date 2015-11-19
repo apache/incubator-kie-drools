@@ -145,18 +145,18 @@ public class CloudBalancingGenerator extends LoggingMain {
     }
 
     private void writeCloudBalance(int computerListSize, int processListSize) {
-        String inputId = determineInputId(computerListSize, processListSize);
-        File outputFile = new File(outputDir, inputId + ".xml");
-        CloudBalance cloudBalance = createCloudBalance(inputId, computerListSize, processListSize);
+        String fileName = determineFileName(computerListSize, processListSize);
+        File outputFile = new File(outputDir, fileName + ".xml");
+        CloudBalance cloudBalance = createCloudBalance(fileName, computerListSize, processListSize);
         solutionDao.writeSolution(cloudBalance, outputFile);
     }
 
-    private String determineInputId(int computerListSize, int processListSize) {
+    private String determineFileName(int computerListSize, int processListSize) {
         return computerListSize + "computers-" + processListSize + "processes";
     }
 
     public CloudBalance createCloudBalance(int computerListSize, int processListSize) {
-        return createCloudBalance(determineInputId(computerListSize, processListSize),
+        return createCloudBalance(determineFileName(computerListSize, processListSize),
                 computerListSize, processListSize);
     }
 
@@ -189,10 +189,10 @@ public class CloudBalancingGenerator extends LoggingMain {
             int cost = CPU_POWER_PRICES[cpuPowerPricesIndex].getCost()
                     + MEMORY_PRICES[memoryPricesIndex].getCost()
                     + NETWORK_BANDWIDTH_PRICES[networkBandwidthPricesIndex].getCost();
-            logger.trace("Created computer with cpuPowerPricesIndex ({}), memoryPricesIndex({}),"
-                    + " networkBandwidthPricesIndex({}).",
-                    cpuPowerPricesIndex, memoryPricesIndex, networkBandwidthPricesIndex);
             computer.setCost(cost);
+            logger.trace("Created computer with cpuPowerPricesIndex ({}), memoryPricesIndex ({}),"
+                    + " networkBandwidthPricesIndex ({}).",
+                    cpuPowerPricesIndex, memoryPricesIndex, networkBandwidthPricesIndex);
             computerList.add(computer);
         }
         cloudBalance.setComputerList(computerList);
@@ -225,8 +225,8 @@ public class CloudBalancingGenerator extends LoggingMain {
             process.setRequiredMemory(requiredMemory);
             int requiredNetworkBandwidth = generateRandom(MAXIMUM_REQUIRED_NETWORK_BANDWIDTH);
             process.setRequiredNetworkBandwidth(requiredNetworkBandwidth);
-            logger.trace("Created CloudProcess with requiredCpuPower ({}), requiredMemory({}),"
-                    + " requiredNetworkBandwidth({}).",
+            logger.trace("Created CloudProcess with requiredCpuPower ({}), requiredMemory ({}),"
+                    + " requiredNetworkBandwidth ({}).",
                     requiredCpuPower, requiredMemory, requiredNetworkBandwidth);
             // Notice that we leave the PlanningVariable properties on null
             processList.add(process);
