@@ -151,13 +151,13 @@ public class CloudBalancingGenerator extends LoggingMain {
         solutionDao.writeSolution(cloudBalance, outputFile);
     }
 
-    private String determineFileName(int computerListSize, int processListSize) {
-        return computerListSize + "computers-" + processListSize + "processes";
-    }
-
     public CloudBalance createCloudBalance(int computerListSize, int processListSize) {
         return createCloudBalance(determineFileName(computerListSize, processListSize),
                 computerListSize, processListSize);
+    }
+
+    private String determineFileName(int computerListSize, int processListSize) {
+        return computerListSize + "computers-" + processListSize + "processes";
     }
 
     public CloudBalance createCloudBalance(String inputId, int computerListSize, int processListSize) {
