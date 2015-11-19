@@ -32,6 +32,7 @@ import javax.transaction.UserTransaction;
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.runtime.process.InternalProcessRuntime;
+import org.jbpm.process.audit.variable.ProcessIndexerManager;
 import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.event.KieRuntimeEvent;
@@ -62,6 +63,8 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
     private boolean sharedEM = false;
     
     private EntityManagerFactory emf;
+    
+    private ProcessIndexerManager indexManager = ProcessIndexerManager.get();
 
     /*
      * for backward compatibility
@@ -122,8 +125,11 @@ public class JPAWorkingMemoryDbLogger extends AbstractAuditLogger {
 
     @Override
     public void afterVariableChanged(ProcessVariableChangedEvent event) {
-        VariableInstanceLog log = (VariableInstanceLog) builder.buildEvent(event);
-        persist(log, event);
+        
+        List<org.kie.api.runtime.manager.audit.VariableInstanceLog> variables = indexManager.index(getBuilder(), event);
+        for (org.kie.api.runtime.manager.audit.VariableInstanceLog log : variables) {        
+            persist(log, event);
+        }
     }
 
     @Override

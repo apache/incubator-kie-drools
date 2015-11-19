@@ -23,6 +23,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -394,6 +395,115 @@ public abstract class AbstractAuditLogServiceTest extends AbstractBaseTest {
             assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
             assertNotNull(variableInstance.getDate());
         }
+        
+        // Test findVariableInstancesByName* methods
+        List<VariableInstanceLog> emptyVarLogs = auditLogService.findVariableInstancesByName("s", true) ;
+        assertTrue( emptyVarLogs.isEmpty());
+        for( VariableInstanceLog origVarLog : variableInstances ) { 
+           varLogs = auditLogService.findVariableInstancesByName(origVarLog.getVariableId(), false) ;
+           for( VariableInstanceLog varLog : varLogs ) { 
+               assertEquals( origVarLog.getVariableId(), varLog.getVariableId());
+           }
+        }
+        emptyVarLogs = auditLogService.findVariableInstancesByNameAndValue("s", "InitialValue", true);
+        assertTrue( emptyVarLogs.isEmpty() );
+        String varId = "s";
+        String varValue = "ResultValue";
+        variableInstances = auditLogService.findVariableInstancesByNameAndValue(varId, varValue, false);
+        assertEquals( 3, variableInstances.size() );
+        VariableInstanceLog varLog = variableInstances.get(0);
+        assertEquals( varId, varLog.getVariableId() );
+        assertEquals( varValue, varLog.getValue() );
+        
+        auditLogService.clear();
+        processInstances = auditLogService.findProcessInstances("com.sample.ruleflow3");
+        assertTrue(processInstances.isEmpty());
+    }
+    
+    public static void runTestLogger4WithCustomVariableIndexer(KieSession session, AuditLogService auditLogService) throws Exception {
+        final List<Long> workItemIds = new ArrayList<Long>();
+        session.getWorkItemManager().registerWorkItemHandler("Human Task", new WorkItemHandler() {
+            public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
+                workItemIds.add(workItem.getId());
+            }
+            public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+            }
+        });
+        // record the initial count to compare to later
+        List<ProcessInstanceLog> processInstances = auditLogService.findProcessInstances("com.sample.ruleflow");
+        int initialProcessInstanceSize = processInstances.size();
+        
+        // start process instance
+        Map<String, Object> params = new HashMap<String, Object>();
+        List<String> list = new LinkedList<String>();
+        list.add("One");
+        list.add("Two");
+        list.add("Three");
+        params.put("list", list);
+        long processInstanceId = session.startProcess("com.sample.ruleflow3", params).getId();
+
+        // Test findVariableInstancesByName* methods: check for variables (only) in active processes
+        List<VariableInstanceLog> varLogs = auditLogService.findVariableInstancesByName("s", true) ;
+        assertFalse( varLogs.isEmpty() );
+        assertEquals( 1, varLogs.size() );
+                
+        for( Long workItemId : workItemIds ) { 
+            Map<String, Object> results = new HashMap<String, Object>();
+            results.put("Result", "ResultValue");
+            session.getWorkItemManager().completeWorkItem(workItemId, results);
+        }
+        
+        logger.debug("Checking process instances for process 'com.sample.ruleflow3'");
+        processInstances = auditLogService.findProcessInstances("com.sample.ruleflow3");
+        assertEquals(initialProcessInstanceSize + 1, processInstances.size());
+        ProcessInstanceLog processInstance = processInstances.get(initialProcessInstanceSize);
+        logger.debug("{} -> {} - {}", processInstance.toString(), processInstance.getStart(), processInstance.getEnd());
+        assertNotNull(processInstance.getStart());
+        assertNotNull("ProcessInstanceLog does not contain end date.", processInstance.getEnd());
+        assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
+        assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
+        List<VariableInstanceLog> variableInstances = auditLogService.findVariableInstances(processInstanceId);
+        assertEquals(13, variableInstances.size());
+        for (VariableInstanceLog variableInstance: variableInstances) {
+            logger.debug(variableInstance.toString());
+            assertEquals(processInstanceId, processInstance.getProcessInstanceId().longValue());
+            assertEquals("com.sample.ruleflow3", processInstance.getProcessId());
+            assertNotNull(variableInstance.getDate());
+        }
+        
+        List<VariableInstanceLog> listVariables = new ArrayList<VariableInstanceLog>();
+        // collect only those that are related to list process variable
+        for (VariableInstanceLog v : variableInstances) {
+            if (v.getVariableInstanceId().equals("list")) {
+                listVariables.add(v);
+            }
+        }
+        
+        assertEquals(3, listVariables.size());
+        VariableInstanceLog var = listVariables.get(0);
+        
+        assertEquals("One", var.getValue());
+        assertEquals("", var.getOldValue());
+        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
+        assertEquals(processInstance.getProcessId(), var.getProcessId());
+        assertEquals("list[0]", var.getVariableId());
+        assertEquals("list", var.getVariableInstanceId());
+        
+        var = listVariables.get(1);
+        assertEquals("Two", var.getValue());
+        assertEquals("", var.getOldValue());
+        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
+        assertEquals(processInstance.getProcessId(), var.getProcessId());
+        assertEquals("list[1]", var.getVariableId());
+        assertEquals("list", var.getVariableInstanceId());
+        
+        var = listVariables.get(2);        
+        assertEquals("Three", var.getValue());
+        assertEquals("", var.getOldValue());
+        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
+        assertEquals(processInstance.getProcessId(), var.getProcessId());
+        assertEquals("list[2]", var.getVariableId());
+        assertEquals("list", var.getVariableInstanceId());
         
         // Test findVariableInstancesByName* methods
         List<VariableInstanceLog> emptyVarLogs = auditLogService.findVariableInstancesByName("s", true) ;

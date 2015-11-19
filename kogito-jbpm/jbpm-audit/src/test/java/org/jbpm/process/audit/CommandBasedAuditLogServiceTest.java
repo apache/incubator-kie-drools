@@ -104,4 +104,8 @@ public class CommandBasedAuditLogServiceTest extends AbstractAuditLogServiceTest
         runTestLogger5(session, auditLogService);
     }
 
+    @Test
+    public void runTestLogger4WithCustomVariableIndexer() throws Exception {
+        runTestLogger4WithCustomVariableIndexer(session, auditLogService);
+    }
 }

@@ -113,5 +113,10 @@ public class AuditLogServiceTest extends AbstractAuditLogServiceTest {
     public void testLoggerWithCustomVariableLogLength() throws Exception { 
     	runTestLoggerWithCustomVariableLogLength(session, auditLogService);
     }
+    
+    @Test
+    public void runTestLogger4WithCustomVariableIndexer() throws Exception {
+        runTestLogger4WithCustomVariableIndexer(session, auditLogService);
+    }
 
 }

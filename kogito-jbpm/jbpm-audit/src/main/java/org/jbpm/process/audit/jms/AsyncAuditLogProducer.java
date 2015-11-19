@@ -15,6 +15,8 @@
 
 package org.jbpm.process.audit.jms;
 
+import java.util.List;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -26,7 +28,7 @@ import javax.jms.TextMessage;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
-import org.jbpm.process.audit.VariableInstanceLog;
+import org.jbpm.process.audit.variable.ProcessIndexerManager;
 import org.jbpm.workflow.instance.impl.NodeInstanceImpl;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
@@ -65,6 +67,8 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
     private ConnectionFactory connectionFactory;    
     private Queue queue;
     private boolean transacted = true;
+    
+    private ProcessIndexerManager indexManager = ProcessIndexerManager.get();
 
     public AsyncAuditLogProducer() {
         
@@ -107,8 +111,10 @@ public class AsyncAuditLogProducer extends AbstractAuditLogger {
 
     @Override
     public void afterVariableChanged(ProcessVariableChangedEvent event) {
-        VariableInstanceLog log = (VariableInstanceLog) builder.buildEvent(event);
-        sendMessage(log, AFTER_VAR_CHANGE_EVENT_TYPE);   
+        List<org.kie.api.runtime.manager.audit.VariableInstanceLog> variables = indexManager.index(getBuilder(), event);
+        for (org.kie.api.runtime.manager.audit.VariableInstanceLog log : variables) {  
+            sendMessage(log, AFTER_VAR_CHANGE_EVENT_TYPE);   
+        }
     }
 
     @Override

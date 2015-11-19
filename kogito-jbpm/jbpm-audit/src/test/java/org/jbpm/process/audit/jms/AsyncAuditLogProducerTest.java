@@ -15,15 +15,21 @@
 
 package org.jbpm.process.audit.jms;
 
-import static org.jbpm.process.audit.AbstractAuditLogServiceTest.*;
-import static org.jbpm.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
+import static org.jbpm.persistence.util.PersistenceUtil.JBPM_PERSISTENCE_UNIT_NAME;
+import static org.jbpm.persistence.util.PersistenceUtil.cleanUp;
+import static org.jbpm.persistence.util.PersistenceUtil.createEnvironment;
+import static org.jbpm.persistence.util.PersistenceUtil.setupWithPoolingDataSource;
+import static org.jbpm.process.audit.AbstractAuditLogServiceTest.createKieSession;
+import static org.jbpm.process.audit.AbstractAuditLogServiceTest.createKnowledgeBase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
@@ -37,7 +43,6 @@ import javax.naming.InitialContext;
 import javax.persistence.EntityManagerFactory;
 import javax.transaction.UserTransaction;
 
-import org.drools.core.io.impl.ClassPathResource;
 import org.hornetq.jms.server.embedded.EmbeddedJMS;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLogService;
@@ -46,21 +51,16 @@ import org.jbpm.process.audit.AuditLoggerFactory.Type;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.audit.NodeInstanceLog;
 import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.audit.VariableInstanceLog;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.test.util.AbstractBaseTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
-import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -283,6 +283,160 @@ public class AsyncAuditLogProducerTest extends AbstractBaseTest {
         }
         logService.clear();
         processInstances = logService.findProcessInstances("com.sample.ruleflow");
+        logService.dispose();
+        assertTrue(processInstances.isEmpty());
+    }
+    
+    @Test
+    public void testAsyncAuditLoggerCompleteWithVariables() throws Exception {
+        Environment env = createEnvironment(context);
+        // load the process
+        KnowledgeBase kbase = createKnowledgeBase();
+        // create a new session
+        StatefulKnowledgeSession session = createSession(kbase, env);
+        
+        Map<String, Object> jmsProps = new HashMap<String, Object>();
+        jmsProps.put("jbpm.audit.jms.transacted", false);
+        jmsProps.put("jbpm.audit.jms.connection.factory", factory);
+        jmsProps.put("jbpm.audit.jms.queue", queue);
+        AbstractAuditLogger logger = AuditLoggerFactory.newInstance(Type.JMS, session, jmsProps);
+        assertNotNull(logger);
+        assertTrue((logger instanceof AsyncAuditLogProducer));
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", "test value");
+
+        // start process instance
+        ProcessInstance processInstance = session.startProcess("com.sample.ruleflow3", params);
+        
+        MessageReceiver receiver = new MessageReceiver();
+        receiver.receiveAndProcess(queue, ((EntityManagerFactory)env.get(EnvironmentName.ENTITY_MANAGER_FACTORY)));
+     
+        // validate if everything is stored in db
+        AuditLogService logService = new JPAAuditLogService(env);
+        List<ProcessInstanceLog> processInstances = logService.findProcessInstances("com.sample.ruleflow3");
+        assertEquals(1, processInstances.size());
+        List<NodeInstanceLog> nodeInstances = logService.findNodeInstances(processInstance.getId());
+        assertEquals(6, nodeInstances.size());
+        for (NodeInstanceLog nodeInstance: nodeInstances) {
+
+            assertEquals(processInstance.getId(), nodeInstance.getProcessInstanceId().longValue());
+            assertEquals("com.sample.ruleflow3", nodeInstance.getProcessId());
+            assertNotNull(nodeInstance.getDate());
+        }
+        //verify variables
+        List<VariableInstanceLog> variables = logService.findVariableInstances(processInstance.getId());
+        assertNotNull(variables);
+        assertEquals(2, variables.size());
+        
+        VariableInstanceLog var = variables.get(0);
+        // initial value from rule flow definition
+        assertEquals("InitialValue", var.getValue());
+        assertEquals("", var.getOldValue());
+        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
+        assertEquals(processInstance.getProcessId(), var.getProcessId());
+        assertEquals("s", var.getVariableId());
+        assertEquals("s", var.getVariableInstanceId());
+        
+        // value given at process start
+        var = variables.get(1);
+        // initial value from rule flow definition
+        assertEquals("test value", var.getValue());
+        assertEquals("InitialValue", var.getOldValue());
+        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
+        assertEquals(processInstance.getProcessId(), var.getProcessId());
+        assertEquals("s", var.getVariableId());
+        assertEquals("s", var.getVariableInstanceId());
+        
+        logService.clear();
+        processInstances = logService.findProcessInstances("com.sample.ruleflow3");
+        logService.dispose();
+        assertTrue(processInstances.isEmpty());
+    }
+    
+    @Test
+    public void testAsyncAuditLoggerCompleteWithVariablesCustomIndexer() throws Exception {
+        Environment env = createEnvironment(context);
+        // load the process
+        KnowledgeBase kbase = createKnowledgeBase();
+        // create a new session
+        StatefulKnowledgeSession session = createSession(kbase, env);
+        
+        Map<String, Object> jmsProps = new HashMap<String, Object>();
+        jmsProps.put("jbpm.audit.jms.transacted", false);
+        jmsProps.put("jbpm.audit.jms.connection.factory", factory);
+        jmsProps.put("jbpm.audit.jms.queue", queue);
+        AbstractAuditLogger logger = AuditLoggerFactory.newInstance(Type.JMS, session, jmsProps);
+        assertNotNull(logger);
+        assertTrue((logger instanceof AsyncAuditLogProducer));
+
+        List<String> names = new LinkedList<String>();
+        names.add("john");
+        names.add("mary");
+        names.add("peter");
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("list", names);
+
+        // start process instance
+        ProcessInstance processInstance = session.startProcess("com.sample.ruleflow3", params);
+        
+        MessageReceiver receiver = new MessageReceiver();
+        receiver.receiveAndProcess(queue, ((EntityManagerFactory)env.get(EnvironmentName.ENTITY_MANAGER_FACTORY)));
+     
+        // validate if everything is stored in db
+        AuditLogService logService = new JPAAuditLogService(env);
+        List<ProcessInstanceLog> processInstances = logService.findProcessInstances("com.sample.ruleflow3");
+        assertEquals(1, processInstances.size());
+        List<NodeInstanceLog> nodeInstances = logService.findNodeInstances(processInstance.getId());
+        assertEquals(12, nodeInstances.size());
+        for (NodeInstanceLog nodeInstance: nodeInstances) {
+
+            assertEquals(processInstance.getId(), nodeInstance.getProcessInstanceId().longValue());
+            assertEquals("com.sample.ruleflow3", nodeInstance.getProcessId());
+            assertNotNull(nodeInstance.getDate());
+        }
+        //verify variables
+        List<VariableInstanceLog> variables = logService.findVariableInstances(processInstance.getId());
+        assertNotNull(variables);
+        assertEquals(8, variables.size());
+        
+        List<VariableInstanceLog> listVariables = new ArrayList<VariableInstanceLog>();
+        // collect only those that are related to list process variable
+        for (VariableInstanceLog v : variables) {
+            if (v.getVariableInstanceId().equals("list")) {
+                listVariables.add(v);
+            }
+        }
+        
+        assertEquals(3, listVariables.size());
+        VariableInstanceLog var = listVariables.get(0);
+        
+        assertEquals("john", var.getValue());
+        assertEquals("", var.getOldValue());
+        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
+        assertEquals(processInstance.getProcessId(), var.getProcessId());
+        assertEquals("list[0]", var.getVariableId());
+        assertEquals("list", var.getVariableInstanceId());
+        
+        var = listVariables.get(1);
+        assertEquals("mary", var.getValue());
+        assertEquals("", var.getOldValue());
+        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
+        assertEquals(processInstance.getProcessId(), var.getProcessId());
+        assertEquals("list[1]", var.getVariableId());
+        assertEquals("list", var.getVariableInstanceId());
+        
+        var = listVariables.get(2);        
+        assertEquals("peter", var.getValue());
+        assertEquals("", var.getOldValue());
+        assertEquals(processInstance.getId(), var.getProcessInstanceId().longValue());
+        assertEquals(processInstance.getProcessId(), var.getProcessId());
+        assertEquals("list[2]", var.getVariableId());
+        assertEquals("list", var.getVariableInstanceId());
+        
+        logService.clear();
+        processInstances = logService.findProcessInstances("com.sample.ruleflow3");
         logService.dispose();
         assertTrue(processInstances.isEmpty());
     }
