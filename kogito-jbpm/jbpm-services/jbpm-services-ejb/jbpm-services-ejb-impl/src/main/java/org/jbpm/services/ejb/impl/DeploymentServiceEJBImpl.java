@@ -36,6 +36,7 @@ import org.jbpm.kie.services.impl.KModuleDeploymentService;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl;
 import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
+import org.jbpm.runtime.manager.impl.deploy.TransientNamedObjectModel;
 import org.jbpm.services.api.DefinitionService;
 import org.jbpm.services.api.DeploymentEventListener;
 import org.jbpm.services.api.DeploymentService;
@@ -52,7 +53,6 @@ import org.jbpm.services.ejb.impl.identity.EJBContextIdentityProvider;
 import org.kie.api.executor.ExecutorService;
 import org.kie.internal.identity.IdentityProvider;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
-import org.kie.internal.runtime.conf.NamedObjectModel;
 
 @Singleton
 @ConcurrencyManagement(ConcurrencyManagementType.CONTAINER)
@@ -179,7 +179,7 @@ public class DeploymentServiceEJBImpl extends KModuleDeploymentService implement
 				descriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
 			}
 			descriptor.getBuilder()
-			.addWorkItemHandler(new NamedObjectModel("ejb", "async", "org.jbpm.executor.impl.wih.AsyncWorkItemHandler", 
+			.addWorkItemHandler(new TransientNamedObjectModel("ejb", "async", "org.jbpm.executor.impl.wih.AsyncWorkItemHandler", 
 						new Object[]{"jndi:java:module/ExecutorServiceEJBImpl", "org.jbpm.executor.commands.PrintOutCommand"}));
 			
 			unit.setDeploymentDescriptor(descriptor);
