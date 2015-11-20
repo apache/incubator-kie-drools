@@ -31,16 +31,6 @@ import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.curriculumcourse.domain.Course;
-import org.optaplanner.examples.curriculumcourse.domain.Curriculum;
-import org.optaplanner.examples.curriculumcourse.domain.Day;
-import org.optaplanner.examples.curriculumcourse.domain.Lecture;
-import org.optaplanner.examples.curriculumcourse.domain.Period;
-import org.optaplanner.examples.curriculumcourse.domain.Room;
-import org.optaplanner.examples.curriculumcourse.domain.Teacher;
-import org.optaplanner.examples.curriculumcourse.domain.Timeslot;
-import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
-import org.optaplanner.examples.curriculumcourse.domain.solver.CourseConflict;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution

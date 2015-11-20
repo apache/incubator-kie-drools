@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <solutionClass>org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule</solutionClass>
+  <entityClass>org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment</entityClass>
+
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_MEDIUM_SOFT</scoreDefinitionType>
+    <scoreDrl>org/optaplanner/examples/meetingscheduling/solver/meetingSchedulingScoreRules.drl</scoreDrl>
+  </scoreDirectorFactory>
+
+  <termination>
+    <minutesSpentLimit>5</minutesSpentLimit>
+  </termination>
+</solver>

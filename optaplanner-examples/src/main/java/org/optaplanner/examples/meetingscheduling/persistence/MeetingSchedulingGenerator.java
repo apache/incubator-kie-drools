@@ -25,7 +25,6 @@ import java.util.Random;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
-import org.optaplanner.examples.curriculumcourse.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.Attendance;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
@@ -33,6 +32,7 @@ import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 import org.optaplanner.examples.meetingscheduling.domain.Person;
 import org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
+import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 
 public class MeetingSchedulingGenerator extends LoggingMain {
@@ -319,7 +319,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             timeGrain.setId((long) i);
             int grainIndex = i;
             timeGrain.setGrainIndex(grainIndex);
-            int dayOfYear = i / startingMinuteOfDayOptions.length;
+            int dayOfYear = (i / startingMinuteOfDayOptions.length) + 1;
             timeGrain.setDayOfYear(dayOfYear);
             int startingMinuteOfDay = startingMinuteOfDayOptions[i % startingMinuteOfDayOptions.length];
             timeGrain.setStartingMinuteOfDay(startingMinuteOfDay);
@@ -336,13 +336,13 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             Room room = new Room();
             room.setId((long) i);
             int roomsPerFloor = 20;
-            String code = "R " + ((i / roomsPerFloor * 100) + (i % roomsPerFloor) + 1);
-            room.setCode(code);
+            String name = "R " + ((i / roomsPerFloor * 100) + (i % roomsPerFloor) + 1);
+            room.setName(name);
             int capacityOptionsSubsetSize = personsPerMeetingOptions.length * 3 / 4;
             int capacity = personsPerMeetingOptions[personsPerMeetingOptions.length - (i % capacityOptionsSubsetSize) - 1];
             room.setCapacity(capacity);
-            logger.trace("Created room with code ({}), capacity ({}).",
-                    code, capacity);
+            logger.trace("Created room with name ({}), capacity ({}).",
+                    name, capacity);
             roomList.add(room);
         }
         meetingSchedule.setRoomList(roomList);
