@@ -1777,7 +1777,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                     if (factHandle.getOtnCount() == 0) {
                         // remove it from the object store and clean up resources
                         factHandle.setExpired(true);
-                        factHandle.getEntryPoint().delete(factHandle);
+                        if (factHandle.getActivationsCount() == 0) {
+                            factHandle.getEntryPoint().delete( factHandle );
+                        }
                     }
                 } else {
                     ((NamedEntryPoint) factHandle.getEntryPoint()).getTruthMaintenanceSystem().delete( factHandle );

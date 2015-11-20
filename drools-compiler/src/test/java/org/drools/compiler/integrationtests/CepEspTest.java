@@ -5844,6 +5844,53 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals( 0, ksession.getObjects().size() );
     }
 
+    @Test
+    public void testSubclassWithLongerExpirationThanSuperWithSerialization() throws Exception {
+        // DROOLS-983
+        String drl =
+                "import " + SuperClass.class.getCanonicalName() + "\n" +
+                "import " + SubClass.class.getCanonicalName() + "\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $e : SuperClass()\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $e : SubClass()\n" +
+                "    not SubClass(this != $e)\n" +
+                "then\n" +
+                "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        EventFactHandle handle1 = (EventFactHandle) ksession.insert(new SubClass());
+        ksession.fireAllRules();
+
+        clock.advanceTime(15, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertFalse(handle1.isExpired());
+        assertEquals( 1, ksession.getObjects().size() );
+
+        try {
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true, false );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
+
+        clock = ksession.getSessionClock();
+        clock.advanceTime(10, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals( 0, ksession.getObjects().size() );
+    }
+
     @Role(Role.Type.EVENT)
     @Expires( "10s" )
     public static class SuperClass implements Serializable { }
