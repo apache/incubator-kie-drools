@@ -19,7 +19,6 @@ package org.optaplanner.examples.meetingscheduling.persistence;
 import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -27,8 +26,13 @@ import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.curriculumcourse.domain.Room;
+import org.optaplanner.examples.meetingscheduling.domain.Attendance;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
+import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
+import org.optaplanner.examples.meetingscheduling.domain.Person;
+import org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance;
+import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 
 public class MeetingSchedulingGenerator extends LoggingMain {
@@ -148,6 +152,57 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             17 * 60 + 45, // 17:45
     };
 
+    private static final String[][] fullNamePartOptions = {
+            new String[] {
+                    "Geoff",
+                    "Mark",
+                    "Edson",
+                    "Ondrej",
+                    "Lukas",
+                    "Vicky",
+                    "Shelly",
+                    "Peter",
+                    "Micha",
+                    "Steph",
+            },
+            new String[] {
+                    "A.",
+                    "B.",
+                    "C.",
+                    "D.",
+                    "E.",
+                    "F.",
+                    "G.",
+                    "H.",
+                    "I.",
+                    "J.",
+            },
+            new String[] {
+                    "O.",
+                    "P.",
+                    "Q.",
+                    "R.",
+                    "S.",
+                    "T.",
+                    "U.",
+                    "V.",
+                    "W.",
+                    "X",
+            },
+            new String[] {
+                    "Smet",
+                    "Proc",
+                    "Fusco",
+                    "Skop",
+                    "Davis",
+                    "Smith",
+                    "Gowan",
+                    "Siro",
+                    "Kief",
+                    "Snos",
+            }
+    };
+
     public static void main(String[] args) {
         new MeetingSchedulingGenerator().generate();
     }
@@ -190,10 +245,14 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         MeetingSchedule meetingSchedule = new MeetingSchedule();
         meetingSchedule.setId(0L);
 
-        createMeetingList(meetingSchedule, meetingListSize);
+        createMeetingListAndAttendanceList(meetingSchedule, meetingListSize);
+        int timeGrainListSize = meetingListSize * durationInGrainsOptions[durationInGrainsOptions.length - 1] / roomListSize;
+        createTimeGrainList(meetingSchedule, timeGrainListSize);
         createRoomList(meetingSchedule, roomListSize);
+        createPersonList(meetingSchedule);
+        linkAttendanceListToPersons(meetingSchedule);
+        createMeetingAssignmentList(meetingSchedule);
 
-        int timeGrainListSize = meetingSchedule.getTimeGrainList().size();
         BigInteger possibleSolutionSize = BigInteger.valueOf(timeGrainListSize * roomListSize)
                 .pow(meetingSchedule.getMeetingAssignmentList().size());
         logger.info("MeetingSchedule {} has {} meetings, {} timeGrains and {} rooms with a search space of {}.",
@@ -205,8 +264,10 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         return meetingSchedule;
     }
 
-    private void createMeetingList(MeetingSchedule meetingSchedule, int meetingListSize) {
+    private void createMeetingListAndAttendanceList(MeetingSchedule meetingSchedule, int meetingListSize) {
         List<Meeting> meetingList = new ArrayList<Meeting>(meetingListSize);
+        List<Attendance> globalAttendanceList = new ArrayList<Attendance>();
+        long attendanceId = 0L;
         for (int i = 0; i < meetingListSize; i++) {
             Meeting meeting = new Meeting();
             meeting.setId((long) i);
@@ -214,11 +275,59 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             meeting.setTopic(topic);
             int durationInGrains = durationInGrainsOptions[random.nextInt(durationInGrainsOptions.length)];
             meeting.setDurationInGrains(durationInGrains);
-            logger.trace("Created meeting with topic ({}), durationInGrains ({}).",
-                    topic, durationInGrains);
+
+            int attendanceListSize = personsPerMeetingOptions[random.nextInt(personsPerMeetingOptions.length)];
+            int requiredAttendanceListSize = Math.max(2, random.nextInt(attendanceListSize + 1));
+            List<RequiredAttendance> requiredAttendanceList = new ArrayList<RequiredAttendance>(requiredAttendanceListSize);
+            for (int j = 0; j < requiredAttendanceListSize; j++) {
+                RequiredAttendance attendance = new RequiredAttendance();
+                attendance.setId(attendanceId);
+                attendanceId++;
+                attendance.setMeeting(meeting);
+                // person is filled in later
+                requiredAttendanceList.add(attendance);
+                globalAttendanceList.add(attendance);
+            }
+            meeting.setRequiredAttendanceList(requiredAttendanceList);
+            int preferredAttendanceListSize = attendanceListSize - requiredAttendanceListSize;
+            List<PreferredAttendance> preferredAttendanceList = new ArrayList<PreferredAttendance>(preferredAttendanceListSize);
+            for (int j = 0; j < preferredAttendanceListSize; j++) {
+                PreferredAttendance attendance = new PreferredAttendance();
+                attendance.setId(attendanceId);
+                attendanceId++;
+                attendance.setMeeting(meeting);
+                // person is filled in later
+                preferredAttendanceList.add(attendance);
+                globalAttendanceList.add(attendance);
+            }
+            meeting.setPreferredAttendanceList(preferredAttendanceList);
+
+            logger.trace("Created meeting with topic ({}), durationInGrains ({}),"
+                    + " requiredAttendanceListSize ({}), preferredAttendanceListSize ({}).",
+                    topic, durationInGrains,
+                    requiredAttendanceListSize, preferredAttendanceListSize);
             meetingList.add(meeting);
         }
         meetingSchedule.setMeetingList(meetingList);
+        meetingSchedule.setAttendanceList(globalAttendanceList);
+    }
+
+    private void createTimeGrainList(MeetingSchedule meetingSchedule, int timeGrainListSize) {
+        List<TimeGrain> timeGrainList = new ArrayList<TimeGrain>(timeGrainListSize);
+        for (int i = 0; i < timeGrainListSize; i++) {
+            TimeGrain timeGrain = new TimeGrain();
+            timeGrain.setId((long) i);
+            int grainIndex = i;
+            timeGrain.setGrainIndex(grainIndex);
+            int dayOfYear = i / startingMinuteOfDayOptions.length;
+            timeGrain.setDayOfYear(dayOfYear);
+            int startingMinuteOfDay = startingMinuteOfDayOptions[i % startingMinuteOfDayOptions.length];
+            timeGrain.setStartingMinuteOfDay(startingMinuteOfDay);
+            logger.trace("Created timeGrain with grainIndex ({}), dayOfYear ({}), startingMinuteOfDay ({}).",
+                    grainIndex, dayOfYear, startingMinuteOfDay);
+            timeGrainList.add(timeGrain);
+        }
+        meetingSchedule.setTimeGrainList(timeGrainList);
     }
 
     private void createRoomList(MeetingSchedule meetingSchedule, int roomListSize) {
@@ -237,6 +346,56 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             roomList.add(room);
         }
         meetingSchedule.setRoomList(roomList);
+    }
+
+    private void createPersonList(MeetingSchedule meetingSchedule) {
+        int attendanceListSize = 0;
+        for (Meeting meeting : meetingSchedule.getMeetingList()) {
+            attendanceListSize += meeting.getRequiredAttendanceList().size()
+                    + meeting.getPreferredAttendanceList().size();
+        }
+        int personListSize = attendanceListSize * meetingSchedule.getRoomList().size() * 3
+                / (4 * meetingSchedule.getMeetingList().size());
+        List<Person> personList = new ArrayList<Person>(personListSize);
+        for (int i = 0; i < personListSize; i++) {
+            Person person = new Person();
+            person.setId((long) i);
+            String fullName = generateStringFromPartOptions(fullNamePartOptions, i);
+            person.setFullName(fullName);
+            logger.trace("Created person with fullName ({}).",
+                    fullName);
+            personList.add(person);
+        }
+        meetingSchedule.setPersonList(personList);
+    }
+
+    private void linkAttendanceListToPersons(MeetingSchedule meetingSchedule) {
+        for (Meeting meeting : meetingSchedule.getMeetingList()) {
+            List<Person> availablePersonList = new ArrayList<Person>(meetingSchedule.getPersonList());
+            int attendanceListSize = meeting.getRequiredAttendanceList().size() + meeting.getPreferredAttendanceList().size();
+            if (availablePersonList.size() < attendanceListSize) {
+                throw new IllegalStateException("The availablePersonList size (" + availablePersonList.size()
+                        + ") is less than the attendanceListSize (" + attendanceListSize + ").");
+            }
+            for (RequiredAttendance requiredAttendance : meeting.getRequiredAttendanceList()) {
+                requiredAttendance.setPerson(availablePersonList.remove(random.nextInt(availablePersonList.size())));
+            }
+            for (PreferredAttendance preferredAttendance : meeting.getPreferredAttendanceList()) {
+                preferredAttendance.setPerson(availablePersonList.remove(random.nextInt(availablePersonList.size())));
+            }
+        }
+    }
+
+    private void createMeetingAssignmentList(MeetingSchedule meetingSchedule) {
+        List<Meeting> meetingList = meetingSchedule.getMeetingList();
+        List<MeetingAssignment> meetingAssignmentList = new ArrayList<MeetingAssignment>(meetingList.size());
+        for (Meeting meeting : meetingList) {
+            MeetingAssignment meetingAssignment = new MeetingAssignment();
+            meetingAssignment.setId(meeting.getId());
+            meetingAssignment.setMeeting(meeting);
+            meetingAssignmentList.add(meetingAssignment);
+        }
+        meetingSchedule.setMeetingAssignmentList(meetingAssignmentList);
     }
 
     private String generateStringFromPartOptions(String[][] partOptions, int index) {

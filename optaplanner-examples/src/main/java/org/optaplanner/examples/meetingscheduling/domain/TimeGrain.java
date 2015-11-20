@@ -33,6 +33,30 @@ public class TimeGrain extends AbstractPersistable implements Labeled {
     private int dayOfYear;
     private int startingMinuteOfDay;
 
+    public int getGrainIndex() {
+        return grainIndex;
+    }
+
+    public void setGrainIndex(int grainIndex) {
+        this.grainIndex = grainIndex;
+    }
+
+    public int getDayOfYear() {
+        return dayOfYear;
+    }
+
+    public void setDayOfYear(int dayOfYear) {
+        this.dayOfYear = dayOfYear;
+    }
+
+    public int getStartingMinuteOfDay() {
+        return startingMinuteOfDay;
+    }
+
+    public void setStartingMinuteOfDay(int startingMinuteOfDay) {
+        this.startingMinuteOfDay = startingMinuteOfDay;
+    }
+
     public String getDateString() {
         int minutes = startingMinuteOfDay * GRAIN_LENGTH_IN_MINUTES;
         return dayOfYear + "-JAN " + (minutes / 60) + ":" + (minutes % 60);
