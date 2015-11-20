@@ -1708,11 +1708,12 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         public WorkingMemoryReteExpireAction(final EventFactHandle factHandle) {
             this.factHandle = factHandle;
+            factHandle.increaseOtnCount();
         }
 
         public WorkingMemoryReteExpireAction(final EventFactHandle factHandle,
                                              final ObjectTypeNode node) {
-            this.factHandle = factHandle;
+            this(factHandle);
             this.node = node;
         }
 
@@ -1763,19 +1764,22 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 // if the fact is still in the working memory (since it may have been previously retracted already
                 final PropagationContext context = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.EXPIRATION,
                                                                                         null, null, this.factHandle);
-                factHandle.setExpired(true);
                 if ( factHandle.getEqualityKey() == null || factHandle.getEqualityKey().getLogicalFactHandle() != factHandle ) {
                     if (this.node != null) {
                         this.node.retractObject(factHandle, context, workingMemory);
                     } else {
                         workingMemory.getEntryPoint(factHandle.getEntryPoint().getEntryPointId()).delete(factHandle);
                     }
+                    factHandle.decreaseOtnCount();
 
                     context.evaluateActionQueue(workingMemory);
                     // if no activations for this expired event
-                    if (factHandle.getActivationsCount() == 0) {
+                    if (factHandle.getOtnCount() == 0) {
                         // remove it from the object store and clean up resources
-                        factHandle.getEntryPoint().delete(factHandle);
+                        factHandle.setExpired(true);
+                        if (factHandle.getActivationsCount() == 0) {
+                            factHandle.getEntryPoint().delete( factHandle );
+                        }
                     }
                 } else {
                     ((NamedEntryPoint) factHandle.getEntryPoint()).getTruthMaintenanceSystem().delete( factHandle );
