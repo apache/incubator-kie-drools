@@ -31,6 +31,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
     private long              duration;
     private boolean           expired;
     private long              activationsCount;
+    private int               otnCount;
 
     private EventFactHandle   linkedFactHandle;
 
@@ -180,7 +181,23 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
             this.activationsCount--;
         }
     }
-    
+
+    public void increaseOtnCount() {
+        otnCount++;
+    }
+
+    public void decreaseOtnCount() {
+        otnCount--;
+    }
+
+    public int getOtnCount() {
+        return otnCount;
+    }
+
+    public void setOtnCount( int otnCount ) {
+        this.otnCount = otnCount;
+    }
+
     public EventFactHandle clone() {
         EventFactHandle clone = new EventFactHandle( getId(),
                                                       getObject(),
@@ -190,6 +207,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                                                       getEntryPoint(),
                                                       isTraitOrTraitable() );
         clone.setActivationsCount( getActivationsCount() );
+        clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
         clone.setEntryPoint( getEntryPoint() );
         clone.setEqualityKey( getEqualityKey() );
@@ -210,6 +228,7 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
                                                      getEntryPoint(),
                                                      isTraitOrTraitable() );
         clone.setActivationsCount( getActivationsCount() );
+        clone.setOtnCount( getOtnCount() );
         clone.setExpired( isExpired() );
         clone.setEntryPoint( getEntryPoint() );
         clone.setEqualityKey( getEqualityKey() );

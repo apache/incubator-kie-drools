@@ -55,7 +55,9 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.Role;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.DebugAgendaEventListener;
@@ -5801,4 +5803,99 @@ public class CepEspTest extends CommonTestMethodBase {
         assertEquals(1, list.size());
         assertEquals("JBPM", list.get(0));
     }
+
+    @Test
+    public void testSubclassWithLongerExpirationThanSuper() throws Exception {
+        // DROOLS-983
+        String drl =
+                "import " + SuperClass.class.getCanonicalName() + "\n" +
+                "import " + SubClass.class.getCanonicalName() + "\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $e : SuperClass()\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $e : SubClass()\n" +
+                "    not SubClass(this != $e)\n" +
+                "then\n" +
+                "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        EventFactHandle handle1 = (EventFactHandle) ksession.insert(new SubClass());
+        ksession.fireAllRules();
+
+        clock.advanceTime(15, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertFalse(handle1.isExpired());
+        assertEquals( 1, ksession.getObjects().size() );
+
+        clock.advanceTime(10, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertTrue(handle1.isExpired());
+        assertEquals( 0, ksession.getObjects().size() );
+    }
+
+    @Test
+    public void testSubclassWithLongerExpirationThanSuperWithSerialization() throws Exception {
+        // DROOLS-983
+        String drl =
+                "import " + SuperClass.class.getCanonicalName() + "\n" +
+                "import " + SubClass.class.getCanonicalName() + "\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $e : SuperClass()\n" +
+                "then\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    $e : SubClass()\n" +
+                "    not SubClass(this != $e)\n" +
+                "then\n" +
+                "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        EventFactHandle handle1 = (EventFactHandle) ksession.insert(new SubClass());
+        ksession.fireAllRules();
+
+        clock.advanceTime(15, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertFalse(handle1.isExpired());
+        assertEquals( 1, ksession.getObjects().size() );
+
+        try {
+            ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession( ksession, true, false );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+            fail( e.getMessage() );
+        }
+
+        clock = ksession.getSessionClock();
+        clock.advanceTime(10, TimeUnit.SECONDS);
+        ksession.fireAllRules();
+        assertEquals( 0, ksession.getObjects().size() );
+    }
+
+    @Role(Role.Type.EVENT)
+    @Expires( "10s" )
+    public static class SuperClass implements Serializable { }
+
+    @Role(Role.Type.EVENT)
+    @Expires( "20s" )
+    public static class SubClass extends SuperClass { }
 }
