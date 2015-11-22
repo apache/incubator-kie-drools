@@ -79,8 +79,8 @@ global HardSoftScoreHolder scoreHolder;
 // a nurse can only work one shift per day, i.e. no two shift can be assigned to the same nurse on a day.
 rule "oneShiftPerDay"
     when
-        $leftAssignment : ShiftAssignment($leftId : id, $employee : employee, $shiftDate : shiftDate, employee != null)
-        $rightAssignment : ShiftAssignment(employee == $employee, shiftDate == $shiftDate, id > $leftId)
+        ShiftAssignment($leftId : id, $employee : employee, $shiftDate : shiftDate, employee != null)
+        ShiftAssignment(employee == $employee, shiftDate == $shiftDate, id > $leftId)
     then
         scoreHolder.addHardConstraintMatch(kcontext, -1);
 end
@@ -189,7 +189,7 @@ rule "minimumConsecutiveWorkingDays"
         )
         $employee : Employee(contract == $contract)
 
-        $employeeWorkSequence : EmployeeWorkSequence(
+        EmployeeWorkSequence(
             employee == $employee,
             dayLength < $minimumValue,
             $dayLength : dayLength
@@ -207,7 +207,7 @@ rule "maximumConsecutiveWorkingDays"
         )
         $employee : Employee(contract == $contract)
 
-        $employeeWorkSequence : EmployeeWorkSequence(
+        EmployeeWorkSequence(
             employee == $employee,
             dayLength > $maximumValue,
             $dayLength : dayLength
@@ -295,7 +295,7 @@ rule "minimumConsecutiveFreeDays"
         )
         $employee : Employee(contract == $contract)
 
-        $employeeFreeSequence : EmployeeFreeSequence(
+        EmployeeFreeSequence(
             employee == $employee,
             dayLength < $minimumValue,
             $dayLength : dayLength
@@ -313,7 +313,7 @@ rule "maximumConsecutiveFreeDays"
         )
         $employee : Employee(contract == $contract)
 
-        $employeeFreeSequence : EmployeeFreeSequence(
+        EmployeeFreeSequence(
             employee == $employee,
             dayLength > $maximumValue,
             $dayLength : dayLength
@@ -389,7 +389,7 @@ rule "minimumConsecutiveWorkingWeekends"
         )
         $employee : Employee(contract == $contract)
 
-        $employeeWeekendSequence : EmployeeWeekendSequence(
+        EmployeeWeekendSequence(
             employee == $employee,
             weekendLength < $minimumValue,
             $weekendLength : weekendLength
@@ -408,7 +408,7 @@ rule "maximumConsecutiveWorkingWeekends"
         )
         $employee : Employee(contract == $contract)
 
-        $employeeWeekendSequence : EmployeeWeekendSequence(
+        EmployeeWeekendSequence(
             employee == $employee,
             weekendLength > $maximumValue,
             $weekendLength : weekendLength
@@ -426,7 +426,7 @@ rule "startOnNotFirstDayOfWeekend"
             contractLineType == ContractLineType.COMPLETE_WEEKENDS, enabled == true,
             $contract : contract
         )
-        $employeeConsecutiveAssignmentStart : EmployeeConsecutiveAssignmentStart(
+        EmployeeConsecutiveAssignmentStart(
             weekendAndNotFirstDayOfWeekend == true,
             contract == $contract,
             $distanceToFirstDayOfWeekend : distanceToFirstDayOfWeekend
@@ -440,7 +440,7 @@ rule "endOnNotLastDayOfWeekend"
             contractLineType == ContractLineType.COMPLETE_WEEKENDS, enabled == true,
             $contract : contract
         )
-        $employeeConsecutiveAssignmentEnd : EmployeeConsecutiveAssignmentEnd(
+        EmployeeConsecutiveAssignmentEnd(
             weekendAndNotLastDayOfWeekend == true,
             contract == $contract,
             $distanceToLastDayOfWeekend : distanceToLastDayOfWeekend
@@ -473,14 +473,14 @@ end
 // Requested day on/off
 rule "dayOffRequest"
     when
-        $dayOffRequest : DayOffRequest($employee : employee, $shiftDate : shiftDate, $weight : weight)
-        $assignment : ShiftAssignment(employee == $employee, shiftDate == $shiftDate)
+        DayOffRequest($employee : employee, $shiftDate : shiftDate, $weight : weight)
+        ShiftAssignment(employee == $employee, shiftDate == $shiftDate)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
 end
 rule "dayOnRequest"
     when
-        $dayOnRequest : DayOnRequest($employee : employee, $shiftDate : shiftDate, $weight : weight)
+        DayOnRequest($employee : employee, $shiftDate : shiftDate, $weight : weight)
         not ShiftAssignment(employee == $employee, shiftDate == $shiftDate)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
@@ -489,14 +489,14 @@ end
 // Requested shift on/off
 rule "shiftOffRequest"
     when
-        $shiftOffRequest : ShiftOffRequest($employee : employee, $shift : shift, $weight : weight)
-        $assignment : ShiftAssignment(employee == $employee, shift == $shift)
+        ShiftOffRequest($employee : employee, $shift : shift, $weight : weight)
+        ShiftAssignment(employee == $employee, shift == $shift)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
 end
 rule "shiftOnRequest"
     when
-        $shiftOnRequest : ShiftOnRequest($employee : employee, $shift : shift, $weight : weight)
+        ShiftOnRequest($employee : employee, $shift : shift, $weight : weight)
         not ShiftAssignment(employee == $employee, shift == $shift)
     then
         scoreHolder.addSoftConstraintMatch(kcontext, - $weight);
@@ -507,7 +507,7 @@ rule "alternativeSkill"
     when
         $contractLine : BooleanContractLine(contractLineType == ContractLineType.ALTERNATIVE_SKILL_CATEGORY,
             $contract : contract)
-        $assignment : ShiftAssignment(contract == $contract, $employee : employee, $shiftType : shiftType)
+        ShiftAssignment(contract == $contract, $employee : employee, $shiftType : shiftType)
         ShiftTypeSkillRequirement(shiftType == $shiftType, $skill : skill)
         not SkillProficiency(employee == $employee, skill == $skill)
     then
