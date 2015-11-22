@@ -35,6 +35,16 @@ global HardMediumSoftScoreHolder scoreHolder;
 // Hard constraints
 // ############################################################################
 
+rule "Required attendance"
+    when
+        RequiredAttendance($leftId : id, $person : person, $leftMeeting : meeting)
+        RequiredAttendance(person == $person, $rightMeeting : meeting, id > $leftId)
+        $leftAssignment : MeetingAssignment(meeting == $leftMeeting)
+        $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
+end
+
 // ############################################################################
 // Soft constraints
 // ############################################################################

@@ -61,6 +61,23 @@ public class MeetingAssignment extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    public int calculateOverlap(MeetingAssignment other) {
+        if (startingTimeGrain == null || other.getStartingTimeGrain() == null) {
+            return 0;
+        }
+        int start = startingTimeGrain.getGrainIndex();
+        int end = start + meeting.getDurationInGrains();
+        int otherStart = other.startingTimeGrain.getGrainIndex();
+        int otherEnd = otherStart + other.meeting.getDurationInGrains();
+
+        if (end < otherStart) {
+            return 0;
+        } else if (otherEnd < start) {
+            return 0;
+        }
+        return Math.min(end, otherEnd) - Math.max(start, otherStart);
+    }
+
     public String getLabel() {
         return meeting.getLabel();
     }
