@@ -133,8 +133,10 @@ public class TimeTableLayout implements LayoutManager2, Serializable {
         }
         if (c.isFillCollisions()) {
             if (collisionIndex != 0 || occupiedCollisionIndexes.contains(FILL_COLLISIONS_FLAG)) {
-                throw new IllegalArgumentException("There is a collision with fillCollisions ("
-                        + c.isFillCollisions() + ").");
+                throw new IllegalArgumentException("There is a collision in the cell range ("
+                        + (c.getX() == c.getXEnd() - 1 ? c.getX() : c.getX() + "-" + (c.getXEnd() - 1))
+                        + ", " + (c.getY() == c.getYEnd() - 1 ? c.getY() : c.getY() + "-" + (c.getYEnd() - 1))
+                        + ").");
             }
             collisionIndex = FILL_COLLISIONS_FLAG;
         }

@@ -47,15 +47,15 @@ public class MeetingSchedulingPanel extends SolutionPanel {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/meetingscheduling/swingui/meetingschedulingLogo.png";
 
-    private final TimeTablePanel<Room, TimeGrain> roomsPanel;
-    private final TimeTablePanel<Person, TimeGrain> personsPanel;
+    private final TimeTablePanel<TimeGrain, Room> roomsPanel;
+    private final TimeTablePanel<TimeGrain, Person> personsPanel;
 
     public MeetingSchedulingPanel() {
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
-        roomsPanel = new TimeTablePanel<Room, TimeGrain>();
+        roomsPanel = new TimeTablePanel<TimeGrain, Room>();
         tabbedPane.add("Rooms", new JScrollPane(roomsPanel));
-        personsPanel = new TimeTablePanel<Person, TimeGrain>();
+        personsPanel = new TimeTablePanel<TimeGrain, Person>();
         tabbedPane.add("Persons", new JScrollPane(personsPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
@@ -85,69 +85,62 @@ public class MeetingSchedulingPanel extends SolutionPanel {
     }
 
     private void defineGrid(MeetingSchedule meetingSchedule) {
-        JButton footprint = SwingUtils.makeSmallButton(new JButton("AAAAA BB CC DDDDD"));
-        int footprintWidth = footprint.getPreferredSize().width;
-
-        roomsPanel.defineColumnHeaderByKey(HEADER_COLUMN_GROUP1); // Day header
-        roomsPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Period header
-        for (Room room : meetingSchedule.getRoomList()) {
-            roomsPanel.defineColumnHeader(room, footprintWidth);
-        }
-        roomsPanel.defineColumnHeader(null, footprintWidth); // Unassigned
-
-        personsPanel.defineColumnHeaderByKey(HEADER_COLUMN_GROUP1); // Day header
-        personsPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Period header
-        for (Person person : meetingSchedule.getPersonList()) {
-            personsPanel.defineColumnHeader(person, footprintWidth);
-        }
-
-        roomsPanel.defineRowHeaderByKey(HEADER_ROW); // Room header
-        personsPanel.defineRowHeaderByKey(HEADER_ROW); // Teacher header
+        roomsPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Room header
+        personsPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Person header
         for (TimeGrain timeGrain : meetingSchedule.getTimeGrainList()) {
-            roomsPanel.defineRowHeader(timeGrain);
-            personsPanel.defineRowHeader(timeGrain);
+            roomsPanel.defineColumnHeader(timeGrain);
+            personsPanel.defineColumnHeader(timeGrain);
         }
-        roomsPanel.defineRowHeader(null); // Unassigned timeGrain
-        personsPanel.defineRowHeader(null); // Unassigned timeGrain
+        roomsPanel.defineColumnHeader(null); // Unassigned timeGrain
+        personsPanel.defineColumnHeader(null); // Unassigned timeGrain
+
+        roomsPanel.defineRowHeaderByKey(HEADER_ROW); // TimeGrain header
+        for (Room room : meetingSchedule.getRoomList()) {
+            roomsPanel.defineRowHeader(room);
+        }
+        roomsPanel.defineRowHeader(null); // Unassigned
+
+        personsPanel.defineRowHeaderByKey(HEADER_ROW); // TimeGrain header
+        for (Person person : meetingSchedule.getPersonList()) {
+            personsPanel.defineRowHeader(person);
+        }
     }
 
     private void fillCells(MeetingSchedule meetingSchedule) {
-        roomsPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createTableHeader(new JLabel("Day")));
         roomsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Time")));
         fillRoomCells(meetingSchedule);
-        personsPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createTableHeader(new JLabel("Day")));
         personsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Time")));
-        fillTeacherCells(meetingSchedule);
-        fillTimeUnitCells(meetingSchedule);
+        fillPersonCells(meetingSchedule);
+        fillTimeGrainCells(meetingSchedule);
         fillMeetingAssignmentCells(meetingSchedule);
     }
 
     private void fillRoomCells(MeetingSchedule meetingSchedule) {
         for (Room room : meetingSchedule.getRoomList()) {
-            roomsPanel.addColumnHeader(room, HEADER_ROW,
+            roomsPanel.addRowHeader(HEADER_COLUMN, room,
                     createTableHeader(new JLabel(room.getLabel(), SwingConstants.CENTER)));
         }
-        roomsPanel.addColumnHeader(null, HEADER_ROW,
+        roomsPanel.addRowHeader(HEADER_COLUMN, null,
                 createTableHeader(new JLabel("Unassigned", SwingConstants.CENTER)));
     }
 
-    private void fillTeacherCells(MeetingSchedule meetingSchedule) {
+    private void fillPersonCells(MeetingSchedule meetingSchedule) {
         for (Person person : meetingSchedule.getPersonList()) {
-            personsPanel.addColumnHeader(person, HEADER_ROW,
+            personsPanel.addRowHeader(HEADER_COLUMN, person,
                     createTableHeader(new JLabel(person.getLabel(), SwingConstants.CENTER)));
         }
     }
 
-    private void fillTimeUnitCells(MeetingSchedule meetingSchedule) {
+    private void fillTimeGrainCells(MeetingSchedule meetingSchedule) {
         for (TimeGrain timeGrain : meetingSchedule.getTimeGrainList()) {
-            roomsPanel.addRowHeader(HEADER_COLUMN, timeGrain,
+            roomsPanel.addColumnHeader(timeGrain, HEADER_ROW,
                     createTableHeader(new JLabel(timeGrain.getLabel())));
-            personsPanel.addRowHeader(HEADER_COLUMN, timeGrain,
+            personsPanel.addColumnHeader(timeGrain, HEADER_ROW,
                     createTableHeader(new JLabel(timeGrain.getLabel())));
         }
-        roomsPanel.addRowHeader(HEADER_COLUMN_GROUP1, null, HEADER_COLUMN, null,
+        roomsPanel.addColumnHeader(null, HEADER_ROW,
                 createTableHeader(new JLabel("Unassigned")));
-        personsPanel.addRowHeader(HEADER_COLUMN_GROUP1, null, HEADER_COLUMN, null,
+        personsPanel.addColumnHeader(null, HEADER_ROW,
                 createTableHeader(new JLabel("Unassigned")));
     }
 
@@ -160,12 +153,12 @@ public class MeetingSchedulingPanel extends SolutionPanel {
             TimeGrain lastTimeGrain = startingTimeGrain == null ? null :
                     meetingSchedule.getTimeGrainList().get(
                     startingTimeGrain.getGrainIndex() + meetingAssignment.getMeeting().getDurationInGrains());
-            roomsPanel.addCell(meetingAssignment.getRoom(), startingTimeGrain,
-                    meetingAssignment.getRoom(), lastTimeGrain,
+            roomsPanel.addCell(startingTimeGrain, meetingAssignment.getRoom(),
+                    lastTimeGrain, meetingAssignment.getRoom(),
                     createButton(meetingAssignment, color));
             for (RequiredAttendance requiredAttendance : meetingAssignment.getMeeting().getRequiredAttendanceList()) {
-                personsPanel.addCell(requiredAttendance.getPerson(), startingTimeGrain,
-                        requiredAttendance.getPerson(), lastTimeGrain,
+                personsPanel.addCell(startingTimeGrain, requiredAttendance.getPerson(),
+                        lastTimeGrain, requiredAttendance.getPerson(),
                         createButton(meetingAssignment, color));
             }
         }
