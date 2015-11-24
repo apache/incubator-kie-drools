@@ -2385,4 +2385,43 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testMultipleIncrementalCompilationWithExistentialRules() {
+        // DROOLS-988
+        List<String> drls = new ArrayList<String>();
+        drls.add(getExistenzialRule("R0", "> 10"));
+
+        // Create a session with the above rule
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "test-upgrade", "1.0.0");
+        KieModule km = createAndDeployJar(ks, releaseId, drls.toArray(new String[drls.size()]));
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        AtomicInteger counter = new AtomicInteger( 0 );
+        ksession.setGlobal( "counter", counter );
+
+        ksession.insert(3);
+        ksession.fireAllRules();
+        assertEquals(0, counter.get());
+
+        for (int i = 1; i < 11; i++) {
+            ReleaseId newReleaseId = ks.newReleaseId("org.kie", "test-upgrade", "1.1." + i);
+            drls.add(getExistenzialRule("R" + i, "< 10"));
+            km = createAndDeployJar(ks, newReleaseId, drls.toArray(new String[drls.size()]));
+            kc.updateToVersion(newReleaseId);
+            ksession.fireAllRules();
+            assertEquals(i, counter.get());
+        }
+    }
+
+    private String getExistenzialRule(String rulename, String condition) {
+        return "global java.util.concurrent.atomic.AtomicInteger counter\n" +
+               "rule " + rulename + " when\n" +
+               "  exists (Integer( this " + condition + ") )\n" +
+               "then\n" +
+               "  counter.incrementAndGet();\n" +
+               "end";
+    }
 }

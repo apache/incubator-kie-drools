@@ -119,7 +119,7 @@ public class AddRemoveRule {
                         continue; // Segments are initialised lazily, so the SM may not yet exist yet, and thus no processing needed
                     }
                     initNewSegment(splitStartLeftTupleSource, wm, sm);
-                    correctSegmentBeforeSplitOnAdd(wm, newPmem, 0, pathMems.get(0), sm);
+                    correctSegmentBeforeSplitOnAdd(wm, newPmem, pathMems.get(0), sm);
                 }
             }
 
@@ -349,18 +349,28 @@ public class AddRemoveRule {
      }
 
 
+     private static void correctSegmentBeforeSplitOnAdd(InternalWorkingMemory wm, PathMemory newPmem, PathMemory pmem, SegmentMemory sm) {
+         while (sm != null) {
+             setSegmentMemoryOnNewPath( wm, newPmem, sm );
+             sm = sm.getPos() > 0 ? pmem.getSegmentMemories()[sm.getPos()-1] : null;
+         }
+     }
+
      private static void correctSegmentBeforeSplitOnAdd(InternalWorkingMemory wm, PathMemory newPmem, int p, PathMemory pmem, SegmentMemory sm) {
          pmem.setSegmentMemory( sm.getPos(), sm );
          if ( p == 0 ) {
              // only handle for the first PathMemory, all others are shared and duplicate until this point
-             newPmem.setSegmentMemory(sm.getPos(), sm);
-             sm.addPathMemory( newPmem );
-
-             sm.notifyRuleLinkSegment(wm);
+             setSegmentMemoryOnNewPath( wm, newPmem, sm );
          }
      }
 
-     private static void correctSegmentBeforeSplitOnRemove(InternalWorkingMemory wm, PathMemory removedPmem, PathMemory pmem, SegmentMemory sm, int p) {
+    private static void setSegmentMemoryOnNewPath( InternalWorkingMemory wm, PathMemory newPmem, SegmentMemory sm ) {
+        newPmem.setSegmentMemory(sm.getPos(), sm);
+        sm.addPathMemory( newPmem );
+        sm.notifyRuleLinkSegment(wm);
+    }
+
+    private static void correctSegmentBeforeSplitOnRemove(InternalWorkingMemory wm, PathMemory removedPmem, PathMemory pmem, SegmentMemory sm, int p) {
          pmem.setSegmentMemory( sm.getPos(), sm );
          if ( p == 0 ) {
              // only handle for the first PathMemory, all others are shared and duplicate until this point
