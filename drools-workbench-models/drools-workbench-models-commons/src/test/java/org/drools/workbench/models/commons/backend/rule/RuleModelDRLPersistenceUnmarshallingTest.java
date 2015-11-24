@@ -40,6 +40,7 @@ import org.drools.workbench.models.datamodel.rule.ActionCallMethod;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.ActionGlobalCollectionAdd;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
+import org.drools.workbench.models.datamodel.rule.ActionInsertLogicalFact;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
 import org.drools.workbench.models.datamodel.rule.ActionUpdateField;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
@@ -4674,12 +4675,12 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEquals( "sum", actionCallMethod.getFieldValue( 0 ).getField() );
         assertEquals( "$age", actionCallMethod.getFieldValue( 0 ).getValue() );
         assertEquals( 2, actionCallMethod.getFieldValue( 0 ).getNature() );
-        assertEquals( "Integer", actionCallMethod.getFieldValue( 0 ).getType() );
+        assertEquals( "java.lang.Integer", actionCallMethod.getFieldValue( 0 ).getType() );
 
         assertEquals( "sum", actionCallMethod.getFieldValue( 1 ).getField() );
         assertEquals( "$age", actionCallMethod.getFieldValue( 1 ).getValue() );
         assertEquals( 2, actionCallMethod.getFieldValue( 1 ).getNature() );
-        assertEquals( "Integer", actionCallMethod.getFieldValue( 1 ).getType() );
+        assertEquals( "java.lang.Integer", actionCallMethod.getFieldValue( 1 ).getType() );
 
         assertEqualsIgnoreWhitespace( drl,
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
@@ -8077,4 +8078,143 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
         assertEqualsIgnoreWhitespace( drl,
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
+
+    @Test
+    public void testRHSAppendToList() throws Exception {
+        //https://issues.jboss.org/browse/GUVNOR-2286
+        String drl = "package org.test;\n" +
+                "import java.lang.Number;\n" +
+                "rule \"RuleCheckEmail\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "incomeData : IncomeData( email == \"myemail\" , $list : list != null )\n" +
+                "then\n" +
+                "Element element = new Element();\n" +
+                "element.setId( 2 );\n" +
+                "insertLogical( element );\n" +
+                "$list.add( element );\n" +
+                "end";
+
+        addModelField( "org.test.IncomeData",
+                       "this",
+                       "org.test.IncomeData",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.IncomeData",
+                       "email",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+        addModelField( "org.test.IncomeData",
+                       "list",
+                       List.class.getName(),
+                       DataType.TYPE_COLLECTION );
+
+        addModelField( "java.util.List",
+                       "this",
+                       "java.util.List",
+                       DataType.TYPE_THIS );
+        addMethodInformation( "java.util.List",
+                              "add",
+                              new ArrayList<String>() {{
+                                  add( "java.lang.Object" );
+                              }},
+                              DataType.TYPE_BOOLEAN,
+                              null,
+                              DataType.TYPE_BOOLEAN );
+        addMethodInformation( "java.util.List",
+                              "add",
+                              new ArrayList<String>() {{
+                                  add( "java.lang.Integer" );
+                                  add( "java.lang.Object" );
+                              }},
+                              DataType.TYPE_BOOLEAN,
+                              null,
+                              DataType.TYPE_BOOLEAN );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "IncomeData",
+                      fp0.getFactType() );
+        assertEquals( 2,
+                      fp0.getNumberOfConstraints() );
+
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint fp0sfc0 = (SingleFieldConstraint) fp0.getConstraint( 0 );
+        assertEquals( "IncomeData",
+                      fp0sfc0.getFactType() );
+        assertEquals( "email",
+                      fp0sfc0.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      fp0sfc0.getFieldType() );
+        assertEquals( "==",
+                      fp0sfc0.getOperator() );
+        assertEquals( "myemail",
+                      fp0sfc0.getValue() );
+
+        assertTrue( fp0.getConstraint( 1 ) instanceof SingleFieldConstraint );
+        final SingleFieldConstraint fp0sfc1 = (SingleFieldConstraint) fp0.getConstraint( 1 );
+        assertEquals( "IncomeData",
+                      fp0sfc1.getFactType() );
+        assertEquals( "list",
+                      fp0sfc1.getFieldName() );
+        assertEquals( DataType.TYPE_COLLECTION,
+                      fp0sfc1.getFieldType() );
+        assertEquals( "!= null",
+                      fp0sfc1.getOperator() );
+        assertNull( fp0sfc1.getValue() );
+
+        assertEquals( 2,
+                      m.rhs.length );
+
+        assertTrue( m.rhs[ 0 ] instanceof ActionInsertLogicalFact );
+        final ActionInsertLogicalFact a0 = (ActionInsertLogicalFact) m.rhs[ 0 ];
+        assertEquals( "Element",
+                      a0.getFactType() );
+        assertEquals( "element",
+                      a0.getBoundName() );
+        assertEquals( 1,
+                      a0.getFieldValues().length );
+        final ActionFieldValue a0f0 = a0.getFieldValues()[ 0 ];
+        assertEquals( "id",
+                      a0f0.getField() );
+        assertEquals( "2",
+                      a0f0.getValue() );
+        assertEquals( DataType.TYPE_NUMERIC,
+                      a0f0.getType() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      a0f0.getNature() );
+
+        assertTrue( m.rhs[ 1 ] instanceof ActionCallMethod );
+        final ActionCallMethod a1 = (ActionCallMethod) m.rhs[ 1 ];
+        assertEquals( "add",
+                      a1.getMethodName() );
+        assertEquals( "$list",
+                      a1.getVariable() );
+        assertEquals( 1,
+                      a1.getFieldValues().length );
+        final ActionFieldValue a1f0 = a1.getFieldValues()[ 0 ];
+        assertEquals( "add",
+                      a1f0.getField() );
+        assertEquals( "element",
+                      a1f0.getValue() );
+        assertEquals( FieldNatureType.TYPE_VARIABLE,
+                      a1f0.getNature() );
+        assertEquals( "java.lang.Object",
+                      a1f0.getType() );
+
+        //Check round-trip
+        assertEqualsIgnoreWhitespace( drl,
+                                      RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
+    }
+
 }
