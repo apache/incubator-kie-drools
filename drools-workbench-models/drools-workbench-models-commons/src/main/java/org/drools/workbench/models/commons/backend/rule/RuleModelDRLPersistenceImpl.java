@@ -2766,9 +2766,12 @@ public class RuleModelDRLPersistenceImpl
                 String type = getStatementType( fact,
                                                 factsType );
                 if ( type != null ) {
+                    boundParams.put( fact,
+                                     type );
                     ActionInsertLogicalFact action = new ActionInsertLogicalFact( type );
                     m.addRhsItem( action );
                     if ( factsType.containsKey( fact ) ) {
+                        action.setBoundName( fact );
                         addSettersToAction( setStatements,
                                             fact,
                                             action,
@@ -2784,6 +2787,8 @@ public class RuleModelDRLPersistenceImpl
                 String type = getStatementType( fact,
                                                 factsType );
                 if ( type != null ) {
+                    boundParams.put( fact,
+                                     type );
                     ActionInsertFact action = new ActionInsertFact( type );
                     m.addRhsItem( action );
                     if ( factsType.containsKey( fact ) ) {
@@ -3864,7 +3869,7 @@ public class RuleModelDRLPersistenceImpl
                     for ( ModelField field : fields ) {
                         if ( field.getName().equals( fieldName ) ) {
                             boundParams.put( fieldBinding,
-                                             field.getType() );
+                                             field.getClassName() );
                         }
                     }
                 }
