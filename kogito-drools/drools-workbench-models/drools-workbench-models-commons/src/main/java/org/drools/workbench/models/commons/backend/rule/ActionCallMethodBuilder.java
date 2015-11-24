@@ -233,9 +233,11 @@ public class ActionCallMethodBuilder {
     private String assertParamDataType( final String methodParamDataType,
                                         final String paramValue ) {
         if ( boundParams.containsKey( paramValue ) ) {
-            final String boundParamDataType = boundParams.get( paramValue );
-            return boundParamDataType;
+            //If the parameter is a bound variable use the MethodInfo data-type
+            return methodParamDataType;
+
         } else {
+            //Otherwise try coercing the parameter value into the method data-type until a match is found
             if ( DataType.TYPE_BOOLEAN.equals( methodParamDataType ) ) {
                 if ( Boolean.TRUE.equals( Boolean.parseBoolean( paramValue ) ) || Boolean.FALSE.equals( Boolean.parseBoolean( paramValue ) ) ) {
                     return methodParamDataType;
