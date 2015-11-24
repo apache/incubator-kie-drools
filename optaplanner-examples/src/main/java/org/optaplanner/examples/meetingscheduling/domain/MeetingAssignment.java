@@ -78,6 +78,20 @@ public class MeetingAssignment extends AbstractPersistable {
         return Math.min(end, otherEnd) - Math.max(start, otherStart);
     }
 
+    public Integer getLastTimeGrainIndex() {
+        if (startingTimeGrain == null) {
+            return null;
+        }
+        return startingTimeGrain.getGrainIndex() + meeting.getDurationInGrains() - 1;
+    }
+
+    public String getDurationDateTimeString() {
+        if (startingTimeGrain == null) {
+            return null;
+        }
+        return startingTimeGrain.getDateTimeString() + " + " + meeting.getDurationString();
+    }
+
     public String getLabel() {
         return meeting.getLabel();
     }

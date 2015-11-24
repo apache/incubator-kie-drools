@@ -68,6 +68,10 @@ public class Meeting extends AbstractPersistable {
     // Complex methods
     // ************************************************************************
 
+    public String getDurationString() {
+        return (durationInGrains * TimeGrain.GRAIN_LENGTH_IN_MINUTES) + " minutes";
+    }
+
     public String getLabel() {
         return topic;
     }

@@ -19,6 +19,7 @@ package org.optaplanner.examples.meetingscheduling.swingui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -42,6 +43,7 @@ import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
@@ -51,6 +53,7 @@ public class MeetingSchedulingPanel extends SolutionPanel {
 
     private final TimeTablePanel<TimeGrain, Room> roomsPanel;
     private final TimeTablePanel<TimeGrain, Pair<Person, Boolean>> personsPanel;
+    private final OvertimeTimeGrain OVERTIME_TIME_GRAIN = new OvertimeTimeGrain();
 
     public MeetingSchedulingPanel() {
         setLayout(new BorderLayout());
@@ -94,6 +97,8 @@ public class MeetingSchedulingPanel extends SolutionPanel {
             roomsPanel.defineColumnHeader(timeGrain);
             personsPanel.defineColumnHeader(timeGrain);
         }
+        roomsPanel.defineColumnHeader(OVERTIME_TIME_GRAIN); // Overtime timeGrain
+        personsPanel.defineColumnHeader(OVERTIME_TIME_GRAIN); // Overtime timeGrain
         roomsPanel.defineColumnHeader(null); // Unassigned timeGrain
         personsPanel.defineColumnHeader(null); // Unassigned timeGrain
 
@@ -148,6 +153,10 @@ public class MeetingSchedulingPanel extends SolutionPanel {
             personsPanel.addColumnHeader(timeGrain, HEADER_ROW,
                     createTableHeader(new JLabel(timeGrain.getLabel())));
         }
+        roomsPanel.addColumnHeader(OVERTIME_TIME_GRAIN, HEADER_ROW,
+                createTableHeader(new JLabel("Overtime")));
+        personsPanel.addColumnHeader(OVERTIME_TIME_GRAIN, HEADER_ROW,
+                createTableHeader(new JLabel("Overtime")));
         roomsPanel.addColumnHeader(null, HEADER_ROW,
                 createTableHeader(new JLabel("Unassigned")));
         personsPanel.addColumnHeader(null, HEADER_ROW,
@@ -159,10 +168,18 @@ public class MeetingSchedulingPanel extends SolutionPanel {
         for (MeetingAssignment meetingAssignment : meetingSchedule.getMeetingAssignmentList()) {
             Color color = tangoColorFactory.pickColor(meetingAssignment.getMeeting());
             TimeGrain startingTimeGrain = meetingAssignment.getStartingTimeGrain();
-            // TODO consider adding lastTimeGrain on Meeting
-            TimeGrain lastTimeGrain = startingTimeGrain == null ? null :
-                    meetingSchedule.getTimeGrainList().get(
-                    startingTimeGrain.getGrainIndex() + meetingAssignment.getMeeting().getDurationInGrains());
+            TimeGrain lastTimeGrain;
+            if (startingTimeGrain == null) {
+                lastTimeGrain = null;
+            } else {
+                int lastTimeGrainIndex = meetingAssignment.getLastTimeGrainIndex();
+                List<TimeGrain> timeGrainList = meetingSchedule.getTimeGrainList();
+                if (lastTimeGrainIndex < meetingSchedule.getTimeGrainList().size()) {
+                    lastTimeGrain = timeGrainList.get(lastTimeGrainIndex);
+                } else {
+                    lastTimeGrain = OVERTIME_TIME_GRAIN;
+                }
+            }
             roomsPanel.addCell(startingTimeGrain, meetingAssignment.getRoom(),
                     lastTimeGrain, meetingAssignment.getRoom(),
                     createButton(meetingAssignment, color));
@@ -202,6 +219,10 @@ public class MeetingSchedulingPanel extends SolutionPanel {
 
         public MeetingAssignmentAction(MeetingAssignment meetingAssignment) {
             super(meetingAssignment.getLabel());
+            putValue(SHORT_DESCRIPTION, "<html>Topic: " + meetingAssignment.getMeeting().getTopic() + "<br/>"
+                    + "Date and time: " + defaultIfNull(meetingAssignment.getDurationDateTimeString(), "unassigned") + "<br/>"
+                    + "Room: " + defaultIfNull(meetingAssignment.getRoom(), "unassigned")
+                    + "</html>");
             this.meetingAssignment = meetingAssignment;
         }
 
@@ -248,6 +269,21 @@ public class MeetingSchedulingPanel extends SolutionPanel {
 //                }
 //                solverAndPersistenceFrame.resetScreen();
 //            }
+        }
+
+    }
+
+    private static final class OvertimeTimeGrain extends TimeGrain {
+
+        private OvertimeTimeGrain() {
+            setGrainIndex(-1);
+            setDayOfYear(-1);
+            setStartingMinuteOfDay(-1);
+        }
+
+        @Override
+        public String getDateTimeString() {
+            return "Overtime";
         }
 
     }

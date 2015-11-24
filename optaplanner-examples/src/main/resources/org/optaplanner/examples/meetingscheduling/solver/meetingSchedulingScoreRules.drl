@@ -39,10 +39,28 @@ rule "Required attendance"
     when
         RequiredAttendance($leftId : id, $person : person, $leftMeeting : meeting)
         RequiredAttendance(person == $person, $rightMeeting : meeting, id > $leftId)
-        $leftAssignment : MeetingAssignment(meeting == $leftMeeting)
+        $leftAssignment : MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null)
         $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
     then
         scoreHolder.addHardConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
+end
+
+rule "Room conflict"
+    when
+        $leftAssignment : MeetingAssignment(room != null, $leftId : id, $room : room)
+        $rightAssignment : MeetingAssignment(room == $room, calculateOverlap($leftAssignment) > 0, id > $leftId)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
+end
+
+// TODO Might be more efficient if a MeetingAssignment knows timeGrainList.size()
+// TODO Can be obsolete if MeetingAssignment uses @ValueRangeProvider from entity for timeGrainRange
+rule "Don't go in overtime"
+    when
+        MeetingAssignment(startingTimeGrain != null, $lastTimeGrainIndex : getLastTimeGrainIndex())
+        not TimeGrain(grainIndex == $lastTimeGrainIndex)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, - $lastTimeGrainIndex);
 end
 
 // ############################################################################

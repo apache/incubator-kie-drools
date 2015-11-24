@@ -225,28 +225,23 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     }
 
     private void writeMeetingSchedule(int meetingListSize, int roomListSize) {
-        String fileName = determineFileName(meetingListSize, roomListSize);
+        int timeGrainListSize = meetingListSize * durationInGrainsOptions[durationInGrainsOptions.length - 1] / roomListSize;
+        String fileName = determineFileName(meetingListSize, timeGrainListSize, roomListSize);
         File outputFile = new File(outputDir, fileName + ".xml");
-        MeetingSchedule meetingSchedule = createMeetingSchedule(fileName, meetingListSize, roomListSize);
+        MeetingSchedule meetingSchedule = createMeetingSchedule(fileName, meetingListSize, timeGrainListSize, roomListSize);
         solutionDao.writeSolution(meetingSchedule, outputFile);
     }
 
-    public MeetingSchedule createMeetingSchedule(int computerListSize, int processListSize) {
-        return createMeetingSchedule(determineFileName(computerListSize, processListSize),
-                computerListSize, processListSize);
+    private String determineFileName(int meetingListSize, int timeGrainListSize, int roomListSize) {
+        return meetingListSize + "meetings-" + timeGrainListSize + "timegrains-" + roomListSize + "rooms";
     }
 
-    private String determineFileName(int meetingListSize, int roomListSize) {
-        return meetingListSize + "meetings-" + roomListSize + "rooms";
-    }
-
-    public MeetingSchedule createMeetingSchedule(String fileName, int meetingListSize, int roomListSize) {
+    public MeetingSchedule createMeetingSchedule(String fileName, int meetingListSize, int timeGrainListSize, int roomListSize) {
         random = new Random(37);
         MeetingSchedule meetingSchedule = new MeetingSchedule();
         meetingSchedule.setId(0L);
 
         createMeetingListAndAttendanceList(meetingSchedule, meetingListSize);
-        int timeGrainListSize = meetingListSize * durationInGrainsOptions[durationInGrainsOptions.length - 1] / roomListSize;
         createTimeGrainList(meetingSchedule, timeGrainListSize);
         createRoomList(meetingSchedule, roomListSize);
         createPersonList(meetingSchedule);

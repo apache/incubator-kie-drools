@@ -57,7 +57,7 @@ public class TimeGrain extends AbstractPersistable implements Labeled {
         this.startingMinuteOfDay = startingMinuteOfDay;
     }
 
-    public String getTimeDateString() {
+    public String getDateTimeString() {
         int hourOfDay = startingMinuteOfDay / 60;
         int minuteOfHour = startingMinuteOfDay % 60;
         return dayOfYear + "-JAN "
@@ -66,12 +66,12 @@ public class TimeGrain extends AbstractPersistable implements Labeled {
     }
 
     public String getLabel() {
-        return getTimeDateString();
+        return getDateTimeString();
     }
 
     @Override
     public String toString() {
-        return grainIndex + "(" + getTimeDateString() + ")";
+        return grainIndex + "(" + getDateTimeString() + ")";
     }
 
 }
