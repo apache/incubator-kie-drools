@@ -219,9 +219,9 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     public void generate() {
         writeMeetingSchedule(50, 5);
         writeMeetingSchedule(100, 5);
-        writeMeetingSchedule(200, 5);
-        writeMeetingSchedule(400, 5);
-        writeMeetingSchedule(800, 5);
+//        writeMeetingSchedule(200, 5);
+//        writeMeetingSchedule(400, 5);
+//        writeMeetingSchedule(800, 5);
     }
 
     private void writeMeetingSchedule(int meetingListSize, int roomListSize) {

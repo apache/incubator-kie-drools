@@ -73,7 +73,7 @@ public class MeetingSchedulingPanel extends SolutionPanel {
 
     @Override
     public boolean isRefreshScreenDuringSolving() {
-        return true;
+        return false;
     }
 
     private MeetingSchedule getMeetingSchedule() {

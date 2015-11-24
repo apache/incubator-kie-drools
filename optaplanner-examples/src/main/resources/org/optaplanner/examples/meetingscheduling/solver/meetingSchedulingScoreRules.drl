@@ -35,7 +35,7 @@ global HardMediumSoftScoreHolder scoreHolder;
 // Hard constraints
 // ############################################################################
 
-rule "Required attendance"
+rule "Required attendance conflict"
     when
         RequiredAttendance($leftId : id, $person : person, $leftMeeting : meeting)
         RequiredAttendance(person == $person, $rightMeeting : meeting, id > $leftId)
@@ -66,3 +66,32 @@ end
 // ############################################################################
 // Soft constraints
 // ############################################################################
+
+rule "Required and preferred attendance conflict"
+    when
+        RequiredAttendance($person : person, $leftMeeting : meeting)
+        PreferredAttendance(person == $person, $rightMeeting : meeting)
+        $leftAssignment : MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null)
+        $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
+    then
+        scoreHolder.addMediumConstraintMatch(kcontext, -1);
+        scoreHolder.addSoftConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
+end
+
+rule "Preferred attendance conflict"
+    when
+        PreferredAttendance($leftId : id, $person : person, $leftMeeting : meeting)
+        PreferredAttendance(person == $person, $rightMeeting : meeting, id > $leftId)
+        $leftAssignment : MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null)
+        $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
+    then
+        scoreHolder.addMediumConstraintMatch(kcontext, -1);
+        scoreHolder.addSoftConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
+end
+
+rule "Do all meetings as soon as possible"
+    when
+        MeetingAssignment(startingTimeGrain != null, $startingTimeGrain : startingTimeGrain)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $startingTimeGrain.getGrainIndex());
+end
