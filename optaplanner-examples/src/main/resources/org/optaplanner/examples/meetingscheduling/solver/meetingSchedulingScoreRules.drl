@@ -64,7 +64,7 @@ rule "Don't go in overtime"
 end
 
 // ############################################################################
-// Soft constraints
+// Medium constraints
 // ############################################################################
 
 rule "Required and preferred attendance conflict"
@@ -75,7 +75,7 @@ rule "Required and preferred attendance conflict"
         $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
     then
         scoreHolder.addMediumConstraintMatch(kcontext, -1);
-        scoreHolder.addSoftConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
+        // scoreHolder.addSoftConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
 end
 
 rule "Preferred attendance conflict"
@@ -86,8 +86,12 @@ rule "Preferred attendance conflict"
         $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
     then
         scoreHolder.addMediumConstraintMatch(kcontext, -1);
-        scoreHolder.addSoftConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
+        // scoreHolder.addSoftConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
 end
+
+// ############################################################################
+// Soft constraints
+// ############################################################################
 
 rule "Do all meetings as soon as possible"
     when
