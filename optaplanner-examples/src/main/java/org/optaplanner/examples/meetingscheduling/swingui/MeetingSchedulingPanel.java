@@ -28,12 +28,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 import org.optaplanner.examples.meetingscheduling.domain.Person;
+import org.optaplanner.examples.meetingscheduling.domain.PreferredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.RequiredAttendance;
 import org.optaplanner.examples.meetingscheduling.domain.Room;
 import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
@@ -48,14 +50,14 @@ public class MeetingSchedulingPanel extends SolutionPanel {
     public static final String LOGO_PATH = "/org/optaplanner/examples/meetingscheduling/swingui/meetingschedulingLogo.png";
 
     private final TimeTablePanel<TimeGrain, Room> roomsPanel;
-    private final TimeTablePanel<TimeGrain, Person> personsPanel;
+    private final TimeTablePanel<TimeGrain, Pair<Person, Boolean>> personsPanel;
 
     public MeetingSchedulingPanel() {
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
         roomsPanel = new TimeTablePanel<TimeGrain, Room>();
         tabbedPane.add("Rooms", new JScrollPane(roomsPanel));
-        personsPanel = new TimeTablePanel<TimeGrain, Person>();
+        personsPanel = new TimeTablePanel<TimeGrain, Pair<Person, Boolean>>();
         tabbedPane.add("Persons", new JScrollPane(personsPanel));
         add(tabbedPane, BorderLayout.CENTER);
         setPreferredSize(PREFERRED_SCROLLABLE_VIEWPORT_SIZE);
@@ -86,7 +88,8 @@ public class MeetingSchedulingPanel extends SolutionPanel {
 
     private void defineGrid(MeetingSchedule meetingSchedule) {
         roomsPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Room header
-        personsPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Person header
+        personsPanel.defineColumnHeaderByKey(HEADER_COLUMN_GROUP1); // Person header
+        personsPanel.defineColumnHeaderByKey(HEADER_COLUMN); // Required header
         for (TimeGrain timeGrain : meetingSchedule.getTimeGrainList()) {
             roomsPanel.defineColumnHeader(timeGrain);
             personsPanel.defineColumnHeader(timeGrain);
@@ -102,14 +105,16 @@ public class MeetingSchedulingPanel extends SolutionPanel {
 
         personsPanel.defineRowHeaderByKey(HEADER_ROW); // TimeGrain header
         for (Person person : meetingSchedule.getPersonList()) {
-            personsPanel.defineRowHeader(person);
+            personsPanel.defineRowHeader(Pair.of(person, Boolean.TRUE));
+            personsPanel.defineRowHeader(Pair.of(person, Boolean.FALSE));
         }
     }
 
     private void fillCells(MeetingSchedule meetingSchedule) {
-        roomsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Time")));
+        roomsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Room")));
         fillRoomCells(meetingSchedule);
-        personsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Time")));
+        personsPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createTableHeader(new JLabel("Person")));
+        personsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Attendence")));
         fillPersonCells(meetingSchedule);
         fillTimeGrainCells(meetingSchedule);
         fillMeetingAssignmentCells(meetingSchedule);
@@ -126,8 +131,13 @@ public class MeetingSchedulingPanel extends SolutionPanel {
 
     private void fillPersonCells(MeetingSchedule meetingSchedule) {
         for (Person person : meetingSchedule.getPersonList()) {
-            personsPanel.addRowHeader(HEADER_COLUMN, person,
+            personsPanel.addRowHeader(HEADER_COLUMN_GROUP1, Pair.of(person, Boolean.TRUE),
+                    HEADER_COLUMN_GROUP1, Pair.of(person, Boolean.FALSE),
                     createTableHeader(new JLabel(person.getLabel(), SwingConstants.CENTER)));
+            personsPanel.addRowHeader(HEADER_COLUMN, Pair.of(person, Boolean.TRUE),
+                    createTableHeader(new JLabel("Required", SwingConstants.CENTER)));
+            personsPanel.addRowHeader(HEADER_COLUMN, Pair.of(person, Boolean.FALSE),
+                    createTableHeader(new JLabel("Preferred", SwingConstants.CENTER)));
         }
     }
 
@@ -157,8 +167,15 @@ public class MeetingSchedulingPanel extends SolutionPanel {
                     lastTimeGrain, meetingAssignment.getRoom(),
                     createButton(meetingAssignment, color));
             for (RequiredAttendance requiredAttendance : meetingAssignment.getMeeting().getRequiredAttendanceList()) {
-                personsPanel.addCell(startingTimeGrain, requiredAttendance.getPerson(),
-                        lastTimeGrain, requiredAttendance.getPerson(),
+                Pair<Person, Boolean> pair = Pair.of(requiredAttendance.getPerson(), Boolean.TRUE);
+                personsPanel.addCell(startingTimeGrain, pair,
+                        lastTimeGrain, pair,
+                        createButton(meetingAssignment, color));
+            }
+            for (PreferredAttendance preferredAttendance : meetingAssignment.getMeeting().getPreferredAttendanceList()) {
+                Pair<Person, Boolean> pair = Pair.of(preferredAttendance.getPerson(), Boolean.FALSE);
+                personsPanel.addCell(startingTimeGrain, pair,
+                        lastTimeGrain, pair,
                         createButton(meetingAssignment, color));
             }
         }
