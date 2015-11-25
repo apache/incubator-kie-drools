@@ -242,6 +242,7 @@ public class MVELAccumulateBuilder
                                                                 : "this == " + func.getBind(),
                                                            new Declaration[] { inner },
                                                            null,
+                                                           null,
                                                            IndexUtil.ConstraintType.EQUAL,
                                                            context.getDeclarationResolver().getDeclaration( context.getRule(), func.getBind() ),
                                                            accumDescr.isMultiFunction()

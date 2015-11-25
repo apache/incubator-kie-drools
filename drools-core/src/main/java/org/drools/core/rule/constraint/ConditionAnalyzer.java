@@ -15,6 +15,7 @@
 
 package org.drools.core.rule.constraint;
 
+import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.rule.Declaration;
 import org.mvel2.Operator;
 import org.mvel2.ParserContext;
@@ -84,10 +85,12 @@ public class ConditionAnalyzer {
     private ASTNode node;
     private ExecutableLiteral executableLiteral;
     private final Declaration[] declarations;
+    private final EvaluatorWrapper[] operators;
     private final String conditionClass;
 
-    public ConditionAnalyzer(ExecutableStatement stmt, Declaration[] declarations, String conditionClass) {
+    public ConditionAnalyzer(ExecutableStatement stmt, Declaration[] declarations, EvaluatorWrapper[] operators, String conditionClass) {
         this.declarations = declarations;
+        this.operators = operators;
         this.conditionClass = conditionClass;
         if (stmt instanceof ExecutableLiteral) {
             executableLiteral = (ExecutableLiteral)stmt;
@@ -525,7 +528,9 @@ public class ConditionAnalyzer {
 
     private Expression statementToExpression(ExecutableStatement param, Class paramType) {
         if (param instanceof ExecutableLiteral) {
-            return new FixedExpression(paramType, ((ExecutableLiteral)param).getLiteral());
+            return paramType.isPrimitive() ?
+                   new FixedExpression(paramType, ((ExecutableLiteral)param).getLiteral()) :
+                   new FixedExpression(((ExecutableLiteral)param).getLiteral());
         } else if (param instanceof ExecutableAccessor) {
             return analyzeNode(((ExecutableAccessor)param).getNode());
         } else {
@@ -539,6 +544,11 @@ public class ConditionAnalyzer {
                 return declaration.getDeclarationClass() != null ?
                        declaration.getDeclarationClass() :
                        declaration.getValueType().getClassType();
+            }
+        }
+        for (EvaluatorWrapper operator : operators) {
+            if (operator.getBindingName().equals( name )) {
+                return EvaluatorWrapper.class;
             }
         }
         return null;

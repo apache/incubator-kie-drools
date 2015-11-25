@@ -51,7 +51,8 @@ public interface ConstraintBuilder {
                                               String rightValue,
                                               InternalReadAccessor extractor,
                                               Declaration requiredDeclaration,
-                                              RelationalExprDescr relDescr);
+                                              RelationalExprDescr relDescr,
+                                              Map<String, OperatorDescr> aliases);
 
     public Constraint buildLiteralConstraint(RuleBuildContext context,
                                              Pattern pattern,
@@ -62,7 +63,8 @@ public interface ConstraintBuilder {
                                              String operator,
                                              String rightValue,
                                              InternalReadAccessor extractor,
-                                             LiteralRestrictionDescr restrictionDescr);
+                                             LiteralRestrictionDescr restrictionDescr,
+                                             Map<String, OperatorDescr> aliases);
 
 
     public Evaluator buildLiteralEvaluator( RuleBuildContext context,
@@ -98,7 +100,8 @@ public interface ConstraintBuilder {
 
     public Constraint buildMvelConstraint( Collection<String> packageNames,
                                            String expression, 
-                                           Declaration[] declarations, 
+                                           Declaration[] declarations,
+                                           EvaluatorWrapper[] operators,
                                            MVELCompilationUnit compilationUnit,
                                            IndexUtil.ConstraintType constraintType,
                                            Declaration indexingDeclaration,
@@ -108,6 +111,7 @@ public interface ConstraintBuilder {
     public Constraint buildMvelConstraint( String packageName,
                                            String expression,
                                            Declaration[] declarations,
+                                           EvaluatorWrapper[] operators,
                                            MVELCompilationUnit compilationUnit,
                                            boolean isIndexable );
 }

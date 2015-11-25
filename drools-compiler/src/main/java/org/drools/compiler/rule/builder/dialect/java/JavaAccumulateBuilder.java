@@ -194,6 +194,7 @@ public class JavaAccumulateBuilder
                                                             : "this == " + fc.getBind(),
                                                        new Declaration[] { inner },
                                                        null,
+                                                       null,
                                                        IndexUtil.ConstraintType.EQUAL,
                                                        context.getDeclarationResolver().getDeclaration( context.getRule(), fc.getBind() ),
                                                        index >= 0

@@ -55,8 +55,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.drools.compiler.rule.builder.PatternBuilder.buildAnalysis;
-import static org.drools.compiler.rule.builder.PatternBuilder.getUsedDeclarations;
+import static org.drools.compiler.rule.builder.PatternBuilder.*;
 import static org.drools.compiler.rule.builder.dialect.DialectUtil.copyErrorLocation;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 
@@ -106,7 +105,8 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                               String rightValue,
                                               InternalReadAccessor extractor,
                                               Declaration requiredDeclaration,
-                                              RelationalExprDescr relDescr) {
+                                              RelationalExprDescr relDescr,
+                                              Map<String, OperatorDescr> aliases) {
         if (!isMvelOperator(operatorDescr.getOperator())) {
             if (requiredDeclaration == null) {
                 return null;
@@ -135,18 +135,33 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         if (isUnification) {
             expression = resolveUnificationAmbiguity(expression, declarations, leftValue, rightValue);
         }
+
         expression = normalizeMVELVariableExpression(expression, leftValue, rightValue, relDescr);
         IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operatorDescr.getOperator());
-        MVELCompilationUnit compilationUnit = isUnification ? null : buildCompilationUnit(context, pattern, expression, null);
-        return new MvelConstraint( Collections.singletonList( context.getPkg().getName() ), expression, declarations, compilationUnit, constraintType, requiredDeclaration, extractor, isUnification);
+        MVELCompilationUnit compilationUnit = isUnification ? null : buildCompilationUnit(context, pattern, expression, aliases);
+        EvaluatorWrapper[] operators = getOperators(buildOperators(context, pattern, relDescr, aliases));
+        return new MvelConstraint( Collections.singletonList( context.getPkg().getName() ), expression, declarations, operators, compilationUnit, constraintType, requiredDeclaration, extractor, isUnification);
     }
 
-    public Constraint buildMvelConstraint(String packageName, String expression, Declaration[] declarations, MVELCompilationUnit compilationUnit, boolean isDynamic) {
-        return new MvelConstraint( packageName, expression, declarations, compilationUnit, isDynamic );
+    public Constraint buildMvelConstraint(String packageName,
+                                          String expression,
+                                          Declaration[] declarations,
+                                          EvaluatorWrapper[] operators,
+                                          MVELCompilationUnit compilationUnit,
+                                          boolean isDynamic) {
+        return new MvelConstraint( packageName, expression, declarations, operators, compilationUnit, isDynamic );
     }
 
-    public Constraint buildMvelConstraint(Collection<String> packageName, String expression, Declaration[] declarations, MVELCompilationUnit compilationUnit, IndexUtil.ConstraintType constraintType, Declaration indexingDeclaration, InternalReadAccessor extractor, boolean isUnification) {
-        return new MvelConstraint( packageName, expression, declarations, compilationUnit, constraintType, indexingDeclaration, extractor, isUnification );
+    public Constraint buildMvelConstraint(Collection<String> packageNames,
+                                          String expression,
+                                          Declaration[] declarations,
+                                          EvaluatorWrapper[] operators,
+                                          MVELCompilationUnit compilationUnit,
+                                          IndexUtil.ConstraintType constraintType,
+                                          Declaration indexingDeclaration,
+                                          InternalReadAccessor extractor,
+                                          boolean isUnification) {
+        return new MvelConstraint( packageNames, expression, declarations, operators, compilationUnit, constraintType, indexingDeclaration, extractor, isUnification );
     }
 
     public Constraint buildLiteralConstraint(RuleBuildContext context,
@@ -158,7 +173,8 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                                              String operator,
                                              String rightValue,
                                              InternalReadAccessor extractor,
-                                             LiteralRestrictionDescr restrictionDescr) {
+                                             LiteralRestrictionDescr restrictionDescr,
+                                             Map<String, OperatorDescr> aliases) {
         if (!isMvelOperator(operator)) {
             Evaluator evaluator = buildLiteralEvaluator(context, extractor, restrictionDescr, vtype);
             if (evaluator != null && evaluator.isTemporal()) {
@@ -177,8 +193,9 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
 
         String mvelExpr = normalizeMVELLiteralExpression(vtype, field, expression, leftValue, operator, rightValue, restrictionDescr);
         IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.decode(operator);
-        MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr, null);
-        return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, constraintType, field, extractor);
+        MVELCompilationUnit compilationUnit = buildCompilationUnit(context, pattern, mvelExpr, aliases);
+        EvaluatorWrapper[] operators = getOperators(buildOperators(context, pattern, restrictionDescr, aliases));
+        return new MvelConstraint(context.getPkg().getName(), mvelExpr, compilationUnit, constraintType, field, extractor, operators);
     }
 
     protected static String resolveUnificationAmbiguity(String expr, Declaration[] declrations, String leftValue, String rightValue) {
