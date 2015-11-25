@@ -95,36 +95,8 @@ public class HumanTaskServiceProducer {
             return null;
         }
         if ( taskService == null ) {
-            HumanTaskConfigurator configurator = HumanTaskServiceFactory.newTaskServiceConfigurator()
-                    .entityManagerFactory( emf )
-                    .userGroupCallback( safeGet( userGroupCallback ) )
-                    .userInfo( safeGet( userInfo ) );
+            HumanTaskConfigurator configurator = createHumanTaskConfigurator();
             
-            DeploymentDescriptorManager manager = new DeploymentDescriptorManager("org.jbpm.domain");
-        	DeploymentDescriptor descriptor = manager.getDefaultDescriptor();
-        	// in case there is descriptor with enabled audit register then by default
-        	if (!descriptor.getAuditMode().equals(AuditMode.NONE)) {
-	        	JPATaskLifeCycleEventListener listener = new JPATaskLifeCycleEventListener(false);
-	        	BAMTaskEventListener bamListener = new BAMTaskEventListener(false);
-	        	// if the audit persistence unit is different than default for the engine perform proper init
-	        	if (!"org.jbpm.domain".equals(descriptor.getAuditPersistenceUnit())) {
-	        		 EntityManagerFactory emf = EntityManagerFactoryManager.get().getOrCreate(descriptor.getAuditPersistenceUnit());
-	        		 listener = new JPATaskLifeCycleEventListener(emf);
-	        		 
-	        		 bamListener = new BAMTaskEventListener(emf);
-	        	}
-	        	configurator.listener( listener );
-	        	configurator.listener( bamListener );
-        	}
-        	// next proceed with registration of further listeners as cdi injections
-            try {
-                for ( TaskLifeCycleEventListener listener : taskListeners ) {
-                    configurator.listener( listener );
-                    logger.debug( "Registering listener {}", listener );
-                }
-            } catch ( Exception e ) {
-                logger.debug( "Cannot add listeners to task service due to {}", e.getMessage() );
-            }
             if ( mode.equalsIgnoreCase( "singleton" ) ) {
                 this.taskService = (CommandBasedTaskService) configurator.getTaskService();
             } else {
@@ -133,6 +105,46 @@ public class HumanTaskServiceProducer {
         }
 
         return (CommandBasedTaskService) taskService;
+    }
+
+    protected HumanTaskConfigurator createHumanTaskConfigurator() {
+        HumanTaskConfigurator configurator = HumanTaskServiceFactory.newTaskServiceConfigurator();
+        
+        configureHumanTaskConfigurator(configurator);
+        return configurator;
+    }
+
+    protected void configureHumanTaskConfigurator(HumanTaskConfigurator configurator) {
+        configurator
+                .entityManagerFactory( emf )
+                .userGroupCallback( safeGet( userGroupCallback ) )
+                .userInfo( safeGet( userInfo ) );
+        
+        DeploymentDescriptorManager manager = new DeploymentDescriptorManager("org.jbpm.domain");
+        DeploymentDescriptor descriptor = manager.getDefaultDescriptor();
+        // in case there is descriptor with enabled audit register then by default
+        if (!descriptor.getAuditMode().equals(AuditMode.NONE)) {
+        	JPATaskLifeCycleEventListener listener = new JPATaskLifeCycleEventListener(false);
+        	BAMTaskEventListener bamListener = new BAMTaskEventListener(false);
+        	// if the audit persistence unit is different than default for the engine perform proper init
+        	if (!"org.jbpm.domain".equals(descriptor.getAuditPersistenceUnit())) {
+        		 EntityManagerFactory emf = EntityManagerFactoryManager.get().getOrCreate(descriptor.getAuditPersistenceUnit());
+        		 listener = new JPATaskLifeCycleEventListener(emf);
+        		 
+        		 bamListener = new BAMTaskEventListener(emf);
+        	}
+        	configurator.listener( listener );
+        	configurator.listener( bamListener );
+        }
+        // next proceed with registration of further listeners as cdi injections
+        try {
+            for ( TaskLifeCycleEventListener listener : taskListeners ) {
+                configurator.listener( listener );
+                logger.debug( "Registering listener {}", listener );
+            }
+        } catch ( Exception e ) {
+            logger.debug( "Cannot add listeners to task service due to {}", e.getMessage() );
+        }
     }
 
     protected <T> T safeGet( Instance<T> instance ) {
