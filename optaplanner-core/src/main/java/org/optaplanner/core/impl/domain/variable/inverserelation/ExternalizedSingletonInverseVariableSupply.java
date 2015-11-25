@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.StatefulVariableListener;
@@ -35,7 +34,7 @@ public class ExternalizedSingletonInverseVariableSupply implements StatefulVaria
 
     protected final VariableDescriptor sourceVariableDescriptor;
 
-    protected Map<Object, Set<Object>> inverseEntitySetMap = null;
+    protected Map<Object, Object> inverseEntityMap = null;
 
     public ExternalizedSingletonInverseVariableSupply(VariableDescriptor sourceVariableDescriptor) {
         this.sourceVariableDescriptor = sourceVariableDescriptor;
@@ -48,14 +47,14 @@ public class ExternalizedSingletonInverseVariableSupply implements StatefulVaria
     public void resetWorkingSolution(ScoreDirector scoreDirector) {
         EntityDescriptor entityDescriptor = sourceVariableDescriptor.getEntityDescriptor();
         List<Object> entityList = entityDescriptor.extractEntities(scoreDirector.getWorkingSolution());
-        inverseEntitySetMap = new IdentityHashMap<Object, Set<Object>>(entityList.size());
+        inverseEntityMap = new IdentityHashMap<Object, Object>(entityList.size());
         for (Object entity : entityList) {
             insert(scoreDirector, entity);
         }
     }
 
     public void clearWorkingSolution(ScoreDirector scoreDirector) {
-        inverseEntitySetMap = null;
+        inverseEntityMap = null;
     }
 
     public void beforeEntityAdded(ScoreDirector scoreDirector, Object entity) {
@@ -87,17 +86,13 @@ public class ExternalizedSingletonInverseVariableSupply implements StatefulVaria
         if (value == null) {
             return;
         }
-        Set<Object> inverseEntitySet = inverseEntitySetMap.get(value);
-        if (inverseEntitySet == null) {
-            inverseEntitySet = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
-            inverseEntitySetMap.put(value, inverseEntitySet);
-        }
-        boolean addSucceeded = inverseEntitySet.add(entity);
-        if (!addSucceeded) {
+        Object oldInverseEntity = inverseEntityMap.put(value, entity);
+        if (oldInverseEntity != null) {
             throw new IllegalStateException("The supply (" + this + ") is corrupted,"
                     + " because the entity (" + entity
                     + ") for sourceVariable (" + sourceVariableDescriptor.getVariableName()
-                    + ") cannot be inserted: it was already inserted.");
+                    + ") cannot be inserted: another entity (" + oldInverseEntity
+                    + ") already has that value (" + value + ").");
         }
     }
 
@@ -106,31 +101,17 @@ public class ExternalizedSingletonInverseVariableSupply implements StatefulVaria
         if (value == null) {
             return;
         }
-        Set<Object> inverseEntitySet = inverseEntitySetMap.get(value);
-        boolean removeSucceeded = inverseEntitySet.remove(entity);
-        if (!removeSucceeded) {
+        Object oldInverseEntity = inverseEntityMap.remove(value);
+        if (oldInverseEntity != entity) {
             throw new IllegalStateException("The supply (" + this + ") is corrupted,"
                     + " because the entity (" + entity
                     + ") for sourceVariable (" + sourceVariableDescriptor.getVariableName()
-                    + ") cannot be retracted: it was never inserted.");
-        }
-        if (inverseEntitySet.isEmpty()) {
-            inverseEntitySetMap.put(value, null);
+                    + ") cannot be retracted: the entity was never inserted for that value (" + value + ").");
         }
     }
 
     public Object getInverseSingleton(Object value) {
-        Set<Object> inverseEntitySet = inverseEntitySetMap.get(value);
-        if (inverseEntitySet == null) {
-            return null;
-        }
-        // inverseEntitySet can never be an empty list
-        if (inverseEntitySet.size() > 1) {
-            throw new IllegalStateException("The planning value (" + value
-                    + ") has multiple inverse entities (" + inverseEntitySet
-                    + ") pointing to it from sourceVariable (" + sourceVariableDescriptor.getVariableName() + ").");
-        }
-        return inverseEntitySet.iterator().next();
+        return inverseEntityMap.get(value);
     }
 
     @Override
