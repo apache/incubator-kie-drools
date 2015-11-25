@@ -17,6 +17,7 @@ package org.drools.core.rule.constraint;
 
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.DroolsQuery;
+import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.base.extractors.ArrayElementReader;
 import org.drools.core.base.extractors.MVELObjectClassFieldReader;
 import org.drools.core.base.mvel.MVELCompilationUnit;
@@ -88,6 +89,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     protected String expression;
     private IndexUtil.ConstraintType constraintType = IndexUtil.ConstraintType.UNKNOWN;
     private Declaration[] declarations;
+    private EvaluatorWrapper[] operators;
     private Declaration indexingDeclaration;
     private InternalReadAccessor extractor;
     private boolean isUnification;
@@ -101,6 +103,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     protected transient volatile ConditionEvaluator conditionEvaluator;
     private transient volatile Condition analyzedCondition;
 
+    private static final Declaration[] EMPTY_DECLARATIONS = new Declaration[0];
+    private static final EvaluatorWrapper[] EMPTY_OPERATORS = new EvaluatorWrapper[0];
+
     public MvelConstraint() {}
 
     public MvelConstraint(final String packageName,
@@ -108,12 +113,14 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                           MVELCompilationUnit compilationUnit,
                           IndexUtil.ConstraintType constraintType,
                           FieldValue fieldValue,
-                          InternalReadAccessor extractor) {
+                          InternalReadAccessor extractor,
+                          EvaluatorWrapper[] operators) {
         this.packageNames = new HashSet<String>() {{ add(packageName); }};
         this.expression = expression;
         this.compilationUnit = compilationUnit;
         this.constraintType = constraintType;
-        this.declarations = new Declaration[0];
+        this.declarations = EMPTY_DECLARATIONS;
+        this.operators = operators == null ? EMPTY_OPERATORS : operators;
         this.fieldValue = fieldValue;
         this.extractor = extractor;
     }
@@ -121,11 +128,13 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     public MvelConstraint(final String packageName,
                           String expression,
                           Declaration[] declarations,
+                          EvaluatorWrapper[] operators,
                           MVELCompilationUnit compilationUnit,
                           boolean isDynamic) {
         this.packageNames = new HashSet<String>() {{ add(packageName); }};
         this.expression = expression;
-        this.declarations = declarations;
+        this.declarations = declarations == null ? EMPTY_DECLARATIONS : declarations;
+        this.operators = operators == null ? EMPTY_OPERATORS : operators;
         this.compilationUnit = compilationUnit;
         this.isDynamic = isDynamic;
     }
@@ -133,6 +142,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
     public MvelConstraint(Collection<String> packageNames,
                           String expression,
                           Declaration[] declarations,
+                          EvaluatorWrapper[] operators,
                           MVELCompilationUnit compilationUnit,
                           IndexUtil.ConstraintType constraintType,
                           Declaration indexingDeclaration,
@@ -142,7 +152,8 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         this.expression = expression;
         this.compilationUnit = compilationUnit;
         this.constraintType = indexingDeclaration != null ? constraintType : IndexUtil.ConstraintType.UNKNOWN;
-        this.declarations = declarations == null ? new Declaration[0] : declarations;
+        this.declarations = declarations == null ? EMPTY_DECLARATIONS : declarations;
+        this.operators = operators == null ? EMPTY_OPERATORS : operators;
         this.indexingDeclaration = indexingDeclaration;
         this.extractor = extractor;
         this.isUnification = isUnification;
@@ -255,9 +266,9 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             ParserConfiguration configuration = statement instanceof CompiledExpression ?
                     ((CompiledExpression)statement).getParserConfiguration() :
                     data.getParserConfiguration();
-            conditionEvaluator = new MvelConditionEvaluator(compilationUnit, configuration, statement, declarations, getAccessedClass());
+            conditionEvaluator = new MvelConditionEvaluator(compilationUnit, configuration, statement, declarations, operators, getAccessedClass());
         } else {
-            conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression, declarations, getAccessedClass());
+            conditionEvaluator = new MvelConditionEvaluator(getParserConfiguration(workingMemory), expression, declarations, operators, getAccessedClass());
         }
     }
 
@@ -317,13 +328,13 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             if (analyzedCondition == null) {
                 analyzedCondition = ((MvelConditionEvaluator) conditionEvaluator).getAnalyzedCondition(handle, workingMemory, leftTuple);
             }
-            conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(expression, analyzedCondition, declarations, kBase.getRootClassLoader(), leftTuple);
+            conditionEvaluator = ASMConditionEvaluatorJitter.jitEvaluator(expression, analyzedCondition, declarations, operators, kBase.getRootClassLoader(), leftTuple);
         } catch (Throwable t) {
             if (TEST_JITTING) {
                 if (analyzedCondition == null) {
                     logger.error("Unable to analize condition for expression: " + expression, t);
                 } else {
-                    throw new RuntimeException(t);
+                    throw new RuntimeException("Unable to analize condition for expression: " + expression, t);
                 }
             } else {
                 logger.warn( "Exception jitting: " + expression +
@@ -357,6 +368,10 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     public Declaration getIndexingDeclaration() {
         return indexingDeclaration;
+    }
+
+    public EvaluatorWrapper[] getOperators() {
+        return operators;
     }
 
     public void replaceDeclaration(Declaration oldDecl, Declaration newDecl) {
@@ -494,6 +509,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         out.writeObject(fieldValue);
         out.writeObject(compilationUnit);
         out.writeObject(evaluationContext);
+        out.writeObject(operators);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -509,6 +525,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         fieldValue = (FieldValue) in.readObject();
         compilationUnit = (MVELCompilationUnit) in.readObject();
         evaluationContext = (EvaluationContext) in.readObject();
+        operators = (EvaluatorWrapper[]) in.readObject();
     }
 
     public boolean isTemporal() {
@@ -535,6 +552,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         clone.fieldValue = fieldValue;
         clone.constraintType = constraintType;
         clone.declarations = clonedDeclarations;
+        clone.operators = operators;
         clone.indexingDeclaration = indexingDeclaration;
         clone.extractor = extractor;
         clone.isUnification = isUnification;

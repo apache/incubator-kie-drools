@@ -174,6 +174,14 @@ public class ClassGenerator {
         }
     }
 
+    public <T> T newInstance(Class paramType1, Object param1, Class paramType2, Object param2) {
+        try {
+            return (T)generateClass().getConstructor(paramType1, paramType2).newInstance(param1, param2);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // Accessors
 
     public String getClassDescriptor() {
@@ -629,6 +637,8 @@ public class ClassGenerator {
             if (from.isPrimitive()) {
                 if (to.isPrimitive()) {
                     castPrimitiveToPrimitive(from, to);
+                } else if (to == Object.class) {
+                    castFromPrimitive(from);
                 } else {
                     Class toPrimitive = convertToPrimitiveType(to);
                     castPrimitiveToPrimitive(convertToPrimitiveType(from), toPrimitive);
