@@ -110,6 +110,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -597,6 +598,7 @@ public class PatternBuilder
         }
 
         List<Declaration> declarations = new ArrayList<Declaration>();
+        List<EvaluatorWrapper> operators = new ArrayList<EvaluatorWrapper>();
         Set<String> declarationNames = new HashSet<String>();
 
         boolean isFirst = true;
@@ -624,6 +626,9 @@ public class PatternBuilder
                     declarations.add(declaration);
                 }
             }
+            for ( EvaluatorWrapper operator : constraint.getOperators() ) {
+                operators.add( operator );
+            }
         }
 
         String expression = expressionBuilder.toString();
@@ -632,6 +637,7 @@ public class PatternBuilder
         Constraint combinedConstraint = getConstraintBuilder( context ).buildMvelConstraint( packageNames,
                                                                                              expression,
                                                                                              declarations.toArray(new Declaration[declarations.size()]),
+                                                                                             operators.toArray(new EvaluatorWrapper[operators.size()]),
                                                                                              compilationUnit,
                                                                                              IndexUtil.ConstraintType.UNKNOWN,
                                                                                              null, null, false );
@@ -996,7 +1002,7 @@ public class PatternBuilder
             return createAndBuildPredicate( context, pattern, relDescr, expr, aliases );
         }
 
-        Constraint constraint = buildConstraintForPattern( context, pattern, relDescr, expr, values[0], values[1], value2Expr.isConstant() );
+        Constraint constraint = buildConstraintForPattern( context, pattern, relDescr, expr, values[0], values[1], value2Expr.isConstant(), aliases );
         return constraint != null ? constraint : createAndBuildPredicate( context, pattern, relDescr, expr, aliases );
     }
 
@@ -1035,7 +1041,8 @@ public class PatternBuilder
                                                     String expr,
                                                     String value1,
                                                     String value2,
-                                                    boolean isConstant) {
+                                                    boolean isConstant,
+                                                    Map<String, OperatorDescr> aliases) {
 
         InternalReadAccessor extractor = getFieldReadAccessor( context, relDescr, pattern, value1, null, true );
         if (extractor == null) {
@@ -1060,7 +1067,7 @@ public class PatternBuilder
         if (restrictionDescr != null) {
             FieldValue field = getFieldValue(context, vtype, restrictionDescr.getText().trim());
             if (field != null) {
-                Constraint constraint = getConstraintBuilder( context ).buildLiteralConstraint(context, pattern, vtype, field, expr, value1, operator, value2, extractor, restrictionDescr);
+                Constraint constraint = getConstraintBuilder( context ).buildLiteralConstraint(context, pattern, vtype, field, expr, value1, operator, value2, extractor, restrictionDescr, aliases);
                 if (constraint != null) {
                     return constraint;
                 }
@@ -1115,7 +1122,7 @@ public class PatternBuilder
             }
         }
 
-        return getConstraintBuilder( context ).buildVariableConstraint(context, pattern, expr, declarations, value1, relDescr.getOperatorDescr(), value2, extractor, declr, relDescr);
+        return getConstraintBuilder( context ).buildVariableConstraint(context, pattern, expr, declarations, value1, relDescr.getOperatorDescr(), value2, extractor, declr, relDescr, aliases);
     }
 
     private Declaration[] getDeclarationsForReturnValue(RuleBuildContext context, RelationalExprDescr relDescr, String operator, String value2) {
@@ -1463,12 +1470,22 @@ public class PatternBuilder
             mvelDeclarations[i++] = context.getDeclarationResolver().getDeclaration(context.getRule(), global);
         }
 
-        boolean isDynamic = requiredOperators.length > 0 ||
-                ClassObjectType.Match_ObjectType.isAssignableFrom( pattern.getObjectType()) ||
-                (!((ClassObjectType)pattern.getObjectType()).getClassType().isArray() &&
-                !context.getKnowledgeBuilder().getTypeDeclaration(((ClassObjectType)pattern.getObjectType()).getClassType()).isTypesafe());
+        boolean isDynamic =
+                !((ClassObjectType)pattern.getObjectType()).getClassType().isArray() &&
+                !context.getKnowledgeBuilder().getTypeDeclaration(((ClassObjectType)pattern.getObjectType()).getClassType()).isTypesafe();
 
-        return getConstraintBuilder( context ).buildMvelConstraint( context.getPkg().getName(), expr, mvelDeclarations, compilationUnit, isDynamic );
+        return getConstraintBuilder( context ).buildMvelConstraint( context.getPkg().getName(), expr, mvelDeclarations, getOperators( usedIdentifiers.getOperators() ), compilationUnit, isDynamic );
+    }
+
+    protected static EvaluatorWrapper[] getOperators( Map<String, EvaluatorWrapper> operatorMap ) {
+        EvaluatorWrapper[] operators = new EvaluatorWrapper[operatorMap.size()];
+        int i = 0;
+        for (Map.Entry<String, EvaluatorWrapper> entry : operatorMap.entrySet()) {
+            EvaluatorWrapper evaluator = entry.getValue();
+            evaluator.setBindingName( entry.getKey() );
+            operators[i++] = evaluator;
+        }
+        return operators;
     }
 
     public static Declaration[][] getUsedDeclarations(RuleBuildContext context, Pattern pattern, AnalysisResult analysis) {
@@ -1518,8 +1535,12 @@ public class PatternBuilder
 
     protected static Map<String, EvaluatorWrapper> buildOperators(RuleBuildContext context,
                                                                   Pattern pattern,
-                                                                  PredicateDescr predicateDescr,
+                                                                  BaseDescr predicateDescr,
                                                                   Map<String, OperatorDescr> aliases) {
+        if (aliases.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
         Map<String, EvaluatorWrapper> operators = new HashMap<String, EvaluatorWrapper>();
         for ( Map.Entry<String, OperatorDescr> entry : aliases.entrySet() ) {
             OperatorDescr op = entry.getValue();

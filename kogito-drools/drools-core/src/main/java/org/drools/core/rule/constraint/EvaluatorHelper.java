@@ -15,6 +15,7 @@
 
 package org.drools.core.rule.constraint;
 
+import org.drools.core.base.EvaluatorWrapper;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.LeftTuple;
@@ -43,6 +44,13 @@ public class EvaluatorHelper {
             }
         }
         return map;
+    }
+
+    public static void initOperators(InternalFactHandle handle, InternalWorkingMemory workingMemory, LeftTuple leftTuple, EvaluatorWrapper[] operators) {
+        InternalFactHandle[] handles = leftTuple != null ? leftTuple.toFactHandles() : new InternalFactHandle[0];
+        for (EvaluatorWrapper operator : operators) {
+            operator.loadHandles(workingMemory, handles, handle);
+        }
     }
 
     public static int arrayLenght(Object array) {

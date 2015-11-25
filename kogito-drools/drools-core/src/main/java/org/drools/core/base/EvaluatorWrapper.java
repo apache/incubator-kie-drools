@@ -60,6 +60,8 @@ public class EvaluatorWrapper
     private boolean                                    selfLeft;
     private boolean                                    selfRight;
 
+    private String                                     bindingName;
+
     public EvaluatorWrapper(Evaluator evaluator,
                             Declaration leftBinding,
                             Declaration rightBinding) {
@@ -268,5 +270,13 @@ public class EvaluatorWrapper
 
     public boolean isSelfRight() {
         return selfRight;
+    }
+
+    public String getBindingName() {
+        return bindingName;
+    }
+
+    public void setBindingName( String bindingName ) {
+        this.bindingName = bindingName;
     }
 }
