@@ -67,6 +67,7 @@
     <module>drools-examples-cdi</module>
     <module>drools-workbench-models</module>
     <module>knowledge-api-legacy5-adapter</module>
+    <module>kie-test-util</module>
   </modules>
 
   <build>
