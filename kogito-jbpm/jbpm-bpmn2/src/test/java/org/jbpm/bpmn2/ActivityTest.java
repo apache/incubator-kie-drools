@@ -1383,6 +1383,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         assertTrue(list.size() == 1);
     }
 
+    @RequirePersistence
     @Test(timeout=10000)
     public void testNullVariableInScriptTaskProcess() throws Exception {
         CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("After Timer", 1);
