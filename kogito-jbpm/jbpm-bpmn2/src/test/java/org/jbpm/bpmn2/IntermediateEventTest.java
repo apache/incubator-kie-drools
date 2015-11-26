@@ -2236,8 +2236,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceActive(processInstance);
         assertProcessInstanceActive(processInstance2);
         
-        ksession.execute(new AssertNodeActiveCommand(processInstance.getId(), "Complete work", "Wait"));
-        ksession.execute(new AssertNodeActiveCommand(processInstance2.getId(), "Complete work", "Wait"));
+        assertNodeActive(processInstance.getId(), ksession, "Complete work", "Wait");
+        assertNodeActive(processInstance2.getId(), ksession, "Complete work", "Wait");
         
         List<WorkItem> items = handler.getWorkItems();
         
@@ -2250,7 +2250,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         
         assertProcessInstanceCompleted(processInstance);
         assertProcessInstanceActive(processInstance2);
-        ksession.execute(new AssertNodeActiveCommand(processInstance2.getId(), "Complete work", "Wait"));
+        assertNodeActive(processInstance2.getId(), ksession, "Complete work", "Wait");
         
         wi = items.get(1);
         ksession.getWorkItemManager().completeWorkItem(wi.getId(), result);
@@ -2274,8 +2274,8 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         assertProcessInstanceActive(processInstance);
         assertProcessInstanceActive(processInstance2);
         
-        ksession.execute(new AssertNodeActiveCommand(processInstance.getId(), "Complete work", "Wait"));
-        ksession.execute(new AssertNodeActiveCommand(processInstance2.getId(), "Complete work", "Wait"));
+        assertNodeActive(processInstance.getId(), ksession, "Complete work", "Wait");
+        assertNodeActive(processInstance2.getId(), ksession, "Complete work", "Wait");
         
         List<WorkItem> items = handler.getWorkItems();
         
@@ -2288,7 +2288,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         
         assertProcessInstanceCompleted(processInstance);
         assertProcessInstanceActive(processInstance2);
-        ksession.execute(new AssertNodeActiveCommand(processInstance2.getId(), "Complete work", "Wait"));
+        assertNodeActive(processInstance2.getId(), ksession, "Complete work", "Wait");
         
         wi = items.get(1);
         ksession.getWorkItemManager().completeWorkItem(wi.getId(), result);
@@ -2328,7 +2328,7 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
                 
         assertProcessInstanceActive(processInstance);
         
-        ksession.execute(new AssertNodeActiveCommand(processInstance.getId(), "Complete work", "Wait"));
+        assertNodeActive(processInstance.getId(), ksession, "Complete work", "Wait");
         
         List<WorkItem> items = handler.getWorkItems();
         assertEquals(1, items.size());
@@ -2503,24 +2503,5 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         });
         assertNotNull(processInstances);
         assertEquals(0, processInstances.size());
-    }
-    
-    class AssertNodeActiveCommand implements GenericCommand<Void> {
-
-        private long piId;
-        private String[] nodes;
-        public AssertNodeActiveCommand(long piId, String... nodes) {
-            this.piId = piId;
-            this.nodes = nodes;
-        }
-        
-        @Override
-        public Void execute(Context context) {
-            
-            KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-            assertNodeActive(piId, ksession, nodes);
-            
-            return null;
-        }
     }
 }
