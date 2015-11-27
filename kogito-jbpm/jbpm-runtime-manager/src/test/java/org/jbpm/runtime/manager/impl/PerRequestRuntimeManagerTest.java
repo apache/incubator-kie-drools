@@ -52,7 +52,10 @@ import org.kie.api.runtime.manager.audit.AuditService;
 import org.kie.api.runtime.manager.audit.NodeInstanceLog;
 import org.kie.api.runtime.manager.audit.ProcessInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.TaskService;
 import org.kie.api.task.UserGroupCallback;
+import org.kie.api.task.model.Task;
+import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
@@ -469,5 +472,49 @@ public class PerRequestRuntimeManagerTest extends AbstractBaseTest {
         
         // close manager which will close session maintained by the manager
         manager.close();
+    }
+
+    @Test
+    public void testNonexistentDeploymentId() {
+        // JBPM-4852
+        RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .userGroupCallback(userGroupCallback)
+                .addAsset(ResourceFactory.newClassPathResource("BPMN2-UserTask.bpmn2"), ResourceType.BPMN2)
+                .get();
+
+        RuntimeManager manager1 = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment, "id-1");
+        RuntimeEngine runtime1 = manager1.getRuntimeEngine(EmptyContext.get());
+        KieSession ksession1 = runtime1.getKieSession();
+
+        ProcessInstance processInstance = ksession1.startProcess("UserTask");
+
+        manager1.disposeRuntimeEngine(runtime1);
+        manager1.close(); // simulating server reboot
+
+        RuntimeManager manager2 = RuntimeManagerFactory.Factory.get().newPerRequestRuntimeManager(environment, "id-2");
+        RuntimeEngine runtime2 = manager2.getRuntimeEngine(EmptyContext.get());
+        TaskService taskService2 = runtime2.getTaskService();
+
+        List<TaskSummary> taskList = taskService2.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        assertEquals(1, taskList.size());
+
+        Long taskId = taskList.get(0).getId();
+        Task task = taskService2.getTaskById(taskId);
+        assertEquals("id-1", task.getTaskData().getDeploymentId());
+
+        taskService2.start(taskId, "john");
+
+        try {
+            taskService2.complete(taskId, "john", null);
+        } catch (NullPointerException npe) {
+            fail("NullPointerException is thrown");
+        } catch (RuntimeException re) {
+            // RuntimeException with a better message
+            assertEquals("No RuntimeManager registered with identifier: id-1", re.getMessage());
+        }
+
+        manager2.disposeRuntimeEngine(runtime2);
+        manager2.close();
     }
 }
