@@ -25,6 +25,7 @@ import org.jbpm.workflow.core.node.WorkItemNode;
 public class HumanTaskNodeInstance extends WorkItemNodeInstance {
 
     private static final long serialVersionUID = 510l;
+    private String separator = System.getProperty("org.jbpm.ht.user.separator", ",");
     
     private transient SwimlaneContextInstance swimlaneContextInstance;
     
@@ -55,7 +56,7 @@ public class HumanTaskNodeInstance extends WorkItemNodeInstance {
         // actor is specified for this human task
         if (actorId == null) {
         	actorId = (String) workItem.getParameter("ActorId");
-        	if (actorId != null && swimlaneContextInstance != null) {
+        	if (actorId != null && swimlaneContextInstance != null && actorId.split(separator).length == 1) {
         		swimlaneContextInstance.setActorId(swimlaneName, actorId);
         		workItem.setParameter("SwimlaneActorId", actorId);
         	}
