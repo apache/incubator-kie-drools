@@ -1252,7 +1252,14 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public void halt() {
-        propagationList.addEntryToTop( new Halt() );
+        synchronized (agenda) {
+            // only attempt halt an engine that is currently firing
+            // This will place a halt command on the propagation queue
+            // that will allow the engine to halt safely
+            if ( agenda.isFiring() ) {
+                propagationList.addEntry(new Halt());
+            }
+        }
     }
 
     private static class Halt extends PropagationEntry.AbstractPropagationEntry {
@@ -1260,7 +1267,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         @Override
         public void execute( InternalWorkingMemory wm ) {
             wm.getAgenda().halt();
-            wm.notifyHalt();
         }
 
         @Override
@@ -2011,13 +2017,9 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         executeQueuedActionsForRete();
     }
 
-    public void flushPropagationsOnFireUntilHalt(boolean fired) {
-        propagationList.flushOnFireUntilHalt( fired );
-        executeQueuedActionsForRete();
-    }
-
-    public void flushPropagationsOnFireUntilHalt( boolean fired, PropagationEntry propagationEntry ) {
-        propagationList.flushOnFireUntilHalt( fired, propagationEntry );
+    @Override public void flushPropagations(PropagationEntry propagationEntry)
+    {
+        propagationList.flush(propagationEntry);
         executeQueuedActionsForRete();
     }
 
@@ -2025,8 +2027,24 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         return propagationList.takeAll();
     }
 
-    public void notifyHalt() {
-        propagationList.notifyHalt();
+    @Override
+    public void setEngineInactive() {
+        agenda.setEngineInactive();
+    }
+
+
+    @Override
+    public PropagationList getPropagationList() {
+        return propagationList;
+    }
+
+    @Override
+    public void waitOnRest() {
+        propagationList.waitOnRest();
+    }
+
+    public void notifyWaitOnRest() {
+        propagationList.notifyWaitOnRest();
     }
 
     public void flushNonMarshallablePropagations() {

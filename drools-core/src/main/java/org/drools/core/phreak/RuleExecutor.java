@@ -66,7 +66,7 @@ public class RuleExecutor {
         setDirty( false );
     }
 
-    public int evaluateNetworkAndFire( InternalWorkingMemory wm,
+    public int  evaluateNetworkAndFire( InternalWorkingMemory wm,
                                                     final AgendaFilter filter,
                                                     int fireCount,
                                                     int fireLimit ) {

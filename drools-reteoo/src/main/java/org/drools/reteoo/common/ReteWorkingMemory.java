@@ -216,7 +216,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
         try {
             startOperation();
             actionQueue.add(action);
-            notifyHalt();
+            notifyWaitOnRest();
         } finally {
             endOperation();
         }
