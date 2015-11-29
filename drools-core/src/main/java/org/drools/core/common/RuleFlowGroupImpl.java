@@ -199,7 +199,7 @@ public class RuleFlowGroupImpl
 //        }
 //
 //        // making sure we re-evaluate agenda in case we are waiting for activations
-//        ((InternalAgenda) workingMemory.getAgenda()).notifyHalt();
+//        ((InternalAgenda) workingMemory.getAgenda()).notifyWaitOnRest();
 //    }
 
     public void clear() {
