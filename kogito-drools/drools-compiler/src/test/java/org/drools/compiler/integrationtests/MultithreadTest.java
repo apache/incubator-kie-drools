@@ -89,38 +89,84 @@ public class MultithreadTest extends CommonTestMethodBase {
             }
         });
 
-        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+        Callable<Boolean>[] tasks = new Callable[threadCount];
         for (int i = 0; i < threadCount; i++) {
-            ecs.submit(new Callable<Boolean>() {
-                public Boolean call() throws Exception {
-                    try {
-                        FactHandle[] facts = new FactHandle[objectCount];
-                        for (int i = 0; i < objectCount; i++) facts[i] = ksession.insert(new Bean(i));
-                        ksession.fireAllRules();
-                        for (FactHandle fact : facts) ksession.delete(fact);
-                        ksession.fireAllRules();
-                        return true;
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        return false;
-                    }
-                }
-            });
+            tasks[i] = getTask( objectCount, ksession );
         }
 
-        boolean success = true;
+        CompletionService<Boolean> ecs = new ExecutorCompletionService<Boolean>(executor);
+        for (Callable<Boolean> task : tasks) {
+            ecs.submit( task );
+        }
+
+        int successCounter = 0;
         for (int i = 0; i < threadCount; i++) {
             try {
-                success = ecs.take().get() && success;
+                if ( ecs.take().get() ) {
+                    successCounter++;
+                }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
 
-        assertTrue(success);
+        assertEquals(threadCount, successCounter);
         ksession.dispose();
     }
 
+    private Callable<Boolean> getTask( final int objectCount, final KieSession ksession ) {
+        return new Callable<Boolean>() {
+            public Boolean call() throws Exception {
+                try {
+                    FactHandle[] facts = new FactHandle[objectCount];
+                    for (int i = 0; i < objectCount; i++) {
+                        facts[i] = ksession.insert(new Bean(i));
+                    }
+                    ksession.fireAllRules();
+                    for (FactHandle fact : facts) {
+                        ksession.delete(fact);
+                    }
+                    ksession.fireAllRules();
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            }
+        };
+    }
+
+    public static class Bean {
+
+        private final int seed;
+        private final String threadName;
+
+        public Bean(int seed) {
+            this.seed = seed;
+            threadName = Thread.currentThread().getName();
+        }
+
+        public int getSeed() {
+            return seed;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (!(other instanceof Bean)) return false;
+            return seed == ((Bean)other).seed && threadName.equals( ((Bean)other).threadName );
+        }
+
+        @Override
+        public int hashCode() {
+            return 29 * seed + 31 * threadName.hashCode();
+        }
+
+        @Override
+        public String toString() {
+            return "Bean #" + seed + " created by " + threadName;
+        }
+    }
+/*/
     public static class Bean {
 
         private final int seed;
@@ -146,10 +192,10 @@ public class MultithreadTest extends CommonTestMethodBase {
 
         @Override
         public String toString() {
-            return "Bean nr. " + seed;
+            return "Bean #" + seed;
         }
     }
-
+*/
     @Test(timeout = 1000000)
     public void testSlidingTimeWindows() {
         String str = "package org.drools\n" +

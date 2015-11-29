@@ -246,7 +246,7 @@ public class KieContainerImpl
         }
 
         for (StatefulKnowledgeSession session : kBase.getStatefulKnowledgeSessions()) {
-            ( (InternalWorkingMemory) session ).notifyHalt();
+            ( (InternalWorkingMemory) session ).notifyWaitOnRest();
         }
     }
 

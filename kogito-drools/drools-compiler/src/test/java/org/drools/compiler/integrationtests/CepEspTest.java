@@ -4210,7 +4210,7 @@ public class CepEspTest extends CommonTestMethodBase {
                      "  accumulate ( $e: StockTick() over window:length(10), $n : count($e) )\n" +
                      "then\n" +
                      "  list.add( $n ); \n" +
-                     "  System.out.println( \"Events in last 3 seconds: \" + $n );\n" +
+                     "  System.out.println( \"Events in last X seconds: \" + $n );\n" +
                      "end" +
                      "";
 

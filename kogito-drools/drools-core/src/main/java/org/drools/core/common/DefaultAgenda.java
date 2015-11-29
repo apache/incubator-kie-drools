@@ -24,7 +24,6 @@ import org.drools.core.phreak.ExecutableEntry;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.phreak.RuleExecutor;
-import org.drools.core.phreak.SynchronizedPropagationList;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.PathMemory;
@@ -127,12 +126,11 @@ public class DefaultAgenda
 
     private volatile ExecutionState                              currentState = ExecutionState.INACTIVE;
 
-    private enum ExecutionState {  // fireAllRule | fireUntilHalt | executeTask <-- required action
+    public enum ExecutionState {   // fireAllRule | fireUntilHalt | executeTask <-- required action
         INACTIVE( false ),         // fire        | fire          | exec
         FIRING_ALL_RULES( true ),  // do nothing  | wait + fire   | enqueue
         FIRING_UNTIL_HALT( true ), // do nothing  | do nothing    | enqueue
-        REST_HALTING( false ),     // wait + fire | wait + fire   | enqueue
-        FORCE_HALTING( false ),    // wait + fire | wait + fire   | wait + exec
+        HALTING( false ),          // wait + fire | wait + fire   | enqueue
         EXECUTING_TASK( false );   // wait + fire | wait + fire   | wait + exec
 
         private final boolean firing;
@@ -145,6 +143,8 @@ public class DefaultAgenda
             return firing;
         }
     }
+
+    private final Object stateMachineLock = new Object();
 
     // ------------------------------------------------------------
     // Constructors
@@ -521,6 +521,10 @@ public class DefaultAgenda
      * @see org.kie.common.AgendaI#getNextFocus()
      */
     public InternalAgendaGroup getNextFocus() {
+        if (focusStack.isEmpty()) {
+            return null;
+        }
+        
         InternalAgendaGroup agendaGroup;
         // Iterate until we find a populate AgendaModule or we reach the MAIN,
         // default, AgendaGroup
@@ -565,20 +569,19 @@ public class DefaultAgenda
         return agendaGroup;
     }
 
-    public InternalAgendaGroup removeLast() {
+    private InternalAgendaGroup removeLast() {
         InternalAgendaGroup group = (InternalAgendaGroup) this.focusStack.removeLast();
         group.visited();
         return group;
     }
 
-    public boolean removeGroup(InternalAgendaGroup group) {
+    private boolean removeGroup(InternalAgendaGroup group) {
         boolean existed = this.focusStack.remove( group );
         group.visited();
-
         return existed;
     }
 
-    public void clearFocusStack() {
+    private void clearFocusStack() {
         InternalAgendaGroup[] groups = focusStack.toArray( new InternalAgendaGroup[focusStack.size()] );
         for ( InternalAgendaGroup group : groups ) {
             group.visited();
@@ -703,7 +706,7 @@ public class DefaultAgenda
         setFocus( group );
         ((EventSupport) this.workingMemory).getAgendaEventSupport().fireAfterRuleFlowGroupActivated( group,
                                                                                                      this.workingMemory );
-        this.workingMemory.notifyHalt();
+        this.workingMemory.notifyWaitOnRest();
     }
 
     public void deactivateRuleFlowGroup(final String name) {
@@ -955,45 +958,40 @@ public class DefaultAgenda
     public int fireNextItem(final AgendaFilter filter,
                             int fireCount,
                             int fireLimit) throws ConsequenceException {
+        // Because rules can be on the agenda, but after network evaluation produce no full matches, the
+        // engine uses tryAgain to drive a loop to find a rule that has matches, until there are no more rules left to try.
+        // once rule with 1..n matches is found, it'll return back to the outer loop.
         boolean tryagain;
         int localFireCount = 0;
-        try {
-            do {
-                evaluateEagerList();
-                this.workingMemory.prepareToFireActivation();
-                tryagain = false;
-                final InternalAgendaGroup group = getNextFocus();
-                // if there is a group with focus
-                if ( group != null ) {
-                    RuleAgendaItem item;
-                    if ( workingMemory.getKnowledgeBase().getConfiguration().isSequential() ) {
-                        item = (RuleAgendaItem) group.remove();
-                        item.setBlocked(true);
-                    }   else {
-                        item = (RuleAgendaItem) group.peek();
-                    }
+        do {
+            evaluateEagerList();
+            tryagain = false;
+            final InternalAgendaGroup group = getNextFocus();
+            // if there is a group with focus
+            if ( group != null ) {
+                RuleAgendaItem item;
+                if ( workingMemory.getKnowledgeBase().getConfiguration().isSequential() ) {
+                    item = (RuleAgendaItem) group.remove();
+                    item.setBlocked(true);
+                }   else {
+                    item = (RuleAgendaItem) group.peek();
+                }
 
-                    if (item != null) {
-
-                        evaluateQueriesForRule(item);
-                        localFireCount = item.getRuleExecutor().evaluateNetworkAndFire(this.workingMemory, filter,
-                                                                                       fireCount, fireLimit);
-                        if ( localFireCount == 0 ) {
-                            // nothing matched
-                            tryagain = true; // will force the next Activation of the agenda, without going to outer loop which checks halt
-                            this.workingMemory.flushPropagations(); // There may actions to process, which create new rule matches
-                        }
-                    }
-
-                    if ( group.peek() == null || !((AgendaItem) group.peek()).getTerminalNode().isFireDirect() ) {
-                        // make sure the "fireDirect" meta rules have all impacted first, before unstaging.
-                        unstageActivations();
+                if (item != null) {
+                    // there was a rule, so evaluate it
+                    evaluateQueriesForRule(item);
+                    localFireCount = item.getRuleExecutor().evaluateNetworkAndFire(this.workingMemory, filter,
+                                                                                   fireCount, fireLimit);
+                    // it produced no full matches, so drive the search to the next rule
+                    if ( localFireCount == 0 ) {
+                        // nothing matched
+                        tryagain = true;
+                        this.workingMemory.flushPropagations(); // There may actions to process, which create new rule matches
                     }
                 }
-            } while ( tryagain );
-        } finally {
-            this.workingMemory.activationFired();
-        }
+            }
+        } while ( tryagain );
+
         return localFireCount;
     }
 
@@ -1242,66 +1240,107 @@ public class DefaultAgenda
     }
 
     public void fireUntilHalt(final AgendaFilter agendaFilter) {
-        synchronized (this) {
+        synchronized (stateMachineLock) {
             if (currentState == ExecutionState.FIRING_UNTIL_HALT) {
                 return;
             }
             waitAndEnterExecutionState( ExecutionState.FIRING_UNTIL_HALT );
         }
 
-        try {
-            if ( log.isTraceEnabled() ) {
-                log.trace("Starting fireUntilHalt");
-            }
-
-            this.workingMemory.flushPropagations();
-            while ( isFiring() ) {
-                workingMemory.flushPropagationsOnFireUntilHalt( fireNextItem( agendaFilter, 0, -1 ) > 0 );
-            }
-
-            PropagationEntry head = tryHalt();
-            while (head != null) {
-                workingMemory.flushPropagationsOnFireUntilHalt( fireNextItem( agendaFilter, 0, -1 ) > 0, head );
-                head = workingMemory.takeAllPropagations();
-            }
-
-            if ( log.isTraceEnabled() ) {
-                log.trace( "Ending fireUntilHalt" );
-            }
-        } finally {
-            immediateHalt();
+        if ( log.isTraceEnabled() ) {
+            log.trace("Starting Fire Until Halt");
+        }
+        fireLoop( agendaFilter, -1, RestHandler.FIRE_UNTIL_HALT);
+        if ( log.isTraceEnabled() ) {
+            log.trace("Ending Fire Until Halt");
         }
     }
 
     public int fireAllRules(AgendaFilter agendaFilter,
                             int fireLimit) {
-        unstageActivations();
-
-        synchronized (this) {
+        synchronized (stateMachineLock) {
             if (currentState.isFiring()) {
                 return 0;
             }
             waitAndEnterExecutionState( ExecutionState.FIRING_ALL_RULES );
         }
 
+        if ( log.isTraceEnabled() ) {
+            log.trace("Starting Fire All Rules");
+        }
+
+       int fireCount = fireLoop(agendaFilter, fireLimit, RestHandler.FIRE_ALL_RULES);
+
+        if ( log.isTraceEnabled() ) {
+            log.trace("Ending Fire All Rules");
+        }
+
+        return fireCount;
+    }
+
+    private int fireLoop(AgendaFilter agendaFilter,
+                         int fireLimit,
+                         RestHandler restHandler) {
         int fireCount = 0;
         try {
-            this.workingMemory.flushPropagations();
-            int returnedFireCount;
-            do {
-                returnedFireCount = fireNextItem( agendaFilter, fireCount, fireLimit );
-                fireCount += returnedFireCount;
-                this.workingMemory.flushPropagations();
-            } while ( ( isFiring() && returnedFireCount != 0 && (fireLimit == -1 || fireCount < fireLimit) ) );
+            PropagationEntry head = workingMemory.takeAllPropagations();
+            int returnedFireCount = 0;
 
-            PropagationEntry head = tryHalt();
-            while (head != null) {
-                fireCount += fireNextItem( agendaFilter, fireCount, fireLimit );
-                SynchronizedPropagationList.flush(workingMemory, head);
-                if (currentState == ExecutionState.FORCE_HALTING) {
-                    break;
+            boolean limitReached = fireLimit == 0; // -1 or > 0 will return false. No reason for user to give 0, just handled for completeness.
+
+            boolean loop = true;
+
+
+            // The engine comes to potential rest (inside the loop) when there are no propagations and no rule firings.
+            // It's potentially at rest, because we cannot guarantee it is at rest.
+            // This is because external async actions (timer rules) can populate the queue that must be executed immediately.
+            // A final takeAll within the sync point determines if it can safely come to rest.
+            // if takeAll returns null, the engine is now safely at rest. If it returns something
+            // the engine is not at rest and the loop continues.
+            //
+            // When FireUntilHalt comes to a safe rest, the thread is put into a wait state,
+            // when the queue is populated the thread is notified and the loop begins again.
+            //
+            // When FireAllRules comes to a safe rest it will put the engine into an INACTIVE state
+            // and the loop can exit.
+            //
+            // When a halt() command is added to the propagation queue and that queue is flushed
+            // the engine is put into a INACTIVE state. At this point isFiring returns false and
+            // no more rules can fire. However the loop will continue until rest point has been safely
+            // entered, i.e. the queue returns null within that sync point.
+            //
+            // The loop is susceptable to never return on extremely greedy behaviour.
+            //
+            // Note that if a halt() command is given, the engine is changed to INACTIVE,
+            // and isFiring returns false allowing it to exit before all rules are fired.
+            //
+            while ( loop  )  {
+                log.debug("Fire Loop");
+                if ( head != null ) {
+                    // it is possible that there are no action propagations, but there are rules to fire.
+                    this.workingMemory.flushPropagations(head);
                 }
+
+                if ( !limitReached && isFiring() ) {
+                    // only fire rules while the limit has not reached.
+                    // if halt is called, then isFiring will be false.
+                    // The while loop may continue to loop, to keep flushing the action propagation queue
+                    returnedFireCount = fireNextItem(agendaFilter, fireCount, fireLimit);
+                    fireCount += returnedFireCount;
+
+                    limitReached = (fireLimit > 0 && fireCount >= fireLimit);
+                } else {
+                    returnedFireCount = 0; // no rules fired this iteration, so we know this is 0
+                }
+
                 head = workingMemory.takeAllPropagations();
+
+                if ( returnedFireCount == 0 && head == null ) {
+                    // if true, the engine is now considered potentially at rest
+                    head = restHandler.handleRest(workingMemory, this);
+                }
+
+                loop = head != null || isFiring();
             }
 
             if ( this.focusStack.size() == 1 && getMainAgendaGroup().isEmpty() ) {
@@ -1309,20 +1348,49 @@ public class DefaultAgenda
                 getMainAgendaGroup().setActive( false );
             }
         } finally {
+            // makes sure the engine is inactive, if an exception is thrown.
+            // if it safely returns, then the engine should already be inactive
             immediateHalt();
         }
         return fireCount;
     }
 
+    interface RestHandler {
+        RestHandler FIRE_ALL_RULES = new FireAllRulesRestHandler();
+        RestHandler FIRE_UNTIL_HALT = new FireUntilHaltRestHandler();
+
+        PropagationEntry handleRest(InternalWorkingMemory wm, DefaultAgenda agenda);
+
+        class FireAllRulesRestHandler implements RestHandler {
+            @Override
+            public PropagationEntry handleRest(InternalWorkingMemory wm, DefaultAgenda agenda) {
+                synchronized (agenda.stateMachineLock) {
+                    PropagationEntry head = wm.takeAllPropagations();
+                    if (head == null) {
+                        agenda.halt();
+                    }
+                    return head;
+                }
+            }
+        }
+
+        class FireUntilHaltRestHandler  implements RestHandler {
+            @Override
+            public PropagationEntry handleRest(InternalWorkingMemory wm, DefaultAgenda agenda) {
+                return wm.handleRestOnFireUntilHalt( agenda.currentState );
+            }
+        }
+    }
+
     private void waitAndEnterExecutionState( ExecutionState newState ) {
         if (currentState != ExecutionState.INACTIVE) {
             try {
-                wait();
+                stateMachineLock.wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException( e );
             }
         }
-        currentState = newState;
+        setCurrentState( newState );
     }
 
     @Override
@@ -1332,12 +1400,12 @@ public class DefaultAgenda
 
     @Override
     public void executeTask( ExecutableEntry executable ) {
-        synchronized (this) {
-            if (isFiring() || currentState == ExecutionState.REST_HALTING) {
+        synchronized (stateMachineLock) {
+            // state is never changed outside of a sync block, so this is safe.
+            if (isFiring()) {
                 executable.enqueue();
                 return;
-            }
-            if (currentState != ExecutionState.EXECUTING_TASK) {
+            } else if (currentState != ExecutionState.EXECUTING_TASK) {
                 waitAndEnterExecutionState( ExecutionState.EXECUTING_TASK );
             }
         }
@@ -1350,38 +1418,30 @@ public class DefaultAgenda
     }
 
     public void halt() {
-        synchronized (this) {
+        synchronized (stateMachineLock) {
             if (currentState.isFiring()) {
-                currentState = ExecutionState.FORCE_HALTING;
+                setCurrentState( ExecutionState.HALTING );
             }
         }
     }
 
     private void immediateHalt() {
-        synchronized (this) {
+        synchronized (stateMachineLock) {
             if (currentState != ExecutionState.INACTIVE) {
-                setEngineInactive();
+                setCurrentState( ExecutionState.INACTIVE );
+                stateMachineLock.notify();
+                workingMemory.notifyEngineInactive();
             }
         }
     }
 
-    private PropagationEntry tryHalt() {
-        synchronized (this) {
-            PropagationEntry head = workingMemory.takeAllPropagations();
-            if (head == null) {
-                setEngineInactive();
-            } else if (currentState != ExecutionState.FORCE_HALTING) {
-                currentState = ExecutionState.REST_HALTING;
-            }
-            return head;
+    public void setCurrentState(ExecutionState state) {
+        if ( log.isDebugEnabled() ) {
+            log.debug("State was {} is nw {}", currentState, state);
         }
+        currentState = state;
     }
 
-    private void setEngineInactive() {
-        currentState = ExecutionState.INACTIVE;
-        notify();
-        workingMemory.notifyEngineInactive();
-    }
 
     public ConsequenceExceptionHandler getConsequenceExceptionHandler() {
         return this.legacyConsequenceExceptionHandler;

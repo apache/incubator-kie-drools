@@ -113,7 +113,8 @@ public interface PropagationEntry {
                                            effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
 
             if (nextTimestamp < workingMemory.getTimerService().getCurrentTime()) {
-                workingMemory.queueWorkingMemoryAction(new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn ));
+                WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn );
+                action.execute(workingMemory);  // this can now execute straight away, as alpha node propagation is now done by the engine thread
             } else {
                 JobContext jobctx = new ObjectTypeNode.ExpireJobContext( new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn ),
                                                                          workingMemory );

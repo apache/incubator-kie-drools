@@ -29,10 +29,6 @@ public class SynchronizedBypassPropagationList extends SynchronizedPropagationLi
 
     @Override
     public void addEntry(final PropagationEntry propagationEntry) {
-        doAddEntry( propagationEntry, false );
-    }
-
-    private void doAddEntry( final PropagationEntry propagationEntry, final boolean addToTop ) {
         workingMemory.getAgenda().executeTask( new ExecutableEntry() {
            @Override
            public void execute() {
@@ -54,19 +50,10 @@ public class SynchronizedBypassPropagationList extends SynchronizedPropagationLi
            }
 
             private void doAdd() {
-               if (addToTop) {
-                   SynchronizedBypassPropagationList.super.addEntryToTop( propagationEntry );
-               } else {
-                   internalAddEntry( propagationEntry );
-               }
+                internalAddEntry( propagationEntry );
            }
         });
-        notifyHalt();
-    }
-
-    @Override
-    public void addEntryToTop(PropagationEntry propagationEntry ) {
-        doAddEntry( propagationEntry, true );
+        notifyWaitOnRest();
     }
 
     @Override
