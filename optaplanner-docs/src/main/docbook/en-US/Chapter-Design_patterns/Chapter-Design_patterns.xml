@@ -83,7 +83,7 @@
       </listitem>
     </itemizedlist>
 
-    <para>There are also several designs for assigning a planning entity to a starting time (or date).</para>
+    <para>There are also several designs for assigning a planning entity to a starting time (or date):</para>
 
     <itemizedlist>
       <listitem>
@@ -118,8 +118,8 @@
           </listitem>
 
           <listitem>
-            <para>If duration differs, gaps are common and time uses a course-grained granularity such as 5 minutes (or
-            more) use <link linkend="timeGrainPattern">the TimeGrain pattern</link>.</para>
+            <para>If duration differs and time uses a course-grained granularity such as 5 minutes (or more) use <link
+            linkend="timeGrainPattern">the TimeGrain pattern</link>.</para>
 
             <itemizedlist>
               <listitem>
@@ -144,6 +144,14 @@
       </listitem>
     </itemizedlist>
 
+    <para>Choose the right pattern depending on the use case:</para>
+
+    <mediaobject>
+      <imageobject>
+        <imagedata fileref="images/Chapter-Design_patterns/assigningTimeToPlanningEntities.png"/>
+      </imageobject>
+    </mediaobject>
+
     <section xml:id="timeslotPattern">
       <title>Timeslot Pattern: Assign to a Fixed-Length Timeslot</title>
 
@@ -160,6 +168,8 @@
       <title>Chained Through Time Pattern: Assign in a Chain that Determines Starting Time</title>
 
       <para>TODO</para>
+
+      <para>No variable gaps. Deterministic gaps are ok.</para>
     </section>
   </section>
 
