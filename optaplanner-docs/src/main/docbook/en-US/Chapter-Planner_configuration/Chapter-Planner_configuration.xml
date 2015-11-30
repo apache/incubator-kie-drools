@@ -157,10 +157,10 @@
         each user request, build a <literal>SolverFactory</literal> as base during initialization and clone it with the
         <literal>cloneSolverFactory()</literal> method for a user request:</para>
 
-        <programlisting language="java">    private SolverFactory template;
+        <programlisting language="java">    private SolverFactory base;
 
     public void init() {
-        SolverFactory base = SolverFactory.createFromXmlResource(
+        base = SolverFactory.createFromXmlResource(
                 "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
         base.getSolverConfig().setTerminationConfig(new TerminationConfig());
     }
