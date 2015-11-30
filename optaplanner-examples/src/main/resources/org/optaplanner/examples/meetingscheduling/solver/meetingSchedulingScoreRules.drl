@@ -74,8 +74,8 @@ rule "Required and preferred attendance conflict"
         $leftAssignment : MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null)
         $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
     then
+        // Fairness not implemented (see tennis example)
         scoreHolder.addMediumConstraintMatch(kcontext, -1);
-        // scoreHolder.addSoftConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
 end
 
 rule "Preferred attendance conflict"
@@ -85,8 +85,8 @@ rule "Preferred attendance conflict"
         $leftAssignment : MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null)
         $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
     then
+        // Fairness not implemented (see tennis example)
         scoreHolder.addMediumConstraintMatch(kcontext, -1);
-        // scoreHolder.addSoftConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
 end
 
 // ############################################################################

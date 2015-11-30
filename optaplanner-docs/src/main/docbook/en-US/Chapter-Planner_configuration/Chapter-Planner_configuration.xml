@@ -344,7 +344,8 @@
         </listitem>
       </itemizedlist>
 
-      <para>For inspiration, take a look at how the examples modeled their domain:</para>
+      <para>For inspiration, take a look at <link linkend="designPatterns">typical design patterns</link> or how the
+      examples modeled their domain:</para>
 
       <mediaobject>
         <imageobject>
@@ -357,9 +358,9 @@
         variable</link>.</para>
       </note>
 
-      <para><emphasis role="bold">In Planner all problems facts and planning entities are plain old JavaBeans
-      (POJOs).</emphasis> You can load them from a database, an XML file, a data repository, a noSQL cloud, ... (see
-      <link linkend="integration">Integration</link>).</para>
+      <para><emphasis role="bold">In Planner, all problems facts and planning entities are plain old JavaBeans
+      (POJOs).</emphasis> Load them from a database, an XML file, a data repository, a REST service, a noSQL cloud, ...
+      (see <link linkend="integration">integration</link>): it doesn't matter.</para>
     </section>
 
     <section xml:id="problemFact">
