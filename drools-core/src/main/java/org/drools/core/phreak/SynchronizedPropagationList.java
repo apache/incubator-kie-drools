@@ -16,10 +16,14 @@
 package org.drools.core.phreak;
 
 import org.drools.core.common.InternalWorkingMemory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 
 public class SynchronizedPropagationList implements PropagationList {
+
+    protected static final transient Logger log                = LoggerFactory.getLogger( SynchronizedPropagationList.class );
 
     protected final InternalWorkingMemory workingMemory;
 
@@ -49,22 +53,6 @@ public class SynchronizedPropagationList implements PropagationList {
         }
     }
 
-    @Override
-    public synchronized void addEntryToTop(final PropagationEntry entry) {
-        boolean wasEmpty = head == null;
-        if ( !wasEmpty ) {
-            entry.setNext( head );
-            tail = head;
-        } else {
-            tail = entry;
-        }
-        head = entry;
-
-        if ( wasEmpty ) {
-            notifyHalt();
-        }
-    }
-
     protected synchronized void internalAddEntry( PropagationEntry entry ) {
         boolean wasEmpty = head == null;
         if ( wasEmpty ) {
@@ -75,36 +63,18 @@ public class SynchronizedPropagationList implements PropagationList {
         tail = entry;
 
         if ( wasEmpty ) {
-            notifyHalt();
+            notifyWaitOnRest();
         }
     }
 
     @Override
     public void flush() {
-        for ( PropagationEntry currentHead = takeAll(); currentHead != null; currentHead = takeAll() ) {
-            flush( workingMemory, currentHead );
-        }
+        flush( workingMemory, takeAll() );
     }
 
-    @Override
-    public void flushOnFireUntilHalt(boolean fired) {
-        flushOnFireUntilHalt( fired, takeAll() );
-    }
-
-    @Override
-    public void flushOnFireUntilHalt( boolean fired, PropagationEntry currentHead ) {
-        if ( !fired && currentHead == null) {
-            synchronized (this) {
-                if (head == null) {
-                    halt();
-                }
-                currentHead = takeAll();
-            }
-        }
-        while ( currentHead != null ) {
-            flush( workingMemory, currentHead );
-            currentHead = takeAll();
-        }
+    @Override public void flush(PropagationEntry currentHead)
+    {
+        flush( workingMemory, currentHead );
     }
 
     public static void flush( InternalWorkingMemory workingMemory, PropagationEntry currentHead ) {
@@ -141,14 +111,6 @@ public class SynchronizedPropagationList implements PropagationList {
         tail = newTail;
     }
 
-    private synchronized void halt() {
-        try {
-            wait();
-        } catch (InterruptedException e) {
-            // nothing to do
-        }
-    }
-
     @Override
     public synchronized void reset() {
         head = null;
@@ -160,8 +122,19 @@ public class SynchronizedPropagationList implements PropagationList {
         return head == null;
     }
 
+    public synchronized void waitOnRest() {
+        try {
+            log.debug("Engine wait");
+            wait();
+        } catch (InterruptedException e) {
+            // do nothing
+        }
+        log.debug("Engine resumed");
+    }
+
+
     @Override
-    public synchronized void notifyHalt() {
+    public synchronized void notifyWaitOnRest() {
         notifyAll();
     }
 
@@ -169,9 +142,6 @@ public class SynchronizedPropagationList implements PropagationList {
     public synchronized Iterator<PropagationEntry> iterator() {
         return new PropagationEntryIterator(head);
     }
-
-    @Override
-    public void onEngineInactive() { }
 
     public static class PropagationEntryIterator implements Iterator<PropagationEntry> {
 
@@ -198,4 +168,7 @@ public class SynchronizedPropagationList implements PropagationList {
             throw new UnsupportedOperationException();
         }
     }
+
+    @Override
+    public void onEngineInactive() { }
 }

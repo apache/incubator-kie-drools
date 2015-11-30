@@ -37,11 +37,6 @@ public class RetePropagationList implements PropagationList {
     }
 
     @Override
-    public void addEntryToTop(PropagationEntry propagationEntry) {
-        addEntry(propagationEntry);
-    }
-
-    @Override
     public PropagationEntry takeAll() {
         return null;
     }
@@ -49,30 +44,26 @@ public class RetePropagationList implements PropagationList {
     @Override
     public void flush() { }
 
+    @Override public void flush(PropagationEntry currentHead)
+    {
+
+    }
+
     @Override
     public void flushNonMarshallable() { }
 
     @Override
-    public void flushOnFireUntilHalt(boolean fired) {
-        flushOnFireUntilHalt( fired, null );
+    public void waitOnRest() {
+
     }
 
     @Override
-    public void flushOnFireUntilHalt( boolean fired, PropagationEntry currentHead ) {
-        if ( !fired ) {
-            synchronized ( this ) {
-                try {
-                    this.wait();
-                } catch (InterruptedException e) {
-                    // nothing to do
-                }
-            }
-        }
-        flush();
+    public void onEngineInactive() {
+
     }
 
     @Override
-    public void notifyHalt() {
+    public void notifyWaitOnRest() {
         synchronized ( this ) {
             this.notifyAll();
         }
@@ -91,6 +82,4 @@ public class RetePropagationList implements PropagationList {
         return Collections.<PropagationEntry>emptyList().iterator();
     }
 
-    @Override
-    public void onEngineInactive() { }
 }

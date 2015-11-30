@@ -22,6 +22,7 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.AgendaEventSupport;
 import org.drools.core.event.RuleRuntimeEventSupport;
 import org.drools.core.phreak.PropagationEntry;
+import org.drools.core.phreak.PropagationList;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
@@ -203,8 +204,7 @@ public interface InternalWorkingMemory
     void addPropagation(PropagationEntry propagationEntry);
 
     void flushPropagations();
-    void flushPropagationsOnFireUntilHalt( boolean fired );
-    void flushPropagationsOnFireUntilHalt( boolean fired, PropagationEntry propagationEntry );
+    void flushPropagations(PropagationEntry propagationEntry);
     void flushNonMarshallablePropagations();
 
     void notifyEngineInactive();
@@ -212,9 +212,15 @@ public interface InternalWorkingMemory
     boolean hasPendingPropagations();
     PropagationEntry takeAllPropagations();
 
+    PropagationList getPropagationList();
+
     Iterator<? extends PropagationEntry> getActionsIterator();
 
     void removeGlobal(String identifier);
 
-    void notifyHalt();
+    void waitOnRest();
+
+    void notifyWaitOnRest();
+
+    void setEngineInactive();
 }
