@@ -28,6 +28,9 @@ import org.optaplanner.examples.travelingtournament.persistence.TravelingTournam
 import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentImporter;
 import org.optaplanner.examples.travelingtournament.swingui.TravelingTournamentPanel;
 
+/**
+ * WARNING: This is an old, complex, tailored example. You're probably better off with one of the other examples.
+ */
 public class TravelingTournamentApp extends CommonApp {
 
     public static final String SOLVER_CONFIG

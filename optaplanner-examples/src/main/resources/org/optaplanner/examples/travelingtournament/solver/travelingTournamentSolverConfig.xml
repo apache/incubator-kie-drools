@@ -12,6 +12,8 @@
   <termination>
     <bestScoreLimit>0hard/0soft</bestScoreLimit>
   </termination>
+
+  <!-- WARNING: This is an old, complex, tailored example. You're probably better off with one of the other examples. -->
   <localSearch>
     <unionMoveSelector>
       <swapMoveSelector>
