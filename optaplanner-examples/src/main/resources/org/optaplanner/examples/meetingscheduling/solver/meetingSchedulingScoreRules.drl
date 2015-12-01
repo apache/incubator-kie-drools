@@ -35,16 +35,6 @@ global HardMediumSoftScoreHolder scoreHolder;
 // Hard constraints
 // ############################################################################
 
-rule "Required attendance conflict"
-    when
-        RequiredAttendance($leftId : id, $person : person, $leftMeeting : meeting)
-        RequiredAttendance(person == $person, $rightMeeting : meeting, id > $leftId)
-        $leftAssignment : MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null)
-        $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
-    then
-        scoreHolder.addHardConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
-end
-
 rule "Room conflict"
     when
         $leftAssignment : MeetingAssignment(room != null, $leftId : id, $room : room)
@@ -61,6 +51,16 @@ rule "Don't go in overtime"
         not TimeGrain(grainIndex == $lastTimeGrainIndex)
     then
         scoreHolder.addHardConstraintMatch(kcontext, - $lastTimeGrainIndex);
+end
+
+rule "Required attendance conflict"
+    when
+        RequiredAttendance($leftId : id, $person : person, $leftMeeting : meeting)
+        RequiredAttendance(person == $person, $rightMeeting : meeting, id > $leftId)
+        $leftAssignment : MeetingAssignment(meeting == $leftMeeting, startingTimeGrain != null)
+        $rightAssignment : MeetingAssignment(meeting == $rightMeeting, calculateOverlap($leftAssignment) > 0)
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
 end
 
 // ############################################################################

@@ -155,50 +155,92 @@
     <section xml:id="timeslotPattern">
       <title>Timeslot Pattern: Assign to a Fixed-Length Timeslot</title>
 
-      <para>If all planning entities have the same duration (or can be inflated to the same duration), the Timeslot
-      pattern is useful. The planning entities are assigned to a timeslot, instead of a loose time. For example in the
-      course scheduling example, all lectures take 1 hour and they can start at 8:00, 9:00, 10:15, 11:15, 13:30,
-      ...</para>
+      <para>If all planning entities have <emphasis role="bold">the same duration</emphasis> (or can be inflated to the
+      same duration), the Timeslot pattern is useful. The planning entities are assigned to a timeslot, instead of
+      directly to a time. For example in <link linkend="curriculumCourse">course timetabling</link>, all lectures take 1
+      hour.</para>
 
-      <para>It is also usable if all planning entities can be inflated to the same duration. For example in the exam
-      scheduling example, some exams take 90 minutes and others 120 minutes, but all timeslots are 120 minutes. When an
-      exam of 90 minutes is assigned to a timeslot, the remaining 30 minutes is gone too and cannot be used by another
-      exam.</para>
+      <para>The timeslots can start at any time. For example, the timeslots start at 8:00, 9:00, 10:15 (after a 15
+      minute break), 11:15, ... They can even overlap, but that's unusual.</para>
+
+      <para>It is also usable if all planning entities can be inflated to the same duration. For example in <link
+      linkend="examination">exam timetabling</link>, some exams take 90 minutes and others 120 minutes, but all
+      timeslots are 120 minutes. When an exam of 90 minutes is assigned to a timeslot, for the remaining 30 minutes, its
+      seats are occupied too and cannot be used by another exam.</para>
+
+      <para>Normally there's a second planning variable, for example the room. In course timetabling, 2 lectures are in
+      conflict if the share the same room at the same timeslot. However, in exam timetabling, that's allowed, if there's
+      enough seating capacity in the room (although mixed exam durations in the same room do inflict a soft score
+      penalty).</para>
     </section>
 
     <section xml:id="timeGrainPattern">
       <title>TimeGrain Pattern: Assign to a Starting TimeGrain</title>
 
-      <para>Assigning humans to start a meeting at 4 seconds after 9 o'clock is pointless because a second accuracy on
-      meetings starts is overly optimistic. Most human activities have a time granularity of 5 minutes or 15 minutes.
-      Therefore it's unneeded to allow a planning entity to be assigned on subsecond, second or even 1 minute accuracy,
-      if 5 minute or 15 minutes accuracy suffices. For example in the meeting scheduling example, all meetings start and
-      end on the hour, half hour or 15 minutes before/after the hour.</para>
+      <para>Assigning humans to start a meeting at 4 seconds after 9 o'clock is pointless because a second accuracy for
+      meetings is overly optimistic. Most human activities have a time granularity of 5 minutes or 15 minutes. Therefore
+      it's unneeded to allow a planning entity to be assigned on subsecond, second or even 1 minute accuracy, if 5
+      minute or 15 minutes accuracy suffices. The TimeGrain pattern models such <emphasis role="bold">time
+      accuracy</emphasis> by partitioning time as time grains. For example in <link linkend="meetingScheduling">meeting
+      scheduling</link>, all meetings start/end on the hour, half hour or 15 minutes before/after the hour, so the time
+      grains are 15 minutes.</para>
 
-      <para>In the TimeGrain pattern, each planning entities is assigned to a starting time grain. The ending time grain
-      is calculated by adding the duration in grains to the starting time grain. Overlap of 2 entities is determined by
-      comparing their start and end time grains.</para>
+      <para>Each planning entity is assigned to a starting time grain. The ending time grain is calculated by adding the
+      duration in grains to the starting time grain. Overlap of 2 entities is determined by comparing their start and
+      end time grains.</para>
 
-      <para>This pattern also works with a coarser time granularity (such as days, half days, hours, ...). With a finer
-      time granularity (such as seconds, milliseconds, ...) and a long planning window, the value range (and therefore
-      <link linkend="searchSpaceSize">the search space</link>) can become very big which reduces efficiency and
-      scalability.</para>
+      <para>This pattern also works well with a coarser time granularity (such as days, half days, hours, ...). With a
+      finer time granularity (such as seconds, milliseconds, ...) and a long time window, the value range (and therefore
+      <link linkend="searchSpaceSize">the search space</link>) can become big which reduces efficiency and scalability.
+      However, it can still work, as shown in <link linkend="cheapTimeScheduling">cheap time scheduling</link>.</para>
     </section>
 
     <section xml:id="chainedThroughTime">
       <title>Chained Through Time Pattern: Assign in a Chain that Determines Starting Time</title>
 
-      <para>If a person or machine continuously works on 1 task at a time, starting a task when the previous is finished
-      (or with a deterministic delay), the Chained Through Time pattern is usefull. For example, in the vehicle routing
-      with time windows example, a vehicle drives from customer to customer (so he handles 1 customer at a time).</para>
+      <para>If a person or machine continuously works on <emphasis role="bold">1 task at a time in sequence</emphasis>,
+      so starting a task when the previous is finished (or with a deterministic delay), the Chained Through Time pattern
+      is useful. For example, in the vehicle routing with time windows example, a vehicle drives from customer to
+      customer (so he handles 1 customer at a time).</para>
 
       <para>In this pattern, the planning entities are <link linkend="chainedPlanningVariable">chained</link>. The
       anchor determines the starting time of its first planning entity. The second entity's starting time is calculated
       based on the starting time and duration of the first entity. For example, in task assignment, Beth (the anchor)
-      starts working at 8:00, so her first task starts at 8:00. It lasts 52 mins. At 8:52 her second task starts. The
-      starting time is usually <link linkend="shadowVariable">a shadow variable</link>.</para>
+      starts working at 8:00, so her first task starts at 8:00. It lasts 52 mins. So at 8:52 her second task starts. The
+      starting time of an entity is normally <link linkend="shadowVariable">a shadow variable</link>.</para>
 
-      <para>Between planning entities, there no gaps or only deterministic gaps.</para>
+      <para>An anchor has only one chain. Although it's possible to split up the anchor into 2 separate anchors, for
+      example split up Beth into Beth's left hand and Beth's right hand (because she can do 2 tasks at the same time),
+      it is difficult in this model to allow those 2 anchors to pool resources. So using this model for exam scheduling
+      to allow 2 or more exams to use the same room at the same time, is painful.</para>
+
+      <para>Between planning entities, there are 3 ways to create gaps:</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>No gaps: This is common when the anchor is a machine. For example in build server always starts the next
+          job when the previous finishes. It doesn't need a break.</para>
+        </listitem>
+
+        <listitem>
+          <para>Only deterministic gaps: This is common for humans. For example, any task that crosses the 10:00 barrier
+          gets an extra 15 minutes duration so the human can take a break. </para>
+
+          <itemizedlist>
+            <listitem>
+              <para>A deterministic gap can be subjected complex business logic. For example in vehicle routing, a
+              cross-continent truck driver needs to rest 15 minutes after 2 hours of driving (which can be during
+              loading/unloading time at a customer location) and also needs to rest 10 hours after 14 hours of
+              work.</para>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>Planning variable gaps: This is uncommon, because this extra planning variable (which impacts <link
+          linkend="searchSpaceSize">the search space</link>) reduces efficiency and scalability.</para>
+        </listitem>
+      </itemizedlist>
     </section>
   </section>
 

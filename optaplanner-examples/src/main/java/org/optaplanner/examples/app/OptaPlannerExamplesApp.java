@@ -47,6 +47,7 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionDao;
 import org.optaplanner.examples.common.swingui.OpenBrowserAction;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
+import org.optaplanner.examples.meetingscheduling.app.MeetingSchedulingApp;
 import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
 import org.optaplanner.examples.dinnerparty.app.DinnerPartyApp;
@@ -133,7 +134,7 @@ public class OptaPlannerExamplesApp extends JFrame {
     }
 
     private JPanel createBasicExamplesPanel() {
-        JPanel panel = new JPanel(new GridLayout(5, 1, 5, 5));
+        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Basic examples");
         titledBorder.setTitleColor(TangoColorFactory.CHAMELEON_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
@@ -143,11 +144,12 @@ public class OptaPlannerExamplesApp extends JFrame {
         panel.add(createExampleButton(new TspApp()));
         panel.add(createExampleButton(new DinnerPartyApp()));
         panel.add(createExampleButton(new TennisApp()));
+        panel.add(createExampleButton(new MeetingSchedulingApp()));
         return panel;
     }
 
     private JPanel createRealExamplesPanel() {
-        JPanel panel = new JPanel(new GridLayout(5, 1, 5, 5));
+        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Real examples");
         titledBorder.setTitleColor(TangoColorFactory.BUTTER_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,
@@ -161,7 +163,7 @@ public class OptaPlannerExamplesApp extends JFrame {
     }
 
     private JPanel createDifficultExamplesPanel() {
-        JPanel panel = new JPanel(new GridLayout(5, 1, 5, 5));
+        JPanel panel = new JPanel(new GridLayout(0, 1, 5, 5));
         TitledBorder titledBorder = BorderFactory.createTitledBorder("Difficult examples");
         titledBorder.setTitleColor(TangoColorFactory.SCARLET_3);
         panel.setBorder(BorderFactory.createCompoundBorder(titledBorder,

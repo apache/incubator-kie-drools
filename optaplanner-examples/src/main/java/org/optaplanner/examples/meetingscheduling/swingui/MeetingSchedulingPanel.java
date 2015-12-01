@@ -49,7 +49,7 @@ import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.H
 
 public class MeetingSchedulingPanel extends SolutionPanel {
 
-    public static final String LOGO_PATH = "/org/optaplanner/examples/meetingscheduling/swingui/meetingschedulingLogo.png";
+    public static final String LOGO_PATH = "/org/optaplanner/examples/meetingscheduling/swingui/meetingSchedulingLogo.png";
 
     private final TimeTablePanel<TimeGrain, Room> roomsPanel;
     private final TimeTablePanel<TimeGrain, Pair<Person, Boolean>> personsPanel;

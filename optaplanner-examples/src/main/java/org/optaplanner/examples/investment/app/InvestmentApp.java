@@ -37,8 +37,9 @@ public class InvestmentApp extends CommonApp {
     }
 
     public InvestmentApp() {
-        super("Investment asset class allocation",
-                "Decide the percentage of the investor's budget to invest in each asset class.",
+        super("Investment allocation",
+                "Decide the percentage of the investor's budget to invest in each asset class.\n\n"
+                + "Maximize expected return.",
                 InvestmentPanel.LOGO_PATH);
     }
 

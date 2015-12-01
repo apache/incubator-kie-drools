@@ -260,6 +260,50 @@
           </row>
 
           <row>
+            <entry><link linkend="meetingScheduling">Meeting scheduling</link></entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para>1 entity class</para>
+                </listitem>
+
+                <listitem>
+                  <para>2 variables</para>
+                </listitem>
+              </itemizedlist></entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para>Entity &lt;= <literal>10</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para>Value &lt;= 320 and &lt;= <literal>5</literal></para>
+                </listitem>
+
+                <listitem>
+                  <para>Search space &lt;= <literal>10^320</literal></para>
+                </listitem>
+              </itemizedlist></entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para>No</para>
+                </listitem>
+
+                <listitem>
+                  <para>Defined by us</para>
+                </listitem>
+              </itemizedlist></entry>
+
+            <entry><itemizedlist>
+                <listitem>
+                  <para><link linkend="timeGrainPattern">TimeGrain pattern</link></para>
+                </listitem>
+              </itemizedlist></entry>
+          </row>
+
+          <row>
             <entry><link linkend="curriculumCourse">Course timetabling</link></entry>
 
             <entry><itemizedlist>
@@ -723,7 +767,8 @@
                 </listitem>
 
                 <listitem>
-                  <para><link xlink:href="http://iconchallenge.insight-centre.org/challenge-energy">ICON Energy</link></para>
+                  <para><link xlink:href="http://iconchallenge.insight-centre.org/challenge-energy">ICON
+                  Energy</link></para>
                 </listitem>
               </itemizedlist></entry>
 
@@ -1181,6 +1226,52 @@ lu980    has 980 cities with a search space of 10^2927.</programlisting>
             <imagedata fileref="images/Chapter-Use_cases_and_examples/tennisClassDiagram.png"/>
           </imageobject>
         </mediaobject>
+      </section>
+    </section>
+
+    <section xml:id="meetingScheduling">
+      <title>Meeting Scheduling</title>
+
+      <section xml:id="meetingSchedulingProblemDescription">
+        <title>Problem Description</title>
+
+        <para>Assign each meeting to a starting time and a room. Meetings have different durations.</para>
+
+        <para>Hard constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Room conflict: 2 meetings must not use the same room at the same time.</para>
+          </listitem>
+
+          <listitem>
+            <para>Required attendance: A person cannot have 2 required meetings at the same time.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Medium constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Preferred attendance: A person cannot have 2 preferred meetings at the same time, nor a preferred and
+            a required meeting at the same time.</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>Soft constraints:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Sooner rather than later: Schedule all meetings as soon as possible.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section xml:id="meetingSchedulingProblemSize">
+        <title>Problem Size</title>
+
+        <programlisting>50meetings-160timegrains-5rooms  has  50 meetings, 160 timeGrains and 5 rooms with a search space of 10^145.
+100meetings-320timegrains-5rooms has 100 meetings, 320 timeGrains and 5 rooms with a search space of 10^320.</programlisting>
       </section>
     </section>
   </section>
