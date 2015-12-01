@@ -25,6 +25,7 @@ import javax.ejb.ConcurrencyManagement;
 import javax.ejb.ConcurrencyManagementType;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
+import javax.ejb.NoSuchObjectLocalException;
 import javax.ejb.ScheduleExpression;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -37,6 +38,8 @@ import javax.ejb.TransactionManagementType;
 import javax.inject.Inject;
 
 import org.jbpm.kie.services.impl.store.DeploymentSynchronizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 @Startup
@@ -45,6 +48,8 @@ import org.jbpm.kie.services.impl.store.DeploymentSynchronizer;
 @TransactionManagement(TransactionManagementType.BEAN)
 @AccessTimeout(value=1, unit=TimeUnit.MINUTES)
 public class DeploymentSynchronizerCDInvoker {
+    
+    private static final Logger logger = LoggerFactory.getLogger(DeploymentSynchronizerCDInvoker.class);
 	
 	private Timer timer;
 	@Resource
@@ -68,7 +73,11 @@ public class DeploymentSynchronizerCDInvoker {
 	@PreDestroy
 	public void shutdown() {
 		if (timer != null) {
-			timer.cancel();
+		    try {
+		        timer.cancel();
+		    } catch (NoSuchObjectLocalException e) {
+		        logger.debug("Timer {} is already canceled or expired", timer);
+		    }
 		}
 	}
 
