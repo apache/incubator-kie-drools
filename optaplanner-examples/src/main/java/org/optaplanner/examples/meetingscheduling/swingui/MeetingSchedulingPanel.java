@@ -19,7 +19,9 @@ package org.optaplanner.examples.meetingscheduling.swingui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -33,6 +35,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.timetable.TimeTablePanel;
+import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 import org.optaplanner.examples.meetingscheduling.domain.Person;
@@ -102,12 +105,14 @@ public class MeetingSchedulingPanel extends SolutionPanel {
         roomsPanel.defineColumnHeader(null); // Unassigned timeGrain
         personsPanel.defineColumnHeader(null); // Unassigned timeGrain
 
+        roomsPanel.defineRowHeaderByKey(HEADER_ROW_GROUP1); // Date header
         roomsPanel.defineRowHeaderByKey(HEADER_ROW); // TimeGrain header
         for (Room room : meetingSchedule.getRoomList()) {
             roomsPanel.defineRowHeader(room);
         }
         roomsPanel.defineRowHeader(null); // Unassigned
 
+        personsPanel.defineRowHeaderByKey(HEADER_ROW_GROUP1); // Day header
         personsPanel.defineRowHeaderByKey(HEADER_ROW); // TimeGrain header
         for (Person person : meetingSchedule.getPersonList()) {
             personsPanel.defineRowHeader(Pair.of(person, Boolean.TRUE));
@@ -119,7 +124,7 @@ public class MeetingSchedulingPanel extends SolutionPanel {
         roomsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Room")));
         fillRoomCells(meetingSchedule);
         personsPanel.addCornerHeader(HEADER_COLUMN_GROUP1, HEADER_ROW, createTableHeader(new JLabel("Person")));
-        personsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Attendence")));
+        personsPanel.addCornerHeader(HEADER_COLUMN, HEADER_ROW, createTableHeader(new JLabel("Attendance")));
         fillPersonCells(meetingSchedule);
         fillTimeGrainCells(meetingSchedule);
         fillMeetingAssignmentCells(meetingSchedule);
@@ -147,7 +152,18 @@ public class MeetingSchedulingPanel extends SolutionPanel {
     }
 
     private void fillTimeGrainCells(MeetingSchedule meetingSchedule) {
+        Map<Day, TimeGrain> firstTimeGrainMap = new HashMap<Day, TimeGrain>(meetingSchedule.getDayList().size());
+        Map<Day, TimeGrain> lastTimeGrainMap = new HashMap<Day, TimeGrain>(meetingSchedule.getDayList().size());
         for (TimeGrain timeGrain : meetingSchedule.getTimeGrainList()) {
+            Day day = timeGrain.getDay();
+            TimeGrain firstTimeGrain = firstTimeGrainMap.get(day);
+            if (firstTimeGrain == null || firstTimeGrain.getGrainIndex() > timeGrain.getGrainIndex()) {
+                firstTimeGrainMap.put(day, timeGrain);
+            }
+            TimeGrain lastTimeGrain = lastTimeGrainMap.get(day);
+            if (lastTimeGrain == null || lastTimeGrain.getGrainIndex() < timeGrain.getGrainIndex()) {
+                lastTimeGrainMap.put(day, timeGrain);
+            }
             roomsPanel.addColumnHeader(timeGrain, HEADER_ROW,
                     createTableHeader(new JLabel(timeGrain.getLabel())));
             personsPanel.addColumnHeader(timeGrain, HEADER_ROW,
@@ -161,6 +177,16 @@ public class MeetingSchedulingPanel extends SolutionPanel {
                 createTableHeader(new JLabel("Unassigned")));
         personsPanel.addColumnHeader(null, HEADER_ROW,
                 createTableHeader(new JLabel("Unassigned")));
+
+        for (Day day : meetingSchedule.getDayList()) {
+            TimeGrain firstTimeGrain = firstTimeGrainMap.get(day);
+            TimeGrain lastTimeGrain = lastTimeGrainMap.get(day);
+            roomsPanel.addColumnHeader(firstTimeGrain, HEADER_ROW_GROUP1, lastTimeGrain, HEADER_ROW_GROUP1,
+                    createTableHeader(new JLabel(day.getLabel())));
+            personsPanel.addColumnHeader(firstTimeGrain, HEADER_ROW_GROUP1, lastTimeGrain, HEADER_ROW_GROUP1,
+                    createTableHeader(new JLabel(day.getLabel())));
+
+        }
     }
 
     private void fillMeetingAssignmentCells(MeetingSchedule meetingSchedule) {
@@ -220,7 +246,8 @@ public class MeetingSchedulingPanel extends SolutionPanel {
         public MeetingAssignmentAction(MeetingAssignment meetingAssignment) {
             super(meetingAssignment.getLabel());
             putValue(SHORT_DESCRIPTION, "<html>Topic: " + meetingAssignment.getMeeting().getTopic() + "<br/>"
-                    + "Date and time: " + defaultIfNull(meetingAssignment.getDurationDateTimeString(), "unassigned") + "<br/>"
+                    + "Date and time: " + defaultIfNull(meetingAssignment.getStartingDateTimeString(), "unassigned") + "<br/>"
+                    + "Duration: " + meetingAssignment.getMeeting().getDurationString() + "<br/>"
                     + "Room: " + defaultIfNull(meetingAssignment.getRoom(), "unassigned")
                     + "</html>");
             this.meetingAssignment = meetingAssignment;
@@ -277,7 +304,7 @@ public class MeetingSchedulingPanel extends SolutionPanel {
 
         private OvertimeTimeGrain() {
             setGrainIndex(-1);
-            setDayOfYear(-1);
+            setDay(null);
             setStartingMinuteOfDay(-1);
         }
 

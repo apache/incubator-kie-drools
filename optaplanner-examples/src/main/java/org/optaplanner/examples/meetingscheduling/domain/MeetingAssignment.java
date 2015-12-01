@@ -17,6 +17,7 @@
 package org.optaplanner.examples.meetingscheduling.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.apache.commons.lang3.text.WordUtils;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -85,15 +86,16 @@ public class MeetingAssignment extends AbstractPersistable {
         return startingTimeGrain.getGrainIndex() + meeting.getDurationInGrains() - 1;
     }
 
-    public String getDurationDateTimeString() {
+    public String getStartingDateTimeString() {
         if (startingTimeGrain == null) {
             return null;
         }
-        return startingTimeGrain.getDateTimeString() + " + " + meeting.getDurationString();
+        return startingTimeGrain.getDateTimeString();
     }
 
     public String getLabel() {
-        return meeting.getLabel();
+        int wrapLength = Math.max(8 * meeting.getDurationInGrains(), 16);
+        return "<html><center>" + WordUtils.wrap(meeting.getTopic(), wrapLength, "<br/>", false) + "</center></html>";
     }
 
     @Override

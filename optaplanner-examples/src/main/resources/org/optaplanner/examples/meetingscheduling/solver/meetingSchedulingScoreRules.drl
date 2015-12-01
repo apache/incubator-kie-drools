@@ -95,7 +95,7 @@ end
 
 rule "Do all meetings as soon as possible"
     when
-        MeetingAssignment(startingTimeGrain != null, $startingTimeGrain : startingTimeGrain)
+        MeetingAssignment(startingTimeGrain != null, $lastTimeGrainIndex : lastTimeGrainIndex)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, - $startingTimeGrain.getGrainIndex());
+        scoreHolder.addSoftConstraintMatch(kcontext, - $lastTimeGrainIndex);
 end

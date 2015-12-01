@@ -38,6 +38,7 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 public class MeetingSchedule extends AbstractPersistable implements Solution<HardMediumSoftScore> {
 
     private List<Meeting> meetingList;
+    private List<Day> dayList;
     private List<TimeGrain> timeGrainList;
     private List<Room> roomList;
     private List<Person> personList;
@@ -54,6 +55,14 @@ public class MeetingSchedule extends AbstractPersistable implements Solution<Har
 
     public void setMeetingList(List<Meeting> meetingList) {
         this.meetingList = meetingList;
+    }
+
+    public List<Day> getDayList() {
+        return dayList;
+    }
+
+    public void setDayList(List<Day> dayList) {
+        this.dayList = dayList;
     }
 
     @ValueRangeProvider(id = "timeGrainRange")
@@ -116,6 +125,7 @@ public class MeetingSchedule extends AbstractPersistable implements Solution<Har
     public Collection<? extends Object> getProblemFacts() {
         List<Object> facts = new ArrayList<Object>();
         facts.addAll(meetingList);
+        facts.addAll(dayList);
         facts.addAll(timeGrainList);
         facts.addAll(roomList);
         facts.addAll(personList);

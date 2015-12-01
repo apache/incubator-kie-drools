@@ -26,6 +26,7 @@ import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.meetingscheduling.domain.Attendance;
+import org.optaplanner.examples.meetingscheduling.domain.Day;
 import org.optaplanner.examples.meetingscheduling.domain.Meeting;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingAssignment;
 import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
@@ -67,7 +68,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
                     "e-business",
                     "virtualization",
                     "multitasking",
-                    "on stop shop",
+                    "one stop shop",
                     "braindumps",
                     "data mining",
                     "policies",
@@ -308,6 +309,9 @@ public class MeetingSchedulingGenerator extends LoggingMain {
     }
 
     private void createTimeGrainList(MeetingSchedule meetingSchedule, int timeGrainListSize) {
+        List<Day> dayList = new ArrayList<Day>(timeGrainListSize);
+        long dayId = 0;
+        Day day = null;
         List<TimeGrain> timeGrainList = new ArrayList<TimeGrain>(timeGrainListSize);
         for (int i = 0; i < timeGrainListSize; i++) {
             TimeGrain timeGrain = new TimeGrain();
@@ -315,13 +319,21 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             int grainIndex = i;
             timeGrain.setGrainIndex(grainIndex);
             int dayOfYear = (i / startingMinuteOfDayOptions.length) + 1;
-            timeGrain.setDayOfYear(dayOfYear);
+            if (day == null || day.getDayOfYear() != dayOfYear) {
+                day = new Day();
+                day.setId(dayId);
+                day.setDayOfYear(dayOfYear);
+                dayId++;
+                dayList.add(day);
+            }
+            timeGrain.setDay(day);
             int startingMinuteOfDay = startingMinuteOfDayOptions[i % startingMinuteOfDayOptions.length];
             timeGrain.setStartingMinuteOfDay(startingMinuteOfDay);
             logger.trace("Created timeGrain with grainIndex ({}), dayOfYear ({}), startingMinuteOfDay ({}).",
                     grainIndex, dayOfYear, startingMinuteOfDay);
             timeGrainList.add(timeGrain);
         }
+        meetingSchedule.setDayList(dayList);
         meetingSchedule.setTimeGrainList(timeGrainList);
     }
 
