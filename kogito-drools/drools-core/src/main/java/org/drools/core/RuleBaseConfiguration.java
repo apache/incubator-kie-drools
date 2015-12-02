@@ -430,6 +430,8 @@ public class RuleBaseConfiguration
     }
     
     private void init(Properties properties) {
+        this.componentFactory = new KieComponentFactory();
+
         this.immutable = false;
 
         this.chainedProperties = new ChainedProperties( "rulebase.conf",
@@ -500,9 +502,6 @@ public class RuleBaseConfiguration
 
         setDeclarativeAgendaEnabled( Boolean.valueOf( this.chainedProperties.getProperty( DeclarativeAgendaOption.PROPERTY_NAME,
                                                                                           "false" ) ) );        
-
-        this.componentFactory = new KieComponentFactory();
-
     }
 
     /**

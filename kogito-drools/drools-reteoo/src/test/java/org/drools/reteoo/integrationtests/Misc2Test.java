@@ -3017,4 +3017,30 @@ public class Misc2Test extends CommonTestMethodBase {
         System.out.println(list);
         assertEquals(0, list.size());
     }
+
+    @Test
+    public void testUseReteooViaSystemProperty() {
+        // DROOLS-986
+        String drl =
+                "rule R1 when\n" +
+                "    String( )\n" +
+                "then \n" +
+                "end\n";
+
+        System.setProperty( "drools.ruleEngine", "reteoo" );
+
+        try {
+            KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                                 .build()
+                                                 .newKieSession();
+
+            assertFalse( ( (InternalKnowledgeBase) ksession.getKieBase() ).getConfiguration().isPhreakEnabled() );
+
+            ksession.insert( "test" );
+            assertEquals( 1, ksession.fireAllRules() );
+
+        } finally {
+            System.clearProperty( "drools.ruleEngine" );
+        }
+    }
 }
