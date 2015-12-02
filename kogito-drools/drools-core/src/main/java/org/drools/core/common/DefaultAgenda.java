@@ -964,33 +964,45 @@ public class DefaultAgenda
         boolean tryagain;
         int localFireCount = 0;
         do {
-            evaluateEagerList();
             tryagain = false;
+            evaluateEagerList();
             final InternalAgendaGroup group = getNextFocus();
             // if there is a group with focus
             if ( group != null ) {
-                RuleAgendaItem item;
-                if ( workingMemory.getKnowledgeBase().getConfiguration().isSequential() ) {
-                    item = (RuleAgendaItem) group.remove();
-                    item.setBlocked(true);
-                }   else {
-                    item = (RuleAgendaItem) group.peek();
-                }
+                localFireCount = fireNextItem(filter, fireCount, fireLimit, group);
 
-                if (item != null) {
-                    // there was a rule, so evaluate it
-                    evaluateQueriesForRule(item);
-                    localFireCount = item.getRuleExecutor().evaluateNetworkAndFire(this.workingMemory, filter,
-                                                                                   fireCount, fireLimit);
-                    // it produced no full matches, so drive the search to the next rule
-                    if ( localFireCount == 0 ) {
-                        // nothing matched
-                        tryagain = true;
-                        this.workingMemory.flushPropagations(); // There may actions to process, which create new rule matches
-                    }
+                // it produced no full matches, so drive the search to the next rule
+                if ( localFireCount == 0 ) {
+                    // nothing matched
+                    tryagain = true;
+                    this.workingMemory.flushPropagations(); // There may actions to process, which create new rule matches
                 }
             }
         } while ( tryagain );
+
+        return localFireCount;
+    }
+
+    private int fireNextItem(final AgendaFilter filter,
+                             int fireCount,
+                             int fireLimit,
+                             InternalAgendaGroup group) throws ConsequenceException {
+        RuleAgendaItem item;
+        int localFireCount = 0;
+
+        if ( workingMemory.getKnowledgeBase().getConfiguration().isSequential() ) {
+            item = (RuleAgendaItem) group.remove();
+            item.setBlocked(true);
+        }   else {
+            item = (RuleAgendaItem) group.peek();
+        }
+
+        if (item != null) {
+            // there was a rule, so evaluate it
+            evaluateQueriesForRule(item);
+            localFireCount = item.getRuleExecutor().evaluateNetworkAndFire(this.workingMemory, filter,
+                                                                           fireCount, fireLimit);
+        }
 
         return localFireCount;
     }
@@ -1314,33 +1326,40 @@ public class DefaultAgenda
             // Note that if a halt() command is given, the engine is changed to INACTIVE,
             // and isFiring returns false allowing it to exit before all rules are fired.
             //
-            while ( loop  )  {
+            while ( isFiring()  )  {
                 log.debug("Fire Loop");
                 if ( head != null ) {
                     // it is possible that there are no action propagations, but there are rules to fire.
                     this.workingMemory.flushPropagations(head);
+                    head = null;
                 }
 
-                if ( !limitReached && isFiring() ) {
+                // a halt may have occurred during the flushPropagations,
+                // which changes the isFiring state. So a second isFiring guard is needed
+                if (!isFiring()) {
+                    break;
+                }
+
+                evaluateEagerList();
+                InternalAgendaGroup group = getNextFocus();
+                if ( group != null && !limitReached ) {
                     // only fire rules while the limit has not reached.
                     // if halt is called, then isFiring will be false.
                     // The while loop may continue to loop, to keep flushing the action propagation queue
-                    returnedFireCount = fireNextItem(agendaFilter, fireCount, fireLimit);
+                    returnedFireCount = fireNextItem( agendaFilter, fireCount, fireLimit, group );
                     fireCount += returnedFireCount;
 
-                    limitReached = (fireLimit > 0 && fireCount >= fireLimit);
+                    limitReached = ( fireLimit > 0 && fireCount >= fireLimit );
+                    head = workingMemory.takeAllPropagations();
                 } else {
                     returnedFireCount = 0; // no rules fired this iteration, so we know this is 0
+                    group = null; // set the group to null in case the fire limit has been reached
                 }
 
-                head = workingMemory.takeAllPropagations();
-
-                if ( returnedFireCount == 0 && head == null ) {
+                if ( returnedFireCount == 0 && head == null && ( group == null || !group.isAutoDeactivate() ) ) {
                     // if true, the engine is now considered potentially at rest
-                    head = restHandler.handleRest(workingMemory, this);
+                    head = restHandler.handleRest( workingMemory, this );
                 }
-
-                loop = head != null || isFiring();
             }
 
             if ( this.focusStack.size() == 1 && getMainAgendaGroup().isEmpty() ) {
