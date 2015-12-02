@@ -79,6 +79,30 @@ public abstract class TaskQueryServiceBaseTest extends HumanTaskServicesBaseTest
         assertEquals(1, tasks.size());
     }
     
+    @Test
+    public void testGetTasksAssignedAsBusinessAdministratorWithGroupLangOneTask() {
+        // JBPM-4862
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [new Group('Crusaders')], }),";
+        str += "name = 'This is my task name' })";
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsBusinessAdministrator("Crusaders", "en-UK");
+        assertEquals(1, tasks.size());
+    }
+    
+    @Test
+    public void testGetTasksAssignedAsBusinessAdministratorWithUserOfGroupLangOneTask() {
+        // JBPM-4862
+        String str = "(with (new Task()) { priority = 55, taskData = (with( new TaskData()) { } ), ";
+        str += "peopleAssignments = (with ( new PeopleAssignments() ) { businessAdministrators = [new Group('Crusaders')], }),";
+        str += "name = 'This is my task name' })";
+        Task task = TaskFactory.evalTask(new StringReader(str));
+        taskService.addTask(task, new HashMap<String, Object>());
+        List<TaskSummary> tasks = taskService.getTasksAssignedAsBusinessAdministrator("Bobba Fet", "en-UK");
+        assertEquals(1, tasks.size());
+    }
+    
     
     // getTasksAssignedAsExcludedOwner(String userId, String language);
     
