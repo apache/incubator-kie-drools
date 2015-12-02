@@ -5898,4 +5898,44 @@ public class CepEspTest extends CommonTestMethodBase {
     @Role(Role.Type.EVENT)
     @Expires( "20s" )
     public static class SubClass extends SuperClass { }
+
+    @Test
+    public void testTemporalOperatorWithGlobal() {
+        // DROOLS-993
+        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
+                     "global java.util.List list;\n" +
+                     "global " + SimpleEvent.class.getCanonicalName() + " baseEvent;\n" +
+                     "\n" +
+                     "declare SimpleEvent\n" +
+                     "    @role( event )\n" +
+                     "    @timestamp( dateEvt )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R \n" +
+                     "    when\n" +
+                     "        $e : SimpleEvent( dateEvt before[10s] baseEvent.dateEvt )\n" +
+                     "    then\n" +
+                     "        list.add(\"1\");\n" +
+                     "    end\n " +
+                     "";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal("list", list);
+
+        ksession.setGlobal("baseEvent", new SimpleEvent("1", 15000L));
+
+        SimpleEvent event1 = new SimpleEvent("1", 0L);
+        ksession.insert(event1);
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+    }
 }

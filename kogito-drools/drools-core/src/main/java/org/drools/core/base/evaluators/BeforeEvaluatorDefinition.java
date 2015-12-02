@@ -16,23 +16,16 @@
 
 package org.drools.core.base.evaluators;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.VariableRestriction.LeftStartRightEndContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.time.Interval;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,9 +82,7 @@ public class BeforeEvaluatorDefinition
 
     private Map<String, BeforeEvaluator> cache         = Collections.emptyMap();
 
-    { init(); }
-
-    static void init() {
+    static {
         if ( Operator.determineOperator( beforeOp, false ) == null ) {
             BEFORE = Operator.addOperatorToRegistry( beforeOp, false );
             NOT_BEFORE = Operator.addOperatorToRegistry( beforeOp, true );
@@ -209,18 +200,8 @@ public class BeforeEvaluatorDefinition
     /**
      * Implements the 'before' evaluator itself
      */
-    public static class BeforeEvaluator extends BaseEvaluator {
+    public static class BeforeEvaluator extends PointInTimeEvaluator {
         private static final long serialVersionUID = 510l;
-
-        private long              initRange;
-        private long              finalRange;
-        private String            paramText;
-        private boolean           unwrapLeft;
-        private boolean           unwrapRight;
-
-        {
-            BeforeEvaluatorDefinition.init();
-        }
 
         public BeforeEvaluator() {
         }
@@ -232,35 +213,11 @@ public class BeforeEvaluatorDefinition
                                final boolean unwrapLeft,
                                final boolean unwrapRight) {
             super( type,
-                   isNegated ? NOT_BEFORE : BEFORE );
-            this.paramText = paramText;
-            this.unwrapLeft = unwrapLeft;
-            this.unwrapRight = unwrapRight;
-            this.setParameters( parameters );
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            super.readExternal( in );
-            initRange = in.readLong();
-            finalRange = in.readLong();
-            paramText = (String) in.readObject();
-            unwrapLeft = in.readBoolean();
-            unwrapRight = in.readBoolean();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal( out );
-            out.writeLong( initRange );
-            out.writeLong( finalRange );
-            out.writeObject( paramText );
-            out.writeBoolean( unwrapLeft );
-            out.writeBoolean( unwrapRight );
-        }
-
-        @Override
-        public boolean isTemporal() {
-            return true;
+                   isNegated ? NOT_BEFORE : BEFORE,
+                   parameters,
+                   paramText,
+                   unwrapLeft,
+                   unwrapRight );
         }
 
         @Override
@@ -274,7 +231,7 @@ public class BeforeEvaluatorDefinition
                 } else if ( init != Interval.MIN && end == Interval.MAX ) {
                     init = Interval.MIN;
                     end = initRange - 1;
-                } else if ( init == Interval.MIN && end == Interval.MAX ) {
+                } else if ( init == Interval.MIN ) {
                     init = 0;
                     end = -1;
                 } else {
@@ -282,160 +239,23 @@ public class BeforeEvaluatorDefinition
                     end = Interval.MAX;
                 }
             }
-            return new Interval( init,
-                                 end );
+            return new Interval( init, end );
         }
 
-        public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final InternalReadAccessor extractor,
-                                final InternalFactHandle object1,
-                                final FieldValue object2) {
-            long rightTS;
-            if ( extractor.isSelfReference() ) {
-                rightTS = ((EventFactHandle) object1).getStartTimestamp();
-            } else {
-                rightTS = extractor.getLongValue( workingMemory, object1.getObject() );
-            }
-
-            long leftTS = ((Date)object2.getValue()).getTime();
-
-            return evaluate(rightTS, leftTS);
-        }
-
-        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                                           final VariableContextEntry context,
-                                           final InternalFactHandle left) {
-            if ( context.rightNull || 
-                    context.declaration.getExtractor().isNullValue( workingMemory, left.getObject() )) {
-                return false;
-            }
-            
-            long rightTS = ((LeftStartRightEndContextEntry)context).timestamp;
-            long leftTS;
-            if ( context.declaration.getExtractor().isSelfReference() ) {
-                leftTS = ((EventFactHandle) left).getStartTimestamp();
-            } else {
-                leftTS = context.declaration.getExtractor().getLongValue( workingMemory, left.getObject() );
-            }
-
-            return evaluate(rightTS, leftTS);
-        }
-
-        private boolean evaluate(long rightTS, long leftTS) {
+        @Override
+        protected boolean evaluate(long rightTS, long leftTS) {
             long dist = leftTS - rightTS;
             return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
         }
 
-        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-                                          final VariableContextEntry context,
-                                          final InternalFactHandle right) {
-            if ( context.leftNull ||
-                    context.extractor.isNullValue( workingMemory, right.getObject() ) ) {
-                return false;
-            }
-
-            long leftTS = ((LeftStartRightEndContextEntry)context).timestamp;
-            long rightTS;
-            if ( context.getFieldExtractor().isSelfReference() ) {
-                rightTS = ((EventFactHandle) right).getEndTimestamp();
-            } else {
-                rightTS = context.getFieldExtractor().getLongValue( workingMemory, right.getObject() );
-            }
-            return evaluate(rightTS, leftTS);
-        }
-
-        public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final InternalReadAccessor extractor1,
-                                final InternalFactHandle handle1,
-                                final InternalReadAccessor extractor2,
-                                final InternalFactHandle handle2) {
-            if ( extractor1.isNullValue( workingMemory, handle1.getObject() ) || 
-                    extractor2.isNullValue( workingMemory, handle2.getObject() ) ) {
-                return false;
-            }
-            
-            long rightTS;
-            if ( extractor1.isSelfReference() ) {
-                rightTS = ((EventFactHandle) handle1).getEndTimestamp();
-            } else {
-                rightTS = extractor1.getLongValue( workingMemory, handle1.getObject() );
-            }
-            
-            long leftTS;
-            if ( extractor2.isSelfReference() ) {
-                leftTS = ((EventFactHandle) handle2).getStartTimestamp();
-            } else {
-                leftTS = extractor2.getLongValue( workingMemory, handle2.getObject() );
-            }
-
-            return evaluate(rightTS, leftTS);
-        }
-
-        public String toString() {
-            return this.getOperator().toString() + "[" + paramText + "]";
-        }
-
-        /* (non-Javadoc)
-         * @see java.lang.Object#hashCode()
-         */
         @Override
-        public int hashCode() {
-            final int PRIME = 31;
-            int result = super.hashCode();
-            result = PRIME * result + (int) (finalRange ^ (finalRange >>> 32));
-            result = PRIME * result + (int) (initRange ^ (initRange >>> 32));
-            result = PRIME * result + ((paramText == null) ? 0 : paramText.hashCode());
-            result = PRIME * result + (unwrapLeft ? 1231 : 1237);
-            result = PRIME * result + (unwrapRight ? 1231 : 1237);
-            return result;
+        protected long getLeftTimestamp( InternalFactHandle handle ) {
+            return ( (EventFactHandle) handle ).getStartTimestamp();
         }
 
-        /* (non-Javadoc)
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
         @Override
-        public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( !super.equals( obj ) ) return false;
-            if ( getClass() != obj.getClass() ) return false;
-            BeforeEvaluator other = (BeforeEvaluator) obj;
-            if ( finalRange != other.finalRange ) return false;
-            if ( initRange != other.initRange ) return false;
-            if ( paramText == null ) {
-                if ( other.paramText != null ) return false;
-            } else if ( !paramText.equals( other.paramText ) ) return false;
-            if ( unwrapLeft != other.unwrapLeft ) return false;
-            if ( unwrapRight != other.unwrapRight ) return false;
-            return true;
+        protected long getRightTimestamp( InternalFactHandle handle ) {
+            return ( (EventFactHandle) handle ).getEndTimestamp();
         }
-
-        /**
-         * This methods sets the parameters appropriately.
-         *
-         * @param parameters
-         */
-        private void setParameters(Long[] parameters) {
-            if ( parameters == null || parameters.length == 0 ) {
-                // open bounded range
-                this.initRange = 1;
-                this.finalRange = Long.MAX_VALUE;
-                return;
-            } else if ( parameters.length == 1 ) {
-                this.initRange = parameters[0].longValue();
-                this.finalRange = Long.MAX_VALUE;
-            } else if ( parameters.length == 2 ) {
-                if ( parameters[0].longValue() <= parameters[1].longValue() ) {
-                    this.initRange = parameters[0].longValue();
-                    this.finalRange = parameters[1].longValue();
-                } else {
-                    this.initRange = parameters[1].longValue();
-                    this.finalRange = parameters[0].longValue();
-                }
-            } else {
-                throw new RuntimeException( "[Before Evaluator]: Not possible to have more than 2 parameters: '" + paramText + "'" );
-            }
-        }
-
     }
-
 }

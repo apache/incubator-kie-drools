@@ -91,7 +91,7 @@ public class EvaluatorWrapper
      */
     public boolean evaluate(Object left,
                             Object right) {
-        if (rightBinding == null) {
+        if (rightHandle == null || rightBinding == null) {
             return evaluator.evaluate( workingMemory,
                                        leftBinding != null ? leftExtractor : new ConstantValueReader(left),
                                        leftHandle,
@@ -100,7 +100,7 @@ public class EvaluatorWrapper
         return evaluator.evaluate( workingMemory,
                                    leftBinding != null ? leftExtractor : new ConstantValueReader(left),
                                    leftHandle,
-                                   rightHandle != null ? rightExtractor : new ConstantValueReader( rightExtractor.getValue( workingMemory, right ) ),
+                                   rightExtractor,
                                    rightHandle );
     }
 

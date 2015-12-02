@@ -16,23 +16,16 @@
 
 package org.drools.core.base.evaluators;
 
-import org.drools.core.base.BaseEvaluator;
 import org.drools.core.base.ValueType;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.rule.VariableRestriction.LeftEndRightStartContextEntry;
-import org.drools.core.rule.VariableRestriction.VariableContextEntry;
 import org.drools.core.spi.Evaluator;
-import org.drools.core.spi.FieldValue;
-import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.time.Interval;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,39 +72,38 @@ public class AfterEvaluatorDefinition
     implements
     EvaluatorDefinition {
 
-    protected static final String   afterOp = "after";
+    protected static final String afterOp = "after";
 
-    public static Operator          AFTER;
-    public static Operator          NOT_AFTER;
+    public static Operator AFTER;
+    public static Operator NOT_AFTER;
 
-    private static String[]         SUPPORTED_IDS;
+    private static String[] SUPPORTED_IDS;
 
-    private Map<String, AfterEvaluator> cache         = Collections.emptyMap();
+    private Map<String, AfterEvaluator> cache = Collections.emptyMap();
 
-    { init(); }
-
-    static void init() {
+    static {
         if ( Operator.determineOperator( afterOp, false ) == null ) {
             AFTER = Operator.addOperatorToRegistry( afterOp, false );
             NOT_AFTER = Operator.addOperatorToRegistry( afterOp, true );
-            SUPPORTED_IDS = new String[] { afterOp };
+            SUPPORTED_IDS = new String[]{afterOp};
         }
     }
 
     @SuppressWarnings("unchecked")
-    public void readExternal(ObjectInput in) throws IOException,
-            ClassNotFoundException {
+    public void readExternal( ObjectInput in ) throws IOException,
+                                                      ClassNotFoundException {
         cache = (Map<String, AfterEvaluator>) in.readObject();
     }
 
-    public void writeExternal(ObjectOutput out) throws IOException {
+    public void writeExternal( ObjectOutput out ) throws IOException {
         out.writeObject( cache );
     }
+
     /**
      * @inheridDoc
      */
-    public Evaluator getEvaluator(ValueType type,
-                                  Operator operator) {
+    public Evaluator getEvaluator( ValueType type,
+                                   Operator operator ) {
         return this.getEvaluator( type,
                                   operator.getOperatorString(),
                                   operator.isNegated(),
@@ -123,9 +115,9 @@ public class AfterEvaluatorDefinition
     /**
      * @inheridDoc
      */
-    public Evaluator getEvaluator(ValueType type,
-                                  Operator operator,
-                                  String parameterText) {
+    public Evaluator getEvaluator( ValueType type,
+                                   Operator operator,
+                                   String parameterText ) {
         return this.getEvaluator( type,
                                   operator.getOperatorString(),
                                   operator.isNegated(),
@@ -137,10 +129,10 @@ public class AfterEvaluatorDefinition
     /**
      * @inheritDoc
      */
-    public Evaluator getEvaluator(final ValueType type,
-                                  final String operatorId,
-                                  final boolean isNegated,
-                                  final String parameterText) {
+    public Evaluator getEvaluator( final ValueType type,
+                                   final String operatorId,
+                                   final boolean isNegated,
+                                   final String parameterText ) {
         return this.getEvaluator( type,
                                   operatorId,
                                   isNegated,
@@ -153,16 +145,16 @@ public class AfterEvaluatorDefinition
     /**
      * @inheritDoc
      */
-    public Evaluator getEvaluator(final ValueType type,
-                                  final String operatorId,
-                                  final boolean isNegated,
-                                  final String parameterText,
-                                  final Target left,
-                                  final Target right) {
+    public Evaluator getEvaluator( final ValueType type,
+                                   final String operatorId,
+                                   final boolean isNegated,
+                                   final String parameterText,
+                                   final Target left,
+                                   final Target right ) {
         if ( this.cache == Collections.EMPTY_MAP ) {
             this.cache = new HashMap<String, AfterEvaluator>();
         }
-        String key = left+":"+right+":"+isNegated + ":" + parameterText;
+        String key = left + ":" + right + ":" + isNegated + ":" + parameterText;
         AfterEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
             Long[] params = TimeIntervalParser.parse( parameterText );
@@ -202,7 +194,7 @@ public class AfterEvaluatorDefinition
     /**
      * @inheritDoc
      */
-    public boolean supportsType(ValueType type) {
+    public boolean supportsType( ValueType type ) {
         // supports all types, since it operates over fact handles
         // Note: should we change this interface to allow checking of event classes only?
         return true;
@@ -211,58 +203,24 @@ public class AfterEvaluatorDefinition
     /**
      * Implements the 'after' evaluator itself
      */
-    public static class AfterEvaluator extends BaseEvaluator {
+    public static class AfterEvaluator extends PointInTimeEvaluator {
         private static final long serialVersionUID = 510l;
-
-        private long              initRange;
-        private long              finalRange;
-        private String            paramText;
-        private boolean           unwrapLeft;
-        private boolean           unwrapRight;
-
-        {
-            AfterEvaluatorDefinition.init();
-        }
 
         public AfterEvaluator() {
         }
 
-        public AfterEvaluator(final ValueType type,
-                              final boolean isNegated,
-                              final Long[] parameters,
-                              final String paramText,
-                              final boolean unwrapLeft,
-                              final boolean unwrapRight) {
-            super(type,
-                    isNegated ? NOT_AFTER : AFTER);
-            this.paramText = paramText;
-            this.unwrapLeft = unwrapLeft;
-            this.unwrapRight = unwrapRight;
-            this.setParameters(parameters);
-        }
-
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-            super.readExternal( in );
-            initRange = in.readLong();
-            finalRange = in.readLong();
-            unwrapLeft = in.readBoolean();
-            unwrapRight = in.readBoolean();
-            paramText = (String) in.readObject();
-        }
-
-        public void writeExternal(ObjectOutput out) throws IOException {
-            super.writeExternal( out );
-            out.writeLong( initRange );
-            out.writeLong( finalRange );
-            out.writeBoolean( unwrapLeft );
-            out.writeBoolean( unwrapRight );
-            out.writeObject( paramText );
-        }
-
-        @Override
-        public boolean isTemporal() {
-            return true;
+        public AfterEvaluator( final ValueType type,
+                               final boolean isNegated,
+                               final Long[] parameters,
+                               final String paramText,
+                               final boolean unwrapLeft,
+                               final boolean unwrapRight ) {
+            super( type,
+                   isNegated ? NOT_AFTER : AFTER,
+                   parameters,
+                   paramText,
+                   unwrapLeft,
+                   unwrapRight );
         }
 
         @Override
@@ -276,7 +234,7 @@ public class AfterEvaluatorDefinition
                 } else if ( init != Interval.MIN && end == Interval.MAX ) {
                     init = Interval.MIN;
                     end = initRange - 1;
-                } else if ( init == Interval.MIN && end == Interval.MAX ) {
+                } else if ( init == Interval.MIN ) {
                     init = 0;
                     end = -1;
                 } else {
@@ -284,154 +242,23 @@ public class AfterEvaluatorDefinition
                     end = Interval.MAX;
                 }
             }
-            return new Interval( init,
-                                 end );
+            return new Interval( init, end );
         }
 
-        public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final InternalReadAccessor extractor,
-                                final InternalFactHandle object1,
-                                final FieldValue object2) {
-            long rightTS;
-            if ( extractor.isSelfReference() ) {
-                rightTS = ((EventFactHandle) object1).getStartTimestamp();
-            } else {
-                rightTS = extractor.getLongValue( workingMemory, object1.getObject() );
-            }
-
-            long leftTS = ((Date)object2.getValue()).getTime();
-
-            return evaluate(rightTS, leftTS);
-        }
-
-        private boolean evaluate(long rightTS, long leftTS) {
+        @Override
+        protected boolean evaluate( long rightTS, long leftTS ) {
             long dist = rightTS - leftTS;
-            return this.getOperator().isNegated() ^ (dist >= this.initRange && dist <= this.finalRange);
-        }
-
-        public boolean evaluateCachedRight(InternalWorkingMemory workingMemory,
-                                           final VariableContextEntry context,
-                                           final InternalFactHandle left) {
-            if ( context.rightNull || 
-                    context.declaration.getExtractor().isNullValue( workingMemory, left.getObject() )) {
-                return false;
-            }
-            
-            long rightTS = ((LeftEndRightStartContextEntry)context).timestamp;
-            long leftTS;
-            if ( context.declaration.getExtractor().isSelfReference() ) {
-                leftTS = ((EventFactHandle) left).getEndTimestamp();
-            } else {
-                leftTS = context.declaration.getExtractor().getLongValue( workingMemory, left.getObject() );
-            }
-
-            return evaluate(rightTS, leftTS);
-        }
-
-        public boolean evaluateCachedLeft(InternalWorkingMemory workingMemory,
-                                          final VariableContextEntry context,
-                                          final InternalFactHandle right) {
-            if ( context.leftNull ||
-                    context.extractor.isNullValue( workingMemory, right.getObject() ) ) {
-                return false;
-            }
-       
-            long leftTS = ((LeftEndRightStartContextEntry)context).timestamp; // either long or endTimeStamp
-            long rightTS;
-            if ( context.getFieldExtractor().isSelfReference() ) {
-                rightTS = ((EventFactHandle) right).getStartTimestamp();
-            } else {
-                rightTS = context.getFieldExtractor().getLongValue( workingMemory, right.getObject() );
-            }
-
-            return evaluate(rightTS, leftTS);
-        }
-
-        public boolean evaluate(InternalWorkingMemory workingMemory,
-                                final InternalReadAccessor extractor1,
-                                final InternalFactHandle handle1,
-                                final InternalReadAccessor extractor2,
-                                final InternalFactHandle handle2) {
-            if ( extractor1.isNullValue( workingMemory, handle1.getObject() ) || 
-                    extractor2.isNullValue( workingMemory, handle2.getObject() ) ) {
-                return false;
-            }
-
-            long rightTS;
-            if ( extractor1.isSelfReference() ) {
-                rightTS = ((EventFactHandle) handle1).getStartTimestamp();
-            } else {
-                rightTS = extractor1.getLongValue( workingMemory, handle1.getObject() );
-            }                        
-            
-            long leftTS;
-            if ( extractor2.isSelfReference() ) {
-                leftTS = ((EventFactHandle) handle2).getEndTimestamp();
-            } else {
-                leftTS = extractor2.getLongValue( workingMemory, handle2.getObject() );
-            }
-
-            return evaluate(rightTS, leftTS);
-        }
-
-        public String toString() {
-            return this.getOperator().toString() + this.paramText != null ? "[" + paramText + "]" : "";
+            return this.getOperator().isNegated() ^ ( dist >= this.initRange && dist <= this.finalRange );
         }
 
         @Override
-        public int hashCode() {
-            final int prime = 31;
-            int result = super.hashCode();
-            result = prime * result + (int) (finalRange ^ (finalRange >>> 32));
-            result = prime * result + (int) (initRange ^ (initRange >>> 32));
-            result = prime * result + ((paramText == null) ? 0 : paramText.hashCode());
-            result = prime * result + (unwrapLeft ? 1231 : 1237);
-            result = prime * result + (unwrapRight ? 1231 : 1237);
-            return result;
+        protected long getLeftTimestamp( InternalFactHandle handle ) {
+            return ( (EventFactHandle) handle ).getEndTimestamp();
         }
 
         @Override
-        public boolean equals(Object obj) {
-            if ( this == obj ) return true;
-            if ( !super.equals( obj ) ) return false;
-            if ( getClass() != obj.getClass() ) return false;
-            AfterEvaluator other = (AfterEvaluator) obj;
-            if ( finalRange != other.finalRange ) return false;
-            if ( initRange != other.initRange ) return false;
-            if ( paramText == null ) {
-                if ( other.paramText != null ) return false;
-            } else if ( !paramText.equals( other.paramText ) ) return false;
-            if ( unwrapLeft != other.unwrapLeft ) return false;
-            if ( unwrapRight != other.unwrapRight ) return false;
-            return true;
+        protected long getRightTimestamp( InternalFactHandle handle ) {
+            return ( (EventFactHandle) handle ).getStartTimestamp();
         }
-
-        /**
-         * This methods sets the parameters appropriately.
-         *
-         * @param parameters
-         */
-        private void setParameters(Long[] parameters) {
-            if ( parameters == null || parameters.length == 0 ) {
-                // open bounded range
-                this.initRange = 1;
-                this.finalRange = Long.MAX_VALUE;
-            } else if ( parameters.length == 1 ) {
-                this.initRange = parameters[0].longValue();
-                this.finalRange = Long.MAX_VALUE;
-            } else if ( parameters.length == 2 ) {
-                if ( parameters[0].longValue() <= parameters[1].longValue() ) {
-                    this.initRange = parameters[0].longValue();
-                    this.finalRange = parameters[1].longValue();
-                } else {
-                    this.initRange = parameters[1].longValue();
-                    this.finalRange = parameters[0].longValue();
-                }
-            } else {
-                throw new RuntimeException( "[After Evaluator]: Not possible to have more than 2 parameters: '" + paramText + "'" );
-            }
-        }
-
     }
-
 }
