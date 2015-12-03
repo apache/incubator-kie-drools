@@ -230,7 +230,9 @@ public class TypeDeclarationConfigurator {
                 }
                 return;
             }
-            type.setExpirationOffset(TimeIntervalParser.parse( expiration )[0]);
+            long offset = TimeIntervalParser.parseSingle( expiration );
+            // @Expires( -1 ) means never expire
+            type.setExpirationOffset(offset == -1L ? Long.MAX_VALUE : offset);
         }
     }
 

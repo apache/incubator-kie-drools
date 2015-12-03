@@ -31,17 +31,17 @@ public class TimeIntervalParser {
         }
         String[] params = paramText.split( "," );
         Long[] result = new Long[params.length];
-        int index = 0;
-        for ( String param : params ) {
-            String trimmed = param.trim();
-            if ( trimmed.length() > 0 ) {
-                result[index++] = TimeUtils.parseTimeString( param );
-            } else {
-                throw new RuntimeException( "Empty parameters not allowed in: [" + paramText + "]" );
-            }
+        for ( int i = 0; i < params.length; i++ ) {
+            result[i] = parseSingle( params[i] );
         }
         return result;
     }
 
-
+    public static Long parseSingle(String param) {
+        param = param.trim();
+        if ( param.length() > 0 ) {
+            return TimeUtils.parseTimeString( param );
+        }
+        throw new RuntimeException( "Empty parameters not allowed in: [" + param + "]" );
+    }
 }
