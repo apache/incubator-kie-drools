@@ -154,7 +154,7 @@ public class BeforeEvaluatorDefinition
         String key = left+":"+right+":"+isNegated + ":" + parameterText;
         BeforeEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
-            Long[] params = TimeIntervalParser.parse( parameterText );
+            long[] params = TimeIntervalParser.parse( parameterText );
             eval = new BeforeEvaluator( type,
                                         isNegated,
                                         params,
@@ -208,7 +208,7 @@ public class BeforeEvaluatorDefinition
 
         public BeforeEvaluator(final ValueType type,
                                final boolean isNegated,
-                               final Long[] parameters,
+                               final long[] parameters,
                                final String paramText,
                                final boolean unwrapLeft,
                                final boolean unwrapRight) {

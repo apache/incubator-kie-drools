@@ -25,23 +25,23 @@ public class TimeIntervalParser {
 
     private TimeIntervalParser() { }
 
-    public static Long[] parse(String paramText) {
+    public static long[] parse(String paramText) {
         if ( paramText == null || paramText.trim().length() == 0 ) {
-            return new Long[0];
+            return new long[0];
         }
         String[] params = paramText.split( "," );
-        Long[] result = new Long[params.length];
-        int index = 0;
-        for ( String param : params ) {
-            String trimmed = param.trim();
-            if ( trimmed.length() > 0 ) {
-                result[index++] = TimeUtils.parseTimeString( param );
-            } else {
-                throw new RuntimeException( "Empty parameters not allowed in: [" + paramText + "]" );
-            }
+        long[] result = new long[params.length];
+        for ( int i = 0; i < params.length; i++ ) {
+            result[i] = parseSingle( params[i] );
         }
         return result;
     }
 
-
+    public static long parseSingle(String param) {
+        param = param.trim();
+        if ( param.length() > 0 ) {
+            return TimeUtils.parseTimeString( param );
+        }
+        throw new RuntimeException( "Empty parameters not allowed in: [" + param + "]" );
+    }
 }

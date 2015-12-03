@@ -155,7 +155,7 @@ public class CoincidesEvaluatorDefinition
         String key = left + ":" + right + ":" + isNegated + ":" + parameterText;
         CoincidesEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
-            Long[] params = TimeIntervalParser.parse( parameterText );
+            long[] params = TimeIntervalParser.parse( parameterText );
             eval = new CoincidesEvaluator( type,
                                            isNegated,
                                            params,
@@ -219,7 +219,7 @@ public class CoincidesEvaluatorDefinition
 
         public CoincidesEvaluator(final ValueType type,
                                   final boolean isNegated,
-                                  final Long[] parameters,
+                                  final long[] parameters,
                                   final String paramText,
                                   final boolean unwrapLeft,
                                   final boolean unwrapRight) {
@@ -393,7 +393,7 @@ public class CoincidesEvaluatorDefinition
          *
          * @param parameters
          */
-        private void setParameters(Long[] parameters) {
+        private void setParameters(long[] parameters) {
             if ( parameters == null || parameters.length == 0 ) {
                 // open bounded range
                 this.startDev = 0;
@@ -407,12 +407,12 @@ public class CoincidesEvaluatorDefinition
                 }
                 if ( parameters.length == 1 ) {
                     // same deviation for both
-                    this.startDev = parameters[0].longValue();
-                    this.endDev = parameters[0].longValue();
+                    this.startDev = parameters[0];
+                    this.endDev = parameters[0];
                 } else if ( parameters.length == 2 ) {
                     // different deviation 
-                    this.startDev = parameters[0].longValue();
-                    this.endDev = parameters[1].longValue();
+                    this.startDev = parameters[0];
+                    this.endDev = parameters[1];
                 } else {
                     throw new RuntimeException( "[Coincides Evaluator]: Not possible to have more than 2 parameters: '" + paramText + "'" );
                 }
