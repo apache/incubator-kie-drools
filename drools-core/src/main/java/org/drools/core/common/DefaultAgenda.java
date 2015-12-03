@@ -1402,7 +1402,7 @@ public class DefaultAgenda
     }
 
     private void waitAndEnterExecutionState( ExecutionState newState ) {
-        if (currentState != ExecutionState.INACTIVE) {
+        while (currentState != ExecutionState.INACTIVE) {
             try {
                 stateMachineLock.wait();
             } catch (InterruptedException e) {
