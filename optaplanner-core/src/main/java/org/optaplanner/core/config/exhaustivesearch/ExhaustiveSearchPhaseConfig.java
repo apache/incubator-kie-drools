@@ -273,7 +273,7 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
         valueSorterManner = ConfigUtils.inheritOverwritableProperty(valueSorterManner,
                 inheritedConfig.getValueSorterManner());
         entitySelectorConfig = ConfigUtils.inheritConfig(entitySelectorConfig, inheritedConfig.getEntitySelectorConfig());
-        moveSelectorConfig = ConfigUtils.inheritConfig(moveSelectorConfig, inheritedConfig.getMoveSelectorConfig());
+        moveSelectorConfig = ConfigUtils.<MoveSelectorConfig>inheritConfig(moveSelectorConfig, inheritedConfig.getMoveSelectorConfig());
     }
 
 }
