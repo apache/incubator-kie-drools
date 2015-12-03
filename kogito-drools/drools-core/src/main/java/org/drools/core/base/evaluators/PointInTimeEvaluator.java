@@ -41,7 +41,7 @@ public abstract class PointInTimeEvaluator extends BaseEvaluator {
 
     public PointInTimeEvaluator(final ValueType type,
                                 final Operator operator,
-                                final Long[] parameters,
+                                final long[] parameters,
                                 final String paramText,
                                 final boolean unwrapLeft,
                                 final boolean unwrapRight) {
@@ -163,7 +163,7 @@ public abstract class PointInTimeEvaluator extends BaseEvaluator {
         return evaluate(rightTS, leftTS);
     }
 
-    private void setParameters(Long[] parameters) {
+    private void setParameters(long[] parameters) {
         if ( parameters == null || parameters.length == 0 ) {
             // open bounded range
             this.initRange = 1;

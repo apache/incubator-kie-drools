@@ -491,7 +491,7 @@ public class CepEspTest extends CommonTestMethodBase {
         // read in the source
         TypeDeclaration factType = ((KnowledgeBaseImpl)kbase).getTypeDeclaration( StockTick.class );
 
-        assertEquals( TimeIntervalParser.parse( "1h30m" )[0].longValue(),
+        assertEquals( TimeIntervalParser.parse( "1h30m" )[0],
                       factType.getExpirationOffset() );
     }
 
@@ -509,7 +509,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertNotNull( node );
 
         // the expiration policy @expires(10m) should override the temporal operator usage 
-        assertEquals( TimeIntervalParser.parse( "10m" )[0].longValue() + 1,
+        assertEquals( TimeIntervalParser.parse( "10m" )[0] + 1,
                       node.getExpirationOffset() );
     }
 
@@ -526,7 +526,7 @@ public class CepEspTest extends CommonTestMethodBase {
         assertNotNull( node );
 
         // the expiration policy @expires(10m) should override the temporal operator usage 
-        assertEquals( TimeIntervalParser.parse( "10m" )[0].longValue() + 1,
+        assertEquals( TimeIntervalParser.parse( "10m" )[0] + 1,
                       node.getExpirationOffset() );
     }
 
@@ -5937,5 +5937,62 @@ public class CepEspTest extends CommonTestMethodBase {
         ksession.fireAllRules();
 
         assertEquals( 1, list.size() );
+    }
+
+    @Test
+    public void testNoExpirationWithNot() {
+        // DROOLS-984
+        checkNoExpiration("$s: SimpleEvent ()\n" +
+                          "not SimpleEvent (this != $s, this after[0, 30s] $s)\n" );
+    }
+
+    @Test
+    public void testNoExpirationWithSlidingWindow() {
+        // DROOLS-984
+        checkNoExpiration("SimpleEvent( ) over window:time(30s)\n" );
+    }
+
+    @Test
+    public void testNoExpirationWithNoTemporalConstraint() {
+        // DROOLS-984
+        checkNoExpiration("SimpleEvent( )\n" );
+    }
+
+    private void checkNoExpiration(String lhs) {
+        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
+                     "declare SimpleEvent\n" +
+                     "    @role( event )\n" +
+                     "    @expires( -1 )\n" +
+                     "    @timestamp( dateEvt )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     lhs +
+                     "then\n" +
+                     "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        SimpleEvent event1 = new SimpleEvent("1", 0L);
+        ksession.insert(event1);
+        ksession.fireAllRules();
+
+        //Session should only contain the fact we just inserted.
+        assertEquals( 1, ksession.getFactCount() );
+
+        clock.advanceTime( 60000, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+
+        //We've disabled expiration, so fact should still be in WorkingMemory.
+        assertEquals( 1, ksession.getFactCount() );
+
+        ksession.dispose();
     }
 }

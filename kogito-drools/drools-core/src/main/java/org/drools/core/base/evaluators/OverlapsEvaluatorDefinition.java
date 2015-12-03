@@ -165,7 +165,7 @@ public class OverlapsEvaluatorDefinition
         String key = isNegated + ":" + parameterText;
         OverlapsEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
-            Long[] params = TimeIntervalParser.parse( parameterText );
+            long[] params = TimeIntervalParser.parse( parameterText );
             eval = new OverlapsEvaluator( type,
                                           isNegated,
                                           params,
@@ -224,7 +224,7 @@ public class OverlapsEvaluatorDefinition
 
         public OverlapsEvaluator(final ValueType type,
                                  final boolean isNegated,
-                                 final Long[] parameters, 
+                                 final long[] parameters,
                                  final String paramText) {
             super( type,
                    isNegated ? OVERLAPS_NOT : OVERLAPS );
@@ -351,7 +351,7 @@ public class OverlapsEvaluatorDefinition
          *
          * @param parameters
          */
-        private void setParameters(Long[] parameters) {
+        private void setParameters(long[] parameters) {
             if ( parameters == null || parameters.length == 0 ) {
                 // open bounded range
                 this.minDev = 1;
@@ -359,11 +359,11 @@ public class OverlapsEvaluatorDefinition
             } else if ( parameters.length == 1 ) {
                 // open bounded ranges
                 this.minDev = 1;
-                this.maxDev = parameters[0].longValue();
+                this.maxDev = parameters[0];
             } else if ( parameters.length == 2 ) {
                 // open bounded ranges
-                this.minDev = parameters[0].longValue();
-                this.maxDev = parameters[1].longValue();
+                this.minDev = parameters[0];
+                this.maxDev = parameters[1];
             } else {
                 throw new RuntimeException( "[Overlaps Evaluator]: Not possible to use " + parameters.length + " parameters: '" + paramText + "'" );
             }
