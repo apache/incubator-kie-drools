@@ -52,7 +52,7 @@ tokens {
         return errors;
     }
 
-    /** Override this method to not output mesages */
+    /** Overridden to not output messages */
     public void emitErrorMessage(String msg) {
     }
 }
@@ -68,7 +68,7 @@ tokens {
         return errors;
     }
 
-    /** Override this method to not output mesages */
+    /** Overridden to not output messages */
     public void emitErrorMessage(String msg) {
     }
 

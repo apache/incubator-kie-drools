@@ -45,7 +45,7 @@ tokens {
         return errors;
     }
 
-    /** Overrided this method to not output mesages */
+    /** Overridden to not output messages */
     public void emitErrorMessage(String msg) {
     }
     

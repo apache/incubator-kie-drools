@@ -36,6 +36,7 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -102,7 +103,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
         String drl = "package org.drools.compiler.integrationtests\n" +
                 "import " + Message.class.getCanonicalName() + "\n" +
                 "rule R1 when\n" +
-                "   $m : Message( mesage == \"Hello World\" )\n" +
+                "   $m : Message( nonExistentField == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n";
 
