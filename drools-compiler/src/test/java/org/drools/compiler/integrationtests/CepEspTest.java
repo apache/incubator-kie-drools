@@ -5898,4 +5898,49 @@ public class CepEspTest extends CommonTestMethodBase {
     @Role(Role.Type.EVENT)
     @Expires( "20s" )
     public static class SubClass extends SuperClass { }
+
+    @Test
+    public void testNoExpiration() {
+        // DROOLS-984
+        String drl = "import " + SimpleEvent.class.getCanonicalName() + "\n" +
+                     "global java.util.List list;\n" +
+                     "\n" +
+                     "declare SimpleEvent\n" +
+                     "    @role( event )\n" +
+                     "    @timestamp( dateEvt )\n" +
+                     "    @expires( -1 )\n" +
+                     "end\n" +
+                     "\n" +
+                     "rule R when\n" +
+                     "    $s: SimpleEvent ()\n" +
+                     "    not SimpleEvent (this != $s, this after[0, 30s] $s)\n" +
+                     "then\n" +
+                     "end";
+
+        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieBase kbase = helper.build( EventProcessingOption.STREAM );
+        KieSession ksession = kbase.newKieSession( sessionConfig, null );
+
+        PseudoClockScheduler clock = ksession.getSessionClock();
+
+        SimpleEvent event1 = new SimpleEvent("1", 0L);
+        ksession.insert(event1);
+        ksession.fireAllRules();
+
+        //Session should only contain the fact we just inserted.
+        assertEquals(1, ksession.getFactCount());
+        Collection<FactHandle> factHandles = ksession.getFactHandles();
+
+        clock.advanceTime(60000, TimeUnit.MILLISECONDS );
+        ksession.fireAllRules();
+
+        //We've disabled expiration, so fact should still be in WorkingMemory.
+        assertEquals(1, ksession.getFactCount());
+
+        ksession.dispose();
+    }
 }
