@@ -118,8 +118,7 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
                     + " annotated property (" + variableMemberAccessor.getName()
                     + ") that has no valueRangeProviderRefs (" + Arrays.toString(valueRangeProviderRefs) + ").");
         }
-        List<ValueRangeDescriptor> valueRangeDescriptorList
-                = new ArrayList<ValueRangeDescriptor>(valueRangeProviderRefs.length);
+        List<ValueRangeDescriptor> valueRangeDescriptorList = new ArrayList<ValueRangeDescriptor>(valueRangeProviderRefs.length);
         boolean addNullInValueRange = nullable && valueRangeProviderRefs.length == 1;
         for (String valueRangeProviderRef : valueRangeProviderRefs) {
             valueRangeDescriptorList.add(buildValueRangeDescriptor(descriptorPolicy, valueRangeProviderRef, addNullInValueRange));

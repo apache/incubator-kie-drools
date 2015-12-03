@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.List;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -66,6 +69,55 @@ public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractV
                     + " annotated member (" + memberAccessor
                     + ") that does not return a " + Collection.class.getSimpleName()
                     + " or a " + ValueRange.class.getSimpleName() + ".");
+        }
+        if (collectionWrapping) {
+            Type genericType = memberAccessor.getGenericType();
+            // TODO PLANNER-383 As of 7.0, it should fail fast if a ValueRangeProvider's Collection is unparameterized
+//            if (!(genericType instanceof ParameterizedType)) {
+//                throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+//                        + ") has a " + PlanningVariable.class.getSimpleName()
+//                        + " annotated property (" + variableDescriptor.getVariableName()
+//                        + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+//                        + " annotated member (" + memberAccessor
+//                        + ") that returns a " + Collection.class.getSimpleName()
+//                        + " which has no generic parameters.");
+//            }
+            if (genericType instanceof ParameterizedType) { // TODO PLANNER-383 remove this if statement
+                ParameterizedType parameterizedType = (ParameterizedType) genericType;
+                Type[] typeArguments = parameterizedType.getActualTypeArguments();
+                if (typeArguments.length != 1) {
+                    throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                            + ") has a " + PlanningVariable.class.getSimpleName()
+                            + " annotated property (" + variableDescriptor.getVariableName()
+                            + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                            + " annotated member (" + memberAccessor
+                            + ") that returns a parameterized " + Collection.class.getSimpleName()
+                            + ") with an unsupported number of generic parameters (" + typeArguments.length + ").");
+                }
+                Type typeArgument = typeArguments[0];
+                if (!(typeArgument instanceof Class)) {
+                    throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                            + ") has a " + PlanningVariable.class.getSimpleName()
+                            + " annotated property (" + variableDescriptor.getVariableName()
+                            + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                            + " annotated member (" + memberAccessor
+                            + ") that returns a parameterized " + Collection.class.getSimpleName()
+                            + " with an unsupported type arguments (" + typeArgument + ").");
+                }
+                Class collectionElementClass = ((Class) typeArgument);
+                Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
+                if (!variablePropertyType.isAssignableFrom(collectionElementClass)) {
+                    throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
+                            + ") has a " + PlanningVariable.class.getSimpleName()
+                            + " annotated property (" + variableDescriptor.getVariableName()
+                            + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                            + " annotated member (" + memberAccessor
+                            + ") that returns a " + Collection.class.getSimpleName()
+                            + " with elements of type (" + collectionElementClass
+                            + ") which cannot be assigned to the " + PlanningVariable.class.getSimpleName()
+                            + "'s type (" + variablePropertyType + ").");
+                }
+            }
         }
         countable = collectionWrapping || CountableValueRange.class.isAssignableFrom(type);
     }
