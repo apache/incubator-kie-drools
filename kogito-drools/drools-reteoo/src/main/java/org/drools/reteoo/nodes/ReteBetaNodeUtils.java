@@ -28,6 +28,7 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 
 public class ReteBetaNodeUtils {
@@ -111,8 +112,8 @@ public class ReteBetaNodeUtils {
                 }
 
                 FastIterator it = memory.getLeftTupleMemory().fullFastIterator();
-                for (LeftTuple leftTuple = betaNode.getFirstLeftTuple(memory.getLeftTupleMemory(), it); leftTuple != null; ) {
-                    LeftTuple tmp = (LeftTuple) it.next(leftTuple);
+                for (Tuple leftTuple = BetaNode.getFirstTuple( memory.getLeftTupleMemory(), it ); leftTuple != null; ) {
+                    Tuple tmp = (LeftTuple) it.next(leftTuple);
                     if (context.getCleanupAdapter() != null) {
                         LeftTuple child;
                         while ((child = leftTuple.getFirstChild()) != null) {
@@ -140,7 +141,7 @@ public class ReteBetaNodeUtils {
 
                 if (!betaNode.isInUse()) {
                     it = memory.getRightTupleMemory().fullFastIterator();
-                    for (RightTuple rightTuple = betaNode.getFirstRightTuple(memory.getRightTupleMemory(), it); rightTuple != null; ) {
+                    for (RightTuple rightTuple = (RightTuple) BetaNode.getFirstTuple(memory.getRightTupleMemory(), it); rightTuple != null; ) {
                         RightTuple tmp = (RightTuple) it.next(rightTuple);
                         if (rightTuple.getBlocked() != null) {
                             // special case for a not, so unlink left tuple from here, as they aren't in the left memory

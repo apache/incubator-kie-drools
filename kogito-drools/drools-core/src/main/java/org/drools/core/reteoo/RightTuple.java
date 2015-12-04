@@ -20,12 +20,6 @@ import org.drools.core.spi.Tuple;
 
 public interface RightTuple extends Tuple {
 
-    LeftTuple getFirstChild();
-    void setFirstChild( LeftTuple firstChild );
-
-    LeftTuple getLastChild();
-    void setLastChild( LeftTuple firstChild );
-
     RightTuple getHandlePrevious();
     void setHandlePrevious( RightTuple handlePrevious );
 

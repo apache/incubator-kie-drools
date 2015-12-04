@@ -37,7 +37,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.index.RightTupleIndexHashTable;
+import org.drools.core.util.index.TupleIndexHashTable;
 
 public class ReteJoinNode extends JoinNode {
 
@@ -419,8 +419,8 @@ public class ReteJoinNode extends JoinNode {
                                          final InternalFactHandle factHandle,
                                          final FastIterator it) {
         if ( !this.indexedUnificationJoin ) {
-            return memory instanceof RightTupleIndexHashTable ?
-                   (RightTuple) ((RightTupleIndexHashTable)memory).getFirst( leftTuple, factHandle ) :
+            return memory instanceof TupleIndexHashTable ?
+                   (RightTuple) ((TupleIndexHashTable)memory).getFirst( leftTuple, factHandle ) :
                    (RightTuple) memory.getFirst(leftTuple);
         } else {
             return (RightTuple) it.next( null );

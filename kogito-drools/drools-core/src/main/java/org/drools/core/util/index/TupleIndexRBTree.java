@@ -22,9 +22,9 @@ import org.drools.core.util.AbstractHashTable;
 import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
-import org.drools.core.util.LeftTupleRBTree;
-import org.drools.core.util.LeftTupleRBTree.Boundary;
-import org.drools.core.util.LeftTupleRBTree.Node;
+import org.drools.core.util.TupleRBTree;
+import org.drools.core.util.TupleRBTree.Boundary;
+import org.drools.core.util.TupleRBTree.Node;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -33,23 +33,26 @@ import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LeftTupleIndexRBTree implements Externalizable, TupleMemory {
+public class TupleIndexRBTree implements Externalizable, TupleMemory {
 
-    private LeftTupleRBTree<Comparable<Comparable>> tree;
+    private TupleRBTree<Comparable<Comparable>> tree;
 
     private AbstractHashTable.FieldIndex index;
     private IndexUtil.ConstraintType constraintType;
 
     private int size;
 
-    public LeftTupleIndexRBTree() {
+    private boolean left;
+
+    public TupleIndexRBTree() {
         // constructor for serialisation
     }
 
-    public LeftTupleIndexRBTree( IndexUtil.ConstraintType constraintType, AbstractHashTable.FieldIndex index ) {
+    public TupleIndexRBTree( IndexUtil.ConstraintType constraintType, AbstractHashTable.FieldIndex index, boolean left ) {
         this.index = index;
         this.constraintType = constraintType;
-        tree = new LeftTupleRBTree<Comparable<Comparable>>();
+        this.left = left;
+        tree = new TupleRBTree<Comparable<Comparable>>();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -57,13 +60,15 @@ public class LeftTupleIndexRBTree implements Externalizable, TupleMemory {
         out.writeObject( index );
         out.writeObject( constraintType );
         out.writeInt(size);
+        out.writeBoolean( left );
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        tree = (LeftTupleRBTree<Comparable<Comparable>>) in.readObject();
+        tree = (TupleRBTree<Comparable<Comparable>>) in.readObject();
         index = (AbstractHashTable.FieldIndex) in.readObject();
         constraintType = (IndexUtil.ConstraintType) in.readObject();
         size = in.readInt();
+        left = in.readBoolean();
     }
 
     public void add(Tuple tuple) {
@@ -123,7 +128,7 @@ public class LeftTupleIndexRBTree implements Externalizable, TupleMemory {
 
     public Iterator<Tuple> iterator() {
         TupleList list = tree.first();
-        Tuple firstTuple = list != null ? list.first : null;
+        Tuple firstTuple = list != null ? list.getFirst() : null;
         return new FastIterator.IteratorAdapter(fastIterator(), firstTuple);
     }
 
@@ -133,11 +138,11 @@ public class LeftTupleIndexRBTree implements Externalizable, TupleMemory {
     }
 
     public FastIterator fastIterator() {
-        return new LeftTupleFastIterator();
+        return new TupleFastIterator();
     }
 
     public FastIterator fullFastIterator() {
-        return new LeftTupleFastIterator();
+        return new TupleFastIterator();
     }
 
     public FastIterator fullFastIterator(Tuple leftTuple) {
@@ -148,14 +153,24 @@ public class LeftTupleIndexRBTree implements Externalizable, TupleMemory {
     }
 
     private Comparable getLeftIndexedValue( Tuple tuple ) {
-        return (Comparable) index.getDeclaration().getExtractor().getValue( tuple.getObject( index.getDeclaration() ) );
+        return getIndexedValue( tuple, left );
     }
 
     private Comparable getRightIndexedValue( Tuple tuple ) {
-        return (Comparable) index.getExtractor().getValue( tuple.getFactHandle().getObject() );
+        return getIndexedValue( tuple, !left );
+    }
+
+    private Comparable getIndexedValue( Tuple tuple, boolean left ) {
+        return left ?
+               (Comparable) index.getDeclaration().getExtractor().getValue( tuple.getObject( index.getDeclaration() ) ) :
+               (Comparable) index.getExtractor().getValue( tuple.getFactHandle().getObject() );
     }
 
     private Tuple getNext(Comparable key, boolean first) {
+        return left ? getNextLeft( key, first ) : getNextRight( key, first );
+    }
+
+    private Tuple getNextLeft(Comparable key, boolean first) {
         Node<Comparable<Comparable>> firstNode;
         switch (constraintType) {
             case LESS_THAN:
@@ -176,7 +191,28 @@ public class LeftTupleIndexRBTree implements Externalizable, TupleMemory {
         return firstNode == null ? null : firstNode.getFirst();
     }
 
-    public class LeftTupleFastIterator implements FastIterator {
+    private Tuple getNextRight(Comparable key, boolean first) {
+        Node<Comparable<Comparable>> firstNode;
+        switch (constraintType) {
+            case LESS_THAN:
+                firstNode = tree.findNearestNode(key, false, Boundary.UPPER);
+                break;
+            case LESS_OR_EQUAL:
+                firstNode = tree.findNearestNode(key, first, Boundary.UPPER);
+                break;
+            case GREATER_THAN:
+                firstNode = tree.findNearestNode(key, false, Boundary.LOWER);
+                break;
+            case GREATER_OR_EQUAL:
+                firstNode = tree.findNearestNode(key, first, Boundary.LOWER);
+                break;
+            default:
+                throw new UnsupportedOperationException("Cannot call remove constraint of type: " + constraintType);
+        }
+        return firstNode == null ? null : firstNode.getFirst();
+    }
+
+    public class TupleFastIterator implements FastIterator {
         public Entry next(Entry object) {
             if (object == null) {
                 Node<Comparable<Comparable>> firstNode = tree.first();
@@ -197,10 +233,10 @@ public class LeftTupleIndexRBTree implements Externalizable, TupleMemory {
     }
 
     public void clear() {
-        tree = new LeftTupleRBTree<Comparable<Comparable>>();
+        tree = new TupleRBTree<Comparable<Comparable>>();
     }
 
-    public TupleMemory.IndexType getIndexType() {
-        return TupleMemory.IndexType.COMPARISON;
+    public IndexType getIndexType() {
+        return IndexType.COMPARISON;
     }
 }

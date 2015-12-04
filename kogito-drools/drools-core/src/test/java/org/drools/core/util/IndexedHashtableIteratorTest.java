@@ -18,7 +18,7 @@ package org.drools.core.util;
 import org.drools.core.reteoo.LeftTupleImpl;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RightTupleImpl;
-import org.drools.core.util.index.LeftTupleIndexHashTable;
+import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;
 import org.junit.Test;
 
@@ -61,7 +61,7 @@ public class IndexedHashtableIteratorTest {
         }
 
         // test fast
-        LeftTupleIndexHashTable.FullFastIterator iter = new LeftTupleIndexHashTable.FullFastIterator( table );
+        TupleIndexHashTable.FullFastIterator iter = new TupleIndexHashTable.FullFastIterator( table );
         List<RightTuple> list = new ArrayList<RightTuple>();
         for ( RightTuple rightTuple = (RightTuple) iter.next( null ); rightTuple != null; rightTuple = (RightTuple) iter.next( rightTuple ) ) {
             assertFalse( contains( list, rightTuple ) ); // ensure no duplicate
@@ -69,9 +69,9 @@ public class IndexedHashtableIteratorTest {
         }
         
         // test normal
-        LeftTupleIndexHashTable rthTable = new LeftTupleIndexHashTable();
+        TupleIndexHashTable rthTable = new TupleIndexHashTable();
         rthTable.init( table, 3, numEntries * 3 );
-        LeftTupleIndexHashTable.FieldIndexHashTableFullIterator iter2 = new LeftTupleIndexHashTable.FieldIndexHashTableFullIterator( rthTable );
+        TupleIndexHashTable.FieldIndexHashTableFullIterator iter2 = new TupleIndexHashTable.FieldIndexHashTableFullIterator( rthTable );
         list = new ArrayList<RightTuple>();
         for ( RightTuple rightTuple = (RightTuple) iter2.next( ); rightTuple != null; rightTuple = (RightTuple) iter2.next( ) ) {
             assertFalse( contains( list, rightTuple ) ); // ensure no duplicate
@@ -112,7 +112,7 @@ public class IndexedHashtableIteratorTest {
         }
 
         // test fast
-        LeftTupleIndexHashTable.FullFastIterator iter = new LeftTupleIndexHashTable.FullFastIterator( table );
+        TupleIndexHashTable.FullFastIterator iter = new TupleIndexHashTable.FullFastIterator( table );
         List<LeftTupleImpl> list = new ArrayList<LeftTupleImpl>();
         for ( LeftTupleImpl leftTuple = (LeftTupleImpl) iter.next( null ); leftTuple != null; leftTuple = (LeftTupleImpl) iter.next( leftTuple ) ) {
             assertFalse( contains( list, leftTuple ) ); // ensure no duplicate
@@ -122,9 +122,9 @@ public class IndexedHashtableIteratorTest {
         assertEquals( numEntries * 3, list.size() );
         
         // test normal
-        LeftTupleIndexHashTable lthTable = new LeftTupleIndexHashTable();
+        TupleIndexHashTable lthTable = new TupleIndexHashTable();
         lthTable.init( table, 3, numEntries * 3 );
-        LeftTupleIndexHashTable.FieldIndexHashTableFullIterator iter2 = new LeftTupleIndexHashTable.FieldIndexHashTableFullIterator( lthTable );
+        TupleIndexHashTable.FieldIndexHashTableFullIterator iter2 = new TupleIndexHashTable.FieldIndexHashTableFullIterator( lthTable );
         list = new ArrayList<LeftTupleImpl>();
         for ( LeftTupleImpl leftTuple = (LeftTupleImpl) iter2.next( ); leftTuple != null; leftTuple = (LeftTupleImpl) iter2.next( ) ) {
             assertFalse( contains( list, leftTuple ) ); // ensure no duplicate

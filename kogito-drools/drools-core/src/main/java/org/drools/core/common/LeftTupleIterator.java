@@ -34,6 +34,7 @@ import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 
@@ -80,8 +81,7 @@ public class LeftTupleIterator
             BetaMemory memory = accmem.getBetaMemory();
             
             FastIterator localIt = memory.getLeftTupleMemory().fullFastIterator();
-            LeftTuple leftTuple = BetaNode.getFirstLeftTuple( memory.getLeftTupleMemory(),
-                                                              localIt );
+            Tuple leftTuple = BetaNode.getFirstTuple( memory.getLeftTupleMemory(), localIt );
             if( leftTuple != null ) {
                 AccumulateContext accctx = (AccumulateContext) leftTuple.getContextObject();
                 return accctx.getResultLeftTuple();
@@ -100,8 +100,7 @@ public class LeftTupleIterator
             }
 
             localIt = memory.getLeftTupleMemory().fullFastIterator();
-            LeftTuple leftTuple = BetaNode.getFirstLeftTuple( memory.getLeftTupleMemory(),
-                                                              localIt );
+            Tuple leftTuple = BetaNode.getFirstTuple( memory.getLeftTupleMemory(), localIt );
 
             while ( leftTuple != null ) {
                 for ( LeftTuple childleftTuple = leftTuple.getFirstChild(); childleftTuple != null; childleftTuple = childleftTuple.getLeftParentNext() ) {
@@ -116,8 +115,7 @@ public class LeftTupleIterator
             BetaMemory memory = (BetaMemory) wm.getNodeMemory( (MemoryFactory) source );
             FastIterator localIt = memory.getRightTupleMemory().fullFastIterator();
 
-            RightTuple rightTuple = BetaNode.getFirstRightTuple( memory.getRightTupleMemory(),
-                                                                 localIt );
+            RightTuple rightTuple = (RightTuple) BetaNode.getFirstTuple( memory.getRightTupleMemory(), localIt );
 
             while ( rightTuple != null ) {
                 if ( rightTuple.getBlocked() != null ) {

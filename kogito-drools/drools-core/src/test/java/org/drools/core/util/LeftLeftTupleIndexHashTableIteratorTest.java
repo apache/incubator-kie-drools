@@ -26,8 +26,8 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.SingleBetaConstraints;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.util.index.LeftTupleIndexHashTable;
-import org.drools.core.util.index.LeftTupleIndexHashTable.FieldIndexHashTableFullIterator;
+import org.drools.core.util.index.TupleIndexHashTable;
+import org.drools.core.util.index.TupleIndexHashTable.FieldIndexHashTableFullIterator;
 import org.drools.core.util.index.TupleList;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.LeftTupleImpl;
@@ -131,7 +131,7 @@ public class LeftLeftTupleIndexHashTableIteratorTest {
                                                             null,
                                                             true ) );
 
-        LeftTupleIndexHashTable hashTable = (LeftTupleIndexHashTable) betaMemory.getLeftTupleMemory();
+        TupleIndexHashTable hashTable = (TupleIndexHashTable) betaMemory.getLeftTupleMemory();
         // can't create a 0 hashCode, so forcing 
         TupleList leftTupleList = new TupleList();
         leftTupleList.add( new LeftTupleImpl( fh10,

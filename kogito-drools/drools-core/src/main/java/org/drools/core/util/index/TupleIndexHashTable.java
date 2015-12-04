@@ -1,9 +1,8 @@
 /*
- * Copyright 2010 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -12,6 +11,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package org.drools.core.util.index;
@@ -29,41 +29,44 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-public class RightTupleIndexHashTable extends AbstractHashTable implements TupleMemory {
+public class TupleIndexHashTable extends AbstractHashTable implements TupleMemory {
 
     private static final long                         serialVersionUID = 510l;
 
     public static final int                           PRIME            = 31;
 
+    private int                                       startResult;
+
     private transient FieldIndexHashTableFullIterator tupleValueFullIterator;
 
     private transient FullFastIterator                fullFastIterator;
-
-    private int                                       startResult;
 
     private int                                       factSize;
 
     private Index                                     index;
 
-    public RightTupleIndexHashTable() {
+    private boolean                                   left;
 
+    public TupleIndexHashTable() {
+        // constructor for serialisation
     }
 
-    public RightTupleIndexHashTable(final FieldIndex[] index) {
-        this( 128,
-              0.75f,
-              index );
+    public TupleIndexHashTable( FieldIndex[] index, boolean left ) {
+        this( 128, 0.75f, index, left );
     }
 
-    public RightTupleIndexHashTable(final int capacity,
-                                    final float loadFactor,
-                                    final FieldIndex[] index) {
+    public TupleIndexHashTable( int capacity,
+                                float loadFactor,
+                                FieldIndex[] index,
+                                boolean left ) {
         super( capacity,
                loadFactor );
 
-        this.startResult = RightTupleIndexHashTable.PRIME;
-        for ( int i = 0, length = index.length; i < length; i++ ) {
-            this.startResult += RightTupleIndexHashTable.PRIME * this.startResult + index[i].getExtractor().getIndex();
+        this.left = left;
+
+        this.startResult = PRIME;
+        for ( FieldIndex i : index ) {
+            this.startResult += PRIME * this.startResult + i.getExtractor().getIndex();
         }
 
         switch ( index.length ) {
@@ -92,6 +95,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable implements Tuple
         startResult = in.readInt();
         factSize = in.readInt();
         index = (Index) in.readObject();
+        left = in.readBoolean();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -99,6 +103,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable implements Tuple
         out.writeInt( startResult );
         out.writeInt( factSize );
         out.writeObject( index );
+        out.writeBoolean( left );
     }
 
     public void init(Entry[] table, int size, int factSize) {
@@ -107,41 +112,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable implements Tuple
         this.factSize = factSize;
     }
 
-    public Tuple getFirst(Tuple tuple) {
-        TupleList bucket = get( tuple );
-        if ( bucket != null ) {
-            return bucket.getFirst( );
-        } else {
-            return null;
-        }
-    }
-
-    public Tuple getFirst(Tuple leftTuple, InternalFactHandle factHandle) {
-        TupleList bucket = get( leftTuple, factHandle );
-        if ( bucket != null ) {
-            return bucket.first;
-        } else {
-            return null;
-        }
-    }
-
-    public boolean isIndexed() {
-        return true;
-    }
-
-    public Index getIndex() {
-        return this.index;
-    }
-
-    public Entry getBucket(final Object object) {
-        final int hashCode = this.index.hashCodeOf( object );
-        final int index = indexOf( hashCode,
-                                   this.table.length );
-
-        return this.table[index];
-    }
-
-    public Iterator iterator() {
+    public Iterator<Tuple> iterator() {
         if ( this.tupleValueFullIterator == null ) {
             this.tupleValueFullIterator = new FieldIndexHashTableFullIterator( this );
         } else {
@@ -150,13 +121,6 @@ public class RightTupleIndexHashTable extends AbstractHashTable implements Tuple
         return this.tupleValueFullIterator;
     }
 
-    @Override
-    public int getResizeHashcode(Entry entry) {
-        // Entry is always LeftTupleList which caches the hashcode, so just return it
-        return  entry.hashCode();
-    }
-
-
     public FastIterator fastIterator() {
         return LinkedList.fastIterator;
     }
@@ -164,27 +128,25 @@ public class RightTupleIndexHashTable extends AbstractHashTable implements Tuple
     public FastIterator fullFastIterator() {
         if ( fullFastIterator == null ) {
             fullFastIterator = new FullFastIterator( this.table );
-
         } else {
-            fullFastIterator.reset(this.table );
+            fullFastIterator.reset(this.table);
         }
         return fullFastIterator;
     }
 
-    public FastIterator fullFastIterator(Tuple rightTuple) {
-        fullFastIterator.resume(rightTuple.getMemory(), this.table);
+    public FastIterator fullFastIterator(Tuple leftTuple) {
+        fullFastIterator.resume(leftTuple.getMemory(), this.table);
         return fullFastIterator;
     }
 
     public static class FullFastIterator implements FastIterator {
-        private Entry[]           table;
-        private int               row;
+        private Entry[]     table;
+        private int         row;
 
         public FullFastIterator(Entry[] table, int row) {
             this.table = table;
             this.row = row + 1;
         }
-
 
         public FullFastIterator(Entry[] table) {
             this.table = table;
@@ -199,10 +161,10 @@ public class RightTupleIndexHashTable extends AbstractHashTable implements Tuple
         }
 
         public Entry next(Entry object) {
-            Tuple rightTuple = ( Tuple ) object;
+            Tuple tuple = ( Tuple ) object;
             TupleList list = null;
-            if ( rightTuple != null ) {
-                list = (TupleList) rightTuple.getMemory(); // assumes you do not pass in a null RightTuple
+            if ( tuple != null ) {
+                list = tuple.getMemory(); // assumes you do not pass in a null RightTuple
             }
 
             int length = table.length;
@@ -221,22 +183,22 @@ public class RightTupleIndexHashTable extends AbstractHashTable implements Tuple
 
                     if ( list != null ) {
                         // we have a bucket so assign the frist LeftTuple and return
-                        rightTuple = (Tuple) list.getFirst( );
-                        return rightTuple;
+                        tuple = list.getFirst( );
+                        return tuple;
                     }
                 }
 
-                rightTuple = (Tuple) rightTuple.getNext();
-                if ( rightTuple != null ) {
+                tuple = (Tuple) tuple.getNext();
+                if ( tuple != null ) {
                     // we have a next tuple so return
-                    return rightTuple;
+                    return tuple;
                 } else {
-                    list = (TupleList) list.getNext();
+                    list = list.getNext();
                     // try the next bucket if we have a shared array position
                     if ( list != null ) {
-                        // if we have another bucket, assign the first RightTuple and return
-                        rightTuple = (Tuple) list.getFirst( );
-                        return rightTuple;
+                        // if we have another bucket, assign the first LeftTuple and return
+                        tuple = list.getFirst( );
+                        return tuple;
                     }
                 }
             }
@@ -251,27 +213,44 @@ public class RightTupleIndexHashTable extends AbstractHashTable implements Tuple
             this.table = table;
             this.row = 0;
         }
+
+    }
+
+    public Tuple getFirst(final Tuple rightTuple) {
+        TupleList bucket = get( rightTuple, !left );
+        return bucket != null ? bucket.getFirst() : null;
+    }
+
+    public boolean isIndexed() {
+        return true;
+    }
+
+    public Index getIndex() {
+        return this.index;
+    }
+
+    @Override
+    public int getResizeHashcode(Entry entry) {
+        // Entry is always LeftTupleList which caches the hashcode, so just return it
+        return  entry.hashCode();
     }
 
     public static class FieldIndexHashTableFullIterator
         implements
-        Iterator {
-        private AbstractHashTable hashTable;
-        private Entry[]           table;
-        private int               row;
-        private int               length;
-        private TupleList     list;
-        private Tuple         rightTuple;
+        Iterator<Tuple> {
+        private final AbstractHashTable hashTable;
+        private Entry[]                 table;
+        private int                     row;
+        private int                     length;
+        private TupleList               list;
+        private Tuple                   tuple;
 
         public FieldIndexHashTableFullIterator(final AbstractHashTable hashTable) {
             this.hashTable = hashTable;
             reset();
         }
 
-        /* (non-Javadoc)
-         * @see org.kie.util.Iterator#next()
-         */
-        public Object next() {
+        public Tuple next() {
             while ( this.row <= this.length ) {
                 // check if there is a current bucket
                 while ( this.list == null ) {
@@ -285,28 +264,31 @@ public class RightTupleIndexHashTable extends AbstractHashTable implements Tuple
                     }
 
                     if ( this.list != null ) {
-                        // we have a bucket so assign the frist LeftTuple and return
-                        this.rightTuple = (Tuple) this.list.getFirst();
-                        return this.rightTuple;
+                        // we have a bucket so assign the first LeftTuple and return
+                        this.tuple = this.list.getFirst( );
+                        return this.tuple;
                     }
-
                 }
 
-                this.rightTuple = (Tuple) this.rightTuple.getNext();
-                if ( this.rightTuple != null ) {
+                this.tuple = (Tuple) this.tuple.getNext();
+                if ( this.tuple != null ) {
                     // we have a next tuple so return
-                    return this.rightTuple;
+                    return this.tuple;
                 } else {
-                    this.list = (TupleList) this.list.getNext();
+                    this.list = this.list.getNext();
                     // try the next bucket if we have a shared array position
                     if ( this.list != null ) {
                         // if we have another bucket, assign the first LeftTuple and return
-                        this.rightTuple = (Tuple) this.list.getFirst( );
-                        return this.rightTuple;
+                        this.tuple = this.list.getFirst( );
+                        return this.tuple;
                     }
                 }
             }
             return null;
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException( "FieldIndexHashTableFullIterator does not support remove()." );
         }
 
         /* (non-Javadoc)
@@ -317,135 +299,192 @@ public class RightTupleIndexHashTable extends AbstractHashTable implements Tuple
             this.length = this.table.length;
             this.row = 0;
             this.list = null;
-            this.rightTuple = null;
+            this.tuple = null;
         }
     }
 
-    public Entry[] toArray() {
-        Entry[] result = new Entry[this.factSize];
+    public Tuple[] toArray() {
+        Tuple[] result = new Tuple[this.factSize];
         int index = 0;
-        for ( int i = 0; i < this.table.length; i++ ) {
-            TupleList bucket = (TupleList) this.table[i];
-            while ( bucket != null ) {
-                Entry entry = bucket.first;
-                while ( entry != null ) {
+        for (Entry aTable : this.table) {
+            TupleList bucket = (TupleList) aTable;
+            while (bucket != null) {
+                Tuple entry = bucket.getFirst();
+                while (entry != null) {
                     result[index++] = entry;
-                    entry = entry.getNext();
+                    entry = (Tuple) entry.getNext();
                 }
-                bucket = (TupleList) bucket.next;
+                bucket = bucket.getNext();
             }
         }
         return result;
     }
 
-    public void add(final Tuple rightTuple) {
-        final TupleList entry = getOrCreate( rightTuple.getFactHandle().getObject() );
-        entry.add( rightTuple );
-        this.factSize++;
-    }
+    public void removeAdd(Tuple tuple) {
+        TupleList memory = tuple.getMemory();
+        memory.remove( tuple );
 
-    public void removeAdd(final Tuple rightTuple) {
-        TupleList memory = (TupleList) rightTuple.getMemory();
-        memory.remove( rightTuple );
-
-        final int newHashCode = this.index.hashCodeOf( rightTuple.getFactHandle().getObject() );
+        final int newHashCode = this.index.hashCodeOf( tuple, left );
         if ( newHashCode == memory.hashCode() ) {
             // it's the same bucket, so re-use and return
-            memory.add( rightTuple );
+            memory.add( tuple );
             return;
         }
 
         // bucket is empty so remove.
         this.factSize--;
-        if ( memory.first == null ) {
+        if ( memory.getFirst() == null ) {
             final int index = indexOf( memory.hashCode(),
                                        this.table.length );
             TupleList previous = null;
             TupleList current = (TupleList) this.table[index];
             while ( current != memory ) {
                 previous = current;
-                current = (TupleList) current.getNext();
+                current = current.getNext();
             }
 
             if ( previous != null ) {
-                previous.next = current.next;
+                previous.setNext( current.getNext() );
             } else {
-                this.table[index] = current.next;
+                this.table[index] = current.getNext();
             }
             this.size--;
         }
 
-        add( rightTuple );
+        add( tuple );
+    }
+
+    public void add(final Tuple tuple) {
+        final TupleList entry = getOrCreate( tuple );
+        entry.add( tuple );
+        this.factSize++;
+    }
+
+    public void remove(final Tuple tuple) {
+        TupleList memory = tuple.getMemory();
+        memory.remove( tuple );
+        this.factSize--;
+        if ( memory.getFirst() == null ) {
+            final int index = indexOf( memory.hashCode(),
+                                       this.table.length );
+            TupleList previous = null;
+            TupleList current = (TupleList) this.table[index];
+            while ( current != memory ) {
+                previous = current;
+                current = current.getNext();
+            }
+
+            if ( previous != null ) {
+                previous.setNext( current.getNext() );
+            } else {
+                this.table[index] = current.getNext();
+            }
+            this.size--;
+        }
+        tuple.clear();
     }
 
     /**
-     * We assume that this rightTuple is contained in this hash table
+     * We use this method to aviod to table lookups for the same hashcode; which is what we would have to do if we did
+     * a get and then a create if the value is null.
      */
-    public void remove(final Tuple rightTuple) {
-        TupleList memory = (TupleList) rightTuple.getMemory();
-        memory.remove( rightTuple );
-        this.factSize--;
-        if ( memory.first == null ) {
-            final int index = indexOf( memory.hashCode(),
-                                       this.table.length );
-            TupleList previous = null;
-            TupleList current = (TupleList) this.table[index];
-            while ( current != memory ) {
-                previous = current;
-                current = (TupleList) current.getNext();
-            }
-
-            if ( previous != null ) {
-                previous.next = current.next;
-            } else {
-                this.table[index] = current.next;
-            }
-            this.size--;
-        }
-        rightTuple.clear();
-    }
-
-    public boolean contains(final Tuple rightTuple) {
-        final Object object = rightTuple.getFactHandle().getObject();
-
-        final int hashCode = this.index.hashCodeOf( object );
-
-        final int index = indexOf( hashCode,
-                                   this.table.length );
-
-        TupleList current = (TupleList) this.table[index];
-        while ( current != null ) {
-            if ( current.matches( object, hashCode, true ) ) {
-                return true;
-            }
-            current = (TupleList) current.next;
-        }
-        return false;
-    }
-
-    public TupleList get(Tuple tuple) {
-        //this.index.setCachedValue( tuple );
-
-        final int hashCode = this.index.hashCodeOf( tuple );
-
-        final int index = indexOf( hashCode,
-                                   this.table.length );
-
+    private TupleList getOrCreate(final Tuple tuple) {
+        final int hashCode = this.index.hashCodeOf( tuple, left );
+        final int index = indexOf( hashCode, this.table.length );
         TupleList entry = (TupleList) this.table[index];
 
-
+        // search to find an existing entry
         while ( entry != null ) {
-            if ( entry.matches( tuple, hashCode, true ) ) {
+            if ( matchesRight( entry, tuple, hashCode ) ) {
                 return entry;
             }
-            entry = (TupleList) entry.getNext();
+            entry = entry.getNext();
         }
 
+        // entry does not exist, so create
+        entry = new TupleList( this.index, hashCode );
+        entry.setNext( (TupleList) this.table[index] );
+        this.table[index] = entry;
+
+        if ( this.size++ >= this.threshold ) {
+            resize( 2 * this.table.length );
+        }
         return entry;
     }
 
-    public TupleList get(final Tuple tuple, InternalFactHandle factHandle) {
-        int hashCode = this.index.hashCodeOf( tuple );
+    public boolean contains(final Tuple tuple) {
+        return get(tuple, left) != null;
+    }
+
+    private TupleList get(final Tuple tuple, boolean isLeftTuple) {
+        final int hashCode = this.index.hashCodeOf( tuple, isLeftTuple );
+
+        final int index = indexOf( hashCode, this.table.length );
+        TupleList entry = (TupleList) this.table[index];
+
+        while ( entry != null ) {
+            if ( matches(entry, tuple, hashCode ) ) {
+                return entry;
+            }
+            entry = entry.getNext();
+        }
+
+        return null;
+    }
+
+    private boolean matches(TupleList list, Tuple tuple, int tupleHashCode) {
+        if ( list.hashCode() != tupleHashCode ) {
+            return false;
+        }
+
+        return left ?
+               this.index.equal( tuple.getFactHandle().getObject(), list.getFirst() ) :
+               this.index.equal( list.getFirst().getFactHandle().getObject(), tuple );
+    }
+
+    private boolean matchesRight( TupleList list, Tuple tuple, int tupleHashCode ) {
+        if ( list.hashCode() != tupleHashCode ) {
+            return false;
+        }
+
+        return left ?
+               this.index.equal( list.getFirst(), tuple ) :
+               this.index.equal( list.getFirst().getFactHandle().getObject(), tuple.getFactHandle().getObject() );
+    }
+
+    public int size() {
+        return this.factSize;
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        Iterator it = iterator();
+        for ( Tuple leftTuple = (Tuple) it.next(); leftTuple != null; leftTuple = (Tuple) it.next() ) {
+            builder.append(leftTuple).append("\n");
+        }
+
+        return builder.toString();
+    }
+
+    public void clear() {
+        super.clear();
+        this.startResult = PRIME;
+        this.factSize = 0;
+        this.fullFastIterator = null;
+        this.tupleValueFullIterator = null;
+    }
+
+    public IndexType getIndexType() {
+        return IndexType.EQUAL;
+    }
+
+    public Tuple getFirst(Tuple leftTuple, InternalFactHandle factHandle) {
+        TupleList bucket = get( leftTuple, factHandle );
+        return bucket != null ? bucket.getFirst() : null;
+    }
+
+    private TupleList get(final Tuple tuple, InternalFactHandle factHandle) {
+        int hashCode = this.index.hashCodeOf( tuple, !left );
         int index = indexOf( hashCode, this.table.length );
 
         TupleList entry = (TupleList) this.table[index];
@@ -454,7 +493,7 @@ public class RightTupleIndexHashTable extends AbstractHashTable implements Tuple
             if ( matches( entry, tuple, hashCode, factHandle ) ) {
                 return entry;
             }
-            entry = (TupleList) entry.getNext();
+            entry = entry.getNext();
         }
 
         return entry;
@@ -474,65 +513,5 @@ public class RightTupleIndexHashTable extends AbstractHashTable implements Tuple
         }
 
         return this.index.equal( tupleList.getFirst().getFactHandle().getObject(), tuple );
-    }
-
-    /**
-     * We use this method to aviod to table lookups for the same hashcode; which is what we would have to do if we did
-     * a get and then a create if the value is null.
-     */
-    private TupleList getOrCreate(final Object object) {
-        int hashCode = this.index.hashCodeOf( object );
-        int index = indexOf( hashCode, this.table.length );
-
-        TupleList entry = (TupleList) this.table[index];
-
-        while ( entry != null ) {
-            if ( entry.matches( object, hashCode, false ) ) {
-                return entry;
-            }
-            entry = (TupleList) entry.next;
-        }
-
-        if ( entry == null ) {
-            entry = new TupleList( this.index, hashCode );
-            entry.next = this.table[index];
-            this.table[index] = entry;
-
-            if ( this.size++ >= this.threshold ) {
-                resize( 2 * this.table.length );
-            }
-        }
-        return entry;
-    }
-
-    public int size() {
-        return this.factSize;
-    }
-
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        for ( Entry entry : this.table ) {
-            while ( entry != null ) {
-                TupleList bucket = (TupleList) entry;
-                for ( Tuple rightTuple = bucket.getFirst( ); rightTuple != null; rightTuple = (Tuple) rightTuple.getNext() ) {
-                    builder.append( rightTuple );
-                }
-                entry = entry.getNext();
-            }
-        }
-
-        return builder.toString();
-    }
-
-    public IndexType getIndexType() {
-        return IndexType.EQUAL;
-    }
-
-    public void clear() {
-        super.clear();
-        this.startResult = PRIME;
-        this.factSize = 0;
-        this.fullFastIterator = null;
-        this.tupleValueFullIterator = null;
     }
 }

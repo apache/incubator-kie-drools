@@ -24,7 +24,7 @@ import org.drools.core.util.Entry;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.ReflectiveVisitor;
-import org.drools.core.util.index.RightTupleIndexHashTable;
+import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -193,8 +193,8 @@ public class MemoryVisitor extends ReflectiveVisitor
     private void checkObjectHashTable(final TupleMemory memory) {
         if ( memory instanceof TupleList ) {
             checkRightTupleList( (TupleList) memory );
-        } else if ( memory instanceof RightTupleIndexHashTable ) {
-            checkRightTupleIndexHashTable( (RightTupleIndexHashTable) memory );
+        } else if ( memory instanceof TupleIndexHashTable ) {
+            checkRightTupleIndexHashTable( (TupleIndexHashTable) memory );
         } else {
             throw new RuntimeException( memory.getClass() + " should not be here" );
         }
@@ -213,7 +213,7 @@ public class MemoryVisitor extends ReflectiveVisitor
         }
     }
 
-    private void checkRightTupleIndexHashTable(final RightTupleIndexHashTable memory) {
+    private void checkRightTupleIndexHashTable(final TupleIndexHashTable memory) {
         final Entry[] entries = memory.getTable();
         int factCount = 0;
         int bucketCount = 0;
@@ -222,8 +222,8 @@ public class MemoryVisitor extends ReflectiveVisitor
             if ( entry1 != null ) {
                 TupleList rightTupleList = (TupleList) entry1;
                 while ( rightTupleList != null ) {
-                    if ( rightTupleList.first != null ) {
-                        Entry entry = rightTupleList.first;
+                    if ( rightTupleList.getFirst() != null ) {
+                        Entry entry = rightTupleList.getFirst();
                         while ( entry != null ) {
                             entry = it.next( entry );
                             factCount++;
@@ -231,7 +231,7 @@ public class MemoryVisitor extends ReflectiveVisitor
                     } else {
                         logger.info( "error : fieldIndexHashTable cannot have empty FieldIndexEntry objects" );
                     }
-                    rightTupleList = (TupleList) rightTupleList.getNext();
+                    rightTupleList = rightTupleList.getNext();
                     bucketCount++;
                 }
             }

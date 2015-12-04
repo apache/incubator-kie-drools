@@ -76,6 +76,10 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
         this.sink = null;
     }
 
+    public void unlinkFromLeftParent() {
+
+    }
+
     public LeftTuple getBlocked() {
         return this.blocked;
     }

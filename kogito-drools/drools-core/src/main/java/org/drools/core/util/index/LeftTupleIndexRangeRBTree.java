@@ -168,7 +168,7 @@ public class LeftTupleIndexRangeRBTree implements Externalizable, TupleMemory {
 
     public Iterator<Tuple> iterator() {
         TupleList list = tree.first().value.first().value;
-        Tuple firstTuple = list != null ? list.first : null;
+        Tuple firstTuple = list != null ? list.getFirst() : null;
         return new FastIterator.IteratorAdapter(fastIterator(), firstTuple);
     }
 

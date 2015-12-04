@@ -17,6 +17,7 @@
 package org.drools.core.spi;
 
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.rule.Declaration;
 import org.drools.core.util.Entry;
@@ -31,7 +32,7 @@ import java.io.Serializable;
  * 
  * @see org.drools.core.marshalling.impl.ProtobufMessages.FactHandle
  */
-public interface Tuple extends Serializable, Entry {
+public interface Tuple extends Serializable, Entry<Tuple> {
 
     short NONE   = 0;
     short INSERT = 1;
@@ -119,12 +120,13 @@ public interface Tuple extends Serializable, Entry {
 
     void reAdd();
     void unlinkFromRightParent();
+    void unlinkFromLeftParent();
 
     PropagationContext getPropagationContext();
     void setPropagationContext( PropagationContext propagationContext );
 
-    Entry getPrevious();
-    void setPrevious( Entry previous );
+    Tuple getPrevious();
+    void setPrevious( Tuple previous );
 
     Sink getTupleSink();
 
@@ -136,4 +138,10 @@ public interface Tuple extends Serializable, Entry {
 
     Tuple getRootTuple();
     Tuple skipEmptyHandles();
+
+    LeftTuple getFirstChild();
+    void setFirstChild( LeftTuple firstChild );
+
+    LeftTuple getLastChild();
+    void setLastChild( LeftTuple firstChild );
 }
