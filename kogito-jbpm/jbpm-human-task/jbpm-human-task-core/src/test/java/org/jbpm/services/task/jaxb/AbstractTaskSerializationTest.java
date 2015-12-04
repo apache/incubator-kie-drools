@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -33,12 +33,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
 import org.jbpm.services.task.MvelFilePath;
-import org.jbpm.services.task.commands.AddContentFromUserCommand;
 import org.jbpm.services.task.commands.CancelDeadlineCommand;
 import org.jbpm.services.task.commands.CompositeCommand;
 import org.jbpm.services.task.commands.GetTaskAssignedAsPotentialOwnerCommand;
@@ -74,6 +72,7 @@ import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.kie.internal.task.api.model.SubTasksStrategy;
+import org.kie.test.util.compare.ComparePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +95,7 @@ public abstract class AbstractTaskSerializationTest {
     }
 
     protected static Random random = new Random();
-    
+
     // TESTS ----------------------------------------------------------------------------------------------------------------------
 
     @Test
@@ -111,22 +110,22 @@ public abstract class AbstractTaskSerializationTest {
         assertNotNull("Could not load file: " + MvelFilePath.FullTask, stream);
         Reader reader = new InputStreamReader(stream);
         InternalTask task = (InternalTask) TaskFactory.evalTask(reader, vars);
-        
-        // fill task 
+
+        // fill task
         task.setFormName("Bruno's Form");
         task.setId(23);
         task.setSubTaskStrategy(SubTasksStrategy.EndParentOnAllSubTasksEnd);
-        
-        for( I18NText text : task.getNames() ) { 
+
+        for( I18NText text : task.getNames() ) {
             ((InternalI18NText) text).setId((long) random.nextInt(1000));
         }
-        for( I18NText text : task.getSubjects() ) { 
+        for( I18NText text : task.getSubjects() ) {
             ((InternalI18NText) text).setId((long) random.nextInt(1000));
         }
-        for( I18NText text : task.getDescriptions() ) { 
+        for( I18NText text : task.getDescriptions() ) {
             ((InternalI18NText) text).setId((long) random.nextInt(1000));
         }
-       
+
         // fill task -> task data
         InternalTaskData taskData = (InternalTaskData) task.getTaskData();
         taskData.setOutputAccessType(AccessType.Inline);
@@ -157,12 +156,12 @@ public abstract class AbstractTaskSerializationTest {
         taskData.addAttachment(attach);
 
         JaxbTask xmlTask = new JaxbTask(task);
-        
+
         verifyThatAllFieldsAreFilledOrUnsupported(xmlTask, InternalTask.class);
         verifyThatAllFieldsAreFilledOrUnsupported(xmlTask.getTaskData(), TaskData.class);
         verifyThatAllFieldsAreFilledOrUnsupported(xmlTask.getTaskData().getAttachments().get(0), Attachment.class);
         verifyThatAllFieldsAreFilledOrUnsupported(xmlTask.getTaskData().getComments().get(0), Comment.class);
-        
+
         assertNotNull(xmlTask.getNames());
         assertTrue(xmlTask.getNames().size() > 0);
         JaxbTask bornAgainTask = testRoundTrip(xmlTask);
@@ -174,40 +173,40 @@ public abstract class AbstractTaskSerializationTest {
 
         assertNotNull(((InternalTask) xmlTask).getFormName());
         assertEquals(((InternalTask) xmlTask).getFormName(), ((InternalTask) bornAgainTask).getFormName());
-        
+
         Task realTask = xmlTask.getTask();
         verifyThatXmlFieldsAreFilled(realTask, xmlTask, InternalTask.class, "deadlines");
         verifyThatXmlFieldsAreFilled(realTask.getTaskData(), xmlTask.getTaskData(), TaskData.class);
     }
 
-    private void verifyThatXmlFieldsAreFilled(Object realInst, Object xmlInst, Class interfaze, String... ignoreFields ) { 
+    private void verifyThatXmlFieldsAreFilled(Object realInst, Object xmlInst, Class interfaze, String... ignoreFields ) {
         Set<String> ignoreFieldSet = new HashSet<String>(Arrays.asList(ignoreFields));
         assertNotNull( interfaze.getSimpleName() + " (XML) instance is null", xmlInst);
         assertNotNull( interfaze.getSimpleName() + " (XML) instance is null", realInst);
-        
+
         String methodName = null;
-        try { 
+        try {
             for( Method getMethod : interfaze.getMethods() )  {
                 methodName = getMethod.getName();
                 if( ! methodName.startsWith("get") ) {
-                   continue; 
+                   continue;
                 }
-                try { 
+                try {
                    String fieldName = methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
                    if( ignoreFieldSet.contains(fieldName) ) {
                        continue;
                    }
-                   
+
                    // xml Inst
                    Object xmlFieldValue = getMethod.invoke(xmlInst);
-                   
+
                    // real Inst
                    Object fieldValue = getMethod.invoke(realInst);
-                   if( Enum.class.isAssignableFrom(xmlFieldValue.getClass()) || xmlFieldValue.getClass().isEnum() ) { 
-                       assertEquals( interfaze.getSimpleName() + "." + fieldName + " value has not been copied", 
+                   if( Enum.class.isAssignableFrom(xmlFieldValue.getClass()) || xmlFieldValue.getClass().isEnum() ) {
+                       assertEquals( interfaze.getSimpleName() + "." + fieldName + " value has not been copied",
                                xmlFieldValue, fieldValue);
                    } else if( xmlFieldValue.getClass().getPackage().getName().contains("org.kie")
-                           || xmlFieldValue.getClass().getPackage().getName().contains("org.jbpm") ) { 
+                           || xmlFieldValue.getClass().getPackage().getName().contains("org.jbpm") ) {
                       assertNotNull(interfaze.getSimpleName() + "." + fieldName + " value is empty", fieldValue);
                    } else if( xmlFieldValue.getClass().isArray() ) {
                        List xmlList = Arrays.asList(xmlFieldValue);
@@ -219,9 +218,9 @@ public abstract class AbstractTaskSerializationTest {
                            Object realElem = realList.get(i);
                            verifyThatXmlFieldsAreFilled(realElem, xmlElem, xmlElem.getClass().getInterfaces()[0]);
                        }
-                   } else if( List.class.isAssignableFrom(xmlFieldValue.getClass()) ) { 
-                       List xmlList = (List) xmlFieldValue; 
-                       List realList = (List) fieldValue; 
+                   } else if( List.class.isAssignableFrom(xmlFieldValue.getClass()) ) {
+                       List xmlList = (List) xmlFieldValue;
+                       List realList = (List) fieldValue;
                        assertEquals( interfaze.getSimpleName() + "." + fieldName + " value has unequal list size",
                                xmlList.size(), realList.size());
                        for( int i = 0; i < xmlList.size(); ++i ) {
@@ -230,51 +229,51 @@ public abstract class AbstractTaskSerializationTest {
                            verifyThatXmlFieldsAreFilled(realElem, xmlElem, xmlElem.getClass().getInterfaces()[0]);
                        }
                    } else {
-                       assertEquals( interfaze.getSimpleName() + "." + fieldName + " value has not been copied", 
+                       assertEquals( interfaze.getSimpleName() + "." + fieldName + " value has not been copied",
                                xmlFieldValue, fieldValue);
                    }
-                } catch( InvocationTargetException ite ) { 
+                } catch( InvocationTargetException ite ) {
                     Throwable cause = ite.getCause();
-                    if( cause instanceof UnsupportedOperationException 
+                    if( cause instanceof UnsupportedOperationException
                             && cause.getMessage().contains("not supported on the JAXB") ) {
                         continue;
-                    } 
+                    }
                     throw ite;
                 }
             }
-        } catch( Exception e ) { 
+        } catch( Exception e ) {
             logger.error("Test failed: " + e.getMessage(), e);
             fail( "Unable to verify field via method "  + methodName + ": " + e.getMessage());
-        } 
+        }
     }
-    
-    private void verifyThatAllFieldsAreFilledOrUnsupported(Object instance, Class interfaze ) { 
+
+    private void verifyThatAllFieldsAreFilledOrUnsupported(Object instance, Class interfaze ) {
         assertNotNull( interfaze.getSimpleName() + " instance is null", instance);
         String methodName = null;
-        try { 
+        try {
             for( Method getMethod : interfaze.getMethods() )  {
                 methodName = getMethod.getName();
                 if( ! methodName.startsWith("get") ) {
-                   continue; 
+                   continue;
                 }
-                try { 
+                try {
                    Object fieldValue = getMethod.invoke(instance);
                    String fieldName = methodName.substring(3, 4).toLowerCase() + methodName.substring(4);
                    assertNotNull(interfaze.getSimpleName() + "." + fieldName + " is null", fieldValue);
-                   if( fieldValue instanceof Number ) { 
-                       assertFalse(interfaze.getSimpleName() + "." + fieldName + " is -1", 
+                   if( fieldValue instanceof Number ) {
+                       assertFalse(interfaze.getSimpleName() + "." + fieldName + " is -1",
                                ((Number) fieldValue).intValue() < 0 );
                    }
-                } catch( InvocationTargetException ite ) { 
+                } catch( InvocationTargetException ite ) {
                     Throwable cause = ite.getCause();
-                    if( cause instanceof UnsupportedOperationException 
+                    if( cause instanceof UnsupportedOperationException
                             && cause.getMessage().contains("not supported on the JAXB") ) {
                         continue;
-                    } 
+                    }
                     throw ite;
                 }
             }
-        } catch( Exception e ) { 
+        } catch( Exception e ) {
             logger.error("Test failed: " + e.getMessage(), e);
             fail( "Unable to verify field via method "  + methodName + ": " + e.getMessage());
         }
@@ -282,7 +281,7 @@ public abstract class AbstractTaskSerializationTest {
 
     @Test
     public void taskCompositeCommandCanBeSerialized() throws Exception {
-        Assume.assumeTrue(TestType.JAXB.equals(getType())); 
+        Assume.assumeTrue(TestType.JAXB.equals(getType()));
         addClassesToSerializationContext(CompositeCommand.class);
         addClassesToSerializationContext(StartTaskCommand.class);
         addClassesToSerializationContext(CancelDeadlineCommand.class);
@@ -319,27 +318,27 @@ public abstract class AbstractTaskSerializationTest {
     }
 
 
-    @Test 
-    public void statusInCommandSerialization() throws Exception { 
+    @Test
+    public void statusInCommandSerialization() throws Exception {
         Assume.assumeTrue(getType().equals(TestType.JAXB));
         addClassesToSerializationContext(GetTaskAssignedAsPotentialOwnerCommand.class);
-  
+
         List<Status> statuses = new ArrayList<Status>();
         statuses.add(Status.Completed);
         statuses.add(Status.Exited);
         List<String> groupIds = new ArrayList<String>();
         groupIds.add("team");
         groupIds.add("region");
-        
+
         QueryFilter filter = new QueryFilter( 0, 0, "order", false);
         GetTaskAssignedAsPotentialOwnerCommand cmd = new GetTaskAssignedAsPotentialOwnerCommand( "user", groupIds, statuses, filter );
         GetTaskAssignedAsPotentialOwnerCommand copyCmd = testRoundTrip(cmd);
-        
+
         ComparePair.compareObjectsViaFields(cmd, copyCmd);
     }
 
     @Test
-    public void jaxbContentTest() throws Exception { 
+    public void jaxbContentTest() throws Exception {
         Assume.assumeFalse(getType().equals(TestType.YAML));
         ContentImpl content = new ContentImpl();
         content.setId(23);
@@ -350,13 +349,13 @@ public abstract class AbstractTaskSerializationTest {
         byte [] bytes = ContentMarshallerHelper.marshallContent(map, null);
         content.setContent(bytes);
 
-        JaxbContent jaxbContent = new JaxbContent(content); 
+        JaxbContent jaxbContent = new JaxbContent(content);
         JaxbContent copyJaxbContent = testRoundTrip(jaxbContent);
         ComparePair.compareObjectsViaFields(jaxbContent, copyJaxbContent);
     }
-    
+
     @Test
-    public void jaxbCommentTest() throws Exception { 
+    public void jaxbCommentTest() throws Exception {
         Assume.assumeFalse(getType().equals(TestType.YAML));
         CommentImpl comment = new CommentImpl();
         comment.setAddedAt(new Date());
@@ -364,46 +363,46 @@ public abstract class AbstractTaskSerializationTest {
         comment.setId(23l);
         comment.setText("ILLUMINATI!");
 
-        JaxbComment jaxbComment = new JaxbComment(comment); 
-       
+        JaxbComment jaxbComment = new JaxbComment(comment);
+
         assertEquals("added at", comment.getAddedAt(), jaxbComment.getAddedAt());
         assertEquals("added by", comment.getAddedBy().getId(), jaxbComment.getAddedById());
         assertEquals("added by", comment.getAddedBy().getId(), jaxbComment.getAddedBy().getId());
         assertEquals("id", comment.getId(), jaxbComment.getId());
         assertEquals("text", comment.getText(), jaxbComment.getText());
-        
+
         JaxbComment copyJaxbComment = testRoundTrip(jaxbComment);
         ComparePair.compareObjectsViaFields(jaxbComment, copyJaxbComment);
     }
-    
+
     @Test
-    public void jaxbI18NTextTest() throws Exception { 
+    public void jaxbI18NTextTest() throws Exception {
         Assume.assumeFalse(getType().equals(TestType.YAML));
-        
+
         I18NTextImpl textImpl = new I18NTextImpl();
         textImpl.setId(1605l);
         textImpl.setLanguage("es-ES");
         textImpl.setText("Quixote");
 
         JaxbI18NText jaxbText = new JaxbI18NText(textImpl);
-       
+
         assertEquals("id", textImpl.getId(), jaxbText.getId());
         assertEquals("language", textImpl.getLanguage(), jaxbText.getLanguage());
         assertEquals("text", textImpl.getText(), jaxbText.getText());
-       
+
         JaxbI18NText copyJaxbText = testRoundTrip(jaxbText);
         ComparePair.compareObjectsViaFields(jaxbText, copyJaxbText);
-        
+
         List<I18NText> intList = new ArrayList<I18NText>();
         intList.add(textImpl);
-        
+
         List<JaxbI18NText> jaxbList = JaxbI18NText.convertListFromInterfaceToJaxbImpl(intList, I18NText.class, JaxbI18NText.class);
-       
+
         jaxbText = jaxbList.get(0);
         assertEquals("id", textImpl.getId(), jaxbText.getId());
         assertEquals("language", textImpl.getLanguage(), jaxbText.getLanguage());
         assertEquals("text", textImpl.getText(), jaxbText.getText());
-       
+
         intList = JaxbI18NText.convertListFromJaxbImplToInterface(jaxbList);
 
         I18NText text = intList.get(0);
