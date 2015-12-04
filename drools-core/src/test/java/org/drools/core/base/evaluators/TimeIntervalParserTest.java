@@ -25,18 +25,18 @@ public class TimeIntervalParserTest {
     public void testParse() {
         String input = "2d10h49m10s789ms";
         long expected = 211750789;
-        Long[] result = TimeIntervalParser.parse( input );
+        long[] result = TimeIntervalParser.parse( input );
         assertEquals( 1, result.length );
-        assertEquals( expected, result[0].longValue() );
+        assertEquals( expected, result[0] );
     }
 
     @Test
     public void testParse2() {
         String input = "10h49m789ms";
         long expected = 10 * 3600000 + 49 * 60000 + 789;
-        Long[] result = TimeIntervalParser.parse( input );
+        long[] result = TimeIntervalParser.parse( input );
         assertEquals( 1, result.length );
-        assertEquals( expected, result[0].longValue() );
+        assertEquals( expected, result[0] );
     }
 
     @Test
@@ -45,10 +45,10 @@ public class TimeIntervalParserTest {
         String input = " 10h49m789 , 12h ";
         long expected1 = 10 * 3600000 + 49 * 60000 + 789;
         long expected2 = 12 * 3600000;
-        Long[] result = TimeIntervalParser.parse( input );
+        long[] result = TimeIntervalParser.parse( input );
         assertEquals( 2, result.length );
-        assertEquals( expected1, result[0].longValue() );
-        assertEquals( expected2, result[1].longValue() );
+        assertEquals( expected1, result[0] );
+        assertEquals( expected2, result[1] );
     }
 
     @Test
@@ -57,17 +57,17 @@ public class TimeIntervalParserTest {
         String input = " 15957, 3500000 ";
         long expected1 = 15957;
         long expected2 = 3500000;
-        Long[] result = TimeIntervalParser.parse( input );
+        long[] result = TimeIntervalParser.parse( input );
         assertEquals( 2, result.length );
-        assertEquals( expected1, result[0].longValue() );
-        assertEquals( expected2, result[1].longValue() );
+        assertEquals( expected1, result[0] );
+        assertEquals( expected2, result[1] );
     }
 
     @Test
     public void testParse5() {
         // empty input
         String input = "";
-        Long[] result = TimeIntervalParser.parse( input );
+        long[] result = TimeIntervalParser.parse( input );
         assertEquals( 0, result.length );
     }
     
@@ -75,7 +75,7 @@ public class TimeIntervalParserTest {
     public void testParse6() {
         // null input
         String input = null;
-        Long[] result = TimeIntervalParser.parse( input );
+        long[] result = TimeIntervalParser.parse( input );
         assertEquals( 0, result.length );
     }
     
@@ -83,7 +83,7 @@ public class TimeIntervalParserTest {
     public void testParse7() {
         // empty input
         String input = "  ";
-        Long[] result = TimeIntervalParser.parse( input );
+        long[] result = TimeIntervalParser.parse( input );
         assertEquals( 0, result.length );
     }
     
@@ -93,10 +93,10 @@ public class TimeIntervalParserTest {
         String input = " -15957, 3500000 ";
         long expected1 = -15957;
         long expected2 = 3500000;
-        Long[] result = TimeIntervalParser.parse( input );
+        long[] result = TimeIntervalParser.parse( input );
         assertEquals( 2, result.length );
-        assertEquals( expected1, result[0].longValue() );
-        assertEquals( expected2, result[1].longValue() );
+        assertEquals( expected1, result[0] );
+        assertEquals( expected2, result[1] );
     }
 
     @Test
@@ -105,10 +105,10 @@ public class TimeIntervalParserTest {
         String input = " -10h49m789 , -8h ";
         long expected1 = -( 10 * 3600000 + 49 * 60000 + 789 );
         long expected2 = -( 8 * 3600000 );
-        Long[] result = TimeIntervalParser.parse( input );
+        long[] result = TimeIntervalParser.parse( input );
         assertEquals( 2, result.length );
-        assertEquals( expected1, result[0].longValue() );
-        assertEquals( expected2, result[1].longValue() );
+        assertEquals( expected1, result[0] );
+        assertEquals( expected2, result[1] );
     }
 
 }

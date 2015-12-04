@@ -312,7 +312,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         String drl2_2 = "package org.drools.compiler\n" +
                 "rule R2_2 when\n" +
-                "   $m : Message( mesage == \"Hello World\" )\n" +
+                "   $m : Message( nonExistentField == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n";
 
@@ -351,7 +351,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         String drl2_1 = "package org.drools.compiler\n" +
                 "rule R2_1 when\n" +
-                "   $m : Message( mesage == \"Hello World\" )\n" +
+                "   $m : Message( nonExistentField == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n";
 
@@ -391,10 +391,10 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        //Field is unknown ("mesage" not "message")
+        //Field is unknown ("nonExistentField" not "message")
         String drl2_1 = "package org.drools.compiler\n" +
                 "rule R2_1 when\n" +
-                "   $m : Message( mesage == \"Hello World\" )\n" +
+                "   $m : Message( nonExistentField == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n";
 
@@ -430,17 +430,17 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
     @Test
     public void testIncrementalCompilationAddErrorThenRemoveIt() throws Exception {
-        //Fact Type is unknown ("Mesage" not "Message")
+        //Fact Type is unknown ("NonExistentClass" not "Message")
         String drl1 = "package org.drools.compiler\n" +
                 "rule R1 when\n" +
-                "   $m : Mesage()\n" +
+                "   $m : NonExistentClass()\n" +
                 "then\n" +
                 "end\n";
 
-        //Field is unknown ("mesage" not "message")
+        //Field is unknown ("nonExistentField" not "message")
         String drl2_1 = "package org.drools.compiler\n" +
                 "rule R2_1 when\n" +
-                "   $m : Message( mesage == \"Hello World\" )\n" +
+                "   $m : Message( nonExistentField == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n";
 
@@ -541,10 +541,10 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        //Field is unknown ("mesage" not "message")
+        //Field is unknown ("nonExistentField" not "message")
         String drl2_1 = "package org.drools.compiler\n" +
                 "rule R2_1 when\n" +
-                "   $m : Message( mesage == \"Hello World\" )\n" +
+                "   $m : Message( nonExistentField == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n";
 
@@ -1010,7 +1010,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         String drl2_2 = "package org.drools.compiler\n" +
                 "rule R2_2 when\n" +
-                "   $m : Message( mesage == \"Hello World\" )\n" +
+                "   $m : Message( nonExistentField == \"Hello World\" )\n" +
                 "then\n" +
                 "end\n";
 
@@ -1106,7 +1106,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         String drl2_1 = "package org.drools.compiler\n" +
                 "rule R2\n" +
                 "when\n" +
-                "   $m : Mesage()\n" +
+                "   $m : NonExistentClass()\n" +
                 "then\n" +
                 "end\n";
 

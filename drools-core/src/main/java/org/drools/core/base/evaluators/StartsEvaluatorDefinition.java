@@ -156,7 +156,7 @@ public class StartsEvaluatorDefinition
         String key = isNegated + ":" + parameterText;
         StartsEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
-            Long[] params = TimeIntervalParser.parse( parameterText );
+            long[] params = TimeIntervalParser.parse( parameterText );
             eval = new StartsEvaluator( type,
                                         isNegated,
                                         params,
@@ -212,7 +212,7 @@ public class StartsEvaluatorDefinition
 
         public StartsEvaluator(final ValueType type,
                                final boolean isNegated,
-                               final Long[] params,
+                               final long[] params,
                                final String paramText) {
             super( type,
                    isNegated ? STARTS_NOT : STARTS );
@@ -331,13 +331,13 @@ public class StartsEvaluatorDefinition
          *
          * @param parameters
          */
-        private void setParameters(Long[] parameters) {
+        private void setParameters(long[] parameters) {
             if ( parameters == null || parameters.length == 0 ) {
                 this.startDev = 0;
             } else if ( parameters.length == 1 ) {
-                if( parameters[0].longValue() >= 0 ) {
+                if( parameters[0] >= 0 ) {
                     // defined deviation for end timestamp
-                    this.startDev = parameters[0].longValue();
+                    this.startDev = parameters[0];
                 } else {
                     throw new RuntimeException("[Starts Evaluator]: Not possible to use negative parameter: '" + paramText + "'");
                 }

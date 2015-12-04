@@ -156,7 +156,7 @@ public class FinishedByEvaluatorDefinition
         String key = isNegated + ":" + parameterText;
         FinishedByEvaluator eval = this.cache.get( key );
         if ( eval == null ) {
-            Long[] params = TimeIntervalParser.parse( parameterText );
+            long[] params = TimeIntervalParser.parse( parameterText );
             eval = new FinishedByEvaluator( type,
                                             isNegated,
                                             params,
@@ -215,7 +215,7 @@ public class FinishedByEvaluatorDefinition
 
         public FinishedByEvaluator(final ValueType type,
                                    final boolean isNegated,
-                                   final Long[] parameters,
+                                   final long[] parameters,
                                    final String paramText) {
             super( type,
                    isNegated ? NOT_FINISHED_BY : FINISHED_BY );
@@ -331,13 +331,13 @@ public class FinishedByEvaluatorDefinition
          *
          * @param parameters
          */
-        private void setParameters(Long[] parameters) {
+        private void setParameters(long[] parameters) {
             if ( parameters == null || parameters.length == 0 ) {
                 this.endDev = 0;
             } else if ( parameters.length == 1 ) {
-                if( parameters[0].longValue() >= 0 ) {
+                if( parameters[0] >= 0 ) {
                     // defined deviation for end timestamp
-                    this.endDev = parameters[0].longValue();
+                    this.endDev = parameters[0];
                 } else {
                     throw new RuntimeException("[FinishedBy Evaluator]: Not possible to use negative parameter: '" + paramText + "'");
                 }
