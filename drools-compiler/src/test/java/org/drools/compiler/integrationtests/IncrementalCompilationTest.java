@@ -48,6 +48,7 @@ import org.kie.api.command.Command;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
 import org.kie.api.logger.KieRuntimeLogger;
 import org.kie.api.runtime.Globals;
@@ -2424,4 +2425,150 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                "  counter.incrementAndGet();\n" +
                "end";
     }
+
+	/*
+	@Test
+    public void testDeclarationWithPojoExtensionMultiplePackages() throws Exception {
+        String drlDeclare = "package org.drools.compiler.integrationtests\n" +
+                     "declare Drools_applications extends org.drools.compiler.integrationtests.TypeDeclarationTest.BaseClass\n" +
+                     "    drools_app_name: String\n" +
+                     "end";
+        String drlRule = "package org.drools.compiler.test\n" +
+                     "rule R1 when\n" +
+                     "   $fact : org.drools.compiler.integrationtests.Drools_applications( drools_app_name == \"appName\" )\n" +
+                     "then\n" +
+                     "end";
+
+        org.drools.builder.KnowledgeBuilder kbuilder = org.drools.builder.KnowledgeBuilderFactory.newKnowledgeBuilder();
+		kbuilder.add(org.drools.io.ResourceFactory.newReaderResource(new StringReader(drlDeclare)), org.drools.builder.ResourceType.DRL);
+        org.drools.KnowledgeBase kbase = org.drools.KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        org.drools.builder.KnowledgeBuilder kbuilder2 = org.drools.builder.KnowledgeBuilderFactory.newKnowledgeBuilder(kbase);
+		kbuilder2.add(org.drools.io.ResourceFactory.newReaderResource(new StringReader(drlRule)), org.drools.builder.ResourceType.DRL);
+		// This line may not be necessary
+		// kbase.addKnowledgePackages(kbuilder2.getKnowledgePackages());
+
+		org.drools.runtime.StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        org.drools.definition.type.FactType factType = kbase.getFactType( "org.drools.compiler.integrationtests", "Drools_applications" );
+        Object fact = factType.newInstance();
+        factType.set( fact, "drools_app_name", "appName" );
+        ksession.insert( fact );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+    }
+	*/
+
+	public static class BaseClass {
+		String baseField;
+		public String getBaseField() {
+			return baseField;
+		}
+		public void setBaseField(String baseField) {
+			this.baseField = baseField;
+		}
+	}
+
+    @Test
+    public void testUpdateWithPojoExtension() throws Exception {
+        String drlDeclare = "package org.drools.compiler.integrationtests\n" +
+                     "declare Drools_applications extends org.drools.compiler.integrationtests.TypeDeclarationTest.BaseClass\n" +
+                     "    drools_app_name: String\n" +
+                     "end";
+        String drlRule = "package org.drools.compiler.integrationtests\n" +
+                     "rule R1 when\n" +
+                     "   $fact : Drools_applications( drools_app_name == \"appName\" )\n" +
+                     "then\n" +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+
+        kfs.generateAndWritePomXML( releaseId1 );
+        kfs.write( ks.getResources()
+                           .newReaderResource( new StringReader( drlDeclare ) )
+                           .setResourceType( ResourceType.DRL )
+                           .setSourcePath( "drlDeclare.drl" ) );
+
+        kieBuilder.buildAll();
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+
+        kfs.write( ks.getResources()
+                           .newReaderResource( new StringReader( drlRule ) )
+                           .setResourceType( ResourceType.DRL )
+                           .setSourcePath( "drlRule.drl" ) );
+
+        IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).incrementalBuild();
+        System.out.println( results.getAddedMessages() );
+        assertEquals( 0, results.getAddedMessages().size() );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        Results updateResults = kc.updateToVersion( releaseId2 );
+        assertEquals( 0, updateResults.getMessages().size() );
+
+        // Create a session and fire rules
+        KieSession ksession = kc.newKieSession();
+        FactType factType = kc.getKieBase().getFactType( "org.drools.compiler.integrationtests", "Drools_applications" );
+        Object fact = factType.newInstance();
+        factType.set( fact, "drools_app_name", "appName" );
+        ksession.insert( fact );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testUpdateWithPojoExtensionDifferentPackages() throws Exception {
+        String drlDeclare = "package org.drools.compiler.integrationtests\n" +
+                     "declare Drools_applications extends org.drools.compiler.integrationtests.TypeDeclarationTest.BaseClass\n" +
+                     "    drools_app_name: String\n" +
+                     "end";
+        String drlRule = "package org.drools.compiler.test\n" +
+                     "rule R1 when\n" +
+                     "   $fact : org.drools.compiler.integrationtests.Drools_applications( drools_app_name == \"appName\" )\n" +
+                     "then\n" +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.0.0" );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+
+        kfs.generateAndWritePomXML( releaseId1 );
+        kfs.write( ks.getResources()
+                           .newReaderResource( new StringReader( drlDeclare ) )
+                           .setResourceType( ResourceType.DRL )
+                           .setSourcePath( "drlDeclare.drl" ) );
+
+        kieBuilder.buildAll();
+
+        KieContainer kc = ks.newKieContainer( releaseId1 );
+
+        kfs.write( ks.getResources()
+                           .newReaderResource( new StringReader( drlRule ) )
+                           .setResourceType( ResourceType.DRL )
+                           .setSourcePath( "drlRule.drl" ) );
+
+        IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).incrementalBuild();
+        System.out.println( results.getAddedMessages() );
+        assertEquals( 0, results.getAddedMessages().size() );
+
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        Results updateResults = kc.updateToVersion( releaseId2 );
+        assertEquals( 0, updateResults.getMessages().size() );
+
+        // Create a session and fire rules
+        KieSession ksession = kc.newKieSession();
+        FactType factType = kc.getKieBase().getFactType( "org.drools.compiler.integrationtests", "Drools_applications" );
+        Object fact = factType.newInstance();
+        factType.set( fact, "drools_app_name", "appName" );
+        ksession.insert( fact );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
 }
