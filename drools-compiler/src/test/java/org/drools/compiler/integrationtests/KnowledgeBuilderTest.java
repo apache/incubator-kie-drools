@@ -538,4 +538,69 @@ public class KnowledgeBuilderTest {
 
         }
     }
+
+	@Test
+    public void testDeclarationWithPojoExtension() throws Exception {
+        String drlDeclare = "package org.drools.compiler.integrationtests\n" +
+                     "declare Drools_applications extends org.drools.compiler.integrationtests.TypeDeclarationTest.BaseClass\n" +
+                     "    drools_app_name: String\n" +
+                     "end";
+        String drlRule = "package org.drools.compiler.integrationtests\n" +
+                     "rule R1 when\n" +
+                     "   $fact : org.drools.compiler.integrationtests.Drools_applications( drools_app_name == \"appName\" )\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drlDeclare.getBytes() ), ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder(kbase);
+        kbuilder2.add( ResourceFactory.newByteArrayResource( drlRule.getBytes() ), ResourceType.DRL );
+		// This line may not be necessary
+		// kbase.addKnowledgePackages(kbuilder2.getKnowledgePackages());
+
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType factType = kbase.getFactType( "org.drools.compiler.integrationtests", "Drools_applications" );
+        Object fact = factType.newInstance();
+        factType.set( fact, "drools_app_name", "appName" );
+        ksession.insert( fact );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+    }
+	@Test
+    public void testDeclarationWithPojoExtensionMultiplePackages() throws Exception {
+        String drlDeclare = "package org.drools.compiler.integrationtests\n" +
+                     "declare Drools_applications extends org.drools.compiler.integrationtests.TypeDeclarationTest.BaseClass\n" +
+                     "    drools_app_name: String\n" +
+                     "end";
+        String drlRule = "package org.drools.compiler.test\n" +
+                     "rule R1 when\n" +
+                     "   $fact : org.drools.compiler.integrationtests.Drools_applications( drools_app_name == \"appName\" )\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drlDeclare.getBytes() ), ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder(kbase);
+        kbuilder2.add( ResourceFactory.newByteArrayResource( drlRule.getBytes() ), ResourceType.DRL );
+		// This line may not be necessary
+		// kbase.addKnowledgePackages(kbuilder2.getKnowledgePackages());
+
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType factType = kbase.getFactType( "org.drools.compiler.integrationtests", "Drools_applications" );
+        Object fact = factType.newInstance();
+        factType.set( fact, "drools_app_name", "appName" );
+        ksession.insert( fact );
+
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+    }
 }
