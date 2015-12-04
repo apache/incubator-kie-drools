@@ -86,6 +86,7 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         processes.add("repo/processes/general/humanTask.bpmn");
         processes.add("repo/processes/general/BPMN2-UserTask.bpmn2");
         processes.add("repo/processes/general/SimpleHTProcess.bpmn2");
+        processes.add("repo/processes/general/AdHocSubProcess.bpmn2");
 
         InternalKieModule kJar1 = createKieJar(ks, releaseId, processes);
         File pom = new File("target/kmodule", "pom.xml");
@@ -142,12 +143,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	Collection<ProcessDefinition> definitions = runtimeDataService.getProcessesByDeploymentId(deploymentUnit.getIdentifier(), new QueryContext());
     	assertNotNull(definitions);
 
-    	assertEquals(4, definitions.size());
+    	assertEquals(5, definitions.size());
     	List<String> expectedProcessIds = new ArrayList<String>();
     	expectedProcessIds.add("org.jbpm.writedocument.empty");
     	expectedProcessIds.add("org.jbpm.writedocument");
     	expectedProcessIds.add("UserTask");
     	expectedProcessIds.add("org.jboss.qa.bpms.HumanTask");
+    	expectedProcessIds.add("AdHocSubProcess");
 
     	for (ProcessDefinition def : definitions) {
     		assertTrue(expectedProcessIds.contains(def.getId()));
@@ -192,12 +194,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	Collection<ProcessDefinition> definitions = runtimeDataService.getProcesses(new QueryContext());
     	assertNotNull(definitions);
 
-    	assertEquals(4, definitions.size());
+    	assertEquals(5, definitions.size());
     	List<String> expectedProcessIds = new ArrayList<String>();
     	expectedProcessIds.add("org.jbpm.writedocument.empty");
     	expectedProcessIds.add("org.jbpm.writedocument");
     	expectedProcessIds.add("UserTask");
     	expectedProcessIds.add("org.jboss.qa.bpms.HumanTask");
+    	expectedProcessIds.add("AdHocSubProcess");
 
     	for (ProcessDefinition def : definitions) {
     		assertTrue(expectedProcessIds.contains(def.getId()));
@@ -209,12 +212,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	Collection<String> definitions = runtimeDataService.getProcessIds(deploymentUnit.getIdentifier(), new QueryContext());
     	assertNotNull(definitions);
 
-    	assertEquals(4, definitions.size());
+    	assertEquals(5, definitions.size());
 
     	assertTrue(definitions.contains("org.jbpm.writedocument.empty"));
     	assertTrue(definitions.contains("org.jbpm.writedocument"));
     	assertTrue(definitions.contains("UserTask"));
     	assertTrue(definitions.contains("org.jboss.qa.bpms.HumanTask"));
+    	assertTrue(definitions.contains("AdHocSubProcess"));
     }
 
     @Test
@@ -222,13 +226,14 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	Collection<ProcessDefinition> definitions = runtimeDataService.getProcesses(new QueryContext("ProcessName", true));
     	assertNotNull(definitions);
 
-    	assertEquals(4, definitions.size());
+    	assertEquals(5, definitions.size());
     	List<String> expectedProcessIds = new ArrayList<String>();
 
+    	expectedProcessIds.add("AdHoc SubProcess");
     	expectedProcessIds.add("HumanTask");
     	expectedProcessIds.add("User Task");
     	expectedProcessIds.add("humanTaskSample");
-    	expectedProcessIds.add("humanTaskSample");
+    	expectedProcessIds.add("humanTaskSample");    	
 
     	int index = 0;
     	for (ProcessDefinition def : definitions) {
@@ -243,12 +248,13 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	Collection<ProcessDefinition> definitions = runtimeDataService.getProcesses(new QueryContext("ProcessVersion", true));
     	assertNotNull(definitions);
 
-    	assertEquals(4, definitions.size());
+    	assertEquals(5, definitions.size());
     	List<String> expectedProcessIds = new ArrayList<String>();
     	expectedProcessIds.add("UserTask");
     	expectedProcessIds.add("org.jboss.qa.bpms.HumanTask");
+    	expectedProcessIds.add("AdHocSubProcess");
     	expectedProcessIds.add("org.jbpm.writedocument.empty");
-    	expectedProcessIds.add("org.jbpm.writedocument");
+    	expectedProcessIds.add("org.jbpm.writedocument");    	
 
     	int index = 0;
     	for (ProcessDefinition def : definitions) {
@@ -813,6 +819,40 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	instances = runtimeDataService.getProcessInstanceFullHistoryByType(processInstanceId, EntryType.END, new QueryContext());
     	assertNotNull(instances);
     	assertEquals(1, instances.size());
+    }
+    
+    @Test
+    public void testGetProcessInstanceHistoryAdHocSubprocess() {
+
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "AdHocSubProcess");
+        assertNotNull(processInstanceId);
+        
+        processService.signalProcessInstance(processInstanceId, "Hello1", null);
+
+        // get active nodes as history view
+        Collection<NodeInstanceDesc> instances = runtimeDataService.getProcessInstanceHistoryActive(processInstanceId, new QueryContext());
+        assertNotNull(instances);
+        assertEquals(2, instances.size());
+
+        // get completed nodes as history view
+        instances = runtimeDataService.getProcessInstanceHistoryCompleted(processInstanceId, new QueryContext());
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
+
+        // get both active and completed nodes as history view
+        instances = runtimeDataService.getProcessInstanceFullHistory(processInstanceId, new QueryContext());
+        assertNotNull(instances);
+        assertEquals(4, instances.size());
+
+        // get nodes filtered by type - start
+        instances = runtimeDataService.getProcessInstanceFullHistoryByType(processInstanceId, EntryType.START, new QueryContext());
+        assertNotNull(instances);
+        assertEquals(3, instances.size());
+
+        // get nodes filtered by type - end
+        instances = runtimeDataService.getProcessInstanceFullHistoryByType(processInstanceId, EntryType.END, new QueryContext());
+        assertNotNull(instances);
+        assertEquals(1, instances.size());
     }
 
     @Test
