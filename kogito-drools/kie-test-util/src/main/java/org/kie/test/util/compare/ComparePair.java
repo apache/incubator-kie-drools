@@ -19,23 +19,29 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class does deep, configurable reflection based comparison,
  * meant for usage with round-tripped (serialized, deserialized) objects.
  */
 public class ComparePair {
+
+    private static final Logger logger = LoggerFactory.getLogger(ComparePair.class);
 
     private Object orig;
     private Object copy;
@@ -59,6 +65,10 @@ public class ComparePair {
         this.objInterface = c;
     }
 
+    public ComparePair(Object a, Object b) {
+        this(a, b, a.getClass());
+    }
+
     public List<ComparePair> compare() {
         if (useGetMethods) {
             return compareObjectsViaGetMethods(orig, copy, objInterface);
@@ -66,6 +76,11 @@ public class ComparePair {
             compareObjectsViaFields(orig, copy, nullFields);
             return null;
         }
+    }
+
+    public ComparePair useFields() {
+        this.useGetMethods = false;
+        return this;
     }
 
     public void recursiveCompare() {
@@ -76,9 +91,9 @@ public class ComparePair {
         }
     }
 
-    public void addNullFields(String... fieldNames) {
+    public ComparePair addNullFields(String... fieldNames) {
         if (fieldNames == null) {
-            return;
+            return this;
         }
         if (nullFields == null) {
             nullFields = new String[0];
@@ -91,6 +106,8 @@ public class ComparePair {
             newNullFields[i + nullFields.length] = fieldNames[i];
         }
         this.nullFields = newNullFields;
+
+        return this;
     }
 
     private List<ComparePair> compareObjectsViaGetMethods(Object orig, Object copy, Class<?> objInterface) {
@@ -174,9 +191,19 @@ public class ComparePair {
     }
 
     public static void compareObjectsViaFields(Object orig, Object copy, String... skipFields) {
+        if( orig == copy ) {
+            return;
+        } else if( copy == null ) {
+           fail( "Copy " +  orig.getClass().getSimpleName() + " is null!" );
+        } else if( orig == null ) {
+           fail( "Original " +  copy.getClass().getSimpleName() + " is null!" );
+        }
+
         Class<?> origClass = orig.getClass();
-        assertEquals("copy is not an instance of " + origClass + " (" + copy.getClass().getSimpleName() + ")", origClass,
-                copy.getClass());
+        String origClassName = origClass.getSimpleName();
+        Class<?> copyClass = copy.getClass();
+        assertEquals("copy is an instance of " + copyClass.getSimpleName() + " ( instead of " + origClassName + ")",
+                origClass, copy.getClass());
         for (Field field : orig.getClass().getDeclaredFields()) {
             try {
                 field.setAccessible(true);
@@ -199,7 +226,17 @@ public class ComparePair {
                 if (origFieldVal == null || copyFieldVal == null) {
                     nullFound = true;
                     for (String nullFieldName : skipFields) {
-                        if (nullFieldName.matches(fieldName)) {
+                        String actualNullFieldName = nullFieldName;
+                        if( nullFieldName.contains(".") ) {
+                            int dotIndex = nullFieldName.indexOf(".");
+                            if( nullFieldName.substring(0, dotIndex).equals(origClassName) ) {
+                                actualNullFieldName = nullFieldName.substring(dotIndex+1);
+                            } else {
+                                continue;
+                            }
+
+                        }
+                        if (nullFound && actualNullFieldName.matches(fieldName)) {
                             nullFound = false;
                         }
                     }
@@ -208,8 +245,8 @@ public class ComparePair {
                 assertFalse(failMsg + "!", nullFound);
 
                 if (copyFieldVal != origFieldVal) {
-                    assertNotNull(failMsg + "in copy!", copyFieldVal);
-                    assertNotNull(failMsg + "in original!", origFieldVal);
+                    assertNotNull(failMsg + " in the copy!", copyFieldVal);
+                    assertNotNull(failMsg + " in the original!", origFieldVal);
                     Package pkg = origFieldVal.getClass().getPackage();
                     if (pkg == null || pkg.getName().startsWith("java.")) {
                         if( origFieldVal.getClass().isArray() ) {
@@ -217,9 +254,28 @@ public class ComparePair {
                                 assertArrayEquals(origClass.getSimpleName() + "." + field.getName(), (byte []) origFieldVal, (byte []) copyFieldVal);
                             }
                         } else if( origFieldVal instanceof Map<?, ?> && copyFieldVal instanceof Map<?, ?> ) {
-                            CollectionUtils.disjunction(
+                            Collection shouldBeEmpty = CollectionUtils.disjunction(
                                     ((Map) origFieldVal).values(),
                                     ((Map) copyFieldVal).values());
+                            assertTrue( "Comparison of Map values failed on " + origFieldVal.getClass().getSimpleName() + "." + fieldName, shouldBeEmpty.isEmpty() );
+                        } else if( origFieldVal instanceof Collection ) {
+                            assertEquals( "Different collection sizes on "+ origFieldVal.getClass().getSimpleName() + "." + fieldName,
+                                    ((Collection) origFieldVal).size(), ((Collection) copyFieldVal).size());
+                           for( Object elem : ((Collection) origFieldVal) ) {
+                              boolean match = false;
+                              for( Object copyElem : ((Collection) copyFieldVal) ) {
+                                 try {
+                                    compareObjectsViaFields(elem, copyElem, skipFields);
+                                    match = true;
+                                    break;
+                                 } catch( Throwable t ) {
+                                     logger.debug(t.getMessage());
+                                     // ignore
+                                 }
+                              }
+                              assertTrue( "Different collection values on " + origFieldVal.getClass().getSimpleName() + "." + fieldName,
+                                      match);
+                           }
                         } else {
                             assertEquals(origClass.getSimpleName() + "." + field.getName(), origFieldVal, copyFieldVal);
                         }
@@ -232,6 +288,12 @@ public class ComparePair {
                         + ".", e);
             }
         }
+    }
+
+    public interface FieldComparator<T> {
+
+        public void compare(T orig, T copy);
+
     }
 
 }
