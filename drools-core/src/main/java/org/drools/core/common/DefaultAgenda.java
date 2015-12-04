@@ -892,7 +892,7 @@ public class DefaultAgenda
         }
         // restore lazy items
         for ( RuleAgendaItem lazyItem : lazyItems ) {
-            ((InternalAgendaGroup) agendaGroup ).add( lazyItem );
+            agendaGroup.add( lazyItem );
         }
     }
 
@@ -1299,9 +1299,6 @@ public class DefaultAgenda
             int returnedFireCount = 0;
 
             boolean limitReached = fireLimit == 0; // -1 or > 0 will return false. No reason for user to give 0, just handled for completeness.
-
-            boolean loop = true;
-
 
             // The engine comes to potential rest (inside the loop) when there are no propagations and no rule firings.
             // It's potentially at rest, because we cannot guarantee it is at rest.

@@ -36,8 +36,8 @@ import org.drools.core.rule.MvelConstraintTestUtil;
 import org.drools.core.rule.Pattern;
 import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.index.RightTupleIndexHashTable;
-import org.drools.core.util.index.RightTupleIndexHashTable.FieldIndexHashTableFullIterator;
+import org.drools.core.util.index.TupleIndexHashTable;
+import org.drools.core.util.index.TupleIndexHashTable.FieldIndexHashTableFullIterator;
 import org.drools.core.util.index.TupleList;
 import org.junit.Test;
 import org.kie.internal.KnowledgeBaseFactory;
@@ -99,7 +99,7 @@ public class RightTupleIndexHashTableIteratorTest {
         betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh8, null ) );
         betaMemory.getRightTupleMemory().add( new RightTupleImpl( fh9, null ) );
         
-        RightTupleIndexHashTable hashTable = (RightTupleIndexHashTable) betaMemory.getRightTupleMemory();
+        TupleIndexHashTable hashTable = (TupleIndexHashTable) betaMemory.getRightTupleMemory();
         // can't create a 0 hashCode, so forcing 
         TupleList rightTupleList = new TupleList();
         rightTupleList.add( new RightTupleImpl( fh10, null) );

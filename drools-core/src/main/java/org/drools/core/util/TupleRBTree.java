@@ -1,9 +1,8 @@
 /*
- * Copyright 2012 JBoss Inc
+ * Copyright 2015 JBoss Inc
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -12,22 +11,19 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
 
 package org.drools.core.util;
 
 import org.drools.core.util.index.TupleList;
 
-public class RightTupleRBTree<K extends Comparable< ? super K>> {
+public class TupleRBTree<K extends Comparable< ? super K>> {
 
     public static final boolean VERIFY_RBTREE = false;
     private static final int    INDENT_STEP   = 4;
 
     public Node<K>        root;
-
-    public RightTupleRBTree() {
-        //verifyProperties();
-    }
 
     public void verifyProperties() {
         if ( VERIFY_RBTREE ) {
@@ -112,7 +108,7 @@ public class RightTupleRBTree<K extends Comparable< ? super K>> {
         private Node<K> next;
 
         public RangeFastIterator(Node<K> lowerNearest,
-                                 Node<K> upperNearest) {
+                                  Node<K> upperNearest) {
             this.next = lowerNearest;
             this.upperBound = upperNearest;
         }
@@ -184,7 +180,7 @@ public class RightTupleRBTree<K extends Comparable< ? super K>> {
     }
 
     public FastIterator fastIterator() {
-        return root == null ? FastIterator.EMPTY : new RangeFastIterator( first(), last() );
+        return root == null ? FastIterator.EMPTY : new RangeFastIterator( first(), null );
     }
 
     @Override
@@ -219,7 +215,6 @@ public class RightTupleRBTree<K extends Comparable< ? super K>> {
             upperNearest = lowerNearest;
         }
 
-        // return new RBTreeFastIterator( this, lowerNearest, upperNearest );
         return new RangeFastIterator( lowerNearest, upperNearest );
     }
 
@@ -326,7 +321,7 @@ public class RightTupleRBTree<K extends Comparable< ? super K>> {
             insertedNode.parent = n;
         }
         insertCase1( insertedNode );
-        //verifyProperties();
+        // verifyProperties();
         return insertedNode;
     }
 
@@ -359,7 +354,7 @@ public class RightTupleRBTree<K extends Comparable< ? super K>> {
             rotateRight( n.parent );
             n = n.right;
         }
-        insertCase5( n );
+        insertCase5(n);
     }
 
     void insertCase5(Node<K> n) {
@@ -393,7 +388,11 @@ public class RightTupleRBTree<K extends Comparable< ? super K>> {
             root.color = Color.BLACK;
         }
 
-        //verifyProperties();
+        if ( nodeColor( root ) == Color.RED ) {
+            root.color = Color.BLACK;
+        }
+
+        // verifyProperties();
     }
 
     private static <K extends Comparable< ? super K>, V> Node<K> maximumNode(Node<K> n) {
@@ -512,7 +511,7 @@ public class RightTupleRBTree<K extends Comparable< ? super K>> {
         RED, BLACK
     }
 
-    public static class Node<K extends Comparable< ? super K>> extends TupleList implements Entry, Comparable<Node<K>> {
+    public static class Node<K extends Comparable< ? super K>> extends TupleList implements Entry<TupleList>, Comparable<Node<K>> {
         public  K       key;
         private Node<K> left;
         private Node<K> right;
@@ -539,12 +538,12 @@ public class RightTupleRBTree<K extends Comparable< ? super K>> {
             return "Node key=" + key;
         }
 
-        public void setNext(Entry next) {
+        public void setNext(TupleList next) {
             // TODO Auto-generated method stub
 
         }
 
-        public Entry getNext() {
+        public TupleList getNext() {
             // TODO Auto-generated method stub
             return null;
         }

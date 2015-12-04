@@ -425,21 +425,11 @@ public abstract class BetaNode extends LeftTupleSource
         }
     }
 
-    public static RightTuple getFirstRightTuple(final TupleMemory memory,
-                                                final FastIterator it) {
+    public static Tuple getFirstTuple(TupleMemory memory, FastIterator it) {
         if ( !memory.isIndexed() ) {
-            return (RightTuple) memory.getFirst(null);
+            return memory.getFirst( null );
         } else {
-            return (RightTuple) it.next( null );
-        }
-    }
-
-    public static LeftTuple getFirstLeftTuple(final TupleMemory memory,
-                                              final FastIterator it) {
-        if ( !memory.isIndexed() ) {
-            return (LeftTuple) memory.getFirst( null );
-        } else {
-            return (LeftTuple) it.next( null );
+            return (Tuple) it.next( null );
         }
     }
 
