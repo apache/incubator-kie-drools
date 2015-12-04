@@ -2426,41 +2426,6 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                "end";
     }
 
-	/*
-	@Test
-    public void testDeclarationWithPojoExtensionMultiplePackages() throws Exception {
-        String drlDeclare = "package org.drools.compiler.integrationtests\n" +
-                     "declare Drools_applications extends org.drools.compiler.integrationtests.TypeDeclarationTest.BaseClass\n" +
-                     "    drools_app_name: String\n" +
-                     "end";
-        String drlRule = "package org.drools.compiler.test\n" +
-                     "rule R1 when\n" +
-                     "   $fact : org.drools.compiler.integrationtests.Drools_applications( drools_app_name == \"appName\" )\n" +
-                     "then\n" +
-                     "end";
-
-        org.drools.builder.KnowledgeBuilder kbuilder = org.drools.builder.KnowledgeBuilderFactory.newKnowledgeBuilder();
-		kbuilder.add(org.drools.io.ResourceFactory.newReaderResource(new StringReader(drlDeclare)), org.drools.builder.ResourceType.DRL);
-        org.drools.KnowledgeBase kbase = org.drools.KnowledgeBaseFactory.newKnowledgeBase();
-		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
-
-        org.drools.builder.KnowledgeBuilder kbuilder2 = org.drools.builder.KnowledgeBuilderFactory.newKnowledgeBuilder(kbase);
-		kbuilder2.add(org.drools.io.ResourceFactory.newReaderResource(new StringReader(drlRule)), org.drools.builder.ResourceType.DRL);
-		// This line may not be necessary
-		// kbase.addKnowledgePackages(kbuilder2.getKnowledgePackages());
-
-		org.drools.runtime.StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
-
-        org.drools.definition.type.FactType factType = kbase.getFactType( "org.drools.compiler.integrationtests", "Drools_applications" );
-        Object fact = factType.newInstance();
-        factType.set( fact, "drools_app_name", "appName" );
-        ksession.insert( fact );
-
-        int rules = ksession.fireAllRules();
-        assertEquals( 1, rules );
-    }
-	*/
-
 	public static class BaseClass {
 		String baseField;
 		public String getBaseField() {
@@ -2497,8 +2462,13 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         kieBuilder.buildAll();
 
+        KieModule kieModule = kieBuilder.getKieModule();
+        assertEquals( releaseId1, kieModule.getReleaseId() );
+
         KieContainer kc = ks.newKieContainer( releaseId1 );
 
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        kfs.generateAndWritePomXML( releaseId2 );
         kfs.write( ks.getResources()
                            .newReaderResource( new StringReader( drlRule ) )
                            .setResourceType( ResourceType.DRL )
@@ -2508,7 +2478,9 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         System.out.println( results.getAddedMessages() );
         assertEquals( 0, results.getAddedMessages().size() );
 
-        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        kieModule = kieBuilder.getKieModule();
+        assertEquals( releaseId2, kieModule.getReleaseId() );
+
         Results updateResults = kc.updateToVersion( releaseId2 );
         assertEquals( 0, updateResults.getMessages().size() );
 
@@ -2547,8 +2519,13 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         kieBuilder.buildAll();
 
+        KieModule kieModule = kieBuilder.getKieModule();
+        assertEquals( releaseId1, kieModule.getReleaseId() );
+
         KieContainer kc = ks.newKieContainer( releaseId1 );
 
+        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        kfs.generateAndWritePomXML( releaseId2 );
         kfs.write( ks.getResources()
                            .newReaderResource( new StringReader( drlRule ) )
                            .setResourceType( ResourceType.DRL )
@@ -2558,7 +2535,9 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         System.out.println( results.getAddedMessages() );
         assertEquals( 0, results.getAddedMessages().size() );
 
-        ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.0" );
+        kieModule = kieBuilder.getKieModule();
+        assertEquals( releaseId2, kieModule.getReleaseId() );
+
         Results updateResults = kc.updateToVersion( releaseId2 );
         assertEquals( 0, updateResults.getMessages().size() );
 
