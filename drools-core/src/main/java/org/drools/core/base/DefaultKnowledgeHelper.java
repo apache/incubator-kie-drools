@@ -338,7 +338,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
     public void cancelRemainingPreviousLogicalDependencies() {
         if ( this.previousJustified != null ) {
-            for ( LogicalDependency dep = (LogicalDependency) this.previousJustified.getFirst(); dep != null; dep = (LogicalDependency) dep.getNext() ) {
+            for ( LogicalDependency<T> dep = this.previousJustified.getFirst(); dep != null; dep = dep.getNext() ) {
                 TruthMaintenanceSystemHelper.removeLogicalDependency( dep, activation.getPropagationContext() );
             }
         }

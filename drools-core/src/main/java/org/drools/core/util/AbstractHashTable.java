@@ -21,7 +21,7 @@ import org.drools.core.rule.IndexEvaluator;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.ReadAccessor;
 import org.drools.core.spi.Tuple;
-import org.drools.core.util.index.LeftTupleIndexHashTable;
+import org.drools.core.util.index.TupleList;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -33,13 +33,15 @@ public abstract class AbstractHashTable
     Externalizable {
     static final int           MAX_CAPACITY = 1 << 30;
 
+    public static final int                           PRIME            = 31;
+
     protected int              size;
     protected int              threshold;
     protected float            loadFactor;
 
     protected ObjectComparator comparator;
 
-    protected Entry[]          table;
+    protected Entry<TupleList>[] table;
 
     private HashTableIterator  iterator;
 
@@ -170,74 +172,7 @@ public abstract class AbstractHashTable
         return result;
     }
 
-    //    public void add(Entry entry) {
-    //        int index = indexOf( entry.hashCode(), table.length  );
-    //
-    //
-    //        boolean exists = false;
-    //
-    //        // scan the linked entries to see if it exists
-    //        if ( !checkExists ) {
-    //            Entry current = this.table[index];
-    //            int hashCode = entry.hashCode();
-    //            while ( current != null ) {
-    //                if  ( hashCode == current.hashCode() && entry.equals( current ) ) {
-    //                    exists = true;
-    //                }
-    //            }
-    //        }
-    //
-    //        if( exists == false ) {
-    //            entry.setNext( this.table[index] );
-    //            this.table[index] = entry;
-    //
-    //            if ( this.size++ >= this.threshold ) {
-    //                resize( 2 * this.table.length );
-    //            }
-    //        }
-    //
-    //    }
-    //
-    //    public Entry get(Entry entry) {
-    //        int index = indexOf( entry.hashCode(), table.length  );
-    //        Entry current = this.table[index];
-    //        while ( current != null ) {
-    //            if ( entry.hashCode() == current.hashCode() && entry.equals( current ) ) {
-    //                return current;
-    //            }
-    //            current = current.remove();
-    //        }
-    //        return null;
-    //    }
-    //
-    //    public Entry remove(Entry entry) {
-    //        int index = indexOf( entry.hashCode(), table.length  );
-    //        Entry previous = this.table[index];
-    //        Entry current = previous;
-    //        int hashCode = entry.hashCode();
-    //        while ( current != null ) {
-    //            Entry next = current.remove();
-    //            if ( hashCode == current.hashCode() && entry.equals( current ) ) {
-    //                if( previous  == current ) {
-    //                    this.table[index] = next;
-    //                    previous.setNext( next );
-    //                }
-    //                current.setNext( null );
-    //                this.size--;
-    //                return current;
-    //            }
-    //            previous = current;
-    //            current = next;
-    //        }
-    //        return current;
-    //    }
-
-    protected Entry getBucket(final int hashCode) {
-        return this.table[indexOf( hashCode,
-                                   this.table.length )];
-    }
-
-    public Entry[] getTable() {
+    public Entry<TupleList>[] getTable() {
         return this.table;
     }
 
@@ -259,15 +194,9 @@ public abstract class AbstractHashTable
         return hashCode & (dataSize - 1);
     }      
 
-    public abstract Entry getBucket(Object object);
-
-    public interface ObjectComparator
-        extends
-        Externalizable {
-        public int hashCodeOf(Object object);
-
-        public boolean equal(Object object1,
-                             Object object2);
+    public interface ObjectComparator extends Externalizable {
+        int hashCodeOf(Object object);
+        boolean equal(Object object1, Object object2);
     }
     
     public String toString() {
@@ -306,7 +235,7 @@ public abstract class AbstractHashTable
             return InstanceEquals.INSTANCE;
         }
 
-        private InstanceEquals() {
+        public InstanceEquals() {
 
         }
         
@@ -402,25 +331,24 @@ public abstract class AbstractHashTable
         public IndexEvaluator getEvaluator() {
             return this.evaluator;
         }
+
+        public int hashCodeOf(Tuple tuple, boolean left) {
+            return left ?
+                   declaration.getHashCode( null, tuple.getObject( declaration ) ) :
+                   extractor.getHashCode( null, tuple.getFactHandle().getObject() );
+        }
     }
 
-    public static interface Index
-        extends
-        Externalizable {
-        public FieldIndex getFieldIndex(int index);
+    public interface Index extends Externalizable {
+        FieldIndex getFieldIndex(int index);
 
-        public int hashCodeOf(Tuple tuple);
+        int hashCodeOf(Tuple tuple, boolean left);
 
-        public int hashCodeOf(Object object);
+        boolean equal(Object object, Tuple tuple);
 
-        public boolean equal(Object object,
-                             Tuple tuple);
+        boolean equal(Tuple tuple1, Tuple tuple2);
 
-        public boolean equal(Tuple tuple1,
-                             Tuple tuple2);
-
-        public boolean equal(Object object1,
-                             Object object2);
+        boolean equal(Object object1, Object object2);
     }
 
     public static class SingleIndex
@@ -429,9 +357,7 @@ public abstract class AbstractHashTable
 
         private static final long    serialVersionUID = 510l;
 
-        private InternalReadAccessor extractor;
-        private Declaration          declaration;
-        private IndexEvaluator       evaluator;
+        private FieldIndex           index;
 
         private int                  startResult;
 
@@ -442,24 +368,17 @@ public abstract class AbstractHashTable
         public SingleIndex(final FieldIndex[] indexes,
                            final int startResult) {
             this.startResult = startResult;
-
-            this.extractor = indexes[0].extractor;
-            this.declaration = indexes[0].declaration;
-            this.evaluator = indexes[0].evaluator;
+            this.index = indexes[0];
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
-            extractor = (InternalReadAccessor) in.readObject();
-            declaration = (Declaration) in.readObject();
-            evaluator = (IndexEvaluator) in.readObject();
+            index = (FieldIndex) in.readObject();
             startResult = in.readInt();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
-            out.writeObject( extractor );
-            out.writeObject( declaration );
-            out.writeObject( evaluator );
+            out.writeObject( index );
             out.writeInt( startResult );
         }
 
@@ -467,55 +386,38 @@ public abstract class AbstractHashTable
             if ( index > 0 ) {
                 throw new IllegalArgumentException( "IndexUtil position " + index + " does not exist" );
             }
-            return new FieldIndex( extractor,
-                                   declaration,
-                                   evaluator );
+            return this.index;
         }
 
-        public int hashCodeOf(final Object object) {
-            int hashCode = this.startResult;
-            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.extractor.getHashCode( null,
-                                                                                              object );
-            return rehash( hashCode );
-        }
-
-        public int hashCodeOf(final Tuple tuple) {
-            int hashCode = this.startResult;
-            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.declaration.getHashCode( null,
-                                                                                                tuple.getObject( this.declaration ) );
-            return rehash( hashCode );
+        public int hashCodeOf(final Tuple tuple, boolean left) {
+            return rehash( PRIME * startResult + index.hashCodeOf( tuple, left ) );
         }
 
         public boolean equal(final Object right,
                              final Tuple tuple) {
-            final Object left = tuple.getObject( this.declaration );
-
-            return this.evaluator.evaluate( null,
-                                            this.declaration.getExtractor(),
-                                            left,
-                                            this.extractor,
-                                            right );
+            return this.index.evaluator.evaluate( null,
+                                                  this.index.declaration.getExtractor(),
+                                                  tuple.getObject( this.index.declaration ),
+                                                  this.index.extractor,
+                                                  right );
         }
 
         public boolean equal(final Object object1,
                              final Object object2) {
-
-            return this.evaluator.evaluate( null,
-                                            this.extractor,
-                                            object1,
-                                            this.extractor,
-                                            object2 );
+            return this.index.evaluator.evaluate( null,
+                                                  this.index.extractor,
+                                                  object1,
+                                                  this.index.extractor,
+                                                  object2 );
         }
 
         public boolean equal(final Tuple tuple1,
                              final Tuple tuple2) {
-            final Object object1 = tuple1.getObject( this.declaration );
-            final Object object2 = tuple2.getObject( this.declaration );
-            return this.evaluator.evaluate( null,
-                                            this.declaration.getExtractor(),
-                                            object1,
-                                            this.declaration.getExtractor(),
-                                            object2 );
+            return this.index.evaluator.evaluate( null,
+                                                  this.index.declaration.getExtractor(),
+                                                  tuple1.getObject( this.index.declaration ),
+                                                  this.index.declaration.getExtractor(),
+                                                  tuple2.getObject( this.index.declaration ) );
         }
     }
 
@@ -566,61 +468,41 @@ public abstract class AbstractHashTable
             }
         }
 
-        public int hashCodeOf(final Object object) {
+        public int hashCodeOf(Tuple tuple, boolean left) {
             int hashCode = this.startResult;
-
-            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index0.extractor.getHashCode( null,
-                                                                                                     object );
-            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index1.extractor.getHashCode( null,
-                                                                                                     object );
-
-            return rehash( hashCode );
-        }
-
-        public int hashCodeOf(final Tuple tuple) {
-            int hashCode = this.startResult;
-
-            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index0.declaration.getHashCode( null,
-                                                                                                       tuple.getObject( this.index0.declaration ) );
-            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index1.declaration.getHashCode( null,
-                                                                                                       tuple.getObject( this.index1.declaration ) );
-
+            hashCode = PRIME * hashCode + this.index0.hashCodeOf( tuple, left );
+            hashCode = PRIME * hashCode + this.index1.hashCodeOf( tuple, left );
             return rehash( hashCode );
         }
 
         public boolean equal(final Object right,
                              final Tuple tuple) {
-            final Object left1 = tuple.getObject( this.index0.declaration );
-            final Object left2 = tuple.getObject( this.index1.declaration );
-
             return this.index0.evaluator.evaluate( null,
                                                    this.index0.declaration.getExtractor(),
-                                                   left1,
+                                                   tuple.getObject( this.index0.declaration ),
                                                    this.index0.extractor,
-                                                   right ) && this.index1.evaluator.evaluate( null,
-                                                                                              this.index1.declaration.getExtractor(),
-                                                                                              left2,
-                                                                                              this.index1.extractor,
-                                                                                              right );
+                                                   right )
+                   &&
+                   this.index1.evaluator.evaluate( null,
+                                                   this.index1.declaration.getExtractor(),
+                                                   tuple.getObject( this.index1.declaration ),
+                                                   this.index1.extractor,
+                                                   right );
         }
 
         public boolean equal(final Tuple tuple1,
                              final Tuple tuple2) {
-            final Object object11 = tuple1.getObject( this.index0.declaration );
-            final Object object12 = tuple2.getObject( this.index0.declaration );
-
-            final Object object21 = tuple1.getObject( this.index1.declaration );
-            final Object object22 = tuple2.getObject( this.index1.declaration );
-
             return this.index0.evaluator.evaluate( null,
                                                    this.index0.declaration.getExtractor(),
-                                                   object11,
+                                                   tuple1.getObject( this.index0.declaration ),
                                                    this.index0.declaration.getExtractor(),
-                                                   object12 ) && this.index1.evaluator.evaluate( null,
-                                                                                                 this.index1.declaration.getExtractor(),
-                                                                                                 object21,
-                                                                                                 this.index1.declaration.getExtractor(),
-                                                                                                 object22 );
+                                                   tuple2.getObject( this.index0.declaration ) )
+                   &&
+                   this.index1.evaluator.evaluate( null,
+                                                   this.index1.declaration.getExtractor(),
+                                                   tuple1.getObject( this.index1.declaration ),
+                                                   this.index1.declaration.getExtractor(),
+                                                   tuple2.getObject( this.index1.declaration ) );
         }
 
         public boolean equal(final Object object1,
@@ -629,11 +511,13 @@ public abstract class AbstractHashTable
                                                    this.index0.extractor,
                                                    object1,
                                                    this.index0.extractor,
-                                                   object2 ) && this.index1.evaluator.evaluate( null,
-                                                                                                this.index1.extractor,
-                                                                                                object1,
-                                                                                                this.index1.extractor,
-                                                                                                object2 );
+                                                   object2 )
+                   &&
+                   this.index1.evaluator.evaluate( null,
+                                                   this.index1.extractor,
+                                                   object1,
+                                                   this.index1.extractor,
+                                                   object2 );
         }
     }
 
@@ -690,75 +574,53 @@ public abstract class AbstractHashTable
             }
         }
 
-        public int hashCodeOf(final Object object) {
+        public int hashCodeOf(Tuple tuple, boolean left) {
             int hashCode = this.startResult;
-
-            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index0.extractor.getHashCode( null,
-                                                                                                     object );;
-            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index1.extractor.getHashCode( null,
-                                                                                                     object );;
-            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index2.extractor.getHashCode( null,
-                                                                                                     object );;
-
-            return rehash( hashCode );
-        }
-
-        public int hashCodeOf(final Tuple tuple) {
-            int hashCode = this.startResult;
-
-            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index0.declaration.getHashCode( null,
-                                                                                                       tuple.getObject( this.index0.declaration ) );
-            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index1.declaration.getHashCode( null,
-                                                                                                       tuple.getObject( this.index1.declaration ) );
-            hashCode = LeftTupleIndexHashTable.PRIME * hashCode + this.index2.declaration.getHashCode( null,
-                                                                                                       tuple.getObject( this.index2.declaration ) );
-
+            hashCode = PRIME * hashCode + this.index0.hashCodeOf( tuple, left );
+            hashCode = PRIME * hashCode + this.index1.hashCodeOf( tuple, left );
+            hashCode = PRIME * hashCode + this.index2.hashCodeOf( tuple, left );
             return rehash( hashCode );
         }
 
         public boolean equal(final Object right,
                              final Tuple tuple) {
-            final Object left1 = tuple.getObject( this.index0.declaration );
-            final Object left2 = tuple.getObject( this.index1.declaration );
-            final Object left3 = tuple.getObject( this.index2.declaration );
-
             return this.index0.evaluator.evaluate( null,
                                                    this.index0.declaration.getExtractor(),
-                                                   left1,
+                                                   tuple.getObject( this.index0.declaration ),
                                                    this.index0.extractor,
-                                                   right ) && this.index1.evaluator.evaluate( null,
-                                                                                              this.index1.declaration.getExtractor(),
-                                                                                              left2,
-                                                                                              this.index1.extractor,
-                                                                                              right ) && this.index2.evaluator.evaluate( null,
-                                                                                                                                         this.index2.declaration.getExtractor(),
-                                                                                                                                         left3,
-                                                                                                                                         this.index2.extractor,
-                                                                                                                                         right );
+                                                   right )
+                   &&
+                   this.index1.evaluator.evaluate( null,
+                                                   this.index1.declaration.getExtractor(),
+                                                   tuple.getObject( this.index1.declaration ),
+                                                   this.index1.extractor,
+                                                   right )
+                   && this.index2.evaluator.evaluate( null,
+                                                      this.index2.declaration.getExtractor(),
+                                                      tuple.getObject( this.index2.declaration ),
+                                                      this.index2.extractor,
+                                                      right );
         }
 
         public boolean equal(final Tuple tuple1,
                              final Tuple tuple2) {
-            final Object object11 = tuple1.getObject( this.index0.declaration );
-            final Object object12 = tuple2.getObject( this.index0.declaration );
-            final Object object21 = tuple1.getObject( this.index1.declaration );
-            final Object object22 = tuple2.getObject( this.index1.declaration );
-            final Object object31 = tuple1.getObject( this.index2.declaration );
-            final Object object32 = tuple2.getObject( this.index2.declaration );
-
             return this.index0.evaluator.evaluate( null,
                                                    this.index0.declaration.getExtractor(),
-                                                   object11,
+                                                   tuple1.getObject( this.index0.declaration ),
                                                    this.index0.declaration.getExtractor(),
-                                                   object12 ) && this.index1.evaluator.evaluate( null,
-                                                                                                 this.index1.declaration.getExtractor(),
-                                                                                                 object21,
-                                                                                                 this.index1.declaration.getExtractor(),
-                                                                                                 object22 ) && this.index2.evaluator.evaluate( null,
-                                                                                                                                               this.index2.declaration.getExtractor(),
-                                                                                                                                               object31,
-                                                                                                                                               this.index2.declaration.getExtractor(),
-                                                                                                                                               object32 );
+                                                   tuple2.getObject( this.index0.declaration ) )
+                   &&
+                   this.index1.evaluator.evaluate( null,
+                                                   this.index1.declaration.getExtractor(),
+                                                   tuple1.getObject( this.index1.declaration ),
+                                                   this.index1.declaration.getExtractor(),
+                                                   tuple2.getObject( this.index1.declaration ) )
+                   &&
+                   this.index2.evaluator.evaluate( null,
+                                                   this.index2.declaration.getExtractor(),
+                                                   tuple1.getObject( this.index2.declaration ),
+                                                   this.index2.declaration.getExtractor(),
+                                                   tuple2.getObject( this.index2.declaration ) );
         }
 
         public boolean equal(final Object object1,
@@ -767,15 +629,19 @@ public abstract class AbstractHashTable
                                                    this.index0.extractor,
                                                    object1,
                                                    this.index0.extractor,
-                                                   object2 ) && this.index1.evaluator.evaluate( null,
-                                                                                                this.index1.extractor,
-                                                                                                object1,
-                                                                                                this.index1.extractor,
-                                                                                                object2 ) && this.index2.evaluator.evaluate( null,
-                                                                                                                                             this.index2.extractor,
-                                                                                                                                             object1,
-                                                                                                                                             this.index2.extractor,
-                                                                                                                                             object2 );
+                                                   object2 )
+                   &&
+                   this.index1.evaluator.evaluate( null,
+                                                   this.index1.extractor,
+                                                   object1,
+                                                   this.index1.extractor,
+                                                   object2 )
+                   &&
+                   this.index2.evaluator.evaluate( null,
+                                                   this.index2.extractor,
+                                                   object1,
+                                                   this.index2.extractor,
+                                                   object2 );
         }
 
     }

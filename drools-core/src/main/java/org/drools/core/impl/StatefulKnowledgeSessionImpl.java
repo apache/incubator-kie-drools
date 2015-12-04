@@ -2216,7 +2216,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             TupleList tupleList = ruleAgendaItem.getRuleExecutor().getLeftTupleList();
             Map result = new TreeMap();
             int i = 0;
-            for (Tuple tuple = tupleList.getFirst(); tuple != null; tuple = (LeftTuple) tuple.getNext()) {
+            for (Tuple tuple = tupleList.getFirst(); tuple != null; tuple = tuple.getNext()) {
                 Map params = getActivationParameters(tuple);
                 result.put("Parameters set [" + i++ + "]", (Map.Entry[]) params.entrySet().toArray(new Map.Entry[params.size()]));
             }

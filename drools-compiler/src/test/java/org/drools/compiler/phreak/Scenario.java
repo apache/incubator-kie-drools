@@ -246,8 +246,8 @@ public class Scenario {
                              boolean testDelete,
                              boolean testUpdate) {
 
-        Tuple expectedTuple = null;
-        Tuple actualTuple = null;
+        Tuple expectedTuple;
+        Tuple actualTuple;
         
         if ( testInsert ) {
             if ( expected.getInsertFirst() != null ) {
@@ -306,17 +306,9 @@ public class Scenario {
         }
 
         if ( expected == null ) {
-            if ( actual == null ) {
-                return true;
-            } else {
-                return false;
-            }
+            return actual == null;
         } else if ( actual == null ) {
-            if ( expected == null ) {
-                return true;
-            } else {
-                return false;
-            }
+            return expected == null;
         }
 
         while ( actual.getFactHandle() == null ) {
@@ -325,15 +317,10 @@ public class Scenario {
         }
 
         // A LeftTuple is  only the same if it has the same hashCode, factId and parent
-        if ( expected.hashCode() != actual.hashCode() ) {
-            return false;
-        }
+        return expected.hashCode() == actual.hashCode() &&
+               expected.getFactHandle() == actual.getFactHandle() &&
+               equals( expected.getParent(), actual.getParent() );
 
-        if ( expected.getFactHandle() != actual.getFactHandle() ) {
-            return false;
-        }
-
-        return equals( expected.getParent(), actual.getParent() );
     }
 
     public void equalsLeftMemory(List<LeftTuple> leftTuples) {
@@ -342,8 +329,8 @@ public class Scenario {
         int length = 0;
         for ( LeftTuple expectedLeftTuple : leftTuples ) {
             FastIterator it = betaNode.getLeftIterator( ltm );
-            LeftTuple actualLeftTuple = null;
-            for ( actualLeftTuple = betaNode.getFirstLeftTuple( ltm, it ); actualLeftTuple != null; actualLeftTuple = (LeftTuple) it.next( actualLeftTuple ) ) {
+            Tuple actualLeftTuple = null;
+            for ( actualLeftTuple = BetaNode.getFirstTuple( ltm, it ); actualLeftTuple != null; actualLeftTuple = (LeftTuple) it.next( actualLeftTuple ) ) {
                 if ( expectedLeftTuple.equals( actualLeftTuple ) ) {
                     length++;
                     break;
@@ -364,8 +351,8 @@ public class Scenario {
         int length = 0;
         for ( RightTuple expectedRightTuple : rightTuples ) {
             FastIterator it = betaNode.getRightIterator( rtm );
-            RightTuple actualRightTuple = null;
-            for ( actualRightTuple = betaNode.getFirstRightTuple( rtm, it ); actualRightTuple != null; actualRightTuple = (RightTuple) it.next( actualRightTuple ) ) {
+            Tuple actualRightTuple = null;
+            for ( actualRightTuple = BetaNode.getFirstTuple( rtm, it ); actualRightTuple != null; actualRightTuple = (RightTuple) it.next( actualRightTuple ) ) {
                 if ( expectedRightTuple.equals( actualRightTuple ) ) {
                     length++;
                     break;

@@ -21,7 +21,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
-import org.drools.core.util.Entry;
 
 public abstract class BaseTuple implements Tuple {
     private volatile short       stagedType;
@@ -35,8 +34,8 @@ public abstract class BaseTuple implements Tuple {
     protected Tuple stagedNext;
     protected Tuple stagedPrevious;
 
-    private Entry previous;
-    private Entry next;
+    private Tuple   previous;
+    private Tuple   next;
 
     protected Sink sink;
 
@@ -90,19 +89,19 @@ public abstract class BaseTuple implements Tuple {
         this.stagedPrevious = stagedPrevious;
     }
 
-    public Entry getPrevious() {
+    public Tuple getPrevious() {
         return previous;
     }
 
-    public void setPrevious(Entry previous) {
+    public void setPrevious(Tuple previous) {
         this.previous = previous;
     }
 
-    public Entry getNext() {
+    public Tuple getNext() {
         return next;
     }
 
-    public void setNext(Entry next) {
+    public void setNext(Tuple next) {
         this.next = next;
     }
 

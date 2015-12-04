@@ -52,6 +52,7 @@ import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
 import org.slf4j.Logger;
@@ -567,8 +568,8 @@ public class AddRemoveRule {
 
                     TupleMemory rtm = bm.getRightTupleMemory();
                     FastIterator it = rtm.fullFastIterator();
-                    for (RightTuple rightTuple = BetaNode.getFirstRightTuple(rtm, it); rightTuple != null; ) {
-                        RightTuple next = (RightTuple) it.next(rightTuple);
+                    for (Tuple rightTuple = BetaNode.getFirstTuple( rtm, it ); rightTuple != null; ) {
+                        Tuple next = (Tuple) it.next(rightTuple);
                         rtm.remove(rightTuple);
                         rightTuple.unlinkFromRightParent();
                         rightTuple = next;
@@ -657,7 +658,7 @@ public class AddRemoveRule {
                     AccumulateMemory am = (AccumulateMemory) memory;
                     bm = am.getBetaMemory();
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                    LeftTuple lt = BetaNode.getFirstLeftTuple(bm.getLeftTupleMemory(), it);
+                    Tuple lt = BetaNode.getFirstTuple( bm.getLeftTupleMemory(), it );
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                         AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
                         followPeer(accctx.getResultLeftTuple(), smem, sinks,  sinks.size()-1, insert);
@@ -665,7 +666,7 @@ public class AddRemoveRule {
                 } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
-                    RightTuple rt = BetaNode.getFirstRightTuple(bm.getRightTupleMemory(), it);
+                    RightTuple rt = (RightTuple) BetaNode.getFirstTuple( bm.getRightTupleMemory(), it );
                     for (; rt != null; rt = (RightTuple) it.next(rt)) {
                         for ( LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext() ) {
                             if ( lt.getFirstChild() != null ) {
@@ -676,7 +677,7 @@ public class AddRemoveRule {
                 } else {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                    LeftTuple lt = BetaNode.getFirstLeftTuple(bm.getLeftTupleMemory(), it);
+                    Tuple lt = BetaNode.getFirstTuple( bm.getLeftTupleMemory(), it );
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                         if ( lt.getFirstChild() != null ) {
                             followPeerFromLeftInput(lt.getFirstChild(), smem, sinks, insert);

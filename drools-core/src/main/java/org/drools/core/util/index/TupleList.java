@@ -25,14 +25,14 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.LinkedList;
 
-public class TupleList implements TupleMemory, Entry {
+public class TupleList implements TupleMemory, Entry<TupleList> {
 
     public static final long       serialVersionUID = 510l;
 
-    public Entry                   next;
+    private TupleList              next;
 
-    public Tuple                   first;
-    public Tuple                   last;
+    private Tuple                  first;
+    private Tuple                  last;
 
     private int                    hashCode;
     private Index                  index;
@@ -104,8 +104,8 @@ public class TupleList implements TupleMemory, Entry {
     }
 
     public void remove(final Tuple tuple) {
-        Tuple previous = (Tuple) tuple.getPrevious();
-        Tuple next = (Tuple) tuple.getNext();
+        Tuple previous = tuple.getPrevious();
+        Tuple next = tuple.getNext();
 
         if ( previous != null && next != null ) {
             // remove from middle
@@ -240,26 +240,6 @@ public class TupleList implements TupleMemory, Entry {
         return false;
     }
 
-    boolean matches(Object object, int objectHashCode, boolean left) {
-        if ( this.hashCode != objectHashCode ) {
-            return false;
-        }
-
-        return left ?
-               this.index.equal( object, this.first ) :
-               this.index.equal( this.first.getFactHandle().getObject(), object );
-    }
-
-    boolean matches(Tuple tuple, int tupleHashCode, boolean left) {
-        if ( this.hashCode != tupleHashCode ) {
-            return false;
-        }
-
-        return left ?
-               this.index.equal( this.first.getFactHandle().getObject(), tuple ) :
-               this.index.equal( this.first, tuple );
-    }
-
     public int hashCode() {
         return this.hashCode;
     }
@@ -269,11 +249,11 @@ public class TupleList implements TupleMemory, Entry {
         return this.hashCode == other.hashCode && this.index == other.index;
     }
 
-    public Entry getNext() {
+    public TupleList getNext() {
         return this.next;
     }
 
-    public void setNext(final Entry next) {
+    public void setNext(final TupleList next) {
         this.next = next;
     }
 

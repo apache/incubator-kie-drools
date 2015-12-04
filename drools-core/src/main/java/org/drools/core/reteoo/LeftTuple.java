@@ -22,8 +22,6 @@ public interface LeftTuple extends Tuple {
     void reAddLeft();
     void reAddRight();
 
-    void unlinkFromLeftParent();
-
     LeftTupleSink getTupleSink();
 
     /* Had to add the set method because sink adapters must override 
@@ -69,12 +67,6 @@ public interface LeftTuple extends Tuple {
     LeftTuple getParent();
 
     String toTupleTree(int indent);
-
-    LeftTuple getFirstChild();
-    void setFirstChild(LeftTuple firstChild);
-
-    LeftTuple getLastChild();
-    void setLastChild(LeftTuple lastChild);
 
     void setIndex(int index);
 

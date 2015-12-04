@@ -300,11 +300,11 @@ public class IndexUtil {
             }
 
             if (indexSpec.constraintType == ConstraintType.EQUAL) {
-                return new RightTupleIndexHashTable( indexSpec.indexes );
+                return new TupleIndexHashTable( indexSpec.indexes, false );
             }
 
             if (indexSpec.constraintType.isComparison()) {
-                return new RightTupleIndexRBTree( indexSpec.constraintType, indexSpec.indexes[0] );
+                return new TupleIndexRBTree( indexSpec.constraintType, indexSpec.indexes[0], false );
             }
 
             if (indexSpec.constraintType == ConstraintType.RANGE) {
@@ -325,11 +325,11 @@ public class IndexUtil {
             }
 
             if (indexSpec.constraintType == ConstraintType.EQUAL) {
-                return new LeftTupleIndexHashTable( indexSpec.indexes );
+                return new TupleIndexHashTable( indexSpec.indexes, true );
             }
 
             if (indexSpec.constraintType.isComparison()) {
-                return new LeftTupleIndexRBTree( indexSpec.constraintType, indexSpec.indexes[0] );
+                return new TupleIndexRBTree( indexSpec.constraintType, indexSpec.indexes[0], true );
             }
 
             if (indexSpec.constraintType == ConstraintType.RANGE) {

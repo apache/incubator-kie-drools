@@ -32,6 +32,7 @@ import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TupleMemory;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.Iterator;
 import org.kie.api.KieBase;
@@ -133,7 +134,7 @@ public class PhreakActivationIterator
                         AccumulateMemory am = (AccumulateMemory) memory;
                         bm = am.getBetaMemory();
                         FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                        LeftTuple lt = BetaNode.getFirstLeftTuple(bm.getLeftTupleMemory(), it);
+                        Tuple lt = BetaNode.getFirstTuple( bm.getLeftTupleMemory(), it );
                         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                             AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
                             collectFromPeers(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
@@ -141,7 +142,7 @@ public class PhreakActivationIterator
                     } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
                         bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                         FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
-                        RightTuple rt = BetaNode.getFirstRightTuple(bm.getRightTupleMemory(), it);
+                        RightTuple rt = (RightTuple) BetaNode.getFirstTuple( bm.getRightTupleMemory(), it );
                         for (; rt != null; rt = (RightTuple) it.next(rt)) {
                             for ( LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext() ) {
                                 if ( lt.getFirstChild() != null ) {
@@ -152,7 +153,7 @@ public class PhreakActivationIterator
                     } else {
                         bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                         FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                        LeftTuple lt = BetaNode.getFirstLeftTuple(bm.getLeftTupleMemory(), it);
+                        Tuple lt = BetaNode.getFirstTuple( bm.getLeftTupleMemory(), it );
                         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                             if ( lt.getFirstChild() != null ) {
                                 collectFromLeftInput(lt.getFirstChild(), agendaItems, nodeSet, wm);

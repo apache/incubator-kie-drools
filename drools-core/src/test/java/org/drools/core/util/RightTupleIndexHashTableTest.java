@@ -28,9 +28,10 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.InternalReadAccessor;
+import org.drools.core.spi.Tuple;
 import org.drools.core.test.model.Cheese;
 import org.drools.core.util.AbstractHashTable.FieldIndex;
-import org.drools.core.util.index.RightTupleIndexHashTable;
+import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;
 import org.junit.Before;
 import org.junit.Test;
@@ -67,7 +68,7 @@ public class RightTupleIndexHashTableTest {
                                                       declaration,
                                                       MvelConstraint.INDEX_EVALUATOR );
 
-        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
+        final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
         final Cheese cheddar = new Cheese( "cheddar",
                                            10 );
@@ -76,9 +77,9 @@ public class RightTupleIndexHashTableTest {
 
         assertEquals( 0,
                       map.size() );
-        assertNull( map.get( new LeftTupleImpl( cheddarHandle1,
-                                            null,
-                                            true ) ) );
+        assertNull( map.getFirst( new LeftTupleImpl( cheddarHandle1,
+                                                     null,
+                                                     true ) ) );
 
         final Cheese stilton1 = new Cheese( "stilton",
                                             35 );
@@ -98,12 +99,12 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 2,
                                                                          stilton2 );
 
-        final TupleList list = map.get( new LeftTupleImpl( stiltonHandle2,
-                                                            null,
-                                                            true ) );
+        final Tuple tuple = map.getFirst( new LeftTupleImpl( stiltonHandle2,
+                                                             null,
+                                                             true ) );
         assertSame( stiltonRighTuple.getFactHandle(),
-                    list.first.getFactHandle() );
-        assertNull( list.first.getNext() );
+                    tuple.getFactHandle() );
+        assertNull( tuple.getNext() );
     }
 
     @Test
@@ -122,7 +123,7 @@ public class RightTupleIndexHashTableTest {
                                                       declaration,
                                                       MvelConstraint.INDEX_EVALUATOR );
 
-        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
+        final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
         assertEquals( 0,
                       map.size() );
@@ -150,23 +151,23 @@ public class RightTupleIndexHashTableTest {
                                             77 );
         final InternalFactHandle stiltonHandle2 = new DefaultFactHandle( 2,
                                                                          stilton2 );
-        TupleList list = map.get( new LeftTupleImpl( stiltonHandle2,
-                                                      null,
-                                                      true ) );
+        Tuple tuple = map.getFirst( new LeftTupleImpl( stiltonHandle2,
+                                                       null,
+                                                       true ) );
         assertSame( stiltonHandle1,
-                    list.first.getFactHandle() );
-        assertNull( list.first.getNext() );
+                    tuple.getFactHandle() );
+        assertNull( tuple.getNext() );
 
         final Cheese cheddar2 = new Cheese( "cheddar",
                                             5 );
         final InternalFactHandle cheddarHandle2 = new DefaultFactHandle( 2,
                                                                          cheddar2 );
-        list = map.get( new LeftTupleImpl( cheddarHandle2,
-                                       null,
-                                       true ) );
+        tuple = map.getFirst( new LeftTupleImpl( cheddarHandle2,
+                                                 null,
+                                                 true ) );
         assertSame( cheddarHandle1,
-                    list.first.getFactHandle() );
-        assertNull( list.first.getNext() );
+                    tuple.getFactHandle() );
+        assertNull( tuple.getNext() );
     }
 
     @Test
@@ -185,7 +186,7 @@ public class RightTupleIndexHashTableTest {
                                                       declaration,
                                                       MvelConstraint.INDEX_EVALUATOR );
 
-        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
+        final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
         assertEquals( 0,
                       map.size() );
@@ -222,13 +223,13 @@ public class RightTupleIndexHashTableTest {
         final InternalFactHandle stiltonHandle3 = new DefaultFactHandle( 4,
                                                                          stilton2 );
 
-        final TupleList list = map.get( new LeftTupleImpl( stiltonHandle3,
-                                                            null,
-                                                            true ) );
+        final Tuple tuple = map.getFirst( new LeftTupleImpl( stiltonHandle3,
+                                                           null,
+                                                           true ) );
         assertSame( stiltonHandle1,
-                    list.first.getFactHandle() );
+                    tuple.getFactHandle() );
         assertSame( stiltonHandle2,
-                    ((RightTuple) list.first.getNext()).getFactHandle() );
+                    ((RightTuple) tuple.getNext()).getFactHandle() );
     }
 
     @Test
@@ -247,7 +248,7 @@ public class RightTupleIndexHashTableTest {
                                                       declaration,
                                                       MvelConstraint.INDEX_EVALUATOR );
 
-        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
+        final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
         final TestClass c1 = new TestClass( 0,
                                             new TestClass( 20,
@@ -281,13 +282,13 @@ public class RightTupleIndexHashTableTest {
                       entries.length );
         TupleList list = (TupleList) entries[0];
         assertSame( ch2,
-                    list.first.getFactHandle() );
-        assertNull( list.first.getNext() );
+                    list.getFirst().getFactHandle() );
+        assertNull( list.getFirst().getNext() );
 
         assertSame( ch1,
-                    ((TupleList) list.next).first.getFactHandle() );
-        assertNull( ((TupleList) list.next).first.getNext() );
-        assertNull( ((TupleList) list.next).next );
+                    list.getNext().getFirst().getFactHandle() );
+        assertNull( list.getNext().getFirst().getNext() );
+        assertNull( list.getNext().getNext() );
     }
 
     @Test
@@ -306,7 +307,7 @@ public class RightTupleIndexHashTableTest {
                                                       declaration,
                                                       MvelConstraint.INDEX_EVALUATOR );
 
-        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
+        final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
         assertEquals( 0,
                       map.size() );
@@ -379,9 +380,7 @@ public class RightTupleIndexHashTableTest {
                                                       declaration,
                                                       MvelConstraint.INDEX_EVALUATOR );
 
-        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( 16,
-                                                                           0.75f,
-                                                                           new FieldIndex[]{fieldIndex} );
+        final TupleIndexHashTable map = new TupleIndexHashTable( 16, 0.75f, new FieldIndex[]{fieldIndex}, false );
 
         assertEquals( 0,
                       map.size() );
@@ -606,7 +605,7 @@ public class RightTupleIndexHashTableTest {
                                                       declaration,
                                                       MvelConstraint.INDEX_EVALUATOR );
 
-        final RightTupleIndexHashTable map = new RightTupleIndexHashTable( new FieldIndex[]{fieldIndex} );
+        final TupleIndexHashTable map = new TupleIndexHashTable( new FieldIndex[]{fieldIndex}, false );
 
         final Cheese stilton = new Cheese( "stilton",
                                            55 );

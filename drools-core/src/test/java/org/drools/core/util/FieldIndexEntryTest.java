@@ -58,7 +58,7 @@ public class FieldIndexEntryTest {
         final TupleList index = new TupleList( singleIndex, "stilton".hashCode() );
 
         // Test initial construction
-        assertNull( index.first );
+        assertNull( index.getFirst() );
         assertEquals( "stilton".hashCode(),
                       index.hashCode() );
 
@@ -71,7 +71,7 @@ public class FieldIndexEntryTest {
         RightTuple h1RightTuple = new RightTupleImpl( h1, null );
         index.add( h1RightTuple );
 
-        final Tuple entry1 = index.first;
+        final Tuple entry1 = index.getFirst();
         assertSame( h1,
                     entry1.getFactHandle() );
         assertNull( entry1.getNext() );
@@ -85,7 +85,7 @@ public class FieldIndexEntryTest {
 
         // test remove
         index.remove( h1RightTuple );
-        assertNull( index.first );
+        assertNull( index.getFirst() );
     }
 
     @Test
@@ -116,9 +116,9 @@ public class FieldIndexEntryTest {
         index.add( h1RightTuple );
         index.add( h2RightTuple );
         assertEquals( h1,
-                      index.first.getFactHandle() );
+                      index.getFirst().getFactHandle() );
         assertEquals( h2,
-                      ((RightTuple) index.first.getNext()).getFactHandle() );
+                      ((RightTuple) index.getFirst().getNext()).getFactHandle() );
 
         // test get
         assertEquals( h1,
@@ -130,13 +130,13 @@ public class FieldIndexEntryTest {
         // remove first
         index.remove( h2RightTuple );
         assertEquals( h1RightTuple.getFactHandle(),
-                      index.first.getFactHandle() );
+                      index.getFirst().getFactHandle() );
 
         // remove second
         index.add( h2RightTuple );
         index.remove( h1RightTuple );
         assertEquals( h2RightTuple.getFactHandle(),
-                      index.first.getFactHandle() );
+                      index.getFirst().getFactHandle() );
 
         // check index type does not change, as this fact is removed
         stilton1.setType( "cheddar" );
@@ -176,11 +176,11 @@ public class FieldIndexEntryTest {
         index.add( h2RightTuple );
         index.add( h3RightTuple );
         assertEquals( h1,
-                      index.first.getFactHandle() );
+                      index.getFirst().getFactHandle() );
         assertEquals( h2,
-                      ((RightTuple) index.first.getNext()).getFactHandle() );
+                      ((RightTuple) index.getFirst().getNext()).getFactHandle() );
         assertEquals( h3,
-                      ((RightTuple) index.first.getNext().getNext()).getFactHandle() );
+                      ((RightTuple) index.getFirst().getNext().getNext()).getFactHandle() );
 
         // test get
         assertEquals( h1,
@@ -194,25 +194,25 @@ public class FieldIndexEntryTest {
         //remove first
         index.remove( h3RightTuple );
         assertEquals( h1,
-                      index.first.getFactHandle() );
+                      index.getFirst().getFactHandle() );
         assertEquals( h2,
-                      ((RightTuple) index.first.getNext()).getFactHandle() );
+                      ((RightTuple) index.getFirst().getNext()).getFactHandle() );
 
         index.add( h3RightTuple );
         index.remove( h2RightTuple );
         assertEquals( h1,
-                      index.first.getFactHandle() );
+                      index.getFirst().getFactHandle() );
         assertEquals( h3,
-                      ((RightTuple) index.first.getNext()).getFactHandle() );
+                      ((RightTuple) index.getFirst().getNext()).getFactHandle() );
 
         index.add( h2RightTuple );
         index.remove( h1RightTuple );
         assertEquals( h3,
-                      index.first.getFactHandle() );
+                      index.getFirst().getFactHandle() );
         assertEquals( h2,
-                      ((RightTuple) index.first.getNext()).getFactHandle() );
+                      ((RightTuple) index.getFirst().getNext()).getFactHandle() );
 
-        index.remove( index.first );
+        index.remove( index.getFirst() );
         // check index type does not change, as this fact is removed
         stilton2.setType( "cheddar" );
     }
