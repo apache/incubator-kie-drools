@@ -18,6 +18,7 @@ package org.jbpm.runtime.manager.concurrent;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 import org.jbpm.runtime.manager.impl.DefaultRegisterableItemsFactory;
+import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
 import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -90,7 +91,7 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
 					@Override
 					public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
 						Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
-						handlers.put("Log", new AsyncWorkItemHandler(runtime.getKieSession()));
+						handlers.put("Log", new AsyncWorkItemHandler(((RuntimeEngineImpl)runtime).getManager()));
 						return handlers;
 					}
 
@@ -150,7 +151,7 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
 					@Override
 					public Map<String, WorkItemHandler> getWorkItemHandlers(RuntimeEngine runtime) {
 						Map<String, WorkItemHandler> handlers = super.getWorkItemHandlers(runtime);
-						handlers.put("Log", new AsyncWorkItemHandler(runtime.getKieSession()));
+						handlers.put("Log", new AsyncWorkItemHandler(((RuntimeEngineImpl)runtime).getManager()));
 						return handlers;
 					}
                 	
@@ -211,10 +212,10 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
     
     private class AsyncWorkItemHandler implements WorkItemHandler {
     	
-    	private KieSession ksession;
+    	private RuntimeManager runtimeManager;
     	
-    	AsyncWorkItemHandler(KieSession ksession) {
-    		this.ksession = ksession;
+    	AsyncWorkItemHandler(RuntimeManager runtimeManager) {
+    		this.runtimeManager = runtimeManager;
     	}
 
 		@Override
@@ -224,15 +225,20 @@ public class ConcurrentOperationsTest extends AbstractBaseTest {
 
 				@Override
 				public void run() {
-					logger.debug("staring a thread....");
-					ksession.insert("doing it async");
+				    
 					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						
+					    Thread.sleep(1000);
+					    
+    					RuntimeEngine engine = runtimeManager.getRuntimeEngine(EmptyContext.get());// only for singleton
+                        logger.debug("staring a thread....");
+                        engine.getKieSession().insert("doing it async");
+    					logger.debug("Completing the work item");
+    					
+    					engine.getKieSession().getWorkItemManager().completeWorkItem(workItem.getId(), null);
+    					runtimeManager.disposeRuntimeEngine(engine);
+					} catch (Exception e) {
+					    logger.error("Error when executing async operation", e);
 					}
-					logger.debug("Completing the work item");
-					ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
 				}
 				
 			}.start();

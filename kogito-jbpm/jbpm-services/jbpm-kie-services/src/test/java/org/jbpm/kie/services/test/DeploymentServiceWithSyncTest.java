@@ -40,6 +40,7 @@ import org.jbpm.services.api.ListenerSupport;
 import org.jbpm.services.api.model.DeployedUnit;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
+import org.jbpm.shared.services.impl.commands.UpdateStringCommand;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -132,7 +133,7 @@ public class DeploymentServiceWithSyncTest extends AbstractKieServicesBaseTest {
         invoker.start();
     }
     
-    protected CoundDownDeploymentListener configureListener(int threads) {
+    protected CoundDownDeploymentListener configureListener(int threads, boolean deploy, boolean undeploy, boolean activate, boolean deactivate) {
         CoundDownDeploymentListener countDownListener = new CoundDownDeploymentListener(threads);
         ((ListenerSupport)deploymentService).addListener(countDownListener);
         
@@ -144,6 +145,12 @@ public class DeploymentServiceWithSyncTest extends AbstractKieServicesBaseTest {
     	if (invoker != null) {
     		invoker.stop();
     	}
+    	
+        int deleted = 0;
+        deleted += commandService.execute(new UpdateStringCommand("delete from  DeploymentStoreEntry dse"));
+
+        logger.info("Deleted " + deleted);
+        
         cleanupSingletonSessionId();
         if (units != null && !units.isEmpty()) {
             for (DeploymentUnit unit : units) {
@@ -157,7 +164,7 @@ public class DeploymentServiceWithSyncTest extends AbstractKieServicesBaseTest {
     @Test
     public void testDeploymentOfProcessesBySync() throws Exception {
         
-        CoundDownDeploymentListener countDownListener = configureListener(1);
+        CoundDownDeploymentListener countDownListener = configureListener(1, true, false, false, false);
 
     	Collection<DeployedUnit> deployed = deploymentService.getDeployedUnits();
     	assertNotNull(deployed);
@@ -178,7 +185,7 @@ public class DeploymentServiceWithSyncTest extends AbstractKieServicesBaseTest {
     
     @Test
     public void testUndeploymentOfProcessesBySync() throws Exception {
-        CoundDownDeploymentListener countDownListener = configureListener(2);
+        CoundDownDeploymentListener countDownListener = configureListener(1, false, true, false, false);
         
     	Collection<DeployedUnit> deployed = deploymentService.getDeployedUnits();
     	assertNotNull(deployed);
@@ -205,7 +212,7 @@ public class DeploymentServiceWithSyncTest extends AbstractKieServicesBaseTest {
     
     @Test
     public void testDeactivateAndActivateOfProcessesBySync() throws Exception {
-        CoundDownDeploymentListener countDownListener = configureListener(2);
+        CoundDownDeploymentListener countDownListener = configureListener(2, false, false, true, true);
         
     	Collection<DeployedUnit> deployed = deploymentService.getDeployedUnits();
     	assertNotNull(deployed);
@@ -242,7 +249,7 @@ public class DeploymentServiceWithSyncTest extends AbstractKieServicesBaseTest {
     
     @Test
     public void testDeploymentOfProcessesBySyncWithDisabledAttribute() throws Exception {
-        CoundDownDeploymentListener countDownListener = configureListener(2);
+        CoundDownDeploymentListener countDownListener = configureListener(1, true, false, false, false);
         
     	Collection<DeployedUnit> deployed = deploymentService.getDeployedUnits();
     	assertNotNull(deployed);

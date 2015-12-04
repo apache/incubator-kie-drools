@@ -51,20 +51,13 @@ import org.kie.api.runtime.query.QueryContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 import bitronix.tm.resource.jms.PoolingConnectionFactory;
 
 public class JmsAvaiableJobExecutorTest  {
 
     private static final Logger logger = LoggerFactory.getLogger(JmsAvaiableJobExecutorTest.class);
-    
-    static {
-        if (!TransactionManagerServices.isTransactionManagerRunning()) {
-            TransactionManagerServices.getConfiguration().setJournal("null");
-        }
-    }
-    
+
     private ConnectionFactory factory;
     private Queue queue;
     

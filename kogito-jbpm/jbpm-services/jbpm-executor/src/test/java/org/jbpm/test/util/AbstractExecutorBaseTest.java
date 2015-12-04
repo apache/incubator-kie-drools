@@ -22,15 +22,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 
-import bitronix.tm.TransactionManagerServices;
-
 public abstract class AbstractExecutorBaseTest {
     
-    static {
-        if (!TransactionManagerServices.isTransactionManagerRunning()) {
-            TransactionManagerServices.getConfiguration().setJournal("null");
-        }
-    }
+
     @After
     public void cleanup() {
     	EntityManagerFactoryManager.get().clear();

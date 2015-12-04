@@ -37,7 +37,6 @@ import org.kie.api.executor.ExecutorService;
 import org.kie.api.executor.RequestInfo;
 import org.kie.api.runtime.query.QueryContext;
 
-import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 
 
@@ -45,12 +44,6 @@ public class ReconfiguredExecutorTest {
     
 	protected ExecutorService executorService;
     public static final Map<String, Object> cachedEntities = new HashMap<String, Object>();
-    
-    static {
-        if (!TransactionManagerServices.isTransactionManagerRunning()) {
-            TransactionManagerServices.getConfiguration().setJournal("null");
-        }
-    }
     
 	private PoolingDataSource pds;
 	private EntityManagerFactory emf = null;

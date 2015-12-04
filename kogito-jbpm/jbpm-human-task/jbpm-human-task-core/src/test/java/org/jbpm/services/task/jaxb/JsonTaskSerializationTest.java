@@ -16,10 +16,6 @@
 package org.jbpm.services.task.jaxb;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.jbpm.services.task.impl.model.ContentImpl;
-import org.jbpm.services.task.impl.model.xml.JaxbContent;
-import org.junit.Test;
-import org.kie.api.task.model.Content;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +26,9 @@ public class JsonTaskSerializationTest extends AbstractTaskSerializationTest {
     public final static int JMS_SERIALIZATION_TYPE = 1;
 
     private ObjectMapper mapper = new ObjectMapper();
+
+    public JsonTaskSerializationTest() {
+    }
 
     public TestType getType() {
         return TestType.JSON;

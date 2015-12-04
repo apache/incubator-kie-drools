@@ -20,16 +20,9 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 
-import bitronix.tm.TransactionManagerServices;
-
 public abstract class AbstractBaseTest extends Assert {
     
-    static {
-        if (!TransactionManagerServices.isTransactionManagerRunning()) {
-            TransactionManagerServices.getConfiguration().setJournal("null");
-        }
-    }
-        
+
     @BeforeClass
     public static void configure() { 
         LoggingPrintStream.interceptSysOutSysErr();

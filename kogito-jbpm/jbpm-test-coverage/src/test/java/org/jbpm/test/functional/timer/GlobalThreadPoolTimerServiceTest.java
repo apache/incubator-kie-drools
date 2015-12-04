@@ -26,6 +26,7 @@ import javax.persistence.Persistence;
 
 import org.jbpm.process.core.timer.impl.ThreadPoolSchedulerService;
 import org.jbpm.test.functional.timer.addon.TransactionalThreadPoolSchedulerService;
+import org.jbpm.test.listener.CountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -91,10 +92,10 @@ public class GlobalThreadPoolTimerServiceTest extends GlobalTimerServiceBaseTest
         }
     }
     
-    @Test
+    @Test(timeout=20000)
     public void testInterediateTimerWithGlobalTestServiceWithinTransaction() throws Exception {
-        int badNumTimers = 4;
-        final CountDownLatch timerCompleted = new CountDownLatch(badNumTimers);
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
+
         globalScheduler = new TransactionalThreadPoolSchedulerService(3);
         // prepare listener to assert results
         final List<Long> timerExporations = new ArrayList<Long>();
@@ -104,7 +105,6 @@ public class GlobalThreadPoolTimerServiceTest extends GlobalTimerServiceBaseTest
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 if (event.getNodeInstance().getNodeName().equals("timer")) {
                     timerExporations.add(event.getProcessInstance().getId());
-                    timerCompleted.countDown();
                 }
             }
             
@@ -115,7 +115,7 @@ public class GlobalThreadPoolTimerServiceTest extends GlobalTimerServiceBaseTest
     			.entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("org/jbpm/test/functional/timer/IntermediateCatchEventTimerCycle3.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
-                .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener, countDownListener))
                 .get();
 
 
@@ -128,12 +128,11 @@ public class GlobalThreadPoolTimerServiceTest extends GlobalTimerServiceBaseTest
         ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent");
         assertTrue(processInstance.getState() == ProcessInstance.STATE_ACTIVE);
         // now wait for 1 second for first timer to trigger
-        boolean didNotWait = timerCompleted.await(2, TimeUnit.SECONDS);
-        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
+        countDownListener.waitTillCompleted(2000);
         // dispose session to force session to be reloaded on timer expiration
         manager.disposeRuntimeEngine(runtime);
-        didNotWait = timerCompleted.await(2, TimeUnit.SECONDS);
-        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
+        countDownListener.waitTillCompleted();
+        countDownListener.reset(1);
         
         try {
             runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
@@ -146,9 +145,7 @@ public class GlobalThreadPoolTimerServiceTest extends GlobalTimerServiceBaseTest
             // expected for PerProcessInstanceManagers since process instance is completed
         }
         // let's wait to ensure no more timers are expired and triggered
-        didNotWait = timerCompleted.await(3, TimeUnit.SECONDS);
-        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
-   
+        countDownListener.waitTillCompleted(3000);
    
         assertEquals(3, timerExporations.size());
         manager.disposeRuntimeEngine(runtime);

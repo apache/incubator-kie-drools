@@ -18,7 +18,7 @@
   <description>jBPM BPMN2</description>
   
   <properties>    
-    <maven.jdbc.url>jdbc:h2:tcp://localhost/target/jbpm-bpmn-db</maven.jdbc.url>
+    <maven.jdbc.url>jdbc:h2:tcp://localhost/target/jbpm-bpmn-db;MVCC=TRUE</maven.jdbc.url>
   </properties>
 
   <dependencies>

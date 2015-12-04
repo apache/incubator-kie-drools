@@ -19,16 +19,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
 
 import javax.persistence.EntityManagerFactory;
 
 import org.jbpm.process.audit.AuditLogService;
 import org.jbpm.process.audit.JPAAuditLogService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
+import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.jbpm.test.JbpmTestCase;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.io.ResourceType;
@@ -49,6 +52,8 @@ import org.kie.internal.builder.KnowledgeBuilderError;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.kie.internal.task.api.InternalTaskService;
+import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.UserGroupCallback;
 
 public class ConcurrentHumanTaskTest extends JbpmTestCase {
@@ -57,18 +62,33 @@ public class ConcurrentHumanTaskTest extends JbpmTestCase {
 		super(true, true);
 	}
 
-	private static final int THREADS = 2;
+	private static final int THREADS = 2;	
+	
+	@Before
+	public void populateOrgEntity() {
+	    TaskService taskService = HumanTaskServiceFactory.newTaskServiceConfigurator().entityManagerFactory(getEmf()).getTaskService();
+	    
+	    ((InternalTaskService)taskService).addUser(TaskModelProvider.getFactory().newUser("krisv"));
+	    ((InternalTaskService)taskService).addUser(TaskModelProvider.getFactory().newUser("sales-rep"));
+	    ((InternalTaskService)taskService).addUser(TaskModelProvider.getFactory().newUser("john"));
+	    ((InternalTaskService)taskService).addUser(TaskModelProvider.getFactory().newUser("Administrator"));
+	    
+	    ((InternalTaskService)taskService).addGroup(TaskModelProvider.getFactory().newGroup("sales"));
+	    ((InternalTaskService)taskService).addGroup(TaskModelProvider.getFactory().newGroup("PM"));
+	    ((InternalTaskService)taskService).addGroup(TaskModelProvider.getFactory().newGroup("Administrators"));
+	}
 
-	@Test
+	@Test(timeout=10000)
 	public void testConcurrentInvocationsIncludingUserTasks() throws Exception {
-		for (int i = 0; i < THREADS; i++) {
-			ProcessRunner pr = new ProcessRunner(i, getEmf());
+	    CountDownLatch latch = new CountDownLatch(THREADS);
+	    for (int i = 0; i < THREADS; i++) {
+			ProcessRunner pr = new ProcessRunner(i, getEmf(), latch);
 			Thread t = new Thread(pr, i + "-process-runner");
-			t.start();						
+			t.start();	
+						
 		}
 		
-		Thread.sleep(5000);
-		
+		latch.await();
 		AuditLogService logService = new JPAAuditLogService(getEmf());
 		
 		List<? extends ProcessInstanceLog> logs = logService.findProcessInstances("com.sample.humantask.concurrent");
@@ -86,10 +106,12 @@ class ProcessRunner implements Runnable {
 
 	private int i;
 	private EntityManagerFactory emf;
+	private CountDownLatch latch;
 
-	public ProcessRunner(int i, EntityManagerFactory emf) {
+	public ProcessRunner(int i, EntityManagerFactory emf, CountDownLatch latch) {
 		this.i = i;
 		this.emf = emf;
+		this.latch = latch;
 	}
 
 	private RuntimeManager getRuntimeManager(String process, int i) {
@@ -140,7 +162,7 @@ class ProcessRunner implements Runnable {
         ProcessInstance pi = ksession.startProcess("com.sample.humantask.concurrent", params);
 
         System.out.println(" starting runtime: " + i);
-        HumanTaskResolver htr = new HumanTaskResolver(pi.getId(), manager);
+        HumanTaskResolver htr = new HumanTaskResolver(pi.getId(), manager, this.latch);
         Thread t = new Thread(htr, i + "-ht-resolver");
         t.start();
     }
@@ -150,10 +172,12 @@ class HumanTaskResolver implements Runnable {
 
 	private final long pid;
 	private final RuntimeManager runtime;
+	private CountDownLatch latch;
 
-	public HumanTaskResolver(long pid, RuntimeManager runtime) {
+	public HumanTaskResolver(long pid, RuntimeManager runtime, CountDownLatch latch) {
 		this.pid = pid;
 		this.runtime = runtime;
+		this.latch = latch;
 		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>" + pid);
 	}
 
@@ -209,9 +233,10 @@ class HumanTaskResolver implements Runnable {
         Assert.assertNotNull(result);
         taskService4.complete(task4.getId(), "sales-rep", null);
 
-        System.out.println("Process instance completed");
-
+        System.out.println("Process instance completed");        
         runtime.close();
+        
+        latch.countDown();
     }
 
 	public TaskService getTaskService() {

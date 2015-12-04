@@ -23,6 +23,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.persistence.TransactionManager;
+import org.drools.persistence.TransactionManagerFactory;
+import org.drools.persistence.TransactionSynchronization;
 import org.kie.api.event.process.DefaultProcessEventListener;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
@@ -34,6 +37,7 @@ import org.kie.api.runtime.process.ProcessInstance;
 public class TrackingProcessEventListener extends DefaultProcessEventListener {
 
     private final int numberOfCountDownsNeeded;
+    private boolean transactional = true;
     
     public TrackingProcessEventListener(int involvedThreads) { 
         this.numberOfCountDownsNeeded = involvedThreads;
@@ -46,6 +50,11 @@ public class TrackingProcessEventListener extends DefaultProcessEventListener {
     public TrackingProcessEventListener() { 
        this(1);
     }
+    
+    public TrackingProcessEventListener(boolean transactional) { 
+        this(1);
+        this.transactional = transactional;
+     }
    
     private final List<String> processesStarted = new ArrayList<String>();
     private CountDownLatch processesStartedLatch;
@@ -67,25 +76,25 @@ public class TrackingProcessEventListener extends DefaultProcessEventListener {
     public void beforeNodeTriggered(ProcessNodeTriggeredEvent event) {
         String nodeName = event.getNodeInstance().getNodeName();
         CountDownLatch nodeLatch = getNodeTriggeredLatch(nodeName);
-        nodeLatch.countDown();
         nodesTriggered.add(nodeName);
+        countDown(nodeLatch);        
     }
 
     @Override
     public void beforeNodeLeft(ProcessNodeLeftEvent event) {
         String nodeName = event.getNodeInstance().getNodeName();
         CountDownLatch nodeLatch = getNodeLeftLatch(nodeName);
-        nodeLatch.countDown();
         nodesLeft.add(nodeName);
+        countDown(nodeLatch);        
     }
 
     @Override
     public void beforeProcessStarted(ProcessStartedEvent event) {
         if( processesStartedLatch.getCount() == 0 ) { 
             processesStartedLatch = new CountDownLatch(numberOfCountDownsNeeded);
-        }
-        processesStartedLatch.countDown();
+        }        
         processesStarted.add(event.getProcessInstance().getProcessId());
+        countDown(processesStartedLatch);
     }
 
     @Override
@@ -95,13 +104,13 @@ public class TrackingProcessEventListener extends DefaultProcessEventListener {
             if( processesAbortedLatch.getCount() == 0 ) { 
                 processesAbortedLatch = new CountDownLatch(numberOfCountDownsNeeded);
             }
-            processesAbortedLatch.countDown();
+            countDown(processesAbortedLatch);
         } else {
             processesCompleted.add(event.getProcessInstance().getProcessId());
             if( processesCompletedLatch.getCount() == 0 ) { 
                 processesCompletedLatch = new CountDownLatch(numberOfCountDownsNeeded);
             }
-            processesCompletedLatch.countDown();
+            countDown(processesCompletedLatch);
         }
     }
 
@@ -212,6 +221,31 @@ public class TrackingProcessEventListener extends DefaultProcessEventListener {
         processesCompletedLatch = new CountDownLatch(numberOfCountDownsNeeded);
         nodeTriggeredLatchMap.clear();
         nodeLeftLatchMap.clear();
+    }
+    
+    protected void countDown(final CountDownLatch latch) {
+        try {
+            TransactionManager tm = TransactionManagerFactory.get().newTransactionManager();
+            if (transactional && tm != null && tm.getStatus() != TransactionManager.STATUS_NO_TRANSACTION
+                    && tm.getStatus() != TransactionManager.STATUS_ROLLEDBACK
+                    && tm.getStatus() != TransactionManager.STATUS_COMMITTED) {
+                tm.registerTransactionSynchronization(new TransactionSynchronization() {
+                    
+                    @Override
+                    public void beforeCompletion() {        
+                    }
+                    
+                    @Override
+                    public void afterCompletion(int status) {
+                        latch.countDown();
+                    }
+                });
+            } else {            
+                latch.countDown();
+            }
+        } catch (Exception e) {
+            latch.countDown();
+        }
     }
 
 }

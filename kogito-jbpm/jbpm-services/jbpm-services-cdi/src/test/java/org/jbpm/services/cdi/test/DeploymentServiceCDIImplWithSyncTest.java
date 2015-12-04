@@ -38,7 +38,7 @@ import org.junit.runner.RunWith;
 
 @RunWith(Arquillian.class)
 public class DeploymentServiceCDIImplWithSyncTest extends DeploymentServiceWithSyncTest {
-	
+   
 	@Deployment()
     public static Archive<?> createDeployment() {
         return ShrinkWrap.create(JavaArchive.class, "domain-services.jar")                
@@ -121,8 +121,12 @@ public class DeploymentServiceCDIImplWithSyncTest extends DeploymentServiceWithS
 	}
 
 	@Override
-    protected CoundDownDeploymentListener configureListener(int threads) {
+    protected CoundDownDeploymentListener configureListener(int threads, boolean deploy, boolean undeploy, boolean activate, boolean deactivate) {
         countDownListner.reset(threads);
+        countDownListner.setDeploy(deploy);
+        countDownListner.setUndeploy(undeploy);
+        countDownListner.setActivate(activate);
+        countDownListner.setDeactivate(deactivate);
 	    
         return countDownListner;
     }
@@ -178,6 +182,5 @@ public class DeploymentServiceCDIImplWithSyncTest extends DeploymentServiceWithS
 	public void setCommandService(TransactionalCommandService commandService) {
 		super.setCommandService(commandService);
 	}
-
 	
 }

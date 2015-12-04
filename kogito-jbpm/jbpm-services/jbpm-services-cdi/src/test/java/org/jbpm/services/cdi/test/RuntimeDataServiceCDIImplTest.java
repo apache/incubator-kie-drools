@@ -34,9 +34,13 @@ import org.jbpm.shared.services.impl.TransactionalCommandService;
 import org.jbpm.shared.services.impl.commands.UpdateStringCommand;
 import org.junit.After;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RunWith(Arquillian.class)
 public class RuntimeDataServiceCDIImplTest extends RuntimeDataServiceImplTest {
+    
+    private static final Logger logger = LoggerFactory.getLogger(RuntimeDataServiceCDIImplTest.class);
 	
 	@Deployment()
     public static Archive<?> createDeployment() {
@@ -164,6 +168,6 @@ public class RuntimeDataServiceCDIImplTest extends RuntimeDataServiceImplTest {
         deleted += commandService.execute(new UpdateStringCommand("delete from  AuditTaskImpl at"));
         deleted += commandService.execute(new UpdateStringCommand("delete from  TaskEventImpl te"));
         deleted += commandService.execute(new UpdateStringCommand("delete from  TaskVariableImpl te"));
-        System.out.println("Deleted " + deleted);
+        logger.debug("Deleted " + deleted);
 	}
 }

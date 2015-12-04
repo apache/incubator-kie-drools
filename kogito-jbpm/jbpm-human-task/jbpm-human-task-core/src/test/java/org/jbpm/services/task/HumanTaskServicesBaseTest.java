@@ -60,12 +60,6 @@ public abstract class HumanTaskServicesBaseTest {
 
     private static final Logger logger = LoggerFactory.getLogger(HumanTaskServicesBaseTest.class);
     
-    static {
-        if (!TransactionManagerServices.isTransactionManagerRunning()) {
-            TransactionManagerServices.getConfiguration().setJournal("null");
-        }
-    }
-    
     protected InternalTaskService taskService;
 
     @BeforeClass

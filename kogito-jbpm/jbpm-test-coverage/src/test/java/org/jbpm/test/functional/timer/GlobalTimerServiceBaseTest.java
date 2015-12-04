@@ -42,6 +42,7 @@ import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.jpa.EntityManagerFactoryManager;
 import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.services.task.persistence.JPATaskPersistenceContextManager;
+import org.jbpm.test.listener.CountDownProcessEventListener;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
 import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
 import org.junit.Ignore;
@@ -102,10 +103,9 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         }
     }
 
-    @Test
+    @Test(timeout=20000)
     public void testInterediateTimerWithGlobalTestService() throws Exception {
-        int badNumTimers = 4;
-        final CountDownLatch timerCompleted = new CountDownLatch(badNumTimers);
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
         // prepare listener to assert results
         final List<Long> timerExporations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){
@@ -114,7 +114,6 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 if (event.getNodeInstance().getNodeName().equals("timer")) {
                     timerExporations.add(event.getProcessInstance().getId());
-                    timerCompleted.countDown();
                 }
             }
             
@@ -125,7 +124,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     			.entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("org/jbpm/test/functional/timer/IntermediateCatchEventTimerCycle3.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
-                .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener, countDownListener))
                 .get();
 
 
@@ -154,17 +153,15 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             // expected for PerProcessInstanceManagers since process instance is completed
         }
         // let's wait to ensure no more timers are expired and triggered
-        boolean didNotWait = timerCompleted.await(3, TimeUnit.SECONDS);
-        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
-   
+        countDownListener.waitTillCompleted();
+        
         assertEquals(3, timerExporations.size());
         manager.disposeRuntimeEngine(runtime);
     }
-
-    @Test
+    
+    @Test(timeout=20000)
     public void testTimerStart() throws Exception {
-        int badNumTimers = 6;
-        final CountDownLatch timerCompleted = new CountDownLatch(badNumTimers);
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("StartProcess", 5);
         // prepare listener to assert results
         final List<Long> timerExporations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){
@@ -172,7 +169,6 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             @Override
             public void beforeProcessStarted(ProcessStartedEvent event) {
                 timerExporations.add(event.getProcessInstance().getId());
-                timerCompleted.countDown();
             }
 
         };
@@ -182,7 +178,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     			.entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("org/jbpm/test/functional/timer/TimerStart2.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
-                .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener, countDownListener))
                 .get();
         
         manager = getManager(environment, false);
@@ -191,8 +187,8 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         
         assertEquals(0, timerExporations.size());
        
-        boolean didNotWait = timerCompleted.await(6, TimeUnit.SECONDS);
-        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
+        countDownListener.waitTillCompleted();
+        
         manager.disposeRuntimeEngine(runtime);
         assertEquals(5, timerExporations.size());
 
@@ -233,10 +229,9 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         assertEquals(5, timerExporations.size());
     }
     
-    @Test
+    @Test(timeout=20000)
     public void testInterediateTimerWithHTAfterWithGlobalTestService() throws Exception {
-        int badNumTimers = 4;
-        final CountDownLatch timerCompleted = new CountDownLatch(badNumTimers);
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
         // prepare listener to assert results
         final List<Long> timerExpirations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){
@@ -245,7 +240,6 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 if (event.getNodeInstance().getNodeName().equals("timer")) {
                     timerExpirations.add(event.getProcessInstance().getId());
-                    timerCompleted.countDown();
                 }
             }
             
@@ -260,7 +254,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     			.entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("org/jbpm/test/functional/timer/IntermediateCatchEventTimerCycleWithHT.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
-                .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener, countDownListener))
                 .userGroupCallback(userGroupCallback)
                 .get();
        
@@ -275,9 +269,9 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         logger.debug("Disposed after start");
         // dispose session to force session to be reloaded on timer expiration
         manager.disposeRuntimeEngine(runtime);
-        boolean didNotWait = timerCompleted.await(4, TimeUnit.SECONDS);
-        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
-   
+        
+        countDownListener.waitTillCompleted();
+        countDownListener.reset(1);
         
         runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
         ksession = runtime.getKieSession();
@@ -298,19 +292,16 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         processInstance = ksession.getProcessInstance(processInstance.getId());        
         assertNull(processInstance);
         // let's wait to ensure no more timers are expired and triggered
-        didNotWait = timerCompleted.await(3, TimeUnit.SECONDS);
-        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
-   
+        countDownListener.waitTillCompleted(3000);
         
         manager.disposeRuntimeEngine(runtime);
 
         assertEquals(3, timerExpirations.size());
     }
     
-    @Test
+    @Test(timeout=20000)
     public void testInterediateTimerWithHTBeforeWithGlobalTestService() throws Exception {
-        int badNumTimers = 4;
-        final CountDownLatch timerCompleted = new CountDownLatch(badNumTimers);
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
         // prepare listener to assert results
         final List<Long> timerExporations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){
@@ -319,7 +310,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 if (event.getNodeInstance().getNodeName().equals("timer")) {
                     timerExporations.add(event.getProcessInstance().getId());
-                    timerCompleted.countDown();
+                    
                 }
             }
             
@@ -333,7 +324,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     			.entityManagerFactory(emf)
                 .addAsset(ResourceFactory.newClassPathResource("org/jbpm/test/functional/timer/IntermediateCatchEventTimerCycleWithHT2.bpmn2"), ResourceType.BPMN2)
                 .schedulerService(globalScheduler)
-                .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener, countDownListener))
                 .userGroupCallback(userGroupCallback)
                 .get();
                 
@@ -362,8 +353,8 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         manager.disposeRuntimeEngine(runtime);
         // now wait for 1 second for first timer to trigger
 
-        boolean didNotWait = timerCompleted.await(4, TimeUnit.SECONDS);
-        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
+        countDownListener.waitTillCompleted();
+        countDownListener.reset(1);
         try {
             runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get(processInstance.getId()));
             ksession = runtime.getKieSession();
@@ -375,16 +366,14 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             // expected for PerProcessInstanceManagers since process instance is completed
         }
         // let's wait to ensure no more timers are expired and triggered
-        didNotWait = timerCompleted.await(3, TimeUnit.SECONDS);
-        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
-   
+        countDownListener.waitTillCompleted(3000);
    
         manager.disposeRuntimeEngine(runtime);
 
         assertEquals(3, timerExporations.size());
     }
     
-    @Test
+    @Test(timeout=20000)
     public void testInterediateTimerWithGlobalTestServiceRollback() throws Exception {
         
         environment = RuntimeEnvironmentBuilder.Factory.get()
@@ -426,7 +415,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         }
     }
     
-    @Test
+    @Test(timeout=20000)
     public void testInterediateTimerWithHTBeforeWithGlobalTestServiceRollback() throws Exception {
         
         // prepare listener to assert results
@@ -486,7 +475,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
 
     }
     
-    @Test
+    @Test(timeout=20000)
     public void testInterediateBoundaryTimerWithGlobalTestServiceRollback() throws Exception {
         Properties properties= new Properties();
         properties.setProperty("mary", "HR");
@@ -537,8 +526,6 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
     
     @Test
     public void testHumanTaskDeadlineWithGlobalTimerService() throws Exception {
-        
-
         
         environment = RuntimeEnvironmentBuilder.Factory.get()
     			.newDefaultBuilder()
@@ -692,10 +679,9 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         
     }
     
-    @Test
+    @Test(timeout=20000)
     public void testInterediateTimerWithGlobalTestServiceSimulateCMT() throws Exception {
-        int badNumTimers = 4;
-        final CountDownLatch timerCompleted = new CountDownLatch(badNumTimers);
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 3);
         // prepare listener to assert results
         final List<Long> timerExporations = new ArrayList<Long>();
         ProcessEventListener listener = new DefaultProcessEventListener(){
@@ -704,7 +690,6 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
             public void afterNodeLeft(ProcessNodeLeftEvent event) {
                 if (event.getNodeInstance().getNodeName().equals("timer")) {
                     timerExporations.add(event.getProcessInstance().getId());
-                    timerCompleted.countDown();
                 }
             }
             
@@ -727,7 +712,7 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
                 .addEnvironmentEntry(EnvironmentName.PERSISTENCE_CONTEXT_MANAGER, new JpaProcessPersistenceContextManager(env))
         		.addEnvironmentEntry(EnvironmentName.TASK_PERSISTENCE_CONTEXT_MANAGER, new JPATaskPersistenceContextManager(env))                
                 .schedulerService(globalScheduler)
-                .registerableItemsFactory(new TestRegisterableItemsFactory(listener))
+                .registerableItemsFactory(new TestRegisterableItemsFactory(listener, countDownListener))
                 .userGroupCallback(userGroupCallback)
                 .get();
 
@@ -768,8 +753,8 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         }
         ut.commit();
         // now wait for 1 second for first timer to trigger
-        boolean didNotWait = timerCompleted.await(4, TimeUnit.SECONDS);
-        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
+        countDownListener.waitTillCompleted();
+        countDownListener.reset(1);
         
         ut = InitialContext.doLookup("java:comp/UserTransaction");
         ut.begin();
@@ -785,9 +770,8 @@ public abstract class GlobalTimerServiceBaseTest extends TimerBaseTest{
         }
         ut.commit();
         // let's wait to ensure no more timers are expired and triggered
-        didNotWait = timerCompleted.await(2, TimeUnit.SECONDS);
-        assertTrue("Too many timers elapsed: " + (badNumTimers - timerCompleted.getCount()), ! didNotWait );
-   
+        countDownListener.waitTillCompleted(3000);
+        
         assertEquals(3, timerExporations.size());
     }
     

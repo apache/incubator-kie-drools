@@ -83,27 +83,37 @@ public class AsyncTaskTest extends JbpmAsyncJobTestCase {
     @BZ("1121027")
     public void testTaskComplete() throws Exception {
         CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Process async", 1);
-        addProcessEventListener(countDownListener);
-        KieSession ksession = createKSession(ASYNC_DATA_EXECUTOR);
-        WorkItemManager wim = ksession.getWorkItemManager();
-        wim.registerWorkItemHandler("async", new AsyncWorkItemHandler(getExecutorService()));
-
-        Map<String, Object> pm = new HashMap<String, Object>();
-        pm.put("command", USER_COMMAND);
-        ProcessInstance pi = ksession.startProcess(ASYNC_DATA_EXECUTOR_ID, pm);
-
-        assertNodeTriggered(pi.getId(), "StartProcess", "Set user info", "Process async");
-        assertNodeNotTriggered(pi.getId(), "Output");
-
-        // Wait for the job to complete
-        countDownListener.waitTillCompleted();
-        
-        ProcessInstance processInstance = ksession.getProcessInstance(pi.getId());
-        assertNull(processInstance);
-
-        assertNodeTriggered(pi.getId(), "Output", "EndProcess");
-        Assertions.assertThat(getExecutorService().getCompletedRequests(new QueryContext())).hasSize(1);
-        assertProcessInstanceCompleted(pi.getId());
+        CountDownAsyncJobListener countDownJobListener = new CountDownAsyncJobListener(1);
+        try {
+            ((ExecutorServiceImpl) getExecutorService()).addAsyncJobListener(countDownJobListener);
+            
+            addProcessEventListener(countDownListener);
+            KieSession ksession = createKSession(ASYNC_DATA_EXECUTOR);
+            WorkItemManager wim = ksession.getWorkItemManager();
+            wim.registerWorkItemHandler("async", new AsyncWorkItemHandler(getExecutorService()));
+    
+            Map<String, Object> pm = new HashMap<String, Object>();
+            pm.put("command", USER_COMMAND);
+            ProcessInstance pi = ksession.startProcess(ASYNC_DATA_EXECUTOR_ID, pm);
+    
+            assertNodeTriggered(pi.getId(), "StartProcess", "Set user info", "Process async");
+            assertNodeNotTriggered(pi.getId(), "Output");
+    
+            // Wait for the job to complete
+            countDownListener.waitTillCompleted();
+            
+            ProcessInstance processInstance = ksession.getProcessInstance(pi.getId());
+            assertNull(processInstance);
+    
+            assertNodeTriggered(pi.getId(), "Output", "EndProcess");
+            
+            countDownJobListener.waitTillCompleted();
+            
+            Assertions.assertThat(getExecutorService().getCompletedRequests(new QueryContext())).hasSize(1);
+            assertProcessInstanceCompleted(pi.getId());
+        } finally {
+            ((ExecutorServiceImpl) getExecutorService()).removeAsyncJobListener(countDownJobListener);
+        }
     }
 
     

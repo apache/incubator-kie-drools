@@ -49,18 +49,10 @@ import org.kie.api.runtime.query.QueryContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import bitronix.tm.TransactionManagerServices;
-
 public abstract class BasicExecutorBaseTest {
     
     private static final Logger logger = LoggerFactory.getLogger(BasicExecutorBaseTest.class);
 
-    static {
-        if (!TransactionManagerServices.isTransactionManagerRunning()) {
-            TransactionManagerServices.getConfiguration().setJournal("null");
-        }
-    }
-    
     protected ExecutorService executorService;
     public static final Map<String, Object> cachedEntities = new HashMap<String, Object>();
     

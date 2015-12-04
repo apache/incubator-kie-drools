@@ -29,6 +29,11 @@ public class CoundDownDeploymentListener implements DeploymentEventListener {
 
     private CountDownLatch latch;
     
+    private boolean deploy;
+    private boolean undeploy;
+    private boolean activate;
+    private boolean deactivate;
+    
     public CoundDownDeploymentListener() {
         this.latch = new CountDownLatch(0);
     }
@@ -39,22 +44,30 @@ public class CoundDownDeploymentListener implements DeploymentEventListener {
     
     @Override
     public void onDeploy(DeploymentEvent event) {
-        this.latch.countDown();
+        if (deploy) {
+            this.latch.countDown();
+        }
     }
 
     @Override
     public void onUnDeploy(DeploymentEvent event) {
-        this.latch.countDown();
+        if (undeploy) {
+            this.latch.countDown();
+        }
     }
 
     @Override
     public void onActivate(DeploymentEvent event) {
-        this.latch.countDown();
+        if (activate) {
+            this.latch.countDown();
+        }
     }
 
     @Override
     public void onDeactivate(DeploymentEvent event) {
-        this.latch.countDown();
+        if (deactivate) {
+            this.latch.countDown();
+        }
     }
     
     public void waitTillCompleted() {
@@ -75,5 +88,45 @@ public class CoundDownDeploymentListener implements DeploymentEventListener {
     
     public void reset(int threads) {
         this.latch = new CountDownLatch(threads);
+    }
+
+    
+    public boolean isDeploy() {
+        return deploy;
+    }
+
+    
+    public void setDeploy(boolean deploy) {
+        this.deploy = deploy;
+    }
+
+    
+    public boolean isUndeploy() {
+        return undeploy;
+    }
+
+    
+    public void setUndeploy(boolean undeploy) {
+        this.undeploy = undeploy;
+    }
+
+    
+    public boolean isActivate() {
+        return activate;
+    }
+
+    
+    public void setActivate(boolean activate) {
+        this.activate = activate;
+    }
+
+    
+    public boolean isDeactivate() {
+        return deactivate;
+    }
+
+    
+    public void setDeactivate(boolean deactivate) {
+        this.deactivate = deactivate;
     }
 }
