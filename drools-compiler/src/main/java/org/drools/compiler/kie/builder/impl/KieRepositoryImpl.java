@@ -241,7 +241,7 @@ public class KieRepositoryImpl
     private static final Object PRESENT = new Object();
 
     /**
-     * The methods in this class are all synchronized becuase
+     * The methods in this class are all synchronized because
      * 1. performance is not particularly important here
      * 2. I wrote performant concurrent code and then realized it was not easily maintainable
      *    (and maintainability is more important here, AFAICT),

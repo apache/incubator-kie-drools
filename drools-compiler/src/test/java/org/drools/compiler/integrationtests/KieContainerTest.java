@@ -15,6 +15,7 @@
 
 package org.drools.compiler.integrationtests;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -190,9 +191,10 @@ public class KieContainerTest {
             kieSession.setGlobal("list", list);
             kieSession.fireAllRules();
             kieSession.dispose();
-            // There can be 2 items in the list if an updateToVersion is triggered during a fireAllRules
-            // in that case it may fire with both the old and the new rule
-            assertTrue( list.size() >= 1 && list.size() <= 2);
+            // There can be multiple items in the list if an updateToVersion is triggered during a fireAllRules
+            // (updateToVersion can be called multiple times during fireAllRules, especially on slower machines)
+            // in that case it may fire with the old rule and multiple new ones
+            Assertions.assertThat(list).isNotEmpty();
             if (list.get(0).equals("rule9")) {
                 break;
             }
