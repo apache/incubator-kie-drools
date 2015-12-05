@@ -78,6 +78,7 @@
           <configuration>
             <forkCount>${surefire.forkCount}</forkCount>
             <reuseForks>true</reuseForks>
+            <runOrder>hourly</runOrder>
           </configuration>
         </plugin>
       </plugins>

@@ -19,13 +19,13 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.ComparableVersion;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.KieModuleRepo;
 import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.common.ResourceProvider;
 import org.jboss.byteman.contrib.bmunit.BMScript;
 import org.jboss.byteman.contrib.bmunit.BMUnitConfig;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,11 +50,27 @@ public class KieModuleRepoTest {
 
     private KieModuleRepo kieModuleRepo;
 
-    @Before
-    public void before() {
+    private int maxSizeGaCacheOrig;
+    private int maxSizeGaVersionsCacheOrig;
+    private Field maxSizeGaCacheField;
+    private Field maxSizeGaVersionsCacheField;
 
+    @Before
+    public void before() throws Exception {
         InternalKieScanner mockKieScanner = mock(InternalKieScanner.class);
         kieModuleRepo = new KieModuleRepo(mockKieScanner);
+
+        // store the original values as we need to restore them after the test
+        maxSizeGaCacheOrig = KieModuleRepo.MAX_SIZE_GA_CACHE;
+        maxSizeGaVersionsCacheOrig = KieModuleRepo.MAX_SIZE_GA_VERSIONS_CACHE;
+        maxSizeGaCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_CACHE");
+        maxSizeGaVersionsCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_VERSIONS_CACHE");
+    }
+
+    @After
+    public void after() throws Exception {
+        setFinalField(maxSizeGaCacheField, null, maxSizeGaCacheOrig);
+        setFinalField(maxSizeGaVersionsCacheField, null, maxSizeGaVersionsCacheOrig);
     }
 
     /**
@@ -349,9 +365,7 @@ public class KieModuleRepoTest {
     @Test
     public void storingNewProjectsCausesOldProjectEvictionFromKieModuleRepoTest() throws Exception {
         // setup
-        Field maxSizeGaCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_CACHE");
         setFinalField(maxSizeGaCacheField, null, 3);
-        Field maxSizeGaVersionsCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_VERSIONS_CACHE");
         setFinalField(maxSizeGaVersionsCacheField, null, 2); // to test oldKieModules caching
 
         ReleaseIdImpl [] releaseIds = new ReleaseIdImpl[7];
@@ -382,10 +396,8 @@ public class KieModuleRepoTest {
     @Test
     public void storingNewProjectVersionsCausesOldVersionEvictionFromKieModuleRepoTest() throws Exception {
         // setup
-        Field maxSizeGaCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_CACHE");
         setFinalField(maxSizeGaCacheField, null, 2); // to test oldKieModules caching
-        Field maxSizeGaVersionsCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_VERSIONS_CACHE");
-        setFinalField(maxSizeGaVersionsCacheField, null, 3);;
+        setFinalField(maxSizeGaVersionsCacheField, null, 3);
 
         ReleaseIdImpl [] releaseIds = new ReleaseIdImpl[7];
         for( int i = 0; i < releaseIds.length; ++i ) {
@@ -433,9 +445,7 @@ public class KieModuleRepoTest {
     @Test
     public void testOldKieModulesLRUCache() throws Exception {
         // setup
-        Field maxSizeGaCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_CACHE");
         setFinalField(maxSizeGaCacheField, null, 2);
-        Field maxSizeGaVersionsCacheField = KieModuleRepo.class.getDeclaredField("MAX_SIZE_GA_VERSIONS_CACHE");
         setFinalField(maxSizeGaVersionsCacheField, null, 4);
 
         ReleaseIdImpl [] releaseIds = new ReleaseIdImpl[9];
