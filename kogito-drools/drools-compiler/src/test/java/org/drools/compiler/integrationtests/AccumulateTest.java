@@ -2007,7 +2007,7 @@ public class AccumulateTest extends CommonTestMethodBase {
                       results.get( 0 ) );
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 10000)
     public void testInfiniteLoopAddingPkgAfterSession() throws Exception {
         // JBRULES-3488
         String rule = "package org.drools.compiler.test;\n" +
