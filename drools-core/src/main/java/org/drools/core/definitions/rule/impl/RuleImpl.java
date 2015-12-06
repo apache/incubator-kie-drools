@@ -387,7 +387,7 @@ public class RuleImpl implements Externalizable,
     /**
 	 * Returns <code>true</code> if the rule uses dynamic salience, <code>false</code> otherwise.
 	 * 
-	 * @return <code>true</code> if he rule uses dynamic salience, else <code>false</code>.
+	 * @return <code>true</code> if the rule uses dynamic salience, else <code>false</code>.
 	 */
     public boolean isSalienceDynamic() {
     	return getSalience().isDynamic();
