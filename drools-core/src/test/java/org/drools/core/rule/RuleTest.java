@@ -16,21 +16,25 @@
 
 package org.drools.core.rule;
 
-import org.drools.core.ClockType;
-import org.drools.core.SessionConfiguration;
-import org.drools.core.WorkingMemory;
-import org.drools.core.base.EnabledBoolean;
-import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.reteoo.RuleTerminalNode;
-import org.drools.core.time.impl.PseudoClockScheduler;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Calendar;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.drools.core.ClockType;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.WorkingMemory;
+import org.drools.core.base.EnabledBoolean;
+import org.drools.core.base.SalienceInteger;
+import org.drools.core.base.mvel.MVELSalienceExpression;
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.spi.Salience;
+import org.drools.core.time.impl.PseudoClockScheduler;
+import org.junit.Test;
 
 public class RuleTest {
 
@@ -150,6 +154,28 @@ public class RuleTest {
         ((PseudoClockScheduler)wm.getSessionClock()).advanceTime( 1000000000000L, TimeUnit.MILLISECONDS );
         
         assertTrue(rule.isEffective(null, new RuleTerminalNode(), wm ));
+    }
+    
+    @Test
+    public void testGetSalienceValue() {
+    	final RuleImpl rule = new RuleImpl( "myrule" );
+    	final int salienceValue = 100;
+    	
+    	Salience salience = new SalienceInteger(salienceValue);
+    	rule.setSalience(salience);
+    	
+    	assertEquals(salienceValue, rule.getSalienceValue());
+    	assertFalse(rule.isSalienceDynamic());
+    }
+    
+    @Test
+    public void testIsSalienceDynamic() {
+    	final RuleImpl rule = new RuleImpl( "myrule" );
+    	
+    	Salience salience = new MVELSalienceExpression();
+    	rule.setSalience(salience);
+    	
+    	assertTrue(rule.isSalienceDynamic());
     }
 
 }
