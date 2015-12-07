@@ -261,15 +261,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
         this.pkgRegistryMap = new LinkedHashMap<String, PackageRegistry>();
         this.results = new ArrayList<KnowledgeBuilderResult>();
 
-        PackageRegistry pkgRegistry = new PackageRegistry(rootClassLoader, this.configuration, pkg);
-        pkgRegistry.setDialect(this.defaultDialect);
-        this.pkgRegistryMap.put(pkg.getName(),
-                                pkgRegistry);
-
-        // add imports to pkg registry
-        for (final ImportDeclaration implDecl : pkg.getImports().values()) {
-            pkgRegistry.addImport(new ImportDescr(implDecl.getTarget()));
-        }
+		addInternalKnowledgePackage(pkg);
 
         processBuilder = createProcessBuilder();
         typeBuilder = new TypeDeclarationBuilder(this);
@@ -298,9 +290,26 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
 
         this.kBase = kBase;
 
+		if (kBase != null) {
+			for (InternalKnowledgePackage pkg : kBase.getPackagesMap().values()) {
+				addInternalKnowledgePackage(pkg);
+			}
+		}
+
         processBuilder = createProcessBuilder();
         typeBuilder = new TypeDeclarationBuilder(this);
     }
+
+	private void addInternalKnowledgePackage(InternalKnowledgePackage pkg) {
+        PackageRegistry pkgRegistry = new PackageRegistry(this.rootClassLoader, this.configuration, pkg);
+        pkgRegistry.setDialect(this.defaultDialect);
+        this.pkgRegistryMap.put(pkg.getName(), pkgRegistry);
+
+        // add imports to pkg registry
+        for (final ImportDeclaration implDecl : pkg.getImports().values()) {
+            pkgRegistry.addImport(new ImportDescr(implDecl.getTarget()));
+        }
+	}
 
     private ProcessBuilder createProcessBuilder() {
         try {
