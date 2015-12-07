@@ -52,12 +52,11 @@
                 t.taskData.deploymentId,
                 t.taskData.skipable              )
             from
-            TaskImpl t,
-            OrganizationalEntityImpl businessAdministrator
+            TaskImpl t
+            join t.peopleAssignments.businessAdministrators businessAdministrators
             where
             t.archived = 0 and
-            businessAdministrator.id = :userId and
-            businessAdministrator in elements ( t.peopleAssignments.businessAdministrators  )  and
+            ( businessAdministrators.id = :userId or businessAdministrators.id in (:groupIds) ) and 
             t.taskData.status in (:status) 
            
             order by t.id DESC

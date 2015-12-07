@@ -700,6 +700,7 @@ public class RuntimeDataServiceImpl implements RuntimeDataService, DeploymentEve
 		Map<String, Object> params = new HashMap<String, Object>();
         params.put("userId", userId);
         params.put("status", allActiveStatus);
+        params.put("groupIds", identityProvider.getRoles());
         applyQueryContext(params, filter);
         applyQueryFilter(params, filter);
         return (List<TaskSummary>) commandService.execute(

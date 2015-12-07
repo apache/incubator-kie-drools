@@ -51,11 +51,11 @@ public class GetTaskAssignedAsBusinessAdminCommand extends UserGroupCallbackTask
     public List<TaskSummary> execute(Context cntxt) {
         TaskContext context = (TaskContext) cntxt;
         doCallbackUserOperation(userId, context);
-        doUserGroupCallbackOperation(userId, null, context);
+        List<String> groups = doUserGroupCallbackOperation(userId, null, context);
         if (status == null || status.isEmpty()){
-            return context.getTaskQueryService().getTasksAssignedAsBusinessAdministrator(userId);
+            return context.getTaskQueryService().getTasksAssignedAsBusinessAdministrator(userId, groups);
         }
-        return context.getTaskQueryService().getTasksAssignedAsBusinessAdministratorByStatus(userId,status);
+        return context.getTaskQueryService().getTasksAssignedAsBusinessAdministratorByStatus(userId, groups, status);
     }
 
 }
