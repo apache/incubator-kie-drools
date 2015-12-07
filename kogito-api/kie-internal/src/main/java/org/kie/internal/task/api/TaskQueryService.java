@@ -43,9 +43,9 @@ public interface TaskQueryService {
     
     List<TaskSummary> getTasksAssignedAsPotentialOwner(String userId, List<String> groupIds);
     
-    List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId);
+    List<TaskSummary> getTasksAssignedAsBusinessAdministrator(String userId, List<String> groupIds);
     
-    List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId,List<Status> status);
+    List<TaskSummary> getTasksAssignedAsBusinessAdministratorByStatus(String userId, List<String> groupIds, List<Status> status);
 
     List<TaskSummary> getTasksAssignedAsExcludedOwner(String userId);
     
