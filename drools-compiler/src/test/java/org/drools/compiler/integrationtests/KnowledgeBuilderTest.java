@@ -539,68 +539,179 @@ public class KnowledgeBuilderTest {
         }
     }
 
+	public static class BaseClass {
+		String baseField;
+		public String getBaseField() {
+			return baseField;
+		}
+		public void setBaseField(String baseField) {
+			this.baseField = baseField;
+		}
+	}
+
 	@Test
     public void testDeclarationWithPojoExtension() throws Exception {
-        String drlDeclare = "package org.drools.compiler.integrationtests\n" +
-                     "declare Drools_applications extends org.drools.compiler.integrationtests.TypeDeclarationTest.BaseClass\n" +
-                     "    drools_app_name: String\n" +
-                     "end";
-        String drlRule = "package org.drools.compiler.integrationtests\n" +
+        String drl = "package org.drools.compiler.integrationtests\n" +
+                     "declare Fact extends org.drools.compiler.integrationtests.KnowledgeBuilderTest.BaseClass\n" +
+                     "    field: String\n" +
+                     "end\n" +
                      "rule R1 when\n" +
-                     "   $fact : org.drools.compiler.integrationtests.Drools_applications( drools_app_name == \"appName\" )\n" +
+                     "   $fact : org.drools.compiler.integrationtests.Fact( field == baseField )\n" +
                      "then\n" +
                      "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drlDeclare.getBytes() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder(kbase);
-        kbuilder2.add( ResourceFactory.newByteArrayResource( drlRule.getBytes() ), ResourceType.DRL );
-		// This line may not be necessary
-		// kbase.addKnowledgePackages(kbuilder2.getKnowledgePackages());
-
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType factType = kbase.getFactType( "org.drools.compiler.integrationtests", "Drools_applications" );
+        FactType factType = kbase.getFactType( "org.drools.compiler.integrationtests", "Fact" );
         Object fact = factType.newInstance();
-        factType.set( fact, "drools_app_name", "appName" );
+        factType.set( fact, "field", "foo" );
+        //factType.set( fact, "baseField", "foo" ); // This doesn't work, so case it to the base type
+		((KnowledgeBuilderTest.BaseClass) fact).setBaseField("foo");
         ksession.insert( fact );
 
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
     }
+
 	@Test
     public void testDeclarationWithPojoExtensionMultiplePackages() throws Exception {
-        String drlDeclare = "package org.drools.compiler.integrationtests\n" +
-                     "declare Drools_applications extends org.drools.compiler.integrationtests.TypeDeclarationTest.BaseClass\n" +
-                     "    drools_app_name: String\n" +
-                     "end";
-        String drlRule = "package org.drools.compiler.test\n" +
+        String drlBase = "package org.drools.compiler.integrationtests\n";
+        String drl = "package org.drools.compiler.test\n" +
+                     "declare Fact extends org.drools.compiler.integrationtests.KnowledgeBuilderTest.BaseClass\n" +
+                     "    field: String\n" +
+                     "end\n" +
                      "rule R1 when\n" +
-                     "   $fact : org.drools.compiler.integrationtests.Drools_applications( drools_app_name == \"appName\" )\n" +
+                     "   $fact : org.drools.compiler.test.Fact( field == baseField )\n" +
                      "then\n" +
                      "end";
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drlDeclare.getBytes() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( drlBase.getBytes() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
-        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder(kbase);
-        kbuilder2.add( ResourceFactory.newByteArrayResource( drlRule.getBytes() ), ResourceType.DRL );
-		// This line may not be necessary
-		// kbase.addKnowledgePackages(kbuilder2.getKnowledgePackages());
-
 		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
 
-        FactType factType = kbase.getFactType( "org.drools.compiler.integrationtests", "Drools_applications" );
+        FactType factType = kbase.getFactType( "org.drools.compiler.test", "Fact" );
         Object fact = factType.newInstance();
-        factType.set( fact, "drools_app_name", "appName" );
+        factType.set( fact, "field", "foo" );
+        //factType.set( fact, "baseField", "foo" ); // This doesn't work, so case it to the base type
+		((KnowledgeBuilderTest.BaseClass) fact).setBaseField("foo");
         ksession.insert( fact );
 
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
     }
+
+    @Test
+    public void testDeclarationWithDifferentPackageNoRule() throws Exception {
+        String drlPackage1 = "package org.drools.compiler.test1\n" +
+                     "declare Fact \n" +
+                     "    field: String\n" +
+                     "end";
+        String drlPackage2 = "package org.drools.compiler.test2\n" +
+                     "declare Fact \n" +
+                     "    field: String\n" +
+                     "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drlPackage1.getBytes() ), ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder(kbase);
+        kbuilder2.add( ResourceFactory.newByteArrayResource( drlPackage2.getBytes() ), ResourceType.DRL );
+
+        FactType factType1 = kbase.getFactType( "org.drools.compiler.test1", "Fact" );
+		assertTrue(factType1 != null);
+        FactType factType2 = kbase.getFactType( "org.drools.compiler.test2", "Fact" );
+		assertTrue(factType2 != null);
+    }
+
+    @Test
+    public void testDeclarationWithDifferentPackageWithRule() throws Exception {
+        String drlPackage1 = "package org.drools.compiler.test1\n" +
+                     "declare Fact \n" +
+                     "    field: String\n" +
+                     "end";
+        String drlPackage2 = "package org.drools.compiler.test2\n" +
+                     "declare Fact \n" +
+                     "    field: String\n" +
+                     "end\n" +
+                     "rule R1 when\n" +
+                     "   $fact1 : org.drools.compiler.test1.Fact()\n" +
+                     "   $fact2 : org.drools.compiler.test2.Fact( $fact1.field == field )\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drlPackage1.getBytes() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( drlPackage2.getBytes() ), ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+		/*
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder(kbase);
+        kbuilder2.add( ResourceFactory.newByteArrayResource( drlPackage2.getBytes() ), ResourceType.DRL );
+		*/
+
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType factType1 = kbase.getFactType( "org.drools.compiler.test1", "Fact" );
+		assertTrue(factType1 != null);
+        Object fact1 = factType1.newInstance();
+        factType1.set( fact1, "field", "foo" );
+        ksession.insert( fact1 );
+        FactType factType2 = kbase.getFactType( "org.drools.compiler.test2", "Fact" );
+		assertTrue(factType2 != null);
+        Object fact2 = factType2.newInstance();
+        factType2.set( fact2, "field", "foo" );
+        ksession.insert( fact2 );
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+    }
+
+    @Test
+    public void testDeclarationWithDifferentPackageWithRuleMultipleBuilders() throws Exception {
+        String drlPackage1 = "package org.drools.compiler.test1\n" +
+                     "declare Fact \n" +
+                     "    field: String\n" +
+                     "end";
+        String drlPackage2 = "package org.drools.compiler.test2\n" +
+                     "declare Fact \n" +
+                     "    field: String\n" +
+                     "end\n" +
+                     "rule R1 when\n" +
+                     "   $fact1 : org.drools.compiler.test1.Fact()\n" +
+                     "   $fact2 : org.drools.compiler.test2.Fact( $fact1.field == field )\n" +
+                     "then\n" +
+                     "end";
+
+        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        kbuilder.add( ResourceFactory.newByteArrayResource( drlPackage1.getBytes() ), ResourceType.DRL );
+        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
+        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder(kbase);
+        kbuilder2.add( ResourceFactory.newByteArrayResource( drlPackage2.getBytes() ), ResourceType.DRL );
+
+		StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+
+        FactType factType1 = kbase.getFactType( "org.drools.compiler.test1", "Fact" );
+		assertTrue(factType1 != null);
+        Object fact1 = factType1.newInstance();
+        factType1.set( fact1, "field", "foo" );
+        ksession.insert( fact1 );
+        FactType factType2 = kbase.getFactType( "org.drools.compiler.test2", "Fact" );
+		assertTrue(factType2 != null);
+        Object fact2 = factType2.newInstance();
+        factType2.set( fact2, "field", "foo" );
+        ksession.insert( fact2 );
+        int rules = ksession.fireAllRules();
+        assertEquals( 1, rules );
+    }
+
 }

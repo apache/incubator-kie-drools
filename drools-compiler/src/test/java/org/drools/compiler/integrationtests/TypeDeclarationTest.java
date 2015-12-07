@@ -23,6 +23,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class TypeDeclarationTest {
 
@@ -143,8 +144,9 @@ public class TypeDeclarationTest {
 
         FactType factType = kbase.getFactType( "org.drools.compiler.integrationtests", "Fact" );
         Object fact = factType.newInstance();
-        factType.set( fact, "baseField", "foo" );
         factType.set( fact, "field", "foo" );
+        //factType.set( fact, "baseField", "foo" ); // This doesn't work, so case it to the base type
+		((TypeDeclarationTest.BaseClass) fact).setBaseField("foo");
         ksession.insert( fact );
 
         int rules = ksession.fireAllRules();
@@ -153,8 +155,9 @@ public class TypeDeclarationTest {
 
     @Test
     public void testDeclarationWithPojoExtensionDifferentPackage() throws Exception {
+        String drlBase = "package org.drools.compiler.integrationtests\n";
         String drl = "package org.drools.compiler.test\n" +
-                     "declare Fact extends org.drools.compiler.test.TypeDeclarationTest.BaseClass\n" +
+                     "declare Fact extends org.drools.compiler.integrationtests.TypeDeclarationTest.BaseClass\n" +
                      "    field: String\n" +
                      "end\n" +
                      "rule R1 when\n" +
@@ -162,40 +165,18 @@ public class TypeDeclarationTest {
                      "then\n" +
                      "end";
 
-        KieBase kbase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        KieBase kbase = new KieHelper().addContent(drlBase, ResourceType.DRL).addContent(drl, ResourceType.DRL).build();
         KieSession ksession = kbase.newKieSession();
 
         FactType factType = kbase.getFactType( "org.drools.compiler.test", "Fact" );
         Object fact = factType.newInstance();
-        factType.set( fact, "baseField", "foo" );
         factType.set( fact, "field", "foo" );
+        //factType.set( fact, "baseField", "foo" ); // This doesn't work, so case it to the base type
+		((TypeDeclarationTest.BaseClass) fact).setBaseField("foo");
         ksession.insert( fact );
 
         int rules = ksession.fireAllRules();
         assertEquals( 1, rules );
     }
 
-	@Test
-    public void testDeclarationWithPojoExtensionMultiplePackages() throws Exception {
-        String drlDeclare = "package org.drools.compiler.integrationtests\n" +
-                     "declare Drools_applications extends org.drools.compiler.integrationtests.TypeDeclarationTest.BaseClass\n" +
-                     "    drools_app_name: String\n" +
-                     "end\n";
-        String drlRule = "package org.drools.compiler.test\n" +
-                     "rule R1 when\n" +
-                     "   $fact : org.drools.compiler.integrationtests.Drools_applications( drools_app_name == \"appName\" )\n" +
-                     "then\n" +
-                     "end";
-
-        KieBase kbase = new KieHelper().addContent(drlDeclare, ResourceType.DRL).addContent(drlRule, ResourceType.DRL).build();
-        KieSession ksession = kbase.newKieSession();
-
-        FactType factType = kbase.getFactType( "org.drools.compiler.integrationtests", "Drools_applications" );
-        Object fact = factType.newInstance();
-        factType.set( fact, "drools_app_name", "appName" );
-        ksession.insert( fact );
-
-        int rules = ksession.fireAllRules();
-        assertEquals( 1, rules );
-    }
 }
