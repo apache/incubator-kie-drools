@@ -140,11 +140,9 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
-          <compilerArgs>
-            <processor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</processor>
-          </compilerArgs>
+          <annotationProcessors>
+            <annotationProcessor>org.hibernate.jpamodelgen.JPAMetaModelEntityProcessor</annotationProcessor>
+          </annotationProcessors>
         </configuration>
       </plugin>
 
