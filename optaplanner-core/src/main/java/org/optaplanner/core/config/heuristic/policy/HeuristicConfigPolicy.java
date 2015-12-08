@@ -25,6 +25,8 @@ import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicRecorder;
+import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecorder;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 
@@ -40,6 +42,8 @@ public class HeuristicConfigPolicy {
 
     private Map<String, EntityMimicRecorder> entityMimicRecorderMap
             = new HashMap<String, EntityMimicRecorder>();
+    private Map<String, ValueMimicRecorder> valueMimicRecorderMap
+            = new HashMap<String, ValueMimicRecorder>();
 
     public HeuristicConfigPolicy(EnvironmentMode environmentMode, InnerScoreDirectorFactory scoreDirectorFactory) {
         this.environmentMode = environmentMode;
@@ -94,6 +98,14 @@ public class HeuristicConfigPolicy {
         this.entityMimicRecorderMap = entityMimicRecorderMap;
     }
 
+    public Map<String, ValueMimicRecorder> getValueMimicRecorderMap() {
+        return valueMimicRecorderMap;
+    }
+
+    public void setValueMimicRecorderMap(Map<String, ValueMimicRecorder> valueMimicRecorderMap) {
+        this.valueMimicRecorderMap = valueMimicRecorderMap;
+    }
+
     public boolean isInitializedChainedValueFilterEnabled() {
         return initializedChainedValueFilterEnabled;
     }
@@ -124,6 +136,18 @@ public class HeuristicConfigPolicy {
 
     public EntityMimicRecorder getEntityMimicRecorder(String id) {
         return entityMimicRecorderMap.get(id);
+    }
+
+    public void addValueMimicRecorder(String id, ValueMimicRecorder mimicRecordingValueSelector) {
+        ValueMimicRecorder put = valueMimicRecorderMap.put(id, mimicRecordingValueSelector);
+        if (put != null) {
+            throw new IllegalStateException("Multiple " + ValueMimicRecorder.class.getSimpleName() + "s (usually "
+                    + ValueSelector.class.getSimpleName() + "s) have the same id (" + id + ").");
+        }
+    }
+
+    public ValueMimicRecorder getValueMimicRecorder(String id) {
+        return valueMimicRecorderMap.get(id);
     }
 
 }

@@ -19,6 +19,7 @@ package org.optaplanner.core.config.constructionheuristic;
 import org.optaplanner.core.config.constructionheuristic.placer.EntityPlacerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig;
 import org.optaplanner.core.config.constructionheuristic.placer.QueuedEntityPlacerConfig;
+import org.optaplanner.core.config.constructionheuristic.placer.QueuedValuePlacerConfig;
 import org.optaplanner.core.config.heuristic.selector.entity.EntitySorterManner;
 import org.optaplanner.core.config.heuristic.selector.value.ValueSorterManner;
 
@@ -53,12 +54,12 @@ public enum ConstructionHeuristicType {
      * Repeat until all entities are assigned.
      */
     ALLOCATE_ENTITY_FROM_QUEUE,
-//    /**
-//     * Put all values in a round-robin queue.
-//     * Assign the best entity to the first value (from that queue).
-//     * Repeat until all entities are assigned.
-//     */
-//    ALLOCATE_TO_VALUE_FROM_QUEUE,
+    /**
+     * Put all values in a round-robin queue.
+     * Assign the best entity to the first value (from that queue).
+     * Repeat until all entities are assigned.
+     */
+    ALLOCATE_TO_VALUE_FROM_QUEUE,
     /**
      * A specific form of {@link #ALLOCATE_FROM_POOL}.
      */
@@ -81,7 +82,7 @@ public enum ConstructionHeuristicType {
             case STRONGEST_FIT_DECREASING:
                 return EntitySorterManner.DECREASING_DIFFICULTY;
             case ALLOCATE_ENTITY_FROM_QUEUE:
-//            case ALLOCATE_TO_VALUE_FROM_QUEUE:
+            case ALLOCATE_TO_VALUE_FROM_QUEUE:
             case CHEAPEST_INSERTION:
             case ALLOCATE_FROM_POOL:
                 return EntitySorterManner.DECREASING_DIFFICULTY_IF_AVAILABLE;
@@ -101,9 +102,9 @@ public enum ConstructionHeuristicType {
             case STRONGEST_FIT:
             case STRONGEST_FIT_DECREASING:
                 return ValueSorterManner.DECREASING_STRENGTH;
-            case CHEAPEST_INSERTION:
             case ALLOCATE_ENTITY_FROM_QUEUE:
-//            case ALLOCATE_TO_VALUE_FROM_QUEUE:
+            case ALLOCATE_TO_VALUE_FROM_QUEUE:
+            case CHEAPEST_INSERTION:
             case ALLOCATE_FROM_POOL:
                 return ValueSorterManner.INCREASING_STRENGTH_IF_AVAILABLE;
             default:
@@ -121,9 +122,8 @@ public enum ConstructionHeuristicType {
             case STRONGEST_FIT_DECREASING:
             case ALLOCATE_ENTITY_FROM_QUEUE:
                 return new QueuedEntityPlacerConfig();
-//            case ALLOCATE_TO_VALUE_FROM_QUEUE:
-//                throw new UnsupportedOperationException("The constructionHeuristicType ("
-//                        + this + ") is not yet supported.");
+            case ALLOCATE_TO_VALUE_FROM_QUEUE:
+                return new QueuedValuePlacerConfig();
             case CHEAPEST_INSERTION:
             case ALLOCATE_FROM_POOL:
                 return new PooledEntityPlacerConfig();

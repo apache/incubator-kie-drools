@@ -279,13 +279,15 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
                 || entityClass != null
                 || cacheType != null
                 || selectionOrder != null
+                || nearbySelectionConfig != null
                 || filterClassList != null
                 || sorterManner != null
                 || sorterComparatorClass != null
                 || sorterWeightFactoryClass != null
                 || sorterOrder != null
                 || sorterClass != null
-                || probabilityWeightFactoryClass != null) {
+                || probabilityWeightFactoryClass != null
+                || selectedCountLimit != null) {
             throw new IllegalArgumentException("The entitySelectorConfig (" + this
                     + ") with mimicSelectorRef ("  + mimicSelectorRef
                     + ") has another property that is not null.");
@@ -532,8 +534,7 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
 
     public void inherit(EntitySelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
-        id = ConfigUtils.inheritOverwritableProperty(id,
-                inheritedConfig.getId());
+        id = ConfigUtils.inheritOverwritableProperty(id, inheritedConfig.getId());
         mimicSelectorRef = ConfigUtils.inheritOverwritableProperty(mimicSelectorRef,
                 inheritedConfig.getMimicSelectorRef());
         entityClass = ConfigUtils.inheritOverwritableProperty(entityClass,

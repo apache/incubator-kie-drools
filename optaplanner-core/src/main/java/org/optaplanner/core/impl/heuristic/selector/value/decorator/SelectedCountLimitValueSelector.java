@@ -72,7 +72,7 @@ public class SelectedCountLimitValueSelector extends AbstractValueSelector imple
     public long getSize() {
         if (!(childValueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("To use the method getSize(), the moveSelector (" + this
-                    + ") needs to be based on a EntityIndependentValueSelector (" + childValueSelector + ")."
+                    + ") needs to be based on an EntityIndependentValueSelector (" + childValueSelector + ")."
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
         }
         long childSize = ((EntityIndependentValueSelector) childValueSelector).getSize();

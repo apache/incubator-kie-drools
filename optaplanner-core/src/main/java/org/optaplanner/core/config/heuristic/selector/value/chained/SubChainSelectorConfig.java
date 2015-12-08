@@ -111,7 +111,7 @@ public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfi
                 minimumCacheType, SelectionOrder.ORIGINAL);
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The minimumCacheType (" + this
-                    + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                    + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
         }
         return new DefaultSubChainSelector((EntityIndependentValueSelector) valueSelector,

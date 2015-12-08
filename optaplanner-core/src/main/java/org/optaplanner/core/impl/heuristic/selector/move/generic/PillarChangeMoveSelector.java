@@ -64,7 +64,7 @@ public class PillarChangeMoveSelector extends GenericMoveSelector {
     public long getSize() {
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("To use the method getSize(), the moveSelector (" + this
-                    + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                    + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
         }
         return pillarSelector.getSize() * ((EntityIndependentValueSelector) valueSelector).getSize();

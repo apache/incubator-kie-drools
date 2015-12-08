@@ -65,98 +65,11 @@ public abstract class SelectorConfig<C extends SelectorConfig> extends AbstractC
         }
     }
 
-    protected EntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor,
-            Class<?> entityClass) {
-        EntityDescriptor entityDescriptor;
-        if (entityClass != null) {
-            entityDescriptor = solutionDescriptor.getEntityDescriptorStrict(entityClass);
-            if (entityDescriptor == null) {
-                throw new IllegalArgumentException("The selectorConfig (" + this
-                        + ") has an entityClass (" + entityClass + ") that is not a known planning entity.\n"
-                        + "Check your solver configuration. If that class (" + entityClass.getSimpleName()
-                        + ") is not in the entityClassSet (" + solutionDescriptor.getEntityClassSet()
-                        + "), check your " + PlanningSolution.class.getSimpleName()
-                        + " implementation's annotated methods too.");
-            }
-        } else {
-            Collection<EntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
-            if (entityDescriptors.size() != 1) {
-                throw new IllegalArgumentException("The selectorConfig (" + this
-                        + ") has no entityClass (" + entityClass
-                        + ") configured and because there are multiple in the entityClassSet ("
-                        + solutionDescriptor.getEntityClassSet()
-                        + "), it can not be deducted automatically.");
-            }
-            entityDescriptor = entityDescriptors.iterator().next();
-        }
-        return entityDescriptor;
-    }
-
-    protected GenuineVariableDescriptor deduceVariableDescriptor(
-            EntityDescriptor entityDescriptor, String variableName) {
-        GenuineVariableDescriptor variableDescriptor;
-        if (variableName != null) {
-            variableDescriptor = entityDescriptor.getGenuineVariableDescriptor(variableName);
-            if (variableDescriptor == null) {
-                throw new IllegalArgumentException("The selectorConfig (" + this
-                        + ") has a variableName (" + variableName
-                        + ") which is not a valid planning variable on entityClass ("
-                        + entityDescriptor.getEntityClass() + ").\n"
-                        + entityDescriptor.buildInvalidVariableNameExceptionMessage(variableName));
-            }
-        } else {
-            Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor
-                    .getGenuineVariableDescriptors();
-            if (variableDescriptors.size() != 1) {
-                throw new IllegalArgumentException("The selectorConfig (" + this
-                        + ") has no configured variableName (" + variableName
-                        + ") for entityClass (" + entityDescriptor.getEntityClass()
-                        + ") and because there are multiple variableNames ("
-                        + entityDescriptor.getGenuineVariableNameSet()
-                        + "), it can not be deducted automatically.");
-            }
-            variableDescriptor = variableDescriptors.iterator().next();
-        }
-        return variableDescriptor;
-    }
-
-    protected List<GenuineVariableDescriptor> deduceVariableDescriptorList(
-            EntityDescriptor entityDescriptor, List<String> variableNameIncludeList) {
-        List<GenuineVariableDescriptor> variableDescriptorList = entityDescriptor.getGenuineVariableDescriptorList();
-        if (variableNameIncludeList == null) {
-            return variableDescriptorList;
-        }
-        List<GenuineVariableDescriptor> resolvedVariableDescriptorList
-                = new ArrayList<GenuineVariableDescriptor>(variableDescriptorList.size());
-        for (String variableNameInclude : variableNameIncludeList) {
-            boolean found = false;
-            for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
-                if (variableDescriptor.getVariableName().equals(variableNameInclude)) {
-                    resolvedVariableDescriptorList.add(variableDescriptor);
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                throw new IllegalArgumentException("The selectorConfig (" + this
-                        + ") has a variableNameInclude (" + variableNameInclude
-                        + ") which does not exist in the entity (" + entityDescriptor.getEntityClass()
-                        + ")'s variableDescriptorList (" + variableDescriptorList + ").");
-            }
-        }
-        return resolvedVariableDescriptorList;
-    }
-
     // ************************************************************************
     // Builder methods
     // ************************************************************************
 
     public void inherit(C inheritedConfig) {
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "()";
     }
 
 }

@@ -97,7 +97,7 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig<SubChai
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         if (!(valueSelector instanceof EntityIndependentValueSelector)) {
             throw new IllegalArgumentException("The moveSelectorConfig (" + this
-                    + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                    + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                     + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
         }
         return new SubChainChangeMoveSelector(subChainSelector, (EntityIndependentValueSelector) valueSelector,

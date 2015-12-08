@@ -19,6 +19,7 @@ package org.optaplanner.core.config.heuristic.selector.value;
 import java.util.Comparator;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
 import org.optaplanner.core.config.heuristic.selector.SelectorConfig;
@@ -39,6 +40,9 @@ import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSo
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.mimic.EntityMimicRecorder;
+import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicRecordingEntitySelector;
+import org.optaplanner.core.impl.heuristic.selector.entity.mimic.MimicReplayingEntitySelector;
 import org.optaplanner.core.impl.heuristic.selector.value.EntityIndependentValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromEntityPropertyValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.FromSolutionPropertyValueSelector;
@@ -52,9 +56,17 @@ import org.optaplanner.core.impl.heuristic.selector.value.decorator.Reinitialize
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SelectedCountLimitValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ShufflingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.SortingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicRecordingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.mimic.MimicReplayingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.mimic.ValueMimicRecorder;
 
 @XStreamAlias("valueSelector")
 public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
+
+    @XStreamAsAttribute
+    protected String id = null;
+    @XStreamAsAttribute
+    protected String mimicSelectorRef = null;
 
     protected Class<?> downcastEntityClass = null;
     protected String variableName = null;
@@ -88,6 +100,22 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         if (inheritedConfig != null) {
             inherit(inheritedConfig);
         }
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getMimicSelectorRef() {
+        return mimicSelectorRef;
+    }
+
+    public void setMimicSelectorRef(String mimicSelectorRef) {
+        this.mimicSelectorRef = mimicSelectorRef;
     }
 
     public Class<?> getDowncastEntityClass() {
@@ -203,6 +231,8 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                         + entityDescriptor.buildInvalidVariableNameExceptionMessage(variableName));
             }
             return variableDescriptor;
+        } else if (mimicSelectorRef != null) {
+            return configPolicy.getValueMimicRecorder(mimicSelectorRef).getVariableDescriptor();
         } else {
             return null;
         }
@@ -221,6 +251,9 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
     public ValueSelector buildValueSelector(HeuristicConfigPolicy configPolicy,
             EntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
+        if (mimicSelectorRef != null) {
+            return buildMimicReplaying(configPolicy);
+        }
         entityDescriptor = downcastEntityDescriptor(configPolicy, entityDescriptor);
         GenuineVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, variableName);
         SelectionCacheType resolvedCacheType = SelectionCacheType.resolve(cacheType, minimumCacheType);
@@ -254,7 +287,35 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         valueSelector = applySelectedLimit(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyReinitializeVariableFiltering(configPolicy, valueSelector);
         valueSelector = applyDowncasting(configPolicy, valueSelector);
+        valueSelector = applyMimicRecording(configPolicy, valueSelector);
         return valueSelector;
+    }
+
+    protected ValueSelector buildMimicReplaying(HeuristicConfigPolicy configPolicy) {
+        if (id != null
+                || downcastEntityClass != null
+                || variableName != null
+                || cacheType != null
+                || selectionOrder != null
+                || nearbySelectionConfig != null
+                || sorterManner != null
+                || sorterComparatorClass != null
+                || sorterWeightFactoryClass != null
+                || sorterOrder != null
+                || sorterClass != null
+                || probabilityWeightFactoryClass != null
+                || selectedCountLimit != null) {
+            throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                    + ") with mimicSelectorRef ("  + mimicSelectorRef
+                    + ") has another property that is not null.");
+        }
+        ValueMimicRecorder valueMimicRecorder = configPolicy.getValueMimicRecorder(mimicSelectorRef);
+        if (valueMimicRecorder == null) {
+            throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                    + ") has a mimicSelectorRef ("  + mimicSelectorRef
+                    + ") for which no valueSelector with that id exists (in its solver phase).");
+        }
+        return new MimicReplayingValueSelector(valueMimicRecorder);
     }
 
     protected EntityDescriptor downcastEntityDescriptor(HeuristicConfigPolicy configPolicy, EntityDescriptor entityDescriptor) {
@@ -432,7 +493,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                     throw new IllegalArgumentException("The valueSelectorConfig (" + this
                             + ") with resolvedCacheType (" + resolvedCacheType
                             + ") and resolvedSelectionOrder (" + resolvedSelectionOrder
-                            + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                            + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                             + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
                 }
                 valueSelector = new SortingValueSelector((EntityIndependentValueSelector) valueSelector,
@@ -467,7 +528,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
                         + ") with resolvedCacheType (" + resolvedCacheType
                         + ") and resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                        + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
             valueSelector = new ProbabilityValueSelector((EntityIndependentValueSelector) valueSelector,
@@ -483,7 +544,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
                         + ") with resolvedCacheType (" + resolvedCacheType
                         + ") and resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                        + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
             valueSelector = new ShufflingValueSelector((EntityIndependentValueSelector) valueSelector,
@@ -499,7 +560,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                 throw new IllegalArgumentException("The valueSelectorConfig (" + this
                         + ") with resolvedCacheType (" + resolvedCacheType
                         + ") and resolvedSelectionOrder (" + resolvedSelectionOrder
-                        + ") needs to be based on a EntityIndependentValueSelector (" + valueSelector + ")."
+                        + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
                         + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
             }
             valueSelector = new CachingValueSelector((EntityIndependentValueSelector) valueSelector, resolvedCacheType,
@@ -542,8 +603,31 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         return valueSelector;
     }
 
+    private ValueSelector applyMimicRecording(HeuristicConfigPolicy configPolicy, ValueSelector valueSelector) {
+        if (id != null) {
+            if (id.isEmpty()) {
+                throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                        + ") has an empty id (" + id + ").");
+            }
+            if (!(valueSelector instanceof EntityIndependentValueSelector)) {
+                throw new IllegalArgumentException("The valueSelectorConfig (" + this
+                        + ") with id (" + id
+                        + ") needs to be based on an EntityIndependentValueSelector (" + valueSelector + ")."
+                        + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
+            }
+            MimicRecordingValueSelector mimicRecordingValueSelector
+                    = new MimicRecordingValueSelector((EntityIndependentValueSelector) valueSelector);
+            configPolicy.addValueMimicRecorder(id, mimicRecordingValueSelector);
+            valueSelector = mimicRecordingValueSelector;
+        }
+        return valueSelector;
+    }
+
     public void inherit(ValueSelectorConfig inheritedConfig) {
         super.inherit(inheritedConfig);
+        id = ConfigUtils.inheritOverwritableProperty(id, inheritedConfig.getId());
+        mimicSelectorRef = ConfigUtils.inheritOverwritableProperty(mimicSelectorRef,
+                inheritedConfig.getMimicSelectorRef());
         downcastEntityClass = ConfigUtils.inheritOverwritableProperty(downcastEntityClass,
                 inheritedConfig.getDowncastEntityClass());
         variableName = ConfigUtils.inheritOverwritableProperty(variableName, inheritedConfig.getVariableName());

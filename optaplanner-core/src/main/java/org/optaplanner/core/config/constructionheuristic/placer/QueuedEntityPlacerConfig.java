@@ -108,7 +108,7 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
         EntitySelectorConfig entitySelectorConfig_;
         if (entitySelectorConfig == null) {
             entitySelectorConfig_ = new EntitySelectorConfig();
-            EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
+            EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), null);
             Class<?> entityClass = entityDescriptor.getEntityClass();
             entitySelectorConfig_.setId(entityClass.getName());
             entitySelectorConfig_.setEntityClass(entityClass);

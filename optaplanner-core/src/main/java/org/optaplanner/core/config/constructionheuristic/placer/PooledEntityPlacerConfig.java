@@ -77,7 +77,7 @@ public class PooledEntityPlacerConfig extends EntityPlacerConfig<PooledEntityPla
     }
 
     private MoveSelectorConfig buildMoveSelectorConfig(HeuristicConfigPolicy configPolicy) {
-        EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
+        EntityDescriptor entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor(), null);
         EntitySelectorConfig entitySelectorConfig = buildEntitySelectorConfig(configPolicy, entityDescriptor);
 
         Collection<GenuineVariableDescriptor> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();

@@ -36,32 +36,12 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 public abstract class EntityPlacerConfig<C extends EntityPlacerConfig> extends AbstractConfig<C> {
 
     // ************************************************************************
-    // Helper methods
-    // ************************************************************************
-
-    protected EntityDescriptor deduceEntityDescriptor(SolutionDescriptor solutionDescriptor) {
-        Collection<EntityDescriptor> entityDescriptors = solutionDescriptor.getGenuineEntityDescriptors();
-        if (entityDescriptors.size() != 1) {
-            throw new IllegalArgumentException("The entityPlacerConfig (" + this
-                    + ") has no entitySelector configured"
-                    + " and because there are multiple in the entityClassSet (" + solutionDescriptor.getEntityClassSet()
-                    + "), it can not be deducted automatically.");
-        }
-        return entityDescriptors.iterator().next();
-    }
-
-    // ************************************************************************
     // Builder methods
     // ************************************************************************
 
     public abstract EntityPlacer buildEntityPlacer(HeuristicConfigPolicy configPolicy, Termination phaseTermination);
 
     public void inherit(C inheritedConfig) {
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "()";
     }
 
 }
