@@ -44,6 +44,8 @@ import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTaskData;
 
 import bitronix.tm.resource.jdbc.PoolingDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Central context that hides persistence from tests, so there is no need to work with persistence in the tests
@@ -51,6 +53,7 @@ import bitronix.tm.resource.jdbc.PoolingDataSource;
  */
 public final class TestPersistenceContext {
 
+    private static final Logger logger = LoggerFactory.getLogger(TestPersistenceContext.class);
     private HashMap<String, Object> context;
     private EntityManagerFactory entityManagerFactory;
     private JtaTransactionManager transactionManager;
@@ -104,10 +107,10 @@ public final class TestPersistenceContext {
         try {
             for (File script : sqlScripts) {
                 if (type == null || script.getName().startsWith(type)) {
-                    System.out.println("Executing script " + script.getName());
+                    logger.debug("Executing script {}", script.getName());
                     final List<String> scriptCommands = SQLScriptUtil.getCommandsFromScript(script, databaseType);
                     for (String command : scriptCommands) {
-                        System.out.println(command);
+                        logger.debug(command);
                         final PreparedStatement statement;
                         if (databaseType == DatabaseType.SQLSERVER || databaseType == DatabaseType.SQLSERVER2008) {
                             statement = connection.prepareStatement(

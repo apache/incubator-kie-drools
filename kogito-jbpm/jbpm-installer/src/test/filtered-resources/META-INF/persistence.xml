@@ -32,7 +32,7 @@
       <property name="hibernate.max_fetch_depth" value="3"/>
       <!-- No value for hbm2ddl.auto, because tests manage DDL themselves. -->
       <property name="hibernate.hbm2ddl.auto" value=""/>
-      <property name="hibernate.show_sql" value="true"/>
+      <property name="hibernate.show_sql" value="false"/>
 
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
 
@@ -104,7 +104,7 @@
     <properties>
       <property name="hibernate.max_fetch_depth" value="3"/>
       <property name="hibernate.hbm2ddl.auto" value="validate"/>
-      <property name="hibernate.show_sql" value="true"/>
+      <property name="hibernate.show_sql" value="false"/>
 
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
 
@@ -189,7 +189,7 @@
       <property name="hibernate.max_fetch_depth" value="3"/>
       <!-- No value for hbm2ddl.auto, because tests manage DDL themselves. -->
       <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
-      <property name="hibernate.show_sql" value="true"/>
+      <property name="hibernate.show_sql" value="false"/>
 
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
 

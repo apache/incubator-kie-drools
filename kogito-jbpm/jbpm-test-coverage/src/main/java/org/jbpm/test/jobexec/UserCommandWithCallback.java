@@ -20,12 +20,16 @@ import org.kie.api.executor.Command;
 import org.kie.api.executor.CommandContext;
 import org.kie.api.executor.ExecutionResults;
 import org.kie.api.runtime.process.WorkItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class UserCommandWithCallback implements Command {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserCommandWithCallback.class);
+
     public ExecutionResults execute(CommandContext ctx) {
-        System.out.println("[INFO] Command executed on executor with " + ctx.getData());
+        logger.debug("Command executed on executor with {}", ctx.getData());
 
         WorkItem workItem = (WorkItem) ctx.getData("workItem");
         User user = (User) workItem.getParameter("UserIn");
@@ -38,7 +42,7 @@ public class UserCommandWithCallback implements Command {
 
         double item = 0;
         for (int i = 0; i < 99; i++) {
-            System.out.println("[INFO] User item:" + item);
+            logger.debug("User item: {}", item);
             item++;
         }
         return executionResults;

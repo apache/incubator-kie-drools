@@ -27,12 +27,15 @@ import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.TaskSummary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a sample file to launch a process.
  */
 public class ParalellLoopTest extends JbpmTestCase {
 
+  private static final Logger logger = LoggerFactory.getLogger(ParalellLoopTest.class);
   TaskService taskService;
 
   @Test
@@ -50,7 +53,7 @@ public class ParalellLoopTest extends JbpmTestCase {
 
     for (int i = 0; i < 20; i++) {
 
-      System.out.println(">>> Loop: " + i);
+      logger.debug(">>> Loop: {}", i);
 
       assertNodeTriggered(processInstance.getId(), "ApproveMary");
       assertNodeTriggered(processInstance.getId(), "ApproveJohn");
@@ -90,7 +93,7 @@ public class ParalellLoopTest extends JbpmTestCase {
 
     for (int i = 0; i < 20; i++) {
 
-      System.out.println(">>> Loop: " + i);
+      logger.debug(">>> Loop: {}", i);
 
 
       assertNodeTriggered(processInstance.getId(), "ApproveMary");
@@ -131,7 +134,7 @@ public class ParalellLoopTest extends JbpmTestCase {
 
     for (int i = 0; i < 20; i++) {
 
-      System.out.println(">>> Loop: " + i);
+      logger.debug(">>> Loop: {}", i);
 
       complete("mary", "Approve");
       complete("john", "Reject");
@@ -165,7 +168,7 @@ public class ParalellLoopTest extends JbpmTestCase {
 
     for (int i = 0; i < 20; i++) {
 
-      System.out.println(">>> Loop: " + i);
+      logger.debug(">>> Loop: {}", i);
 
       complete("john", "Approve");
       complete("mary", "Reject");
@@ -199,7 +202,7 @@ public class ParalellLoopTest extends JbpmTestCase {
 
     for (int i = 0; i < 20; i++) {
 
-      System.out.println(">>> Loop: " + i);
+      logger.debug(">>> Loop: {}", i);
 
       assertNodeTriggered(processInstance.getId(), "ApproveMary");
       assertNodeTriggered(processInstance.getId(), "ApproveJohn");
@@ -252,14 +255,14 @@ public class ParalellLoopTest extends JbpmTestCase {
 
     List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner(user, "en-UK");
     TaskSummary task = list.get(0);
-    System.out.println("complete task");
-    System.out.println("- " + user + " is executing task " + task.getName());
+    logger.debug("complete task");
+    logger.debug("- {} is executing task {}", user, task.getName());
     taskService.start(task.getId(), user);
 
     Map<String, Object> map = new HashMap<String, Object>();
     map.put("OUTCOME", outcome);
     taskService.complete(task.getId(), user, map);
-    System.out.println("- " + user + " executed task " + task.getName());
+    logger.debug("- {} executed task {}", user, task.getName());
   }
 
   public ParalellLoopTest() {
