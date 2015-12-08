@@ -78,8 +78,17 @@ public class MimicReplayingValueSelector extends AbstractValueSelector
         return valueMimicRecorder.isNeverEnding();
     }
 
+    public long getSize(Object entity) {
+        return valueMimicRecorder.getSize(entity);
+    }
+
     public long getSize() {
         return valueMimicRecorder.getSize();
+    }
+
+    public Iterator<Object> iterator(Object entity) {
+        // TODO Not yet implemented
+        throw new UnsupportedOperationException();
     }
 
     public Iterator<Object> iterator() {
@@ -143,18 +152,6 @@ public class MimicReplayingValueSelector extends AbstractValueSelector
 
     }
 
-    @Override
-    public long getSize(Object entity) {
-        return valueMimicRecorder.getSize(entity);
-    }
-
-    @Override
-    public Iterator<Object> iterator(Object entity) {
-        // TODO Not yet implemented
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
     public Iterator<Object> endingIterator(Object entity) {
         // No replaying, because the endingIterator() is used for determining size
         return valueMimicRecorder.endingIterator(entity);

@@ -62,8 +62,16 @@ public class MimicRecordingValueSelector extends AbstractValueSelector
         return childValueSelector.isNeverEnding();
     }
 
+    public long getSize(Object entity) {
+        return childValueSelector.getSize(entity);
+    }
+
     public long getSize() {
         return childValueSelector.getSize();
+    }
+
+    public Iterator<Object> iterator(Object entity) {
+        return new RecordingValueIterator(childValueSelector.iterator(entity));
     }
 
     public Iterator<Object> iterator() {
@@ -96,17 +104,6 @@ public class MimicRecordingValueSelector extends AbstractValueSelector
 
     }
 
-    @Override
-    public long getSize(Object entity) {
-        return childValueSelector.getSize(entity);
-    }
-
-    @Override
-    public Iterator<Object> iterator(Object entity) {
-        return new RecordingValueIterator(childValueSelector.iterator(entity));
-    }
-
-    @Override
     public Iterator<Object> endingIterator(Object entity) {
         // No recording, because the endingIterator() is used for determining size
         return childValueSelector.endingIterator(entity);

@@ -117,7 +117,7 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
             valueSelectorConfig_ = new ValueSelectorConfig();
             Class<?> entityClass = entityDescriptor.getEntityClass();
             GenuineVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, null);
-            valueSelectorConfig_.setId(entityClass.getName());
+            valueSelectorConfig_.setId(entityClass.getName() + "." + variableDescriptor.getVariableName());
             valueSelectorConfig_.setVariableName(variableDescriptor.getVariableName());
             if (configPolicy.getValueSorterManner().hasSorter(variableDescriptor)) {
                 valueSelectorConfig_.setCacheType(SelectionCacheType.PHASE);
@@ -150,7 +150,6 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
         }
         changeMoveSelectorConfig.setEntitySelectorConfig(changeEntitySelectorConfig);
         ValueSelectorConfig changeValueSelectorConfig = new ValueSelectorConfig();
-        changeValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
         changeValueSelectorConfig.setMimicSelectorRef(valueSelectorConfigId);
         changeMoveSelectorConfig.setValueSelectorConfig(changeValueSelectorConfig);
         return changeMoveSelectorConfig;
