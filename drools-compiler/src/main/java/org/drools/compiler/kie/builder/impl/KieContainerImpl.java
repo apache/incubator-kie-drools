@@ -600,7 +600,7 @@ public class KieContainerImpl
             return null;
         }
 
-        KieSession kSession = kBase.newKieSession( conf != null ? conf : getKnowledgeSessionConfiguration(kSessionModel), environment );
+        KieSession kSession = kBase.newKieSession( conf != null ? conf : getKieSessionConfiguration( kSessionModel ), environment );
         wireListnersAndWIHs(kSessionModel, kSession);
         registerLoggers(kSessionModel, kSession);
         kSessions.put(kSessionName, kSession);
@@ -641,7 +641,7 @@ public class KieContainerImpl
             return null;
         }
 
-        StatelessKieSession statelessKieSession = kBase.newStatelessKieSession( conf != null ? conf : getKnowledgeSessionConfiguration(kSessionModel) );
+        StatelessKieSession statelessKieSession = kBase.newStatelessKieSession( conf != null ? conf : getKieSessionConfiguration( kSessionModel ) );
         wireListnersAndWIHs(kSessionModel, statelessKieSession);
         registerLoggers(kSessionModel, statelessKieSession);
         statelessKSessions.put(kSessionName, statelessKieSession);
@@ -654,7 +654,20 @@ public class KieContainerImpl
 
     }
 
-    private KieSessionConfiguration getKnowledgeSessionConfiguration(KieSessionModelImpl kSessionModel) {
+    public KieSessionConfiguration getKieSessionConfiguration() {
+        return getKieSessionConfiguration( kProject.getDefaultKieSession() );
+    }
+
+    public KieSessionConfiguration getKieSessionConfiguration( String kSessionName ) {
+        KieSessionModelImpl kSessionModel = (KieSessionModelImpl) kProject.getKieSessionModel( kSessionName );
+        if ( kSessionModel == null ) {
+            log.error("Unknown KieSession name: " + kSessionName);
+            return null;
+        }
+        return getKieSessionConfiguration( kSessionModel );
+    }
+
+    private KieSessionConfiguration getKieSessionConfiguration( KieSessionModel kSessionModel ) {
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ksConf.setOption( kSessionModel.getClockType() );
         ksConf.setOption( kSessionModel.getBeliefSystem() );
