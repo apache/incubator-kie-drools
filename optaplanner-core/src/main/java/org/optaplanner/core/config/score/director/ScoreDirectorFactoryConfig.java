@@ -202,7 +202,7 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         if (!solutionScoreClass.isAssignableFrom(scoreDefinition.getScoreClass())) {
             throw new IllegalArgumentException("The solutionScoreClass (" + solutionScoreClass
                     + ") of solutionClass (" + solutionDescriptor.getSolutionClass()
-                    + ") is the same or a superclass as the scoreDefinition's scoreClass ("
+                    + ") is not the same or a superclass as the scoreDefinition's scoreClass ("
                     + scoreDefinition.getScoreClass() + ").");
         }
         return buildScoreDirectorFactory(classLoader, environmentMode, solutionDescriptor, scoreDefinition);
