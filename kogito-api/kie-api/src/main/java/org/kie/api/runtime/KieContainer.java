@@ -176,4 +176,14 @@ public interface KieContainer {
      * Returns the ClassLoader used by this KieContainer
      */
     ClassLoader getClassLoader();
+
+    /**
+     * Returns the KieSessionConfiguration of the default KieSession for this KieContainer
+     */
+    KieSessionConfiguration getKieSessionConfiguration();
+
+    /**
+     * Returns the KieSessionConfiguration of the KieSession with the given name for this KieContainer
+     */
+    KieSessionConfiguration getKieSessionConfiguration( String kSessionName );
 }
