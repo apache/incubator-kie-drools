@@ -15,14 +15,13 @@
  */
 package org.drools.persistence.kie.persistence.session;
 
-import java.io.Serializable;
-
 import org.drools.compiler.Person;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.FireAllRulesInterceptor;
 import org.drools.core.command.impl.LoggingInterceptor;
 import org.drools.core.factmodel.traits.Traitable;
+import org.drools.core.time.SessionPseudoClock;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.util.PersistenceUtil;
 import org.junit.After;
@@ -32,24 +31,26 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.api.builder.KieFileSystem;
 import org.kie.api.KieServices;
-import org.kie.internal.command.CommandFactory;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.definition.type.Position;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.command.CommandFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.naming.InitialContext;
 import javax.transaction.UserTransaction;
-
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -60,11 +61,7 @@ import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-
-import org.junit.Ignore;
+import static org.junit.Assert.*;
 
 @RunWith(Parameterized.class)
 public class JpaPersistentStatefulSessionTest {
@@ -594,4 +591,30 @@ public class JpaPersistentStatefulSessionTest {
         }
     }
 
+    @Test
+    public void testSessionConfigurationFromContainer() {
+        // DROOLS-1002
+        String str = "rule R when then end";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kmodel = ks.newKieModuleModel();
+        kmodel.newKieBaseModel( "kbase1" )
+              .newKieSessionModel( "ksession1" )
+              .setClockType( ClockTypeOption.get( "pseudo" ) );
+
+        KieFileSystem kfs = ks.newKieFileSystem()
+                              .write( "src/main/resources/r1.drl", str )
+                              .writeKModuleXML( kmodel.toXML() );
+
+        ks.newKieBuilder( kfs ).buildAll();
+
+        KieContainer kcontainer = ks.newKieContainer( ks.getRepository().getDefaultReleaseId() );
+
+        KieSessionConfiguration conf = kcontainer.getKieSessionConfiguration( "ksession1" );
+        assertEquals( "pseudo", conf.getOption( ClockTypeOption.class ).getClockType() );
+
+        KieSession ksession = ks.getStoreServices().newKieSession( kcontainer.getKieBase("kbase1"), conf, env );
+        assertTrue(ksession.getSessionClock() instanceof SessionPseudoClock);
+    }
 }
