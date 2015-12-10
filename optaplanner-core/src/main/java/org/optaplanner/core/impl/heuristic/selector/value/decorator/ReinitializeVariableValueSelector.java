@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 import java.util.Iterator;
 
 import com.google.common.collect.Iterators;
-import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
@@ -32,8 +31,11 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * Prevents reassigning of already initialized variables during Construction Heuristics and Exhaustive Search.
  * <p>
  * Returns no values for an entity's variable if the variable is already initialized.
+ * <p>
+ * Does not implement {@link EntityIndependentValueSelector} because if used like that,
+ * it shouldn't be added during configuration in the first place.
  */
-public class ReinitializeVariableValueSelector extends AbstractValueSelector implements EntityIndependentValueSelector {
+public class ReinitializeVariableValueSelector extends AbstractValueSelector {
 
     protected final ValueSelector childValueSelector;
     protected final SelectionFilter reinitializeVariableEntityFilter;
@@ -82,24 +84,11 @@ public class ReinitializeVariableValueSelector extends AbstractValueSelector imp
         return childValueSelector.getSize(entity);
     }
 
-    public long getSize() {
-        if (!(childValueSelector instanceof EntityIndependentValueSelector)) {
-            throw new IllegalArgumentException("To use the method getSize(), the moveSelector (" + this
-                    + ") needs to be based on an EntityIndependentValueSelector (" + childValueSelector + ")."
-                    + " Check your @" + ValueRangeProvider.class.getSimpleName() + " annotations.");
-        }
-        return ((EntityIndependentValueSelector) childValueSelector).getSize();
-    }
-
     public Iterator<Object> iterator(Object entity) {
         if (!reinitializeVariableEntityFilter.accept(scoreDirector, entity)) {
             return Iterators.emptyIterator();
         }
         return childValueSelector.iterator(entity);
-    }
-
-    public Iterator<Object> iterator() {
-        return ((EntityIndependentValueSelector) childValueSelector).iterator();
     }
 
     public Iterator<Object> endingIterator(Object entity) {

@@ -42,6 +42,12 @@ public class MimicReplayingValueSelector extends AbstractValueSelector
         this.valueMimicRecorder = valueMimicRecorder;
         // No PhaseLifecycleSupport because the MimicRecordingValueSelector is hooked up elsewhere too
         valueMimicRecorder.addMimicReplayingValueSelector(this);
+        // Precondition for iterator(Object)'s current implementation
+        if (!valueMimicRecorder.getVariableDescriptor().getValueRangeDescriptor().isEntityIndependent()) {
+            throw new IllegalArgumentException(
+                    "The current implementation support only an entityIndependent variable ("
+                    + valueMimicRecorder.getVariableDescriptor() + ").");
+        }
     }
 
     // ************************************************************************
@@ -87,8 +93,8 @@ public class MimicReplayingValueSelector extends AbstractValueSelector
     }
 
     public Iterator<Object> iterator(Object entity) {
-        // TODO Not yet implemented
-        throw new UnsupportedOperationException();
+        // Ignores the entity, but the constructor of this class guarantees that the valueRange is entity independent
+        return new ReplayingValueIterator();
     }
 
     public Iterator<Object> iterator() {

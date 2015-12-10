@@ -39,27 +39,30 @@ public class QueuedValuePlacer extends AbstractEntityPlacer implements EntityPla
     }
 
     public Iterator<Placement> iterator() {
-        return new QueuedValuePlacingIterator(valueSelector.iterator());
+        return new QueuedValuePlacingIterator();
     }
 
     private class QueuedValuePlacingIterator extends UpcomingSelectionIterator<Placement> {
 
-        private final Iterator<Object> valueIterator;
+        private Iterator<Object> valueIterator;
 
-        private QueuedValuePlacingIterator(Iterator<Object> valueIterator) {
-            this.valueIterator = valueIterator;
+        private QueuedValuePlacingIterator() {
+            valueIterator = Iterators.emptyIterator();
         }
 
         protected Placement createUpcomingSelection() {
-
-            Iterator<Move> moveIterator = null;
-            // Skip empty placements to avoid no-operation steps
-            while (moveIterator == null || !moveIterator.hasNext()) {
+            // If all values are used, there can still be entities uninitialized
+            if (!valueIterator.hasNext()) {
+                valueIterator = valueSelector.iterator();
                 if (!valueIterator.hasNext()) {
                     return noUpcomingSelection();
                 }
-                valueIterator.next();
-                moveIterator = moveSelector.iterator();
+            }
+            valueIterator.next();
+            Iterator<Move> moveIterator = moveSelector.iterator();
+            // Because the valueSelector is entity independent, there is always a move if there's still an entity
+            if (!moveIterator.hasNext()) {
+                return noUpcomingSelection();
             }
             return new Placement(moveIterator);
         }

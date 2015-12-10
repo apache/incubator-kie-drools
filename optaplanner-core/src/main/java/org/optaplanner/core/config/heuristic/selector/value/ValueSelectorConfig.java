@@ -252,7 +252,10 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
             EntityDescriptor entityDescriptor,
             SelectionCacheType minimumCacheType, SelectionOrder inheritedSelectionOrder) {
         if (mimicSelectorRef != null) {
-            return buildMimicReplaying(configPolicy);
+            ValueSelector valueSelector = buildMimicReplaying(configPolicy);
+            valueSelector = applyReinitializeVariableFiltering(configPolicy, valueSelector);
+            valueSelector = applyDowncasting(configPolicy, valueSelector);
+            return valueSelector;
         }
         entityDescriptor = downcastEntityDescriptor(configPolicy, entityDescriptor);
         GenuineVariableDescriptor variableDescriptor = deduceVariableDescriptor(entityDescriptor, variableName);
@@ -285,15 +288,14 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         valueSelector = applyShuffling(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applyCaching(resolvedCacheType, resolvedSelectionOrder, valueSelector);
         valueSelector = applySelectedLimit(resolvedCacheType, resolvedSelectionOrder, valueSelector);
+        valueSelector = applyMimicRecording(configPolicy, valueSelector);
         valueSelector = applyReinitializeVariableFiltering(configPolicy, valueSelector);
         valueSelector = applyDowncasting(configPolicy, valueSelector);
-        valueSelector = applyMimicRecording(configPolicy, valueSelector);
         return valueSelector;
     }
 
     protected ValueSelector buildMimicReplaying(HeuristicConfigPolicy configPolicy) {
         if (id != null
-                || downcastEntityClass != null
                 || variableName != null
                 || cacheType != null
                 || selectionOrder != null
@@ -588,21 +590,6 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
         return valueSelector;
     }
 
-    private ValueSelector applyReinitializeVariableFiltering(HeuristicConfigPolicy configPolicy,
-            ValueSelector valueSelector) {
-        if (configPolicy.isReinitializeVariableFilterEnabled()) {
-            valueSelector = new ReinitializeVariableValueSelector(valueSelector);
-        }
-        return valueSelector;
-    }
-
-    private ValueSelector applyDowncasting(HeuristicConfigPolicy configPolicy, ValueSelector valueSelector) {
-        if (downcastEntityClass != null) {
-            valueSelector = new DowncastingValueSelector(valueSelector, downcastEntityClass);
-        }
-        return valueSelector;
-    }
-
     private ValueSelector applyMimicRecording(HeuristicConfigPolicy configPolicy, ValueSelector valueSelector) {
         if (id != null) {
             if (id.isEmpty()) {
@@ -619,6 +606,21 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                     = new MimicRecordingValueSelector((EntityIndependentValueSelector) valueSelector);
             configPolicy.addValueMimicRecorder(id, mimicRecordingValueSelector);
             valueSelector = mimicRecordingValueSelector;
+        }
+        return valueSelector;
+    }
+
+    private ValueSelector applyReinitializeVariableFiltering(HeuristicConfigPolicy configPolicy,
+            ValueSelector valueSelector) {
+        if (configPolicy.isReinitializeVariableFilterEnabled()) {
+            valueSelector = new ReinitializeVariableValueSelector(valueSelector);
+        }
+        return valueSelector;
+    }
+
+    private ValueSelector applyDowncasting(HeuristicConfigPolicy configPolicy, ValueSelector valueSelector) {
+        if (downcastEntityClass != null) {
+            valueSelector = new DowncastingValueSelector(valueSelector, downcastEntityClass);
         }
         return valueSelector;
     }
