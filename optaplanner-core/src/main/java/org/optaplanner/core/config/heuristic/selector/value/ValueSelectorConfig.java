@@ -50,6 +50,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.CachingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.DowncastingValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.EntityDependentSortingValueSelector;
+import org.optaplanner.core.impl.heuristic.selector.value.decorator.EntityIndependentInitializedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.InitializedValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ProbabilityValueSelector;
 import org.optaplanner.core.impl.heuristic.selector.value.decorator.ReinitializeVariableValueSelector;
@@ -396,7 +397,11 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
             ValueSelector valueSelector) {
         if (configPolicy.isInitializedChainedValueFilterEnabled()
                     && variableDescriptor.isChained()) {
-            valueSelector = new InitializedValueSelector(valueSelector);
+            if (valueSelector instanceof EntityIndependentValueSelector) {
+                valueSelector = new EntityIndependentInitializedValueSelector((EntityIndependentValueSelector) valueSelector);
+            } else {
+                valueSelector = new InitializedValueSelector(valueSelector);
+            }
         }
         return valueSelector;
     }

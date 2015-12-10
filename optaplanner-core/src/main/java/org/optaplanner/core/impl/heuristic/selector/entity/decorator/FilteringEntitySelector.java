@@ -79,18 +79,20 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
         return new JustInTimeFilteringEntityIterator(childEntitySelector.iterator());
     }
 
-    private class JustInTimeFilteringEntityIterator extends UpcomingSelectionIterator<Object> {
+    protected class JustInTimeFilteringEntityIterator extends UpcomingSelectionIterator<Object> {
 
         private final Iterator<Object> childEntityIterator;
+        private final long bailOutSize;
 
         public JustInTimeFilteringEntityIterator(Iterator<Object> childEntityIterator) {
             this.childEntityIterator = childEntityIterator;
+            this.bailOutSize = determineBailOutSize();
         }
 
         @Override
         protected Object createUpcomingSelection() {
             Object next;
-            long attemptsBeforeBailOut = bailOutEnabled ? determineBailOutSize() : 0L;
+            long attemptsBeforeBailOut = bailOutSize;
             do {
                 if (!childEntityIterator.hasNext()) {
                     return noUpcomingSelection();
@@ -112,6 +114,9 @@ public class FilteringEntitySelector extends AbstractEntitySelector {
     }
 
     protected long determineBailOutSize() {
+        if (!bailOutEnabled) {
+            return -1L;
+        }
         return childEntitySelector.getSize() * 10L;
     }
 

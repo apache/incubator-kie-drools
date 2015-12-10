@@ -77,15 +77,17 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
     private class JustInTimeFilteringMoveIterator extends UpcomingSelectionIterator<Move> {
 
         private final Iterator<Move> childMoveIterator;
+        private final long bailOutSize;
 
         public JustInTimeFilteringMoveIterator(Iterator<Move> childMoveIterator) {
             this.childMoveIterator = childMoveIterator;
+            this.bailOutSize = determineBailOutSize();
         }
 
         @Override
         protected Move createUpcomingSelection() {
             Move next;
-            long attemptsBeforeBailOut = bailOutEnabled ? determineBailOutSize() : 0L;
+            long attemptsBeforeBailOut = bailOutSize;
             do {
                 if (!childMoveIterator.hasNext()) {
                     return noUpcomingSelection();
@@ -107,6 +109,9 @@ public class FilteringMoveSelector extends AbstractMoveSelector {
     }
 
     protected long determineBailOutSize() {
+        if (!bailOutEnabled) {
+            return -1L;
+        }
         return childMoveSelector.getSize() * 10L;
     }
 

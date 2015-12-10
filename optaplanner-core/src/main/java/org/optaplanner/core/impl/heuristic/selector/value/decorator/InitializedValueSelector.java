@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.value.decorator;
 
 import java.util.Iterator;
 
+import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.UpcomingSelectionIterator;
 import org.optaplanner.core.impl.heuristic.selector.value.AbstractValueSelector;
@@ -26,7 +27,7 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 /**
  * Prevents creating chains without an anchor.
  * <p>
- * Filters out every value that is a planning entity for which the planning variable
+ * Filters out every value that is a planning entity for which the {@link PlanningVariable}
  * (on which this {@link ValueSelector} applies to) is uninitialized.
  * <p>
  * Mainly used for chained planning variables, but supports other planning variables too.
@@ -73,20 +74,26 @@ public class InitializedValueSelector extends AbstractValueSelector {
         return new JustInTimeInitializedValueIterator(entity, childValueSelector.endingIterator(entity));
     }
 
-    private class JustInTimeInitializedValueIterator extends UpcomingSelectionIterator<Object> {
+    protected class JustInTimeInitializedValueIterator extends UpcomingSelectionIterator<Object> {
 
         private final Object entity;
         private final Iterator<Object> childValueIterator;
+        private final long bailOutSize;
 
         public JustInTimeInitializedValueIterator(Object entity, Iterator<Object> childValueIterator) {
+            this(entity, childValueIterator, determineBailOutSize(entity));
+        }
+
+        public JustInTimeInitializedValueIterator(Object entity, Iterator<Object> childValueIterator, long bailOutSize) {
             this.entity = entity;
             this.childValueIterator = childValueIterator;
+            this.bailOutSize = bailOutSize;
         }
 
         @Override
         protected Object createUpcomingSelection() {
             Object next;
-            long attemptsBeforeBailOut = bailOutEnabled ? determineBailOutSize(entity) : 0L;
+            long attemptsBeforeBailOut = bailOutSize;
             do {
                 if (!childValueIterator.hasNext()) {
                     return noUpcomingSelection();
@@ -108,10 +115,13 @@ public class InitializedValueSelector extends AbstractValueSelector {
     }
 
     protected long determineBailOutSize(Object entity) {
+        if (!bailOutEnabled) {
+            return -1L;
+        }
         return childValueSelector.getSize(entity) * 10L;
     }
 
-    private boolean accept(Object value) {
+    protected boolean accept(Object value) {
         return value == null
                 || !variableDescriptor.getEntityDescriptor().getEntityClass().isAssignableFrom(value.getClass())
                 || variableDescriptor.isInitialized(value);
