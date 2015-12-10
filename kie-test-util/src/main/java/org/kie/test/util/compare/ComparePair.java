@@ -187,7 +187,8 @@ public class ComparePair {
     }
 
     public static void compareObjectsViaFields(Object orig, Object copy) {
-        compareObjectsViaFields(orig, copy, new String[] {});
+        String name = orig == null ? "null" : orig.getClass().getSimpleName();
+        compareValues(orig, copy, name, new String[] {});
     }
 
     public static void compareObjectsViaFields(Object orig, Object copy, String... skipFields) {
@@ -241,51 +242,53 @@ public class ComparePair {
                         }
                     }
                 }
-                String failMsg = origClass.getSimpleName() + "." + field.getName() + " is null";
-                assertFalse(failMsg + "!", nullFound);
+                String objectFieldName = origClass.getSimpleName() + "." + field.getName();
+                assertFalse(objectFieldName + "!", nullFound);
 
-                if (copyFieldVal != origFieldVal) {
-                    assertNotNull(failMsg + " in the copy!", copyFieldVal);
-                    assertNotNull(failMsg + " in the original!", origFieldVal);
-                    Package pkg = origFieldVal.getClass().getPackage();
-                    if (pkg == null || pkg.getName().startsWith("java.")) {
-                        if( origFieldVal.getClass().isArray() ) {
-                            if( origFieldVal instanceof byte[] ) {
-                                assertArrayEquals(origClass.getSimpleName() + "." + field.getName(), (byte []) origFieldVal, (byte []) copyFieldVal);
-                            }
-                        } else if( origFieldVal instanceof Map<?, ?> && copyFieldVal instanceof Map<?, ?> ) {
-                            Collection shouldBeEmpty = CollectionUtils.disjunction(
-                                    ((Map) origFieldVal).values(),
-                                    ((Map) copyFieldVal).values());
-                            assertTrue( "Comparison of Map values failed on " + origFieldVal.getClass().getSimpleName() + "." + fieldName, shouldBeEmpty.isEmpty() );
-                        } else if( origFieldVal instanceof Collection ) {
-                            assertEquals( "Different collection sizes on "+ origFieldVal.getClass().getSimpleName() + "." + fieldName,
-                                    ((Collection) origFieldVal).size(), ((Collection) copyFieldVal).size());
-                           for( Object elem : ((Collection) origFieldVal) ) {
-                              boolean match = false;
-                              for( Object copyElem : ((Collection) copyFieldVal) ) {
-                                 try {
-                                    compareObjectsViaFields(elem, copyElem, skipFields);
-                                    match = true;
-                                    break;
-                                 } catch( Throwable t ) {
-                                     logger.debug(t.getMessage());
-                                     // ignore
-                                 }
-                              }
-                              assertTrue( "Different collection values on " + origFieldVal.getClass().getSimpleName() + "." + fieldName,
-                                      match);
-                           }
-                        } else {
-                            assertEquals(origClass.getSimpleName() + "." + field.getName(), origFieldVal, copyFieldVal);
-                        }
-                    } else {
-                        compareObjectsViaFields(origFieldVal, copyFieldVal, skipFields);
-                    }
+                if (copyFieldVal != origFieldVal ) {
+                    compareValues(origFieldVal, copyFieldVal, objectFieldName, skipFields);
                 }
             } catch (Exception e) {
                 throw new RuntimeException("Unable to access " + field.getName() + " when testing " + origClass.getSimpleName()
                         + ".", e);
+            }
+        }
+    }
+
+    private static void compareValues(Object origFieldVal, Object copyFieldVal, String objectFieldName, String [] skipFields ) {
+        assertNotNull(objectFieldName + " is null in the copy!", copyFieldVal);
+        assertNotNull(objectFieldName + " is null in the original!", origFieldVal);
+
+        Package pkg = origFieldVal.getClass().getPackage();
+        if (pkg == null || pkg.getName().startsWith("java.")) {
+            if( origFieldVal.getClass().isArray() ) {
+                if( origFieldVal instanceof byte[] ) {
+                    assertArrayEquals(objectFieldName, (byte []) origFieldVal, (byte []) copyFieldVal);
+                }
+            } else if( origFieldVal instanceof Map<?, ?> && copyFieldVal instanceof Map<?, ?> ) {
+                Collection shouldBeEmpty = CollectionUtils.disjunction(
+                        ((Map) origFieldVal).values(),
+                        ((Map) copyFieldVal).values());
+                assertTrue( "Comparison of Map values failed on " + objectFieldName, shouldBeEmpty.isEmpty() );
+            } else if( origFieldVal instanceof Collection ) {
+                assertEquals( "Different collection sizes on "+ objectFieldName,
+                        ((Collection) origFieldVal).size(), ((Collection) copyFieldVal).size());
+               for( Object elem : ((Collection) origFieldVal) ) {
+                  boolean match = false;
+                  for( Object copyElem : ((Collection) copyFieldVal) ) {
+                     try {
+                        compareObjectsViaFields(elem, copyElem, skipFields);
+                        match = true;
+                        break;
+                     } catch( Throwable t ) {
+                         logger.debug(t.getMessage());
+                         // ignore
+                     }
+                  }
+                  assertTrue( "Different collection values on " + objectFieldName, match);
+               }
+            } else {
+                assertEquals(objectFieldName, origFieldVal, copyFieldVal);
             }
         }
     }
