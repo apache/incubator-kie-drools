@@ -126,7 +126,9 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig<ChangeMoveSelec
             }
             childMoveSelectorConfig.setEntitySelectorConfig(childEntitySelectorConfig);
             ValueSelectorConfig childValueSelectorConfig = new ValueSelectorConfig(valueSelectorConfig);
-            childValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
+            if (childValueSelectorConfig.getMimicSelectorRef() == null) {
+                childValueSelectorConfig.setVariableName(variableDescriptor.getVariableName());
+            }
             childMoveSelectorConfig.setValueSelectorConfig(childValueSelectorConfig);
             moveSelectorConfigList.add(childMoveSelectorConfig);
         }
