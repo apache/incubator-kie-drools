@@ -574,6 +574,9 @@
       <literal>changeMoveSelector</literal> A and B, for which B is empty (because all it's entities are immovable)
       returns no move if <literal>ignoreEmptyChildIterators</literal> is <literal>false</literal> and the moves of A if
       <literal>ignoreEmptyChildIterators</literal> is <literal>true</literal>.</para>
+
+      <para>To enforce that 2 child selectors use the same entity or value efficiently, use <link
+      linkend="mimicSelection">mimic selection</link>, not move filtering.</para>
     </section>
   </section>
 
@@ -1194,7 +1197,8 @@
         &lt;/changeMoveSelector&gt;
       &lt;/cartesianProductMoveSelector&gt;</programlisting>
 
-      <para>Mimic selection is useful to create a composite move from 2 moves that affect the same entity.</para>
+      <para>Mimic selection is useful to create <link linkend="cartesianProductMoveSelector">a composite move</link>
+      from 2 moves that affect the same entity.</para>
     </section>
 
     <section xml:id="nearbySelection">

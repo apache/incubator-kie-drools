@@ -584,7 +584,7 @@
     <section xml:id="allocateToValueFromQueueAlgorithm">
       <title>Algorithm Description</title>
 
-      <para>Allocate To Value From Queue is a versatile, generic form of Nearest Neighbour. It works like this:</para>
+      <para>Allocate To Value From Queue works like this:</para>
 
       <orderedlist>
         <listitem>
@@ -604,7 +604,40 @@
     <section xml:id="allocateToValueFromQueueConfiguration">
       <title>Configuration</title>
 
-      <para>Not yet implemented.</para>
+      <para>Simple configuration:</para>
+
+      <programlisting language="xml">  &lt;constructionHeuristic&gt;
+    &lt;constructionHeuristicType&gt;ALLOCATE_TO_VALUE_FROM_QUEUE&lt;/constructionHeuristicType&gt;
+  &lt;/constructionHeuristic&gt;</programlisting>
+
+      <para>Verbose simple configuration:</para>
+
+      <programlisting language="xml">  &lt;constructionHeuristic&gt;
+    &lt;constructionHeuristicType&gt;ALLOCATE_TO_VALUE_FROM_QUEUE&lt;/constructionHeuristicType&gt;
+    &lt;entitySorterManner&gt;DECREASING_DIFFICULTY_IF_AVAILABLE&lt;/entitySorterManner&gt;
+    &lt;valueSorterManner&gt;INCREASING_STRENGTH_IF_AVAILABLE&lt;/valueSorterManner&gt;
+  &lt;/constructionHeuristic&gt;</programlisting>
+
+      <para>Advanced detailed configuration. For example, a configuration for a single entity class with a single
+      variable:</para>
+
+      <programlisting language="xml">  &lt;constructionHeuristic&gt;
+    &lt;queuedValuePlacer&gt;
+      &lt;valueSelector id="placerValueSelector"&gt;
+        &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+        &lt;selectionOrder&gt;SORTED&lt;/selectionOrder&gt;
+        &lt;sorterManner&gt;INCREASING_STRENGTH&lt;/sorterManner&gt;
+      &lt;/valueSelector&gt;
+      &lt;changeMoveSelector&gt;
+        &lt;entitySelector&gt;
+          &lt;cacheType&gt;PHASE&lt;/cacheType&gt;
+          &lt;selectionOrder&gt;SORTED&lt;/selectionOrder&gt;
+          &lt;sorterManner&gt;DECREASING_DIFFICULTY&lt;/sorterManner&gt;
+        &lt;/entitySelector&gt;
+        &lt;valueSelector mimicSelectorRef="placerValueSelector"/&gt;
+      &lt;/changeMoveSelector&gt;
+    &lt;/queuedValuePlacer&gt;
+  &lt;/constructionHeuristic&gt;</programlisting>
     </section>
   </section>
 

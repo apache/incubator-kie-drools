@@ -173,6 +173,7 @@ public class SelectorTestUtils {
     public static EntityIndependentValueSelector mockEntityIndependentValueSelector(Class entityClass, String variableName,
             Object... values) {
         GenuineVariableDescriptor variableDescriptor = mockVariableDescriptor(entityClass, variableName);
+        when(variableDescriptor.isValueRangeEntityIndependent()).thenReturn(true);
         return mockEntityIndependentValueSelector(variableDescriptor, values);
     }
 
