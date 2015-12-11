@@ -150,4 +150,8 @@ public class HeuristicConfigPolicy {
         return valueMimicRecorderMap.get(id);
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + environmentMode + ")";
+    }
 }

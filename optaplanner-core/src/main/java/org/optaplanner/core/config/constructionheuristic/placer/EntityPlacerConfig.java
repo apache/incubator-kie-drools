@@ -31,6 +31,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  */
 @XStreamInclude({
         QueuedEntityPlacerConfig.class,
+        QueuedValuePlacerConfig.class,
         PooledEntityPlacerConfig.class
 })
 public abstract class EntityPlacerConfig<C extends EntityPlacerConfig> extends AbstractConfig<C> {
