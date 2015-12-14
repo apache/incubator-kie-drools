@@ -37,6 +37,7 @@ public class CurriculumCourseConstructionHeuristicTest extends ConstructionHeuri
     }
 
     // TODO Delete this temporary workaround static pseudo-overwriting method to ignore ALLOCATE_TO_VALUE_FROM_QUEUE
+    //      https://issues.jboss.org/browse/PLANNER-486
     protected static Collection<Object[]> buildParameters(SolutionDao solutionDao, String... unsolvedFileNames) {
         List<ConstructionHeuristicType> typeList = new ArrayList<ConstructionHeuristicType>();
         for (ConstructionHeuristicType type : ConstructionHeuristicType.values()) {

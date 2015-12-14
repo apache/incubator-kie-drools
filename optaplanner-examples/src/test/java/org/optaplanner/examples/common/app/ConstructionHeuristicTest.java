@@ -29,7 +29,6 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
-@Ignore("FIX PLANNER-486 to work with multiple variables") // TODO FIX https://issues.jboss.org/browse/PLANNER-486
 public abstract class ConstructionHeuristicTest extends PhaseTest {
 
     protected static Collection<Object[]> buildParameters(SolutionDao solutionDao, String... unsolvedFileNames) {
