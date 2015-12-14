@@ -72,7 +72,7 @@ public class ProcessInstanceDesc implements org.jbpm.services.api.model.ProcessI
        this.processVersion = processVersion==null?"":processVersion;
        this.state = state;
        this.deploymentId = deploymentId;
-       this.dataTimeStamp = dataTimeStamp == null?null:new Date(dataTimeStamp.getTime());
+       this.dataTimeStamp = dataTimeStamp;
        this.initiator = initiator;
        this.correlationKey = correlationKey==null?"":correlationKey;
    }
