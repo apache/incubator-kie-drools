@@ -118,7 +118,7 @@ public class PhreakActivationIterator
         while (NodeTypeEnums.LeftInputAdapterNode != node1.getType()) {
             node1 = node1.getLeftTupleSource();
         }
-        int maxShareCount = node1.getAssociations().size();
+        int maxShareCount = node1.getAssociationsSize();
 
         while (NodeTypeEnums.LeftInputAdapterNode != node.getType()) {
             Memory memory = wm.getNodeMemory((MemoryFactory) node);
@@ -126,7 +126,7 @@ public class PhreakActivationIterator
                 // segment has never been initialized, which means the rule has never been linked.
                 return;
             }
-            if ( node.getAssociations().size() == maxShareCount ) {
+            if ( node.getAssociationsSize() == maxShareCount ) {
                 // the recurse must start from the first split node, otherwise we get partial overlaps in propagations
                 if (NodeTypeEnums.isBetaNode(node)) {
                     BetaMemory bm;

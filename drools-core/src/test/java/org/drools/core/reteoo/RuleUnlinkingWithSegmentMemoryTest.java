@@ -139,27 +139,27 @@ public class RuleUnlinkingWithSegmentMemoryTest {
         rtn3 = ( RuleTerminalNode ) createNetworkNode( 20, RULE_TERMINAL_NODE, n8, rule3 );
 
 
-        lian.addAssociation( rule1, null );
-        lian.addAssociation( rule2, null );
-        lian.addAssociation( rule3, null );
-        n1.addAssociation( rule1, null );
-        n1.addAssociation( rule2, null );
-        n1.addAssociation( rule3, null );
-        n2.addAssociation( rule1, null );
-        n2.addAssociation( rule2, null );
-        n2.addAssociation( rule3, null );
-        n3.addAssociation( rule1, null );
-        n3.addAssociation( rule2, null );
-        n3.addAssociation( rule3, null );
+        lian.addAssociation( rule1 );
+        lian.addAssociation( rule2 );
+        lian.addAssociation( rule3 );
+        n1.addAssociation( rule1 );
+        n1.addAssociation( rule2 );
+        n1.addAssociation( rule3 );
+        n2.addAssociation( rule1 );
+        n2.addAssociation( rule2 );
+        n2.addAssociation( rule3 );
+        n3.addAssociation( rule1 );
+        n3.addAssociation( rule2 );
+        n3.addAssociation( rule3 );
 
-        n4.addAssociation( rule2, null );
-        n4.addAssociation( rule3, null );
-        n5.addAssociation( rule2, null );
-        n5.addAssociation( rule3, null );
+        n4.addAssociation( rule2 );
+        n4.addAssociation( rule3 );
+        n5.addAssociation( rule2 );
+        n5.addAssociation( rule3 );
         
-        n6.addAssociation( rule3, null );
-        n7.addAssociation( rule3, null );
-        n8.addAssociation( rule3, null );
+        n6.addAssociation( rule3 );
+        n7.addAssociation( rule3 );
+        n8.addAssociation( rule3 );
     }
     
     @Test

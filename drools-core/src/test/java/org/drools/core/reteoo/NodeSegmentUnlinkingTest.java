@@ -149,24 +149,24 @@ public class NodeSegmentUnlinkingTest {
         //                      \
         //                      n7 -> n8 -> r3          
         
-        n1.getAssociations().put( rule1, null );
-        n1.getAssociations().put( rule2, null );
-        n1.getAssociations().put( rule3, null );
-        n2.getAssociations().put( rule1, null );
-        n2.getAssociations().put( rule2, null );
-        n2.getAssociations().put( rule3, null );
+        n1.addAssociation( rule1 );
+        n1.addAssociation( rule2 );
+        n1.addAssociation( rule3 );
+        n2.addAssociation( rule1 );
+        n2.addAssociation( rule2 );
+        n2.addAssociation( rule3 );
 
-        n3.getAssociations().put( rule2, null );
-        n3.getAssociations().put( rule3, null );
-        n4.getAssociations().put( rule2, null );
-        n4.getAssociations().put( rule3, null );
-        n5.getAssociations().put( rule2, null );
-        n5.getAssociations().put( rule3, null );
-        n6.getAssociations().put( rule2, null );
-        n6.getAssociations().put( rule3, null );
+        n3.addAssociation( rule2 );
+        n3.addAssociation( rule3 );
+        n4.addAssociation( rule2 );
+        n4.addAssociation( rule3 );
+        n5.addAssociation( rule2 );
+        n5.addAssociation( rule3 );
+        n6.addAssociation( rule2 );
+        n6.addAssociation( rule3 );
 
-        n7.getAssociations().put( rule3, null );
-        n8.getAssociations().put( rule3, null );
+        n7.addAssociation( rule3 );
+        n8.addAssociation( rule3 );
     }
 
     @Test
@@ -197,16 +197,16 @@ public class NodeSegmentUnlinkingTest {
         BetaNode n5 = new JoinNode( 14, n2, mockObjectSource,
                                     new EmptyBetaConstraints(), buildContext );
 
-        n1.addAssociation( rule1, null );
-        n1.addAssociation( rule2, null );
-        n1.addAssociation( rule3, null );
+        n1.addAssociation( rule1 );
+        n1.addAssociation( rule2 );
+        n1.addAssociation( rule3 );
 
-        n2.addAssociation( rule2, null );
-        n2.addAssociation( rule3, null );
+        n2.addAssociation( rule2 );
+        n2.addAssociation( rule3 );
 
-        n3.addAssociation( rule1, null );
-        n4.addAssociation( rule2, null );
-        n5.addAssociation( rule3, null );
+        n3.addAssociation( rule1 );
+        n4.addAssociation( rule2 );
+        n5.addAssociation( rule3 );
 
         mockObjectSource.attach(buildContext);
         mockTupleSource.attach(buildContext);

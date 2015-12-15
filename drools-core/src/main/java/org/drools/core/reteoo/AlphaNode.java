@@ -25,7 +25,6 @@ import org.drools.core.rule.constraint.EvaluatorConstraint;
 import org.drools.core.rule.constraint.MvelConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.RuleComponent;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.definition.rule.Rule;
@@ -35,7 +34,6 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.List;
-import java.util.Map;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 
@@ -309,10 +307,17 @@ public class AlphaNode extends ObjectSource
             return NodeTypeEnums.AlphaNode;
         }
 
-        public Map<Rule, RuleComponent> getAssociations() {
-            return sink.getAssociations();
+        public int getAssociationsSize() {
+            return sink.getAssociationsSize();
         }
 
+        public int getAssociationsSize(Rule rule) {
+            return sink.getAssociationsSize(rule);
+        }
+
+        public boolean isAssociatedWith( Rule rule ) {
+            return sink.isAssociatedWith( rule );
+        }
     }
 
     public BitMask calculateDeclaredMask(List<String> settableProperties) {
