@@ -329,7 +329,7 @@ public class ObjectTypeNode extends ObjectSource
         }
         factHandle.clearRightTuples();
 
-        for (LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext()) {
+        for (LeftTuple leftTuple = factHandle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext()) {
             // must go via the LiaNode, so that the fact counter is updated, for linking
             ((LeftInputAdapterNode) leftTuple.getTupleSink().getLeftTupleSource()).retractLeftTuple(leftTuple,
                                                                                                         context,
@@ -447,7 +447,7 @@ public class ObjectTypeNode extends ObjectSource
                 Iterator<InternalFactHandle> it = memory.iterator();
                 while (it.hasNext()) {
                     InternalFactHandle handle = it.next();
-                    for (LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext()) {
+                    for (LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext()) {
                         adapter.cleanUp(leftTuple,
                                         workingMemory);
                     }

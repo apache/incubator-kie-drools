@@ -23,9 +23,9 @@ public interface RightTupleSink extends Sink {
 
     short getType();
 
-    public abstract void assertRightTuple( final RightTuple rightTuple,
-                                           final PropagationContext context,
-                                           final InternalWorkingMemory workingMemory );
+    void assertRightTuple( final RightTuple rightTuple,
+                           final PropagationContext context,
+                           final InternalWorkingMemory workingMemory );
 
     void retractRightTuple(final RightTuple rightTuple,
                            final PropagationContext context,

@@ -4291,7 +4291,7 @@ import static org.mockito.Mockito.*;
                            "rule2" );
          leftTuple = handle.getFirstLeftTuple();
          assertNotNull( leftTuple );
-         assertNull( leftTuple.getLeftParentNext() );
+         assertNull( leftTuple.getHandleNext() );
      }
 
      // JBRULES-1808

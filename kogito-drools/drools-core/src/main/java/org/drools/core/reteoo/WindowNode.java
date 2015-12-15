@@ -172,7 +172,7 @@ public class WindowNode extends ObjectSource
         rightTuple.setPropagationContext( pctx );
 
         InternalFactHandle clonedFh = evFh.cloneAndLink();  // this is cloned, as we need to separate the child RightTuple references
-        rightTuple.setObject( clonedFh );
+        rightTuple.setContextObject( clonedFh );
 
         // process the behavior
         final WindowMemory memory = (WindowMemory) workingMemory.getNodeMemory(this);
@@ -192,14 +192,14 @@ public class WindowNode extends ObjectSource
             behavior.retractFact( memory.behaviorContext, rightTuple.getFactHandle(), pctx, wm );
         }
 
-        InternalFactHandle clonedFh = ( InternalFactHandle ) rightTuple.getObject();
+        InternalFactHandle clonedFh = ( InternalFactHandle ) rightTuple.getContextObject();
         ObjectTypeNode.doRetractObject(clonedFh, pctx, wm);
     }
 
     @Override
     public void modifyRightTuple(RightTuple rightTuple, PropagationContext context, InternalWorkingMemory workingMemory) {
         EventFactHandle originalFactHandle = ( EventFactHandle ) rightTuple.getFactHandle();
-        EventFactHandle cloneFactHandle  = ( EventFactHandle ) rightTuple.getObject();
+        EventFactHandle cloneFactHandle  = ( EventFactHandle ) rightTuple.getContextObject();
         originalFactHandle.quickCloneUpdate( cloneFactHandle ); // make sure all fields are updated
 
         // behavior modify
@@ -245,7 +245,7 @@ public class WindowNode extends ObjectSource
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
 
-        if ( rightTuple != null && rightTuple.getTupleSink().getRightInputOtnId().equals(getRightInputOtnId()) ) {
+        if ( rightTuple != null && rightTuple.getTupleSink().getRightInputOtnId().equals( getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple();
             rightTuple.reAdd();
             modifyRightTuple( rightTuple, context, wm );

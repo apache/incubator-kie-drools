@@ -32,11 +32,8 @@ public interface LeftTuple extends Tuple {
     LeftTuple getLeftParent();
     void setLeftParent(LeftTuple leftParent);
 
-    LeftTuple getLeftParentPrevious();
-    void setLeftParentPrevious(LeftTuple leftParentLeft);
-
-    LeftTuple getLeftParentNext();
-    void setLeftParentNext(LeftTuple leftParentright);
+    LeftTuple getHandlePrevious();
+    LeftTuple getHandleNext();
 
     RightTuple getRightParent();
     void setRightParent(RightTuple rightParent);
@@ -57,20 +54,7 @@ public interface LeftTuple extends Tuple {
     LeftTuple getBlockedNext();
     void setBlockedNext(LeftTuple blockerNext);
 
-    /**
-     * We use this equals method to avoid the cast
-     */
-    boolean equals(final LeftTuple other);
-
-    Object[] toObjectArray();
-
     LeftTuple getParent();
-
-    String toTupleTree(int indent);
-
-    void setIndex(int index);
-
-    void setParent(LeftTuple parent);
 
     void setPeer(LeftTuple peer);
     LeftTuple getPeer();

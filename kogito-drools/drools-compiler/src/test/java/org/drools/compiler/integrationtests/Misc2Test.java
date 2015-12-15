@@ -882,11 +882,11 @@ public class Misc2Test extends CommonTestMethodBase {
 
         LeftTuple leftTuple = ( (DefaultFactHandle) fh ).getFirstLeftTuple();
         ObjectTypeNode.Id letTupleOtnId = leftTuple.getTupleSink().getLeftInputOtnId();
-        leftTuple = leftTuple.getLeftParentNext();
+        leftTuple = leftTuple.getHandleNext();
         while ( leftTuple != null ) {
             assertTrue( letTupleOtnId.before( leftTuple.getTupleSink().getLeftInputOtnId() ) );
             letTupleOtnId = leftTuple.getTupleSink().getLeftInputOtnId();
-            leftTuple = leftTuple.getLeftParentNext();
+            leftTuple = leftTuple.getHandleNext();
         }
     }
 

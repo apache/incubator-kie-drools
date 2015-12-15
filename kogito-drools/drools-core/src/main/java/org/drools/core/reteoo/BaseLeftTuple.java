@@ -36,8 +36,6 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     // left and right tuples in parent
     private LeftTuple          leftParent;
-    private LeftTuple          leftParentPrevious;
-    private LeftTuple          leftParentNext;
 
     private RightTuple         rightParent;
     private LeftTuple          rightParentPrevious;
@@ -65,7 +63,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
         setFactHandle( factHandle );
         this.sink = sink;
         if ( leftTupleMemoryEnabled ) {
-            factHandle.addLeftTupleInPosition( this );
+            factHandle.addTupleInPosition( this );
         }
     }
     
@@ -89,8 +87,8 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
         if ( leftTupleMemoryEnabled ) {
             this.leftParent = leftTuple;
             if ( leftTuple.getLastChild() != null ) {
-                this.leftParentPrevious = leftTuple.getLastChild();
-                this.leftParentPrevious.setLeftParentNext( this );
+                this.handlePrevious = leftTuple.getLastChild();
+                this.handlePrevious.setHandleNext( this );
             } else {
                 leftTuple.setFirstChild( this );
             }
@@ -111,8 +109,8 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
         this.leftParent = leftTuple;
         // insert at the end f the list
         if ( leftTuple.getLastChild() != null ) {
-            this.leftParentPrevious = leftTuple.getLastChild();
-            this.leftParentPrevious.setLeftParentNext( this );
+            this.handlePrevious = leftTuple.getLastChild();
+            this.handlePrevious.setHandleNext( this );
         } else {
             leftTuple.setFirstChild( this );
         }
@@ -159,21 +157,21 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
             if( currentLeftChild == null ) {
                 // insert at the end of the list 
                 if ( leftTuple.getLastChild() != null ) {
-                    this.leftParentPrevious = leftTuple.getLastChild();
-                    this.leftParentPrevious.setLeftParentNext( this );
+                    this.handlePrevious = leftTuple.getLastChild();
+                    this.handlePrevious.setHandleNext( this );
                 } else {
                     leftTuple.setFirstChild( this );
                 }
                 leftTuple.setLastChild( this );
             } else {
                 // insert before current child
-                this.leftParentNext = currentLeftChild;
-                this.leftParentPrevious = currentLeftChild.getLeftParentPrevious();
-                currentLeftChild.setLeftParentPrevious( this );
-                if( this.leftParentPrevious == null ) {
+                this.handleNext = currentLeftChild;
+                this.handlePrevious = currentLeftChild.getHandlePrevious();
+                currentLeftChild.setHandlePrevious( this );
+                if( this.handlePrevious == null ) {
                     this.leftParent.setFirstChild( this  );
                 } else {
-                    this.leftParentPrevious.setLeftParentNext( this );
+                    this.handlePrevious.setHandleNext( this );
                 }
             }
             
@@ -211,23 +209,23 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     public void reAddLeft() {
         // The parent can never be the FactHandle (root LeftTuple) as that is handled by reAdd()
         // make sure we aren't already at the end
-        if ( this.leftParentNext != null ) {
-            if ( this.leftParentPrevious != null ) {
+        if ( this.handleNext != null ) {
+            if ( this.handlePrevious != null ) {
                 // remove the current LeftTuple from the middle of the chain
-                this.leftParentPrevious.setLeftParentNext( this.leftParentNext );
-                this.leftParentNext.setLeftParentPrevious( this.leftParentPrevious );
+                this.handlePrevious.setHandleNext( this.handleNext );
+                this.handleNext.setHandlePrevious( this.handlePrevious );
             } else {
                 if( this.leftParent.getFirstChild() == this ) {
                     // remove the current LeftTuple from start start of the chain
-                    this.leftParent.setFirstChild( this.leftParentNext );
+                    this.leftParent.setFirstChild( getHandleNext() );
                 }
-                this.leftParentNext.setLeftParentPrevious(  null );
+                this.handleNext.setHandlePrevious( null );
             }
             // re-add to end
-            this.leftParentPrevious = this.leftParent.getLastChild();
-            this.leftParentPrevious.setLeftParentNext( this );
+            this.handlePrevious = this.leftParent.getLastChild();
+            this.handlePrevious.setHandleNext( this );
             this.leftParent.setLastChild( this );
-            this.leftParentNext = null;
+            this.handleNext = null;
         }
     }
 
@@ -256,13 +254,13 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     @Override
     public void unlinkFromLeftParent() {
-        LeftTuple previousParent = this.leftParentPrevious;
-        LeftTuple nextParent = this.leftParentNext;
+        LeftTuple previousParent = getHandlePrevious();
+        LeftTuple nextParent = getHandleNext();
 
         if ( previousParent != null && nextParent != null ) {
             //remove  from middle
-            this.leftParentPrevious.setLeftParentNext( nextParent );
-            this.leftParentNext.setLeftParentPrevious( previousParent );
+            this.handlePrevious.setHandleNext( nextParent );
+            this.handleNext.setHandlePrevious( previousParent );
         } else if ( nextParent != null ) {
             //remove from first
             if ( this.leftParent != null ) {
@@ -271,7 +269,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
                 // This is relevant to the root node and only happens at rule removal time
                 getFactHandle().removeLeftTuple( this );
             }
-            nextParent.setLeftParentPrevious( null );
+            nextParent.setHandlePrevious( null );
         } else if ( previousParent != null ) {
             //remove from end
             if ( this.leftParent != null ) {
@@ -280,7 +278,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
                 // relevant to the root node, as here the parent is the FactHandle, only happens at rule removal time
                 getFactHandle().removeLeftTuple( this );
             }
-            previousParent.setLeftParentNext(  null );
+            previousParent.setHandleNext( null );
         } else {
             // single remaining item, no previous or next
             if( leftParent != null ) {
@@ -293,8 +291,8 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
         }
 
         this.leftParent = null;
-        this.leftParentPrevious = null;
-        this.leftParentNext = null;
+        this.handlePrevious = null;
+        this.handleNext = null;
     }
 
     @Override
@@ -359,23 +357,13 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     }
 
     @Override
-    public LeftTuple getLeftParentPrevious() {
-        return leftParentPrevious;
+    public LeftTuple getHandlePrevious() {
+        return (LeftTuple) handlePrevious;
     }
 
     @Override
-    public void setLeftParentPrevious(LeftTuple leftParentLeft) {
-        this.leftParentPrevious = leftParentLeft;
-    }
-
-    @Override
-    public LeftTuple getLeftParentNext() {
-        return leftParentNext;
-    }
-
-    @Override
-    public void setLeftParentNext(LeftTuple leftParentright) {
-        this.leftParentNext = leftParentright;
+    public LeftTuple getHandleNext() {
+        return (LeftTuple) handleNext;
     }
 
     @Override
@@ -499,33 +487,27 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     }
 
     @Override
-    public boolean equals(final LeftTuple other) {
-        // we know the object is never null and always of the  type LeftTuple
-        if ( other == this ) {
+    public boolean equals(Object object) {
+        if (object == this) {
             return true;
-        } else if( other == null ) {
+        }
+
+        if (!(object instanceof LeftTuple)) {
             return false;
         }
+
+        LeftTuple other = ( (LeftTuple) object );
 
         // A LeftTuple is  only the same if it has the same hashCode, factId and parent
-        if ( this.hashCode() != other.hashCode() ) {
+        if ( this.hashCode() != other.hashCode() || getFactHandle() != other.getFactHandle() ) {
             return false;
         }
 
-        if ( getFactHandle() != other.getFactHandle() ) {
-            return false;
-        }
-        
         if ( this.parent == null ) {
             return (other.getParent() == null);
         } else {
             return this.parent.equals( other.getParent() );
         }
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        return object instanceof LeftTuple && equals( (LeftTuple) object );
     }
 
     @Override
@@ -551,16 +533,6 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     @Override
     public void setLastChild(LeftTuple lastChild) {
         this.lastChild = lastChild;
-    }
-
-    @Override
-    public void setIndex(int index) {
-        this.index = index;
-    }
-
-    @Override
-    public void setParent(LeftTuple parent) {
-        this.parent = parent;
     }
 
     @Override
@@ -615,38 +587,8 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     }
 
     @Override
-    public Object[] toObjectArray() {
-        Object[] objects = new Object[this.index + 1];
-        LeftTuple entry = this;
-        while ( entry != null ) {
-            if ( entry.getFactHandle() != null ) {
-                // can be null for eval, not and exists that have no right input
-                Object object = entry.getFactHandle().getObject();
-                objects[entry.getIndex()] = object;
-            }
-            entry = entry.getParent();
-        }
-        return objects;
-    }
-
-    @Override
     public LeftTuple getParent() {
         return parent;
-    }
-
-    @Override
-    public String toTupleTree(int indent) {
-        StringBuilder buf = new StringBuilder();
-        char[] spaces = new char[indent];
-        Arrays.fill( spaces, ' ' );
-        String istr = new String( spaces );
-        buf.append( istr );
-        buf.append( toExternalString() );
-        buf.append( "\n" );
-        for( LeftTuple leftTuple = this.firstChild; leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
-            buf.append( leftTuple.toTupleTree( indent+4 ) );
-        }
-        return buf.toString();
     }
 
     protected String toExternalString() {
@@ -683,5 +625,10 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     @Override
     public Object getObject(int index) {
         return get(index).getObject();
+    }
+
+    @Override
+    public ObjectTypeNode.Id getInputOtnId() {
+        return sink != null ? getTupleSink().getLeftInputOtnId() : null;
     }
 }

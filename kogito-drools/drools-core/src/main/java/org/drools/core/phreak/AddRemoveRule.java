@@ -543,7 +543,7 @@ public class AddRemoveRule {
         while (it.hasNext()) {
             InternalFactHandle fh = it.next();
             for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; ) {
-                LeftTuple next = childLt.getLeftParentNext();
+                LeftTuple next = childLt.getHandleNext();
                 //stagedLeftTuples
                 if ( childLt.getTupleSink() == lian ) {
                     fh.removeLeftTuple(childLt);
@@ -721,7 +721,7 @@ public class AddRemoveRule {
         while (it.hasNext()) {
             InternalFactHandle fh = it.next();
             if (fh.getFirstLeftTuple() != null ) {
-                for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; childLt = childLt.getLeftParentNext()) {
+                for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; childLt = childLt.getHandleNext()) {
                     if ( childLt.getTupleSink() == firstLiaSink ) {
                         followPeer(childLt, smem, sinks,  sinks.size()-1, insert);
                     }
@@ -732,7 +732,7 @@ public class AddRemoveRule {
 
     private static void followPeerFromLeftInput(LeftTuple lt, SegmentMemory smem, List<LeftTupleSink> sinks, boolean insert) {
         // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
-        for (; lt != null; lt = lt.getLeftParentNext()) {
+        for (; lt != null; lt = lt.getHandleNext()) {
             followPeer(lt, smem, sinks, sinks.size() -1, insert);
         }
     }
@@ -774,7 +774,7 @@ public class AddRemoveRule {
                 AccumulateContext accctx = (AccumulateContext) peer.getContextObject();
                 followPeer(accctx.getResultLeftTuple(), smem, sinks,  i-1, insert);
             } else if ( peer.getFirstChild() != null ) {
-                for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getLeftParentNext()) {
+                for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getHandleNext()) {
                     followPeer(childLt, smem, sinks, i-1, insert);
                 }
             }
@@ -812,8 +812,8 @@ public class AddRemoveRule {
 
         if (previousPeer == null) {
             // the first sink is being removed, which is the first peer. The next peer must be set as the first peer.
-            LeftTuple leftPrevious = peer.getLeftParentPrevious();
-            LeftTuple leftNext = peer.getLeftParentNext();
+            LeftTuple leftPrevious = peer.getHandlePrevious();
+            LeftTuple leftNext = peer.getHandleNext();
 
             LeftTuple rightPrevious = peer.getRightParentPrevious();
             LeftTuple rightNext = peer.getRightParentNext();
@@ -854,8 +854,8 @@ public class AddRemoveRule {
             }
         } else if ( leftNext != null ) {
             // replacing first
-            newPeer.setLeftParentNext(leftNext );
-            leftNext.setLeftParentPrevious(newPeer );
+            newPeer.setHandleNext( leftNext );
+            leftNext.setHandlePrevious( newPeer );
             if ( isHandle ) {
                 fh.setFirstLeftTuple(newPeer);
             } else {
@@ -863,8 +863,8 @@ public class AddRemoveRule {
             }
         } else {
             // replacing last
-            newPeer.setLeftParentPrevious(leftPrevious );
-            leftPrevious.setLeftParentNext(newPeer );
+            newPeer.setHandlePrevious( leftPrevious );
+            leftPrevious.setHandleNext( newPeer );
             if ( isHandle ) {
                 fh.setLastLeftTuple(newPeer);
             } else {

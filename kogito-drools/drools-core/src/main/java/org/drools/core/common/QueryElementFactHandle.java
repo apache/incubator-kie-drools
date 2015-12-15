@@ -19,6 +19,7 @@ package org.drools.core.common;
 import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.EntryPoint;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -215,10 +216,6 @@ public class QueryElementFactHandle
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public void addLeftTupleInPosition( LeftTuple leftTuple ) {
-        throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
-    }
-
     public void removeLeftTuple( LeftTuple leftTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
@@ -239,7 +236,7 @@ public class QueryElementFactHandle
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 
-    public void addRightTupleInPosition( RightTuple rightTuple ) {
+    public void addTupleInPosition( Tuple rightTuple ) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 

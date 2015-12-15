@@ -98,7 +98,7 @@ public class ReactiveObjectUtil {
             } else {
                 LeftTuple childLeftTuple = ((LeftTuple)leftTuple).getFirstChild();
                 while (childLeftTuple != null) {
-                    LeftTuple next = childLeftTuple.getLeftParentNext();
+                    LeftTuple next = childLeftTuple.getHandleNext();
                     if ( object == childLeftTuple.getFactHandle().getObject() ) {
                         deleteChildLeftTuple( propagationContext, mem.getStagedLeftTuples(), null, childLeftTuple );
                     }

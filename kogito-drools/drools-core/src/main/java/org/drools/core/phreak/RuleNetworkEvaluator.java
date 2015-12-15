@@ -801,7 +801,7 @@ public class RuleNetworkEvaluator {
             LeftTuple next = leftTuple.getStagedNext();
             ltm.add(leftTuple);
             for (LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; ) {
-                LeftTuple childNext = childLeftTuple.getLeftParentNext();
+                LeftTuple childNext = childLeftTuple.getHandleNext();
                 childLeftTuple.reAddRight();
                 childLeftTuple = childNext;
             }
@@ -828,7 +828,7 @@ public class RuleNetworkEvaluator {
             if ( blocker == null ) {
                 ltm.add(leftTuple);
                 for (LeftTuple childLeftTuple = leftTuple.getFirstChild(); childLeftTuple != null; ) {
-                    LeftTuple childNext = childLeftTuple.getLeftParentNext();
+                    LeftTuple childNext = childLeftTuple.getHandleNext();
                     childLeftTuple.reAddRight();
                     childLeftTuple = childNext;
                 }

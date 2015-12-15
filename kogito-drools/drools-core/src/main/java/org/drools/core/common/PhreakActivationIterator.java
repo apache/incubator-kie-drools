@@ -197,7 +197,7 @@ public class PhreakActivationIterator
         while (it.hasNext()) {
             InternalFactHandle fh = it.next();
             if (fh.getFirstLeftTuple() != null ) {
-                for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; childLt = childLt.getLeftParentNext()) {
+                for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; childLt = childLt.getHandleNext()) {
                     if ( childLt.getTupleSink() == firstLiaSink ) {
                         collectFromLeftInput(childLt, agendaItems, nodeSet, wm);
                     }
@@ -207,7 +207,7 @@ public class PhreakActivationIterator
     }
 
     private static void collectFromLeftInput(LeftTuple lt, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
-        for (; lt != null; lt = lt.getLeftParentNext()) {
+        for (; lt != null; lt = lt.getHandleNext()) {
             collectFromPeers(lt, agendaItems, nodeSet, wm);
         }
     }
@@ -221,7 +221,7 @@ public class PhreakActivationIterator
                     collectFromLeftInput(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
                 }
             } else if ( peer.getFirstChild() != null ) {
-                for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getLeftParentNext()) {
+                for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getHandleNext()) {
                     collectFromLeftInput(childLt, agendaItems, nodeSet, wm);
                 }
             } else if ( peer.getTupleSink().getType() == NodeTypeEnums.RuleTerminalNode ) {

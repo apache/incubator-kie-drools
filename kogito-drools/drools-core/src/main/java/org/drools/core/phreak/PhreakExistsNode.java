@@ -280,7 +280,7 @@ public class PhreakExistsNode {
                     updateChildLeftTuple(childLeftTuple, stagedLeftTuples, trgLeftTuples);
 
                     childLeftTuple.reAddRight();
-                    childLeftTuple = childLeftTuple.getLeftParentNext();
+                    childLeftTuple = childLeftTuple.getHandleNext();
                 }
             }
 

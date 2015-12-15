@@ -17,10 +17,11 @@
 package org.drools.core.common;
 
 import org.drools.core.factmodel.traits.TraitTypeEnum;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.spi.Tuple;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.runtime.rule.FactHandle;
 
 public interface InternalFactHandle
     extends
@@ -69,11 +70,9 @@ public interface InternalFactHandle
     TraitTypeEnum getTraitType();
     
     RightTuple getFirstRightTuple();
-
     RightTuple getLastRightTuple();
 
     LeftTuple getFirstLeftTuple();
-    
     LeftTuple getLastLeftTuple();
     
     EntryPoint getEntryPoint();
@@ -84,15 +83,11 @@ public interface InternalFactHandle
     
     String toExternalForm();
     
-    String toTupleTree( int indent );
-    
     void disconnect();
 
     void addFirstLeftTuple(LeftTuple leftTuple);
 
     void addLastLeftTuple( LeftTuple leftTuple );
-
-    void addLeftTupleInPosition( LeftTuple leftTuple );
 
     void setFirstLeftTuple(LeftTuple leftTuple);
 
@@ -108,15 +103,14 @@ public interface InternalFactHandle
 
     void addLastRightTuple( RightTuple rightTuple );
 
-    void addRightTupleInPosition( RightTuple rightTuple );
-
     void removeRightTuple( RightTuple rightTuple );
-    
+
+    void addTupleInPosition( Tuple tuple );
+
     InternalFactHandle quickClone();
 
-    public boolean isNegated();
+    boolean isNegated();
+    void setNegated(boolean negated);
 
-    public void setNegated(boolean negated);
-
-    public <K> K as( Class<K> klass ) throws ClassCastException;
+    <K> K as( Class<K> klass ) throws ClassCastException;
 }

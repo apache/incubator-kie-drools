@@ -49,7 +49,7 @@ public class FromNodeVisitor extends AbstractNetworkNodeVisitor {
                 LeftTuple child = leftTuple.getFirstChild();
                 while( child != null ) {
                     handles++;
-                    child = child.getLeftParentNext();
+                    child = child.getHandleNext();
                 }
             }
             ni.setCreatedFactHandles( handles );

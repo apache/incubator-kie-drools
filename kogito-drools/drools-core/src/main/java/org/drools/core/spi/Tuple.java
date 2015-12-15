@@ -18,6 +18,7 @@ package org.drools.core.spi;
 
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.rule.Declaration;
 import org.drools.core.util.Entry;
@@ -103,7 +104,6 @@ public interface Tuple extends Serializable, Entry<Tuple> {
     Tuple getSubTuple(final int elements);
 
     Object getContextObject();
-
     void setContextObject( final Object object );
 
     short getStagedType();
@@ -144,4 +144,12 @@ public interface Tuple extends Serializable, Entry<Tuple> {
 
     LeftTuple getLastChild();
     void setLastChild( LeftTuple firstChild );
+
+    Tuple getHandlePrevious();
+    void setHandlePrevious( Tuple leftParentLeft );
+
+    Tuple getHandleNext();
+    void setHandleNext( Tuple leftParentright );
+
+    ObjectTypeNode.Id getInputOtnId();
 }

@@ -202,7 +202,7 @@ public class PhreakJoinNode {
             if (childLeftTuple != null && rtm.isIndexed() && !it.isFullIterator() && (rightTuple == null || (rightTuple.getMemory() != childLeftTuple.getRightParent().getMemory()))) {
                 // our index has changed, so delete all the previous propagations
                 while (childLeftTuple != null) {
-                    LeftTuple nextChild = childLeftTuple.getLeftParentNext();
+                    LeftTuple nextChild = childLeftTuple.getHandleNext();
                     RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
                     childLeftTuple = nextChild;
                 }
@@ -260,13 +260,13 @@ public class PhreakJoinNode {
                         childLeftTuple.setPropagationContext(rightTuple.getPropagationContext());
                         updateChildLeftTuple(childLeftTuple, stagedLeftTuples, trgLeftTuples);
 
-                        LeftTuple nextChildLeftTuple = childLeftTuple.getLeftParentNext();
+                        LeftTuple nextChildLeftTuple = childLeftTuple.getHandleNext();
                         childLeftTuple.reAddRight();
                         childLeftTuple = nextChildLeftTuple;
                     }
                 } else if (childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple) {
                     // delete, childLeftTuple is updated
-                    LeftTuple nextChild = childLeftTuple.getLeftParentNext();
+                    LeftTuple nextChild = childLeftTuple.getHandleNext();
                     RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
                     childLeftTuple = nextChild;
                 }
@@ -407,7 +407,7 @@ public class PhreakJoinNode {
                 LeftTuple childLeftTuple = leftTuple.getFirstChild();
 
                 while (childLeftTuple != null) {
-                    LeftTuple nextChild = childLeftTuple.getLeftParentNext();
+                    LeftTuple nextChild = childLeftTuple.getHandleNext();
                     RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, trgLeftTuples, stagedLeftTuples );
                     childLeftTuple = nextChild;
                 }
