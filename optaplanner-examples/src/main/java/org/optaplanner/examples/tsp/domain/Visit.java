@@ -23,6 +23,7 @@ import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.domain.solver.DomicileAngleVisitDifficultyWeightFactory;
+import org.optaplanner.examples.tsp.domain.solver.DomicileDistanceStandstillStrengthWeightFactory;
 
 @PlanningEntity(difficultyWeightFactoryClass = DomicileAngleVisitDifficultyWeightFactory.class)
 @XStreamAlias("Visit")
@@ -42,7 +43,8 @@ public class Visit extends AbstractPersistable implements Standstill {
     }
 
     @PlanningVariable(valueRangeProviderRefs = {"domicileRange", "visitRange"},
-            graphType = PlanningVariableGraphType.CHAINED)
+            graphType = PlanningVariableGraphType.CHAINED,
+            strengthWeightFactoryClass = DomicileDistanceStandstillStrengthWeightFactory.class)
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
