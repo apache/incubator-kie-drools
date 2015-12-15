@@ -261,7 +261,7 @@ public class RightInputAdapterNode extends ObjectSource
     @Override
     public String toString() {
         return "RightInputAdapterNode(" + id + ")[ tupleMemoryEnabled=" + tupleMemoryEnabled + ", tupleSource=" + tupleSource + ", source="
-               + source + ", associations=" + associations.keySet() + ", partitionId=" + partitionId + "]";
+               + source + ", associations=" + associations + ", partitionId=" + partitionId + "]";
     }
     
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,

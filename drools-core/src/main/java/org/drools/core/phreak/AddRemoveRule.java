@@ -77,7 +77,7 @@ public class AddRemoveRule {
 
         for (InternalWorkingMemory wm : wms) {
 
-            if (splitStartLeftTupleSource.getAssociations().size() > 1) {
+            if (splitStartLeftTupleSource.getAssociationsSize() > 1) {
                 List<PathMemory> pathMems = new ArrayList<PathMemory>();
 
                 collectRtnPathMemories(splitStartLeftTupleSource, wm, pathMems, tn); // get all PathMemories, except current
@@ -123,7 +123,7 @@ public class AddRemoveRule {
                 }
             }
 
-            if (NodeTypeEnums.LeftInputAdapterNode == splitStartLeftTupleSource.getType() && splitStartLeftTupleSource.getAssociations().size() == 1) {
+            if (NodeTypeEnums.LeftInputAdapterNode == splitStartLeftTupleSource.getType() && splitStartLeftTupleSource.getAssociationsSize() == 1) {
                 // rule added with no sharing
                 insertLiaFacts( splitStartLeftTupleSource, wm );
             }
@@ -154,13 +154,13 @@ public class AddRemoveRule {
              wm.flushPropagations();
 
              //
-             if (NodeTypeEnums.LeftInputAdapterNode == splitStartNode.getType() && splitStartNode.getAssociations().size() == 1) {
+             if (NodeTypeEnums.LeftInputAdapterNode == splitStartNode.getType() && splitStartNode.getAssociationsSize() == 1) {
                  // rule added with no sharing
                  deleteLiaFacts(splitStartNode, wm);
              }
 
              LeftTupleSink sink;
-             if ( splitStartNode.getAssociations().size() == 1 ) {
+             if ( splitStartNode.getAssociationsSize() == 1 ) {
                  // there is no sharing, so get the node after the root of the only SegmentMemory
                  SegmentMemory sm =  removedPmem.getSegmentMemories()[s];
                  if ( sm == null ) {
@@ -180,7 +180,7 @@ public class AddRemoveRule {
              }
              deleteFacts( sink, wm);
 
-             if ( splitStartNode.getAssociations().size() > 1 ) {
+             if ( splitStartNode.getAssociationsSize() > 1 ) {
                  List<PathMemory> pathMems = new ArrayList<PathMemory>();
                  collectRtnPathMemories(splitStartNode, wm, pathMems, tn); // get all PathMemories, except current
 
@@ -234,7 +234,7 @@ public class AddRemoveRule {
      }
 
     private static void flushSegmentIfMerge(InternalWorkingMemory wm, TerminalNode tn, LeftTupleSource splitStartNode, int segmentPos) {
-        if ( splitStartNode.getAssociations().size() == 2 ) {
+        if ( splitStartNode.getAssociationsSize() == 2 ) {
             // only handle for the first PathMemory, all others are shared and duplicate until this point
             PathMemory pmem = getFirstRtnPathMemory(splitStartNode, wm, tn);
             SegmentMemory[] smems = pmem.getSegmentMemories();
@@ -841,8 +841,8 @@ public class AddRemoveRule {
             }
         } else if ( leftNext != null ) {
             // replacing first
-            newPeer.setLeftParentNext(leftNext);
-            leftNext.setLeftParentPrevious(newPeer);
+            newPeer.setLeftParentNext(leftNext );
+            leftNext.setLeftParentPrevious(newPeer );
             if ( isHandle ) {
                 fh.setFirstLeftTuple(newPeer);
             } else {
@@ -850,8 +850,8 @@ public class AddRemoveRule {
             }
         } else {
             // replacing last
-            newPeer.setLeftParentPrevious(leftPrevious);
-            leftPrevious.setLeftParentNext(newPeer);
+            newPeer.setLeftParentPrevious(leftPrevious );
+            leftPrevious.setLeftParentNext(newPeer );
             if ( isHandle ) {
                 fh.setLastLeftTuple(newPeer);
             } else {
@@ -944,7 +944,7 @@ public class AddRemoveRule {
          LeftTupleSource lt = tn.getLeftTupleSource();
 
          // iterate to find split point, or to the root
-         while ( lt.getType() != NodeTypeEnums.LeftInputAdapterNode && lt.getAssociations().size() == 1 ) {
+         while ( lt.getType() != NodeTypeEnums.LeftInputAdapterNode && lt.getAssociationsSize() == 1 ) {
              lt = lt.getLeftTupleSource();
          }
 

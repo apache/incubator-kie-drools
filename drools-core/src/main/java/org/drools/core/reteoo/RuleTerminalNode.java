@@ -222,7 +222,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public void attach( BuildContext context ) {
         getLeftTupleSource().addTupleSink(this, context);
-        addAssociation( context.getRule(), context.peekRuleComponent() );
+        addAssociation( context.getRule() );
     }
 
     public Declaration[] getAllDeclarations() {

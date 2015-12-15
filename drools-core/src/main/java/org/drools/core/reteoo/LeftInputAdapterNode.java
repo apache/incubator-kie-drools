@@ -34,7 +34,6 @@ import org.drools.core.spi.Activation;
 import org.drools.core.spi.ClassWireable;
 import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.RuleComponent;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
@@ -45,7 +44,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Map;
 
 import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
@@ -659,8 +657,16 @@ public class LeftInputAdapterNode extends LeftTupleSource
             return NodeTypeEnums.LeftInputAdapterNode;
         }
 
-        public Map<Rule, RuleComponent> getAssociations() {
-            return sink.getAssociations();
+        public int getAssociationsSize() {
+            return sink.getAssociationsSize();
+        }
+
+        public int getAssociationsSize(Rule rule) {
+            return sink.getAssociationsSize(rule);
+        }
+
+        public boolean isAssociatedWith( Rule rule ) {
+            return sink.isAssociatedWith( rule );
         }
     }
 
