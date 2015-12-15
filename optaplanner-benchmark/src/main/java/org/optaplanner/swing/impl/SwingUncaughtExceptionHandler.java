@@ -17,6 +17,7 @@
 package org.optaplanner.swing.impl;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.AbstractAction;
@@ -82,6 +83,7 @@ public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHa
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         contentPanel.add(stackTraceScrollPane, BorderLayout.CENTER);
         stackTraceTextArea.setCaretPosition(0); // Scroll to top
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 0));
         JButton closeButton = new JButton(new AbstractAction("Close") {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -89,7 +91,15 @@ public class SwingUncaughtExceptionHandler implements Thread.UncaughtExceptionHa
                 exceptionFrame.dispose();
             }
         });
-        contentPanel.add(closeButton, BorderLayout.SOUTH);
+        buttonPanel.add(closeButton);
+        JButton exitApplicationButton = new JButton(new AbstractAction("Exit application") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(1);
+            }
+        });
+        buttonPanel.add(exitApplicationButton);
+        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
         exceptionFrame.setContentPane(contentPanel);
         exceptionFrame.pack();
         exceptionFrame.setLocationRelativeTo(null);
