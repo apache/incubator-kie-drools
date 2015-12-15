@@ -21,13 +21,12 @@ import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.RuleRemovalContext;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.RuleComponent;
+import org.drools.core.util.Bag;
 import org.kie.api.definition.rule.Rule;
 
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The base class for all Rete nodes.
@@ -39,7 +38,7 @@ public abstract class BaseNode
     protected int                      id;
     protected RuleBasePartitionId      partitionId;
     protected boolean                  partitionsEnabled;
-    protected Map<Rule, RuleComponent> associations;
+    protected Bag<Rule>                associations;
     private   boolean                  streamMode;
 
     public BaseNode() {
@@ -59,7 +58,7 @@ public abstract class BaseNode
         this.id = id;
         this.partitionId = partitionId;
         this.partitionsEnabled = partitionsEnabled;
-        this.associations = new HashMap<Rule, RuleComponent>();
+        this.associations = new Bag<Rule>();
     }
 
     @SuppressWarnings("unchecked")
@@ -68,7 +67,7 @@ public abstract class BaseNode
         id = in.readInt();
         partitionId = (RuleBasePartitionId) in.readObject();
         partitionsEnabled = in.readBoolean();
-        associations = (Map<Rule, RuleComponent>) in.readObject();
+        associations = (Bag<Rule>) in.readObject();
         streamMode = in.readBoolean();
     }
 
@@ -161,26 +160,33 @@ public abstract class BaseNode
     }
 
     /**
-     * Creates an association between this node and the rule + rule component
-     * that caused the creation of this node. Since nodes might be shared,
-     * there might be more than one source for each node.
+     * Associates this node with the give rule
      */
-    public void addAssociation( Rule rule, RuleComponent component ) {
-        this.associations.put( rule, component );
+    public void addAssociation( Rule rule ) {
+        this.associations.add( rule );
     }
-    
-    /**
-     * Returns the map of associations for this node
-     */
-    public Map<Rule, RuleComponent> getAssociations() {
-        return this.associations;
+
+    public void addAssociation( Rule rule, RuleComponent ruleComponent ) {
+        addAssociation( rule );
     }
-    
+
     /**
      * Removes the association to the given rule from the
      * associations map.
      */
     public void removeAssociation( Rule rule ) {
         this.associations.remove(rule);
+    }
+
+    public int getAssociationsSize() {
+        return this.associations.size();
+    }
+
+    public int getAssociationsSize(Rule rule) {
+        return this.associations.sizeFor(rule);
+    }
+
+    public boolean isAssociatedWith( Rule rule ) {
+        return this.associations.contains( rule );
     }
 }

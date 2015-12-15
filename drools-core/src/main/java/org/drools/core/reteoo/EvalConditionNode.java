@@ -33,7 +33,8 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Map.Entry;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EvalConditionNode extends LeftTupleSource
     implements
@@ -49,6 +50,8 @@ public class EvalConditionNode extends LeftTupleSource
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
+
+    private Map<Rule, RuleComponent> componentsMap = new HashMap<Rule, RuleComponent>();
 
     // ------------------------------------------------------------
     // Constructors
@@ -74,12 +77,14 @@ public class EvalConditionNode extends LeftTupleSource
         super.readExternal( in );
         condition = (EvalCondition) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
+        componentsMap = (Map<Rule, RuleComponent>) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal( out );
         out.writeObject( condition );
         out.writeBoolean( tupleMemoryEnabled );
+        out.writeObject( componentsMap );
     }
 
     public void attach( BuildContext context ) {
@@ -317,11 +322,20 @@ public class EvalConditionNode extends LeftTupleSource
         } else {
             // need to re-wire eval expression to the same one from another rule
             // that is sharing this node
-            Entry<Rule, RuleComponent> next = this.getAssociations().entrySet().iterator().next();
-            this.condition = (EvalCondition) next.getValue();
+            this.condition = (EvalCondition) componentsMap.values().iterator().next();
             return false;
         }
     }
 
+    @Override
+    public void addAssociation( Rule rule, RuleComponent ruleComponent ) {
+        super.addAssociation(rule, ruleComponent);
+        componentsMap.put(rule, ruleComponent);
+    }
 
+    @Override
+    public void removeAssociation( Rule rule ) {
+        super.removeAssociation(rule);
+        componentsMap.remove(rule);
+    }
 }

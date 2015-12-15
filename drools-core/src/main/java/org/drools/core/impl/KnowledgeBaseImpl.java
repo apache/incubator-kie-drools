@@ -1414,7 +1414,7 @@ public class KnowledgeBaseImpl
     }
 
     public void invalidateSegmentPrototype(LeftTupleSource tupleSource, boolean ruleRemoved) {
-        if (ruleRemoved && tupleSource.getAssociations().size() < 2) {
+        if (ruleRemoved && tupleSource.getAssociationsSize() < 2) {
             return;
         }
         while ( tupleSource.getLeftTupleSource() != null ) {
