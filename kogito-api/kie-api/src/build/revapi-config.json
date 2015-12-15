@@ -1,0 +1,16 @@
+{
+  "revapi" : {
+    "ignore" : [
+      {
+        "code" : "java.method.addedToInterface",
+        "new" : "method org.kie.api.runtime.KieSessionConfiguration org.kie.api.runtime.KieContainer::getKieSessionConfiguration()",
+        "justification" : "Enables retrieving the default session configuration directly from KieContainer."
+      },
+      {
+        "code" : "java.method.addedToInterface",
+        "new" : "method org.kie.api.runtime.KieSessionConfiguration org.kie.api.runtime.KieContainer::getKieSessionConfiguration(java.lang.String)",
+        "justification" : "Enables retrieving the named session configuration directly from KieContainer."
+      }
+    ]
+  }
+}
