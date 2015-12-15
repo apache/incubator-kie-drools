@@ -129,7 +129,7 @@ public class ReteWindowNode extends WindowNode
             rightTuple.setPropagationContext(pctx);
 
             InternalFactHandle clonedFh = evFh.cloneAndLink();  // this is cloned, as we need to separate the child RightTuple references
-            rightTuple.setObject(clonedFh);
+            rightTuple.setContextObject( clonedFh);
 
             // process the behavior
             if (!behavior.assertFact(memory.behaviorContext, clonedFh, pctx, workingMemory)) {
@@ -153,7 +153,7 @@ public class ReteWindowNode extends WindowNode
             memory.gate.unlock();
         }
 
-        InternalFactHandle clonedFh = (InternalFactHandle) rightTuple.getObject();
+        InternalFactHandle clonedFh = (InternalFactHandle) rightTuple.getContextObject();
         ObjectTypeNode.doRetractObject(clonedFh, pctx, wm);
     }
 
@@ -165,7 +165,7 @@ public class ReteWindowNode extends WindowNode
         memory.gate.lock();
 
         EventFactHandle originalFactHandle = (EventFactHandle) rightTuple.getFactHandle();
-        EventFactHandle cloneFactHandle = (EventFactHandle) rightTuple.getObject();
+        EventFactHandle cloneFactHandle = (EventFactHandle) rightTuple.getContextObject();
         originalFactHandle.quickCloneUpdate(cloneFactHandle); // make sure all fields are updated
 
         // behavior modify

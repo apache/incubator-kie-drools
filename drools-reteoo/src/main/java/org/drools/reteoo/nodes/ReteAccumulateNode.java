@@ -387,12 +387,12 @@ public class ReteAccumulateNode extends AccumulateNode {
                                       true );
                         } else {
                             // we must re-add this to ensure deterministic iteration
-                            LeftTuple temp = childLeftTuple.getLeftParentNext();
+                            LeftTuple temp = childLeftTuple.getHandleNext();
                             childLeftTuple.reAddRight();
                             childLeftTuple = temp;
                         }
                     } else if ( childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple ) {
-                        LeftTuple temp = childLeftTuple.getLeftParentNext();
+                        LeftTuple temp = childLeftTuple.getHandleNext();
                         // remove the match
                         removeMatch( rightTuple,
                                      childLeftTuple,
@@ -810,7 +810,7 @@ public class ReteAccumulateNode extends AccumulateNode {
                               workingMemory );
         for ( LeftTuple childMatch = getFirstMatch( leftTuple,
                                                     accctx,
-                                                    false ); childMatch != null; childMatch = childMatch.getLeftParentNext() ) {
+                                                    false ); childMatch != null; childMatch = childMatch.getHandleNext() ) {
             InternalFactHandle childHandle = childMatch.getRightParent().getFactHandle();
             LeftTuple tuple = leftTuple;
             if ( this.unwrapRightObject ) {
@@ -833,7 +833,7 @@ public class ReteAccumulateNode extends AccumulateNode {
         LeftTuple[] matchings = splitList( leftTuple,
                                            accctx,
                                            false );
-        for ( LeftTuple match = matchings[0]; match != null; match = match.getLeftParentNext() ) {
+        for ( LeftTuple match = matchings[0]; match != null; match = match.getHandleNext() ) {
             // can't unlink from the left parent as it was already unlinked during the splitList call above
             match.unlinkFromRightParent();
         }
@@ -894,10 +894,10 @@ public class ReteAccumulateNode extends AccumulateNode {
             if ( parent.getFirstChild() == matchings[0] ) {
                 parent.setFirstChild( null );
             }
-            parent.setLastChild( matchings[0].getLeftParentPrevious() );
+            parent.setLastChild( matchings[0].getHandlePrevious() );
             if ( parent.getLastChild() != null ) {
-                parent.getLastChild().setLeftParentNext( null );
-                matchings[0].setLeftParentPrevious( null );
+                parent.getLastChild().setHandleNext( null );
+                matchings[0].setHandlePrevious( null );
             }
         }
 
@@ -911,8 +911,8 @@ public class ReteAccumulateNode extends AccumulateNode {
             parent.setFirstChild( matchings[0] );
             parent.setLastChild( matchings[1] );
         } else if ( matchings[0] != null ) {
-            parent.getLastChild().setLeftParentNext( matchings[0] );
-            matchings[0].setLeftParentPrevious( parent.getLastChild() );
+            parent.getLastChild().setHandleNext( matchings[0] );
+            matchings[0].setHandlePrevious( parent.getLastChild() );
             parent.setLastChild( matchings[1] );
         }
     }
@@ -931,7 +931,7 @@ public class ReteAccumulateNode extends AccumulateNode {
             // To do that, we need to skip the first N children that are in fact the propagated tuples
             int target = isUpdatingSink ? this.sink.size() - 1 : this.sink.size();
             for ( int i = 0; i < target; i++ ) {
-                child = child.getLeftParentNext();
+                child = child.getHandleNext();
             }
         }
         return child;

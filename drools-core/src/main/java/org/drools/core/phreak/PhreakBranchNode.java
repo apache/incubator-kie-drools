@@ -131,7 +131,7 @@ public class PhreakBranchNode {
                 } else {
                     rtnLeftTuple = child;
                 }
-                child = child.getLeftParentNext();
+                child = child.getHandleNext();
                 if ( child != null ) {
                     if ( child.getTupleSink() == sink ) {
                         mainLeftTuple = child;

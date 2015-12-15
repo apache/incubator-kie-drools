@@ -96,7 +96,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                           final InternalWorkingMemory workingMemory) {
         LeftTuple child = leftTuple.getFirstChild();
         while ( child != null ) { 
-            LeftTuple temp = child.getLeftParentNext();
+            LeftTuple temp = child.getHandleNext();
             doPropagateRetractLeftTuple( context,
                                          workingMemory,
                                          child,
@@ -112,7 +112,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                                            final InternalWorkingMemory workingMemory) {
         LeftTuple child = leftTuple.getFirstChild();
         while ( child != null ) {
-            LeftTuple temp = child.getLeftParentNext();
+            LeftTuple temp = child.getHandleNext();
             doPropagateRetractLeftTuple( context,
                                          workingMemory,
                                          child,
@@ -256,7 +256,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                                            workingMemory );
         // re-order right to keep order consistency
         childLeftTuple.reAddRight();
-        return childLeftTuple.getLeftParentNext();
+        return childLeftTuple.getHandleNext();
     }
 
     public LeftTuple propagateModifyChildLeftTuple(LeftTuple childLeftTuple,
@@ -286,7 +286,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                                     RightTuple parentRightTuple,
                                                     PropagationContext context,
                                                     InternalWorkingMemory workingMemory) {
-        LeftTuple temp = childLeftTuple.getLeftParentNext();
+        LeftTuple temp = childLeftTuple.getHandleNext();
         doPropagateRetractLeftTuple( context,
                                      workingMemory,
                                      childLeftTuple,

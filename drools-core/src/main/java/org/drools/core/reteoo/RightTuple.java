@@ -21,10 +21,7 @@ import org.drools.core.spi.Tuple;
 public interface RightTuple extends Tuple {
 
     RightTuple getHandlePrevious();
-    void setHandlePrevious( RightTuple handlePrevious );
-
     RightTuple getHandleNext();
-    void setHandleNext( RightTuple handleNext );
 
     RightTupleSink getTupleSink();
 
@@ -35,9 +32,6 @@ public interface RightTuple extends Tuple {
 
     LeftTuple getTempBlocked();
     void setTempBlocked( LeftTuple tempBlocked );
-
-    Object getObject();
-    void setObject( Object object );
 
     RightTuple getTempNextRightTuple();
     void setTempNextRightTuple( RightTuple tempNextRightTuple );

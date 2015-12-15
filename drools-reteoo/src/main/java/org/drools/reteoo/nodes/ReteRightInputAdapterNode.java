@@ -94,7 +94,7 @@ public class ReteRightInputAdapterNode extends RightInputAdapterNode {
         }
         factHandle.clearRightTuples();
 
-        for ( LeftTuple leftTuple = factHandle.getLastLeftTuple(); leftTuple != null; leftTuple = leftTuple.getLeftParentNext() ) {
+        for ( LeftTuple leftTuple = factHandle.getLastLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext() ) {
             leftTuple.getTupleSink().retractLeftTuple( leftTuple,
                                                            context,
                                                            workingMemory );

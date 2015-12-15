@@ -22,12 +22,7 @@ import org.drools.core.util.index.TupleList;
 
 public class RightTupleImpl extends BaseTuple implements RightTuple {
 
-    private RightTuple           handlePrevious;
-    private RightTuple           handleNext;
-
     private TupleList            memory;
-
-    private Object               object;
 
     private LeftTuple            firstChild;
     private LeftTuple            lastChild;
@@ -51,7 +46,7 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
         this.sink = sink;
 
         // add to end of RightTuples on handle
-        handle.addRightTupleInPosition( this );
+        handle.addTupleInPosition( this );
     }
 
     public RightTupleSink getTupleSink() {
@@ -125,19 +120,11 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
     }
 
     public RightTuple getHandlePrevious() {
-        return handlePrevious;
-    }
-
-    public void setHandlePrevious(RightTuple handlePrevious) {
-        this.handlePrevious = handlePrevious;
+        return (RightTuple) handlePrevious;
     }
 
     public RightTuple getHandleNext() {
-        return handleNext;
-    }
-
-    public void setHandleNext(RightTuple handleNext) {
-        this.handleNext = handleNext;
+        return (RightTuple) handleNext;
     }
 
     public LeftTuple getFirstChild() {
@@ -190,14 +177,6 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
 
     public int hashCode() {
         return getFactHandle().hashCode();
-    }
-
-    public Object getObject() {
-        return object;
-    }
-
-    public void setObject(Object object) {
-        this.object = object;
     }
 
     public String toString() {
@@ -272,5 +251,10 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
     @Override
     public Tuple getSubTuple( int elements ) {
         return elements == 1 ? this : null;
+    }
+
+    @Override
+    public ObjectTypeNode.Id getInputOtnId() {
+        return sink != null ? getTupleSink().getRightInputOtnId() : null;
     }
 }

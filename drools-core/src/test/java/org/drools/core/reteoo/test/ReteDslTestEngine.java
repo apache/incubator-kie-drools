@@ -796,7 +796,7 @@ public class ReteDslTestEngine {
                                                                                       wm );
                                 }
                                 handle.clearRightTuples();
-                                for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getLeftParentNext() ) {
+                                for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getHandleNext() ) {
                                     leftTuple.getTupleSink().retractLeftTuple( leftTuple,
                                                                                    pContext,
                                                                                    wm );

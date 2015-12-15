@@ -223,7 +223,7 @@ public class ReteConditionalBranchNode extends ConditionalBranchNode {
 
                 while ( childLeftTuple != null && childLeftTuple.getRightParent() == rightParent ) {
                     // skip to the next child that has a different right parent
-                    childLeftTuple = childLeftTuple.getLeftParentNext();
+                    childLeftTuple = childLeftTuple.getHandleNext();
                 }
             }
         }

@@ -374,13 +374,13 @@ public class PhreakAccumulateNode {
                                  true);
                     } else {
                         // we must re-add this to ensure deterministic iteration
-                        LeftTuple temp = childLeftTuple.getLeftParentNext();
+                        LeftTuple temp = childLeftTuple.getHandleNext();
                         childLeftTuple.reAddRight();
                         childLeftTuple = temp;
                         isDirty = accumulate.hasRequiredDeclarations();
                     }
                 } else if (childLeftTuple != null && childLeftTuple.getRightParent() == rightTuple) {
-                    LeftTuple temp = childLeftTuple.getLeftParentNext();
+                    LeftTuple temp = childLeftTuple.getHandleNext();
                     // remove the match
                     removeMatch(accNode,
                                 accumulate,
@@ -828,7 +828,7 @@ public class PhreakAccumulateNode {
                         accctx.context,
                         leftTuple,
                         wm);
-        for (LeftTuple childMatch = leftTuple.getFirstChild(); childMatch != null; childMatch = childMatch.getLeftParentNext()) {
+        for (LeftTuple childMatch = leftTuple.getFirstChild(); childMatch != null; childMatch = childMatch.getHandleNext()) {
             InternalFactHandle childHandle = childMatch.getRightParent().getFactHandle();
             LeftTuple tuple = leftTuple;
             if (accNode.isUnwrapRightObject()) {
@@ -879,7 +879,7 @@ public class PhreakAccumulateNode {
                                                           final AccumulateContext accctx,
                                                           boolean reInit) {
         for (LeftTuple match = leftTuple.getFirstChild(); match != null; ) {
-            LeftTuple next = match.getLeftParentNext();
+            LeftTuple next = match.getHandleNext();
             match.unlinkFromRightParent();
             match.unlinkFromLeftParent();
             match = next;

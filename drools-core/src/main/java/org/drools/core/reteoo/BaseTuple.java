@@ -39,6 +39,9 @@ public abstract class BaseTuple implements Tuple {
 
     protected Sink sink;
 
+    protected Tuple handlePrevious;
+    protected Tuple handleNext;
+
     public Object getObject(Declaration declaration) {
         return getObject(declaration.getPattern().getOffset());
     }
@@ -156,5 +159,25 @@ public abstract class BaseTuple implements Tuple {
             entry = entry.getParent();
         }
         return entry;
+    }
+
+    @Override
+    public Tuple getHandlePrevious() {
+        return handlePrevious;
+    }
+
+    @Override
+    public void setHandlePrevious(Tuple handlePrevious) {
+        this.handlePrevious = handlePrevious;
+    }
+
+    @Override
+    public Tuple getHandleNext() {
+        return handleNext;
+    }
+
+    @Override
+    public void setHandleNext(Tuple handleNext) {
+        this.handleNext = handleNext;
     }
 }
