@@ -93,6 +93,17 @@ public class MeetingAssignment extends AbstractPersistable {
         return startingTimeGrain.getDateTimeString();
     }
 
+    public int getRoomCapacity() {
+        if (room == null) {
+            return 0;
+        }
+        return room.getCapacity();
+    }
+
+    public int getRequiredCapacity() {
+        return meeting.getRequiredCapacity();
+    }
+
     public String getLabel() {
         int wrapLength = Math.max(8 * meeting.getDurationInGrains(), 16);
         return "<html><center>" + WordUtils.wrap(meeting.getTopic(), wrapLength, "<br/>", false) + "</center></html>";

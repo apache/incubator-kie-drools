@@ -64,9 +64,14 @@ public class Meeting extends AbstractPersistable {
     public void setPreferredAttendanceList(List<PreferredAttendance> preferredAttendanceList) {
         this.preferredAttendanceList = preferredAttendanceList;
     }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    public int getRequiredCapacity() {
+        return requiredAttendanceList.size() + preferredAttendanceList.size();
+    }
 
     public String getDurationString() {
         return (durationInGrains * TimeGrain.GRAIN_LENGTH_IN_MINUTES) + " minutes";

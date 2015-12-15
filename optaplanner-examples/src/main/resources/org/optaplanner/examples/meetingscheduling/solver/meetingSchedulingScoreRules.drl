@@ -63,6 +63,13 @@ rule "Required attendance conflict"
         scoreHolder.addHardConstraintMatch(kcontext, - $rightAssignment.calculateOverlap($leftAssignment));
 end
 
+rule "Required room capacity"
+    when
+        MeetingAssignment(requiredCapacity > roomCapacity, $penalty : (roomCapacity - requiredCapacity))
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, $penalty);
+end
+
 // ############################################################################
 // Medium constraints
 // ############################################################################
