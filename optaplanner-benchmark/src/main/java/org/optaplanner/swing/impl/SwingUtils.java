@@ -42,9 +42,9 @@ public class SwingUtils {
     }
 
     public static void fixateLookAndFeel() {
-        // increaseDefaultFont(1.5F);
         configureNimbusToTangoColors();
         configureLookAndFeel("Nimbus");
+//        increaseDefaultFont(1.5F);
     }
 
     protected static void configureNimbusToTangoColors() {
