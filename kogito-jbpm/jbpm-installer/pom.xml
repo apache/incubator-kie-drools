@@ -119,14 +119,6 @@
   <build>
     <testResources>
       <testResource>
-        <directory>db</directory>
-        <filtering>false</filtering>
-        <includes>
-          <include>**/*.sql</include>
-          <include>**/*.SQL</include>
-        </includes>
-      </testResource>
-      <testResource>
         <directory>src/test/resources</directory>
         <filtering>false</filtering>
       </testResource>
@@ -135,6 +127,23 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
+    
+    <resources>
+      <resource>
+        <directory>db</directory>
+        <filtering>false</filtering>
+        <includes>
+          <include>**/*.sql</include>
+          <include>**/*.SQL</include>
+          <include>**/*.xml</include>
+        </includes>
+        <excludes>
+          <exclude>**/*.jar</exclude>
+        </excludes>
+      </resource>
+      
+    </resources>
+    
     <plugins>
       <plugin>
         <!--  ensure that db files are deleted before _any_ run
