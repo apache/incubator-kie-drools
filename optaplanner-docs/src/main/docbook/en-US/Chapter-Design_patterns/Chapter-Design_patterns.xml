@@ -235,7 +235,7 @@
         </listitem>
 
         <listitem>
-          <para>Planning variable gaps: This is uncommon, because such extra planning variable (which impacts the <link
+          <para>Planning variable gaps: This is uncommon, because an extra planning variable (which impacts the <link
           linkend="searchSpaceSize">search space</link>) reduces efficiency and scalability.</para>
         </listitem>
       </itemizedlist>
@@ -253,7 +253,6 @@
     confuse it with <link linkend="solverPhase">multi-phase solving</link> which uses a one-solver configuration.</para>
 
     <para>Similarly to <link linkend="partitionedSearch">Partitioned Search</link>, multi-stage planning leads to
-    suboptimal results. Nevertheless, it may be beneficial in order to simplify the maintenance, ownership, and help a project
-    to succeed.</para>
+    suboptimal results. Nevertheless, it may be beneficial in order to simplify the maintenance, ownership, and help to start a project.</para>
   </section>
 </chapter>
