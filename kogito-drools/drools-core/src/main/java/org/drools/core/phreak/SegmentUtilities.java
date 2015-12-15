@@ -446,16 +446,16 @@ public class SegmentUtilities {
         }
         int size = parentLt.getSinkPropagator().size();
 
-        if (removingRule != null && size == 2 && parentLt.getAssociations().containsKey(removingRule)) {
+        if (removingRule != null && size == 2 && parentLt.isAssociatedWith( removingRule )) {
             // looks like a split, but one of the branches may be removed.
 
             LeftTupleSink first = parentLt.getSinkPropagator().getFirstLeftTupleSink();
-            if (first.getAssociations().size() == 1 && first.getAssociations().containsKey(removingRule)) {
+            if (first.getAssociationsSize() == first.getAssociationsSize( removingRule )) {
                 return true;
             }
 
             LeftTupleSink last = parentLt.getSinkPropagator().getLastLeftTupleSink();
-            return last.getAssociations().size() == 1 && last.getAssociations().containsKey(removingRule);
+            return last.getAssociationsSize() == last.getAssociationsSize(removingRule);
         } else {
             return size == 1;
         }

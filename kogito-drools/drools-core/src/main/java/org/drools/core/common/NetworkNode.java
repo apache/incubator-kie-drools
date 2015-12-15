@@ -16,11 +16,9 @@
 
 package org.drools.core.common;
 
-import java.io.Externalizable;
-import java.util.Map;
-
-import org.drools.core.spi.RuleComponent;
 import org.kie.api.definition.rule.Rule;
+
+import java.io.Externalizable;
 
 /**
  * Interface used to expose generic information on Rete nodes outside of he package. It is used
@@ -35,17 +33,20 @@ public interface NetworkNode
      * @return
      *      unique int value
      */
-    public int getId();
+    int getId();
 
     /**
      * Returns the partition ID to which this node belongs to
      *
      * @return
      */
-    public RuleBasePartitionId getPartitionId();
+    RuleBasePartitionId getPartitionId();
     
-    public short getType();
-    
-    public Map<Rule, RuleComponent> getAssociations();
+    short getType();
 
+    int getAssociationsSize();
+
+    int getAssociationsSize( Rule rule );
+
+    boolean isAssociatedWith( Rule rule );
 }

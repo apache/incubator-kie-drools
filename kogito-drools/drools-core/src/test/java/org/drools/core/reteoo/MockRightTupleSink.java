@@ -19,7 +19,6 @@ package org.drools.core.reteoo;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.RuleComponent;
 import org.kie.api.definition.rule.Rule;
 
 import java.io.IOException;
@@ -27,7 +26,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class MockRightTupleSink
     implements
@@ -76,9 +74,16 @@ public class MockRightTupleSink
         
     }
 
-    public Map<Rule, RuleComponent> getAssociations() {
-        // TODO Auto-generated method stub
-        return null;
+    public int getAssociationsSize() {
+        return 0;
+    }
+
+    public int getAssociationsSize(Rule rule) {
+        return 0;
+    }
+
+    public boolean isAssociatedWith( Rule rule ) {
+        return false;
     }
 
     public ObjectTypeNode.Id getRightInputOtnId() {
