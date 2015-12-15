@@ -147,7 +147,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         int size = tupleSource.getSinkPropagator().size();
         if ( size > 2 ) {
             counter++;
-        } else if ( size == 2 && ( removingRule == null || !tupleSource.getAssociations().containsKey( removingRule )  ) ) {
+        } else if ( size == 2 && ( removingRule == null || !tupleSource.isAssociatedWith( removingRule )  ) ) {
             counter++;
         }
 

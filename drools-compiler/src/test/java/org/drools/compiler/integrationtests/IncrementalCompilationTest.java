@@ -2424,4 +2424,36 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                "  counter.incrementAndGet();\n" +
                "end";
     }
+
+    @Test
+    public void testRuleRemovalWithOR() throws Exception {
+        // DROOLS-1007
+        String drl1 =
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "	 (Integer(this == $s.length) or Long(this == $s.length))\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.1" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        ksession.fireAllRules();
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        km = createAndDeployJar( ks, releaseId2 );
+
+        try {
+            kc.updateToVersion( releaseId2 );
+        } catch (Exception e) {
+            fail( "Incremental update should succeed, but failed with " + e.getLocalizedMessage() );
+        }
+
+        ksession.fireAllRules();
+    }
 }
