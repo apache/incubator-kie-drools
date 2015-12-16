@@ -57,8 +57,20 @@ public class ConstraintMatchesDialog extends JDialog {
     }
 
     public void resetContentPanel() {
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        Action okAction = new AbstractAction("OK") {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setVisible(false);
+            }
+        };
+        buttonPanel.add(new JButton(okAction));
         if (!solutionBusiness.isConstraintMatchEnabled()) {
-            setContentPane(new JLabel("Constraint matches are not supported with this ScoreDirector."));
+            JPanel unsupportedPanel = new JPanel(new BorderLayout());
+            JLabel unsupportedLabel = new JLabel("Constraint matches are not supported with this ScoreDirector.");
+            unsupportedPanel.add(unsupportedLabel, BorderLayout.CENTER);
+            unsupportedPanel.add(buttonPanel, BorderLayout.SOUTH);
+            setContentPane(unsupportedPanel);
         } else {
             final List<ConstraintMatchTotal> constraintMatchTotalList
                     = solutionBusiness.getConstraintMatchTotalList();
@@ -95,14 +107,6 @@ public class ConstraintMatchesDialog extends JDialog {
                         }
                     }
             );
-            JPanel buttonPanel = new JPanel(new FlowLayout());
-            Action okAction = new AbstractAction("OK") {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    setVisible(false);
-                }
-            };
-            buttonPanel.add(new JButton(okAction));
             bottomPanel.add(buttonPanel, BorderLayout.SOUTH);
             splitPane.setBottomComponent(bottomPanel);
             splitPane.setResizeWeight(1.0);
