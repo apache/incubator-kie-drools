@@ -13,8 +13,8 @@
     <section xml:id="whatIsAScore">
       <title>What is a Score?</title>
 
-      <para>Every initialized <literal>Solution</literal> has a score. That score is an objective way to compare 2
-      solutions: the solution with the higher score is better. The <literal>Solver</literal> aims to find the
+      <para>Every initialized <literal>Solution</literal> has a score. The score is an objective way to compare two
+      solutions. The solution with the higher score is better. The <literal>Solver</literal> aims to find the
       <literal>Solution</literal> with the highest <literal>Score</literal> of all possible solutions. The
       <emphasis>best solution</emphasis> is the <literal>Solution</literal> with the highest <literal>Score</literal>
       that <literal>Solver</literal> has encountered during solving, which might be the <emphasis>optimal
@@ -22,7 +22,7 @@
 
       <para>Planner cannot automatically know which <literal>Solution</literal> is best for your business, so you need
       to tell it how to calculate the score of a given <literal>Solution</literal> according to your business needs. If
-      you forget or unable to implement an important constraint, the solution is probably useless:</para>
+      you forget or are unable to implement an important constraint, the solution is probably useless:</para>
 
       <mediaobject>
         <imageobject>
@@ -30,8 +30,7 @@
         </imageobject>
       </mediaobject>
 
-      <para>Luckily, Planner is very flexible to define constraints, thanks to these score techniques, which can be used
-      and combined as much as needed:</para>
+      <para>The following score techniques can be used to make the Planner flexible by defining constraints:</para>
 
       <itemizedlist>
         <listitem>
@@ -56,7 +55,7 @@
     <section xml:id="scoreConstraintSignum">
       <title>Score Constraint Signum (Positive or Negative)</title>
 
-      <para>All score techniques are based on constraints. Such a constraint can be a simple pattern (such as
+      <para>All score techniques are based on constraints. A constraint can be a simple pattern (such as
       <emphasis>Maximize the apple harvest in the solution</emphasis>) or a more complex pattern. A positive constraint
       is a constraint you want to maximize. A negative constraint is a constraint you want to minimize.</para>
 
@@ -66,18 +65,18 @@
         </imageobject>
       </mediaobject>
 
-      <para>Notice in the image above, that <emphasis role="bold">the optimal solution always has the highest
+      <para>The image above illustrates that <emphasis role="bold">the optimal solution always has the highest
       score</emphasis>, regardless if the constraints are positive or negative.</para>
 
       <para>Most planning problems have only negative constraints and therefore have a negative score. In that case, the
       score is the sum of the weight of the negative constraints being broken, with a perfect score of 0. This explains
-      why the score of a solution of 4 queens is the negative of the number of queen pairs which can attack each
+      why the score of a solution of four queens is the negative of the number of queen pairs which can attack each
       other.</para>
 
       <para>Negative and positive constraints can be combined, even in the same score level.</para>
 
       <note>
-        <para>Don't presume your business knows all its score constraints in advance. Expect score constraints to be
+        <para>Do not presume that your business knows all its score constraints in advance. Expect score constraints to be
         added or changed after the first releases.</para>
       </note>
 
@@ -89,8 +88,8 @@
       <title>Score Constraint Weight</title>
 
       <para>Not all score constraints are equally important. If breaking one constraint is equally bad as breaking
-      another constraint x times, then those 2 constraints have a different weight (but they are in the same score
-      level). For example in vehicle routing, you can make1 "unhappy driver" constraint match count as much as 2 "fuel
+      another constraint x times, then those two constraints have a different weight (but they are in the same score
+      level). For example in vehicle routing, you can make one "unhappy driver" constraint match count as much as two "fuel
       tank usage" constraint matches:</para>
 
       <mediaobject>
@@ -100,12 +99,12 @@
       </mediaobject>
 
       <para>Score weighting is often used in use cases where you can put a price tag on everything. In that case, the
-      positive constraints maximize revenue and the negative constraints minimize expenses: together they maximize
+      positive constraints maximize revenue and the negative constraints minimize expenses and together they maximize
       profit. Alternatively, score weighting is also often used to create social <link
-      linkend="fairnessScoreConstraints">fairness</link>. For example: a nurse that requests a free day pays a higher
-      weight on New Year's eve than on a normal day.</para>
+      linkend="fairnessScoreConstraints">fairness</link>. For example, a nurse who requests a free day pays a higher
+      weight on New Years eve than on a normal day.</para>
 
-      <para>Put a good weight on a constraint can be a difficult analytical decision, because it's about making choices
+      <para>Putting a good weight on a constraint can be a difficult analytical decision, because it is about making choices
       and tradeoffs with other constraints. However, a non-accurate weight is less damaging than mediocre
       algorithms:</para>
 
@@ -116,7 +115,7 @@
       </mediaobject>
 
       <para>The weight of a constraint match can be dynamically based on the planning entities involved. For example in
-      cloud balance: the weight of the soft constraint match for an active <literal>Computer</literal> is the
+      cloud balance, the weight of the soft constraint match for an active <literal>Computer</literal> is the
       <literal>cost</literal> of that <literal>Computer</literal> (which differs per computer).</para>
 
       <note>
@@ -130,12 +129,12 @@
       <title>Score Constraint Level (hard, soft, ...)</title>
 
       <para>Sometimes a score constraint outranks another score constraint, no matter how many times the other is
-      broken. In that case, those score constraints are in different levels. For example: a nurse cannot do 2 shifts at
+      broken. In that case, those score constraints are in different levels. For example, a nurse cannot do 2 shifts at
       the same time (due to the constraints of physical reality), this outranks all nurse happiness constraints.</para>
 
-      <para>Most use cases have only 2 score levels: hard and soft. When comparing 2 scores, they are compared
-      lexicographically: the first score level gets compared first. If those differ, the others score levels are
-      ignored. For example: a score that breaks <literal>0</literal> hard constraints and <literal>1000000</literal>
+      <para>Most use cases have only two score levels, hard and soft. Two scores are compared
+      lexicographically. The first score level gets compared first. If those differ, the others score levels are
+      ignored. For example, a score that breaks <literal>0</literal> hard constraints and <literal>1000000</literal>
       soft constraints is better than a score that breaks <literal>1</literal> hard constraint and <literal>0</literal>
       soft constraints.</para>
 
@@ -145,7 +144,7 @@
         </imageobject>
       </mediaobject>
 
-      <para>If there are 2 (or more) score levels, for example a hard and soft level, then a score is feasible if no
+      <para>If there are two (or more) score levels, for example a hard and soft level, then a score is feasible if no
       hard constraints are broken.</para>
 
       <note>
@@ -156,7 +155,7 @@
 
       <para>For each constraint, you need to pick a score level, a score weight and a score signum. For example:
       <literal>-1soft</literal> which has score level of <literal>soft</literal>, a weight of <literal>1</literal> and a
-      negative signum. Don't use a big constraint weight when your business actually wants different score levels. That
+      negative signum. Do not use a big constraint weight when your business actually wants different score levels. That
       hack, known as <emphasis>score folding</emphasis>, is broken:</para>
 
       <mediaobject>
@@ -172,8 +171,8 @@
         lacking. For example in cloud balancing, how many new computers to buy.</para>
 
         <para>Furthermore, it will likely create a <link linkend="scoreTrap">score trap</link>. For example in cloud
-        balance: if a <literal>Computer</literal> has 7 CPU too little for its <literal>Process</literal>es, then it
-        must be weighted 7 times as much as if it had only 1 CPU too little.</para>
+        balance if a <literal>Computer</literal> has seven CPU too little for its <literal>Process</literal>es, then it
+        must be weighted seven times as much as if it had only one CPU too little.</para>
       </note>
 
       <para>Three or more score levels are supported. For example: a company might decide that profit outranks employee
@@ -190,14 +189,14 @@
 
       <para>Far less common is the use case of pareto optimization, which is also known under the more confusing term
       multi-objective optimization. In pareto scoring, score constraints are in the same score level, yet they are not
-      weighted against each other. When 2 scores are compared, each of the score constraints are compared individually
+      weighted against each other. When two scores are compared, each of the score constraints are compared individually
       and the score with the most dominating score constraints wins. Pareto scoring can even be combined with score
       levels and score constraint weighting.</para>
 
       <para>Consider this example with positive constraints, where we want to get the most apples and oranges. Since
-      it's impossible to compare apples and oranges, we can't weight them against each other. Yet, despite that we can't
-      compare them, we can state that 2 apples are better then 1 apple. Similarly, we can state that 2 apples and 1
-      orange are better than just 1 orange. So despite our inability to compare some Scores conclusively (at which point
+      it is impossible to compare apples and oranges, we can not weight them against each other. Yet, despite that we can not
+      compare them, we can state that two apples are better then one apple. Similarly, we can state that two apples and one
+      orange are better than just one orange. So despite our inability to compare some Scores conclusively (at which point
       we declare them equal), we can find a set of optimal scores. Those are called pareto optimal.</para>
 
       <mediaobject>
@@ -206,10 +205,10 @@
         </imageobject>
       </mediaobject>
 
-      <para>Scores are considered equal far more often. It's left up to a human to choose the better out of a set of
+      <para>Scores are considered equal far more often. It is left up to a human to choose the better out of a set of
       best solutions (with equal scores) found by Planner. In the example above, the user must choose between solution A
-      (3 apples and 1 orange) and solution B (1 apple and 6 oranges). It's guaranteed that Planner has not found another
-      solution which has more apples or more oranges or even a better combination of both (such as 2 apples and 3
+      (three apples and one orange) and solution B (one apple and six oranges). It is guaranteed that Planner has not found another
+      solution which has more apples or more oranges or even a better combination of both (such as two apples and three
       oranges).</para>
 
       <para>To implement pareto scoring in Planner, <link linkend="customScore">implement a custom
@@ -218,9 +217,9 @@
 
       <note>
         <para>A pareto <literal>Score</literal>'s <literal>compareTo</literal> method is not transitive because it does
-        a pareto comparison. For example: having 2 apples is greater than 1 apple. 1 apple is equal to 1 orange. Yet, 2
-        apples are not greater than 1 orange (but actually equal). Pareto comparison violates the contract of the
-        interface <literal>java.lang.Comparable</literal>'s <literal>compareTo</literal> method, but Planner's systems
+        a pareto comparison. For example: having two apples is greater than one apple. One apple is equal to One orange. Yet, two
+        apples are not greater than one orange (but actually equal). Pareto comparison violates the contract of the
+        interface <literal>java.lang.Comparable</literal>'s <literal>compareTo</literal> method, but Planners systems
         are <emphasis>pareto comparison safe</emphasis>, unless explicitly stated otherwise in this
         documentation.</para>
       </note>
@@ -296,7 +295,7 @@
 
       <note>
         <para>BigDecimal arithmetic is considerably slower than <literal>int</literal>, <literal>long</literal> or
-        <literal>double</literal> arithmetic. In experiments we've seen the average calculation count get divided by
+        <literal>double</literal> arithmetic. In experiments we have seen the average calculation count get divided by
         5.</para>
 
         <para>Therefore, in some cases, it can be worthwhile to multiply <emphasis>all</emphasis> numbers for a single
@@ -417,7 +416,7 @@
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
 
-      <para>The number of hard and soft score levels needs to be set at configuration time: it's not flexible to change
+      <para>The number of hard and soft score levels needs to be set at configuration time. It is not flexible to change
       during solving.</para>
 
       <para>Variants of this <literal>scoreDefinitionType</literal>:</para>
@@ -440,7 +439,7 @@
 
       <para>The <literal>ScoreDefinition</literal> interface defines the score representation.</para>
 
-      <para>To implement a custom <literal>Score</literal>, you'll also need to implement a custom
+      <para>To implement a custom <literal>Score</literal>, you will also need to implement a custom
       <literal>ScoreDefinition</literal>. Extend <literal>AbstractScoreDefinition</literal> (preferably by copy pasting
       <literal>HardSoftScoreDefinition</literal>) and start from there.</para>
 
@@ -483,7 +482,7 @@
       <para>All score calculation types are Object Oriented and can reuse existing Java code.</para>
 
       <important>
-        <para>The score calculation should be read-only: it should not change the planning entities or the problem facts
+        <para>The score calculation must be read-only. It must not change the planning entities or the problem facts
         in any way. For example, it must not call a setter method on a planning entity in a Drools score rule's RHS.
         This does not apply to <emphasis>logically inserted</emphasis> objects, which can be changed by the score rules
         that logically inserted them in the first place.</para>
@@ -491,7 +490,7 @@
         <para>Planner will not recalculate the score of a <literal>Solution</literal> if it can predict it (unless an
         <link linkend="environmentMode">environmentMode assertion</link> is enabled). For example, after a winning step
         is done, there is no need to calculate the score because that move was done and undone earlier. As a result,
-        there's no guarantee that such changes applied during score calculation are actually done.</para>
+        there is no guarantee that such changes applied during score calculation are actually done.</para>
       </important>
     </section>
 
@@ -885,7 +884,7 @@
         <section xml:id="droolsScoreCalculationScoreDrl">
           <title>A scoreDrl Resource on the Classpath</title>
 
-          <para>This is the easy way: the score rule live in a DRL file which is provided as a classpath resource. Just
+          <para>This is the easy way. The score rule live in a DRL file which is provided as a classpath resource. Just
           add the score rules DRL file in the solver configuration as a <literal>&lt;scoreDrl&gt;</literal>
           element:</para>
 
@@ -933,7 +932,7 @@
           <warning>
             <para>For portability reasons, a classpath resource is recommended over a File. An application build on one
             computer, but used on another computer, might not find the file on the same location. Worse, if they use a
-            different Operating System, it's hard to choose a portable file path.</para>
+            different Operating System, it is hard to choose a portable file path.</para>
           </warning>
 
           <para>Add multiple <literal>&lt;scoreDrlFile&gt;</literal> elements if the score rules are split across
@@ -950,7 +949,7 @@
           <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setKieBase(kieBase);</programlisting>
 
           <note>
-            <para>To be able to define your score rules in Drools Workbench, you'll want to:</para>
+            <para>To be able to define your score rules in Drools Workbench, you will want to:</para>
 
             <orderedlist>
               <listitem>
@@ -968,7 +967,7 @@
       <section xml:id="implementingAScoreRule">
         <title>Implementing a Score Rule</title>
 
-        <para>Here's an example of a score constraint implemented as a score rule in a DRL file:</para>
+        <para>Here is an example of a score constraint implemented as a score rule in a DRL file:</para>
 
         <programlisting>rule "multipleQueensHorizontal"
     when
@@ -980,7 +979,7 @@ end</programlisting>
 
         <para>This score rule will fire once for every 2 queens with the same <literal>rowIndex</literal>. The
         <literal>(id &gt; $id)</literal> condition is needed to assure that for 2 queens A and B, it can only fire for
-        (A, B) and not for (B, A), (A, A) or (B, B). Let's take a closer look at this score rule on this solution of 4
+        (A, B) and not for (B, A), (A, A) or (B, B). Let us take a closer look at this score rule on this solution of 4
         queens:</para>
 
         <mediaobject>
@@ -995,10 +994,10 @@ end</programlisting>
         <literal>0</literal>.</para>
 
         <note>
-          <para>Notice that every score rule will relate to at least 1 planning entity class (directly or indirectly
+          <para>Notice that every score rule will relate to at least one planning entity class (directly or indirectly
           through a logically inserted fact).</para>
 
-          <para>This is normal: it would be a waste of time to write a score rule that only relates to problem facts, as
+          <para>This is a normal case. It would be a waste of time to write a score rule that only relates to problem facts, as
           the consequence will never change during planning, no matter what the possible solution.</para>
         </note>
 
@@ -1047,8 +1046,8 @@ end</programlisting>
         <para>Most use cases will also weigh their constraint types or even their matches differently, by using a
         specific weight for each constraint match.</para>
 
-        <para>Here's an example from CurriculumCourse, where assigning a <literal>Lecture</literal> to a
-        <literal>Room</literal> which is missing 2 seats is weighted equally bad as having 1 isolated
+        <para>Here is an example from CurriculumCourse, where assigning a <literal>Lecture</literal> to a
+        <literal>Room</literal> which is missing two seats is weighted equally bad as having one isolated
         <literal>Lecture</literal> in a <literal>Curriculum</literal>:</para>
 
         <programlisting>global HardSoftScoreHolder scoreHolder;
@@ -1082,7 +1081,7 @@ end</programlisting>
       <title>InitializingScoreTrend</title>
 
       <para>The <literal>InitializingScoreTrend</literal> specifies how the Score will change as more and more variables
-      are initialized (while the already initialized variables don't change). Some optimization algorithms (such
+      are initialized (while the already initialized variables do not change). Some optimization algorithms (such
       Construction Heuristics and Exhaustive Search) run faster if they have such information.</para>
 
       <para>For for the Score (or each <link linkend="scoreLevel">score level</link> separately), specify a
@@ -1191,29 +1190,29 @@ end</programlisting>
       <para>After solving a problem, the <literal>Solver</literal> will log the <emphasis>average calculation count per
       second</emphasis>. This is a good measurement of Score calculation performance, despite that it is affected by non
       score calculation execution time. It depends on the problem scale of the problem dataset. Normally, even for high
-      scale problems, it is higher than <literal>1000</literal>, except when you're using
+      scale problems, it is higher than <literal>1000</literal>, except when you are using
       <literal>EasyScoreCalculator</literal>.</para>
 
       <important>
         <para>When improving your score calculation, focus on maximizing the average calculation count per second,
         instead of maximizing the best score. A big improvement in score calculation can sometimes yield little or no
-        best score improvement, for example when the algorithm is stuck in a local or global optima. If you're watching
+        best score improvement, for example when the algorithm is stuck in a local or global optima. If you are watching
         the calculation count instead, score calculation improvements are far more visible.</para>
 
         <para>Furthermore, watching the calculation count, allows you to remove or add score constraints, and still
         compare it with the original calculation count. Comparing the best score with the original would be wrong,
-        because it's comparing apples and oranges.</para>
+        because it is comparing apples and oranges.</para>
       </important>
     </section>
 
     <section xml:id="incrementalScoreCalculation">
-      <title>Incremental Score Calculation (with Delta's)</title>
+      <title>Incremental Score Calculation (with Deltas)</title>
 
       <para>When a <literal>Solution</literal> changes, incremental score calculation (AKA delta based score
       calculation), will calculate the delta with the previous state to find the new <literal>Score</literal>, instead
       of recalculating the entire score on every solution evaluation.</para>
 
-      <para>For example, if a single queen A moves from row <literal>1</literal> to <literal>2</literal>, it won't
+      <para>For example, if a single queen A moves from row <literal>1</literal> to <literal>2</literal>, it will not
       bother to check if queen B and C can attack each other, since neither of them changed.</para>
 
       <figure>
@@ -1237,7 +1236,7 @@ end</programlisting>
     <section xml:id="avoidCallingRemoteServicesDuringScoreCalculation">
       <title>Avoid Calling Remote Services During Score Calculation</title>
 
-      <para>Do not call remote services in your score calculation (except if you're bridging
+      <para>Do not call remote services in your score calculation (except if you are bridging
       <literal>EasyScoreCalculator</literal> to a legacy system). The network latency will kill your score calculation
       performance. Cache the results of those remote services if possible.</para>
 
@@ -1248,14 +1247,14 @@ end</programlisting>
     <section xml:id="pointlessConstraints">
       <title>Pointless Constraints</title>
 
-      <para>If you know a certain constraint can never be broken (or it is always broken), don't bother writing a score
-      constraint for it. For example in n queens, the score calculation doesn't check if multiple queens occupy the same
+      <para>If you know a certain constraint can never be broken (or it is always broken), you need not write a score
+      constraint for it. For example in n queens, the score calculation does not check if multiple queens occupy the same
       column, because a <literal>Queen</literal>'s <literal>column</literal> never changes and every
       <literal>Solution</literal> starts with each <literal>Queen</literal> on a different
       <literal>column</literal>.</para>
 
       <note>
-        <para>Don't go overboard with this. If some datasets don't use a specific constraint but others do, just return
+        <para>Do not go overboard with this. If some datasets do not use a specific constraint but others do, just return
         out of the constraint as soon as you can. There is no need to dynamically change your score calculation based on
         the dataset.</para>
       </note>
@@ -1264,7 +1263,7 @@ end</programlisting>
     <section xml:id="buildInHardConstraint">
       <title>Built-in Hard Constraint</title>
 
-      <para>Instead of implementing a hard constraint, it can sometimes be built in. For example: If
+      <para>Instead of implementing a hard constraint, it can sometimes be built in. For example, If
       <literal>Lecture</literal> A should never be assigned to <literal>Room</literal> X, but it uses
       <literal>ValueRangeProvider</literal> on Solution, so the <literal>Solver</literal> will often try to assign it to
       <literal>Room</literal> X too (only to find out that it breaks a hard constraint). Use <link
@@ -1285,7 +1284,7 @@ end</programlisting>
 
         <listitem>
           <para>Both implementation approaches have limitations (feature compatibility, disabling automatic performance
-          optimizations, ...), as explained in their documentation.</para>
+          optimizations), as explained in their documentation.</para>
         </listitem>
       </itemizedlist>
     </section>
@@ -1295,8 +1294,8 @@ end</programlisting>
 
       <itemizedlist>
         <listitem>
-          <para>Verify that your score calculation happens in the correct <literal>Number</literal> type. If you're
-          making the sum of <literal>int</literal> values, don't let Drools sum it in a <literal>double</literal> which
+          <para>Verify that your score calculation happens in the correct <literal>Number</literal> type. If you are
+          making the sum of <literal>int</literal> values, do not let Drools sum it in a <literal>double</literal> which
           takes longer.</para>
         </listitem>
 
@@ -1328,13 +1327,13 @@ end</programlisting>
 
       <itemizedlist>
         <listitem>
-          <para>If you need 2 doctors at each table, but you're only moving 1 doctor at a time. So the solver has no
+          <para>You need two doctors at each table, but you are only moving one doctor at a time. So the solver has no
           incentive to move a doctor to a table with no doctors. Punish a table with no doctors more then a table with
-          only 1 doctor in that score constraint in the score function.</para>
+          only one doctor in that score constraint in the score function.</para>
         </listitem>
 
         <listitem>
-          <para>2 exams need to be conducted at the same time, but you're only moving 1 exam at a time. So the solver
+          <para>Two exams need to be conducted at the same time, but you are only moving one exam at a time. So the solver
           has to move one of those exams to another timeslot without moving the other in the same move. Add a
           coarse-grained move that moves both exams at the same time.</para>
         </listitem>
@@ -1357,14 +1356,14 @@ end</programlisting>
         <para>Avoiding score traps does not mean that your score function should be smart enough to avoid local optima.
         Leave it to the optimization algorithms to deal with the local optima.</para>
 
-        <para>Avoiding score traps means to avoid - for each score constraint individually - a flatlined score
+        <para>Avoiding score traps means to avoid, for each score constraint individually, a flatlined score
         function.</para>
       </note>
 
       <important>
-        <para>Always specify the degree of infeasibility. The business will often say: "if the solution is infeasible,
-        it doesn't matter how infeasible it." While that's true for the business, it's not true for score calculation:
-        it benefits from knowing how infeasible it is. In practice, soft constraints usually do this naturally and it's
+        <para>Always specify the degree of infeasibility. The business will often say "if the solution is infeasible,
+        it does not matter how infeasible it is." While that is true for the business, it is not true for score calculation as
+        it benefits from knowing how infeasible it is. In practice, soft constraints usually do this naturally and it is
         just a matter of doing it for the hard constraints too.</para>
       </important>
 
@@ -1372,21 +1371,21 @@ end</programlisting>
 
       <itemizedlist>
         <listitem>
-          <para>Improve the score constraint to make a distinction in the score weight. For example: penalize
+          <para>Improve the score constraint to make a distinction in the score weight. For example, penalize
           <literal>-1hard</literal> for every missing CPU, instead of just <literal>-1hard</literal> if any CPU is
           missing.</para>
         </listitem>
 
         <listitem>
           <para>If changing the score constraint is not allowed from the business perspective, add a lower score level
-          with a score constraint that makes such a distinction. For example: penalize <literal>-1subsoft</literal> for
+          with a score constraint that makes such a distinction. For example, penalize <literal>-1subsoft</literal> for
           every missing CPU, on top of <literal>-1hard</literal> if any CPU is missing. The business ignores the subsoft
           score level.</para>
         </listitem>
 
         <listitem>
           <para>Add coarse-grained moves and union select them with the existing fine-grained moves. A coarse-grained
-          move effectively does multiple moves to directly get out of a score trap with a single move. For example: move
+          move effectively does multiple moves to directly get out of a score trap with a single move. For example, move
           multiple items from the same container to another container.</para>
         </listitem>
       </itemizedlist>
@@ -1395,9 +1394,9 @@ end</programlisting>
     <section xml:id="stepLimitBenchmark">
       <title>stepLimit Benchmark</title>
 
-      <para>Not all score constraints have the same performance cost. Sometimes 1 score constraint can kill the score
-      calculation performance outright. Use the <link linkend="benchmarker">Benchmarker</link> to do a 1 minute run and
-      check what happens to the average calculation count per second if you comment out all but 1 of the score
+      <para>Not all score constraints have the same performance cost. Sometimes one score constraint can kill the score
+      calculation performance outright. Use the <link linkend="benchmarker">Benchmarker</link> to do a one minute run and
+      check what happens to the average calculation count per second if you comment out all but one of the score
       constraints.</para>
     </section>
 
@@ -1418,7 +1417,7 @@ end</programlisting>
       </itemizedlist>
 
       <para>Implementing such a constraint can seem difficult (especially because there are different ways to formalize
-      fairness), but usually the <emphasis>squared workload</emphasis> implementation behaves most desirable: for each
+      fairness), but usually the <emphasis>squared workload</emphasis> implementation behaves most desirable. For each
       employee/asset, count the workload <literal>w</literal> and subtract <literal>w²</literal> from the score.</para>
 
       <mediaobject>
@@ -1427,9 +1426,9 @@ end</programlisting>
         </imageobject>
       </mediaobject>
 
-      <para>As shown above, the <emphasis>squared workload</emphasis> implementation guarantees that if you select 2
-      employees from a given solution and make their distribution between those 2 employees fairer, then the resulting
-      new solution will have a better overall score. Don't just use the difference from the average workload, as that
+      <para>As shown above, the <emphasis>squared workload</emphasis> implementation guarantees that if you select two
+      employees from a given solution and make their distribution between those two employees fairer, then the resulting
+      new solution will have a better overall score. Don not just use the difference from the average workload, as that
       can lead to unfairness, as demonstrated below.</para>
 
       <mediaobject>
@@ -1439,10 +1438,10 @@ end</programlisting>
       </mediaobject>
 
       <note>
-        <para>Instead of the <emphasis>squared workload</emphasis>, it's also possible to use the <link
+        <para>Instead of the <emphasis>squared workload</emphasis>, it is also possible to use the <link
         xlink:href="http://en.wikipedia.org/wiki/Variance">variance</link> (squared difference to the average) or the
         <link xlink:href="http://en.wikipedia.org/wiki/Standard_deviation">standard deviation</link> (square root of the
-        variance). This has no effect on the score comparison, because the average won't change during planning. It's
+        variance). This has no effect on the score comparison, because the average will not change during planning. It is
         just more work to implement (because the average needs to be known) and trivially slower (because the
         calculation is a bit longer).</para>
       </note>
