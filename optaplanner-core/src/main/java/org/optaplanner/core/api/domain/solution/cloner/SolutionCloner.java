@@ -26,7 +26,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
  * <p>
  * Planning cloning is hard: avoid doing it yourself.
  */
-public interface SolutionCloner<SolutionG extends Solution> {
+public interface SolutionCloner<Solution_ extends Solution> {
 
     /**
      * Does a planning clone. The returned {@link Solution} clone must fulfill these requirements:
@@ -43,6 +43,6 @@ public interface SolutionCloner<SolutionG extends Solution> {
      * @param original never null, the original {@link Solution}
      * @return never null, the cloned {@link Solution}
      */
-     SolutionG cloneSolution(SolutionG original);
+     Solution_ cloneSolution(Solution_ original);
 
 }

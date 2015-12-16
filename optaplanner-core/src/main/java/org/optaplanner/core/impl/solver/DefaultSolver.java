@@ -41,11 +41,11 @@ import org.slf4j.LoggerFactory;
  * Default implementation for {@link Solver}.
  * @see Solver
  */
-public class DefaultSolver implements Solver {
+public class DefaultSolver<Solution_ extends Solution> implements Solver<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected SolverEventSupport solverEventSupport = new SolverEventSupport(this);
+    protected SolverEventSupport<Solution_> solverEventSupport = new SolverEventSupport<Solution_>(this);
 
     protected EnvironmentMode environmentMode;
     protected RandomFactory randomFactory;
@@ -127,8 +127,8 @@ public class DefaultSolver implements Solver {
     // Complex getters
     // ************************************************************************
 
-    public Solution getBestSolution() {
-        return solverScope.getBestSolution();
+    public Solution_ getBestSolution() {
+        return (Solution_) solverScope.getBestSolution();
     }
 
     public long getTimeMillisSpent() {
@@ -163,7 +163,7 @@ public class DefaultSolver implements Solver {
     // Worker methods
     // ************************************************************************
 
-    public final void solve(Solution planningProblem) {
+    public final Solution_ solve(Solution_ planningProblem) {
         if (planningProblem == null) {
             throw new IllegalArgumentException("The planningProblem (" + planningProblem
                     + ") must not be null.");
@@ -178,6 +178,7 @@ public class DefaultSolver implements Solver {
             restartSolver = checkProblemFactChanges();
         }
         outerSolvingEnded(solverScope);
+        return (Solution_) solverScope.getBestSolution();
     }
 
     public void outerSolvingStarted(DefaultSolverScope solverScope) {
@@ -279,11 +280,11 @@ public class DefaultSolver implements Solver {
         return score;
     }
 
-    public void addEventListener(SolverEventListener eventListener) {
+    public void addEventListener(SolverEventListener<Solution_> eventListener) {
         solverEventSupport.addEventListener(eventListener);
     }
 
-    public void removeEventListener(SolverEventListener eventListener) {
+    public void removeEventListener(SolverEventListener<Solution_> eventListener) {
         solverEventSupport.removeEventListener(eventListener);
     }
 

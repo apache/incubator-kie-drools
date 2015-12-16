@@ -23,7 +23,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
-public interface SolverEventListener<SolutionG extends Solution> extends EventListener {
+public interface SolverEventListener<Solution_ extends Solution> extends EventListener {
 
     /**
      * Called once every time when a better {@link Solution} is found.
@@ -40,6 +40,6 @@ public interface SolverEventListener<SolutionG extends Solution> extends EventLi
      * so it doesn't matter whether the new {@link Score} is better than that or not.
      * @param event never null
      */
-    void bestSolutionChanged(BestSolutionChangedEvent<SolutionG> event);
+    void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event);
 
 }

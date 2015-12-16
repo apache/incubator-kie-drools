@@ -27,11 +27,11 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * Delivered when the best {@link Solution} changes during solving.
  * Delivered in the solver thread (which is the thread that calls {@link Solver#solve(Solution)}.
  */
-public class BestSolutionChangedEvent<SolutionG extends Solution> extends EventObject {
+public class BestSolutionChangedEvent<Solution_ extends Solution> extends EventObject {
 
-    private final Solver solver;
+    private final Solver<Solution_> solver;
     private final long timeMillisSpent;
-    private final SolutionG newBestSolution;
+    private final Solution_ newBestSolution;
     private final int newUninitializedVariableCount;
 
     /**
@@ -40,7 +40,7 @@ public class BestSolutionChangedEvent<SolutionG extends Solution> extends EventO
      * @param newBestSolution never null
      * @param newUninitializedVariableCount {@code >= 0}
      */
-    public BestSolutionChangedEvent(Solver solver, long timeMillisSpent, SolutionG newBestSolution,
+    public BestSolutionChangedEvent(Solver<Solution_> solver, long timeMillisSpent, Solution_ newBestSolution,
             int newUninitializedVariableCount) {
         super(solver);
         this.solver = solver;
@@ -67,7 +67,7 @@ public class BestSolutionChangedEvent<SolutionG extends Solution> extends EventO
      * </ul>
      * @return never null
      */
-    public SolutionG getNewBestSolution() {
+    public Solution_ getNewBestSolution() {
         return newBestSolution;
     }
 

@@ -35,8 +35,8 @@ import static org.junit.Assert.*;
 @RunWith(Parameterized.class)
 public abstract class PhaseTest extends LoggingTest {
 
-    protected static <EnumG extends Enum> Collection<Object[]> buildParameters(SolutionDao solutionDao,
-            EnumG[] types, String... unsolvedFileNames) {
+    protected static <Enum_ extends Enum> Collection<Object[]> buildParameters(SolutionDao solutionDao,
+            Enum_[] types, String... unsolvedFileNames) {
         List<Object[]> filesAsParameters = new ArrayList<Object[]>(unsolvedFileNames.length * types.length);
         File dataDir = solutionDao.getDataDir();
         File unsolvedDataDir = new File(dataDir, "unsolved");
@@ -46,7 +46,7 @@ public abstract class PhaseTest extends LoggingTest {
                 throw new IllegalStateException("The directory unsolvedFile (" + unsolvedFile.getAbsolutePath()
                         + ") does not exist.");
             }
-            for (EnumG type : types) {
+            for (Enum_ type : types) {
                 filesAsParameters.add(new Object[]{unsolvedFile, type});
             }
         }

@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.solver.EmptySolverFactory;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
@@ -31,7 +32,7 @@ import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
  * <p>
  * Supports tweaking the configuration programmatically before a {@link Solver} instance is build.
  */
-public abstract class SolverFactory {
+public abstract class SolverFactory<Solution_ extends Solution> {
 
     // ************************************************************************
     // Static creation methods
@@ -43,8 +44,8 @@ public abstract class SolverFactory {
      * and configure the remainder programmatically with {@link #getSolverConfig()}.
      * @return never null
      */
-    public static SolverFactory createEmpty() {
-        return new EmptySolverFactory();
+    public static <Solution_ extends Solution> SolverFactory<Solution_> createEmpty() {
+        return new EmptySolverFactory<Solution_>();
     }
 
     /**
@@ -53,8 +54,8 @@ public abstract class SolverFactory {
      *      null to use the default {@link ClassLoader}
      * @return never null
      */
-    public static SolverFactory createEmpty(ClassLoader classLoader) {
-        return new EmptySolverFactory(classLoader);
+    public static <Solution_ extends Solution> SolverFactory<Solution_> createEmpty(ClassLoader classLoader) {
+        return new EmptySolverFactory<Solution_>(classLoader);
     }
 
     /**
@@ -62,8 +63,8 @@ public abstract class SolverFactory {
      * as defined by {@link ClassLoader#getResource(String)}
      * @return never null
      */
-    public static SolverFactory createFromXmlResource(String solverConfigResource) {
-        return new XStreamXmlSolverFactory().configure(solverConfigResource);
+    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource) {
+        return new XStreamXmlSolverFactory<Solution_>().configure(solverConfigResource);
     }
 
     /**
@@ -74,16 +75,16 @@ public abstract class SolverFactory {
      *      null to use the default {@link ClassLoader}
      * @return never null
      */
-    public static SolverFactory createFromXmlResource(String solverConfigResource, ClassLoader classLoader) {
-        return new XStreamXmlSolverFactory(classLoader).configure(solverConfigResource);
+    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource, ClassLoader classLoader) {
+        return new XStreamXmlSolverFactory<Solution_>(classLoader).configure(solverConfigResource);
     }
 
     /**
      * @param solverConfigFile never null
      * @return never null
      */
-    public static SolverFactory createFromXmlFile(File solverConfigFile) {
-        return new XStreamXmlSolverFactory().configure(solverConfigFile);
+    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile) {
+        return new XStreamXmlSolverFactory<Solution_>().configure(solverConfigFile);
     }
 
     /**
@@ -92,16 +93,16 @@ public abstract class SolverFactory {
      *      null to use the default {@link ClassLoader}
      * @return never null
      */
-    public static SolverFactory createFromXmlFile(File solverConfigFile, ClassLoader classLoader) {
-        return new XStreamXmlSolverFactory(classLoader).configure(solverConfigFile);
+    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile, ClassLoader classLoader) {
+        return new XStreamXmlSolverFactory<Solution_>(classLoader).configure(solverConfigFile);
     }
 
     /**
      * @param in never null, gets closed
      * @return never null
      */
-    public static SolverFactory createFromXmlInputStream(InputStream in) {
-        return new XStreamXmlSolverFactory().configure(in);
+    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlInputStream(InputStream in) {
+        return new XStreamXmlSolverFactory<Solution_>().configure(in);
     }
 
     /**
@@ -110,16 +111,16 @@ public abstract class SolverFactory {
      *      null to use the default {@link ClassLoader}
      * @return never null
      */
-    public static SolverFactory createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
-        return new XStreamXmlSolverFactory(classLoader).configure(in);
+    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
+        return new XStreamXmlSolverFactory<Solution_>(classLoader).configure(in);
     }
 
     /**
      * @param reader never null, gets closed
      * @return never null
      */
-    public static SolverFactory createFromXmlReader(Reader reader) {
-        return new XStreamXmlSolverFactory().configure(reader);
+    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlReader(Reader reader) {
+        return new XStreamXmlSolverFactory<Solution_>().configure(reader);
     }
 
     /**
@@ -128,8 +129,8 @@ public abstract class SolverFactory {
      *      null to use the default {@link ClassLoader}
      * @return never null
      */
-    public static SolverFactory createFromXmlReader(Reader reader, ClassLoader classLoader) {
-        return new XStreamXmlSolverFactory(classLoader).configure(reader);
+    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlReader(Reader reader, ClassLoader classLoader) {
+        return new XStreamXmlSolverFactory<Solution_>(classLoader).configure(reader);
     }
 
     // ************************************************************************
@@ -152,12 +153,12 @@ public abstract class SolverFactory {
      * {@link Solver} without affecting the original {@link SolverFactory}.
      * @return never null, often a different {@link SolverFactory} subclass implementation than this instance
      */
-    public abstract SolverFactory cloneSolverFactory();
+    public abstract SolverFactory<Solution_> cloneSolverFactory();
 
     /**
      * Creates a new {@link Solver} instance.
      * @return never null
      */
-    public abstract Solver buildSolver();
+    public abstract Solver<Solution_> buildSolver();
 
 }

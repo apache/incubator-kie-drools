@@ -26,18 +26,18 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 /**
  * Internal API.
  */
-public class SolverEventSupport extends AbstractEventSupport<SolverEventListener> {
+public class SolverEventSupport<Solution_ extends Solution> extends AbstractEventSupport<SolverEventListener<Solution_>> {
 
-    private DefaultSolver solver;
+    private DefaultSolver<Solution_> solver;
 
-    public SolverEventSupport(DefaultSolver solver) {
+    public SolverEventSupport(DefaultSolver<Solution_> solver) {
         this.solver = solver;
     }
 
-    public void fireBestSolutionChanged(Solution newBestSolution, int newUninitializedVariableCount) {
-        final Iterator<SolverEventListener> it = eventListenerSet.iterator();
+    public void fireBestSolutionChanged(Solution_ newBestSolution, int newUninitializedVariableCount) {
+        final Iterator<SolverEventListener<Solution_>> it = eventListenerSet.iterator();
         if (it.hasNext()) {
-            final BestSolutionChangedEvent event = new BestSolutionChangedEvent(solver,
+            final BestSolutionChangedEvent<Solution_> event = new BestSolutionChangedEvent<Solution_>(solver,
                     solver.getSolverScope().calculateTimeMillisSpent(), newBestSolution, newUninitializedVariableCount);
             do {
                 it.next().bestSolutionChanged(event);

@@ -30,42 +30,42 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * Each {@link ScoreDirector} has a different {@link VariableListener} instance, so it can be stateful.
  * If it is stateful, it must implement {@link StatefulVariableListener}.
  */
-public interface VariableListener<EntityG> extends Supply {
+public interface VariableListener<Entity_> extends Supply {
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void beforeEntityAdded(ScoreDirector scoreDirector, EntityG entity);
+    void beforeEntityAdded(ScoreDirector scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void afterEntityAdded(ScoreDirector scoreDirector, EntityG entity);
+    void afterEntityAdded(ScoreDirector scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void beforeVariableChanged(ScoreDirector scoreDirector, EntityG entity);
+    void beforeVariableChanged(ScoreDirector scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void afterVariableChanged(ScoreDirector scoreDirector, EntityG entity);
+    void afterVariableChanged(ScoreDirector scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void beforeEntityRemoved(ScoreDirector scoreDirector, EntityG entity);
+    void beforeEntityRemoved(ScoreDirector scoreDirector, Entity_ entity);
 
     /**
      * @param scoreDirector never null
      * @param entity never null
      */
-    void afterEntityRemoved(ScoreDirector scoreDirector, EntityG entity);
+    void afterEntityRemoved(ScoreDirector scoreDirector, Entity_ entity);
 
 }

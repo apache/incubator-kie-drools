@@ -194,7 +194,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * @deprecated Use {@link SolverFactory#buildSolver()} or {@link #buildSolver(ClassLoader)} instead.
      */
     @Deprecated
-    public Solver buildSolver() {
+    public <Solution_ extends Solution> Solver<Solution_> buildSolver() {
         return buildSolver(null);
     }
 
@@ -202,8 +202,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * @param classLoader sometimes null
      * @return never null
      */
-    public Solver buildSolver(ClassLoader classLoader) {
-        DefaultSolver solver = new DefaultSolver();
+    public <Solution_ extends Solution> Solver<Solution_> buildSolver(ClassLoader classLoader) {
+        DefaultSolver<Solution_> solver = new DefaultSolver<Solution_>();
         EnvironmentMode environmentMode_ = determineEnvironmentMode();
         solver.setEnvironmentMode(environmentMode_);
         boolean daemon_ = defaultIfNull(daemon, false);

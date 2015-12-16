@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Future;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
@@ -38,12 +39,12 @@ import org.optaplanner.core.impl.solver.termination.Termination;
  * <p>
  * Build by a {@link SolverFactory}.
  */
-public interface Solver {
+public interface Solver<Solution_ extends Solution> {
 
     /**
      * @return never null, but it can return the original, uninitialized {@link Solution} with a {@link Score} null.
      */
-    Solution getBestSolution();
+    Solution_ getBestSolution();
 
     /**
      * @return the amount of millis spent between when this solver started (or last restarted) and ended
@@ -58,7 +59,7 @@ public interface Solver {
      * @param planningProblem never null, usually its planning variables are uninitialized
      * @see #terminateEarly()
      */
-    void solve(Solution planningProblem);
+    Solution_ solve(Solution_ planningProblem);
 
     /**
      * This method is thread-safe.
@@ -110,12 +111,12 @@ public interface Solver {
     /**
      * @param eventListener never null
      */
-    void addEventListener(SolverEventListener eventListener);
+    void addEventListener(SolverEventListener<Solution_> eventListener);
 
     /**
      * @param eventListener never null
      */
-    void removeEventListener(SolverEventListener eventListener);
+    void removeEventListener(SolverEventListener<Solution_> eventListener);
 
     /**
      * Useful to reuse the {@link Score} calculation in a UI (or even to explain the {@link Score} in a UI).

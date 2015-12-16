@@ -20,10 +20,10 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 
-public class PlanningCloneableSolutionCloner<SolutionG extends Solution> implements SolutionCloner<SolutionG> {
+public class PlanningCloneableSolutionCloner<Solution_ extends Solution> implements SolutionCloner<Solution_> {
 
-    public SolutionG cloneSolution(SolutionG original) {
-        return (SolutionG) ((PlanningCloneable) original).planningClone();
+    public Solution_ cloneSolution(Solution_ original) {
+        return (Solution_) ((PlanningCloneable) original).planningClone();
     }
 
 }

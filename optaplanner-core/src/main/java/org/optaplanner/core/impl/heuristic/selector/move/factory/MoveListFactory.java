@@ -28,7 +28,7 @@ import org.optaplanner.core.impl.heuristic.move.Move;
  * <p>
  * For a more powerful version, see {@link MoveIteratorFactory}.
  */
-public interface MoveListFactory<SolutionG extends Solution> {
+public interface MoveListFactory<Solution_ extends Solution> {
 
     /**
      * When it is called depends on the configured {@link SelectionCacheType}.
@@ -38,6 +38,6 @@ public interface MoveListFactory<SolutionG extends Solution> {
      * @param solution never null, the {@link Solution} of which the {@link Move}s need to be generated
      * @return never null
      */
-    List<? extends Move> createMoveList(SolutionG solution);
+    List<? extends Move> createMoveList(Solution_ solution);
 
 }

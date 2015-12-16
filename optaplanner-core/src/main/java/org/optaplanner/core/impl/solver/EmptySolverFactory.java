@@ -16,9 +16,10 @@
 
 package org.optaplanner.core.impl.solver;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.solver.SolverConfig;
 
-public class EmptySolverFactory extends AbstractSolverFactory {
+public class EmptySolverFactory<Solution_ extends Solution> extends AbstractSolverFactory<Solution_> {
 
     public EmptySolverFactory() {
         this(null);

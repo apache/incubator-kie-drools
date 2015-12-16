@@ -49,7 +49,7 @@ import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
-public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements SolutionCloner<SolutionG> {
+public class FieldAccessingSolutionCloner<Solution_ extends Solution> implements SolutionCloner<Solution_> {
 
     protected final SolutionDescriptor solutionDescriptor;
 
@@ -66,7 +66,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
     // Worker methods
     // ************************************************************************
 
-    public SolutionG cloneSolution(SolutionG originalSolution) {
+    public Solution_ cloneSolution(Solution_ originalSolution) {
         return new FieldAccessingSolutionClonerRun().cloneSolution(originalSolution);
     }
 
@@ -195,11 +195,11 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
         protected Map<Object, Object> originalToCloneMap;
         protected Queue<Unprocessed> unprocessedQueue;
 
-        protected SolutionG cloneSolution(SolutionG originalSolution) {
+        protected Solution_ cloneSolution(Solution_ originalSolution) {
             unprocessedQueue = new LinkedList<Unprocessed>();
             originalToCloneMap = new IdentityHashMap<Object, Object>(
                     solutionDescriptor.getEntityCount(originalSolution) + 1);
-            SolutionG cloneSolution = clone(originalSolution);
+            Solution_ cloneSolution = clone(originalSolution);
             processQueue();
             validateCloneSolution(originalSolution, cloneSolution);
             return cloneSolution;
@@ -376,7 +376,7 @@ public class FieldAccessingSolutionCloner<SolutionG extends Solution> implements
          * @param originalSolution never null
          * @param cloneSolution never null
          */
-        protected void validateCloneSolution(SolutionG originalSolution, SolutionG cloneSolution) {
+        protected void validateCloneSolution(Solution_ originalSolution, Solution_ cloneSolution) {
             for (MemberAccessor memberAccessor
                     : solutionDescriptor.getEntityPropertyAccessorMap().values()) {
                 Object originalProperty = memberAccessor.executeGetter(originalSolution);

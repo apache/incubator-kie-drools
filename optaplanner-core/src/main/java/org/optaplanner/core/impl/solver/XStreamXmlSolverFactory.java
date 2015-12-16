@@ -36,7 +36,7 @@ import org.optaplanner.core.config.solver.SolverConfig;
  * XML based configuration that builds a {@link Solver} with {@link XStream}.
  * @see SolverFactory
  */
-public class XStreamXmlSolverFactory extends AbstractSolverFactory {
+public class XStreamXmlSolverFactory<Solution_ extends Solution> extends AbstractSolverFactory<Solution_> {
 
     /**
      * Builds the {@link XStream} setup which is used to read/write solver configs and benchmark configs.
@@ -95,7 +95,7 @@ public class XStreamXmlSolverFactory extends AbstractSolverFactory {
      * as defined by {@link ClassLoader#getResource(String)}
      * @return this
      */
-    public XStreamXmlSolverFactory configure(String solverConfigResource) {
+    public XStreamXmlSolverFactory<Solution_> configure(String solverConfigResource) {
         ClassLoader actualClassLoader = (classLoader != null) ? classLoader : getClass().getClassLoader();
         InputStream in = actualClassLoader.getResourceAsStream(solverConfigResource);
         if (in == null) {
@@ -116,7 +116,7 @@ public class XStreamXmlSolverFactory extends AbstractSolverFactory {
         }
     }
 
-    public XStreamXmlSolverFactory configure(File solverConfigFile) {
+    public XStreamXmlSolverFactory<Solution_> configure(File solverConfigFile) {
         try {
             return configure(new FileInputStream(solverConfigFile));
         } catch (FileNotFoundException e) {
@@ -124,7 +124,7 @@ public class XStreamXmlSolverFactory extends AbstractSolverFactory {
         }
     }
 
-    public XStreamXmlSolverFactory configure(InputStream in) {
+    public XStreamXmlSolverFactory<Solution_> configure(InputStream in) {
         Reader reader = null;
         try {
             reader = new InputStreamReader(in, "UTF-8");
@@ -137,7 +137,7 @@ public class XStreamXmlSolverFactory extends AbstractSolverFactory {
         }
     }
 
-    public XStreamXmlSolverFactory configure(Reader reader) {
+    public XStreamXmlSolverFactory<Solution_> configure(Reader reader) {
         solverConfig = (SolverConfig) xStream.fromXML(reader);
         return this;
     }
