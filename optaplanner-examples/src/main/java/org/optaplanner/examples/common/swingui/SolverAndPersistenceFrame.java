@@ -67,14 +67,14 @@ import org.optaplanner.swing.impl.TangoColorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SolverAndPersistenceFrame extends JFrame {
+public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFrame {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     public static final ImageIcon OPTA_PLANNER_ICON = new ImageIcon(
             SolverAndPersistenceFrame.class.getResource("optaPlannerIcon.png"));
 
-    private final SolutionBusiness solutionBusiness;
+    private final SolutionBusiness<Solution_> solutionBusiness;
 
     private SolutionPanel solutionPanel;
     private ConstraintMatchesDialog constraintMatchesDialog;
@@ -97,7 +97,7 @@ public class SolverAndPersistenceFrame extends JFrame {
     private JTextField scoreField;
     private ShowConstraintMatchesDialogAction showConstraintMatchesDialogAction;
 
-    public SolverAndPersistenceFrame(SolutionBusiness solutionBusiness, SolutionPanel solutionPanel) {
+    public SolverAndPersistenceFrame(SolutionBusiness<Solution_> solutionBusiness, SolutionPanel solutionPanel) {
         super(solutionBusiness.getAppName() + " OptaPlanner example");
         this.solutionBusiness = solutionBusiness;
         this.solutionPanel = solutionPanel;
@@ -288,22 +288,22 @@ public class SolverAndPersistenceFrame extends JFrame {
 
         public void actionPerformed(ActionEvent e) {
             setSolvingState(true);
-            Solution planningProblem = solutionBusiness.getSolution();
+            Solution_ planningProblem = solutionBusiness.getSolution();
             new SolveWorker(planningProblem).execute();
         }
 
     }
 
-    protected class SolveWorker extends SwingWorker<Solution, Void> {
+    protected class SolveWorker extends SwingWorker<Solution_, Void> {
 
-        protected final Solution planningProblem;
+        protected final Solution_ planningProblem;
 
-        public SolveWorker(Solution planningProblem) {
+        public SolveWorker(Solution_ planningProblem) {
             this.planningProblem = planningProblem;
         }
 
         @Override
-        protected Solution doInBackground() throws Exception {
+        protected Solution_ doInBackground() throws Exception {
             return solutionBusiness.solve(planningProblem);
         }
 

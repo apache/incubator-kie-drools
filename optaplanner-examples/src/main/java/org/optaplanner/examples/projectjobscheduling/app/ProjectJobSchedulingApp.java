@@ -22,11 +22,12 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 import org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingDao;
 import org.optaplanner.examples.projectjobscheduling.persistence.ProjectJobSchedulingImporter;
 import org.optaplanner.examples.projectjobscheduling.swingui.ProjectJobSchedulingPanel;
 
-public class ProjectJobSchedulingApp extends CommonApp {
+public class ProjectJobSchedulingApp extends CommonApp<Schedule> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingSolverConfig.xml";
@@ -42,13 +43,8 @@ public class ProjectJobSchedulingApp extends CommonApp {
                         " multi-mode resource-constrained multi-project scheduling problem (MRCMPSP)\n\n" +
                         "Schedule all jobs in time and execution mode.\n\n" +
                         "Minimize project delays.",
+                SOLVER_CONFIG,
                 ProjectJobSchedulingPanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver createSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override

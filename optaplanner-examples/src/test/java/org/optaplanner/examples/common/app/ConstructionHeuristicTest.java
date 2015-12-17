@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.Ignore;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
@@ -44,8 +45,8 @@ public abstract class ConstructionHeuristicTest extends PhaseTest {
         this.constructionHeuristicType = constructionHeuristicType;
     }
 
-    protected SolverFactory buildSolverFactory() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
+    protected SolverFactory<Solution> buildSolverFactory() {
+        SolverFactory<Solution> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.setTerminationConfig(new TerminationConfig());
         ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();

@@ -23,13 +23,14 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.persistence.TspDao;
 import org.optaplanner.examples.tsp.persistence.TspExporter;
 import org.optaplanner.examples.tsp.persistence.TspImageStipplerImporter;
 import org.optaplanner.examples.tsp.persistence.TspImporter;
 import org.optaplanner.examples.tsp.swingui.TspPanel;
 
-public class TspApp extends CommonApp {
+public class TspApp extends CommonApp<TravelingSalesmanTour> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/tsp/solver/tspSolverConfig.xml";
@@ -44,13 +45,8 @@ public class TspApp extends CommonApp {
                 "Official competition name: TSP - Traveling salesman problem\n\n" +
                         "Determine the order in which to visit all cities.\n\n" +
                         "Find the shortest route to visit all cities.",
+                SOLVER_CONFIG,
                 TspPanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver createSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override

@@ -39,6 +39,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
@@ -76,12 +77,12 @@ public class PickedMoveTypeBestScoreDiffSubSingleStatistic extends PureSubSingle
     // Lifecycle methods
     // ************************************************************************
 
-    public void open(Solver solver) {
-        ((DefaultSolver) solver).addPhaseLifecycleListener(listener);
+    public void open(Solver<Solution> solver) {
+        ((DefaultSolver<Solution>) solver).addPhaseLifecycleListener(listener);
     }
 
-    public void close(Solver solver) {
-        ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
+    public void close(Solver<Solution> solver) {
+        ((DefaultSolver<Solution>) solver).removePhaseLifecycleListener(listener);
     }
 
     private class PickedMoveTypeBestScoreDiffSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {

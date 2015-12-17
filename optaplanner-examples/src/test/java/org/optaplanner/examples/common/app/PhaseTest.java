@@ -69,12 +69,11 @@ public abstract class PhaseTest extends LoggingTest {
 
     @Test(timeout = 600000)
     public void runPhase() {
-        SolverFactory solverFactory = buildSolverFactory();
+        SolverFactory<Solution> solverFactory = buildSolverFactory();
         Solution planningProblem = readPlanningProblem();
-        Solver solver = solverFactory.buildSolver();
+        Solver<Solution> solver = solverFactory.buildSolver();
 
-        solver.solve(planningProblem);
-        Solution bestSolution = solver.getBestSolution();
+        Solution bestSolution = solver.solve(planningProblem);
         assertSolution(bestSolution);
     }
 
@@ -83,7 +82,7 @@ public abstract class PhaseTest extends LoggingTest {
         assertNotNull(bestSolution.getScore());
     }
 
-    protected abstract SolverFactory buildSolverFactory();
+    protected abstract SolverFactory<Solution> buildSolverFactory();
 
     protected abstract String createSolverConfigResource();
 

@@ -18,6 +18,7 @@ package org.optaplanner.examples.cheaptime.app;
 
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.persistence.CheapTimeDao;
 import org.optaplanner.examples.cheaptime.persistence.CheapTimeExporter;
 import org.optaplanner.examples.cheaptime.persistence.CheapTimeImporter;
@@ -28,7 +29,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 
-public class CheapTimeApp extends CommonApp {
+public class CheapTimeApp extends CommonApp<CheapTimeSolution> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/cheaptime/solver/cheapTimeSolverConfig.xml";
@@ -45,13 +46,8 @@ public class CheapTimeApp extends CommonApp {
                 "Each machine must have enough hardware to run all of its tasks.\n" +
                 "Each task and machine consumes power. The power price differs over time.\n" +
                 "Minimize the power cost.",
+                SOLVER_CONFIG,
                 CheapTimePanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver createSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override

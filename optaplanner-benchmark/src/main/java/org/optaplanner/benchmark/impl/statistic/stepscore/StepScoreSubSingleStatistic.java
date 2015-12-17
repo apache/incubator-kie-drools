@@ -21,6 +21,7 @@ import java.util.List;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
@@ -40,12 +41,12 @@ public class StepScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<
     // Lifecycle methods
     // ************************************************************************
 
-    public void open(Solver solver) {
-        ((DefaultSolver) solver).addPhaseLifecycleListener(listener);
+    public void open(Solver<Solution> solver) {
+        ((DefaultSolver<Solution>) solver).addPhaseLifecycleListener(listener);
     }
 
-    public void close(Solver solver) {
-        ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
+    public void close(Solver<Solution> solver) {
+        ((DefaultSolver<Solution>) solver).removePhaseLifecycleListener(listener);
     }
 
     private class StepScoreSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {

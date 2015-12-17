@@ -50,7 +50,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
     @Test(timeout = 600000)
     public void daemon() throws InterruptedException {
         // In main thread
-        Solver solver = buildSolver();
+        Solver<CloudBalance> solver = buildSolver();
         CloudBalance cloudBalance = buildPlanningProblem(4, 12);
         SolverThread solverThread = new SolverThread(solver, cloudBalance);
         solverThread.start();
@@ -65,7 +65,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
         }
         // Wait until those AddProcessChanges are processed
         waitForNextStage();
-        assertEquals(8, ((CloudBalance) solver.getBestSolution()).getProcessList().size());
+        assertEquals(8, (solver.getBestSolution()).getProcessList().size());
 
         // Give the solver thread some time to solve, terminate and get into the daemon waiting state
         Thread.sleep(1000);
@@ -85,15 +85,15 @@ public class CloudBalancingDaemonTest extends LoggingTest {
             throw new IllegalStateException("SolverThread did not die yet due to an interruption.", e);
         }
         assertEquals(true, solver.isEveryProblemFactChangeProcessed());
-        assertEquals(12, ((CloudBalance) solver.getBestSolution()).getProcessList().size());
+        assertEquals(12, (solver.getBestSolution()).getProcessList().size());
     }
 
     private class SolverThread extends Thread implements SolverEventListener<CloudBalance> {
 
-        private final Solver solver;
+        private final Solver<CloudBalance> solver;
         private final CloudBalance cloudBalance;
 
-        private SolverThread(Solver solver, CloudBalance cloudBalance) {
+        private SolverThread(Solver<CloudBalance> solver, CloudBalance cloudBalance) {
             this.solver = solver;
             this.cloudBalance = cloudBalance;
         }
@@ -137,8 +137,8 @@ public class CloudBalancingDaemonTest extends LoggingTest {
 
     }
 
-    protected Solver buildSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
+    protected Solver<CloudBalance> buildSolver() {
+        SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
         solverFactory.getSolverConfig().setDaemon(true);
         TerminationConfig terminationConfig = new TerminationConfig();

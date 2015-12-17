@@ -23,6 +23,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentDao;
 import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentExporter;
 import org.optaplanner.examples.travelingtournament.persistence.TravelingTournamentImporter;
@@ -31,7 +32,7 @@ import org.optaplanner.examples.travelingtournament.swingui.TravelingTournamentP
 /**
  * WARNING: This is an old, complex, tailored example. You're probably better off with one of the other examples.
  */
-public class TravelingTournamentApp extends CommonApp {
+public class TravelingTournamentApp extends CommonApp<TravelingTournament> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/travelingtournament/solver/travelingTournamentSolverConfig.xml";
@@ -45,13 +46,8 @@ public class TravelingTournamentApp extends CommonApp {
         super("Traveling tournament",
                 "Official competition name: TTP - Traveling tournament problem\n\n" +
                         "Assign sport matches to days. Minimize the distance travelled.",
+                SOLVER_CONFIG,
                 TravelingTournamentPanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver createSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override

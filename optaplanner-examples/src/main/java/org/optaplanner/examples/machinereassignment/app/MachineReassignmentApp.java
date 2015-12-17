@@ -23,12 +23,13 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentDao;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentExporter;
 import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentImporter;
 import org.optaplanner.examples.machinereassignment.swingui.MachineReassignmentPanel;
 
-public class MachineReassignmentApp extends CommonApp {
+public class MachineReassignmentApp extends CommonApp<MachineReassignment> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/machinereassignment/solver/machineReassignmentSolverConfig.xml";
@@ -42,13 +43,8 @@ public class MachineReassignmentApp extends CommonApp {
         super("Machine reassignment",
                 "Official competition name: Google ROADEF 2012 - Machine reassignment\n\n" +
                         "Reassign processes to machines.",
+                SOLVER_CONFIG,
                 MachineReassignmentPanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver createSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override

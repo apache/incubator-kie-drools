@@ -18,6 +18,7 @@ package org.optaplanner.examples.coachshuttlegathering.app;
 
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringDao;
 import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringExporter;
 import org.optaplanner.examples.coachshuttlegathering.persistence.CoachShuttleGatheringImporter;
@@ -28,7 +29,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 
-public class CoachShuttleGatheringApp extends CommonApp {
+public class CoachShuttleGatheringApp extends CommonApp<CoachShuttleGatheringSolution> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/coachshuttlegathering/solver/coachShuttleGatheringSolverConfig.xml";
@@ -41,13 +42,8 @@ public class CoachShuttleGatheringApp extends CommonApp {
     public CoachShuttleGatheringApp() {
         super("Coach shuttle gathering",
                 "Transport passengers to a hub by using coaches and shuttles.",
+                SOLVER_CONFIG,
                 CoachShuttleGatheringPanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver createSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override

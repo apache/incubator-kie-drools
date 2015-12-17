@@ -36,9 +36,9 @@ public class CloudBalancingWebAction {
     public void setup(HttpSession session) {
         terminateEarly(session);
 
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
+        SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
-        Solver solver = solverFactory.buildSolver();
+        Solver<CloudBalance> solver = solverFactory.buildSolver();
         session.setAttribute(CloudBalancingSessionAttributeName.SOLVER, solver);
 
         // Load a problem with 40 computers and 120 processes
@@ -47,7 +47,7 @@ public class CloudBalancingWebAction {
     }
 
     public void solve(final HttpSession session) {
-        final Solver solver = (Solver) session.getAttribute(CloudBalancingSessionAttributeName.SOLVER);
+        final Solver<CloudBalance> solver = (Solver<CloudBalance>) session.getAttribute(CloudBalancingSessionAttributeName.SOLVER);
         final CloudBalance unsolvedSolution = (CloudBalance) session.getAttribute(CloudBalancingSessionAttributeName.SHOWN_SOLUTION);
 
         solver.addEventListener(new SolverEventListener<CloudBalance>() {
@@ -64,7 +64,7 @@ public class CloudBalancingWebAction {
     }
 
     public void terminateEarly(HttpSession session) {
-        final Solver solver = (Solver) session.getAttribute(CloudBalancingSessionAttributeName.SOLVER);
+        final Solver<CloudBalance> solver = (Solver<CloudBalance>) session.getAttribute(CloudBalancingSessionAttributeName.SOLVER);
         if (solver != null) {
             solver.terminateEarly();
             session.setAttribute(CloudBalancingSessionAttributeName.SOLVER, null);

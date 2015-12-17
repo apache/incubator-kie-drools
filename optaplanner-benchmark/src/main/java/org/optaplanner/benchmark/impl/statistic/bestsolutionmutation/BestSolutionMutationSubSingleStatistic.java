@@ -43,14 +43,14 @@ public class BestSolutionMutationSubSingleStatistic extends ProblemBasedSubSingl
     // Lifecycle methods
     // ************************************************************************
 
-    public void open(Solver solver) {
+    public void open(Solver<Solution> solver) {
         InnerScoreDirectorFactory scoreDirectorFactory = (InnerScoreDirectorFactory) solver.getScoreDirectorFactory();
         SolutionDescriptor solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
         listener.setMutationCounter(new MutationCounter(solutionDescriptor));
         solver.addEventListener(listener);
     }
 
-    public void close(Solver solver) {
+    public void close(Solver<Solution> solver) {
         solver.removeEventListener(listener);
     }
 

@@ -351,7 +351,7 @@ end</programlisting>
 
           <itemizedlist>
             <listitem>
-              <para>Except for terminateEarly(), which does make it return from <literal>solve()</literal>, freeing up
+              <para>Except for <literal>terminateEarly()</literal>, which does make it return from <literal>solve()</literal>, freeing up
               system resources and allowing an application to shutdown gracefully.</para>
             </listitem>
 

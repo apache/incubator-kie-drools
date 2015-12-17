@@ -36,6 +36,7 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
@@ -103,9 +104,9 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
     // Lifecycle methods
     // ************************************************************************
 
-    public abstract void open(Solver solver);
+    public abstract void open(Solver<Solution> solver);
 
-    public abstract void close(Solver solver);
+    public abstract void close(Solver<Solution> solver);
 
     // ************************************************************************
     // Write methods

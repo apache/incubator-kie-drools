@@ -953,7 +953,7 @@
       a server restart. This cannot be configured by a <literal>Termination</literal> as it's impossible to predict when
       and if it will occur. Therefore the <literal>Solver</literal> interface has these 2 thread-safe methods:</para>
 
-      <programlisting language="java">public interface Solver {
+      <programlisting language="java">public interface Solver&lt;S extends Solution&gt; {
 
     // ...
 
@@ -977,12 +977,12 @@
     <para>To listen to such events, add a <literal>SolverEventListener</literal> to the
     <literal>Solver</literal>:</para>
 
-    <programlisting language="java">public interface Solver {
+    <programlisting language="java">public interface Solver&lt;S extends Solution&gt; {
 
     // ...
 
-    void addEventListener(SolverEventListener&lt;? extends Solution&gt; eventListener);
-    void removeEventListener(SolverEventListener&lt;? extends Solution&gt; eventListener);
+    void addEventListener(SolverEventListener&lt;S&gt; eventListener);
+    void removeEventListener(SolverEventListener&lt;S&gt; eventListener);
 
 }</programlisting>
 

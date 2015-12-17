@@ -52,11 +52,13 @@ public interface Solver<Solution_ extends Solution> {
     long getTimeMillisSpent();
 
     /**
-     * Solves the planning problem.
-     * It can take minutes, even hours or days before this method returns,
-     * depending on the termination configuration.
+     * Solves the planning problem and returns the best solution encountered (which might or might not be optimal).
+     * <p>
+     * It can take seconds, minutes, even hours or days before this method returns,
+     * depending on the {@link Termination} configuration.
      * To terminate a {@link Solver} early, call {@link #terminateEarly()}.
      * @param planningProblem never null, usually its planning variables are uninitialized
+     * @return never null, but it can return the original, uninitialized {@link Solution} with a {@link Score} null.
      * @see #terminateEarly()
      */
     Solution_ solve(Solution_ planningProblem);

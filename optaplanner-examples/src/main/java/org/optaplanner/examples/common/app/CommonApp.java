@@ -19,6 +19,8 @@ package org.optaplanner.examples.common.app;
 import java.awt.Component;
 import javax.swing.WindowConstants;
 
+import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.swing.impl.SwingUncaughtExceptionHandler;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.core.api.solver.Solver;
@@ -31,7 +33,7 @@ import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class CommonApp extends LoggingMain {
+public abstract class CommonApp<Solution_ extends Solution> extends LoggingMain {
 
     protected static final Logger logger = LoggerFactory.getLogger(CommonApp.class);
 
@@ -46,14 +48,16 @@ public abstract class CommonApp extends LoggingMain {
 
     protected final String name;
     protected final String description;
+    protected final String solverConfig;
     protected final String iconResource;
 
-    protected SolverAndPersistenceFrame solverAndPersistenceFrame;
-    protected SolutionBusiness solutionBusiness;
+    protected SolverAndPersistenceFrame<Solution_> solverAndPersistenceFrame;
+    protected SolutionBusiness<Solution_> solutionBusiness;
 
-    protected CommonApp(String name, String description, String iconResource) {
+    protected CommonApp(String name, String description, String solverConfig, String iconResource) {
         this.name = name;
         this.description = description;
+        this.solverConfig = solverConfig;
         this.iconResource = iconResource;
     }
 
@@ -75,14 +79,14 @@ public abstract class CommonApp extends LoggingMain {
 
     public void init(Component centerForComponent, boolean exitOnClose) {
         solutionBusiness = createSolutionBusiness();
-        solverAndPersistenceFrame = new SolverAndPersistenceFrame(solutionBusiness, createSolutionPanel());
+        solverAndPersistenceFrame = new SolverAndPersistenceFrame<Solution_>(solutionBusiness, createSolutionPanel());
         solverAndPersistenceFrame.setDefaultCloseOperation(exitOnClose ? WindowConstants.EXIT_ON_CLOSE : WindowConstants.DISPOSE_ON_CLOSE);
         solverAndPersistenceFrame.init(centerForComponent);
         solverAndPersistenceFrame.setVisible(true);
     }
 
-    public SolutionBusiness createSolutionBusiness() {
-        SolutionBusiness solutionBusiness = new SolutionBusiness(this);
+    public SolutionBusiness<Solution_> createSolutionBusiness() {
+        SolutionBusiness<Solution_> solutionBusiness = new SolutionBusiness<Solution_>(this);
         solutionBusiness.setSolutionDao(createSolutionDao());
         solutionBusiness.setImporters(createSolutionImporters());
         solutionBusiness.setExporter(createSolutionExporter());
@@ -91,7 +95,10 @@ public abstract class CommonApp extends LoggingMain {
         return solutionBusiness;
     }
 
-    protected abstract Solver createSolver();
+    protected Solver<Solution_> createSolver() {
+        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(solverConfig);
+        return solverFactory.buildSolver();
+    }
 
     protected abstract SolutionPanel createSolutionPanel();
 

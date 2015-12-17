@@ -240,16 +240,15 @@
 
     public static void main(String[] args) {
         // Build the Solver
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
+        SolverFactory&lt;CloudBalance&gt; solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
-        Solver solver = solverFactory.buildSolver();
+        Solver&lt;CloudBalance&gt; solver = solverFactory.buildSolver();
 
         // Load a problem with 400 computers and 1200 processes
         CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(400, 1200);
 
         // Solve the problem
-        solver.solve(unsolvedCloudBalance);
-        CloudBalance solvedCloudBalance = (CloudBalance) solver.getBestSolution();
+        CloudBalance solvedCloudBalance = solver.solve(unsolvedCloudBalance);
 
         // Display the result
         System.out.println("\nSolved cloudBalance with 400 computers and 1200 processes:\n"
@@ -257,7 +256,6 @@
     }
 
     ...
-
 }</programlisting>
       </example>
 
@@ -265,12 +263,12 @@
 
       <itemizedlist>
         <listitem>
-          <para>Build the <literal>Solver</literal> based on a solver configuration (in this case an XML file from the
-          classpath).</para>
+          <para>Build the <literal>Solver</literal> based on a solver configuration (in this case <link
+          linkend="solverConfigurationByXML">an XML file</link> from the classpath).</para>
 
-          <programlisting language="java">        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
+          <programlisting language="java">        SolverFactory&lt;CloudBalance&gt; solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
-        Solver solver = solverFactory.buildSolver();</programlisting>
+        Solver solver&lt;CloudBalance&gt; = solverFactory.buildSolver();</programlisting>
         </listitem>
 
         <listitem>
@@ -283,8 +281,7 @@
         <listitem>
           <para>Solve the problem.</para>
 
-          <programlisting language="java">        solver.solve(unsolvedCloudBalance);
-        CloudBalance solvedCloudBalance = (CloudBalance) solver.getBestSolution();</programlisting>
+          <programlisting language="java">        CloudBalance solvedCloudBalance = solver.solve(unsolvedCloudBalance);</programlisting>
         </listitem>
 
         <listitem>
@@ -341,8 +338,8 @@
           <para><emphasis role="bold">Score configuration</emphasis>: How should Planner optimize the planning
           variables? What is our goal? Since we have hard and soft constraints, we use a
           <literal>HardSoftScore</literal>. But we also need to tell Planner how to calculate the score, depending on
-          our business requirements. Further down, we will look into two alternatives to calculate the score: using a
-          simple Java implementation, or using Drools DRL.</para>
+          our business requirements. Further down, we will look into two alternatives to calculate the score: using an
+          easy Java implementation, or using Drools DRL.</para>
 
           <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
     &lt;scoreDefinitionType&gt;HARD_SOFT&lt;/scoreDefinitionType&gt;
@@ -503,7 +500,6 @@ public class CloudBalance ... implements Solution&lt;HardSoftScore&gt; {
     }
 
     ...
-
 }</programlisting>
         </example>
 
@@ -614,8 +610,8 @@ public class CloudBalance ... implements Solution&lt;HardSoftScore&gt; {
 
         <para>Even if we optimize the code above to use <literal>Map</literal>s to iterate through the
         <literal>processList</literal> only once, <emphasis role="bold">it is still slow</emphasis> because it does not
-        do incremental score calculation. To fix that, either use an incremental Java score function or a Drools score
-        function. Let's take a look at the latter.</para>
+        do <link linkend="incrementalScoreCalculation">incremental score calculation</link>. To fix that, either use an
+        incremental Java score function or a Drools score function. Let's take a look at the latter.</para>
       </section>
 
       <section xml:id="cloudBalancingDroolsScoreConfiguration">

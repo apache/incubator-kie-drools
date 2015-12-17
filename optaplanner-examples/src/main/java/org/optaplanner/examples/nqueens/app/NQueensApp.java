@@ -42,7 +42,10 @@ import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.persistence.NQueensDao;
 import org.optaplanner.examples.nqueens.swingui.NQueensPanel;
 
-public class NQueensApp extends CommonApp {
+/**
+ * For an easy example, look at {@link NQueensHelloWorld} instead.
+ */
+public class NQueensApp extends CommonApp<NQueens> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
@@ -56,11 +59,12 @@ public class NQueensApp extends CommonApp {
         super("N queens",
                 "Place queens on a chessboard.\n\n" +
                         "No 2 queens must be able to attack each other.",
+                SOLVER_CONFIG,
                 NQueensPanel.LOGO_PATH);
     }
 
     @Override
-    protected Solver createSolver() {
+    protected Solver<NQueens> createSolver() {
         return createSolverByXml();
     }
 
@@ -68,8 +72,8 @@ public class NQueensApp extends CommonApp {
      * Normal way to create a {@link Solver}.
      * @return never null
      */
-    protected Solver createSolverByXml() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
+    protected Solver<NQueens> createSolverByXml() {
+        SolverFactory<NQueens> solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
         return solverFactory.buildSolver();
     }
 
@@ -79,8 +83,8 @@ public class NQueensApp extends CommonApp {
      * Not recommended! It is recommended to use {@link #createSolverByXml()} instead.
      * @return never null
      */
-    protected Solver createSolverByApi() {
-        SolverFactory solverFactory = SolverFactory.createEmpty();
+    protected Solver<NQueens> createSolverByApi() {
+        SolverFactory<NQueens> solverFactory = SolverFactory.createEmpty();
         SolverConfig solverConfig = solverFactory.getSolverConfig();
 
         solverConfig.setSolutionClass(NQueens.class);

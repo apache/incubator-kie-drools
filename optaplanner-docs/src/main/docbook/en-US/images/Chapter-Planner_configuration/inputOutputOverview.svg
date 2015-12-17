@@ -246,7 +246,7 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.3516667"
-     inkscape:cx="390.75216"
+     inkscape:cx="307.8915"
      inkscape:cy="300"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -604,19 +604,7 @@
        d="m 260,485 40,0 0,-20 20,30 -20,30 0,-20 -40,0 z"
        id="path3763"
        inkscape:connector-curvature="0" />
-    <flowRoot
-       transform="translate(-100,434.40983)"
-       xml:space="preserve"
-       id="flowRoot4700"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#4e9a06;fill-opacity:1;stroke:none"><flowRegion
-         id="flowRegion4702"><rect
-           id="rect4704"
-           width="120"
-           height="19.999998"
-           x="330"
-           y="95.590172"
-           style="font-size:12px;text-align:center;text-anchor:middle;fill:#4e9a06" /></flowRegion><flowPara
-         id="flowPara3244">solve(problem)</flowPara></flowRoot>    <g
+    <g
        style="display:inline"
        id="g4798"
        transform="matrix(0.74944221,0,0,0.74944669,15.147589,634.81937)">
@@ -917,19 +905,7 @@
        id="path4533"
        d="m 480,485 39.99999,0 0,-20 20,30 -20,30 0,-20 L 480,505 Z"
        style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#8ae234;stroke:#4e9a06;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate" />
-    <flowRoot
-       transform="translate(110,440.78483)"
-       xml:space="preserve"
-       id="flowRoot4755"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;fill:#4e9a06;fill-opacity:1;stroke:none"><flowRegion
-         id="flowRegion4757"><rect
-           id="rect4759"
-           width="120.00002"
-           height="19.999975"
-           x="340"
-           y="89.215172"
-           style="font-size:12px;text-align:center;text-anchor:middle;fill:#4e9a06" /></flowRegion><flowPara
-         id="flowPara4761">getBestSolution()</flowPara></flowRoot>    <g
+    <g
        id="g5249"
        transform="matrix(0.74944221,0,0,0.74924583,555.14766,717.21631)">
       <rect
@@ -1185,5 +1161,17 @@
                style="font-size:14.48488903px" /></flowRegion><flowPara
              id="flowPara4405">2</flowPara></flowRoot>      </g>
     </g>
-  </g>
+    <flowRoot
+       transform="translate(-100,434.40983)"
+       xml:space="preserve"
+       id="flowRoot4700"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#4e9a06;fill-opacity:1;stroke:none"><flowRegion
+         id="flowRegion4702"><rect
+           id="rect4704"
+           width="100"
+           height="20.00001"
+           x="450"
+           y="115.59017"
+           style="font-size:12px;text-align:center;text-anchor:middle;fill:#4e9a06" /></flowRegion><flowPara
+         id="flowPara3244">solve(problem)</flowPara></flowRoot>  </g>
 </svg>

@@ -22,11 +22,12 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.investment.domain.InvestmentSolution;
 import org.optaplanner.examples.investment.persistence.InvestmentDao;
 import org.optaplanner.examples.investment.persistence.InvestmentImporter;
 import org.optaplanner.examples.investment.swingui.InvestmentPanel;
 
-public class InvestmentApp extends CommonApp {
+public class InvestmentApp extends CommonApp<InvestmentSolution> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/investment/solver/investmentSolverConfig.xml";
@@ -40,13 +41,8 @@ public class InvestmentApp extends CommonApp {
         super("Investment allocation",
                 "Decide the percentage of the investor's budget to invest in each asset class.\n\n"
                 + "Maximize expected return.",
+                SOLVER_CONFIG,
                 InvestmentPanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver createSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override

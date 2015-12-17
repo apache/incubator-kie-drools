@@ -23,10 +23,11 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.meetingscheduling.domain.MeetingSchedule;
 import org.optaplanner.examples.meetingscheduling.persistence.MeetingSchedulingDao;
 import org.optaplanner.examples.meetingscheduling.swingui.MeetingSchedulingPanel;
 
-public class MeetingSchedulingApp extends CommonApp {
+public class MeetingSchedulingApp extends CommonApp<MeetingSchedule> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/meetingscheduling/solver/meetingSchedulingSolverConfig.xml";
@@ -39,13 +40,8 @@ public class MeetingSchedulingApp extends CommonApp {
     public MeetingSchedulingApp() {
         super("Meeting scheduling",
                 "Assign meetings a starting time and a room.",
+                SOLVER_CONFIG,
                 MeetingSchedulingPanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver createSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override

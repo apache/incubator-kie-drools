@@ -29,12 +29,8 @@
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold">Solve it</emphasis> with <literal>Solver.solve(planningProblem)</literal>.</para>
-      </listitem>
-
-      <listitem>
-        <para><emphasis role="bold">Get the best solution found</emphasis> by the <literal>Solver</literal> with
-        <literal>Solver.getBestSolution()</literal>.</para>
+        <para><emphasis role="bold">Solve it</emphasis> with <literal>Solver.solve(planningProblem)</literal> which
+        retuns the best solution found.</para>
       </listitem>
     </orderedlist>
 
@@ -51,13 +47,13 @@
     <section xml:id="solverConfigurationByXML">
       <title>Solver Configuration by XML</title>
 
-      <para>Build a <literal>Solver</literal> instance with the <literal>SolverFactory</literal>. Configure it with a
-      solver configuration XML file, provided as a classpath resource (as definied by
-      <literal>ClassLoader.getResource()</literal>):</para>
+      <para>Build a <literal>Solver</literal> instance with the <literal>SolverFactory</literal>. Configure the
+      <literal>SolverFactory</literal> with a solver configuration XML file, provided as a classpath resource (as
+      definied by <literal>ClassLoader.getResource()</literal>):</para>
 
-      <programlisting language="java">       SolverFactory solverFactory = SolverFactory.createFromXmlResource(
+      <programlisting language="java">       SolverFactory&lt;NQueens&gt; solverFactory = SolverFactory.createFromXmlResource(
                "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
-       Solver solver = solverFactory.buildSolver();</programlisting>
+       Solver&lt;NQueens&gt; solver = solverFactory.buildSolver();</programlisting>
 
       <para>In a typical project (following the Maven directory structure), that solverConfig XML file would be located
       at
@@ -74,11 +70,15 @@
         <literal>ClassLoader</literal> of the <literal>optaplanner-core</literal> jar. In those cases, provide the
         <literal>ClassLoader</literal> of your classes as a parameter:</para>
 
-        <programlisting language="java">       SolverFactory solverFactory = SolverFactory.createFromXmlResource(
+        <programlisting language="java">       SolverFactory&lt;NQueens&gt; solverFactory = SolverFactory.createFromXmlResource(
                ".../nqueensSolverConfig.xml", getClass().getClassLoader());</programlisting>
       </note>
 
-      <para>A solver configuration file looks like this:</para>
+      <para>Both a <literal>Solver</literal> and a <literal>SolverFactory</literal> have a generic type, which is the
+      class representing a <link linkend="planningProblemAndPlanningSolution">planning problem and
+      solution</link>.</para>
+
+      <para>A solver configuration XML file looks like this:</para>
 
       <programlisting language="xml">&lt;?xml version="1.0" encoding="UTF-8"?&gt;
 &lt;solver&gt;
@@ -135,14 +135,14 @@
       especially useful to change some values dynamically at runtime. For example, to change the running time based on
       user input, before building the <literal>Solver</literal>:</para>
 
-      <programlisting language="java">        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
+      <programlisting language="java">        SolverFactory&lt;NQueens&gt; solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
 
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setMinutesSpentLimit(userInput);
         solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);
 
-        Solver solver = solverFactory.buildSolver();</programlisting>
+        Solver&lt;NQueens&gt; solver = solverFactory.buildSolver();</programlisting>
 
       <para>Every element in the solver configuration XML is available as a <literal>*Config</literal> class or a
       property on a <literal>*Config</literal> class in the package namespace
@@ -153,11 +153,11 @@
 
       <important>
         <para>The <literal>SolverFactory</literal> is only multi-thread safe after its configured. So the
-        <literal>getSolverConfig()</literal> method is not thread-safe. To configure a SolverFactory dynamically for
-        each user request, build a <literal>SolverFactory</literal> as base during initialization and clone it with the
-        <literal>cloneSolverFactory()</literal> method for a user request:</para>
+        <literal>getSolverConfig()</literal> method is not thread-safe. To configure a <literal>SolverFactory</literal>
+        dynamically for each user request, build a <literal>SolverFactory</literal> as base during initialization and
+        clone it with the <literal>cloneSolverFactory()</literal> method for a user request:</para>
 
-        <programlisting language="java">    private SolverFactory base;
+        <programlisting language="java">    private SolverFactory&lt;NQueens&gt; base;
 
     public void init() {
         base = SolverFactory.createFromXmlResource(
@@ -167,9 +167,9 @@
 
     // Called concurrently from different threads
     public void userRequest(..., long userInput)
-        SolverFactory solverFactory = base.cloneSolverFactory();
+        SolverFactory&lt;NQueens&gt; solverFactory = base.cloneSolverFactory();
         solverFactory.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(userInput);
-        Solver solver = solverFactory.buildSolver();
+        Solver&lt;NQueens&gt; solver = solverFactory.buildSolver();
         ...
     }</programlisting>
       </important>
@@ -485,7 +485,8 @@ public class Lecture {
 
           <para>For example, do not create a planning entity class to hold the total free time of a teacher, which needs
           to be kept up to date as the <literal>Lecture</literal> planning entities change. Instead, calculate the free
-          time in the score constraints and put the result per teacher into a logically inserted score object.</para>
+          time in the score constraints (or as a <link linkend="shadowVariable">shadow variable</link>) and put the
+          result per teacher into a logically inserted score object.</para>
 
           <para>If historic data needs to be considered too, then create problem fact to hold the total of the historic
           assignments up to, but <emphasis>not including</emphasis>, the planning window (so that it does not change
@@ -535,7 +536,7 @@ public class Queen {
           <para>Difficulty should be implemented ascending: easy entities are lower, difficult entities are higher. For
           example, in bin packing: small item &lt; medium item &lt; big item.</para>
 
-          <para>Even though some algorithms start with the more difficult entities first, they just reverse the
+          <para>Although most algorithms start with the more difficult entities first, they just reverse the
           ordering.</para>
         </important>
 
@@ -1051,7 +1052,8 @@ public class Visit ... implements Standstill {
 
     public City getCity() {...}
 
-    @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED, valueRangeProviderRefs = {"domicileRange", "visitRange"})
+    @PlanningVariable(graphType = PlanningVariableGraphType.CHAINED,
+        valueRangeProviderRefs = {"domicileRange", "visitRange"})
     public Standstill getPreviousStandstill() {
         return previousStandstill;
     }
@@ -1417,6 +1419,38 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
 &lt;/solver&gt;</programlisting>
       </section>
 
+      <section xml:id="extractTheEntitiesFromTheSolution">
+        <title>Extract the entities from the <literal>Solution</literal></title>
+
+        <para>Planner needs to extract the entity instances from the <literal>Solution</literal> instance. It gets those
+        collection(s) by calling every getter (or field) that is annotated with
+        <literal>@PlanningEntityCollectionProperty</literal>:</para>
+
+        <programlisting language="java">@PlanningSolution
+public class NQueens implements Solution&lt;SimpleScore&gt; {
+    ...
+
+    private List&lt;Queen&gt; queenList;
+
+    @PlanningEntityCollectionProperty
+    public List&lt;Queen&gt; getQueenList() {
+        return queenList;
+    }
+
+}</programlisting>
+
+        <para>There can be multiple <literal>@PlanningEntityCollectionProperty</literal> annotated members. Those can
+        even return a <literal>Collection</literal> with the same entity class type.</para>
+
+        <note>
+          <para>A @PlanningEntityCollectionProperty annotation needs to be on a member in a class with a
+          @PlanningSolution annotation. It is ignored on parent classes or subclasses without that annotation.</para>
+        </note>
+
+        <para>In rare cases, a planning entity might be a singleton: use <literal>@PlanningEntityProperty</literal> on
+        its getter (or field) instead.</para>
+      </section>
+
       <section xml:id="getScoreAndSetScoreMethods">
         <title>The <literal>getScore()</literal> and <literal>setScore()</literal> Methods</title>
 
@@ -1537,38 +1571,6 @@ public class CourseSchedule implements Solution&lt;HardSoftScore&gt; {
           <literal>TopicConflict</literal> instance can be used as a problem fact, rather than having to combine every
           two <literal>Student</literal> instances.</para>
         </section>
-      </section>
-
-      <section xml:id="extractTheEntitiesFromTheSolution">
-        <title>Extract the entities from the <literal>Solution</literal></title>
-
-        <para>Planner needs to extract the entity instances from the <literal>Solution</literal> instance. It gets those
-        collection(s) by calling every getter (or field) that is annotated with
-        <literal>@PlanningEntityCollectionProperty</literal>:</para>
-
-        <programlisting language="java">@PlanningSolution
-public class NQueens implements Solution&lt;SimpleScore&gt; {
-    ...
-
-    private List&lt;Queen&gt; queenList;
-
-    @PlanningEntityCollectionProperty
-    public List&lt;Queen&gt; getQueenList() {
-        return queenList;
-    }
-
-}</programlisting>
-
-        <para>There can be multiple <literal>@PlanningEntityCollectionProperty</literal> annotated members. Those can
-        even return a <literal>Collection</literal> with the same entity class type.</para>
-
-        <note>
-          <para>A @PlanningEntityCollectionProperty annotation needs to be on a member in a class with a
-          @PlanningSolution annotation. It is ignored on parent classes or subclasses without that annotation.</para>
-        </note>
-
-        <para>In rare cases, a planning entity might be a singleton: use <literal>@PlanningEntityProperty</literal> on
-        its getter (or field) instead.</para>
       </section>
 
       <section xml:id="cloningASolution">
@@ -1768,20 +1770,17 @@ public class SeatDesignationDependency {
 
       <para>A <literal>Solver</literal> implementation will solve your planning problem.</para>
 
-      <programlisting language="java">public interface Solver {
+      <programlisting language="java">public interface Solver&lt;S extends Solution&gt; {
     
-    void solve(Solution planningProblem);
+    S solve(S planningProblem);
 
-    Solution getBestSolution();
-
-    // ...
-
+    ...
 }</programlisting>
 
       <para>A <literal>Solver</literal> can only solve one planning problem instance at a time. A
       <literal>Solver</literal> should only be accessed from a single thread, except for the methods that are
-      specifically javadocced as being thread-safe. It is built with a <literal>SolverFactory</literal>, do not
-      implement or build it yourself.</para>
+      specifically javadocced as being thread-safe. It is built with a <literal>SolverFactory</literal>, there is no
+      need to implement it yourself.</para>
     </section>
 
     <section xml:id="solvingAProblem">
@@ -1799,14 +1798,13 @@ public class SeatDesignationDependency {
         </listitem>
       </itemizedlist>
 
-      <para>Just set the planning problem, solve it and extract the best solution:</para>
+      <para>Just provide the planning problem as argument to the <literal>solve()</literal> method and it will return
+      the best solution found:</para>
 
-      <programlisting language="java">    solver.solve(planningProblem);
-    Solution bestSolution = solver.getBestSolution();</programlisting>
+      <programlisting language="java">    NQueens bestSolution = solver.solve(planningProblem);</programlisting>
 
-      <para>For example in n queens, the <literal>getBestSolution()</literal> method will return an
-      <literal>NQueens</literal> instance with every <literal>Queen</literal> assigned to a
-      <literal>Row</literal>.</para>
+      <para>For example in n queens, the <literal>solve()</literal> method will return an <literal>NQueens</literal>
+      instance with every <literal>Queen</literal> assigned to a <literal>Row</literal>.</para>
 
       <figure>
         <title>Best Solution for the 4 Queens Puzzle in 8ms (Also an Optimal Solution)</title>
@@ -1819,23 +1817,26 @@ public class SeatDesignationDependency {
       </figure>
 
       <para>The <literal>solve(Solution)</literal> method can take a long time (depending on the problem size and the
-      solver configuration). The <literal>Solver</literal> will remember (actually clone) the best solution it
-      encounters during its solving. Depending on a number factors (including problem size, how much time the
-      <literal>Solver</literal> has, the solver configuration, ...), that best solution will be a feasible or even an
-      optimal solution.</para>
+      solver configuration). The <literal>Solver</literal> intelligently wades through <link
+      linkend="searchSpaceSize">the search space</link> of possible solutions and remembers the best solution it
+      encounters during solving. Depending on a number factors (including problem size, how much time the
+      <literal>Solver</literal> has, the solver configuration, ...), <link
+      linkend="doesPlannerFindTheOptimalSolution">that best solution might or might not be an optimal
+      solution</link>.</para>
 
       <note>
-        <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> will be
-        changed by the <literal>Solver</literal>, but do not mistake it for the best solution.</para>
+        <para>The <literal>Solution</literal> instance given to the method <literal>solve(Solution)</literal> is changed
+        by the <literal>Solver</literal>, but do not mistake it for the best solution.</para>
 
-        <para>The <literal>Solution</literal> instance returned by the <literal>getBestSolution()</literal> method will
-        most likely be a clone of the instance given to the method <literal>solve(Solution)</literal>, which means it is
-        a different instance.</para>
+        <para>The <literal>Solution</literal> instance returned by the methods <literal>solve(Solution)</literal> or
+        <literal>getBestSolution()</literal> is most likely <link linkend="cloningASolution">a planning clone</link> of
+        the instance given to the method <literal>solve(Solution)</literal>, which implies it is a different
+        instance.</para>
       </note>
 
       <note>
         <para>The <literal>Solution</literal> instance given to the <literal>solve(Solution)</literal> method does not
-        need to be uninitialized. It can be partially or fully initialized, which is likely to be the case in <link
+        need to be uninitialized. It can be partially or fully initialized, which is often the case in <link
         linkend="repeatedPlanning">repeated planning</link>.</para>
       </note>
     </section>
@@ -2066,8 +2067,7 @@ INFO  Solving ended: time spent (24), best score (0), average calculate count pe
         xlink:href="http://logback.qos.ch/manual/mdc.html">MDC</link>:</para>
 
         <programlisting language="java">        MDC.put("tenant.name",tenantName);
-        solver.solve(planningProblem);
-        Solution bestSolution = solver.getBestSolution();
+        Solution bestSolution = solver.solve(planningProblem);
         MDC.remove("tenant.name");</programlisting>
 
         <para>Then configure your logger to use different files for each <literal>${tenant.name}</literal>. For example

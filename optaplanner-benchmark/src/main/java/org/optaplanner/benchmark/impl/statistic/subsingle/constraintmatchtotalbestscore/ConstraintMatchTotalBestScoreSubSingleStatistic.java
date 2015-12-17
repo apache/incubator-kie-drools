@@ -39,6 +39,7 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
@@ -76,13 +77,13 @@ public class ConstraintMatchTotalBestScoreSubSingleStatistic extends PureSubSing
     // Lifecycle methods
     // ************************************************************************
 
-    public void open(Solver solver) {
-        DefaultSolver defaultSolver = (DefaultSolver) solver;
+    public void open(Solver<Solution> solver) {
+        DefaultSolver<Solution> defaultSolver = (DefaultSolver<Solution>) solver;
         defaultSolver.setConstraintMatchEnabledPreference(true);
         defaultSolver.addPhaseLifecycleListener(listener);
     }
 
-    public void close(Solver solver) {
+    public void close(Solver<Solution> solver) {
         ((DefaultSolver) solver).removePhaseLifecycleListener(listener);
     }
 

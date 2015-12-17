@@ -20,24 +20,33 @@ import java.io.IOException;
 
 import org.junit.Test;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.junit.Assert.*;
 
 public class SolverFactoryTest {
 
     @Test
-    public void testdataSolverConfig() {
+    public void testdataSolverConfigWithoutGenericsForBackwardsCompatibility() {
         SolverFactory solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
         Solver solver = solverFactory.buildSolver();
         assertNotNull(solver);
     }
 
+    @Test
+    public void testdataSolverConfig() {
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
+                "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        assertNotNull(solver);
+    }
+
     @Test(expected = IllegalArgumentException.class)
     public void nonExistingSolverConfig() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/nonExistingSolverConfig.xml");
-        Solver solver = solverFactory.buildSolver();
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
         assertNotNull(solver);
     }
 
@@ -45,26 +54,26 @@ public class SolverFactoryTest {
     public void testdataSolverConfigWithClassLoader() throws ClassNotFoundException, IOException {
         // Mocking loadClass doesn't work well enough, because the className still differs from class.getName()
         ClassLoader classLoader = new DivertingClassLoader(getClass().getClassLoader());
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromXmlResource(
                 "divertThroughClassLoader/org/optaplanner/core/api/solver/classloaderTestdataSolverConfig.xml", classLoader);
-        Solver solver = solverFactory.buildSolver();
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
         assertNotNull(solver);
     }
 
     @Test
     public void cloneSolverFactory() {
-        SolverFactory solverFactoryTemplate = SolverFactory.createFromXmlResource(
+        SolverFactory<TestdataSolution> solverFactoryTemplate = SolverFactory.createFromXmlResource(
                 "org/optaplanner/core/api/solver/testdataSolverConfig.xml");
         solverFactoryTemplate.getSolverConfig().setTerminationConfig(new TerminationConfig());
-        SolverFactory solverFactory1 = solverFactoryTemplate.cloneSolverFactory();
-        SolverFactory solverFactory2 = solverFactoryTemplate.cloneSolverFactory();
+        SolverFactory<TestdataSolution> solverFactory1 = solverFactoryTemplate.cloneSolverFactory();
+        SolverFactory<TestdataSolution> solverFactory2 = solverFactoryTemplate.cloneSolverFactory();
         assertNotSame(solverFactory1, solverFactory2);
         solverFactory1.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(1L);
         solverFactory2.getSolverConfig().getTerminationConfig().setMinutesSpentLimit(2L);
         assertEquals((Long) 1L, solverFactory1.getSolverConfig().getTerminationConfig().getMinutesSpentLimit());
         assertEquals((Long) 2L, solverFactory2.getSolverConfig().getTerminationConfig().getMinutesSpentLimit());
-        Solver solver1 = solverFactory1.buildSolver();
-        Solver solver2 = solverFactory2.buildSolver();
+        Solver<TestdataSolution> solver1 = solverFactory1.buildSolver();
+        Solver<TestdataSolution> solver2 = solverFactory2.buildSolver();
         assertNotSame(solver1, solver2);
     }
 

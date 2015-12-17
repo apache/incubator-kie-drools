@@ -59,13 +59,15 @@ public abstract class SolverPerformanceTest extends LoggingTest {
     }
 
     protected void runSpeedTest(File unsolvedDataFile, String bestScoreLimitString, EnvironmentMode environmentMode) {
-        SolverFactory solverFactory = buildSolverFactory(bestScoreLimitString, environmentMode);
-        Solver solver = solve(solverFactory, unsolvedDataFile);
-        assertBestSolution(solver, bestScoreLimitString);
+        SolverFactory<Solution> solverFactory = buildSolverFactory(bestScoreLimitString, environmentMode);
+        Solution planningProblem = solutionDao.readSolution(unsolvedDataFile);
+        Solver<Solution> solver = solverFactory.buildSolver();
+        Solution bestSolution = solver.solve(planningProblem);
+        assertBestSolution(solver, bestSolution, bestScoreLimitString);
     }
 
-    protected SolverFactory buildSolverFactory(String bestScoreLimitString, EnvironmentMode environmentMode) {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
+    protected SolverFactory<Solution> buildSolverFactory(String bestScoreLimitString, EnvironmentMode environmentMode) {
+        SolverFactory<Solution> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
         solverFactory.getSolverConfig().setEnvironmentMode(environmentMode);
         TerminationConfig terminationConfig = new TerminationConfig();
         terminationConfig.setBestScoreLimit(bestScoreLimitString);
@@ -73,15 +75,7 @@ public abstract class SolverPerformanceTest extends LoggingTest {
         return solverFactory;
     }
 
-    private Solver solve(SolverFactory solverFactory, File unsolvedDataFile) {
-        Solution planningProblem = solutionDao.readSolution(unsolvedDataFile);
-        Solver solver = solverFactory.buildSolver();
-        solver.solve(planningProblem);
-        return solver;
-    }
-
-    private void assertBestSolution(Solver solver, String bestScoreLimitString) {
-        Solution bestSolution = solver.getBestSolution();
+    private void assertBestSolution(Solver<Solution> solver, Solution bestSolution, String bestScoreLimitString) {
         assertNotNull(bestSolution);
         Score bestScore = bestSolution.getScore();
         InnerScoreDirectorFactory scoreDirectorFactory = (InnerScoreDirectorFactory) solver.getScoreDirectorFactory();

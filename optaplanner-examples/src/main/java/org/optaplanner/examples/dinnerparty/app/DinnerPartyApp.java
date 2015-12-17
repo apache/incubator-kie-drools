@@ -22,11 +22,12 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 import org.optaplanner.examples.dinnerparty.persistence.DinnerPartyDao;
 import org.optaplanner.examples.dinnerparty.persistence.DinnerPartyImporter;
 import org.optaplanner.examples.dinnerparty.swingui.DinnerPartyPanel;
 
-public class DinnerPartyApp extends CommonApp {
+public class DinnerPartyApp extends CommonApp<DinnerParty> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/dinnerparty/solver/dinnerPartySolverConfig.xml";
@@ -40,13 +41,8 @@ public class DinnerPartyApp extends CommonApp {
         super("Dinner party",
                 "Decide the seating at a big fancy dinner party with round tables.\n" +
                         "Assign guests to seats at tables.",
+                SOLVER_CONFIG,
                 DinnerPartyPanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver createSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override

@@ -40,11 +40,11 @@ public class BestScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<
     // Lifecycle methods
     // ************************************************************************
 
-    public void open(Solver solver) {
+    public void open(Solver<Solution> solver) {
         solver.addEventListener(listener);
     }
 
-    public void close(Solver solver) {
+    public void close(Solver<Solution> solver) {
         solver.removeEventListener(listener);
     }
 

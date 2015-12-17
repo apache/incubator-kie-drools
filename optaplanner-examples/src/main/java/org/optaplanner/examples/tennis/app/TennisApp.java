@@ -21,10 +21,11 @@ import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.tennis.domain.TennisSolution;
 import org.optaplanner.examples.tennis.persistence.TennisDao;
 import org.optaplanner.examples.tennis.swingui.TennisPanel;
 
-public class TennisApp extends CommonApp {
+public class TennisApp extends CommonApp<TennisSolution> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/tennis/solver/tennisSolverConfig.xml";
@@ -39,13 +40,8 @@ public class TennisApp extends CommonApp {
                 "Assign available spots to teams.\n\n" +
                         "Each team must play an almost equal number of times.\n" +
                         "Each team must play against each other team an almost equal number of times.",
+                SOLVER_CONFIG,
                 TennisPanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver createSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override

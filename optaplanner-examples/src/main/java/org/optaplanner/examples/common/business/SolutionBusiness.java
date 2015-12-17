@@ -54,7 +54,7 @@ import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class SolutionBusiness {
+public class SolutionBusiness<Solution_ extends Solution> {
 
     private static final ProblemFileComparator FILE_COMPARATOR = new ProblemFileComparator();
 
@@ -72,7 +72,7 @@ public class SolutionBusiness {
     private File exportDataDir;
 
     // volatile because the solve method doesn't come from the event thread (like every other method call)
-    private volatile Solver solver;
+    private volatile Solver<Solution_> solver;
     private String solutionFileName = null;
     private ScoreDirector guiScoreDirector;
 
@@ -168,7 +168,7 @@ public class SolutionBusiness {
         return exporter.getOutputFileSuffix();
     }
 
-    public void setSolver(Solver solver) {
+    public void setSolver(Solver<Solution_> solver) {
         this.solver = solver;
         ScoreDirectorFactory scoreDirectorFactory = solver.getScoreDirectorFactory();
         guiScoreDirector = scoreDirectorFactory.buildScoreDirector();
@@ -188,8 +188,8 @@ public class SolutionBusiness {
         return fileList;
     }
 
-    public Solution getSolution() {
-        return guiScoreDirector.getWorkingSolution();
+    public Solution_ getSolution() {
+        return (Solution_) guiScoreDirector.getWorkingSolution();
     }
 
     public void setSolution(Solution solution) {
@@ -203,7 +203,7 @@ public class SolutionBusiness {
     public int getUninitializedVariableCount() {
         // TODO Remove after fixing https://issues.jboss.org/browse/PLANNER-405
         if (solver instanceof DefaultSolver) {
-            return ((DefaultSolver) solver).getSolverScope().getBestUninitializedVariableCount();
+            return ((DefaultSolver<Solution_>) solver).getSolverScope().getBestUninitializedVariableCount();
         }
         return 0;
     }
@@ -217,15 +217,15 @@ public class SolutionBusiness {
     }
 
     public void registerForBestSolutionChanges(final SolverAndPersistenceFrame solverAndPersistenceFrame) {
-        solver.addEventListener(new SolverEventListener<Solution>() {
+        solver.addEventListener(new SolverEventListener<Solution_>() {
             // Not called on the event thread
-            public void bestSolutionChanged(BestSolutionChangedEvent<Solution> event) {
+            public void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event) {
                 // Avoid ConcurrentModificationException when there is an unprocessed ProblemFactChange
                 // because the paint method uses the same problem facts instances as the Solver's workingSolution
                 // unlike the planning entities of the bestSolution which are cloned from the Solver's workingSolution
                 if (solver.isEveryProblemFactChangeProcessed()) {
                     // final is also needed for thread visibility
-                    final Solution latestBestSolution = event.getNewBestSolution();
+                    final Solution_ latestBestSolution = event.getNewBestSolution();
                     // Migrate it to the event thread
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
@@ -312,9 +312,8 @@ public class SolutionBusiness {
      * @param planningProblem never null
      * @return never null
      */
-    public Solution solve(Solution planningProblem) {
-        solver.solve(planningProblem);
-        return solver.getBestSolution();
+    public Solution_ solve(Solution_ planningProblem) {
+        return solver.solve(planningProblem);
     }
 
     public void terminateSolvingEarly() {

@@ -22,11 +22,12 @@ import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingDao;
 import org.optaplanner.examples.vehiclerouting.persistence.VehicleRoutingImporter;
 import org.optaplanner.examples.vehiclerouting.swingui.VehicleRoutingPanel;
 
-public class VehicleRoutingApp extends CommonApp {
+public class VehicleRoutingApp extends CommonApp<VehicleRoutingSolution> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml";
@@ -44,13 +45,8 @@ public class VehicleRoutingApp extends CommonApp {
                         "Find the shortest route possible.\n" +
                         "Do not overload the capacity of the vehicles.\n" +
                         "Arrive within the time window of each customer.",
+                SOLVER_CONFIG,
                 VehicleRoutingPanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver createSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override

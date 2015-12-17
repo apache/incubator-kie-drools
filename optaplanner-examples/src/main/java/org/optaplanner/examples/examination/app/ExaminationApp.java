@@ -24,6 +24,7 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.curriculumcourse.app.CurriculumCourseApp;
+import org.optaplanner.examples.examination.domain.Examination;
 import org.optaplanner.examples.examination.persistence.ExaminationDao;
 import org.optaplanner.examples.examination.persistence.ExaminationExporter;
 import org.optaplanner.examples.examination.persistence.ExaminationImporter;
@@ -33,7 +34,7 @@ import org.optaplanner.examples.examination.swingui.ExaminationPanel;
  * Examination is super optimized and a bit complex.
  * {@link CurriculumCourseApp} is arguably a better example to learn from.
  */
-public class ExaminationApp extends CommonApp {
+public class ExaminationApp extends CommonApp<Examination> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/examination/solver/examinationSolverConfig.xml";
@@ -47,13 +48,8 @@ public class ExaminationApp extends CommonApp {
         super("Exam timetabling",
                 "Official competition name: ITC 2007 track1 - Examination timetabling\n\n" +
                         "Assign exams to timeslots and rooms.",
+                SOLVER_CONFIG,
                 ExaminationPanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver createSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override

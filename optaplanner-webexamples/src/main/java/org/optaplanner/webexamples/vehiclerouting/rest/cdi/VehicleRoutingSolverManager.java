@@ -40,14 +40,14 @@ public class VehicleRoutingSolverManager implements Serializable {
     private static final String SOLVER_CONFIG = "org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingSolverConfig.xml";
     private static final String IMPORT_DATASET = "/org/optaplanner/webexamples/vehiclerouting/belgium-road-time-n50-k10.vrp";
 
-    private SolverFactory solverFactory;
+    private SolverFactory<VehicleRoutingSolution> solverFactory;
     // TODO After upgrading to JEE 7, replace ExecutorService by ManagedExecutorService:
     // @Resource(name = "DefaultManagedExecutorService")
     // private ManagedExecutorService executor;
     private ExecutorService executor;
 
     private Map<String, VehicleRoutingSolution> sessionSolutionMap;
-    private Map<String, Solver> sessionSolverMap;
+    private Map<String, Solver<VehicleRoutingSolution>> sessionSolverMap;
 
     @PostConstruct
     public synchronized void init() {
@@ -59,12 +59,12 @@ public class VehicleRoutingSolverManager implements Serializable {
         executor = Executors.newFixedThreadPool(2); // Only 2 because the other examples have their own Executor
         // TODO these probably don't need to be thread-safe because all access is synchronized
         sessionSolutionMap = new ConcurrentHashMap<String, VehicleRoutingSolution>();
-        sessionSolverMap = new ConcurrentHashMap<String, Solver>();
+        sessionSolverMap = new ConcurrentHashMap<String, Solver<VehicleRoutingSolution>>();
     }
 
     @PreDestroy
     public synchronized void destroy() {
-        for (Solver solver : sessionSolverMap.values()) {
+        for (Solver<VehicleRoutingSolution> solver : sessionSolverMap.values()) {
             solver.terminateEarly();
         }
         executor.shutdown();
@@ -82,11 +82,11 @@ public class VehicleRoutingSolverManager implements Serializable {
     }
 
     public synchronized boolean solve(final String sessionId) {
-        final Solver solver = solverFactory.buildSolver();
-        solver.addEventListener(new SolverEventListener() {
+        final Solver<VehicleRoutingSolution> solver = solverFactory.buildSolver();
+        solver.addEventListener(new SolverEventListener<VehicleRoutingSolution>() {
             @Override
-            public void bestSolutionChanged(BestSolutionChangedEvent event) {
-                VehicleRoutingSolution bestSolution = (VehicleRoutingSolution) event.getNewBestSolution();
+            public void bestSolutionChanged(BestSolutionChangedEvent<VehicleRoutingSolution> event) {
+                VehicleRoutingSolution bestSolution = event.getNewBestSolution();
                 synchronized (VehicleRoutingSolverManager.this) {
                     sessionSolutionMap.put(sessionId, bestSolution);
                 }
@@ -100,8 +100,7 @@ public class VehicleRoutingSolverManager implements Serializable {
         executor.submit(new Runnable() {
             @Override
             public void run() {
-                solver.solve(solution);
-                VehicleRoutingSolution bestSolution = (VehicleRoutingSolution) solver.getBestSolution();
+                VehicleRoutingSolution bestSolution = solver.solve(solution);
                 synchronized (VehicleRoutingSolverManager.this) {
                     sessionSolutionMap.put(sessionId, bestSolution);
                     sessionSolverMap.remove(sessionId);
@@ -112,7 +111,7 @@ public class VehicleRoutingSolverManager implements Serializable {
     }
 
     public synchronized boolean terminateEarly(String sessionId) {
-        Solver solver = sessionSolverMap.remove(sessionId);
+        Solver<VehicleRoutingSolution> solver = sessionSolverMap.remove(sessionId);
         if (solver != null) {
             solver.terminateEarly();
             return true;

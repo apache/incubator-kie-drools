@@ -28,16 +28,15 @@ public class NQueensHelloWorld {
 
     public static void main(String[] args) {
         // Build the Solver
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(
+        SolverFactory<NQueens> solverFactory = SolverFactory.createFromXmlResource(
                 "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml");
-        Solver solver = solverFactory.buildSolver();
+        Solver<NQueens> solver = solverFactory.buildSolver();
 
         // Load a problem with 8 queens
         NQueens unsolved8Queens = new NQueensGenerator().createNQueens(8);
 
         // Solve the problem
-        solver.solve(unsolved8Queens);
-        NQueens solved8Queens = (NQueens) solver.getBestSolution();
+        NQueens solved8Queens = solver.solve(unsolved8Queens);
 
         // Display the result
         System.out.println("\nSolved 8 queens:\n" + toDisplayString(solved8Queens));

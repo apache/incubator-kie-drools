@@ -47,7 +47,7 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
     @Test
     public void runFastAndFullAssert() {
         checkRunTurtleTests();
-        SolverFactory solverFactory = buildSolverFactory();
+        SolverFactory<Solution> solverFactory = buildSolverFactory();
         Solution planningProblem = readPlanningProblem();
         // Specifically use NON_INTRUSIVE_FULL_ASSERT instead of FULL_ASSERT to flush out bugs hidden by intrusiveness
         // 1) NON_INTRUSIVE_FULL_ASSERT ASSERT to find CH bugs (but covers little ground)
@@ -58,7 +58,7 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
         planningProblem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, planningProblem, 3L);
     }
 
-    protected Solution buildAndSolve(SolverFactory solverFactory, EnvironmentMode environmentMode,
+    protected Solution buildAndSolve(SolverFactory<Solution> solverFactory, EnvironmentMode environmentMode,
             Solution planningProblem, long maximumMinutesSpent) {
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.getTerminationConfig().setMinutesSpentLimit(maximumMinutesSpent);
@@ -70,9 +70,8 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
             solverConfig.getScoreDirectorFactoryConfig().setAssertionScoreDirectorFactory(
                     assertionScoreDirectorFactoryConfig);
         }
-        Solver solver = solverFactory.buildSolver();
-        solver.solve(planningProblem);
-        Solution bestSolution = solver.getBestSolution();
+        Solver<Solution> solver = solverFactory.buildSolver();
+        Solution bestSolution = solver.solve(planningProblem);
         if (bestSolution == null) {
             // Solver didn't make it past initialization // TODO remove me once getBestSolution() never returns null
             bestSolution = planningProblem;
@@ -84,8 +83,8 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
         return null;
     }
 
-    protected SolverFactory buildSolverFactory() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
+    protected SolverFactory<Solution> buildSolverFactory() {
+        SolverFactory<Solution> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
         TerminationConfig terminationConfig = new TerminationConfig();
         // buildAndSolve() fills in minutesSpentLimit
         solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);

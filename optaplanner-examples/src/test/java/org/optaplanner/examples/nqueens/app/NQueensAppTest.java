@@ -18,6 +18,7 @@ package org.optaplanner.examples.nqueens.app;
 
 import org.junit.Test;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.examples.nqueens.domain.NQueens;
 
 import static org.junit.Assert.*;
 
@@ -26,7 +27,7 @@ public class NQueensAppTest {
     @Test
     public void createSolverByApi() {
         NQueensApp nQueensApp = new NQueensApp();
-        Solver solver = nQueensApp.createSolverByApi();
+        Solver<NQueens> solver = nQueensApp.createSolverByApi();
         assertNotNull(solver);
     }
 

@@ -23,12 +23,13 @@ import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
+import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleDao;
 import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleExporter;
 import org.optaplanner.examples.pas.persistence.PatientAdmissionScheduleImporter;
 import org.optaplanner.examples.pas.swingui.PatientAdmissionSchedulePanel;
 
-public class PatientAdmissionScheduleApp extends CommonApp {
+public class PatientAdmissionScheduleApp extends CommonApp<PatientAdmissionSchedule> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/pas/solver/patientAdmissionScheduleSolverConfig.xml";
@@ -42,13 +43,8 @@ public class PatientAdmissionScheduleApp extends CommonApp {
         super("Hospital bed planning",
                 "Official competition name: PAS - Patient admission scheduling\n\n" +
                         "Assign patients to beds.",
+                SOLVER_CONFIG,
                 PatientAdmissionSchedulePanel.LOGO_PATH);
-    }
-
-    @Override
-    protected Solver createSolver() {
-        SolverFactory solverFactory = SolverFactory.createFromXmlResource(SOLVER_CONFIG);
-        return solverFactory.buildSolver();
     }
 
     @Override
