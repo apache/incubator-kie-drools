@@ -364,7 +364,8 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	    .auditPersistenceUnit(getAuditPersistenceUnit())
 	    .persistenceMode(getPersistenceMode())
 	    .persistenceUnit(getPersistenceUnit())
-	    .runtimeStrategy(getRuntimeStrategy());
+	    .runtimeStrategy(getRuntimeStrategy())
+	    .setLimitSerializationClasses(getLimitSerializationClasses());
 
 	     removeTransient(clone.configuration);
 	     removeTransient(clone.environmentEntries);

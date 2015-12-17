@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -18,9 +18,21 @@ package org.jbpm.runtime.manager.impl.deploy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.ByteArrayInputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
+
+import javax.xml.bind.annotation.XmlElement;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.junit.Test;
@@ -31,8 +43,10 @@ import org.kie.internal.runtime.conf.AuditMode;
 import org.kie.internal.runtime.conf.DeploymentDescriptor;
 import org.kie.internal.runtime.conf.MergeMode;
 import org.kie.internal.runtime.conf.NamedObjectModel;
+import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
+import org.kie.test.util.compare.ComparePair;
 
 public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescriptorTest {
 
@@ -44,7 +58,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 	protected static final String GROUP_ID = "org.jbpm.test";
 	protected static final String VERSION = "1.0.0-SNAPSHOT";
 
-	
+
 
 	@Test
 	public void testDefaultDeploymentDescriptor() {
@@ -176,7 +190,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 				.getDeploymentDescriptorHierarchy(kieContainer);
 		assertNotNull(descriptorHierarchy);
 		assertEquals(2, descriptorHierarchy.size());
-		
+
 		descriptor = descriptorHierarchy.get(0);
 
 		assertNotNull(descriptor);
@@ -192,7 +206,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 		assertEquals(0, descriptor.getGlobals().size());
 		assertEquals(0, descriptor.getTaskEventListeners().size());
 		assertEquals(0, descriptor.getWorkItemHandlers().size());
-		
+
 		descriptor = descriptorHierarchy.get(1);
 
 		assertNotNull(descriptor);
@@ -210,7 +224,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 		assertEquals(0, descriptor.getWorkItemHandlers().size());
 
 	}
-	
+
 	@Test
 	public void testDeploymentDescriptorFromKieContainerWithDependency() {
 		DeploymentDescriptorManager manager = new DeploymentDescriptorManager("org.jbpm.domain");
@@ -231,7 +245,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 
 		InternalKieModule kJarDep = createKieJar(ks, releaseIdDep, resourcesDep);
 		deployKjar(releaseIdDep, kJarDep);
-		
+
 		// create first kjar that will have dependency to another
 		ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
 
@@ -253,9 +267,9 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 		List<DeploymentDescriptor> descriptorHierarchy = manager.getDeploymentDescriptorHierarchy(kieContainer);
 		assertNotNull(descriptorHierarchy);
 		assertEquals(3, descriptorHierarchy.size());
-		
+
 		descriptor = descriptorHierarchy.get(0);
-		
+
 		assertNotNull(descriptor);
 		assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
 		assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
@@ -269,7 +283,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 		assertEquals(0, descriptor.getGlobals().size());
 		assertEquals(0, descriptor.getTaskEventListeners().size());
 		assertEquals(0, descriptor.getWorkItemHandlers().size());
-		
+
 		descriptor = descriptorHierarchy.get(1);
 
 		assertNotNull(descriptor);
@@ -284,7 +298,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 		assertEquals(0, descriptor.getEventListeners().size());
 		assertEquals(0, descriptor.getGlobals().size());
 		assertEquals(0, descriptor.getTaskEventListeners().size());
-		assertEquals(0, descriptor.getWorkItemHandlers().size());		
+		assertEquals(0, descriptor.getWorkItemHandlers().size());
 
 		descriptor = descriptorHierarchy.get(2);
 
@@ -325,7 +339,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 
 		InternalKieModule kJarDep = createKieJar(ks, releaseIdDep, resourcesDep);
 		deployKjar(releaseIdDep, kJarDep);
-		
+
 		// create first kjar that will have dependency to another
 		ReleaseId releaseId = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, VERSION);
 
@@ -347,9 +361,9 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 		List<DeploymentDescriptor> descriptorHierarchy = manager.getDeploymentDescriptorHierarchy(kieContainer);
 		assertNotNull(descriptorHierarchy);
 		assertEquals(3, descriptorHierarchy.size());
-		
+
 		descriptor = descriptorHierarchy.get(0);
-		
+
 		assertNotNull(descriptor);
 		assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
 		assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
@@ -363,7 +377,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 		assertEquals(0, descriptor.getGlobals().size());
 		assertEquals(0, descriptor.getTaskEventListeners().size());
 		assertEquals(0, descriptor.getWorkItemHandlers().size());
-		
+
 		descriptor = descriptorHierarchy.get(1);
 
 		assertNotNull(descriptor);
@@ -378,7 +392,7 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 		assertEquals(0, descriptor.getEventListeners().size());
 		assertEquals(1, descriptor.getGlobals().size());
 		assertEquals(0, descriptor.getTaskEventListeners().size());
-		assertEquals(0, descriptor.getWorkItemHandlers().size());		
+		assertEquals(0, descriptor.getWorkItemHandlers().size());
 
 		descriptor = descriptorHierarchy.get(2);
 
@@ -395,10 +409,10 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 		assertEquals(0, descriptor.getGlobals().size());
 		assertEquals(0, descriptor.getTaskEventListeners().size());
 		assertEquals(0, descriptor.getWorkItemHandlers().size());
-		
+
 		DeploymentDescriptorMerger merger = new DeploymentDescriptorMerger();
 		DeploymentDescriptor outcome = merger.merge(descriptorHierarchy, MergeMode.MERGE_COLLECTIONS);
-		
+
 		assertNotNull(outcome);
 		assertEquals("org.jbpm.domain", outcome.getPersistenceUnit());
 		assertEquals("org.jbpm.domain", outcome.getAuditPersistenceUnit());
@@ -415,5 +429,70 @@ public class DeploymentDescriptorManagerTest extends AbstractDeploymentDescripto
 
 	}
 
+	@Test
+	public void roundTripDescriptorMarshallingTest() throws Exception {
+	   DeploymentDescriptorImpl depDescImpl = new DeploymentDescriptorImpl();
 
+	   List<Field> fieldsToFill = new LinkedList<Field>();
+	   for( Field field : DeploymentDescriptorImpl.class.getDeclaredFields() ) {
+	       if( field.getAnnotation(XmlElement.class) != null ) {
+	           fieldsToFill.add(field);
+	       }
+	   }
+	   for( Field field : fieldsToFill ) {
+	       field.setAccessible(true);
+	      Class fieldType = field.getType();
+	      if( fieldType.equals(String.class) ) {
+	          field.set(depDescImpl, getStringVal());
+	      } else if( fieldType.equals(Boolean.class) ) {
+	          field.set(depDescImpl, true);
+	      } else if( fieldType.equals(PersistenceMode.class) ) {
+	         field.set(depDescImpl, PersistenceMode.NONE);
+	      } else if( fieldType.equals(AuditMode.class) ) {
+	         field.set(depDescImpl, AuditMode.JMS);
+	      } else if( fieldType.equals(RuntimeStrategy.class) ) {
+	         field.set(depDescImpl, RuntimeStrategy.PER_PROCESS_INSTANCE);
+	      } else if( Set.class.isAssignableFrom(fieldType) ) {
+	         Type genType = field.getGenericType();
+	         Type genParamType = ((ParameterizedType) genType).getActualTypeArguments()[0];
+	         Set val = new HashSet();
+	         if( genParamType.equals(String.class) ) {
+	            val.add(getStringVal());
+	         } else if( genParamType.equals(ObjectModel.class) ) {
+	             val.add(getObjectModelParameter(getStringVal(), false));
+	         } else if( genParamType.equals(NamedObjectModel.class) ) {
+	             val.add(getObjectModelParameter(getStringVal(), true));
+	         }
+	         field.set(depDescImpl, val);
+	      }
+	   }
+
+	   String depDescXml = DeploymentDescriptorIO.toXml(depDescImpl);
+
+	   ByteArrayInputStream inputStream = new ByteArrayInputStream(depDescXml.getBytes());
+
+	   DeploymentDescriptor copyDepDescImpl = DeploymentDescriptorIO.fromXml(inputStream);
+
+	   new ComparePair(depDescImpl, copyDepDescImpl)
+	       .addNullFields( "mappedRoles" )
+	       .useFields()
+	       .compare();
+
+	}
+
+	private static String getStringVal() {
+	    String val = UUID.randomUUID().toString();
+	    return val.substring(0, val.indexOf("-"));
+	}
+
+
+    private static Random random = new Random();
+
+    private static ObjectModel getObjectModelParameter( String resolver, boolean named ) {
+        if( named ) {
+            return new NamedObjectModel(resolver, UUID.randomUUID().toString(), Integer.toString(random.nextInt(100000)));
+        } else {
+            return new ObjectModel(resolver, UUID.randomUUID().toString(), Integer.toString(random.nextInt(100000)));
+        }
+    }
 }
