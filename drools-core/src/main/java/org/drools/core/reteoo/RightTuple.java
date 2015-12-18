@@ -16,6 +16,7 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.spi.Tuple;
 
 public interface RightTuple extends Tuple {
@@ -33,4 +34,6 @@ public interface RightTuple extends Tuple {
 
     TupleMemory getTempRightTupleMemory();
     void setTempRightTupleMemory( TupleMemory tempRightTupleMemory );
+
+    InternalFactHandle getFactHandleForEvaluation();
 }

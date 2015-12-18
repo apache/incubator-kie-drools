@@ -274,4 +274,8 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
     public void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory ) {
         getTupleSink().retractRightTuple( this, context, workingMemory );
     }
+
+    public InternalFactHandle getFactHandleForEvaluation() {
+        return getFactHandle();
+    }
 }

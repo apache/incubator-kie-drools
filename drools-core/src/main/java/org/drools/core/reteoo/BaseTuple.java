@@ -46,7 +46,7 @@ public abstract class BaseTuple implements Tuple {
         return getObject(declaration.getPattern().getOffset());
     }
 
-    public final Object getContextObject() {
+    public Object getContextObject() {
         return this.contextObject;
     }
 
