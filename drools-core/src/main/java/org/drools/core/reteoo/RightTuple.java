@@ -16,14 +16,10 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.spi.Tuple;
 
 public interface RightTuple extends Tuple {
-
-    RightTuple getHandlePrevious();
-    RightTuple getHandleNext();
-
-    RightTupleSink getTupleSink();
 
     LeftTuple getBlocked();
     void setBlocked( LeftTuple leftTuple );
@@ -39,6 +35,5 @@ public interface RightTuple extends Tuple {
     TupleMemory getTempRightTupleMemory();
     void setTempRightTupleMemory( TupleMemory tempRightTupleMemory );
 
-    RightTuple getStagedPrevious();
-    RightTuple getStagedNext();
+    InternalFactHandle getFactHandleForEvaluation();
 }

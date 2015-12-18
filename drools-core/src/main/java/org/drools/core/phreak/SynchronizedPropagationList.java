@@ -54,17 +54,13 @@ public class SynchronizedPropagationList implements PropagationList {
     }
 
     protected synchronized void internalAddEntry( PropagationEntry entry ) {
-        boolean wasEmpty = head == null;
-        if ( wasEmpty ) {
+        if ( head == null ) {
             head = entry;
+            notifyWaitOnRest();
         } else {
             tail.setNext( entry );
         }
         tail = entry;
-
-        if ( wasEmpty ) {
-            notifyWaitOnRest();
-        }
     }
 
     @Override

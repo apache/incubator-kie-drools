@@ -884,11 +884,11 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert( new A( 2, 2, 2, 2 ) );
 
         LeftTuple leftTuple = ( (DefaultFactHandle) fh ).getFirstLeftTuple();
-        ObjectTypeNode.Id letTupleOtnId = leftTuple.getTupleSink().getLeftInputOtnId();
+        ObjectTypeNode.Id letTupleOtnId = leftTuple.getInputOtnId();
         leftTuple = leftTuple.getHandleNext();
         while ( leftTuple != null ) {
-            assertTrue( letTupleOtnId.before( leftTuple.getTupleSink().getLeftInputOtnId() ) );
-            letTupleOtnId = leftTuple.getTupleSink().getLeftInputOtnId();
+            assertTrue( letTupleOtnId.before( leftTuple.getInputOtnId() ) );
+            letTupleOtnId = leftTuple.getInputOtnId();
             leftTuple = leftTuple.getHandleNext();
         }
     }
@@ -6744,11 +6744,11 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert( "1" );
         FactHandle iFH = ksession.insert( 1 );
         FactHandle lFH = ksession.insert( 1L );
-        ksession.fireAllRules();
+        assertEquals( 0, ksession.fireAllRules() );
 
         ksession.delete( iFH );
         ksession.delete( lFH );
-        ksession.fireAllRules();
+        assertEquals( 1, ksession.fireAllRules() );
 
         assertEquals( 0, ksession.getFactCount() );
     }

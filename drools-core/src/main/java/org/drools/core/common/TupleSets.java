@@ -39,6 +39,8 @@ public interface TupleSets<T extends Tuple> {
 
     void addAll(TupleSets<T> source);
 
+    void addTo(TupleSets<T> target);
+
     TupleSets<T> takeAll();
 
     boolean isEmpty();

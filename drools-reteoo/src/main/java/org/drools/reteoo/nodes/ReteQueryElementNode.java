@@ -82,7 +82,7 @@ public class ReteQueryElementNode extends QueryElementNode {
         InternalFactHandle handle = createFactHandle(context, workingMemory, leftTuple);
 
         DroolsQuery queryObject = createDroolsQuery(leftTuple, handle,
-                                                    null, null, null, null, null,
+                                                    null, null, null, null,
                                                     workingMemory);
 
         QueryInsertAction action = new QueryInsertAction(context,
@@ -606,7 +606,7 @@ public class ReteQueryElementNode extends QueryElementNode {
                     node.getSinkPropagator().doPropagateAssertLeftTuple(context,
                                                                         workingMemory,
                                                                         childLeftTuple,
-                                                                        childLeftTuple.getTupleSink());
+                                                                        (LeftTupleSink) childLeftTuple.getTupleSink());
                 }
                 rightTuple = tmp;
             }
