@@ -301,8 +301,7 @@ public abstract class BetaNode extends LeftTupleSource
         RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
-        while ( rightTuple != null &&
-                rightTuple.getTupleSink().getRightInputOtnId().before( getRightInputOtnId()) ) {
+        while ( rightTuple != null && rightTuple.getInputOtnId().before( getRightInputOtnId() ) ) {
             modifyPreviousTuples.removeRightTuple();
 
             // we skipped this node, due to alpha hashing, so retract now
@@ -312,7 +311,7 @@ public abstract class BetaNode extends LeftTupleSource
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
 
-        if ( rightTuple != null && rightTuple.getTupleSink().getRightInputOtnId().equals( getRightInputOtnId()) ) {
+        if ( rightTuple != null && rightTuple.getInputOtnId().equals( getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple();
             rightTuple.reAdd();
             if ( context.getModificationMask().intersects(getRightInferredMask()) ) {

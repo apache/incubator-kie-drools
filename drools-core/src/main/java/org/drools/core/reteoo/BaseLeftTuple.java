@@ -17,7 +17,9 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.index.TupleList;
 
 import java.util.Arrays;
@@ -630,5 +632,20 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     @Override
     public ObjectTypeNode.Id getInputOtnId() {
         return sink != null ? getTupleSink().getLeftInputOtnId() : null;
+    }
+
+    @Override
+    public LeftTupleSource getTupleSource() {
+        return sink != null ? getTupleSink().getLeftTupleSource() : null;
+    }
+
+    @Override
+    public void modifyTuple( PropagationContext context, InternalWorkingMemory workingMemory) {
+        getTupleSink().modifyLeftTuple( this, context, workingMemory );
+    }
+
+    @Override
+    public void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory ) {
+        getTupleSink().retractLeftTuple( this, context, workingMemory );
     }
 }

@@ -187,9 +187,7 @@ public class ReteBetaNodeUtils {
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext(context);
-            rightTuple.getTupleSink().retractRightTuple(rightTuple,
-                                                             context,
-                                                             wm);
+            rightTuple.retractTuple(context, wm);
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
 

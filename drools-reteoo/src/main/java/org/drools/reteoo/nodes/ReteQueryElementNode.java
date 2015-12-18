@@ -606,7 +606,7 @@ public class ReteQueryElementNode extends QueryElementNode {
                     node.getSinkPropagator().doPropagateAssertLeftTuple(context,
                                                                         workingMemory,
                                                                         childLeftTuple,
-                                                                        childLeftTuple.getTupleSink());
+                                                                        (LeftTupleSink) childLeftTuple.getTupleSink());
                 }
                 rightTuple = tmp;
             }

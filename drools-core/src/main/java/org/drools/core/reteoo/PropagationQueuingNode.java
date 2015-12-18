@@ -178,16 +178,14 @@ public class PropagationQueuingNode extends ObjectSource
             BetaNode betaNode = (BetaNode) s;
             RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
             while ( rightTuple != null &&
-                    rightTuple.getTupleSink().getRightInputOtnId().before( betaNode.getRightInputOtnId() ) ) {
+                    rightTuple.getInputOtnId().before( betaNode.getRightInputOtnId() ) ) {
                 modifyPreviousTuples.removeRightTuple();
                 // we skipped this node, due to alpha hashing, so retract now
-                rightTuple.getTupleSink().retractRightTuple( rightTuple,
-                                                                  context,
-                                                                  workingMemory );
+                rightTuple.retractTuple( context, workingMemory );
                 rightTuple = modifyPreviousTuples.peekRightTuple();
             }
 
-            if ( rightTuple != null && rightTuple.getTupleSink().getRightInputOtnId().equals( betaNode.getRightInputOtnId() ) ) {
+            if ( rightTuple != null && rightTuple.getInputOtnId().equals( betaNode.getRightInputOtnId() ) ) {
                 modifyPreviousTuples.removeRightTuple();
                 rightTuple.reAdd();
                 if ( context.getModificationMask().intersects( betaNode.getRightInferredMask() ) ) {
@@ -463,16 +461,12 @@ public class PropagationQueuingNode extends ObjectSource
                              final InternalWorkingMemory workingMemory ) {
 
             for ( RightTuple rightTuple = (RightTuple) this.handle.getFirstRightTuple(); rightTuple != null; rightTuple = rightTuple.getHandleNext() ) {
-                rightTuple.getTupleSink().retractRightTuple( rightTuple,
-                                                                  context,
-                                                                  workingMemory );
+                rightTuple.retractTuple( context, workingMemory );
             }
             this.handle.clearRightTuples();
 
             for ( LeftTuple leftTuple = (LeftTuple) this.handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext() ) {
-                leftTuple.getTupleSink().retractLeftTuple( leftTuple,
-                                                               context,
-                                                               workingMemory );
+                leftTuple.retractTuple(  context, workingMemory );
             }
             this.handle.clearLeftTuples();
             context.evaluateActionQueue( workingMemory );

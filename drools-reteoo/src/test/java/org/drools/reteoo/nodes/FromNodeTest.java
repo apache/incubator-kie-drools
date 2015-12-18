@@ -349,7 +349,7 @@ public class FromNodeTest {
                       memory.getBetaMemory().getLeftTupleMemory().size() );
         assertNull( memory.getBetaMemory().getRightTupleMemory() );
         RightTuple rightTuple2 = tuple.getFirstChild().getRightParent();
-        RightTuple rightTuple1 = tuple.getFirstChild().getHandleNext().getRightParent();
+        RightTuple rightTuple1 = ( (LeftTuple) tuple.getFirstChild().getHandleNext() ).getRightParent();
         assertFalse( rightTuple1.equals( rightTuple2 ) );
         assertNull( tuple.getFirstChild().getHandleNext().getHandleNext() );
 
