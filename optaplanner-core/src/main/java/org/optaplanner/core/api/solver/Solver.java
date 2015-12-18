@@ -23,6 +23,7 @@ import java.util.concurrent.Future;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
@@ -42,6 +43,14 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 public interface Solver<Solution_ extends Solution> {
 
     /**
+     * The best solution is the best solution found during solving:
+     * it might or might not be optimal, feasible or even initialized.
+     * <p/>
+     * The {@link #solve(Solution)} method also returns the best solution,
+     * but this method is useful in rare asynchronous situations (although
+     * {@link SolverEventListener#bestSolutionChanged(BestSolutionChangedEvent)} is often more appropriate).
+     * <p>
+     * This method is thread-safe.
      * @return never null, but it can return the original, uninitialized {@link Solution} with a {@link Score} null.
      */
     Solution_ getBestSolution();
@@ -52,7 +61,8 @@ public interface Solver<Solution_ extends Solution> {
     long getTimeMillisSpent();
 
     /**
-     * Solves the planning problem and returns the best solution encountered (which might or might not be optimal).
+     * Solves the planning problem and returns the best solution encountered
+     * (which might or might not be optimal, feasible or even initialized).
      * <p>
      * It can take seconds, minutes, even hours or days before this method returns,
      * depending on the {@link Termination} configuration.
