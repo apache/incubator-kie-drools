@@ -180,9 +180,7 @@ public class JavaDialectConfiguration
             case V1_7:
                 return "1.7";
             case V1_8:
-                // ecj still doesn't work with version 1.8 it generates the following error
-                // "Pb(591) Syntax error, static imports are only available if source level is 1.5 or greater"
-                return "1.7";
+                return "1.8";
             default:
                 return "1.7";
         }
