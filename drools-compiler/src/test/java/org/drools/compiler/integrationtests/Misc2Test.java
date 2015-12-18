@@ -8160,7 +8160,7 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .newKieSession();
 
         ksession.insert( "\"#" );
-        assertEquals(1, ksession.fireAllRules());
+        assertEquals( 1, ksession.fireAllRules() );
     }
 
     @Test
@@ -8177,6 +8177,43 @@ public class Misc2Test extends CommonTestMethodBase {
                                              .newKieSession();
 
         ksession.insert( "\"!." );
-        assertEquals( 1, ksession.fireAllRules());
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testLambdaInRHS() {
+        checkJava8InRhs("i -> list.add(i)");
+    }
+
+    @Test
+    public void testMethodReferenceInRHS() {
+        checkJava8InRhs("list::add");
+    }
+
+    private void checkJava8InRhs(String expr) {
+        if (!System.getProperty("java.version").startsWith( "1.8" )) {
+            // This test requires Java 8
+            return;
+        }
+
+        // BZ-1199965
+        String drl =
+                "global java.util.List list;\n" +
+                "rule \"Example with Lambda expression\"\n" +
+                "    when\n" +
+                "    then\n" +
+                "        java.util.List<Integer> $list = java.util.Arrays.asList(1, 2, 3, 4);\n" +
+                "        $list.forEach(" + expr + ");\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+        assertEquals( 4, list.size() );
+        assertTrue( list.containsAll( Arrays.asList(1, 2, 3, 4) ) );
     }
 }
