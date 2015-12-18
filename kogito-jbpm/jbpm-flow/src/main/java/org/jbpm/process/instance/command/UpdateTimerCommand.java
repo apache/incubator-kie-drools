@@ -16,6 +16,8 @@
 
 package org.jbpm.process.instance.command;
 
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -30,6 +32,7 @@ import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.timer.TimerInstance;
 import org.jbpm.process.instance.timer.TimerManager;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
+import org.jbpm.workflow.instance.node.StateBasedNodeInstance;
 import org.jbpm.workflow.instance.node.TimerNodeInstance;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
@@ -105,6 +108,34 @@ public class UpdateTimerCommand implements GenericCommand<Void>, ProcessInstance
 
                     tni.internalSetTimerId(newTimer.getId());
 
+                    break;
+                }
+            } else if (nodeInstance instanceof StateBasedNodeInstance) {
+                StateBasedNodeInstance sbni = (StateBasedNodeInstance) nodeInstance;
+                
+                if (sbni.getNodeName().equals(timerName)) {
+                    List<Long> timerList = sbni.getTimerInstances();
+                    if (timerList != null && timerList.size() == 1) {
+                        TimerInstance timer = tm.getTimerMap().get(timerList.get(0));
+    
+                        tm.cancelTimer(timer.getTimerId());
+                        TimerInstance newTimer = new TimerInstance();
+    
+                        if (delay != 0) {
+                            long diff = System.currentTimeMillis() - timer.getActivated().getTime();
+                            newTimer.setDelay(delay * 1000 - diff);
+                        }
+                        newTimer.setPeriod(period);
+                        newTimer.setRepeatLimit(repeatLimit);
+                        newTimer.setTimerId(timer.getTimerId());
+                        tm.registerTimer(newTimer, wfp);
+                        
+                        timerList.clear();
+                        timerList.add(newTimer.getId());
+    
+                        sbni.internalSetTimerInstances(timerList);
+                    
+                    }
                     break;
                 }
             }
