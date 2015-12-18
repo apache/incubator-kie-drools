@@ -894,7 +894,7 @@ public class ReteAccumulateNode extends AccumulateNode {
             if ( parent.getFirstChild() == matchings[0] ) {
                 parent.setFirstChild( null );
             }
-            parent.setLastChild( matchings[0].getHandlePrevious() );
+            parent.setLastChild( (LeftTuple) matchings[0].getHandlePrevious() );
             if ( parent.getLastChild() != null ) {
                 parent.getLastChild().setHandleNext( null );
                 matchings[0].setHandlePrevious( null );

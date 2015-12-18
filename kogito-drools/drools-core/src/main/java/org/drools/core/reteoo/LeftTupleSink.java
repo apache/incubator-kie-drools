@@ -34,8 +34,6 @@ public interface LeftTupleSink
     Externalizable,
     Sink {
 
-    short getType();
-    
     /**
      * Assert a new <code>ReteTuple</code>.
      *

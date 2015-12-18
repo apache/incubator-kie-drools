@@ -16,7 +16,6 @@
 
 package org.drools.core.common;
 
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.spi.Tuple;
 
 public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
@@ -39,44 +38,60 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
         return this.insertFirst;
     }
 
+    protected void setInsertFirst( T insertFirst ) {
+        this.insertFirst = insertFirst;
+    }
+
     public T getDeleteFirst() {
         return this.deleteFirst;
+    }
+
+    protected void setDeleteFirst( T deleteFirst ) {
+        this.deleteFirst = deleteFirst;
     }
 
     public T getUpdateFirst() {
         return this.updateFirst;
     }
 
+    protected void setUpdateFirst( T updateFirst ) {
+        this.updateFirst = updateFirst;
+    }
+
     public T getNormalizedDeleteFirst() {
         return normalizedDeleteFirst;
     }
 
+    protected void setNormalizedDeleteFirst( T normalizedDeleteFirst ) {
+        this.normalizedDeleteFirst = normalizedDeleteFirst;
+    }
+
     public void resetAll() {
-        insertFirst = null;
-        deleteFirst = null;
-        updateFirst = null;
-        normalizedDeleteFirst = null;
+        setInsertFirst( null );
+        setDeleteFirst( null );
+        setUpdateFirst( null );
+        setNormalizedDeleteFirst( null );
     }
 
     public boolean addInsert(T tuple) {
-        if (tuple.getStagedType() == Tuple.UPDATE) {
+        if ( getStagedType( tuple ) == Tuple.UPDATE) {
             // do nothing, it's already staged as an update, which means it's already scheduled for eval too.
             return false;
         }
 
-        tuple.setStagedType( Tuple.INSERT );
+        setStagedType( tuple, Tuple.INSERT );
         if ( insertFirst == null ) {
             insertFirst = tuple;
             return true;
         }
-        tuple.setStagedNext( insertFirst );
-        insertFirst.setStagedPrevious( tuple );
+        setNextTuple( tuple, insertFirst );
+        setPreviousTuple( insertFirst, tuple );
         insertFirst = tuple;
         return false;
     }
 
     public boolean addDelete(T tuple) {
-        switch ( tuple.getStagedType() ) {
+        switch ( getStagedType( tuple ) ) {
             // handle clash with already staged entries
             case Tuple.INSERT:
                 removeInsert( tuple );
@@ -86,100 +101,100 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
                 break;
         }
 
-        tuple.setStagedType( Tuple.DELETE );
+        setStagedType( tuple, Tuple.DELETE );
         if ( deleteFirst == null ) {
             deleteFirst = tuple;
             return true;
         }
-        tuple.setStagedNext( deleteFirst );
-        deleteFirst.setStagedPrevious( tuple );
+        setNextTuple( tuple, deleteFirst );
+        setPreviousTuple( deleteFirst, tuple );
         deleteFirst = tuple;
         return false;
     }
 
     public boolean addNormalizedDelete(T tuple) {
-        tuple.setStagedType( Tuple.NORMALIZED_DELETE );
+        setStagedType( tuple, Tuple.NORMALIZED_DELETE );
         if ( normalizedDeleteFirst == null ) {
             normalizedDeleteFirst = tuple;
             return true;
         }
-        tuple.setStagedNext( normalizedDeleteFirst );
-        normalizedDeleteFirst.setStagedPrevious( tuple );
+        setNextTuple( tuple, normalizedDeleteFirst );
+        setPreviousTuple( normalizedDeleteFirst, tuple );
         normalizedDeleteFirst = tuple;
         return false;
     }
 
     public boolean addUpdate(T tuple) {
-        if (tuple.getStagedType() != LeftTuple.NONE) {
+        if ( getStagedType( tuple ) != Tuple.NONE) {
             // do nothing, it's already staged as insert, which means it's already scheduled for eval too.
             return false;
         }
 
-        tuple.setStagedType( Tuple.UPDATE );
+        setStagedType( tuple, Tuple.UPDATE );
         if ( updateFirst == null ) {
             updateFirst = tuple;
             return true;
         }
-        tuple.setStagedNext( updateFirst );
-        updateFirst.setStagedPrevious( tuple );
+        setNextTuple( tuple, updateFirst );
+        setPreviousTuple( updateFirst, tuple );
         updateFirst = tuple;
         return false;
     }
 
     public void removeInsert(T tuple) {
-        tuple.setStagedType( Tuple.NONE );
+        setStagedType( tuple, Tuple.NONE );
         if ( tuple == insertFirst ) {
-            Tuple next = tuple.getStagedNext();
+            T next = getNextTuple( tuple );
             if ( next != null ) {
-                next.setStagedPrevious( null );
+                setPreviousTuple( next, null );
             }
-            insertFirst = (T)next;
+            setInsertFirst( next );
         } else {
-            Tuple next = tuple.getStagedNext();
-            Tuple previous = tuple.getStagedPrevious();
+            T next = getNextTuple( tuple );
+            T previous = getPreviousTuple( tuple );
             if ( next != null ) {
-                next.setStagedPrevious( previous );
+                setPreviousTuple( next, previous );
             }
-            previous.setStagedNext( next );
+            setNextTuple( previous, next );
         }
         tuple.clearStaged();
     }
 
     public void removeDelete(T tuple) {
-        tuple.setStagedType( Tuple.NONE );
+        setStagedType( tuple, Tuple.NONE );
         if ( tuple == deleteFirst ) {
-            Tuple next = tuple.getStagedNext();
+            T next = getNextTuple( tuple );
             if ( next != null ) {
-                next.setStagedPrevious( null );
+                setPreviousTuple( next, null );
             }
             deleteFirst = (T) next;
         } else {
-            Tuple next = tuple.getStagedNext();
-            Tuple previous = tuple.getStagedPrevious();
+            T next = getNextTuple( tuple );
+            T previous = getPreviousTuple( tuple );
             if ( next != null ) {
-                next.setStagedPrevious( previous );
+                setPreviousTuple( next, previous );
             }
-            previous.setStagedNext( next );
+            setNextTuple( previous, next );
 
         }
         tuple.clearStaged();
     }
 
     public void removeUpdate(Tuple tuple) {
-        tuple.setStagedType( Tuple.NONE );
+        setStagedType( (T) tuple, Tuple.NONE );
         if ( tuple == updateFirst ) {
-            Tuple next = tuple.getStagedNext();
+            T next = getNextTuple( (T) tuple );
             if ( next != null ) {
-                next.setStagedPrevious( null );
+                setPreviousTuple( next, null );
             }
-            updateFirst = (T)next;
+            updateFirst = next;
         } else {
-            Tuple next = tuple.getStagedNext();
-            Tuple previous = tuple.getStagedPrevious();
+            T next = getNextTuple( (T) tuple );
+            T previous = getPreviousTuple( (T) tuple );
             if ( next != null ) {
-                next.setStagedPrevious( previous );
+                setPreviousTuple( next, previous );
             }
-            previous.setStagedNext( next );
+            setNextTuple( previous, next );
         }
         tuple.clearStaged();
     }
@@ -187,57 +202,57 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
     public void addAllInserts(TupleSets<T> tupleSets) {
         if ( tupleSets.getInsertFirst() != null ) {
             if ( insertFirst == null ) {
-                insertFirst = tupleSets.getInsertFirst();
+                setInsertFirst( tupleSets.getInsertFirst() );
             } else {
-                Tuple current = insertFirst;
-                Tuple last = null;
+                T current = insertFirst;
+                T last = null;
                 while ( current != null ) {
                     last = current;
-                    current = current.getStagedNext();
+                    current = getNextTuple( current );
                 }
-                Tuple tuple = tupleSets.getInsertFirst();
-                last.setStagedNext( tuple );
-                tuple.setStagedPrevious( last );
+                T tuple = tupleSets.getInsertFirst();
+                setNextTuple( last, tuple );
+                setPreviousTuple( tuple, last );
             }
-            ( (TupleSetsImpl) tupleSets ).insertFirst = null;
+            ( (TupleSetsImpl) tupleSets ).setInsertFirst( null );
         }
     }
 
     public void addAllDeletes(TupleSets<T> tupleSets) {
         if ( tupleSets.getDeleteFirst() != null ) {
             if ( deleteFirst == null ) {
-                deleteFirst = tupleSets.getDeleteFirst();
+                setDeleteFirst( tupleSets.getDeleteFirst() );
             } else {
-                Tuple current = deleteFirst;
-                Tuple last = null;
+                T current = deleteFirst;
+                T last = null;
                 while ( current != null ) {
                     last = current;
-                    current = current.getStagedNext();
+                    current = getNextTuple( current );
                 }
-                Tuple tuple = tupleSets.getDeleteFirst();
-                last.setStagedNext( tuple );
-                tuple.setStagedPrevious( last );
+                T tuple = tupleSets.getDeleteFirst();
+                setNextTuple( last, tuple );
+                setPreviousTuple( tuple, last );
             }
-            ((TupleSetsImpl) tupleSets).deleteFirst = null;
+            ((TupleSetsImpl) tupleSets).setDeleteFirst( null );
         }
     }
 
     public void addAllUpdates(TupleSets<T> tupleSets) {
         if ( tupleSets.getUpdateFirst() != null ) {
             if ( updateFirst == null ) {
-                updateFirst = tupleSets.getUpdateFirst();
+                setUpdateFirst( tupleSets.getUpdateFirst() );
             } else {
-                Tuple current = updateFirst;
-                Tuple last = null;
+                T current = updateFirst;
+                T last = null;
                 while ( current != null ) {
                     last = current;
-                    current = current.getStagedNext();
+                    current = getNextTuple( current );
                 }
-                Tuple tuple = tupleSets.getUpdateFirst();
-                last.setStagedNext( tuple );
-                tuple.setStagedPrevious( last );
+                T tuple = tupleSets.getUpdateFirst();
+                setNextTuple( last, tuple );
+                setPreviousTuple( tuple, last );
             }
-            ( (TupleSetsImpl) tupleSets ).updateFirst = null;
+            ( (TupleSetsImpl) tupleSets ).setUpdateFirst( null );
         }
     }
 
@@ -245,6 +260,10 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
         addAllInserts( source );
         addAllDeletes( source );
         addAllUpdates( source );
+    }
+
+    public void addTo(TupleSets<T> target) {
+        target.addAll( this );
     }
 
     @Override
@@ -266,9 +285,9 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
         resetAll();
     }
 
-    private void clear( Tuple tuple ) {
+    private void clear( T tuple ) {
         while ( tuple != null ) {
-            Tuple next =  tuple.getStagedNext();
+            T next = getNextTuple( tuple );
             tuple.clearStaged();
             tuple = next;
         }
@@ -303,8 +322,32 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
     }
 
     private void appendSet( StringBuilder sbuilder, Tuple tuple ) {
-        for ( ; tuple != null; tuple = tuple.getStagedNext() ) {
+        for ( ; tuple != null; tuple = getNextTuple( (T) tuple ) ) {
             sbuilder.append( " " ).append( tuple ).append( "\n" );
         }
+    }
+
+    protected T getPreviousTuple( T tuple ) {
+        return (T) tuple.getStagedPrevious();
+    }
+
+    protected void setPreviousTuple( T tuple, T stagedPrevious ) {
+        tuple.setStagedPrevious( stagedPrevious );
+    }
+
+    protected T getNextTuple( T tuple ) {
+        return tuple.getStagedNext();
+    }
+
+    protected void setNextTuple( T tuple, T stagedNext ) {
+        tuple.setStagedNext( stagedNext );
+    }
+
+    protected void setStagedType( T tuple, short type ) {
+        tuple.setStagedType( type );
+    }
+
+    protected short getStagedType( T tuple ) {
+        return tuple.getStagedType();
     }
 }

@@ -22,18 +22,13 @@ public interface LeftTuple extends Tuple {
     void reAddLeft();
     void reAddRight();
 
-    LeftTupleSink getTupleSink();
-
-    /* Had to add the set method because sink adapters must override 
+    /* Had to add the set method because sink adapters must override
      * the tuple sink set when the tuple was created.
      */
     void setLeftTupleSink(LeftTupleSink sink);
 
     LeftTuple getLeftParent();
     void setLeftParent(LeftTuple leftParent);
-
-    LeftTuple getHandlePrevious();
-    LeftTuple getHandleNext();
 
     RightTuple getRightParent();
     void setRightParent(RightTuple rightParent);
@@ -59,6 +54,6 @@ public interface LeftTuple extends Tuple {
     void setPeer(LeftTuple peer);
     LeftTuple getPeer();
 
-    LeftTuple getStagedPrevious();
-    LeftTuple getStagedNext();
+    short getStagedTypeForQueries();
+    void setStagedTypeForQueries( short stagedTypeForQueries );
 }

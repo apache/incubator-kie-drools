@@ -455,8 +455,10 @@ public class ProtobufOutputMarshaller {
 
             // iterates over all propagated handles and assert them to the new sink
             for ( RightTuple entry = (RightTuple) it.next(); entry != null; entry = (RightTuple) it.next() ) {
-                LeftTuple leftTuple = (LeftTuple) entry.getFactHandle().getObject();
-                InternalFactHandle handle = (InternalFactHandle) leftTuple.getContextObject();
+                LeftTuple leftTuple = entry instanceof LeftTuple ?
+                                      (LeftTuple) entry : // with phreak the entry is always both a right and a left tuple
+                                      (LeftTuple) entry.getFactHandle().getObject(); // this is necessary only for reteoo
+                InternalFactHandle handle = (InternalFactHandle) leftTuple.getFactHandle();
                 FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()
                         .setId( handle.getId() )
                         .setRecency( handle.getRecency() )

@@ -37,7 +37,6 @@ import org.drools.core.marshalling.impl.PersisterHelper;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.QueryElementContext;
 import org.drools.core.marshalling.impl.ProtobufInputMarshaller.TupleKey;
 import org.drools.core.marshalling.impl.ProtobufMessages;
-import org.drools.core.phreak.RuleNetworkEvaluator;
 import org.drools.core.phreak.StackEntry;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.AbductiveQuery;
@@ -45,6 +44,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.rule.QueryElement;
 import org.drools.core.rule.QueryImpl;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.kie.api.runtime.rule.Variable;
 
@@ -183,7 +183,6 @@ public class QueryElementNode extends LeftTupleSource
                                          StackEntry stackEntry,
                                          final List<PathMemory> pmems,
                                          QueryElementNodeMemory qmem,
-                                         TupleSets<LeftTuple> trgLeftTuples,
                                          LeftTupleSink sink,
                                          InternalWorkingMemory workingMemory) {
         Object[] args = new Object[argsTemplate.length]; // the actual args, to be created from the  template
@@ -245,7 +244,7 @@ public class QueryElementNode extends LeftTupleSource
                                                    executeAsOpenQuery,
                                                    stackEntry,
                                                    pmems,
-                                                   trgLeftTuples,
+                                                   qmem != null ? qmem.getResultLeftTuples() : null,
                                                    qmem,
                                                    sink);
 
@@ -350,7 +349,7 @@ public class QueryElementNode extends LeftTupleSource
                              PropagationContext context,
                              InternalWorkingMemory workingMemory) {
 
-            QueryTerminalNode node = (QueryTerminalNode) resultLeftTuple.getTupleSink();
+            QueryTerminalNode node = resultLeftTuple.getTupleSink();
             QueryImpl query = node.getQuery();
             Declaration[] decls = node.getRequiredDeclarations();
             DroolsQuery dquery = (DroolsQuery) this.factHandle.getObject();
@@ -482,7 +481,17 @@ public class QueryElementNode extends LeftTupleSource
             TupleSets<LeftTuple> leftTuples = query.getResultLeftTupleSets();
             LeftTuple childLeftTuple = rightTuple.getFirstChild();
 
-            RuleNetworkEvaluator.unlinkAndDeleteChildLeftTuple( childLeftTuple, leftTuples, leftTuples );
+            switch (childLeftTuple.getStagedTypeForQueries()) {
+                // handle clash with already staged entries
+                case LeftTuple.INSERT:
+                    leftTuples.removeInsert(childLeftTuple);
+                    return;
+                case LeftTuple.UPDATE:
+                    leftTuples.removeUpdate(childLeftTuple);
+                    break;
+            }
+
+            leftTuples.addDelete(childLeftTuple);
         }
 
         public void rowUpdated(final RuleImpl rule,
@@ -499,7 +508,7 @@ public class QueryElementNode extends LeftTupleSource
             resultLeftTuple.setContextObject( null );
 
             // We need to recopy everything back again, as we don't know what has or hasn't changed
-            QueryTerminalNode node = (QueryTerminalNode) resultLeftTuple.getTupleSink();
+            QueryTerminalNode node = resultLeftTuple.getTupleSink();
             Declaration[] decls = node.getRequiredDeclarations();
             InternalFactHandle rootHandle = resultLeftTuple.get( 0 );
             DroolsQuery dquery = (DroolsQuery) rootHandle.getObject();
@@ -525,7 +534,7 @@ public class QueryElementNode extends LeftTupleSource
 
             TupleSets<LeftTuple> leftTuples = dquery.getResultLeftTupleSets();
             LeftTuple childLeftTuple = rightTuple.getFirstChild();
-            switch ( childLeftTuple.getStagedType() ) {
+            switch ( childLeftTuple.getStagedTypeForQueries() ) {
                 // handle clash with already staged entries
                 case LeftTuple.INSERT :
                     leftTuples.removeInsert( childLeftTuple );
@@ -632,12 +641,16 @@ public class QueryElementNode extends LeftTupleSource
 
         private TupleSets<LeftTuple> resultLeftTuples;
 
-        private long          nodePosMaskBit;
+        private long nodePosMaskBit;
 
         public QueryElementNodeMemory(QueryElementNode node) {
             this.node = node;
-            // @FIXME I don't think this is thread safe
-            this.resultLeftTuples = new TupleSetsImpl<LeftTuple>();
+
+            // if there is only one sink there is no split and then no smem staging and no normalization
+            // otherwise it uses special tuplset with alternative linking fields (rightParentPrev/Next)
+            this.resultLeftTuples = node.getSinkPropagator().size() > 1 ?
+                                    new QueryTupleSets() :
+                                    new TupleSetsImpl<LeftTuple>();
         }
 
         public QueryElementNode getNode() {
@@ -668,6 +681,24 @@ public class QueryElementNode extends LeftTupleSource
             return resultLeftTuples;
         }
 
+        public void correctMemoryOnSinksChanged() {
+            if (resultLeftTuples instanceof QueryTupleSets ) {
+                if (node.getSinkPropagator().size() == 1) {
+                    // a sink has been removed and now there is no longer a split
+                    TupleSetsImpl<LeftTuple> newTupleSets = new TupleSetsImpl<LeftTuple>();
+                    this.resultLeftTuples.addTo( newTupleSets );
+                    this.resultLeftTuples = newTupleSets;
+                }
+            } else {
+                if (node.getSinkPropagator().size() > 1) {
+                    // a sink has been added and now there is a split
+                    TupleSetsImpl<LeftTuple> newTupleSets = new QueryTupleSets();
+                    this.resultLeftTuples.addTo( newTupleSets );
+                    this.resultLeftTuples = newTupleSets;
+                }
+            }
+        }
+
         public long getNodePosMaskBit() {
             return nodePosMaskBit;
         }
@@ -686,6 +717,83 @@ public class QueryElementNode extends LeftTupleSource
 
         public void reset() {
             resultLeftTuples.resetAll();
+        }
+
+        public static class QueryTupleSets extends TupleSetsImpl<LeftTuple> {
+            @Override
+            protected LeftTuple getPreviousTuple( LeftTuple tuple ) {
+                return tuple.getRightParentPrevious();
+            }
+
+            @Override
+            protected void setPreviousTuple( LeftTuple tuple, LeftTuple stagedPrevious ) {
+                tuple.setRightParentPrevious( stagedPrevious );
+            }
+
+            @Override
+            protected LeftTuple getNextTuple( LeftTuple tuple ) {
+                return tuple.getRightParentNext();
+            }
+
+            @Override
+            protected void setNextTuple( LeftTuple tuple, LeftTuple stagedNext ) {
+                tuple.setRightParentNext( stagedNext );
+            }
+
+            @Override
+            protected void setStagedType( LeftTuple tuple, short type ) {
+                tuple.setStagedTypeForQueries( type );
+            }
+
+            @Override
+            protected short getStagedType( LeftTuple tuple ) {
+                return tuple.getStagedTypeForQueries();
+            }
+
+            public void addTo(TupleSets<LeftTuple> tupleSets) {
+                addAllInsertsTo( tupleSets );
+                addAllDeletesTo( tupleSets );
+                addAllUpdatesTo( tupleSets );
+            }
+
+            private void addAllInsertsTo( TupleSets<LeftTuple> tupleSets ) {
+                LeftTuple leftTuple = getInsertFirst();
+                while (leftTuple != null) {
+                    LeftTuple next = getNextTuple( leftTuple );
+                    clear( leftTuple );
+                    tupleSets.addInsert( leftTuple );
+                    leftTuple = next;
+                }
+                setInsertFirst( null );
+            }
+
+            private void addAllUpdatesTo( TupleSets<LeftTuple> tupleSets ) {
+                LeftTuple leftTuple = getUpdateFirst();
+                while (leftTuple != null) {
+                    LeftTuple next = getNextTuple( leftTuple );
+                    clear( leftTuple );
+                    tupleSets.addUpdate( leftTuple );
+                    leftTuple = next;
+                }
+                setUpdateFirst( null );
+            }
+
+            private void addAllDeletesTo( TupleSets<LeftTuple> tupleSets ) {
+                LeftTuple leftTuple = getDeleteFirst();
+                while (leftTuple != null) {
+                    LeftTuple next = getNextTuple( leftTuple );
+                    clear( leftTuple );
+                    tupleSets.addDelete( leftTuple );
+                    leftTuple = next;
+                }
+                setDeleteFirst( null );
+            }
+
+            private void clear( LeftTuple leftTuple ) {
+                setStagedType( leftTuple, Tuple.NONE );
+                setPreviousTuple( leftTuple, null );
+                setNextTuple( leftTuple, null );
+            }
         }
     }
 

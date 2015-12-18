@@ -55,13 +55,8 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                               final PropagationContext context,
                                               final InternalWorkingMemory workingMemory) {
         LeftTuple childLeftTuple = rightTuple.getFirstChild();
-        childLeftTuple.getTupleSink().modifyLeftTuple( childLeftTuple,
-                                                           context,
-                                                           workingMemory );       
+        childLeftTuple.modifyTuple( context, workingMemory );
     }
-    
-    
-    
 
     public void propagateAssertLeftTuple(final LeftTuple leftTuple,
                                          final RightTuple rightTuple,
@@ -97,10 +92,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
         LeftTuple child = leftTuple.getFirstChild();
         while ( child != null ) { 
             LeftTuple temp = child.getHandleNext();
-            doPropagateRetractLeftTuple( context,
-                                         workingMemory,
-                                         child,
-                                         child.getTupleSink() );
+            child.retractTuple( context, workingMemory );
             child.unlinkFromRightParent();
             child.unlinkFromLeftParent();
             child = temp;
@@ -113,10 +105,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
         LeftTuple child = leftTuple.getFirstChild();
         while ( child != null ) {
             LeftTuple temp = child.getHandleNext();
-            doPropagateRetractLeftTuple( context,
-                                         workingMemory,
-                                         child,
-                                         child.getTupleSink() );
+            child.retractTuple( context, workingMemory );
             //workingMemory.getFactHandleFactory().destroyFactHandle( child.getRightParent().getFactHandle() );
             child.unlinkFromRightParent();
             child.unlinkFromLeftParent();
@@ -130,10 +119,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
         LeftTuple child = rightTuple.getFirstChild();
         while ( child != null ) {
             LeftTuple temp = child.getRightParentNext();
-            doPropagateRetractLeftTuple( context,
-                                         workingMemory,
-                                         child,
-                                         child.getTupleSink() );
+            child.retractTuple( context, workingMemory );
             child.unlinkFromLeftParent();
             child.unlinkFromRightParent();
             child = temp;
@@ -221,21 +207,6 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                    workingMemory );
     }
 
-    /**
-     * This is a hook method that may be overriden by subclasses. Please keep it
-     * package protected.
-     */
-    protected void doPropagateRetractLeftTuple(PropagationContext context,
-                                               InternalWorkingMemory workingMemory,
-                                               LeftTuple child,
-                                               LeftTupleSink tupleSink) {
-        tupleSink.retractLeftTuple( child,
-                                    context,
-                                    workingMemory );
-    }
-
-    // related to true modify
-    
     public void propagateModifyObject(InternalFactHandle factHandle,
                                       ModifyPreviousTuples modifyPreviousTuples,
                                       PropagationContext context,
@@ -251,9 +222,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                                    PropagationContext context,
                                                    InternalWorkingMemory workingMemory,
                                                    boolean tupleMemoryEnabled) {
-        childLeftTuple.getTupleSink().modifyLeftTuple( childLeftTuple,
-                                                           context,
-                                                           workingMemory );
+        childLeftTuple.modifyTuple( context, workingMemory );
         // re-order right to keep order consistency
         childLeftTuple.reAddRight();
         return childLeftTuple.getHandleNext();
@@ -264,9 +233,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                                    PropagationContext context,
                                                    InternalWorkingMemory workingMemory,
                                                    boolean tupleMemoryEnabled) {
-        childLeftTuple.getTupleSink().modifyLeftTuple( childLeftTuple,
-                                                           context,
-                                                           workingMemory );
+        childLeftTuple.modifyTuple( context, workingMemory );
         // re-order right to keep order consistency
         childLeftTuple.reAddLeft();
         return childLeftTuple.getRightParentNext();
@@ -277,9 +244,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                               InternalWorkingMemory workingMemory,
                                               boolean tupleMemoryEnabled) {
         // not shared, so only one child
-        leftTuple.getFirstChild().getTupleSink().modifyLeftTuple( leftTuple.getFirstChild(),
-                                                                      context,
-                                                                      workingMemory );
+        leftTuple.getFirstChild().modifyTuple( context, workingMemory );
     }
 
     public LeftTuple propagateRetractChildLeftTuple(LeftTuple childLeftTuple,
@@ -287,10 +252,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                                     PropagationContext context,
                                                     InternalWorkingMemory workingMemory) {
         LeftTuple temp = childLeftTuple.getHandleNext();
-        doPropagateRetractLeftTuple( context,
-                                     workingMemory,
-                                     childLeftTuple,
-                                     childLeftTuple.getTupleSink() );
+        childLeftTuple.retractTuple( context, workingMemory );
         childLeftTuple.unlinkFromRightParent();
         childLeftTuple.unlinkFromLeftParent();
         return temp;
@@ -301,10 +263,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
                                                     PropagationContext context,
                                                     InternalWorkingMemory workingMemory) {
         LeftTuple temp = childLeftTuple.getRightParentNext();
-        doPropagateRetractLeftTuple( context,
-                                     workingMemory,
-                                     childLeftTuple,
-                                     childLeftTuple.getTupleSink() );
+        childLeftTuple.retractTuple( context, workingMemory );
         childLeftTuple.unlinkFromRightParent();
         childLeftTuple.unlinkFromLeftParent();
         return temp;

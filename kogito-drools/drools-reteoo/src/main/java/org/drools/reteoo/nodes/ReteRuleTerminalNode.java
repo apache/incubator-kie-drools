@@ -52,7 +52,7 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
             return;
         }
 
-        final InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        final InternalAgenda agenda = workingMemory.getAgenda();
 
         boolean fire = agenda.createActivation( leftTuple,  context,
                                                 workingMemory,  this );
@@ -64,7 +64,7 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
     public void modifyLeftTuple(LeftTuple leftTuple,
                                 PropagationContext context,
                                 InternalWorkingMemory workingMemory) {
-        InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        InternalAgenda agenda = workingMemory.getAgenda();
 
         // we need the inserted facthandle so we can update the network with new Activation
         Object o = leftTuple.getContextObject();
@@ -112,7 +112,7 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
         Activation activation = (Activation) obj;
         activation.setMatched( false );
 
-        InternalAgenda agenda = (InternalAgenda) workingMemory.getAgenda();
+        InternalAgenda agenda = workingMemory.getAgenda();
 
         agenda.cancelActivation( leftTuple,
                                  context,
@@ -126,8 +126,7 @@ public class ReteRuleTerminalNode extends RuleTerminalNode {
     public void cancelMatch(AgendaItem match, InternalWorkingMemoryActions workingMemory) {
         match.cancel();
         if ( match.isQueued() ) {
-            LeftTuple leftTuple = (LeftTuple)match.getTuple();
-            leftTuple.getTupleSink().retractLeftTuple( leftTuple, (PropagationContext) match.getPropagationContext(), workingMemory );
+            match.getTuple().retractTuple( match.getPropagationContext(), workingMemory );
         }
     }
 

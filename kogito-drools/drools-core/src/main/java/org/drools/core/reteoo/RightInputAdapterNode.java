@@ -119,7 +119,7 @@ public class RightInputAdapterNode extends ObjectSource
     }
     
     public LeftTuple createPeer(LeftTuple original) {
-        JoinNodeLeftTuple peer = new JoinNodeLeftTuple();
+        SubnetworkTuple peer = new SubnetworkTuple();
         peer.initPeer( (BaseLeftTuple) original, this );
         original.setPeer( peer );
         return peer;
@@ -267,26 +267,26 @@ public class RightInputAdapterNode extends ObjectSource
     public LeftTuple createLeftTuple(InternalFactHandle factHandle,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(factHandle, sink, leftTupleMemoryEnabled );
+        return new SubnetworkTuple(factHandle, sink, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
                                      final LeftTuple leftTuple,
                                      final Sink sink) {
-        return new JoinNodeLeftTuple(factHandle,leftTuple, sink );
+        return new SubnetworkTuple(factHandle,leftTuple, sink );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      Sink sink,
                                      PropagationContext pctx,
                                      boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
+        return new SubnetworkTuple(leftTuple,sink, pctx, leftTupleMemoryEnabled );
     }
 
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
                                      RightTuple rightTuple,
                                      Sink sink) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, sink );
+        return new SubnetworkTuple(leftTuple, rightTuple, sink );
     }   
     
     public LeftTuple createLeftTuple(LeftTuple leftTuple,
@@ -295,7 +295,7 @@ public class RightInputAdapterNode extends ObjectSource
                                      LeftTuple currentRightChild,
                                      Sink sink,
                                      boolean leftTupleMemoryEnabled) {
-        return new JoinNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
+        return new SubnetworkTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );
     }
 
     public LeftTupleSource getLeftTupleSource() {

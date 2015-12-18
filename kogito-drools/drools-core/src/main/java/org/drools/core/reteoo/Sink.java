@@ -22,4 +22,5 @@ import org.drools.core.common.NetworkNode;
  * A simple markup interfaces for Sink types
  */
 public interface Sink extends NetworkNode {
+
 }

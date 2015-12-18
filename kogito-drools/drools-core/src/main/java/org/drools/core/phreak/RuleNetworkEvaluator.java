@@ -17,7 +17,6 @@ package org.drools.core.phreak;
 
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.BetaConstraints;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.NetworkNode;
@@ -51,14 +50,12 @@ import org.drools.core.reteoo.ReactiveFromNode;
 import org.drools.core.reteoo.RiaPathMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RightTupleImpl;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
 import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
-import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
@@ -183,7 +180,7 @@ public class RuleNetworkEvaluator {
             // copy across the results, if any from the query node memory
             QueryElementNodeMemory qmem = (QueryElementNodeMemory) nodeMem;
             qmem.setNodeCleanWithoutNotify();
-            trgTuples.addAll(qmem.getResultLeftTuples());
+            qmem.getResultLeftTuples().addTo(trgTuples);
         }
 
         LeftTupleSinkNode sink = entry.getSink();
@@ -454,7 +451,7 @@ public class RuleNetworkEvaluator {
 
         // result tuples can happen when reactivity occurs inside of the query, prior to evaluation
         // we will need special behaviour to add the results again, when this query result resumes
-        trgTuples.addAll(qmem.getResultLeftTuples());
+        qmem.getResultLeftTuples().addTo( trgTuples );
         qmem.setNodeCleanWithoutNotify();
 
         if (!srcTuples.isEmpty()) {
@@ -622,7 +619,7 @@ public class RuleNetworkEvaluator {
         } else {
             bm = (BetaMemory) nodeMem;
         }
-
+        TupleSets<RightTuple> rightTuples = bm.getStagedRightTuples();
 
         // Build up iteration array for other sinks
         BetaNode[] bns = null;
@@ -646,90 +643,76 @@ public class RuleNetworkEvaluator {
         for (LeftTuple leftTuple = srcTuples.getInsertFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            PropagationContext pctx = leftTuple.getPropagationContext();
-            InternalFactHandle handle = riaNode.createFactHandle(leftTuple, pctx, wm);
-
-            RightTuple rightTuple = new RightTupleImpl(handle, betaNode);
-            leftTuple.setContextObject( handle );
-            rightTuple.setPropagationContext(pctx);
-
             if ( bm.getStagedRightTuples().isEmpty() ) {
                 bm.setNodeDirtyWithoutNotify();
             }
-            bm.getStagedRightTuples().addInsert(rightTuple);
+            leftTuple.clearStaged();
+            rightTuples.addInsert( (RightTuple) leftTuple );
 
             if (bns != null) {
                 // Add peered RightTuples, they are attached to FH - unlink LeftTuples that has a peer ref
                 for (int i = 0; i < length; i++) {
-                    rightTuple = new RightTupleImpl(handle, bns[i]);
-                    rightTuple.setPropagationContext(pctx);
+                    //rightTuple = new RightTupleImpl(handle, bns[i]);
+                    //rightTuple.setPropagationContext(pctx);
 
                     if ( bms[i].getStagedRightTuples().isEmpty() ) {
                         bms[i].setNodeDirtyWithoutNotify();
                     }
-                    bms[i].getStagedRightTuples().addInsert(rightTuple);
+                    //bms[i].getStagedRightTuples().addInsert(rightTuple);
+                    bms[i].getStagedRightTuples().addInsert((RightTuple)leftTuple);
                 }
             }
 
 
-            leftTuple.clearStaged();
             leftTuple = next;
         }
 
         for (LeftTuple leftTuple = srcTuples.getDeleteFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            InternalFactHandle handle = (InternalFactHandle) leftTuple.getContextObject();
-            RightTuple rightTuple = handle.getFirstRightTuple();
-            TupleSets<RightTuple> rightTuples = bm.getStagedRightTuples();
-
             if ( rightTuples.isEmpty() ) {
                 bm.setNodeDirtyWithoutNotify();
             }
-            rightTuples.addDelete(rightTuple);
+            leftTuple.clearStaged();
+            rightTuples.addDelete((RightTuple)leftTuple);
 
             if (bns != null) {
                 // Add peered RightTuples, they are attached to FH - unlink LeftTuples that has a peer ref
                 for (int i = 0; i < length; i++) {
-                    rightTuple = rightTuple.getHandleNext();
+                    leftTuple = leftTuple.getHandleNext();
                     rightTuples = bms[i].getStagedRightTuples();
                     if ( rightTuples.isEmpty() ) {
                         bms[i].setNodeDirtyWithoutNotify();
                     }
-                    rightTuples.addDelete(rightTuple);
+                    rightTuples.addDelete((RightTuple)leftTuple);
                 }
             }
 
-            leftTuple.clearStaged();
             leftTuple = next;
         }
 
         for (LeftTuple leftTuple = srcTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
 
-            InternalFactHandle handle = (InternalFactHandle) leftTuple.getContextObject();
-            RightTuple rightTuple = handle.getFirstRightTuple();
-            TupleSets<RightTuple> rightTuples = bm.getStagedRightTuples();
-
             if ( rightTuples.isEmpty() ) {
                 bm.setNodeDirtyWithoutNotify();
             }
-            rightTuples.addUpdate(rightTuple);
+            leftTuple.clearStaged();
+            rightTuples.addUpdate((RightTuple)leftTuple);
 
             if (bns != null) {
                 // Add peered RightTuples, they are attached to FH - unlink LeftTuples that has a peer ref
                 for (int i = 0; i < length; i++) {
-                    rightTuple = rightTuple.getHandleNext();
+                    leftTuple = leftTuple.getHandleNext();
                     rightTuples = bms[i].getStagedRightTuples();
 
                     if ( rightTuples.isEmpty() ) {
                         bms[i].setNodeDirtyWithoutNotify();
                     }
-                    rightTuples.addUpdate(rightTuple);
+                    rightTuples.addUpdate((RightTuple)leftTuple);
                 }
             }
 
-            leftTuple.clearStaged();
             leftTuple = next;
         }
 
@@ -738,13 +721,13 @@ public class RuleNetworkEvaluator {
 
     public static void findLeftTupleBlocker(BetaNode betaNode, TupleMemory rtm,
                                              ContextEntry[] contextEntry, BetaConstraints constraints,
-                                             LeftTuple leftTuple, FastIterator it, boolean useLeftMemory) {
+                                             LeftTuple leftTuple, boolean useLeftMemory) {
         // This method will also remove rightTuples that are from subnetwork where no leftmemory use used
-
+        FastIterator it = betaNode.getRightIterator(rtm);
         for (RightTuple rightTuple = betaNode.getFirstRightTuple(leftTuple, rtm, null, it); rightTuple != null; ) {
             RightTuple nextRight = (RightTuple) it.next(rightTuple);
             if (constraints.isAllowedCachedLeft(contextEntry,
-                                                rightTuple.getFactHandle())) {
+                                                rightTuple.getFactHandleForEvaluation())) {
                 leftTuple.setBlocker(rightTuple);
 
                 if (useLeftMemory) {

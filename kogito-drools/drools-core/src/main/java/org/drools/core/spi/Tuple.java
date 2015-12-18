@@ -17,6 +17,8 @@
 package org.drools.core.spi;
 
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Sink;
@@ -112,7 +114,7 @@ public interface Tuple extends Serializable, Entry<Tuple> {
     Tuple getStagedPrevious();
     void setStagedPrevious( Tuple stagePrevious );
 
-    Tuple getStagedNext();
+    <T extends Tuple> T getStagedNext();
     void setStagedNext( Tuple stageNext );
 
     void clear();
@@ -128,7 +130,7 @@ public interface Tuple extends Serializable, Entry<Tuple> {
     Tuple getPrevious();
     void setPrevious( Tuple previous );
 
-    Sink getTupleSink();
+    <S extends Sink> S getTupleSink();
 
     TupleList getMemory();
     void setMemory( TupleList memory );
@@ -145,11 +147,16 @@ public interface Tuple extends Serializable, Entry<Tuple> {
     LeftTuple getLastChild();
     void setLastChild( LeftTuple firstChild );
 
-    Tuple getHandlePrevious();
+    <T extends Tuple> T getHandlePrevious();
     void setHandlePrevious( Tuple leftParentLeft );
 
-    Tuple getHandleNext();
+    <T extends Tuple> T getHandleNext();
     void setHandleNext( Tuple leftParentright );
 
     ObjectTypeNode.Id getInputOtnId();
+
+    <N extends NetworkNode> N getTupleSource();
+
+    void modifyTuple( PropagationContext context, InternalWorkingMemory workingMemory );
+    void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory );
 }

@@ -72,7 +72,6 @@ public class PhreakQueryNode {
             DroolsQuery dquery = queryNode.createDroolsQuery(leftTuple, handle, stackEntry,
                                                              qmem.getSegmentMemory().getPathMemories(),
                                                              qmem,
-                                                             qmem.getResultLeftTuples(),
                                                              stackEntry.getSink(), wm);
 
             LeftInputAdapterNode lian = (LeftInputAdapterNode) qmem.getQuerySegmentMemory().getRootNode();

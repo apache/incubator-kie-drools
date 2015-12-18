@@ -44,6 +44,7 @@ import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.QueryElementNode;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
 import org.drools.core.reteoo.RightTuple;
@@ -127,6 +128,7 @@ public class AddRemoveRule {
                 insertLiaFacts( splitStartLeftTupleSource, wm );
             }
 
+            correctMemoryOnSplitsChanged( splitStartLeftTupleSource, wm );
             insertFacts( splitStartLeftTupleSource.getSinkPropagator().getLastLeftTupleSink(), wm);
         }
     }
@@ -229,6 +231,8 @@ public class AddRemoveRule {
              if ( removedPmem.getRuleAgendaItem() != null && removedPmem.getRuleAgendaItem().isQueued() ) {
                  removedPmem.getRuleAgendaItem().dequeue();
              }
+
+             correctMemoryOnSplitsChanged( splitStartNode, wm );
          }
      }
 
@@ -432,7 +436,13 @@ public class AddRemoveRule {
          processLeftTuples(lts, peerLts, newSmem, wm, true);
      }
 
-     private static void correctSegmentOnSplitOnRemove(InternalWorkingMemory wm, SegmentMemory sm1,SegmentMemory sm2,  PathMemory pmem, PathMemory removedPmem, int p) {
+    private static void correctMemoryOnSplitsChanged( LeftTupleSource splitStart, InternalWorkingMemory wm ) {
+        if ( splitStart.getType() == NodeTypeEnums.UnificationNode) {
+            ((QueryElementNode.QueryElementNodeMemory) wm.getNodeMemory( (MemoryFactory) splitStart )).correctMemoryOnSinksChanged();
+        }
+    }
+
+    private static void correctSegmentOnSplitOnRemove(InternalWorkingMemory wm, SegmentMemory sm1,SegmentMemory sm2,  PathMemory pmem, PathMemory removedPmem, int p) {
          if ( p == 0 ) {
              mergeSegment(sm1, sm2);
 

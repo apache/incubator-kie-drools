@@ -314,7 +314,7 @@ public class PhreakFromNode {
                                   boolean useLeftMemory,
                                   TupleSets<LeftTuple> trgLeftTuples,
                                   TupleSets<LeftTuple> stagedLeftTuples ) {
-        if (betaConstraints.isAllowedCachedLeft(context, rightTuple.getFactHandle())) {
+        if (betaConstraints.isAllowedCachedLeft(context, rightTuple.getFactHandleForEvaluation())) {
 
             if (rightTuple.getFirstChild() == null) {
                 // this is a new match, so propagate as assert

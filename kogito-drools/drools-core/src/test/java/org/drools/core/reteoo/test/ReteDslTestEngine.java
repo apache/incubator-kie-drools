@@ -791,15 +791,11 @@ public class ReteDslTestEngine {
                                                                        wm );
                             } else {
                                 for ( RightTuple rightTuple = handle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
-                                    rightTuple.getTupleSink().retractRightTuple( rightTuple,
-                                                                                      pContext,
-                                                                                      wm );
+                                    rightTuple.retractTuple( pContext, wm );
                                 }
                                 handle.clearRightTuples();
                                 for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getHandleNext() ) {
-                                    leftTuple.getTupleSink().retractLeftTuple( leftTuple,
-                                                                                   pContext,
-                                                                                   wm );
+                                    leftTuple.retractTuple( pContext, wm );
                                 }
                                 handle.clearLeftTuples();
                             }

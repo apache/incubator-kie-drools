@@ -2456,4 +2456,87 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testSplitAfterQuery() throws Exception {
+        String drl1 =
+                "global java.util.List list; " +
+                "query foo( Integer $i ) " +
+                "   $i := Integer( this < 10 ) " +
+                "end\n" +
+                "\n" +
+
+                "rule r2 when " +
+                "   foo( $i; ) " +
+                "   Integer( this == 20 ) " +
+                "then " +
+                "   System.out.println(\"20 \" + $i);" +
+                "   list.add( 20 + $i );\n" +
+                "end\n" +
+
+                "rule r3 when " +
+                "   $i : Integer( this == 1 ) " +
+                "then " +
+                "   System.out.println($i);" +
+                "   update( kcontext.getKieRuntime().getFactHandle( $i ), $i + 1 );" +
+                "end\n" +
+                "\n";
+
+        String drl2 =
+                "global java.util.List list; " +
+                "query foo( Integer $i ) " +
+                "   $i := Integer( this < 10 ) " +
+                "end\n" +
+                "\n" +
+
+                "rule r1 when " +
+                "   foo( $i ; ) " +
+                "   Integer( this == 10 ) " +
+                "then " +
+                "   System.out.println(\"10 \" + $i);" +
+                "   list.add( 10 + $i );\n" +
+                "end\n" +
+
+                "rule r2 when " +
+                "   foo( $i; ) " +
+                "   Integer( this == 20 ) " +
+                "then " +
+                "   System.out.println(\"20 \" + $i);" +
+                "   list.add( 20 + $i );\n" +
+                "end\n" +
+
+                "rule r3 when " +
+                "   $i : Integer( this == 1 ) " +
+                "then " +
+                "   System.out.println($i);" +
+                "   update( kcontext.getKieRuntime().getFactHandle( $i ), $i + 1 );" +
+                "end\n" +
+                "\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.1" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( 1 );
+        ksession.insert( 20 );
+
+        ksession.fireAllRules();
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        km = createAndDeployJar( ks, releaseId2, drl2 );
+        kc.updateToVersion(releaseId2);
+
+        ksession.fireAllRules();
+
+        assertEquals( 2, list.size() );
+        assertEquals( 21, (int)list.get(0) );
+        assertEquals( 22, (int)list.get(1) );
+    }
 }

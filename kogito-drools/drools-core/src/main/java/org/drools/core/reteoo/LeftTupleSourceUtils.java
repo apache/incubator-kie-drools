@@ -29,20 +29,20 @@ public class LeftTupleSourceUtils {
                                          ObjectTypeNode.Id leftInputOtnId,
                                          BitMask leftInferredMask) {
         LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
-        while ( leftTuple != null && leftTuple.getTupleSink().getLeftInputOtnId() != null &&
-                leftTuple.getTupleSink().getLeftInputOtnId().before( leftInputOtnId ) ) {
+        while ( leftTuple != null && leftTuple.getInputOtnId() != null &&
+                leftTuple.getInputOtnId().before( leftInputOtnId ) ) {
             modifyPreviousTuples.removeLeftTuple();
 
             // we skipped this node, due to alpha hashing, so retract now
-            ((LeftInputAdapterNode) leftTuple.getTupleSink().getLeftTupleSource()).retractLeftTuple( leftTuple,
-                                                                                                         context,
-                                                                                                         workingMemory );
+            ((LeftInputAdapterNode) leftTuple.getTupleSource()).retractLeftTuple( leftTuple,
+                                                                                  context,
+                                                                                  workingMemory );
 
             leftTuple = modifyPreviousTuples.peekLeftTuple();
         }
 
-        if ( leftTuple != null && leftTuple.getTupleSink().getLeftInputOtnId() != null &&
-             leftTuple.getTupleSink().getLeftInputOtnId().equals( leftInputOtnId ) ) {
+        if ( leftTuple != null && leftTuple.getInputOtnId() != null &&
+             leftTuple.getInputOtnId().equals( leftInputOtnId ) ) {
             modifyPreviousTuples.removeLeftTuple();
             leftTuple.reAdd();
             if ( context.getModificationMask().intersects( leftInferredMask ) ) {

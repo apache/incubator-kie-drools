@@ -145,8 +145,7 @@ public abstract class LeftTupleSource extends BaseNode
         }
 
         if ( sinkPropagator instanceof SingleLeftTupleSinkAdapter ) {
-            final CompositeLeftTupleSinkAdapter sinkAdapter;
-            sinkAdapter = new CompositeLeftTupleSinkAdapter( this.getPartitionId() );
+            CompositeLeftTupleSinkAdapter sinkAdapter = new CompositeLeftTupleSinkAdapter( this.getPartitionId() );
             sinkAdapter.addTupleSink( sinkPropagator.getSinks()[0] );
             sinkAdapter.addTupleSink( tupleSink );
             return sinkAdapter;
@@ -253,7 +252,7 @@ public abstract class LeftTupleSource extends BaseNode
 
     private LeftTupleSource unwrapLeftInput(LeftTupleSource leftInput) {
         if (leftInput.getType() == NodeTypeEnums.FromNode || leftInput.getType() == NodeTypeEnums.ReactiveFromNode) {
-            return ((LeftTupleSink)leftInput).getLeftTupleSource();
+            return leftInput.getLeftTupleSource();
         }
         return leftInput;
     }

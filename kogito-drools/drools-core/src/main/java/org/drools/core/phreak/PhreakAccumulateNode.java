@@ -169,9 +169,8 @@ public class PhreakAccumulateNode {
                                                                     rightIt); rightTuple != null; ) {
                 RightTuple nextRightTuple = (RightTuple) rightIt.next(rightTuple);
 
-                InternalFactHandle handle = rightTuple.getFactHandle();
                 if (constraints.isAllowedCachedLeft(contextEntry,
-                                                    handle)) {
+                                                    rightTuple.getFactHandleForEvaluation())) {
                     // add a match
                     addMatch(accNode,
                              accumulate,
@@ -223,7 +222,7 @@ public class PhreakAccumulateNode {
             if ( ltm != null && ltm.size() > 0 ) {
                 constraints.updateFromFactHandle( contextEntry,
                                                   wm,
-                                                  rightTuple.getFactHandle() );
+                                                  rightTuple.getFactHandleForEvaluation() );
 
                 FastIterator leftIt = accNode.getLeftIterator( ltm );
 
@@ -336,9 +335,8 @@ public class PhreakAccumulateNode {
             // either we are indexed and changed buckets or
             // we had no children before, but there is a bucket to potentially match, so try as normal assert
             for (; rightTuple != null; rightTuple = (RightTuple) rightIt.next(rightTuple)) {
-                final InternalFactHandle handle = rightTuple.getFactHandle();
                 if (constraints.isAllowedCachedLeft(bm.getContext(),
-                                                    handle)) {
+                                                    rightTuple.getFactHandleForEvaluation())) {
                     // add a new match
                     addMatch(accNode,
                              accumulate,
@@ -356,10 +354,8 @@ public class PhreakAccumulateNode {
             boolean isDirty = false;
             // in the same bucket, so iterate and compare
             for (; rightTuple != null; rightTuple = (RightTuple) rightIt.next(rightTuple)) {
-                final InternalFactHandle handle = rightTuple.getFactHandle();
-
                 if (constraints.isAllowedCachedLeft(bm.getContext(),
-                                                    handle)) {
+                                                    rightTuple.getFactHandleForEvaluation())) {
                     if (childLeftTuple == null || childLeftTuple.getRightParent() != rightTuple) {
                         // add a new match
                         addMatch(accNode,
@@ -432,7 +428,7 @@ public class PhreakAccumulateNode {
 
                 constraints.updateFromFactHandle( contextEntry,
                                                   wm,
-                                                  rightTuple.getFactHandle() );
+                                                  rightTuple.getFactHandleForEvaluation() );
 
                 // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
                 // We assume a bucket change if leftTuple == null
@@ -680,9 +676,9 @@ public class PhreakAccumulateNode {
         AlphaNodeFieldConstraint[] resultConstraints = accNode.getResultConstraints();
         BetaConstraints resultBinder = accNode.getResultBinder();
         boolean isAllowed = true;
-        for (int i = 0, length = resultConstraints.length; i < length; i++) {
-            if (!resultConstraints[i].isAllowed(accctx.resultFactHandle,
-                                                workingMemory)) {
+        for ( AlphaNodeFieldConstraint resultConstraint : resultConstraints ) {
+            if ( !resultConstraint.isAllowed( accctx.resultFactHandle,
+                                              workingMemory ) ) {
                 isAllowed = false;
                 break;
             }
@@ -748,7 +744,8 @@ public class PhreakAccumulateNode {
         InternalFactHandle handle = rightTuple.getFactHandle();
         if (accNode.isUnwrapRightObject()) {
             // if there is a subnetwork, handle must be unwrapped
-            tuple = (LeftTuple) handle.getObject();
+            tuple = (LeftTuple) rightTuple;
+            handle = rightTuple.getFactHandleForEvaluation();
         }
 
         accctx.setPropagationContext(rightTuple.getPropagationContext());
@@ -793,7 +790,8 @@ public class PhreakAccumulateNode {
         InternalFactHandle handle = rightTuple.getFactHandle();
         LeftTuple tuple = leftTuple;
         if (accNode.isUnwrapRightObject()) {
-            tuple = (LeftTuple) handle.getObject();
+            tuple = (LeftTuple) rightTuple;
+            handle = rightTuple.getFactHandleForEvaluation();
         }
 
         if (accumulate.supportsReverse()) {
@@ -829,11 +827,13 @@ public class PhreakAccumulateNode {
                         leftTuple,
                         wm);
         for (LeftTuple childMatch = leftTuple.getFirstChild(); childMatch != null; childMatch = childMatch.getHandleNext()) {
-            InternalFactHandle childHandle = childMatch.getRightParent().getFactHandle();
+            RightTuple rightTuple = childMatch.getRightParent();
+            InternalFactHandle childHandle = rightTuple.getFactHandle();
             LeftTuple tuple = leftTuple;
             if (accNode.isUnwrapRightObject()) {
                 // if there is a subnetwork, handle must be unwrapped
-                tuple = (LeftTuple) childHandle.getObject();
+                tuple = (LeftTuple) rightTuple;
+                childHandle = rightTuple.getFactHandleForEvaluation();
             }
             accumulate.accumulate(am.workingMemoryContext,
                                   accctx.context,

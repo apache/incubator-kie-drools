@@ -161,7 +161,6 @@ public class WindowNode extends ObjectSource
                              final PropagationContext pctx,
                              final InternalWorkingMemory workingMemory) {
         EventFactHandle evFh = ( EventFactHandle ) factHandle;
-        int index = 0;
         for (AlphaNodeFieldConstraint constraint : constraints) {
             if (!constraint.isAllowed(evFh, workingMemory)) {
                 return;
@@ -203,7 +202,6 @@ public class WindowNode extends ObjectSource
         originalFactHandle.quickCloneUpdate( cloneFactHandle ); // make sure all fields are updated
 
         // behavior modify
-        int index = 0;
         boolean isAllowed = true;
         for (AlphaNodeFieldConstraint constraint : constraints) {
             if (!constraint.isAllowed(cloneFactHandle,
@@ -235,17 +233,16 @@ public class WindowNode extends ObjectSource
         RightTuple rightTuple = modifyPreviousTuples.peekRightTuple();
 
         // if the peek is for a different OTN we assume that it is after the current one and then this is an assert
-        while ( rightTuple != null &&
-                rightTuple.getTupleSink().getRightInputOtnId().before( getRightInputOtnId() ) ) {
+        while ( rightTuple != null && rightTuple.getInputOtnId().before( getRightInputOtnId() ) ) {
             modifyPreviousTuples.removeRightTuple();
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
-            rightTuple.getTupleSink().retractRightTuple( rightTuple, context, wm );
+            rightTuple.retractTuple( context, wm );
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
 
-        if ( rightTuple != null && rightTuple.getTupleSink().getRightInputOtnId().equals( getRightInputOtnId()) ) {
+        if ( rightTuple != null && rightTuple.getInputOtnId().equals( getRightInputOtnId()) ) {
             modifyPreviousTuples.removeRightTuple();
             rightTuple.reAdd();
             modifyRightTuple( rightTuple, context, wm );
