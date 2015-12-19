@@ -140,6 +140,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
                         + " annotated property (" + variableMemberAccessor.getName()
                         + ") with refVariable (" + refVariableDescriptor + ") that must not be a reference too.");
             }
+            refVariableDescriptor.registerSinkVariableDescriptor(this);
         } else {
             CustomShadowVariable.Source[] sources = shadowVariableAnnotation.sources();
             sourceVariableDescriptorList = new ArrayList<VariableDescriptor>(sources.length);
@@ -171,7 +172,7 @@ public class CustomShadowVariableDescriptor extends ShadowVariableDescriptor {
                             + sourceEntityDescriptor.getEntityClass() + ").\n"
                             + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
                 }
-                sourceVariableDescriptor.registerShadowVariableDescriptor(this);
+                sourceVariableDescriptor.registerSinkVariableDescriptor(this);
                 sourceVariableDescriptorList.add(sourceVariableDescriptor);
             }
         }

@@ -29,7 +29,7 @@ public abstract class VariableDescriptor {
     protected final MemberAccessor variableMemberAccessor;
     protected final String variableName;
 
-    private List<ShadowVariableDescriptor> shadowVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
+    protected List<ShadowVariableDescriptor> sinkVariableDescriptorList = new ArrayList<ShadowVariableDescriptor>(4);
 
     public VariableDescriptor(EntityDescriptor entityDescriptor, MemberAccessor variableMemberAccessor) {
         this.entityDescriptor = entityDescriptor;
@@ -61,16 +61,16 @@ public abstract class VariableDescriptor {
     // Shadows
     // ************************************************************************
 
-    public void registerShadowVariableDescriptor(ShadowVariableDescriptor shadowVariableDescriptor) {
-        shadowVariableDescriptorList.add(shadowVariableDescriptor);
+    public void registerSinkVariableDescriptor(ShadowVariableDescriptor shadowVariableDescriptor) {
+        sinkVariableDescriptorList.add(shadowVariableDescriptor);
     }
 
     /**
-     * Primary shadow variables are direct as well as non-referencing.
-     * @return never null, only direct, non-referencing shadow variables
+     * Inverse of {@link ShadowVariableDescriptor#getSourceVariableDescriptorList()}.
+     * @return never null, only direct shadow variables that are affected by this variable
      */
-    public List<ShadowVariableDescriptor> getPrimaryShadowVariableDescriptorList() {
-        return shadowVariableDescriptorList;
+    public List<ShadowVariableDescriptor> getSinkVariableDescriptorList() {
+        return sinkVariableDescriptorList;
     }
 
     /**
@@ -91,12 +91,6 @@ public abstract class VariableDescriptor {
 
     public void setValue(Object entity, Object value) {
         variableMemberAccessor.executeSetter(entity, value);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" + variableName
-                + " of " + entityDescriptor.getEntityClass().getName() + ")";
     }
 
 }

@@ -70,7 +70,7 @@ public class AnchorShadowVariableDescriptor extends ShadowVariableDescriptor {
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not chained.");
         }
-        sourceVariableDescriptor.registerShadowVariableDescriptor(this);
+        sourceVariableDescriptor.registerSinkVariableDescriptor(this);
     }
 
     @Override

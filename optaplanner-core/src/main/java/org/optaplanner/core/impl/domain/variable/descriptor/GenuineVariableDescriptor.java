@@ -255,8 +255,7 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "(" + variableMemberAccessor.getName()
-                + " of " + entityDescriptor.getEntityClass().getName() + ")";
+        return getSimpleEntityAndVariableName() + " variable";
     }
 
 }

@@ -131,7 +131,7 @@ public class InverseRelationShadowVariableDescriptor extends ShadowVariableDescr
                         + ") which is chained. A chained variable supports only a singleton inverse.");
             }
         }
-        sourceVariableDescriptor.registerShadowVariableDescriptor(this);
+        sourceVariableDescriptor.registerSinkVariableDescriptor(this);
     }
 
     @Override

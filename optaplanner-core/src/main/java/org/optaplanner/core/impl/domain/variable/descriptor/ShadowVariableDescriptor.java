@@ -38,6 +38,10 @@ public abstract class ShadowVariableDescriptor extends VariableDescriptor {
 
     public abstract void linkShadowSources(DescriptorPolicy descriptorPolicy);
 
+    /**
+     * Inverse of {@link #getSinkVariableDescriptorList()}.
+     * @return never null, only variables affect this shadow variable directly
+     */
     public abstract List<VariableDescriptor> getSourceVariableDescriptorList();
 
     public int getGlobalShadowOrder() {
@@ -66,5 +70,10 @@ public abstract class ShadowVariableDescriptor extends VariableDescriptor {
      * @return never null
      */
     public abstract VariableListener buildVariableListener(InnerScoreDirector scoreDirector);
+
+    @Override
+    public String toString() {
+        return getSimpleEntityAndVariableName() + " shadow";
+    }
 
 }
