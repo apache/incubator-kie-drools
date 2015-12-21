@@ -18,6 +18,8 @@ package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
 import org.junit.Test;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.shadow.cyclic.seven.TestdataSevenNonCyclicShadowedSolution;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,13 +35,13 @@ public class ComparatorSelectionSorterTest {
         Integer[] baseArray = new Integer[] {3, 4, 3, 5, 1};
         List<Integer> arrayToSort = new ArrayList<Integer>();
         Collections.addAll(arrayToSort, baseArray);
-        ComparatorSelectionSorter<Integer> selectionSorter = new ComparatorSelectionSorter<Integer>(new TestComparator(), SelectionSorterOrder.ASCENDING);
+        ComparatorSelectionSorter<TestdataSolution, Integer> selectionSorter = new ComparatorSelectionSorter<TestdataSolution, Integer>(new TestComparator(), SelectionSorterOrder.ASCENDING);
         selectionSorter.sort(null, arrayToSort);
         assertTrue(ascendingSort(arrayToSort));
 
         arrayToSort = new ArrayList<Integer>();
         Collections.addAll(arrayToSort, baseArray);
-        selectionSorter = new ComparatorSelectionSorter<Integer>(new TestComparator(), SelectionSorterOrder.DESCENDING);
+        selectionSorter = new ComparatorSelectionSorter<TestdataSolution, Integer>(new TestComparator(), SelectionSorterOrder.DESCENDING);
         selectionSorter.sort(null, arrayToSort);
         assertTrue(descendingSort(arrayToSort));
     }
