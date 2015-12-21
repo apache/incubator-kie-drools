@@ -7103,8 +7103,16 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( "040404", sb.toString() );
     }
 
-    public static class StringWrapper {
+    public interface TestString<T extends TestString> extends Comparable<TestString<?>> { }
+
+    public static class StringWrapper implements TestString<StringWrapper> {
         private String wrapped;
+
+        public StringWrapper() { }
+
+        public StringWrapper(String wrapped) {
+            this.wrapped = wrapped;
+        }
 
         public String getWrapped() {
             return wrapped;
@@ -7120,6 +7128,11 @@ public class Misc2Test extends CommonTestMethodBase {
 
         public int getValue() {
             return wrapped != null ? wrapped.length() : 0;
+        }
+
+        @Override
+        public int compareTo( TestString o ) {
+            return wrapped.compareTo( ( (StringWrapper) o ).wrapped );
         }
     }
 
@@ -8213,5 +8226,33 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 4, list.size() );
         assertTrue( list.containsAll( Arrays.asList(1, 2, 3, 4) ) );
+    }
+
+    @Test
+    public void testCompareToOnInterface() {
+        // DROOLS-1013
+        String drl =
+                "import " + StringWrapper.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    $s1 : StringWrapper()\n" +
+                "    $s2 : StringWrapper( this > $s1 )\n" +
+                "then\n" +
+                "    list.add($s2.getWrapped());\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new StringWrapper("aaa") );
+        ksession.insert( new StringWrapper("bbb") );
+
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+        assertEquals( "bbb", list.get( 0 ) );
     }
 }
