@@ -24,6 +24,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
@@ -32,14 +33,14 @@ public class WeightFactorySelectionSorterTest {
 
     @Test
     public void sortAscending() {
-        SelectionSorterWeightFactory<Solution, TestdataEntity> weightFactory
-                = new SelectionSorterWeightFactory<Solution, TestdataEntity>() {
+        SelectionSorterWeightFactory<TestdataSolution, TestdataEntity> weightFactory
+                = new SelectionSorterWeightFactory<TestdataSolution, TestdataEntity>() {
             @Override
-            public Comparable createSorterWeight(Solution solution, TestdataEntity selection) {
+            public Comparable createSorterWeight(TestdataSolution solution, TestdataEntity selection) {
                 return Integer.valueOf(selection.getCode().charAt(0));
             }
         };
-        WeightFactorySelectionSorter<TestdataEntity> selectionSorter = new WeightFactorySelectionSorter<TestdataEntity>(
+        WeightFactorySelectionSorter<TestdataSolution, TestdataEntity> selectionSorter = new WeightFactorySelectionSorter<TestdataSolution, TestdataEntity>(
                 weightFactory, SelectionSorterOrder.ASCENDING);
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         List<TestdataEntity> selectionList = new ArrayList<TestdataEntity>();
@@ -53,14 +54,14 @@ public class WeightFactorySelectionSorterTest {
 
     @Test
     public void sortDescending() {
-        SelectionSorterWeightFactory<Solution, TestdataEntity> weightFactory
-                = new SelectionSorterWeightFactory<Solution, TestdataEntity>() {
+        SelectionSorterWeightFactory<TestdataSolution, TestdataEntity> weightFactory
+                = new SelectionSorterWeightFactory<TestdataSolution, TestdataEntity>() {
             @Override
-            public Comparable createSorterWeight(Solution solution, TestdataEntity selection) {
+            public Comparable createSorterWeight(TestdataSolution solution, TestdataEntity selection) {
                 return Integer.valueOf(selection.getCode().charAt(0));
             }
         };
-        WeightFactorySelectionSorter<TestdataEntity> selectionSorter = new WeightFactorySelectionSorter<TestdataEntity>(
+        WeightFactorySelectionSorter<TestdataSolution, TestdataEntity> selectionSorter = new WeightFactorySelectionSorter<TestdataSolution, TestdataEntity>(
                 weightFactory, SelectionSorterOrder.DESCENDING);
         ScoreDirector scoreDirector = mock(ScoreDirector.class);
         List<TestdataEntity> selectionList = new ArrayList<TestdataEntity>();

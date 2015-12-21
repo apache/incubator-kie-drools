@@ -30,6 +30,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 import static org.mockito.Mockito.*;
@@ -59,7 +60,7 @@ public class SortingValueSelectorTest {
                 new TestdataValue("apr"), new TestdataValue("may"), new TestdataValue("jun"));
 
 
-        SelectionSorter<TestdataValue> sorter = new SelectionSorter<TestdataValue>() {
+        SelectionSorter<TestdataSolution, TestdataValue> sorter = new SelectionSorter<TestdataSolution, TestdataValue>() {
             public void sort(ScoreDirector scoreDirector, List<TestdataValue> selectionList) {
                 Collections.sort(selectionList, new Comparator<TestdataValue>() {
                     public int compare(TestdataValue a, TestdataValue b) {

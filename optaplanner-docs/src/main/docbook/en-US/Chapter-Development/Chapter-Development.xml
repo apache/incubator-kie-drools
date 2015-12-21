@@ -18,6 +18,9 @@
       </imageobject>
     </mediaobject>
 
+    <para>In the diagram above, it's important to understand the clear separation between the configuration and runtime
+    classes.</para>
+
     <para>The development philosophy includes:</para>
 
     <itemizedlist>
@@ -43,8 +46,8 @@
       </listitem>
 
       <listitem>
-        <para><emphasis role="bold">Automated testing</emphasis>: There are unit tests, integration tests and stress
-        tests. The test coverage is high.</para>
+        <para><emphasis role="bold">Automated testing</emphasis>: There are unit tests, integration tests, performance
+        regressions tests and stress tests. The test coverage is high.</para>
       </listitem>
 
       <listitem>
@@ -96,7 +99,7 @@
             <para>The <literal>Exception</literal> message must include the name and state of each relevant variable.
             For example:<programlisting language="java">if (fooSize &lt; 0) {
     throw new IllegalArgumentException("The fooSize (" + fooSize + ") of bar (" + this + ") must be positive.");
-}</programlisting>Notice that the output clearly explains what's wrong:<programlisting language="java">Exception in thread "main" java.lang.IllegalArgumentException: The fooSize (-5) must be positive.
+}</programlisting>Notice that the output clearly explains what's wrong:<programlisting language="java">Exception in thread "main" java.lang.IllegalArgumentException: The fooSize (-5) of bar (myBar) must be positive.
     at ...</programlisting></para>
           </listitem>
 
@@ -105,14 +108,22 @@
           </listitem>
 
           <listitem>
-            <para>Whenever the fix is not obvious, the <literal>Exception</literal> message must include advice.</para>
+            <para>Whenever the fix is not obvious, the <literal>Exception</literal> message should include advice.
+            Advice normally starts with the word <emphasis>maybe</emphasis> on a new line:</para>
 
-            <programlisting language="java">Exception in thread "main" java.lang.IllegalArgumentException: UndoMove corruption: ...
-  1) Check your custom createUndoMove() of ...
-  2) Check your custom Variable listeners if ...
+            <programlisting language="java">Exception in thread "main" java.lang.IllegalStateException: The valueRangeDescriptor (fooRange) is nullable, but not countable (false).
+Maybe the member (getFooRange) should return CountableValueRange.
     at ...</programlisting>
+
+            <para>The word <emphasis>maybe</emphasis> is to indicate that the advice is not guaranteed to be right in
+            all cases.</para>
           </listitem>
         </orderedlist>
+      </listitem>
+
+      <listitem>
+        <para>Generics. The <literal>Solution</literal> class is often passed as a generic type parameter to subsystems.
+        The <literal>PlanningEntity</literal> class(es) are rarely passed as a generic type parameter.</para>
       </listitem>
     </orderedlist>
   </section>

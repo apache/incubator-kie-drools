@@ -23,16 +23,24 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import com.google.common.collect.Ordering;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
+import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.heuristic.selector.Selector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class WeightFactorySelectionSorter<T> implements SelectionSorter<T> {
+/**
+ * Sorts a selection {@link List} based on a {@link SelectionSorterWeightFactory}.
+ * @param <Solution_> the solution type
+ * @param <T> the selection type
+ */
+public class WeightFactorySelectionSorter<Solution_ extends Solution, T> implements SelectionSorter<Solution_, T> {
 
-    private final SelectionSorterWeightFactory<Solution, T> selectionSorterWeightFactory;
+    private final SelectionSorterWeightFactory<Solution_, T> selectionSorterWeightFactory;
     private final Comparator<Comparable> appliedWeightComparator;
 
-    public WeightFactorySelectionSorter(SelectionSorterWeightFactory<Solution, T> selectionSorterWeightFactory,
+    public WeightFactorySelectionSorter(SelectionSorterWeightFactory<Solution_, T> selectionSorterWeightFactory,
             SelectionSorterOrder selectionSorterOrder) {
         this.selectionSorterWeightFactory = selectionSorterWeightFactory;
         switch (selectionSorterOrder) {
@@ -49,7 +57,15 @@ public class WeightFactorySelectionSorter<T> implements SelectionSorter<T> {
     }
 
     public void sort(ScoreDirector scoreDirector, List<T> selectionList) {
-        Solution solution = scoreDirector.getWorkingSolution();
+        sort((Solution_) scoreDirector.getWorkingSolution(), selectionList);
+    }
+
+    /**
+     * @param solution never null, the {@link Solution} to which the selections belong or apply to
+     * @param selectionList never null, a {@link List}
+     * of {@link PlanningEntity}, planningValue,  {@link Move} or {@link Selector}
+     */
+    public void sort(Solution_ solution, List<T> selectionList) {
         SortedMap<Comparable, T> selectionMap = new TreeMap<Comparable, T>(appliedWeightComparator);
         for (T selection : selectionList) {
             Comparable difficultyWeight = selectionSorterWeightFactory.createSorterWeight(solution, selection);

@@ -21,16 +21,16 @@ import java.util.Map;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class FixedSelectorProbabilityWeightFactory<Sel extends Selector>
-        implements SelectionProbabilityWeightFactory<Sel> {
+public class FixedSelectorProbabilityWeightFactory<Selector_ extends Selector>
+        implements SelectionProbabilityWeightFactory<Selector_> {
 
-    private final Map<Sel, Double> fixedProbabilityWeightMap;
+    private final Map<Selector_, Double> fixedProbabilityWeightMap;
 
-    public FixedSelectorProbabilityWeightFactory(Map<Sel, Double> fixedProbabilityWeightMap) {
+    public FixedSelectorProbabilityWeightFactory(Map<Selector_, Double> fixedProbabilityWeightMap) {
         this.fixedProbabilityWeightMap = fixedProbabilityWeightMap;
     }
 
-    public double createProbabilityWeight(ScoreDirector scoreDirector, Selector selector) {
+    public double createProbabilityWeight(ScoreDirector scoreDirector, Selector_ selector) {
         return fixedProbabilityWeightMap.get(selector);
     }
 

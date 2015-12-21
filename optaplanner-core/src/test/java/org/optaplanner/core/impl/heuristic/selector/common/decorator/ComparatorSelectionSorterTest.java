@@ -30,25 +30,25 @@ public class ComparatorSelectionSorterTest {
 
     @Test
     public void sort() {
-        Object[] baseArray = new Object[] {3, 4, 3, 5, 1};
-        List<Object> arrayToSort = new ArrayList<Object>();
+        Integer[] baseArray = new Integer[] {3, 4, 3, 5, 1};
+        List<Integer> arrayToSort = new ArrayList<Integer>();
         Collections.addAll(arrayToSort, baseArray);
-        ComparatorSelectionSorter selectionSorter = new ComparatorSelectionSorter(new TestComparator(), SelectionSorterOrder.ASCENDING);
+        ComparatorSelectionSorter<Integer> selectionSorter = new ComparatorSelectionSorter<Integer>(new TestComparator(), SelectionSorterOrder.ASCENDING);
         selectionSorter.sort(null, arrayToSort);
         assertTrue(ascendingSort(arrayToSort));
 
-        arrayToSort = new ArrayList<Object>();
+        arrayToSort = new ArrayList<Integer>();
         Collections.addAll(arrayToSort, baseArray);
-        selectionSorter = new ComparatorSelectionSorter(new TestComparator(), SelectionSorterOrder.DESCENDING);
+        selectionSorter = new ComparatorSelectionSorter<Integer>(new TestComparator(), SelectionSorterOrder.DESCENDING);
         selectionSorter.sort(null, arrayToSort);
         assertTrue(descendingSort(arrayToSort));
     }
 
-    private boolean ascendingSort(List<Object> list) {
-        Integer tmp = (Integer) list.get(0);
-        for (Object aList : list) {
-            if (tmp <= (Integer) aList) {
-                tmp = (Integer) aList;
+    private boolean ascendingSort(List<Integer> list) {
+        Integer tmp = list.get(0);
+        for (Integer aList : list) {
+            if (tmp <= aList) {
+                tmp = aList;
             } else {
                 return false;
             }
@@ -56,11 +56,11 @@ public class ComparatorSelectionSorterTest {
         return true;
     }
 
-    private boolean descendingSort(List<Object> list) {
-        Integer tmp = (Integer) list.get(0);
-        for (Object aList : list) {
-            if (tmp >= (Integer) aList) {
-                tmp = (Integer) aList;
+    private boolean descendingSort(List<Integer> list) {
+        Integer tmp = list.get(0);
+        for (Integer aList : list) {
+            if (tmp >= aList) {
+                tmp = aList;
             } else {
                 return false;
             }
@@ -68,17 +68,13 @@ public class ComparatorSelectionSorterTest {
         return true;
     }
 
-    private class TestComparator implements Comparator<Object> {
+    private class TestComparator implements Comparator<Integer> {
 
         @Override
-        public int compare(Object o, Object o2) {
-            Integer first = (Integer) o;
-            Integer second = (Integer) o2;
-            if (first.intValue() == second.intValue()) {
-                return 0;
-            }
-            return first > second ? 1 : -1;
+        public int compare(Integer a, Integer b) {
+            return a.compareTo(b);
         }
+
     }
 
 }

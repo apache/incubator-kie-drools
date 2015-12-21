@@ -27,13 +27,13 @@ import org.optaplanner.core.impl.heuristic.selector.Selector;
  * The selections are then sorted by their weight,
  * normally ascending unless its configured descending.
  */
-public interface SelectionSorterWeightFactory<Sol extends Solution, T> {
+public interface SelectionSorterWeightFactory<Solution_ extends Solution, T> {
 
     /**
      * @param solution never null, the {@link Solution} to which the selection belongs or applies to
      * @param selection never null, a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}
      * @return never null, for example a {@link Integer}, {@link Double} or a more complex {@link Comparable}
      */
-    Comparable createSorterWeight(Sol solution, T selection);
+    Comparable createSorterWeight(Solution_ solution, T selection);
 
 }

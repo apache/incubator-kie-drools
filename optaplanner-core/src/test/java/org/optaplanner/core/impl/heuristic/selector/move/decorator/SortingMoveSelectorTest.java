@@ -30,6 +30,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 import static org.mockito.Mockito.*;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
@@ -61,7 +62,7 @@ public class SortingMoveSelectorTest {
                 new DummyMove("jan"), new DummyMove("feb"), new DummyMove("mar"),
                 new DummyMove("apr"), new DummyMove("may"), new DummyMove("jun"));
 
-        SelectionSorter<DummyMove> sorter = new SelectionSorter<DummyMove>() {
+        SelectionSorter<TestdataSolution, DummyMove> sorter = new SelectionSorter<TestdataSolution, DummyMove>() {
             public void sort(ScoreDirector scoreDirector, List<DummyMove> selectionList) {
                 Collections.sort(selectionList, new Comparator<DummyMove>() {
                     public int compare(DummyMove a, DummyMove b) {

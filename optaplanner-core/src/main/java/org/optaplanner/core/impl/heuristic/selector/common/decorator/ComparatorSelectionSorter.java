@@ -20,14 +20,20 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class ComparatorSelectionSorter implements SelectionSorter<Object> {
+/**
+ * Sorts a selection {@link List} based on a {@link Comparator}.
+ * @param <Solution_> the solution type
+ * @param <T> the selection type
+ */
+public class ComparatorSelectionSorter<Solution_ extends Solution, T> implements SelectionSorter<Solution_, T> {
 
-    private final Comparator<Object> appliedComparator;
+    private final Comparator<T> appliedComparator;
 
-    public ComparatorSelectionSorter(Comparator<Object> comparator, SelectionSorterOrder selectionSorterOrder) {
+    public ComparatorSelectionSorter(Comparator<T> comparator, SelectionSorterOrder selectionSorterOrder) {
         switch (selectionSorterOrder) {
             case ASCENDING:
                 this.appliedComparator = comparator;
@@ -41,7 +47,7 @@ public class ComparatorSelectionSorter implements SelectionSorter<Object> {
         }
     }
 
-    public void sort(ScoreDirector scoreDirector, List<Object> selectionList) {
+    public void sort(ScoreDirector scoreDirector, List<T> selectionList) {
         Collections.sort(selectionList, appliedComparator);
     }
 
