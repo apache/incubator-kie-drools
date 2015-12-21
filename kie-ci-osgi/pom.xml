@@ -35,6 +35,10 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-internal</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -102,6 +106,7 @@
               org.kie.api.builder,
               org.kie.api.builder.model,
               org.kie.api.runtime,
+              org.kie.internal.utils,
               org.osgi.framework,
               org.slf4j,
               org.slf4j.spi,
