@@ -15,18 +15,29 @@
 
 package org.jbpm.test.functional.timer;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
+import javax.naming.InitialContext;
 import javax.persistence.Persistence;
+import javax.sql.DataSource;
+import javax.transaction.UserTransaction;
 
 import org.drools.core.time.TimerService;
+import org.drools.core.time.impl.TimerJobInstance;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
 import org.jbpm.process.core.timer.impl.QuartzSchedulerService;
 import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
+import org.jbpm.services.task.identity.JBossUserGroupCallbackImpl;
 import org.jbpm.test.listener.CountDownProcessEventListener;
 import org.junit.After;
 import org.junit.Before;
@@ -47,7 +58,9 @@ import org.kie.api.runtime.manager.RuntimeEnvironmentBuilder;
 import org.kie.api.runtime.manager.RuntimeManager;
 import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.UserGroupCallback;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 @RunWith(Parameterized.class)
@@ -295,5 +308,48 @@ public class GlobalQuartzDBTimerServiceTest extends GlobalTimerServiceBaseTest {
 
         manager.disposeRuntimeEngine(runtime);
         manager.close();
+    }
+    
+    @Test(timeout=20000)
+    public void testTimerRequiresRecoveryFlagSet() throws Exception {
+        Properties properties= new Properties();
+        properties.setProperty("mary", "HR");
+        properties.setProperty("john", "HR");
+        UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl(properties);
+        environment = RuntimeEnvironmentBuilder.Factory.get()
+                .newDefaultBuilder()
+                .entityManagerFactory(emf)
+                .addAsset(ResourceFactory.newClassPathResource("org/jbpm/test/functional/timer/HumanTaskWithBoundaryTimer.bpmn"), ResourceType.BPMN2)
+                .schedulerService(globalScheduler)
+                .userGroupCallback(userGroupCallback)
+                .get();
+
+        manager = getManager(environment, true);
+
+        RuntimeEngine runtime = manager.getRuntimeEngine(ProcessInstanceIdContext.get());
+        KieSession ksession = runtime.getKieSession();
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("test", "john");
+        ProcessInstance processInstance = ksession.startProcess("PROCESS_1", params);
+       
+        try {
+            Connection connection = ((DataSource)InitialContext.doLookup("jdbc/jbpm-ds")).getConnection();
+            Statement stmt = connection.createStatement();
+
+            ResultSet resultSet = stmt.executeQuery("select REQUESTS_RECOVERY from QRTZ_JOB_DETAILS");
+            while(resultSet.next()) {
+                boolean requestsRecovery = resultSet.getBoolean(1);
+                assertEquals("Requests recovery must be set to true", true, requestsRecovery);
+            }
+            
+            stmt.close();
+            connection.close();
+        } catch (Exception e) {
+            
+        }
+        ksession.abortProcessInstance(processInstance.getId());
+        manager.disposeRuntimeEngine(runtime);
+        
     }
 }

@@ -151,7 +151,7 @@ public class QuartzSchedulerService implements GlobalSchedulerService {
         GlobalQuartzJobHandle quartzJobHandle = (GlobalQuartzJobHandle) timerJobInstance.getJobHandle();
         // Define job instance
         JobDetail jobq = new JobDetail(quartzJobHandle.getJobName(), quartzJobHandle.getJobGroup(), QuartzJob.class);
-
+        jobq.setRequestsRecovery(true);
         jobq.getJobDataMap().put("timerJobInstance", timerJobInstance);
             
         // Define a Trigger that will fire "now"
