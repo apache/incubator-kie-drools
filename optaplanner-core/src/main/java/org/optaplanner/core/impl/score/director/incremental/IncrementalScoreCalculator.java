@@ -28,17 +28,17 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
  * This is much faster than {@link EasyScoreCalculator} but requires much more code to implement too.
  * <p>
  * Any implementation is naturally stateful.
- * @param <Sol> Subclass of {@link Solution}
+ * @param <Solution_> Subclass of {@link Solution}
  * @see IncrementalScoreDirector
  */
-public interface IncrementalScoreCalculator<Sol extends Solution> {
+public interface IncrementalScoreCalculator<Solution_ extends Solution> {
 
     /**
      * There are no {@link #beforeEntityAdded(Object)} and {@link #afterEntityAdded(Object)} calls
      * for entities that are already present in the workingSolution.
      * @param workingSolution never null
      */
-    void resetWorkingSolution(Sol workingSolution);
+    void resetWorkingSolution(Solution_ workingSolution);
 
     /**
      * @param entity never null, an instance of a {@link PlanningEntity} class

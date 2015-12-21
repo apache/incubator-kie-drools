@@ -22,9 +22,9 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 public class FieldAccessingSolutionClonerTest extends AbstractSolutionClonerTest {
 
     @Override
-    protected <Sol extends Solution> FieldAccessingSolutionCloner<Sol> createSolutionCloner(
+    protected <Solution_ extends Solution> FieldAccessingSolutionCloner<Solution_> createSolutionCloner(
             SolutionDescriptor solutionDescriptor) {
-        return new FieldAccessingSolutionCloner<Sol>(solutionDescriptor);
+        return new FieldAccessingSolutionCloner<Solution_>(solutionDescriptor);
     }
 
 }

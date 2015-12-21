@@ -22,6 +22,6 @@ import org.optaplanner.core.api.domain.solution.Solution;
  * Abstract superclass for {@link IncrementalScoreCalculator}.
  * @see IncrementalScoreCalculator
  */
-public abstract class AbstractIncrementalScoreCalculator<Sol extends Solution> implements IncrementalScoreCalculator<Sol> {
+public abstract class AbstractIncrementalScoreCalculator<Solution_ extends Solution> implements IncrementalScoreCalculator<Solution_> {
 
 }
