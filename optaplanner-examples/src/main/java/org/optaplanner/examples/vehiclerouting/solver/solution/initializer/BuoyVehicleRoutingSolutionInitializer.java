@@ -54,13 +54,7 @@ public class BuoyVehicleRoutingSolutionInitializer implements CustomPhaseCommand
                 public int compare(Standstill a, Standstill b) {
                     double aDistance = origin.getLocation().getDistanceTo(a.getLocation());
                     double bDistance = origin.getLocation().getDistanceTo(b.getLocation());
-                    if (aDistance < bDistance) {
-                        return -1;
-                    } else if (aDistance > bDistance) {
-                        return 1;
-                    } else {
-                        return 0; // Keep endingIterator order
-                    }
+                    return Double.compare(aDistance, bDistance);
                 }
             });
             nearbyMap.put(origin, nearbyCustomers);
