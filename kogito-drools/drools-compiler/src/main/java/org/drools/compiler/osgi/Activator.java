@@ -16,9 +16,6 @@
 
 package org.drools.compiler.osgi;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-
 import org.drools.compiler.builder.impl.KnowledgeBuilderFactoryServiceImpl;
 import org.drools.compiler.compiler.BPMN2ProcessProvider;
 import org.drools.compiler.compiler.DecisionTableProvider;
@@ -26,9 +23,10 @@ import org.drools.core.marshalling.impl.ProcessMarshallerFactoryService;
 import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.kie.api.Service;
 import org.kie.api.builder.KieScannerFactoryService;
-import org.kie.internal.builder.KnowledgeBuilderFactoryService;
-import org.kie.internal.utils.ServiceRegistryImpl;
 import org.kie.api.osgi.Activator.BundleContextInstantiator;
+import org.kie.internal.builder.KnowledgeBuilderFactoryService;
+import org.kie.internal.utils.ClassLoaderResolver;
+import org.kie.internal.utils.ServiceRegistryImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -38,6 +36,9 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 public class Activator
     implements
@@ -52,6 +53,7 @@ public class Activator
     private ServiceTracker      processRuntimeTracker;
     private ServiceTracker      processMarshallerTracker;
     private ServiceTracker      scannerTracker;
+    private ServiceTracker      classResolverTracker;
 
     public void start(BundleContext bc) throws Exception {
         logger.info( "registering compiler services" );
@@ -92,6 +94,11 @@ public class Activator
                                                   new DroolsServiceTracker( bc, this ) );
         this.scannerTracker.open();
 
+        this.classResolverTracker = new ServiceTracker( bc,
+                                                        ClassLoaderResolver.class.getName(),
+                                                        new DroolsServiceTracker( bc, this ) );
+        this.classResolverTracker.open();
+
         logger.info( "compiler services registered" );
     }
 
@@ -102,6 +109,7 @@ public class Activator
         this.processRuntimeTracker.close();
         this.processMarshallerTracker.close();
         this.scannerTracker.close();
+        this.classResolverTracker.close();
     }
 
     public static class DroolsServiceTracker
