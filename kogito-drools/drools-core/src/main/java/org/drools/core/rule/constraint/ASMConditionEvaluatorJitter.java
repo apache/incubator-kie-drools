@@ -464,19 +464,31 @@ public class ASMConditionEvaluatorJitter {
         private Class<?> findComparingParameterClass(Type interfaze) {
             if (interfaze instanceof ParameterizedType) {
                 ParameterizedType pType = (ParameterizedType)interfaze;
-                if (pType.getRawType() == Comparable.class) {
-                    return (Class<?>) pType.getActualTypeArguments()[0];
+                Type rawType = pType.getRawType();
+                if (rawType == Comparable.class) {
+                    Type comparableType = pType.getActualTypeArguments()[0];
+                    return comparableType instanceof Class ?
+                           ( (Class) comparableType ) :
+                           (Class)( (ParameterizedType) comparableType ).getRawType();
+                }
+                if (rawType instanceof Class) {
+                    findComparingClassOnSuperInterfaces( (Class) rawType );
                 }
             }
             if (interfaze instanceof Class) {
                 if (interfaze == Comparable.class) {
                     return Object.class;
                 }
-                for (Type superInterfaze : ((Class) interfaze).getGenericInterfaces()) {
-                    Class<?> comparingClass = findComparingParameterClass(superInterfaze);
-                    if (comparingClass != null) {
-                        return comparingClass;
-                    }
+                return findComparingClassOnSuperInterfaces( (Class) interfaze );
+            }
+            return null;
+        }
+
+        private Class<?> findComparingClassOnSuperInterfaces( Class rawType ) {
+            for ( Type superInterfaze : rawType.getGenericInterfaces() ) {
+                Class<?> comparingClass = findComparingParameterClass( superInterfaze );
+                if ( comparingClass != null ) {
+                    return comparingClass;
                 }
             }
             return null;
