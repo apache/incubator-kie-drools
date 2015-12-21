@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ObjectUtils;
-import org.apache.commons.lang3.tuple.Pair;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
@@ -35,11 +33,8 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.ShadowVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableDemand;
-import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.listener.support.VariableListenerSupport;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
@@ -57,12 +52,12 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * @see ScoreDirector
  */
-public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFactory>
+public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirectorFactory>
         implements InnerScoreDirector, Cloneable {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected final F scoreDirectorFactory;
+    protected final Factory_ scoreDirectorFactory;
     protected final boolean constraintMatchEnabledPreference;
     protected final VariableListenerSupport variableListenerSupport;
 
@@ -73,14 +68,14 @@ public abstract class AbstractScoreDirector<F extends AbstractScoreDirectorFacto
 
     protected long calculateCount = 0L;
 
-    protected AbstractScoreDirector(F scoreDirectorFactory, boolean constraintMatchEnabledPreference) {
+    protected AbstractScoreDirector(Factory_ scoreDirectorFactory, boolean constraintMatchEnabledPreference) {
         this.scoreDirectorFactory = scoreDirectorFactory;
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
         variableListenerSupport = new VariableListenerSupport(this);
         variableListenerSupport.linkVariableListeners();
     }
 
-    public F getScoreDirectorFactory() {
+    public Factory_ getScoreDirectorFactory() {
         return scoreDirectorFactory;
     }
 
