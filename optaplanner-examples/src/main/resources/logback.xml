@@ -23,7 +23,8 @@
     <!--</encoder>-->
   <!--</appender>-->
 
-  <logger name="org.optaplanner" level="debug"/>
+  <!-- To override the debug log level from the command line, use the VM option "-Dlogback.level.org.optaplanner=trace" -->
+  <logger name="org.optaplanner" level="${logback.level.org.optaplanner:-debug}"/>
 
   <root level="warn">
     <appender-ref ref="consoleAppender" />
