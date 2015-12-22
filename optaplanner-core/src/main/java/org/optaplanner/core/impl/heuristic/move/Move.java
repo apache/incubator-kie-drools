@@ -73,9 +73,11 @@ public interface Move {
     Move createUndoMove(ScoreDirector scoreDirector);
 
     /**
-     * Does the Move and updates the {@link Solution} and its {@link ScoreDirector} accordingly.
-     * When the {@link Solution} is modified, the {@link ScoreDirector} should be correctly notified,
-     * otherwise later calculated {@link Score}s can be corrupted.
+     * Does the move (which indirectly affects the {@link ScoreDirector#getWorkingSolution()}).
+     * When the {@link Solution workingSolution} is modified, the {@link ScoreDirector} must be correctly notified
+     * (through {@link ScoreDirector#beforeVariableChanged(Object, String)},
+     * {@link ScoreDirector#afterProblemFactChanged(Object)}, etc),
+     * otherwise later calculated {@link Score}s will be corrupted.
      * <p>
      * This method must end with calling {@link ScoreDirector#triggerVariableListeners()} to ensure all shadow variables are updated.
      * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes.

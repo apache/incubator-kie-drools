@@ -16,14 +16,23 @@
 
 package org.optaplanner.core.impl.phase.custom;
 
+import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 public interface CustomPhaseCommand {
 
     /**
+     * Changes {@link Solution workingSolution} of {@link ScoreDirector#getWorkingSolution()}.
+     * When the {@link Solution workingSolution} is modified, the {@link ScoreDirector} must be correctly notified
+     * (through {@link ScoreDirector#beforeVariableChanged(Object, String)},
+     * {@link ScoreDirector#afterProblemFactChanged(Object)}, etc),
+     * otherwise calculated {@link Score}s will be corrupted.
+     * <p>
      * Don't forget to call {@link ScoreDirector#triggerVariableListeners()} after each set of changes
-     * (especially before a {@link ScoreDirector#calculateScore()} call).
-     * @param scoreDirector never null
+     * (especially before every {@link ScoreDirector#calculateScore()} call)
+     * to ensure all shadow variables are updated.
+     * @param scoreDirector never null, the {@link ScoreDirector} that needs to get notified of the changes.
      */
     void changeWorkingSolution(ScoreDirector scoreDirector);
 
