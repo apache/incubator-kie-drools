@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.impl.phase.custom.AbstractCustomPhaseCommand;
 import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
@@ -29,7 +30,7 @@ import org.optaplanner.examples.dinnerparty.domain.SeatDesignation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DinnerPartySolutionInitializer implements CustomPhaseCommand {
+public class DinnerPartySolutionInitializer extends AbstractCustomPhaseCommand {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 

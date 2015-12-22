@@ -16,11 +16,33 @@
 
 package org.optaplanner.core.impl.phase.custom;
 
+import java.util.Map;
+
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
+import org.optaplanner.core.impl.solver.termination.AbstractTermination;
 
+/**
+ * Runs a custom algorithm as a {@link Phase} of the {@link Solver} that changes the planning variables.
+ * Do not abuse to change the problems facts,
+ * instead use {@link Solver#addProblemFactChange(ProblemFactChange)} for that.
+ * <p>
+ * An implementation must extend {@link AbstractCustomPhaseCommand} to ensure backwards compatibility in future versions.
+ * @see AbstractCustomPhaseCommand
+ */
 public interface CustomPhaseCommand {
+
+    /**
+     * Called during {@link SolverFactory#buildSolver()}.
+     * @param customPropertyMap never null
+     * @throws IllegalArgumentException if any of the properties are not supported or don't parse correctly
+     */
+    void applyCustomProperties(Map<String, String> customPropertyMap);
 
     /**
      * Changes {@link Solution workingSolution} of {@link ScoreDirector#getWorkingSolution()}.

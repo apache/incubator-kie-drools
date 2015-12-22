@@ -1008,10 +1008,10 @@
   <section xml:id="customSolverPhase">
     <title>Custom Solver Phase</title>
 
-    <para>Between phases or before the first phase, you might want to execute a custom action on the
-    <literal>Solution</literal> to get a better score. Yet you'll still want to reuse the score calculation. For
-    example, to implement a custom construction heuristic without implementing an entire
-    <literal>Phase</literal>.</para>
+    <para>Between phases or before the first phase, you might want to run a custom optmization algorithm to initialize
+    the <literal>Solution</literal> or to take some low hanging fruit to get a better score quickly. Yet you'll still
+    want to reuse the score calculation. For example, to implement a custom Construction Heuristic without implementing
+    an entire <literal>Phase</literal>.</para>
 
     <note>
       <para>Most of the time, a custom solver phase is not worth the hassle. The supported <link
@@ -1020,17 +1020,20 @@
       partially initialized solutions too.</para>
     </note>
 
-    <para>Implement the <literal>CustomPhaseCommand</literal> interface:</para>
+    <para>The <literal>CustomPhaseCommand</literal> interface looks like this:</para>
 
     <programlisting language="java">public interface CustomPhaseCommand {
+
+    void applyCustomProperties(Map&lt;String, String&gt; customPropertyMap);
 
     void changeWorkingSolution(ScoreDirector scoreDirector);
 
 }</programlisting>
 
-    <para>For example:</para>
+    <para>For example, extend <literal>AbstractCustomPhaseCommand</literal> and implement the
+    <literal>changeWorkingSolution()</literal> method:</para>
 
-    <programlisting language="java">public class ToOriginalMachineSolutionInitializer implements CustomPhaseCommand {
+    <programlisting language="java">public class ToOriginalMachineSolutionInitializer extends AbstractCustomPhaseCommand {
 
     public void changeWorkingSolution(ScoreDirector scoreDirector) {
         MachineReassignment machineReassignment = (MachineReassignment) scoreDirector.getWorkingSolution();
@@ -1086,5 +1089,37 @@
       <literal>CustomPhaseCommand</literal> is done, however long that takes. The build-in solver phases don't suffer
       from this problem.</para>
     </note>
+
+    <para>To configure values of your <literal>CustomPhaseCommand</literal> dynamically in the solver configuration (so
+    you can tweak those parameters with the <link linkend="benchmarker">Benchmarker</link>), use the
+    <literal>customProperties</literal> element:</para>
+
+    <programlisting language="xml">  &lt;customPhase&gt;
+    &lt;customProperties&gt;
+      &lt;mySelectionSize&gt;5&lt;/mySelectionSize&gt;
+    &lt;/customProperties&gt;
+  &lt;/customPhase&gt;</programlisting>
+
+    <para>Then override the <literal>applyCustomProperties()</literal> method to parse and apply them when a
+    <literal>Solver</literal> is build.</para>
+
+    <programlisting language="java">public class MySolutionInitializer extends AbstractCustomPhaseCommand {
+
+    private int mySelectionSize;
+
+    public void applyCustomProperties(Map&lt;String, String&gt; customPropertyMap) {
+        String mySelectionSizeString = customPropertyMap.get("mySelectionSize");
+        if (mySelectionSizeString == null) {
+            throw new IllegalArgumentException("A customProperty (mySelectionSize) is missing from the solver configuration.");
+        }
+        solverFactory = SolverFactory.createFromXmlResource(partitionSolverConfigResource);
+        if (customPropertyMap.size() != 1) {
+            throw new IllegalArgumentException("The customPropertyMap's size (" + customPropertyMap.size() + ") is not 1.");
+        }
+        mySelectionSize = Integer.parseInt(mySelectionSizeString);
+    }
+
+    ...
+}</programlisting>
   </section>
 </chapter>
