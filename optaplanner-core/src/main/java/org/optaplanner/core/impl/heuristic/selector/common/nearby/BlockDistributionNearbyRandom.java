@@ -76,4 +76,12 @@ public class BlockDistributionNearbyRandom implements NearbyRandom {
         return random.nextInt(size);
     }
 
+    @Override
+    public int getOverallSizeMaximum() {
+        if (uniformDistributionProbability > 0.0) {
+            return Integer.MAX_VALUE;
+        }
+        return sizeMaximum;
+    }
+
 }

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.AbstractEntitySelector;
@@ -40,7 +41,7 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
     protected final boolean randomSelection;
     protected final boolean discardNearbyIndexZero = true; // TODO deactivate me when appropriate
 
-    protected Map<Object, Object[]> originToDestinationsMap = null;
+    protected NearbyDistanceMatrix nearbyDistanceMatrix = null;
 
     public NearEntityNearbyEntitySelector(EntitySelector childEntitySelector, EntitySelector originEntitySelector,
             NearbyDistanceMeter nearbyDistanceMeter, NearbyRandom nearbyRandom, boolean randomSelection) {
@@ -76,42 +77,34 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
                     + ") has an entitySize (" + originSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        originToDestinationsMap = new HashMap<Object, Object[]>((int) originSize);
         long childSize = childEntitySelector.getSize();
         if (childSize > (long) Integer.MAX_VALUE) {
             throw new IllegalStateException("The childEntitySelector (" + childEntitySelector
                     + ") has an entitySize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
+        int destinationSize = (int) childSize;
+        if (randomSelection) {
+            // Reduce RAM memory usage by reducing destinationSize if nearbyRandom will never select a higher value
+            int overallSizeMaximum = nearbyRandom.getOverallSizeMaximum();
+            if (discardNearbyIndexZero) {
+                overallSizeMaximum++;
+            }
+            if (destinationSize > overallSizeMaximum) {
+                destinationSize = overallSizeMaximum;
+            }
+        }
+        nearbyDistanceMatrix = new NearbyDistanceMatrix(nearbyDistanceMeter, (int) originSize);
         for (Iterator originIt = originEntitySelector.endingIterator(); originIt.hasNext(); ) {
             final Object origin =  originIt.next();
-            Object[] destinations = new Object[(int) childSize];
-            int i = 0;
-            for (Iterator childIt = childEntitySelector.endingIterator(); childIt.hasNext(); i++) {
-                destinations[i] = childIt.next();
-            }
-            Arrays.sort(destinations, new Comparator<Object>() {
-                @Override
-                public int compare(Object a, Object b) {
-                    double aDistance = nearbyDistanceMeter.getNearbyDistance(origin, a);
-                    double bDistance = nearbyDistanceMeter.getNearbyDistance(origin, b);
-                    if (aDistance < bDistance) {
-                        return -1;
-                    } else if (aDistance > bDistance) {
-                        return 1;
-                    } else {
-                        return 0; // Keep endingIterator order
-                    }
-                }
-            });
-            originToDestinationsMap.put(origin, destinations);
+            nearbyDistanceMatrix.addAllDestinations(origin, childEntitySelector.endingIterator(), destinationSize);
         }
     }
 
     @Override
     public void phaseEnded(AbstractPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
-        originToDestinationsMap = null;
+        nearbyDistanceMatrix = null;
     }
 
     public EntityDescriptor getEntityDescriptor() {
@@ -174,8 +167,7 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
         @Override
         public Object next() {
             Object origin = originEntityIterator.next();
-            Object[] destinations = originToDestinationsMap.get(origin);
-            Object next = destinations[nextNearbyIndex];
+            Object next = nearbyDistanceMatrix.getDestination(origin, nextNearbyIndex);
             nextNearbyIndex++;
             return next;
         }
@@ -209,8 +201,7 @@ public class NearEntityNearbyEntitySelector extends AbstractEntitySelector {
             if (discardNearbyIndexZero) {
                 nearbyIndex++;
             }
-            Object[] destinations = originToDestinationsMap.get(origin);
-            return destinations[nearbyIndex];
+            return nearbyDistanceMatrix.getDestination(origin, nearbyIndex);
         }
 
     }

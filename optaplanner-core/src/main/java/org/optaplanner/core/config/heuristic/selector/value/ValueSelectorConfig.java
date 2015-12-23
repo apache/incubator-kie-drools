@@ -278,6 +278,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
                 determineBaseRandomSelection(variableDescriptor, resolvedCacheType, resolvedSelectionOrder));
 
         if (nearbySelectionConfig != null) {
+            // TODO Static filtering should affect nearbySelection too
             valueSelector = nearbySelectionConfig.applyNearbyValueSelector(configPolicy,
                     minimumCacheType, resolvedCacheType, resolvedSelectionOrder, valueSelector);
         }

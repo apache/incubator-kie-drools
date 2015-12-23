@@ -50,4 +50,9 @@ public class LinearDistributionNearbyRandom implements NearbyRandom {
         return next;
     }
 
+    @Override
+    public int getOverallSizeMaximum() {
+        return sizeMaximum;
+    }
+
 }

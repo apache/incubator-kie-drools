@@ -260,10 +260,10 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
                 SelectionCacheType.max(minimumCacheType, resolvedCacheType),
                 determineBaseRandomSelection(entityDescriptor, resolvedCacheType, resolvedSelectionOrder));
         if (nearbySelectionConfig != null) {
+            // TODO Static filtering (such as movableEntitySelectionFilter) should affect nearbySelection
             entitySelector = nearbySelectionConfig.applyNearbyEntitySelector(configPolicy,
                     minimumCacheType, resolvedCacheType, resolvedSelectionOrder, entitySelector);
         }
-
         entitySelector = applyFiltering(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applySorting(resolvedCacheType, resolvedSelectionOrder, entitySelector);
         entitySelector = applyProbability(resolvedCacheType, resolvedSelectionOrder, entitySelector);

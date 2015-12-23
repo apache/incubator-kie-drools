@@ -47,4 +47,9 @@ public class BetaDistributionNearbyRandom implements NearbyRandom {
         return next;
     }
 
+    @Override
+    public int getOverallSizeMaximum() {
+        return Integer.MAX_VALUE;
+    }
+
 }

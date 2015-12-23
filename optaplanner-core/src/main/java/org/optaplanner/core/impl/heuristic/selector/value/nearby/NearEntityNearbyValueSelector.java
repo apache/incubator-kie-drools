@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.heuristic.selector.common.iterator.SelectionIterator;
+import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMatrix;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyDistanceMeter;
 import org.optaplanner.core.impl.heuristic.selector.common.nearby.NearbyRandom;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
@@ -40,7 +41,7 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
     protected final boolean randomSelection;
     protected final boolean discardNearbyIndexZero = true; // TODO deactivate me when appropriate
 
-    protected Map<Object, Object[]> originToDestinationsMap = null;
+    protected NearbyDistanceMatrix nearbyDistanceMatrix = null;
 
     public NearEntityNearbyValueSelector(ValueSelector childValueSelector, EntitySelector originEntitySelector,
             NearbyDistanceMeter nearbyDistanceMeter, NearbyRandom nearbyRandom, boolean randomSelection) {
@@ -81,7 +82,7 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
                     + ") has an entitySize (" + originSize
                     + ") which is higher than Integer.MAX_VALUE.");
         }
-        originToDestinationsMap = new HashMap<Object, Object[]>((int) originSize);
+        nearbyDistanceMatrix = new NearbyDistanceMatrix(nearbyDistanceMeter, (int) originSize);
         for (Iterator originIt = originEntitySelector.endingIterator(); originIt.hasNext(); ) {
             final Object origin =  originIt.next();
             long childSize = childValueSelector.getSize(origin);
@@ -90,33 +91,25 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
                         + ") has an entitySize (" + childSize
                         + ") which is higher than Integer.MAX_VALUE.");
             }
-            Object[] destinations = new Object[(int) childSize];
-            int i = 0;
-            for (Iterator childIt = childValueSelector.endingIterator(origin); childIt.hasNext(); i++) {
-                destinations[i] = childIt.next();
-            }
-            Arrays.sort(destinations, new Comparator<Object>() {
-                @Override
-                public int compare(Object a, Object b) {
-                    double aDistance = nearbyDistanceMeter.getNearbyDistance(origin, a);
-                    double bDistance = nearbyDistanceMeter.getNearbyDistance(origin, b);
-                    if (aDistance < bDistance) {
-                        return -1;
-                    } else if (aDistance > bDistance) {
-                        return 1;
-                    } else {
-                        return 0; // Keep endingIterator order
-                    }
+            int destinationSize = (int) childSize;
+            if (randomSelection) {
+                // Reduce RAM memory usage by reducing destinationSize if nearbyRandom will never select a higher value
+                int overallSizeMaximum = nearbyRandom.getOverallSizeMaximum();
+                if (discardNearbyIndexZero) {
+                    overallSizeMaximum++;
                 }
-            });
-            originToDestinationsMap.put(origin, destinations);
+                if (destinationSize > overallSizeMaximum) {
+                    destinationSize = overallSizeMaximum;
+                }
+            }
+            nearbyDistanceMatrix.addAllDestinations(origin, childValueSelector.endingIterator(origin), destinationSize);
         }
     }
 
     @Override
     public void phaseEnded(AbstractPhaseScope phaseScope) {
         super.phaseEnded(phaseScope);
-        originToDestinationsMap = null;
+        nearbyDistanceMatrix = null;
     }
 
     // ************************************************************************
@@ -186,8 +179,7 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
         @Override
         public Object next() {
             selectOrigin();
-            Object[] destinations = originToDestinationsMap.get(origin);
-            Object next = destinations[nextNearbyIndex];
+            Object next = nearbyDistanceMatrix.getDestination(origin, nextNearbyIndex);
             nextNearbyIndex++;
             return next;
         }
@@ -221,8 +213,7 @@ public class NearEntityNearbyValueSelector extends AbstractValueSelector {
             if (discardNearbyIndexZero) {
                 nearbyIndex++;
             }
-            Object[] destinations = originToDestinationsMap.get(origin);
-            return destinations[nearbyIndex];
+            return nearbyDistanceMatrix.getDestination(origin, nearbyIndex);
         }
 
     }
