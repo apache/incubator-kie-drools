@@ -18,7 +18,6 @@ package org.drools.core.rule;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
@@ -167,4 +166,8 @@ public class From extends ConditionalElement
         }
     }
 
+    @Override
+    public boolean requiresLeftActivation() {
+        return true;
+    }
 }

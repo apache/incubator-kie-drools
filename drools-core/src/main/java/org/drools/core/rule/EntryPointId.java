@@ -143,4 +143,9 @@ public class EntryPointId extends ConditionalElement
     public boolean isPatternScopeDelimiter() {
         return true;
     }
+
+    @Override
+    public boolean requiresLeftActivation() {
+        return false;
+    }
 }
