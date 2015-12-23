@@ -30,8 +30,10 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.compiler.rule.builder.dialect.mvel.MVELDialectConfiguration;
 import org.drools.core.ClassObjectFilter;
+import org.drools.core.InitialFact;
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.WorkingMemory;
+import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
@@ -8254,5 +8256,30 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 1, list.size() );
         assertEquals( "bbb", list.get( 0 ) );
+    }
+
+    @Test
+    public void testFromEPDontRequireLeftInput() {
+        // DROOLS-1014
+        String drl =
+                "rule R when\n" +
+                "    $s1 : String() from entry-point \"xxx\"\n" +
+                "then\n" +
+                "end\n";
+
+        KieBase kbase = new KieHelper().addContent( drl, ResourceType.DRL ) .build();
+
+        Rete rete = ( (KnowledgeBaseImpl) kbase ).getRete();
+        LeftInputAdapterNode liaNode = null;
+        for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
+            Class<?> otnType = ( (ClassObjectType) otn.getObjectType() ).getClassType();
+            if ( String.class == otnType ) {
+                assertEquals( 1, otn.getSinkPropagator().size() );
+            } else if ( InitialFact.class.isAssignableFrom( otnType ) ) {
+                assertEquals( 0, otn.getSinkPropagator().size() );
+            } else {
+                fail("There shouldn't be other OTNs");
+            }
+        }
     }
 }

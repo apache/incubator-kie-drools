@@ -131,4 +131,9 @@ public class WindowReference extends ConditionalElement
     public boolean isPatternScopeDelimiter() {
         return true;
     }
+
+    @Override
+    public boolean requiresLeftActivation() {
+        return true;
+    }
 }

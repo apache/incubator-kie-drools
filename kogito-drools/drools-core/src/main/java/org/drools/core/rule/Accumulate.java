@@ -185,4 +185,9 @@ public abstract class Accumulate extends ConditionalElement
     public boolean hasRequiredDeclarations() {
         return requiredDeclarations != null && requiredDeclarations.length > 0;
     }
+
+    @Override
+    public boolean requiresLeftActivation() {
+        return true;
+    }
 }

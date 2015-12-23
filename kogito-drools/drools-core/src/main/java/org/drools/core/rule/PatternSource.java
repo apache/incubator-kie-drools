@@ -20,5 +20,5 @@ package org.drools.core.rule;
  * A markup interface for pattern source elements
  */
 public interface PatternSource extends RuleConditionElement {
-
+    boolean requiresLeftActivation();
 }

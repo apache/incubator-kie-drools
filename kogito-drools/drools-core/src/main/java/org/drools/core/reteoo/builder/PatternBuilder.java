@@ -416,7 +416,9 @@ public class PatternBuilder
      */
     public boolean requiresLeftActivation(final BuildUtils utils,
                                           final RuleConditionElement rce) {
-        return ((Pattern) rce).getSource() != null || ! ((Pattern) rce).getBehaviors().isEmpty() ;
+        PatternSource source = ((Pattern) rce).getSource();
+        return (source != null && source.requiresLeftActivation() ) ||
+               ! ((Pattern) rce).getBehaviors().isEmpty() ;
     }
 
     private static class Constraints {
