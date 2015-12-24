@@ -53,4 +53,7 @@ public interface LeftTuple extends Tuple {
 
     void setPeer(LeftTuple peer);
     LeftTuple getPeer();
+
+    short getStagedTypeForQueries();
+    void setStagedTypeForQueries( short stagedTypeForQueries );
 }

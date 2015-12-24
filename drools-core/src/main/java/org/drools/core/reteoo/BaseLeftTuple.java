@@ -19,7 +19,6 @@ package org.drools.core.reteoo;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.PropagationContext;
-import org.drools.core.spi.Tuple;
 import org.drools.core.util.index.TupleList;
 
 import java.util.Arrays;
@@ -51,6 +50,8 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     protected TupleList        memory;
 
     private LeftTuple            peer;
+
+    private volatile short       stagedTypeForQueries;
 
     public BaseLeftTuple() {
         // constructor needed for serialisation
@@ -647,5 +648,13 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     @Override
     public void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory ) {
         getTupleSink().retractLeftTuple( this, context, workingMemory );
+    }
+
+    public short getStagedTypeForQueries() {
+        return stagedTypeForQueries;
+    }
+
+    public void setStagedTypeForQueries( short stagedTypeForQueries ) {
+        this.stagedTypeForQueries = stagedTypeForQueries;
     }
 }

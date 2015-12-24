@@ -180,7 +180,7 @@ public class RuleNetworkEvaluator {
             // copy across the results, if any from the query node memory
             QueryElementNodeMemory qmem = (QueryElementNodeMemory) nodeMem;
             qmem.setNodeCleanWithoutNotify();
-            trgTuples.addAll(qmem.getResultLeftTuples());
+            qmem.getResultLeftTuples().addTo(trgTuples);
         }
 
         LeftTupleSinkNode sink = entry.getSink();
@@ -451,7 +451,7 @@ public class RuleNetworkEvaluator {
 
         // result tuples can happen when reactivity occurs inside of the query, prior to evaluation
         // we will need special behaviour to add the results again, when this query result resumes
-        trgTuples.addAll(qmem.getResultLeftTuples());
+        qmem.getResultLeftTuples().addTo( trgTuples );
         qmem.setNodeCleanWithoutNotify();
 
         if (!srcTuples.isEmpty()) {

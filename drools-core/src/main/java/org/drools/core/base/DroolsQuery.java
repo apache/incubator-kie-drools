@@ -44,7 +44,7 @@ public final class DroolsQuery extends ArrayElements {
 
     private WorkingMemoryAction action;
 
-    private TupleSets<LeftTuple> resultLeftTuples;
+    private final TupleSets<LeftTuple> resultLeftTuples;
 
     private QueryElementNodeMemory qmem;
 
@@ -53,24 +53,6 @@ public final class DroolsQuery extends ArrayElements {
     private StackEntry stackEntry;
 
     private LeftTupleSink sink;
-
-    //    public DroolsQuery(DroolsQuery droolsQuery) {
-    //        super( new Object[droolsQuery.getElements().length] );
-    //
-    //        this.name = droolsQuery.getName();
-    //        this.resultsCollector = droolsQuery.getQueryResultCollector();
-    //        this.open = droolsQuery.isOpen();
-    //        final Object[] params = getElements();
-    //        System.arraycopy( droolsQuery.getElements(), 0, params, 0, params.length );
-    //        originalDroolsQuery = droolsQuery;
-    //    }
-
-    public DroolsQuery(final String name,
-                       final Object[] params,
-                       final InternalViewChangedEventListener resultsCollector,
-                       final boolean open) {
-        this(name, params, resultsCollector, open, null, null, null, null, null);
-    }
 
     public DroolsQuery(final String name,
                        final Object[] params,
@@ -207,7 +189,4 @@ public final class DroolsQuery extends ArrayElements {
                     ", args=" + Arrays.toString( getElements() ) +
                     ", vars=" + Arrays.toString( vars ) + "]";
     }
-    
-
-
 }
