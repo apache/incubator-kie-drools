@@ -76,8 +76,8 @@
       <para>Negative and positive constraints can be combined, even in the same score level.</para>
 
       <note>
-        <para>Do not presume that your business knows all its score constraints in advance. Expect score constraints to be
-        added or changed after the first releases.</para>
+        <para>Do not presume that your business knows all its score constraints in advance. Expect score constraints to
+        be added or changed after the first releases.</para>
       </note>
 
       <para>When a constraint activates (because the negative constraint is broken or the positive constraint is
@@ -89,8 +89,8 @@
 
       <para>Not all score constraints are equally important. If breaking one constraint is equally bad as breaking
       another constraint x times, then those two constraints have a different weight (but they are in the same score
-      level). For example in vehicle routing, you can make one "unhappy driver" constraint match count as much as two "fuel
-      tank usage" constraint matches:</para>
+      level). For example in vehicle routing, you can make one "unhappy driver" constraint match count as much as two
+      "fuel tank usage" constraint matches:</para>
 
       <mediaobject>
         <imageobject>
@@ -104,8 +104,8 @@
       linkend="fairnessScoreConstraints">fairness</link>. For example, a nurse who requests a free day pays a higher
       weight on New Years eve than on a normal day.</para>
 
-      <para>Putting a good weight on a constraint can be a difficult analytical decision, because it is about making choices
-      and tradeoffs with other constraints. However, a non-accurate weight is less damaging than mediocre
+      <para>Putting a good weight on a constraint can be a difficult analytical decision, because it is about making
+      choices and tradeoffs with other constraints. However, a non-accurate weight is less damaging than mediocre
       algorithms:</para>
 
       <mediaobject>
@@ -132,11 +132,10 @@
       broken. In that case, those score constraints are in different levels. For example, a nurse cannot do 2 shifts at
       the same time (due to the constraints of physical reality), this outranks all nurse happiness constraints.</para>
 
-      <para>Most use cases have only two score levels, hard and soft. Two scores are compared
-      lexicographically. The first score level gets compared first. If those differ, the others score levels are
-      ignored. For example, a score that breaks <literal>0</literal> hard constraints and <literal>1000000</literal>
-      soft constraints is better than a score that breaks <literal>1</literal> hard constraint and <literal>0</literal>
-      soft constraints.</para>
+      <para>Most use cases have only two score levels, hard and soft. Two scores are compared lexicographically. The
+      first score level gets compared first. If those differ, the others score levels are ignored. For example, a score
+      that breaks <literal>0</literal> hard constraints and <literal>1000000</literal> soft constraints is better than a
+      score that breaks <literal>1</literal> hard constraint and <literal>0</literal> soft constraints.</para>
 
       <mediaobject>
         <imageobject>
@@ -193,11 +192,11 @@
       and the score with the most dominating score constraints wins. Pareto scoring can even be combined with score
       levels and score constraint weighting.</para>
 
-      <para>Consider this example with positive constraints, where we want to get the most apples and oranges. Since
-      it is impossible to compare apples and oranges, we can not weight them against each other. Yet, despite that we can not
-      compare them, we can state that two apples are better then one apple. Similarly, we can state that two apples and one
-      orange are better than just one orange. So despite our inability to compare some Scores conclusively (at which point
-      we declare them equal), we can find a set of optimal scores. Those are called pareto optimal.</para>
+      <para>Consider this example with positive constraints, where we want to get the most apples and oranges. Since it
+      is impossible to compare apples and oranges, we can not weight them against each other. Yet, despite that we can
+      not compare them, we can state that two apples are better then one apple. Similarly, we can state that two apples
+      and one orange are better than just one orange. So despite our inability to compare some Scores conclusively (at
+      which point we declare them equal), we can find a set of optimal scores. Those are called pareto optimal.</para>
 
       <mediaobject>
         <imageobject>
@@ -207,9 +206,9 @@
 
       <para>Scores are considered equal far more often. It is left up to a human to choose the better out of a set of
       best solutions (with equal scores) found by Planner. In the example above, the user must choose between solution A
-      (three apples and one orange) and solution B (one apple and six oranges). It is guaranteed that Planner has not found another
-      solution which has more apples or more oranges or even a better combination of both (such as two apples and three
-      oranges).</para>
+      (three apples and one orange) and solution B (one apple and six oranges). It is guaranteed that Planner has not
+      found another solution which has more apples or more oranges or even a better combination of both (such as two
+      apples and three oranges).</para>
 
       <para>To implement pareto scoring in Planner, <link linkend="customScore">implement a custom
       <literal>ScoreDefinition</literal> and <literal>Score</literal></link> (and replace the
@@ -217,10 +216,10 @@
 
       <note>
         <para>A pareto <literal>Score</literal>'s <literal>compareTo</literal> method is not transitive because it does
-        a pareto comparison. For example: having two apples is greater than one apple. One apple is equal to One orange. Yet, two
-        apples are not greater than one orange (but actually equal). Pareto comparison violates the contract of the
-        interface <literal>java.lang.Comparable</literal>'s <literal>compareTo</literal> method, but Planners systems
-        are <emphasis>pareto comparison safe</emphasis>, unless explicitly stated otherwise in this
+        a pareto comparison. For example: having two apples is greater than one apple. One apple is equal to One orange.
+        Yet, two apples are not greater than one orange (but actually equal). Pareto comparison violates the contract of
+        the interface <literal>java.lang.Comparable</literal>'s <literal>compareTo</literal> method, but Planners
+        systems are <emphasis>pareto comparison safe</emphasis>, unless explicitly stated otherwise in this
         documentation.</para>
       </note>
     </section>
@@ -482,10 +481,10 @@
       <para>All score calculation types are Object Oriented and can reuse existing Java code.</para>
 
       <important>
-        <para>The score calculation must be read-only. It must not change the planning entities or the problem facts
-        in any way. For example, it must not call a setter method on a planning entity in a Drools score rule's RHS.
-        This does not apply to <emphasis>logically inserted</emphasis> objects, which can be changed by the score rules
-        that logically inserted them in the first place.</para>
+        <para>The score calculation must be read-only. It must not change the planning entities or the problem facts in
+        any way. For example, it must not call a setter method on a planning entity in a Drools score rule's RHS. This
+        does not apply to <emphasis>logically inserted</emphasis> objects, which can be changed by the score rules that
+        logically inserted them in the first place.</para>
 
         <para>Planner will not recalculate the score of a <literal>Solution</literal> if it can predict it (unless an
         <link linkend="environmentMode">environmentMode assertion</link> is enabled). For example, after a winning step
@@ -997,8 +996,8 @@ end</programlisting>
           <para>Notice that every score rule will relate to at least one planning entity class (directly or indirectly
           through a logically inserted fact).</para>
 
-          <para>This is a normal case. It would be a waste of time to write a score rule that only relates to problem facts, as
-          the consequence will never change during planning, no matter what the possible solution.</para>
+          <para>This is a normal case. It would be a waste of time to write a score rule that only relates to problem
+          facts, as the consequence will never change during planning, no matter what the possible solution.</para>
         </note>
 
         <note>
@@ -1012,7 +1011,7 @@ end</programlisting>
         <title>Weighing Score Rules</title>
 
         <para>A <literal>ScoreHolder</literal> instance is asserted into the <literal>KieSession</literal> as a global
-        called <literal>scoreHolder</literal>. Your score rules need to (directly or indirectly) update that
+        called <literal>scoreHolder</literal>. The score rules need to (directly or indirectly) update that
         instance.</para>
 
         <programlisting>global SimpleScoreHolder scoreHolder;
@@ -1043,23 +1042,26 @@ rule "multipleQueensDescendingDiagonal"
         scoreHolder.addConstraintMatch(kcontext, -1);
 end</programlisting>
 
-        <para>Most use cases will also weigh their constraint types or even their matches differently, by using a
-        specific weight for each constraint match.</para>
+        <note>
+          <para>To learn more about the Drools rule language (DRL), consult <link
+          xlink:href="http://drools.org/learn/documentation.html">the Drools documentation</link>.</para>
+        </note>
 
-        <para>Here is an example from CurriculumCourse, where assigning a <literal>Lecture</literal> to a
-        <literal>Room</literal> which is missing two seats is weighted equally bad as having one isolated
-        <literal>Lecture</literal> in a <literal>Curriculum</literal>:</para>
+        <para>Most use cases also weigh their constraint types or even their matches differently, by using a specific
+        weight for each constraint match. For example in <link linkend="curriculumCourse">course scheduling</link>,
+        assigning a <literal>Lecture</literal> to a <literal>Room</literal> that is lacking two seats is weighted
+        equally bad as having one isolated <literal>Lecture</literal> in a <literal>Curriculum</literal>:</para>
 
         <programlisting>global HardSoftScoreHolder scoreHolder;
 
 // RoomCapacity: For each lecture, the number of students that attend the course must be less or equal
 // than the number of seats of all the rooms that host its lectures.
-// Each student above the capacity counts as 1 point of penalty.
 rule "roomCapacity"
     when
         $room : Room($capacity : capacity)
         $lecture : Lecture(room == $room, studentSize &gt; $capacity, $studentSize : studentSize)
     then
+        // Each student above the capacity counts as 1 point of penalty.
         scoreHolder.addSoftConstraintMatch(kcontext, ($capacity - $studentSize));
 end
 
@@ -1067,11 +1069,11 @@ end
 // to each other (i.e., in consecutive periods).
 // For a given curriculum we account for a violation every time there is one lecture not adjacent
 // to any other lecture within the same day.
-// Each isolated lecture in a curriculum counts as 2 points of penalty.
 rule "curriculumCompactness"
     when
         ...
     then
+        // Each isolated lecture in a curriculum counts as 2 points of penalty.
         scoreHolder.addSoftConstraintMatch(kcontext, -2);
 end</programlisting>
       </section>
@@ -1248,15 +1250,15 @@ end</programlisting>
       <title>Pointless Constraints</title>
 
       <para>If you know a certain constraint can never be broken (or it is always broken), you need not write a score
-      constraint for it. For example in n queens, the score calculation does not check if multiple queens occupy the same
-      column, because a <literal>Queen</literal>'s <literal>column</literal> never changes and every
+      constraint for it. For example in n queens, the score calculation does not check if multiple queens occupy the
+      same column, because a <literal>Queen</literal>'s <literal>column</literal> never changes and every
       <literal>Solution</literal> starts with each <literal>Queen</literal> on a different
       <literal>column</literal>.</para>
 
       <note>
-        <para>Do not go overboard with this. If some datasets do not use a specific constraint but others do, just return
-        out of the constraint as soon as you can. There is no need to dynamically change your score calculation based on
-        the dataset.</para>
+        <para>Do not go overboard with this. If some datasets do not use a specific constraint but others do, just
+        return out of the constraint as soon as you can. There is no need to dynamically change your score calculation
+        based on the dataset.</para>
       </note>
     </section>
 
@@ -1333,8 +1335,8 @@ end</programlisting>
         </listitem>
 
         <listitem>
-          <para>Two exams need to be conducted at the same time, but you are only moving one exam at a time. So the solver
-          has to move one of those exams to another timeslot without moving the other in the same move. Add a
+          <para>Two exams need to be conducted at the same time, but you are only moving one exam at a time. So the
+          solver has to move one of those exams to another timeslot without moving the other in the same move. Add a
           coarse-grained move that moves both exams at the same time.</para>
         </listitem>
       </itemizedlist>
@@ -1361,10 +1363,10 @@ end</programlisting>
       </note>
 
       <important>
-        <para>Always specify the degree of infeasibility. The business will often say "if the solution is infeasible,
-        it does not matter how infeasible it is." While that is true for the business, it is not true for score calculation as
-        it benefits from knowing how infeasible it is. In practice, soft constraints usually do this naturally and it is
-        just a matter of doing it for the hard constraints too.</para>
+        <para>Always specify the degree of infeasibility. The business will often say "if the solution is infeasible, it
+        does not matter how infeasible it is." While that is true for the business, it is not true for score calculation
+        as it benefits from knowing how infeasible it is. In practice, soft constraints usually do this naturally and it
+        is just a matter of doing it for the hard constraints too.</para>
       </important>
 
       <para>There are several ways to deal with a score trap:</para>
@@ -1395,8 +1397,8 @@ end</programlisting>
       <title>stepLimit Benchmark</title>
 
       <para>Not all score constraints have the same performance cost. Sometimes one score constraint can kill the score
-      calculation performance outright. Use the <link linkend="benchmarker">Benchmarker</link> to do a one minute run and
-      check what happens to the average calculation count per second if you comment out all but one of the score
+      calculation performance outright. Use the <link linkend="benchmarker">Benchmarker</link> to do a one minute run
+      and check what happens to the average calculation count per second if you comment out all but one of the score
       constraints.</para>
     </section>
 
@@ -1441,8 +1443,8 @@ end</programlisting>
         <para>Instead of the <emphasis>squared workload</emphasis>, it is also possible to use the <link
         xlink:href="http://en.wikipedia.org/wiki/Variance">variance</link> (squared difference to the average) or the
         <link xlink:href="http://en.wikipedia.org/wiki/Standard_deviation">standard deviation</link> (square root of the
-        variance). This has no effect on the score comparison, because the average will not change during planning. It is
-        just more work to implement (because the average needs to be known) and trivially slower (because the
+        variance). This has no effect on the score comparison, because the average will not change during planning. It
+        is just more work to implement (because the average needs to be known) and trivially slower (because the
         calculation is a bit longer).</para>
       </note>
 
