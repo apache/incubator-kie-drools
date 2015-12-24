@@ -27,6 +27,7 @@ public class I18nPerson implements Serializable {
     private String élève; // "student" in French (creates a weird getter/setter name)
     private String имя; // "name" in Russian
     private String 名称; // "name" in Chinese
+    private 住所 住所; // "address" in Japanese
 
     public String getGarçon() {
         return garçon;
@@ -58,6 +59,14 @@ public class I18nPerson implements Serializable {
 
     public void set名称(String 名称) {
         this.名称 = 名称;
+    }
+
+    public 住所 get住所() {
+        return 住所;
+    }
+
+    public void set住所(住所 住所) {
+        this.住所 = 住所;
     }
 
 }
