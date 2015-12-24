@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.cloudbalancing.app;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -45,7 +46,7 @@ public class CloudBalancingDaemonTest extends LoggingTest {
     private CountDownLatch stage2Latch = new CountDownLatch(1);
     private CountDownLatch stage3Latch = new CountDownLatch(1);
 
-    private Queue<CloudProcess> notYetAddedProcessQueue = new LinkedList<CloudProcess>();
+    private Queue<CloudProcess> notYetAddedProcessQueue = new ArrayDeque<CloudProcess>();
 
     @Test(timeout = 600000)
     public void daemon() throws InterruptedException {

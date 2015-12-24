@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -340,7 +341,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter {
             for (Map.Entry<Topic, Set<Topic>> entry : afterMap.entrySet()) {
                 Topic leftTopic = entry.getKey();
                 Set<Topic> afterLeftSet = entry.getValue();
-                Queue<Topic> queue = new LinkedList<Topic>();
+                Queue<Topic> queue = new ArrayDeque<Topic>();
                 for (Topic topic : afterMap.get(leftTopic)) {
                     queue.add(topic);
                     queue.addAll(coincidenceMap.get(topic));

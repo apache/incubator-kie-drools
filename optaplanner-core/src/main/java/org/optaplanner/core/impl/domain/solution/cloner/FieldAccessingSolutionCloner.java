@@ -23,9 +23,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
@@ -196,9 +198,10 @@ public class FieldAccessingSolutionCloner<Solution_ extends Solution> implements
         protected Queue<Unprocessed> unprocessedQueue;
 
         protected Solution_ cloneSolution(Solution_ originalSolution) {
-            unprocessedQueue = new LinkedList<Unprocessed>();
+            int entityCount = solutionDescriptor.getEntityCount(originalSolution);
+            unprocessedQueue = new ArrayDeque<Unprocessed>(entityCount + 1);
             originalToCloneMap = new IdentityHashMap<Object, Object>(
-                    solutionDescriptor.getEntityCount(originalSolution) + 1);
+                    entityCount + 1);
             Solution_ cloneSolution = clone(originalSolution);
             processQueue();
             validateCloneSolution(originalSolution, cloneSolution);
@@ -299,6 +302,7 @@ public class FieldAccessingSolutionCloner<Solution_ extends Solution> implements
         }
 
         protected <E> Collection<E> constructCloneCollection(Collection<E> originalCollection) {
+            // TODO Don't hardcode all standard collections
             if (originalCollection instanceof List) {
                 if (originalCollection instanceof ArrayList) {
                     return new ArrayList<E>(originalCollection.size());
@@ -319,6 +323,8 @@ public class FieldAccessingSolutionCloner<Solution_ extends Solution> implements
                     // Default to a LinkedHashSet to respect order
                     return new LinkedHashSet<E>(originalCollection.size());
                 }
+            } else if (originalCollection instanceof Deque) {
+                return new ArrayDeque<E>(originalCollection.size());
             } else { // Default collection
                 return new ArrayList<E>(originalCollection.size());
             }
@@ -343,7 +349,7 @@ public class FieldAccessingSolutionCloner<Solution_ extends Solution> implements
         protected <K, V> Map<K, V> constructCloneMap(Map<K, V> originalMap) {
             // Normally a Map will never be selected for cloning, but extending implementations might anyway
             if (originalMap instanceof SortedMap) {
-                Comparator setComparator = ((SortedMap) originalMap).comparator();
+                Comparator<K> setComparator = ((SortedMap) originalMap).comparator();
                 return new TreeMap<K, V>(setComparator);
             } else if (originalMap instanceof LinkedHashMap) {
                 return new LinkedHashMap<K, V>(originalMap.size());
