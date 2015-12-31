@@ -37,6 +37,11 @@ public class TailChainSwapMoveSelectorConfig extends MoveSelectorConfig<TailChai
 
     @XStreamAlias("entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
+    /**
+     * Uses a valueSelector instead of a secondaryEntitySelector because
+     * the secondary entity might not exist if the value is a buoy (= the last entity in a chain)
+     * and also because with nearby selection, it's more important that the value is near (instead of the secondary entity).
+     */
     @XStreamAlias("valueSelector")
     private ValueSelectorConfig valueSelectorConfig = null;
 
