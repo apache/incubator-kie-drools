@@ -39,6 +39,8 @@ import org.optaplanner.core.impl.heuristic.selector.value.ValueSelector;
 @XStreamAlias("kOptMoveSelector")
 public class KOptMoveSelectorConfig extends MoveSelectorConfig<KOptMoveSelectorConfig> {
 
+    public static final int K = 3;
+
     @XStreamAlias("entitySelector")
     private EntitySelectorConfig entitySelectorConfig = null;
     /**
@@ -75,10 +77,14 @@ public class KOptMoveSelectorConfig extends MoveSelectorConfig<KOptMoveSelectorC
                 minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
         ValueSelectorConfig valueSelectorConfig_ = valueSelectorConfig == null ? new ValueSelectorConfig()
                 : valueSelectorConfig;
-        ValueSelector valueSelector = valueSelectorConfig_.buildValueSelector(configPolicy,
-                entitySelector.getEntityDescriptor(),
-                minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
-        return new KOptMoveSelector(entitySelector, valueSelector, randomSelection);
+        ValueSelector[] valueSelectors = new ValueSelector[K - 1];
+        for (int i = 0; i < valueSelectors.length; i++) {
+            valueSelectors[i] = valueSelectorConfig_.buildValueSelector(configPolicy,
+                    entitySelector.getEntityDescriptor(),
+                    minimumCacheType, SelectionOrder.fromRandomSelectionBoolean(randomSelection));
+
+        }
+        return new KOptMoveSelector(entitySelector, valueSelectors, randomSelection);
     }
 
     public void inherit(KOptMoveSelectorConfig inheritedConfig) {
