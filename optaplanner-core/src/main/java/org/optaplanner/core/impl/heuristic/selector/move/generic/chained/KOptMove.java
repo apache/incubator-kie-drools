@@ -71,22 +71,37 @@ public class KOptMove extends AbstractMove {
     }
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        // TODO as long as all anchors are different, there is no need to check that oldValue == newValue
         Object firstAnchor = anchorVariableSupply.getAnchor(entity);
+        Object firstValue = variableDescriptor.getValue(entity);
         Object formerAnchor = firstAnchor;
-        for (int i = 0; i < values.length; i++) {
-            Object value = values[i];
+        Object formerValue = firstValue;
+        for (Object value : values) {
             Object anchor = variableDescriptor.isValuePotentialAnchor(value)
                     ? value : anchorVariableSupply.getAnchor(value);
-            if (anchor == formerAnchor) {
+            if (anchor == formerAnchor && compareValuesInSameChain(formerValue, value) >= 0) {
                 return false;
             }
             formerAnchor = anchor;
+            formerValue = value;
         }
-        if (firstAnchor == formerAnchor) {
+        if (firstAnchor == formerAnchor && compareValuesInSameChain(formerValue, firstValue) >= 0) {
             return false;
         }
         return true;
+    }
+
+    protected int compareValuesInSameChain(Object a, Object b) {
+        if (a == b) {
+            return 0;
+        }
+        Object afterA = inverseVariableSupply.getInverseSingleton(a);
+        while (afterA != null) {
+            if (afterA == b) {
+                return 1;
+            }
+            afterA = inverseVariableSupply.getInverseSingleton(afterA);
+        }
+        return -1;
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
