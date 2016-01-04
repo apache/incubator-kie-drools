@@ -118,4 +118,19 @@ public class ProjectDataModelOracleUtils {
         return dmo.getProjectTypeSources().get( factType );
     }
 
+    public static String getFieldFullyQualifiedClassName( ProjectDataModelOracle dmo,
+            final String fullyQualifiedClassName,
+            final String fieldName ) {
+        final ModelField[] mfs = dmo.getProjectModelFields().get( fullyQualifiedClassName );
+        if( mfs == null ) { 
+            return null;
+        }
+        for ( ModelField mf : mfs ) {
+            if ( mf.getName().equals( fieldName ) ) {
+                return mf.getClassName();
+            }
+        }
+        return null;
+    }
+
 }
