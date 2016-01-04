@@ -166,11 +166,10 @@ public class KOptMove extends AbstractMove {
         Object leftValue = variableDescriptor.getValue(entity);
         StringBuilder builder = new StringBuilder(80 * values.length);
         builder.append(entity).append(" {").append(leftValue);
-        Object formerEntity = entity;
         for (int i = 0; i < values.length; i++) {
             Object value = values[i];
-            builder.append("} kOpt-> ").append(formerEntity).append(" {").append(value);
-            formerEntity = inverseVariableSupply.getInverseSingleton(value);
+            Object oldEntity = inverseVariableSupply.getInverseSingleton(value);
+            builder.append("} -kOpt-> ").append(oldEntity).append(" {").append(value);
         }
         builder.append("}");
         return builder.toString();
