@@ -499,7 +499,7 @@ public class NamedEntryPoint
 
             PropagationContext propagationContext  = delete(handle, object, typeConf, rule, activation );
 
-            if ( typeConf.isTMSEnabled() ) {
+            if ( typeConf.isTMSEnabled() && key != null ) { // key can be null if we're expiring an event that has been already deleted
                 TruthMaintenanceSystem tms = getTruthMaintenanceSystem();
 
                 // Update the equality key, which maintains a list of stated FactHandles
