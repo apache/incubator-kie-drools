@@ -164,7 +164,7 @@ public class MachineReassignmentPanel extends SolutionPanel {
                     if (ObjectUtils.equals(workingMachine, machine)) {
                         scoreDirector.beforeProblemFactRemoved(workingMachine);
                         it.remove(); // remove from list
-                        scoreDirector.beforeProblemFactRemoved(workingMachine);
+                        scoreDirector.afterProblemFactRemoved(workingMachine);
                         break;
                     }
                 }

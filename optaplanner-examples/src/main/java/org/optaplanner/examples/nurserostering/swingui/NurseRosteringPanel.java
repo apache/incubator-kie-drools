@@ -268,7 +268,7 @@ public class NurseRosteringPanel extends SolutionPanel {
                     if (ObjectUtils.equals(workingEmployee, employee)) {
                         scoreDirector.beforeProblemFactRemoved(workingEmployee);
                         it.remove(); // remove from list
-                        scoreDirector.beforeProblemFactRemoved(employee);
+                        scoreDirector.afterProblemFactRemoved(employee);
                         break;
                     }
                 }

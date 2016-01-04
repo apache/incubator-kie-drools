@@ -288,7 +288,7 @@ public class CloudBalancingPanel extends SolutionPanel {
                     if (ObjectUtils.equals(workingComputer, computer)) {
                         scoreDirector.beforeProblemFactRemoved(workingComputer);
                         it.remove(); // remove from list
-                        scoreDirector.beforeProblemFactRemoved(workingComputer);
+                        scoreDirector.afterProblemFactRemoved(workingComputer);
                         break;
                     }
                 }
