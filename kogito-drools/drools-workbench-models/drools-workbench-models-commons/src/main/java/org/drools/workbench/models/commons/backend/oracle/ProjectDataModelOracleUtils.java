@@ -32,73 +32,62 @@ import org.drools.workbench.models.datamodel.oracle.TypeSource;
  */
 public class ProjectDataModelOracleUtils {
 
-    public static String[] getFactTypes( final ProjectDataModelOracle dmo ) {
+    public static String[] getFactTypes(final ProjectDataModelOracle dmo) {
         final Map<String, ModelField[]> modelFields = dmo.getProjectModelFields();
-        final String[] types = modelFields.keySet().toArray( new String[ modelFields.size() ] );
-        Arrays.sort( types );
+        final String[] types = modelFields.keySet().toArray(new String[modelFields.size()]);
+        Arrays.sort(types);
         return types;
     }
 
-    public static List<String> getSuperType( final ProjectDataModelOracle dmo,
-                                       final String factType ) {
-        return dmo.getProjectSuperTypes().get( factType );
+    public static List<String> getSuperType(final ProjectDataModelOracle dmo, final String factType) {
+        return dmo.getProjectSuperTypes().get(factType);
     }
 
-    public static Set<Annotation> getTypeAnnotations( final ProjectDataModelOracle dmo,
-                                                      final String factType ) {
+    public static Set<Annotation> getTypeAnnotations(final ProjectDataModelOracle dmo, final String factType) {
         final Map<String, Set<Annotation>> typeAnnotations = dmo.getProjectTypeAnnotations();
-        if ( !typeAnnotations.containsKey( factType ) ) {
+        if (!typeAnnotations.containsKey(factType)) {
             return Collections.EMPTY_SET;
         }
-        return typeAnnotations.get( factType );
+        return typeAnnotations.get(factType);
     }
 
-    public static Map<String, Set<Annotation>> getTypeFieldsAnnotations( final ProjectDataModelOracle dmo,
-                                                                         final String factType ) {
+    public static Map<String, Set<Annotation>> getTypeFieldsAnnotations(final ProjectDataModelOracle dmo, final String factType) {
         final Map<String, Map<String, Set<Annotation>>> typeFieldsAnnotations = dmo.getProjectTypeFieldsAnnotations();
-        if ( !typeFieldsAnnotations.containsKey( factType ) ) {
+        if (!typeFieldsAnnotations.containsKey(factType)) {
             return Collections.EMPTY_MAP;
         }
-        return typeFieldsAnnotations.get( factType );
+        return typeFieldsAnnotations.get(factType);
     }
 
-    public static String getFieldClassName( final ProjectDataModelOracle dmo,
-                                            final String factType,
-                                            final String fieldName ) {
-        final ModelField field = getField( dmo,
-                                           factType,
-                                           fieldName );
+    public static String getFieldClassName(final ProjectDataModelOracle dmo, final String factType, final String fieldName) {
+        final ModelField field = getField(dmo, factType, fieldName);
         return field == null ? null : field.getClassName();
     }
 
-    private static ModelField getField( final ProjectDataModelOracle dmo,
-                                        final String factType,
-                                        final String fieldName ) {
-        final String shortName = getFactNameFromType( dmo,
-                                                      factType );
-        final ModelField[] fields = dmo.getProjectModelFields().get( shortName );
-        if ( fields == null ) {
+    private static ModelField getField(final ProjectDataModelOracle dmo, final String factType, final String fieldName) {
+        final String shortName = getFactNameFromType(dmo, factType);
+        final ModelField[] fields = dmo.getProjectModelFields().get(shortName);
+        if (fields == null) {
             return null;
         }
-        for ( ModelField modelField : fields ) {
-            if ( modelField.getName().equals( fieldName ) ) {
+        for (ModelField modelField : fields) {
+            if (modelField.getName().equals(fieldName)) {
                 return modelField;
             }
         }
         return null;
     }
 
-    private static String getFactNameFromType( final ProjectDataModelOracle dmo,
-                                               final String factType ) {
-        if ( factType == null ) {
+    private static String getFactNameFromType(final ProjectDataModelOracle dmo, final String factType) {
+        if (factType == null) {
             return null;
         }
-        if ( dmo.getProjectModelFields().containsKey( factType ) ) {
+        if (dmo.getProjectModelFields().containsKey(factType)) {
             return factType;
         }
-        for ( Map.Entry<String, ModelField[]> entry : dmo.getProjectModelFields().entrySet() ) {
-            for ( ModelField mf : entry.getValue() ) {
-                if ( DataType.TYPE_THIS.equals( mf.getName() ) && factType.equals( mf.getClassName() ) ) {
+        for (Map.Entry<String, ModelField[]> entry : dmo.getProjectModelFields().entrySet()) {
+            for (ModelField mf : entry.getValue()) {
+                if (DataType.TYPE_THIS.equals(mf.getName()) && factType.equals(mf.getClassName())) {
                     return entry.getKey();
                 }
             }
@@ -106,16 +95,26 @@ public class ProjectDataModelOracleUtils {
         return null;
     }
 
-    public static String getParametricFieldType( final ProjectDataModelOracle dmo,
-                                                 final String factType,
-                                                 final String fieldName ) {
+    public static String getParametricFieldType(final ProjectDataModelOracle dmo, final String factType, final String fieldName) {
         final String qualifiedFactFieldName = factType + "#" + fieldName;
-        return dmo.getProjectFieldParametersType().get( qualifiedFactFieldName );
+        return dmo.getProjectFieldParametersType().get(qualifiedFactFieldName);
     }
 
-    public static TypeSource getTypeSource( final ProjectDataModelOracle dmo,
-                                            final String factType ) {
-        return dmo.getProjectTypeSources().get( factType );
+    public static TypeSource getTypeSource(final ProjectDataModelOracle dmo, final String factType) {
+        return dmo.getProjectTypeSources().get(factType);
+    }
+
+    public static String getFieldFullyQualifiedClassName(final ProjectDataModelOracle dmo, final String fullyQualifiedClassName, final String fieldName) {
+        final ModelField[] mfs = dmo.getProjectModelFields().get(fullyQualifiedClassName);
+        if (mfs == null) {
+            return null;
+        }
+        for (ModelField mf : mfs) {
+            if (mf.getName().equals(fieldName)) {
+                return mf.getClassName();
+            }
+        }
+        return null;
     }
 
 }
