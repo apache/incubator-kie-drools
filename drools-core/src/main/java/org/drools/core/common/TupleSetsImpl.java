@@ -262,6 +262,10 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
         addAllUpdates( source );
     }
 
+    public void addTo(TupleSets<T> target) {
+        target.addAll( this );
+    }
+
     @Override
     public TupleSets<T> takeAll() {
         TupleSets<T> clone = new TupleSetsImpl(insertFirst, updateFirst, deleteFirst, normalizedDeleteFirst);

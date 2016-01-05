@@ -3274,7 +3274,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                 "   Integer( this == 10 ) " +
                 "then " +
                 "   System.out.println(\"10 \" + $i);" +
-                //"   list.add( $i );\n" +
+                "   list.add( 10 );\n" +
                 "end\n" +
                 "\n" +
 
@@ -3283,6 +3283,7 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                 "   Integer( this == 20 ) " +
                 "then " +
                 "   System.out.println(\"20 \" + $i);" +
+                "   list.add( 20 );\n" +
                 "end\n" +
 
                 "rule r3 when " +
@@ -3304,5 +3305,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
         kieSession.insert( 20 );
 
         kieSession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( 20, (int)list.get(0) );
     }
 }
