@@ -146,7 +146,7 @@ public class PhreakJoinNode {
 
                 constraints.updateFromFactHandle( contextEntry,
                                                   wm,
-                                                  rightTuple.getFactHandle() );
+                                                  rightTuple.getFactHandleForEvaluation() );
 
                 for ( LeftTuple leftTuple = joinNode.getFirstLeftTuple( rightTuple, ltm, it ); leftTuple != null; leftTuple = (LeftTuple) it.next( leftTuple ) ) {
                     if ( leftTuple.getStagedType() == LeftTuple.UPDATE ) {
@@ -296,7 +296,7 @@ public class PhreakJoinNode {
 
                 constraints.updateFromFactHandle( contextEntry,
                                                   wm,
-                                                  rightTuple.getFactHandle() );
+                                                  rightTuple.getFactHandleForEvaluation() );
 
                 // first check our index (for indexed nodes only) hasn't changed and we are returning the same bucket
                 // We assume a bucket change if leftTuple == null

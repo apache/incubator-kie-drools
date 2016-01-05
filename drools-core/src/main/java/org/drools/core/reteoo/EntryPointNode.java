@@ -25,7 +25,6 @@ import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
-import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.ObjectType;
@@ -287,14 +286,14 @@ public class EntryPointNode extends ObjectSource
     }
 
     public void doDeleteObject(PropagationContext pctx, InternalWorkingMemory wm, LeftTuple leftTuple) {
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) leftTuple.getTupleSink().getLeftTupleSource();
-        LiaNodeMemory lm = ( LiaNodeMemory )  wm.getNodeMemory( liaNode );
+        LeftInputAdapterNode liaNode = leftTuple.getTupleSource();
+        LiaNodeMemory lm = wm.getNodeMemory( liaNode );
         LeftInputAdapterNode.doDeleteObject(leftTuple, pctx, lm.getSegmentMemory(), wm, liaNode, true, lm);
     }
 
     public void doRightDelete(PropagationContext pctx, InternalWorkingMemory wm, RightTuple rightTuple) {
         rightTuple.setPropagationContext( pctx );
-        rightTuple.getTupleSink().retractRightTuple(rightTuple, pctx, wm);
+        rightTuple.retractTuple( pctx, wm );
     }
 
     public void modifyObject(InternalFactHandle factHandle,
@@ -454,7 +453,7 @@ public class EntryPointNode extends ObjectSource
             if ( objectTypeConf.getConcreteObjectTypeNode() != null && newObjectType.isAssignableFrom( objectTypeConf.getConcreteObjectTypeNode().getObjectType() ) ) {
                 objectTypeConf.resetCache();
                 ObjectTypeNode sourceNode = objectTypeConf.getConcreteObjectTypeNode();
-                Iterator<InternalFactHandle> it = ((ObjectTypeNodeMemory) workingMemory.getNodeMemory( sourceNode )).iterator();
+                Iterator<InternalFactHandle> it = workingMemory.getNodeMemory( sourceNode ).iterator();
                 while ( it.hasNext() ) {
                     sink.assertObject( it.next(),
                                        context,

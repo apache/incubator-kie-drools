@@ -365,13 +365,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
             SegmentUtilities.createSegmentMemory( this, workingMemory );
         }
 
-        if ( leftTuple != null && leftTuple.getTupleSink().getLeftInputOtnId().equals( otnId ) ) {
+        if ( leftTuple != null && leftTuple.getInputOtnId().equals( otnId ) ) {
             modifyPreviousTuples.removeLeftTuple();
             leftTuple.reAdd();
             LeftTupleSink sink = getSinkPropagator().getFirstLeftTupleSink();
             BitMask mask = sink.getLeftInferredMask();
             if ( context.getModificationMask().intersects( mask) ) {
-                doUpdateObject( leftTuple, context, workingMemory, (LeftInputAdapterNode) leftTuple.getTupleSink().getLeftTupleSource(), true, lm, lm.getSegmentMemory() );
+                doUpdateObject( leftTuple, context, workingMemory, (LeftInputAdapterNode) leftTuple.getTupleSource(), true, lm, lm.getSegmentMemory() );
                 if (leftTuple instanceof Activation) {
                     ((Activation)leftTuple).setActive(true);
                 }
@@ -390,10 +390,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private static LeftTuple processDeletesFromModify(ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory, Id otnId) {
         LeftTuple leftTuple = modifyPreviousTuples.peekLeftTuple();
-        while ( leftTuple != null && leftTuple.getTupleSink().getLeftInputOtnId().before( otnId ) ) {
+        while ( leftTuple != null && leftTuple.getInputOtnId().before( otnId ) ) {
             modifyPreviousTuples.removeLeftTuple();
 
-            LeftInputAdapterNode prevLiaNode = (LeftInputAdapterNode) leftTuple.getTupleSink().getLeftTupleSource();
+            LeftInputAdapterNode prevLiaNode = (LeftInputAdapterNode) leftTuple.getTupleSource();
             LiaNodeMemory prevLm = workingMemory.getNodeMemory( prevLiaNode );
             SegmentMemory prevSm = prevLm.getSegmentMemory();
             doDeleteObject( leftTuple, context, prevSm, workingMemory, prevLiaNode, true, prevLm );

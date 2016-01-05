@@ -908,7 +908,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.kBase.readLock();
             this.lock.lock();
 
-            LeftInputAdapterNode lian = ( LeftInputAdapterNode ) factHandle.getFirstLeftTuple().getTupleSink().getLeftTupleSource();
+            LeftInputAdapterNode lian = factHandle.getFirstLeftTuple().getTupleSource();
             LeftInputAdapterNode.LiaNodeMemory lmem = getNodeMemory(lian);
             SegmentMemory lsmem = lmem.getSegmentMemory();
 

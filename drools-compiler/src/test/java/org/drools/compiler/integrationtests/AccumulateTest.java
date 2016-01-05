@@ -817,7 +817,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         execTestAccumulateMax( "test_AccumulateMaxMVEL.drl" );
     }
 
-    @Test(timeout = 10000)
+    @Test//(timeout = 10000)
     public void testAccumulateMultiPatternJava() throws Exception {
         execTestAccumulateReverseModifyMultiPattern( "test_AccumulateMultiPattern.drl" );
     }
@@ -1421,13 +1421,13 @@ public class AccumulateTest extends CommonTestMethodBase {
         wm.setGlobal( "results",
                       results );
 
-        final Cheese[] cheese = new Cheese[]{new Cheese( "stilton",
-                                                         10 ), new Cheese( "stilton",
-                                                                           2 ), new Cheese( "stilton",
-                                                                                            5 ), new Cheese( "brie",
-                                                                                                             15 ), new Cheese( "brie",
-                                                                                                                               16 ), new Cheese( "provolone",
-                                                                                                                                                 8 )};
+        final Cheese[] cheese = new Cheese[]{ new Cheese( "stilton", 10 ),
+                                              new Cheese( "stilton", 2 ),
+                                              new Cheese( "stilton", 5 ),
+                                              new Cheese( "brie", 15 ),
+                                              new Cheese( "brie", 16 ),
+                                              new Cheese( "provolone", 8 ) };
+
         final Person bob = new Person( "Bob",
                                        "stilton" );
         final Person mark = new Person( "Mark",

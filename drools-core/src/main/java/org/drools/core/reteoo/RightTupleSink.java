@@ -21,8 +21,6 @@ import org.drools.core.spi.PropagationContext;
 
 public interface RightTupleSink extends Sink {
 
-    short getType();
-
     void assertRightTuple( final RightTuple rightTuple,
                            final PropagationContext context,
                            final InternalWorkingMemory workingMemory );
