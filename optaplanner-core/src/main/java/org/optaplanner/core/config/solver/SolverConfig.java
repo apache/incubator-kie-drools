@@ -279,10 +279,8 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             bestSolutionRecaller.setAssertInitialScoreFromScratch(true);
-            bestSolutionRecaller.setAssertBestScoreIsUnmodified(true);
-        }
-        if (environmentMode == EnvironmentMode.FULL_ASSERT) {
             bestSolutionRecaller.setAssertShadowVariablesAreNotStale(true);
+            bestSolutionRecaller.setAssertBestScoreIsUnmodified(true);
         }
         return bestSolutionRecaller;
     }
