@@ -696,6 +696,7 @@
     create index IDX_I18NText_DescrId ON I18NText(Task_Descriptions_Id);
     create index IDX_I18NText_ReassignId ON I18NText(Reassignment_Documentation_Id);
     create index IDX_I18NText_NotSubjId ON I18NText(Notification_Subjects_Id);
+    create index IDX_I18NText_NotNamId ON I18NText(Notification_Names_Id);
     create index IDX_I18NText_NotDocId ON I18NText(Notification_Documentation_Id);
     create index IDX_I18NText_NotDescrId ON I18NText(Notification_Descriptions_Id);
     create index IDX_I18NText_DeadDocId ON I18NText(Deadline_Documentation_Id);
