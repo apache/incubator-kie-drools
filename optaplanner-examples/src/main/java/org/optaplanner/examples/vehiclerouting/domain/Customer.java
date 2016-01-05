@@ -96,7 +96,8 @@ public class Customer extends AbstractPersistable implements Standstill {
      */
     public long getDistanceFromPreviousStandstill() {
         if (previousStandstill == null) {
-            return 0;
+            throw new IllegalStateException("This method must not be called when the previousStandstill ("
+                    + previousStandstill + ") is not initialized yet.");
         }
         return getDistanceFrom(previousStandstill);
     }

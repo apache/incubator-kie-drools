@@ -71,7 +71,7 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
     }
 
     private Long calculateArrivalTime(TimeWindowedCustomer customer, Long previousDepartureTime) {
-        if (customer == null) {
+        if (customer == null || customer.getPreviousStandstill() == null) {
             return null;
         }
         if (previousDepartureTime == null) {
