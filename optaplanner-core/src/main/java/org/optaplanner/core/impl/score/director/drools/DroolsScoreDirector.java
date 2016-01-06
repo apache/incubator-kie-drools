@@ -47,10 +47,6 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         super(scoreDirectorFactory, constraintMatchEnabledPreference);
     }
 
-    protected KieBase getKieBase() {
-        return scoreDirectorFactory.getKieBase();
-    }
-
     public KieSession getKieSession() {
         return kieSession;
     }
@@ -69,7 +65,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
         if (kieSession != null) {
             kieSession.dispose();
         }
-        kieSession = getKieBase().newKieSession();
+        kieSession = scoreDirectorFactory.newKieSession();
         workingScoreHolder = getScoreDefinition().buildScoreHolder(constraintMatchEnabledPreference);
         kieSession.setGlobal(GLOBAL_SCORE_HOLDER_KEY, workingScoreHolder);
         // TODO Adjust when uninitialized entities from getWorkingFacts get added automatically too (and call afterEntityAdded)

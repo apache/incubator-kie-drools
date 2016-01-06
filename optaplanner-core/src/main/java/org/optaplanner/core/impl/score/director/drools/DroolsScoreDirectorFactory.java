@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.score.director.drools;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Global;
+import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 
@@ -59,6 +60,10 @@ public class DroolsScoreDirectorFactory extends AbstractScoreDirectorFactory {
 
     public DroolsScoreDirector buildScoreDirector(boolean constraintMatchEnabledPreference) {
         return new DroolsScoreDirector(this, constraintMatchEnabledPreference);
+    }
+
+    public KieSession newKieSession() {
+        return kieBase.newKieSession();
     }
 
 }
