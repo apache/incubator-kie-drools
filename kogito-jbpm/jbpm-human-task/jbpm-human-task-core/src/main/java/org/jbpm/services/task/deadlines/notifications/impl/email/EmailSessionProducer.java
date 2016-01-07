@@ -37,14 +37,14 @@ public class EmailSessionProducer {
             try {
                 mailSession = InitialContext.doLookup(MAIL_JNDI_KEY);
             } catch (NamingException e1) {
-                logger.warn("Mail session was not found in JNDI under {} trying to look up email.properties on classspath", MAIL_JNDI_KEY);
+                logger.debug("Mail session was not found in JNDI under {} trying to look up email.properties on classspath", MAIL_JNDI_KEY);
                 Properties conf = new Properties();
                 try {
                     conf.load(EmailSessionProducer.class.getResourceAsStream("/email.properties"));
                     
                     mailSession = Session.getInstance(conf);
                 } catch (Exception e) {
-                    logger.error("email.properties was not found on classpath, nor mail session available in JNDI, unable to configure deadlines");
+                    logger.debug("email.properties was not found on classpath, nor mail session available in JNDI, unable to configure deadlines");
                     return null;
                 }
             }

@@ -26,10 +26,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 
-import org.jbpm.services.task.deadlines.NotificationListener;
-import org.jbpm.services.task.deadlines.notifications.impl.email.EmailNotificationListener;
+import org.jbpm.services.task.deadlines.notifications.impl.NotificationListenerManager;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.kie.api.runtime.EnvironmentName;
@@ -66,8 +64,7 @@ public class ExecuteDeadlinesCommand extends TaskCommand<Void> {
 	private Long deadlineId; 
 	@XmlElement
 	private DeadlineType type;
-	@XmlTransient
-	private NotificationListener notificationListener;
+
 	
 	public ExecuteDeadlinesCommand() {
 		
@@ -79,20 +76,12 @@ public class ExecuteDeadlinesCommand extends TaskCommand<Void> {
 		this.type = type;
 	}
 	
-	public ExecuteDeadlinesCommand(long taskId, long deadlineId, DeadlineType type, NotificationListener notificationListener) {
-		this.taskId = taskId;
-		this.deadlineId = deadlineId;
-		this.type = type;
-		this.notificationListener = notificationListener;
-	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Void execute(Context context) {
 		TaskContext ctx = (TaskContext) context;
-		if (notificationListener == null) {
-			this.notificationListener = new EmailNotificationListener((UserInfo) context.get(EnvironmentName.TASK_USER_INFO));
-		}
+		UserInfo userInfo = (UserInfo) context.get(EnvironmentName.TASK_USER_INFO);
 		
 		TaskPersistenceContext persistenceContext = ctx.getPersistenceContext();
 		
@@ -161,7 +150,7 @@ public class ExecuteDeadlinesCommand extends TaskCommand<Void> {
 	                            
 	                            taskEventSupport.fireBeforeTaskNotified(task, ctx);
 	                            logger.debug("Sending an Email");
-	                            notificationListener.onNotification(new NotificationEvent(notification, task, variables));
+	                            NotificationListenerManager.get().broadcast(new NotificationEvent(notification, task, variables), userInfo);
 	                            
 	                            taskEventSupport.fireAfterTaskNotified(task, ctx);
 	                        }

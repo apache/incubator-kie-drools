@@ -26,10 +26,8 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 
-import org.jbpm.services.task.deadlines.NotificationListener;
-import org.jbpm.services.task.deadlines.notifications.impl.email.EmailNotificationListener;
+import org.jbpm.services.task.deadlines.notifications.impl.NotificationListenerManager;
 import org.jbpm.services.task.events.TaskEventSupport;
 import org.jbpm.services.task.utils.ClassUtil;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
@@ -84,8 +82,6 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
 	@XmlElement
 	@XmlSchemaType(name="String")
     private String fromUser;
-	@XmlTransient
-	private NotificationListener notificationListener;
 	
 	public ExecuteReminderCommand() {
 		
@@ -99,9 +95,7 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
 	@Override
 	public Void execute(Context context) {
 		TaskContext ctx = (TaskContext) context;
-		if (notificationListener == null) {
-			this.notificationListener = new EmailNotificationListener((UserInfo) context.get(EnvironmentName.TASK_USER_INFO));
-		}
+		UserInfo userInfo = (UserInfo) context.get(EnvironmentName.TASK_USER_INFO);
 		
 		TaskPersistenceContext persistenceContext = ctx.getPersistenceContext();
 	        
@@ -125,7 +119,7 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
         		    	Map<String, Object> variables = getVariables(ctx, persistenceContext, task,
         							taskData);
         		        Notification notification = buildDefaultNotification(taskData,task);
-        		        notificationListener.onNotification(new NotificationEvent(notification, task, variables));
+        		        NotificationListenerManager.get().broadcast(new NotificationEvent(notification, task, variables), userInfo);
         		        
         		        taskEventSupport.fireAfterTaskNotified(task, ctx);
         		    }
@@ -170,6 +164,7 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
 		}
 		
 		if (taskData != null) {
+		    UserInfo userInfo = (UserInfo) ctx.get(EnvironmentName.TASK_USER_INFO);
 		    // check if task is still in valid status
 		    if (DeadlineType.START.isValidStatus(taskData.getStatus()) || DeadlineType.END.isValidStatus(taskData.getStatus())) {
 		        Map<String, Object> variables = getVariables(ctx, persistenceContext, task, taskData);
@@ -182,7 +177,7 @@ public class ExecuteReminderCommand extends TaskCommand<Void> {
 		            for (Notification notification : escalation.getNotifications()) {
 		                if (notification.getNotificationType() == NotificationType.Email) {		                    
 		                    logger.debug("Sending an Email");
-		                    notificationListener.onNotification(new NotificationEvent(notification, task, variables));
+		                    NotificationListenerManager.get().broadcast(new NotificationEvent(notification, task, variables), userInfo);
 		                }
 		            }
 		        }

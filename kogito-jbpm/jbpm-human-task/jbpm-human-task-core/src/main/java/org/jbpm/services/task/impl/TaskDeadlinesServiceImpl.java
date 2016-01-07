@@ -231,7 +231,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
         public ScheduledTaskDeadline call() throws Exception {
         	CommandExecutor executor = TaskDeadlinesServiceImpl.getInstance();
             if (executor != null) {
-                executor.execute(new ExecuteDeadlinesCommand(taskId, deadlineId, type, notificationListener));
+                executor.execute(new ExecuteDeadlinesCommand(taskId, deadlineId, type));
             } else {
                 logger.error("TaskDeadlineService instance is not available, most likely was not properly initialized - Job did not run!");
             }
@@ -307,7 +307,7 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             
             CommandExecutor executor = TaskDeadlinesServiceImpl.getInstance();
             if (executor != null) {
-                executor.execute(new ExecuteDeadlinesCommand(taskId, deadlineId, type, notificationListener));
+                executor.execute(new ExecuteDeadlinesCommand(taskId, deadlineId, type));
             } else {
                 logger.error("TaskDeadlineService instance is not available, most likely was not properly initialized - Job did not run!");
             }            
@@ -356,11 +356,6 @@ public class TaskDeadlinesServiceImpl implements TaskDeadlinesService {
             return null;
         }
     }
-
-
-    public static void setNotificationListener(NotificationListener notificationListener) {
-		TaskDeadlinesServiceImpl.notificationListener = notificationListener;
-	}
 
     public static CommandExecutor getInstance() {
         return instance;

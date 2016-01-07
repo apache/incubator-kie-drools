@@ -41,7 +41,6 @@ public class DeadlinesLocalTest extends DeadlinesBaseTest {
 		this.notificationListener = new MockNotificationListener();
 		pds = setupPoolingDataSource();
 		emf = Persistence.createEntityManagerFactory( "org.jbpm.services.task" );
-		TaskDeadlinesServiceImpl.setNotificationListener(this.notificationListener);
 		this.taskService = (InternalTaskService) HumanTaskServiceFactory.newTaskServiceConfigurator()
 												.entityManagerFactory(emf)
 												.getTaskService();
