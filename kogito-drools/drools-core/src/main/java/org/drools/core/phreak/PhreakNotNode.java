@@ -321,7 +321,7 @@ public class PhreakNotNode {
             if ( ltm != null && ltm.size() > 0 ) {
                 constraints.updateFromFactHandle( contextEntry,
                                                   wm,
-                                                  rightTuple.getFactHandle() );
+                                                  rightTuple.getFactHandleForEvaluation() );
 
                 FastIterator leftIt = notNode.getLeftIterator( ltm );
                 LeftTuple firstLeftTuple = notNode.getFirstLeftTuple( rightTuple, ltm, leftIt );
