@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- For a list of all released XSD files, visit http://www.drools.org/xsd/ -->
+<!-- Do NOT change the version number 6.0.0 in the targetNamespace because that breaks clients! -->
+<!-- TODO the targetNamespace must change to http://drools.org/xsd/kmodule in 7.0 to become versionless -->
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             elementFormDefault="qualified" attributeFormDefault="unqualified"
             targetNamespace="http://jboss.org/kie/6.0.0/kmodule" xmlns="http://jboss.org/kie/6.0.0/kmodule">
