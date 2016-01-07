@@ -135,7 +135,12 @@ public interface KieSessionModel {
      */
     KieSessionModel setDefault(boolean isDefault);
 
-    public static enum KieSessionType {
-        STATEFUL, STATELESS;
+    /**
+     * Returns the KieBaseModel which this KieSessionModel belongs to
+     */
+    KieBaseModel getKieBaseModel();
+
+    enum KieSessionType {
+        STATEFUL, STATELESS
     }
 }

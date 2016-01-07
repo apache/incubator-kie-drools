@@ -20,6 +20,8 @@ import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
+import org.kie.api.builder.model.KieBaseModel;
+import org.kie.api.builder.model.KieSessionModel;
 
 import java.util.Collection;
 
@@ -186,4 +188,14 @@ public interface KieContainer {
      * Returns the KieSessionConfiguration of the KieSession with the given name for this KieContainer
      */
     KieSessionConfiguration getKieSessionConfiguration( String kSessionName );
+
+    /**
+     * Returns the KieBaseModel for the KieBase with the given name
+     */
+    KieBaseModel getKieBaseModel( String kBaseName );
+
+    /**
+     * Returns the KieSessionModel for the KieSession with the given name
+     */
+    KieSessionModel getKieSessionModel( String kSessionName );
 }
