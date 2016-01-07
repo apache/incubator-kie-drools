@@ -312,7 +312,7 @@ public class PhreakExistsNode {
 
                 constraints.updateFromFactHandle( contextEntry,
                                                   wm,
-                                                  rightTuple.getFactHandle() );
+                                                  rightTuple.getFactHandleForEvaluation() );
 
 
                 // first process non-blocked tuples, as we know only those ones are in the left memory.
