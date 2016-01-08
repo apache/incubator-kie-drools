@@ -31,6 +31,8 @@ import javax.persistence.Id;
 import javax.persistence.Persistence;
 
 import org.drools.core.common.DroolsObjectInputStream;
+import org.drools.core.marshalling.impl.MarshallerWriteContext;
+import org.drools.core.marshalling.impl.ProcessMarshallerWriteContext;
 import org.drools.persistence.TransactionAware;
 import org.drools.persistence.TransactionManager;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
@@ -106,6 +108,8 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
                           ObjectOutputStream os, 
                           Object object) throws IOException {
         Object id = getClassIdValue(object);
+        String entityType = object.getClass().getCanonicalName();
+
         EntityManager em = getEntityManager();
         if (id == null) {
             em.persist(object);
@@ -113,6 +117,8 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         } else {
             em.merge(object);
         }
+        addMapping(id, entityType, object, os, em);
+        em.merge(object);
         // since this is invoked by marshaller it's safe to call flush
         // and it's important to be flushed so subsequent unmarshall operations
         // will get update content especially when merged
@@ -120,7 +126,7 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
 
         ByteArrayOutputStream buff = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream( buff );
-        oos.writeUTF(object.getClass().getCanonicalName());
+        oos.writeUTF(entityType);
         oos.writeObject(id);
         oos.close();
         return buff.toByteArray();
@@ -251,6 +257,27 @@ public class JPAPlaceholderResolverStrategy implements ObjectMarshallingStrategy
         if (closeEmf && this.emf != null) {
             this.emf.close();
             this.emf = null;
+        }
+    }
+
+    protected void addMapping(Object entityId, String entityType, Object entity, ObjectOutputStream context, EntityManager em) {
+        if (entityId instanceof Number && entity instanceof VariableEntity && context instanceof ProcessMarshallerWriteContext) {
+
+            ProcessMarshallerWriteContext processContext = (ProcessMarshallerWriteContext) context;
+            VariableEntity variableEntity = (VariableEntity) entity;
+
+            MappedVariable mappedVariable = new MappedVariable(((Number)entityId).longValue(), entityType, processContext.getProcessInstanceId(), processContext.getTaskId(), processContext.getWorkItemId());
+            if (processContext.getState() == ProcessMarshallerWriteContext.STATE_ACTIVE) {
+                variableEntity.addMappedVariables(mappedVariable);
+            } else {
+                MappedVariable toBeRemoved = variableEntity.findMappedVariables(mappedVariable);
+                if (toBeRemoved != null) {
+                    toBeRemoved = em.find(MappedVariable.class, toBeRemoved.getMappedVarId());
+                    em.remove(toBeRemoved);
+
+                    variableEntity.removeMappedVariables(toBeRemoved);
+                }
+            }
         }
     }
 }
