@@ -799,7 +799,7 @@ public class UserTaskServiceImpl implements UserTaskService, VariablesAware {
 	        
 	        ContentMarshallerContext ctx = TaskContentRegistry.get().getMarshallerContext(task.getDeploymentId());
 	        
-	        ((InternalContent)content).setContent(ContentMarshallerHelper.marshallContent(attachment, ctx.getEnvironment()));
+	        ((InternalContent)content).setContent(ContentMarshallerHelper.marshallContent(taskService.getTaskById(taskId), attachment, ctx.getEnvironment()));
 	        att.setSize(content.getContent().length);
 			return ((InternalTaskService)taskService).addAttachment(taskId, att, content);
 		} finally {

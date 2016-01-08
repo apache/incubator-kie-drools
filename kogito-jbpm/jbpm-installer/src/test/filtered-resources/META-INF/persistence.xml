@@ -67,6 +67,7 @@
     <class>org.jbpm.runtime.manager.impl.jpa.ContextMappingInfo</class>
     <!-- jbpm-kie-services -->
     <class>org.jbpm.kie.services.impl.store.DeploymentStoreEntry</class>
+    <class>org.jbpm.kie.services.impl.query.persistence.QueryDefinitionEntity</class>
     <!-- jbpm-human-task-jpa -->
     <class>org.jbpm.services.task.impl.model.AttachmentImpl</class>
     <class>org.jbpm.services.task.impl.model.BooleanExpressionImpl</class>
@@ -138,6 +139,7 @@
     <class>org.jbpm.runtime.manager.impl.jpa.ContextMappingInfo</class>
     <!-- jbpm-kie-services -->
     <class>org.jbpm.kie.services.impl.store.DeploymentStoreEntry</class>
+    <class>org.jbpm.kie.services.impl.query.persistence.QueryDefinitionEntity</class>
     <!-- jbpm-human-task-jpa -->
     <class>org.jbpm.services.task.impl.model.AttachmentImpl</class>
     <class>org.jbpm.services.task.impl.model.BooleanExpressionImpl</class>

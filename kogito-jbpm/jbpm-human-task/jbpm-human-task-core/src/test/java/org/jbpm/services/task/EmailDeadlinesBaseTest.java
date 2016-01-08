@@ -115,7 +115,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         InternalContent content = (InternalContent) TaskModelProvider.getFactory().newContent();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(task, params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -173,7 +173,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         long taskId = task.getId();
 
         InternalContent content = (InternalContent) TaskModelProvider.getFactory().newContent();
-        ContentData marshalledObject = ContentMarshallerHelper.marshal("'singleobject'", null);
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(task, "'singleobject'", null);
         content.setContent(marshalledObject.getContent());
        
         taskService.addContent(taskId, content);
@@ -246,7 +246,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         InternalContent content = (InternalContent) TaskModelProvider.getFactory().newContent();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(task, params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -303,7 +303,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         InternalContent content = (InternalContent) TaskModelProvider.getFactory().newContent();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(task, params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -359,7 +359,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         InternalContent content = (InternalContent) TaskModelProvider.getFactory().newContent();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(task, params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -414,7 +414,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         InternalContent content = (InternalContent) TaskModelProvider.getFactory().newContent();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(task, params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();
@@ -507,7 +507,7 @@ public abstract class EmailDeadlinesBaseTest extends HumanTaskServicesBaseTest {
         InternalContent content = (InternalContent) TaskModelProvider.getFactory().newContent();
         
         Map<String, String> params = fillMarshalSubjectAndBodyParams();
-        ContentData marshalledObject = ContentMarshallerHelper.marshal(params, null);
+        ContentData marshalledObject = ContentMarshallerHelper.marshal(task, params, null);
         content.setContent(marshalledObject.getContent());
         taskService.addContent(taskId, content);
         long contentId = content.getId();

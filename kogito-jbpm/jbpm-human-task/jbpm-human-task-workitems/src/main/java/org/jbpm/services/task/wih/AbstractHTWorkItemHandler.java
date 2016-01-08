@@ -197,7 +197,7 @@ public abstract class AbstractHTWorkItemHandler implements WorkItemHandler {
             if(session != null){
                 env = session.getEnvironment();
             }
-            content = ContentMarshallerHelper.marshal(contentObject, env);
+            content = ContentMarshallerHelper.marshal(null, contentObject, env);
         }
         return content;
     }

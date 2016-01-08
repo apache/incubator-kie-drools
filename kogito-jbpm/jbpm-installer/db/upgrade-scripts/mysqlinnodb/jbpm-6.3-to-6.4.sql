@@ -9,3 +9,15 @@ create table TaskVariableImpl (
     value varchar(5000),
     primary key (id)
 ) ENGINE=InnoDB;
+
+create table QueryDefinitionStore (
+    id bigint not null auto_increment,
+    qExpression longtext,
+    qName varchar(255),
+    qSource varchar(255),
+    qTarget varchar(255),
+    primary key (id)
+) ENGINE=InnoDB;
+
+alter table QueryDefinitionStore 
+        add constraint UK_4ry5gt77jvq0orfttsoghta2j unique (qName);

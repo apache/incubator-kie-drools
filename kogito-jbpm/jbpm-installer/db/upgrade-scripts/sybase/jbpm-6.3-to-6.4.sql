@@ -9,3 +9,18 @@ create table TaskVariableImpl (
     value varchar(5000) null,
     primary key (id)
 ) lock datarows
+go
+
+create table QueryDefinitionStore (
+    id numeric(19,0) identity not null,
+    qExpression text null,
+    qName varchar(255) null,
+    qSource varchar(255) null,
+    qTarget varchar(255) null,
+    primary key (id)
+) lock datarows
+
+go
+
+alter table QueryDefinitionStore 
+    add constraint UK_4ry5gt77jvq0orfttsoghta2j unique (qName)

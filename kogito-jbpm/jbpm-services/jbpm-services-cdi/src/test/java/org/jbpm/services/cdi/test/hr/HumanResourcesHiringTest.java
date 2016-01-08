@@ -34,7 +34,6 @@ import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jbpm.kie.services.impl.audit.ServicesAwareAuditEventBuilder;
-import org.jbpm.kie.services.test.TestIdentityProvider;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
 import org.jbpm.process.audit.AbstractAuditLogger;
 import org.jbpm.process.audit.AuditLoggerFactory;
@@ -42,6 +41,7 @@ import org.jbpm.runtime.manager.util.TestUtil;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.cdi.impl.manager.InjectableRegisterableItemsFactory;
+import org.jbpm.services.cdi.test.TestIdentifyProviderCDI;
 import org.jbpm.services.task.utils.ContentMarshallerHelper;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -57,12 +57,12 @@ import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.api.task.TaskService;
 import org.kie.api.task.model.Content;
 import org.kie.api.task.model.Task;
 import org.kie.api.task.model.TaskSummary;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.runtime.manager.context.EmptyContext;
 import org.kie.internal.task.api.InternalTaskService;
 import org.slf4j.Logger;
@@ -123,6 +123,10 @@ public class HumanResourcesHiringTest extends AbstractKieServicesBaseTest {
                 .addPackage("org.jbpm.kie.services.impl.audit")
                 .addPackage("org.jbpm.kie.services.impl.form")
                 .addPackage("org.jbpm.kie.services.impl.form.provider")
+                .addPackage("org.jbpm.kie.services.impl.query")  
+                .addPackage("org.jbpm.kie.services.impl.query.mapper")  
+                .addPackage("org.jbpm.kie.services.impl.query.persistence")  
+                .addPackage("org.jbpm.kie.services.impl.query.preprocessor")  
                 
                 .addPackage("org.jbpm.services.cdi")
                 .addPackage("org.jbpm.services.cdi.impl")
@@ -130,6 +134,7 @@ public class HumanResourcesHiringTest extends AbstractKieServicesBaseTest {
                 .addPackage("org.jbpm.services.cdi.impl.manager")
                 .addPackage("org.jbpm.services.cdi.producer")
                 .addPackage("org.jbpm.services.cdi.impl.security")
+                .addPackage("org.jbpm.services.cdi.impl.query")
                 
                 .addPackage("org.jbpm.kie.services.test")
                 .addPackage("org.jbpm.services.cdi.test") // Identity Provider Test Impl here
@@ -174,7 +179,7 @@ public class HumanResourcesHiringTest extends AbstractKieServicesBaseTest {
         String id = "custom-manager";
         AbstractAuditLogger auditLogger =AuditLoggerFactory.newJPAInstance();
         ServicesAwareAuditEventBuilder auditEventBuilder = new ServicesAwareAuditEventBuilder();
-        auditEventBuilder.setIdentityProvider(new TestIdentityProvider());
+        auditEventBuilder.setIdentityProvider(new TestIdentifyProviderCDI());
         auditEventBuilder.setDeploymentUnitId(id);
         auditLogger.setBuilder(auditEventBuilder);
         RuntimeEnvironmentBuilder builder = RuntimeEnvironmentBuilder.Factory.get().newDefaultBuilder()

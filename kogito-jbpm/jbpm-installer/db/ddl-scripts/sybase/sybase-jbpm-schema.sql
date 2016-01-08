@@ -280,6 +280,16 @@
     ) lock datarows
     go
 
+    create table QueryDefinitionStore (
+        id numeric(19,0) identity not null,
+        qExpression text null,
+        qName varchar(255) null,
+        qSource varchar(255) null,
+        qTarget varchar(255) null,
+        primary key (id)
+    ) lock datarows
+    go
+
     create table Reassignment (
         id numeric(19,0) identity not null,
         Escalation_Reassignments_Id numeric(19,0) null,
@@ -671,6 +681,10 @@
         add constraint FK482F79D5786553A5
         foreign key (task_id)
         references Task
+    go
+    
+    alter table QueryDefinitionStore 
+        add constraint UK_4ry5gt77jvq0orfttsoghta2j unique (qName)
     go
 
     alter table Reassignment

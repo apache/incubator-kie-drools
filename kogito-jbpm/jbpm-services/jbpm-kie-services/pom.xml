@@ -108,7 +108,21 @@
       <artifactId>jboss-el-api_2.2_spec</artifactId>
     </dependency>
 
-
+    <!-- dashbuilder dataset integration for advanced queries -->
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-dataset-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-dataset-core</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.dashbuilder</groupId>
+      <artifactId>dashbuilder-dataset-sql</artifactId>
+    </dependency> 
+    
     <dependency>
       <groupId>org.codehaus.btm</groupId>
       <artifactId>btm</artifactId>

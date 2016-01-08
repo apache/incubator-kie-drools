@@ -228,7 +228,7 @@ public class LifeCycleLocalWithRuleServiceTest extends HumanTaskServicesBaseTest
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("manager", "John");
         
-        ContentData data = ContentMarshallerHelper.marshal(params, null);
+        ContentData data = ContentMarshallerHelper.marshal(task, params, null);
         try {
             taskService.addTask(task, data);
             

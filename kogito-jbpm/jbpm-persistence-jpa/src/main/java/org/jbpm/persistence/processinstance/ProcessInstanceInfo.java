@@ -44,6 +44,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.PersisterHelper;
+import org.drools.core.marshalling.impl.ProcessMarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMarshaller;
 import org.drools.persistence.Transformable;
 import org.jbpm.marshalling.impl.JBPMMessages;
@@ -217,12 +218,16 @@ public class ProcessInstanceInfo implements Transformable {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         boolean variablesChanged = false;
         try {
-            MarshallerWriteContext context = new MarshallerWriteContext( baos,
+            ProcessMarshallerWriteContext context = new ProcessMarshallerWriteContext( baos,
                                                                          null,
                                                                          null,
                                                                          null,
                                                                          null,
                                                                          this.env );
+            context.setProcessInstanceId(processInstance.getId());
+            context.setState(processInstance.getState() == ProcessInstance.STATE_ACTIVE ? 
+                    ProcessMarshallerWriteContext.STATE_ACTIVE:ProcessMarshallerWriteContext.STATE_COMPLETED);
+            
             String processType = ((ProcessInstanceImpl) processInstance).getProcess().getType();
             saveProcessInstanceType( context,
                                      processInstance,

@@ -43,6 +43,8 @@ public class ExcludeNonCDIImplExtension implements Extension {
 		excluded.add("org.jbpm.services.task.events.DefaultTaskEventListener");
 		excluded.add("org.jbpm.kie.services.impl.store.DeploymentSynchronizer");
 		excluded.add("org.jbpm.kie.services.impl.security.DeploymentRolesManager");
+		excluded.add("org.jbpm.kie.services.impl.query.QueryServiceImpl");
+		excluded.add("org.jbpm.kie.services.test.TestIdentityProvider");
 	}
 
 

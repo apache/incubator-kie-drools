@@ -235,6 +235,7 @@
 
     create table ProcessInstanceLog (
         id bigint not null auto_increment,
+        correlationKey varchar(255),
         duration bigint,
         end_date datetime,
         externalId varchar(255),
@@ -243,12 +244,20 @@
         parentProcessInstanceId bigint,
         processId varchar(255),
         processInstanceDescription varchar(255),
-        correlationKey varchar(255),
         processInstanceId bigint not null,
         processName varchar(255),
         processVersion varchar(255),
         start_date datetime,
         status integer,
+        primary key (id)
+    );
+
+    create table QueryDefinitionStore (
+        id bigint not null auto_increment,
+        qExpression longtext,
+        qName varchar(255),
+        qSource varchar(255),
+        qTarget varchar(255),
         primary key (id)
     );
 
@@ -338,11 +347,11 @@
     create table TaskEvent (
         id bigint not null auto_increment,
         logTime datetime,
+        message varchar(255),
         processInstanceId bigint,
         taskId bigint,
         type varchar(255),
         userId varchar(255),
-        message varchar(255),
         OPTLOCK integer,
         workItemId bigint,
         primary key (id)
@@ -403,279 +412,282 @@
         primary key (id)
     );
 
+    alter table DeploymentStore 
+        add constraint UK_85rgskt09thd8mkkfl3tb0y81 unique (DEPLOYMENT_ID);
+
+    alter table Notification_email_header 
+        add constraint UK_ptaka5kost68h7l3wflv7w6y8 unique (emailHeaders_id);
+
+    alter table QueryDefinitionStore 
+        add constraint UK_4ry5gt77jvq0orfttsoghta2j unique (qName);
+
     alter table Attachment 
-        add index FK1C93543D937BFB5 (attachedBy_id), 
-        add constraint FK1C93543D937BFB5 
+        add index FK_7ndpfa311i50bq7hy18q05va3 (attachedBy_id), 
+        add constraint FK_7ndpfa311i50bq7hy18q05va3 
         foreign key (attachedBy_id) 
         references OrganizationalEntity (id);
 
     alter table Attachment 
-        add index FK1C9354333CA892A (TaskData_Attachments_Id), 
-        add constraint FK1C9354333CA892A 
+        add index FK_hqupx569krp0f0sgu9kh87513 (TaskData_Attachments_Id), 
+        add constraint FK_hqupx569krp0f0sgu9kh87513 
         foreign key (TaskData_Attachments_Id) 
         references Task (id);
 
     alter table BooleanExpression 
-        add index FKE3D208C06C97C90E (Escalation_Constraints_Id), 
-        add constraint FKE3D208C06C97C90E 
+        add index FK_394nf2qoc0k9ok6omgd6jtpso (Escalation_Constraints_Id), 
+        add constraint FK_394nf2qoc0k9ok6omgd6jtpso 
         foreign key (Escalation_Constraints_Id) 
         references Escalation (id);
 
     alter table CorrelationPropertyInfo 
-        add index FK761452A5D87156ED (correlationKey_keyId), 
-        add constraint FK761452A5D87156ED 
+        add index FK_hrmx1m882cejwj9c04ixh50i4 (correlationKey_keyId), 
+        add constraint FK_hrmx1m882cejwj9c04ixh50i4 
         foreign key (correlationKey_keyId) 
         references CorrelationKeyInfo (keyId);
 
     alter table Deadline 
-        add index FK21DF3E78A9FE0EF4 (Deadlines_StartDeadLine_Id), 
-        add constraint FK21DF3E78A9FE0EF4 
+        add index FK_68w742sge00vco2cq3jhbvmgx (Deadlines_StartDeadLine_Id), 
+        add constraint FK_68w742sge00vco2cq3jhbvmgx 
         foreign key (Deadlines_StartDeadLine_Id) 
         references Task (id);
 
     alter table Deadline 
-        add index FK21DF3E78695E4DDB (Deadlines_EndDeadLine_Id), 
-        add constraint FK21DF3E78695E4DDB 
+        add index FK_euoohoelbqvv94d8a8rcg8s5n (Deadlines_EndDeadLine_Id), 
+        add constraint FK_euoohoelbqvv94d8a8rcg8s5n 
         foreign key (Deadlines_EndDeadLine_Id) 
         references Task (id);
 
     alter table Delegation_delegates 
-        add index FK47485D5772B3A123 (entity_id), 
-        add constraint FK47485D5772B3A123 
+        add index FK_gn7ula51sk55wj1o1m57guqxb (entity_id), 
+        add constraint FK_gn7ula51sk55wj1o1m57guqxb 
         foreign key (entity_id) 
         references OrganizationalEntity (id);
 
     alter table Delegation_delegates 
-        add index FK47485D57786553A5 (task_id), 
-        add constraint FK47485D57786553A5 
+        add index FK_fajq6kossbsqwr3opkrctxei3 (task_id), 
+        add constraint FK_fajq6kossbsqwr3opkrctxei3 
         foreign key (task_id) 
         references Task (id);
 
-    alter table DeploymentStore 
-        add constraint UK_DeploymentStore_1 unique (DEPLOYMENT_ID);
-
     alter table ErrorInfo 
-        add index FK8B1186B6724A467 (REQUEST_ID), 
-        add constraint FK8B1186B6724A467 
+        add index FK_cms0met37ggfw5p5gci3otaq0 (REQUEST_ID), 
+        add constraint FK_cms0met37ggfw5p5gci3otaq0 
         foreign key (REQUEST_ID) 
         references RequestInfo (id);
 
     alter table Escalation 
-        add index FK67B2C6B5D1E5CC1 (Deadline_Escalation_Id), 
-        add constraint FK67B2C6B5D1E5CC1 
+        add index FK_ay2gd4fvl9yaapviyxudwuvfg (Deadline_Escalation_Id), 
+        add constraint FK_ay2gd4fvl9yaapviyxudwuvfg 
         foreign key (Deadline_Escalation_Id) 
         references Deadline (id);
 
     alter table EventTypes 
-        add index FKB0E5621F7665489A (InstanceId), 
-        add constraint FKB0E5621F7665489A 
+        add index FK_nrecj4617iwxlc65ij6m7lsl1 (InstanceId), 
+        add constraint FK_nrecj4617iwxlc65ij6m7lsl1 
         foreign key (InstanceId) 
         references ProcessInstanceInfo (InstanceId);
 
     alter table I18NText 
-        add index FK2349686BF4ACCD69 (Task_Subjects_Id), 
-        add constraint FK2349686BF4ACCD69 
+        add index FK_k16jpgrh67ti9uedf6konsu1p (Task_Subjects_Id), 
+        add constraint FK_k16jpgrh67ti9uedf6konsu1p 
         foreign key (Task_Subjects_Id) 
         references Task (id);
 
     alter table I18NText 
-        add index FK2349686B424B187C (Task_Names_Id), 
-        add constraint FK2349686B424B187C 
+        add index FK_fd9uk6hemv2dx1ojovo7ms3vp (Task_Names_Id), 
+        add constraint FK_fd9uk6hemv2dx1ojovo7ms3vp 
         foreign key (Task_Names_Id) 
         references Task (id);
 
     alter table I18NText 
-        add index FK2349686BAB648139 (Task_Descriptions_Id), 
-        add constraint FK2349686BAB648139 
+        add index FK_4eyfp69ucrron2hr7qx4np2fp (Task_Descriptions_Id), 
+        add constraint FK_4eyfp69ucrron2hr7qx4np2fp 
         foreign key (Task_Descriptions_Id) 
         references Task (id);
 
     alter table I18NText 
-        add index FK2349686BB340A2AA (Reassignment_Documentation_Id), 
-        add constraint FK2349686BB340A2AA 
+        add index FK_pqarjvvnwfjpeyb87yd7m0bfi (Reassignment_Documentation_Id), 
+        add constraint FK_pqarjvvnwfjpeyb87yd7m0bfi 
         foreign key (Reassignment_Documentation_Id) 
         references Reassignment (id);
 
     alter table I18NText 
-        add index FK2349686BF0CDED35 (Notification_Subjects_Id), 
-        add constraint FK2349686BF0CDED35 
+        add index FK_o84rkh69r47ti8uv4eyj7bmo2 (Notification_Subjects_Id), 
+        add constraint FK_o84rkh69r47ti8uv4eyj7bmo2 
         foreign key (Notification_Subjects_Id) 
         references Notification (id);
 
     alter table I18NText 
-        add index FK2349686BCC03ED3C (Notification_Names_Id), 
-        add constraint FK2349686BCC03ED3C 
+        add index FK_g1trxri8w64enudw2t1qahhk5 (Notification_Names_Id), 
+        add constraint FK_g1trxri8w64enudw2t1qahhk5 
         foreign key (Notification_Names_Id) 
         references Notification (id);
 
     alter table I18NText 
-        add index FK2349686B77C1C08A (Notification_Documentation_Id), 
-        add constraint FK2349686B77C1C08A 
+        add index FK_qoce92c70adem3ccb3i7lec8x (Notification_Documentation_Id), 
+        add constraint FK_qoce92c70adem3ccb3i7lec8x 
         foreign key (Notification_Documentation_Id) 
         references Notification (id);
 
     alter table I18NText 
-        add index FK2349686B18DDFE05 (Notification_Descriptions_Id), 
-        add constraint FK2349686B18DDFE05 
+        add index FK_bw8vmpekejxt1ei2ge26gdsry (Notification_Descriptions_Id), 
+        add constraint FK_bw8vmpekejxt1ei2ge26gdsry 
         foreign key (Notification_Descriptions_Id) 
         references Notification (id);
 
     alter table I18NText 
-        add index FK2349686B78AF072A (Deadline_Documentation_Id), 
-        add constraint FK2349686B78AF072A 
+        add index FK_21qvifarxsvuxeaw5sxwh473w (Deadline_Documentation_Id), 
+        add constraint FK_21qvifarxsvuxeaw5sxwh473w 
         foreign key (Deadline_Documentation_Id) 
         references Deadline (id);
 
     alter table Notification 
-        add index FK2D45DD0BC0C0F29C (Escalation_Notifications_Id), 
-        add constraint FK2D45DD0BC0C0F29C 
+        add index FK_bdbeml3768go5im41cgfpyso9 (Escalation_Notifications_Id), 
+        add constraint FK_bdbeml3768go5im41cgfpyso9 
         foreign key (Escalation_Notifications_Id) 
         references Escalation (id);
 
     alter table Notification_BAs 
-        add index FK2DD68EE072B3A123 (entity_id), 
-        add constraint FK2DD68EE072B3A123 
+        add index FK_mfbsnbrhth4rjhqc2ud338s4i (entity_id), 
+        add constraint FK_mfbsnbrhth4rjhqc2ud338s4i 
         foreign key (entity_id) 
         references OrganizationalEntity (id);
 
     alter table Notification_BAs 
-        add index FK2DD68EE093F2090B (task_id), 
-        add constraint FK2DD68EE093F2090B 
+        add index FK_fc0uuy76t2bvxaxqysoo8xts7 (task_id), 
+        add constraint FK_fc0uuy76t2bvxaxqysoo8xts7 
         foreign key (task_id) 
         references Notification (id);
 
     alter table Notification_Recipients 
-        add index FK98FD214E72B3A123 (entity_id), 
-        add constraint FK98FD214E72B3A123 
+        add index FK_blf9jsrumtrthdaqnpwxt25eu (entity_id), 
+        add constraint FK_blf9jsrumtrthdaqnpwxt25eu 
         foreign key (entity_id) 
         references OrganizationalEntity (id);
 
     alter table Notification_Recipients 
-        add index FK98FD214E93F2090B (task_id), 
-        add constraint FK98FD214E93F2090B 
+        add index FK_3l244pj8sh78vtn9imaymrg47 (task_id), 
+        add constraint FK_3l244pj8sh78vtn9imaymrg47 
         foreign key (task_id) 
         references Notification (id);
 
     alter table Notification_email_header 
-        add constraint UK_F30FE3446CEA0510 unique (emailHeaders_id);
-
-    alter table Notification_email_header 
-        add index FKF30FE3448BED1339 (emailHeaders_id), 
-        add constraint FKF30FE3448BED1339 
+        add index FK_ptaka5kost68h7l3wflv7w6y8 (emailHeaders_id), 
+        add constraint FK_ptaka5kost68h7l3wflv7w6y8 
         foreign key (emailHeaders_id) 
         references email_header (id);
 
     alter table Notification_email_header 
-        add index FKF30FE3443E3E97EB (Notification_id), 
-        add constraint FKF30FE3443E3E97EB 
+        add index FK_eth4nvxn21fk1vnju85vkjrai (Notification_id), 
+        add constraint FK_eth4nvxn21fk1vnju85vkjrai 
         foreign key (Notification_id) 
         references Notification (id);
 
     alter table PeopleAssignments_BAs 
-        add index FK9D8CF4EC72B3A123 (entity_id), 
-        add constraint FK9D8CF4EC72B3A123 
+        add index FK_t38xbkrq6cppifnxequhvjsl2 (entity_id), 
+        add constraint FK_t38xbkrq6cppifnxequhvjsl2 
         foreign key (entity_id) 
         references OrganizationalEntity (id);
 
     alter table PeopleAssignments_BAs 
-        add index FK9D8CF4EC786553A5 (task_id), 
-        add constraint FK9D8CF4EC786553A5 
+        add index FK_omjg5qh7uv8e9bolbaq7hv6oh (task_id), 
+        add constraint FK_omjg5qh7uv8e9bolbaq7hv6oh 
         foreign key (task_id) 
         references Task (id);
 
     alter table PeopleAssignments_ExclOwners 
-        add index FKC77B97E472B3A123 (entity_id), 
-        add constraint FKC77B97E472B3A123 
+        add index FK_pth28a73rj6bxtlfc69kmqo0a (entity_id), 
+        add constraint FK_pth28a73rj6bxtlfc69kmqo0a 
         foreign key (entity_id) 
         references OrganizationalEntity (id);
 
     alter table PeopleAssignments_ExclOwners 
-        add index FKC77B97E4786553A5 (task_id), 
-        add constraint FKC77B97E4786553A5 
+        add index FK_b8owuxfrdng050ugpk0pdowa7 (task_id), 
+        add constraint FK_b8owuxfrdng050ugpk0pdowa7 
         foreign key (task_id) 
         references Task (id);
 
     alter table PeopleAssignments_PotOwners 
-        add index FK1EE418D72B3A123 (entity_id), 
-        add constraint FK1EE418D72B3A123 
+        add index FK_tee3ftir7xs6eo3fdvi3xw026 (entity_id), 
+        add constraint FK_tee3ftir7xs6eo3fdvi3xw026 
         foreign key (entity_id) 
         references OrganizationalEntity (id);
 
     alter table PeopleAssignments_PotOwners 
-        add index FK1EE418D786553A5 (task_id), 
-        add constraint FK1EE418D786553A5 
+        add index FK_4dv2oji7pr35ru0w45trix02x (task_id), 
+        add constraint FK_4dv2oji7pr35ru0w45trix02x 
         foreign key (task_id) 
         references Task (id);
 
     alter table PeopleAssignments_Recipients 
-        add index FKC6F615C272B3A123 (entity_id), 
-        add constraint FKC6F615C272B3A123 
+        add index FK_4g7y3wx6gnokf6vycgpxs83d6 (entity_id), 
+        add constraint FK_4g7y3wx6gnokf6vycgpxs83d6 
         foreign key (entity_id) 
         references OrganizationalEntity (id);
 
     alter table PeopleAssignments_Recipients 
-        add index FKC6F615C2786553A5 (task_id), 
-        add constraint FKC6F615C2786553A5 
+        add index FK_enhk831fghf6akjilfn58okl4 (task_id), 
+        add constraint FK_enhk831fghf6akjilfn58okl4 
         foreign key (task_id) 
         references Task (id);
 
     alter table PeopleAssignments_Stakeholders 
-        add index FK482F79D572B3A123 (entity_id), 
-        add constraint FK482F79D572B3A123 
+        add index FK_met63inaep6cq4ofb3nnxi4tm (entity_id), 
+        add constraint FK_met63inaep6cq4ofb3nnxi4tm 
         foreign key (entity_id) 
         references OrganizationalEntity (id);
 
     alter table PeopleAssignments_Stakeholders 
-        add index FK482F79D5786553A5 (task_id), 
-        add constraint FK482F79D5786553A5 
+        add index FK_4bh3ay74x6ql9usunubttfdf1 (task_id), 
+        add constraint FK_4bh3ay74x6ql9usunubttfdf1 
         foreign key (task_id) 
         references Task (id);
 
     alter table Reassignment 
-        add index FK724D056062A1E871 (Escalation_Reassignments_Id), 
-        add constraint FK724D056062A1E871 
+        add index FK_pnpeue9hs6kx2ep0sp16b6kfd (Escalation_Reassignments_Id), 
+        add constraint FK_pnpeue9hs6kx2ep0sp16b6kfd 
         foreign key (Escalation_Reassignments_Id) 
         references Escalation (id);
 
     alter table Reassignment_potentialOwners 
-        add index FK90B59CFF72B3A123 (entity_id), 
-        add constraint FK90B59CFF72B3A123 
+        add index FK_8frl6la7tgparlnukhp8xmody (entity_id), 
+        add constraint FK_8frl6la7tgparlnukhp8xmody 
         foreign key (entity_id) 
         references OrganizationalEntity (id);
 
     alter table Reassignment_potentialOwners 
-        add index FK90B59CFF35D2FEE0 (task_id), 
-        add constraint FK90B59CFF35D2FEE0 
+        add index FK_qbega5ncu6b9yigwlw55aeijn (task_id), 
+        add constraint FK_qbega5ncu6b9yigwlw55aeijn 
         foreign key (task_id) 
         references Reassignment (id);
 
     alter table Task 
-        add index FK27A9A53C55C806 (taskInitiator_id), 
-        add constraint FK27A9A53C55C806 
+        add index FK_dpk0f9ucm14c78bsxthh7h8yh (taskInitiator_id), 
+        add constraint FK_dpk0f9ucm14c78bsxthh7h8yh 
         foreign key (taskInitiator_id) 
         references OrganizationalEntity (id);
 
     alter table Task 
-        add index FK27A9A5B723BE8B (actualOwner_id), 
-        add constraint FK27A9A5B723BE8B 
+        add index FK_nh9nnt47f3l61qjlyedqt05rf (actualOwner_id), 
+        add constraint FK_nh9nnt47f3l61qjlyedqt05rf 
         foreign key (actualOwner_id) 
         references OrganizationalEntity (id);
 
     alter table Task 
-        add index FK27A9A55427E8F1 (createdBy_id), 
-        add constraint FK27A9A55427E8F1 
+        add index FK_k02og0u71obf1uxgcdjx9rcjc (createdBy_id), 
+        add constraint FK_k02og0u71obf1uxgcdjx9rcjc 
         foreign key (createdBy_id) 
         references OrganizationalEntity (id);
 
     alter table task_comment 
-        add index FK61F475A57A3215D9 (addedBy_id), 
-        add constraint FK61F475A57A3215D9 
+        add index FK_aax378yjnsmw9kb9vsu994jjv (addedBy_id), 
+        add constraint FK_aax378yjnsmw9kb9vsu994jjv 
         foreign key (addedBy_id) 
         references OrganizationalEntity (id);
 
     alter table task_comment 
-        add index FK61F475A5F510CB46 (TaskData_Comments_Id), 
-        add constraint FK61F475A5F510CB46 
+        add index FK_1ws9jdmhtey6mxu7jb0r0ufvs (TaskData_Comments_Id), 
+        add constraint FK_1ws9jdmhtey6mxu7jb0r0ufvs 
         foreign key (TaskData_Comments_Id) 
         references Task (id);
 

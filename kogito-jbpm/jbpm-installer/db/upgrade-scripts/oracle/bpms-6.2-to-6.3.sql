@@ -11,3 +11,16 @@ create table TaskVariableImpl (
 );
 create sequence TASK_VAR_ID_SEQ;
 
+create table QueryDefinitionStore (
+    id number(19,0) not null,
+    qExpression clob,
+    qName varchar2(255 char),
+    qSource varchar2(255 char),
+    qTarget varchar2(255 char),
+    primary key (id)
+);
+
+alter table QueryDefinitionStore 
+        add constraint UK_4ry5gt77jvq0orfttsoghta2j unique (qName);
+        
+create sequence QUERY_DEF_ID_SEQ;        

@@ -53,6 +53,12 @@
       <artifactId>jbpm-runtime-manager</artifactId>
       <optional>true</optional>
     </dependency>
+    
+        <dependency>
+      <groupId>org.jbpm</groupId>
+      <artifactId>jbpm-services-api</artifactId>
+      <optional>true</optional>
+    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>

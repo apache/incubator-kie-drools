@@ -27,6 +27,7 @@ import java.util.concurrent.CyclicBarrier;
 
 import javax.persistence.EntityManagerFactory;
 
+import org.dashbuilder.DataSetCore;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.jbpm.kie.services.impl.FormManagerServiceImpl;
 import org.jbpm.kie.services.impl.KModuleDeploymentService;
@@ -34,6 +35,7 @@ import org.jbpm.kie.services.impl.ProcessServiceImpl;
 import org.jbpm.kie.services.impl.RuntimeDataServiceImpl;
 import org.jbpm.kie.services.impl.UserTaskServiceImpl;
 import org.jbpm.kie.services.impl.bpmn2.BPMN2DataServiceImpl;
+import org.jbpm.kie.services.impl.query.QueryServiceImpl;
 import org.jbpm.kie.services.test.TestIdentityProvider;
 import org.jbpm.process.instance.impl.util.LoggingPrintStream;
 import org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl;
@@ -43,6 +45,7 @@ import org.jbpm.services.api.DeploymentService;
 import org.jbpm.services.api.ProcessService;
 import org.jbpm.services.api.RuntimeDataService;
 import org.jbpm.services.api.UserTaskService;
+import org.jbpm.services.api.query.QueryService;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.services.task.audit.TaskAuditServiceFactory;
 import org.jbpm.shared.services.impl.TransactionalCommandService;
@@ -74,7 +77,7 @@ public abstract class AbstractKieServicesBaseTest {
 	protected static final String GROUP_ID = "org.jbpm.test";
 	protected static final String VERSION = "1.0.0-SNAPSHOT";
 
-	private PoolingDataSource ds;
+	protected PoolingDataSource ds;
 
 	protected EntityManagerFactory emf;
 	protected DeploymentService deploymentService;
@@ -82,6 +85,7 @@ public abstract class AbstractKieServicesBaseTest {
 	protected RuntimeDataService runtimeDataService;
 	protected ProcessService processService;
 	protected UserTaskService userTaskService;
+	protected QueryService queryService;
 
 	protected TestIdentityProvider identityProvider;
 
@@ -98,6 +102,7 @@ public abstract class AbstractKieServicesBaseTest {
     }
 
     protected void close() {
+        DataSetCore.set(null);
     	if (emf != null) {
     		emf.close();
     	}
@@ -113,7 +118,10 @@ public abstract class AbstractKieServicesBaseTest {
 		// build definition service
 		bpmn2Service = new BPMN2DataServiceImpl();
 
-
+		queryService = new QueryServiceImpl();
+		((QueryServiceImpl)queryService).setIdentityProvider(identityProvider);
+		((QueryServiceImpl)queryService).setCommandService(new TransactionalCommandService(emf));
+		((QueryServiceImpl)queryService).init();
 
 		// build deployment service
 		deploymentService = new KModuleDeploymentService();
@@ -249,7 +257,7 @@ public abstract class AbstractKieServicesBaseTest {
         ds.getDriverProperties().put("user", "sa");
         ds.getDriverProperties().put("password", "sasa");
         ds.getDriverProperties().put("URL", "jdbc:h2:mem:mydb");
-
+        
         ds.init();
     }
 
@@ -297,7 +305,14 @@ public abstract class AbstractKieServicesBaseTest {
 	public void setUserTaskService(UserTaskService userTaskService) {
 		this.userTaskService = userTaskService;
 	}
-
+    
+    public void setQueryService(QueryService queryService) {
+        this.queryService = queryService;
+    }
+    
+    public void setIdentityProvider(TestIdentityProvider identityProvider) {
+        this.identityProvider = identityProvider;
+    }
 
     protected static void waitForTheOtherThreads(CyclicBarrier barrier) {
         try {

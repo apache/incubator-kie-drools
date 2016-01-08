@@ -346,7 +346,7 @@ public abstract class AbstractTaskSerializationTest {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("life", new Integer(23));
         map.put("sick", new Integer(45));
-        byte [] bytes = ContentMarshallerHelper.marshallContent(map, null);
+        byte [] bytes = ContentMarshallerHelper.marshallContent(null, map, null);
         content.setContent(bytes);
 
         JaxbContent jaxbContent = new JaxbContent(content);

@@ -320,7 +320,7 @@ public class MVELLifeCycleManager implements LifeCycleManager {
                 case Fail: {
                     if (data != null) {
 
-                        FaultData faultData = ContentMarshallerHelper.marshalFault(data, null);
+                        FaultData faultData = ContentMarshallerHelper.marshalFault(task, data, null);
                         Content content = TaskModelProvider.getFactory().newContent();
                         ((InternalContent)content).setContent(faultData.getContent());
                         persistenceContext.persistContent(content);

@@ -44,6 +44,8 @@ import org.kie.internal.task.api.TaskPersistenceContext;
 import org.kie.internal.task.api.model.Deadline;
 import org.kie.internal.task.api.model.Deadlines;
 import org.kie.internal.task.api.model.Escalation;
+import org.kie.internal.task.api.model.InternalAttachment;
+import org.kie.internal.task.api.model.InternalComment;
 import org.kie.internal.task.api.model.InternalOrganizationalEntity;
 import org.kie.internal.task.api.model.InternalPeopleAssignments;
 import org.kie.internal.task.api.model.InternalTaskData;
@@ -99,6 +101,16 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
         return false;
 
     }
+    
+    protected User doCallbackAndReturnUserOperation(String userId, TaskContext context) {
+
+        if (userId != null && context.getUserGroupCallback().existsUser(userId)) {
+            return addUserFromCallbackOperation(userId, context);
+            
+        }
+        return null;
+
+    }
 
     protected boolean doCallbackGroupOperation(String groupId, TaskContext context) {
 
@@ -110,7 +122,7 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
 
     }
 
-    protected void addUserFromCallbackOperation(String userId, TaskContext context) {
+    protected User addUserFromCallbackOperation(String userId, TaskContext context) {
     	User user = context.getPersistenceContext().findUser(userId);
         boolean userExists = user != null;
         if (!StringUtils.isEmpty(userId) && !userExists) {
@@ -119,6 +131,8 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
             
             persistIfNotExists(user, context);
         } 
+        
+        return user;
     }
     
     protected void persistIfNotExists(final OrganizationalEntity entity, TaskContext context) {
@@ -466,7 +480,10 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
      protected void doCallbackOperationForComment(Comment comment, TaskContext context) {
          if (comment != null) {
              if (comment.getAddedBy() != null) {
-                 doCallbackUserOperation(comment.getAddedBy().getId(), context);
+                 User  entity = doCallbackAndReturnUserOperation(comment.getAddedBy().getId(), context);
+                 if (entity != null) {
+                     ((InternalComment)comment).setAddedBy(entity);
+                 }
              }
          }
      }
@@ -474,10 +491,14 @@ public class UserGroupCallbackTaskCommand<T> extends TaskCommand<T> {
      protected void doCallbackOperationForAttachment(Attachment attachment, TaskContext context) {
          if (attachment != null) {
              if (attachment.getAttachedBy() != null) {
-                 doCallbackUserOperation(attachment.getAttachedBy().getId(), context);
+                 User  entity = doCallbackAndReturnUserOperation(attachment.getAttachedBy().getId(), context);
+                 if (entity != null) {
+                     ((InternalAttachment)attachment).setAttachedBy(entity);
+                 }
              }
          }
      }
+    
      
      protected List<String> filterGroups(List<String> groups) {
          if (groups != null) {

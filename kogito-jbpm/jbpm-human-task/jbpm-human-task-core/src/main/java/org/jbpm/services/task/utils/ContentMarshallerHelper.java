@@ -23,9 +23,9 @@ import java.util.Map;
 
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.marshalling.impl.MarshallerWriteContext;
 import org.drools.core.marshalling.impl.MarshallingConfigurationImpl;
 import org.drools.core.marshalling.impl.PersisterHelper;
+import org.drools.core.marshalling.impl.ProcessMarshallerWriteContext;
 import org.drools.core.marshalling.impl.ProtobufMessages.Header;
 import org.drools.core.marshalling.impl.SerializablePlaceholderResolverStrategy;
 import org.jbpm.marshalling.impl.JBPMMessages;
@@ -36,6 +36,8 @@ import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
+import org.kie.api.task.model.Status;
+import org.kie.api.task.model.Task;
 import org.kie.internal.task.api.TaskModelProvider;
 import org.kie.internal.task.api.model.AccessType;
 import org.kie.internal.task.api.model.ContentData;
@@ -52,11 +54,15 @@ public class ContentMarshallerHelper {
     private static final String SINGLE_VAR_KEY = "_results_";
 
     public static ContentData marshal(Object o, Environment env) {
+        return marshal(null, o, env);
+    }
+    
+    public static ContentData marshal(Task task, Object o, Environment env) {
         if (o == null) {
             return null;
         }
         ContentData content = null;
-        byte[] toByteArray = marshallContent(o, env);
+        byte[] toByteArray = marshallContent(task, o, env);
         content = TaskModelProvider.getFactory().newContentData();
         content.setContent(toByteArray);
         content.setType(o.getClass().getCanonicalName());
@@ -65,10 +71,14 @@ public class ContentMarshallerHelper {
         return content;
     }
     
-     public static FaultData marshalFault(Map<String, Object> fault, Environment env) {
+    public static FaultData marshalFault(Map<String, Object> fault, Environment env) {
+        return marshalFault(null, fault, env);
+    }
+    
+    public static FaultData marshalFault(Task task, Map<String, Object> fault, Environment env) {
         
         FaultData content = null;
-        byte[] toByteArray = marshallContent(fault, env);
+        byte[] toByteArray = marshallContent(task, fault, env);
         content = TaskModelProvider.getFactory().newFaultData();
         content.setContent(toByteArray);
         content.setType(fault.getClass().getCanonicalName());
@@ -123,9 +133,13 @@ public class ContentMarshallerHelper {
         return null;
     }
 
+    public static byte[] marshallContent(Object o, Environment env) {
+        return marshallContent(null, o, env);
+    }
+    
     @SuppressWarnings("unchecked")
-	public static byte[] marshallContent(Object o, Environment env) {
-        MarshallerWriteContext context;
+	public static byte[] marshallContent(Task task, Object o, Environment env) {
+        ProcessMarshallerWriteContext context;
         try {
             MarshallingConfigurationImpl marshallingConfigurationImpl = null;
             if (env != null) {
@@ -136,7 +150,22 @@ public class ContentMarshallerHelper {
             ObjectMarshallingStrategyStore objectMarshallingStrategyStore = marshallingConfigurationImpl.getObjectMarshallingStrategyStore();
             ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-            context = new MarshallerWriteContext(stream, null, null, null, objectMarshallingStrategyStore, env);
+            context = new ProcessMarshallerWriteContext(stream, null, null, null, objectMarshallingStrategyStore, env);
+            if (task != null) {
+                context.setTaskId(task.getId());
+                context.setProcessInstanceId(task.getTaskData().getProcessInstanceId());
+                context.setWorkItemId(task.getTaskData().getWorkItemId());
+                // determine state of the task
+                int taskState = ProcessMarshallerWriteContext.STATE_ACTIVE;
+                if (task.getTaskData().getStatus() == Status.Completed || 
+                        task.getTaskData().getStatus() == Status.Error ||
+                        task.getTaskData().getStatus() == Status.Exited ||
+                        task.getTaskData().getStatus() == Status.Failed ||
+                        task.getTaskData().getStatus() == Status.Obsolete) {
+                    taskState = ProcessMarshallerWriteContext.STATE_COMPLETED;
+                }
+                context.setState(taskState);
+            }
             Map<String, Object> input = null;
             if (o instanceof Map) {
             	input = (Map<String, Object>) o;
