@@ -237,8 +237,10 @@ public class DeploymentServiceTest extends AbstractKieServicesBaseTest {
         assertNotNull(deploymentService);
 
         DeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        assertFalse(deploymentService.isDeployed(deploymentUnit.getIdentifier()));
         deploymentService.deploy(deploymentUnit);
         units.add(deploymentUnit);
+        assertTrue(deploymentService.isDeployed(deploymentUnit.getIdentifier()));
         DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
         assertNotNull(deployedGeneral);
         assertNotNull(deployedGeneral.getDeploymentUnit());
