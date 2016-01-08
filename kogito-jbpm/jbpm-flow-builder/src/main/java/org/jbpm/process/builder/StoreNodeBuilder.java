@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -36,9 +36,10 @@ public class StoreNodeBuilder
         ActionNode actionNode = ( ActionNode ) node;
         DroolsConsequenceAction action = (DroolsConsequenceAction) actionNode.getAction();
         ActionDescr actionDescr = new ActionDescr();
-        actionDescr.setText( action.getConsequence() );   
-        
-        ProcessDialect dialect = ProcessDialectRegistry.getDialect( action.getDialect() );            
+        actionDescr.setText( action.getConsequence() );
+        actionDescr.setResource(processDescr.getResource());
+
+        ProcessDialect dialect = ProcessDialectRegistry.getDialect( action.getDialect() );
         dialect.getActionBuilder().build( context, action, actionDescr, (NodeImpl) node );
     }
 

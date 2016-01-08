@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -41,7 +41,7 @@ public class SplitNodeBuilder implements ProcessNodeBuilder {
                       ProcessBuildContext context,
                       Node node) {
         Split splitNode = ( Split ) node;
-        
+
         if ( splitNode.getType() != Split.TYPE_XOR && splitNode.getType() != Split.TYPE_OR ) {
             // we only process or/xor
             return;
@@ -52,7 +52,7 @@ public class SplitNodeBuilder implements ProcessNodeBuilder {
             Map.Entry<ConnectionRef, Constraint> entry = it.next();
             ConnectionRef connection = entry.getKey();
             ConstraintImpl constraint = (ConstraintImpl) entry.getValue();
-            Connection outgoingConnection = null; 
+            Connection outgoingConnection = null;
             for (Connection out: splitNode.getDefaultOutgoingConnections()) {
                 if (out.getToType().equals(connection.getToType())
                     && out.getTo().getId() == connection.getNodeId()) {
@@ -81,12 +81,13 @@ public class SplitNodeBuilder implements ProcessNodeBuilder {
                 returnValueConstraint.setDefault( constraint.isDefault() );
                 returnValueConstraint.setType(constraint.getType());
                 returnValueConstraint.setConstraint(constraint.getConstraint());
-                splitNode.setConstraint( outgoingConnection, returnValueConstraint );            
-                
+                splitNode.setConstraint( outgoingConnection, returnValueConstraint );
+
                 ReturnValueDescr returnValueDescr = new ReturnValueDescr();
                 returnValueDescr.setText( constraint.getConstraint() );
-                
-                ProcessDialect dialect = ProcessDialectRegistry.getDialect( constraint.getDialect() );            
+                returnValueDescr.setResource(processDescr.getResource());
+
+                ProcessDialect dialect = ProcessDialectRegistry.getDialect( constraint.getDialect() );
             	dialect.getReturnValueEvaluatorBuilder().build( context, returnValueConstraint, returnValueDescr, (NodeImpl) node );
             }
         }
