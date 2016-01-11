@@ -10,6 +10,21 @@
         "code" : "java.method.addedToInterface",
         "new" : "method org.kie.api.runtime.KieSessionConfiguration org.kie.api.runtime.KieContainer::getKieSessionConfiguration(java.lang.String)",
         "justification" : "Enables retrieving the named session configuration directly from KieContainer."
+      },
+      {
+        "code" : "java.method.addedToInterface",
+        "new" : "method org.kie.api.builder.model.KieBaseModel org.kie.api.builder.model.KieSessionModel::getKieBaseModel()",
+        "justification" : "Enables retrieving the KieBaseModel from a KieSessionModel."
+      },
+      {
+        "code" : "java.method.addedToInterface",
+        "new" : "method org.kie.api.builder.model.KieBaseModel org.kie.api.runtime.KieContainer::getKieBaseModel(java.lang.String)",
+        "justification" : "Enables retrieving the named KieBaseModel directly from KieContainer."
+      },
+      {
+        "code" : "java.method.addedToInterface",
+        "new" : "method org.kie.api.builder.model.KieSessionModel org.kie.api.runtime.KieContainer::getKieSessionModel(java.lang.String)",
+        "justification" : "Enables retrieving the named KieSessionModel directly from KieContainer."
       }
     ]
   }
