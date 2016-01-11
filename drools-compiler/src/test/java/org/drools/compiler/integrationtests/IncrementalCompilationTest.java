@@ -997,7 +997,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
                 "  <name>test</name>\n" +
                 "</project>";
 
-        String kmodule = "<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
+        String kmodule = "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n" +
                 "<kbase name=\"kbase\" includes=\"nonExistent\"/>\n" +
                 "</kmodule>";
 

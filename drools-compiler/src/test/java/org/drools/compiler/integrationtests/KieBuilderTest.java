@@ -64,7 +64,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
                 "end\n";
 
         String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
-                "         xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n" +
+                "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
                 "  <kbase name=\"kbase1\" default=\"true\" eventProcessingMode=\"stream\" equalsBehavior=\"identity\" scope=\"javax.enterprise.context.ApplicationScoped\">\n" +
                 "    <ksession name=\"ksession1\" type=\"stateful\" default=\"true\" clockType=\"realtime\" scope=\"javax.enterprise.context.ApplicationScoped\"/>\n" +
                 "  </kbase>\n" +
