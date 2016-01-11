@@ -74,13 +74,13 @@
         <ksession name="DecisionTableKS" type="stateless"/>
     </kbase>
 
-    <kbase name="DTableWithTemplateKB" packages="org.drools.examples.decisiontable">
-        <ruleTemplate dtable="org/drools/examples/decisiontable/ExamplePolicyPricing.xls"
-                      template="org/drools/examples/decisiontable/BasePricing.drt"
-                      row="10" col="3"/>
-        <ruleTemplate dtable="org/drools/examples/decisiontable/ExamplePolicyPricing.xls"
-                      template="org/drools/examples/decisiontable/PromotionalPricing.drt"
-                      row="30" col="3"/>
+    <kbase name="DTableWithTemplateKB" packages="org.drools.examples.decisiontable-template">
+        <ruleTemplate dtable="org/drools/examples/decisiontable-template/ExamplePolicyPricingTemplateData.xls"
+                      template="org/drools/examples/decisiontable-template/BasePricing.drt"
+                      row="3" col="3"/>
+        <ruleTemplate dtable="org/drools/examples/decisiontable-template/ExamplePolicyPricingTemplateData.xls"
+                      template="org/drools/examples/decisiontable-template/PromotionalPricing.drt"
+                      row="18" col="3"/>
         <ksession name="DTableWithTemplateKS"/>
     </kbase>
 

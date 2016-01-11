@@ -1,0 +1,23 @@
+template header
+age[]
+priorClaims
+policyType
+discount
+
+package org.drools.examples.decisiontable;
+
+template "discounts"
+age
+priorClaims
+policyType
+discount
+
+rule "Discounts_@{row.rowNumber}"
+
+    when
+        Driver(age >= @{age0}, age <= @{age1}, priorClaims == "@{priorClaims}")
+        policy: Policy(type == "@{policyType}")
+    then
+        policy.applyDiscount(@{discount});
+end
+end template
