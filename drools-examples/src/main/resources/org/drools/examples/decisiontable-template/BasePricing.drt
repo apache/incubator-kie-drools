@@ -1,0 +1,28 @@
+template header
+age[]
+profile
+priorClaims
+policyType
+base
+reason
+
+package org.drools.examples.decisiontable;
+
+template "Pricing bracket"
+age
+policyType
+base
+
+rule "Pricing bracket_@{row.rowNumber}"
+
+    when
+        Driver(age >= @{age0}, age <= @{age1}
+            , priorClaims == "@{priorClaims}"
+            , locationRiskProfile == "@{profile}"
+        )
+        policy: Policy(type == "@{policyType}")
+    then
+        policy.setBasePrice(@{base});
+        System.out.println("@{reason}");
+end
+end template
