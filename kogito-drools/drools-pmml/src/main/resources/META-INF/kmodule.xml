@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://jboss.org/kie/6.0.0/kmodule">
+         xmlns="http://www.drools.org/xsd/kmodule">
 
   <kbase name="PMML-Bayes-Rules" packages="org.drools.pmml.pmml_4_2.compiler.declares,org.drools.pmml.pmml_4_2.compiler.bayes" eventProcessingMode="stream" />
   <kbase name="PMML-Cluster-Rules" packages="org.drools.pmml.pmml_4_2.compiler.declares,org.drools.pmml.pmml_4_2.compiler.clustering" eventProcessingMode="stream" />
