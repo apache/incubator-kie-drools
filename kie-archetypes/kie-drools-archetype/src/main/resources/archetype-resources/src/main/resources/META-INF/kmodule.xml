@@ -2,6 +2,6 @@
 #set( $symbol_dollar = '$' )
 #set( $symbol_escape = '\' )
 <?xml version="1.0" encoding="UTF-8"?>
-<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
+<kmodule xmlns="http://www.drools.org/xsd/kmodule">
 	<!-- This is a minimal kmodule.xml. Ref Drools documentation, see http://docs.jboss.org/drools/release/6.1.0.Final/drools-docs/html_single/index.html${symbol_pound}d0e1112 -->
 </kmodule>
