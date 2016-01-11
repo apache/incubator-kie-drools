@@ -99,6 +99,9 @@
       <properties>
         <jdk.min.version>1.8.0</jdk.min.version>
       </properties>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
       <build>
         <plugins>
           <plugin>
