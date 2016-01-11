@@ -341,7 +341,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
                            + "</project>" );
 
         kfs.write("/src/main/resources/META-INF/kmodule.xml",
-                  "<kmodule xmlns=\"http://jboss.org/kie/6.0.0/kmodule\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>");
+                  "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"/>");
 
         final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
         final List<Message> messages = kieBuilder.buildAll().getResults().getMessages();

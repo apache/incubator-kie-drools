@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule">
+<kmodule xmlns="http://www.drools.org/xsd/kmodule">
 
     <kbase name="kbaseCSV" packages="org.drools.decisiontable.integrationtests.csv" />
     <kbase name="kbaseXLS" packages="org.drools.decisiontable.integrationtests.xls" />

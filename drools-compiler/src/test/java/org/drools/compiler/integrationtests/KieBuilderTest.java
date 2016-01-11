@@ -64,7 +64,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
                 "end\n";
 
         String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
-                "         xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n" +
+                "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
                 "  <kbase name=\"kbase1\" default=\"true\" eventProcessingMode=\"stream\" equalsBehavior=\"identity\" scope=\"javax.enterprise.context.ApplicationScoped\">\n" +
                 "    <ksession name=\"ksession1\" type=\"stateful\" default=\"true\" clockType=\"realtime\" scope=\"javax.enterprise.context.ApplicationScoped\"/>\n" +
                 "  </kbase>\n" +
@@ -98,6 +98,89 @@ public class KieBuilderTest extends CommonTestMethodBase {
         ksession.insert( new Message( "Hello World" ) );
         assertEquals( 2, ksession.fireAllRules() );
         ksession.dispose();
+    }
+
+    @Test
+    public void testValidXsdTargetNamespace() {
+        String drl1 = "package org.drools.compiler\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n";
+
+        String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                "  <kbase name=\"kbase1\">\n" +
+                "    <ksession name=\"ksession1\" default=\"true\"/>\n" +
+                "  </kbase>\n" +
+                "</kmodule>";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+        Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
+        KieModule km = createAndDeployJar( ks,
+                                           kmodule,
+                                           releaseId1,
+                                           r1);
+
+        ks.newKieContainer( km.getReleaseId() );
+    }
+
+    @Test(expected = RuntimeException.class) // TODO Should be a validation exception, but createAndDeployJar throws NPE
+    public void testInvalidXsdTargetNamespace() {
+        String drl1 = "package org.drools.compiler\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n";
+
+        String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                "         xmlns=\"http://www.drools.org/xsd/doesNotExist\">\n" +
+                "  <kbase name=\"kbase1\">\n" +
+                "    <ksession name=\"ksession1\" default=\"true\"/>\n" +
+                "  </kbase>\n" +
+                "</kmodule>";
+
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+        Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
+        KieModule km = createAndDeployJar( ks,
+                                           kmodule,
+                                           releaseId1,
+                                           r1);
+
+        ks.newKieContainer( km.getReleaseId() );
+    }
+
+    @Test
+    public void testOldXsdTargetNamespace() {
+        String drl1 = "package org.drools.compiler\n" +
+                "rule R1 when\n" +
+                "   $m : Message()\n" +
+                "then\n" +
+                "end\n";
+
+        String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                "         xmlns=\"http://jboss.org/kie/6.0.0/kmodule\">\n" +
+                "  <kbase name=\"kbase1\">\n" +
+                "    <ksession name=\"ksession1\" default=\"true\"/>\n" +
+                "  </kbase>\n" +
+                "</kmodule>";
+
+        KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+        Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
+        KieModule km = createAndDeployJar( ks,
+                                           kmodule,
+                                           releaseId1,
+                                           r1);
+
+        ks.newKieContainer( km.getReleaseId() );
     }
 
     @Test
