@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- For a list of all released XSD files, visit http://www.drools.org/xsd/ -->
+<!-- Do NOT change the version number 6.0.0 in the targetNamespace because that breaks old clients! -->
+<!-- The targetNamespace has changed to http://drools.org/xsd/kmodule in the new kmodule.xsd to become versionless -->
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             elementFormDefault="qualified" attributeFormDefault="unqualified"
-            targetNamespace="http://www.drools.org/xsd/kmodule" xmlns="http://www.drools.org/xsd/kmodule">
+            targetNamespace="http://jboss.org/kie/6.0.0/kmodule" xmlns="http://jboss.org/kie/6.0.0/kmodule">
 
   <!-- xsd:import namespace="http://www.w3.org/2001/XMLSchema-instance" / -->
 
