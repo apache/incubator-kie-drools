@@ -47,6 +47,9 @@ public interface PropagationEntry {
     
     boolean isCalledFromRHS();
 
+    boolean isPartitionSplittable();
+    PropagationEntry getSplitForPartition(int i);
+
     abstract class AbstractPropagationEntry implements PropagationEntry {
         private PropagationEntry next;
 
@@ -82,6 +85,28 @@ public interface PropagationEntry {
         public void executeForMarshalling(InternalWorkingMemory wm) {
             execute( wm );
         }
+
+        @Override
+        public boolean isPartitionSplittable() {
+            return false;
+        }
+
+        @Override
+        public PropagationEntry getSplitForPartition( int i ) {
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    abstract class AbstractPartitionedPropagationEntry extends AbstractPropagationEntry {
+        protected final int partition;
+
+        protected AbstractPartitionedPropagationEntry( int partition ) {
+            this.partition = partition;
+        }
+
+        protected boolean isMasterPartition() {
+            return partition == 0;
+        }
     }
 
     abstract class PropagationEntryWithResult<T> extends PropagationEntry.AbstractPropagationEntry {
@@ -114,15 +139,13 @@ public interface PropagationEntry {
 
         private final InternalFactHandle handle;
         private final PropagationContext context;
-        private final InternalWorkingMemory workingMemory;
         private final ObjectTypeConf objectTypeConf;
         private final boolean isEvent;
         private final long insertionTime;
 
-        public Insert( InternalFactHandle handle, PropagationContext context, InternalWorkingMemory workingMemory, ObjectTypeConf objectTypeConf) {
+        public Insert(InternalFactHandle handle, PropagationContext context, InternalWorkingMemory workingMemory, ObjectTypeConf objectTypeConf) {
             this.handle = handle;
             this.context = context;
-            this.workingMemory = workingMemory;
             this.objectTypeConf = objectTypeConf;
             this.isEvent = objectTypeConf.isEvent();
             this.insertionTime = isEvent ? workingMemory.getTimerService().getCurrentTime() : 0L;
@@ -135,19 +158,29 @@ public interface PropagationEntry {
         }
 
         public void execute( InternalWorkingMemory wm ) {
+            internalExecute( handle, context, wm, objectTypeConf, isEvent, insertionTime );
+        }
+
+        public static void execute( InternalFactHandle handle, PropagationContext context, InternalWorkingMemory wm, ObjectTypeConf objectTypeConf ) {
+            boolean isEvent = objectTypeConf.isEvent();
+            long insertionTime = isEvent ? wm.getTimerService().getCurrentTime() : 0L;
+            internalExecute( handle, context, wm, objectTypeConf, isEvent, insertionTime );
+        }
+
+        private static void internalExecute( InternalFactHandle handle, PropagationContext context, InternalWorkingMemory wm, ObjectTypeConf objectTypeConf, boolean isEvent, long insertionTime ) {
             for ( ObjectTypeNode otn : objectTypeConf.getObjectTypeNodes() ) {
                 otn.propagateAssert( handle, context, wm );
                 if (isEvent) {
-                    scheduleExpiration( otn, otn.getExpirationOffset() );
+                    scheduleExpiration( handle, context, insertionTime, wm, otn, otn.getExpirationOffset() );
                 }
             }
 
             if (isEvent && objectTypeConf.getConcreteObjectTypeNode() == null) {
-                scheduleExpiration( null, ( (ClassObjectTypeConf) objectTypeConf ).getExpirationOffset() );
+                scheduleExpiration( handle, context, insertionTime, wm, null, ( (ClassObjectTypeConf) objectTypeConf ).getExpirationOffset() );
             }
         }
 
-        private void scheduleExpiration( ObjectTypeNode otn, long expirationOffset ) {
+        private static void scheduleExpiration( InternalFactHandle handle, PropagationContext context, long insertionTime, InternalWorkingMemory wm, ObjectTypeNode otn, long expirationOffset ) {
             if ( expirationOffset < 0 || expirationOffset == Long.MAX_VALUE || context.getReaderContext() != null ) {
                 return;
             }
@@ -158,16 +191,22 @@ public interface PropagationEntry {
             long nextTimestamp = Math.max( insertionTime,
                                            effectiveEnd >= 0 ? effectiveEnd : Long.MAX_VALUE );
 
-            if (nextTimestamp < workingMemory.getTimerService().getCurrentTime()) {
-                WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn );
-                action.execute(workingMemory);  // this can now execute straight away, as alpha node propagation is now done by the engine thread
+            WorkingMemoryReteExpireAction action = new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn );
+            if (nextTimestamp < wm.getTimerService().getCurrentTime()) {
+                if ( wm.getKnowledgeBase().getConfiguration().isMultithreadEvaluation() ) {
+                    // in case of multithreaded evaluation the expiration is scheduled directly from user thread
+                    // and then it has to be enqueued on the propagation list
+                    wm.addPropagation( action );
+                } else {
+                    // this can now execute straight away, as alpha node propagation is now done by the engine thread
+                    action.execute( wm );
+                }
             } else {
-                JobContext jobctx = new ObjectTypeNode.ExpireJobContext( new WorkingMemoryReteExpireAction( (EventFactHandle) handle, otn ),
-                                                                         workingMemory );
-                JobHandle jobHandle = workingMemory.getTimerService()
-                                                   .scheduleJob( job,
-                                                                 jobctx,
-                                                                 new PointInTimeTrigger( nextTimestamp, null, null ) );
+                JobContext jobctx = new ObjectTypeNode.ExpireJobContext( action, wm );
+                JobHandle jobHandle = wm.getTimerService()
+                                        .scheduleJob( job,
+                                                      jobctx,
+                                                      new PointInTimeTrigger( nextTimestamp, null, null ) );
                 jobctx.setJobHandle( jobHandle );
                 eventFactHandle.addJob( jobHandle );
             }
@@ -220,8 +259,53 @@ public interface PropagationEntry {
         }
 
         @Override
+        public boolean isPartitionSplittable() {
+            return true;
+        }
+
+        @Override
+        public PropagationEntry getSplitForPartition( int i ) {
+            return new PartitionedDelete( handle, context, objectTypeConf, i );
+        }
+
+        @Override
         public String toString() {
             return "Delete of " + handle.getObject();
+        }
+    }
+
+    class PartitionedDelete extends AbstractPartitionedPropagationEntry {
+        private final InternalFactHandle handle;
+        private final PropagationContext context;
+        private final ObjectTypeConf objectTypeConf;
+
+        public PartitionedDelete(InternalFactHandle handle, PropagationContext context, ObjectTypeConf objectTypeConf, int partition) {
+            super(partition);
+            this.handle = handle;
+            this.context = context;
+            this.objectTypeConf = objectTypeConf;
+        }
+
+        public void execute(InternalWorkingMemory wm) {
+            ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
+
+            if ( cachedNodes == null ) {
+                // it is  possible that there are no ObjectTypeNodes for an  object being retracted
+                return;
+            }
+
+            for ( ObjectTypeNode cachedNode : cachedNodes ) {
+                cachedNode.retractObject( handle, context, wm, partition );
+            }
+
+            if (isMasterPartition() && handle.isEvent()) {
+                ((EventFactHandle) handle).unscheduleAllJobs(wm);
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "Delete of " + handle.getObject() + " for partition " + partition;
         }
     }
 }

@@ -16,17 +16,16 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.common.BaseNode;
+import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.spi.PropagationContext;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 
-import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.RuleBasePartitionId;
-import org.drools.core.spi.PropagationContext;
-
-public class EmptyObjectSinkAdapter extends AbstractObjectSinkAdapter {
+public class EmptyObjectSinkAdapter implements ObjectSinkPropagator {
 
     private static final long                   serialVersionUID = 510l;
 
@@ -38,25 +37,19 @@ public class EmptyObjectSinkAdapter extends AbstractObjectSinkAdapter {
         return INSTANCE;
     }
 
-    public EmptyObjectSinkAdapter() {
-        super( RuleBasePartitionId.MAIN_PARTITION );
+    public ObjectSinkPropagator addObjectSink(final ObjectSink sink, int alphaNodeHashingThreshold) {
+        return new SingleObjectSinkAdapter( sink );
     }
 
-    public EmptyObjectSinkAdapter( RuleBasePartitionId partitionId ) {
-        super( partitionId );
+    public ObjectSinkPropagator removeObjectSink(final ObjectSink sink) {
+        throw new IllegalArgumentException( "Cannot remove a sink, when the list of sinks is null" );
     }
 
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        super.readExternal( in );
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        super.writeExternal( out );
-    }
-
-    public RuleBasePartitionId getPartitionId() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void propagateAssertObject(final InternalFactHandle factHandle,
@@ -95,6 +88,10 @@ public class EmptyObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
     public int size() {
         return 0;
+    }
+
+    public boolean isEmpty() {
+        return true;
     }
 
     public boolean equals(Object obj) {

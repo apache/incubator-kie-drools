@@ -98,7 +98,7 @@ public class NodeSegmentUnlinkingTest {
         buildContext = new BuildContext( kBase, kBase.getReteooBuilder().getIdGenerator() );
 
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
 
         MockTupleSource mockTupleSource = new MockTupleSource( 9 );
 
@@ -451,9 +451,6 @@ public class NodeSegmentUnlinkingTest {
 
         n6.assertObject( f1, context, ksession );
         assertTrue( bm.getSegmentMemory().isSegmentLinked() ); // only after all 4 nodes are populated, is the segment linked in
-
-        n6.retractRightTuple( f1.getLastRightTuple(), context, ksession );
-        assertFalse( bm.getSegmentMemory().isSegmentLinked() ); // check retraction unlinks again
     }
 
     @Test
@@ -481,9 +478,6 @@ public class NodeSegmentUnlinkingTest {
 
         n6.assertObject( f1, context, ksession );
         assertTrue( bm.getSegmentMemory().isSegmentLinked() ); // only after all 4 nodes are populated, is the segment linked in
-
-        n6.retractRightTuple( f1.getLastRightTuple(), context, ksession );
-        assertFalse( bm.getSegmentMemory().isSegmentLinked() ); // check retraction unlinks again        
     }
 
     private static BetaMemory createSegmentMemory(BetaNode node,

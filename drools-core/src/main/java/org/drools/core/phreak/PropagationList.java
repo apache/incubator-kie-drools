@@ -38,4 +38,6 @@ public interface PropagationList {
     void notifyWaitOnRest();
 
     void onEngineInactive();
+
+    void dispose();
 }

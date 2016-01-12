@@ -70,8 +70,7 @@ public class SimpleBeliefSystem
                        bfh.getObject(),
                        node.getJustifier().getRule(),
                        node.getJustifier(),
-                       typeConf,
-                       null );
+                       typeConf );
         }
         return beliefSet;
     }
@@ -93,8 +92,7 @@ public class SimpleBeliefSystem
                        bfh.getObject(),
                        rule,
                        activation,
-                       typeConf,
-                       null );
+                       typeConf );
         }
         return beliefSet;
     }
@@ -122,7 +120,7 @@ public class SimpleBeliefSystem
         InternalFactHandle bfh = beliefSet.getFactHandle();
 
         if ( beliefSet.isEmpty() && bfh.getEqualityKey() != null && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
-            ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), (RuleImpl) context.getRule(), (Activation) context.getLeftTupleOrigin() );
+            ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), (RuleImpl) context.getRuleOrigin(), (Activation) context.getLeftTupleOrigin() );
         } else if ( !beliefSet.isEmpty() && bfh.getObject() == payload && payload != bfh.getObject() ) {
             // prime has changed, to update new object
             // Equality might have changed on the object, so remove (which uses the handle id) and add back in
@@ -148,7 +146,7 @@ public class SimpleBeliefSystem
                       BeliefSet<SimpleMode> beliefSet) {
         InternalFactHandle bfh = beliefSet.getFactHandle();
         // Remove the FH from the network
-        ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet),(RuleImpl) context.getRule(), null);
+        ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet),(RuleImpl) context.getRuleOrigin(), null);
 
         bfh.getEqualityKey().setStatus( EqualityKey.STATED ); // revert to stated
     }
@@ -159,7 +157,7 @@ public class SimpleBeliefSystem
         bfh.getEqualityKey().setStatus( EqualityKey.JUSTIFIED ); // revert to justified
 
         // Add the FH back into the network
-        ep.insert(bfh, bfh.getObject(), (RuleImpl) context.getRule(), null, getObjectTypeConf(beliefSet), null );
+        ep.insert(bfh, bfh.getObject(), (RuleImpl) context.getRuleOrigin(), null, getObjectTypeConf(beliefSet) );
     }
 
     private ObjectTypeConf getObjectTypeConf(BeliefSet beliefSet) {

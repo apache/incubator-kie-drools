@@ -16,6 +16,8 @@
 
 package org.drools.core.reteoo;
 
+import org.drools.core.common.RuleBasePartitionId;
+
 /**
  * Items placed in a <code>LinkedList<code> must implement this interface .
  * 
@@ -31,27 +33,28 @@ public interface ObjectSinkNode
      *      The next LinkedListNode
      */
 
-    public ObjectSinkNode getNextObjectSinkNode();
+    ObjectSinkNode getNextObjectSinkNode();
 
     /**
      * Sets the next node 
      * @param next
      *      The next LinkedListNode
      */
-    public void setNextObjectSinkNode(ObjectSinkNode next);
+    void setNextObjectSinkNode(ObjectSinkNode next);
 
     /**
      * Returns the previous node
      * @return
      *      The previous LinkedListNode
      */
-    public ObjectSinkNode getPreviousObjectSinkNode();
+    ObjectSinkNode getPreviousObjectSinkNode();
 
     /**
      * Sets the previous node 
      * @param previous
      *      The previous LinkedListNode
      */
-    public void setPreviousObjectSinkNode(ObjectSinkNode previous);
+    void setPreviousObjectSinkNode(ObjectSinkNode previous);
 
+    void setPartitionIdWithSinks( RuleBasePartitionId partitionId );
 }

@@ -150,7 +150,7 @@ public abstract class BaseNode
     /**
      * Sets the partition this node belongs to
      */
-    public void setPartitionId(final RuleBasePartitionId partitionId) {
+    public void setPartitionId(BuildContext context, RuleBasePartitionId partitionId) {
         this.partitionId = partitionId;
     }
 

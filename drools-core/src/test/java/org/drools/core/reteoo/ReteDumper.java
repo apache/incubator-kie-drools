@@ -16,9 +16,10 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.BaseNode;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.KnowledgeRuntime;
 
 import java.util.Collection;
@@ -29,7 +30,7 @@ public class ReteDumper {
 
     private ReteDumper() { }
 
-    public static void dumpRete(KnowledgeBase kbase) {
+    public static void dumpRete(KieBase kbase ) {
         dumpRete((InternalKnowledgeBase) kbase);
     }
 
@@ -52,7 +53,7 @@ public class ReteDumper {
     }
 
     private static void dumpNode(BaseNode node, String ident, Set<BaseNode> visitedNodes ) {
-        System.out.println(ident + node);
+        System.out.println(ident + node + " on " + node.getPartitionId());
         if (!visitedNodes.add( node )) {
             return;
         }
@@ -66,7 +67,7 @@ public class ReteDumper {
         }
     }
 
-    public static Sink[] getSinks( BaseNode node ) {
+    public static Sink[] getSinks( NetworkNode node ) {
         Sink[] sinks = null;
         if (node instanceof EntryPointNode ) {
             EntryPointNode source = (EntryPointNode) node;

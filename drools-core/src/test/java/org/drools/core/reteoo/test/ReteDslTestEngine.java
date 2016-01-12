@@ -688,7 +688,7 @@ public class ReteDslTestEngine {
 
                         if ( element instanceof InternalFactHandle ) {
                             InternalFactHandle handle = (InternalFactHandle) element;
-                            PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.INSERTION,
+                            PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
                                                                                                null, null, handle);
                             ((ObjectSink) sink).assertObject( handle,
                                                               pContext,
@@ -698,7 +698,7 @@ public class ReteDslTestEngine {
                             List<InternalFactHandle> tlist = (List<InternalFactHandle>) element;
                             LeftTuple tuple = createTuple( context,
                                                            tlist );
-                            PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.INSERTION,
+                            PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
                                                                                                null, tuple, null);
                             ((LeftTupleSink) sink).assertLeftTuple( tuple,
                                                                     pContext,
@@ -783,20 +783,16 @@ public class ReteDslTestEngine {
 
                         if ( element instanceof InternalFactHandle ) {
                             InternalFactHandle handle = (InternalFactHandle) element;
-                            PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.DELETION,
+                            PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.DELETION,
                                                                                                null, null, handle);
                             if ( sink instanceof ObjectTypeNode ) {
                                 ((ObjectTypeNode) sink).retractObject( handle,
                                                                        pContext,
                                                                        wm );
                             } else {
-                                for ( RightTuple rightTuple = handle.getFirstRightTuple(); rightTuple != null; rightTuple = (RightTuple) rightTuple.getHandleNext() ) {
-                                    rightTuple.retractTuple( pContext, wm );
-                                }
+                                handle.forEachRightTuple( rt -> rt.retractTuple( pContext, wm ) );
                                 handle.clearRightTuples();
-                                for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = (LeftTuple) leftTuple.getHandleNext() ) {
-                                    leftTuple.retractTuple( pContext, wm );
-                                }
+                                handle.forEachLeftTuple( lt -> lt.retractTuple( pContext, wm ) );
                                 handle.clearLeftTuples();
                             }
                             pContext.evaluateActionQueue( wm );
@@ -807,7 +803,7 @@ public class ReteDslTestEngine {
                             if ( tuple == null ) {
                                 throw new IllegalArgumentException( "Tuple not found: " + id + " : " + tlist.toString() );
                             }
-                            PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.DELETION,
+                            PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.DELETION,
                                                                                                null, tuple, null);
                             ((LeftTupleSink) sink).retractLeftTuple( tuple,
                                                                      pContext,
@@ -861,13 +857,10 @@ public class ReteDslTestEngine {
 
                         if ( element instanceof InternalFactHandle ) {
                             InternalFactHandle handle = (InternalFactHandle) element;
-                            PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.MODIFICATION,
+                            PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
                                                                                                null, null, handle);
-                            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( handle.getFirstLeftTuple(),
-                                                                                                  handle.getFirstRightTuple(),
+                            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples( handle.detachLinkedTuples(),
                                                                                                   new EntryPointNode() );
-                            handle.clearRightTuples();
-                            handle.clearLeftTuples();
                             ((ObjectSink) sink).modifyObject( handle,
                                                               modifyPreviousTuples,
                                                               pContext,
@@ -882,7 +875,7 @@ public class ReteDslTestEngine {
                             if ( tuple == null ) {
                                 throw new IllegalArgumentException( "Tuple not found: " + id + " : " + tlist.toString() );
                             }
-                            PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.MODIFICATION,
+                            PropagationContext pContext = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.MODIFICATION,
                                                                                                null, tuple, new DefaultFactHandle(1, ""));
                             ((LeftTupleSink) sink).modifyLeftTuple( tuple,
                                                                     pContext,

@@ -201,10 +201,6 @@ public class MockLeftTupleSink extends LeftTupleSource
         return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }
 
-    public LeftTupleSource getLeftTupleSource() {
-        return super.getLeftTupleSource();
-    }
-
     @Override
     protected ObjectTypeNode getObjectTypeNode() {
         return null;

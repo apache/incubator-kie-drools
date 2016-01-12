@@ -68,7 +68,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
         pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        this.context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        this.context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
 
         BuildContext buildContext = new BuildContext(kBase,
                                                      kBase.getReteooBuilder().getIdGenerator());
@@ -365,7 +365,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
 
         // assert tuple, should not add to left memory, since we are in sequential mode
         this.node.assertLeftTuple( tuple0,
-                                   pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, f0),
+                                   pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, f0),
                                    this.workingMemory );
         // check memories 
         assertNull( this.memory.getLeftTupleMemory() );
@@ -380,7 +380,7 @@ public class AccumulateNodeTest extends DroolsTestCase {
                                                 null,
                                                 true );
         this.node.assertLeftTuple( tuple1,
-                                   pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, f1),
+                                   pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, f1),
                                    this.workingMemory );
         assertNull( this.memory.getLeftTupleMemory() );
         assertEquals( "Wrong number of elements in matching objects list ",

@@ -32,11 +32,15 @@ public class DefaultAgendaFactory implements AgendaFactory, Serializable {
     private DefaultAgendaFactory() { }
 
     public InternalAgenda createAgenda(InternalKnowledgeBase kBase, boolean initMain) {
-        return new DefaultAgenda( kBase, initMain );
+        return kBase.getConfiguration().isMultithreadEvaluation() ?
+               new CompositeDefaultAgenda( kBase, initMain ) :
+               new DefaultAgenda( kBase, initMain );
     }
 
     public InternalAgenda createAgenda(InternalKnowledgeBase kBase) {
-        return new DefaultAgenda( kBase );
+        return kBase.getConfiguration().isMultithreadEvaluation() ?
+               new CompositeDefaultAgenda( kBase ) :
+               new DefaultAgenda( kBase );
     }
 
 }

@@ -214,10 +214,6 @@ public class QueryElementNode extends LeftTupleSource
                                                             tupleMemoryEnabled );
     }
 
-    public LeftTupleSource getLeftTupleSource() {
-        return this.leftInput;
-    }
-
     public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         this.tupleMemoryEnabled = tupleMemoryEnabled;
     }

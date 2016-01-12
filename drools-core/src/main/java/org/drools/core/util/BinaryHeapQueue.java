@@ -57,7 +57,7 @@ public class BinaryHeapQueue
      * @param comparator the comparator used to order the elements, null
      *                   means use natural order
      */
-    public BinaryHeapQueue(final Comparator comparator) {
+    public BinaryHeapQueue(final Comparator<Activation> comparator) {
         this(comparator,
              BinaryHeapQueue.DEFAULT_CAPACITY);
     }
@@ -70,7 +70,7 @@ public class BinaryHeapQueue
      * @param capacity   the initial capacity for the heap
      * @throws IllegalArgumentException if <code>capacity</code> is &lt;= <code>0</code>
      */
-    public BinaryHeapQueue(final Comparator comparator,
+    public BinaryHeapQueue(final Comparator<Activation> comparator,
                            final int capacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("invalid capacity");
@@ -341,5 +341,70 @@ public class BinaryHeapQueue
     @Override
     public String toString() {
         return Arrays.toString(elements);
+    }
+
+    public static class Synchronized extends BinaryHeapQueue {
+
+        public Synchronized() {
+            super();
+        }
+
+        public Synchronized( Comparator<Activation> comparator ) {
+            super( comparator );
+        }
+
+        public Synchronized( Comparator<Activation> comparator, int capacity ) {
+            super( comparator, capacity );
+        }
+
+        @Override
+        public synchronized void clear() {
+            super.clear();
+        }
+
+        @Override
+        public synchronized Activation[] getAndClear() {
+            return super.getAndClear();
+        }
+
+        @Override
+        public synchronized boolean isEmpty() {
+            return super.isEmpty();
+        }
+
+        @Override
+        public synchronized boolean isFull() {
+            return super.isFull();
+        }
+
+        @Override
+        public synchronized int size() {
+            return super.size();
+        }
+
+        @Override
+        public synchronized Activation peek() {
+            return super.peek();
+        }
+
+        @Override
+        public synchronized void enqueue( Activation element ) {
+            super.enqueue( element );
+        }
+
+        @Override
+        public synchronized Activation dequeue() throws NoSuchElementException {
+            return super.dequeue();
+        }
+
+        @Override
+        public synchronized Activation dequeue( Activation activation ) {
+            return super.dequeue( activation );
+        }
+
+        @Override
+        public synchronized Object[] toArray( Object[] a ) {
+            return super.toArray( a );
+        }
     }
 }

@@ -25,6 +25,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.PropagationContextFactory;
+import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.common.ScheduledAgendaItem;
 import org.drools.core.common.TruthMaintenanceSystemHelper;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -280,7 +281,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
                     leftTuple.getMemory().remove( leftTuple );
                 }
             }
-            PhreakRuleTerminalNode.doLeftDelete(workingMemory, ((RuleTerminalNodeLeftTuple)leftTuple).getRuleAgendaItem().getRuleExecutor(), leftTuple);
+            PhreakRuleTerminalNode.doLeftDelete(workingMemory.getAgenda(), ((RuleTerminalNodeLeftTuple)leftTuple).getRuleAgendaItem().getRuleExecutor(), leftTuple);
         }
     }
 
@@ -386,7 +387,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
             }
 
             PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_REMOVAL, null, null, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.RULE_REMOVAL, null, null, null);
             TruthMaintenanceSystemHelper.removeLogicalDependencies( activation,
                                                                     propagationContext,
                                                                     node.getRule() );
@@ -436,7 +437,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
     public void setLeftInputOtnId(ObjectTypeNode.Id leftInputOtnId) {
         this.leftInputOtnId = leftInputOtnId;
-    }  
+    }
 
     public boolean isFireDirect() {
         return fireDirect;

@@ -152,7 +152,7 @@ public class WindowNode extends ObjectSource
 
         for (InternalWorkingMemory workingMemory : context.getWorkingMemories()) {
             PropagationContextFactory pctxFactory = workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
+            final PropagationContext propagationContext = pctxFactory.createPropagationContext(workingMemory.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
             this.source.updateSink(this,
                                    propagationContext,
                                    workingMemory);
@@ -214,9 +214,7 @@ public class WindowNode extends ObjectSource
         }
 
         if  ( isAllowed ) {
-            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(cloneFactHandle.getFirstLeftTuple(), cloneFactHandle.getFirstRightTuple(), epNode );
-            cloneFactHandle.clearLeftTuples();
-            cloneFactHandle.clearRightTuples();
+            ModifyPreviousTuples modifyPreviousTuples = new ModifyPreviousTuples(cloneFactHandle.detachLinkedTuples(), epNode );
 
             this.sink.propagateModifyObject(cloneFactHandle,
                                             modifyPreviousTuples,

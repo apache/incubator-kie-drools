@@ -19,7 +19,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
@@ -36,7 +35,7 @@ public class RetePropagationContextFactory implements PropagationContextFactory,
     }
 
     public PropagationContext createPropagationContext(final long number,
-                                                       final int type,
+                                                       final PropagationContext.Type type,
                                                        final RuleImpl rule,
                                                        final Tuple leftTuple,
                                                        final InternalFactHandle factHandle,
@@ -48,7 +47,7 @@ public class RetePropagationContextFactory implements PropagationContextFactory,
     }
 
     public PropagationContext createPropagationContext(final long number,
-                                                       final int type,
+                                                       final PropagationContext.Type type,
                                                        final RuleImpl rule,
                                                        final Tuple leftTuple,
                                                        final InternalFactHandle factHandle,
@@ -58,7 +57,7 @@ public class RetePropagationContextFactory implements PropagationContextFactory,
     }
 
     public PropagationContext createPropagationContext(final long number,
-                                                       final int type,
+                                                       final PropagationContext.Type type,
                                                        final RuleImpl rule,
                                                        final Tuple leftTuple,
                                                        final InternalFactHandle factHandle,
@@ -70,7 +69,7 @@ public class RetePropagationContextFactory implements PropagationContextFactory,
     }
 
     public PropagationContext createPropagationContext(final long number,
-                                                       final int type,
+                                                       final PropagationContext.Type type,
                                                        final RuleImpl rule,
                                                        final Tuple leftTuple,
                                                        final InternalFactHandle factHandle,
@@ -79,7 +78,7 @@ public class RetePropagationContextFactory implements PropagationContextFactory,
     }
 
     public PropagationContext createPropagationContext(final long number,
-                                                       final int type,
+                                                       final PropagationContext.Type type,
                                                        final RuleImpl rule,
                                                        final Tuple leftTuple,
                                                        final InternalFactHandle factHandle) {
