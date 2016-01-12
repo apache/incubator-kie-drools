@@ -17,8 +17,10 @@
 package org.optaplanner.core.impl.score.director.drools;
 
 import org.kie.api.KieBase;
+import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Global;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
@@ -30,10 +32,42 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
  */
 public class DroolsScoreDirectorFactory extends AbstractScoreDirectorFactory {
 
-    protected KieBase kieBase;
+    protected final KieContainer kieContainer;
+    protected final String ksessionName;
 
-    public DroolsScoreDirectorFactory(KieBase kieBase) {
-        this.kieBase = kieBase;
+    /**
+     * For {@link LegacyDroolsScoreDirectorFactory} only. Do not use.
+     * @param kieBase never null
+     */
+    protected DroolsScoreDirectorFactory(KieBase kieBase) {
+        kieContainer = null;
+        ksessionName = null;
+    }
+
+    /**
+     * @param kieContainer never null
+     * @param ksessionName null if the default ksession should be used
+     */
+    public DroolsScoreDirectorFactory(KieContainer kieContainer, String ksessionName) {
+        this.kieContainer = kieContainer;
+        this.ksessionName = ksessionName;
+        // if ksessionName is null, then the default kieSession is used
+        KieSessionModel kieSessionModel = kieContainer.getKieSessionModel(ksessionName);
+        if (kieSessionModel == null) {
+            if (ksessionName == null) {
+                throw new IllegalArgumentException("The kieContainer does not have a default ksession"
+                        + " and the ksessionName (" + ksessionName + ") is not specified.");
+            } else {
+                throw new IllegalArgumentException("The kieContainer does not contain a ksessionName ("
+                        + ksessionName + ") with that name.");
+            }
+        }
+        String kbaseName = kieSessionModel.getKieBaseModel().getName();
+        KieBase kieBase = kieContainer.newKieBase(kbaseName, null);
+        checkIfGlobalScoreHolderExists(kieBase);
+    }
+
+    protected void checkIfGlobalScoreHolderExists(KieBase kieBase) {
         boolean hasGlobalScoreHolder = false;
         for (KiePackage kiePackage : kieBase.getKiePackages()) {
             for (Global global : kiePackage.getGlobalVariables()) {
@@ -50,8 +84,15 @@ public class DroolsScoreDirectorFactory extends AbstractScoreDirectorFactory {
         }
     }
 
-    public KieBase getKieBase() {
-        return kieBase;
+    public KieContainer getKieContainer() {
+        return kieContainer;
+    }
+
+    /**
+     * @return null if the default ksession should be used
+     */
+    public String getKsessionName() {
+        return ksessionName;
     }
 
     // ************************************************************************
@@ -63,7 +104,7 @@ public class DroolsScoreDirectorFactory extends AbstractScoreDirectorFactory {
     }
 
     public KieSession newKieSession() {
-        return kieBase.newKieSession();
+        return kieContainer.newKieSession(ksessionName);
     }
 
 }

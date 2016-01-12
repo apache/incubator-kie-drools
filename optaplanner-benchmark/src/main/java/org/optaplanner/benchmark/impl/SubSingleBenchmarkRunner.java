@@ -86,7 +86,7 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
             solverConfig.offerRandomSeedFromSubSingleIndex((long) subSingleBenchmarkResult.getSubSingleBenchmarkIndex());
         }
         // Intentionally create a fresh solver for every SingleBenchmarkResult to reset Random, tabu lists, ...
-        Solver<Solution> solver = solverConfig.buildSolver(classLoader);
+        Solver<Solution> solver = solverConfig.buildSolver(classLoader); // TODO
 
         for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
             subSingleStatistic.open(solver);

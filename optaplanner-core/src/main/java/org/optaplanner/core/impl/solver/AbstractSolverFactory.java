@@ -19,16 +19,17 @@ package org.optaplanner.core.impl.solver;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 
 public class AbstractSolverFactory<Solution_ extends Solution> extends SolverFactory<Solution_> {
 
-    protected final ClassLoader classLoader;
+    protected final SolverConfigContext solverConfigContext;
 
     protected SolverConfig solverConfig = null;
 
-    public AbstractSolverFactory(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public AbstractSolverFactory(SolverConfigContext solverConfigContext) {
+        this.solverConfigContext = solverConfigContext;
     }
 
     // ************************************************************************
@@ -48,7 +49,7 @@ public class AbstractSolverFactory<Solution_ extends Solution> extends SolverFac
             throw new IllegalStateException("The solverConfig (" + solverConfig + ") is null," +
                     " call configure(...) first.");
         }
-        return solverConfig.buildSolver(classLoader);
+        return solverConfig.buildSolver(solverConfigContext);
     }
 
     @Override
@@ -58,7 +59,7 @@ public class AbstractSolverFactory<Solution_ extends Solution> extends SolverFac
                     " call configure(...) first.");
         }
         SolverConfig solverConfigClone = new SolverConfig(solverConfig);
-        return new EmptySolverFactory(classLoader, solverConfigClone);
+        return new EmptySolverFactory<Solution_>(solverConfigContext, solverConfigClone);
     }
 
 }

@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 
@@ -38,7 +39,9 @@ public class XStreamXmlSolverFactoryTest {
         InputStream originalConfigInputStream = getClass().getResourceAsStream(solverConfigResource);
         XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory().configure(originalConfigInputStream);
         SolverConfig solverConfig = solverFactory.getSolverConfig();
-        solverConfig.buildSolver(getClass().getClassLoader());
+        SolverConfigContext configContext = new SolverConfigContext();
+        configContext.setClassLoader(getClass().getClassLoader());
+        solverConfig.buildSolver(configContext);
         String savedXml = solverFactory.getXStream().toXML(solverConfig);
         assertEquals(originalXml, savedXml);
         originalConfigInputStream.close();

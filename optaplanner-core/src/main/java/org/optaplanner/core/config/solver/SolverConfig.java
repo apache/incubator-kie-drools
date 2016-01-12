@@ -25,6 +25,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.AbstractConfig;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.domain.ScanAnnotatedClassesConfig;
 import org.optaplanner.core.config.heuristic.policy.HeuristicConfigPolicy;
@@ -191,18 +192,31 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
     }
 
     /**
-     * @deprecated Use {@link SolverFactory#buildSolver()} or {@link #buildSolver(ClassLoader)} instead.
+     * @return never null
+     * @deprecated Use {@link SolverFactory#buildSolver()} or {@link #buildSolver(SolverConfigContext)} instead.
      */
     @Deprecated
     public <Solution_ extends Solution> Solver<Solution_> buildSolver() {
-        return buildSolver(null);
+        return buildSolver(new SolverConfigContext());
     }
 
     /**
      * @param classLoader sometimes null
      * @return never null
+     * @deprecated Use {@link SolverFactory#buildSolver()} or {@link #buildSolver(SolverConfigContext)} instead.
      */
+    @Deprecated
     public <Solution_ extends Solution> Solver<Solution_> buildSolver(ClassLoader classLoader) {
+        SolverConfigContext configContext = new SolverConfigContext();
+        configContext.setClassLoader(classLoader);
+        return buildSolver(configContext);
+    }
+
+    /**
+     * @param configContext never null
+     * @return never null
+     */
+    public <Solution_ extends Solution> Solver<Solution_> buildSolver(SolverConfigContext configContext) {
         DefaultSolver<Solution_> solver = new DefaultSolver<Solution_>();
         EnvironmentMode environmentMode_ = determineEnvironmentMode();
         solver.setEnvironmentMode(environmentMode_);
@@ -216,7 +230,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
                 = scoreDirectorFactoryConfig == null ? new ScoreDirectorFactoryConfig()
                 : scoreDirectorFactoryConfig;
         InnerScoreDirectorFactory scoreDirectorFactory = scoreDirectorFactoryConfig_.buildScoreDirectorFactory(
-                classLoader, environmentMode_, solutionDescriptor);
+                configContext, environmentMode_, solutionDescriptor);
         solver.setConstraintMatchEnabledPreference(environmentMode_.isAsserted());
         solver.setScoreDirectorFactory(scoreDirectorFactory);
 

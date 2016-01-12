@@ -30,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 
 /**
@@ -59,18 +60,17 @@ public class XStreamXmlSolverFactory<Solution_ extends Solution> extends Abstrac
     protected XStream xStream;
 
     public XStreamXmlSolverFactory() {
-        this(null);
+        this(new SolverConfigContext());
     }
 
     /**
-     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     *      null to use the default {@link ClassLoader}
+     * @param solverConfigContext never null
      */
-    public XStreamXmlSolverFactory(ClassLoader classLoader) {
-        super(classLoader);
+    public XStreamXmlSolverFactory(SolverConfigContext solverConfigContext) {
+        super(solverConfigContext);
         xStream = buildXStream();
-        if (classLoader != null) {
-            xStream.setClassLoader(classLoader);
+        if (solverConfigContext.getClassLoader() != null) {
+            xStream.setClassLoader(solverConfigContext.getClassLoader());
         }
     }
 
@@ -96,7 +96,7 @@ public class XStreamXmlSolverFactory<Solution_ extends Solution> extends Abstrac
      * @return this
      */
     public XStreamXmlSolverFactory<Solution_> configure(String solverConfigResource) {
-        ClassLoader actualClassLoader = (classLoader != null) ? classLoader : getClass().getClassLoader();
+        ClassLoader actualClassLoader = solverConfigContext.determineActualClassLoader();
         InputStream in = actualClassLoader.getResourceAsStream(solverConfigResource);
         if (in == null) {
             String errorMessage = "The solverConfigResource (" + solverConfigResource

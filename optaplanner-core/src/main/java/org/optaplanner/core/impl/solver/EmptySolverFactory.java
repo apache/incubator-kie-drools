@@ -17,22 +17,33 @@
 package org.optaplanner.core.impl.solver;
 
 import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 
 public class EmptySolverFactory<Solution_ extends Solution> extends AbstractSolverFactory<Solution_> {
 
     public EmptySolverFactory() {
-        this(null);
+        this(new SolverConfigContext());
     }
 
-    public EmptySolverFactory(ClassLoader classLoader) {
-        super(classLoader);
+    /**
+     * @param solverConfigContext never null
+     */
+    public EmptySolverFactory(SolverConfigContext solverConfigContext) {
+        super(solverConfigContext);
         solverConfig = new SolverConfig();
     }
 
-    protected EmptySolverFactory(ClassLoader classLoader, SolverConfig solverConfig) {
-        super(classLoader);
+    /**
+     * @param solverConfigContext never null
+     * @param solverConfig never null
+     */
+    protected EmptySolverFactory(SolverConfigContext solverConfigContext, SolverConfig solverConfig) {
+        super(solverConfigContext);
         this.solverConfig = solverConfig;
+        if (solverConfig == null) {
+            throw new IllegalArgumentException("The solverConfig (" + solverConfig + ") cannot be null.");
+        }
     }
 
 }
