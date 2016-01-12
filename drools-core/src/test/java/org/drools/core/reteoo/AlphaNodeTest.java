@@ -61,7 +61,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final RuleImpl rule = new RuleImpl( "test-rule" );
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
@@ -133,7 +133,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final RuleImpl rule = new RuleImpl( "test-rule" );
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 
@@ -197,7 +197,7 @@ public class AlphaNodeTest extends DroolsTestCase {
 
         final RuleImpl rule = new RuleImpl( "test-rule" );
         PropagationContextFactory pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, null);
+        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, null);
 
         final MockObjectSource source = new MockObjectSource( buildContext.getNextId() );
 

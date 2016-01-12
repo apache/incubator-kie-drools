@@ -31,7 +31,6 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.LIANodePropagation;
-import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.FactHandleFactory;
@@ -53,7 +52,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
 
     private List<LIANodePropagation> liaPropagations;
 
-    private Queue<WorkingMemoryAction> actionQueue;
+    private Queue<WorkingMemoryAction> actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
 
     private AtomicBoolean evaluatingActionQueue = new AtomicBoolean(false);
 
@@ -77,12 +76,6 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
 
     public ReteWorkingMemory(long id, InternalKnowledgeBase kBase, FactHandleFactory handleFactory, InternalFactHandle initialFactHandle, long propagationContext, SessionConfiguration config, Environment environment, RuleRuntimeEventSupport workingMemoryEventSupport, AgendaEventSupport agendaEventSupport, RuleEventListenerSupport ruleEventListenerSupport, InternalAgenda agenda) {
         super(id, kBase, handleFactory, false, propagationContext, config, environment, workingMemoryEventSupport, agendaEventSupport, ruleEventListenerSupport, agenda);
-    }
-
-    @Override
-    protected void init() {
-        this.actionQueue = new ConcurrentLinkedQueue<WorkingMemoryAction>();
-        this.propagationList = new RetePropagationList(this);
     }
 
     @Override
@@ -184,7 +177,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
             this.kBase.readLock();
             this.lock.lock();
 
-            final PropagationContext pCtx = pctxFactory.createPropagationContext(getNextPropagationIdCounter(), PropagationContext.INSERTION,
+            final PropagationContext pCtx = pctxFactory.createPropagationContext(getNextPropagationIdCounter(), PropagationContext.Type.INSERTION,
                                                                                  null, null, factHandle, getEntryPoint());
 
             getEntryPointNode().retractQuery( factHandle,
@@ -275,28 +268,12 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
 
     @Override
     public FactHandle insert( final Object object,
-                              final Object tmsValue,
                               final boolean dynamic,
-                              boolean logical,
                               final RuleImpl rule,
                               final Activation activation ) {
         try {
             kBase.readLock();
-            return super.insert( object, tmsValue, dynamic, logical, rule, activation );
-        } finally {
-            kBase.readUnlock();
-        }
-    }
-
-    @Override
-    public void insert(final InternalFactHandle handle,
-                       final Object object,
-                       final RuleImpl rule,
-                       final Activation activation,
-                       ObjectTypeConf typeConf ) {
-        try {
-            kBase.readLock();
-            super.insert( handle, object, rule, activation, typeConf );
+            return super.insert( object, dynamic, rule, activation );
         } finally {
             kBase.readUnlock();
         }

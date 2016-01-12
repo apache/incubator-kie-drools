@@ -18,12 +18,10 @@ package org.drools.core.base;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.spi.Activation;
@@ -200,12 +198,12 @@ public class SequentialKnowledgeHelper
     }
 
     @Override
-    public InternalFactHandle bolster( Object object, Object value ) {
+    public InternalFactHandle bolster( Object object ) {
         return null;
     }
 
     @Override
-    public InternalFactHandle bolster( Object object ) {
+    public InternalFactHandle bolster( Object object, Object value ) {
         return null;
     }
 
@@ -215,6 +213,10 @@ public class SequentialKnowledgeHelper
     }
 
     public void cancelRemainingPreviousLogicalDependencies() {
+    }
+
+    public FactHandle insertAsync( Object object ) {
+        return null;
     }
 
     public InternalFactHandle insert(Object object) {

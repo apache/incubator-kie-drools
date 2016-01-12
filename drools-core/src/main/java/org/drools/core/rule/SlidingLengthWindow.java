@@ -107,7 +107,7 @@ public class SlidingLengthWindow
         if ( window.handles[window.pos] != null ) {
             final EventFactHandle previous = window.handles[window.pos];
             // retract previous
-            final PropagationContext expiresPctx = createPropagationContextForFact( workingMemory, previous, PropagationContext.EXPIRATION );
+            final PropagationContext expiresPctx = createPropagationContextForFact( workingMemory, previous, PropagationContext.Type.EXPIRATION );
             ObjectTypeNode.doRetractObject( previous, expiresPctx, workingMemory);
             expiresPctx.evaluateActionQueue( workingMemory );
         }

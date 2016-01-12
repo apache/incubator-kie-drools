@@ -391,10 +391,6 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         return new FromNodeLeftTuple(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
     }
 
-    public LeftTupleSource getLeftTupleSource() {
-        return this.leftInput;
-    }
-
     protected ObjectTypeNode getObjectTypeNode() {
         return leftInput.getObjectTypeNode();
     }

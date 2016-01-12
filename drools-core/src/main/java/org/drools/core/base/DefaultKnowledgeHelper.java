@@ -16,7 +16,6 @@
 
 package org.drools.core.base;
 
-import org.drools.core.QueryResultsImpl;
 import org.drools.core.WorkingMemory;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.BeliefSystem;
@@ -25,12 +24,9 @@ import org.drools.core.beliefsystem.simple.SimpleLogicalDependency;
 import org.drools.core.beliefsystem.simple.SimpleMode;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.EqualityKey;
-import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalRuleFlowGroup;
-import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
@@ -40,7 +36,6 @@ import org.drools.core.factmodel.traits.CoreWrapper;
 import org.drools.core.factmodel.traits.Thing;
 import org.drools.core.factmodel.traits.TraitableBean;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeConf;
@@ -53,11 +48,8 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.bitmask.BitMask;
-import org.kie.api.event.KieRuntimeEventManager;
-import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.KieRuntime;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessContext;
@@ -66,9 +58,7 @@ import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.process.CorrelationAwareProcessRuntime;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.beliefs.Mode;
 
 import java.io.Externalizable;
@@ -202,6 +192,10 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         }
     }
 
+    public FactHandle insertAsync( final Object object ) {
+        return this.workingMemory.insertAsync( object );
+    }
+
     public InternalFactHandle insert(final Object object) {
         return insert( object,
                        false );
@@ -210,9 +204,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     public InternalFactHandle insert(final Object object,
                                      final boolean dynamic) {
         return (InternalFactHandle) this.workingMemory.insert( object,
-                                                               null,
                                                                dynamic,
-                                                               false,
                                                                this.activation.getRule(),
                                                                this.activation );
     }

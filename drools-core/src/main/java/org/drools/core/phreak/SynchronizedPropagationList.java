@@ -30,6 +30,8 @@ public class SynchronizedPropagationList implements PropagationList {
     protected volatile PropagationEntry head;
     protected volatile PropagationEntry tail;
 
+    private volatile boolean disposed = false;
+
     public SynchronizedPropagationList(InternalWorkingMemory workingMemory) {
         this.workingMemory = workingMemory;
     }
@@ -61,7 +63,7 @@ public class SynchronizedPropagationList implements PropagationList {
         }
     }
 
-    protected synchronized void internalAddEntry( PropagationEntry entry ) {
+    synchronized void internalAddEntry( PropagationEntry entry ) {
         if ( head == null ) {
             head = entry;
             notifyWaitOnRest();
@@ -72,17 +74,22 @@ public class SynchronizedPropagationList implements PropagationList {
     }
 
     @Override
+    public void dispose() {
+        disposed = true;
+    }
+
+    @Override
     public void flush() {
         flush( workingMemory, takeAll() );
     }
 
-    @Override public void flush(PropagationEntry currentHead)
-    {
+    @Override
+    public void flush(PropagationEntry currentHead) {
         flush( workingMemory, currentHead );
     }
 
-    public static void flush( InternalWorkingMemory workingMemory, PropagationEntry currentHead ) {
-        for (PropagationEntry entry = currentHead; entry != null; entry = entry.getNext()) {
+    void flush( InternalWorkingMemory workingMemory, PropagationEntry currentHead ) {
+        for (PropagationEntry entry = currentHead; !disposed && entry != null; entry = entry.getNext()) {
             entry.execute(workingMemory);
         }
     }
@@ -99,6 +106,7 @@ public class SynchronizedPropagationList implements PropagationList {
     public synchronized void reset() {
         head = null;
         tail = null;
+        disposed = false;
     }
 
     @Override

@@ -18,7 +18,6 @@ package org.drools.reteoo.common;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.DefaultFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -98,7 +97,7 @@ public class SchedulerTest extends DroolsTestCase {
         rule.setTimer(new DurationTimer(100));
 
         final PropagationContext context = pctxFactory.createPropagationContext(0,
-                                                                                PropagationContext.INSERTION,
+                                                                                PropagationContext.Type.INSERTION,
                                                                                 null,
                                                                                 null,
                                                                                 null);
@@ -149,7 +148,7 @@ public class SchedulerTest extends DroolsTestCase {
                 /* on first invoke add another one to the agenda */
                 if (data.size() < 3) {
                     final PropagationContext context2 = pctxFactory.createPropagationContext(0,
-                                                                                             0,
+                                                                                             PropagationContext.Type.INSERTION,
                                                                                              rule,
                                                                                              (RuleTerminalNodeLeftTuple) knowledgeHelper.getTuple(),
                                                                                              null);
@@ -178,7 +177,7 @@ public class SchedulerTest extends DroolsTestCase {
         });
 
         final PropagationContext context1 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  null,
                                                                                  null,
                                                                                  null);
@@ -236,7 +235,7 @@ public class SchedulerTest extends DroolsTestCase {
                 /* on first invoke add another one to the agenda */
                 if (data.size() < 5) {
                     final PropagationContext context2 = pctxFactory.createPropagationContext(0,
-                                                                                             0,
+                                                                                             PropagationContext.Type.INSERTION,
                                                                                              rule,
                                                                                              (RuleTerminalNodeLeftTuple) knowledgeHelper.getTuple(),
                                                                                              null);
@@ -265,7 +264,7 @@ public class SchedulerTest extends DroolsTestCase {
         });
 
         final PropagationContext context1 = pctxFactory.createPropagationContext(0,
-                                                                                 PropagationContext.INSERTION,
+                                                                                 PropagationContext.Type.INSERTION,
                                                                                  null,
                                                                                  null,
                                                                                  null);

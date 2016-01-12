@@ -15,9 +15,6 @@
  */
 package org.drools.compiler.conf;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.runtime.rule.impl.DefaultConsequenceExceptionHandler;
 import org.drools.core.util.MemoryUtil;
@@ -26,24 +23,25 @@ import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.conf.RemoveIdentitiesOption;
+import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
+import org.kie.internal.conf.AlphaThresholdOption;
 import org.kie.internal.conf.CompositeKeyDepthOption;
 import org.kie.internal.conf.ConsequenceExceptionHandlerOption;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.internal.conf.IndexLeftBetaMemoryOption;
 import org.kie.internal.conf.IndexPrecedenceOption;
 import org.kie.internal.conf.IndexRightBetaMemoryOption;
 import org.kie.internal.conf.MaxThreadsOption;
 import org.kie.internal.conf.MultithreadEvaluationOption;
 import org.kie.internal.conf.PermGenThresholdOption;
-import org.kie.api.conf.RemoveIdentitiesOption;
 import org.kie.internal.conf.SequentialAgendaOption;
 import org.kie.internal.conf.SequentialOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
-import org.kie.api.runtime.rule.ConsequenceExceptionHandler;
+
+import static org.junit.Assert.assertEquals;
 
 public class KnowledgeBaseConfigurationTest {
 
@@ -423,32 +421,26 @@ public class KnowledgeBaseConfigurationTest {
     
     @Test
     public void testMultithreadEvaluationConfiguration() {
-        try {
-            // setting the option using the type safe method
-            config.setOption( MultithreadEvaluationOption.YES );
-            
-            fail( "An exception should have been raised as this configuration option is no longer supported. ");
+        // setting the option using the type safe method
+        config.setOption( MultithreadEvaluationOption.YES );
 
-            // checking the type safe getOption() method
-            assertEquals( MultithreadEvaluationOption.YES,
-                          config.getOption( MultithreadEvaluationOption.class ) );
-            // checking the string based getProperty() method
-            assertEquals( "true",
-                          config.getProperty( MultithreadEvaluationOption.PROPERTY_NAME ) );
+        // checking the type safe getOption() method
+        assertEquals( MultithreadEvaluationOption.YES,
+                      config.getOption( MultithreadEvaluationOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "true",
+                      config.getProperty( MultithreadEvaluationOption.PROPERTY_NAME ) );
 
-            // setting the options using the string based setProperty() method
-            config.setProperty( MultithreadEvaluationOption.PROPERTY_NAME,
-                                "false" );
-            
-            // checking the type safe getOption() method
-            assertEquals( MultithreadEvaluationOption.NO,
-                          config.getOption( MultithreadEvaluationOption.class ) );
-            // checking the string based getProperty() method
-            assertEquals( "false",
-                          config.getProperty( MultithreadEvaluationOption.PROPERTY_NAME ) );
-        } catch( Exception ex ) {
-            // succeed, as this configuration option is not currently supported
-        }
+        // setting the options using the string based setProperty() method
+        config.setProperty( MultithreadEvaluationOption.PROPERTY_NAME,
+                            "false" );
+
+        // checking the type safe getOption() method
+        assertEquals( MultithreadEvaluationOption.NO,
+                      config.getOption( MultithreadEvaluationOption.class ) );
+        // checking the string based getProperty() method
+        assertEquals( "false",
+                      config.getProperty( MultithreadEvaluationOption.PROPERTY_NAME ) );
     }
     
     @Test

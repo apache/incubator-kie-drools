@@ -70,7 +70,7 @@ public class FactHandleMarshallingTest {
 
         NodeFactory nFacotry = kBase.getConfiguration().getComponentFactory().getNodeFactoryService();
 
-        RuleBasePartitionId partionId = new RuleBasePartitionId("P-MAIN");
+        RuleBasePartitionId partionId = RuleBasePartitionId.MAIN_PARTITION;
         EntryPointNode entryPointNode = nFacotry.buildEntryPointNode(1, partionId, false, (ObjectSource) rete , EntryPointId.DEFAULT);
         InternalWorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint( EntryPointId.DEFAULT, entryPointNode, wm);
 

@@ -3,7 +3,6 @@ package org.drools.core.base;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.WorkingMemory;
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.common.DefaultAgenda.ExecutionState;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventSupport;
 import org.drools.core.common.InternalAgenda;
@@ -28,7 +27,6 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
@@ -341,13 +339,18 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		delegate.delete(handle, rule, activation);
 	}
 
-	public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
-		return delegate.getRuleRuntimeEventListeners();
+	@Override
+	public FactHandle insert( Object object, boolean dynamic, RuleImpl rule, Activation activation ) {
+		return delegate.insert( object, dynamic, rule, activation);
 	}
 
-	public FactHandle insert(Object object, Object value, boolean dynamic, boolean logical, RuleImpl rule,
-			Activation activation) {
-		return delegate.insert(object, value, dynamic, logical, rule, activation);
+	@Override
+	public FactHandle insertAsync( Object object ) {
+		return delegate.insert( object );
+	}
+
+	public Collection<RuleRuntimeEventListener> getRuleRuntimeEventListeners() {
+		return delegate.getRuleRuntimeEventListeners();
 	}
 
 	public void addEventListener(AgendaEventListener listener) {
@@ -494,11 +497,6 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 
 	public EntryPoint getEntryPoint(String name) {
 		return delegate.getEntryPoint(name);
-	}
-
-	public void insert(InternalFactHandle handle, Object object, RuleImpl rule, Activation activation,
-			ObjectTypeConf typeConf) {
-		delegate.insert(handle, object, rule, activation, typeConf);
 	}
 
 	public void delete(FactHandle handle, State fhState) {
@@ -693,10 +691,6 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		delegate.flushPropagations();
 	}
 
-	public void flushPropagations(PropagationEntry propagationEntry) {
-		delegate.flushPropagations(propagationEntry);
-	}
-
 	public void activate() {
 		delegate.activate();
 	}
@@ -709,20 +703,8 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 		return delegate.tryDeactivate();
 	}
 
-	public void notifyEngineInactive() {
-		delegate.notifyEngineInactive();
-	}
-
 	public void setAsyncExceptionHandler(AsyncExceptionHandler handler) {
 		delegate.setAsyncExceptionHandler(handler);
-	}
-
-	public boolean hasPendingPropagations() {
-		return delegate.hasPendingPropagations();
-	}
-
-	public PropagationEntry takeAllPropagations() {
-		return delegate.takeAllPropagations();
 	}
 
 	public Iterator<? extends PropagationEntry> getActionsIterator() {
@@ -739,10 +721,6 @@ public final class WrappedStatefulKnowledgeSessionForRHS
 
 	public void clearAgenda() {
 		delegate.clearAgenda();
-	}
-
-	public PropagationEntry handleRestOnFireUntilHalt(ExecutionState currentState) {
-		return delegate.handleRestOnFireUntilHalt(currentState);
 	}
 
 	public void clearAgendaGroup(String group) {

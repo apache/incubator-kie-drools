@@ -151,7 +151,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context1 = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
+        final PropagationContext context1 = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, new DefaultFactHandle());
 
         // Test single activation for a single logical assertions
         node.assertLeftTuple( tuple1,
@@ -160,9 +160,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final String logicalString = new String( "logical" );
         InternalFactHandle logicalHandle = (InternalFactHandle) ksession.insert( logicalString,
-                                                                                      null,
                                                                                       false,
-                                                                                      true,
                                                                                       rule1,
                                                                                       (Activation) tuple1.getContextObject() );
         new RightTupleImpl( logicalHandle, sink );
@@ -189,9 +187,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                               context1,
                               ksession );
         logicalHandle = (InternalFactHandle) ksession.insert( logicalString,
-                                                                   null,
                                                                    false,
-                                                                   true,
                                                                    rule1,
                                                                    (Activation) tuple1.getContextObject() );
 
@@ -276,7 +272,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context1 = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
+        final PropagationContext context1 = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, new DefaultFactHandle());
 
         // Test single activation for a single logical assertions
         node.assertLeftTuple( tuple1,
@@ -285,17 +281,13 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         final String logicalString1 = new String( "logical" );
         FactHandle logicalHandle1 = ksession.insert( logicalString1,
-                                                          null,
                                                           false,
-                                                          true,
                                                           rule1,
                                                           (Activation) tuple1.getContextObject() );
 
         final String logicalString2 = new String( "logical" );
         FactHandle logicalHandle2 = ksession.insert( logicalString2,
-                                                          null,
                                                           false,
-                                                          true,
                                                           rule1,
                                                           (Activation) tuple1.getContextObject() );
 
@@ -384,7 +376,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context1 = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
+        final PropagationContext context1 = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, new DefaultFactHandle());
 
         // Test that a STATED assertion overrides a logical assertion
         node.assertLeftTuple( tuple1,
@@ -393,9 +385,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         String logicalString1 = new String( "logical" );
         FactHandle logicalHandle1 = ksession.insert( logicalString1,
-                                                          null,
                                                           false,
-                                                          true,
                                                           rule1,
                                                           (Activation) tuple1.getContextObject() );
 
@@ -434,9 +424,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // an equals STATED assertion.
         logicalString1 = new String( "logical" );
         logicalHandle1 = ksession.insert( logicalString1,
-                                               null,
                                                false,
-                                               true,
                                                rule1,
                                                (Activation) tuple1.getContextObject() );
 
@@ -444,8 +432,6 @@ public class LogicalAssertionTest extends DroolsTestCase {
 
         // Already identify same so return previously assigned handle
         logicalHandle1 = ksession.insert( logicalString2,
-                                               null,
-                                               false,
                                                false,
                                                rule1,
                                                (Activation) tuple1.getContextObject() );
@@ -535,7 +521,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
+        final PropagationContext context = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, new DefaultFactHandle());
 
         node.assertLeftTuple( tuple1,
                               context,
@@ -544,9 +530,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // Assert the logical "logical" fact
         final String logicalString1 = new String( "logical" );
         final FactHandle logicalHandle1 = ksession.insert( logicalString1,
-                                                                null,
                                                                 false,
-                                                                true,
                                                                 rule1,
                                                                 (Activation) tuple1.getContextObject() );
 
@@ -577,9 +561,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // Assert the logical "logical" fact
         final String logicalString2 = new String( "logical" );
         final FactHandle logicalHandle2 = ksession.insert( logicalString2,
-                                                                null,
                                                                 false,
-                                                                true,
                                                                 rule2,
                                                                 (Activation) tuple2.getContextObject() );
 
@@ -662,7 +644,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context1 = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
+        final PropagationContext context1 = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, new DefaultFactHandle());
         // get the activation onto the agenda
         node.assertLeftTuple( tuple1,
                               context1,
@@ -684,7 +666,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node2,
                                                                                 true );
 
-        final PropagationContext context2 = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
+        final PropagationContext context2 = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, new DefaultFactHandle());
 
         // get the activations onto the agenda
         node2.assertLeftTuple( tuple2,
@@ -694,9 +676,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // Create the first justifieable relationship
         final String logicalString1 = new String( "logical" );
         final InternalFactHandle logicalHandle1 = (InternalFactHandle) ksession.insert( logicalString1,
-                                                                                             "value1",
                                                                                              false,
-                                                                                             true,
                                                                                              rule1,
                                                                                              (Activation) tuple1.getContextObject() );
         new RightTupleImpl( logicalHandle1, sink );
@@ -704,9 +684,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // Create the second justifieable relationship
         final String logicalString2 = new String( "logical" );
         final InternalFactHandle logicalHandle2 = (InternalFactHandle) ksession.insert( logicalString2,
-                                                                                             "value2",
                                                                                              false,
-                                                                                             true,
                                                                                              rule2,
                                                                                              (Activation) tuple2.getContextObject() );
 
@@ -819,7 +797,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context1 = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
+        final PropagationContext context1 = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, new DefaultFactHandle());
 
         // Assert multiple stated objects
         node.assertLeftTuple( tuple1,
@@ -835,9 +813,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         // This assertion is logical should fail as there is previous stated objects
         final String logicalString3 = new String( "logical" );
         FactHandle logicalHandle3 = ksession.insert( logicalString3,
-                                                          null,
                                                           false,
-                                                          true,
                                                           rule1,
                                                           (Activation) tuple1.getContextObject() );
 
@@ -852,9 +828,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
             ksession.retract( statedHandle2 );
 
             logicalHandle3 = ksession.insert( logicalString3,
-                                                   null,
                                                    false,
-                                                   true,
                                                    rule1,
                                                    (Activation) tuple1.getContextObject() );
 
@@ -865,9 +839,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         ksession.retract( statedHandle1 );
 
         logicalHandle3 = ksession.insert( logicalString3,
-                                               null,
                                                false,
-                                               true,
                                                rule1,
                                                (Activation) tuple1.getContextObject() );
 
@@ -939,7 +911,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
                                                                                 node,
                                                                                 true );
 
-        final PropagationContext context1 = pctxFactory.createPropagationContext(0, PropagationContext.INSERTION, null, null, new DefaultFactHandle());
+        final PropagationContext context1 = pctxFactory.createPropagationContext(0, PropagationContext.Type.INSERTION, null, null, new DefaultFactHandle());
 
         // Test that a STATED assertion overrides a logical assertion
         node.assertLeftTuple( tuple1,
@@ -949,9 +921,7 @@ public class LogicalAssertionTest extends DroolsTestCase {
         final Cheese cheese = new Cheese( "brie",
                                           10 );
         final FactHandle cheeseHandle = ksession.insert( cheese,
-                                                              null,
                                                               false,
-                                                              true,
                                                               rule1,
                                                               (Activation) tuple1.getContextObject() );
 

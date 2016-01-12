@@ -16,10 +16,10 @@
 
 package org.drools.core.event.rule.impl;
 
+import org.drools.core.spi.PropagationContext;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.event.rule.RuleRuntimeEvent;
 import org.kie.internal.runtime.KnowledgeRuntime;
-import org.kie.api.runtime.rule.PropagationContext;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -49,18 +49,16 @@ public class RuleRuntimeEventImpl implements RuleRuntimeEvent, Externalizable {
     }
 
     public Rule getRule() {
-        return this.propagationContext != null ? this.getPropagationContext().getRule() : null;
+        return this.propagationContext != null ? this.getPropagationContext().getRuleOrigin() : null;
     }
     
     public void writeExternal(ObjectOutput out) throws IOException {
-        new SerializablePropagationContext( propagationContext ).writeExternal( out );
+        out.writeObject( propagationContext );
     }
     
     public void readExternal(ObjectInput in) throws IOException,
                                             ClassNotFoundException {
-        this.kruntime = null; // null because we don't serialise this
-        this.propagationContext = new SerializablePropagationContext();
-        ((SerializablePropagationContext)this.propagationContext).readExternal( in );
+        this.propagationContext = (PropagationContext) in.readObject();
     }
 
     @Override

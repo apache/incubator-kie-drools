@@ -138,7 +138,6 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
 
         checkDirty();
 
-        context.setObjectType( objectType );
         if ( compiledNetwork != null ) {
             compiledNetwork.modifyObject( factHandle,
                     modifyPreviousTuples,
@@ -151,7 +150,7 @@ public class TraitObjectTypeNode extends ObjectTypeNode {
                     // "don" update :
                     if ( context.getModificationMask().isSet( PropertySpecificUtil.TRAITABLE_BIT )
                             && modifyPreviousTuples.peekLeftTuple() != null
-                            && modifyPreviousTuples.peekLeftTuple().getPropagationContext().getType() == PropagationContext.INSERTION ) {
+                            && modifyPreviousTuples.peekLeftTuple().getPropagationContext().getType() == PropagationContext.Type.INSERTION ) {
                         // property reactivity may block trait proxies which have been asserted and then immediately updated because of another "don"
 
                         BitMask originalMask = context.getModificationMask();

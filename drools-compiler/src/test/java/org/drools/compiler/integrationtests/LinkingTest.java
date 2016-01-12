@@ -16,6 +16,7 @@
 package org.drools.compiler.integrationtests;
 
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.base.DefaultKnowledgeHelper;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalAgendaGroup;
@@ -24,6 +25,7 @@ import org.drools.core.common.MemoryFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.phreak.RuleAgendaItem;
+import org.drools.core.phreak.RuleExecutor;
 import org.drools.core.phreak.SegmentUtilities;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.EvalConditionNode;
@@ -1731,7 +1733,9 @@ public class LinkingTest {
         InternalAgenda agenda = ( InternalAgenda ) wm.getAgenda();
         InternalAgendaGroup group = (InternalAgendaGroup) agenda.getNextFocus();
         AgendaItem item = (AgendaItem) group.remove();
-        int count = ((RuleAgendaItem)item).getRuleExecutor().evaluateNetworkAndFire(wm, null, 0, -1);
+        RuleExecutor ruleExecutor = ((RuleAgendaItem)item).getRuleExecutor();
+        ruleExecutor.setKnowledgeHelper( new DefaultKnowledgeHelper() );
+        int count = ruleExecutor.evaluateNetworkAndFire(wm, null, 0, -1);
         //assertEquals(3, count );
         
         wm.fireAllRules();

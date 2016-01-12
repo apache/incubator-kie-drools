@@ -141,10 +141,9 @@ public class LeftTupleIterator
 
             while (otnIterator.hasNext()) {
                 InternalFactHandle handle = otnIterator.next();
-                for ( LeftTuple leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext() ) {
-                    if ( leftTuple.getTupleSink() == sink ) {
-                        return leftTuple;
-                    }
+                LeftTuple leftTuple = handle.findFirstLeftTuple( lt -> lt.getTupleSink() == sink );
+                if ( leftTuple != null ) {
+                    return leftTuple;
                 }
             }
         } else if ( source instanceof EvalConditionNode || source instanceof QueryElementNode ) {
@@ -211,10 +210,9 @@ public class LeftTupleIterator
             // We have exhausted the current FactHandle, now try the next
             while ( otnIterator.hasNext() ) {
                 InternalFactHandle handle = otnIterator.next();
-                for ( leftTuple = handle.getFirstLeftTuple(); leftTuple != null; leftTuple = leftTuple.getHandleNext() ) {
-                    if ( leftTuple.getTupleSink() == sink ) {
-                        return leftTuple;
-                    }
+                leftTuple = handle.findFirstLeftTuple( lt -> lt.getTupleSink() == sink );
+                if ( leftTuple != null ) {
+                    return leftTuple;
                 }
             }
             // We've exhausted this OTN so set the iterator to null

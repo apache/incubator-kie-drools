@@ -17,6 +17,7 @@ package org.drools.core.phreak;
 
 
 import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
@@ -80,10 +81,6 @@ public class AddRemoveRule {
     /**
      * This method is called after the rule nodes have been added to the network
      * For add tuples are processed after the segments and pmems have been adjusted
-     *
-     * @param tn
-     * @param wms
-     * @param kBase
      */
     public static void addRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalKnowledgeBase kBase) {
         if (log.isTraceEnabled()) {
@@ -139,10 +136,6 @@ public class AddRemoveRule {
     /**
      * This method is called before the rule nodes are removed from the network.
      * For remove tuples are processed before the segments and pmems have been adjusted
-     *
-     * @param tn
-     * @param wms
-     * @param kBase
      */
     public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalKnowledgeBase kBase) {
         if (log.isTraceEnabled()) {
@@ -679,9 +672,10 @@ public class AddRemoveRule {
                              pmem :
                              wm.getNodeMemory((AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
 
-        new RuleNetworkEvaluator().outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, wm,
+        InternalAgenda agenda = pmem.getActualAgenda( wm );
+        new RuleNetworkEvaluator().outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, agenda,
                                              new LinkedList<StackEntry>(),
-                                             true, rtnPmem.getOrCreateRuleAgendaItem(wm).getRuleExecutor());
+                                             true, rtnPmem.getOrCreateRuleAgendaItem(agenda).getRuleExecutor());
     }
 
 
@@ -744,7 +738,7 @@ public class AddRemoveRule {
     private static void insertLiaFacts(LeftTupleNode startNode, InternalWorkingMemory wm) {
         // rule added with no sharing
         PropagationContextFactory pctxFactory = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-        final PropagationContext  pctx        = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
+        final PropagationContext  pctx        = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
         LeftInputAdapterNode      lian        = (LeftInputAdapterNode) startNode;
         RightTupleSinkAdapter     liaAdapter  = new RightTupleSinkAdapter(lian);
         lian.getObjectSource().updateSink(liaAdapter, pctx, wm);
@@ -766,7 +760,7 @@ public class AddRemoveRule {
                     if (!bn.isRightInputIsRiaNode()) {
                         for ( int j = 0; j < wms.length; j++ ) {
                             PropagationContextFactory pctxFactory = wms[j].getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-                            final PropagationContext pctx = pctxFactory.createPropagationContext(wms[j].getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
+                            final PropagationContext pctx = pctxFactory.createPropagationContext(wms[j].getNextPropagationIdCounter(), PropagationContext.Type.RULE_ADDITION, null, null, null);
                             bn.getRightInput().updateSink(bn,
                                                           pctx,
                                                           wms[j]);
@@ -814,13 +808,11 @@ public class AddRemoveRule {
         if (source instanceof WindowNode) {
             WindowNode.WindowMemory memory = (WindowNode.WindowMemory) wm.getNodeMemory(((WindowNode) source));
             for (EventFactHandle factHandle : memory.getFactHandles()) {
-                for (RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; ) {
-                    RightTuple nextRightTuple = rightTuple.getHandleNext();
-                    if (source.equals(rightTuple.getTupleSink())) {
-                        rightTuple.unlinkFromRightParent();
+                factHandle.forEachRightTuple( rt -> {
+                    if (source.equals(rt.getTupleSink())) {
+                        rt.unlinkFromRightParent();
                     }
-                    rightTuple = nextRightTuple;
-                }
+                });
             }
         }
     }
@@ -916,8 +908,7 @@ public class AddRemoveRule {
         Iterator<InternalFactHandle> it = omem.iterator();
         while (it.hasNext()) {
             InternalFactHandle fh = it.next();
-            LeftTuple lt = fh.getFirstLeftTuple();
-            while (lt != null) {
+            fh.forEachLeftTuple( lt -> {
                 LeftTuple nextLt = lt.getHandleNext();
 
                 // Each lt is for a different lian, skip any lian not associated with the rule. Need to use lt parent (souce) not child to check the lian.
@@ -931,9 +922,7 @@ public class AddRemoveRule {
                         nextLt.setHandlePrevious( lt.getHandlePrevious() );
                     }
                 }
-
-                lt = nextLt;
-            }
+            });
         }
     }
 
@@ -1040,7 +1029,7 @@ public class AddRemoveRule {
         if (NodeTypeEnums.isTerminalNode(lt.getTupleSink())) {
             PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory( lt.getTupleSink().getId() );
             if (pmem != null) {
-                PhreakRuleTerminalNode.doLeftDelete( wm, pmem.getRuleAgendaItem().getRuleExecutor(), lt );
+                PhreakRuleTerminalNode.doLeftDelete( pmem.getActualAgenda( wm ), pmem.getRuleAgendaItem().getRuleExecutor(), lt );
             }
         } else {
             for (LeftTuple child = lt.getFirstChild(); child != null; child = child.getHandleNext()) {
@@ -1075,7 +1064,7 @@ public class AddRemoveRule {
                 return;
             }
 
-            boolean   isRootLt = (isFirstLt && removingLt.getLeftParent() == null); // is the LT for the LIAN, if so we need to process the FH too.
+            boolean   isRootLt = removingLt.getLeftParent() == null; // is the LT for the LIAN, if so we need to process the FH too.
             InternalFactHandle fh = removingLt.getFactHandle();
 
             // This is the first LT in a peer chain. Only this LT is hooked into the left and right parent LT and RT and
@@ -1125,19 +1114,13 @@ public class AddRemoveRule {
                 }
 
                 if (leftParent.getLastChild() == removingLt) {
-
                     leftParent.setLastChild(nextPeerLt);
                 }
             } else if ( isRootLt ) {
                 if (fh.getFirstLeftTuple() == removingLt) {
                     fh.setFirstLeftTuple(nextPeerLt);
                 }
-
-                if (fh.getLastLeftTuple() == removingLt) {
-                    fh.setLastLeftTuple(nextPeerLt);
-                }
             }
-
 
             if ( rightParent != null ) {
                 // This tuple is the first peer and thus is linked into the right parent RT.
