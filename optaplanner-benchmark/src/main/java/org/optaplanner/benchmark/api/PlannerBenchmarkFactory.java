@@ -23,6 +23,7 @@ import java.io.Reader;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.impl.FreemarkerXmlPlannerBenchmarkFactory;
 import org.optaplanner.benchmark.impl.XStreamXmlPlannerBenchmarkFactory;
+import org.optaplanner.core.config.SolverConfigContext;
 
 /**
  * Builds {@link PlannerBenchmark} instances.
@@ -41,7 +42,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromXmlResource(String benchmarkConfigResource) {
-        return new XStreamXmlPlannerBenchmarkFactory().configure(benchmarkConfigResource);
+        return new XStreamXmlPlannerBenchmarkFactory()
+                .configure(benchmarkConfigResource);
     }
 
     /**
@@ -53,7 +55,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromXmlResource(String benchmarkConfigResource, ClassLoader classLoader) {
-        return new XStreamXmlPlannerBenchmarkFactory(classLoader).configure(benchmarkConfigResource);
+        return new XStreamXmlPlannerBenchmarkFactory(new SolverConfigContext(classLoader))
+                .configure(benchmarkConfigResource);
     }
 
     /**
@@ -61,7 +64,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromXmlFile(File benchmarkConfigFile) {
-        return new XStreamXmlPlannerBenchmarkFactory().configure(benchmarkConfigFile);
+        return new XStreamXmlPlannerBenchmarkFactory()
+                .configure(benchmarkConfigFile);
     }
 
     /**
@@ -71,7 +75,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromXmlFile(File benchmarkConfigFile, ClassLoader classLoader) {
-        return new XStreamXmlPlannerBenchmarkFactory(classLoader).configure(benchmarkConfigFile);
+        return new XStreamXmlPlannerBenchmarkFactory(new SolverConfigContext(classLoader))
+                .configure(benchmarkConfigFile);
     }
 
     /**
@@ -79,7 +84,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromXmlInputStream(InputStream in) {
-        return new XStreamXmlPlannerBenchmarkFactory().configure(in);
+        return new XStreamXmlPlannerBenchmarkFactory()
+                .configure(in);
     }
 
     /**
@@ -89,7 +95,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
-        return new XStreamXmlPlannerBenchmarkFactory(classLoader).configure(in);
+        return new XStreamXmlPlannerBenchmarkFactory(new SolverConfigContext(classLoader))
+                .configure(in);
     }
 
     /**
@@ -97,7 +104,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromXmlReader(Reader reader) {
-        return new XStreamXmlPlannerBenchmarkFactory().configure(reader);
+        return new XStreamXmlPlannerBenchmarkFactory()
+                .configure(reader);
     }
 
     /**
@@ -107,7 +115,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromXmlReader(Reader reader, ClassLoader classLoader) {
-        return new XStreamXmlPlannerBenchmarkFactory(classLoader).configure(reader);
+        return new XStreamXmlPlannerBenchmarkFactory(new SolverConfigContext(classLoader))
+                .configure(reader);
     }
 
     // ************************************************************************
@@ -138,7 +147,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlResource(String templateResource, Object model) {
-        return new FreemarkerXmlPlannerBenchmarkFactory().configure(templateResource, model);
+        return new FreemarkerXmlPlannerBenchmarkFactory()
+                .configure(templateResource, model);
     }
 
     /**
@@ -149,7 +159,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlResource(String templateResource, Object model, ClassLoader classLoader) {
-        return new FreemarkerXmlPlannerBenchmarkFactory(classLoader).configure(templateResource, model);
+        return new FreemarkerXmlPlannerBenchmarkFactory(new SolverConfigContext(classLoader))
+                .configure(templateResource, model);
     }
 
     /**
@@ -176,7 +187,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlFile(File templateFile, Object model) {
-        return new FreemarkerXmlPlannerBenchmarkFactory().configure(templateFile, model);
+        return new FreemarkerXmlPlannerBenchmarkFactory()
+                .configure(templateFile, model);
     }
 
     /**
@@ -187,7 +199,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlFile(File templateFile, Object model, ClassLoader classLoader) {
-        return new FreemarkerXmlPlannerBenchmarkFactory(classLoader).configure(templateFile, model);
+        return new FreemarkerXmlPlannerBenchmarkFactory(new SolverConfigContext(classLoader))
+                .configure(templateFile, model);
     }
 
     /**
@@ -214,7 +227,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlInputStream(InputStream templateIn, Object model) {
-        return new FreemarkerXmlPlannerBenchmarkFactory().configure(templateIn, model);
+        return new FreemarkerXmlPlannerBenchmarkFactory()
+                .configure(templateIn, model);
     }
 
     /**
@@ -225,7 +239,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlInputStream(InputStream templateIn, Object model, ClassLoader classLoader) {
-        return new FreemarkerXmlPlannerBenchmarkFactory(classLoader).configure(templateIn, model);
+        return new FreemarkerXmlPlannerBenchmarkFactory(new SolverConfigContext(classLoader))
+                .configure(templateIn, model);
     }
 
     /**
@@ -252,7 +267,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlReader(Reader templateReader, Object model) {
-        return new FreemarkerXmlPlannerBenchmarkFactory().configure(templateReader, model);
+        return new FreemarkerXmlPlannerBenchmarkFactory()
+                .configure(templateReader, model);
     }
 
     /**
@@ -263,7 +279,8 @@ public abstract class PlannerBenchmarkFactory {
      * @return never null
      */
     public static PlannerBenchmarkFactory createFromFreemarkerXmlReader(Reader templateReader, Object model, ClassLoader classLoader) {
-        return new FreemarkerXmlPlannerBenchmarkFactory(classLoader).configure(templateReader, model);
+        return new FreemarkerXmlPlannerBenchmarkFactory(new SolverConfigContext(classLoader))
+                .configure(templateReader, model);
     }
 
     // ************************************************************************

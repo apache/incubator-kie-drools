@@ -34,26 +34,26 @@ import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
+import org.optaplanner.core.config.SolverConfigContext;
 
 /**
  * @see PlannerBenchmarkFactory
  */
 public class FreemarkerXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
 
-    protected final ClassLoader classLoader;
+    protected final SolverConfigContext solverConfigContext;
     private final XStreamXmlPlannerBenchmarkFactory xmlPlannerBenchmarkFactory;
 
     public FreemarkerXmlPlannerBenchmarkFactory() {
-        this(null);
+        this(new SolverConfigContext());
     }
 
     /**
-     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     *      null to use the default {@link ClassLoader}
+     * @param solverConfigContext never null
      */
-    public FreemarkerXmlPlannerBenchmarkFactory(ClassLoader classLoader) {
-        this.classLoader = classLoader;
-        xmlPlannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory(classLoader);
+    public FreemarkerXmlPlannerBenchmarkFactory(SolverConfigContext solverConfigContext) {
+        this.solverConfigContext = solverConfigContext;
+        xmlPlannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory(solverConfigContext);
     }
 
     // ************************************************************************
@@ -74,7 +74,7 @@ public class FreemarkerXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactor
      * @return this
      */
     public FreemarkerXmlPlannerBenchmarkFactory configure(String templateResource, Object model) {
-        ClassLoader actualClassLoader = (classLoader != null) ? classLoader : getClass().getClassLoader();
+        ClassLoader actualClassLoader = solverConfigContext.determineActualClassLoader();
         InputStream templateIn = actualClassLoader.getResourceAsStream(templateResource);
         if (templateIn == null) {
             String errorMessage = "The templateResource (" + templateResource

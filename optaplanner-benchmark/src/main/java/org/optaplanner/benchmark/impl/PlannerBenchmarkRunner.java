@@ -41,6 +41,7 @@ import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
@@ -53,7 +54,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             getClass().getName() + ".singleBenchmarkRunnerException");
 
     private final PlannerBenchmarkResult plannerBenchmarkResult;
-    private final ClassLoader classLoader;
+    private final SolverConfigContext solverConfigContext;
 
     private File benchmarkDirectory = null;
     private BenchmarkReport benchmarkReport = null;
@@ -67,12 +68,13 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
     private SubSingleBenchmarkRunner firstFailureSubSingleBenchmarkRunner = null;
 
     public PlannerBenchmarkRunner(PlannerBenchmarkResult plannerBenchmarkResult) {
-        this(plannerBenchmarkResult, null);
+        this(plannerBenchmarkResult, new SolverConfigContext());
     }
 
-    public PlannerBenchmarkRunner(PlannerBenchmarkResult plannerBenchmarkResult, ClassLoader classLoader) {
+    public PlannerBenchmarkRunner(PlannerBenchmarkResult plannerBenchmarkResult,
+            SolverConfigContext solverConfigContext) {
         this.plannerBenchmarkResult = plannerBenchmarkResult;
-        this.classLoader = classLoader;
+        this.solverConfigContext = solverConfigContext;
     }
 
     public PlannerBenchmarkResult getPlannerBenchmarkResult() {
@@ -200,7 +202,8 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             SingleBenchmarkResult singleBenchmarkResult
                     = solverBenchmarkResult.getSingleBenchmarkResultList().get(singleBenchmarkResultIndex);
             // Just take the first subSingle, we don't need to warm up each one
-            SubSingleBenchmarkRunner subSingleBenchmarkRunner = new SubSingleBenchmarkRunner(singleBenchmarkResult.getSubSingleBenchmarkResultList().get(0), classLoader);
+            SubSingleBenchmarkRunner subSingleBenchmarkRunner = new SubSingleBenchmarkRunner(
+                    singleBenchmarkResult.getSubSingleBenchmarkResultList().get(0), solverConfigContext);
             Future<SubSingleBenchmarkRunner> future = warmUpExecutorCompletionService.submit(subSingleBenchmarkRunner);
             futureMap.put(future, subSingleBenchmarkRunner);
             singleBenchmarkResultIndexMap.put(solverBenchmarkResult, singleBenchmarkResultIndex + 1);
@@ -262,7 +265,8 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
             for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
-                    SubSingleBenchmarkRunner subSingleBenchmarkRunner = new SubSingleBenchmarkRunner(subSingleBenchmarkResult, classLoader);
+                    SubSingleBenchmarkRunner subSingleBenchmarkRunner = new SubSingleBenchmarkRunner(
+                            subSingleBenchmarkResult, solverConfigContext);
                     Future<SubSingleBenchmarkRunner> future = executorService.submit(subSingleBenchmarkRunner);
                     futureMap.put(subSingleBenchmarkRunner, future);
                 }

@@ -38,6 +38,7 @@ import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.AbstractConfig;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,10 +187,10 @@ public class PlannerBenchmarkConfig {
     // ************************************************************************
 
     public PlannerBenchmark buildPlannerBenchmark() {
-        return buildPlannerBenchmark(null);
+        return buildPlannerBenchmark(new SolverConfigContext());
     }
 
-    public PlannerBenchmark buildPlannerBenchmark(ClassLoader classLoader) {
+    public PlannerBenchmark buildPlannerBenchmark(SolverConfigContext solverConfigContext) {
         validate();
         generateSolverBenchmarkConfigNames();
         List<SolverBenchmarkConfig> effectiveSolverBenchmarkConfigList = buildEffectiveSolverBenchmarkConfigList();
@@ -197,7 +198,7 @@ public class PlannerBenchmarkConfig {
         PlannerBenchmarkResult plannerBenchmarkResult = new PlannerBenchmarkResult();
         plannerBenchmarkResult.setName(name);
         plannerBenchmarkResult.setAggregation(false);
-        PlannerBenchmarkRunner plannerBenchmarkRunner = new PlannerBenchmarkRunner(plannerBenchmarkResult, classLoader);
+        PlannerBenchmarkRunner plannerBenchmarkRunner = new PlannerBenchmarkRunner(plannerBenchmarkResult, solverConfigContext);
         plannerBenchmarkRunner.setBenchmarkDirectory(benchmarkDirectory);
         plannerBenchmarkResult.setParallelBenchmarkCount(resolveParallelBenchmarkCount());
         plannerBenchmarkResult.setWarmUpTimeMillisSpentLimit(calculateWarmUpTimeMillisSpentLimit());

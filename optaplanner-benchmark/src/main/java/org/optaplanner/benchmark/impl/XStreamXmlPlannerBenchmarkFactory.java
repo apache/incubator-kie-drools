@@ -30,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
 
 /**
@@ -37,24 +38,23 @@ import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
  */
 public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
 
-    protected final ClassLoader classLoader;
+    protected final SolverConfigContext solverConfigContext;
     protected XStream xStream;
     protected PlannerBenchmarkConfig plannerBenchmarkConfig = null;
 
     public XStreamXmlPlannerBenchmarkFactory() {
-        this(null);
+        this(new SolverConfigContext());
     }
 
     /**
-     * @param classLoader sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     *      null to use the default {@link ClassLoader}
+     * @param solverConfigContext never null
      */
-    public XStreamXmlPlannerBenchmarkFactory(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+    public XStreamXmlPlannerBenchmarkFactory(SolverConfigContext solverConfigContext) {
+        this.solverConfigContext = solverConfigContext;
         xStream = XStreamXmlSolverFactory.buildXStream();
         xStream.processAnnotations(PlannerBenchmarkConfig.class);
-        if (classLoader != null) {
-            xStream.setClassLoader(classLoader);
+        if (solverConfigContext.getClassLoader() != null) {
+            xStream.setClassLoader(solverConfigContext.getClassLoader());
         }
     }
 
@@ -80,7 +80,7 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
      * @return this
      */
     public XStreamXmlPlannerBenchmarkFactory configure(String benchmarkConfigResource) {
-        ClassLoader actualClassLoader = (classLoader != null) ? classLoader : getClass().getClassLoader();
+        ClassLoader actualClassLoader = solverConfigContext.determineActualClassLoader();
         InputStream in = actualClassLoader.getResourceAsStream(benchmarkConfigResource);
         if (in == null) {
             String errorMessage = "The benchmarkConfigResource (" + benchmarkConfigResource
@@ -144,7 +144,7 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
             throw new IllegalStateException("The plannerBenchmarkConfig (" + plannerBenchmarkConfig + ") is null," +
                     " call configure(...) first.");
         }
-        return plannerBenchmarkConfig.buildPlannerBenchmark(classLoader);
+        return plannerBenchmarkConfig.buildPlannerBenchmark(solverConfigContext);
     }
 
 }
