@@ -84,10 +84,84 @@
       <artifactId>h2</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.codehaus.btm</groupId>
+      <artifactId>btm</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
+  <properties>
+    <maven.btm.maxPoolSize>16</maven.btm.maxPoolSize>
+    <maven.hibernate.dialect>org.hibernate.dialect.H2Dialect</maven.hibernate.dialect>
+    <maven.datasource.classname>bitronix.tm.resource.jdbc.lrc.LrcXADataSource</maven.datasource.classname>
+    <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
+    <maven.jdbc.db.name/>
+    <maven.jdbc.db.port/>
+    <maven.jdbc.db.server/>
+    <maven.jdbc.driver.jar/>
+    <maven.jdbc.username></maven.jdbc.username>
+    <maven.jdbc.password></maven.jdbc.password>
+    <maven.jdbc.url>jdbc:h2:</maven.jdbc.url>
+    <maven.jdbc.schema>public</maven.jdbc.schema>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>database</id>
+      <dependencyManagement>
+        <dependencies>
+          <dependency>
+            <groupId>org.jbpm</groupId>
+            <artifactId>downloaded-jdbc-driver-jar</artifactId>
+            <version>1.0</version>
+          </dependency>
+        </dependencies>
+      </dependencyManagement>
+
+      <dependencies>
+        <!--  Add the downloaded jdbc driver jar for the database to the classpath.
+              !: <groupId>, <artifactId> and <version> are just placeholders and DO NOT MATTER! -->
+        <dependency>
+          <groupId>org.jbpm</groupId>
+          <artifactId>downloaded-jdbc-driver-jar</artifactId>
+          <scope>system</scope>
+          <systemPath>${maven.jdbc.driver.jar}</systemPath>
+        </dependency>
+      </dependencies>
+    </profile>
+  </profiles>
+
   <build>
+
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>false</filtering>
+      </testResource>
+      <testResource>
+        <directory>src/test/filtered-resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+
     <plugins>
+      <plugin>
+        <!--  ensure that db files are deleted before _any_ run
+              otherwise we get tests failing because of leftover db's -->
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>btm*</include>
+                <include>JPADroolsFlow.h2.db</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.felix</groupId>
         <artifactId>maven-bundle-plugin</artifactId>
