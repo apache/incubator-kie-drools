@@ -16,29 +16,32 @@
 
 package org.optaplanner.persistence.jpa.impl.score;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Persistence;
-import javax.persistence.Transient;
-
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.optaplanner.core.api.score.Score;
-import org.optaplanner.persistence.jpa.impl.score.buildin.hardsoft.HardSoftScoreHibernateTypeTest;
+import org.optaplanner.persistence.jpa.util.PersistenceUtil;
 
-import static org.junit.Assert.*;
+import javax.persistence.*;
+import java.util.HashMap;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public abstract class AbstractScoreHibernateTypeTest {
 
+    private HashMap<String, Object> context;
+
     protected static EntityManagerFactory entityManagerFactory;
 
-    @BeforeClass
-    public static void setup() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("optaplanner-persistence-jpa-test");
+    @Before
+    public void setUp() throws Exception {
+        context = PersistenceUtil.setupWithPoolingDataSource(PersistenceUtil.ENTITY_MANAGER_FACTORY);
+        entityManagerFactory = (EntityManagerFactory) context.get(PersistenceUtil.ENTITY_MANAGER_FACTORY);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+        PersistenceUtil.cleanUp(context);
     }
 
     protected <S extends Score, E extends AbstractTestJpaEntity<S>> Long persistAndAssert(E jpaEntity) {
