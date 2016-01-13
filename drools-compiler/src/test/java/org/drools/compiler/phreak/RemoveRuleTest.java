@@ -131,19 +131,10 @@ public class RemoveRuleTest {
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
-        ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
-
-        LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
-        SegmentMemory sm = lm.getSegmentMemory();
-        SegmentMemory subSm = sm.getFirst();
-        SegmentMemory mainSm = subSm.getNext();
-
         wm.fireAllRules();
         assertEquals(2, list.size() );
         assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
         assertEquals( "r1", ((Match)list.get(1)).getRule().getName() );
-
 
         kbase.removeRule("org.kie", "r1");
         wm.insert(new A(1));

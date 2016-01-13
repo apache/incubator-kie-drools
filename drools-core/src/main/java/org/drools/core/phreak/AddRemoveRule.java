@@ -143,7 +143,6 @@ public class AddRemoveRule {
          kBase.invalidateSegmentPrototype( splitStartNode, true );
 
          for ( InternalWorkingMemory wm : wms ) {
-
              PathMemory removedPmem = wm.getNodeMemory( tn );
              int s = getSegmentPos(splitStartNode, null);
 
@@ -153,12 +152,6 @@ public class AddRemoveRule {
              // must be done before segments are mutated
              flushStagedTuples(splitStartNode, removedPmem, wm, true);
              wm.flushPropagations();
-
-             //
-             if (NodeTypeEnums.LeftInputAdapterNode == splitStartNode.getType() && splitStartNode.getAssociationsSize() == 1) {
-                 // rule added with no sharing
-                 deleteLiaFacts(splitStartNode, wm);
-             }
 
              LeftTupleSink sink;
              if ( splitStartNode.getAssociationsSize() == 1 ) {
@@ -190,6 +183,7 @@ public class AddRemoveRule {
                  if ( splitStartNode.getSinkPropagator().size() == 2 ) {
                      // can only be two if the removing node causes the split to be removed
                      int p = 0;
+                     boolean firstRulePath = true;
                      for ( PathMemory pmem : pathMems) {
                          pmem.setlinkedSegmentMask(0);
                          SegmentMemory[] smems = previousSmems.get(p);
@@ -197,21 +191,26 @@ public class AddRemoveRule {
                          for (int i = 0; i < smems.length; i++ ) {
                              SegmentMemory sm = smems[i];
                              if ( sm == null ) {
-                                 // if SegmentMemory has not been yet initialized enforce its creation here to allow merging
-                                 sm = SegmentUtilities.createSegmentMemory( splitStartNode, wm );
+                                 if (i == 0) {
+                                     // if SegmentMemory has not been yet initialized enforce its creation here to allow merging
+                                     sm = SegmentUtilities.createSegmentMemory( splitStartNode, wm );
+                                 } else {
+                                     continue;
+                                 }
                              }
 
                              if ( i < s ) {
-                                 correctSegmentBeforeSplitOnRemove(wm, removedPmem, pmem, sm, p);
+                                 correctSegmentBeforeSplitOnRemove(wm, removedPmem, pmem, sm, firstRulePath);
                              } else if ( i == s ) {
                                  if (smems[i+1] != null) {
-                                     correctSegmentOnSplitOnRemove(wm,  sm, smems[i+1], pmem, removedPmem, p);
+                                     correctSegmentOnSplitOnRemove(wm,  sm, smems[i+1], pmem, removedPmem, firstRulePath);
                                      i++; // increase to skip merged segment
                                  }
                              } else if (i > s) {
                                  correctSegmentAfterSplitOnRemove(wm, pmem, i, sm);
                              }
                          }
+                         firstRulePath &= pmem.getNodeType() == NodeTypeEnums.RightInputAdaterNode;
                          p++;
                      }
                  } else {
@@ -261,7 +260,7 @@ public class AddRemoveRule {
          LeftTupleSink sink;
          Memory mem;
          long bit = 1;
-         if ( smems.length == 1 ) {
+         if ( splitStartNode.getAssociationsSize() == 1 && (smems[0] == null || smems[0].getTipNode().getType() != NodeTypeEnums.LeftInputAdapterNode) ) {
              // there is no sharing
              sm = smems[0];
              if ( sm == null ) {
@@ -373,9 +372,9 @@ public class AddRemoveRule {
         sm.notifyRuleLinkSegment(wm);
     }
 
-    private static void correctSegmentBeforeSplitOnRemove(InternalWorkingMemory wm, PathMemory removedPmem, PathMemory pmem, SegmentMemory sm, int p) {
+    private static void correctSegmentBeforeSplitOnRemove(InternalWorkingMemory wm, PathMemory removedPmem, PathMemory pmem, SegmentMemory sm, boolean firstRulePath) {
          pmem.setSegmentMemory( sm.getPos(), sm );
-         if ( p == 0 ) {
+         if ( firstRulePath ) {
              // only handle for the first PathMemory, all others are shared and duplicate until this point
              sm.removePathMemory( removedPmem );
              sm.notifyRuleLinkSegment(wm);
@@ -442,8 +441,8 @@ public class AddRemoveRule {
         }
     }
 
-    private static void correctSegmentOnSplitOnRemove(InternalWorkingMemory wm, SegmentMemory sm1,SegmentMemory sm2,  PathMemory pmem, PathMemory removedPmem, int p) {
-         if ( p == 0 ) {
+    private static void correctSegmentOnSplitOnRemove(InternalWorkingMemory wm, SegmentMemory sm1,SegmentMemory sm2,  PathMemory pmem, PathMemory removedPmem, boolean firstRulePath) {
+         if ( firstRulePath ) {
              mergeSegment(sm1, sm2);
 
              pmem.setSegmentMemory( sm1.getPos(), sm1 );
@@ -538,29 +537,6 @@ public class AddRemoveRule {
             subLts = subLts.getLeftTupleSource();
         }
         insertFacts( ( LeftTupleSink ) subLts, wm);
-    }
-
-    private static void deleteLiaFacts(LeftTupleSource startNode, InternalWorkingMemory wm) {
-        LeftInputAdapterNode lian = ( LeftInputAdapterNode ) startNode;
-        ObjectSource os = lian.getObjectSource();
-        while (os.getType() != NodeTypeEnums.ObjectTypeNode) {
-            os = os.getParentObjectSource();
-        }
-        ObjectTypeNode otn = (ObjectTypeNode) os;
-        final ObjectTypeNodeMemory omem = wm.getNodeMemory(otn);
-        Iterator<InternalFactHandle> it = omem.iterator();
-
-        while (it.hasNext()) {
-            InternalFactHandle fh = it.next();
-            for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; ) {
-                LeftTuple next = childLt.getHandleNext();
-                //stagedLeftTuples
-                if ( childLt.getTupleSink() == lian ) {
-                    fh.removeLeftTuple(childLt);
-                }
-                childLt = next;
-            }
-        }
     }
 
     public static void deleteFacts(LeftTupleSink startNode, InternalWorkingMemory wm) {
@@ -788,10 +764,7 @@ public class AddRemoveRule {
                     followPeer(childLt, smem, sinks, i-1, insert);
                 }
             }
-
         }
-
-
     }
 
     private static void deletePeerLeftTuple(LeftTuple lt, LeftTupleSink newNode, SegmentMemory smem) {
@@ -1016,7 +989,7 @@ public class AddRemoveRule {
          return sm2;
      }
 
-     public static void mergeSegment(SegmentMemory sm1, SegmentMemory sm2) {
+     private static void mergeSegment(SegmentMemory sm1, SegmentMemory sm2) {
          // sm1 may not be linked yet to sm2 because sm2 has been just created
          if (sm1.contains( sm2 )) {
              sm1.remove( sm2 );
@@ -1030,6 +1003,8 @@ public class AddRemoveRule {
                  sm = next;
              }
          }
+
+         sm1.setStagedTuples( sm2.getStagedLeftTuples() );
 
          // re-assigned tip nodes
          sm1.setTipNode(sm2.getTipNode());
@@ -1133,5 +1108,4 @@ public class AddRemoveRule {
          }
          return nodePos;
      }
-
- }
+}
