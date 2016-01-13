@@ -143,7 +143,6 @@ public class AddRemoveRule {
          kBase.invalidateSegmentPrototype( splitStartNode, true );
 
          for ( InternalWorkingMemory wm : wms ) {
-
              PathMemory removedPmem = wm.getNodeMemory( tn );
              int s = getSegmentPos(splitStartNode, null);
 
@@ -152,13 +151,7 @@ public class AddRemoveRule {
 
              // must be done before segments are mutated
              flushStagedTuples(splitStartNode, removedPmem, wm, true);
-             wm.flushPropagations();
 
-             //
-             if (NodeTypeEnums.LeftInputAdapterNode == splitStartNode.getType() && splitStartNode.getAssociationsSize() == 1) {
-                 // rule added with no sharing
-                 deleteLiaFacts(splitStartNode, wm);
-             }
 
              LeftTupleSink sink;
              if ( splitStartNode.getAssociationsSize() == 1 ) {
@@ -261,7 +254,7 @@ public class AddRemoveRule {
          LeftTupleSink sink;
          Memory mem;
          long bit = 1;
-         if ( smems.length == 1 ) {
+         if ( splitStartNode.getAssociationsSize() == 1 ) {
              // there is no sharing
              sm = smems[0];
              if ( sm == null ) {
@@ -538,29 +531,6 @@ public class AddRemoveRule {
             subLts = subLts.getLeftTupleSource();
         }
         insertFacts( ( LeftTupleSink ) subLts, wm);
-    }
-
-    private static void deleteLiaFacts(LeftTupleSource startNode, InternalWorkingMemory wm) {
-        LeftInputAdapterNode lian = ( LeftInputAdapterNode ) startNode;
-        ObjectSource os = lian.getObjectSource();
-        while (os.getType() != NodeTypeEnums.ObjectTypeNode) {
-            os = os.getParentObjectSource();
-        }
-        ObjectTypeNode otn = (ObjectTypeNode) os;
-        final ObjectTypeNodeMemory omem = wm.getNodeMemory(otn);
-        Iterator<InternalFactHandle> it = omem.iterator();
-
-        while (it.hasNext()) {
-            InternalFactHandle fh = it.next();
-            for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; ) {
-                LeftTuple next = childLt.getHandleNext();
-                //stagedLeftTuples
-                if ( childLt.getTupleSink() == lian ) {
-                    fh.removeLeftTuple(childLt);
-                }
-                childLt = next;
-            }
-        }
     }
 
     public static void deleteFacts(LeftTupleSink startNode, InternalWorkingMemory wm) {

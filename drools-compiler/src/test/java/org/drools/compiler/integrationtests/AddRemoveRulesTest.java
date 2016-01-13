@@ -40,6 +40,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -163,9 +164,6 @@ public class AddRemoveRulesTest {
 
     public boolean deleteRule(String name) {
         this.base.removeRule(packageName, name);
-        for(KiePackage kp : this.base.getKiePackages())
-            for( Rule r : kp.getRules())
-                System.out.println(r.getName()+" "+r.getPackageName());
         return true;
 
     }
@@ -364,10 +362,12 @@ public class AddRemoveRulesTest {
                                              "   list.add( \"ok\" ); \n" +
                                              "end ";
 
-    private StatefulKnowledgeSession buildSessionInTwoSteps( String drl1, String drl2 ) {
+    private StatefulKnowledgeSession buildSessionInTwoSteps( String... drls ) {
+
+        String drl = drls[0];
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl1.getBytes() ), ResourceType.DRL );
+        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
@@ -377,12 +377,16 @@ public class AddRemoveRulesTest {
         StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
         kSession.fireAllRules();
 
-        KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder( kSession.getKieBase() );
-        kbuilder2.add( ResourceFactory.newByteArrayResource( drl2.getBytes() ), ResourceType.DRL );
-        if ( kbuilder2.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
+
+        for ( int i = 1; i < drls.length; i++) {
+            drl = drls[i];
+            KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder(kSession.getKieBase());
+            kbuilder2.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
+            if (kbuilder2.hasErrors()) {
+                fail(kbuilder.getErrors().toString());
+            }
+            kSession.getKieBase().addKnowledgePackages(kbuilder2.getKnowledgePackages());
         }
-        kSession.getKieBase().addKnowledgePackages( kbuilder2.getKnowledgePackages() );
 
         return kSession;
     }
@@ -785,5 +789,117 @@ public class AddRemoveRulesTest {
         session.getKieBase().removeKnowledgePackage(packageName2);
         session.insert(new String());
         session.fireAllRules();
+    }
+
+    @Test
+    public void testRemoveNonSharedRuleWithSubNetwork() {
+        String packageName = "pk1";
+
+        String rule1 = "package " + packageName + ";" +
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "    Integer()\n" +
+                "    exists Integer() from globalInt.get()\n" +
+                "then\n" +
+                "end\n";
+
+
+        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1 );
+
+        session.setGlobal( "globalInt", new AtomicInteger(0) );
+        session.insert( 1 );
+        session.insert( "1" );
+
+        session.fireAllRules();
+        session.getKieBase().removeKnowledgePackage(packageName);
+    }
+
+    @Test
+    public void testRemoveWithShareRuleWithSubNetwork() {
+        String rule1 = "package " + packageName + ";" +
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "    Integer()\n" +
+                "    exists Integer() from globalInt.get()\n" +
+                "then\n" +
+                " list.add('R1'); \n" +
+                "end\n";
+
+        String rule2 = "package " + packageName + ";" +
+                "global java.util.List list\n" +
+                "rule R2 \n" +
+                "when \n" +
+                "    $s1 : String()\n" +
+                "    $s2 : String()\n" +
+                "then \n" +
+                " list.add('R2'); \n" +
+                "end";
+
+        List list = new ArrayList();
+
+        // delete before first fireAllRules
+        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
+        base = session.getKieBase();
+        session.setGlobal( "globalInt", new AtomicInteger(0) );
+        session.setGlobal("list", list);
+        session.insert( 1 );
+        session.insert( "1" );
+        deleteRule( "R2" );
+        session.fireAllRules();
+
+        deleteRule( "R1" );
+        session.fireAllRules();
+        assertEquals("[R1]", list.toString());
+        list.clear();
+
+        // repeat but reverse the rule order
+        session = buildSessionInTwoSteps( rule2, rule1 );
+        base = session.getKieBase();
+
+        session.setGlobal( "globalInt", new AtomicInteger(0) );
+        session.setGlobal("list", list);
+        session.insert( 1 );
+        session.insert( "1" );
+        deleteRule( "R2" );
+        session.fireAllRules();
+
+        deleteRule( "R1" );
+        session.fireAllRules();
+        assertEquals("[R1]", list.toString());
+        list.clear();
+
+        // delete after first fireAllRules
+        session = buildSessionInTwoSteps( rule2, rule1 );
+        base = session.getKieBase();
+        session.setGlobal( "globalInt", new AtomicInteger(0) );
+        session.setGlobal("list", list);
+        session.insert( 1 );
+        session.insert( "1" );
+        session.fireAllRules();
+        deleteRule( "R2" );
+
+        deleteRule( "R1" );
+        session.fireAllRules();
+        assertEquals("[R1, R2]", list.toString());
+        list.clear();
+
+        // repeat but reverse the rule order
+        session = buildSessionInTwoSteps( rule2, rule1 );
+        base = session.getKieBase();
+
+        session.setGlobal( "globalInt", new AtomicInteger(0) );
+        session.setGlobal("list", list);
+        session.insert( 1 );
+        session.insert( "1" );
+        session.fireAllRules();
+        deleteRule( "R2" );
+
+        deleteRule( "R1" );
+        session.fireAllRules();
+        assertEquals("[R1, R2]", list.toString());
+        list.clear();
     }
 }
