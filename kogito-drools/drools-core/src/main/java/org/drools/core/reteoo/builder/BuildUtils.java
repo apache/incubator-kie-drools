@@ -118,7 +118,7 @@ public class BuildUtils {
             if ( (context.getTupleSource() != null) && NodeTypeEnums.isLeftTupleSink( candidate ) ) {
                 node = context.getTupleSource().getSinkPropagator().getMatchingNode( candidate );
             } else if ( (context.getObjectSource() != null) && NodeTypeEnums.isObjectSink( candidate ) ) {
-                node = context.getObjectSource().getSinkPropagator().getMatchingNode( candidate );
+                node = context.getObjectSource().getObjectSinkPropagator().getMatchingNode( candidate );
             } else {
                 throw new RuntimeException( "This is a bug on node sharing verification. Please report to development team." );
             }

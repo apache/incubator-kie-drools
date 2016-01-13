@@ -114,7 +114,6 @@ public abstract class BaseNode
     public boolean remove(RuleRemovalContext context,
                        ReteooBuilder builder,
                        InternalWorkingMemory[] workingMemories) {
-        this.removeAssociation( context.getRule() );
         boolean removed = doRemove( context, builder, workingMemories );
         if ( !this.isInUse() && !(this instanceof EntryPointNode) ) {
             builder.getIdGenerator().releaseId( this.getId() );
@@ -174,12 +173,16 @@ public abstract class BaseNode
      * Removes the association to the given rule from the
      * associations map.
      */
-    public void removeAssociation( Rule rule ) {
-        this.associations.remove(rule);
+    public boolean removeAssociation( Rule rule ) {
+        return this.associations.removeKey(rule);
     }
 
     public int getAssociationsSize() {
         return this.associations.size();
+    }
+
+    public int getAssociatedRuleSize() {
+        return this.associations.getKeySize();
     }
 
     public int getAssociationsSize(Rule rule) {

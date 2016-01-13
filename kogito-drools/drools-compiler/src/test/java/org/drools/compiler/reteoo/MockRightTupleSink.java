@@ -78,6 +78,10 @@ public class MockRightTupleSink
         return 0;
     }
 
+    public int getAssociatedRuleSize() {
+        return 0;
+    }
+
     public int getAssociationsSize(Rule rule) {
         return 0;
     }

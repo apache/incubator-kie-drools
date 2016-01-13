@@ -334,8 +334,9 @@ public class EvalConditionNode extends LeftTupleSource
     }
 
     @Override
-    public void removeAssociation( Rule rule ) {
-        super.removeAssociation(rule);
+    public boolean removeAssociation( Rule rule ) {
+        boolean result = super.removeAssociation(rule);
         componentsMap.remove(rule);
+        return result;
     }
 }

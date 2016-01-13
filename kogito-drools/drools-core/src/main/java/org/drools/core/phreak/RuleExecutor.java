@@ -95,7 +95,7 @@ public class RuleExecutor {
                 }
             }
 
-            RuleTerminalNode rtn = (RuleTerminalNode) pmem.getNetworkNode();
+            RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
             RuleImpl rule = rtn.getRule();
             Tuple tuple = getNextTuple();
             

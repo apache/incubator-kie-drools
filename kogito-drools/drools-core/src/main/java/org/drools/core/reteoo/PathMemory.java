@@ -37,22 +37,22 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
 
     private          AtomicBitwiseLong linkedSegmentMask;
     private          long              allLinkedMaskTest;
-    private          NetworkNode       networkNode;
+    private          PathEndNode pathEndNode;
     private volatile RuleAgendaItem    agendaItem;
     private          SegmentMemory[]   segmentMemories;
     private          SegmentMemory     segmentMemory;
 
-    public PathMemory(NetworkNode networkNode) {
-        this.networkNode = networkNode;
+    public PathMemory(PathEndNode pathEndNode) {
+        this.pathEndNode = pathEndNode;
         this.linkedSegmentMask = new AtomicBitwiseLong();
     }
 
-    public NetworkNode getNetworkNode() {
-        return networkNode;
+    public PathEndNode getPathEndNode() {
+        return pathEndNode;
     }
 
     public RuleImpl getRule() {
-        return networkNode instanceof TerminalNode ? ((TerminalNode) networkNode).getRule() : null;
+        return pathEndNode instanceof TerminalNode ? ((TerminalNode) pathEndNode).getRule() : null;
     }
 
     public RuleAgendaItem getRuleAgendaItem() {
@@ -83,8 +83,8 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
                             InternalWorkingMemory wm) {
         linkedSegmentMask.getAndBitwiseOr( mask );
         if (isLogTraceEnabled) {
-            if (NodeTypeEnums.isTerminalNode(getNetworkNode())) {
-                TerminalNode rtn = (TerminalNode) getNetworkNode();
+            if (NodeTypeEnums.isTerminalNode(getPathEndNode())) {
+                TerminalNode rtn = (TerminalNode) getPathEndNode();
                 log.trace("  LinkSegment smask={} rmask={} name={}", mask, linkedSegmentMask, rtn.getRule().getName());
             } else {
                 log.trace("  LinkSegment smask={} rmask={} name={}", mask, "RiaNode");
@@ -101,7 +101,7 @@ public class PathMemory extends AbstractBaseLinkedListNode<Memory>
     }
 
     private TerminalNode ensureAgendaItemCreated(InternalWorkingMemory wm) {
-        TerminalNode rtn = (TerminalNode) getNetworkNode();
+        TerminalNode rtn = (TerminalNode) getPathEndNode();
         if (agendaItem == null) {
             int salience = ( rtn.getRule().getSalience() instanceof MVELSalienceExpression)
                            ? 0

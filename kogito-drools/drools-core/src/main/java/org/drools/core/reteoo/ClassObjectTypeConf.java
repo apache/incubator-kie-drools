@@ -219,7 +219,7 @@ public class ClassObjectTypeConf
 
     public boolean isActive() {
         ObjectTypeNode otn = getConcreteObjectTypeNode();
-        return otn != null && otn.getSinkPropagator().getSinks().length > 0;
+        return otn != null && otn.getObjectSinkPropagator().getSinks().length > 0;
     }
 
     public boolean isEvent() {

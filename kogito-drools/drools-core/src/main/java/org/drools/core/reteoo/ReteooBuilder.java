@@ -26,6 +26,7 @@ import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.AddRemoveRule;
 import org.drools.core.rule.InvalidPatternException;
 import org.drools.core.rule.WindowDeclaration;
+import org.kie.api.definition.rule.Rule;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -182,6 +183,8 @@ public class ReteooBuilder
         }
 
         BaseNode node = (BaseNode) tn;
+        removeNodeAssociation(node, context.getRule());
+
         Set<BaseNode> removedSources = new HashSet<BaseNode>();
         LinkedList<BaseNode> betaStack = new LinkedList<BaseNode>();
         LinkedList<BaseNode> alphaStack = new LinkedList<BaseNode>();
@@ -263,6 +266,22 @@ public class ReteooBuilder
         }
     }
 
+    private void removeNodeAssociation(BaseNode node, Rule rule) {
+        if (node == null || !node.removeAssociation( rule )) {
+            return;
+        }
+        if (node instanceof LeftTupleNode) {
+            removeNodeAssociation( ((LeftTupleNode)node).getLeftTupleSource(), rule );
+        }
+        if ( NodeTypeEnums.isBetaNode( node ) ) {
+            removeNodeAssociation( ((BetaNode) node).getRightInput(), rule );
+        } else if ( node.getType() == NodeTypeEnums.LeftInputAdapterNode ) {
+            removeNodeAssociation( ((LeftInputAdapterNode) node).getObjectSource(), rule );
+        } else if ( node.getType() == NodeTypeEnums.AlphaNode ) {
+            removeNodeAssociation( ((AlphaNode) node).getParentObjectSource(), rule );
+        }
+    }
+
     public void resetMasks(List<BaseNode> nodes) {
         NodeSet leafSet = new NodeSet();
 
@@ -294,7 +313,7 @@ public class ReteooBuilder
     private void updateLeafSet(BaseNode baseNode, NodeSet leafSet) {
         if ( baseNode.getType() == NodeTypeEnums.AlphaNode ) {
             ((AlphaNode) baseNode).resetInferredMask();
-            for ( ObjectSink sink : ((AlphaNode) baseNode).getSinkPropagator().getSinks() ) {
+            for ( ObjectSink sink : ((AlphaNode) baseNode).getObjectSinkPropagator().getSinks() ) {
                 if ( ((BaseNode)sink).isInUse() ) {
                     updateLeafSet( ( BaseNode ) sink, leafSet );
                 }

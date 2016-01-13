@@ -174,7 +174,12 @@ public class LinkedList<T extends LinkedListNode<T>>
     }
 
     public boolean contains(T node) {
-        return this.firstNode == node || node.getPrevious() != null;
+        for (T currentNode = firstNode; currentNode != null; currentNode = currentNode.getNext()) {
+            if (currentNode == node) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

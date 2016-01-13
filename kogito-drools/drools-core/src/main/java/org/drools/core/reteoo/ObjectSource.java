@@ -227,7 +227,7 @@ public abstract class ObjectSource extends BaseNode
         this.source.networkUpdated(updateContext);
     }
 
-    public ObjectSinkPropagator getSinkPropagator() {
+    public ObjectSinkPropagator getObjectSinkPropagator() {
         return this.sink;
     }
 

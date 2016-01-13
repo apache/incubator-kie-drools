@@ -893,7 +893,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         LeftInputAdapterNode.doInsertObject( handle, pCtx, lian, this, lmem, false, queryObject.isOpen() );
 
         for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
-            RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode() );
+            RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getPathEndNode() );
             evaluator.getRuleExecutor().setDirty( true );
             evaluator.getRuleExecutor().evaluateNetworkAndFire( this, null, 0, -1 );
         }
@@ -916,7 +916,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             LeftInputAdapterNode.doDeleteObject( childLeftTuple, childLeftTuple.getPropagationContext(),  lsmem, this, lian, false, lmem );
 
             for ( PathMemory rm : lmem.getSegmentMemory().getPathMemories() ) {
-                RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getNetworkNode() );
+                RuleAgendaItem evaluator = agenda.createRuleAgendaItem( Integer.MAX_VALUE, rm, (TerminalNode) rm.getPathEndNode() );
                 evaluator.getRuleExecutor().setDirty( true );
                 evaluator.getRuleExecutor().evaluateNetworkAndFire( this, null, 0, -1 );
             }

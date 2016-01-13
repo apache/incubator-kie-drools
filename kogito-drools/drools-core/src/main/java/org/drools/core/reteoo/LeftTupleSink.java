@@ -31,6 +31,7 @@ import java.io.Externalizable;
  */
 public interface LeftTupleSink
     extends
+    LeftTupleNode,
     Externalizable,
     Sink {
 
@@ -61,8 +62,6 @@ public interface LeftTupleSink
                          PropagationContext context,
                          InternalWorkingMemory workingMemory);
     
-    LeftTupleSource getLeftTupleSource();
-
     void modifyLeftTuple(LeftTuple leftTuple,
                          PropagationContext context,
                          InternalWorkingMemory workingMemory);

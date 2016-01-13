@@ -406,7 +406,7 @@ public class XpathTest {
 
         EntryPointNode epn = ( (InternalKnowledgeBase) ksession.getKieBase() ).getRete().getEntryPointNodes().values().iterator().next();
         ObjectTypeNode otn = epn.getObjectTypeNodes().values().iterator().next();
-        LeftInputAdapterNode lian = (LeftInputAdapterNode)otn.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode lian = (LeftInputAdapterNode)otn.getObjectSinkPropagator().getSinks()[0];
         ReactiveFromNode from1 = (ReactiveFromNode)lian.getSinkPropagator().getSinks()[0];
         ReactiveFromNode from2 = (ReactiveFromNode)from1.getSinkPropagator().getSinks()[0];
         ReactiveFromNode from3 = (ReactiveFromNode)from2.getSinkPropagator().getSinks()[0];

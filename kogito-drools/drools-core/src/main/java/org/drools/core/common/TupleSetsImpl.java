@@ -273,10 +273,6 @@ public class TupleSetsImpl<T extends Tuple> implements TupleSets<T> {
         return clone;
     }
 
-    /**
-     * clear also ensures all contained LeftTuples are cleared
-     * reset does not touch any contained tuples
-     */
     public void clear() {
         clear( getInsertFirst() );
         clear( getDeleteFirst() );

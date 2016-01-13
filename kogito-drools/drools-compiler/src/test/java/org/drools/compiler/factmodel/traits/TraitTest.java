@@ -5596,7 +5596,7 @@ public class TraitTest extends CommonTestMethodBase {
         NamedEntryPoint nep = ( (NamedEntryPoint) kSession.getEntryPoint( EntryPointId.DEFAULT.getEntryPointId() ) );
         ObjectTypeNode otn = nep.getEntryPointNode().getObjectTypeNodes().get( new ClassObjectType( Entity.class ) );
         assertNotNull( otn );
-        assertEquals( 1, otn.getSinkPropagator().getSinks().length );
+        assertEquals( 1, otn.getObjectSinkPropagator().getSinks().length );
     }
 
 

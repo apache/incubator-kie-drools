@@ -64,7 +64,7 @@ public class ObjectTypeNodeParser {
      * @see NetworkHandler
      */
     public void accept(NetworkHandler handler) {
-        ObjectSinkPropagator propagator = objectTypeNode.getSinkPropagator();
+        ObjectSinkPropagator propagator = objectTypeNode.getObjectSinkPropagator();
 
         handler.startObjectTypeNode(objectTypeNode);
         traversePropagator(propagator, handler);
@@ -132,7 +132,7 @@ public class ObjectTypeNodeParser {
 
                 handler.startHashedAlphaNode(alphaNode, hashKey.getObjectValue());
                 // traverse the propagator for each alpha
-                traversePropagator(alphaNode.getSinkPropagator(), handler);
+                traversePropagator( alphaNode.getObjectSinkPropagator(), handler );
 
                 handler.endHashedAlphaNode(alphaNode, hashKey.getObjectValue());
             }
@@ -148,7 +148,7 @@ public class ObjectTypeNodeParser {
 
             handler.startNonHashedAlphaNode(alphaNode);
 
-            traversePropagator(alphaNode.getSinkPropagator(), handler);
+            traversePropagator( alphaNode.getObjectSinkPropagator(), handler );
 
             handler.endNonHashedAlphaNode(alphaNode);
         } else if (NodeTypeEnums.isBetaNode( sink ) ) {

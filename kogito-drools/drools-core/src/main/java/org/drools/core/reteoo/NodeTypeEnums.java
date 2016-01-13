@@ -95,4 +95,12 @@ public class NodeTypeEnums {
     public static boolean isLeftTupleSink(NetworkNode node) {
         return node.getType() % 2 != 0;
     }
+
+    public static boolean isEndNode(NetworkNode node) {
+        return NodeTypeEnums.isTerminalNode(node) || NodeTypeEnums.RightInputAdaterNode == node.getType();
+    }
+
+    public static boolean isLeftTupleNode(NetworkNode node) {
+        return isLeftTupleSource(node) || isLeftTupleSink(node);
+    }
 }

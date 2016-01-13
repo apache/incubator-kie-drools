@@ -317,7 +317,7 @@ public class PassiveQueryTest {
 
         for (ObjectTypeNode otn : rete.getObjectTypeNodes()) {
             if ( Integer.class == otn.getObjectType().getValueType().getClassType() ) {
-                lia = (LeftInputAdapterNode)otn.getSinkPropagator().getSinks()[0];
+                lia = (LeftInputAdapterNode)otn.getObjectSinkPropagator().getSinks()[0];
                 break;
             }
         }

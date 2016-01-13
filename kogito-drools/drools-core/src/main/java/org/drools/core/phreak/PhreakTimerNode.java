@@ -426,6 +426,10 @@ public class PhreakTimerNode {
             needEvaluation &= filter != null;
 
             for (final PathMemory pmem : timerJobCtx.getPathMemories()) {
+                if (pmem.getPathEndNode().getAssociatedRuleSize() == 0) {
+                    // if the corresponding rule has been removed avoid to link and notify this pmem
+                    continue;
+                }
                 pmem.doLinkRule( wm );
 
                 if (needEvaluation && filter.accept(new Rule[]{pmem.getRule()})) {

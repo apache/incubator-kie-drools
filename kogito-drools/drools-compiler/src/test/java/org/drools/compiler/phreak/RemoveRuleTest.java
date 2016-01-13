@@ -75,7 +75,7 @@ public class RemoveRuleTest {
         wm.setGlobal("list", list);
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
 
         LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
         SegmentMemory sm = lm.getSegmentMemory();
@@ -102,12 +102,6 @@ public class RemoveRuleTest {
         kbase.removeRule("org.kie", "r1");
 
         assertEquals( 6, countNodeMemories(nms)); // still has OTN
-
-        assertEquals( 0, bMem.getLeftTupleMemory().size() );
-        assertEquals( 0, bMem.getRightTupleMemory().size() );
-
-        assertEquals( 0, eMem.getLeftTupleMemory().size() );
-        assertEquals( 0, eMem.getRightTupleMemory().size() );
     }
 
     @Test
@@ -131,19 +125,10 @@ public class RemoveRuleTest {
         List list = new ArrayList();
         wm.setGlobal("list", list);
 
-        ObjectTypeNode aotn = getObjectTypeNode(kbase, A.class );
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
-
-        LiaNodeMemory lm = ( LiaNodeMemory ) wm.getNodeMemory(liaNode);
-        SegmentMemory sm = lm.getSegmentMemory();
-        SegmentMemory subSm = sm.getFirst();
-        SegmentMemory mainSm = subSm.getNext();
-
         wm.fireAllRules();
         assertEquals(2, list.size() );
         assertEquals( "r1", ((Match)list.get(0)).getRule().getName() );
         assertEquals( "r1", ((Match)list.get(1)).getRule().getName() );
-
 
         kbase.removeRule("org.kie", "r1");
         wm.insert(new A(1));
@@ -186,7 +171,7 @@ public class RemoveRuleTest {
         wm.fireAllRules();
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase1, A.class );
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         JoinNode bNode = (JoinNode) liaNode.getSinkPropagator().getFirstLeftTupleSink();
 
         JoinNode c1Node = (JoinNode) bNode.getSinkPropagator().getFirstLeftTupleSink();
@@ -212,9 +197,6 @@ public class RemoveRuleTest {
         assertEquals( 10, countNodeMemories(wm.getNodeMemories()));
 
         assertNull( sm.getFirst());
-
-        assertEquals( 0, c2Mem.getLeftTupleMemory().size() );
-        assertEquals( 0, c2Mem.getRightTupleMemory().size() );
 
         assertSame( sm, c1Mem.getSegmentMemory()); // c1SMem repoints back to original Smem
 
@@ -249,7 +231,7 @@ public class RemoveRuleTest {
         wm.fireAllRules();
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase1, A.class );
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         JoinNode bNode = (JoinNode) liaNode.getSinkPropagator().getFirstLeftTupleSink();
 
         EvalConditionNode e1 = (EvalConditionNode) bNode.getSinkPropagator().getFirstLeftTupleSink();
@@ -278,9 +260,6 @@ public class RemoveRuleTest {
         assertEquals( 8, countNodeMemories(wm.getNodeMemories()));
 
         assertNull( sm.getFirst());
-
-        assertEquals( 0, c2Mem.getLeftTupleMemory().size() );
-        assertEquals( 0, c2Mem.getRightTupleMemory().size() );
 
         assertSame( sm, c1Mem.getSegmentMemory()); // c1SMem repoints back to original Smem
 
@@ -316,7 +295,7 @@ public class RemoveRuleTest {
         assertEquals( 17, countNodeMemories(wm.getNodeMemories()));
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase1, A.class );
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         JoinNode b1Node = (JoinNode) liaNode.getSinkPropagator().getFirstLeftTupleSink();
         JoinNode b2Node = (JoinNode) liaNode.getSinkPropagator().getLastLeftTupleSink();
         JoinNode c1Node = (JoinNode) b1Node.getSinkPropagator().getLastLeftTupleSink();
@@ -355,8 +334,6 @@ public class RemoveRuleTest {
 
         //SegmentMemory b2Smem =  sm.getFirst().remove();
         assertSame( b2Smem, b2Mem.getSegmentMemory());
-        assertEquals( 0, b2Mem.getLeftTupleMemory().size() );
-        assertEquals( 0, b2Mem.getRightTupleMemory().size() );
 
         wm.insert(new A(1));
         wm.fireAllRules();

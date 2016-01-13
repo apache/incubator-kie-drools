@@ -397,8 +397,8 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
             InternalWorkingMemory wm = ((NamedEntryPoint)ep).getInternalWorkingMemory();
             ObjectTypeNode otn = ((NamedEntryPoint)ep).getEntryPointNode().getObjectTypeNodes().values().iterator().next();
-            AlphaNode alpha = (AlphaNode)otn.getSinkPropagator().getSinks()[0];
-            BetaNode beta = (BetaNode)alpha.getSinkPropagator().getSinks()[0];
+            AlphaNode alpha = (AlphaNode)otn.getObjectSinkPropagator().getSinks()[0];
+            BetaNode beta = (BetaNode)alpha.getObjectSinkPropagator().getSinks()[0];
             BetaMemory memory = (BetaMemory) wm.getNodeMemory(beta);
             memory.getSegmentMemory();
 
@@ -688,8 +688,8 @@ public class PhreakConcurrencyTest extends CommonTestMethodBase {
             NamedEntryPoint ep = (NamedEntryPoint)epManipulators[8].getEntryPoiny();
             InternalWorkingMemory wm = ((NamedEntryPoint)ep).getInternalWorkingMemory();
             ObjectTypeNode otn = ((NamedEntryPoint)ep).getEntryPointNode().getObjectTypeNodes().values().iterator().next();
-            AlphaNode alpha = (AlphaNode)otn.getSinkPropagator().getSinks()[0];
-            ObjectSink[] sinks = alpha.getSinkPropagator().getSinks();
+            AlphaNode alpha = (AlphaNode)otn.getObjectSinkPropagator().getSinks()[0];
+            ObjectSink[] sinks = alpha.getObjectSinkPropagator().getSinks();
             for (int i = 0; i < sinks.length; i++) {
                 BetaNode beta = (BetaNode)sinks[i];
                 RuleTerminalNode rtn = (RuleTerminalNode)beta.getSinkPropagator().getSinks()[0];

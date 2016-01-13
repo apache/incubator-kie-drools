@@ -5168,7 +5168,7 @@ public class Misc2Test extends CommonTestMethodBase {
         JoinNode joinNode = null;
         for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             if ( String.class == otn.getObjectType().getValueType().getClassType() ) {
-                joinNode = (JoinNode) otn.getSinkPropagator().getSinks()[0];
+                joinNode = (JoinNode) otn.getObjectSinkPropagator().getSinks()[0];
                 break;
             }
         }
@@ -5315,8 +5315,8 @@ public class Misc2Test extends CommonTestMethodBase {
         LeftInputAdapterNode liaNode = null;
         for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             if ( String.class == otn.getObjectType().getValueType().getClassType() ) {
-                AlphaNode alphaNode = (AlphaNode) otn.getSinkPropagator().getSinks()[0];
-                liaNode = (LeftInputAdapterNode) alphaNode.getSinkPropagator().getSinks()[0];
+                AlphaNode alphaNode = (AlphaNode) otn.getObjectSinkPropagator().getSinks()[0];
+                liaNode = (LeftInputAdapterNode) alphaNode.getObjectSinkPropagator().getSinks()[0];
                 break;
             }
         }
@@ -8274,9 +8274,9 @@ public class Misc2Test extends CommonTestMethodBase {
         for ( ObjectTypeNode otn : rete.getObjectTypeNodes() ) {
             Class<?> otnType = ( (ClassObjectType) otn.getObjectType() ).getClassType();
             if ( String.class == otnType ) {
-                assertEquals( 1, otn.getSinkPropagator().size() );
+                assertEquals( 1, otn.getObjectSinkPropagator().size() );
             } else if ( InitialFact.class.isAssignableFrom( otnType ) ) {
-                assertEquals( 0, otn.getSinkPropagator().size() );
+                assertEquals( 0, otn.getObjectSinkPropagator().size() );
             } else {
                 fail("There shouldn't be other OTNs");
             }
@@ -8308,4 +8308,5 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
         assertEquals( "Bob", list.get( 0 ) );
     }
+
 }

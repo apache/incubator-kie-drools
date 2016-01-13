@@ -29,6 +29,8 @@ import java.io.ObjectOutput;
 public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     private LeftTupleSinkNodeList sinks;
 
+    private LeftTupleSink[] sinkArray;
+
     public CompositeLeftTupleSinkAdapter() {
         super( RuleBasePartitionId.MAIN_PARTITION );
     }
@@ -40,10 +42,12 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
 
     public void addTupleSink(final LeftTupleSink sink) {
         this.sinks.add( (LeftTupleSinkNode) sink );
+        sinkArray = null;
     }
 
     public void removeTupleSink(final LeftTupleSink sink) {
         this.sinks.remove( (LeftTupleSinkNode) sink );
+        sinkArray = null;
     }
     
     public  LeftTupleSinkNodeList getRawSinks() {
@@ -177,16 +181,15 @@ public class CompositeLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter 
         return null; //To change body of implemented methods use File | Settings | File Templates.
     }
     
-    
-
     public LeftTupleSink[] getSinks() {
-        final LeftTupleSink[] sinkArray = new LeftTupleSink[this.sinks.size()];
+        if (sinkArray == null) {
+            sinkArray = new LeftTupleSink[this.sinks.size()];
 
-        int i = 0;
-        for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
-            sinkArray[i++] = sink;
+            int i = 0;
+            for ( LeftTupleSinkNode sink = this.sinks.getFirst(); sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
+                sinkArray[i++] = sink;
+            }
         }
-
         return sinkArray;
     }
     

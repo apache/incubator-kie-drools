@@ -115,7 +115,7 @@ public class RuleNetworkEvaluator {
 
         TupleSets<LeftTuple> srcTuples = smem.getStagedLeftTuples();
         if (log.isTraceEnabled()) {
-            log.trace("Rule[name={}] segments={} {}", ((TerminalNode)pmem.getNetworkNode()).getRule().getName(), smems.length, srcTuples.toStringSizes());
+            log.trace("Rule[name={}] segments={} {}", ((TerminalNode)pmem.getPathEndNode()).getRule().getName(), smems.length, srcTuples.toStringSizes());
         }
         outerEval(liaNode, pmem, node, bit, nodeMem, smems, smemIndex, srcTuples, wm, stack, true, executor);
     }
@@ -609,7 +609,7 @@ public class RuleNetworkEvaluator {
                             TupleSets<LeftTuple> srcTuples,
                             RightInputAdapterNode riaNode) {
 
-        ObjectSink[] sinks = riaNode.getSinkPropagator().getSinks();
+        ObjectSink[] sinks = riaNode.getObjectSinkPropagator().getSinks();
 
         BetaNode betaNode = (BetaNode) sinks[0];
         BetaMemory bm;

@@ -441,7 +441,7 @@ public class MVELTest extends CommonTestMethodBase {
             }
         }
         
-        AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];
+        AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
@@ -497,7 +497,7 @@ public class MVELTest extends CommonTestMethodBase {
             }
         }
         
-        AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];        
+        AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
@@ -505,7 +505,7 @@ public class MVELTest extends CommonTestMethodBase {
             assertEquals( new Address("s1"), (( MvelConstraint )constraint).getField().getValue() );
         }
 
-        alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];
+        alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
@@ -561,7 +561,7 @@ public class MVELTest extends CommonTestMethodBase {
             }
         }
         
-        AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];        
+        AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
@@ -569,7 +569,7 @@ public class MVELTest extends CommonTestMethodBase {
             assertEquals( new Address("s1"), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
         }
 
-        alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];
+        alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
         if (constraint instanceof MvelConstraint) {
             assertTrue( (( MvelConstraint ) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader );
@@ -624,7 +624,7 @@ public class MVELTest extends CommonTestMethodBase {
             }
         }
         
-        AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];        
+        AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
@@ -632,7 +632,7 @@ public class MVELTest extends CommonTestMethodBase {
             assertEquals( new Address("s1"), (( MvelConstraint ) alphanode.getConstraint()).getField().getValue() );
         }
 
-        alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];
+        alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {

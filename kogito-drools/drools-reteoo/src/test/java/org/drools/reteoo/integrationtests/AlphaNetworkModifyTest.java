@@ -139,7 +139,7 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         
         ObjectTypeNode otnInit = getObjectTypeNode(kbase, "InitialFactImpl" );
         
-        LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otnInit.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otnInit.getObjectSinkPropagator().getSinks()[0];
         
         LeftTupleSink[] sinks = liaNode.getSinkPropagator().getSinks();
         
@@ -193,7 +193,7 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         
         ObjectTypeNode otnInit = getObjectTypeNode(kbase, "InitialFactImpl" );
         
-        LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otnInit.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otnInit.getObjectSinkPropagator().getSinks()[0];
         
         LeftTupleSink[] sinks = liaNode.getSinkPropagator().getSinks();
         

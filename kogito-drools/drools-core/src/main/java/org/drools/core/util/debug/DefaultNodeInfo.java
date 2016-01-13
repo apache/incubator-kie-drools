@@ -120,7 +120,7 @@ public class DefaultNodeInfo
             return epn.getObjectTypeNodes().values();
         } else if ( node instanceof ObjectSource ) {
             List<NetworkNode> result = new ArrayList<NetworkNode>();
-            for ( ObjectSink sink : ((ObjectSource)node).getSinkPropagator().getSinks() ) {
+            for ( ObjectSink sink : ((ObjectSource)node).getObjectSinkPropagator().getSinks() ) {
                 result.add( (NetworkNode) sink );
             }
             return result;
