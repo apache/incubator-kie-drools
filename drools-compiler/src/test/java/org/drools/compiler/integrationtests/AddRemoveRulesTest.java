@@ -900,4 +900,95 @@ public class AddRemoveRulesTest {
         assertEquals("[R1, R2]", list.toString());
         list.clear();
     }
+
+    @Test
+    public void testRemoveWithSplitStartAtJoinAndFollowedBySubNetworkWithSharing() {
+        //  moved the share to after the exists
+        String rule1 = "package " + packageName + ";" +
+                       "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                       "global java.util.List list\n" +
+                       "rule R1 when\n" +
+                       "    $s : String()\n" +
+                       "    Integer()\n" +
+                       "    exists Integer() from globalInt.get()\n" +
+                       "then\n" +
+                       " list.add('R1'); \n" +
+                       "end\n";
+
+        String rule2 = "package " + packageName + ";" +
+                       "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                       "global java.util.List list\n" +
+                       "rule R2 \n" +
+                       "when \n" +
+                       "    $s : String()\n" +
+                       "    Integer()\n" +
+                       "    String()\n" +
+                       "then \n" +
+                       " list.add('R2'); \n" +
+                       "end";
+
+        List list = new ArrayList();
+
+        // delete before first fireAllRules
+        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
+        base = session.getKieBase();
+        session.setGlobal( "globalInt", new AtomicInteger(0) );
+        session.setGlobal("list", list);
+        session.insert( 1 );
+        session.insert( "1" );
+        deleteRule( "R2" );
+        session.fireAllRules();
+
+        deleteRule( "R1" );
+        session.fireAllRules();
+        assertEquals("[R1]", list.toString());
+        list.clear();
+
+        // repeat but reverse the rule order
+        session = buildSessionInTwoSteps( rule2, rule1 );
+        base = session.getKieBase();
+
+        session.setGlobal( "globalInt", new AtomicInteger(0) );
+        session.setGlobal("list", list);
+        session.insert( 1 );
+        session.insert( "1" );
+        deleteRule( "R2" );
+        session.fireAllRules();
+
+        deleteRule( "R1" );
+        session.fireAllRules();
+        assertEquals("[R1]", list.toString());
+        list.clear();
+
+        // delete after first fireAllRules
+        session = buildSessionInTwoSteps( rule2, rule1 );
+        base = session.getKieBase();
+        session.setGlobal( "globalInt", new AtomicInteger(0) );
+        session.setGlobal("list", list);
+        session.insert( 1 );
+        session.insert( "1" );
+        session.fireAllRules();
+        deleteRule( "R2" );
+
+        deleteRule( "R1" );
+        session.fireAllRules();
+        assertEquals("[R1, R2]", list.toString());
+        list.clear();
+
+        // repeat but reverse the rule order
+        session = buildSessionInTwoSteps( rule2, rule1 );
+        base = session.getKieBase();
+
+        session.setGlobal( "globalInt", new AtomicInteger(0) );
+        session.setGlobal("list", list);
+        session.insert( 1 );
+        session.insert( "1" );
+        session.fireAllRules();
+        deleteRule( "R2" );
+
+        deleteRule( "R1" );
+        session.fireAllRules();
+        assertEquals("[R1, R2]", list.toString());
+        list.clear();
+    }
 }
