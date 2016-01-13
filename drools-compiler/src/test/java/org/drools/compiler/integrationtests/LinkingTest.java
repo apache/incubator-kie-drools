@@ -244,7 +244,7 @@ public class LinkingTest {
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 3, liaNode.getSinkPropagator().size() );
 
         ExistsNode existsNode2 = ( ExistsNode) liaNode.getSinkPropagator().getSinks()[1];
@@ -263,9 +263,9 @@ public class LinkingTest {
         assertEquals( 2, joinNodeD.getSinkPropagator().size() );
 
 
-        assertSame( existsNode2, (( RightInputAdapterNode) joinNodeC.getSinkPropagator().getSinks()[1]).getSinkPropagator().getSinks()[0] );
+        assertSame( existsNode2, (( RightInputAdapterNode) joinNodeC.getSinkPropagator().getSinks()[1]).getObjectSinkPropagator().getSinks()[0] );
 
-        assertSame( existsNode3, (( RightInputAdapterNode) joinNodeD.getSinkPropagator().getSinks()[1]).getSinkPropagator().getSinks()[0] );
+        assertSame( existsNode3, (( RightInputAdapterNode) joinNodeD.getSinkPropagator().getSinks()[1]).getObjectSinkPropagator().getSinks()[0] );
     }
 
     @Test
@@ -317,7 +317,7 @@ public class LinkingTest {
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
-        LeftInputAdapterNode liaNodeA = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNodeA = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         ExistsNode existsNode2 = ( ExistsNode) liaNodeA.getSinkPropagator().getSinks()[1];
         ExistsNode existsNode3 = ( ExistsNode) liaNodeA.getSinkPropagator().getSinks()[2];
         JoinNode joinNodeB = ( JoinNode) liaNodeA.getSinkPropagator().getSinks()[0];
@@ -422,7 +422,7 @@ public class LinkingTest {
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 1, liaNode.getSinkPropagator().size() );
 
         JoinNode bNode = ( JoinNode) liaNode.getSinkPropagator().getSinks()[0];
@@ -517,7 +517,7 @@ public class LinkingTest {
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 2, liaNode.getSinkPropagator().size() );
 
         JoinNode bNode = ( JoinNode) liaNode.getSinkPropagator().getSinks()[0];
@@ -585,7 +585,7 @@ public class LinkingTest {
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 2, liaNode.getSinkPropagator().size() );
 
         JoinNode bNode = ( JoinNode) liaNode.getSinkPropagator().getSinks()[0];
@@ -649,7 +649,7 @@ public class LinkingTest {
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 1, liaNode.getSinkPropagator().size() );
 
         JoinNode bNode = ( JoinNode) liaNode.getSinkPropagator().getSinks()[0];
@@ -667,10 +667,10 @@ public class LinkingTest {
         JoinNode fNode = ( JoinNode) eNode.getSinkPropagator().getSinks()[0];
 
         RightInputAdapterNode riaNode2 =  ( RightInputAdapterNode ) fNode.getSinkPropagator().getSinks()[0];
-        assertEquals( exists2n, riaNode2.getSinkPropagator().getSinks()[0] );
+        assertEquals( exists2n, riaNode2.getObjectSinkPropagator().getSinks()[0] );
 
         RightInputAdapterNode riaNode1 =  ( RightInputAdapterNode ) exists2n.getSinkPropagator().getSinks()[0];
-        assertEquals( exists1n, riaNode1.getSinkPropagator().getSinks()[0] );
+        assertEquals( exists1n, riaNode1.getObjectSinkPropagator().getSinks()[0] );
 
         JoinNode gNode = ( JoinNode) exists1n.getSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn = ( RuleTerminalNode) gNode.getSinkPropagator().getSinks()[0];
@@ -735,7 +735,7 @@ public class LinkingTest {
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         JoinNode bNode = ( JoinNode) liaNode.getSinkPropagator().getSinks()[0];
 
         ExistsNode exists1n = ( ExistsNode) bNode.getSinkPropagator().getSinks()[1];
@@ -931,7 +931,7 @@ public class LinkingTest {
         }        
         wm.flushPropagations();
         
-        LeftInputAdapterNode aNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];                        
+        LeftInputAdapterNode aNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         JoinNode bNode = ( JoinNode) aNode.getSinkPropagator().getSinks()[0];        
         JoinNode cNode = ( JoinNode) bNode.getSinkPropagator().getSinks()[0];                
         
@@ -1128,7 +1128,7 @@ public class LinkingTest {
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
-        LeftInputAdapterNode aNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];                        
+        LeftInputAdapterNode aNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         NotNode bNode = ( NotNode) aNode.getSinkPropagator().getSinks()[0];        
         JoinNode cNode = ( JoinNode) bNode.getSinkPropagator().getSinks()[0];                
         
@@ -1215,7 +1215,7 @@ public class LinkingTest {
         List list = new ArrayList();
         wm.setGlobal( "list", list );
         
-        LeftInputAdapterNode aNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];                        
+        LeftInputAdapterNode aNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         NotNode bNode = ( NotNode) aNode.getSinkPropagator().getSinks()[0];        
         JoinNode cNode = ( JoinNode) bNode.getSinkPropagator().getSinks()[0];                
         
@@ -1401,7 +1401,7 @@ public class LinkingTest {
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 1, liaNode.getSinkPropagator().size() );
 
         wm.insert( new A() );
@@ -1464,7 +1464,7 @@ public class LinkingTest {
         ObjectTypeNode node = getObjectTypeNode(kbase, A.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         assertEquals( 1, liaNode.getSinkPropagator().size() );
 
         wm.insert( new A() );

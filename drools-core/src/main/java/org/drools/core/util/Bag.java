@@ -31,6 +31,10 @@ public class Bag<T> implements Collection<T>, Serializable {
         return size;
     }
 
+    public int getKeySize() {
+        return map.size();
+    }
+
     public int sizeFor(T t) {
         Counter i = map.get(t);
         return i != null ? i.get() : 0;
@@ -84,6 +88,15 @@ public class Bag<T> implements Collection<T>, Serializable {
         }
         size--;
         return true;
+    }
+
+    public boolean removeKey( Object o ) {
+        Counter i = map.remove(o);
+        if (i != null) {
+            size -= i.get();
+            return true;
+        }
+        return false;
     }
 
     @Override

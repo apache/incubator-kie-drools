@@ -55,7 +55,7 @@ public class SegmentCreationTest {
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, InitialFactImpl.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];                        
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[0];  
         
 
@@ -79,7 +79,7 @@ public class SegmentCreationTest {
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, InitialFactImpl.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];                        
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn1 = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn2 = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[1];
         
@@ -110,7 +110,7 @@ public class SegmentCreationTest {
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];                        
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[0];  
         
 
@@ -135,7 +135,7 @@ public class SegmentCreationTest {
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];                        
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn1 = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn2 = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[1];
         
@@ -168,7 +168,7 @@ public class SegmentCreationTest {
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn1 = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[0];        
         JoinNode bNode = ( JoinNode ) liaNode.getSinkPropagator().getSinks()[1];
         RuleTerminalNode rtn2 = ( RuleTerminalNode) bNode.getSinkPropagator().getSinks()[0];
@@ -221,7 +221,7 @@ public class SegmentCreationTest {
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         
         JoinNode bNode = ( JoinNode ) liaNode.getSinkPropagator().getSinks()[0];
         JoinNode cNode = ( JoinNode ) bNode.getSinkPropagator().getSinks()[0];
@@ -263,7 +263,7 @@ public class SegmentCreationTest {
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn1 = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[0];
         
         JoinNode bNode = ( JoinNode ) liaNode.getSinkPropagator().getSinks()[1];
@@ -310,7 +310,7 @@ public class SegmentCreationTest {
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
         RuleTerminalNode rtn1 = ( RuleTerminalNode) liaNode.getSinkPropagator().getSinks()[0];
         
         JoinNode bNode = ( JoinNode ) liaNode.getSinkPropagator().getSinks()[1];
@@ -367,7 +367,7 @@ public class SegmentCreationTest {
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
 
         ConditionalBranchNode cen1Node = ( ConditionalBranchNode ) liaNode.getSinkPropagator().getSinks()[0];
         JoinNode bNode = ( JoinNode ) cen1Node.getSinkPropagator().getSinks()[0];
@@ -420,7 +420,7 @@ public class SegmentCreationTest {
 
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) aotn.getObjectSinkPropagator().getSinks()[0];
 
         ConditionalBranchNode cen1Node = ( ConditionalBranchNode ) liaNode.getSinkPropagator().getSinks()[1];
         JoinNode bNode = ( JoinNode ) cen1Node.getSinkPropagator().getSinks()[0];

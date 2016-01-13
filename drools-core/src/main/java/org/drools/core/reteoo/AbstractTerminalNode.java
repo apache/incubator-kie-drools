@@ -34,6 +34,7 @@ import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
+import org.kie.api.definition.rule.Rule;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -43,13 +44,15 @@ import java.util.List;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
 
-public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode, Externalizable {
+public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode, PathEndNode, Externalizable {
 
     private LeftTupleSource tupleSource;
 
     private BitMask declaredMask = EmptyBitMask.get();
     private BitMask inferredMask = EmptyBitMask.get();
     private BitMask negativeMask = EmptyBitMask.get();
+
+    private LeftTupleNode[] pathNodes;
 
     public AbstractTerminalNode() { }
 
@@ -72,6 +75,10 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         out.writeObject(declaredMask);
         out.writeObject(inferredMask);
         out.writeObject(negativeMask);
+    }
+
+    public int getPositionInPath() {
+        return tupleSource.getPositionInPath() + 1;
     }
 
     public void initDeclaredMask(BuildContext context) {
@@ -132,22 +139,19 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     public PathMemory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         PathMemory pmem = new PathMemory(this);
-        initPathMemory(pmem, getLeftTupleSource(), null, wm, null );
+        initPathMemory(pmem, this, null, wm, null );
         return pmem;
     }
 
     /**
      * Creates and return the node memory
      */
-    public static void initPathMemory(PathMemory pmem, LeftTupleSource tupleSource, LeftTupleSource startTupleSource, InternalWorkingMemory wm, RuleImpl removingRule) {
+    public static void initPathMemory(PathMemory pmem, LeftTupleNode endNode, LeftTupleSource startTupleSource, InternalWorkingMemory wm, Rule removingRule) {
         int counter = 1;
         long allLinkedTestMask = 0;
 
-
-        int size = tupleSource.getSinkPropagator().size();
-        if ( size > 2 ) {
-            counter++;
-        } else if ( size == 2 && ( removingRule == null || !tupleSource.isAssociatedWith( removingRule )  ) ) {
+        LeftTupleSource tupleSource = endNode.getLeftTupleSource();
+        if ( SegmentUtilities.isRootNode(endNode, removingRule)) {
             counter++;
         }
 
@@ -183,7 +187,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
                 }
             }
 
-            if ( !SegmentUtilities.parentInSameSegment( tupleSource, removingRule ) ) {
+            if ( SegmentUtilities.isRootNode( tupleSource, removingRule ) ) {
                 updateBitInNewSegment = true; // allow bit to be set for segment
                 allLinkedTestMask = allLinkedTestMask << 1;
                 counter++;
@@ -278,5 +282,24 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     public void setLeftTupleMemoryEnabled(boolean tupleMemoryEnabled) {
         // do nothing, this can only ever be false
+    }
+
+    public static LeftTupleNode[] getPathNodes(PathEndNode endNode) {
+        LeftTupleNode[] pathNodes = new LeftTupleNode[endNode.getPositionInPath()+1];
+        for (LeftTupleNode node = endNode; node != null; node = node.getLeftTupleSource()) {
+            pathNodes[node.getPositionInPath()] = node;
+        }
+        return pathNodes;
+    }
+
+    public LeftTupleNode[] getPathNodes() {
+        if (pathNodes == null) {
+            pathNodes = getPathNodes( this );
+        }
+        return pathNodes;
+    }
+
+    public LeftTupleSinkPropagator getSinkPropagator() {
+        return EmptyLeftTupleSinkAdapter.getInstance();
     }
 }

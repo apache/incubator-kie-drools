@@ -49,6 +49,7 @@ import static org.drools.core.reteoo.PropertySpecificUtil.*;
  */
 public abstract class LeftTupleSource extends BaseNode
         implements
+        LeftTupleNode,
         Externalizable {
 
     private BitMask                   leftDeclaredMask = EmptyBitMask.get();
@@ -68,6 +69,8 @@ public abstract class LeftTupleSource extends BaseNode
     protected LeftTupleSinkPropagator sink;
 
     private transient ObjectTypeNode.Id leftInputOtnId;
+
+    private int positionInPath;
 
     // ------------------------------------------------------------
     // Constructors
@@ -99,6 +102,7 @@ public abstract class LeftTupleSource extends BaseNode
         leftDeclaredMask = (BitMask) in.readObject();
         leftInferredMask = (BitMask) in.readObject();
         leftNegativeMask = (BitMask) in.readObject();
+        positionInPath = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -108,6 +112,11 @@ public abstract class LeftTupleSource extends BaseNode
         out.writeObject(leftDeclaredMask);
         out.writeObject(leftInferredMask);
         out.writeObject(leftNegativeMask);
+        out.writeInt( positionInPath );
+    }
+
+    public int getPositionInPath() {
+        return positionInPath;
     }
 
     public abstract short getType();
@@ -124,6 +133,7 @@ public abstract class LeftTupleSource extends BaseNode
 
     public void setLeftTupleSource(LeftTupleSource leftInput) {
         this.leftInput = leftInput;
+        positionInPath = leftInput.getPositionInPath() + 1;
     }
 
 	/**

@@ -66,7 +66,7 @@ import static org.mockito.Mockito.mock;
 
 public class TruthMaintenanceTest extends CommonTestMethodBase {
 
-    @Test(timeout=10000)
+    @Test() //timeout=10000)
     public void testLogicalInsertionsDynamicRule() throws Exception {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         kbuilder.add( ResourceFactory.newClassPathResource("test_LogicalInsertionsDynamicRule.drl",

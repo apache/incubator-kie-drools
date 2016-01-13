@@ -40,7 +40,7 @@ public class RightInputAdapterNodeVisitor extends AbstractNetworkNodeVisitor {
         RightInputAdapterNode an = (RightInputAdapterNode) node;
         DefaultNodeInfo ni = info.getNodeInfo( node );
 
-        BetaNode betaNode = (BetaNode) an.getSinkPropagator().getSinks()[0];
+        BetaNode betaNode = (BetaNode) an.getObjectSinkPropagator().getSinks()[0];
 
         Memory childMemory = info.getSession().getNodeMemory( betaNode );
 

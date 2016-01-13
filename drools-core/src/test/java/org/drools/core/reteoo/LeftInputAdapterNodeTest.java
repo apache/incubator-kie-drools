@@ -69,11 +69,11 @@ public class LeftInputAdapterNodeTest extends DroolsTestCase {
         assertEquals( 23,
                       liaNode.getId() );
 
-        assertEquals( 0,
-                      objectTypeNode.getSinkPropagator().getSinks().length );
+        assertEquals                                                             ( 0,
+                      objectTypeNode.getObjectSinkPropagator().getSinks().length );
         liaNode.attach(context);
-        assertEquals( 1,
-                      objectTypeNode.getSinkPropagator().getSinks().length );
+        assertEquals                                                             ( 1,
+                      objectTypeNode.getObjectSinkPropagator().getSinks().length );
     }
 
     /**

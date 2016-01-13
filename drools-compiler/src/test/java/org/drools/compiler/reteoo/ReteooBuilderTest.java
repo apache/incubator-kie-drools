@@ -104,8 +104,8 @@ public class ReteooBuilderTest {
             final ObjectSource source1 = (ObjectSource) object1;
             final ObjectSource source2 = (ObjectSource) object2;
 
-            final ObjectSink[] list1 = source1.getSinkPropagator().getSinks();
-            final ObjectSink[] list2 = source2.getSinkPropagator().getSinks();
+            final ObjectSink[] list1 = source1.getObjectSinkPropagator().getSinks();
+            final ObjectSink[] list2 = source2.getObjectSinkPropagator().getSinks();
 
             assertEquals( object1.getClass() + " nodes have different number of sinks",
                           list1.length,

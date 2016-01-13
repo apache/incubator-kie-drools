@@ -292,8 +292,8 @@ public class ReteDslTestEngineTest {
         LeftInputAdapterNode lian0 = (LeftInputAdapterNode) result.context.get( "lian0" );
         assertNotNull( lian0 );
 
-        assertSame( lian0,
-                    otn1.getSinkPropagator().getSinks()[0] );
+        assertSame                                               ( lian0,
+                    otn1.getObjectSinkPropagator().getSinks()[0] );
     }
 
     @Test

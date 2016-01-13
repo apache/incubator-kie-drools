@@ -16,19 +16,21 @@
 
 package org.drools.core.reteoo;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.spi.PropagationContext;
 
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+
 public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
 
     private static final EmptyLeftTupleSinkAdapter instance = new EmptyLeftTupleSinkAdapter();
+
+    private static final LeftTupleSink[] sinks = new LeftTupleSink[]{};
 
     public static final EmptyLeftTupleSinkAdapter getInstance() {
         return instance;
@@ -87,7 +89,7 @@ public class EmptyLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     }
 
     public LeftTupleSink[] getSinks() {
-        return new LeftTupleSink[]{};
+        return sinks;
     }
     
     public LeftTupleSinkNode getFirstLeftTupleSink() {

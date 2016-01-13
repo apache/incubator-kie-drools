@@ -41,8 +41,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     protected static final Logger log = LoggerFactory.getLogger(SegmentMemory.class);
     protected static final boolean isLogTraceEnabled = log.isTraceEnabled();
 
-    private final    NetworkNode        rootNode;
-    private          NetworkNode        tipNode;
+    private final    LeftTupleNode        rootNode;
+    private          LeftTupleNode        tipNode;
     private          LinkedList<Memory> nodeMemories;
     private          AtomicBitwiseLong  linkedNodeMask;
     private          AtomicBitwiseLong  dirtyNodeMask;
@@ -57,7 +57,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     private transient PathMemory firstDataDrivenPathMemory;
 
-    public SegmentMemory(NetworkNode rootNode) {
+    public SegmentMemory(LeftTupleNode rootNode) {
         this.rootNode = rootNode;
         this.linkedNodeMask = new AtomicBitwiseLong();
         this.dirtyNodeMask = new AtomicBitwiseLong();
@@ -66,15 +66,15 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         this.stagedLeftTuples = new TupleSetsImpl<LeftTuple>();
     }
 
-    public NetworkNode getRootNode() {
+    public LeftTupleNode getRootNode() {
         return rootNode;
     }
 
-    public NetworkNode getTipNode() {
+    public LeftTupleNode getTipNode() {
         return tipNode;
     }
 
-    public void setTipNode(NetworkNode tipNode) {
+    public void setTipNode(LeftTupleNode tipNode) {
         this.tipNode = tipNode;
     }
 
@@ -178,9 +178,13 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
         if (isSegmentLinked()) {
             for (int i = 0, length = pathMemories.size(); i < length; i++) {
                 // do not use foreach, don't want Iterator object creation
-                pathMemories.get(i).linkSegment(segmentPosMaskBit, wm);
+                notifyRuleLinkSegment(wm, pathMemories.get(i));
             }
         }
+    }
+
+    public void notifyRuleLinkSegment(InternalWorkingMemory wm, PathMemory pmem) {
+        pmem.linkSegment(segmentPosMaskBit, wm);
     }
 
     public void unlinkNode(long mask,
@@ -210,6 +214,14 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                     pathMemories.get(i).doLinkRule(wm);
                 }
             }
+        }
+    }
+
+    public void unlinkSegment(InternalWorkingMemory wm) {
+        for (int i = 0, length = pathMemories.size(); i < length; i++) {
+            // do not use foreach, don't want Iterator object creation
+            pathMemories.get(i).unlinkedSegment(segmentPosMaskBit,
+                                                wm);
         }
     }
 
@@ -358,8 +370,8 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
     }
 
     public static class Prototype {
-        private NetworkNode                 rootNode;
-        private NetworkNode                 tipNode;
+        private LeftTupleNode               rootNode;
+        private LeftTupleNode               tipNode;
         private long                        linkedNodeMask;
         private long                        allLinkedMaskTest;
         private long                        segmentPosMaskBit;
