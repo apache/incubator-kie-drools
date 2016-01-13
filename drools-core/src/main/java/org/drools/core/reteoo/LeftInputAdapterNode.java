@@ -218,7 +218,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
         }
     }
 
-    private static void doInsertSegmentMemory( InternalWorkingMemory wm, boolean linkOrNotify, final LiaNodeMemory lm,
+    public static void doInsertSegmentMemory( InternalWorkingMemory wm, boolean linkOrNotify, final LiaNodeMemory lm,
                                                SegmentMemory sm, LeftTuple leftTuple, boolean streamMode ) {
         if ( flushLeftTupleIfNecessary( wm, sm, leftTuple, streamMode ) ) {
             if ( linkOrNotify ) {
@@ -651,6 +651,10 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         public int getAssociationsSize() {
             return sink.getAssociationsSize();
+        }
+
+        public int getAssociatedRuleSize() {
+            return sink.getAssociatedRuleSize();
         }
 
         public int getAssociationsSize(Rule rule) {

@@ -41,12 +41,14 @@ import org.drools.core.util.FastIterator;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;
 import org.junit.Test;
+import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import static org.drools.compiler.integrationtests.incrementalcompilation.IncrementalCompilationTest.rulestoMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +57,58 @@ import java.util.Map;
 
 
 public class IndexingTest extends CommonTestMethodBase {
+
+    //@Test(timeout=10000)
+    @Test()
+    public void testAlphaNodeSharing() {
+        String drl = "";
+        drl += "package org.drools.compiler.test\n";
+        drl += "import " + Person.class.getCanonicalName() + "\n";
+        drl += "rule r1\n";
+        drl += "when\n";
+        drl += "   Person(name == \"Mark\")\n";
+        drl += "then\n";
+        drl += "end\n";
+        drl += "rule r2\n";
+        drl += "when\n";
+        drl += "   Person(name == \"Mark\", age == 40)\n";
+        drl += "then\n";
+        drl += "end\n";
+        drl += "rule r3\n";
+        drl += "when\n";
+        drl += "   Person(name == \"Mark\", age == 50)\n";
+        drl += "then\n";
+        drl += "end\n";
+        drl += "rule r4\n";
+        drl += "when\n";
+        drl += "   Person(name == \"John\", age == 60)\n";
+        drl += "then\n";
+        drl += "end\n";
+
+        KnowledgeBase kbase = loadKnowledgeBaseFromString( drl );
+
+        Map<String, Rule> rules = rulestoMap(kbase);
+
+        ObjectTypeNode otn = getObjectTypeNode(kbase, Person.class );
+        InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
+
+        assertEquals( 2, otn.getObjectSinkPropagator().size() );
+
+        AlphaNode a1 = ( AlphaNode ) otn.getObjectSinkPropagator().getSinks()[0];
+        assertEquals( 3, a1.getObjectSinkPropagator().size() );
+        assertEquals( 3, a1.getAssociationsSize() );
+        assertTrue( a1.isAssociatedWith(rules.get("r1")));
+        assertTrue( a1.isAssociatedWith(rules.get("r2")));
+        assertTrue( a1.isAssociatedWith(rules.get("r3")));
+
+
+        AlphaNode a2 = ( AlphaNode ) otn.getObjectSinkPropagator().getSinks()[1];
+        assertEquals( 1, a2.getAssociationsSize() );
+        assertEquals( 1, a2.getObjectSinkPropagator().size() );
+        assertTrue( a2.isAssociatedWith(rules.get("r4")));
+    }
+
+
 
     @Test(timeout=10000)
     public void testBuildsIndexedAlphaNodes() {
@@ -73,16 +127,16 @@ public class IndexingTest extends CommonTestMethodBase {
         ObjectTypeNode otn = getObjectTypeNode(kbase, Person.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
-        AlphaNode alphaNode1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0];
-        CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter)alphaNode1.getSinkPropagator();
+        AlphaNode alphaNode1 = ( AlphaNode ) otn.getObjectSinkPropagator().getSinks()[0];
+        CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter)alphaNode1.getObjectSinkPropagator();
         ObjectSinkNodeList hashableSinks = sinkAdapter.getHashableSinks();
         assertNotNull(hashableSinks);
         assertEquals(2, hashableSinks.size());
 
-        AlphaNode alphaNode2 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[0];
+        AlphaNode alphaNode2 = ( AlphaNode ) alphaNode1.getObjectSinkPropagator().getSinks()[0];
         assertSame(hashableSinks.getFirst(), alphaNode2);
 
-        AlphaNode alphaNode3 = ( AlphaNode ) alphaNode1.getSinkPropagator().getSinks()[1];
+        AlphaNode alphaNode3 = ( AlphaNode ) alphaNode1.getObjectSinkPropagator().getSinks()[1];
         assertSame(hashableSinks.getLast(), alphaNode3);
     }
 
@@ -114,7 +168,7 @@ public class IndexingTest extends CommonTestMethodBase {
         ObjectTypeNode node = getObjectTypeNode(kbase, Person.class );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
         JoinNode j2 = ( JoinNode ) liaNode.getSinkPropagator().getSinks()[0]; // $p2
         JoinNode j3 = ( JoinNode ) j2.getSinkPropagator().getSinks()[0];  // $p3
         JoinNode j4 = ( JoinNode ) j3.getSinkPropagator().getSinks()[0];  // $p4
@@ -220,8 +274,8 @@ public class IndexingTest extends CommonTestMethodBase {
 
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
         
-        AlphaNode alphanode = ( AlphaNode ) node.getSinkPropagator().getSinks()[0];
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getSinkPropagator().getSinks()[0];
+        AlphaNode alphanode = ( AlphaNode ) node.getObjectSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         JoinNode j = ( JoinNode ) liaNode.getSinkPropagator().getSinks()[0]; // $p2
         
         TripleNonIndexSkipBetaConstraints c = ( TripleNonIndexSkipBetaConstraints ) j.getRawConstraints();
@@ -254,8 +308,8 @@ public class IndexingTest extends CommonTestMethodBase {
 
         StatefulKnowledgeSessionImpl wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
-        AlphaNode alphanode = ( AlphaNode ) node.getSinkPropagator().getSinks()[0];
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getSinkPropagator().getSinks()[0];
+        AlphaNode alphanode = ( AlphaNode ) node.getObjectSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getObjectSinkPropagator().getSinks()[0];
 
         NotNode n = (NotNode) liaNode.getSinkPropagator().getSinks()[0];
 
@@ -396,8 +450,8 @@ public class IndexingTest extends CommonTestMethodBase {
 
         StatefulKnowledgeSessionImpl wm = ((StatefulKnowledgeSessionImpl)kbase.newStatefulKnowledgeSession());
 
-        AlphaNode alphanode = ( AlphaNode ) node.getSinkPropagator().getSinks()[0];
-        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getSinkPropagator().getSinks()[0];
+        AlphaNode alphanode = ( AlphaNode ) node.getObjectSinkPropagator().getSinks()[0];
+        LeftInputAdapterNode liaNode = (LeftInputAdapterNode) alphanode.getObjectSinkPropagator().getSinks()[0];
 
         NotNode n = (NotNode) liaNode.getSinkPropagator().getSinks()[0];
 

@@ -69,7 +69,7 @@ public class ReteDumper {
             sinks = otns.toArray(new Sink[otns.size()]);
         } else if (node instanceof ObjectSource ) {
             ObjectSource source = (ObjectSource) node;
-            sinks = source.getSinkPropagator().getSinks();
+            sinks = source.getObjectSinkPropagator().getSinks();
         } else if (node instanceof LeftTupleSource ) {
             LeftTupleSource source = (LeftTupleSource) node;
             sinks = source.getSinkPropagator().getSinks();

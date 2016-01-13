@@ -363,7 +363,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 final AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( hashKey );
                 if ( sink != null ) {
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
-                    sink.getSinkPropagator().propagateAssertObject( factHandle, context, workingMemory );
+                    sink.getObjectSinkPropagator().propagateAssertObject( factHandle, context, workingMemory );
                 }
             }
         }
@@ -412,7 +412,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 final AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( hashKey );
                 if ( sink != null ) {
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
-                    sink.getSinkPropagator().propagateModifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
+                    sink.getObjectSinkPropagator().propagateModifyObject( factHandle, modifyPreviousTuples, context, workingMemory );
                 }
             }
         }
@@ -461,7 +461,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
                 final AlphaNode sink = (AlphaNode) this.hashedSinkMap.get( hashKey );
                 if ( sink != null ) {
                     // only alpha nodes are hashable
-                    sink.getSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
+                    sink.getObjectSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
                 }
             }
         }
@@ -470,7 +470,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
         if ( this.hashableSinks != null ) {
             for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
                 // only alpha nodes are hashable
-                ((AlphaNode)sink).getSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
+                ((AlphaNode)sink).getObjectSinkPropagator().byPassModifyToBetaNode( factHandle, modifyPreviousTuples, context, workingMemory );
             }
         }
 

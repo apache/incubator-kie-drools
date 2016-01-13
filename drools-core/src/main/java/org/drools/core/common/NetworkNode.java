@@ -30,21 +30,27 @@ public interface NetworkNode
 
     /**
      * Returns the unique id that represents the node in the Rete network
-     * @return
-     *      unique int value
      */
     int getId();
 
     /**
      * Returns the partition ID to which this node belongs to
-     *
-     * @return
      */
     RuleBasePartitionId getPartitionId();
     
     short getType();
 
+    /**
+     * Returns how many times this nodes has been associated.
+     * Note that due to subnetworks this node could be associated to the same rule multiple times.
+     */
     int getAssociationsSize();
+
+    /**
+     * Returns the number of rules that are associated with this node,
+     * regardless of how many times the node is associated with a single rule.
+     */
+    int getAssociatedRuleSize();
 
     int getAssociationsSize( Rule rule );
 

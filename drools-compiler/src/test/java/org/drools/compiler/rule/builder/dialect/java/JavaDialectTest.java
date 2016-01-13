@@ -78,12 +78,12 @@ public class JavaDialectTest {
             }
         }
         
-        AlphaNode alphanode = (AlphaNode) node.getSinkPropagator().getSinks()[0];
+        AlphaNode alphanode = (AlphaNode) node.getObjectSinkPropagator().getSinks()[0];
         PredicateConstraint c = ( PredicateConstraint ) alphanode.getConstraint();
         assertTrue( c.getPredicateExpression() instanceof PredicateExpression );
         assertTrue( c.getPredicateExpression() instanceof CompiledInvoker );
 
-        alphanode = (AlphaNode) alphanode.getSinkPropagator().getSinks()[0];
+        alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
         if (constraint instanceof MvelConstraint) {
@@ -129,7 +129,7 @@ public class JavaDialectTest {
             }
         }
         
-        BetaNode betaanode = (BetaNode) node.getSinkPropagator().getSinks()[0];
+        BetaNode betaanode = (BetaNode) node.getObjectSinkPropagator().getSinks()[0];
         BetaNodeFieldConstraint[] constraint = betaanode.getConstraints();
         PredicateConstraint c = ( PredicateConstraint ) constraint[0];
         assertTrue( c.getPredicateExpression() instanceof PredicateExpression );

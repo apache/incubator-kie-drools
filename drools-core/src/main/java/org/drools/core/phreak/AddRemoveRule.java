@@ -26,275 +26,513 @@ import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.AbstractTerminalNode;
-import org.drools.core.reteoo.AccumulateNode;
+import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
-import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
-import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.RightTupleSinkAdapter;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleSink;
-import org.drools.core.reteoo.LeftTupleSinkNode;
-import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.NodeTypeEnums;
-import org.drools.core.reteoo.ObjectSource;
-import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
-import org.drools.core.reteoo.PathMemory;
-import org.drools.core.reteoo.QueryElementNode;
-import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.SegmentMemory;
-import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.TupleMemory;
-import org.drools.core.reteoo.WindowNode;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
 import org.drools.core.util.LinkedList;
+import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class AddRemoveRule {
 
     private static final Logger log = LoggerFactory.getLogger(AddRemoveRule.class);
 
+    /**
+     * This method is called after the rule nodes have been added to the network
+     * For add tuples are processed after the segments and pmems have been adjusted
+     *
+     * @param tn
+     * @param wms
+     * @param kBase
+     */
     public static void addRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalKnowledgeBase kBase) {
-        if ( log.isTraceEnabled() ) {
-            log.trace("Adding Rule {}", tn.getRule().getName() );
+        if (log.isTraceEnabled()) {
+            log.trace("Adding Rule {}", tn.getRule().getName());
         }
-        LeftTupleSource splitStartLeftTupleSource = getNetworkSplitPoint(tn);
 
-        kBase.invalidateSegmentPrototype( splitStartLeftTupleSource, false );
+        boolean hasProtos = kBase.hasSegmentPrototypes();
+        boolean hasWms = wms.length > 0;
+
+        if (!hasProtos && !hasWms) {
+            return;
+        }
+
+        RuleImpl rule = tn.getRule();
+        LeftTupleNode firstSplit = getNetworkSplitPoint(tn, rule);
+        PathEndNodes pathEndNodes = getPathEndNodes(kBase, firstSplit, tn, rule, hasProtos, hasWms);
+
+        // Insert the facts for the new paths. This will iterate each new path from EndNode to the splitStart - but will not process the splitStart itself (as tha already exist).
+        // It does not matter that the prior segments have not yet been processed for splitting, as this will only apply for branches of paths that did not exist before
+
 
         for (InternalWorkingMemory wm : wms) {
+            wm.flushPropagations();
 
-            if (splitStartLeftTupleSource.getAssociationsSize() > 1) {
-                List<PathMemory> pathMems = new ArrayList<PathMemory>();
+            if (NodeTypeEnums.LeftInputAdapterNode == firstSplit.getType() && firstSplit.getAssociatedRuleSize() == 1) {
+                // rule added with no sharing
+                insertLiaFacts(firstSplit, wm);
+            } else {
+                PathEndNodeMemories tnms = getPathEndMemories(wm, pathEndNodes, false);
 
-                collectRtnPathMemories(splitStartLeftTupleSource, wm, pathMems, tn); // get all PathMemories, except current
+                if (tnms.subjectPmem == null) {
+                    // If the existing PathMemories are not yet initialized there are no Segments or tuples to process
+                    continue;
+                }
 
-                PathMemory newPmem = wm.getNodeMemory( tn );
+                Map<PathMemory, SegmentMemory[]> prevSmemsLookup = reInitPathMemories(wm, tnms.otherPmems, null);
 
-                int s = getSegmentPos(splitStartLeftTupleSource, null);
+                // must collect all visited SegmentMemories, for link notification
+                Set<SegmentMemory> smemsToNotify = handleExistingPaths(rule, prevSmemsLookup, tnms.otherPmems, wm, ExistingPathStrategy.ADD_STRATEGY);
 
-                LeftTupleSink[] sinks = splitStartLeftTupleSource.getSinkPropagator().getSinks();
-                if (sinks.length == 2 || (sinks.length == 3 && NodeTypeEnums.isBetaNode(sinks[2])) && ((BetaNode) sinks[2]).isRightInputIsRiaNode()) {
-                    List<SegmentMemory[]> previousSmems = reInitPathMemories(wm, pathMems, null);
+                addNewPaths(wm, smemsToNotify, tnms.subjectPmems);
 
-                    // can only be two if the adding node caused the split to be created
-                    int p = 0;
-                    SegmentMemory splitSmem = null;
-                    for (PathMemory pmem : pathMems) {
-                        pmem.setlinkedSegmentMask(0);
-                        SegmentMemory[] smems = previousSmems.get(p);
+                processLeftTuples(firstSplit, wm, true, rule);
 
-                        for (int i = 0; i < smems.length; i++) {
-                            SegmentMemory sm = smems[i];
-                            if (sm == null) {
-                                continue; // SegmentMemory is not yet initialized
+                notifySegments(smemsToNotify, wm);
+            }
+        }
+
+        if (hasWms) {
+            insertFacts( pathEndNodes, wms );
+        }
+    }
+
+    /**
+     * This method is called before the rule nodes are removed from the network.
+     * For remove tuples are processed before the segments and pmems have been adjusted
+     *
+     * @param tn
+     * @param wms
+     * @param kBase
+     */
+    public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalKnowledgeBase kBase) {
+        if (log.isTraceEnabled()) {
+            log.trace("Removing Rule {}", tn.getRule().getName());
+        }
+
+        boolean hasProtos = kBase.hasSegmentPrototypes();
+        boolean hasWms = wms.length > 0;
+
+        if (!hasProtos && !hasWms) {
+            return;
+        }
+
+        RuleImpl      rule       = tn.getRule();
+        LeftTupleNode firstSplit = getNetworkSplitPoint(tn, rule);
+        PathEndNodes pathEndNodes = getPathEndNodes(kBase, firstSplit, tn, rule, hasProtos, hasWms);
+
+        for (InternalWorkingMemory wm : wms) {
+            wm.flushPropagations();
+
+
+            PathEndNodeMemories tnms = getPathEndMemories(wm, pathEndNodes, true);
+
+            if (NodeTypeEnums.LeftInputAdapterNode == firstSplit.getType() && firstSplit.getAssociatedRuleSize() == 1) {
+                if ( tnms.subjectPmem != null ) {
+                    flushStagedTuples(firstSplit, tnms.subjectPmem, wm);
+                }
+
+                processLeftTuples(firstSplit, wm, false, tn.getRule());
+
+                removeNewPaths(wm, tnms.subjectPmems);
+            } else {
+
+                for (PathMemory pmem : tnms.pmemsToBeFlushed) {
+                    flushStagedTuples(firstSplit, pmem, wm);
+                }
+
+                processLeftTuples(firstSplit, wm, false, tn.getRule());
+
+                Map<PathMemory, SegmentMemory[]> prevSmemsLookup = reInitPathMemories(wm, tnms.otherPmems, rule);
+
+                // must collect all visited SegmentMemories, for link notification
+                Set<SegmentMemory> smemsToNotify = handleExistingPaths(rule, prevSmemsLookup, tnms.otherPmems, wm, ExistingPathStrategy.REMOVE_STRATEGY);
+
+                removeNewPaths(wm, tnms.subjectPmems);
+
+                notifySegments(smemsToNotify, wm);
+            }
+
+            if (tnms.subjectPmem != null && tnms.subjectPmem.getRuleAgendaItem() != null && tnms.subjectPmem.getRuleAgendaItem().isQueued()) {
+                // SubjectPmem can be null, if it was never initialized
+                tnms.subjectPmem.getRuleAgendaItem().dequeue();
+            }
+        }
+    }
+
+    public interface ExistingPathStrategy {
+        ExistingPathStrategy ADD_STRATEGY = new AddExistingPaths();
+        ExistingPathStrategy REMOVE_STRATEGY = new RemoveExistingPaths();
+
+        LeftTupleNode getNextNode(LeftTupleNode[] nodes, LeftTupleNode node, int index);
+
+        SegmentMemory[] getSegmenMemories(PathMemory pmem);
+
+        void adjustSegment(InternalWorkingMemory wm, Set<SegmentMemory> smemsToNotify, SegmentMemory smem, int smemSplitAdjustAmount);
+
+        void handleSplit(SegmentMemory[] prevSmems, SegmentMemory[] smems, int smemIndex, int prevSmemIndex,
+                         LeftTupleNode parentNode, LeftTupleNode node, Rule rule,
+                         Set<LeftTupleNode> visited, Set<SegmentMemory> smemsToNotify, Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap, InternalWorkingMemory wm);
+        void processSegmentMemories(SegmentMemory[] smems, PathMemory pmem);
+
+        int incSmemIndex1(int smemIndex);
+        int incSmemIndex2(int smemIndex);
+
+        int incPrevSmemIndex1(int prevSmemIndex);
+        int incPrevSmemIndex2(int prevSmemIndex);
+    }
+
+    public static class AddExistingPaths implements ExistingPathStrategy {
+        @Override
+        public LeftTupleNode getNextNode(LeftTupleNode[] nodes, LeftTupleNode node, int index) {
+            return nodes[index];
+        }
+
+        @Override
+        public SegmentMemory[] getSegmenMemories(PathMemory pmem) {
+            return pmem.getSegmentMemories();
+        }
+
+        @Override
+        public void adjustSegment(InternalWorkingMemory wm, Set<SegmentMemory> smemsToNotify, SegmentMemory smem, int smemSplitAdjustAmount) {
+            smemsToNotify.add(smem);
+            smem.unlinkSegment(wm);
+            correctSegmentMemoryAfterSplitOnAdd(smem, smemSplitAdjustAmount);
+        }
+
+        @Override
+        public void handleSplit(SegmentMemory[] prevSmems, SegmentMemory[] smems, int smemIndex, int prevSmemIndex,
+                                LeftTupleNode parentNode, LeftTupleNode node, Rule rule,
+                                Set<LeftTupleNode> visited, Set<SegmentMemory> smemsToNotify, Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap, InternalWorkingMemory wm) {
+            if (smems[smemIndex - 1] != null) {
+                SegmentMemory sm2 = nodeToSegmentMap.get(node);
+                if (sm2 == null) {
+                    SegmentMemory sm1 = smems[smemIndex - 1];
+                    correctMemoryOnSplitsChanged(parentNode, null, wm);
+                    sm2 = splitSegment(wm, sm1, parentNode);
+                    nodeToSegmentMap.put(node, sm2);
+                    smemsToNotify.add(sm1);
+                    smemsToNotify.add(sm2);
+                }
+
+                smems[smemIndex] = sm2;
+            }
+        }
+
+        @Override
+        public void processSegmentMemories(SegmentMemory[] smems, PathMemory pmem) {
+
+        }
+
+        @Override
+        public int incSmemIndex1(int smemIndex) {
+            return smemIndex+1;
+        }
+
+
+        @Override
+        public int incPrevSmemIndex1(int prevSmemIndex) {
+            return prevSmemIndex;
+        }
+
+        @Override
+        public int incSmemIndex2(int smemIndex) {
+            return smemIndex;
+        }
+
+        @Override
+        public int incPrevSmemIndex2(int prevSmemIndex) {
+            return prevSmemIndex+1;
+        }
+    }
+
+    public static class RemoveExistingPaths implements ExistingPathStrategy {
+        @Override
+        public LeftTupleNode getNextNode(LeftTupleNode[] nodes, LeftTupleNode node, int index) {
+            return nodes[index];
+        }
+
+        @Override
+        public SegmentMemory[] getSegmenMemories(PathMemory pmem) {
+            return new SegmentMemory[ pmem.getSegmentMemories().length ];
+        }
+
+        @Override
+        public void adjustSegment(InternalWorkingMemory wm, Set<SegmentMemory> smemsToNotify, SegmentMemory smem, int smemSplitAdjustAmount) {
+            smemsToNotify.add(smem);
+            smem.unlinkSegment(wm);
+            correctSegmentMemoryAfterSplitOnRemove(smem, smemSplitAdjustAmount);
+        }
+
+        @Override
+        public void handleSplit(SegmentMemory[] prevSmems, SegmentMemory[] smems, int smemIndex, int prevSmemIndex,
+                                LeftTupleNode parentNode, LeftTupleNode node, Rule rule,
+                                Set<LeftTupleNode> visited, Set<SegmentMemory> smemsToNotify, Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap, InternalWorkingMemory wm) {
+            if (visited.contains(node)) {
+                return;
+            }
+
+            correctMemoryOnSplitsChanged(parentNode, rule, wm);
+
+            SegmentMemory sm1 = smems[smemIndex];
+            SegmentMemory sm2 = prevSmems[prevSmemIndex];
+
+            if (sm1 != null && sm2 == null) {
+                sm2 = SegmentUtilities.createChildSegment(wm,node);
+                sm1.add(sm2);
+            } else if (sm1 == null && sm2 != null) {
+                sm1 = SegmentUtilities.createChildSegment(wm, parentNode);
+                sm1.add(sm2);
+            }
+
+            if (sm1 != null && sm2 != null) {
+                mergeSegment(sm1, sm2);
+                smemsToNotify.add(sm1);
+                sm1.unlinkSegment(wm);
+                sm2.unlinkSegment(wm);
+                visited.add(node);
+            }
+        }
+
+        @Override
+        public void processSegmentMemories(SegmentMemory[] smems, PathMemory pmem) {
+            System.arraycopy(smems, 0, pmem.getSegmentMemories(), 0, smems.length);
+        }
+
+        @Override
+        public int incSmemIndex1(int smemIndex) {
+            return smemIndex;
+        }
+
+        @Override
+        public int incPrevSmemIndex1(int prevSmemIndex) {
+            return prevSmemIndex+1;
+        }
+
+        @Override
+        public int incSmemIndex2(int smemIndex) {
+            return smemIndex+1;
+        }
+
+        @Override
+        public int incPrevSmemIndex2(int prevSmemIndex) {
+            return prevSmemIndex;
+        }
+    }
+
+    private static Set<SegmentMemory> handleExistingPaths(RuleImpl rule, Map<PathMemory, SegmentMemory[]> prevSmemsLookup,
+                                                          List<PathMemory> pmems, InternalWorkingMemory wm, ExistingPathStrategy strategy) {
+        Set<SegmentMemory>                smemsToNotify    = new HashSet<SegmentMemory>();
+        Set<SegmentMemory>                visitedSegments  = new HashSet<SegmentMemory>();
+        Set<LeftTupleNode> visitedNodes = new HashSet<LeftTupleNode>();
+        Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap = new HashMap<LeftTupleNode, SegmentMemory>();
+
+        for (PathMemory pmem : pmems) {
+            LeftTupleNode[] nodes = pmem.getPathEndNode().getPathNodes();
+
+            SegmentMemory[] prevSmems = prevSmemsLookup.get(pmem);
+            SegmentMemory[] smems     = strategy.getSegmenMemories(pmem);
+
+            LeftTupleNode node                  = null;
+            int           prevSmemIndex         = 0;
+            int           smemIndex             = 0;
+            int           smemSplitAdjustAmount = 0;
+            int           nodeIndex             = 0;
+            // excluding the rule just added iterate while not split (i.e. find the next split, prior to this rule being added)
+            // note it's checking for when the parent is the split, and thus node is the next root root.
+
+            smems[smemIndex] = prevSmems[prevSmemIndex];
+            do {
+                node = strategy.getNextNode(nodes, node, nodeIndex++);
+                LeftTupleNode parentNode = node.getLeftTupleSource();
+                if (isSplit(parentNode)) {
+                    smemIndex = strategy.incSmemIndex1(smemIndex);
+                    prevSmemIndex = strategy.incPrevSmemIndex1(prevSmemIndex);
+                    if (isSplit(parentNode, rule)) {
+                        smemIndex = strategy.incSmemIndex2(smemIndex);
+                        prevSmemIndex = strategy.incPrevSmemIndex2(prevSmemIndex);
+                        smems[smemIndex] = prevSmems[prevSmemIndex];
+                        if ( smems[smemIndex] != null && smemSplitAdjustAmount > 0 && visitedSegments.add(smems[smemIndex])) {
+                            strategy.adjustSegment(wm, smemsToNotify, smems[smemIndex], smemSplitAdjustAmount);
+                        }
+                    } else {
+                        strategy.handleSplit(prevSmems, smems, smemIndex, prevSmemIndex, parentNode, node, rule, visitedNodes, smemsToNotify,nodeToSegmentMap, wm);
+                        smemSplitAdjustAmount++;
+                    }
+                }
+            } while (!NodeTypeEnums.isEndNode(node));
+            strategy.processSegmentMemories(smems, pmem);
+        }
+        return smemsToNotify;
+    }
+
+
+
+    private static void addNewPaths(InternalWorkingMemory wm, Set<SegmentMemory> smemsToNotify, List<PathMemory> pmems) {
+        // Multiple paths may be renetrant, in the case of a second subnetwork on the same rule.
+        // Must make sure we don't duplicate the child smem, and when found, just update it with new pmem.
+        Set<LeftTupleNode> visited = new HashSet<LeftTupleNode>();
+        for (PathMemory pmem : pmems) {
+            LeftTupleSink tipNode = (LeftTupleSink) pmem.getPathEndNode();
+
+            LeftTupleNode child  = tipNode;
+            LeftTupleNode parent = tipNode.getLeftTupleSource();
+
+            SegmentMemory[] smems = pmem.getSegmentMemories();
+            while (true) {
+                if (visited.add(child)) {
+                    if ( parent != null && parent.getAssociatedRuleSize() != 1 && child.getAssociatedRuleSize() == 1 ) {
+                        // This is the split point that the new path enters an existing path.
+                        // If the parent has other child SegmentMemorys then it must create a new child SegmentMemory
+                        // If the parent is a query node, then it's internal data structure needs changing
+                        // all right input data must be propagated
+                        Memory mem = wm.getNodeMemories().peekNodeMemory( parent.getId() );
+                        if ( mem != null && mem.getSegmentMemory() != null ) {
+                            SegmentMemory sm = mem.getSegmentMemory();
+                            if ( sm.getFirst() != null ) {
+                                SegmentMemory childSmem = SegmentUtilities.createChildSegment( wm, child );
+                                sm.add( childSmem );
+                                smems[childSmem.getPos()] = childSmem;
+                                smemsToNotify.add( childSmem );
                             }
-
-                            if (i < s) {
-                                correctSegmentBeforeSplitOnAdd(wm, newPmem, p, pmem, sm);
-                            } else if (i == s) {
-                                splitSmem = correctSegmentOnSplitOnAdd(splitStartLeftTupleSource, wm, newPmem, p, splitSmem, pmem, sm);
-                            } else if (i > s) {
-                                correctSegmentAfterSplitOnAdd(wm, pmem, i, sm);
+                            correctMemoryOnSplitsChanged( parent, null, wm );
+                        }
+                    } else {
+                        Memory mem = wm.getNodeMemories().peekNodeMemory( child.getId() );
+                        // The root of each segment
+                        if ( mem != null ) {
+                            SegmentMemory sm = mem.getSegmentMemory();
+                            if ( sm != null && !sm.getPathMemories().contains( pmem ) ) {
+                                sm.addPathMemory( pmem );
+                                pmem.setSegmentMemory( sm.getPos(), sm );
+                                sm.notifyRuleLinkSegment( wm, pmem );
                             }
                         }
-                        p++;
                     }
                 } else {
-                    SegmentMemory sm = pathMems.get(0).getSegmentMemories()[s];
-                    if (sm == null) {
-                        continue; // Segments are initialised lazily, so the SM may not yet exist yet, and thus no processing needed
+                    Memory mem = wm.getNodeMemories().peekNodeMemory( child.getId() );
+                    if ( mem != null ) {
+                        mem.getSegmentMemory().notifyRuleLinkSegment( wm, pmem );
                     }
-                    initNewSegment(splitStartLeftTupleSource, wm, sm);
-                    correctSegmentBeforeSplitOnAdd(wm, newPmem, pathMems.get(0), sm);
                 }
-            }
 
-            if (NodeTypeEnums.LeftInputAdapterNode == splitStartLeftTupleSource.getType() && splitStartLeftTupleSource.getAssociationsSize() == 1) {
-                // rule added with no sharing
-                insertLiaFacts( splitStartLeftTupleSource, wm );
-            }
-
-            correctMemoryOnSplitsChanged( splitStartLeftTupleSource, wm );
-            insertFacts( splitStartLeftTupleSource.getSinkPropagator().getLastLeftTupleSink(), wm);
-        }
-    }
-
-     public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalKnowledgeBase kBase) {
-         if ( log.isTraceEnabled() ) {
-             log.trace( "Removing Rule {}", tn.getRule().getName() );
-         }
-
-         LeftTupleSource splitStartNode = getNetworkSplitPoint(tn);
-
-         kBase.invalidateSegmentPrototype( splitStartNode, true );
-
-         for ( InternalWorkingMemory wm : wms ) {
-
-             PathMemory removedPmem = wm.getNodeMemory( tn );
-             int s = getSegmentPos(splitStartNode, null);
-
-             // if a segment is going to be merged it is necessary to flush all its staged left tuples before doing any change to the network
-             flushSegmentIfMerge(wm, tn, splitStartNode, s);
-
-             // must be done before segments are mutated
-             flushStagedTuples(splitStartNode, removedPmem, wm, true);
-             wm.flushPropagations();
-
-             //
-             if (NodeTypeEnums.LeftInputAdapterNode == splitStartNode.getType() && splitStartNode.getAssociationsSize() == 1) {
-                 // rule added with no sharing
-                 deleteLiaFacts(splitStartNode, wm);
-             }
-
-             LeftTupleSink sink;
-             if ( splitStartNode.getAssociationsSize() == 1 ) {
-                 // there is no sharing, so get the node after the root of the only SegmentMemory
-                 SegmentMemory sm =  removedPmem.getSegmentMemories()[s];
-                 if ( sm == null ) {
-                     continue; // this rule has not been initialized yet
-                 }
-                 sink = ((LeftInputAdapterNode)sm.getRootNode()).getSinkPropagator().getFirstLeftTupleSink();
-             } else {
-                 // Sharing exists, get the root of the SegmentMemory after the split
-                 SegmentMemory sm = removedPmem.getSegmentMemories()[s+1];
-                 if ( sm == null ) {
-                     List<PathMemory> pathMems = new ArrayList<PathMemory>();
-                     collectRtnPathMemories(splitStartNode, wm, pathMems, tn); // get all PathMemories, except current
-                     reInitPathMemories(wm, pathMems, tn.getRule() );
-                     continue; // this rule has not been initialized yet
-                 }
-                 sink = (LeftTupleSink) sm.getRootNode();
-             }
-             deleteFacts( sink, wm);
-
-             if ( splitStartNode.getAssociationsSize() > 1 ) {
-                 List<PathMemory> pathMems = new ArrayList<PathMemory>();
-                 collectRtnPathMemories(splitStartNode, wm, pathMems, tn); // get all PathMemories, except current
-
-                 List<SegmentMemory[]> previousSmems = reInitPathMemories(wm, pathMems, tn.getRule() );
-
-                 if ( splitStartNode.getSinkPropagator().size() == 2 ) {
-                     // can only be two if the removing node causes the split to be removed
-                     int p = 0;
-                     for ( PathMemory pmem : pathMems) {
-                         pmem.setlinkedSegmentMask(0);
-                         SegmentMemory[] smems = previousSmems.get(p);
-
-                         for (int i = 0; i < smems.length; i++ ) {
-                             SegmentMemory sm = smems[i];
-                             if ( sm == null ) {
-                                 // if SegmentMemory has not been yet initialized enforce its creation here to allow merging
-                                 sm = SegmentUtilities.createSegmentMemory( splitStartNode, wm );
-                             }
-
-                             if ( i < s ) {
-                                 correctSegmentBeforeSplitOnRemove(wm, removedPmem, pmem, sm, p);
-                             } else if ( i == s ) {
-                                 if (smems[i+1] != null) {
-                                     correctSegmentOnSplitOnRemove(wm,  sm, smems[i+1], pmem, removedPmem, p);
-                                     i++; // increase to skip merged segment
-                                 }
-                             } else if (i > s) {
-                                 correctSegmentAfterSplitOnRemove(wm, pmem, i, sm);
-                             }
-                         }
-                         p++;
-                     }
-                 } else {
-                     int p = 0;
-                     for ( PathMemory pmem : pathMems) {
-                         SegmentMemory[] smems = previousSmems.get(p++);
-                         for (int i = 0; i < pmem.getSegmentMemories().length; i++) {
-                             if ( smems[i] == null) {
-                                 continue;
-                             }
-                             smems[i].removePathMemory( removedPmem );
-                             pmem.setSegmentMemory(i, smems[i]);
-                         }
-                     }
-                 }
-             }
-             if ( removedPmem.getRuleAgendaItem() != null && removedPmem.getRuleAgendaItem().isQueued() ) {
-                 removedPmem.getRuleAgendaItem().dequeue();
-             }
-
-             correctMemoryOnSplitsChanged( splitStartNode, wm );
-         }
-     }
-
-    private static void flushSegmentIfMerge(InternalWorkingMemory wm, TerminalNode tn, LeftTupleSource splitStartNode, int segmentPos) {
-        if ( splitStartNode.getAssociationsSize() == 2 ) {
-            // only handle for the first PathMemory, all others are shared and duplicate until this point
-            PathMemory pmem = getFirstRtnPathMemory(splitStartNode, wm, tn);
-            SegmentMemory[] smems = pmem.getSegmentMemories();
-
-            SegmentMemory sm1 = smems[segmentPos];
-            SegmentMemory sm2 = smems[segmentPos+1];
-            if ( sm1 != null && sm2 != null ) {
-                if (sm1.getRootNode() == sm1.getTipNode() && NodeTypeEnums.LeftInputAdapterNode == sm1.getTipNode().getType()) {
-                    sm1.setStagedTuples(sm2.getStagedLeftTuples());
-                } else if ( !sm2.getStagedLeftTuples().isEmpty() ) {
-                    flushStagedTuples(splitStartNode, pmem, wm, false);
+                if (parent == null) {
+                    break;
                 }
+
+                child = parent;
+                parent = parent.getLeftTupleSource();
             }
         }
     }
 
-    private static void flushStagedTuples(LeftTupleSource splitStartNode, PathMemory pmem, InternalWorkingMemory wm, boolean removeTuples) {
-         int smemIndex = getSegmentPos( splitStartNode, null ); // index before the segments are merged
-         SegmentMemory[] smems = pmem.getSegmentMemories();
-         SegmentMemory sm;
-         LeftTupleSink sink;
-         Memory mem;
-         long bit = 1;
-         if ( smems.length == 1 ) {
-             // there is no sharing
-             sm = smems[0];
-             if ( sm == null ) {
-                 return; // segment has not yet been initialized
-             }
-             sink = ((LeftInputAdapterNode)sm.getRootNode()).getSinkPropagator().getFirstLeftTupleSink();
-             mem = sm.getNodeMemories().get(1);
-             bit = 2; // adjust bit to point to next node
-         } else {
-             sm = smems[++smemIndex]; // segment after the split being removed.
-             if ( sm == null ) {
-                 return; // segment has not yet been initialized
-             }
-             sink = (LeftTupleSink) sm.getRootNode();
-             mem = sm.getNodeMemories().get(0);
-         }
 
-         // stages the LeftTuples for deletion in the target SegmentMemory, if necessary it looks up the nodes to find.
-         if (removeTuples) {
-            processLeftTuples( splitStartNode, sink, sm, wm, false );
-         }
+    private static void removeNewPaths(InternalWorkingMemory wm, List<PathMemory> pmems) {
+        Set<Integer> visitedNodes = new HashSet<Integer>();
+        for (PathMemory pmem : pmems) {
+            LeftTupleSink tipNode = (LeftTupleSink) pmem.getPathEndNode();
 
-         // The graph must be fully updated before SegmentMemory and PathMemories are mutated
-         if ( !sm.getStagedLeftTuples().isEmpty() && pmem.isRuleLinked() ) {
-             new RuleNetworkEvaluator().outerEval( ( LeftInputAdapterNode ) smems[0].getRootNode(),
-                                                   pmem, sink, bit, mem, smems, smemIndex,
-                                                   sm.getStagedLeftTuples().takeAll(), wm,
-                                                   new LinkedList<StackEntry>(),
-                                                   true, pmem.getRuleAgendaItem().getRuleExecutor() );
-         }
-     }
+            LeftTupleNode child  = tipNode;
+            LeftTupleNode parent = tipNode.getLeftTupleSource();
 
-    public static boolean flushLeftTupleIfNecessary( InternalWorkingMemory wm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode ) {
+            while (true) {
+                if (child.getAssociatedRuleSize() == 1 && NodeTypeEnums.isBetaNode(child)) {
+                    // If this is a beta node, it'll delete all the right input data
+                    deleteRightInputData((LeftTupleSink) child, wm);
+                }
+
+                if (parent != null && parent.getAssociatedRuleSize() != 1 && child.getAssociatedRuleSize() == 1) {
+                    // This is the split point that the new path enters an existing path.
+                    // If the parent has other child SegmentMemorys then it must create a new child SegmentMemory
+                    // If the parent is a query node, then it's internal data structure needs changing
+                    // all right input data must be propagated
+                    if (!visitedNodes.contains( child.getId() )) {
+                        Memory mem = wm.getNodeMemories().peekNodeMemory( parent.getId() );
+                        if ( mem != null && mem.getSegmentMemory() != null ) {
+                            SegmentMemory sm = mem.getSegmentMemory();
+                            if ( sm.getFirst() != null ) {
+                                SegmentMemory childSm = wm.getNodeMemories().peekNodeMemory( child.getId() ).getSegmentMemory();
+                                sm.remove( childSm );
+                            }
+                        }
+                    }
+                } else {
+                    Memory mem = wm.getNodeMemories().peekNodeMemory(child.getId());
+                    // The root of each segment
+                    if (mem != null) {
+                        SegmentMemory sm = mem.getSegmentMemory();
+                        if (sm != null && sm.getPathMemories().contains( pmem )) {
+                            mem.getSegmentMemory().removePathMemory(pmem);
+                        }
+                    }
+                }
+
+                if (parent == null) {
+                    break;
+                }
+
+                visitedNodes.add(child.getId());
+                child = parent;
+                parent = parent.getLeftTupleSource();
+            }
+        }
+    }
+
+    private static boolean isSplit(LeftTupleNode node) {
+        return isSplit(node, null);
+    }
+
+    private static boolean isSplit(LeftTupleNode node, Rule excludingRule) {
+        return node != null && SegmentUtilities.isTipNode( node, excludingRule );
+
+    }
+
+    private static void flushStagedTuples(LeftTupleNode splitStartNode, PathMemory pmem, InternalWorkingMemory wm) {
+        if (pmem.getRuleAgendaItem() == null ) {
+            // The rule has never been linked in and evaluated, so there will be nothing to flush.
+            return;
+        }
+        int             smemIndex = getSegmentPos(splitStartNode, null); // index before the segments are merged
+        SegmentMemory[] smems     = pmem.getSegmentMemories();
+
+        SegmentMemory   sm;
+        LeftTupleSink   sink;
+        Memory          mem;
+        long            bit       = 1;
+        if (splitStartNode.getAssociatedRuleSize() == 1 && (smems[0] == null || smems[0].getTipNode().getType() != NodeTypeEnums.LeftInputAdapterNode)) {
+            // there is no sharing
+            sm = smems[0];
+            if (sm == null || sm.getStagedLeftTuples().isEmpty()) {
+                return; // segment has not yet been initialized
+            }
+            sink = sm.getRootNode().getSinkPropagator().getFirstLeftTupleSink();
+            mem = sm.getNodeMemories().get(1);
+            bit = 2; // adjust bit to point to next node
+        } else {
+            sm = smems[++smemIndex]; // segment after the split being removed.
+            if (sm == null || sm.getStagedLeftTuples().isEmpty()) {
+                return; // segment has not yet been initialized
+            }
+            sink = (LeftTupleSink) sm.getRootNode();
+            mem = sm.getNodeMemories().get(0);
+        }
+
+        new RuleNetworkEvaluator().outerEval((LeftInputAdapterNode) smems[0].getRootNode(),
+                                             pmem, sink, bit, mem, smems, smemIndex,
+                                             sm.getStagedLeftTuples().takeAll(), wm, new LinkedList<StackEntry>(), true, pmem.getRuleAgendaItem().getRuleExecutor());
+    }
+
+    public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode) {
         PathMemory pmem = streamMode ?
                           sm.getPathMemories().get(0) :
                           sm.getFirstDataDrivenPathMemory();
@@ -308,10 +546,10 @@ public class AddRemoveRule {
         }
 
         LeftTupleSink sink;
-        Memory mem;
-        long bit = 1;
-        if ( sm.getRootNode() instanceof LeftInputAdapterNode ) {
-            sink = ((LeftInputAdapterNode)sm.getRootNode()).getSinkPropagator().getFirstLeftTupleSink();
+        Memory        mem;
+        long          bit = 1;
+        if (sm.getRootNode() instanceof LeftInputAdapterNode) {
+            sink = ((LeftInputAdapterNode) sm.getRootNode()).getSinkPropagator().getFirstLeftTupleSink();
             mem = sm.getNodeMemories().get(1);
             bit = 2; // adjust bit to point to next node
         } else {
@@ -321,299 +559,149 @@ public class AddRemoveRule {
 
         TupleSets<LeftTuple> leftTupleSets = new TupleSetsImpl<LeftTuple>();
         if (leftTuple != null) {
-            leftTupleSets.addInsert( leftTuple);
+            leftTupleSets.addInsert(leftTuple);
         }
 
-        new RuleNetworkEvaluator().outerEval( ( LeftInputAdapterNode ) smems[0].getRootNode(),
-                                              pmem, sink, bit, mem, smems, sm.getPos(), leftTupleSets, wm,
-                                              new LinkedList<StackEntry>(),
-                                              true, pmem.getOrCreateRuleAgendaItem(wm).getRuleExecutor() );
+        new RuleNetworkEvaluator().outerEval((LeftInputAdapterNode) smems[0].getRootNode(),
+                                             pmem, sink, bit, mem, smems, sm.getPos(), leftTupleSets, wm,
+                                             new LinkedList<StackEntry>(),
+                                             true, pmem.getOrCreateRuleAgendaItem(wm).getRuleExecutor());
         return true;
-     }
-
-
-     private static List<SegmentMemory[]> reInitPathMemories(InternalWorkingMemory wm, List<PathMemory> pathMems, RuleImpl removingRule) {
-         List<SegmentMemory[]> previousSmems = new ArrayList<SegmentMemory[]>();
-         for ( PathMemory pmem : pathMems) {
-             // Re initialise all the PathMemories
-             previousSmems.add(pmem.getSegmentMemories());
-             LeftTupleSource lts;
-             LeftTupleSource startRianLts = null;
-             if ( NodeTypeEnums.isTerminalNode(pmem.getNetworkNode())) {
-                 lts = ((TerminalNode)pmem.getNetworkNode()).getLeftTupleSource();
-             } else {
-                 RightInputAdapterNode rian = (RightInputAdapterNode)pmem.getNetworkNode();
-                 startRianLts = rian.getStartTupleSource();
-                 lts = rian.getLeftTupleSource();
-             }
-             AbstractTerminalNode.initPathMemory(pmem, lts, startRianLts, wm, removingRule); // re-initialise the PathMemory
-         }
-         return previousSmems;
-     }
-
-
-     private static void correctSegmentBeforeSplitOnAdd(InternalWorkingMemory wm, PathMemory newPmem, PathMemory pmem, SegmentMemory sm) {
-         while (sm != null) {
-             setSegmentMemoryOnNewPath( wm, newPmem, sm );
-             sm = sm.getPos() > 0 ? pmem.getSegmentMemories()[sm.getPos()-1] : null;
-         }
-     }
-
-     private static void correctSegmentBeforeSplitOnAdd(InternalWorkingMemory wm, PathMemory newPmem, int p, PathMemory pmem, SegmentMemory sm) {
-         pmem.setSegmentMemory( sm.getPos(), sm );
-         if ( p == 0 ) {
-             // only handle for the first PathMemory, all others are shared and duplicate until this point
-             setSegmentMemoryOnNewPath( wm, newPmem, sm );
-         }
-     }
-
-    private static void setSegmentMemoryOnNewPath( InternalWorkingMemory wm, PathMemory newPmem, SegmentMemory sm ) {
-        newPmem.setSegmentMemory(sm.getPos(), sm);
-        sm.addPathMemory( newPmem );
-        sm.notifyRuleLinkSegment(wm);
     }
 
-    private static void correctSegmentBeforeSplitOnRemove(InternalWorkingMemory wm, PathMemory removedPmem, PathMemory pmem, SegmentMemory sm, int p) {
-         pmem.setSegmentMemory( sm.getPos(), sm );
-         if ( p == 0 ) {
-             // only handle for the first PathMemory, all others are shared and duplicate until this point
-             sm.removePathMemory( removedPmem );
-             sm.notifyRuleLinkSegment(wm);
-         }
-     }
 
-     private static SegmentMemory correctSegmentOnSplitOnAdd(LeftTupleSource splitStartLeftTupleSource, InternalWorkingMemory wm, PathMemory newPmem, int p, SegmentMemory splitSmem, PathMemory pmem, SegmentMemory sm) {
-         if ( p == 0 ) {
-             // split is inside of a segment, so the segment must be split in half and a new one created
-             splitSmem = splitSegment(sm, splitStartLeftTupleSource);
+    private static Map<PathMemory, SegmentMemory[]> reInitPathMemories(InternalWorkingMemory wm, List<PathMemory> pathMems, Rule removingRule) {
+        Map<PathMemory, SegmentMemory[]> previousSmems = new HashMap<PathMemory, SegmentMemory[]>();
+        for (PathMemory pmem : pathMems) {
+            // Re initialise all the PathMemories
+            previousSmems.put(pmem, pmem.getSegmentMemories());
+            LeftTupleSource startRianLts = null;
+            if (!NodeTypeEnums.isTerminalNode(pmem.getPathEndNode())) {
+                RightInputAdapterNode rian = (RightInputAdapterNode) pmem.getPathEndNode();
+                startRianLts = rian.getStartTupleSource();
+            }
+            AbstractTerminalNode.initPathMemory(pmem, pmem.getPathEndNode(), startRianLts, wm, removingRule); // re-initialise the PathMemory
+        }
+        return previousSmems;
+    }
 
-             correctSegmentMemoryAfterSplitOnAdd(splitSmem);
-
-             pmem.setSegmentMemory(sm.getPos(), sm);
-             pmem.setSegmentMemory(splitSmem.getPos(), splitSmem);
-
-             newPmem.setSegmentMemory(sm.getPos(), sm);
-             newPmem.setSegmentMemory(splitSmem.getPos(), splitSmem);
-
-             sm.addPathMemory( newPmem );
-             splitSmem.addPathMemory( newPmem );
-
-             sm.notifyRuleLinkSegment(wm);
-             splitSmem.notifyRuleLinkSegment(wm);
-
-             initNewSegment(splitStartLeftTupleSource, wm, sm);
-         } else {
-             pmem.setSegmentMemory(sm.getPos(), sm);
-             pmem.setSegmentMemory(splitSmem.getPos(), splitSmem);
-         }
-         return splitSmem;
-     }
-
-     private static void initNewSegment(LeftTupleSource splitStartLeftTupleSource, InternalWorkingMemory wm, SegmentMemory sm) {// Initialise new SegmentMemory
-         LeftTupleSinkNode peerLts = splitStartLeftTupleSource.getSinkPropagator().getLastLeftTupleSink();
-
-         if ( NodeTypeEnums.isBetaNode(peerLts) && ((BetaNode)peerLts).isRightInputIsRiaNode() ) {
-             LeftTupleSink subNetworkLts = peerLts.getPreviousLeftTupleSinkNode();
-
-             Memory memory = wm.getNodeMemory((MemoryFactory) subNetworkLts);
-             SegmentMemory newSmem = SegmentUtilities.createChildSegment(wm, peerLts, memory);
-             sm.add(newSmem);
-         }
-
-         Memory memory = wm.getNodeMemory((MemoryFactory) peerLts);
-         SegmentMemory newSmem = SegmentUtilities.createChildSegment(wm, peerLts, memory);
-         newSmem.setPos( sm.getPos()+1 );
-         sm.add(newSmem);
-
-         LeftTupleSource lts;
-         if ( NodeTypeEnums.isTerminalNode(sm.getTipNode() ) ) {
-             // if tip is RTN, then use parent
-             lts = ((TerminalNode)sm.getTipNode()).getLeftTupleSource();
-         } else {
-             lts = (LeftTupleSource) sm.getTipNode();
-         }
-
-         processLeftTuples(lts, peerLts, newSmem, wm, true);
-     }
-
-    private static void correctMemoryOnSplitsChanged( LeftTupleSource splitStart, InternalWorkingMemory wm ) {
-        if ( splitStart.getType() == NodeTypeEnums.UnificationNode) {
-            ((QueryElementNode.QueryElementNodeMemory) wm.getNodeMemory( (MemoryFactory) splitStart )).correctMemoryOnSinksChanged();
+    public static void notifySegments(Set<SegmentMemory> smems, InternalWorkingMemory wm) {
+        for (SegmentMemory sm : smems) {
+            sm.notifyRuleLinkSegment(wm);
         }
     }
 
-    private static void correctSegmentOnSplitOnRemove(InternalWorkingMemory wm, SegmentMemory sm1,SegmentMemory sm2,  PathMemory pmem, PathMemory removedPmem, int p) {
-         if ( p == 0 ) {
-             mergeSegment(sm1, sm2);
+    private static void correctMemoryOnSplitsChanged(LeftTupleNode splitStart, Rule removingRule, InternalWorkingMemory wm) {
+        if (splitStart.getType() == NodeTypeEnums.UnificationNode) {
+            QueryElementNode.QueryElementNodeMemory mem = (QueryElementNode.QueryElementNodeMemory) wm.getNodeMemories().peekNodeMemory(splitStart.getId());
+            if (mem != null) {
+                mem.correctMemoryOnSinksChanged(removingRule);
+            }
+        }
+    }
 
-             pmem.setSegmentMemory( sm1.getPos(), sm1 );
 
-             sm1.removePathMemory( removedPmem);
-             SegmentMemory oldSegment = removedPmem.getSegmentMemories()[sm1.getPos() + 1];
-             // sm1 may not be linked yet to oldSegment because oldSegment has been just created
-             if (sm1.contains( oldSegment )) {
-                 sm1.remove( oldSegment );
-             }
+    public static void correctSegmentMemoryAfterSplitOnAdd(SegmentMemory sm) {
+        correctSegmentMemoryAfterSplitOnAdd(sm, 1);
+    }
 
-             sm1.notifyRuleLinkSegment(wm);
-         } else {
-             pmem.setSegmentMemory( sm1.getPos(), sm1 );
-         }
-     }
+    public static void correctSegmentMemoryAfterSplitOnAdd(SegmentMemory sm, int i) {
+        sm.setPos(sm.getPos() + i);
+        sm.setSegmentPosMaskBit(sm.getSegmentPosMaskBit() << i);
+    }
 
-     private static void correctSegmentAfterSplitOnAdd(InternalWorkingMemory wm, PathMemory pmem, int i, SegmentMemory sm) {
-         if ( sm.getPos() == i ) {
-             // segment has not yet had it's pos and bitmasks updated
-             correctSegmentMemoryAfterSplitOnAdd(sm);
-             sm.notifyRuleLinkSegment(wm);
-         }
-         pmem.setSegmentMemory(sm.getPos(), sm);
-     }
+    public static void correctSegmentMemoryAfterSplitOnRemove(SegmentMemory sm, int i) {
+        sm.setPos(sm.getPos() - i);
+        sm.setSegmentPosMaskBit(sm.getSegmentPosMaskBit() >> i);
+    }
 
-     private static void correctSegmentAfterSplitOnRemove(InternalWorkingMemory wm, PathMemory pmem, int i, SegmentMemory sm) {
-         if ( sm.getPos() == i ) {
-             // segment has not yet had it's pos and bitmasks updated
-             correctSegmentMemoryAfterSplitOnRemove(sm);
-             sm.notifyRuleLinkSegment(wm);
-         }
-         pmem.setSegmentMemory(sm.getPos(), sm );
-     }
+    public static int getSegmentPos(LeftTupleNode lts, Rule removingRule) {
+        int counter = 0;
+        while (lts.getType() != NodeTypeEnums.LeftInputAdapterNode) {
+            lts = lts.getLeftTupleSource();
+            if (SegmentUtilities.isTipNode(lts, removingRule)) {
+                counter++;
+            }
+        }
+        return counter;
+    }
 
-     public static void correctSegmentMemoryAfterSplitOnAdd(SegmentMemory sm) {
-         sm.setPos(sm.getPos() + 1);
-         sm.setSegmentPosMaskBit(sm.getSegmentPosMaskBit() << 1);
-     }
-
-     public static void correctSegmentMemoryAfterSplitOnRemove(SegmentMemory sm) {
-         sm.setPos(sm.getPos() - 1);
-         sm.setSegmentPosMaskBit(sm.getSegmentPosMaskBit() >> 1);
-     }
-
-     public static int getSegmentPos(LeftTupleSource lts, RuleImpl removingRule) {
-         int counter = 0;
-         while ( lts.getType() != NodeTypeEnums.LeftInputAdapterNode ) {
-             if ( !SegmentUtilities.parentInSameSegment( lts, removingRule ) ) {
-                 counter++;
-             }
-             lts = lts.getLeftTupleSource();
-         }
-         return counter;
-     }
-
-    private static void insertLiaFacts(LeftTupleSource startNode, InternalWorkingMemory wm) {
+    private static void insertLiaFacts(LeftTupleNode startNode, InternalWorkingMemory wm) {
         // rule added with no sharing
         PropagationContextFactory pctxFactory = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-        final PropagationContext pctx = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
-        LeftInputAdapterNode lian = (LeftInputAdapterNode) startNode;
-        RightTupleSinkAdapter liaAdapter = new RightTupleSinkAdapter(lian);
+        final PropagationContext  pctx        = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
+        LeftInputAdapterNode      lian        = (LeftInputAdapterNode) startNode;
+        RightTupleSinkAdapter     liaAdapter  = new RightTupleSinkAdapter(lian);
         lian.getObjectSource().updateSink(liaAdapter, pctx, wm);
     }
 
-    private static void insertFacts(LeftTupleSink startNode, InternalWorkingMemory wm) {
-        LeftTupleSink lts =  startNode;
-        PropagationContextFactory pctxFactory = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
-        while (!NodeTypeEnums.isTerminalNode(lts) && lts.getLeftTupleSource().getType() != NodeTypeEnums.RightInputAdaterNode ) {
-            if (NodeTypeEnums.isBetaNode(lts)) {
-                BetaNode bn = (BetaNode) lts;
-                if (!bn.isRightInputIsRiaNode() ) {
-                    final PropagationContext pctx = pctxFactory.createPropagationContext(wm.getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
-                    bn.getRightInput().updateSink(bn,
-                                                  pctx,
-                                                  wm);
-                } else {
-                    insertSubnetworkFacts(bn, wm);
+    private static void insertFacts(PathEndNodes endNodes, InternalWorkingMemory[] wms) {
+        Set<LeftTupleNode> visited = new HashSet<LeftTupleNode>();
+
+        for ( PathEndNode endNode : endNodes.subjectEndNodes ) {
+            LeftTupleNode[]  nodes = endNode.getPathNodes();
+            for ( int i = nodes.length-1; i >= 0 && nodes[i].getAssociatedRuleSize() == 1; i-- ) {
+                LeftTupleNode node = nodes[i];
+                if  ( NodeTypeEnums.isBetaNode(node)  ) {
+                    if (!visited.add( node )) {
+                        continue;// this is to avoid rentering a path, and processing nodes twice. This can happen for nested subnetworks.
+                    }
+                    BetaNode bn = (BetaNode) node;
+
+                    if (!bn.isRightInputIsRiaNode()) {
+                        for ( int j = 0; j < wms.length; j++ ) {
+                            PropagationContextFactory pctxFactory = wms[j].getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
+                            final PropagationContext pctx = pctxFactory.createPropagationContext(wms[j].getNextPropagationIdCounter(), PropagationContext.RULE_ADDITION, null, null, null);
+                            bn.getRightInput().updateSink(bn,
+                                                          pctx,
+                                                          wms[j]);
+                        }
+                    }
                 }
-            } else if ( lts.getType() == NodeTypeEnums.RightInputAdaterNode ) {
-                // no need to delete anything, as this gets popagated during the rule evaluation
-                return;
-            }
-            lts = ((LeftTupleSource) lts).getSinkPropagator().getFirstLeftTupleSink();
-        }
-    }
-
-    private static void insertSubnetworkFacts(BetaNode bn, InternalWorkingMemory wm) {
-        RightInputAdapterNode rian = ( RightInputAdapterNode ) bn.getRightInput();
-        LeftTupleSource subLts =  rian.getLeftTupleSource();
-        while ( subLts.getLeftTupleSource() != rian.getStartTupleSource() ) {
-            subLts = subLts.getLeftTupleSource();
-        }
-        insertFacts( ( LeftTupleSink ) subLts, wm);
-    }
-
-    private static void deleteLiaFacts(LeftTupleSource startNode, InternalWorkingMemory wm) {
-        LeftInputAdapterNode lian = ( LeftInputAdapterNode ) startNode;
-        ObjectSource os = lian.getObjectSource();
-        while (os.getType() != NodeTypeEnums.ObjectTypeNode) {
-            os = os.getParentObjectSource();
-        }
-        ObjectTypeNode otn = (ObjectTypeNode) os;
-        final ObjectTypeNodeMemory omem = wm.getNodeMemory(otn);
-        Iterator<InternalFactHandle> it = omem.iterator();
-
-        while (it.hasNext()) {
-            InternalFactHandle fh = it.next();
-            for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; ) {
-                LeftTuple next = childLt.getHandleNext();
-                //stagedLeftTuples
-                if ( childLt.getTupleSink() == lian ) {
-                    fh.removeLeftTuple(childLt);
-                }
-                childLt = next;
             }
         }
     }
 
-    public static void deleteFacts(LeftTupleSink startNode, InternalWorkingMemory wm) {
-        LeftTupleSink lts = startNode;
-        while (!NodeTypeEnums.isTerminalNode(lts) && lts.getLeftTupleSource().getType() != NodeTypeEnums.RightInputAdaterNode ) {
-            if (NodeTypeEnums.isBetaNode(lts)) {
-                BetaNode bn = (BetaNode) lts;
-                if (!bn.isRightInputIsRiaNode() ) {
-                    BetaMemory bm;
-                    if ( bn.getType() == NodeTypeEnums.AccumulateNode ) {
-                        bm = ((AccumulateMemory)wm.getNodeMemory( bn )).getBetaMemory();
-                    } else {
-                        bm = ( BetaMemory ) wm.getNodeMemory( bn );
-                    }
-
-                    TupleMemory rtm = bm.getRightTupleMemory();
-                    FastIterator it = rtm.fullFastIterator();
-                    for (Tuple rightTuple = BetaNode.getFirstTuple( rtm, it ); rightTuple != null; ) {
-                        Tuple next = (Tuple) it.next(rightTuple);
-                        rtm.remove(rightTuple);
-                        rightTuple.unlinkFromRightParent();
-                        rightTuple = next;
-                    }
-
-                    if ( !bm.getStagedRightTuples().isEmpty() ) {
-                        bm.setNodeDirtyWithoutNotify();
-                    }
-                    TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
-
-                    unlinkRightTuples(srcRightTuples.getInsertFirst());
-                    unlinkRightTuples(srcRightTuples.getUpdateFirst());
-                    unlinkRightTuples(srcRightTuples.getDeleteFirst());
-
-                    deleteFactsFromRightInput(bn, wm);
-                } else {
-                    deleteSubnetworkFacts(bn, wm);
-                }
-            } else if ( lts.getType() == NodeTypeEnums.RightInputAdaterNode ) {
-                // no need to delete anything, as these would have been deleted by the left tuple processing.
-                return;
+    private static void deleteRightInputData(LeftTupleSink node, InternalWorkingMemory wm) {
+        if (wm.getNodeMemories().peekNodeMemory(node.getId()) != null) {
+            BetaNode   bn = (BetaNode) node;
+            BetaMemory bm;
+            if (bn.getType() == NodeTypeEnums.AccumulateNode) {
+                bm = ((AccumulateMemory) wm.getNodeMemory(bn)).getBetaMemory();
+            } else {
+                bm = (BetaMemory) wm.getNodeMemory(bn);
             }
-            lts = ((LeftTupleSource) lts).getSinkPropagator().getFirstLeftTupleSink();
+
+            TupleMemory  rtm = bm.getRightTupleMemory();
+            FastIterator it  = rtm.fullFastIterator();
+            for (Tuple rightTuple = BetaNode.getFirstTuple(rtm, it); rightTuple != null; ) {
+                Tuple next = (Tuple) it.next(rightTuple);
+                rtm.remove(rightTuple);
+                rightTuple.unlinkFromRightParent();
+                rightTuple = next;
+            }
+
+            if (!bm.getStagedRightTuples().isEmpty()) {
+                bm.setNodeDirtyWithoutNotify();
+            }
+            TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
+
+            unlinkRightTuples(srcRightTuples.getInsertFirst());
+            unlinkRightTuples(srcRightTuples.getUpdateFirst());
+            unlinkRightTuples(srcRightTuples.getDeleteFirst());
+
+            deleteFactsFromRightInput(bn, wm);
         }
     }
 
     private static void deleteFactsFromRightInput(BetaNode bn, InternalWorkingMemory wm) {
         ObjectSource source = bn.getRightInput();
         if (source instanceof WindowNode) {
-            WindowNode.WindowMemory memory = (WindowNode.WindowMemory) wm.getNodeMemory( ( (WindowNode) source ));
+            WindowNode.WindowMemory memory = (WindowNode.WindowMemory) wm.getNodeMemory(((WindowNode) source));
             for (EventFactHandle factHandle : memory.getFactHandles()) {
                 for (RightTuple rightTuple = factHandle.getFirstRightTuple(); rightTuple != null; ) {
                     RightTuple nextRightTuple = rightTuple.getHandleNext();
-                    if (source.equals( rightTuple.getTupleSink() )) {
+                    if (source.equals(rightTuple.getTupleSink())) {
                         rightTuple.unlinkFromRightParent();
                     }
                     rightTuple = nextRightTuple;
@@ -633,505 +721,677 @@ public class AddRemoveRule {
         }
     }
 
-    private static void deleteSubnetworkFacts(BetaNode bn, InternalWorkingMemory wm) {
-        RightInputAdapterNode rian = ( RightInputAdapterNode ) bn.getRightInput();
-        LeftTupleSource subLts =  rian.getLeftTupleSource();
-        while ( subLts.getLeftTupleSource() != rian.getStartTupleSource() ) {
-            subLts = subLts.getLeftTupleSource();
-        }
-        deleteFacts((LeftTupleSink) subLts, wm);
-    }
-
     /**
      * Populates the SegmentMemory with staged LeftTuples. If the parent is not a Beta or From node, it iterates up to find the first node with memory. If necessary
-     * It traverses to the LiaNode's ObjectTypeNode. It then iterates the LeftTuple chain, on a specific path to navigate down to where an existing LeftTuple is staged
+     * It traverses to the LiaNode's ObjectTypeNode. It then iterates the LeftTuple chains, where an existing LeftTuple is staged
      * as delete. Or a new LeftTuple is created and staged as an insert.
      */
-    public static void processLeftTuples(LeftTupleSource node, LeftTupleSink peerNode, SegmentMemory smem, InternalWorkingMemory wm, boolean insert) {
+    private static void processLeftTuples(LeftTupleNode node, InternalWorkingMemory wm, boolean insert, Rule rule) {
         // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
 
-        // Must iterate up until a node with memory is found, this can be followed to find the LeftTuples to peer
+        // Must iterate up until a node with memory is found, this can be followed to find the LeftTuples
+        // which provide the potential peer of the tuple being added or removed
 
-        // creates the propagation path to follow
-        List<LeftTupleSink> sinks = new ArrayList<LeftTupleSink>();
-        sinks.add(peerNode);
+        Memory memory = wm.getNodeMemories().peekNodeMemory(node.getId());
+        if (memory == null || memory.getSegmentMemory() == null) {
+            // segment has never been initialized, which means the rule(s) have never been linked and thus no Tuples to fix
+            return;
+        }
+        SegmentMemory sm = memory.getSegmentMemory();
 
         while (NodeTypeEnums.LeftInputAdapterNode != node.getType()) {
-            Memory memory = wm.getNodeMemory((MemoryFactory) node);
-            if (memory.getSegmentMemory() == null) {
-                // segment has never been initialized, which means the rule has never been linked.
-                return;
-            }
+
             if (NodeTypeEnums.isBetaNode(node)) {
-                BetaMemory bm;
+                BetaMemory    bm;
+                SegmentMemory childSmem = sm; // if there is no split the child smem is same as current node
+
+                if (sm.getTipNode() == node) {
+                    // There is a network split, so must use the next sm
+                    childSmem = sm.getFirst();
+                }
                 if (NodeTypeEnums.AccumulateNode == node.getType()) {
                     AccumulateMemory am = (AccumulateMemory) memory;
                     bm = am.getBetaMemory();
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                    Tuple lt = BetaNode.getFirstTuple( bm.getLeftTupleMemory(), it );
+                    Tuple        lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                         AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                        followPeer(accctx.getResultLeftTuple(), smem, sinks,  sinks.size()-1, insert);
+                        visitChild(accctx.getResultLeftTuple(), childSmem, insert, wm, rule);
                     }
-                } else if ( NodeTypeEnums.ExistsNode == node.getType() ) {
+                } else if (NodeTypeEnums.ExistsNode == node.getType()) {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
-                    RightTuple rt = (RightTuple) BetaNode.getFirstTuple( bm.getRightTupleMemory(), it );
+                    RightTuple   rt = (RightTuple) BetaNode.getFirstTuple(bm.getRightTupleMemory(), it);
                     for (; rt != null; rt = (RightTuple) it.next(rt)) {
-                        for ( LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext() ) {
-                            if ( lt.getFirstChild() != null ) {
-                                followPeer(lt.getFirstChild(), smem, sinks,  sinks.size()-1, insert);
-                            }
+                        for (LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext()) {
+                            visitChild(wm, insert, rule, childSmem, it, lt);
                         }
                     }
                 } else {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
-                    Tuple lt = BetaNode.getFirstTuple( bm.getLeftTupleMemory(), it );
-                    for (; lt != null; lt = (LeftTuple) it.next(lt)) {
-                        if ( lt.getFirstChild() != null ) {
-                            followPeerFromLeftInput(lt.getFirstChild(), smem, sinks, insert);
-                        }
-                    }
+                    Tuple        lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
+                    visitChild(wm, insert, rule, childSmem, it, lt);
                 }
                 return;
             } else if (NodeTypeEnums.FromNode == node.getType()) {
-                FromMemory fm = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
-                TupleMemory ltm = fm.getBetaMemory().getLeftTupleMemory();
-                FastIterator it = ltm.fullFastIterator();
-                for (LeftTuple lt = (LeftTuple)ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
-                    if ( lt.getFirstChild() != null ) {
-                        followPeerFromLeftInput(lt.getFirstChild(), smem, sinks, insert);
-                    }
+                FromMemory   fm  = (FromMemory) wm.getNodeMemory((MemoryFactory) node);
+                TupleMemory  ltm = fm.getBetaMemory().getLeftTupleMemory();
+                FastIterator it  = ltm.fullFastIterator();
+                for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
+                    visitChild(lt, sm, insert, wm, rule);
                 }
                 return;
             }
-            sinks.add((LeftTupleSink) node);
+            if (sm.getRootNode() == node) {
+                sm = wm.getNodeMemory((MemoryFactory<Memory>) node.getLeftTupleSource()).getSegmentMemory();
+            }
             node = node.getLeftTupleSource();
         }
 
         // No beta or from nodes, so must retrieve LeftTuples from the LiaNode.
         // This is done by scanning all the LeftTuples referenced from the FactHandles in the ObjectTypeNode
         LeftInputAdapterNode lian = (LeftInputAdapterNode) node;
-        Memory memory = wm.getNodeMemory((MemoryFactory) node);
-        if (memory.getSegmentMemory() == null) {
-            // segment has never been initialized, which means the rule has never been linked.
-            return;
-        }
 
         ObjectSource os = lian.getObjectSource();
         while (os.getType() != NodeTypeEnums.ObjectTypeNode) {
             os = os.getParentObjectSource();
         }
-        ObjectTypeNode otn = (ObjectTypeNode) os;
+        ObjectTypeNode             otn  = (ObjectTypeNode) os;
         final ObjectTypeNodeMemory omem = wm.getNodeMemory(otn);
-        LeftTupleSink firstLiaSink = lian.getSinkPropagator().getFirstLeftTupleSink();
-        Iterator<InternalFactHandle> it = omem.iterator();
+        if (omem == null) {
+            // no OTN memory yet, i.e. no inserted matching objects, so no Tuples to process
+            return;
+        }
 
+        Iterator<InternalFactHandle> it = omem.iterator();
         while (it.hasNext()) {
             InternalFactHandle fh = it.next();
-            if (fh.getFirstLeftTuple() != null ) {
-                for (LeftTuple childLt = fh.getFirstLeftTuple(); childLt != null; childLt = childLt.getHandleNext()) {
-                    if ( childLt.getTupleSink() == firstLiaSink ) {
-                        followPeer(childLt, smem, sinks,  sinks.size()-1, insert);
+            LeftTuple lt = fh.getFirstLeftTuple();
+            while (lt != null) {
+                LeftTuple nextLt = lt.getHandleNext();
+
+                // Each lt is for a different lian, skip any lian not associated with the rule. Need to use lt parent (souce) not child to check the lian.
+                if (lt.getTupleSource().isAssociatedWith(rule)) {
+                    SegmentMemory childSmem = sm;
+                    if (sm.getFirst() != null && sm.getFirst().getRootNode() == lt.getTupleSink()) {
+                        // child lt sink is root of next segment, so assign. This happens when the Lian is in a segment of it's own
+                        childSmem = sm.getFirst();
+                    }
+                    visitChild(lt, childSmem, insert, wm, rule);
+
+                    if (lt.getHandlePrevious() != null) {
+                        lt.getHandlePrevious().setHandleNext( nextLt );
+                    }
+                    if (nextLt != null) {
+                        nextLt.setHandlePrevious( lt.getHandlePrevious() );
                     }
                 }
+
+                lt = nextLt;
             }
         }
     }
 
-    private static void followPeerFromLeftInput(LeftTuple lt, SegmentMemory smem, List<LeftTupleSink> sinks, boolean insert) {
-        // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
-        for (; lt != null; lt = lt.getHandleNext()) {
-            followPeer(lt, smem, sinks, sinks.size() -1, insert);
+    private static void visitChild(InternalWorkingMemory wm, boolean insert, Rule rule, SegmentMemory childSmem, FastIterator it, Tuple lt) {
+        for (; lt != null; lt = (LeftTuple) it.next(lt)) {
+            LeftTuple childLt = lt.getFirstChild();
+            while (childLt != null) {
+                LeftTuple nextLt = childLt.getHandleNext();
+                visitChild(childLt, childSmem, insert, wm, rule);
+                childLt = nextLt;
+            }
         }
     }
 
-    private static void followPeer(LeftTuple lt, SegmentMemory smem, List<LeftTupleSink> sinks, int i, boolean insert) {
-        // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
+    private static void visitChild(LeftTuple lt, SegmentMemory smem, boolean insert, InternalWorkingMemory wm, Rule rule) {
+        LeftTuple prevLt = null;
+        LeftTupleSinkNode sink = lt.getTupleSink();
 
-        LeftTupleSink sink = sinks.get(i);
+        for ( ; sink != null; sink = sink.getNextLeftTupleSinkNode() ) {
 
-        if ( i == 0 ) {
-            if ( insert ) {
-                if ( NodeTypeEnums.isBetaNode(sink) ) {
-                    BetaNode bn = ( BetaNode ) sink;
-                    if ( bn.isRightInputIsRiaNode() ) {
-                        // must also create and stage the LeftTuple for the subnetwork
-                        SegmentMemory subSmem = smem.getPrevious(); // Subnetwork segment will be before this one
-                        insertPeerLeftTuple(lt, (LeftTupleSink)subSmem.getRootNode(), subSmem);
+            if ( lt != null ) {
+                if (lt.getTupleSink().isAssociatedWith(rule)) {
+
+                    if (lt.getTupleSink().getAssociatedRuleSize() > 1) {
+                        if (lt.getFirstChild() != null) {
+                            SegmentMemory childSmem = smem; // if there is no split the child smem is same as current node
+
+                            if ( smem.getFirst() != null && smem.getFirst().getRootNode() == lt.getFirstChild().getTupleSink() ) {
+                                // There is a network split, so must use child smem
+                                childSmem = smem.getFirst();
+                            }
+
+                            for ( LeftTuple child = lt.getFirstChild(); child != null; child =  child.getHandleNext() ) {
+                                visitChild(child, childSmem, insert, wm, rule);
+                            }
+                        }
+                    } else if (!insert) {
+                        LeftTuple lt2 = null;
+                        if ( lt.getPeer() != null && lt.getPeer().getTupleSink().isAssociatedWith(rule) && lt.getPeer().getTupleSink().getAssociatedRuleSize() == 1 ) {
+                            // this LT is associated with a peer, due to subnetwork, so process together.
+                            lt2 = lt.getPeer();
+                        }
+
+                        // this sink is not shared and is associated with the rule being removed delete it's children
+                        deletePeerLeftTuple(lt, lt2, prevLt, wm);
+                        break; // only one rule is deleted at a time, we know there are no more peers to delete so break.
                     }
                 }
-                insertPeerLeftTuple(lt, sink, smem);
+
+                prevLt = lt;
+                lt = lt.getPeer();
             } else {
-                if ( NodeTypeEnums.isBetaNode(sink) ) {
-                    BetaNode bn = ( BetaNode ) sink;
-                    if ( bn.isRightInputIsRiaNode() ) {
-                        // must also create and stage the LeftTuple for the subnetwork
-                        SegmentMemory subSmem = smem.getPrevious(); // Subnetwork segment will be before this one
-                        deletePeerLeftTuple(lt, (LeftTupleSink)subSmem.getRootNode(), subSmem);
-                    }
-                }
-                deletePeerLeftTuple(lt, sink, smem);
+                // there is a sink without a peer LT, so create the peer LT
+                prevLt = insertPeerLeftTuple(prevLt, sink, wm);
             }
+
+            if (smem != null) {
+                // will go null when it reaches an LT for a newly added sink, as these need to be initialised
+                smem = smem.getNext();
+            }
+        }
+    }
+
+
+    /**
+     * Create all missing peers
+     */
+    private static LeftTuple insertPeerLeftTuple(LeftTuple lt, LeftTupleSinkNode node, InternalWorkingMemory wm) {
+        LeftInputAdapterNode.LiaNodeMemory liaMem = null;
+        if ( node.getLeftTupleSource().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
+            liaMem = wm.getNodeMemory(((LeftInputAdapterNode) node.getLeftTupleSource()));
+        }
+
+        lt = node.createPeer(lt);
+        Memory memory = wm.getNodeMemories().peekNodeMemory(node.getId());
+        if (memory == null || memory.getSegmentMemory() == null) {
+            throw new IllegalStateException("Defensive Programming: this should not be possilbe, as the addRule code should init child segments if they are needed ");
+        }
+
+
+        if ( liaMem == null) {
+            memory.getSegmentMemory().getStagedLeftTuples().addInsert(lt);
         } else {
-            LeftTuple peer = lt;
-            while (peer.getTupleSink() != sink) {
-                peer = peer.getPeer();
+            // If parent is Lian, then this must be called, so that any linking or unlinking can be done.
+            LeftInputAdapterNode.doInsertSegmentMemory(wm, true, liaMem, memory.getSegmentMemory(), lt, node.getLeftTupleSource().isStreamMode());
+        }
+
+        return lt;
+    }
+
+    private static void deletePeerLeftTuple(LeftTuple lt, LeftTuple lt2, LeftTuple prevLt, InternalWorkingMemory wm) {
+        iterateLeftTuple( lt, wm);
+        if ( lt2 != null ) {
+            iterateLeftTuple( lt2, wm);
+        }
+
+        deleteLeftTuple(lt, lt2, prevLt);
+    }
+
+    private static void iterateLeftTuple(LeftTuple lt, InternalWorkingMemory wm) {
+        if (NodeTypeEnums.isTerminalNode(lt.getTupleSink())) {
+            PathMemory pmem = wm.getNodeMemory((RuleTerminalNode) lt.getTupleSink());
+            PhreakRuleTerminalNode.doLeftDelete(wm, pmem.getRuleAgendaItem().getRuleExecutor(), lt);
+        } else {
+            for (LeftTuple child = lt.getFirstChild(); child != null; child = child.getHandleNext()) {
+                for (LeftTuple peer = child; peer != null; peer = peer.getPeer()) {
+                    iterateLeftTuple(peer, wm);
+                }
+            }
+        }
+    }
+
+    private static void deleteLeftTuple(LeftTuple removingLt, LeftTuple removingLt2, LeftTuple prevLt) {
+        // only the first LT in a peer chain is hooked into left and right parents or the FH.
+        // If the first LT is being remove, those hooks need to be shifted to the next peer,
+        // or nulled if there is no next peer.
+        // When there is a subnetwork, it needs to shift to the peer of the next lt.
+        // if it is not the first LT in the peer chain, leftParent and rightParent are null.
+        // And the previous peer will need to point to the peer after removingLt, or removingLt2 if it exists.
+
+        boolean isFirstLt = prevLt == null; // is this the first LT in a peer chain chain
+        LeftTuple nextPeerLt    = (removingLt2 == null ) ? removingLt.getPeer() : removingLt2.getPeer(); // if there is a subnetwork, skip to the peer after that
+
+        if( !isFirstLt ) {
+            // This LT is not the first tuple in a peer chain. So just correct the peer chain linked list
+            prevLt.setPeer( nextPeerLt );
+        } else {
+            if ( nextPeerLt == null ) {
+                removingLt.unlinkFromLeftParent();
+                removingLt.unlinkFromRightParent();
+                return;
             }
 
-            if (NodeTypeEnums.AccumulateNode == peer.getTupleSink().getType()) {
-                AccumulateContext accctx = (AccumulateContext) peer.getContextObject();
-                followPeer(accctx.getResultLeftTuple(), smem, sinks,  i-1, insert);
-            } else if ( peer.getFirstChild() != null ) {
-                for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getHandleNext()) {
-                    followPeer(childLt, smem, sinks, i-1, insert);
+            boolean   isRootLt = (isFirstLt && removingLt.getLeftParent() == null); // is the LT for the LIAN, if so we need to process the FH too.
+            InternalFactHandle fh = removingLt.getFactHandle();
+
+            // This is the first LT in a peer chain. Only this LT is hooked into the left and right parent LT and RT and
+            // if it's the root (form the lian) it will be hooked itno the FH.
+            LeftTuple leftPrevious = removingLt.getHandlePrevious();
+            LeftTuple leftNext     = removingLt.getHandleNext();
+
+            LeftTuple rightPrevious = removingLt.getRightParentPrevious();
+            LeftTuple rightNext     = removingLt.getRightParentNext();
+
+            LeftTuple          leftParent  = removingLt.getLeftParent();
+            RightTuple         rightParent = removingLt.getRightParent();
+
+            // This tuple is the first peer and thus is linked into the left parent LT.
+
+            nextPeerLt.setFactHandle(removingLt.getFactHandle());
+
+
+            // correct the linked list
+            if (leftPrevious != null) {
+                nextPeerLt.setHandlePrevious(leftPrevious);
+                leftPrevious.setHandleNext(nextPeerLt);
+            }
+
+            if (leftNext != null) {
+                nextPeerLt.setHandleNext(leftNext);
+                leftNext.setHandlePrevious(nextPeerLt);
+            }
+
+            // correct the linked list
+            if (rightPrevious != null) {
+                nextPeerLt.setRightParentPrevious(rightPrevious);
+                rightPrevious.setRightParentNext(nextPeerLt);
+            }
+
+            if (rightNext != null) {
+                nextPeerLt.setRightParentNext(rightNext);
+                rightNext.setRightParentPrevious(nextPeerLt);
+            }
+
+            // correct the parent's first/last references
+            if (leftParent!=null) {
+                nextPeerLt.setLeftParent(leftParent);
+
+                if (leftParent.getFirstChild() == removingLt) {
+                    leftParent.setFirstChild(nextPeerLt);
+                }
+
+                if (leftParent.getLastChild() == removingLt) {
+
+                    leftParent.setLastChild(nextPeerLt);
+                }
+            } else if ( isRootLt ) {
+                if (fh.getFirstLeftTuple() == removingLt) {
+                    fh.setFirstLeftTuple(nextPeerLt);
+                }
+
+                if (fh.getLastLeftTuple() == removingLt) {
+                    fh.setLastLeftTuple(nextPeerLt);
                 }
             }
 
-        }
 
+            if ( rightParent != null ) {
+                // This tuple is the first peer and thus is linked into the right parent RT.
+                nextPeerLt.setRightParent(rightParent);
 
-    }
-
-    private static void deletePeerLeftTuple(LeftTuple lt, LeftTupleSink newNode, SegmentMemory smem) {
-        LeftTuple peer = lt;
-        LeftTuple previousPeer = null;
-        while (peer.getTupleSink() != newNode) {
-            previousPeer = peer;
-            peer = peer.getPeer();
-        }
-
-        switch( peer.getStagedType() ) {
-            case LeftTuple.INSERT: {
-                // insert was never propagated, thus has no children, does not need to be staged.
-                smem.getStagedLeftTuples().removeInsert(peer);
-                break;
-            }
-            case LeftTuple.UPDATE: {
-                smem.getStagedLeftTuples().removeUpdate(peer);
-                // don't break, so that this falls through and calls addDelete
-            }
-            case LeftTuple.NONE: {
-                smem.getStagedLeftTuples().addDelete(peer);
-            }
-            case LeftTuple.DELETE: {
-                // do nothing, leave it staged for delete, added for documention help
-            }
-        }
-
-        if (previousPeer == null) {
-            // the first sink is being removed, which is the first peer. The next peer must be set as the first peer.
-            LeftTuple leftPrevious = peer.getHandlePrevious();
-            LeftTuple leftNext = peer.getHandleNext();
-
-            LeftTuple rightPrevious = peer.getRightParentPrevious();
-            LeftTuple rightNext = peer.getRightParentNext();
-
-            LeftTuple newPeer = peer.getPeer();
-            if ( newPeer != null ) {
-                replaceChildLeftTuple(peer, leftPrevious, leftNext, rightPrevious, rightNext, newPeer);
-
-            } else {
-                // no peers to support this, so remove completely.
-                lt.unlinkFromLeftParent();
-                lt.unlinkFromRightParent();
-            }
-        } else {
-            // mid or end LeftTuple peer is being removed
-            previousPeer.setPeer(peer.getPeer());
-        }
-    }
-
-    private static void replaceChildLeftTuple(LeftTuple peer, LeftTuple leftPrevious, LeftTuple leftNext, LeftTuple rightPrevious, LeftTuple rightNext, LeftTuple newPeer) {boolean isHandle = peer.getLeftParent() == null;
-        InternalFactHandle fh = peer.getFactHandle();
-        LeftTuple leftParent = peer.getLeftParent();
-        RightTuple rightParent = peer.getRightParent();
-
-        newPeer.setLeftParent( peer.getLeftParent() );
-        newPeer.setRightParent( peer.getRightParent() );
-
-        // replace left
-        if ( leftPrevious == null && leftNext == null ) {
-            // no other tuples, simply replace
-            if ( isHandle ) {
-                fh.removeLeftTuple( peer );
-                fh.addFirstLeftTuple( newPeer );
-            }   else {
-                 peer.unlinkFromLeftParent();
-                 leftParent.setFirstChild(newPeer);
-                 leftParent.setLastChild(newPeer);
-            }
-        } else if ( leftNext != null ) {
-            // replacing first
-            newPeer.setHandleNext( leftNext );
-            leftNext.setHandlePrevious( newPeer );
-            if ( isHandle ) {
-                fh.setFirstLeftTuple(newPeer);
-            } else {
-                leftParent.setFirstChild(newPeer);
-            }
-        } else {
-            // replacing last
-            newPeer.setHandlePrevious( leftPrevious );
-            leftPrevious.setHandleNext( newPeer );
-            if ( isHandle ) {
-                fh.setLastLeftTuple(newPeer);
-            } else {
-                leftParent.setLastChild(newPeer);
-            }
-        }
-
-        // replace right
-        if ( rightParent != null ) {
-            // LiaNode LeftTuples have no right parents
-            if ( rightPrevious == null && rightNext == null ) {
-                // no other tuples, simply replace
-                peer.unlinkFromRightParent();
-                rightParent.setFirstChild(newPeer);
-                rightParent.setLastChild(newPeer);
-            } else if ( rightNext != null ) {
-                // replacing first
-                newPeer.setRightParentNext(rightNext);
-                rightNext.setRightParentPrevious(newPeer);
-                rightParent.setFirstChild(newPeer);
-            } else {
-                // replacing last
-                newPeer.setRightParentPrevious(rightPrevious);
-                rightPrevious.setRightParentNext(newPeer);
-                rightParent.setLastChild(newPeer);
-            }
-        }
-    }
-
-    private static void insertPeerLeftTuple(LeftTuple lt, LeftTupleSink newNode, SegmentMemory smem) {
-        // add to end of peer list
-        LeftTuple peer = lt;
-        while (peer.getPeer() != null) {
-            peer = peer.getPeer();
-        }
-
-        LeftTuple newPeer = newNode.createPeer(peer);
-        smem.getStagedLeftTuples().addInsert(newPeer);
-    }
-
-    private static void collectRtnPathMemories(LeftTupleSource lt,
-                                              InternalWorkingMemory wm,
-                                              List<PathMemory> pathMems,
-                                              TerminalNode excludeTerminalNode) {
-        for (LeftTupleSink sink : lt.getSinkPropagator().getSinks()) {
-            if (sink == excludeTerminalNode) {
-                continue;
-            }
-            if (NodeTypeEnums.isLeftTupleSource(sink)) {
-                collectRtnPathMemories((LeftTupleSource) sink, wm, pathMems, excludeTerminalNode);
-            } else if (NodeTypeEnums.isTerminalNode(sink)) {
-                // getting will cause an initialization of rtn, which will recursively initialise rians too.
-                PathMemory pmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
-                pathMems.add(pmem);
-            } else if (NodeTypeEnums.RightInputAdaterNode == sink.getType()) {
-                RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) sink);
-                pathMems.add(riaMem.getRiaPathMemory());
-            } else {
-                throw new RuntimeException("Error: Unknown Node. Defensive programming test..");
-            }
-        }
-    }
-
-    private static PathMemory getFirstRtnPathMemory(LeftTupleSource lt,
-                                                    InternalWorkingMemory wm,
-                                                    TerminalNode excludeTerminalNode) {
-        for (LeftTupleSink sink : lt.getSinkPropagator().getSinks()) {
-            if (sink == excludeTerminalNode) {
-                continue;
-            }
-            if (NodeTypeEnums.isLeftTupleSource(sink)) {
-                PathMemory result = getFirstRtnPathMemory((LeftTupleSource) sink, wm, excludeTerminalNode);
-                if (result != null) {
-                    return result;
+                // correct the parent's first/last references
+                // if nextLT is null, it's ok for parent's reference to be null
+                if (rightParent.getFirstChild() == removingLt) {
+                    // if next peer exists, set it to this
+                    rightParent.setFirstChild(nextPeerLt);
                 }
-            } else if (NodeTypeEnums.isTerminalNode(sink)) {
-                // getting will cause an initialization of rtn, which will recursively initialise rians too.
-                return (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
-            } else if (NodeTypeEnums.RightInputAdaterNode == sink.getType()) {
-                RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) sink);
-                return riaMem.getRiaPathMemory();
-            } else {
-                throw new RuntimeException("Error: Unknown Node. Defensive programming test..");
+
+                if (rightParent.getLastChild() == removingLt) {
+                    rightParent.setLastChild(nextPeerLt);
+                }
             }
         }
-        return null;
     }
 
-     private static LeftTupleSource getNetworkSplitPoint(TerminalNode tn) {
-         LeftTupleSource lt = tn.getLeftTupleSource();
+    private static LeftTupleNode getNetworkSplitPoint(LeftTupleNode node, Rule rule) {
+        while (node.getType() != NodeTypeEnums.LeftInputAdapterNode && node.getAssociatedRuleSize() == 1) {
+            node = node.getLeftTupleSource();
+        }
 
-         // iterate to find split point, or to the root
-         while ( lt.getType() != NodeTypeEnums.LeftInputAdapterNode && lt.getAssociationsSize() == 1 ) {
-             lt = lt.getLeftTupleSource();
-         }
+        return node;
+    }
 
-         return lt;
-     }
+    public static SegmentMemory splitSegment(InternalWorkingMemory wm, SegmentMemory sm1, LeftTupleNode splitNode) {
+        // create new segment, starting after split
+        LeftTupleNode childNode = splitNode.getSinkPropagator().getFirstLeftTupleSink();
+        SegmentMemory sm2 = new SegmentMemory(childNode); // we know there is only one sink
+        wm.getNodeMemories().peekNodeMemory( childNode.getId() ).setSegmentMemory( sm2 );
 
-     public static SegmentMemory splitSegment(SegmentMemory sm1, LeftTupleSource splitNode) {
-         // create new segment, starting after split
-         SegmentMemory sm2 = new SegmentMemory(splitNode.getSinkPropagator().getFirstLeftTupleSink()); // we know there is only one sink
+        // Move the children of sm1 to sm2
+        if (sm1.getFirst() != null) {
+            for (SegmentMemory sm = sm1.getFirst(); sm != null; ) {
+                SegmentMemory next = sm.getNext();
+                sm1.remove(sm);
+                sm2.add(sm);
+                sm = next;
+            }
+        }
 
-         if ( sm1.getFirst() != null ) {
-             for ( SegmentMemory sm = sm1.getFirst(); sm != null;) {
-                 SegmentMemory next = sm.getNext();
-                 sm1.remove(sm);
-                 sm2.add(sm);
-                 sm = next;
-             }
-         }
+        sm1.add(sm2);
 
-         sm1.add( sm2 );
+        sm2.setPos(sm1.getPos());  // clone for now, it's corrected later
+        sm2.setSegmentPosMaskBit(sm1.getSegmentPosMaskBit()); // clone for now, it's corrected later
+        sm2.setLinkedNodeMask(sm1.getLinkedNodeMask());  // clone for now, it's corrected later
 
-         sm2.setPos(sm1.getPos());  // clone for now, it's corrected later
-         sm2.setSegmentPosMaskBit(sm1.getSegmentPosMaskBit()); // clone for now, it's corrected later
-         sm2.setLinkedNodeMask(sm1.getLinkedNodeMask());  // clone for now, it's corrected later
+        sm2.mergePathMemories(sm1);
 
-         sm2.mergePathMemories( sm1 );
+        // re-assigned tip nodes
+        sm2.setTipNode(sm1.getTipNode());
+        sm1.setTipNode(splitNode); // splitNode is now tip of original segment
 
-         // re-assigned tip nodes
-         sm2.setTipNode(sm1.getTipNode());
-         sm1.setTipNode( splitNode ); // splitNode is now tip of original segment
-
-         if ( sm1.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode ) {
-             if (  !sm1.getStagedLeftTuples().isEmpty() ) {
-                 // Segments with only LiaNode's cannot have staged LeftTuples, so move them down to the new Segment
+        if (sm1.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode) {
+            if (!sm1.getStagedLeftTuples().isEmpty()) {
+                // Segments with only LiaNode's cannot have staged LeftTuples, so move them down to the new Segment
                 sm2.getStagedLeftTuples().addAll(sm1.getStagedLeftTuples());
-             }
-         }
+            }
+        }
 
-         // find the pos of the node in the segment
-         int pos = nodeSegmentPosition(sm1, splitNode);
+        // find the pos of the node in the segment
+        int pos = nodeSegmentPosition(sm1, splitNode);
 
-         splitNodeMemories(sm1, sm2, pos);
+        splitNodeMemories(sm1, sm2, pos);
 
-         splitBitMasks(sm1, sm2, pos);
+        splitBitMasks(sm1, sm2, pos);
 
-         return sm2;
-     }
+        correctSegmentMemoryAfterSplitOnAdd(sm2);
 
-     public static void mergeSegment(SegmentMemory sm1, SegmentMemory sm2) {
-         // sm1 may not be linked yet to sm2 because sm2 has been just created
-         if (sm1.contains( sm2 )) {
-             sm1.remove( sm2 );
-         }
+        return sm2;
+    }
 
-         if ( sm2.getFirst() != null ) {
-             for ( SegmentMemory sm = sm2.getFirst(); sm != null;) {
-                 SegmentMemory next = sm.getNext();
-                 sm1.add(sm);
-                 sm2.remove(sm);
-                 sm = next;
-             }
-         }
+    private static void mergeSegment(SegmentMemory sm1, SegmentMemory sm2) {
+        if (sm1.getTipNode().getType() == NodeTypeEnums.LeftInputAdapterNode && !sm2.getStagedLeftTuples().isEmpty()) {
+            // If a rule has not been linked, lia can still have child segments with staged tuples that did not get flushed
+            // these are safe to just move to the parent SegmentMemory
+            sm1.getStagedLeftTuples().addAll(sm2.getStagedLeftTuples());
+        }
 
-         // re-assigned tip nodes
-         sm1.setTipNode(sm2.getTipNode());
+        // sm1 may not be linked yet to sm2 because sm2 has been just created
+        if (sm1.contains(sm2)) {
+            sm1.remove(sm2);
+        }
 
-         mergeNodeMemories(sm1, sm2);
+        if (sm2.getFirst() != null) {
+            for (SegmentMemory sm = sm2.getFirst(); sm != null; ) {
+                SegmentMemory next = sm.getNext();
+                sm2.remove(sm);
+                sm1.add(sm);
+                sm = next;
+            }
+        }
+        // re-assigned tip nodes
+        sm1.setTipNode(sm2.getTipNode());
 
-         mergeBitMasks(sm1, sm2);
-     }
+        mergeNodeMemories(sm1, sm2);
 
-     private static void splitBitMasks(SegmentMemory sm1, SegmentMemory sm2, int pos) {
-         int splitPos = pos + 1; // +1 as zero based
-         long currentAllLinkedMaskTest = sm1.getAllLinkedMaskTest();
-         long currentLinkedNodeMask = sm1.getLinkedNodeMask();
-         long mask = (1L << splitPos) - 1;
+        mergeBitMasks(sm1, sm2);
+    }
 
-         sm1.setAllLinkedMaskTest( mask & currentAllLinkedMaskTest );
-         sm1.setLinkedNodeMask( sm1.getLinkedNodeMask() & sm1.getAllLinkedMaskTest() );
+    private static void splitBitMasks(SegmentMemory sm1, SegmentMemory sm2, int pos) {
+        int  splitPos                 = pos + 1; // +1 as zero based
+        long currentAllLinkedMaskTest = sm1.getAllLinkedMaskTest();
+        long currentLinkedNodeMask    = sm1.getLinkedNodeMask();
+        long mask                     = (1L << splitPos) - 1;
 
-         mask = currentAllLinkedMaskTest >> splitPos;
-         sm2.setAllLinkedMaskTest( mask );
-         sm2.setLinkedNodeMask( mask & (currentLinkedNodeMask >> splitPos) );
-     }
+        sm1.setAllLinkedMaskTest(mask & currentAllLinkedMaskTest);
+        sm1.setLinkedNodeMask(sm1.getLinkedNodeMask() & sm1.getAllLinkedMaskTest());
 
-     private static void mergeBitMasks(SegmentMemory sm1, SegmentMemory sm2) {
-         LinkedList<Memory> smNodeMemories2 =  sm2.getNodeMemories();
+        mask = currentAllLinkedMaskTest >> splitPos;
+        sm2.setAllLinkedMaskTest(mask);
+        sm2.setLinkedNodeMask(mask & (currentLinkedNodeMask >> splitPos));
+    }
 
-         long mask = sm2.getAllLinkedMaskTest() << smNodeMemories2.size();
-         sm1.setAllLinkedMaskTest( mask & sm1.getAllLinkedMaskTest() );
+    private static void mergeBitMasks(SegmentMemory sm1, SegmentMemory sm2) {
+        LinkedList<Memory> smNodeMemories2 = sm2.getNodeMemories();
 
-         mask = sm2.getAllLinkedMaskTest() << smNodeMemories2.size();
-         sm1.setLinkedNodeMask(mask & sm1.getLinkedNodeMask());
-     }
+        long mask = sm2.getAllLinkedMaskTest() << smNodeMemories2.size();
+        sm1.setAllLinkedMaskTest(mask & sm1.getAllLinkedMaskTest());
 
-     private static void splitNodeMemories(SegmentMemory sm1, SegmentMemory sm2, int pos) {
-         LinkedList<Memory> smNodeMemories1 =  sm1.getNodeMemories();
-         LinkedList<Memory> smNodeMemories2 =  sm2.getNodeMemories();
+        mask = sm2.getAllLinkedMaskTest() << smNodeMemories2.size();
+        sm1.setLinkedNodeMask(mask & sm1.getLinkedNodeMask());
+    }
 
-         Memory mem = smNodeMemories1.getFirst();
-         int nodePosMask = 1;
-         for ( int i = 0,length = smNodeMemories1.size(); i < length; i++) {
-             Memory next = mem.getNext();
-             if ( i > pos ) {
-                 smNodeMemories1.remove(mem);
-                 smNodeMemories2.add(mem);
-                 mem.setSegmentMemory(sm2);
+    private static void splitNodeMemories(SegmentMemory sm1, SegmentMemory sm2, int pos) {
+        LinkedList<Memory> smNodeMemories1 = sm1.getNodeMemories();
+        LinkedList<Memory> smNodeMemories2 = sm2.getNodeMemories();
 
-                 // correct the NodePosMaskBit
-                 BetaMemory bm = null;
-                 if ( mem instanceof AccumulateNode.AccumulateMemory ) {
-                     bm = ((AccumulateNode.AccumulateMemory) mem).getBetaMemory();
-                 } else if ( mem instanceof BetaMemory ) {
-                     bm = ( BetaMemory ) mem;
-                 }
-                 if ( bm != null ) {  // node may not be a beta
-                     bm.setNodePosMaskBit(nodePosMask);
-                 }
-                 nodePosMask = nodePosMask << 1;
-             }
-             mem = next;
-         }
-     }
+        Memory mem         = smNodeMemories1.getFirst();
+        int    nodePosMask = 1;
+        for (int i = 0, length = smNodeMemories1.size(); i < length; i++) {
+            Memory next = mem.getNext();
+            if (i > pos) {
+                smNodeMemories1.remove(mem);
+                smNodeMemories2.add(mem);
+                mem.setSegmentMemory(sm2);
 
-     private static void mergeNodeMemories(SegmentMemory sm1, SegmentMemory sm2) {
-         LinkedList<Memory> smNodeMemories1 =  sm1.getNodeMemories();
-         LinkedList<Memory> smNodeMemories2 =  sm2.getNodeMemories();
+                // correct the NodePosMaskBit
+                BetaMemory bm = null;
+                if (mem instanceof AccumulateNode.AccumulateMemory) {
+                    bm = ((AccumulateNode.AccumulateMemory) mem).getBetaMemory();
+                } else if (mem instanceof BetaMemory) {
+                    bm = (BetaMemory) mem;
+                }
+                if (bm != null) {  // node may not be a beta
+                    bm.setNodePosMaskBit(nodePosMask);
+                }
+                nodePosMask = nodePosMask << 1;
+            }
+            mem = next;
+        }
+    }
+
+    private static void mergeNodeMemories(SegmentMemory sm1, SegmentMemory sm2) {
+        LinkedList<Memory> smNodeMemories1 = sm1.getNodeMemories();
+        LinkedList<Memory> smNodeMemories2 = sm2.getNodeMemories();
 
 
+        int nodePosMask = 1;
+        for (int i = 0, length = smNodeMemories1.size(); i < length; i++) {
+            nodePosMask = nodePosMask >> 1;
+        }
 
-         int nodePosMask = 1;
-         for ( int i = 0,length = smNodeMemories1.size(); i < length; i++) {
-             nodePosMask = nodePosMask >> 1;
-         }
+        for (Memory mem = smNodeMemories2.getFirst(); mem != null; ) {
+            Memory next = mem.getNext();
+            smNodeMemories2.remove(mem);
+            smNodeMemories1.add(mem);
+            mem.setSegmentMemory(sm1);
 
-         for ( Memory mem = smNodeMemories2.getFirst(); mem != null; ) {
-             Memory next = mem.getNext();
-             smNodeMemories2.remove(mem);
-             smNodeMemories1.add(mem);
-             mem.setSegmentMemory(sm1);
+            // correct the NodePosMaskBit
+            BetaMemory bm = null;
+            if (mem instanceof AccumulateNode.AccumulateMemory) {
+                bm = ((AccumulateNode.AccumulateMemory) mem).getBetaMemory();
+            } else if (mem instanceof BetaMemory) {
+                bm = (BetaMemory) mem;
+            }
+            if (bm != null) {  // node may not be a beta
+                bm.setNodePosMaskBit(nodePosMask);
+            }
+            nodePosMask = nodePosMask >> 1;
+            mem = next;
+        }
+    }
 
-             // correct the NodePosMaskBit
-             BetaMemory bm = null;
-             if ( mem instanceof AccumulateNode.AccumulateMemory ) {
-                 bm = ((AccumulateNode.AccumulateMemory) mem).getBetaMemory();
-             } else if ( mem instanceof BetaMemory ) {
-                 bm = ( BetaMemory ) mem;
-             }
-             if ( bm != null ) {  // node may not be a beta
-                 bm.setNodePosMaskBit(nodePosMask);
-             }
-             nodePosMask = nodePosMask >> 1;
-             mem = next;
-         }
-     }
+    private static int nodeSegmentPosition(SegmentMemory sm1, LeftTupleNode splitNode) {
+        LeftTupleNode lt = splitNode;
+        int nodePos = 0;
+        while (lt != sm1.getRootNode()) {
+            lt = lt.getLeftTupleSource();
+            nodePos++;
+        }
+        return nodePos;
+    }
 
-     private static int nodeSegmentPosition(SegmentMemory sm1, LeftTupleSource splitNode) {
-         LeftTupleSource lt = splitNode;
-         int nodePos = 0;
-         while ( lt != sm1.getRootNode() ) {
-             lt = lt.getLeftTupleSource();
-             nodePos++;
-         }
-         return nodePos;
-     }
 
- }
+    private static boolean isUnsharedSinkForRule(Rule rule, LeftTupleNode sink) {
+        return sink.getAssociatedRuleSize() == 1 && sink.isAssociatedWith(rule);
+    }
+
+    private static PathEndNodeMemories getPathEndMemories(InternalWorkingMemory wm,
+                                                          PathEndNodes pathEndNodes,
+                                                          boolean isRemoving) {
+        PathEndNodeMemories tnMems = new PathEndNodeMemories();
+
+        if (isRemoving) {
+            List<LeftTupleNode> nodes = new ArrayList<LeftTupleNode>();
+            nodes.addAll(pathEndNodes.subjectSplits);
+            nodes.addAll(pathEndNodes.otherSplits);
+
+            for (LeftTupleNode splitNode : nodes) {
+                findPmemToBeFlushed( tnMems, wm.getNodeMemories().peekNodeMemory(splitNode.getId()) );
+                for (LeftTupleSink sink : splitNode.getSinkPropagator().getSinks()) {
+                    findPmemToBeFlushed( tnMems, wm.getNodeMemories().peekNodeMemory(sink.getId()) );
+                }
+            }
+        }
+
+        for (LeftTupleNode node : pathEndNodes.otherEndNodes) {
+            if (node.getType() == NodeTypeEnums.RightInputAdaterNode) {
+                RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemories().peekNodeMemory(node.getId());
+                if (riaMem != null) {
+                    tnMems.otherPmems.add(riaMem.getRiaPathMemory());
+                }
+            } else {
+                PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(node.getId());
+                if (pmem != null) {
+                    tnMems.otherPmems.add(pmem);
+                }
+            }
+        }
+
+        tnMems.subjectPmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(pathEndNodes.subjectEndNode.getId());
+        if (tnMems.subjectPmem == null && !tnMems.otherPmems.isEmpty()) {
+            // If "other pmem's are initialized, then the subject needs to be initialized too.
+            tnMems.subjectPmem = (PathMemory) wm.getNodeMemory((MemoryFactory<Memory>) pathEndNodes.subjectEndNode);
+        }
+
+        for (LeftTupleNode node : pathEndNodes.subjectEndNodes) {
+            if (node.getType() == NodeTypeEnums.RightInputAdaterNode) {
+                RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemories().peekNodeMemory(node.getId());
+                if (riaMem == null && tnMems.otherPmems != null ) {
+                    riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory<Memory>) node);
+                }
+                if (riaMem != null) {
+                    tnMems.subjectPmems.add(riaMem.getRiaPathMemory());
+                }
+            } else {
+                PathMemory pmem = (PathMemory) wm.getNodeMemories().peekNodeMemory(node.getId());
+                if (pmem != null) {
+                    tnMems.subjectPmems.add(pmem);
+                }
+            }
+        }
+
+        return tnMems;
+    }
+
+    private static void findPmemToBeFlushed( PathEndNodeMemories tnMems, Memory mem ) {
+        if (mem != null) {
+            SegmentMemory smem = mem.getSegmentMemory();
+            if (smem != null && !smem.getStagedLeftTuples().isEmpty()) {
+                for (PathMemory pmem : smem.getPathMemories()) {
+                    if (pmem.getRuleAgendaItem() != null) {
+                        tnMems.pmemsToBeFlushed.add( pmem );
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private static class PathEndNodeMemories {
+        PathMemory subjectPmem;
+        List<PathMemory> subjectPmems = new ArrayList<PathMemory>();
+        List<PathMemory> otherPmems = new ArrayList<PathMemory>();
+        Set<PathMemory> pmemsToBeFlushed = new HashSet<PathMemory>();
+    }
+
+    private static PathEndNodes getPathEndNodes(InternalKnowledgeBase kBase,
+                                                LeftTupleNode lt,
+                                                TerminalNode tn,
+                                                Rule processedRule,
+                                                boolean hasProtos,
+                                                boolean hasWms) {
+        PathEndNodes endNodes = new PathEndNodes();
+        endNodes.subjectEndNode = (PathEndNode) tn;
+        endNodes.subjectEndNodes.add((PathEndNode) tn);
+        if (hasWms && SegmentUtilities.isTipNode(lt, null)) {
+            endNodes.subjectSplit = lt;
+            endNodes.subjectSplits.add(lt);
+        }
+
+        if (hasProtos) {
+            invalidateRootNode( kBase, lt );
+        }
+
+        collectPathEndNodes(kBase, lt, endNodes, tn, processedRule, hasProtos, hasWms, hasProtos && isSplit(lt));
+
+        return endNodes;
+    }
+
+    private static void collectPathEndNodes(InternalKnowledgeBase kBase,
+                                            LeftTupleNode lt,
+                                            PathEndNodes endNodes,
+                                            TerminalNode tn,
+                                            Rule processedRule,
+                                            boolean hasProtos,
+                                            boolean hasWms,
+                                            boolean isBelowNewSplit) {
+        for (LeftTupleSink sink : lt.getSinkPropagator().getSinks()) {
+            if (sink == tn) {
+                continue;
+            }
+            if (hasProtos) {
+                if (isBelowNewSplit) {
+                    if (SegmentUtilities.isRootNode(sink, null)) {
+                        kBase.invalidateSegmentPrototype( sink );
+                    }
+                } else {
+                    isBelowNewSplit = isSplit(sink);
+                    if (isBelowNewSplit) {
+                        invalidateRootNode( kBase, sink );
+                    }
+                }
+            }
+            if (NodeTypeEnums.isLeftTupleSource(sink)) {
+                if (hasWms && SegmentUtilities.isTipNode(sink, null)) {
+                    if (isUnsharedSinkForRule(tn.getRule(), sink)) {
+                        endNodes.subjectSplits.add(sink);
+                    } else {
+                        endNodes.otherSplits.add(sink);
+                    }
+                }
+
+                collectPathEndNodes(kBase, sink, endNodes, tn, processedRule, hasProtos, hasWms, isBelowNewSplit);
+            } else if (NodeTypeEnums.isTerminalNode(sink)) {
+                endNodes.otherEndNodes.add((PathEndNode) sink);
+            } else if (NodeTypeEnums.RightInputAdaterNode == sink.getType()) {
+                if (isUnsharedSinkForRule(tn.getRule(), sink)) {
+                    endNodes.subjectEndNodes.add((PathEndNode) sink);
+                } else {
+                    endNodes.otherEndNodes.add((PathEndNode) sink);
+                }
+
+            } else {
+                throw new RuntimeException("Error: Unknown Node. Defensive programming test..");
+            }
+        }
+    }
+
+    private static void invalidateRootNode( InternalKnowledgeBase kBase, LeftTupleNode lt ) {
+        while (!SegmentUtilities.isRootNode( lt, null )) {
+            lt = lt.getLeftTupleSource();
+        }
+        kBase.invalidateSegmentPrototype( lt );
+    }
+
+    private static class PathEndNodes {
+        PathEndNode   subjectEndNode;
+        LeftTupleNode subjectSplit;
+        List<PathEndNode>   subjectEndNodes = new ArrayList<PathEndNode>();
+        List<LeftTupleNode> subjectSplits   = new ArrayList<LeftTupleNode>();
+        List<PathEndNode>   otherEndNodes   = new ArrayList<PathEndNode>();
+        List<LeftTupleNode> otherSplits     = new ArrayList<LeftTupleNode>();
+    }
+
+}

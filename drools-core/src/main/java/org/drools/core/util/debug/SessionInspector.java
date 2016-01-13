@@ -156,7 +156,7 @@ public class SessionInspector {
             }
         } else if ( parent instanceof ObjectSource ) {
             ObjectSource source = (ObjectSource) parent;
-            for ( ObjectSink sink : source.getSinkPropagator().getSinks() ) {
+            for ( ObjectSink sink : source.getObjectSinkPropagator().getSinks() ) {
                 gatherNodeInfo( sink,
                                 nodeStack,
                                 info );

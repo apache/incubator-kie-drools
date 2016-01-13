@@ -25,6 +25,12 @@ public interface TupleSets<T extends Tuple> {
 
     void resetAll();
 
+    /**
+     * clear also ensures all contained LeftTuples are cleared
+     * reset does not touch any contained tuples
+     */
+    void clear();
+
     boolean addInsert(T leftTuple);
     boolean addDelete(T leftTuple);
     boolean addUpdate(T leftTuple);

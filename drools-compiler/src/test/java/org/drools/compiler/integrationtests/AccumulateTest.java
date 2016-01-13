@@ -922,7 +922,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         // Check the network formation, to ensure the RiaNode is shared.
         ObjectTypeNode cheeseOtn = LinkingTest.getObjectTypeNode( kbase, Cheese.class );
-        ObjectSink[] oSinks = cheeseOtn.getSinkPropagator().getSinks();
+        ObjectSink[] oSinks = cheeseOtn.getObjectSinkPropagator().getSinks();
         assertEquals( 1, oSinks.length );
 
         JoinNode cheeseJoin = (JoinNode) oSinks[0];
@@ -930,7 +930,7 @@ public class AccumulateTest extends CommonTestMethodBase {
 
         assertEquals( 1, ltSinks.length );
         RightInputAdapterNode rian = (RightInputAdapterNode) ltSinks[0];
-        assertEquals( 2, rian.getSinkPropagator().size() );   //  RiaNode is shared, if this has two outputs
+        assertEquals( 2, rian.getObjectSinkPropagator().size() );   //  RiaNode is shared, if this has two outputs
 
         wm.insert( new Cheese( "stilton", 10 ) );
         wm.insert( new Person( "Alice", "brie" ) );

@@ -1573,19 +1573,19 @@ public class BackwardChainingTest extends CommonTestMethodBase {
             }
         }
 
-        BetaNode stringBetaNode = (BetaNode) node.getSinkPropagator().getSinks()[0];
+        BetaNode stringBetaNode = (BetaNode) node.getObjectSinkPropagator().getSinks()[0];
         QueryElementNode queryElementNode1 = (QueryElementNode) stringBetaNode.getSinkPropagator().getSinks()[0];
         RightInputAdapterNode riaNode1 = (RightInputAdapterNode) queryElementNode1.getSinkPropagator().getSinks()[0];
-        AccumulateNode accNode = (AccumulateNode) riaNode1.getSinkPropagator().getSinks()[0];
+        AccumulateNode accNode = (AccumulateNode) riaNode1.getObjectSinkPropagator().getSinks()[0];
 
         QueryElementNode queryElementNode2 = (QueryElementNode) accNode.getSinkPropagator().getSinks()[0];
         RightInputAdapterNode riaNode2 = (RightInputAdapterNode) queryElementNode2.getSinkPropagator().getSinks()[0];
-        ExistsNode existsNode = (ExistsNode) riaNode2.getSinkPropagator().getSinks()[0];
+        ExistsNode existsNode = (ExistsNode) riaNode2.getObjectSinkPropagator().getSinks()[0];
 
         QueryElementNode queryElementNode3 = (QueryElementNode) existsNode.getSinkPropagator().getSinks()[0];
         FromNode fromNode = (FromNode) queryElementNode3.getSinkPropagator().getSinks()[0];
         RightInputAdapterNode riaNode3 = (RightInputAdapterNode) fromNode.getSinkPropagator().getSinks()[0];
-        NotNode notNode = (NotNode) riaNode3.getSinkPropagator().getSinks()[0];
+        NotNode notNode = (NotNode) riaNode3.getObjectSinkPropagator().getSinks()[0];
 
         StatefulKnowledgeSession ksession = createKnowledgeSession( kbase );
         InternalWorkingMemory wm = ((StatefulKnowledgeSessionImpl) ksession);
@@ -1736,7 +1736,8 @@ public class BackwardChainingTest extends CommonTestMethodBase {
                       notMemory.getRightTupleMemory().size() );
     }
 
-    @Test(timeout = 10000)
+    //@Test(timeout = 10000)
+    @Test()
     public void testDynamicRulesWithSharing() throws IOException,
                                              ClassNotFoundException {
         String str = "" +

@@ -67,12 +67,12 @@ public class RuleBaseNodes {
         } else if ( sink instanceof WindowNode ) {
             WindowNode node = (WindowNode) sink;
             nodes.put( sink.getId(), ((BaseNode)sink) );
-            for ( ObjectSink objectSink : node.getSinkPropagator().getSinks() ) {
+            for ( ObjectSink objectSink : node.getObjectSinkPropagator().getSinks() ) {
                 addObjectSink(kBase, objectSink, nodes);
             }
         } else {
             ObjectSource node = ( ObjectSource ) sink;
-            for ( ObjectSink objectSink : node.getSinkPropagator().getSinks() ) {
+            for ( ObjectSink objectSink : node.getObjectSinkPropagator().getSinks() ) {
                 addObjectSink( kBase,
                                objectSink,
                                nodes );
@@ -101,7 +101,7 @@ public class RuleBaseNodes {
             // it may be a RIAN
             nodes.put( sink.getId(), 
                        (ObjectSource) sink );
-            for ( ObjectSink objectSink : ((ObjectSource)sink).getSinkPropagator().getSinks() ) {
+            for ( ObjectSink objectSink : ((ObjectSource)sink).getObjectSinkPropagator().getSinks() ) {
                 addObjectSink( kBase,
                                objectSink,
                                nodes );

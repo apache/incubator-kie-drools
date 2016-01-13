@@ -311,6 +311,10 @@ public class AlphaNode extends ObjectSource
             return sink.getAssociationsSize();
         }
 
+        public int getAssociatedRuleSize() {
+            return sink.getAssociatedRuleSize();
+        }
+
         public int getAssociationsSize(Rule rule) {
             return sink.getAssociationsSize(rule);
         }

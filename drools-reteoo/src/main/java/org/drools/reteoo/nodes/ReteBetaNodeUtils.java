@@ -106,7 +106,7 @@ public class ReteBetaNodeUtils {
                     // right input is RIAN, because RIAN needs sink memory, we must clear it's memory first
                     // but only if the sink size is 1, i.e. once this is removed, the rian is not in use
                     ReteRightInputAdapterNode rian = (ReteRightInputAdapterNode) betaNode.getRightInput();
-                    if ( rian.getSinkPropagator().size() == 1 ) {
+                    if ( rian.getObjectSinkPropagator().size() == 1 ) {
                         rian.removeMemory( workingMemory );
                     }
                 }

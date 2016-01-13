@@ -36,15 +36,7 @@ import org.drools.core.event.KieBaseEventSupport;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.traits.TraitRegistry;
 import org.drools.core.management.DroolsManagementAgent;
-import org.drools.core.reteoo.EntryPointNode;
-import org.drools.core.reteoo.KieComponentFactory;
-import org.drools.core.reteoo.LeftTupleSinkNode;
-import org.drools.core.reteoo.LeftTupleSinkPropagator;
-import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.Rete;
-import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.drools.core.rule.DialectRuntimeRegistry;
@@ -1417,24 +1409,12 @@ public class KnowledgeBaseImpl
         segmentProtos.put(tupleSource.getId(), smem.asPrototype());
     }
 
-    public void invalidateSegmentPrototype(LeftTupleSource tupleSource, boolean ruleRemoved) {
-        if (ruleRemoved && tupleSource.getAssociationsSize() < 2) {
-            return;
-        }
-        while ( tupleSource.getLeftTupleSource() != null ) {
-            tupleSource = tupleSource.getLeftTupleSource();
-        }
-        internalInvalidateSegmentPrototype(tupleSource);
+    public boolean hasSegmentPrototypes() {
+        return !segmentProtos.isEmpty();
     }
 
-    private void internalInvalidateSegmentPrototype(LeftTupleSource tupleSource) {
-        segmentProtos.remove(tupleSource.getId());
-        LeftTupleSinkPropagator sinkProp = tupleSource.getSinkPropagator();
-        for (LeftTupleSinkNode sink = (LeftTupleSinkNode) sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode()) {
-            if (sink instanceof LeftTupleSource) {
-                internalInvalidateSegmentPrototype( (LeftTupleSource) sink );
-            }
-        }
+    public void invalidateSegmentPrototype(LeftTupleNode rootNode) {
+        segmentProtos.remove(rootNode.getId());
     }
 
     public SegmentMemory createSegmentFromPrototype(InternalWorkingMemory wm, LeftTupleSource tupleSource) {

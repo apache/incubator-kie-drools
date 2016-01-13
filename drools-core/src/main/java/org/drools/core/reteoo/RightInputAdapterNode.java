@@ -45,6 +45,7 @@ import java.util.Map;
 public class RightInputAdapterNode extends ObjectSource
     implements
     LeftTupleSinkNode,
+    PathEndNode,
     MemoryFactory<RightInputAdapterNode.RiaNodeMemory> {
 
     private static final long serialVersionUID = 510l;
@@ -57,6 +58,8 @@ public class RightInputAdapterNode extends ObjectSource
 
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
+
+    private LeftTupleNode[] pathNodes;
 
     public RightInputAdapterNode() {
     }
@@ -105,6 +108,10 @@ public class RightInputAdapterNode extends ObjectSource
         return startTupleSource;
     }
 
+    public int getPositionInPath() {
+        return tupleSource.getPositionInPath() + 1;
+    }
+
     /**
      * Creates and return the node memory
      */    
@@ -112,7 +119,7 @@ public class RightInputAdapterNode extends ObjectSource
         RiaNodeMemory rianMem = new RiaNodeMemory();
 
         RiaPathMemory pmem = new RiaPathMemory(this);
-        AbstractTerminalNode.initPathMemory(pmem, getLeftTupleSource(), getStartTupleSource(), wm, null );
+        AbstractTerminalNode.initPathMemory(pmem, this, getStartTupleSource(), wm, null );
         rianMem.setRiaPathMemory(pmem);
         
         return rianMem;
@@ -376,4 +383,14 @@ public class RightInputAdapterNode extends ObjectSource
         throw new UnsupportedOperationException();
     }
 
+    public LeftTupleNode[] getPathNodes() {
+        if (pathNodes == null) {
+            pathNodes = AbstractTerminalNode.getPathNodes( this );
+        }
+        return pathNodes;
+    }
+
+    public LeftTupleSinkPropagator getSinkPropagator() {
+        return EmptyLeftTupleSinkAdapter.getInstance();
+    }
 }

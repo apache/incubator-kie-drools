@@ -433,7 +433,7 @@ public class ProtobufOutputMarshaller {
                                                                   final NodeMemories memories) {
         RightInputAdapterNode riaNode = (RightInputAdapterNode) node;
 
-        ObjectSink[] sinks = riaNode.getSinkPropagator().getSinks();
+        ObjectSink[] sinks = riaNode.getObjectSinkPropagator().getSinks();
         BetaNode betaNode = (BetaNode) sinks[0];
 
         Memory betaMemory = memories.peekNodeMemory( betaNode.getId() );

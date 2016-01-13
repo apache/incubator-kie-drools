@@ -19,7 +19,6 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
 import org.drools.core.common.NetworkNode;
-import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
 import org.drools.core.reteoo.AlphaNode;
@@ -35,6 +34,7 @@ import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.FromNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.LiaNodeMemory;
+import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.LeftTupleSinkPropagator;
@@ -55,6 +55,7 @@ import org.drools.core.reteoo.TimerNode.TimerNodeMemory;
 import org.drools.core.rule.constraint.QueryNameConstraint;
 import org.drools.core.util.Iterator;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
+import org.kie.api.definition.rule.Rule;
 
 public class SegmentUtilities {
 
@@ -72,8 +73,7 @@ public class SegmentUtilities {
             }
 
             // find segment root
-            while (tupleSource.getType() != NodeTypeEnums.LeftInputAdapterNode &&
-                   SegmentUtilities.parentInSameSegment(tupleSource, null)) {
+            while (!SegmentUtilities.isRootNode(tupleSource, null)) {
                 tupleSource = tupleSource.getLeftTupleSource();
             }
 
@@ -138,7 +138,7 @@ public class SegmentUtilities {
                             smem.getNodeMemories().add( riaPmem );
 
                             RightInputAdapterNode rian = ( RightInputAdapterNode ) sink;
-                            ObjectSink[] nodes = rian.getSinkPropagator().getSinks();
+                            ObjectSink[] nodes = rian.getObjectSinkPropagator().getSinks();
                             for ( ObjectSink node : nodes ) {
                                 if ( NodeTypeEnums.isLeftTupleSource(node) )  {
                                     createSegmentMemory( (LeftTupleSource) node, wm );
@@ -164,7 +164,7 @@ public class SegmentUtilities {
             int ruleSegmentPosMask = 1;
             int counter = 0;
             while (pathRoot.getType() != NodeTypeEnums.LeftInputAdapterNode) {
-                if (!SegmentUtilities.parentInSameSegment(pathRoot, null)) {
+                if (SegmentUtilities.isRootNode(pathRoot, null)) {
                     // for each new found segment, increase the mask bit position
                     ruleSegmentPosMask = ruleSegmentPosMask << 1;
                     counter++;
@@ -308,38 +308,43 @@ public class SegmentUtilities {
               return; // this can happen when multiple threads are trying to initialize the segment
         }
         for (LeftTupleSinkNode sink = sinkProp.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode()) {
-            Memory memory = wm.getNodeMemory((MemoryFactory) sink);
-
-            SegmentMemory childSmem = createChildSegment(wm, sink, memory);
+            SegmentMemory childSmem = createChildSegment(wm, sink);
             childSmem.setPos( smem.getPos()+1 );
             smem.add(childSmem);
         }
     }
 
-    public static SegmentMemory createChildSegment(InternalWorkingMemory wm, LeftTupleSink sink, Memory memory) {
-        if (!(NodeTypeEnums.isTerminalNode(sink) || sink.getType() == NodeTypeEnums.RightInputAdaterNode)) {
+    public static SegmentMemory createChildSegment(InternalWorkingMemory wm, LeftTupleNode node) {
+        Memory memory = wm.getNodeMemory((MemoryFactory) node);
+        if (!NodeTypeEnums.isEndNode(node)) {
             if (memory.getSegmentMemory() == null) {
-                SegmentUtilities.createSegmentMemory((LeftTupleSource) sink, wm);
+                SegmentUtilities.createSegmentMemory((LeftTupleSource) node, wm);
             }
         } else {
             // RTNS and RiaNode's have their own segment, if they are the child of a split.
             if (memory.getSegmentMemory() == null) {
-                SegmentMemory childSmem = new SegmentMemory(sink); // rtns or riatns don't need a queue
-
-                PathMemory pmem;
-                if (NodeTypeEnums.isTerminalNode(sink)) {
-                    pmem = (PathMemory) memory;
-                } else {
-                    pmem = ((RiaNodeMemory) memory).getRiaPathMemory();
-                }
-                pmem.setSegmentMemory(pmem.getSegmentMemories().length - 1, childSmem);
-                pmem.setSegmentMemory(childSmem);
-                childSmem.addPathMemory( pmem );
-
-                childSmem.setTipNode(sink);
+                createChildSegmentForTerminalNode( node, memory );
             }
         }
         return memory.getSegmentMemory();
+    }
+
+    public static SegmentMemory createChildSegmentForTerminalNode( LeftTupleNode node, Memory memory ) {
+        SegmentMemory childSmem = new SegmentMemory( node); // rtns or riatns don't need a queue
+
+        PathMemory pmem;
+        if ( NodeTypeEnums.isTerminalNode( node )) {
+            pmem = (PathMemory) memory;
+        } else {
+            pmem = ((RiaNodeMemory) memory).getRiaPathMemory();
+        }
+        childSmem.setPos( pmem.getSegmentMemories().length - 1 );
+        pmem.setSegmentMemory(childSmem.getPos(), childSmem);
+        pmem.setSegmentMemory(childSmem);
+        childSmem.addPathMemory( pmem );
+
+        childSmem.setTipNode(node);
+        return childSmem;
     }
 
     /**
@@ -387,10 +392,12 @@ public class SegmentUtilities {
                     RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) sink);
                     PathMemory pmem = riaMem.getRiaPathMemory();
                     smem.addPathMemory( pmem );
-                    pmem.setSegmentMemory(smem.getPos(), smem);
+                    if (smem.getPos() < pmem.getSegmentMemories().length) {
+                        pmem.setSegmentMemory( smem.getPos(), smem );
+                    }
 
                     if (fromPrototype) {
-                        ObjectSink[] nodes = ((RightInputAdapterNode) sink).getSinkPropagator().getSinks();
+                        ObjectSink[] nodes = ((RightInputAdapterNode) sink).getObjectSinkPropagator().getSinks();
                         for ( ObjectSink node : nodes ) {
                             // check if the SegmentMemory has been already created by the BetaNode and if so avoid to build it twice
                             if ( NodeTypeEnums.isLeftTupleSource(node) && wm.getNodeMemory((MemoryFactory) node).getSegmentMemory() == null )  {
@@ -399,7 +406,7 @@ public class SegmentUtilities {
                         }
                     } else if ( ( pmem.getAllLinkedMaskTest() & ( 1L << pmem.getSegmentMemories().length ) ) == 0 ) {
                         // must eagerly initialize child segment memories
-                        ObjectSink[] nodes = ((RightInputAdapterNode) sink).getSinkPropagator().getSinks();
+                        ObjectSink[] nodes = ((RightInputAdapterNode) sink).getObjectSinkPropagator().getSinks();
                         for ( ObjectSink node : nodes ) {
                             if ( NodeTypeEnums.isLeftTupleSource(node) )  {
                                 createSegmentMemory( (LeftTupleSource) node, wm );
@@ -410,19 +417,23 @@ public class SegmentUtilities {
             } else if (NodeTypeEnums.isTerminalNode(sink)) {
                 PathMemory pmem = (PathMemory) wm.getNodeMemory((MemoryFactory) sink);
                 smem.addPathMemory(pmem);
-                pmem.setSegmentMemory(smem.getPos(), smem);
-                if (smem.isSegmentLinked()) {
-                    // not's can cause segments to be linked, and the rules need to be notified for evaluation
-                    smem.notifyRuleLinkSegment(wm);
+                // this terminal segment could have been created during a rule removal with the only purpose to be merged
+                // with the former one and in this case doesn't have to be added to the the path memory
+                if (smem.getPos() < pmem.getSegmentMemories().length) {
+                    pmem.setSegmentMemory( smem.getPos(), smem );
+                    if (smem.isSegmentLinked()) {
+                        // not's can cause segments to be linked, and the rules need to be notified for evaluation
+                        smem.notifyRuleLinkSegment(wm);
+                    }
+                    checkEagerSegmentCreation(sink.getLeftTupleSource(), wm, nodeTypesInSegment);
                 }
-                checkEagerSegmentCreation(sink.getLeftTupleSource(), wm, nodeTypesInSegment);
             }
         }
         return nodeTypesInSegment;
     }
 
     private static int checkSegmentBoundary(LeftTupleSource lt, InternalWorkingMemory wm, int nodeTypesInSegment) {
-        if ( !parentInSameSegment( lt, null ) )  {
+        if ( isRootNode( lt, null ) )  {
             // we are in a new child segment
             checkEagerSegmentCreation(lt.getLeftTupleSource(), wm, nodeTypesInSegment);
             nodeTypesInSegment = 0;
@@ -439,38 +450,71 @@ public class SegmentUtilities {
         }
     }
 
-    public static boolean parentInSameSegment(LeftTupleSource lt, RuleImpl removingRule) {
-        LeftTupleSource parentLt = lt.getLeftTupleSource();
-        if (parentLt == null) {
+    /**
+     * Returns whether the node is the root of a segment.
+     * Lians are always the root of a segment.
+     *
+     * node cannot be null.
+     *
+     * The result should discount any removingRule. That means it gives you the result as
+     * if the rule had already been removed from the network.
+     * @param node
+     * @param removingRule
+     * @return
+     */
+    public static boolean isRootNode(LeftTupleNode node, Rule removingRule) {
+        if (node.getType() == NodeTypeEnums.LeftInputAdapterNode) {
+            return true;
+        }
+
+        LeftTupleNode parent = node.getLeftTupleSource();
+        if ( isTipNode(parent, removingRule) ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns whether the node is the tip of a segment.
+     * EndNodes (rtn and rian) are always the tip of a segment.
+     *
+     * node cannot be null.
+     *
+     * The result should discount any removingRule. That means it gives you the result as
+     * if the rule had already been removed from the network.
+     * @param node
+     * @param removingRule
+     * @return
+     */
+    public static boolean isTipNode(LeftTupleNode node, Rule removingRule) {
+        if (NodeTypeEnums.isEndNode(node)) {
+            return true;
+        }
+        LeftTupleSinkPropagator sinkPropagator = ((LeftTupleSource)node).getSinkPropagator();
+
+
+        if (removingRule == null) {
+            return sinkPropagator.size() > 1;
+        }
+
+        if (sinkPropagator.size() == 1) {
             return false;
         }
-        int size = parentLt.getSinkPropagator().size();
 
-        if (removingRule != null && size == 2 && parentLt.isAssociatedWith( removingRule )) {
-            // looks like a split, but one of the branches may be removed.
-
-            LeftTupleSink first = parentLt.getSinkPropagator().getFirstLeftTupleSink();
-            if (first.getAssociationsSize() == first.getAssociationsSize( removingRule )) {
-                return true;
+        // we know the sink size is creater than 1 and that there is a removingRule that needs to be ignored.
+        int count = 0;
+        for ( LeftTupleSinkNode sink = sinkPropagator.getFirstLeftTupleSink(); sink != null; sink = sink.getNextLeftTupleSinkNode() )  {
+            int associatedRuleSize = sink.getAssociatedRuleSize();
+            if ( !(associatedRuleSize == 1 && sink.isAssociatedWith( removingRule )) ) {
+                count++;
+                if ( count > 1 ) {
+                    // There is more than one sink that is not for the removing rule
+                    return true;
+                }
             }
-
-            LeftTupleSink last = parentLt.getSinkPropagator().getLastLeftTupleSink();
-            return last.getAssociationsSize() == last.getAssociationsSize(removingRule);
-        } else {
-            return size == 1;
         }
 
-        // comments out for now, as the optimization to preserve subnetwork segments down one side is troublesome.
-        //        LeftTupleSource parent = lt.getLeftTupleSource();
-        //        if ( parent != null && ( parent.getSinkPropagator().size() == 1 ||
-        //               // same segment, if it's a subnetwork split and we are on the non subnetwork side of the split
-        //             ( parent.getSinkPropagator().size() == 2 &&
-        //               NodeTypeEnums.isBetaNode( lt ) &&
-        //               ((BetaNode)lt).isRightInputIsRiaNode() ) ) ) {
-        //            return true;
-        //        } else {
-        //            return false;
-        //        }
+        return false;
     }
 
     public static ObjectTypeNode getQueryOtn(LeftTupleSource lts) {
@@ -488,13 +532,13 @@ public class SegmentUtilities {
     }
 
     public static LeftInputAdapterNode getQueryLiaNode(String queryName, ObjectTypeNode queryOtn) {
-        if (queryOtn.getSinkPropagator() instanceof CompositeObjectSinkAdapter) {
-            CompositeObjectSinkAdapter sink = (CompositeObjectSinkAdapter) queryOtn.getSinkPropagator();
+        if (queryOtn.getObjectSinkPropagator() instanceof CompositeObjectSinkAdapter) {
+            CompositeObjectSinkAdapter sink = (CompositeObjectSinkAdapter) queryOtn.getObjectSinkPropagator();
             if (sink.getHashableSinks() != null) {
                 for (AlphaNode alphaNode = (AlphaNode) sink.getHashableSinks().getFirst(); alphaNode != null; alphaNode = (AlphaNode) alphaNode.getNextObjectSinkNode()) {
                     QueryNameConstraint nameConstraint = (QueryNameConstraint) alphaNode.getConstraint();
                     if (queryName.equals(nameConstraint.getQueryName())) {
-                        return (LeftInputAdapterNode) alphaNode.getSinkPropagator().getSinks()[0];
+                        return (LeftInputAdapterNode) alphaNode.getObjectSinkPropagator().getSinks()[0];
                     }
                 }
             }
@@ -504,16 +548,16 @@ public class SegmentUtilities {
                 AlphaNode alphaNode = (AlphaNode) entry.getValue();
                 QueryNameConstraint nameConstraint = (QueryNameConstraint) alphaNode.getConstraint();
                 if (queryName.equals(nameConstraint.getQueryName())) {
-                    return (LeftInputAdapterNode) alphaNode.getSinkPropagator().getSinks()[0];
+                    return (LeftInputAdapterNode) alphaNode.getObjectSinkPropagator().getSinks()[0];
                 }
             }
         } else {
-            AlphaNode alphaNode = (AlphaNode) queryOtn.getSinkPropagator().getSinks()[0];
+            AlphaNode alphaNode = (AlphaNode) queryOtn.getObjectSinkPropagator().getSinks()[0];
             QueryNameConstraint nameConstraint = (QueryNameConstraint) alphaNode.getConstraint();
             if (queryName.equals(nameConstraint.getQueryName())) {
-                return (LeftInputAdapterNode) alphaNode.getSinkPropagator().getSinks()[0];
+                return (LeftInputAdapterNode) alphaNode.getObjectSinkPropagator().getSinks()[0];
             }
-            return (LeftInputAdapterNode) queryOtn.getSinkPropagator().getSinks()[0];
+            return (LeftInputAdapterNode) queryOtn.getObjectSinkPropagator().getSinks()[0];
         }
 
         throw new RuntimeException("Unable to find query '" + queryName + "'");
