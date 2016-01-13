@@ -30,13 +30,24 @@ import static org.junit.Assert.assertNotNull;
 public abstract class AbstractScoreHibernateTypeTest {
 
     private HashMap<String, Object> context;
-
-    protected static EntityManagerFactory entityManagerFactory;
+    protected EntityManagerFactory entityManagerFactory;
+//    private JtaTransactionManager txm;
+//    private boolean useTransactions = false;
+//    private boolean locking;
 
     @Before
     public void setUp() throws Exception {
         context = PersistenceUtil.setupWithPoolingDataSource(PersistenceUtil.ENTITY_MANAGER_FACTORY);
         entityManagerFactory = (EntityManagerFactory) context.get(PersistenceUtil.ENTITY_MANAGER_FACTORY);
+
+//        if( useTransactions() ) {
+//            useTransactions = true;
+//            Environment env = createEnvironment(context);
+//            Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
+//            this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
+//                    env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
+//                    tm );
+//        }
     }
 
     @After
