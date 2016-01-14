@@ -193,7 +193,7 @@ public class KieModuleModelImpl implements KieModuleModel {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            KieModuleValidator.validate(new ByteArrayInputStream(bytes));
+            KieModuleValidator.validate(bytes);
             return (KieModuleModel)xStream.fromXML(new ByteArrayInputStream(bytes));
         }
 
@@ -270,33 +270,38 @@ public class KieModuleModelImpl implements KieModuleModel {
             }
         }
 
-        private static void validate(InputStream kModuleStream) {
-            validate(new StreamSource(kModuleStream));
+        private static void validate(byte[] bytes) {
+            validate(new StreamSource(new ByteArrayInputStream(bytes)),
+                    new StreamSource(new ByteArrayInputStream(bytes)));
         }
 
         private static void validate(java.io.File kModuleFile) {
-            validate(new StreamSource(kModuleFile));
+            validate(new StreamSource(kModuleFile),
+                    new StreamSource(kModuleFile));
         }
 
         private static void validate(URL kModuleUrl) {
+            String urlString;
             try {
-                validate(new StreamSource(kModuleUrl.toURI().toString()));
+                urlString = kModuleUrl.toURI().toString();
             } catch (URISyntaxException e) {
                 throw new RuntimeException(e);
             }
+            validate(new StreamSource(urlString), new StreamSource(urlString));
         }
 
         private static void validate(String kModuleString) {
-            validate(new StreamSource(new ByteArrayInputStream(kModuleString.getBytes(IoUtils.UTF8_CHARSET))));
+            byte[] bytes = kModuleString.getBytes(IoUtils.UTF8_CHARSET);
+            validate(bytes);
         }
 
-        private static void validate(Source source) {
+        private static void validate(Source source, Source duplicateSource) {
             try {
                 schema.newValidator().validate(source);
             } catch (Exception schemaException) {
                 try {
                     // For backwards compatibility, validate against the old namespace (which has 6.0.0 hardcoded)
-                    oldSchema.newValidator().validate(source);
+                    oldSchema.newValidator().validate(duplicateSource);
                 } catch (Exception oldSchemaException) {
                     // Throw the original exception, as we want them to use that
                     throw new RuntimeException(
