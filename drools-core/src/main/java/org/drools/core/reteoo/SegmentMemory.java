@@ -262,6 +262,12 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
                 }
             }
         }
+        for (SegmentMemory removedSmem : pathMemory.getSegmentMemories()) {
+            if (removedSmem != this && removedSmem.getRootNode().getAssociatedRuleSize() == 1 && contains( removedSmem )) {
+                // if the segment in the removed path belongs only to that path, remove it from this segment
+                remove( removedSmem );
+            }
+        }
     }
 
     public PathMemory getFirstDataDrivenPathMemory() {
