@@ -1004,6 +1004,7 @@ public class AddRemoveRule {
              }
          }
 
+         sm1.getStagedLeftTuples().clear();
          sm1.setStagedTuples( sm2.getStagedLeftTuples() );
 
          // re-assigned tip nodes
