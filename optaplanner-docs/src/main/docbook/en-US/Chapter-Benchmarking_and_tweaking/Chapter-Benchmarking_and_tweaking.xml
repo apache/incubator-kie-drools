@@ -636,15 +636,22 @@
         </mediaobject>
       </figure>
 
-      <para><emphasis role="bold">The best score over time statistic is very useful to detect abnormalities, such as a
-      potential <link linkend="scoreTrap">score trap</link>.</emphasis></para>
-
       <note>
         <para>A time gradient based algorithm (such as Simulated Annealing) will have a different statistic if it's run
         with a different time limit configuration. That's because this Simulated Annealing implementation automatically
         determines its velocity based on the amount of time that can be spent. On the other hand, for the Tabu Search
         and Late Annealing, what you see is what you'd get.</para>
       </note>
+
+      <para><emphasis role="bold">The best score over time statistic is very useful to detect abnormalities, such as a
+      potential <link linkend="scoreTrap">score trap</link> which gets the solver temporarily stuck in a local
+      optima.</emphasis></para>
+
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="images/Chapter-Benchmarking_and_tweaking/bestScoreStatisticShowsTheBottleneck.png"/>
+        </imageobject>
+      </mediaobject>
     </section>
 
     <section xml:id="benchmarkReportStepScoreOverTimeStatistic">
