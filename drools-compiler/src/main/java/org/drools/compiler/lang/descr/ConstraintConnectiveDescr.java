@@ -19,6 +19,8 @@ package org.drools.compiler.lang.descr;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.kie.api.io.Resource;
+
 /**
  * A descriptor to represent logical connectives in constraints, like
  * &&, || and ^. 
@@ -88,7 +90,15 @@ public class ConstraintConnectiveDescr extends AnnotatedBaseDescr {
             addDescr( baseDescr );
         }
     }
-    
+
+    @Override
+    public void setResource(Resource resource) {
+        super.setResource(resource);
+        for( BaseDescr descr : descrs )  {
+            descr.setResource(resource);
+        }
+    }
+    ;
     @Override
     public String toString() {
         return "["+this.connective+" "+descrs+" ]";

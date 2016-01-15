@@ -250,6 +250,12 @@ public class RuleDescr extends AnnotatedBaseDescr
     }
 
     @Override
+    public void setResource(org.kie.api.io.Resource resource) {
+        super.setResource(resource);
+        this.lhs.setResource(resource);
+    };
+
+    @Override
     public String toString() {
         return "[Rule name='" + this.name + "']";
     }

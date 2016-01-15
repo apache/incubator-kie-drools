@@ -113,6 +113,7 @@ public class TypeFieldDescr extends AnnotatedBaseDescr
      */
     public void setPattern( PatternDescr pattern ) {
         this.pattern = pattern;
+        this.pattern.setResource(getResource());
     }
 
     public String toString() {

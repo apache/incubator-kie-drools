@@ -101,6 +101,7 @@ public class AnnotatedBaseDescr extends BaseDescr
         }
         AnnotationDescr annotation = new AnnotationDescr( name,
                                                           value );
+        annotation.setResource(getResource());
         return this.annotations.put( annotation.getName(),
                                      annotation );
     }

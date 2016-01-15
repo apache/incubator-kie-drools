@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -197,7 +197,7 @@ public class TypeDeclarationCache {
 
     private ClassDefinition setClassDefinitionOnTypeDeclaration( Class<?> cls, TypeDeclaration typeDeclaration ) {
         ClassDefinition clsDef = new ClassDefinition();
-        ClassDefinitionFactory.populateDefinitionFromClass( clsDef, cls, cls.getAnnotation( Trait.class ) != null );
+        ClassDefinitionFactory.populateDefinitionFromClass( clsDef, typeDeclaration.getResource(), cls, cls.getAnnotation( Trait.class ) != null );
         typeDeclaration.setTypeClassDef(clsDef);
         return clsDef;
     }
