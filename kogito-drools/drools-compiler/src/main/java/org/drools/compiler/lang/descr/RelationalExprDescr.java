@@ -73,10 +73,7 @@ public class RelationalExprDescr extends BaseDescr {
     }
 
     public void setOperator( String operator ) {
-        if( this.operator == null ) {
-            this.operator = new OperatorDescr();
-        }
-        this.operator.setOperator( operator );
+        createOrGetOperator().setOperator( operator );
     }
 
     public boolean isNegated() {
@@ -84,10 +81,7 @@ public class RelationalExprDescr extends BaseDescr {
     }
 
     public void setNegated( boolean negated ) {
-        if( this.operator == null ) {
-            this.operator = new OperatorDescr();
-        }
-        this.operator.setNegated( negated );
+        createOrGetOperator().setNegated( negated );
     }
 
     public List<String> getParameters() {
@@ -112,10 +106,15 @@ public class RelationalExprDescr extends BaseDescr {
     }
 
     public void setParameters( List<String> parameters ) {
+        createOrGetOperator().setParameters( parameters );
+    }
+
+    private OperatorDescr createOrGetOperator() {
         if( this.operator == null ) {
             this.operator = new OperatorDescr();
+            this.operator.setResource(getResource());
         }
-        this.operator.setParameters( parameters );
+        return this.operator;
     }
     
     public OperatorDescr getOperatorDescr() {

@@ -53,6 +53,9 @@ public class GroupElementBuilder
         // iterate over child descriptors
         for ( final BaseDescr child : cedescr.getDescrs() ) {
             // gets child to build
+
+            // child.setResource(..) does not seem to be necessary (since builderImpls have already set the resource for all children)
+            // but leaving it in here to be save
             child.setResource( context.getRuleDescr().getResource() );
             child.setNamespace( context.getRuleDescr().getNamespace() );
 

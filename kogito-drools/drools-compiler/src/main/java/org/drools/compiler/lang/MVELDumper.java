@@ -162,6 +162,7 @@ public class MVELDumper extends ReflectiveVisitor implements ExpressionRewriter 
     private void processBinding(StringBuilder sbuilder, BindingDescr bind, ConstraintConnectiveDescr parent, boolean isInsideRelCons, MVELDumperContext context) {
         String expr = bind.getExpression().trim();
         AtomicExprDescr atomicExpr = new AtomicExprDescr(expr);
+        atomicExpr.setResource(parent.getResource());
         String[] constrAndExpr = processImplicitConstraints(expr, atomicExpr, parent, parent.getDescrs().indexOf( bind ), context );
 
         if ( isInsideRelCons ) {

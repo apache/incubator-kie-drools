@@ -40,12 +40,14 @@ public class SourceDescrBuilderImpl<P extends PatternDescrBuilder<?>> extends Ba
     public P expression( String expression ) {
         FromDescr from = new FromDescr();
         from.setDataSource( new MVELExprDescr( expression ) );
+        from.setResource(descr.getResource());
         descr.setSource( from );
         return parent;
     }
 
     public P entryPoint( String entryPoint ) {
         EntryPointDescr ep = new EntryPointDescr( entryPoint );
+        ep.setResource(descr.getResource());
         descr.setSource( ep );
         return parent;
     }
@@ -64,6 +66,7 @@ public class SourceDescrBuilderImpl<P extends PatternDescrBuilder<?>> extends Ba
 
     public P window( String window ) {
         WindowReferenceDescr wd = new WindowReferenceDescr( window );
+        wd.setResource(descr.getResource());
         descr.setSource( wd );
         return parent;
     }

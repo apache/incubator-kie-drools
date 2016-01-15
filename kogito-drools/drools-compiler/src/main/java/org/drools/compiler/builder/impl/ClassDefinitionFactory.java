@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -14,6 +14,21 @@
 */
 
 package org.drools.compiler.builder.impl;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.TypeDeclarationError;
@@ -40,21 +55,7 @@ import org.drools.core.util.ClassUtils;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.Key;
 import org.kie.api.definition.type.Position;
-
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.Serializable;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.kie.api.io.Resource;
 
 public class ClassDefinitionFactory {
 
@@ -318,7 +319,7 @@ public class ClassDefinitionFactory {
         return fieldDefs;
     }
 
-    public static void populateDefinitionFromClass( ClassDefinition def, Class<?> concrete, boolean asTrait ) {
+    public static void populateDefinitionFromClass( ClassDefinition def, Resource resource, Class<?> concrete, boolean asTrait ) {
         try {
             def.setClassName( concrete.getName() );
             if ( concrete.getSuperclass() != null ) {
@@ -348,6 +349,7 @@ public class ClassDefinitionFactory {
 
                     Class ret = methods.get( fieldName ).getReturnType();
                     TypeFieldDescr field = new TypeFieldDescr(  );
+                    field.setResource(resource);
                     field.setFieldName( fieldName );
                     field.setPattern( new PatternDescr( ret.getName() ) );
                     field.setIndex( position != null ? position.value() : -1 );

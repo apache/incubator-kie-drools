@@ -85,6 +85,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.io.impl.InputStreamResource;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
 import org.drools.core.reteoo.LeftTuple;
@@ -104,6 +105,7 @@ import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.ObjectDeletedEvent;
 import org.kie.api.event.rule.RuleRuntimeEventListener;
+import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.Environment;
@@ -2350,7 +2352,8 @@ import static org.mockito.Mockito.*;
      @Test
      public void testDumpers() throws Exception {
          final DrlParser parser = new DrlParser( LanguageLevelOption.DRL5 );
-         final PackageDescr pkg = parser.parse( new InputStreamReader( getClass().getResourceAsStream( "test_Dumpers.drl" ) ) );
+         Resource resource = new InputStreamResource( getClass().getResourceAsStream( "test_Dumpers.drl" ) );
+         final PackageDescr pkg = parser.parse( resource );
 
          if ( parser.hasErrors() ) {
              for ( DroolsError error : parser.getErrors() ) {

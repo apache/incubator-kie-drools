@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -49,6 +49,7 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
     private PackageDescrBuilderImpl(Resource resource) {
         this();
         this.resource = resource;
+        this.descr.setResource(resource);
     }
 
     public static PackageDescrBuilder newPackage() {
@@ -128,8 +129,8 @@ public class PackageDescrBuilderImpl extends BaseDescrBuilderImpl<PackageDescrBu
     }
 
     private <T extends BaseDescr> T initDescr(DescrBuilder<PackageDescrBuilder, T> builder) {
+        // resource for new descr already set in builder
         T descr = builder.getDescr();
-        descr.setResource(resource);
         descr.setNamespace(descr.getNamespace());
         return descr;
     }

@@ -177,6 +177,12 @@ public class PatternDescr extends AnnotatedBaseDescr
         this.source = source;
     }
 
+    @Override
+    public void setResource(org.kie.api.io.Resource resource) {
+        super.setResource(resource);
+        ((BaseDescr) this.constraint).setResource(resource);
+    };
+
     /**
      * @return the behaviors
      */

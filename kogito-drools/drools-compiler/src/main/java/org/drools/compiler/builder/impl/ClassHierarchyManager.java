@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -32,6 +32,7 @@ import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.util.HierarchySorter;
 import org.drools.core.util.asm.ClassFieldInspector;
 import org.kie.api.definition.type.Key;
+import org.kie.api.io.Resource;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -182,23 +183,7 @@ public class ClassHierarchyManager {
             // after inheriting the fields from supertypes, now we fill in the locally declared fields
             try {
                 Class existingClass = TypeDeclarationUtils.getExistingDeclarationClass( typeDescr, pkgRegistry );
-                ClassFieldInspector inspector = new ClassFieldInspector( existingClass );
-                for (String name : inspector.getGetterMethods().keySet()) {
-                    // classFieldAccessor requires both getter and setter
-                    if (inspector.getSetterMethods().containsKey(name)) {
-                        if (!inspector.isNonGetter(name) && !"class".equals(name)) {
-                            TypeFieldDescr inheritedFlDescr = new TypeFieldDescr(
-                                    name,
-                                    new PatternDescr(
-                                            inspector.getFieldType(name).getName()));
-                            inheritedFlDescr.setInherited(!Modifier.isAbstract( inspector.getGetterMethods().get( name ).getModifiers() ));
-
-                            if (!tDescr.getFields().containsKey(inheritedFlDescr.getFieldName()))
-                                tDescr.getFields().put(inheritedFlDescr.getFieldName(),
-                                                       inheritedFlDescr);
-                        }
-                    }
-                }
+                buildDescrsFromFields( existingClass, tDescr, pkgRegistry, tDescr.getFields());
             } catch ( Exception e ) {
                 // can't happen as we know that the class is not novel - that is, it has been resolved before
             }
@@ -207,6 +192,27 @@ public class ClassHierarchyManager {
 
     }
 
+    private static void buildDescrsFromFields( Class klass, TypeDeclarationDescr typeDescr, PackageRegistry pkgRegistry,
+            Map<String, TypeFieldDescr> fieldMap ) throws IOException {
+        ClassFieldInspector inspector = new ClassFieldInspector( klass );
+        for (String name : inspector.getGetterMethods().keySet()) {
+            // classFieldAccessor requires both getter and setter
+            if (inspector.getSetterMethods().containsKey(name)) {
+                if (!inspector.isNonGetter(name) && !"class".equals(name)) {
+                    Resource resource = typeDescr.getResource();
+                    PatternDescr patternDescr = new PatternDescr( inspector.getFieldType(name).getName());
+                    patternDescr.setResource(resource);
+                    TypeFieldDescr inheritedFlDescr = new TypeFieldDescr( name, patternDescr);
+                    inheritedFlDescr.setResource(resource);
+                    inheritedFlDescr.setInherited(!Modifier.isAbstract( inspector.getGetterMethods().get( name ).getModifiers() ));
+
+                    if (!fieldMap.containsKey(inheritedFlDescr.getFieldName()))
+                        fieldMap.put(inheritedFlDescr.getFieldName(),
+                                               inheritedFlDescr);
+                }
+            }
+        }
+    }
 
     /**
      * In order to build a declared class, the fields inherited from its
@@ -338,24 +344,7 @@ public class ClassHierarchyManager {
                     // if the supertype has not been declared, and we have got so far, it means that this class is not novel
                     superKlass = resolver.resolveType( fullSuper );
                 }
-                ClassFieldInspector inspector = new ClassFieldInspector(superKlass);
-                for (String name : inspector.getGetterMethods().keySet()) {
-                    // classFieldAccessor requires both getter and setter
-                    if (inspector.getSetterMethods().containsKey(name)) {
-                        if (!inspector.isNonGetter(name) && !"class".equals(name)) {
-                            TypeFieldDescr inheritedFlDescr = new TypeFieldDescr(
-                                    name,
-                                    new PatternDescr(
-                                            inspector.getFieldType(name).getName()));
-                            inheritedFlDescr.setInherited(!Modifier.isAbstract(inspector.getGetterMethods().get(name).getModifiers()));
-
-                            if (!fieldMap.containsKey(inheritedFlDescr.getFieldName()))
-                                fieldMap.put(inheritedFlDescr.getFieldName(),
-                                             inheritedFlDescr);
-                        }
-                    }
-                }
-
+                buildDescrsFromFields( superKlass, typeDescr, registry, fieldMap);
             } catch (ClassNotFoundException cnfe) {
                 throw new RuntimeException("Unable to resolve Type Declaration superclass '" + fullSuper + "'");
             } catch ( IOException e ) {
@@ -435,14 +424,16 @@ public class ClassHierarchyManager {
     }
 
     protected TypeFieldDescr buildInheritedFieldDescrFromDefinition(org.kie.api.definition.type.FactField fld, TypeDeclarationDescr typeDescr) {
-        PatternDescr fldType = new PatternDescr();
         TypeFieldDescr inheritedFldDescr = new TypeFieldDescr();
         inheritedFldDescr.setFieldName(fld.getName());
+        inheritedFldDescr.setResource(typeDescr.getResource());
+        PatternDescr fldType = new PatternDescr();
         fldType.setObjectType( ( (FieldDefinition) fld ).getTypeName() );
-        inheritedFldDescr.setPattern(fldType);
+        inheritedFldDescr.setPattern(fldType); // also sets resource for PatternDescr fldType
         if (fld.isKey()) {
             AnnotationDescr keyAnnotation = new AnnotationDescr(Key.class.getCanonicalName());
             keyAnnotation.setFullyQualifiedName(Key.class.getCanonicalName());
+            keyAnnotation.setResource(typeDescr.getResource());
             inheritedFldDescr.addAnnotation(keyAnnotation);
         }
         inheritedFldDescr.setIndex(((FieldDefinition) fld).getDeclIndex());

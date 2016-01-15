@@ -94,17 +94,17 @@ public class CEDescrBuilderImpl<P extends DescrBuilder< ? , ? >, T extends Annot
      */
     public AccumulateDescrBuilder<CEDescrBuilder<P, T>> accumulate() {
         // here we have to do a trick as a top level accumulate is just an accumulate
-        // whose result pattern is Object[] 
-        
+        // whose result pattern is Object[]
+
         // create a linked Object[] pattern and set it to query false
         PatternDescrBuilder<CEDescrBuilder<P,T>> pdb = pattern("Object[]").isQuery( false );
-        
-        // create the accumulate builder with this CE as its parent 
+
+        // create the accumulate builder with this CE as its parent
         AccumulateDescrBuilder<CEDescrBuilder<P, T>> accumulate = new AccumulateDescrBuilderImpl<CEDescrBuilder<P, T>>(this);
-        
+
         // set the accumulate descriptor as the source of that pattern descr
         pdb.getDescr().setSource( accumulate.getDescr() );
-        
+
         // return the accumulate builder, that has the properly set parent
         return accumulate;
     }

@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -1731,6 +1731,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             InternalKnowledgePackage pkg = pkgRegistry.getPackage();
             DialectCompiletimeRegistry ctr = pkgRegistry.getDialectCompiletimeRegistry();
             RuleDescr dummy = new RuleDescr(wd.getName() + " Window Declaration");
+            dummy.setResource(packageDescr.getResource());
             dummy.addAttribute(new AttributeDescr("dialect", "java"));
             RuleBuildContext context = new RuleBuildContext(this,
                                                             dummy,
@@ -1760,7 +1761,6 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
     }
 
     private void addFunction(final FunctionDescr functionDescr) {
-        functionDescr.setResource(this.resource);
         PackageRegistry pkgRegistry = this.pkgRegistryMap.get(functionDescr.getNamespace());
         Dialect dialect = pkgRegistry.getDialectCompiletimeRegistry().getDialect(functionDescr.getDialect());
         dialect.addFunction(functionDescr,

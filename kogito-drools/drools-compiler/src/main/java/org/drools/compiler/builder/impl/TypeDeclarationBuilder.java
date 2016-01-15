@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -297,6 +297,7 @@ public class TypeDeclarationBuilder {
                         altDescr = foreignPackages.get( typeDescr.getNamespace() );
                     } else {
                         altDescr = new PackageDescr(typeDescr.getNamespace());
+                        altDescr.setResource(packageDescr.getResource());
                         foreignPackages.put( typeDescr.getNamespace(), altDescr );
                     }
 
@@ -363,6 +364,7 @@ public class TypeDeclarationBuilder {
                                           typeDescr.getNamespace());
                         tempDescr.setTrait( true );
                         tempDescr.addSuperType(typeDescr.getType());
+                        tempDescr.setResource(type.getResource());
                         TypeDeclaration tempDeclr = new TypeDeclaration(target);
                         tempDeclr.setKind(TypeDeclaration.Kind.TRAIT);
                         tempDeclr.setTypesafe(type.isTypesafe());
@@ -426,7 +428,7 @@ public class TypeDeclarationBuilder {
     protected void updateTraitDefinition( TypeDeclaration type,
                                           Class concrete,
                                           boolean asTrait ) {
-        ClassDefinitionFactory.populateDefinitionFromClass( type.getTypeClassDef(), concrete, asTrait );
+        ClassDefinitionFactory.populateDefinitionFromClass( type.getTypeClassDef(), type.getResource(), concrete, asTrait );
     }
 
 }
