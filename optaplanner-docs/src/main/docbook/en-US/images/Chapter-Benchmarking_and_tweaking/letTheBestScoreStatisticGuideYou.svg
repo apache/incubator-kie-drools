@@ -15,8 +15,8 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="bestScoreStatisticShowsTheBottleneck.svg"
-   inkscape:export-filename="bestScoreStatisticShowsTheBottleneck.png"
+   sodipodi:docname="letTheBestScoreStatisticGuideYou.svg"
+   inkscape:export-filename="letTheBestScoreStatisticGuideYou.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
   <defs
@@ -7319,10 +7319,10 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.3516667"
-     inkscape:cx="400"
-     inkscape:cy="270.40691"
+     inkscape:cx="401.47965"
+     inkscape:cy="300"
      inkscape:document-units="px"
-     inkscape:current-layer="layer4"
+     inkscape:current-layer="layer1"
      showgrid="true"
      width="800px"
      borderlayer="true"
@@ -7411,7 +7411,7 @@
          id="flowPara6499" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4302"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none;"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        transform="translate(-20,252.36198)"><flowRegion
          id="flowRegion4304"><rect
            id="rect4306"
@@ -7419,8 +7419,8 @@
            height="50.000027"
            x="50"
            y="220.0002"
-           style="font-size:35px;text-align:center;text-anchor:middle;" /></flowRegion><flowPara
-         id="flowPara5893">Best score statistic shows the bottleneck</flowPara></flowRoot>    <flowRoot
+           style="font-size:35px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
+         id="flowPara5893">Let the best score statistic guide you</flowPara></flowRoot>    <flowRoot
        transform="translate(-20,362.36182)"
        xml:space="preserve"
        id="flowRoot4302-6"
@@ -7511,7 +7511,7 @@
            height="50"
            x="220"
            y="210" /></flowRegion><flowPara
-         id="flowPara6104"></flowPara></flowRoot>    <path
+         id="flowPara6104" /></flowRoot>    <path
        sodipodi:nodetypes="ccc"
        style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
        d="m 500.0002,732.36218 10,10 -10,10"
@@ -7647,7 +7647,7 @@
            height="50"
            x="770"
            y="550" /></flowRegion><flowPara
-         id="flowPara6428"></flowPara></flowRoot>    <path
+         id="flowPara6428" /></flowRoot>    <path
        id="path6450"
        style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#4e9a06;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
        d="m 690,620.25281 0,-0.85938 20.625,0 0,-0.85937 22.5,0 m -43.125,1.71875 -18.75,0 0,0.85937 -16.875,0 0,0.85937 -15,0 0,0.85938 -13.125,0 0,0.85937 -11.25,0 0,0.85938 -9.375,0 0,0.85938 -7.5,0 0,0.85937 -5.625,0 0,0.85938 -3.75,0 0,0.85937 -1.875,0 m -6.875,103.125 0,-18.75 0.76389,0 0,-16.875 0.76389,0 0,-15 0.76389,0 0,-13.125 0.76389,0 0,-11.25 0.76388,0 0,-9.375 0.76389,0 0,-7.5 0.76389,0 0,-5.625 0.76389,0 0,-3.75 0.76389,0 0,-1.875"
@@ -7667,7 +7667,7 @@
            height="30"
            x="450"
            y="370" /></flowRegion><flowPara
-         id="flowPara6470"></flowPara></flowRoot>  </g>
+         id="flowPara6470" /></flowRoot>  </g>
   <g
      inkscape:groupmode="layer"
      id="layer2"
@@ -7711,7 +7711,7 @@
          style="font-weight:normal;font-size:15px;fill:#000000"
          id="flowPara6110">Recommendations:</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
-         id="flowPara6116">- Improve score calculation speed. Check the average calcluation count per second.</flowPara><flowPara
+         id="flowPara6116">- Improve score calculation speed. Check the average calculation count per second.</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
          id="flowPara6118">- Use better hardware.</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
@@ -7749,7 +7749,7 @@
          id="flowPara6206"
          style="font-weight:normal;font-size:15px;fill:#000000">Observations:</flowPara><flowPara
          id="flowPara6212"
-         style="font-weight:normal;font-size:15px;fill:#000000">- Some moves are lucky because they stray away from a local optima</flowPara><flowPara
+         style="font-weight:normal;font-size:15px;fill:#000000">- Some moves are lucky because they stray away from a local optima.</flowPara><flowPara
          id="flowPara6214"
          style="font-weight:normal;font-size:15px;fill:#000000" /><flowPara
          id="flowPara6216"
