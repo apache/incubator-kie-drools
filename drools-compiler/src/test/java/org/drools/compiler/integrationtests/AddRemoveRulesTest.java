@@ -1012,9 +1012,22 @@ public class AddRemoveRulesTest {
                        " list.add('R2'); \n" +
                        "end";
 
+        List list = new ArrayList();
+
+        // delete before first fireAllRules
         StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
 
-        // TODO which assertion should go here?
+        base = session.getKieBase();
+        session.setGlobal("list", list);
+        session.insert( 1 );
+        session.insert( "1" );
+        deleteRule( "R2" );
+        session.fireAllRules();
+
+        deleteRule( "R1" );
+        session.fireAllRules();
+        assertEquals("[R1]", list.toString());
+        list.clear();
     }
 
     @Test
@@ -1032,6 +1045,7 @@ public class AddRemoveRulesTest {
                        "rule R2 \n" +
                        "when \n" +
                        "    exists( Integer() and String() )\n" +
+                       "    String()" +
                        "then \n" +
                        " list.add('R2'); \n" +
                        "end";
@@ -1048,7 +1062,6 @@ public class AddRemoveRulesTest {
                        "global java.util.List list\n" +
                        "rule R1 when\n" +
                        "    $s : String()\n" +
-                       "    Integer()\n" +
                        "    exists( Integer() and Integer() )\n" +
                        "then\n" +
                        " list.add('R1'); \n" +
@@ -1060,7 +1073,6 @@ public class AddRemoveRulesTest {
                        "rule R2 \n" +
                        "when \n" +
                        "    $s : String()\n" +
-                       "    Integer()\n" +
                        "    exists( Integer() and Integer() )\n" +
                        "    String()" +
                        "then \n" +

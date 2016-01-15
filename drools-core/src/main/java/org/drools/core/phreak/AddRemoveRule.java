@@ -21,6 +21,7 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
@@ -157,12 +158,13 @@ public class AddRemoveRule {
              PathMemory removedPmem = wm.getNodeMemory( tn );
              int s = getSegmentPos(splitStartNode, null);
 
+             wm.flushPropagations();
+
              // if a segment is going to be merged it is necessary to flush all its staged left tuples before doing any change to the network
              flushSegmentIfMerge(wm, tn, splitStartNode, s);
 
              // must be done before segments are mutated
              flushStagedTuples(splitStartNode, removedPmem, wm, true);
-             wm.flushPropagations();
 
              LeftTupleSink sink;
              if ( splitStartNode.getAssociatedRuleSize() == 1 ) {
@@ -211,6 +213,9 @@ public class AddRemoveRule {
                              if ( i < s ) {
                                  correctSegmentBeforeSplitOnRemove(wm, removedPmem, pmem, sm, firstRulePath);
                              } else if ( i == s ) {
+                                 if (smems[i] != null && smems[i+1] == null) {
+                                     smems[i+1] = createChildSegmentForNodeInPath( wm, pmem, smems[i].getTipNode() );
+                                 }
                                  if (smems[i+1] != null) {
                                      correctSegmentOnSplitOnRemove(wm,  sm, smems[i+1], pmem, removedPmem, firstRulePath);
                                      i++; // increase to skip merged segment
@@ -242,7 +247,21 @@ public class AddRemoveRule {
 
              correctMemoryOnSplitsChanged( splitStartNode, wm );
          }
-     }
+    }
+
+    private static SegmentMemory createChildSegmentForNodeInPath(InternalWorkingMemory wm, PathMemory pmem, NetworkNode sourceNode) {
+        // finds the sink of sourceNode belonging to rule
+        if (sourceNode instanceof LeftTupleSource) {
+            for (LeftTupleSink sink : ( (LeftTupleSource) sourceNode ).getSinkPropagator().getSinks()) {
+                if (sink.isAssociatedWith( pmem.getRule() )) {
+                    return sink instanceof LeftTupleSource ?
+                           SegmentUtilities.createSegmentMemory( (LeftTupleSource) sink, wm ) :
+                           SegmentUtilities.createChildSegmentForTerminalNode( (LeftTupleSink) sink, pmem );
+                }
+            }
+        }
+        return null;
+    }
 
     private static void flushSegmentIfMerge(InternalWorkingMemory wm, TerminalNode tn, LeftTupleSource splitStartNode, int segmentPos) {
         if ( splitStartNode.getAssociatedRuleSize() == 2 ) {
@@ -287,7 +306,7 @@ public class AddRemoveRule {
              mem = sm.getNodeMemories().get(0);
          }
 
-         // stages the LeftTuples for deletion in the target SegmentMemory, if necessary it looks up the nodes to find.
+         // stages the LeftTuples for deletion or insertion in the target SegmentMemory, if necessary it looks up the nodes to find
          if (removeTuples) {
             processLeftTuples( splitStartNode, sink, sm, wm, false );
          }
@@ -635,9 +654,10 @@ public class AddRemoveRule {
     public static void processLeftTuples(LeftTupleSource node, LeftTupleSink peerNode, SegmentMemory smem, InternalWorkingMemory wm, boolean insert) {
         // *** if you make a fix here, it most likely needs to be in PhreakActivationIteratorToo ***
 
-        // Must iterate up until a node with memory is found, this can be followed to find the LeftTuples to peer
+        // Must iterate up until a node with memory is found, this can be followed to find the LeftTuples
+        // which provide the potential peer of the tuple being added or removed
 
-        // creates the propagation path to follow
+        // creates the propagation path of sinks, the sinks are in reverse order, traversing the parents of the node
         List<LeftTupleSink> sinks = new ArrayList<LeftTupleSink>();
         sinks.add(peerNode);
 
