@@ -1898,6 +1898,7 @@ public class PatternBuilder
                                                          final String expression ) {
         DrlExprParser parser = new DrlExprParser( context.getConfiguration().getLanguageLevel() );
         ConstraintConnectiveDescr result = parser.parse( expression );
+        result.setResource(patternDescr.getResource());
 
         if (result == null) {
             context.addError(new DescrBuildError(context.getParentDescr(),

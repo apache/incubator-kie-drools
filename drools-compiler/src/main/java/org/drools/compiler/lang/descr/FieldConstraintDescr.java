@@ -68,7 +68,13 @@ public class FieldConstraintDescr extends BaseDescr {
     public RestrictionConnectiveDescr getRestriction() {
         return this.restriction;
     }
-    
+
+    @Override
+    public void setResource(org.kie.api.io.Resource resource) {
+        super.setResource(resource);
+        this.restriction.setResource(resource);
+    };
+
     @Override
     public String toString() {
         return fieldName + " " + restriction;

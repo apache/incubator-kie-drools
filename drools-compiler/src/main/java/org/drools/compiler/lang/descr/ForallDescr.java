@@ -70,6 +70,7 @@ public class ForallDescr extends BaseDescr
             PatternDescr base = (PatternDescr) original.clone();
             base.getDescrs().clear();
             base.setIdentifier( BASE_IDENTIFIER );
+            base.setResource(original.getResource());
             return base;
         }
         return null;
@@ -91,6 +92,7 @@ public class ForallDescr extends BaseDescr
             PatternDescr original = (PatternDescr) this.patterns.get( 0 );
             PatternDescr remaining = (PatternDescr) original.clone();
             remaining.addConstraint( new ExprConstraintDescr( "this == " + BASE_IDENTIFIER ) );
+            remaining.setResource(original.getResource());
             return Collections.singletonList( (BaseDescr)remaining );
         }
         return Collections.emptyList();
