@@ -59,6 +59,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteComparator;
+import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.KnowledgeHelper;
@@ -8281,5 +8282,45 @@ public class Misc2Test extends CommonTestMethodBase {
                 fail("There shouldn't be other OTNs");
             }
         }
+    }
+
+    @Test
+    public void testX() {
+        // DROOLS-1013
+        String drl =
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "    exists( Integer() and Integer() )\n" +
+                "then\n" +
+                " list.add('R1'); \n" +
+                "end\n" +
+                "rule R2 \n" +
+                "when \n" +
+                "    exists( Integer() and String() )\n" +
+                "then \n" +
+                " list.add('R2'); \n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+        ReteDumper.dumpRete( ksession );
+    }
+
+    @Test
+    public void testY() {
+        // DROOLS-1013
+        String drl =
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "    exists( Integer() and Integer() )\n" +
+                "then\n" +
+                " list.add('R1'); \n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+        ReteDumper.dumpRete( ksession );
     }
 }

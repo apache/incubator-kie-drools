@@ -1032,7 +1032,6 @@ public class AddRemoveRulesTest {
                        "rule R2 \n" +
                        "when \n" +
                        "    exists( Integer() and String() )\n" +
-                       "    String()" +
                        "then \n" +
                        " list.add('R2'); \n" +
                        "end";

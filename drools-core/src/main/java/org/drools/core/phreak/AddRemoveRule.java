@@ -78,20 +78,18 @@ public class AddRemoveRule {
         for (InternalWorkingMemory wm : wms) {
 
             if (splitStartLeftTupleSource.getAssociatedRuleSize() > 1) {
-                List<PathMemory> pathMems = new ArrayList<PathMemory>();
-
-                collectRtnPathMemories(splitStartLeftTupleSource, wm, pathMems, tn); // get all PathMemories, except current
+                List<PathMemory> pathMems = getRtnPathMemories(splitStartLeftTupleSource, wm, tn); // get all PathMemories, except current
 
                 PathMemory newPmem = wm.getNodeMemory( tn );
 
                 int s = getSegmentPos(splitStartLeftTupleSource, null);
 
-                LeftTupleSink[] sinks = splitStartLeftTupleSource.getSinkPropagator().getSinks();
-                if (sinks.length == 2 || (sinks.length == 3 && NodeTypeEnums.isBetaNode(sinks[2])) && ((BetaNode) sinks[2]).isRightInputIsRiaNode()) {
+                if (isNewSplit(tn.getRule(), splitStartLeftTupleSource)) {
                     List<SegmentMemory[]> previousSmems = reInitPathMemories(wm, pathMems, null);
 
                     // can only be two if the adding node caused the split to be created
                     int p = 0;
+                    boolean firstRulePath = true;
                     SegmentMemory splitSmem = null;
                     for (PathMemory pmem : pathMems) {
                         pmem.setlinkedSegmentMask(0);
@@ -104,13 +102,14 @@ public class AddRemoveRule {
                             }
 
                             if (i < s) {
-                                correctSegmentBeforeSplitOnAdd(wm, newPmem, p, pmem, sm);
+                                correctSegmentBeforeSplitOnAdd(wm, newPmem, firstRulePath, pmem, sm);
                             } else if (i == s) {
-                                splitSmem = correctSegmentOnSplitOnAdd(splitStartLeftTupleSource, wm, newPmem, p, splitSmem, pmem, sm);
+                                splitSmem = correctSegmentOnSplitOnAdd(splitStartLeftTupleSource, wm, newPmem, firstRulePath, splitSmem, pmem, sm);
                             } else if (i > s) {
                                 correctSegmentAfterSplitOnAdd(wm, pmem, i, sm);
                             }
                         }
+                        firstRulePath &= pmem.getNodeType() == NodeTypeEnums.RightInputAdaterNode;
                         p++;
                     }
                 } else {
@@ -133,7 +132,19 @@ public class AddRemoveRule {
         }
     }
 
-     public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalKnowledgeBase kBase) {
+    private static boolean isNewSplit(RuleImpl rule, LeftTupleSource splitStart) {
+        LeftTupleSink[] sinks = splitStart.getSinkPropagator().getSinks();
+        if (sinks.length == 2) {
+            return true;
+        }
+        if (sinks.length == 3) {
+            // check if the new 2 sinks have been added both by the last rule
+            return sinks[1].isAssociatedWith( rule ) && sinks[2].isAssociatedWith( rule );
+        }
+        return false;
+    }
+
+    public static void removeRule(TerminalNode tn, InternalWorkingMemory[] wms, InternalKnowledgeBase kBase) {
          if ( log.isTraceEnabled() ) {
              log.trace( "Removing Rule {}", tn.getRule().getName() );
          }
@@ -165,8 +176,7 @@ public class AddRemoveRule {
                  // Sharing exists, get the root of the SegmentMemory after the split
                  SegmentMemory sm = removedPmem.getSegmentMemories()[s+1];
                  if ( sm == null ) {
-                     List<PathMemory> pathMems = new ArrayList<PathMemory>();
-                     collectRtnPathMemories(splitStartNode, wm, pathMems, tn); // get all PathMemories, except current
+                     List<PathMemory> pathMems = getRtnPathMemories(splitStartNode, wm, tn); // get all PathMemories, except current
                      reInitPathMemories(wm, pathMems, tn.getRule() );
                      continue; // this rule has not been initialized yet
                  }
@@ -175,8 +185,7 @@ public class AddRemoveRule {
              deleteFacts( sink, wm);
 
              if ( splitStartNode.getAssociatedRuleSize() > 1 ) {
-                 List<PathMemory> pathMems = new ArrayList<PathMemory>();
-                 collectRtnPathMemories(splitStartNode, wm, pathMems, tn); // get all PathMemories, except current
+                 List<PathMemory> pathMems = getRtnPathMemories(splitStartNode, wm, tn); // get all PathMemories, except current
 
                  List<SegmentMemory[]> previousSmems = reInitPathMemories(wm, pathMems, tn.getRule() );
 
@@ -358,9 +367,9 @@ public class AddRemoveRule {
          }
      }
 
-     private static void correctSegmentBeforeSplitOnAdd(InternalWorkingMemory wm, PathMemory newPmem, int p, PathMemory pmem, SegmentMemory sm) {
+     private static void correctSegmentBeforeSplitOnAdd(InternalWorkingMemory wm, PathMemory newPmem, boolean firstRulePath, PathMemory pmem, SegmentMemory sm) {
          pmem.setSegmentMemory( sm.getPos(), sm );
-         if ( p == 0 ) {
+         if ( firstRulePath ) {
              // only handle for the first PathMemory, all others are shared and duplicate until this point
              setSegmentMemoryOnNewPath( wm, newPmem, sm );
          }
@@ -381,8 +390,8 @@ public class AddRemoveRule {
          }
      }
 
-     private static SegmentMemory correctSegmentOnSplitOnAdd(LeftTupleSource splitStartLeftTupleSource, InternalWorkingMemory wm, PathMemory newPmem, int p, SegmentMemory splitSmem, PathMemory pmem, SegmentMemory sm) {
-         if ( p == 0 ) {
+     private static SegmentMemory correctSegmentOnSplitOnAdd(LeftTupleSource splitStartLeftTupleSource, InternalWorkingMemory wm, PathMemory newPmem, boolean firstRulePath, SegmentMemory splitSmem, PathMemory pmem, SegmentMemory sm) {
+         if ( firstRulePath ) {
              // split is inside of a segment, so the segment must be split in half and a new one created
              splitSmem = splitSegment(sm, splitStartLeftTupleSource);
 
@@ -888,6 +897,15 @@ public class AddRemoveRule {
         smem.getStagedLeftTuples().addInsert(newPeer);
     }
 
+    private static List<PathMemory> getRtnPathMemories( LeftTupleSource lt,
+                                                        InternalWorkingMemory wm,
+                                                        TerminalNode excludeTerminalNode ) {
+        List<PathMemory> pathMems = new ArrayList<PathMemory>();
+        collectRtnPathMemories(lt, wm, pathMems, excludeTerminalNode); // get all PathMemories, except current
+        return pathMems;
+
+    }
+
     private static void collectRtnPathMemories(LeftTupleSource lt,
                                               InternalWorkingMemory wm,
                                               List<PathMemory> pathMems,
@@ -904,7 +922,10 @@ public class AddRemoveRule {
                 pathMems.add(pmem);
             } else if (NodeTypeEnums.RightInputAdaterNode == sink.getType()) {
                 RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) sink);
-                pathMems.add(riaMem.getRiaPathMemory());
+                List<String> terminalNodeNames = riaMem.getRiaPathMemory().getTerminalNodeNames();
+                if (terminalNodeNames.size() != 1 || !terminalNodeNames.get(0).equals( excludeTerminalNode.getRule().getName() )) {
+                    pathMems.add(riaMem.getRiaPathMemory());
+                }
             } else {
                 throw new RuntimeException("Error: Unknown Node. Defensive programming test..");
             }
@@ -1004,8 +1025,11 @@ public class AddRemoveRule {
              }
          }
 
-         sm1.getStagedLeftTuples().clear();
-         sm1.setStagedTuples( sm2.getStagedLeftTuples() );
+         // The 2 merged segment could have the same stagedTuple if sm1 is made only by a LIA
+         if (sm1.getStagedLeftTuples() != sm2.getStagedLeftTuples()) {
+             sm1.getStagedLeftTuples().clear();
+             sm1.setStagedTuples( sm2.getStagedLeftTuples() );
+         }
 
          // re-assigned tip nodes
          sm1.setTipNode(sm2.getTipNode());
