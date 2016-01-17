@@ -25,8 +25,6 @@ import org.kie.api.Service;
  */
 public interface ProcessRuntimeFactoryService extends Service {
 
-    public InternalProcessRuntime newProcessRuntime(InternalWorkingMemory workingMemory);
-    
-    
+    InternalProcessRuntime newProcessRuntime(InternalWorkingMemory workingMemory);
 
 }
