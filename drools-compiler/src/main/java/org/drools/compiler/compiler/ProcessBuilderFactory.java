@@ -24,36 +24,49 @@ public class ProcessBuilderFactory {
     private static final String PROVIDER_CLASS = "org.jbpm.process.builder.ProcessBuilderFactoryServiceImpl";
 
     private static IllegalArgumentException initializationException;
-    private static ProcessBuilderFactoryService provider;
+    private static ProcessBuilderFactoryService provider = initializeProvider();
 
     public static ProcessBuilder newProcessBuilder(KnowledgeBuilder kBuilder) {
-        return getProcessBuilderFactoryService().newProcessBuilder(kBuilder);
-    }
-
-    public static synchronized void setProcessBuilderFactoryService(ProcessBuilderFactoryService provider) {
-        ProcessBuilderFactory.provider = provider;
-    }
-
-    public static synchronized ProcessBuilderFactoryService getProcessBuilderFactoryService() {
-        if (provider == null && !initialized()) {
-            try {
-                loadProvider();
-            } catch (IllegalArgumentException e) {
-                initializationException = e;
-            }
-        }
         if (initializationException != null) {
             // KnowledgeBuilderImpl expects an exception to report the origin of the failure
             throw initializationException;
+        } else if (getProcessBuilderFactoryService() == null) {
+            return null;
+        } else {
+            return getProcessBuilderFactoryService().newProcessBuilder(kBuilder);
         }
+    }
+
+    public static void setProcessBuilderFactoryService(ProcessBuilderFactoryService provider) {
+        ProcessBuilderFactory.provider = provider;
+    }
+
+    private static ProcessBuilderFactoryService initializeProvider() {
+        ProcessBuilderFactoryService service = null;
+        try {
+            ServiceRegistryImpl.getInstance().addDefault(ProcessBuilderFactoryService.class, PROVIDER_CLASS);
+            service = ServiceRegistryImpl.getInstance().get(ProcessBuilderFactoryService.class);
+            setProcessBuilderFactoryService(ServiceRegistryImpl.getInstance().get(ProcessBuilderFactoryService.class ) );
+        } catch (IllegalArgumentException e) {
+            initializationException = e;
+            // intentionally ignored
+        }
+        return service;
+    }
+
+    /**
+     * This method is used in jBPM OSGi Activators as we need a way to force re-initialization when starting
+     * the bundles.
+     */
+    public static synchronized  void reInitializeProvider() {
+        // reset the possible initialization exception captured before
+        initializationException = null;
+        provider = initializeProvider();
+    }
+
+    public static ProcessBuilderFactoryService getProcessBuilderFactoryService() {
         return provider;
     }
-
-    private static void loadProvider() {
-        ServiceRegistryImpl.getInstance().addDefault( ProcessBuilderFactoryService.class, PROVIDER_CLASS );
-        setProcessBuilderFactoryService(ServiceRegistryImpl.getInstance().get( ProcessBuilderFactoryService.class ) );
-    }
-
 
     public static synchronized void loadProvider(ClassLoader cl) {
         if (provider == null) {
@@ -63,11 +76,4 @@ public class ProcessBuilderFactory {
         }
     }
 
-    private static boolean initialized() {
-        return initializationException != null;
-    }
-
-    public static synchronized void resetInitialization() {
-        initializationException = null;
-    }
 }
