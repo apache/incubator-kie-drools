@@ -1062,6 +1062,7 @@ public class AddRemoveRulesTest {
                        "global java.util.List list\n" +
                        "rule R1 when\n" +
                        "    $s : String()\n" +
+                       "    Integer()\n" +
                        "    exists( Integer() and Integer() )\n" +
                        "then\n" +
                        " list.add('R1'); \n" +
@@ -1073,6 +1074,7 @@ public class AddRemoveRulesTest {
                        "rule R2 \n" +
                        "when \n" +
                        "    $s : String()\n" +
+                       "    Integer()\n" +
                        "    exists( Integer() and Integer() )\n" +
                        "    String()" +
                        "then \n" +
