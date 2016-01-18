@@ -19,19 +19,17 @@ package org.jbpm.services.task.audit.impl.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.jbpm.services.task.impl.model.TaskImpl;
 import org.kie.internal.task.api.TaskVariable;
 
 @Entity
@@ -52,6 +50,7 @@ public class TaskVariableImpl implements TaskVariable, Serializable {
 
     private String name;
 
+    @Column(length=5000)
     private String value;
 
     @Enumerated(EnumType.ORDINAL)

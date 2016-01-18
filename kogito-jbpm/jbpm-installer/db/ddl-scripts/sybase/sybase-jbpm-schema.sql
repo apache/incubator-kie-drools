@@ -391,7 +391,7 @@
         processInstanceId numeric(19,0) null,
         taskId numeric(19,0) null,
         type int null,
-        value varchar(255) null,
+        value varchar(5000) null,
         primary key (id)
     ) lock datarows
     go

@@ -356,7 +356,7 @@
         processInstanceId bigint,
         taskId bigint,
         type integer,
-        value varchar(255),
+        value varchar(5000),
         primary key (id)
     );
 
