@@ -15,22 +15,20 @@
 
 package org.kie.test.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import static org.kie.test.util.StaticMethodTestHelper.*;
+import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
-import org.kie.test.util.compare.ComparePair;
 
-public class ComparePairTest {
+public class StaticMethodTestHelperTest {
 
     @Test
-    public void collectionsTest() {
-        List<String> orig = new ArrayList<String>();
-        orig.add("asdfasdfasdfasdf");
+    public void versionIsLessThanProjectVersion() {
+        double version = 6.2d;
+        assertFalse( projectVersionIsLessThan(version) );
 
-        List<String> copy = new ArrayList<String>();
-        copy.add(new String(orig.get(0)));
-
-        ComparePair.compareObjectsViaFields(orig, copy);
+        assertFalse( isLessThanProjectVersion("7.0.0.Beta1", version ) );
+        assertFalse( isLessThanProjectVersion("7.0.0.20160123-098765", version ) );
+        assertFalse( isLessThanProjectVersion("7.0.0-SNAPSHOT", version ) );
     }
 }
