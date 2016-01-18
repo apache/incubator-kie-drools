@@ -472,7 +472,7 @@ public class ASMConditionEvaluatorJitter {
                            (Class)( (ParameterizedType) comparableType ).getRawType();
                 }
                 if (rawType instanceof Class) {
-                    findComparingClassOnSuperInterfaces( (Class) rawType );
+                    return findComparingClassOnSuperInterfaces( (Class) rawType );
                 }
             }
             if (interfaze instanceof Class) {
