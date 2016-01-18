@@ -213,6 +213,11 @@ public class ResourceType
                                                                       "src/main/resources",
                                                                       "scgd");
 
+    public static final ResourceType SOLVER = addResourceTypeToRegistry("SOLVER",
+                                                                        "OptaPlanner Solver Configuration",
+                                                                        "src/main/resources",
+                                                                        "solver");
+
     public static ResourceType getResourceType(final String resourceType) {
         ResourceType resource = CACHE.get(resourceType);
         if (resource == null) {
