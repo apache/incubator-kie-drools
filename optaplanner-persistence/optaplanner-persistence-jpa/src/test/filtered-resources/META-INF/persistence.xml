@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              version="2.0"  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_0.xsd">
-  <persistence-unit name="optaplanner-persistence-jpa-test" transaction-type="RESOURCE_LOCAL">
+  <persistence-unit name="optaplanner-persistence-jpa-test" transaction-type="JTA">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
     <jta-data-source>jdbc/testDS1</jta-data-source>
 
@@ -27,13 +27,10 @@
       <property name="hibernate.hbm2ddl.auto" value="update" />
       <property name="hibernate.show_sql" value="false" />
 
-      <!--<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>-->
       <property name="hibernate.dialect" value="${maven.hibernate.dialect}"/>
       <property name="hibernate.default_schema" value="${maven.jdbc.schema}"/>
 
-      <!--<property name="hibernate.connection.driver_class" value="org.h2.Driver" />-->
       <property name="hibernate.connection.driver_class" value="${maven.jdbc.driver.class}" />
-      <!--<property name="hibernate.connection.url" value="jdbc:h2:mem:optaplannerPersistenceJpaTest" />-->
       <property name="hibernate.connection.url" value="${maven.jdbc.url}" />
       <property name="hibernate.connection.username" value="${maven.jdbc.username}" />
       <property name="hibernate.connection.password" value="${maven.jdbc.password}" />

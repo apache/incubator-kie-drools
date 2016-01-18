@@ -24,11 +24,6 @@ import org.h2.tools.DeleteDbFiles;
 import org.h2.tools.Server;
 import org.junit.Assert;
 import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +37,6 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import static org.junit.Assert.assertNotNull;
-import static org.kie.api.runtime.EnvironmentName.*;
 
 public class PersistenceUtil {
 
@@ -52,10 +46,13 @@ public class PersistenceUtil {
     public static final String OPTAPLANNER_PERSISTENCE_UNIT_NAME = "org.optaplanner.persistence.jpa";
 
     public static final String ENTITY_MANAGER_FACTORY = "optaplanner-persistence-jpa-test";
+    public static final String TRANSACTION_MANAGER = "TRANSACTION_MANAGER";
+    public static final String TRANSACTION = "TRANSACTION";
+    public static final String GLOBALS = "GLOBALS";
 
     protected static final String DATASOURCE_PROPERTIES = "/datasource.properties";
     private static TestH2Server h2Server = new TestH2Server();
-    
+
     private static Properties defaultProperties = null;
 
     // Setup and marshalling setup constants
@@ -69,7 +66,7 @@ public class PersistenceUtil {
     public static HashMap<String, Object> setupWithPoolingDataSource(String persistenceUnitName) {
         return setupWithPoolingDataSource(persistenceUnitName, true);
     }
-    
+
     /**
      * @see #setupWithPoolingDataSource(String, String, boolean)
      * @param persistenceUnitName The name of the persistence unit to be used.
@@ -78,11 +75,11 @@ public class PersistenceUtil {
     public static HashMap<String, Object> setupWithPoolingDataSource(String persistenceUnitName, boolean testMarshalling) {
         return setupWithPoolingDataSource(persistenceUnitName, "jdbc/testDS1", testMarshalling);
     }
-    
+
     /**
      * This method does all of the setup for the test and returns a HashMap
      * containing the persistence objects that the test might need.
-     * 
+     *
      * @param persistenceUnitName
      *            The name of the persistence unit used by the test.
      * @return HashMap<String Object> with persistence objects, such as the
@@ -99,7 +96,6 @@ public class PersistenceUtil {
         // Setup the datasource
         PoolingDataSource ds1 = setupPoolingDataSource(dsProps, dataSourceName);
         if (driverClass.startsWith("org.h2")) {
-            // not sure if this shouldn't be optaplanner-persistence-test
             jdbcUrl += "tcp://localhost/target/optaplanner-persistence-jpa-test";
             ds1.getDriverProperties().setProperty("url", jdbcUrl);
         }
@@ -109,6 +105,8 @@ public class PersistenceUtil {
         // Setup persistence
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnitName);
         context.put(ENTITY_MANAGER_FACTORY, emf);
+
+        context.put( TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager() );
 
         return context;
     }
@@ -355,12 +353,6 @@ public class PersistenceUtil {
            super.finalize();
        }
 
-   }
-
-   public static StatefulKnowledgeSession createKnowledgeSessionFromKBase(KnowledgeBase kbase, HashMap<String, Object> context) {
-       KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-       StatefulKnowledgeSession knowledgeSession = JPAKnowledgeService.newStatefulKnowledgeSession(kbase, ksconf, createEnvironment(context));
-       return knowledgeSession;
    }
 
 }

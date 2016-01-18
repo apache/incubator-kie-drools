@@ -16,16 +16,14 @@
 
 package org.optaplanner.persistence.jpa.impl.score.buildin.simpledouble;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-
 import org.hibernate.annotations.Columns;
 import org.hibernate.annotations.TypeDef;
 import org.junit.Test;
 import org.optaplanner.core.api.score.buildin.simpledouble.SimpleDoubleScore;
 import org.optaplanner.persistence.jpa.impl.score.AbstractScoreHibernateTypeTest;
 
-import static org.junit.Assert.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
 
 public class SimpleDoubleScoreHibernateTypeTest extends AbstractScoreHibernateTypeTest {
 
@@ -57,7 +55,6 @@ public class SimpleDoubleScoreHibernateTypeTest extends AbstractScoreHibernateTy
         public void setScore(SimpleDoubleScore score) {
             this.score = score;
         }
-
     }
 
 }

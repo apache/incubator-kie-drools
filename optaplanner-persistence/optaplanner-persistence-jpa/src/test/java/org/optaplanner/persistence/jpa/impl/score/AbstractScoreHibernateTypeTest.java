@@ -22,6 +22,7 @@ import org.optaplanner.core.api.score.Score;
 import org.optaplanner.persistence.jpa.util.PersistenceUtil;
 
 import javax.persistence.*;
+import javax.transaction.TransactionManager;
 import java.util.HashMap;
 
 import static org.junit.Assert.assertEquals;
@@ -31,23 +32,13 @@ public abstract class AbstractScoreHibernateTypeTest {
 
     private HashMap<String, Object> context;
     protected EntityManagerFactory entityManagerFactory;
-//    private JtaTransactionManager txm;
-//    private boolean useTransactions = false;
-//    private boolean locking;
+    private TransactionManager transactionManager;
 
     @Before
     public void setUp() throws Exception {
         context = PersistenceUtil.setupWithPoolingDataSource(PersistenceUtil.ENTITY_MANAGER_FACTORY);
         entityManagerFactory = (EntityManagerFactory) context.get(PersistenceUtil.ENTITY_MANAGER_FACTORY);
-
-//        if( useTransactions() ) {
-//            useTransactions = true;
-//            Environment env = createEnvironment(context);
-//            Object tm = env.get( EnvironmentName.TRANSACTION_MANAGER );
-//            this.txm = new JtaTransactionManager( env.get( EnvironmentName.TRANSACTION ),
-//                    env.get( EnvironmentName.TRANSACTION_SYNCHRONIZATION_REGISTRY ),
-//                    tm );
-//        }
+        transactionManager = (TransactionManager) context.get(PersistenceUtil.TRANSACTION_MANAGER);
     }
 
     @After
@@ -56,36 +47,50 @@ public abstract class AbstractScoreHibernateTypeTest {
     }
 
     protected <S extends Score, E extends AbstractTestJpaEntity<S>> Long persistAndAssert(E jpaEntity) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        entityManager.persist(jpaEntity);
-        transaction.commit();
+        try {
+            transactionManager.begin();
+            EntityManager em = entityManagerFactory.createEntityManager();
+            em.persist(jpaEntity);
+            transactionManager.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
         Long id = jpaEntity.getId();
         assertNotNull(id);
         return id;
+
     }
 
     protected <S extends Score, E extends AbstractTestJpaEntity<S>> void findAssertAndChangeScore(
             Class<E> jpaEntityClass, Long id, S oldScore, S newScore) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        E jpaEntity = entityManager.find(jpaEntityClass, id);
-        assertEquals(oldScore, jpaEntity.getScore());
-        jpaEntity.setScore(newScore);
-        jpaEntity = entityManager.merge(jpaEntity);
-        transaction.commit();
+        try {
+            transactionManager.begin();
+            EntityManager em = entityManagerFactory.createEntityManager();
+            E jpaEntity = em.find(jpaEntityClass, id);
+            em.persist(jpaEntity);
+            assertEquals(oldScore, jpaEntity.getScore());
+            jpaEntity.setScore(newScore);
+            jpaEntity = em.merge(jpaEntity);
+            transactionManager.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
     }
 
     protected <S extends Score, E extends AbstractTestJpaEntity<S>> void findAndAssert(
             Class<E> jpaEntityClass, Long id, S score) {
-        EntityManager entityManager = entityManagerFactory.createEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        transaction.begin();
-        E jpaEntity = entityManager.find(jpaEntityClass, id);
-        assertEquals(score, jpaEntity.getScore());
-        transaction.commit();
+        try {
+            transactionManager.begin();
+            EntityManager em = entityManagerFactory.createEntityManager();
+            E jpaEntity = em.find(jpaEntityClass, id);
+            assertEquals(score, jpaEntity.getScore());
+            transactionManager.commit();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex.getMessage(), ex);
+        }
     }
 
     @MappedSuperclass
@@ -105,6 +110,7 @@ public abstract class AbstractScoreHibernateTypeTest {
 
         @Transient
         public abstract S getScore();
+
         public abstract void setScore(S score);
 
     }
