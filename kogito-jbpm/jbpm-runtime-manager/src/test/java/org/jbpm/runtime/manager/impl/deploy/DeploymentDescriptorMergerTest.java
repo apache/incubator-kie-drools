@@ -528,7 +528,7 @@ public class DeploymentDescriptorMergerTest {
 		assertEquals("new org.jbpm.process.instance.impl.demo.CustomSystemOutWorkItemHandler()", model.getIdentifier());
 	}
 
-	private static final String jarLocRegexStr = "([\\d\\.]{3})\\.\\d(-SNAPSHOT)?";
+	private static final String jarLocRegexStr = "([\\d\\.]{3})\\S*";
 	private static final Pattern jarLocRegex = Pattern.compile(jarLocRegexStr);
 
 	/**
