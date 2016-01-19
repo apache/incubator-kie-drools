@@ -1031,7 +1031,7 @@ public class AddRemoveRulesTest {
     }
 
     @Test
-    public void testAddPartiallySharedExists() {
+    public void testAddSplitInSubnetwork() {
         String rule1 = "package " + packageName + ";" +
                        "global java.util.List list\n" +
                        "rule R1 when\n" +
@@ -1052,7 +1052,18 @@ public class AddRemoveRulesTest {
 
         StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
 
-        // TODO which assertion should go here?
+        List list = new ArrayList();
+        base = session.getKieBase();
+        session.setGlobal("list", list);
+        session.insert( 1 );
+        session.insert( "1" );
+        deleteRule( "R2" );
+        session.fireAllRules();
+
+        deleteRule( "R1" );
+        session.fireAllRules();
+        assertEquals("[R1]", list.toString());
+        list.clear();
     }
 
     @Test
@@ -1145,4 +1156,66 @@ public class AddRemoveRulesTest {
         assertEquals("[R1, R2]", list.toString());
         list.clear();
     }
+/*
+    @Test
+    public void testIsNewSplitWithSubNetworks() {
+        String rule1 = "package " + packageName + ";\n" +
+                       "global java.util.List list;\n" +
+                       "rule R1 when\n" +
+                       "    $s : String()\n" +
+                       "    exists( Integer() and Integer() )\n" +
+                       "then\n" +
+                       " list.add('R1'); \n" +
+                       "end\n";
+
+        String rule2 = "package " + packageName + ";\n" +
+                       "global java.util.List list;\n" +
+                       "rule R2 when\n" +
+                       "    $s : String()\n" +
+                       "    exists( Integer() and Integer() )\n" +
+                       "    String()\n" +
+                       "then \n" +
+                       "     list.add('R2'); \n" +
+                       "end";
+
+        List list = new ArrayList();
+
+        // check with subnetwork added first
+        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1 );
+        base = session.getKieBase();
+
+        BaseNode[] nodes = ((KnowledgeBaseImpl)base).getReteooBuilder().getTerminalNodes( packageName + ".R1" );
+        RuleImpl r1 = (RuleImpl) base.getRule( packageName, "R1" );
+        LeftTupleSource splitStartNode = AddRemoveRule.getNetworkSplitPoint( (TerminalNode)nodes[0] );
+        assertTrue( AddRemoveRule.isNewSplit(r1, splitStartNode) );
+
+        addRuleToEngineWithoutPrefix( rule2 );
+        RuleImpl r2 = (RuleImpl) base.getRule(packageName, "R2");
+        nodes = ((KnowledgeBaseImpl)base).getReteooBuilder().getTerminalNodes(packageName + ".R2");
+        splitStartNode = AddRemoveRule.getNetworkSplitPoint((TerminalNode)nodes[0]);
+        assertFalse( AddRemoveRule.isNewSplit(r2, splitStartNode) );
+
+        // check with subnetwork added last
+        session = buildSessionInTwoSteps( rule2 );
+        base = session.getKieBase();
+
+        nodes = ((KnowledgeBaseImpl)base).getReteooBuilder().getTerminalNodes(packageName + ".R2");
+        r2 = (RuleImpl) base.getRule(packageName, "R2");
+        splitStartNode = AddRemoveRule.getNetworkSplitPoint((TerminalNode)nodes[0]);
+        assertFalse( AddRemoveRule.isNewSplit(r2, splitStartNode) );
+
+        addRuleToEngineWithoutPrefix( rule1 );
+        r1 = (RuleImpl) base.getRule(packageName, "R1");
+        nodes = ((KnowledgeBaseImpl)base).getReteooBuilder().getTerminalNodes(packageName + ".R1");
+        splitStartNode = AddRemoveRule.getNetworkSplitPoint((TerminalNode)nodes[0]);
+        assertTrue( AddRemoveRule.isNewSplit(r1, splitStartNode) );
+    }
+
+    public void addRuleToEngineWithoutPrefix(String rule)  {
+        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder(base);
+        builder.add( ResourceFactory.newReaderResource( new StringReader( rule ) ), ResourceType.DRL);
+        Collection<KnowledgePackage> pkgs = this.buildKnowledge(builder);
+        this.addKnowledgeToBase(pkgs);
+    }
+*/
 }
