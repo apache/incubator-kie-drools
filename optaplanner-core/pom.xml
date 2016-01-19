@@ -39,6 +39,12 @@
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.drools</groupId>
+      <artifactId>drools-compiler</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
     <!-- External dependencies -->
     <!-- Common utils -->
     <dependency>

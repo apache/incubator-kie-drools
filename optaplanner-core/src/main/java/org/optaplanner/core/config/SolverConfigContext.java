@@ -65,7 +65,20 @@ public class SolverConfigContext {
     // ************************************************************************
 
     public ClassLoader determineActualClassLoader() {
-        return (classLoader != null) ? classLoader : getClass().getClassLoader();
+        if (classLoader != null) {
+            return classLoader;
+        } else if (kieContainer != null) {
+            return kieContainer.getClassLoader();
+        }
+        return getClass().getClassLoader();
+    }
+
+    public void validate() {
+        if (classLoader != null && kieContainer != null) {
+            throw new IllegalStateException("The classLoader (" + classLoader + ") and kieContainer (" + kieContainer
+                    + ") cannot both be configured because the " + KieContainer.class.getSimpleName()
+                    + " already has a " + ClassLoader.class.getSimpleName() + ".");
+        }
     }
 
 }

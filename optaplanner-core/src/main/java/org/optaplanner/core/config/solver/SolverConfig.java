@@ -217,6 +217,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      * @return never null
      */
     public <Solution_ extends Solution> Solver<Solution_> buildSolver(SolverConfigContext configContext) {
+        configContext.validate();
         DefaultSolver<Solution_> solver = new DefaultSolver<Solution_>();
         EnvironmentMode environmentMode_ = determineEnvironmentMode();
         solver.setEnvironmentMode(environmentMode_);

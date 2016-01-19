@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 
+import org.kie.api.runtime.KieContainer;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -58,6 +59,19 @@ public abstract class SolverFactory<Solution_ extends Solution> {
     public static <Solution_ extends Solution> SolverFactory<Solution_> createEmpty(ClassLoader classLoader) {
         return new EmptySolverFactory<Solution_>(new SolverConfigContext(classLoader));
     }
+
+    /**
+     * @param kieContainer never null
+     * @param solverConfigResource never null, a classpath resource in the {@link KieContainer}
+     * as defined by {@link ClassLoader#getResource(String)}
+     * @return never null
+     */
+    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromKieContainerXmlResource(
+            KieContainer kieContainer, String solverConfigResource) {
+        return new XStreamXmlSolverFactory<Solution_>(new SolverConfigContext(kieContainer))
+                .configure(solverConfigResource);
+    }
+
 
     /**
      * @param solverConfigResource never null, a classpath resource
