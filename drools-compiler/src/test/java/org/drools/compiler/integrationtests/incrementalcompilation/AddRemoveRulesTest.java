@@ -864,26 +864,12 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                        "then \n" +
                        " list.add('R2'); \n" +
                        "end";
-//
-//        final List<Object> facts = new ArrayList<Object>(2);
-//        facts.add(1);
-//        facts.add("1");
-//        testRemoveWithSplitStartGeneral(rule1, rule2, facts, false, "[R1]", null);
 
-        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
+        final List<Object> facts = new ArrayList<Object>(2);
+        facts.add(1);
+        facts.add("1");
+        testRemoveWithSplitStartGeneral(rule1, rule2, facts, false, "[R1]", null);
 
-        List list = new ArrayList();
-        base = session.getKieBase();
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        deleteRule( "R2" );
-        session.fireAllRules();
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals("[R1]", list.toString());
-        list.clear();
     }
 
     @Test
