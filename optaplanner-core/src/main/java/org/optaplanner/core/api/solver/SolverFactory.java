@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.Reader;
 
 import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.SolverConfigContext;
@@ -75,6 +76,18 @@ public abstract class SolverFactory<Solution_ extends Solution> {
     }
 
     /**
+     * @param releaseId never null
+     * @param solverConfigResource never null, a classpath resource in the {@link KieContainer}
+     * as defined by {@link ClassLoader#getResource(String)}
+     * @return never null
+     */
+    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromKieContainerXmlResource(
+            ReleaseId releaseId, String solverConfigResource) {
+        KieContainer kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
+        return createFromKieContainerXmlResource(kieContainer, solverConfigResource);
+    }
+
+    /**
      * @param kieContainer never null
      * @param solverConfigResource never null, a classpath resource in the {@link KieContainer}
      * as defined by {@link ClassLoader#getResource(String)}
@@ -85,7 +98,6 @@ public abstract class SolverFactory<Solution_ extends Solution> {
         return new XStreamXmlSolverFactory<Solution_>(new SolverConfigContext(kieContainer))
                 .configure(solverConfigResource);
     }
-
 
     /**
      * @param solverConfigResource never null, a classpath resource

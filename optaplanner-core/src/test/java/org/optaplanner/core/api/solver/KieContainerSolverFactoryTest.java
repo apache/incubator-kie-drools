@@ -69,7 +69,15 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
     // ************************************************************************
 
     @Test
-    public void buildSolver() {
+    public void buildSolverWithReleaseId() {
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
+                releaseId, "testdata/kjar/solverConfig.solver");
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        assertNotNull(solver);
+    }
+
+    @Test
+    public void buildSolverWithKieContainer() {
         KieContainer kieContainer = kieServices.newKieContainer(releaseId);
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
                 kieContainer, "testdata/kjar/solverConfig.solver");
