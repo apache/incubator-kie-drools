@@ -950,7 +950,7 @@
           <para>The score rules still live in a DRL file, but the <literal>KieContainer</literal> finds it through the
           <literal>META-INF/kmodule.xml</literal> file:</para>
 
-          <programlisting language="xml">&lt;kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule"&gt;
+          <programlisting language="xml">&lt;kmodule xmlns="http://www.drools.org/xsd/kmodule"&gt;
   &lt;kbase name="nQueensKbase" packages="org.optaplanner.examples.nqueens.solver"&gt;
     &lt;ksession name="nQueensKsession"/&gt;
   &lt;/kbase&gt;
