@@ -23,14 +23,14 @@ import org.optaplanner.persistence.jpa.util.PersistenceUtil;
 
 import javax.persistence.*;
 import javax.transaction.TransactionManager;
-import java.util.HashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public abstract class AbstractScoreHibernateTypeTest {
 
-    private HashMap<String, Object> context;
+    private Map<String, Object> context;
     protected EntityManagerFactory entityManagerFactory;
     private TransactionManager transactionManager;
 

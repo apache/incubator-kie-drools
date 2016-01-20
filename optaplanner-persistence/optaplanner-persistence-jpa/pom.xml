@@ -103,8 +103,8 @@
     <maven.jdbc.db.port/>
     <maven.jdbc.db.server/>
     <maven.jdbc.driver.jar/>
-    <maven.jdbc.username></maven.jdbc.username>
-    <maven.jdbc.password></maven.jdbc.password>
+    <maven.jdbc.username/>
+    <maven.jdbc.password/>
     <maven.jdbc.url>jdbc:h2:</maven.jdbc.url>
     <maven.jdbc.schema>public</maven.jdbc.schema>
 
@@ -160,7 +160,6 @@
               <directory>${basedir}</directory>
               <includes>
                 <include>btm*</include>
-                <include>JPADroolsFlow.h2.db</include>
               </includes>
             </fileset>
           </filesets>
