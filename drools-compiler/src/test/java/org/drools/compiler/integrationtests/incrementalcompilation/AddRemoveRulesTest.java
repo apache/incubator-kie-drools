@@ -13,7 +13,8 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.integrationtests;
+package org.drools.compiler.integrationtests.incrementalcompilation;
+
 
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -35,16 +36,16 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-
-public class AddRemoveRulesTest {
+public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
     public String ruleNormal1 = "rule 'rn1' "+
                                 "when "+
@@ -126,11 +127,8 @@ public class AddRemoveRulesTest {
 
     private KnowledgeBase base = KnowledgeBaseFactory.newKnowledgeBase();
 
-    public final static String packageName = "com.rules";
-
-
     public String getPrefix() {
-        return "package "+packageName+" \n"+
+        return "package " + PKG_NAME_TEST + " \n"+
                "import java.util.Map;\n"+
                "import java.util.HashMap;\n"+
                "import org.slf4j.Logger;\n"+
@@ -143,50 +141,45 @@ public class AddRemoveRulesTest {
                "end\n\n";
     }
 
-    private boolean loadRule(String rule)  {
+    private boolean loadRule(final String rule)  {
         String prefix = getPrefix();
         prefix += rule;
 
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        final KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder();
         builder.add( ResourceFactory.newReaderResource( new StringReader( prefix ) ), ResourceType.DRL);
-        Collection<KnowledgePackage> pkgs = this.buildKnowledge(builder);
+        final Collection<KnowledgePackage> pkgs = this.buildKnowledge(builder);
         this.addKnowledgeToBase(pkgs);
 
         return true;
     }
 
-    public boolean addRuleToEngine(String rule)  {
+    public boolean addRuleToEngine(final String rule)  {
         this.loadRule(rule);
         return true;
     }
 
-    public boolean deleteRule(String name) {
-        this.base.removeRule(packageName, name);
+    public boolean deleteRule(final String name) {
+        this.base.removeRule(PKG_NAME_TEST, name);
         return true;
     }
 
-    private Collection<KnowledgePackage> buildKnowledge(KnowledgeBuilder builder)  {
+    private Collection<KnowledgePackage> buildKnowledge(final KnowledgeBuilder builder)  {
         if ( builder.hasErrors() ) {
             fail( builder.getErrors().toString() );
         }
         return builder.getKnowledgePackages();
     }
 
-    private void addKnowledgeToBase(Collection<KnowledgePackage> pkgs) {
+    private void addKnowledgeToBase(final Collection<KnowledgePackage> pkgs) {
         this.base.addKnowledgePackages( pkgs );
     }
 
-
-
-
-
-
     @Test
     public void test() throws Exception {
-        KieSession knowledgeSession = base.newKieSession();
+        final KieSession knowledgeSession = base.newKieSession();
         knowledgeSession.fireAllRules();
 
-        addRuleToEngine( ruleNormal1 );
+        addRuleToEngine(ruleNormal1);
         addRuleToEngine(ruleNormal2);
         addRuleToEngine(ruleNormal3);
 
@@ -197,19 +190,27 @@ public class AddRemoveRulesTest {
         addRuleToEngine(rule5);
         addRuleToEngine(rule6);
 
+        assertTrue(getRulesCount(base) == 9);
+
         System.out.println("Primary remove");
         deleteRule("test6");
 
+        assertTrue(getRulesCount(base) == 8);
+
         addRuleToEngine(rule6);
+
+        assertTrue(getRulesCount(base) == 9);
 
         System.out.println("Secondary remove");
         deleteRule("test6");
+
+        assertTrue(getRulesCount(base) == 8);
     }
 
     @Test
     public void testAddRemoveFromKB() {
         // DROOLS-328
-        String drl = "\n" +
+        final String drl = "\n" +
                      "rule A\n" +
                      "  when\n" +
                      "    Double() from entry-point \"AAA\"\n" +
@@ -247,17 +248,13 @@ public class AddRemoveRulesTest {
                      "  end\n" +
                      "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
+        final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, drl);
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 
         // Create kSession and initialize it
-        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
         kSession.fireAllRules();
 
         kSession.getKieBase().addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -267,7 +264,7 @@ public class AddRemoveRulesTest {
     @Test
     public void testAddRemoveDeletingFact() {
         // DROOLS-328
-        String drl = "\n" +
+        final String drl = "\n" +
                      "rule B\n" +
                      "  when\n" +
                      "    Boolean()\n" +
@@ -277,18 +274,13 @@ public class AddRemoveRulesTest {
                      "\n" +
                      "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, drl);
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         // Create kSession and initialize it
-        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
-        FactHandle fh = kSession.insert(new Float( 0.0f ) );
+        final StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        final FactHandle fh = kSession.insert(new Float( 0.0f ) );
         kSession.fireAllRules();
 
         kSession.getKieBase().addKnowledgePackages( kbuilder.getKnowledgePackages() );
@@ -297,7 +289,7 @@ public class AddRemoveRulesTest {
 
     @Test
     public void testAddRemoveWithPartialSharing() {
-        String drl = "package org.drools.test; \n" +
+        final String drl = "package org.drools.test; \n" +
                      "\n" +
                      "declare A end \n" +
                      "declare B end \n" +
@@ -329,25 +321,17 @@ public class AddRemoveRulesTest {
                      "\n" +
                      "";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, drl);
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
 
         // Create kSession and initialize it
-        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
+        final StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
         kSession.fireAllRules();
 
         kSession.getKieBase().removeRule( "org.drools.test", "Two" );
         kSession.fireAllRules();
     }
-
-
-
 
     private String simpleRuleInTestPackage = "package org.drools.test; \n" +
                                              "global java.util.List list; \n" +
@@ -359,38 +343,9 @@ public class AddRemoveRulesTest {
                                              "   list.add( \"ok\" ); \n" +
                                              "end ";
 
-    private StatefulKnowledgeSession buildSessionInTwoSteps( String... drls ) {
-
-        String drl = drls[0];
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
-
-        StatefulKnowledgeSession kSession = kbase.newStatefulKnowledgeSession();
-        kSession.fireAllRules();
-
-
-        for ( int i = 1; i < drls.length; i++) {
-            drl = drls[i];
-            KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder(kSession.getKieBase());
-            kbuilder2.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-            if (kbuilder2.hasErrors()) {
-                fail(kbuilder.getErrors().toString());
-            }
-            kSession.getKieBase().addKnowledgePackages(kbuilder2.getKnowledgePackages());
-        }
-
-        return kSession;
-    }
-
     @Test
     public void testAddRemoveWithReloadInSamePackage_4Rules() {
-        String drl = "package org.drools.test;\n" +
+        final String drl = "package org.drools.test;\n" +
 
                      "declare Fakt enabled : boolean end \n" +
 
@@ -427,19 +382,12 @@ public class AddRemoveRulesTest {
 
                      "";
 
-        StatefulKnowledgeSession knowledgeSession = buildSessionInTwoSteps( drl, simpleRuleInTestPackage );
-        List list = new ArrayList();
-        knowledgeSession.setGlobal( "list", list );
-
-        knowledgeSession.insert( "go" );
-        knowledgeSession.fireAllRules();
-        assertEquals( Arrays.asList( "ok" ), list );
-
+        testAddRemoveWithReloadInSamePackage(drl);
     }
 
     @Test
     public void testAddRemoveWithReloadInSamePackage_3Rules() {
-        String drl = "package org.drools.test;\n" +
+        final String drl = "package org.drools.test;\n" +
 
                      "declare Fakt enabled : boolean end \n" +
 
@@ -470,19 +418,13 @@ public class AddRemoveRulesTest {
 
                      "";
 
-        StatefulKnowledgeSession knowledgeSession = buildSessionInTwoSteps( drl, simpleRuleInTestPackage );
-        List list = new ArrayList();
-        knowledgeSession.setGlobal( "list", list );
-
-        knowledgeSession.insert( "go" );
-        knowledgeSession.fireAllRules();
-        assertEquals( Arrays.asList( "ok" ), list );
+        testAddRemoveWithReloadInSamePackage(drl);
     }
 
 
     @Test
     public void testAddRemoveWithReloadInSamePackage_EntryPoints() {
-        String drl = "package org.drools.test; \n" +
+        final String drl = "package org.drools.test; \n" +
 
                      "rule \"Input_X\"\n" +
                      "when\n" +
@@ -511,18 +453,13 @@ public class AddRemoveRulesTest {
                      "end\n" +
 
                      "";
-        StatefulKnowledgeSession knowledgeSession = buildSessionInTwoSteps( drl, simpleRuleInTestPackage );
-        List list = new ArrayList();
-        knowledgeSession.setGlobal( "list", list );
 
-        knowledgeSession.insert( "go" );
-        knowledgeSession.fireAllRules();
-        assertEquals( Arrays.asList( "ok" ), list );
+        testAddRemoveWithReloadInSamePackage(drl);
     }
 
     @Test
     public void testAddRemoveWithReloadInSamePackage_EntryPointsVariety() {
-        String drl = "package org.drools.test; \n" +
+        final String drl = "package org.drools.test; \n" +
 
                      "rule \"Input_X\"\n" +
                      "when\n" +
@@ -552,20 +489,23 @@ public class AddRemoveRulesTest {
 
                      "";
 
-        StatefulKnowledgeSession knowledgeSession = buildSessionInTwoSteps( drl, simpleRuleInTestPackage );
-        List list = new ArrayList();
-        knowledgeSession.setGlobal( "list", list );
+        testAddRemoveWithReloadInSamePackage(drl);
+    }
 
-        knowledgeSession.insert( "go" );
+    private void testAddRemoveWithReloadInSamePackage(final String drl) {
+        final StatefulKnowledgeSession knowledgeSession = buildSessionInTwoSteps(drl, simpleRuleInTestPackage);
+        final List list = new ArrayList();
+        knowledgeSession.setGlobal("list", list);
+
+        knowledgeSession.insert("go");
         knowledgeSession.fireAllRules();
-        assertEquals( Arrays.asList( "ok" ), list );
-
+        assertEquals(Arrays.asList("ok"), list);
     }
 
     @Test
     public void testRemoveWithDuplicatedCondition() {
-        String packageName = "test_same_condition_pk" ;
-        String rule = "package " + packageName + ";" +
+        final String packageName = "test_same_condition_pk" ;
+        final String rule = "package " + packageName + ";" +
                       "rule 'test_same_condition' \n" +
                       "when \n" +
                       " String(this == \"1\") \n" +
@@ -573,21 +513,17 @@ public class AddRemoveRulesTest {
                       "then \n" +
                       "System.out.println('test same condition rule'); \n"+
                       "end";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( rule.getBytes() ), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, rule);
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         kbase.removeKnowledgePackage(packageName);
     }
 
     @Test
     public void testFireAfterRemoveDuplicatedConditionInDifferentPackages() {
-        String packageName = "test_same_condition_pk" ;
-        String packageName2 = "test_same_condition_pk_2" ;
-        String rule1 = "package " + packageName + ";" +
+        final String packageName = "test_same_condition_pk" ;
+        final String packageName2 = "test_same_condition_pk_2" ;
+        final String rule1 = "package " + packageName + ";" +
                        "import java.util.Map; \n" +
                        "rule 'test_same_condition' \n" +
                        "when \n" +
@@ -595,7 +531,7 @@ public class AddRemoveRulesTest {
                        "then \n" +
                        "System.out.println('test same condition rule'); \n"+
                        "end";
-        String rule2 = "package " + packageName2 + ";" +
+        final String rule2 = "package " + packageName2 + ";" +
                        "import java.util.Map; \n" +
                        "rule 'test_same_condition_2' \n" +
                        "when \n" +
@@ -604,20 +540,95 @@ public class AddRemoveRulesTest {
                        "then \n" +
                        "System.out.println('test same condition rule 2'); \n"+
                        "end";
-        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
+        final StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
         session.getKieBase().removeKnowledgePackage(packageName);
         session.fireAllRules();
-        Map<String, Object> fact = new HashMap<String, Object>();
+        final Map<String, Object> fact = new HashMap<String, Object>();
         fact.put("name", "Michael");
         session.insert(fact);
         session.fireAllRules();
     }
 
     @Test
+    public void testAddRemoveWithExtends() {
+        final String packageName = "test_same_condition_pk" ;
+        final String rule1 = "package " + packageName + ";" +
+                "import java.util.Map; \n" +
+                "rule \"parentRule\" \n" +
+                "when \n" +
+                " Map(this['name'] == 'Michael') \n" +
+                "then \n" +
+                "System.out.println('Parent rule!'); \n"+
+                "end";
+        final String rule2 = "package " + packageName + ";" +
+                "import java.util.Map; \n" +
+                "rule \"childRule\" \n" +
+                "     extends \"parentRule\"\n" +
+                "when \n" +
+                " Map(this['test'] == '1') \n" +
+                "then \n" +
+                "System.out.println('Child rule!'); \n"+
+                "end";
+        final StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2);
+        session.fireAllRules();
+        final Map<String, Object> fact = new HashMap<String, Object>();
+        fact.put("name", "Michael");
+        fact.put("test", 1);
+        session.insert(fact);
+
+        session.getKieBase().removeRule(packageName, "parentRule");
+        assertTrue(session.fireAllRules() == 0);
+    }
+
+    @Test
+    public void testRuleWithExtendsModifyParent() {
+        final String packageName = "test_same_condition_pk" ;
+        final String rule1 = "package " + packageName + ";" +
+                "import java.util.Map; \n" +
+                "rule \"parentRule\" \n" +
+                "when \n" +
+                " Map(this['name'] == 'Michael') \n" +
+                "then \n" +
+                "System.out.println('Parent rule!'); \n"+
+                "end";
+
+        final String rule1modified = "package " + packageName + ";" +
+                "import java.util.Map; \n" +
+                "rule \"parentRule\" \n" +
+                "when \n" +
+                " Map(this['name'] == 'Jerry') \n" +
+                "then \n" +
+                "System.out.println('Parent rule modified!'); \n"+
+                "end";
+
+        final String rule2 = "package " + packageName + ";" +
+                "import java.util.Map; \n" +
+                "rule \"childRule\" \n" +
+                "     extends \"parentRule\"\n" +
+                "when \n" +
+                " Map(this['test'] == '1') \n" +
+                "then \n" +
+                "System.out.println('Child rule!'); \n"+
+                "end";
+        final StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2);
+        session.fireAllRules();
+
+        final KnowledgeBuilder kbuilder2 = createKnowledgeBuilder(session.getKieBase(), rule1modified);
+        session.getKieBase().addKnowledgePackages(kbuilder2.getKnowledgePackages());
+
+        final Map<String, Object> fact2 = new HashMap<String, Object>();
+        fact2.put("name", "Michael");
+        fact2.put("test", 1);
+        session.insert(fact2);
+
+        assertTrue(session.fireAllRules() == 0);
+    }
+
+    @Test
     public void testRemoveHasSameConElement() {
         // DROOLS-891
-        String packageName = "test";
-        String rule1 = "package " + packageName + ";" +
+        final String packageName = "test";
+        final String rule1 = "package " + packageName + ";" +
                        "import java.util.Map; \n" +
                        "rule 'rule1' \n" +
                        "when \n" +
@@ -627,25 +638,20 @@ public class AddRemoveRulesTest {
                        "System.out.println('test rule 1'); \n"+
                        "end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( rule1.getBytes() ), ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
+        final KnowledgeBuilder kbuilder = createKnowledgeBuilder(null, rule1);
+        final KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
         kbase.addKnowledgePackages( kbuilder.getKnowledgePackages() );
         kbase.removeKnowledgePackage(packageName);
-        StatelessKnowledgeSession session = kbase.newStatelessKnowledgeSession();
+        final StatelessKnowledgeSession session = kbase.newStatelessKnowledgeSession();
         session.execute(new HashMap());
     }
 
     @Test
     public void testFireAfterRemoveWithSameCondition() {
         // DROOLS-893
-        String packageName = "pk1";
-        String packageName2 = "pk2";
-        String rule1 = "package " + packageName + ";" +
+        final String packageName = "pk1";
+        final String packageName2 = "pk2";
+        final String rule1 = "package " + packageName + ";" +
                        "import java.util.Map; \n" +
                        "rule 'rule1' \n" +
                        "when \n" +
@@ -657,7 +663,7 @@ public class AddRemoveRulesTest {
                        "System.out.println('test rule 1'); \n"+
                        "end";
 
-        String rule2 = "package " + packageName2 + ";" +
+        final String rule2 = "package " + packageName2 + ";" +
                        "import java.util.Map; \n" +
                        "rule 'rule2' \n" +
                        "when \n" +
@@ -668,12 +674,12 @@ public class AddRemoveRulesTest {
                        "System.out.println('test  rule 2'); \n"+
                        "end";
 
-        Map<String, Object> map = new HashMap<String, Object>();
+        final Map<String, Object> map = new HashMap<String, Object>();
         map.put("type", "Goods");
         map.put("kind", "Stuff");
         map.put("x", "y");
 
-        KieBase kbase = new KieHelper()
+        final KieBase kbase = new KieHelper()
                 .addContent(rule1, ResourceType.DRL)
                 .addContent(rule2, ResourceType.DRL)
                 .build();
@@ -692,24 +698,24 @@ public class AddRemoveRulesTest {
     @Test
     public void testSameEval() {
         // DROOLS-893
-        String rule1Name = "rule1";
-        String rule2Name = "rule2";
+        final String rule1Name = "rule1";
+        final String rule2Name = "rule2";
 
-        String rule1 = "rule " + rule1Name + " \n " +
+        final String rule1 = "rule " + rule1Name + " \n " +
                        "when \n" +
                        " eval(true) \n" +
                        "then \n" +
                        "System.out.println('test rule 1'); \n"+
                        "end";
 
-        String rule2 = "rule " + rule2Name + " \n " +
+        final String rule2 = "rule " + rule2Name + " \n " +
                        "when \n" +
                        "  eval(true) \n" +
                        "then \n" +
                        "System.out.println('test rule 2'); \n"+
                        "end";
 
-        StatelessKnowledgeSession statelessSession = base.newStatelessKnowledgeSession();
+        final StatelessKnowledgeSession statelessSession = base.newStatelessKnowledgeSession();
 
         this.addRuleToEngine(rule1);
         statelessSession.execute(new Object());
@@ -721,10 +727,10 @@ public class AddRemoveRulesTest {
     @Test
     public void testFireAfterRemoveRule() {
         // DROOLS-893
-        String rule1Name = "rule1";
-        String rule2Name = "rule2";
+        final String rule1Name = "rule1";
+        final String rule2Name = "rule2";
 
-        String rule1 =  "rule " + rule1Name + " \n" +
+        final String rule1 =  "rule " + rule1Name + " \n" +
                         "when \n" +
                         " Map(  this['type'] == 'Goods'  )" +
                         " and " +
@@ -733,7 +739,7 @@ public class AddRemoveRulesTest {
                         " System.out.println('test in rule1'); \n"+
                         "end";
 
-        String rule2 =  "rule " + rule2Name + " \n" +
+        final String rule2 =  "rule " + rule2Name + " \n" +
                         "when \n" +
                         " Map(  this['type'] == 'Goods'  )" +
                         " and " +
@@ -742,10 +748,10 @@ public class AddRemoveRulesTest {
                         " System.out.println('test in rule2'); \n"+
                         "end";
 
-        Map<String, Object> fact = new HashMap<String, Object>();
+        final Map<String, Object> fact = new HashMap<String, Object>();
         fact.put("type", "Cinema");
 
-        StatelessKieSession session = base.newStatelessKieSession();
+        final StatelessKieSession session = base.newStatelessKieSession();
 
         this.addRuleToEngine(rule1);
         session.execute(fact);
@@ -760,12 +766,12 @@ public class AddRemoveRulesTest {
 
     @Test
     public void testRemoveWithSameRuleNameInDiffPackage() {
-        String packageName = "pk1";
-        String packageName2 = "pk2";
-        String rule1Name = "rule1";
-        String rule2Name = rule1Name;
+        final String packageName = "pk1";
+        final String packageName2 = "pk2";
+        final String rule1Name = "rule1";
+        final String rule2Name = rule1Name;
 
-        String rule1 = "package " + packageName + ";" +
+        final String rule1 = "package " + packageName + ";" +
                        "rule " + rule1Name + " \n" +
                        "when \n" +
                        " String( ) \n" +
@@ -773,7 +779,7 @@ public class AddRemoveRulesTest {
                        " System.out.println('test in rule1'); \n"+
                        "end";
 
-        String rule2 = "package " + packageName2 + ";" +
+        final String rule2 = "package " + packageName2 + ";" +
                        "rule " + rule2Name + " \n" +
                        "when \n" +
                        " Long( ) \n" +
@@ -781,7 +787,7 @@ public class AddRemoveRulesTest {
                        " System.out.println('test in rule2'); \n"+
                        "end";
 
-        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
+        final StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
         session.getKieBase().removeKnowledgePackage(packageName);
         session.getKieBase().removeKnowledgePackage(packageName2);
         session.insert(new String());
@@ -790,9 +796,9 @@ public class AddRemoveRulesTest {
 
     @Test
     public void testRemoveWithSplitStartAtLianAndFollowedBySubNetworkNoSharing() {
-        String packageName = "pk1";
+        final String packageName = "pk1";
 
-        String rule1 = "package " + packageName + ";" +
+        final String rule1 = "package " + packageName + ";" +
                        "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                        "rule R1 when\n" +
                        "    $s : String()\n" +
@@ -802,7 +808,7 @@ public class AddRemoveRulesTest {
                        "end\n";
 
 
-        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1 );
+        final StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1 );
 
         session.setGlobal( "globalInt", new AtomicInteger(0) );
         session.insert( 1 );
@@ -813,188 +819,8 @@ public class AddRemoveRulesTest {
     }
 
     @Test
-    public void testRemoveWithSplitStartAtLianAndFollowedBySubNetworkWithSharing() {
-        String rule1 = "package " + packageName + ";" +
-                       "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
-                       "global java.util.List list\n" +
-                       "rule R1 when\n" +
-                       "    $s : String()\n" +
-                       "    Integer()\n" +
-                       "    exists Integer() from globalInt.get()\n" +
-                       "then\n" +
-                       " list.add('R1'); \n" +
-                       "end\n";
-
-        String rule2 = "package " + packageName + ";" +
-                       "global java.util.List list\n" +
-                       "rule R2 \n" +
-                       "when \n" +
-                       "    $s1 : String()\n" +
-                       "    $s2 : String()\n" +
-                       "then \n" +
-                       " list.add('R2'); \n" +
-                       "end";
-
-        List list = new ArrayList();
-
-        // delete before first fireAllRules
-        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
-        base = session.getKieBase();
-        session.setGlobal( "globalInt", new AtomicInteger(0) );
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        deleteRule( "R2" );
-        session.fireAllRules();
-        assertEquals("[R1]", list.toString());
-        list.clear();
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals(0, list.size());
-
-        // repeat but reverse the rule order
-        session = buildSessionInTwoSteps( rule2, rule1 );
-        base = session.getKieBase();
-
-        session.setGlobal( "globalInt", new AtomicInteger( 0) );
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        deleteRule( "R2" );
-        session.fireAllRules();
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals("[R1]", list.toString());
-        list.clear();
-
-        // delete after first fireAllRules
-        session = buildSessionInTwoSteps( rule2, rule1 );
-        base = session.getKieBase();
-        session.setGlobal( "globalInt", new AtomicInteger(0) );
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        session.fireAllRules();
-        deleteRule( "R2" );
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals("[R1, R2]", list.toString());
-        list.clear();
-
-        // repeat but reverse the rule order
-        session = buildSessionInTwoSteps( rule2, rule1 );
-        base = session.getKieBase();
-
-        session.setGlobal( "globalInt", new AtomicInteger(0) );
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        session.fireAllRules();
-        deleteRule( "R2" );
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals("[R1, R2]", list.toString());
-        list.clear();
-    }
-
-    @Test
-    public void testRemoveWithSplitStartAtJoinAndFollowedBySubNetworkWithSharing() {
-        //  moved the split start to after the Integer
-        String rule1 = "package " + packageName + ";" +
-                       "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
-                       "global java.util.List list\n" +
-                       "rule R1 when\n" +
-                       "    $s : String()\n" +
-                       "    Integer()\n" +
-                       "    exists Integer() from globalInt.get()\n" +
-                       "then\n" +
-                       " list.add('R1'); \n" +
-                       "end\n";
-
-        String rule2 = "package " + packageName + ";" +
-                       "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
-                       "global java.util.List list\n" +
-                       "rule R2 \n" +
-                       "when \n" +
-                       "    $s : String()\n" +
-                       "    Integer()\n" +
-                       "    String()\n" +
-                       "then \n" +
-                       " list.add('R2'); \n" +
-                       "end";
-
-        List list = new ArrayList();
-
-        // delete before first fireAllRules
-        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
-        base = session.getKieBase();
-        session.setGlobal( "globalInt", new AtomicInteger(0) );
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        deleteRule( "R2" );
-        session.fireAllRules();
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals("[R1]", list.toString());
-        list.clear();
-
-        // repeat but reverse the rule order
-        session = buildSessionInTwoSteps( rule2, rule1 );
-        base = session.getKieBase();
-
-        session.setGlobal( "globalInt", new AtomicInteger(0) );
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        deleteRule( "R2" );
-        session.fireAllRules();
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals("[R1]", list.toString());
-        list.clear();
-
-        // delete after first fireAllRules
-        session = buildSessionInTwoSteps( rule2, rule1 );
-        base = session.getKieBase();
-        session.setGlobal( "globalInt", new AtomicInteger(0) );
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        session.fireAllRules();
-        deleteRule( "R2" );
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals("[R1, R2]", list.toString());
-        list.clear();
-
-        // repeat but reverse the rule order
-        session = buildSessionInTwoSteps( rule2, rule1 );
-        base = session.getKieBase();
-
-        session.setGlobal( "globalInt", new AtomicInteger(0) );
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        session.fireAllRules();
-        deleteRule( "R2" );
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals("[R1, R2]", list.toString());
-        list.clear();
-    }
-
-    @Test
     public void testRemoveExistsPopulatedByInitialFact() {
-        String rule1 = "package " + packageName + ";" +
+        final String rule1 = "package " + PKG_NAME_TEST + ";" +
                        "global java.util.List list\n" +
                        "rule R1 when\n" +
                        "    exists( Integer() and Integer() )\n" +
@@ -1002,7 +828,7 @@ public class AddRemoveRulesTest {
                        " list.add('R1'); \n" +
                        "end\n";
 
-        String rule2 = "package " + packageName + ";" +
+        final String rule2 = "package " + PKG_NAME_TEST + ";" +
                        "global java.util.List list\n" +
                        "rule R2 \n" +
                        "when \n" +
@@ -1012,27 +838,16 @@ public class AddRemoveRulesTest {
                        " list.add('R2'); \n" +
                        "end";
 
-        List list = new ArrayList();
+        final List<Object> facts = new ArrayList<Object>(2);
+        facts.add(1);
+        facts.add("1");
 
-        // delete before first fireAllRules
-        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
-
-        base = session.getKieBase();
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        deleteRule( "R2" );
-        session.fireAllRules();
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals("[R1]", list.toString());
-        list.clear();
+        testRemoveWithSplitStartGeneral(rule1, rule2, facts, false, "[R1]", null);
     }
 
     @Test
     public void testAddSplitInSubnetwork() {
-        String rule1 = "package " + packageName + ";" +
+        final String rule1 = "package " + PKG_NAME_TEST + ";" +
                        "global java.util.List list\n" +
                        "rule R1 when\n" +
                        "    exists( Integer() and Integer() )\n" +
@@ -1040,7 +855,7 @@ public class AddRemoveRulesTest {
                        " list.add('R1'); \n" +
                        "end\n";
 
-        String rule2 = "package " + packageName + ";" +
+        final String rule2 = "package " + PKG_NAME_TEST + ";" +
                        "global java.util.List list\n" +
                        "rule R2 \n" +
                        "when \n" +
@@ -1049,6 +864,11 @@ public class AddRemoveRulesTest {
                        "then \n" +
                        " list.add('R2'); \n" +
                        "end";
+//
+//        final List<Object> facts = new ArrayList<Object>(2);
+//        facts.add(1);
+//        facts.add("1");
+//        testRemoveWithSplitStartGeneral(rule1, rule2, facts, false, "[R1]", null);
 
         StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
 
@@ -1067,8 +887,179 @@ public class AddRemoveRulesTest {
     }
 
     @Test
+    public void testRemoveWithSplitStartAtLianAndFollowedBySubNetworkWithSharing() {
+        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "    Integer()\n" +
+                "    exists Integer() from globalInt.get()\n" +
+                "then\n" +
+                " list.add('R1'); \n" +
+                "end\n";
+
+        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+                "global java.util.List list\n" +
+                "rule R2 \n" +
+                "when \n" +
+                "    $s1 : String()\n" +
+                "    $s2 : String()\n" +
+                "then \n" +
+                " list.add('R2'); \n" +
+                "end";
+
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2);
+    }
+
+    @Test
+    public void testRemoveWithSplitStartBeforeJoinAndFollowedBySubNetworkWithSharing() {
+        //  moved the split start to after the Integer
+        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "    Integer()\n" +
+                "    exists Integer() from globalInt.get()\n" +
+                "then\n" +
+                " list.add('R1'); \n" +
+                "end\n";
+
+        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "global java.util.List list\n" +
+                "rule R2 \n" +
+                "when \n" +
+                "    $s : String()\n" +
+                "    exists Integer() from globalInt.get()\n" +
+                "    Integer()\n" +
+                "    String()\n" +
+                "then \n" +
+                " list.add('R2'); \n" +
+                "end";
+
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2);
+    }
+
+    @Test
+    public void testRemoveWithSplitStartAtJoinAndFollowedBySubNetworkWithSharing() {
+        //  moved the split start to after the Integer
+        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "    Integer()\n" +
+                "    exists Integer() from globalInt.get()\n" +
+                "then\n" +
+                " list.add('R1'); \n" +
+                "end\n";
+
+        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "global java.util.List list\n" +
+                "rule R2 \n" +
+                "when \n" +
+                "    $s : String()\n" +
+                "    Integer()\n" +
+                "    String()\n" +
+                "then \n" +
+                " list.add('R2'); \n" +
+                "end";
+
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2);
+    }
+
+    @Test
+    public void testRemoveWithSplitStartSameRules() {
+        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "    Integer()\n" +
+                "    exists( Integer() and Integer() )\n" +
+                "then\n" +
+                " list.add('R1'); \n" +
+                "end\n";
+
+        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "global java.util.List list\n" +
+                "rule R2 \n" +
+                "when \n" +
+                "    $s : String()\n" +
+                "    Integer()\n" +
+                "    exists( Integer() and Integer() )\n" +
+                "then \n" +
+                " list.add('R2'); \n" +
+                "end";
+
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2);
+    }
+
+    @Test
+    public void testRemoveWithSplitStartDoubledExistsConstraint() {
+        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "    Integer()\n" +
+                "    exists( Integer() and Integer() )\n" +
+                "    exists( Integer() and Integer() )\n" +
+                "then\n" +
+                " list.add('R1'); \n" +
+                "end\n";
+
+        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "global java.util.List list\n" +
+                "rule R2 \n" +
+                "when \n" +
+                "    $s : String()\n" +
+                "    Integer()\n" +
+                "    exists( Integer() and Integer() )\n" +
+                "then \n" +
+                " list.add('R2'); \n" +
+                "end";
+
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2);
+    }
+
+    @Test
+    public void testRemoveWithSplitStartDoubledIntegerConstraint() {
+        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "global java.util.List list\n" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "    Integer()\n" +
+                "    exists( Integer() and Integer() )\n" +
+                "then\n" +
+                " list.add('R1'); \n" +
+                "end\n";
+
+        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "global java.util.List list\n" +
+                "rule R2 \n" +
+                "when \n" +
+                "    $s : String()\n" +
+                "    Integer()\n" +
+                "    Integer()\n" +
+                "    exists( Integer() and Integer() )\n" +
+                "then \n" +
+                " list.add('R2'); \n" +
+                "end";
+
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2);
+    }
+
+    @Test
     public void testRemoveWithSplitStartAfterSubnetwork() {
-        String rule1 = "package " + packageName + ";" +
+        final String rule1 = "package " + PKG_NAME_TEST + ";" +
                        "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                        "global java.util.List list\n" +
                        "rule R1 when\n" +
@@ -1079,7 +1070,7 @@ public class AddRemoveRulesTest {
                        " list.add('R1'); \n" +
                        "end\n";
 
-        String rule2 = "package " + packageName + ";" +
+        final String rule2 = "package " + PKG_NAME_TEST + ";" +
                        "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
                        "global java.util.List list\n" +
                        "rule R2 \n" +
@@ -1087,76 +1078,27 @@ public class AddRemoveRulesTest {
                        "    $s : String()\n" +
                        "    Integer()\n" +
                        "    exists( Integer() and Integer() )\n" +
-                       "    String()" +
+                       "    String()\n" +
                        "then \n" +
                        " list.add('R2'); \n" +
                        "end";
 
-        List list = new ArrayList();
-
-        // delete before first fireAllRules
-        StatefulKnowledgeSession session = buildSessionInTwoSteps( rule1, rule2 );
-
-        base = session.getKieBase();
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        deleteRule( "R2" );
-        session.fireAllRules();
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals("[R1]", list.toString());
-        list.clear();
-
-        // repeat but reverse the rule order
-        session = buildSessionInTwoSteps( rule2, rule1 );
-        base = session.getKieBase();
-
-        session.setGlobal( "globalInt", new AtomicInteger(0) );
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        deleteRule( "R2" );
-        session.fireAllRules();
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals("[R1]", list.toString());
-        list.clear();
-
-        // delete after first fireAllRules
-        session = buildSessionInTwoSteps( rule2, rule1 );
-        base = session.getKieBase();
-        session.setGlobal( "globalInt", new AtomicInteger(0) );
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        session.fireAllRules();
-        deleteRule( "R2" );
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals("[R1, R2]", list.toString());
-        list.clear();
-
-        // repeat but reverse the rule order
-        session = buildSessionInTwoSteps( rule2, rule1 );
-        base = session.getKieBase();
-
-        session.setGlobal( "globalInt", new AtomicInteger(0) );
-        session.setGlobal("list", list);
-        session.insert( 1 );
-        session.insert( "1" );
-        session.fireAllRules();
-        deleteRule( "R2" );
-
-        deleteRule( "R1" );
-        session.fireAllRules();
-        assertEquals("[R1, R2]", list.toString());
-        list.clear();
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2);
     }
-/*
+
+    private void testRemoveWithSplitStartBasicTestSet(final String rule1, final String rule2) {
+
+        final Map<String, Object> additionalGlobals = new HashMap<String, Object>();
+        additionalGlobals.put("globalInt", new AtomicInteger(0));
+
+        final List<Object> facts = new ArrayList<Object>(2);
+        facts.add(1);
+        facts.add("1");
+
+        testRemoveWithSplitStartBasicTestSet(rule1, rule2, facts, additionalGlobals);
+    }
+
+    /*
     @Test
     public void testIsNewSplitWithSubNetworks() {
         String rule1 = "package " + packageName + ";\n" +

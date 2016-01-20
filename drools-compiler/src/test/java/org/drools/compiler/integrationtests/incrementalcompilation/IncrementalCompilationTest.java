@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.integrationtests;
+package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
@@ -1221,7 +1221,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
     public void testUpdateWithDeclarationPresent() throws Exception {
         // DROOLS-560
         String header = "package org.drools.compiler\n"
-                        + "import org.drools.compiler.integrationtests.IncrementalCompilationTest.FooEvent\n";
+                        + "import org.drools.compiler.integrationtests.incrementalcompilation.IncrementalCompilationTest.FooEvent\n";
 
         String declaration = "declare FooEvent\n"
                              + " @timestamp( mytime )\n"
