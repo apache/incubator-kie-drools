@@ -71,7 +71,6 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
       <!-- Used at compile time by *ScoreHibernateType -->
-      <!--<scope>test</scope>-->
       <optional>true</optional>
     </dependency>
     <!-- Test -->
