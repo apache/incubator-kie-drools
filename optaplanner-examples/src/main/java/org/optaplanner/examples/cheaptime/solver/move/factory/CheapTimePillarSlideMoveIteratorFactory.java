@@ -119,7 +119,7 @@ public class CheapTimePillarSlideMoveIteratorFactory implements MoveIteratorFact
             int subPillarSize = workingRandom.nextInt(basePillarSize);
             // Random sampling: See http://eyalsch.wordpress.com/2010/04/01/random-sample/
             // Used Swapping instead of Floyd because subPillarSize is large, to avoid hashCode() hit
-            TaskAssignment[] sandboxPillar = basePillar.toArray(new TaskAssignment[basePillar.size()]); // Clone to avoid changing basePillar
+            TaskAssignment[] sandboxPillar = basePillar.toArray(new TaskAssignment[0]); // Clone to avoid changing basePillar
             List<TaskAssignment> subPillar = new ArrayList<TaskAssignment>(subPillarSize);
             int minimumAbsDiff = Integer.MAX_VALUE;
             for (int i = 0; i < subPillarSize; i++) {

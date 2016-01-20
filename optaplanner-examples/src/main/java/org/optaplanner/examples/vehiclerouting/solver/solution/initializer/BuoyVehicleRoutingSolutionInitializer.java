@@ -49,7 +49,7 @@ public class BuoyVehicleRoutingSolutionInitializer extends AbstractCustomPhaseCo
         logger.info("Starting sorting");
         Map<Standstill, Customer[]> nearbyMap = new HashMap<Standstill, Customer[]>(standstillList.size());
         for (final Standstill origin : standstillList) {
-            Customer[] nearbyCustomers = customerList.toArray(new Customer[customerList.size()]);
+            Customer[] nearbyCustomers = customerList.toArray(new Customer[0]);
             Arrays.sort(nearbyCustomers, new Comparator<Standstill>() {
                 @Override
                 public int compare(Standstill a, Standstill b) {

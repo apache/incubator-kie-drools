@@ -227,7 +227,7 @@ public class CartesianProductMoveSelector extends CompositeMoveSelector {
                     return moveList.get(0);
                 }
             }
-            return new CompositeMove(moveList.toArray(new Move[moveList.size()]));
+            return new CompositeMove(moveList.toArray(new Move[0]));
         }
 
     }

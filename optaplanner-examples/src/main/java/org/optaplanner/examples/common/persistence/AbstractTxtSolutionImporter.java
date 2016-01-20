@@ -380,7 +380,7 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
                     }
                     lineTokenList.add(token);
                 }
-                lineTokens = lineTokenList.toArray(new String[lineTokenList.size()]);
+                lineTokens = lineTokenList.toArray(new String[0]);
             }
             if (minimumNumberOfTokens != null && lineTokens.length < minimumNumberOfTokens) {
                 throw new IllegalArgumentException("Read line (" + line + ") has " + lineTokens.length

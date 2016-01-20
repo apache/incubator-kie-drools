@@ -45,7 +45,7 @@ public class CurriculumCourseConstructionHeuristicTest extends ConstructionHeuri
                 typeList.add(type);
             }
         }
-        return buildParameters(solutionDao, typeList.toArray(new ConstructionHeuristicType[]{}),
+        return buildParameters(solutionDao, typeList.toArray(new ConstructionHeuristicType[0]),
                 unsolvedFileNames);
     }
 

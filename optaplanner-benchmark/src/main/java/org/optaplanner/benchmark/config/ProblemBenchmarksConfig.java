@@ -151,7 +151,7 @@ public class ProblemBenchmarksConfig extends AbstractConfig<ProblemBenchmarksCon
         } else {
             Class[] xStreamAnnotatedClasses;
             if (xStreamAnnotatedClassList != null) {
-                xStreamAnnotatedClasses = xStreamAnnotatedClassList.toArray(new Class[xStreamAnnotatedClassList.size()]);
+                xStreamAnnotatedClasses = xStreamAnnotatedClassList.toArray(new Class[0]);
             } else {
                 xStreamAnnotatedClasses = new Class[0];
             }

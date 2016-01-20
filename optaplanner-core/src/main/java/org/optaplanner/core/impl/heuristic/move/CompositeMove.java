@@ -56,7 +56,7 @@ public class CompositeMove implements Move {
     public static Move buildMove(List<Move> moveList) {
         int size = moveList.size();
         if (size > 1) {
-            return new CompositeMove(moveList.toArray(new Move[moveList.size()]));
+            return new CompositeMove(moveList.toArray(new Move[0]));
         } else if (size == 1) {
             return moveList.get(0);
         } else {
