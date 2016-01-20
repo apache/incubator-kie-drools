@@ -182,6 +182,10 @@ public abstract class BaseNode
         return this.associations.size();
     }
 
+    public int getAssociatedRuleSize() {
+        return this.associations.getKeySize();
+    }
+
     public int getAssociationsSize(Rule rule) {
         return this.associations.sizeFor(rule);
     }

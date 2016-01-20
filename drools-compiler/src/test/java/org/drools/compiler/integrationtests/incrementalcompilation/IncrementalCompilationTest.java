@@ -13,7 +13,7 @@
  * limitations under the License.
 */
 
-package org.drools.compiler.integrationtests;
+package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.FactA;
@@ -1221,7 +1221,7 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
     public void testUpdateWithDeclarationPresent() throws Exception {
         // DROOLS-560
         String header = "package org.drools.compiler\n"
-                        + "import org.drools.compiler.integrationtests.IncrementalCompilationTest.FooEvent\n";
+                        + "import org.drools.compiler.integrationtests.incrementalcompilation.IncrementalCompilationTest.FooEvent\n";
 
         String declaration = "declare FooEvent\n"
                              + " @timestamp( mytime )\n"
@@ -2538,5 +2538,84 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertEquals( 2, list.size() );
         assertEquals( 21, (int)list.get(0) );
         assertEquals( 22, (int)list.get(1) );
+    }
+
+    @Test
+    public void testRuleRemovalWithSubnetwork() throws Exception {
+        // DROOLS-1025
+        String drl1 =
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "	 Integer()\n" +
+                "	 exists Integer() from globalInt.get()\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.1" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        ksession.setGlobal( "globalInt", new AtomicInteger(0) );
+        ksession.insert( 1 );
+        ksession.insert( "1" );
+
+        ksession.fireAllRules();
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        km = createAndDeployJar( ks, releaseId2 );
+
+        try {
+            kc.updateToVersion( releaseId2 );
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail( "Incremental update should succeed, but failed with " + e.getLocalizedMessage() );
+        }
+
+        ksession.fireAllRules();
+    }
+
+    @Test
+    public void testRuleRemovalWithSubnetworkAndOR() throws Exception {
+        // DROOLS-1025
+        String drl1 =
+                "global java.util.concurrent.atomic.AtomicInteger globalInt\n" +
+                "rule R1 when\n" +
+                "    $s : String()\n" +
+                "	 (or exists Integer(this == 1)\n" +
+                "	     exists Integer(this == 2) )\n" +
+                "	 exists Integer() from globalInt.get()\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-upgrade", "1.1.1" );
+        KieModule km = createAndDeployJar( ks, releaseId1, drl1 );
+
+        KieContainer kc = ks.newKieContainer(km.getReleaseId());
+        KieSession ksession = kc.newKieSession();
+
+        ksession.setGlobal( "globalInt", new AtomicInteger(0) );
+        ksession.insert( 1 );
+        ksession.insert( "1" );
+
+        ksession.fireAllRules();
+
+        ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-upgrade", "1.1.2");
+        km = createAndDeployJar( ks, releaseId2 );
+
+        try {
+            kc.updateToVersion( releaseId2 );
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail( "Incremental update should succeed, but failed with " + e.getLocalizedMessage() );
+        }
+
+        ksession.fireAllRules();
     }
 }
