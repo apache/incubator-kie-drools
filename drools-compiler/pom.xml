@@ -195,7 +195,10 @@
               javax.enterprise.*;resolution:=optional,
               org.antlr.*;resolution:=optional,
               org.codehaus.janino.*;resolution:=optional,
-              org.eclipse.jdt.*;resolution:=optional,
+              <!-- Hack/workaround: relying on ECJ package version [0,1) is needed as ECJ does not export specific package
+                   versions (and thus the version defaults to 0.0.0). This is just a workaround as proper fix needs be done
+                   in ECJ directly to export the versions correctly in the MANIFEST.MF. -->
+              org.eclipse.jdt.*;version="[0,1)";resolution:=optional,
               org.osgi.*;resolution:=optional,
               =org.kie.spring;resolution:=optional,
               =org.kie.scanner.*;resolution:=optional,
