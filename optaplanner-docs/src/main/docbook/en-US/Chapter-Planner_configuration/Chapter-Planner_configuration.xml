@@ -74,9 +74,23 @@
                ".../nqueensSolverConfig.xml", getClass().getClassLoader());</programlisting>
       </note>
 
-      <para>Both a <literal>Solver</literal> and a <literal>SolverFactory</literal> have a generic type, which is the
-      class representing a <link linkend="planningProblemAndPlanningSolution">planning problem and
-      solution</link>.</para>
+      <note>
+        <para>When using Workbench or Execution Server or to take advantage of Drools's <literal>KieContainer</literal>
+        features, provide the <literal>KieContainer</literal> as a parameter:</para>
+
+        <programlisting language="java">       KieServices kieServices = KieServices.Factory.get();
+       KieContainer kieContainer = kieServices.newKieContainer(
+               kieServices.newReleaseId("org.nqueens", "nqueens", "1.0.0"));
+       SolverFactory&lt;NQueens&gt; solverFactory = SolverFactory.createFromKieContainerXmlResource(
+               kieContainer, ".../nqueensSolverConfig.xml");</programlisting>
+
+        <para>And use <link linkend="droolsScoreCalculationKsessionName">a ksessionName in the solver
+        configuration</link>.</para>
+      </note>
+
+      <para>Both a <literal>Solver</literal> and a <literal>SolverFactory</literal> have a generic type called
+      <literal>Solution_</literal>, which is the class representing a <link
+      linkend="planningProblemAndPlanningSolution">planning problem and solution</link>.</para>
 
       <para>A solver configuration XML file looks like this:</para>
 
@@ -92,7 +106,7 @@
     &lt;scoreDrl&gt;org/optaplanner/examples/nqueens/solver/nQueensScoreRules.drl&lt;/scoreDrl&gt;
   &lt;/scoreDirectorFactory&gt;
 
-  &lt;!-- Configure the optimization algorithm(s) --&gt;
+  &lt;!-- Configure the optimization algorithms (optional) --&gt;
   &lt;termination&gt;
     ...
   &lt;/termination&gt;
@@ -108,23 +122,23 @@
 
       <itemizedlist>
         <listitem>
-          <para>Define the model</para>
+          <para>Define the model.</para>
         </listitem>
 
         <listitem>
-          <para>Define the score function</para>
+          <para>Define the score function.</para>
         </listitem>
 
         <listitem>
-          <para>Configure the optimization algorithm(s)</para>
+          <para>Optionally configure the optimization algorithm(s).</para>
         </listitem>
       </itemizedlist>
 
       <para>These various parts of a configuration are explained further in this manual.</para>
 
       <para><emphasis role="bold">Planner makes it relatively easy to switch optimization algorithm(s) just by changing
-      the configuration.</emphasis> There is even a <literal>Benchmarker</literal> utility which allows you to play out
-      different configurations against each other and report the most appropriate configuration for your use
+      the configuration.</emphasis> There is even a <link linkend="benchmarker">Benchmarker</link> which allows you to
+      play out different configurations against each other and report the most appropriate configuration for your use
       case.</para>
     </section>
 

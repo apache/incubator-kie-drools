@@ -22,7 +22,7 @@
 
       <para>Planner cannot automatically know which <literal>Solution</literal> is best for your business, so you need
       to tell it how to calculate the score of a given <literal>Solution</literal> according to your business needs. If
-      you forget or are unable to implement an important constraint, the solution is probably useless:</para>
+      you forget or are unable to implement an important business constraint, the solution is probably useless:</para>
 
       <mediaobject>
         <imageobject>
@@ -30,7 +30,7 @@
         </imageobject>
       </mediaobject>
 
-      <para>The following score techniques can be used to make the Planner flexible by defining constraints:</para>
+      <para>Defining constraints in Planner is very flexible through the following score techniques:</para>
 
       <itemizedlist>
         <listitem>
@@ -43,7 +43,8 @@
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">Score level</emphasis>: prioritize a group of constraint types</para>
+          <para><emphasis role="bold">Score level (hard, soft, ...)</emphasis>: prioritize a group of constraint
+          types</para>
         </listitem>
 
         <listitem>
@@ -99,9 +100,9 @@
       </mediaobject>
 
       <para>Score weighting is often used in use cases where you can put a price tag on everything. In that case, the
-      positive constraints maximize revenue and the negative constraints minimize expenses and together they maximize
+      positive constraints maximize revenue and the negative constraints minimize expenses, so together they maximize
       profit. Alternatively, score weighting is also often used to create social <link
-      linkend="fairnessScoreConstraints">fairness</link>. For example, a nurse who requests a free day pays a higher
+      linkend="fairnessScoreConstraints">fairness</link>. For example, a nurse, who requests a free day, pays a higher
       weight on New Years eve than on a normal day.</para>
 
       <para>Putting a good weight on a constraint can be a difficult analytical decision, because it is about making
@@ -119,8 +120,8 @@
       <literal>cost</literal> of that <literal>Computer</literal> (which differs per computer).</para>
 
       <note>
-        <para>Furthermore, it is often useful to allow the planning end-user to recalibrate constraint weights in the
-        user interface, as demonstrated in the exam timetabling example with the
+        <para>Furthermore, it is often useful to allow the end-user to recalibrate constraint weights in the user
+        interface, as demonstrated in the exam timetabling example with the
         <literal>InstitutionParametrization</literal> class.</para>
       </note>
     </section>
@@ -883,7 +884,7 @@
         <section xml:id="droolsScoreCalculationScoreDrl">
           <title>A scoreDrl Resource on the Classpath</title>
 
-          <para>This is the easy way. The score rule live in a DRL file which is provided as a classpath resource. Just
+          <para>This is the easy way. The score rules live in a DRL file which is provided as a classpath resource. Just
           add the score rules DRL file in the solver configuration as a <literal>&lt;scoreDrl&gt;</literal>
           element:</para>
 
@@ -938,28 +939,37 @@
           multiple DRL files.</para>
         </section>
 
-        <section xml:id="droolsScoreCalculationKieBase">
-          <title>A KieBase (Possibly Defined by Drools Workbench)</title>
+        <section xml:id="droolsScoreCalculationKsessionName">
+          <title>A ksessionName in a Kjar from a Maven repository</title>
 
-          <para>To build the <literal>KieBase</literal> yourself or to combine Planner with KIE Workbench (formerly
-          known as Guvnor), set the <literal>KieBase</literal> on the <literal>SolverFactory</literal> before building
-          the <literal>Solver</literal>:</para>
+          <para>This way allows you to use score rules defined by the Workbench or build a kjar and deploy it to the
+          Execution Server. Both the score rules and the solver configuration are resources in a kjar. Clients can
+          obtain that kjar either from the local classpath, from a local Maven repository or even from a remote Maven
+          repository.</para>
 
-          <programlisting language="java">    solverFactory.getSolverConfig().getScoreDirectorFactoryConfig.setKieBase(kieBase);</programlisting>
+          <para>The score rules still live in a DRL file, but the <literal>KieContainer</literal> finds it through the
+          <literal>META-INF/kmodule.xml</literal> file:</para>
 
-          <note>
-            <para>To be able to define your score rules in Drools Workbench, you will want to:</para>
+          <programlisting language="xml">&lt;kmodule xmlns="http://jboss.org/kie/6.0.0/kmodule"&gt;
+  &lt;kbase name="nQueensKbase" packages="org.optaplanner.examples.nqueens.solver"&gt;
+    &lt;ksession name="nQueensKsession"/&gt;
+  &lt;/kbase&gt;
+&lt;/kmodule&gt;</programlisting>
 
-            <orderedlist>
-              <listitem>
-                <para>Upload the <literal>optaplanner-core</literal> jar as a POJO model.</para>
-              </listitem>
+          <para>The kmodule above will pick up all the DRL files in the package
+          <literal>org.optaplanner.examples.nqueens.solver</literal>. A kbase can even extend another kbase.</para>
 
-              <listitem>
-                <para>Add a global variable called <literal>scoreHolder</literal> (see below).</para>
-              </listitem>
-            </orderedlist>
-          </note>
+          <para>Add the ksession name in the solver configuration as a <literal>&lt;ksessionName&gt;</literal>
+          element:</para>
+
+          <programlisting language="xml">  &lt;scoreDirectorFactory&gt;
+    &lt;scoreDefinitionType&gt;...&lt;/scoreDefinitionType&gt;
+    &lt;ksessionName&gt;nQueensKsession&lt;/ksessionName&gt;
+  &lt;/scoreDirectorFactory&gt;</programlisting>
+
+          <para>When using this approach, it's required to use a
+          <literal>SolverFactory.createFromKieContainerXmlResource(...)</literal> method to build the
+          <literal>SolverFactory</literal>.</para>
         </section>
       </section>
 
