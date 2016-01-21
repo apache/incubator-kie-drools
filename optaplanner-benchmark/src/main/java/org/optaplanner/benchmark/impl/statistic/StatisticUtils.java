@@ -19,6 +19,7 @@ package org.optaplanner.benchmark.impl.statistic;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 
 import org.optaplanner.benchmark.impl.result.BenchmarkResult;
 import org.optaplanner.core.api.score.Score;
@@ -69,12 +70,9 @@ public class StatisticUtils {
         StringBuilder standardDeviationString = new StringBuilder(standardDeviationDoubles.length * 9);
         // Abbreviate to 2 decimals
         // We don't use a local sensitive DecimalFormat, because other Scores don't use it either (see PLANNER-169)
-        DecimalFormatSymbols decimalFormatSymbols = DecimalFormatSymbols.getInstance();
-        decimalFormatSymbols.setDecimalSeparator('.');
-        DecimalFormat exponentialFormat = new DecimalFormat("0.0#E0");
-        exponentialFormat.setDecimalFormatSymbols(decimalFormatSymbols);
-        DecimalFormat decimalFormat = new DecimalFormat("0.0#");
-        decimalFormat.setDecimalFormatSymbols(decimalFormatSymbols);
+        DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols(Locale.US);
+        DecimalFormat exponentialFormat = new DecimalFormat("0.0#E0", decimalFormatSymbols);
+        DecimalFormat decimalFormat = new DecimalFormat("0.0#", decimalFormatSymbols);
         boolean first = true;
         for (double standardDeviationDouble : standardDeviationDoubles) {
             if (first) {
