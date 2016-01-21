@@ -8282,4 +8282,30 @@ public class Misc2Test extends CommonTestMethodBase {
             }
         }
     }
+
+    @Test
+    public void testIn() {
+        // DROOLS-1037
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    $p : Person( name == null || (name in (\"Alice\", \"Charlie\", \"David\"))==false )\n" +
+                "then\n" +
+                "    list.add($p.getName());\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( new Person("Bob") );
+
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+        assertEquals( "Bob", list.get( 0 ) );
+    }
 }

@@ -908,9 +908,13 @@ public class PatternBuilder
     }
 
     private String rewriteOrExpressions(RuleBuildContext context, Pattern pattern, BaseDescr d, String expr) {
-        return !( d instanceof ConstraintConnectiveDescr ) || ( (ConstraintConnectiveDescr) d ).getConnective() != ConnectiveType.OR ?
-               expr :
-               rewriteCompositeExpressions( context, pattern, (ConstraintConnectiveDescr)d );
+        if ( d instanceof ConstraintConnectiveDescr && ( (ConstraintConnectiveDescr) d ).getConnective() == ConnectiveType.OR ) {
+            String rewrittenExpr = rewriteCompositeExpressions( context, pattern, (ConstraintConnectiveDescr)d );
+            if (rewrittenExpr != null) {
+                return rewrittenExpr;
+            }
+        }
+        return expr;
     }
 
     private String rewriteCompositeExpressions(RuleBuildContext context, Pattern pattern, ConstraintConnectiveDescr d) {
@@ -934,12 +938,15 @@ public class PatternBuilder
                     normalizedExpr = "";
                 }
             } else if (subDescr instanceof ConstraintConnectiveDescr) {
-                normalizedExpr = "(" + rewriteCompositeExpressions(context, pattern, (ConstraintConnectiveDescr)subDescr) + ")";
+                String rewrittenExpr = rewriteCompositeExpressions(context, pattern, (ConstraintConnectiveDescr)subDescr);
+                if (rewrittenExpr == null) {
+                    return null;
+                }
+                normalizedExpr = "(" + rewrittenExpr + ")";
             } else if (subDescr instanceof AtomicExprDescr) {
                 normalizedExpr = ( (AtomicExprDescr) subDescr ).getRewrittenExpression();
             } else {
-                //normalizedExpr = subExprs[i++];
-                throw new RuntimeException(  );
+                return null;
             }
             sb.append(normalizedExpr);
         }
