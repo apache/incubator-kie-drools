@@ -34,6 +34,12 @@ import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 public final class BendableScore extends AbstractScore<BendableScore>
         implements FeasibilityScore<BendableScore> {
 
+    /**
+     * @param hardLevelsSize {@code >= 0}
+     * @param softLevelsSize {@code >= 0}
+     * @param scoreString never null
+     * @return never null
+     */
     public static BendableScore parseScore(int hardLevelsSize, int softLevelsSize, String scoreString) {
         int levelsSize = hardLevelsSize + softLevelsSize;
         String[] levelStrings = parseLevelStrings(BendableScore.class, scoreString, levelsSize);
@@ -65,6 +71,10 @@ public final class BendableScore extends AbstractScore<BendableScore>
     private final int[] hardScores;
     private final int[] softScores;
 
+    /**
+     * @param hardScores never null
+     * @param softScores never null
+     */
     protected BendableScore(int[] hardScores, int[] softScores) {
         this.hardScores = hardScores;
         this.softScores = softScores;
@@ -72,6 +82,9 @@ public final class BendableScore extends AbstractScore<BendableScore>
 
     // Intentionally no getters for the hardScores or softScores int arrays to guarantee that this class is immutable
 
+    /**
+     * @return {@code >= 0}
+     */
     public int getHardLevelsSize() {
         return hardScores.length;
     }
@@ -84,6 +97,9 @@ public final class BendableScore extends AbstractScore<BendableScore>
         return hardScores[index];
     }
 
+    /**
+     * @return {@code >= 0}
+     */
     public int getSoftLevelsSize() {
         return softScores.length;
     }

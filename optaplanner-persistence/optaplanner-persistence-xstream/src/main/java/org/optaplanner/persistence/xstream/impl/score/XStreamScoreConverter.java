@@ -35,10 +35,21 @@ public class XStreamScoreConverter implements Converter {
 
     private final ScoreDefinition scoreDefinition;
 
+    /**
+     * Useful to register as a general {@link Converter} in XStream.
+     * Not used by the {@code @XStreamConverter} annotation.
+     * @param scoreDefinition never null
+     */
     public XStreamScoreConverter(ScoreDefinition scoreDefinition) {
         this.scoreDefinition = scoreDefinition;
     }
 
+    /**
+     * Called through reflection by for example this code:
+     * {@code @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})}
+     * @param scoreClass never null
+     * @param scoreDefinitionClass never null
+     */
     public XStreamScoreConverter(Class<? extends Score> scoreClass,
             Class<? extends ScoreDefinition> scoreDefinitionClass) {
         if (AbstractBendableScoreDefinition.class.isAssignableFrom(scoreDefinitionClass)) {
@@ -60,6 +71,14 @@ public class XStreamScoreConverter implements Converter {
         }
     }
 
+    /**
+     * Called through reflection by for example this code:
+     * {@code @XStreamConverter(value = XStreamScoreConverter.class, types = {BendableScoreDefinition.class}, ints = {2, 1})}
+     * @param scoreClass never null
+     * @param scoreDefinitionClass never null
+     * @param hardLevelsSize {@code >= 0}
+     * @param softLevelsSize {@code >= 0}
+     */
     public XStreamScoreConverter(Class<? extends Score> scoreClass,
             Class<? extends ScoreDefinition> scoreDefinitionClass, int hardLevelsSize, int softLevelsSize) {
         if (!AbstractBendableScoreDefinition.class.isAssignableFrom(scoreDefinitionClass)) {
