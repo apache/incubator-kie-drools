@@ -1,22 +1,22 @@
-<plannerBenchmark xStreamId="1">
+<plannerBenchmark>
   <benchmarkDirectory>local/data/nqueens</benchmarkDirectory>
-  <solverBenchmark xStreamId="2">
+  <solverBenchmark>
     <name>Entity Tabu Search</name>
-    <solver xStreamId="3">
-      <constructionHeuristic xStreamId="4">
+    <solver>
+      <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
       </constructionHeuristic>
-      <localSearch xStreamId="5">
-        <changeMoveSelector xStreamId="6">
+      <localSearch>
+        <changeMoveSelector>
           <selectionOrder>ORIGINAL</selectionOrder>
         </changeMoveSelector>
-        <acceptor xStreamId="7">
+        <acceptor>
           <entityTabuSize>5</entityTabuSize>
         </acceptor>
-        <forager xStreamId="8"/>
+        <forager/>
       </localSearch>
     </solver>
-    <problemBenchmarks xStreamId="9">
+    <problemBenchmarks>
       <xStreamAnnotatedClass>org.optaplanner.examples.nqueens.domain.NQueens</xStreamAnnotatedClass>
       <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
     </problemBenchmarks>
