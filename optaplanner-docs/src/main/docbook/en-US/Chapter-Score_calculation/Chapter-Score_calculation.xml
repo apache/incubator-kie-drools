@@ -450,6 +450,9 @@
     &lt;scoreDefinitionClass&gt;...MyScoreDefinition&lt;/scoreDefinitionClass&gt;
     ...
   &lt;/scoreDirectorFactory&gt;</programlisting>
+
+      <para>To have it integrate seamlessly with <link linkend="jpaAndHibernatePersistingAScore">JPA/Hibernate</link>,
+      <link linkend="integrationWithXStream">XStream</link>, ... you might need to write some glue code.</para>
     </section>
   </section>
 
