@@ -129,7 +129,12 @@ public abstract class AbstractScoreHibernateType implements CompositeUserType {
             throw new IllegalStateException("The nullCount (" + nullCount
                     + ") must be 0 or levelsSize (" + levelsSize + ") for " + getClass().getSimpleName() + ".");
         }
-        return scoreDefinition.fromLevelNumbers(levelNumbers);
+        Score score = scoreDefinition.fromLevelNumbers(levelNumbers);
+        if (score == null) {
+            throw new IllegalStateException("The levelNumbers (" + Arrays.toString(levelNumbers)
+                    + ") must not build a score (" + null + ") that is null.");
+        }
+        return score;
     }
 
     @Override
