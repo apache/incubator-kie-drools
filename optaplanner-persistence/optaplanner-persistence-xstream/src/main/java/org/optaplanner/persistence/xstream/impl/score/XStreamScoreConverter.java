@@ -48,7 +48,7 @@ public class XStreamScoreConverter implements Converter {
      * Called through reflection by for example this code:
      * {@code @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})}
      * @param scoreClass never null
-     * @param scoreDefinitionClass never null
+     * @param scoreDefinitionClass never null. That implementation class must have a no-args constructor.
      */
     public XStreamScoreConverter(Class<? extends Score> scoreClass,
             Class<? extends ScoreDefinition> scoreDefinitionClass) {
@@ -75,7 +75,7 @@ public class XStreamScoreConverter implements Converter {
      * Called through reflection by for example this code:
      * {@code @XStreamConverter(value = XStreamScoreConverter.class, types = {BendableScoreDefinition.class}, ints = {2, 1})}
      * @param scoreClass never null
-     * @param scoreDefinitionClass never null
+     * @param scoreDefinitionClass never null. That class must be a known {@link AbstractBendableScoreDefinition}.
      * @param hardLevelsSize {@code >= 0}
      * @param softLevelsSize {@code >= 0}
      */
