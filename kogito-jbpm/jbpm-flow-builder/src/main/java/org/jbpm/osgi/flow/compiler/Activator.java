@@ -35,7 +35,7 @@ public class Activator
         this.processBuilderReg = bc.registerService( new String[]{ ProcessBuilderFactoryService.class.getName(), Service.class.getName()},
                                                                    new ProcessBuilderFactoryServiceImpl(),
                                                                    new Hashtable() );
-        ProcessBuilderFactory.resetInitialization();
+        ProcessBuilderFactory.reInitializeProvider();
     }
 
     public void stop(BundleContext bc) throws Exception {

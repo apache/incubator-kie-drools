@@ -42,7 +42,7 @@ public class Activator
         this.processRuntimeReg2 = bc.registerService( new String[]{ ProcessMarshallerFactoryService.class.getName(), Service.class.getName()},
                                                                    new ProcessMarshallerFactoryServiceImpl(),
                                                                    new Hashtable() );
-        ProcessRuntimeFactory.resetInitialization();
+        ProcessRuntimeFactory.reInitializeProvider();
     }
 
     public void stop(BundleContext bc) throws Exception {
