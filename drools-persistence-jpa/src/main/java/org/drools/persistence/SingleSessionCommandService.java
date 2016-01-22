@@ -28,6 +28,7 @@ import org.drools.core.command.runtime.UnpersistableCommand;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.marshalling.impl.KieSessionInitializer;
 import org.drools.core.marshalling.impl.MarshallingConfigurationImpl;
 import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.time.impl.CommandServiceTimerJobFactoryManager;
@@ -35,7 +36,6 @@ import org.drools.core.time.impl.TimerJobFactoryManager;
 import org.drools.persistence.info.SessionInfo;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
 import org.drools.persistence.jpa.processinstance.JPAWorkItemManager;
-import org.drools.persistence.jta.JtaTransactionManager;
 import org.kie.api.KieBase;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
@@ -239,21 +239,11 @@ public class SingleSessionCommandService
         this.sessionInfo.setJPASessionMashallingHelper(this.marshallingHelper);
 
         // if this.ksession is null, it'll create a new one, else it'll use the existing one
-        this.ksession = this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(), this.ksession );
-
-        InternalKnowledgeRuntime kruntime = ((InternalKnowledgeRuntime) ksession);
-
-        // The CommandService for the TimerJobFactoryManager must be set before any timer jobs are scheduled.
-        // Otherwise, if overdue jobs are scheduled (and then run before the .commandService field can be set),
-        //  they will retrieve a null commandService (instead of a reference to this) and fail.
-        TimerJobFactoryManager timerJobFactoryManager = ((InternalKnowledgeRuntime) ksession ).getTimerService().getTimerJobFactoryManager();
-        if (timerJobFactoryManager instanceof CommandServiceTimerJobFactoryManager) {
-            ( (CommandServiceTimerJobFactoryManager) timerJobFactoryManager ).setCommandService( this );
-        }
+        this.ksession = this.marshallingHelper.loadSnapshot( this.sessionInfo.getData(), this.ksession, new JpaSessionInitializer(this) );
 
         // update the session id to be the same as the session info id
+        InternalKnowledgeRuntime kruntime = ((InternalKnowledgeRuntime) ksession);
         kruntime.setId( this.sessionInfo.getId() );
-
         kruntime.setEndOperationListener( new EndOperationListenerImpl( this.txm, this.sessionInfo ) );
 
         if ( this.kContext == null ) {
@@ -272,6 +262,26 @@ public class SingleSessionCommandService
             addInterceptor(iterator.next(), false);
         }
 
+    }
+
+    public class JpaSessionInitializer implements KieSessionInitializer {
+
+        private final SingleSessionCommandService commandService;
+
+        public JpaSessionInitializer( SingleSessionCommandService commandService ) {
+            this.commandService = commandService;
+        }
+
+        @Override
+        public void init( KieSession ksession ) {
+            // The CommandService for the TimerJobFactoryManager must be set before any timer jobs are scheduled.
+            // Otherwise, if overdue jobs are scheduled (and then run before the .commandService field can be set),
+            //  they will retrieve a null commandService (instead of a reference to this) and fail.
+            TimerJobFactoryManager timerJobFactoryManager = ((InternalKnowledgeRuntime) ksession ).getTimerService().getTimerJobFactoryManager();
+            if (timerJobFactoryManager instanceof CommandServiceTimerJobFactoryManager) {
+                ( (CommandServiceTimerJobFactoryManager) timerJobFactoryManager ).setCommandService( commandService );
+            }
+        }
     }
 
     public void initTransactionManager(Environment env) {
