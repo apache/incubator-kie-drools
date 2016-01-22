@@ -127,28 +127,37 @@ public class ProtobufInputMarshaller {
      * Create a new session into which to read the stream data
      */
     public static StatefulKnowledgeSessionImpl readSession(MarshallerReaderContext context,
-                                                    int id) throws IOException,
-                                                           ClassNotFoundException {
-        StatefulKnowledgeSessionImpl session = readSession( context,
-                                                     id,
-                                                     EnvironmentFactory.newEnvironment(),
-                                                     SessionConfiguration.getDefaultInstance() );
-        return session;
+                                                           int id) throws IOException, ClassNotFoundException {
+        return readSession( context,
+                            id,
+                            EnvironmentFactory.newEnvironment(),
+                            SessionConfiguration.getDefaultInstance() );
     }
 
     public static StatefulKnowledgeSessionImpl readSession(MarshallerReaderContext context,
-                                                    int id,
-                                                    Environment environment,
-                                                    SessionConfiguration config) throws IOException,
-                                                                                ClassNotFoundException {
+                                                           int id,
+                                                           Environment environment,
+                                                           SessionConfiguration config) throws IOException, ClassNotFoundException {
+        return readSession( context, id, environment, config, null );
+    }
+
+    public static StatefulKnowledgeSessionImpl readSession(MarshallerReaderContext context,
+                                                           int id,
+                                                           Environment environment,
+                                                           SessionConfiguration config,
+                                                           KieSessionInitializer initializer) throws IOException, ClassNotFoundException {
 
         ProtobufMessages.KnowledgeSession _session = loadAndParseSession( context );
 
         StatefulKnowledgeSessionImpl session = createAndInitializeSession( context,
-                                                                    id,
-                                                                    environment,
-                                                                    config,
-                                                                    _session );
+                                                                           id,
+                                                                           environment,
+                                                                           config,
+                                                                           _session );
+        // Initialize the session before unmarshalling data
+        if (initializer != null) {
+            initializer.init( session );
+        }
 
         return readSession( _session,
                             session,
