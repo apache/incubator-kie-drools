@@ -16,12 +16,13 @@
 
 package org.optaplanner.examples.nqueens.persistence;
 
+import java.io.IOException;
 import java.io.InputStream;
 
+import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.optaplanner.benchmark.config.PlannerBenchmarkConfig;
 import org.optaplanner.benchmark.impl.XStreamXmlPlannerBenchmarkFactory;
 
 import static org.junit.Assert.*;
@@ -29,49 +30,47 @@ import static org.junit.Assert.*;
 public class NQueensXStreamXmlPlannerBenchmarkFactoryTest {
 
     @Test
-    public void configFileRemainsSameAfterReadWrite() throws Exception {
-        String plannerBenchmarkConfigResource = "nqueensSimpleBenchmarkConfig.xml";
-        String originalXml = IOUtils.toString(getClass().getResourceAsStream(plannerBenchmarkConfigResource), "UTF-8");
-        InputStream originalConfigInputStream = getClass().getResourceAsStream(plannerBenchmarkConfigResource);
-        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory().configure(originalConfigInputStream);
-        PlannerBenchmarkConfig benchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
-        String savedXml = plannerBenchmarkFactory.getXStream().toXML(benchmarkConfig);
-        assertEquals(originalXml, savedXml);
+    public void configFileRemainsSameAfterReadWrite() throws IOException {
+        readWriteTest("nqueensSimpleBenchmarkConfig.xml");
     }
 
     @Test
-    public void configFileRemainsSameAfterReadWriteBuild() throws Exception {
-        String plannerBenchmarkConfigResource = "nqueensSimpleBenchmarkConfig.xml";
-        String originalXml = IOUtils.toString(getClass().getResourceAsStream(plannerBenchmarkConfigResource), "UTF-8");
-        InputStream originalConfigInputStream = getClass().getResourceAsStream(plannerBenchmarkConfigResource);
-        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory().configure(originalConfigInputStream);
-        PlannerBenchmarkConfig benchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
-        benchmarkConfig.buildPlannerBenchmark();
-        String savedXml = plannerBenchmarkFactory.getXStream().toXML(benchmarkConfig);
-        assertEquals(originalXml, savedXml);
+    public void configFileRemainsSameAfterReadWriteBuild() throws IOException {
+        readBuildWriteTest("nqueensSimpleBenchmarkConfig.xml");
     }
 
     @Test
-    public void configFileRemainsSameAfterReadWriteWithInherited() throws Exception {
-        String plannerBenchmarkConfigResource = "nqueensSimpleBenchmarkConfigInherited.xml";
-        String originalXml = IOUtils.toString(getClass().getResourceAsStream(plannerBenchmarkConfigResource), "UTF-8");
-        InputStream originalConfigInputStream = getClass().getResourceAsStream(plannerBenchmarkConfigResource);
-        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory().configure(originalConfigInputStream);
-        PlannerBenchmarkConfig benchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
-        String savedXml = plannerBenchmarkFactory.getXStream().toXML(benchmarkConfig);
-        assertEquals(originalXml, savedXml);
+    public void configFileRemainsSameAfterReadWriteWithInherited() throws IOException {
+        readWriteTest("nqueensSimpleBenchmarkConfigInherited.xml");
     }
 
     @Test
     @Ignore("Config shouldn't actually remain the same: we inherited the subSingleCount, problemBenchmarks and more")
-    public void configFileRemainsSameAfterReadWriteBuildWithInherited() throws Exception {
-        String plannerBenchmarkConfigResource = "nqueensSimpleBenchmarkConfigInherited.xml";
-        String originalXml = IOUtils.toString(getClass().getResourceAsStream(plannerBenchmarkConfigResource), "UTF-8");
+    public void configFileRemainsSameAfterReadWriteBuildWithInherited() throws IOException {
+        readBuildWriteTest("nqueensSimpleBenchmarkConfigInherited.xml");
+    }
+
+    private XStreamXmlPlannerBenchmarkFactory createXStreamXmlPlannerBenchmarkFactory(String plannerBenchmarkConfigResource) throws IOException {
         InputStream originalConfigInputStream = getClass().getResourceAsStream(plannerBenchmarkConfigResource);
         XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = new XStreamXmlPlannerBenchmarkFactory().configure(originalConfigInputStream);
-        PlannerBenchmarkConfig benchmarkConfig = plannerBenchmarkFactory.getPlannerBenchmarkConfig();
-        benchmarkConfig.buildPlannerBenchmark();
-        String savedXml = plannerBenchmarkFactory.getXStream().toXML(benchmarkConfig);
+        plannerBenchmarkFactory.getXStream().setMode(XStream.NO_REFERENCES);
+        return plannerBenchmarkFactory;
+    }
+
+    private void compareOutputToOriginal(XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory, String plannerBenchmarkConfigResource) throws IOException {
+        String originalXml = IOUtils.toString(getClass().getResourceAsStream(plannerBenchmarkConfigResource), "UTF-8");
+        String savedXml = plannerBenchmarkFactory.getXStream().toXML(plannerBenchmarkFactory.getPlannerBenchmarkConfig());
         assertEquals(originalXml, savedXml);
+    }
+
+    private void readWriteTest(String plannerBenchmarkConfigResource) throws IOException {
+        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = createXStreamXmlPlannerBenchmarkFactory(plannerBenchmarkConfigResource);
+        compareOutputToOriginal(plannerBenchmarkFactory, plannerBenchmarkConfigResource);
+    }
+
+    private void readBuildWriteTest(String plannerBenchmarkConfigResource) throws IOException {
+        XStreamXmlPlannerBenchmarkFactory plannerBenchmarkFactory = createXStreamXmlPlannerBenchmarkFactory(plannerBenchmarkConfigResource);
+        plannerBenchmarkFactory.getPlannerBenchmarkConfig().buildPlannerBenchmark();
+        compareOutputToOriginal(plannerBenchmarkFactory, plannerBenchmarkConfigResource);
     }
 }
