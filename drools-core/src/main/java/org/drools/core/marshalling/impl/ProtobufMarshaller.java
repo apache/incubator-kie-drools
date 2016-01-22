@@ -27,7 +27,6 @@ import org.drools.core.phreak.PhreakTimerNode.TimerNodeTimerInputMarshaller;
 import org.drools.core.reteoo.ObjectTypeNode.ExpireJobContextTimerInputMarshaller;
 import org.drools.core.rule.SlidingTimeWindow.BehaviorJobContextTimerInputMarshaller;
 import org.kie.api.KieBase;
-import org.kie.api.marshalling.Marshaller;
 import org.kie.api.marshalling.MarshallingConfiguration;
 import org.kie.api.marshalling.ObjectMarshallingStrategyStore;
 import org.kie.api.runtime.Environment;
@@ -52,8 +51,18 @@ import java.util.Map;
  */
 public class ProtobufMarshaller
         implements
-        Marshaller {
-    
+        InternalMarshaller {
+
+    private KieSessionInitializer initializer;
+
+    public KieSessionInitializer getInitializer() {
+        return initializer;
+    }
+
+    public void setInitializer( KieSessionInitializer initializer ) {
+        this.initializer = initializer;
+    }
+
     public static final Map<Integer, TimersInputMarshaller> TIMER_READERS = new HashMap<Integer, TimersInputMarshaller>();
     static {
         TIMER_READERS.put( ProtobufMessages.Timers.TimerType.BEHAVIOR_VALUE, new BehaviorJobContextTimerInputMarshaller() );
@@ -105,9 +114,10 @@ public class ProtobufMarshaller
         RuleBaseConfiguration conf = ((KnowledgeBaseImpl) this.kbase).getConfiguration();
 
         StatefulKnowledgeSessionImpl session = ProtobufInputMarshaller.readSession( context,
-                                                                             id,
-                                                                             environment,
-                                                                             (SessionConfiguration) config );
+                                                                                    id,
+                                                                                    environment,
+                                                                                    (SessionConfiguration) config,
+                                                                                    initializer );
         context.close();
         if ( ((SessionConfiguration) config).isKeepReference() ) {
             ((KnowledgeBaseImpl) this.kbase).addStatefulSession(session);
