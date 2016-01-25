@@ -3064,4 +3064,32 @@ public class AccumulateTest extends CommonTestMethodBase {
             return i;
         }
     }
+
+    @Test
+    public void testNormalizeStagedTuplesInAccumulate() {
+        // DROOLS-998
+        String drl =
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "    not( String() )\n" +
+                "    accumulate(\n" +
+                "        $l: Long();\n" +
+                "        count($l)\n" +
+                "    )\n" +
+                "    ( Boolean() or not( Float() ) )\n" +
+                "then\n" +
+                "    list.add( \"fired\" ); \n" +
+                "    insert(new String());\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
+    }
 }

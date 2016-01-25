@@ -63,7 +63,7 @@ public class PhreakAccumulateNode {
 
         if (srcLeftTuples.getDeleteFirst() != null) {
             // use the real target here, as dealing direct with left tuples
-            doLeftDeletes(accNode, am, wm, srcLeftTuples, trgLeftTuples);
+            doLeftDeletes(accNode, am, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
 
         if (srcRightTuples.getDeleteFirst() != null) {
@@ -570,7 +570,8 @@ public class PhreakAccumulateNode {
                               AccumulateMemory am,
                               InternalWorkingMemory wm,
                               TupleSets<LeftTuple> srcLeftTuples,
-                              TupleSets<LeftTuple> trgLeftTuples) {
+                              TupleSets<LeftTuple> trgLeftTuples,
+                              TupleSets<LeftTuple> stagedLeftTuples) {
         BetaMemory bm = am.getBetaMemory();
         TupleMemory ltm = bm.getLeftTupleMemory();
         Accumulate accumulate = accNode.getAccumulate();
@@ -593,6 +594,16 @@ public class PhreakAccumulateNode {
                                                   false);
 
                 if (accctx.propagated) {
+                    switch (accctx.resultLeftTuple.getStagedType()) {
+                        // handle clash with already staged entries
+                        case LeftTuple.INSERT:
+                            stagedLeftTuples.removeInsert(accctx.resultLeftTuple);
+                            break;
+                        case LeftTuple.UPDATE:
+                            stagedLeftTuples.removeUpdate(accctx.resultLeftTuple);
+                            break;
+                    }
+
                     trgLeftTuples.addDelete(accctx.resultLeftTuple);
                 }
             }
