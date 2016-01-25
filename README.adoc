@@ -5,7 +5,7 @@ image:https://jenkins-kieci.rhcloud.com/buildStatus/icon?job=optaplanner["Build 
 To build and run from source:
 
 ----
-$ mvn clean install
+$ mvn clean install -DskipTests
 $ cd optaplanner-examples
 $ mvn exec:java
 ----
