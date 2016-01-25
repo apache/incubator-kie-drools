@@ -4,19 +4,19 @@ image:https://jenkins-kieci.rhcloud.com/buildStatus/icon?job=optaplanner["Build 
 
 To build and run from source:
 
-[source,sh]
 ----
-    $ mvn clean install
-    $ cd optaplanner-examples
-    $ mvn exec:java
+$ mvn clean install
+$ cd optaplanner-examples
+$ mvn exec:java
 ----
 
 To develop with IntelliJ IDEA, Eclipse or NetBeans, open the root `pom.xml` as a new project
 and configure a _Run/Debug configuration_ like this:
 
+* Type: Application
 * Main class: `org.optaplanner.examples.app.OptaPlannerExamplesApp`
-* VM options: `-Xmx2G -server` (Memory only needed when using the big datasets in the examples)
-* Program arguments: ``
+* VM options: `-Xmx2G -server` (memory only needed when using the big datasets in the examples)
+* Program arguments: (none)
 * Working directory: `$MODULE_DIR$` (must resolve to optaplanner-examples directory)
 * Use classpath of module: `optaplanner-examples`
 
