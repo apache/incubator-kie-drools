@@ -254,15 +254,19 @@ public class KnowledgeBaseImpl
     }
 
     public void addEventListener(KieBaseEventListener listener) {
-        if (!kieBaseListeners.contains(listener)) {
-            eventSupport.addEventListener(listener);
-            kieBaseListeners.add(listener);
+        synchronized (kieBaseListeners) {
+            if ( !kieBaseListeners.contains( listener ) ) {
+                eventSupport.addEventListener( listener );
+                kieBaseListeners.add( listener );
+            }
         }
     }
 
     public void removeEventListener(KieBaseEventListener listener) {
-        eventSupport.removeEventListener(listener);
-        kieBaseListeners.remove(listener);
+        synchronized (kieBaseListeners) {
+            eventSupport.removeEventListener( listener );
+            kieBaseListeners.remove( listener );
+        }
     }
     
     public Collection<KieBaseEventListener> getKieBaseEventListeners() {
