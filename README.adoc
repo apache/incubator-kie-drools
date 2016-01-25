@@ -1,5 +1,25 @@
 image:https://jenkins-kieci.rhcloud.com/buildStatus/icon?job=optaplanner["Build Status", link="https://jenkins-kieci.rhcloud.com/job/optaplanner"]
 
+== Quick development start
+
+To build and run from source:
+
+[source,sh]
+----
+    $ mvn clean install
+    $ cd optaplanner-examples
+    $ mvn exec:java
+----
+
+To develop with IntelliJ IDEA, Eclipse or NetBeans, open the root `pom.xml` as a new project
+and configure a _Run/Debug configuration_ like this:
+
+* Main class: `org.optaplanner.examples.app.OptaPlannerExamplesApp`
+* VM options: `-Xmx2G -server` (Memory only needed when using the big datasets in the examples)
+* Program arguments: ``
+* Working directory: `$MODULE_DIR$` (must resolve to optaplanner-examples directory)
+* Use classpath of module: `optaplanner-examples`
+
 == Developing Drools, OptaPlanner and jBPM
 
 *If you want to build or contribute to a droolsjbpm project, https://github.com/droolsjbpm/droolsjbpm-build-bootstrap/blob/master/README.md[read this document].*
