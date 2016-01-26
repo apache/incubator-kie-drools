@@ -180,7 +180,7 @@ public class KnowledgeBaseImpl
     // This is just a hack, so spring can find the list of generated classes
     public List<List<String>> jaxbClasses;
 
-    public final Set<KieBaseEventListener> kieBaseListeners = new HashSet<KieBaseEventListener>();
+    public final Set<KieBaseEventListener> kieBaseListeners = Collections.newSetFromMap(new ConcurrentHashMap<KieBaseEventListener, Boolean>());
 
     private transient SessionsCache sessionsCache;
 
@@ -254,15 +254,19 @@ public class KnowledgeBaseImpl
     }
 
     public void addEventListener(KieBaseEventListener listener) {
-        if (!kieBaseListeners.contains(listener)) {
-            eventSupport.addEventListener(listener);
-            kieBaseListeners.add(listener);
+        synchronized (kieBaseListeners) {
+            if ( !kieBaseListeners.contains( listener ) ) {
+                eventSupport.addEventListener( listener );
+                kieBaseListeners.add( listener );
+            }
         }
     }
 
     public void removeEventListener(KieBaseEventListener listener) {
-        eventSupport.removeEventListener(listener);
-        kieBaseListeners.remove(listener);
+        synchronized (kieBaseListeners) {
+            eventSupport.removeEventListener( listener );
+            kieBaseListeners.remove( listener );
+        }
     }
     
     public Collection<KieBaseEventListener> getKieBaseEventListeners() {
