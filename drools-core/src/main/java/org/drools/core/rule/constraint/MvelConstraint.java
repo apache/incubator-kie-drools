@@ -25,7 +25,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.PropertySpecificUtil;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
@@ -63,6 +62,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -619,13 +619,44 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
         Map<String, Object> thisImports = ((MVELDialectRuntimeData) kbase.getPackage( thisPkg ).getDialectRuntimeRegistry().getDialectData("mvel")).getImports();
         Map<String, Object> otherImports = ((MVELDialectRuntimeData) kbase.getPackage( otherPkg ).getDialectRuntimeRegistry().getDialectData("mvel")).getImports();
 
-        for (String token : expression.split( "[\\s\\.=<>!\\(\\)\\[\\]]" )) {
+        for (String token : splitExpression(expression)) {
             if ( !areNullSafeEquals(thisImports.get(token), otherImports.get(token)) ) {
                 return false;
             }
         }
 
         return true;
+    }
+
+    /**
+     * Splits the expression in token (words) ignoring everything that is between quotes
+     */
+    private static List<String> splitExpression(String expression) {
+        List<String> tokens = new ArrayList<String>();
+        int lastStart = -1;
+        boolean isQuoted = false;
+        for (int i = 0; i < expression.length(); i++) {
+            if ( lastStart == -1 ) {
+                if ( !isQuoted && Character.isJavaIdentifierStart( expression.charAt(i) ) ) {
+                    lastStart = i;
+                }
+            } else if ( !Character.isJavaIdentifierPart( expression.charAt(i) ) ) {
+                tokens.add(expression.subSequence(lastStart, i).toString());
+                lastStart = -1;
+            }
+            if (expression.charAt(i) == '"' || expression.charAt(i) == '\'') {
+                if (i == 0 || expression.charAt(i-1) != '\\') {
+                    isQuoted = !isQuoted;
+                }
+                if (isQuoted) {
+                    lastStart = -1;
+                }
+            }
+        }
+        if (lastStart != -1) {
+            tokens.add( expression.subSequence( lastStart, expression.length() ).toString() );
+        }
+        return tokens;
     }
 
     @Override
