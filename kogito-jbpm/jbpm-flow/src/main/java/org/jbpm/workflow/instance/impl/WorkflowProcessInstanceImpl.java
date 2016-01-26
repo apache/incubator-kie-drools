@@ -63,7 +63,7 @@ import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 
 /**
  * Default implementation of a RuleFlow process instance.
- * 
+ *
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
@@ -74,12 +74,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
 	private final List<NodeInstance> nodeInstances = new ArrayList<NodeInstance>();;
 
-	@Deprecated // this should be deleted in 7.0.x
-	private long nodeInstanceCounter = 0;
-	@Deprecated // this should be deleted in 7.0.x
-	private boolean deprecatedIdStrategy = Boolean.getBoolean("jbpm.v5.id.strategy");
 	private AtomicLong singleNodeInstanceCounter = new AtomicLong(0);
-	
+
 	private Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
 	private Map<String, List<EventListener>> externalEventListeners = new HashMap<String, List<EventListener>>();
 	private List<String> completedNodeIds = new ArrayList<String>();
@@ -88,7 +84,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	private int currentLevel;
 	private boolean persisted = false;
 	private Object faultData;
-	
+
 	private boolean signalCompletion = true;
 
     public NodeContainer getNodeContainer() {
@@ -96,22 +92,18 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public void addNodeInstance(final NodeInstance nodeInstance) {
-	    long id; 
-	    if( deprecatedIdStrategy ) { 
-	       id = nodeInstanceCounter++; 
-	    } else {
-	        id = singleNodeInstanceCounter.getAndIncrement();
-	    }
+	    long id;
+	    id = singleNodeInstanceCounter.getAndIncrement();
 		((NodeInstanceImpl) nodeInstance).setId(id);
 		this.nodeInstances.add(nodeInstance);
 	}
-	
+
     @Override
     public int getLevelForNode(String uniqueID) {
         if ("true".equalsIgnoreCase(System.getProperty("jbpm.loop.level.disabled"))) {
             return 1;
         }
-        
+
         Integer value = iterationLevels.get(uniqueID);
         if (value == null && currentLevel == 0) {
            value = new Integer(1);
@@ -153,7 +145,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 		return Collections.unmodifiableCollection(result);
 	}
-	
+
 	public NodeInstance getNodeInstance(long nodeInstanceId) {
 		for (NodeInstance nodeInstance: nodeInstances) {
 			if (nodeInstance.getId() == nodeInstanceId) {
@@ -162,7 +154,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 		return null;
 	}
-	
+
 	public NodeInstance getNodeInstance(long nodeInstanceId, boolean recursive) {
 		for (NodeInstance nodeInstance: getNodeInstances(recursive)) {
 			if (nodeInstance.getId() == nodeInstanceId) {
@@ -177,7 +169,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		addActiveNodeIds(this, result);
 		return result;
 	}
-	
+
 	private void addActiveNodeIds(NodeInstanceContainer container, List<String> result) {
 		for (org.kie.api.runtime.process.NodeInstance nodeInstance: container.getNodeInstances()) {
 			result.add(((NodeImpl) ((NodeInstanceImpl) nodeInstance).getNode()).getUniqueId());
@@ -209,7 +201,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 		return result;
 	}
-	
+
 	public List<NodeInstance> getNodeInstances(final long nodeId, final List<NodeInstance> currentView) {
 		List<NodeInstance> result = new ArrayList<NodeInstance>();
 		for (final Iterator<NodeInstance> iterator = currentView.iterator(); iterator.hasNext();) {
@@ -229,15 +221,15 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         } else if (Boolean.parseBoolean((String)node.getMetaData().get("customAsync"))) {
             actualNode = new AsyncEventNode(node);
         }
-	    
-	    
+
+
 		NodeInstanceFactory conf = NodeInstanceFactoryRegistry.getInstance(getKnowledgeRuntime().getEnvironment()).getProcessNodeInstanceFactory(actualNode);
 		if (conf == null) {
 			throw new IllegalArgumentException("Illegal node type: "
 					+ node.getClass());
 		}
 		NodeInstanceImpl nodeInstance  = (NodeInstanceImpl) conf.getNodeInstance(actualNode, this, this);
-		
+
 		if (nodeInstance == null) {
 			throw new IllegalArgumentException("Illegal node type: "
 					+ node.getClass());
@@ -246,42 +238,30 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 			getKnowledgeRuntime().insert(nodeInstance);
 		}
 		return nodeInstance;
-	}	
+	}
 
 	public long getNodeInstanceCounter() {
-	    if( deprecatedIdStrategy ) { 
-	        return nodeInstanceCounter;
-	    }
 		return singleNodeInstanceCounter.get();
 	}
 
 	public void internalSetNodeInstanceCounter(long nodeInstanceCounter) {
-	    if( deprecatedIdStrategy ) { 
-	       this.nodeInstanceCounter = nodeInstanceCounter; 
-	    } else { 
-	        this.singleNodeInstanceCounter = new AtomicLong(nodeInstanceCounter);
-	    }
+	    this.singleNodeInstanceCounter = new AtomicLong(nodeInstanceCounter);
 	}
-	
+
 	public AtomicLong internalGetNodeInstanceCounter() {
 		return this.singleNodeInstanceCounter;
 	}
 
-	public boolean getDeprecatedIdStrategy() { 
-	   return deprecatedIdStrategy; 
-	}
-	
-
 	public WorkflowProcess getWorkflowProcess() {
 		return (WorkflowProcess) getProcess();
 	}
-	
+
 	public Object getVariable(String name) {
 		// for disconnected process instances, try going through the variable scope instances
 		// (as the default variable scope cannot be retrieved as the link to the process could
 		// be null and the associated working memory is no longer accessible)
 		if (getKnowledgeRuntime() == null) {
-			List<ContextInstance> variableScopeInstances = 
+			List<ContextInstance> variableScopeInstances =
 				getContextInstances(VariableScope.VARIABLE_SCOPE);
 			if (variableScopeInstances != null && variableScopeInstances.size() == 1) {
 				for (ContextInstance contextInstance: variableScopeInstances) {
@@ -301,20 +281,20 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 		return variableScopeInstance.getVariable(name);
 	}
-	
+
 	public Map<String, Object> getVariables() {
         // for disconnected process instances, try going through the variable scope instances
         // (as the default variable scope cannot be retrieved as the link to the process could
         // be null and the associated working memory is no longer accessible)
         if (getKnowledgeRuntime() == null) {
-            List<ContextInstance> variableScopeInstances = 
+            List<ContextInstance> variableScopeInstances =
                 getContextInstances(VariableScope.VARIABLE_SCOPE);
             if (variableScopeInstances == null) {
                 return null;
             }
             Map<String, Object> result = new HashMap<String, Object>();
             for (ContextInstance contextInstance: variableScopeInstances) {
-                Map<String, Object> variables = 
+                Map<String, Object> variables =
                     ((VariableScopeInstance) contextInstance).getVariables();
                 result.putAll(variables);
             }
@@ -328,7 +308,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
         }
         return variableScopeInstance.getVariables();
 	}
-	
+
 	public void setVariable(String name, Object value) {
 		VariableScope variableScope = (VariableScope) ((ContextContainer) getProcess()).getDefaultContext( VariableScope.VARIABLE_SCOPE );
 		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
@@ -339,12 +319,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		variableScope.validateVariable(getProcessName(), name, value);
 		variableScopeInstance.setVariable(name, value);
 	}
-	
+
 	public void setState(final int state, String outcome, Object faultData) {
 		this.faultData = faultData;
 		setState(state, outcome);
 	}
-	
+
 	public void setState(final int state, String outcome) {
 	    super.setState(state, outcome);
         // TODO move most of this to ProcessInstanceImpl
@@ -374,7 +354,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                 		// in case no session is found for parent process let's skip signal for process instance completion
                 	}
                 } else {
-                    processRuntime.getSignalManager().signalEvent("processInstanceCompleted:" + getId(), this);    
+                    processRuntime.getSignalManager().signalEvent("processInstanceCompleted:" + getId(), this);
                 }
             }
         }
@@ -387,7 +367,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
     public void disconnect() {
         removeEventListeners();
         unregisterExternalEventNodeListeners();
-        
+
         for (NodeInstance nodeInstance : nodeInstances) {
             if (nodeInstance instanceof EventBasedNodeInstanceInterface) {
                 ((EventBasedNodeInstanceInterface) nodeInstance).removeEventListeners();
@@ -421,7 +401,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	public void start() {
 		start(null);
 	}
-	
+
 	public void start(String trigger) {
 		synchronized (this) {
 			registerExternalEventNodeListeners();
@@ -452,13 +432,13 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                 for (String type : events) {
                     addEventListener(type, new ExternalEventListener(), true);
                 }
-            }	         
+            }
 		}
-		if( getWorkflowProcess().getMetaData().containsKey("Compensation") ) { 
+		if( getWorkflowProcess().getMetaData().containsKey("Compensation") ) {
 		    addEventListener("Compensation", new CompensationEventListener(this), true);
 		}
 	}
-	
+
 	private void unregisterExternalEventNodeListeners() {
 		for (Node node : getWorkflowProcess().getNodes()) {
 			if (node instanceof EventNode) {
@@ -475,9 +455,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 				return;
 			}
 			List<NodeInstance> currentView = new ArrayList<NodeInstance>(this.nodeInstances);
-			
+
 			try {
-				this.activatingNodeIds = new ArrayList<String>(); 
+				this.activatingNodeIds = new ArrayList<String>();
 				List<EventListener> listeners = eventListeners.get(type);
 				if (listeners != null) {
 					for (EventListener listener : listeners) {
@@ -526,11 +506,11 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 				}
 			}
 		}
-	}	
+	}
 
 	public void addEventListener(String type, EventListener listener,
 			boolean external) {
-		Map<String, List<EventListener>> eventListeners = 
+		Map<String, List<EventListener>> eventListeners =
 			external ? this.externalEventListeners : this.eventListeners;
 		List<EventListener> listeners = eventListeners.get(type);
 		if (listeners == null) {
@@ -574,17 +554,17 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		return externalEventListeners.keySet().toArray(
 				new String[externalEventListeners.size()]);
 	}
-	
+
 	public void nodeInstanceCompleted(NodeInstance nodeInstance, String outType) {
 	    Node nodeInstanceNode = nodeInstance.getNode();
-	    if( nodeInstanceNode != null ) { 
+	    if( nodeInstanceNode != null ) {
 	        Object compensationBoolObj =  nodeInstanceNode.getMetaData().get("isForCompensation");
 	        boolean isForCompensation = compensationBoolObj == null ? false : ((Boolean) compensationBoolObj);
-	        if( isForCompensation ) { 
+	        if( isForCompensation ) {
 	            return;
 	        }
 	    }
-	    if (nodeInstance instanceof EndNodeInstance || 
+	    if (nodeInstance instanceof EndNodeInstance ||
         		((org.jbpm.workflow.core.WorkflowProcess) getWorkflowProcess()).isDynamic()
         		|| nodeInstance instanceof CompositeNodeInstance) {
             if (((org.jbpm.workflow.core.WorkflowProcess) getProcess()).isAutoComplete()) {
@@ -592,7 +572,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
                     setState(ProcessInstance.STATE_COMPLETED);
                 }
             }
-        } else { 
+        } else {
             throw new IllegalArgumentException(
                     "Completing a node instance that has no outgoing connection is not supported.");
         }
@@ -605,9 +585,9 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 		public void signalEvent(String type,
 				Object event) {
-		}		
+		}
 	}
-	
+
 	private boolean canComplete() {
 	    if (nodeInstances.isEmpty()) {
 	        return true;
@@ -622,16 +602,16 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	            } else {
 	                return false;
 	            }
-	        }	        
+	        }
 	        return eventSubprocessCounter == nodeInstances.size();
 	    }
 	}
-	
-	public void addCompletedNodeId(String uniqueId) { 
+
+	public void addCompletedNodeId(String uniqueId) {
 	    this.completedNodeIds.add(uniqueId.intern());
 	}
-	
-	public List<String> getCompletedNodeIds() { 
+
+	public List<String> getCompletedNodeIds() {
 	    return new ArrayList<String>(this.completedNodeIds);
 	}
 
@@ -654,31 +634,31 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	public void setPersisted(boolean persisted) {
 		this.persisted = persisted;
 	}
-	
-	public void addActivatingNodeId(String uniqueId) { 
+
+	public void addActivatingNodeId(String uniqueId) {
 		if (this.activatingNodeIds == null) {
 			return;
 		}
 	    this.activatingNodeIds.add(uniqueId.intern());
 	}
-	
-	public List<String> getActivatingNodeIds() { 
+
+	public List<String> getActivatingNodeIds() {
 		if (this.activatingNodeIds == null) {
 			return Collections.emptyList();
 		}
 	    return new ArrayList<String>(this.activatingNodeIds);
 	}
-	
+
 	public Object getFaultData() {
 		return faultData;
 	}
-	
+
     public boolean isSignalCompletion() {
         return signalCompletion;
     }
-    
+
     public void setSignalCompletion(boolean signalCompletion) {
         this.signalCompletion = signalCompletion;
     }
-    
+
 }
