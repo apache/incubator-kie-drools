@@ -302,7 +302,7 @@ public class DeploymentDescriptorMergerTest {
 		assertEquals(0, outcome.getGlobals().size());
 		assertEquals(0, outcome.getTaskEventListeners().size());
 		assertEquals(0, outcome.getWorkItemHandlers().size());
-		assertTrue(outcome.getLimitSerializationClasses());
+		assertFalse(outcome.getLimitSerializationClasses());
 	}
 
 	@Test

@@ -312,7 +312,7 @@ public class FilteredKModuleDeploymentServiceTest extends AbstractKieServicesBas
             }
         }
         assertTrue( "Expected to find unannotated classes in " + deployedUnit.getDeploymentUnit().getIdentifier(),
-                limitClasses || (! limitClasses && unAnnotatedClassesFound) );
+                ( limitClasses && ! unAnnotatedClassesFound ) || (! limitClasses && unAnnotatedClassesFound) );
 
         if( limitClasses ) {
             try {

@@ -130,8 +130,8 @@ public class DeploymentDescriptorMerger {
 				Boolean slaveLimit =  slave.getLimitSerializationClasses();
 				Boolean masterLimit =  master.getLimitSerializationClasses();
 				if( slaveLimit != null && masterLimit != null &&
-				        (slaveLimit || masterLimit) ) {
-				    builder.setLimitSerializationClasses(true);
+				        (!slaveLimit || !masterLimit) ) {
+				    builder.setLimitSerializationClasses(false);
 				}
 
 				merged = builder.get();
