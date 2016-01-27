@@ -46,15 +46,16 @@ import org.kie.api.runtime.rule.StatelessRuleSession;
  * If this was done as a single Command it would be as follows:
  * </p>
  * <pre>
- * kSession.execute( CommandFactory.newInsertElements( collection ) );
+ * KieCommands kieCommands = kieServices.getCommands();
+ * kSession.execute( kieCommands.newInsertElements( collection ) );
  * </pre>
  *
  * <p>
- * Note if you wanted to insert the collection itself, and not the iterate and insert the elements, then CommandFactory.newInsert( collection ) would do the job.
+ * Note if you wanted to insert the collection itself, and not the iterate and insert the elements, then kieCommands.newInsert( collection ) would do the job.
  * </p>
  *
  * <p>
- * The CommandFactory details the supported commands, all of which can be marshalled using XStream and the BatchExecutionHelper. BatchExecutionHelper provides details
+ * The KieCommands interface details the supported commands, all of which can be marshalled using XStream and the BatchExecutionHelper. BatchExecutionHelper provides details
  * on the XML format as well as how to use Drools Pipeline to automate the marshalling of BatchExecution and ExecutionResults.
  * </p>
  *
@@ -81,10 +82,10 @@ import org.kie.api.runtime.rule.StatelessRuleSession;
  *
  * <pre>
  * List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
- * cmds.add( CommandFactory.newSetGlobal( "list1", new ArrayList() ) );
- * cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ) ) );
+ * cmds.add( kieCommands.newSetGlobal( "list1", new ArrayList() ) );
+ * cmds.add( kieCommands.newInsert( new Person( "jon", 102 ) ) );
  *
- * kSession.execute( CommandFactory.newBatchExecution( cmds ) );
+ * kSession.execute( kieCommands.newBatchExecution( cmds ) );
  * </pre>
  *
  * <p>
@@ -93,11 +94,11 @@ import org.kie.api.runtime.rule.StatelessRuleSession;
  *
  * <pre>
  * List&lt;Command&gt; cmds = new ArrayList&lt;Command&gt;();
- * cmds.add( CommandFactory.newSetGlobal( "list1", new ArrayList(), true ) );
- * cmds.add( CommandFactory.newInsert( new Person( "jon", 102 ), "person" ) );
- * cmds.add( CommandFactory.newQuery( "Get People" "getPeople" );
+ * cmds.add( kieCommands.newSetGlobal( "list1", new ArrayList(), true ) );
+ * cmds.add( kieCommands.newInsert( new Person( "jon", 102 ), "person" ) );
+ * cmds.add( kieCommands.newQuery( "Get People" "getPeople" );
  *
- * ExecutionResults results = ksession.execute( CommandFactory.newBatchExecution( cmds ) );
+ * ExecutionResults results = ksession.execute( kieCommands.newBatchExecution( cmds ) );
  * results.getValue( "list1" ); // returns the ArrayList
  * results.getValue( "person" ); // returns the inserted fact Person
  * results.getValue( "Get People" );// returns the query as a QueryResults instance.
