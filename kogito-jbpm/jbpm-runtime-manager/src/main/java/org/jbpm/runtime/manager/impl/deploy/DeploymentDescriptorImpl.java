@@ -42,7 +42,12 @@ import org.kie.internal.runtime.conf.NamedObjectModel;
 import org.kie.internal.runtime.conf.ObjectModel;
 import org.kie.internal.runtime.conf.PersistenceMode;
 import org.kie.internal.runtime.conf.RuntimeStrategy;
-
+/*
+ * NOTE: Whenever adding new fields that represent actual item of deployment descriptor always update:
+ * - isEmpty method
+ * - clearClone method
+ * - Builder
+ */
 @XmlRootElement(name="deployment-descriptor")
 @XmlAccessorType(XmlAccessType.NONE)
 public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializable {
@@ -376,6 +381,58 @@ public class DeploymentDescriptorImpl implements DeploymentDescriptor, Serializa
 	     removeTransient(clone.workItemHandlers);
 
 	     return clone;
+    }
+    
+    public boolean isEmpty() {
+        boolean empty = true;
+        
+        if (persistenceUnit != null) {
+            return false;
+        }
+        if (auditPersistenceUnit != null) {
+            return false;
+        }
+        if (auditMode != AuditMode.JPA) {
+            return false;
+        }
+        if (persistenceMode != PersistenceMode.JPA) {
+            return false;
+        }
+        if (runtimeStrategy != RuntimeStrategy.SINGLETON) {
+            return false;
+        }
+        if ( marshallingStrategies != null && !marshallingStrategies.isEmpty()) {
+            return false;
+        }
+        if (eventListeners != null && !eventListeners.isEmpty()) {
+            return false;
+        }
+        if (taskEventListeners != null && !taskEventListeners.isEmpty()) {
+            return false;
+        }
+        if (globals != null && !globals.isEmpty()) {
+            return false;
+        }
+        if (workItemHandlers != null && !workItemHandlers.isEmpty()) {
+            return false;
+        }
+        if (environmentEntries != null && !environmentEntries.isEmpty()) {
+            return false;
+        }
+        if (configuration != null && !configuration.isEmpty()) {
+            return false;
+        }
+        if (requiredRoles != null && !requiredRoles.isEmpty()) {
+            return false;
+        }
+        if (classes != null && !classes.isEmpty()) {
+            return false;
+        }
+        if (!limitSerializationClasses) {
+            return false;
+        }
+
+        return empty;
     }
 
     @Override

@@ -522,4 +522,81 @@ public class KModuleDeploymentServiceTest extends AbstractKieServicesBaseTest {
         manager.disposeRuntimeEngine(engine);
     }
     
+    @Test
+    public void testDeploymentAvoidEmptyDescriptorOverride() {
+            
+        assertNotNull(deploymentService);
+        
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId(GROUP_ID, "kjar-with-dd", VERSION);
+        List<String> processes = new ArrayList<String>();
+        processes.add("repo/processes/general/customtask.bpmn");
+        processes.add("repo/processes/general/humanTask.bpmn");
+        processes.add("repo/processes/general/import.bpmn");
+        
+        DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+        customDescriptor.getBuilder()
+        .runtimeStrategy(RuntimeStrategy.PER_REQUEST)
+        .addWorkItemHandler(new NamedObjectModel("Log", "org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler"));
+        
+        Map<String, String> resources = new HashMap<String, String>();
+        resources.put("src/main/resources/" + DeploymentDescriptor.META_INF_LOCATION, customDescriptor.toXml());
+        
+        InternalKieModule kJar1 = createKieJar(ks, releaseId, processes, resources);
+        File pom = new File("target/kmodule", "pom.xml");
+        pom.getParentFile().mkdir();
+        try {
+            FileOutputStream fs = new FileOutputStream(pom);
+            fs.write(getPom(releaseId).getBytes());
+            fs.close();
+        } catch (Exception e) {
+            
+        }
+        MavenRepository repository = getMavenRepository();
+        repository.deployArtifact(releaseId, kJar1, pom);
+        
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, "kjar-with-dd", VERSION, "KBase-test", "ksession-test2"); 
+        
+        // let's simulate change of deployment descriptor on deploy time
+        deploymentUnit.setDeploymentDescriptor(new DeploymentDescriptorImpl()); // set empty one...
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        DeployedUnit deployedGeneral = deploymentService.getDeployedUnit(deploymentUnit.getIdentifier());
+        assertNotNull(deployedGeneral);
+        assertNotNull(deployedGeneral.getDeploymentUnit());
+        assertNotNull(deployedGeneral.getRuntimeManager());
+        
+        DeploymentDescriptor descriptor = ((InternalRuntimeManager)deployedGeneral.getRuntimeManager()).getDeploymentDescriptor();
+        assertNotNull(descriptor);
+        assertEquals("org.jbpm.domain", descriptor.getPersistenceUnit());
+        assertEquals("org.jbpm.domain", descriptor.getAuditPersistenceUnit());
+        assertEquals(AuditMode.JPA, descriptor.getAuditMode());
+        assertEquals(PersistenceMode.JPA, descriptor.getPersistenceMode());
+        assertEquals(RuntimeStrategy.PER_REQUEST, descriptor.getRuntimeStrategy());
+        assertEquals(0, descriptor.getMarshallingStrategies().size());
+        assertEquals(0, descriptor.getConfiguration().size());
+        assertEquals(0, descriptor.getEnvironmentEntries().size());
+        assertEquals(0, descriptor.getEventListeners().size());
+        assertEquals(0, descriptor.getGlobals().size());        
+        assertEquals(0, descriptor.getTaskEventListeners().size());
+        assertEquals(1, descriptor.getWorkItemHandlers().size());
+        assertEquals(0, descriptor.getRequiredRoles().size());
+
+        RuntimeManager manager = deploymentService.getRuntimeManager(deploymentUnit.getIdentifier());
+        assertNotNull(manager);
+        
+        RuntimeEngine engine = manager.getRuntimeEngine(EmptyContext.get());
+        assertNotNull(engine);
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        
+        ProcessInstance processInstance = engine.getKieSession().startProcess("customtask", params);
+        
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+        
+        manager.disposeRuntimeEngine(engine);
+        
+    }
+    
 }

@@ -16,7 +16,9 @@
 package org.jbpm.runtime.manager.impl.deploy;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
@@ -310,5 +312,39 @@ public class DeploymentDescriptorTest {
         assertEquals(0, fromXml.getTaskEventListeners().size());
         assertEquals(0, fromXml.getWorkItemHandlers().size());
         assertEquals(1, fromXml.getRequiredRoles().size());
+    }
+	
+	@Test
+    public void testEmptyDeploymentDescriptor() {
+	    DeploymentDescriptorImpl descriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+        
+        descriptor.getBuilder()
+        .addMarshalingStrategy(new ObjectModel("org.jbpm.testCustomStrategy", 
+                new Object[]{
+                new ObjectModel("java.lang.String", new Object[]{"param1"}),
+                "param2"}))
+        .addRequiredRole("experts");
+        
+        assertFalse(descriptor.isEmpty());
+        
+        InputStream input = this.getClass().getResourceAsStream("/deployment/empty-descriptor.xml");        
+        DeploymentDescriptor fromXml = DeploymentDescriptorIO.fromXml(input);
+        
+        assertNotNull(fromXml);        
+        assertTrue(((DeploymentDescriptorImpl)fromXml).isEmpty());
+        
+        assertNull(fromXml.getPersistenceUnit());
+        assertNull(fromXml.getAuditPersistenceUnit());
+        assertEquals(AuditMode.JPA, fromXml.getAuditMode());
+        assertEquals(PersistenceMode.JPA, fromXml.getPersistenceMode());
+        assertEquals(RuntimeStrategy.SINGLETON, fromXml.getRuntimeStrategy());
+        assertEquals(0, fromXml.getMarshallingStrategies().size());
+        assertEquals(0, fromXml.getConfiguration().size());
+        assertEquals(0, fromXml.getEnvironmentEntries().size());
+        assertEquals(0, fromXml.getEventListeners().size());
+        assertEquals(0, fromXml.getGlobals().size());       
+        assertEquals(0, fromXml.getTaskEventListeners().size());
+        assertEquals(0, fromXml.getWorkItemHandlers().size());
+        assertEquals(0, fromXml.getRequiredRoles().size());
     }
 }
