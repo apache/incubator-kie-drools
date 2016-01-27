@@ -25,6 +25,11 @@
         "code" : "java.method.addedToInterface",
         "new" : "method org.kie.api.builder.model.KieSessionModel org.kie.api.runtime.KieContainer::getKieSessionModel(java.lang.String)",
         "justification" : "Enables retrieving the named KieSessionModel directly from KieContainer."
+      },
+      {
+        "code" : "java.method.addedToInterface",
+        "new" : "method org.kie.api.logger.KieRuntimeLogger org.kie.api.logger.KieLoggers::newFileLogger(org.kie.api.event.KieRuntimeEventManager, java.lang.String, int)",
+        "justification" : "Allows to configure maxEventsInMemory in FileLogger."
       }
     ]
   }
