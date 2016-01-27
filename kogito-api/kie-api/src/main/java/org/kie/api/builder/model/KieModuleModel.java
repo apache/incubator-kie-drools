@@ -45,6 +45,12 @@ public interface KieModuleModel {
     Map<String, String> getConfigurationProperties();
 
     /**
+     * Creates a new anonymous KieBaseModel and adds it to this KieModuleModel
+     * @return The new KieBaseModel
+     */
+    KieBaseModel newKieBaseModel();
+
+    /**
      * Creates a new KieBaseModel with the given name and adds it to this KieModuleModel
      * @param name The name of the new KieBaseModel to be created
      * @return The new KieBaseModel

@@ -30,6 +30,11 @@
         "code" : "java.method.addedToInterface",
         "new" : "method org.kie.api.logger.KieRuntimeLogger org.kie.api.logger.KieLoggers::newFileLogger(org.kie.api.event.KieRuntimeEventManager, java.lang.String, int)",
         "justification" : "Allows to configure maxEventsInMemory in FileLogger."
+      },
+      {
+        "code" : "java.method.addedToInterface",
+        "new" : "method org.kie.api.builder.model.KieBaseModel org.kie.api.builder.model.KieModuleModel::newKieBaseModel()",
+        "justification" : "Makes KieBase name optional."
       }
     ]
   }

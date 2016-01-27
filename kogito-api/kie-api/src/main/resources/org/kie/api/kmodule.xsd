@@ -40,7 +40,7 @@
         <xsd:element ref="ruleTemplate" minOccurs="0" maxOccurs="unbounded"/>
         <xsd:element ref="ksession" minOccurs="0" maxOccurs="unbounded"/>
       </xsd:sequence>
-      <xsd:attribute name="name" use="required" type="xsd:ID"/>
+      <xsd:attribute name="name" type="xsd:ID"/>
       <xsd:attribute name="includes" type="xsd:string"/>
       <xsd:attribute name="packages" type="xsd:string"/>
       <xsd:attribute name="default" type="xsd:boolean"/>
