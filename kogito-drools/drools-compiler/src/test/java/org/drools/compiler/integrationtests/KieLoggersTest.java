@@ -15,12 +15,6 @@
 
 package org.drools.compiler.integrationtests;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.io.File;
-
 import org.drools.compiler.Message;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -31,12 +25,16 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.runtime.KieContainer;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.api.io.Resource;
 import org.kie.api.logger.KieRuntimeLogger;
+import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.internal.io.ResourceFactory;
+
+import java.io.File;
+
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 public class KieLoggersTest {
@@ -186,6 +184,45 @@ public class KieLoggersTest {
 
         file = new File( fileName+".log" );
         assertTrue( file.exists() );
+        assertTrue( file.length() > 0 );
+        file.delete();
+    }
+
+    @Test
+    public void testKieFileLoggerWithImmediateFlushing() throws Exception {
+        // DROOLS-991
+        String drl = "package org.drools.integrationtests\n" +
+                     "import org.drools.compiler.Message;\n" +
+                     "rule \"Hello World\"\n" +
+                     "    when\n" +
+                     "        m : Message( myMessage : message )\n" +
+                     "    then\n" +
+                     "end";
+        // get the resource
+        Resource dt = ResourceFactory.newByteArrayResource(drl.getBytes()).setTargetPath( "org/drools/integrationtests/hello.drl" );
+
+        // create the builder
+        KieSession ksession = getKieSession(dt);
+
+        String fileName = "testKieFileLogger";
+        File file = new File(fileName+".log");
+        if( file.exists() ) {
+            file.delete();
+        }
+
+        // Setting maxEventsInMemory to 0 makes all events to be immediately flushed to the file
+        KieRuntimeLogger logger = KieServices.Factory.get().getLoggers().newFileLogger( ksession, fileName, 0 );
+
+        ksession.insert(new Message("Hello World"));
+        int fired = ksession.fireAllRules();
+        assertEquals( 1, fired );
+
+        // check that the file has been populated before closing it
+        file = new File( fileName+".log" );
+        assertTrue( file.exists() );
+        assertTrue( file.length() > 0 );
+
+        logger.close();
         file.delete();
     }
 
