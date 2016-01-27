@@ -36,7 +36,6 @@ import org.kie.api.runtime.conf.ClockTypeOption;
 import java.io.ByteArrayInputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -215,8 +214,8 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML( releaseId )
-                .write( "src/main/resources/KBase1/org/pkg1/test/r1.drl", createDrlWithGlobal( "R1" ) )
-                .write( "src/main/resources/KBase1/org/pkg2/test/r2.drl", createDrlWithGlobal( "R2" ) )
+                .write( "src/main/resources/org/pkg1/test/r1.drl", createDrlWithGlobal( "R1" ) )
+                .write( "src/main/resources/org/pkg2/test/r2.drl", createDrlWithGlobal( "R2" ) )
                 .writeKModuleXML( createKieProjectWithPackages( ks, "org.pkg1.*" ).toXML() );
         ks.newKieBuilder( kfs ).buildAll();
 
@@ -238,13 +237,13 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
 
         KieFileSystem kfs = ks.newKieFileSystem()
                 .generateAndWritePomXML(releaseId)
-                .write("src/main/resources/KBase1/rules/rules.drl", createDrlWithGlobal("R1"))
-                .write("src/main/resources/KBase1/rules/tests/tests.drl", createDrlWithGlobal("R2"))
-                .write("src/main/resources/KBase1/aaarules/aaarules.drl", createDrlWithGlobal("R3"))
-                .write("src/main/resources/KBase1/sample/brms601_1310778/rules/rules.drl", createDrlWithGlobal("R4"))
-                .write("src/main/resources/KBase1/sample/brms601_1310778/tests/tests.drl", createDrlWithGlobal("R5"))
-                .write("src/main/resources/KBase1/tests/tests.drl", createDrlWithGlobal("R6"))
-                .write("src/main/resources/KBase1/rules2/rules2.drl", createDrlWithGlobal("R7"))
+                .write("src/main/resources/rules/rules.drl", createDrlWithGlobal("R1"))
+                .write("src/main/resources/rules/tests/tests.drl", createDrlWithGlobal("R2"))
+                .write("src/main/resources/aaarules/aaarules.drl", createDrlWithGlobal("R3"))
+                .write("src/main/resources/sample/brms601_1310778/rules/rules.drl", createDrlWithGlobal("R4"))
+                .write("src/main/resources/sample/brms601_1310778/tests/tests.drl", createDrlWithGlobal("R5"))
+                .write("src/main/resources/tests/tests.drl", createDrlWithGlobal("R6"))
+                .write("src/main/resources/rules2/rules2.drl", createDrlWithGlobal("R7"))
                 .writeKModuleXML( createKieProjectWithPackages(ks, "rules.*").toXML());
         ks.newKieBuilder( kfs ).buildAll();
 
@@ -281,7 +280,7 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
     private KieModuleModel createKieProjectWithPackages(KieServices ks, String pkg) {
         KieModuleModel kproj = ks.newKieModuleModel();
 
-        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel("KBase1")
+        KieBaseModel kieBaseModel1 = kproj.newKieBaseModel()
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
                 .addPackage(pkg);
@@ -412,13 +411,13 @@ public class KieHelloWorldTest extends CommonTestMethodBase {
     private KieModuleModel createKieProjectWithPackagesAnd2KieBases(KieServices ks) {
         KieModuleModel kproj = ks.newKieModuleModel();
 
-        kproj.newKieBaseModel("KBase2")
+        kproj.newKieBaseModel()
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
                 .addPackage("org.pkg1")
                 .newKieSessionModel("KSession1");
 
-        kproj.newKieBaseModel("KBase1")
+        kproj.newKieBaseModel()
                 .setEqualsBehavior( EqualityBehaviorOption.EQUALITY )
                 .setEventProcessingMode( EventProcessingOption.STREAM )
                 .addPackage("org.pkg2")
