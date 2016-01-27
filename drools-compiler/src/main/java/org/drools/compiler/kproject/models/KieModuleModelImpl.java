@@ -23,6 +23,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.drools.core.util.IoUtils;
+import org.drools.core.util.StringUtils;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.xml.sax.SAXException;
@@ -66,6 +67,10 @@ public class KieModuleModelImpl implements KieModuleModel {
 
     public Map<String, String> getConfigurationProperties() {
         return confProps;
+    }
+
+    public KieBaseModel newKieBaseModel() {
+        return newKieBaseModel( StringUtils.uuid() );
     }
 
     /* (non-Javadoc)

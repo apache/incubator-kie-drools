@@ -1119,4 +1119,8 @@ public class StringUtils {
     public static boolean equalsIgnoreSpaces(String s1, String s2) {
         return s1.replaceAll( "\\s+", "" ).equals( s2.replaceAll( "\\s+", "" ) );
     }
+
+    public static String uuid() {
+        return "x" + UUID.randomUUID().toString().replace( '-', 'x' );
+    }
 }

@@ -21,6 +21,7 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.drools.core.util.Predicate;
+import org.drools.core.util.StringUtils;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
@@ -366,7 +367,10 @@ public class KieBaseModelImpl
         public Object unmarshal(HierarchicalStreamReader reader,
                                 final UnmarshallingContext context) {
             final KieBaseModelImpl kBase = new KieBaseModelImpl();
-            kBase.name = reader.getAttribute( "name" );
+
+            String kbaseName = reader.getAttribute( "name" );
+            kBase.name = kbaseName != null ? kbaseName : StringUtils.uuid();
+
             kBase.setDefault( "true".equals(reader.getAttribute( "default" )) );
 
             String eventMode = reader.getAttribute( "eventProcessingMode" );

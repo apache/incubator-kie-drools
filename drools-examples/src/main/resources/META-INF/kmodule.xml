@@ -2,7 +2,7 @@
 <kmodule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xmlns="http://www.drools.org/xsd/kmodule">
 
-    <kbase name="HelloWorldKB" packages="org.drools.examples.helloworld">
+    <kbase packages="org.drools.examples.helloworld">
         <ksession name="HelloWorldKS"/>
     </kbase>
 
