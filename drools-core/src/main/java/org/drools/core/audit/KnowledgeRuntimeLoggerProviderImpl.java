@@ -31,7 +31,14 @@ public class KnowledgeRuntimeLoggerProviderImpl
 
     public KnowledgeRuntimeLogger newFileLogger(KieRuntimeEventManager session,
                                                 String fileName) {
+        return newFileLogger(session, fileName, WorkingMemoryFileLogger.DEFAULT_MAX_EVENTS_IN_MEMORY);
+    }
+
+    public KnowledgeRuntimeLogger newFileLogger(KieRuntimeEventManager session,
+                                                String fileName,
+                                                int maxEventsInMemory) {
         WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger( (KnowledgeRuntimeEventManager) session );
+        logger.setMaxEventsInMemory( maxEventsInMemory );
         if ( fileName != null ) {
             logger.setFileName(fileName);
         }
