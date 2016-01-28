@@ -100,8 +100,7 @@ public class SwapMoveSelectorConfig extends MoveSelectorConfig<SwapMoveSelectorC
         EntityDescriptor onlyEntityDescriptor = entitySelectorConfig == null ? null
                 : entitySelectorConfig.extractEntityDescriptor(configPolicy);
         if (secondaryEntitySelectorConfig != null) {
-            EntityDescriptor onlySecondaryEntityDescriptor = secondaryEntitySelectorConfig == null ? null
-                    : secondaryEntitySelectorConfig.extractEntityDescriptor(configPolicy);
+            EntityDescriptor onlySecondaryEntityDescriptor = secondaryEntitySelectorConfig.extractEntityDescriptor(configPolicy);
             if (onlyEntityDescriptor != onlySecondaryEntityDescriptor) {
                 throw new IllegalArgumentException("The entitySelector (" + entitySelectorConfig
                         + ")'s entityDescriptor (" + onlyEntityDescriptor
