@@ -105,8 +105,8 @@ public class CalculateCountSubSingleStatistic extends ProblemBasedSubSingleStati
     @Override
     protected CalculateCountStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new CalculateCountStatisticPoint(Long.valueOf(csvLine.get(0)),
-                Long.valueOf(csvLine.get(1)));
+        return new CalculateCountStatisticPoint(Long.parseLong(csvLine.get(0)),
+                Long.parseLong(csvLine.get(1)));
     }
 
 }

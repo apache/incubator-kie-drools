@@ -95,8 +95,8 @@ public class BestSolutionMutationSubSingleStatistic extends ProblemBasedSubSingl
     @Override
     protected BestSolutionMutationStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new BestSolutionMutationStatisticPoint(Long.valueOf(csvLine.get(0)),
-                Integer.valueOf(csvLine.get(1)));
+        return new BestSolutionMutationStatisticPoint(Long.parseLong(csvLine.get(0)),
+                Integer.parseInt(csvLine.get(1)));
     }
 
 }

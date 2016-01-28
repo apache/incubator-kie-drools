@@ -134,7 +134,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic extends PureSubSingle
     @Override
     protected PickedMoveTypeStepScoreDiffStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new PickedMoveTypeStepScoreDiffStatisticPoint(Long.valueOf(csvLine.get(0)),
+        return new PickedMoveTypeStepScoreDiffStatisticPoint(Long.parseLong(csvLine.get(0)),
                 csvLine.get(1), scoreDefinition.parseScore(csvLine.get(2)));
     }
 

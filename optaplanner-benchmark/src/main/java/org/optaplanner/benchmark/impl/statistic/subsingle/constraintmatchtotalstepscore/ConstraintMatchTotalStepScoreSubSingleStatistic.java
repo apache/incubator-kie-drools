@@ -139,9 +139,9 @@ public class ConstraintMatchTotalStepScoreSubSingleStatistic extends PureSubSing
     @Override
     protected ConstraintMatchTotalStepScoreStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new ConstraintMatchTotalStepScoreStatisticPoint(Long.valueOf(csvLine.get(0)),
-                csvLine.get(1), csvLine.get(2), Integer.valueOf(csvLine.get(3)),
-                Integer.valueOf(csvLine.get(4)), Double.valueOf(csvLine.get(5)));
+        return new ConstraintMatchTotalStepScoreStatisticPoint(Long.parseLong(csvLine.get(0)),
+                csvLine.get(1), csvLine.get(2), Integer.parseInt(csvLine.get(3)),
+                Integer.parseInt(csvLine.get(4)), Double.parseDouble(csvLine.get(5)));
     }
 
     // ************************************************************************

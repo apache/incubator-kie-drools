@@ -80,8 +80,8 @@ public class MoveCountPerStepSubSingleStatistic extends ProblemBasedSubSingleSta
     @Override
     protected MoveCountPerStepStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new MoveCountPerStepStatisticPoint(Long.valueOf(csvLine.get(0)),
-                new MoveCountPerStepMeasurement(Long.valueOf(csvLine.get(1)), Long.valueOf(csvLine.get(2))));
+        return new MoveCountPerStepStatisticPoint(Long.parseLong(csvLine.get(0)),
+                new MoveCountPerStepMeasurement(Long.parseLong(csvLine.get(1)), Long.parseLong(csvLine.get(2))));
     }
 
 }

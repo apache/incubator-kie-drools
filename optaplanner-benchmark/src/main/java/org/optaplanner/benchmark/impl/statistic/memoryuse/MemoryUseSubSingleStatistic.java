@@ -91,8 +91,8 @@ public class MemoryUseSubSingleStatistic extends ProblemBasedSubSingleStatistic<
     @Override
     protected MemoryUseStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new MemoryUseStatisticPoint(Long.valueOf(csvLine.get(0)),
-                new MemoryUseMeasurement(Long.valueOf(csvLine.get(1)), Long.valueOf(csvLine.get(2))));
+        return new MemoryUseStatisticPoint(Long.parseLong(csvLine.get(0)),
+                new MemoryUseMeasurement(Long.parseLong(csvLine.get(1)), Long.parseLong(csvLine.get(2))));
     }
 
 }

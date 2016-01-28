@@ -73,7 +73,7 @@ public class StepScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<
     @Override
     protected StepScoreStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new StepScoreStatisticPoint(Long.valueOf(csvLine.get(0)),
+        return new StepScoreStatisticPoint(Long.parseLong(csvLine.get(0)),
                 scoreDefinition.parseScore(csvLine.get(1)));
     }
 

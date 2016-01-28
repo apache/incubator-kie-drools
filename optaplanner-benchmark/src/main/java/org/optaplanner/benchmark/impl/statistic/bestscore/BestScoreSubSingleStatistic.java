@@ -69,7 +69,7 @@ public class BestScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<
     @Override
     protected BestScoreStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
             List<String> csvLine) {
-        return new BestScoreStatisticPoint(Long.valueOf(csvLine.get(0)),
+        return new BestScoreStatisticPoint(Long.parseLong(csvLine.get(0)),
                 scoreDefinition.parseScore(csvLine.get(1)));
     }
 
