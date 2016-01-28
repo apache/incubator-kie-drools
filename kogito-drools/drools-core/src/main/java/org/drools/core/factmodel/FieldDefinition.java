@@ -382,7 +382,7 @@ public class FieldDefinition
         try {
             return initExpr == null ? 0L : Long.parseLong(initExpr);
         } catch (NumberFormatException nfe) {
-            return StringUtils.isEmpty( initExpr ) ? 0 : MVELSafeHelper.getEvaluator().eval( initExpr, Long.class );
+            return StringUtils.isEmpty( initExpr ) ? 0L : MVELSafeHelper.getEvaluator().eval( initExpr, Long.class );
         }
     }
     public Short getDefaultValueAsShort( ) {
