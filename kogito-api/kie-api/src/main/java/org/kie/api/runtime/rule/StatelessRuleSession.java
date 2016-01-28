@@ -18,8 +18,10 @@ package org.kie.api.runtime.rule;
 
 
 /**
- * This interface is used as part of the StatelessKieSession, which is the interface returned from the KnowledgeBase.
- * Please see StatelessKieSession for more details on how to use this api.
+ * This interface is used as part of the {@link org.kie.api.runtime.StatelessKieSession}, which is the interface
+ * returned from the {@link org.kie.api.KieBase}.
+ *
+ * Please see {@link org.kie.api.runtime.StatelessKieSession} for more details on how to use this api.
  *
  * @see org.kie.api.runtime.StatelessKieSession
  */

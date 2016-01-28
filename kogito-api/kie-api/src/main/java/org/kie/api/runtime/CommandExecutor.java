@@ -20,7 +20,7 @@ import org.kie.api.command.Command;
 
 /**
  * <p>
- * Batch Executor allows for the scripting of of a Knowledge session using Commands, both the StatelessKnowledgeSession and StatefulKnowledgeSession 
+ * Batch Executor allows for the scripting of a KieSession using Commands, both the KieSession and KieSession
  * implement this interface.
  * </p>
  * 

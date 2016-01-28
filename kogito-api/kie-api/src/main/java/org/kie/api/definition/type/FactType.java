@@ -23,8 +23,7 @@ import java.util.Map;
  * FactType declarations are fact definitions (like classes) that
  * are managed alongside the rules.
  * 
- * You then communicate with the rulebase/knowledge base by using 
- * instances created by this.
+ * You then communicate with the KieBase by using instances created by this.
  * 
  * There are utility set and get methods on this, as well as in the FactFields.
  *

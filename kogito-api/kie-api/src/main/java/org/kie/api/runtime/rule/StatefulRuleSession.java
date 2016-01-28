@@ -18,8 +18,7 @@ package org.kie.api.runtime.rule;
 
 
 /**
- * An interface for all <code>StatefulRuleSession</code> methods. This interface
- * adds methods available to the StatefulKnowledgeSession beyond what the WorkingMemory provides. 
+ This interface adds methods available to the {@link org.kie.api.runtime.KieSession} beyond what the WorkingMemory provides.
  * 
  * @see org.kie.api.runtime.KieSession
  */
@@ -91,6 +90,5 @@ public interface StatefulRuleSession {
      *             if this method is called when running in sequential mode
      */
     public void fireUntilHalt(final AgendaFilter agendaFilter);
-    
 
 }

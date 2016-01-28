@@ -22,15 +22,15 @@ import java.util.Collection;
 
 /**
  * <p>An entry-point is an abstract channel through where facts are inserted into the engine.</p>
- * <p>Drools 5 supports multiple entry-points into a single <code>StatefulKnowledgeBase</code>: the
+ * <p>KIE 6 supports multiple entry-points into a single {@link org.kie.api.KieBase}: the
  * default, anonymous entry-point, as well as as many user declared entry points the application 
  * requires.</p>
  * 
  * <p>To get a reference to an entry point, just request the session:</p>
  * <pre>
- * StatefulKnowledgeSession session = kbase.newStatelessKnowledgeSession();
+ * KieSession session = kbase.newStatelessKieSession();
  * ...
- * WorkingMemoryEntryPoint entrypoint = session.getWorkingMemoryEntryPoint("my entry point");
+ * WorkingMemoryEntryPoint entrypoint = session.getEntryPoint("my entry point");
  * </pre> 
  * <p>Once a reference to an entry point is acquired, the application can insert, update and retract facts
  * to/from that entry-point as usual:</p>
@@ -102,7 +102,7 @@ public interface EntryPoint {
 
     /**
      * Returns the fact handle associated with the given object. It is important to note that this 
-     * method behaves in accordance with the configured assert behaviour for this knowledge base
+     * method behaves in accordance with the configured assert behaviour for this {@link org.kie.api.KieBase}
      * (either IDENTITY or EQUALITY).
      *  
      * @param object 

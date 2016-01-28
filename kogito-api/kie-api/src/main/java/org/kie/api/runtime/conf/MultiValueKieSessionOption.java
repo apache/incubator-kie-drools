@@ -18,7 +18,7 @@ package org.kie.api.runtime.conf;
 
 
 /**
- * A markup interface for MultiValueKnowledgeSessionConfiguration options
+ * A markup interface for MultiValueKieSessionConfiguration options
  */
 public interface MultiValueKieSessionOption
     extends

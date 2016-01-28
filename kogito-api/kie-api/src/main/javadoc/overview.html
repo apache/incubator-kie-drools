@@ -1,93 +1,45 @@
 <body>
 
 <p>
-Drools & jBPM provide an knowledge-centric API, where rules and processes are first class citizens.
+  KIE provides a knowledge-centric API, where rules and processes are first class citizens. The majority of KIE API
+  is considered stable and should not change, experimental classes and APIs will be marked as such.
 </p>
 
 <p>
-The most common interfaces you will use are:
+  The most common interfaces you will use are:
 <ul>
-<li><tt>org.kie.internal.builder.KnowledgeBuilder</tt></li>
-<li><tt>org.kie.internal.KnowledgeBase</tt></li>
-<li><tt>org.kie.internal.agent.KnowledgeAgent</tt></li>
-<li><tt>org.kie.internal.runtime.StatefulKnowledgeSession</tt></li>
-<li><tt>org.kie.internal.runtime.StatelessKnowledgeSession</tt></li>
+  <li><code>org.kie.api.KieBase</code></li>
+  <li><code>org.kie.api.runtime.KieSession</code></li>
+  <li><code>org.kie.api.runtime.StatelessKieSession</code></li>
+  <li><code>org.kie.api.runtime.KieContainer</code></li>
+  <li><code>org.kie.api.builder.ReleaseId</code></li>
+  <li><code>org.kie.api.builder.KieScanner</code></li>
 </ul>
 </p>
 
 <p>
-Factory classes, with static methods, provide instances of the above interfaces. A pluggable provider approach is used to allow provider implementations to
-be wired up to the factories at runtime. The Factories you will most commonly used are:
+  Factory classes, with static methods, provide instances of the above interfaces. A pluggable provider approach is used
+  to allow provider implementations to
+  be wired up to the factories at runtime. The Factories you will most commonly use are:
 <ul>
-<li><tt>org.kie.internal.builder.KnowledgeBuilderFactory</tt></li>
-<li><tt>org.kie.internal.io.ResourceFactory</tt></li>
-<li><tt>org.kie.internal.KnowledgeBaseFactory</tt></li>
-<li><tt>org.kie.internal.agent.KnowledgeAgentFactory</tt></li>
+  <li><code>org.kie.api.KieServices</code></li>
+  <li><code>org.kie.api.command.KieCommands</code></li>
+  <li><code>org.kie.api.io.KieResources</code></li>
 </ul>
 </p>
 
 <p>
-A Typical example to load a rule resource.
+  Typical example of loading and using knowledge resources (rules, processes, etc) found on classpath. By convention the
+  KIE API expects file <code>META-INF/kmodule.xml</code> which is a marker file and also enables additional configuration.
+  For very basic usage the file can just contain <code>&lt;kmodule xmlns="http://www.drools.org/xsd/kmodule"/&gt;</code>:
 <pre>
-KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-kbuilder.add( ResourceFactory.newUrlResource( url ),
-                      ResourceType.DRL );
-if ( kbuilder.hasErrors() ) {
-    System.err.println( builder.getErrors().toString() );
-}                     
-
-KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-kbase.addKnowledgePackages( builder.getKnowledgePackages() );
-
-StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
-ksession.insert( new Fibonacci( 10 ) );
-ksession.fireAllRules();
-
-ksession.dispose();
+  KieServices kieServices = KieServices.Factory.get();
+  KieContainer kieContainer = kieServices.getKieClasspathContainer();
+  KieSession kieSession = kieContainer.newKieSession();
+  kieSession.insert(new Fibonacci(10));
+  kieSession.fireAllRules();
+  kieSession.dispose();
 </pre>
 </p>
 
-<p>
-A Typical example to load a process resource. Notice the ResourceType is changed to BPMN2 in this example.
-<pre>
-KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-kbuilder.add( ResourceFactory.newUrlResource( url ),
-              ResourceType.BPMN2 );
-KnowledgeBase kbase = kbuilder.newKnowledgeBase();
-StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
-ksession.startProcess( "Buy Order Process" );
-ksession.dispose();
-</pre>
-</p>
-
-<p>
-'kbuilder', 'kbase', 'ksession' are the variable identifiers often used, the k prefix is for 'knowledge'.
-</p>
-
-<p>
-It is also possible to configure a KnowledgeBase using configuration, via a xml change set, instead of programmatically. Here is a simple change set:
-</p>
-<pre>
-&lt;change-set xmlns='http://drools.org/drools-5.0/change-set'
-           xmlns:xs='http://www.w3.org/2001/XMLSchema-instance'
-           xs:schemaLocation='http://drools.org/drools-5.0/change-set change-set-5.0.xsd' &gt;
-  &lt;add&gt;
-    &lt;resource source='classpath:org/domain/someRules.drl' type='DRL' /&gt;
-    &lt;resource source='classpath:org/domain/myProcess.bpmn2' type='BPMN2' /&gt;
-  &lt;/add&gt;
-&lt;/change-set&gt;
-</pre>
-
-<p>
-And it is added just like any other ResourceType
-</p>
-<pre>
-KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-kbuilder.add( ResourceFactory.newUrlResource( url ),
-              ResourceType.ChangeSet );
-</pre>
-
-<p>
-The majority of knowledge API is considered stable and should not change, experimental classes and API's will be marked as such.
-</p>
 </body>

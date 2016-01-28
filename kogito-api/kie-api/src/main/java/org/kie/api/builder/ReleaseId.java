@@ -18,7 +18,7 @@ package org.kie.api.builder;
 
 /**
  * ReleaseId is a full identifier far a given version of an artifact.
- * Following the maven conventions it is composed of 3 parts: a groupId, an artifactId and a version
+ * Following the Maven conventions it is composed of 3 parts: a groupId, an artifactId and a version
  */
 public interface ReleaseId {
 
