@@ -367,7 +367,7 @@ public class FieldAccessingSolutionCloner<Solution_ extends Solution> implements
             // if the List<Long> is a shadow, despite that Long never needs to be cloned (because it's immutable).
             if (original instanceof Collection) {
                 return (C) cloneCollection(Collection.class, (Collection) original);
-            } else if (original instanceof Collection) {
+            } else if (original instanceof Map) {
                 return (C) cloneMap(Map.class, (Map) original);
             }
             if (retrieveDeepCloneDecisionForActualValueClass(original.getClass())) {
