@@ -68,9 +68,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
@@ -202,7 +204,7 @@ public abstract class AbstractKieModule
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(getBuilderConfiguration(kBaseModel, kieProject, kModule));
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
 
-        Map<String, InternalKieModule> assets = new HashMap<String, InternalKieModule>();
+        Set<Asset> assets = new HashSet<Asset>();
 
         boolean allIncludesAreValid = true;
         for (String include : kieProject.getTransitiveIncludes(kBaseModel)) {
@@ -233,8 +235,8 @@ public abstract class AbstractKieModule
                 log.warn("No files found for KieBase " + kBaseModel.getName());
             }
         } else {
-            for (Map.Entry<String, InternalKieModule> entry : assets.entrySet()) {
-                entry.getValue().addResourceToCompiler(ckbuilder, kBaseModel, entry.getKey());
+            for (Asset asset : assets) {
+                asset.kmodule.addResourceToCompiler(ckbuilder, kBaseModel, asset.name);
             }
         }
 
@@ -260,6 +262,31 @@ public abstract class AbstractKieModule
         return kbuilder;
     }
 
+    private static class Asset {
+        private final InternalKieModule kmodule;
+        private final String name;
+
+        private Asset( InternalKieModule kmodule, String name ) {
+            this.kmodule = kmodule;
+            this.name = name;
+        }
+
+        @Override
+        public boolean equals( Object o ) {
+            if ( this == o ) return true;
+            if ( o == null || getClass() != o.getClass() ) return false;
+            Asset asset = (Asset) o;
+            return kmodule.equals( asset.kmodule ) && name.equals( asset.name );
+        }
+
+        @Override
+        public int hashCode() {
+            int result = kmodule.hashCode();
+            result = 31 * result + name.hashCode();
+            return result;
+        }
+    }
+
     private static KnowledgeBuilderConfigurationImpl getBuilderConfiguration(KieBaseModelImpl kBaseModel, KieProject kieProject, AbstractKieModule kModule) {
         KnowledgeBuilderConfigurationImpl pconf = new KnowledgeBuilderConfigurationImpl(kieProject.getClonedClassLoader());
         pconf.setCompilationCache(kModule.getCompilationCache(kBaseModel.getName()));
@@ -272,12 +299,12 @@ public abstract class AbstractKieModule
         return pconf;
     }
 
-    private static void addFiles(Map<String, InternalKieModule> assets,
+    private static void addFiles(Set<Asset> assets,
                                  KieBaseModel kieBaseModel,
                                  InternalKieModule kieModule) {
         for (String fileName : kieModule.getFileNames()) {
             if (!fileName.startsWith(".") && !fileName.endsWith(".properties") && filterFileInKBase(kieModule, kieBaseModel, fileName)) {
-                assets.put(fileName, kieModule);
+                assets.add(new Asset( kieModule, fileName ));
             }
         }
     }
