@@ -45,7 +45,7 @@ import org.kie.api.runtime.rule.StatefulRuleSession;
  * Simple example showing a stateful session executing processes.
  * </p>
  * <pre>
- * KieSession kSession = kbase.newStatefulKnowledgeSession();
+ * KieSession kSession = kbase.newKieSession();
  * kSession.startProcess("com.sample.processid");
  * kSession.signalEvent("SomeEvent", null);
  * kSession.startProcess("com.sample.processid");
@@ -71,7 +71,7 @@ import org.kie.api.runtime.rule.StatefulRuleSession;
  *
  * <p>Code snippet for setting a global:</p>
  * <pre>
- * StatefulKnowledgeSession ksession = kbase.newStatefulKnowledgeSession();
+ * KieSession ksession = kbase.newKieSession();
  * ksession.setGlobal( "hbnSession", hibernateSession ); // sets a global hibernate session, that can be used for DB interactions in the rules.
  * for( Object fact : facts ) {
  * ksession.insert( fact );

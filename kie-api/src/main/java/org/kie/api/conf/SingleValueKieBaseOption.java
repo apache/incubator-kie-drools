@@ -18,7 +18,7 @@ package org.kie.api.conf;
 
 
 /**
- * A markup interface for KnowledgeBaseConfiguration options
+ * A markup interface for KieBaseConfiguration options
  */
 public interface SingleValueKieBaseOption
     extends

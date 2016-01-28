@@ -36,18 +36,18 @@ public interface RuleContext extends KieContext {
     Match getMatch();
     
     /**
-     * Logically inserts a fact into the KnowledgeSession, justified by the current
+     * Logically inserts a fact into the KieSession, justified by the current
      * rule context.
      * 
-     * @param object the fact to insert into the knowledge session
+     * @param object the fact to insert into the kie session
      */
     FactHandle insertLogical(Object object);
     
     /**
-     * Logically inserts a fact into the KnowledgeSession, justified by the current
+     * Logically inserts a fact into the KieSession, justified by the current
      * rule context.
      * 
-     * @param object the fact to insert into the knowledge session
+     * @param object the fact to insert into the kie session
      */
     FactHandle insertLogical(Object object, Object value);
     

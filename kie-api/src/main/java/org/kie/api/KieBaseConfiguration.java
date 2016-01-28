@@ -16,7 +16,6 @@
 
 package org.kie.api;
 
-import org.kie.api.PropertiesConfiguration;
 import org.kie.api.conf.KieBaseOptionsConfiguration;
 
 /**
@@ -33,7 +32,7 @@ import org.kie.api.conf.KieBaseOptionsConfiguration;
  * </p>
  * 
  * <p>
- * So if you want to set a default configuration value for all your new KnowledgeBase, you can simply set the property as
+ * So if you want to set a default configuration value for all your new KieBase, you can simply set the property as
  * a System property.
  * </p>
  * 

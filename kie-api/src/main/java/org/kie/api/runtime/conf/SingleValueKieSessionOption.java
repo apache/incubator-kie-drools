@@ -16,12 +16,10 @@
 
 package org.kie.api.runtime.conf;
 
-
 /**
- * A markup interface for SingleValueKnowledgeSessionConfiguration options
+ * A markup interface for SingleValueKieSessionConfiguration options
  */
 public interface SingleValueKieSessionOption
     extends
     KieSessionOption {
-
 }

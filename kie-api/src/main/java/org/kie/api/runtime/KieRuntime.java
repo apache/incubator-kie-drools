@@ -35,7 +35,7 @@ public interface KieRuntime
      * Returns the session clock instance assigned to this session
      * @return
      */
-    public <T extends SessionClock> T getSessionClock();
+    <T extends SessionClock> T getSessionClock();
 
     /**
      * Sets a global value in this session

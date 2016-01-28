@@ -24,7 +24,7 @@ package org.kie.api.runtime;
  * </p>
  *
  * <p>
- * To create a channel, implement the interface and register it with the KnowledgeRuntime:
+ * To create a channel, implement the interface and register it with the KieRuntime:
  * </p>
  * <pre>
  * ...

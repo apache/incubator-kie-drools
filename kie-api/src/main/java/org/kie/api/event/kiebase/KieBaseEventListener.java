@@ -22,79 +22,79 @@ public interface KieBaseEventListener
     extends
     EventListener {
     /**
-     * Method called before a new package is added to the knowledge base
+     * Method called before a new package is added to the {@link org.kie.api.KieBase}
      * @param event
      */
     void beforeKiePackageAdded(BeforeKiePackageAddedEvent event);
 
     /**
-     * Method called after a new package is added to the knowledge base
+     * Method called after a new package is added to the {@link org.kie.api.KieBase}
      * @param event
      */
     void afterKiePackageAdded(AfterKiePackageAddedEvent event);
 
     /**
-     * Method called before a package is removed from the knowledge base
+     * Method called before a package is removed from the {@link org.kie.api.KieBase}
      * @param event
      */
     void beforeKiePackageRemoved(BeforeKiePackageRemovedEvent event);
 
     /**
-     * Method called after a package is removed from the knowledge base
+     * Method called after a package is removed from the {@link org.kie.api.KieBase}
      * @param event
      */
     void afterKiePackageRemoved(AfterKiePackageRemovedEvent event);
 
     /**
-     * Method called before a knowledge base is locked
+     * Method called before a {@link org.kie.api.KieBase} is locked
      * @param event
      */
     void beforeKieBaseLocked(BeforeKieBaseLockedEvent event);
 
     /**
-     * Method called after a knowledge base is locked
+     * Method called after a {@link org.kie.api.KieBase} is locked
      * @param event
      */
     void afterKieBaseLocked(AfterKieBaseLockedEvent event);
 
     /**
-     * Method called before a knowledge base is unlocked
+     * Method called before a {@link org.kie.api.KieBase} is unlocked
      * @param event
      */
     void beforeKieBaseUnlocked(BeforeKieBaseUnlockedEvent event);
 
     /**
-     * Method called after a knowledge base is unlocked
+     * Method called after a {@link org.kie.api.KieBase} is unlocked
      * @param event
      */
     void afterKieBaseUnlocked(AfterKieBaseUnlockedEvent event);
 
     /**
-     * Method called before a new rule is added to the knowledge base
+     * Method called before a new rule is added to the {@link org.kie.api.KieBase}
      * @param event
      */
     void beforeRuleAdded(BeforeRuleAddedEvent event);
 
     /**
-     * Method called after a new rule is added to the knowledge base
+     * Method called after a new rule is added to the {@link org.kie.api.KieBase}
      * @param event
      */
     void afterRuleAdded(AfterRuleAddedEvent event);
 
     /**
-     * Method called before a rule is removed from the knowledge base
+     * Method called before a rule is removed from the {@link org.kie.api.KieBase}
      * @param event
      */
     void beforeRuleRemoved(BeforeRuleRemovedEvent event);
 
     /**
-     * Method called after a rule is removed from the knowledge base
+     * Method called after a rule is removed from the {@link org.kie.api.KieBase}
      * @param event
      */
     void afterRuleRemoved(AfterRuleRemovedEvent event);
 
     /**
-     * Method called before a function is removed from the knowledge base
+     * Method called before a function is removed from the {@link org.kie.api.KieBase}
      * @param event
      */
     void beforeFunctionRemoved(BeforeFunctionRemovedEvent event);
@@ -106,25 +106,25 @@ public interface KieBaseEventListener
     void afterFunctionRemoved(AfterFunctionRemovedEvent event);
 
     /**
-     * Method called before a process is removed from the knowledge base
+     * Method called before a process is removed from the {@link org.kie.api.KieBase}
      * @param event
      */
     void beforeProcessAdded(BeforeProcessAddedEvent event);
 
     /**
-     * Method called after a function is removed from the knowledge base
+     * Method called after a function is removed from the {@link org.kie.api.KieBase}
      * @param event
      */
     void afterProcessAdded(AfterProcessAddedEvent event);
 
     /**
-     * Method called before a function is removed from the knowledge base
+     * Method called before a function is removed from the {@link org.kie.api.KieBase}
      * @param event
      */
     void beforeProcessRemoved(BeforeProcessRemovedEvent event);
 
     /**
-     * Method called after a function is removed from the knowledge base
+     * Method called after a function is removed from the {@link org.kie.api.KieBase}
      * @param event
      */
     void afterProcessRemoved(AfterProcessRemovedEvent event);

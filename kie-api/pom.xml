@@ -43,28 +43,44 @@
           <excludePackageNames>org.kie.util*</excludePackageNames>
           <groups>
             <group>
-              <title>Knowledge Base API</title>
-              <packages>org.kie</packages>
+              <title>KIE Base API</title>
+              <packages>org.kie.api</packages>
             </group>
             <group>
               <title>Builder API</title>
-              <packages>org.kie.api.builder</packages>
+              <packages>org.kie.api.builder*</packages>
             </group>
             <group>
               <title>Definition API</title>
-              <packages>org.kie.definition*</packages>
+              <packages>org.kie.api.definition*</packages>
             </group>
             <group>
-              <title>Event API</title>
-              <packages>org.kie.event*</packages>
+              <title>Configuration API</title>
+              <packages>org.kie.api.conf*</packages>
             </group>
             <group>
               <title>Runtime API</title>
-              <packages>org.kie.runtime*</packages>
+              <packages>org.kie.api.runtime*</packages>
+            </group>
+            <group>
+              <title>Commands API</title>
+              <packages>org.kie.api.command*</packages>
+            </group>
+            <group>
+              <title>Event API</title>
+              <packages>org.kie.api.event*</packages>
             </group>
             <group>
               <title>Time API</title>
-              <packages>org.kie.time*</packages>
+              <packages>org.kie.api.time*</packages>
+            </group>
+            <group>
+              <title>Task API</title>
+              <packages>org.kie.api.task*</packages>
+            </group>
+            <group>
+              <title>CDI Support API</title>
+              <packages>org.kie.api.cdi*</packages>
             </group>
           </groups>
           <!-- Important: this doclet requires Graphviz (the 'dot' command) to be installed.

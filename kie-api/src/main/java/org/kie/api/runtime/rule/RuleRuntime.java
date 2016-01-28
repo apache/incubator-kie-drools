@@ -19,10 +19,10 @@ package org.kie.api.runtime.rule;
 import java.util.Collection;
 
 /**
- * The <code>RuleRuntime</code> is a super-interface for all <code>KieSession</code>s.
- * Although, users are encouraged to use <code>KieSession</code> or <code>KnowledgeRuntime</code>
- * interface instead of <code>RuleRuntime</code> interface, specially because of the <code>dispose()</code> method
- * that is only available in the <code>KieSession</code> interface.  
+ * The {@link RuleRuntime} is a super-interface for all {@link org.kie.api.runtime.KieSession}s.
+ * Although, users are encouraged to use {@link org.kie.api.runtime.KieSession} or {@link org.kie.api.runtime.KieRuntime}
+ * interface instead of {@link RuleRuntime} interface, specially because of the <code>dispose()</code> method
+ * that is only available in the {@link org.kie.api.runtime.KieSession} interface.
  * 
  * @see org.kie.api.runtime.KieSession
  */
@@ -35,8 +35,8 @@ public interface RuleRuntime
      * finish executing this rule's consequence before stopping.</p>
      * <p>This method will not remove active Matches from the Agenda.
      * In case the application later wants to continue firing rules from the point where it stopped,
-     * it should just call <code>org.kie.api.runtime.StatefulKnowledgeSession.fireAllRules()</code> or
-     * <code>org.kie.api.runtime.StatefulKnowledgeSession.fireUntilHalt()</code> again.</p>
+     * it should just call <code>org.kie.api.runtime.KieSession#fireAllRules()</code> or
+     * <code>org.kie.api.runtime.KieSession#fireUntilHalt()</code> again.</p>
      */
     void halt();
 

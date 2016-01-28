@@ -17,7 +17,7 @@
 package org.kie.api.conf;
 
 /**
- * A markup interface for KnowledgeBaseConfiguration options
+ * A markup interface for {@link org.kie.api.KieBaseConfiguration} options.
  */
 public interface KieBaseOption
     extends

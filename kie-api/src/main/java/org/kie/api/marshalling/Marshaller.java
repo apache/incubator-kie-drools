@@ -27,7 +27,7 @@ import org.kie.api.runtime.KieSessionConfiguration;
 public interface Marshaller {
 
     /**
-     * Marshalls the given StatefulKnowledgeSession into the provided OutputStream
+     * Marshalls the given KieSession into the provided OutputStream
      * @param stream
      * @param ksession
      * @throws IOException
@@ -36,8 +36,8 @@ public interface Marshaller {
                   KieSession ksession) throws IOException;
     
     /**
-     * Creates StatefulKnowledgeSession using default KnowledgeSessionConfiguration and 
-     * Environment. It will then unmarshall the stream into the session. Either KnowledgeSessionConfiguration or
+     * Creates KieSession using default KieSessionConfiguration and
+     * Environment. It will then unmarshall the stream into the session. Either KieSessionConfiguration or
      * Environment may be null and it will use the default.
      * 
      * @param stream
@@ -45,12 +45,11 @@ public interface Marshaller {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public KieSession unmarshall(InputStream stream) throws IOException,
-                                                                      ClassNotFoundException;
+    KieSession unmarshall(InputStream stream) throws IOException, ClassNotFoundException;
 
     /**
-     * Creates StatefulKnowledgeSession using the given KnowledgeSessionConfiguration and 
-     * Environment. It will then unmarshall the stream into the session. Either KnowledgeSessionConfiguration or
+     * Creates KieSession using the given KieSessionConfiguration and
+     * Environment. It will then unmarshall the stream into the session. Either KieSessionConfiguration or
      * Environment may be null and it will use the default.
      * 
      * @param stream
@@ -60,13 +59,12 @@ public interface Marshaller {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public KieSession unmarshall(InputStream stream,
-                                               KieSessionConfiguration config,
-                                               Environment environment) throws IOException,
-                                                                      ClassNotFoundException;
+    KieSession unmarshall(InputStream stream,
+                          KieSessionConfiguration config,
+                          Environment environment) throws IOException, ClassNotFoundException;
 
     /**
-     * Unmarshall the stream into the StatefulKnowledgeSession. All existing state in the session will be lost.
+     * Unmarshall the stream into the KieSession. All existing state in the session will be lost.
      *  
      * @param stream
      * @param ksession
@@ -74,14 +72,13 @@ public interface Marshaller {
      * @throws ClassNotFoundException
      */
     void unmarshall(InputStream stream,
-                    KieSession ksession) throws IOException,
-                                                    ClassNotFoundException;
+                    KieSession ksession) throws IOException, ClassNotFoundException;
 
     /**
-     * Returns the MarshallingConfiguration object for this marshaller
+     * Returns the {@link org.kie.api.marshalling.MarshallingConfiguration} object for this marshaller.
      * 
      * @return
      */
-    public MarshallingConfiguration getMarshallingConfiguration();
+    MarshallingConfiguration getMarshallingConfiguration();
 
 }

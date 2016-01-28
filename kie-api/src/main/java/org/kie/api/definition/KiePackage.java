@@ -25,7 +25,7 @@ import org.kie.api.definition.type.FactType;
 import java.util.Collection;
 
 /**
- * This provides a collection of knowledge definitions that can be given to a KnowledgeBase.
+ * This provides a collection of knowledge definitions that can be given to a {@link org.kie.api.KieBase}.
  * The name is used to provide "namespace" separation of those definitions.
  */
 public interface KiePackage {

@@ -16,11 +16,8 @@
 
 package org.kie.api.conf;
 
-
-import org.kie.api.conf.KieBaseOption;
-
 /**
- * A markup interface for MultiValueKnowledgeBaseConfiguration options
+ * A markup interface for MultiValueKieBaseConfiguration options
  */
 public interface MultiValueKieBaseOption
     extends
