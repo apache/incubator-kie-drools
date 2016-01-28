@@ -134,7 +134,7 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
                 // A shuttle that follows a shuttle should have only transportTimeToHub null
                 destinationTransportTimeToHub = null;
             } else {
-                destinationTransportTimeToHub = (destination == null) ? null : destination.getTransportTimeToHub();
+                destinationTransportTimeToHub = destination.getTransportTimeToHub();
             }
         } else {
             destinationTransportTimeToHub = null;

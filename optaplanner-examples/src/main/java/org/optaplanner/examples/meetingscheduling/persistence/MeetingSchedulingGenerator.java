@@ -249,7 +249,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         linkAttendanceListToPersons(meetingSchedule);
         createMeetingAssignmentList(meetingSchedule);
 
-        BigInteger possibleSolutionSize = BigInteger.valueOf(timeGrainListSize * roomListSize)
+        BigInteger possibleSolutionSize = BigInteger.valueOf((long) timeGrainListSize * roomListSize)
                 .pow(meetingSchedule.getMeetingAssignmentList().size());
         logger.info("MeetingSchedule {} has {} meetings, {} timeGrains and {} rooms with a search space of {}.",
                 fileName,

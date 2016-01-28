@@ -61,7 +61,7 @@ public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightF
                 }
             }
         }
-        return new TotalRankSolverRankingWeight(solverBenchmarkResult, betterCount, equalCount);
+        return new TotalRankSolverRankingWeight(solverBenchmarkResult, betterCount, equalCount, lowerCount);
     }
 
     public static class TotalRankSolverRankingWeight implements Comparable<TotalRankSolverRankingWeight> {
@@ -75,7 +75,7 @@ public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightF
         private int lowerCount;
 
         public TotalRankSolverRankingWeight(SolverBenchmarkResult solverBenchmarkResult,
-                int betterCount, int equalCount) {
+                int betterCount, int equalCount, int lowerCount) {
             this.solverBenchmarkResult = solverBenchmarkResult;
             this.betterCount = betterCount;
             this.equalCount = equalCount;

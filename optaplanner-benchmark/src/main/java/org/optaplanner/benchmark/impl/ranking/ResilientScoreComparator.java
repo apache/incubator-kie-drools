@@ -43,7 +43,7 @@ public class ResilientScoreComparator implements Comparator<Score>, Serializable
                 if (aToken.getClass().equals(bToken.getClass())) {
                     comparison = ((Comparable) aToken).compareTo(bToken);
                 } else {
-                    comparison = Double.valueOf(aToken.doubleValue()).compareTo(bToken.doubleValue());
+                    comparison = Double.compare(aToken.doubleValue(), bToken.doubleValue());
                 }
                 if (comparison != 0) {
                     return comparison;

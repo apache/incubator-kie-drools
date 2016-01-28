@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.cheaptime.solver.drools;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -131,6 +132,7 @@ public class MachinePeriodPart {
 
     @Override
     public String toString() {
-        return machine + ", period = " + period + ", active = " + active + ", resourceAvailableList = " + resourceAvailableList;
+        return machine + ", period = " + period + ", active = " + active
+                + ", resourceAvailableList = " + Arrays.toString(resourceAvailableList);
     }
 }

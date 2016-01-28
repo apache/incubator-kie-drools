@@ -109,7 +109,7 @@ public class BasicPlumbingTermination extends AbstractTermination {
         problemFactChangesBeingProcessed = false;
     }
 
-    public boolean isEveryProblemFactChangeProcessed() {
+    public synchronized boolean isEveryProblemFactChangeProcessed() {
         return problemFactChangeQueue.isEmpty() && !problemFactChangesBeingProcessed;
     }
 

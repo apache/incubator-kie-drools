@@ -17,12 +17,13 @@
 package org.optaplanner.examples.common.business;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Locale;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 
-public class ProblemFileComparator implements Comparator<File> {
+public class ProblemFileComparator implements Comparator<File>, Serializable {
 
     private static final AlphaNumericStringComparator ALPHA_NUMERIC_STRING_COMPARATOR = new AlphaNumericStringComparator();
 
