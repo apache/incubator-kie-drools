@@ -105,7 +105,7 @@ public class ReteWorkingMemory extends StatefulKnowledgeSessionImpl {
         liaPropagations.add( liaNodePropagation );
     }
 
-    private final Integer syncLock = 42;
+    private final Object syncLock = new Object();
     public void initInitialFact() {
         if ( initialFactHandle == null ) {
             synchronized ( syncLock ) {
