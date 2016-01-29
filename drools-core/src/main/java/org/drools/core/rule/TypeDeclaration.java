@@ -18,6 +18,7 @@ package org.drools.core.rule;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.factmodel.ClassDefinition;
+import org.drools.core.factmodel.GeneratedFact;
 import org.drools.core.facttemplates.FactTemplate;
 import org.drools.core.facttemplates.FactTemplateObjectType;
 import org.drools.core.spi.InternalReadAccessor;
@@ -307,6 +308,14 @@ public class TypeDeclaration
         if ( this.typeClass != null ) {
             this.typeClassName = this.typeClass.getName();
         }
+    }
+
+    public boolean isDefinition() {
+        return nature == TypeDeclaration.Nature.DEFINITION || isGeneratedFact();
+    }
+
+    public boolean isGeneratedFact() {
+        return typeClass != null && GeneratedFact.class.isAssignableFrom( typeClass );
     }
 
     /**

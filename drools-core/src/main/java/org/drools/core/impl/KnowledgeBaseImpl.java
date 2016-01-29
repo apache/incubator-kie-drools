@@ -1878,7 +1878,8 @@ public class KnowledgeBaseImpl
             for (Process process : processesToBeRemoved) {
                 removeProcess(process);
             }
-            modified |= !rulesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty() || !processesToBeRemoved.isEmpty();
+            List<TypeDeclaration> removedTypes = pkg.removeTypesGeneratedFromResource(resource);
+            modified |= !rulesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty() || !processesToBeRemoved.isEmpty() || !removedTypes.isEmpty();
         }
         return modified;
     }
