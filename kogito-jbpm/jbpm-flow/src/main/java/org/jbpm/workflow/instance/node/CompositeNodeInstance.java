@@ -16,7 +16,8 @@
 
 package org.jbpm.workflow.instance.node;
 
-import java.io.Serializable;
+import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,7 +44,6 @@ import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
-import org.kie.api.runtime.process.EventListener;
 
 /**
  * Runtime counterpart of a composite node.
@@ -90,12 +90,12 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
 			if (node instanceof EventNode) {
 				if ("external".equals(((EventNode) node).getScope())) {
 					getProcessInstance().addEventListener(
-						((EventNode) node).getType(), new DoNothingEventListener(), true);
+						((EventNode) node).getType(), EMPTY_EVENT_LISTENER,  true);
 				}
 			} else if (node instanceof EventSubProcessNode) {
                 List<String> events = ((EventSubProcessNode) node).getEvents();
                 for (String type : events) {
-                    getProcessInstance().addEventListener(type, new DoNothingEventListener(), true);
+                    getProcessInstance().addEventListener(type, EMPTY_EVENT_LISTENER, true);
                 }
             }
     	}
@@ -271,6 +271,7 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
         return nodeInstance;
     }
 
+    @Override
 	public void signalEvent(String type, Object event) {
 		List<NodeInstance> currentView = new ArrayList<NodeInstance>(this.nodeInstances);
 		super.signalEvent(type, event);
@@ -396,15 +397,6 @@ public class CompositeNodeInstance extends StateBasedNodeInstance implements Nod
     		throw new IllegalArgumentException(
     			"Completing a node instance that has no outgoing connection not supported.");
 	    }
-	}
-
-	private static final class DoNothingEventListener implements EventListener, Serializable {
-		private static final long serialVersionUID = 5L;
-		public String[] getEventTypes() {
-			return null;
-		}
-		public void signalEvent(String type, Object event) {
-		}
 	}
 
     public void setState(final int state) {

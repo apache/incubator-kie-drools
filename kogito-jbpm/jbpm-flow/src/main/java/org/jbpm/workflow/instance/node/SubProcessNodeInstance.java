@@ -64,20 +64,20 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Runtime counterpart of a SubFlow node.
- * 
+ *
  * @author <a href="mailto:kris_verlaenen@hotmail.com">Kris Verlaenen</a>
  */
 public class SubProcessNodeInstance extends StateBasedNodeInstance implements EventListener, ContextInstanceContainer {
 
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(SubProcessNodeInstance.class);
-    
+
     // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
     private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<String, List<ContextInstance>>();
-    
+
     private long processInstanceId;
-	
+
     protected SubProcessNode getSubProcessNode() {
         return (SubProcessNode) getNode();
     }
@@ -101,10 +101,10 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
             	DataTransformer transformer = DataTransformerRegistry.get().find(transformation.getLanguage());
             	if (transformer != null) {
             		parameterValue = transformer.transform(transformation.getCompiledExpression(), getSourceParameters(mapping));
-            		
+
             	}
             } else {
-        	
+
 	            VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
 	                resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getSources().get(0));
 	            if (variableScopeInstance != null) {
@@ -125,7 +125,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 	            }
             }
             if (parameterValue != null) {
-            	parameters.put(mapping.getTarget(),parameterValue); 
+            	parameters.put(mapping.getTarget(),parameterValue);
             }
         }
         String processId = getSubProcessNode().getProcessId();
@@ -143,7 +143,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                 	resolveContextInstance(VariableScope.VARIABLE_SCOPE, paramName);
                 if (variableScopeInstance != null) {
                     Object variableValue = variableScopeInstance.getVariable(paramName);
-                	String variableValueString = variableValue == null ? "" : variableValue.toString(); 
+                	String variableValueString = variableValue == null ? "" : variableValue.toString();
 	                replacements.put(paramName, variableValueString);
                 } else {
                 	try {
@@ -164,17 +164,17 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         KieBase kbase = ((ProcessInstance) getProcessInstance()).getKnowledgeRuntime().getKieBase();
         // start process instance
         Process process = kbase.getProcess(processId);
-        
+
         if (process == null) {
             // try to find it by name
             String latestProcessId = StartProcessHelper.findLatestProcessByName(kbase, processId);
             if (latestProcessId != null) {
                 processId = latestProcessId;
                 process = kbase.getProcess(processId);
-            
+
             }
         }
-        
+
         if (process == null) {
             logger.error("Could not find process {}", processId);
             logger.error("Aborting process");
@@ -191,15 +191,15 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                 // remove foreach input variable to avoid problems when running in variable strict mode
                 parameters.remove(getSubProcessNode().getMetaData("MICollectionInput"));
             }
-            
+
 	    	ProcessInstance processInstance = ( ProcessInstance ) kruntime.createProcessInstance(processId, parameters);
 	    	this.processInstanceId = processInstance.getId();
 	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentProcessInstanceId", getProcessInstance().getId());
 	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentNodeInstanceId", getUniqueId());
-	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());	    	
+	    	((ProcessInstanceImpl) processInstance).setMetaData("ParentNodeId", getSubProcessNode().getUniqueId());
 	    	((ProcessInstanceImpl) processInstance).setParentProcessInstanceId(getProcessInstance().getId());
 	    	((ProcessInstanceImpl) processInstance).setSignalCompletion(getSubProcessNode().isWaitForCompletion());
-	    	
+
 	    	kruntime.startProcessInstance(processInstance.getId());
 	    	if (!getSubProcessNode().isWaitForCompletion()) {
 	    		triggerCompleted();
@@ -211,7 +211,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 	    	}
         }
     }
-    
+
     public void cancel() {
         super.cancel();
         if (getSubProcessNode() == null || !getSubProcessNode().isIndependent()) {
@@ -223,19 +223,19 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                 KnowledgeRuntime managedkruntime = (KnowledgeRuntime) runtime.getKieSession();
         		processInstance = (ProcessInstance) managedkruntime.getProcessInstance(processInstanceId);
         	} else {
-        		processInstance = (ProcessInstance) kruntime.getProcessInstance(processInstanceId);	
+        		processInstance = (ProcessInstance) kruntime.getProcessInstance(processInstanceId);
         	}
-            
+
             if (processInstance != null) {
             	processInstance.setState(ProcessInstance.STATE_ABORTED);
             }
         }
     }
-    
+
     public long getProcessInstanceId() {
     	return processInstanceId;
     }
-    
+
     public void internalSetProcessInstanceId(long processInstanceId) {
     	this.processInstanceId = processInstanceId;
     }
@@ -244,7 +244,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         super.addEventListeners();
         addProcessListener();
     }
-    
+
     private void addProcessListener() {
     	getProcessInstance().addEventListener("processInstanceCompleted:" + processInstanceId, this, true);
     }
@@ -254,6 +254,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
         getProcessInstance().removeEventListener("processInstanceCompleted:" + processInstanceId, this, true);
     }
 
+    @Override
 	public void signalEvent(String type, Object event) {
 		if (("processInstanceCompleted:" + processInstanceId).equals(type)) {
 			processInstanceCompleted((ProcessInstance) event);
@@ -261,21 +262,22 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 			super.signalEvent(type, event);
 		}
 	}
-    
+
+    @Override
     public String[] getEventTypes() {
     	return new String[] { "processInstanceCompleted:" + processInstanceId };
     }
-    
+
     public void processInstanceCompleted(ProcessInstance processInstance) {
         removeEventListeners();
         handleOutMappings(processInstance);
         if (processInstance.getState() == ProcessInstance.STATE_ABORTED) {
             String faultName = processInstance.getOutcome()==null?"":processInstance.getOutcome();
             // handle exception as sub process failed with error code
-            ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance) 
+            ExceptionScopeInstance exceptionScopeInstance = (ExceptionScopeInstance)
                     resolveContextInstance(ExceptionScope.EXCEPTION_SCOPE, faultName);
             if (exceptionScopeInstance != null) {
-                
+
                 exceptionScopeInstance.handleException(faultName, processInstance.getFaultData());
                 cancel();
                 return;
@@ -283,13 +285,13 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                 ((ProcessInstance) getProcessInstance()).setState(ProcessInstance.STATE_ABORTED, faultName);
                 return;
             }
-            
-        }      
+
+        }
         // if there were no exception proceed normally
         triggerCompleted();
-        
+
     }
-    
+
     private void handleOutMappings(ProcessInstance processInstance) {
         VariableScopeInstance subProcessVariableScopeInstance = (VariableScopeInstance)
 	        processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
@@ -305,12 +307,12 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
                 		VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
                         resolveContextInstance(VariableScope.VARIABLE_SCOPE, mapping.getTarget());
                         if (variableScopeInstance != null && parameterValue != null) {
-                              
+
                             variableScopeInstance.setVariable(mapping.getTarget(), parameterValue);
                         } else {
                             logger.warn("Could not find variable scope for variable {}", mapping.getTarget());
                             logger.warn("Continuing without setting variable.");
-                        }                		
+                        }
                 	}
                 } else {
 			        VariableScopeInstance variableScopeInstance = (VariableScopeInstance)
@@ -334,7 +336,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 		    }
         }
     }
-    
+
     public String getNodeName() {
     	Node node = getNode();
     	if (node == null) {
@@ -342,7 +344,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
     	}
     	return super.getNodeName();
     }
-    
+
 
     @Override
     public List<ContextInstance> getContextInstances(String contextId) {
@@ -397,7 +399,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
     public ContextContainer getContextContainer() {
         return getSubProcessNode();
     }
-    
+
     protected Map<String, Object> getSourceParameters(DataAssociation association) {
     	Map<String, Object> parameters = new HashMap<String, Object>();
     	for (String sourceParam : association.getSources()) {
@@ -417,7 +419,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
 	        	parameters.put(association.getTarget(), parameterValue);
 	        }
     	}
-    	
+
     	return parameters;
     }
 

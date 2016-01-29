@@ -16,7 +16,8 @@
 
 package org.jbpm.workflow.instance.impl;
 
-import java.io.Serializable;
+import static org.jbpm.workflow.instance.impl.DummyEventListener.EMPTY_EVENT_LISTENER;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -78,6 +79,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 
 	private Map<String, List<EventListener>> eventListeners = new HashMap<String, List<EventListener>>();
 	private Map<String, List<EventListener>> externalEventListeners = new HashMap<String, List<EventListener>>();
+
 	private List<String> completedNodeIds = new ArrayList<String>();
 	private List<String> activatingNodeIds;
 	private Map<String, Integer> iterationLevels = new HashMap<String, Integer>();
@@ -424,13 +426,12 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		for (Node node : getWorkflowProcess().getNodes()) {
 			if (node instanceof EventNode) {
 				if ("external".equals(((EventNode) node).getScope())) {
-					addEventListener(((EventNode) node).getType(),
-						new ExternalEventListener(), true);
+					addEventListener(((EventNode) node).getType(), EMPTY_EVENT_LISTENER, true);
 				}
             } else if (node instanceof EventSubProcessNode) {
                 List<String> events = ((EventSubProcessNode) node).getEvents();
                 for (String type : events) {
-                    addEventListener(type, new ExternalEventListener(), true);
+                    addEventListener(type, EMPTY_EVENT_LISTENER, true);
                 }
             }
 		}
@@ -508,10 +509,8 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 		}
 	}
 
-	public void addEventListener(String type, EventListener listener,
-			boolean external) {
-		Map<String, List<EventListener>> eventListeners =
-			external ? this.externalEventListeners : this.eventListeners;
+	public void addEventListener(String type, EventListener listener, boolean external) {
+		Map<String, List<EventListener>> eventListeners = external ? this.externalEventListeners : this.eventListeners;
 		List<EventListener> listeners = eventListeners.get(type);
 		if (listeners == null) {
 			listeners = new CopyOnWriteArrayList<EventListener>();
@@ -525,11 +524,10 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public void removeEventListener(String type, EventListener listener, boolean external) {
-		Map<String, List<EventListener>> eventListeners = external ? this.externalEventListeners
-				: this.eventListeners;
+		Map<String, List<EventListener>> eventListeners = external ? this.externalEventListeners : this.eventListeners;
 		List<EventListener> listeners = eventListeners.get(type);
 		if (listeners != null) {
-			listeners.remove(listener);
+		    listeners.remove(listener);
 			if (listeners.isEmpty()) {
 				eventListeners.remove(type);
 				if (external) {
@@ -551,8 +549,7 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
 	}
 
 	public String[] getEventTypes() {
-		return externalEventListeners.keySet().toArray(
-				new String[externalEventListeners.size()]);
+		return externalEventListeners.keySet().toArray(new String[externalEventListeners.size()]);
 	}
 
 	public void nodeInstanceCompleted(NodeInstance nodeInstance, String outType) {
@@ -576,16 +573,6 @@ public abstract class WorkflowProcessInstanceImpl extends ProcessInstanceImpl
             throw new IllegalArgumentException(
                     "Completing a node instance that has no outgoing connection is not supported.");
         }
-	}
-
-	private class ExternalEventListener implements EventListener, Serializable {
-		private static final long serialVersionUID = 5L;
-		public String[] getEventTypes() {
-			return null;
-		}
-		public void signalEvent(String type,
-				Object event) {
-		}
 	}
 
 	private boolean canComplete() {
