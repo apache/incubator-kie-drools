@@ -63,6 +63,8 @@ public class TaskHandler extends AbstractNodeHandler {
     	super.handleNode(node, element, uri, localName, parser);
     	
     	itemDefinitions = (Map<String, ItemDefinition>)((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
+    	dataTypeInputs.clear();
+    	dataTypeOutputs.clear();
     	
     	WorkItemNode workItemNode = (WorkItemNode) node;
         String name = getTaskName(element);
