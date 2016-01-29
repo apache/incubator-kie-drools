@@ -56,8 +56,10 @@ public class TypeDeclarationFactory {
             // if is not new, search the already existing declaration and
             // compare them o see if they are at least compatibles
             // check whether it is necessary to build the class or not
-            type.setNovel( TypeDeclarationUtils.isNovelClass( typeDescr, pkgRegistry ) );
-            type.setNature( type.isNovel() ? TypeDeclaration.Nature.DEFINITION : TypeDeclaration.Nature.DECLARATION );
+            Class<?> existingClass = TypeDeclarationUtils.getExistingDeclarationClass( typeDescr, pkgRegistry );
+            type.setTypeClass( existingClass );
+            type.setNovel( existingClass == null );
+            type.setNature( existingClass == null ? TypeDeclaration.Nature.DEFINITION : TypeDeclaration.Nature.DECLARATION );
         }
 
         processTypeAnnotations(typeDescr, type);
@@ -95,7 +97,7 @@ public class TypeDeclarationFactory {
         try {
             // if there is no previous declaration, then the original declaration was a POJO
             // to the behavior previous these changes
-            if ( previousTypeDeclaration == null ) {
+            if ( !type.isDefinition() ) {
                 // new declarations of a POJO can't declare new fields,
                 // except if the POJO was previously generated/compiled and saved into the kjar
                 Class<?> existingDeclarationClass = TypeDeclarationUtils.getExistingDeclarationClass( typeDescr, pkgRegistry );
@@ -147,7 +149,7 @@ public class TypeDeclarationFactory {
                         kbuilder.addBuilderResult( new TypeDeclarationError( typeDescr, "Unable to redeclare " + typeDescr.getType().getFullName() + " : " + e.getMessage() ) );
                     }
                 }
-            } else {
+            } else if (previousTypeDeclaration != null) { // previous declaration can be null during an incremental compilation
 
                 int typeComparisonResult = this.compareTypeDeclarations(previousTypeDeclaration, type);
 

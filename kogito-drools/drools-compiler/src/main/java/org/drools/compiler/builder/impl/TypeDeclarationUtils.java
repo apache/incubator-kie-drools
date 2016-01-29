@@ -210,25 +210,6 @@ public class TypeDeclarationUtils {
         return getExistingDeclarationClass( typeDescr, reg ) == null;
     }
 
-    /*
-    public static String lookupSimpleNameByImportStar( AbstractClassTypeDeclarationDescr typeDescr, TypeResolver resolver ) {
-        if ( isEmpty(typeDescr.getNamespace()) && typeDescr.getFields().isEmpty() ) {
-            // might be referencing a class imported with a package import (.*)
-
-            if (resolver != null) {
-                try {
-                    Class<?> clz = resolver.resolveType( typeDescr.getTypeName() );
-                    return clz.getName();
-                } catch (Exception e) {
-                    // intentionally eating the exception as we will fallback to default namespace
-                }
-            }
-        }
-        return null;
-    }
-    */
-
-
     public static String rewriteInitExprWithImports( String expr,
                                                      TypeResolver typeResolver ) {
         if (expr == null) {

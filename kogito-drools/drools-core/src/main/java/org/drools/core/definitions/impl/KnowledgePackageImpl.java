@@ -629,7 +629,7 @@ public class KnowledgePackageImpl
         if ( decl == null ) {
             return null;
         } else {
-            if ( decl.getNature() == TypeDeclaration.Nature.DEFINITION ) {
+            if ( decl.isDefinition() ) {
                 return decl.getTypeClassDef();
             } else {
                 throw new UnsupportedOperationException( "KieBase.getFactType should only be used to retrieve declared beans. Class " + typeName + " exists outside DRL " );
@@ -692,7 +692,13 @@ public class KnowledgePackageImpl
 
     public boolean removeObjectsGeneratedFromResource(Resource resource) {
         List<RuleImpl> rulesToBeRemoved = removeRulesGeneratedFromResource(resource);
+        List<TypeDeclaration> typesToBeRemoved = removeTypesGeneratedFromResource( resource );
+        List<Function> functionsToBeRemoved = removeFunctionsGeneratedFromResource(resource);
+        List<Process> processesToBeRemoved = removeProcessesGeneratedFromResource(resource);
+        return !rulesToBeRemoved.isEmpty() || !typesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty() || !processesToBeRemoved.isEmpty();
+    }
 
+    public List<TypeDeclaration> removeTypesGeneratedFromResource( Resource resource ) {
         List<TypeDeclaration> typesToBeRemoved = getTypesGeneratedFromResource(resource);
         if (!typesToBeRemoved.isEmpty()) {
             JavaDialectRuntimeData dialect = (JavaDialectRuntimeData) getDialectRuntimeRegistry().getDialectData( "java" );
@@ -707,10 +713,7 @@ public class KnowledgePackageImpl
             }
             dialect.reload();
         }
-
-        List<Function> functionsToBeRemoved = removeFunctionsGeneratedFromResource(resource);
-
-        return !rulesToBeRemoved.isEmpty() || !typesToBeRemoved.isEmpty() || !functionsToBeRemoved.isEmpty();
+        return typesToBeRemoved;
     }
 
     public List<RuleImpl> removeRulesGeneratedFromResource(Resource resource) {
@@ -721,7 +724,7 @@ public class KnowledgePackageImpl
         return rulesToBeRemoved;
     }
 
-    public List<RuleImpl> getRulesGeneratedFromResource(Resource resource) {
+    private List<RuleImpl> getRulesGeneratedFromResource(Resource resource) {
         List<RuleImpl> rulesFromResource = new ArrayList<RuleImpl>();
         for (RuleImpl rule : rules.values()) {
             if (resource.equals(rule.getResource())) {
@@ -731,7 +734,7 @@ public class KnowledgePackageImpl
         return rulesFromResource;
     }
 
-    public List<TypeDeclaration> getTypesGeneratedFromResource(Resource resource) {
+    private List<TypeDeclaration> getTypesGeneratedFromResource(Resource resource) {
         List<TypeDeclaration> typesFromResource = new ArrayList<TypeDeclaration>();
         for (TypeDeclaration type : typeDeclarations.values()) {
             if (resource.equals(type.getResource())) {
@@ -749,7 +752,7 @@ public class KnowledgePackageImpl
         return functionsToBeRemoved;
     }
 
-    public List<Function> getFunctionsGeneratedFromResource(Resource resource) {
+    private List<Function> getFunctionsGeneratedFromResource(Resource resource) {
         List<Function> functionsFromResource = new ArrayList<Function>();
         for (Function function : functions.values()) {
             if (resource.equals(function.getResource())) {
@@ -771,7 +774,7 @@ public class KnowledgePackageImpl
         ruleFlows.remove(process.getId());
     }
 
-    public List<Process> getProcessesGeneratedFromResource(Resource resource) {
+    private List<Process> getProcessesGeneratedFromResource(Resource resource) {
         List<Process> processesFromResource = new ArrayList<Process>();
         for (Process process : ruleFlows.values()) {
             if (resource.equals(process.getResource())) {

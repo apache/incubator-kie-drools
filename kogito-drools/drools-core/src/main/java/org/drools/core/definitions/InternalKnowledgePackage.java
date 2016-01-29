@@ -82,6 +82,7 @@ public interface InternalKnowledgePackage extends KnowledgePackage, Externalizab
     void removeGlobal( String identifier );
 
     boolean removeObjectsGeneratedFromResource(Resource resource);
+    List<TypeDeclaration> removeTypesGeneratedFromResource(Resource resource);
     List<RuleImpl> removeRulesGeneratedFromResource(Resource resource);
     List<Function> removeFunctionsGeneratedFromResource(Resource resource);
     List<Process> removeProcessesGeneratedFromResource(Resource resource);
