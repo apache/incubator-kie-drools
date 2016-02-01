@@ -163,21 +163,21 @@ public class ClassFieldInspector {
             // modifiers mask
             final int mask = includeFinalMethods ? Modifier.PUBLIC : Modifier.PUBLIC | Modifier.FINAL;
 
-            if ( ( ( method.getModifiers() & mask ) == Opcodes.ACC_PUBLIC ) && ( method.getParameterTypes().length == 0 ) && ( !method.getName().equals( "<init>" ) ) && ( !method.getName().equals( "<clinit>" ) )
-                 && ( method.getReturnType() != void.class ) ) {
+            if ( ( method.getModifiers() & mask ) == Opcodes.ACC_PUBLIC ) {
+                if ( method.getParameterTypes().length == 0 &&
+                     !method.getName().equals( "<init>" ) && !method.getName().equals( "<clinit>" ) &&
+                     method.getReturnType() != void.class && !method.isDefault() ) {
 
-                // want public methods that start with 'get' or 'is' and have no args, and return a value
-                final int fieldIndex = this.fieldNames.size();
-                addToMapping( method,
-                              fieldIndex );
+                    // want public methods that start with 'get' or 'is' and have no args, and return a value
+                    final int fieldIndex = this.fieldNames.size();
+                    addToMapping( method, fieldIndex );
 
-            } else if ( ( ( method.getModifiers() & mask ) == Opcodes.ACC_PUBLIC ) && ( method.getParameterTypes().length == 1 ) && ( method.getName().startsWith( "set" ) ) ) {
+                } else if ( method.getParameterTypes().length == 1 && method.getName().startsWith( "set" ) ) {
 
-                // want public methods that start with 'set' and have one arg
-                final int fieldIndex = this.fieldNames.size();
-                addToMapping( method,
-                              fieldIndex );
-
+                    // want public methods that start with 'set' and have one arg
+                    final int fieldIndex = this.fieldNames.size();
+                    addToMapping( method, fieldIndex );
+                }
             }
         }
 
