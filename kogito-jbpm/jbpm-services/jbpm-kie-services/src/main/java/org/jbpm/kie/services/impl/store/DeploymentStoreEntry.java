@@ -25,17 +25,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-@NamedQueries(value={
-		@NamedQuery(name="getDeploymentUnit", query="select d from DeploymentStoreEntry d where d.deploymentId=:deploymentId"),
-		@NamedQuery(name="getDeploymentUnitsByDate", query="select d from DeploymentStoreEntry d where d.updateDate >= :ludate"),
-		@NamedQuery(name="getDeploymentUnitsByState", query="select d from DeploymentStoreEntry d where d.state in (:state)")
-})
+/*
+ * Named queries defined in services orm file
+ */
 @Entity
 @Table(name="DeploymentStore", uniqueConstraints={@UniqueConstraint(columnNames="DEPLOYMENT_ID")})
 @SequenceGenerator(name="deploymentStoreIdSeq", sequenceName="DEPLOY_STORE_ID_SEQ", allocationSize=1)

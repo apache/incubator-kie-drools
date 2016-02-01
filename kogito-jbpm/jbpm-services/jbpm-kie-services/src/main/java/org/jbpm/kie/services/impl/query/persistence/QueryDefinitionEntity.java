@@ -22,8 +22,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -32,10 +30,9 @@ import org.jbpm.kie.services.impl.query.SqlQueryDefinition;
 import org.jbpm.services.api.query.model.QueryDefinition;
 import org.jbpm.services.api.query.model.QueryDefinition.Target;
 
-@NamedQueries(value={
-        @NamedQuery(name="getQueryDefinitions", query="select qd from QueryDefinitionEntity qd"),
-        @NamedQuery(name="getQueryDefinitionByName", query="select qd from QueryDefinitionEntity qd where name = :name")
-})
+/*
+ * Named queries defined in services orm file
+ */
 @Entity
 @Table(name="QueryDefinitionStore", uniqueConstraints={@UniqueConstraint(columnNames="qName")})
 @SequenceGenerator(name="queryDefIdSeq", sequenceName="QUERY_DEF_ID_SEQ", allocationSize=1)

@@ -617,4 +617,47 @@
     <!-- hint name="org.hibernate.timeout" value="200"/ -->
   </named-query>
 
+  <!-- deployment store named queries -->
+  <named-query name="getDeploymentUnit">
+
+    <query>
+      select d from DeploymentStoreEntry d where d.deploymentId=:deploymentId
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+  <named-query name="getDeploymentUnitsByDate">
+
+    <query>
+      select d from DeploymentStoreEntry d where d.updateDate >= :ludate
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+  
+  <named-query name="getDeploymentUnitsByState">
+
+    <query>
+      select d from DeploymentStoreEntry d where d.state in (:state)
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+  
+  <!-- query definitions storage named queries -->
+  <named-query name="getQueryDefinitionByName">
+
+    <query>
+      select qd from QueryDefinitionEntity qd where name = :name
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
+  
+  <named-query name="getQueryDefinitions">
+
+    <query>
+      select qd from QueryDefinitionEntity qd
+    </query>
+    <!-- hint name="org.hibernate.timeout" value="200"/ -->
+  </named-query>
 </entity-mappings>
