@@ -176,7 +176,7 @@ public class KModuleDeploymentService extends AbstractDeploymentService {
     	        	processResources(depModule, files, kieContainer, kmoduleUnit, deployedUnit, depModule.getReleaseId(), processDescriptors);
     	        }
             }
-            Collection<ReleaseId> dependencies = module.getJarDependencies(new DependencyFilter.ExcludeScopeFilter("test"));
+            Collection<ReleaseId> dependencies = module.getJarDependencies(new DependencyFilter.ExcludeScopeFilter("test", "provided"));
 
             // process deployment dependencies
             if (dependencies != null && !dependencies.isEmpty()) {
