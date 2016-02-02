@@ -32,6 +32,7 @@ import org.drools.template.parser.DecisionTableParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -79,8 +80,30 @@ public class ExcelParser
 
     public void parseFile( InputStream inStream ) {
         try {
-            Workbook workbook = WorkbookFactory.create( inStream );
+            parseWorkbook( WorkbookFactory.create( inStream ) );
+        } catch ( InvalidFormatException e ) {
+            throw new DecisionTableParseException( "An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
+                                                   e );
+        } catch ( IOException e ) {
+            throw new DecisionTableParseException( "Failed to open Excel stream, " + "please check that the content is xls97 format.",
+                                                   e );
+        }
+    }
 
+    public void parseFile( File file ) {
+        try {
+            parseWorkbook( WorkbookFactory.create( file ) );
+        } catch ( InvalidFormatException e ) {
+            throw new DecisionTableParseException( "An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
+                                                   e );
+        } catch ( IOException e ) {
+            throw new DecisionTableParseException( "Failed to open Excel stream, " + "please check that the content is xls97 format.",
+                                                   e );
+        }
+    }
+
+    public void parseWorkbook( Workbook workbook ) {
+        try {
             if ( _useFirstSheet ) {
                 Sheet sheet = workbook.getSheetAt( 0 );
                 processSheet( sheet, _listeners.get( DEFAULT_RULESHEET_NAME ) );
@@ -89,22 +112,20 @@ public class ExcelParser
                     Sheet sheet = workbook.getSheet( sheetName );
                     if ( sheet == null ) {
                         throw new IllegalStateException( "Could not find the sheetName (" + sheetName
-                                                                 + ") in the workbook sheetNames." );
+                                                         + ") in the workbook sheetNames." );
                     }
-                    processSheet( sheet,
+                    processSheet                              ( sheet,
                                   _listeners.get( sheetName ) );
 
                 }
             }
-        } catch ( InvalidFormatException e ) {
-            throw new DecisionTableParseException( "An error occurred opening the workbook. It is possible that the encoding of the document did not match the encoding of the reader.",
-                                                   e );
-
-        } catch ( IOException e ) {
-            throw new DecisionTableParseException( "Failed to open Excel stream, " + "please check that the content is xls97 format.",
-                                                   e );
+        } finally {
+            try {
+                workbook.close();
+            } catch (IOException e) {
+                throw new RuntimeException( e );
+            }
         }
-
     }
 
     private CellRangeAddress[] getMergedCells( Sheet sheet ) {
