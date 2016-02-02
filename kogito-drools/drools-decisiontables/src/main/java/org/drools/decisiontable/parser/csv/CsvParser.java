@@ -16,17 +16,20 @@
 
 package org.drools.decisiontable.parser.csv;
 
+import org.drools.core.util.IoUtils;
+import org.drools.decisiontable.parser.DecisionTableParser;
+import org.drools.template.parser.DataListener;
+import org.drools.template.parser.DecisionTableParseException;
+
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.drools.core.util.IoUtils;
-import org.drools.decisiontable.parser.DecisionTableParser;
-import org.drools.template.parser.DataListener;
-import org.drools.template.parser.DecisionTableParseException;
 
 /**
  * Csv implementation. This implementation removes empty "cells" at the end of
@@ -63,6 +66,15 @@ public class CsvParser implements DecisionTableParser {
             processRows(reader);
             finishSheet();
         } catch (final IOException e) {
+            throw new DecisionTableParseException(
+                    "An error occurred reading the CSV data.", e);
+        }
+    }
+
+    public void parseFile(final File file) {
+        try {
+            parseFile( new FileInputStream( file ) );
+        } catch (FileNotFoundException e) {
             throw new DecisionTableParseException(
                     "An error occurred reading the CSV data.", e);
         }

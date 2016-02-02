@@ -401,7 +401,7 @@ public class KnowledgeBuilderImpl implements KnowledgeBuilder {
             return compositePackageDescr;
         }
 
-        String generatedDrl = DecisionTableFactory.loadFromInputStream(resource.getInputStream(), dtableConfiguration);
+        String generatedDrl = DecisionTableFactory.loadFromResource(resource, dtableConfiguration);
         return generatedDrlToPackageDescr( resource, generatedDrl );
     }
 

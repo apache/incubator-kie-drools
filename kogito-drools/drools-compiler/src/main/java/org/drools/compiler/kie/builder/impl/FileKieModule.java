@@ -15,16 +15,18 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import org.drools.core.util.IoUtils;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieModuleModel;
+import org.kie.api.io.Resource;
+import org.kie.internal.io.ResourceFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
 
-import org.drools.core.util.IoUtils;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.builder.model.KieModuleModel;
+import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class FileKieModule extends AbstractKieModule implements InternalKieModule {
     private final File             file;   
@@ -65,6 +67,11 @@ public class FileKieModule extends AbstractKieModule implements InternalKieModul
         }
     }
 
+    @Override
+    public Resource getResource( String fileName ) {
+        File resource = new File( file, fileName);
+        return resource.exists() ? ResourceFactory.newFileResource( resource ) : null;
+    }
 
     @Override
     public Collection<String> getFileNames() {

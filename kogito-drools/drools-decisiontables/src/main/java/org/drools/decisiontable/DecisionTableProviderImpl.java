@@ -37,11 +37,14 @@ public class DecisionTableProviderImpl
 
     private static final transient Logger logger = LoggerFactory.getLogger( DecisionTableProviderImpl.class );
 
-    public String loadFromInputStream(InputStream is,
-                                      DecisionTableConfiguration configuration) {
+    public String loadFromResource(Resource resource,
+                                   DecisionTableConfiguration configuration) {
 
-        return compileStream( is,
-                              configuration );
+        try {
+            return compileResource( resource, configuration );
+        } catch (IOException e) {
+            throw new RuntimeException( e );
+        }
     }
 
     public List<String> loadFromInputStreamWithTemplates(Resource resource,
@@ -58,8 +61,8 @@ public class DecisionTableProviderImpl
         return drls;
     }
 
-    private String compileStream(InputStream is,
-                                 DecisionTableConfiguration configuration) {
+    private String compileResource(Resource resource,
+                                   DecisionTableConfiguration configuration) throws IOException {
         SpreadsheetCompiler compiler = new SpreadsheetCompiler();
 
         //JBRULES-3005: Sensible default when DecisionTableConfiguration is not provided
@@ -72,14 +75,14 @@ public class DecisionTableProviderImpl
             case XLS :
             case XLSX :
                 if ( StringUtils.isEmpty( configuration.getWorksheetName() ) ) {
-                    return compiler.compile( is,
+                    return compiler.compile( resource,
                                              InputType.XLS );
                 } else {
-                    return compiler.compile( is,
+                    return compiler.compile( resource.getInputStream(),
                                              configuration.getWorksheetName() );
                 }
             case CSV : {
-                return compiler.compile( is,
+                return compiler.compile( resource.getInputStream(),
                                          InputType.CSV );
             }
         }
