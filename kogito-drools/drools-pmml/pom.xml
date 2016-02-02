@@ -88,7 +88,7 @@
             </goals>
             <configuration>
               <sources>
-                <source>${basedir}/target/generated-sources</source>
+                <source>${project.basedir}/target/generated-sources</source>
               </sources>
             </configuration>
           </execution>
@@ -107,13 +107,18 @@
           </execution>
         </executions>
         <configuration>
-          <outputDirectory>${basedir}/target/generated-sources/java</outputDirectory>
+          <outputDirectory>${project.basedir}/target/generated-sources/java</outputDirectory>
           <packageName>org.dmg.pmml.pmml_4_2.descr</packageName>
-          <schemaDirectory>${basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_2</schemaDirectory>
-          <bindingDirectory>${basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_2</bindingDirectory>
+          <sources>
+            <source>${project.basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_2/pmml-4-2.xsd</source>
+          </sources>
+          <xjbSources>
+            <xjbSource>${project.basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_2/bindings.xjb</xjbSource>
+            <xjbSource>${project.basedir}/src/main/resources/xsd/org/dmg/pmml/pmml_4_2/bindings.xml</xjbSource>
+          </xjbSources>
+          <noGeneratedHeaderComments>true</noGeneratedHeaderComments>
           <extension>true</extension>
           <clearOutputDir>false</clearOutputDir>
-          <arguments>-no-header</arguments>
         </configuration>
       </plugin>
 
