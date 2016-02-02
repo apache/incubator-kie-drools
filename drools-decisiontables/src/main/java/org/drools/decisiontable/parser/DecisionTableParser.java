@@ -16,6 +16,7 @@
 
 package org.drools.decisiontable.parser;
 
+import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -25,5 +26,10 @@ public interface DecisionTableParser {
     /**
      * Parse an input stream, store the resulting rulebase.
      */
-    public void parseFile(InputStream inStream);
+    void parseFile(InputStream inStream);
+
+    /**
+     * Parse a file, store the resulting rulebase.
+     */
+    void parseFile(File file);
 }
