@@ -87,67 +87,48 @@
           <additionalparam>-umlautogen</additionalparam-->
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.revapi</groupId>
+        <artifactId>revapi-maven-plugin</artifactId>
+        <configuration>
+          <oldArtifacts>
+            <artifact>${project.groupId}:${project.artifactId}:6.3.0.Final</artifact>
+          </oldArtifacts>
+          <newArtifacts>
+            <!-- The special 'BUILD' GAV is used to specify artifacts that were produced during the build of the current project. -->
+            <artifact>BUILD</artifact>
+          </newArtifacts>
+          <analysisConfigurationFiles>
+            <configurationFile>
+              <path>src/build/revapi-config.json</path>
+            </configurationFile>
+          </analysisConfigurationFiles>
+        </configuration>
+        <!-- Running two executions is a workaround to make sure we get a HTML report in case revapi finds
+             some incompatible changes. The "check" goal will simply fail the whole build before it could get
+             to the report. To make sure we always get a HTML report, the "report" goal needs to be executed
+             before the "check" goal.
+             Once https://github.com/revapi/revapi/issues/11 is fixed it should be possible to use single execution. -->
+        <executions>
+          <execution>
+            <id>check</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+          <execution>
+            <!-- report can be found in ${build.directory}/site/revapi-report.html -->
+            <id>report</id>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <phase>package</phase>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
-
-  <profiles>
-    <!-- Checks a backward compatibility of the KIE API. By default, the current build is checked against the last
-         released (non-SNAPSHOT) version. The check can't be added directly to the default builds as it requires Java 8,
-         to run. Once KIE moves to JDK 8 for builds, the check should be moved directly to the default build. -->
-    <profile>
-      <id>api-compatibility-check</id>
-      <properties>
-        <jdk.min.version>1.8.0</jdk.min.version>
-      </properties>
-      <activation>
-        <jdk>[1.8,)</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.revapi</groupId>
-            <artifactId>revapi-maven-plugin</artifactId>
-            <configuration>
-              <oldArtifacts>
-                <artifact>${project.groupId}:${project.artifactId}:6.3.0.Final</artifact>
-              </oldArtifacts>
-              <newArtifacts>
-                <!-- The special 'BUILD' GAV is used to specify artifacts that were produced during the build of the current project. -->
-                <artifact>BUILD</artifact>
-              </newArtifacts>
-              <analysisConfigurationFiles>
-                <configurationFile>
-                  <path>src/build/revapi-config.json</path>
-                </configurationFile>
-              </analysisConfigurationFiles>
-            </configuration>
-            <!-- Running two executions is a workaround to make sure we get a HTML report in case revapi finds
-                 some incompatible changes. The "check" goal will simply fail the whole build before it could get
-                 to the report. To make sure we always get a HTML report, the "report" goal needs to be executed
-                 before the "check" goal.
-                 Once https://github.com/revapi/revapi/issues/11 is fixed it should be possible to use single execution. -->
-            <executions>
-              <execution>
-                <id>check</id>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-                <phase>verify</phase>
-              </execution>
-              <execution>
-                <!-- report can be found in ${build.directory}/site/revapi-report.html -->
-                <id>report</id>
-                <goals>
-                  <goal>report</goal>
-                </goals>
-                <phase>package</phase>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 
   <dependencies>
     <dependency>
