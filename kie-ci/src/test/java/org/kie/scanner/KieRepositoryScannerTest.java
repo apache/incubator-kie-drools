@@ -15,6 +15,7 @@
 
 package org.kie.scanner;
 
+import org.apache.maven.model.Dependency;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.core.util.FileManager;
@@ -139,6 +140,27 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         InternalKieModule kJar2 = createKieJarWithDependencies( ks, releaseIdWithDep, false, "rule1", dep1, dep2, dep3);
         KieContainer kieContainer2 = ks.newKieContainer( releaseIdWithDep );
         System.out.println("done in " + (System.nanoTime() - start));
+    }
+    
+    @Test
+    public void testKieScannerScopesNotRequired() throws Exception {
+        MavenRepository repository = getMavenRepository();
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseIdWithDep = ks.newReleaseId( "org.kie", "test-with-dep", "1.0-SNAPSHOT" );
+
+        Dependency dep1 = dependencyWithScope( "org.kie", "test-dep1-in-test-scope"    , "1.0-SNAPSHOT", "test"     );
+        Dependency dep2 = dependencyWithScope( "org.kie", "test-dep2-in-provided-scope", "1.0-SNAPSHOT", "provided" );
+        Dependency dep3 = dependencyWithScope( "org.kie", "test-dep3-in-system-scope"  , "1.0-SNAPSHOT", "system"   );
+        dep3.setSystemPath(fileManager.getRootDirectory().getAbsolutePath());
+        // to ensure KieBuilder is able to build correctly:
+        repository.installArtifact(ks.newReleaseId("org.kie", "test-dep3-in-system-scope", "1.0-SNAPSHOT"), new byte[]{}, new byte[]{});
+        
+        InternalKieModule kJar2 = createKieJarWithDependencies( ks, releaseIdWithDep, false, "rule1", dep1, dep2, dep3);
+        KieContainer kieContainer = ks.newKieContainer( releaseIdWithDep );
+        
+        // DROOLS-1051 following should not throw NPE because dependencies are not in scope of scanner
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+        assertNotNull(scanner);
     }
 
     @Test
