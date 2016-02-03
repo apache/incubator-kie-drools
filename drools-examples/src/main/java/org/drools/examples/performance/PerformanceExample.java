@@ -16,9 +16,6 @@ import org.kie.internal.SystemEventListener;
 
 import java.util.ArrayList;
 
-/**
- * Created by Asif Iqbal on 2/2/2016.
- */
 public class PerformanceExample {
     public static void main(final String[] args) throws Exception{
         final long numberOfRulesToBuild = 20000;
