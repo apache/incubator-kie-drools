@@ -354,10 +354,14 @@ public class KieRepositoryScannerImpl implements InternalKieScanner {
     private Map<ReleaseId, DependencyDescriptor> indexAtifacts(ArtifactResolver artifactResolver) {
         Map<ReleaseId, DependencyDescriptor> depsMap = new HashMap<ReleaseId, DependencyDescriptor>();
         for (DependencyDescriptor dep : artifactResolver.getAllDependecies()) {
-            Artifact artifact = artifactResolver.resolveArtifact(dep.getReleaseId());
-            log.debug( artifact + " resolved to  " + artifact.getFile() );
-            if (isKJar(artifact.getFile())) {
-                depsMap.put(dep.getReleaseIdWithoutVersion(), new DependencyDescriptor(artifact));
+            if ( !"test".equals(dep.getScope()) && !"provided".equals(dep.getScope()) && !"system".equals(dep.getScope()) ) {
+                Artifact artifact = artifactResolver.resolveArtifact(dep.getReleaseId());
+                log.debug( artifact + " resolved to  " + artifact.getFile() );
+                if (isKJar(artifact.getFile())) {
+                    depsMap.put(dep.getReleaseIdWithoutVersion(), new DependencyDescriptor(artifact));
+                }
+            } else {
+                log.debug("{} does not need to be resolved because in scope {}", dep, dep.getScope());
             }
         }
         return depsMap;

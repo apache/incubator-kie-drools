@@ -24,6 +24,7 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.ReleaseId;
+import org.apache.maven.model.Dependency;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
@@ -61,6 +62,27 @@ public class AbstractKieCiTest {
         KieBuilder kieBuilder = ks.newKieBuilder(kfs);
         assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
         return (InternalKieModule) kieBuilder.getKieModule();
+    }
+    
+    protected InternalKieModule createKieJarWithDependencies(KieServices ks, ReleaseId releaseId, boolean isdefault, String rule, Dependency... dependencies) {
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks, isdefault);
+        kfs.writePomXML(pomWithMvnDeps(dependencyWithScope(releaseId.getGroupId(), releaseId.getArtifactId(), releaseId.getVersion(), ""), dependencies));
+
+        String file = "org/test/" + rule + ".drl";
+        kfs.write("src/main/resources/KBase1/" + file, createDRL(rule));
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        return (InternalKieModule) kieBuilder.getKieModule();
+    }
+    
+    protected Dependency dependencyWithScope(String groupId, String artifactId, String version, String scope) {
+        Dependency dep1 = new Dependency();
+        dep1.setGroupId(groupId);
+        dep1.setArtifactId(artifactId);
+        dep1.setVersion(version);
+        dep1.setScope(scope);
+        return dep1;
     }
 
     protected InternalKieModule createKieJar(KieServices ks, ReleaseId releaseId, String pomXml, boolean isdefault,  String... rules) throws IOException {
@@ -136,6 +158,38 @@ public class AbstractKieCiTest {
                 pom += "  <groupId>" + dep.getGroupId() + "</groupId>\n";
                 pom += "  <artifactId>" + dep.getArtifactId() + "</artifactId>\n";
                 pom += "  <version>" + dep.getVersion() + "</version>\n";
+                pom += "</dependency>\n";
+            }
+            pom += "</dependencies>\n";
+        }
+        pom += "</project>";
+        return pom;
+    }
+    
+    private String pomWithMvnDeps(Dependency releaseId, Dependency... dependencies) {
+        String pom =
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                        "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                        "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd\">\n" +
+                        "  <modelVersion>4.0.0</modelVersion>\n" +
+                        "\n" +
+                        "  <groupId>" + releaseId.getGroupId() + "</groupId>\n" +
+                        "  <artifactId>" + releaseId.getArtifactId() + "</artifactId>\n" +
+                        "  <version>" + releaseId.getVersion() + "</version>\n" +
+                        "\n";
+        if (dependencies != null && dependencies.length > 0) {
+            pom += "<dependencies>\n";
+            for (Dependency dep : dependencies) {
+                pom += "<dependency>\n";
+                pom += "  <groupId>" + dep.getGroupId() + "</groupId>\n";
+                pom += "  <artifactId>" + dep.getArtifactId() + "</artifactId>\n";
+                pom += "  <version>" + dep.getVersion() + "</version>\n";
+                if ( !"".equals(dep.getScope()) && !"compile".equals(dep.getScope()) ) {
+                    pom += "  <scope>" + dep.getScope() + "</scope>\n";
+                }
+                if ( "system".equals(dep.getScope()) ) {
+                    pom += "  <systemPath>" + dep.getSystemPath() + "</systemPath>\n";
+                }
                 pom += "</dependency>\n";
             }
             pom += "</dependencies>\n";
