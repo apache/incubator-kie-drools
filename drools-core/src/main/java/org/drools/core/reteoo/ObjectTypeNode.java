@@ -111,6 +111,8 @@ public class ObjectTypeNode extends ObjectSource
         return idGenerator.otnIdCounter;
     }
 
+    private volatile int nodeHashCode = -1;
+
     public ObjectTypeNode() {
 
     }
@@ -490,6 +492,12 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     public boolean equals(final Object object) {
+        final ObjectTypeNode other = (ObjectTypeNode) object;
+
+        return thisNodeEquals(object) && this.source.equals(other.source);
+    }
+
+    public boolean thisNodeEquals(final Object object) {
         if (this == object) {
             return true;
         }
@@ -499,8 +507,20 @@ public class ObjectTypeNode extends ObjectSource
         }
 
         final ObjectTypeNode other = (ObjectTypeNode) object;
+        return this.nodeHashCode() == other.nodeHashCode() &&
+               this.objectType.equals(other.objectType);
+    }
 
-        return this.objectType.equals(other.objectType) && this.source.equals(other.source);
+    public int nodeHashCode()
+    {
+        int result = nodeHashCode;
+        if (result == -1) {
+            final int PRIME = 31;
+            result = 1;
+            result = PRIME * result + ((this.objectType == null) ? 0 : this.objectType.hashCode());
+            nodeHashCode = result;
+        }
+        return result;
     }
 
     /**

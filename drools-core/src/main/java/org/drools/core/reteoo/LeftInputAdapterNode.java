@@ -70,6 +70,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private BitMask sinkMask;
 
+    private volatile int nodeHashCode = -1;
+
     public LeftInputAdapterNode() {
 
     }
@@ -474,6 +476,13 @@ public class LeftInputAdapterNode extends LeftTupleSource
     }
 
     public boolean equals(final Object object) {
+        final LeftInputAdapterNode other = (LeftInputAdapterNode) object;
+
+        return  thisNodeEquals(object) &&
+               this.objectSource.equals(other.objectSource);
+    }
+
+    public boolean thisNodeEquals(final Object object) {
         if ( object == this ) {
             return true;
         }
@@ -484,8 +493,20 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         final LeftInputAdapterNode other = (LeftInputAdapterNode) object;
 
-        return this.sinkMask.equals( other.sinkMask ) &&
-               this.objectSource.equals(other.objectSource);
+        return  this.nodeHashCode() == other.nodeHashCode() &&
+                this.sinkMask.equals( other.sinkMask );
+    }
+
+    public int nodeHashCode()
+    {
+        int result = nodeHashCode;
+        if (result == -1) {
+            final int PRIME = 31;
+            result = 1;
+            result = PRIME * result + ((this.sinkMask == null) ? 0 : this.sinkMask.hashCode());
+            nodeHashCode = result;
+        }
+        return result;
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
@@ -664,6 +685,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
         public boolean isAssociatedWith( Rule rule ) {
             return sink.isAssociatedWith( rule );
         }
+
+        public boolean thisNodeEquals(final Object object) {
+            return false;
+        }
+
+        public int nodeHashCode() {return this.hashCode();}
     }
 
 }

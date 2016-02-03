@@ -142,7 +142,7 @@ public class SingleLeftTupleSinkAdapter extends AbstractLeftTupleSinkAdapter {
     }
 
     public BaseNode getMatchingNode(BaseNode candidate) {
-        if ( candidate.equals( sink ) ) {
+        if ( sink.thisNodeEquals( candidate ) ) {
             return (BaseNode) sink;
         }
         return null;
