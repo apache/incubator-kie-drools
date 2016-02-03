@@ -2983,12 +2983,12 @@ public class AccumulateTest extends CommonTestMethodBase {
     }
 
     private KieBase loadKieBaseFromString( String... drlContentStrings ) {
-        return loadKnowledgeBaseFromString( null, null, phreak,
+        return loadKnowledgeBaseFromString( null, null, phreak, null,
                                             drlContentStrings );
     }
 
     private KieSession getKieSessionFromContentStrings( String... drlContentStrings ) {
-        KieBase kbase = loadKnowledgeBaseFromString( null, null, phreak,
+        KieBase kbase = loadKnowledgeBaseFromString( null, null, phreak, null,
                                                      drlContentStrings );
         return kbase.newKieSession();
     }

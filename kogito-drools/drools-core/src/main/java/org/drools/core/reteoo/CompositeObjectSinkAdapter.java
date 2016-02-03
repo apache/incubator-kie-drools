@@ -510,7 +510,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
     public BaseNode getMatchingNode(BaseNode candidate) {
         if ( this.otherSinks != null ) {
             for ( ObjectSinkNode sink = this.otherSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                if ( candidate.equals( sink ) ) {
+                if ( sink.thisNodeEquals( candidate ) ) {
                     return (BaseNode) sink;
                 }
             }
@@ -518,7 +518,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
 
         if ( this.hashableSinks != null ) {
             for ( ObjectSinkNode sink = this.hashableSinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode() ) {
-                if ( candidate.equals( sink ) ) {
+                if ( sink.thisNodeEquals( candidate ) ) {
                     return (BaseNode) sink;
                 }
             }
@@ -528,7 +528,7 @@ public class CompositeObjectSinkAdapter extends AbstractObjectSinkAdapter {
             final Iterator it = this.hashedSinkMap.newIterator();
             for ( ObjectEntry entry = (ObjectEntry) it.next(); entry != null; entry = (ObjectEntry) it.next() ) {
                 final ObjectSink sink = (ObjectSink) entry.getValue();
-                if ( candidate.equals( sink ) ) {
+                if ( sink.thisNodeEquals( candidate ) ) {
                     return (BaseNode) sink;
                 }
             }
