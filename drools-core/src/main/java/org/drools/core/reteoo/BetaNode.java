@@ -559,6 +559,10 @@ public abstract class BetaNode extends LeftTupleSource
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(final Object object) {
+        return thisNodeEquals(object);
+    }
+
+    public boolean thisNodeEquals(final Object object) {
         if ( this == object ) {
             return true;
         }
@@ -570,8 +574,8 @@ public abstract class BetaNode extends LeftTupleSource
         final BetaNode other = (BetaNode) object;
 
         return this.getClass() == other.getClass() &&
-                this.leftInput.equals( other.leftInput ) &&
-                this.rightInput.equals( other.rightInput ) &&
+                this.leftInput.thisNodeEquals( other.leftInput ) &&
+                this.rightInput.thisNodeEquals( other.rightInput ) &&
                 this.constraints.equals( other.constraints ) &&
                 this.rightInputIsPassive == other.rightInputIsPassive &&
                 areNullSafeEquals(this.leftListenedProperties, other.leftListenedProperties) &&
