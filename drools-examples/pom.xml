@@ -107,6 +107,16 @@
       <groupId>org.mvel</groupId>
       <artifactId>mvel2</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>12.0</version>
+    </dependency>
 
     <!-- Examples only dependencies. -->
     <!--
