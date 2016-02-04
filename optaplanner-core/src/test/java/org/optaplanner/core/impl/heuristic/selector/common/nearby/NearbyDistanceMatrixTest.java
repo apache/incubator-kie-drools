@@ -104,7 +104,7 @@ public class NearbyDistanceMatrixTest {
 
     private static class MatrixTestdataObject extends TestdataObject {
         private int index;
-        private double distances[];
+        private double[] distances;
 
         public MatrixTestdataObject(String code, int index, double[] distances) {
             super(code);
