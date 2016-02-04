@@ -42,7 +42,7 @@ public class DefaultSolverScope {
 
     protected Score startingInitializedScore; // TODO after initialization => ambiguous with solve()'s planningProblem
 
-    protected transient Solution bestSolution;
+    protected volatile Solution bestSolution;
     protected int bestUninitializedVariableCount; // TODO remove me by folding me into bestSolution.getScore(): https://issues.jboss.org/browse/PLANNER-405
     protected Score bestScore; // TODO remove me by folding me into bestSolution.getScore(): https://issues.jboss.org/browse/PLANNER-405
     protected Long bestSolutionTimeMillis;
