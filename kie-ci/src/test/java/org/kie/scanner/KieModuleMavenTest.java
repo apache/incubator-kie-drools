@@ -73,7 +73,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        MavenRepository.getMavenRepository().deployArtifact(releaseId, kJar1, pomFile);
+        MavenRepository.getMavenRepository().installArtifact(releaseId, kJar1, pomFile);
 
         KieContainer kieContainer = ks.newKieContainer(releaseId);
         KieBaseModel kbaseModel = ((KieContainerImpl) kieContainer).getKieProject().getDefaultKieBaseModel();
@@ -105,7 +105,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        MavenRepository.getMavenRepository().deployArtifact(releaseId, kJar1, pomFile);
+        MavenRepository.getMavenRepository().installArtifact(releaseId, kJar1, pomFile);
 
         KieContainer kieContainer = ks.newKieContainer(releaseId);
         KieBaseModel kbaseModel = ((KieContainerImpl) kieContainer).getKieProject().getDefaultKieBaseModel();
@@ -140,7 +140,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        MavenRepository.getMavenRepository().deployArtifact(releaseId, kJar1, pomFile);
+        MavenRepository.getMavenRepository().installArtifact(releaseId, kJar1, pomFile);
 
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 
@@ -179,7 +179,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         mfs.write("META-INF/maven/" + pojoID.getGroupId() + "/" + pojoID.getArtifactId() + "/pom.xml", pomContent);
         mfs.write("META-INF/maven/" + pojoID.getGroupId() + "/" + pojoID.getArtifactId() + "/pom.properties", generatePomProperties(pojoID).getBytes());
         byte[] pojojar = mfs.writeAsBytes();
-        MavenRepository.getMavenRepository().deployArtifact(pojoID, pojojar, pomContent);
+        MavenRepository.getMavenRepository().installArtifact(pojoID, pojojar, pomContent);
 
         // Create and deploy a kjar that depends on the previous pojo jar
         String kjarNS = "org.kie.test1";
@@ -217,7 +217,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         File kjar = new File(prefix + "src/test/resources/kjar/kjar-module-before.jar");
         File pom = new File(prefix + "src/test/resources/kjar/pom-kjar.xml");
         MavenRepository repository = getMavenRepository();
-        repository.deployArtifact(releaseId, kjar, pom);
+        repository.installArtifact(releaseId, kjar, pom);
 
         KieContainer kContainer = ks.newKieContainer(releaseId);
         KieBase kbase = kContainer.getKieBase();
@@ -234,7 +234,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         File kjar1 = new File(prefix + "src/test/resources/kjar/kjar-module-after.jar");
         File pom1 = new File(prefix + "src/test/resources/kjar/pom-kjar.xml");
 
-        repository.deployArtifact(releaseId, kjar1, pom1);
+        repository.installArtifact(releaseId, kjar1, pom1);
 
         KieContainer kContainer2 = ks.newKieContainer(releaseId);
         KieBase kbase2 = kContainer2.getKieBase();
@@ -271,7 +271,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        MavenRepository.getMavenRepository().deployArtifact(releaseId, kJar1, pomFile);
+        MavenRepository.getMavenRepository().installArtifact(releaseId, kJar1, pomFile);
 
         KieContainer kieContainer = ks.newKieContainer(releaseId);
         KieBaseModel kbaseModel = ((KieContainerImpl) kieContainer).getKieProject().getDefaultKieBaseModel();
