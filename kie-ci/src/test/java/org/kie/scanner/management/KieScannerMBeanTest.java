@@ -21,7 +21,6 @@ import org.drools.core.util.FileManager;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -71,7 +70,7 @@ public class KieScannerMBeanTest extends AbstractKieCiTest {
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 
         MavenRepository repository = getMavenRepository();
-        repository.deployArtifact(releaseId, kJar1, kPom);
+        repository.installArtifact(releaseId, kJar1, kPom);
 
         // create a ksesion and check it works as expected
         KieSession ksession = kieContainer.newKieSession("KSession1");
@@ -98,7 +97,7 @@ public class KieScannerMBeanTest extends AbstractKieCiTest {
         // create a new kjar
         InternalKieModule kJar2 = createKieJar(ks, releaseId, "rule2", "rule3");
         // deploy it on maven
-        repository.deployArtifact(releaseId, kJar2, kPom);
+        repository.installArtifact(releaseId, kJar2, kPom);
         
         MBeanUtils.invoke(mbeanName, "scanNow", new Object[] {}, new String[] {} );
         

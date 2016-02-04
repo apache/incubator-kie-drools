@@ -34,10 +34,9 @@ public class MavenRepositoryTest {
     public void testMirrors() {
         MavenRepository repo = new MavenRepositoryMock(Aether.getAether());
         Collection<RemoteRepository> remoteRepos = repo.getRemoteRepositoriesForRequest();
-        assertEquals(3, remoteRepos.size());
+        assertEquals(2, remoteRepos.size());
         for (RemoteRepository remoteRepo : remoteRepos) {
-            assertTrue(remoteRepo.getId().equals("local") ||
-                       remoteRepo.getId().equals("qa") ||
+            assertTrue(remoteRepo.getId().equals("qa") ||
                        remoteRepo.getId().equals("foo"));
         }
     }

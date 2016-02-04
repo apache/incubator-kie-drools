@@ -90,7 +90,6 @@ public class Aether {
 
         RemoteRepository localRepo = newLocalRepository();
         if (localRepo != null) {
-            reps.add(localRepo);
             localRepository = localRepo;
         }
         return reps;
@@ -148,10 +147,6 @@ public class Aether {
 
     public RepositorySystemSession getSession() {
         return session;
-    }
-
-    public void renewSession() {
-        session = newRepositorySystemSession( system );
     }
 
     public Collection<RemoteRepository> getRepositories() {
