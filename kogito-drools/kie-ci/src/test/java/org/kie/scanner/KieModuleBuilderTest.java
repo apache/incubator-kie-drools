@@ -15,15 +15,8 @@
 
 package org.kie.scanner;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -31,7 +24,13 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 
-import static org.junit.Assert.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.junit.Assert.assertTrue;
 
 public class KieModuleBuilderTest extends AbstractKieCiTest {
 
@@ -64,9 +63,9 @@ public class KieModuleBuilderTest extends AbstractKieCiTest {
         Assert.assertTrue( kieBuilder1.buildAll().getResults().getMessages().isEmpty() );
         InternalKieModule kieModule = (InternalKieModule) kieBuilder1.getKieModule();
 
-        MavenRepository.getMavenRepository().deployArtifact( releaseId,
-                                                             kieModule,
-                                                             pomFile );
+        MavenRepository.getMavenRepository().installArtifact( releaseId,
+                                                              kieModule,
+                                                              pomFile );
 
         //Build a second KieModule, depends on the first KieModule jar which we have deployed into Maven
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie",

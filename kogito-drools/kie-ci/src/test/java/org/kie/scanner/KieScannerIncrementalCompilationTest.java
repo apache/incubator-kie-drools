@@ -15,18 +15,9 @@
 
 package org.kie.scanner;
 
-import static org.junit.Assert.assertTrue;
-import static org.kie.scanner.MavenRepository.getMavenRepository;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.util.FileManager;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -36,13 +27,20 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
+import static org.kie.scanner.MavenRepository.getMavenRepository;
+
 public class KieScannerIncrementalCompilationTest extends AbstractKieCiTest {
 
     private final int FIRST_VALUE = 5;
     private final int SECOND_VALUE = 10;
 
     private FileManager fileManager;
-    private File kPom;
     private ReleaseId releaseId;
 
     @Before
@@ -50,7 +48,6 @@ public class KieScannerIncrementalCompilationTest extends AbstractKieCiTest {
         this.fileManager = new FileManager();
         this.fileManager.setUp();
         releaseId = KieServices.Factory.get().newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
-        kPom = createKPom(releaseId);
     }
 
     @Test
@@ -68,7 +65,7 @@ public class KieScannerIncrementalCompilationTest extends AbstractKieCiTest {
         MavenRepository repository = getMavenRepository();
 
         InternalKieModule kJar1 = createKieJarWithClass(ks, releaseId, FIRST_VALUE, useJavaInDrl);
-        repository.deployArtifact(releaseId, kJar1, kPom);
+        repository.installArtifact(releaseId, kJar1, createKPom(releaseId));
 
         KieContainer kieContainer = ks.newKieContainer(releaseId);
         KieScanner scanner = ks.newKieScanner(kieContainer);
@@ -76,7 +73,7 @@ public class KieScannerIncrementalCompilationTest extends AbstractKieCiTest {
         checkValue(kieContainer, FIRST_VALUE);
 
         InternalKieModule kJar2 = createKieJarWithClass(ks, releaseId, SECOND_VALUE, useJavaInDrl);
-        repository.deployArtifact(releaseId, kJar2, kPom);
+        repository.installArtifact(releaseId, kJar2, createKPom(releaseId));
 
         scanner.scanNow();
 

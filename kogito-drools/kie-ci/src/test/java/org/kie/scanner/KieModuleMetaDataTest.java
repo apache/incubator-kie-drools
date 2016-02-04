@@ -254,7 +254,7 @@ public class KieModuleMetaDataTest extends AbstractKieCiTest {
         } catch ( IOException e ) {
             throw new RuntimeException( e );
         }
-        MavenRepository.getMavenRepository().deployArtifact( releaseId, kieModule, pomFile );
+        MavenRepository.getMavenRepository().installArtifact( releaseId, kieModule, pomFile );
 
         //Build a second KieModule, depends on the first KieModule jar which we have deployed into Maven
         ReleaseId releaseId2 = ks.newReleaseId( "org.kie", "metadata-test-using-pom", "1.0-SNAPSHOT" );

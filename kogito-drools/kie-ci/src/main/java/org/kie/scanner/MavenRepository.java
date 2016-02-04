@@ -27,6 +27,8 @@ import org.eclipse.aether.deployment.DeploymentException;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.DependencyVisitor;
+import org.eclipse.aether.installation.InstallRequest;
+import org.eclipse.aether.installation.InstallationException;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
@@ -186,40 +188,29 @@ public class MavenRepository {
     public void deployArtifact( ReleaseId releaseId,
                                 InternalKieModule kieModule,
                                 File pomfile ) {
-        File jarFile = new File( System.getProperty( "java.io.tmpdir" ), toFileName( releaseId, null ) + ".jar" );
-        try {
-            FileOutputStream fos = new FileOutputStream( jarFile );
-            fos.write( kieModule.getBytes() );
-            fos.flush();
-            fos.close();
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
-        }
+        File jarFile = bytesToFile( releaseId, kieModule.getBytes(), ".jar" );
         deployArtifact( releaseId, jarFile, pomfile );
     }
 
     public void deployArtifact( ReleaseId releaseId,
                                 byte[] jarContent,
                                 byte[] pomContent ) {
-        File jarFile = new File( System.getProperty( "java.io.tmpdir" ), toFileName( releaseId, null ) + ".jar" );
-        try {
-            FileOutputStream fos = new FileOutputStream( jarFile );
-            fos.write( jarContent );
-            fos.flush();
-            fos.close();
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
-        }
-        File pomFile = new File( System.getProperty( "java.io.tmpdir" ), toFileName( releaseId, null ) + ".pom" );
-        try {
-            FileOutputStream fos = new FileOutputStream( pomFile );
-            fos.write( pomContent );
-            fos.flush();
-            fos.close();
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
-        }
+        File jarFile = bytesToFile( releaseId, jarContent, ".jar" );
+        File pomFile = bytesToFile( releaseId, pomContent, ".pom" );
         deployArtifact( releaseId, jarFile, pomFile );
+    }
+
+    private File bytesToFile( ReleaseId releaseId, byte[] bytes, String extension ) {
+        File file = new File( System.getProperty( "java.io.tmpdir" ), toFileName( releaseId, null ) + extension );
+        try {
+            FileOutputStream fos = new FileOutputStream( file );
+            fos.write( bytes );
+            fos.flush();
+            fos.close();
+        } catch ( IOException e ) {
+            throw new RuntimeException( e );
+        }
+        return file;
     }
 
     public void deployArtifact( ReleaseId releaseId,
@@ -240,6 +231,42 @@ public class MavenRepository {
         try {
             aether.getSystem().deploy( aether.getSession(), deployRequest );
         } catch ( DeploymentException e ) {
+            throw new RuntimeException( e );
+        }
+    }
+
+    public void installArtifact( ReleaseId releaseId,
+                                InternalKieModule kieModule,
+                                File pomfile ) {
+        File jarFile = bytesToFile( releaseId, kieModule.getBytes(), ".jar" );
+        installArtifact( releaseId, jarFile, pomfile );
+    }
+
+    public void installArtifact( ReleaseId releaseId,
+                                 byte[] jarContent,
+                                 byte[] pomContent ) {
+        File jarFile = bytesToFile( releaseId, jarContent, ".jar" );
+        File pomFile = bytesToFile( releaseId, pomContent, ".pom" );
+        installArtifact( releaseId, jarFile, pomFile );
+    }
+
+    public void installArtifact( ReleaseId releaseId,
+                                 File jar,
+                                 File pomfile ) {
+        Artifact jarArtifact = new DefaultArtifact( releaseId.getGroupId(), releaseId.getArtifactId(), "jar", releaseId.getVersion() );
+        jarArtifact = jarArtifact.setFile( jar );
+
+        Artifact pomArtifact = new SubArtifact( jarArtifact, "", "pom" );
+        pomArtifact = pomArtifact.setFile( pomfile );
+
+        InstallRequest installRequest = new InstallRequest();
+        installRequest
+                .addArtifact( jarArtifact )
+                .addArtifact( pomArtifact );
+
+        try {
+            aether.getSystem().install( aether.getSession(), installRequest );
+        } catch (InstallationException e) {
             throw new RuntimeException( e );
         }
     }
@@ -288,9 +315,5 @@ public class MavenRepository {
         }
 
         return releaseId.getArtifactId() + "-" + releaseId.getVersion();
-    }
-
-    public void renewSession() {
-        aether.renewSession();
     }
 }
