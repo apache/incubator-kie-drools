@@ -60,12 +60,12 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
         if (!ConfigUtils.isEmptyCollection(packageIncludeList)) {
             FilterBuilder filterBuilder = new FilterBuilder();
             for (String packageInclude : packageIncludeList) {
-                builder.addUrls(ClasspathHelper.forPackage(packageInclude, actualClassLoader));
+                builder.addUrls(ClasspathHelper.forPackage(packageInclude, (ClassLoader[]) null));
                 filterBuilder.includePackage(packageInclude);
             }
             builder.filterInputsBy(filterBuilder);
         } else {
-            builder.addUrls(ClasspathHelper.forPackage("", actualClassLoader));
+            builder.addUrls(ClasspathHelper.forPackage(""));
         }
         Reflections reflections = new Reflections(builder);
         Class<? extends Solution> solutionClass = loadSolutionClass(reflections);
