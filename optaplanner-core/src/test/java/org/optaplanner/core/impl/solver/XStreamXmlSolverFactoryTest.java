@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.thoughtworks.xstream.XStream;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.optaplanner.core.config.SolverConfigContext;
@@ -38,12 +39,14 @@ public class XStreamXmlSolverFactoryTest {
         String originalXml = IOUtils.toString(getClass().getResourceAsStream(solverConfigResource), "UTF-8");
         InputStream originalConfigInputStream = getClass().getResourceAsStream(solverConfigResource);
         XStreamXmlSolverFactory solverFactory = new XStreamXmlSolverFactory().configure(originalConfigInputStream);
+        solverFactory.getXStream().setMode(XStream.NO_REFERENCES);
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         SolverConfigContext configContext = new SolverConfigContext();
         configContext.setClassLoader(getClass().getClassLoader());
         solverConfig.buildSolver(configContext);
         String savedXml = solverFactory.getXStream().toXML(solverConfig);
-        assertEquals(originalXml, savedXml);
+        assertEquals(originalXml.trim(), savedXml.trim());
         originalConfigInputStream.close();
     }
+
 }
