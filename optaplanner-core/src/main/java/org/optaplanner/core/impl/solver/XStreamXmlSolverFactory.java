@@ -70,9 +70,8 @@ public class XStreamXmlSolverFactory<Solution_ extends Solution> extends Abstrac
     public XStreamXmlSolverFactory(SolverConfigContext solverConfigContext) {
         super(solverConfigContext);
         xStream = buildXStream();
-        if (solverConfigContext.getClassLoader() != null) {
-            xStream.setClassLoader(solverConfigContext.getClassLoader());
-        }
+        ClassLoader actualClassLoader = solverConfigContext.determineActualClassLoader();
+        xStream.setClassLoader(actualClassLoader);
     }
 
     /**

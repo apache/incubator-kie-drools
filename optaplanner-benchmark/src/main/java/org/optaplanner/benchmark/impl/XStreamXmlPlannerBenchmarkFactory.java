@@ -54,6 +54,8 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
     public XStreamXmlPlannerBenchmarkFactory(SolverConfigContext solverConfigContext) {
         this.solverConfigContext = solverConfigContext;
         xStream = XStreamXmlSolverFactory.buildXStream();
+        ClassLoader actualClassLoader = solverConfigContext.determineActualClassLoader();
+        xStream.setClassLoader(actualClassLoader);
         xStream.processAnnotations(PlannerBenchmarkConfig.class);
         xStream.registerConverter(new FileConverter() {
             @Override
@@ -61,9 +63,6 @@ public class XStreamXmlPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
                 return FilenameUtils.separatorsToUnix(((File) obj).getPath());
             }
         });
-        if (solverConfigContext.getClassLoader() != null) {
-            xStream.setClassLoader(solverConfigContext.getClassLoader());
-        }
     }
 
     // ************************************************************************
