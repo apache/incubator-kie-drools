@@ -239,6 +239,39 @@ public class KieBuilderTest extends CommonTestMethodBase {
     }
 
     @Test
+    public void testJavaSourceFileAndDrlDeploy() {
+        String java = "package org.drools.compiler;\n" +
+                "public class JavaSourceMessage { }\n";
+        String drl = "package org.drools.compiler;\n" +
+                "import org.drools.compiler.JavaSourceMessage;" +
+                "rule R1 when\n" +
+                "   $m : JavaSourceMessage()\n" +
+                "then\n" +
+                "end\n";
+
+        String kmodule = "<kmodule xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" +
+                "         xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                "  <kbase name=\"kbase1\">\n" +
+                "    <ksession name=\"ksession1\" default=\"true\"/>\n" +
+                "  </kbase>\n" +
+                "</kmodule>";
+
+        KieServices ks = KieServices.Factory.get();
+
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
+        Resource javaResource = ResourceFactory.newByteArrayResource( java.getBytes() ).setResourceType( ResourceType.JAVA )
+                .setSourcePath( "org/drools/compiler/JavaSourceMessage.java" );
+        Resource drlResource = ResourceFactory.newByteArrayResource( drl.getBytes() ).setResourceType( ResourceType.DRL )
+                .setSourcePath( "kbase1/drl1.drl" );
+        KieModule km = createAndDeployJar( ks,
+                kmodule,
+                releaseId1,
+                javaResource, drlResource);
+
+        ks.newKieContainer( km.getReleaseId() );
+    }
+
+    @Test
     public void testKieBuilderWithDotFiles() {
         // BZ-1044409
         final String KBASE_NAME = "kieBase";
