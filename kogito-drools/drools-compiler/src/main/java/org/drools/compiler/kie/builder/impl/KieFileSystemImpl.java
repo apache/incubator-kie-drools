@@ -20,6 +20,7 @@ import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.util.IoUtils;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.KieFileSystem;
+import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceTypeImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
@@ -30,6 +31,7 @@ import java.util.Properties;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
+import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.JAVA_ROOT;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.RESOURCES_ROOT;
 
 public class KieFileSystemImpl
@@ -70,13 +72,14 @@ public class KieFileSystemImpl
         try {
             String target = resource.getTargetPath() != null ? resource.getTargetPath() : resource.getSourcePath();
             if( target != null ) {
-                write( RESOURCES_ROOT+target, readBytesFromInputStream(resource.getInputStream()) );
+                String prefix = resource.getResourceType() == ResourceType.JAVA ? JAVA_ROOT : RESOURCES_ROOT;
+                write( prefix + target, readBytesFromInputStream(resource.getInputStream()) );
                 ResourceConfiguration conf = resource.getConfiguration();
                 if( conf != null ) {
                     Properties prop = ResourceTypeImpl.toProperties(conf);
                     ByteArrayOutputStream buff = new ByteArrayOutputStream();
-                    prop.store( buff, "Configuration properties for resource: "+target );
-                    write( RESOURCES_ROOT+target+".properties", buff.toByteArray() );
+                    prop.store( buff, "Configuration properties for resource: " + target );
+                    write( prefix + target + ".properties", buff.toByteArray() );
                 }
                 return this;
             } else {
