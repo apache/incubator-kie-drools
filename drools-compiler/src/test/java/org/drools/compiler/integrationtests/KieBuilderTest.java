@@ -268,7 +268,13 @@ public class KieBuilderTest extends CommonTestMethodBase {
                 releaseId1,
                 javaResource, drlResource);
 
-        ks.newKieContainer( km.getReleaseId() );
+        KieContainer kieContainer = ks.newKieContainer(km.getReleaseId());
+        try {
+            Class<?> messageClass = kieContainer.getClassLoader().loadClass("org.drools.compiler.JavaSourceMessage");
+            assertNotNull(messageClass);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Loading the java class failed.", e);
+        }
     }
 
     @Test
