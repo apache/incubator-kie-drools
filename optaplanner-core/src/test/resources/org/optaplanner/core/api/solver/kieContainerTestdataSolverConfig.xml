@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- This file is copy pasted to another package in the KieContainer test to avoid false positive tests -->
 <solver>
-  <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
-  <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
+  <solutionClass>org.optaplanner.core.impl.testdata.domain.classloaded.ClassloadedTestdataSolution</solutionClass>
+  <entityClass>org.optaplanner.core.impl.testdata.domain.classloaded.ClassloadedTestdataEntity</entityClass>
 
   <!-- Score configuration -->
   <scoreDirectorFactory>

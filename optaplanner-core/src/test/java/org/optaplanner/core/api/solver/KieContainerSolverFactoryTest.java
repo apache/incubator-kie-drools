@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
@@ -44,18 +45,32 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         kieServices = KieServices.Factory.get();
         releaseId = kieServices.newReleaseId("org.optaplanner", "optaplanner-testdata-kjar", "1.0.0");
 
+        Resource valueClass = buildResource("org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataValue.java",
+                "org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataValue.java");
+        Resource entityClass = buildResource("org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataEntity.java",
+                "org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataEntity.java");
+        Resource solutionClass = buildResource("org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataSolution.java",
+                "org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataSolution.java");
         Resource scoreRules = buildResource("org/optaplanner/core/api/solver/kieContainerTestdataScoreRules.drl",
                 "testdata/kjar/scoreRules.drl");
         Resource solverConfig = buildResource("org/optaplanner/core/api/solver/kieContainerTestdataSolverConfig.xml",
-                "testdata/kjar/solverConfig.solver");
+                "testdata/kjar/kieContainerTestdataSolverConfig.solver");
+        Resource scanAnnotatedSolverConfig = buildResource("org/optaplanner/core/api/solver/scanAnnotatedKieContainerTestdataSolverConfig.xml",
+                "testdata/kjar/scanAnnotatedKieContainerTestdataSolverConfig.solver");
         String kmodule = readResourceToString("org/optaplanner/core/api/solver/kieContainerKmodule.xml");
-        createAndDeployJar(kieServices, kmodule, releaseId, scoreRules, solverConfig);
+        createAndDeployJar(kieServices, kmodule, releaseId,
+                valueClass, entityClass, solutionClass,
+                scoreRules,
+                solverConfig, scanAnnotatedSolverConfig);
     }
 
     private static Resource buildResource(String resourceString, String targetPath) throws IOException {
         String content = readResourceToString(resourceString);
         Resource resource = kieServices.getResources().newReaderResource(new StringReader(content), "UTF-8");
         resource.setTargetPath(targetPath);
+        if (resourceString.endsWith(".java")) {
+            resource.setResourceType(ResourceType.JAVA);
+        }
         return resource;
     }
 
@@ -71,7 +86,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
     @Test
     public void buildSolverWithReleaseId() {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
-                releaseId, "testdata/kjar/solverConfig.solver");
+                releaseId, "testdata/kjar/kieContainerTestdataSolverConfig.solver");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         assertNotNull(solver);
     }
@@ -80,7 +95,24 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
     public void buildSolverWithKieContainer() {
         KieContainer kieContainer = kieServices.newKieContainer(releaseId);
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
-                kieContainer, "testdata/kjar/solverConfig.solver");
+                kieContainer, "testdata/kjar/kieContainerTestdataSolverConfig.solver");
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        assertNotNull(solver);
+    }
+
+    @Test
+    public void buildScanAnnotatedSolverWithReleaseId() {
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
+                releaseId, "testdata/kjar/scanAnnotatedKieContainerTestdataSolverConfig.solver");
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        assertNotNull(solver);
+    }
+
+    @Test
+    public void buildScanAnnotatedSolverWithKieContainer() {
+        KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
+                kieContainer, "testdata/kjar/scanAnnotatedKieContainerTestdataSolverConfig.solver");
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         assertNotNull(solver);
     }

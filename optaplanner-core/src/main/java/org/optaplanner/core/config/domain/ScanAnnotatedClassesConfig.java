@@ -28,6 +28,7 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.AbstractConfig;
+import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.reflections.Reflections;
@@ -53,17 +54,18 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
     // Builder methods
     // ************************************************************************
 
-    public SolutionDescriptor buildSolutionDescriptor() {
+    public SolutionDescriptor buildSolutionDescriptor(SolverConfigContext configContext) {
+        ClassLoader actualClassLoader = configContext.determineActualClassLoader();
         ConfigurationBuilder builder = new ConfigurationBuilder();
         if (!ConfigUtils.isEmptyCollection(packageIncludeList)) {
             FilterBuilder filterBuilder = new FilterBuilder();
             for (String packageInclude : packageIncludeList) {
-                builder.addUrls(ClasspathHelper.forPackage(packageInclude, (ClassLoader[]) null));
+                builder.addUrls(ClasspathHelper.forPackage(packageInclude, actualClassLoader));
                 filterBuilder.includePackage(packageInclude);
             }
             builder.filterInputsBy(filterBuilder);
         } else {
-            builder.addUrls(ClasspathHelper.forPackage(""));
+            builder.addUrls(ClasspathHelper.forPackage("", actualClassLoader));
         }
         Reflections reflections = new Reflections(builder);
         Class<? extends Solution> solutionClass = loadSolutionClass(reflections);
