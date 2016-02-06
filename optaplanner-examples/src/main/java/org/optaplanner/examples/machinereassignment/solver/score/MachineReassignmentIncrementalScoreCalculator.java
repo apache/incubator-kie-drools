@@ -502,7 +502,10 @@ public class MachineReassignmentIncrementalScoreCalculator
                 }
             }
             for (Map.Entry<MrService, Integer> entry : machineScorePart.serviceBag.entrySet()) {
-                int serviceProcessCount = entry.getValue();
+                Integer serviceProcessCount = entry.getValue();
+                if (serviceProcessCount == null) {
+                    serviceProcessCount = 0;
+                }
                 serviceConflictMatchTotal.addConstraintMatch(
                         Arrays.<Object>asList(entry.getKey()),
                         - (serviceProcessCount - 1));
