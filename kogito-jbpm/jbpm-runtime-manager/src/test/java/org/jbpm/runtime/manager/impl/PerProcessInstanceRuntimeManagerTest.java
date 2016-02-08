@@ -1275,7 +1275,7 @@ public class PerProcessInstanceRuntimeManagerTest extends AbstractBaseTest {
         long ksession1Id = ksession.getIdentifier();
         assertTrue(ksession1Id == 2);
 
-        Map<String, Object> inputParams = new HashMap<>(); 
+        Map<String, Object> inputParams = new HashMap<String, Object>(); 
         inputParams.put("processInput", "MyCoolParam");
         
         ksession.startProcess("main-process", inputParams);

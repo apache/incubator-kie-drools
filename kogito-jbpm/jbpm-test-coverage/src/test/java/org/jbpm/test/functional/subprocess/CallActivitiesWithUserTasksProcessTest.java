@@ -296,7 +296,8 @@ public class CallActivitiesWithUserTasksProcessTest extends JbpmTestCase {
         taskService.complete(taskId, "john", null);
 
         if( userManagedTx ) {
-            assertProcessInstanceActive(processInstance.getId());
+            // since we are checking in same transaction it will already see it as completed 
+            assertProcessInstanceCompleted(processInstance.getId());
             ut.commit();
         }
 
