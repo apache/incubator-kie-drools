@@ -608,7 +608,7 @@
                                     <#assign firstRow = false>
                                 </#list>
                                 <#list problemBenchmarkResult.extractSingleStatisticTypeList() as singleStatisticType>
-                                    <div class="tab-pane<#if firstRow && !subSingleSummaryChartShown> active</#if>" id="singleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}">
+                                    <div class="tab-pane<#if firstRow> active</#if>" id="singleStatistic_${problemBenchmarkResult.anchorId}_${singleStatisticType.anchorId}">
                                         <#list problemBenchmarkResult.extractPureSubSingleStatisticList(singleStatisticType) as pureSubSingleStatistic>
                                             <h3>${pureSubSingleStatistic.subSingleBenchmarkResult.singleBenchmarkResult.solverBenchmarkResult.name}</h3>
                                             <#if pureSubSingleStatistic.graphFileList?? && pureSubSingleStatistic.graphFileList?size != 0>
