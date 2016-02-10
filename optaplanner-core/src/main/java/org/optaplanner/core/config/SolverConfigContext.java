@@ -41,8 +41,11 @@ public class SolverConfigContext {
     }
 
     /**
+     * Used to work with a {@link ClassLoader} provided by OSGi, JBoss modules, etc, but not {@link KieContainer}.
+     * <p/>
+     * Must be null if {@link #getKieContainer()} is not null.
      * @return sometimes null, the {@link ClassLoader} to use for loading all resources and {@link Class}es,
-     *      null to use the default {@link ClassLoader}
+     *      if this is null and {@link #getKieContainer()} is also null, then the default {@link ClassLoader} is used
      */
     public ClassLoader getClassLoader() {
         return classLoader;
@@ -52,6 +55,10 @@ public class SolverConfigContext {
         this.classLoader = classLoader;
     }
 
+    /**
+     * Must be null if {@link #getClassLoader()} is not null.
+     * @return sometimes null, affects the {@link ClassLoader} to use for loading all resources and {@link Class}es
+     */
     public KieContainer getKieContainer() {
         return kieContainer;
     }
