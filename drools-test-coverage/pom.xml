@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.drools</groupId>
+    <artifactId>drools</artifactId>
+    <version>7.0.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.drools.testcoverage</groupId>
+  <artifactId>drools-test-coverage-parent</artifactId>
+  <packaging>pom</packaging>
+
+  <name>Drools :: Test Coverage</name>
+
+  <modules>
+    <module>common</module>
+    <module>test-domain</module>
+    <module>test-kjar</module>
+    <module>kie-ci-without-domain</module>
+    <module>kie-ci-with-domain</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.drools.testcoverage</groupId>
+        <artifactId>common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.drools.testcoverage</groupId>
+        <artifactId>test-domain</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+</project>
