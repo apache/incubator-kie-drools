@@ -47,11 +47,11 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         releaseId = kieServices.newReleaseId("org.optaplanner", "optaplanner-testdata-kjar", "1.0.0");
 
         Resource valueClass = buildResource("org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataValue.java",
-                "org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataValue.java");
+                "testdata/kjar/ClassloadedTestdataValue.java");
         Resource entityClass = buildResource("org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataEntity.java",
-                "org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataEntity.java");
+                "testdata/kjar/ClassloadedTestdataEntity.java");
         Resource solutionClass = buildResource("org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataSolution.java",
-                "org/optaplanner/core/impl/testdata/domain/classloaded/ClassloadedTestdataSolution.java");
+                "testdata/kjar/ClassloadedTestdataSolution.java");
         Resource scoreRules = buildResource("org/optaplanner/core/api/solver/kieContainerTestdataScoreRules.drl",
                 "testdata/kjar/scoreRules.drl");
         Resource solverConfig = buildResource("org/optaplanner/core/api/solver/kieContainerTestdataSolverConfig.xml",

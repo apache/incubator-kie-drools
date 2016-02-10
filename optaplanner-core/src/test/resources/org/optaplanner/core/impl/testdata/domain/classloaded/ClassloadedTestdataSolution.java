@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.classloaded;
+// This file is copy pasted to another package in the KieContainer test to avoid false positive tests
+package testdata.kjar;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,8 +26,8 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.testdata.domain.classloaded.ClassloadedTestdataEntity;
-import org.optaplanner.core.impl.testdata.domain.classloaded.ClassloadedTestdataValue;
+import testdata.kjar.ClassloadedTestdataEntity;
+import testdata.kjar.ClassloadedTestdataValue;
 
 @PlanningSolution
 public class ClassloadedTestdataSolution implements Solution<SimpleScore> {

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.classloaded;
+// This file is copy pasted to another package in the KieContainer test to avoid false positive tests
+package testdata.kjar;
 
 public class ClassloadedTestdataValue {
 

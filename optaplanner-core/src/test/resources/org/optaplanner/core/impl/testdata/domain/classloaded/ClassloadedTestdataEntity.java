@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.classloaded;
+// This file is copy pasted to another package in the KieContainer test to avoid false positive tests
+package testdata.kjar;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.testdata.domain.classloaded.ClassloadedTestdataSolution;
-import org.optaplanner.core.impl.testdata.domain.classloaded.ClassloadedTestdataValue;
+import testdata.kjar.ClassloadedTestdataSolution;
+import testdata.kjar.ClassloadedTestdataValue;
 
 @PlanningEntity
 public class ClassloadedTestdataEntity {
