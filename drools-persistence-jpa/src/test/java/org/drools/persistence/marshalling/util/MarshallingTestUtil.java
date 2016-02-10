@@ -15,15 +15,33 @@
  */
 package org.drools.persistence.marshalling.util;
 
-import static org.drools.persistence.marshalling.util.MarshallingDBUtil.getListOfBaseDbVers;
-import static org.drools.persistence.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
-import static org.drools.persistence.util.PersistenceUtil.cleanUp;
-import static org.drools.persistence.util.PersistenceUtil.getDatasourceProperties;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import bitronix.tm.TransactionManagerServices;
+import junit.framework.TestCase;
+import org.drools.core.SessionConfiguration;
+import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.marshalling.impl.InputMarshaller;
+import org.drools.core.marshalling.impl.MarshallerReaderContext;
+import org.drools.core.process.instance.WorkItem;
+import org.drools.core.time.impl.DefaultTimerJobInstance;
+import org.drools.core.util.DroolsStreamUtils;
+import org.drools.core.util.StringUtils;
+import org.drools.persistence.info.SessionInfo;
+import org.drools.persistence.info.WorkItemInfo;
+import org.junit.Assert;
+import org.junit.Test;
+import org.kie.api.marshalling.Marshaller;
+import org.kie.api.marshalling.ObjectMarshallingStrategy;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSession;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.marshalling.MarshallerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.transaction.TransactionManager;
 import java.io.ByteArrayInputStream;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -36,35 +54,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.TransactionManager;
-
-import org.junit.Assert;
-import junit.framework.TestCase;
-
-import org.drools.core.SessionConfiguration;
-import org.drools.core.util.DroolsStreamUtils;
-import org.drools.core.util.StringUtils;
-import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.marshalling.impl.InputMarshaller;
-import org.drools.core.marshalling.impl.MarshallerReaderContext;
-import org.drools.persistence.info.SessionInfo;
-import org.drools.persistence.info.WorkItemInfo;
-import org.drools.core.process.instance.WorkItem;
-import org.drools.core.time.impl.DefaultTimerJobInstance;
-import org.junit.Test;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.api.marshalling.Marshaller;
-import org.kie.internal.marshalling.MarshallerFactory;
-import org.kie.api.marshalling.ObjectMarshallingStrategy;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.KieSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import bitronix.tm.TransactionManagerServices;
+import static org.drools.persistence.marshalling.util.MarshallingDBUtil.getListOfBaseDbVers;
+import static org.drools.persistence.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
+import static org.drools.persistence.util.DroolsPersistenceUtil.cleanUp;
+import static org.drools.persistence.util.DroolsPersistenceUtil.getDatasourceProperties;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 
 public class MarshallingTestUtil {

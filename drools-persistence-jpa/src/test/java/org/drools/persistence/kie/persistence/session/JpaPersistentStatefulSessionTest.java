@@ -23,7 +23,7 @@ import org.drools.core.command.impl.LoggingInterceptor;
 import org.drools.core.factmodel.traits.Traitable;
 import org.drools.core.time.SessionPseudoClock;
 import org.drools.persistence.SingleSessionCommandService;
-import org.drools.persistence.util.PersistenceUtil;
+import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -54,21 +54,27 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class JpaPersistentStatefulSessionTest {
 
     private static Logger logger = LoggerFactory.getLogger(JpaPersistentStatefulSessionTest.class);
     
-    private HashMap<String, Object> context;
+    private Map<String, Object> context;
     private Environment env;
     private boolean locking;
 
@@ -87,7 +93,7 @@ public class JpaPersistentStatefulSessionTest {
     
     @Before
     public void setUp() throws Exception {
-        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+        context = DroolsPersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         env = createEnvironment(context);
         if( locking ) { 
             env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
@@ -96,7 +102,7 @@ public class JpaPersistentStatefulSessionTest {
         
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.cleanUp(context);
+        DroolsPersistenceUtil.cleanUp(context);
     }
 
 

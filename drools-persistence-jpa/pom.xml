@@ -84,6 +84,7 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
@@ -133,6 +134,13 @@
       <artifactId>jboss-transaction-api_1.1_spec</artifactId>
     </dependency>
 
+    <!-- Testing deps-->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-test-util</artifactId>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Hibernate -->
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -150,13 +158,12 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
-    <dependency><!-- For unit test logging: configure in src/test/resources/logback-test.xml -->
+    <dependency><!-- For test logging: configure in src/test/resources/logback-test.xml -->
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
 
-    <!-- test -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
