@@ -15,30 +15,34 @@
 
 package org.drools.persistence.command;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-
 import org.drools.compiler.command.MoreBatchExecutionTest;
-import org.drools.persistence.util.PersistenceUtil;
+import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.cleanUp;
+import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
 
 @RunWith(Parameterized.class)
 public class MoreBatchExecutionPersistenceTest extends MoreBatchExecutionTest {
 
-    private HashMap<String, Object> context;
+    private Map<String, Object> context;
     private boolean locking;
     
     @Parameters(name="{0}")
@@ -63,7 +67,7 @@ public class MoreBatchExecutionPersistenceTest extends MoreBatchExecutionTest {
 
     protected StatefulKnowledgeSession createKnowledgeSession(KnowledgeBase kbase) {
         if( context == null ) { 
-            context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+            context = DroolsPersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         }
         KieSessionConfiguration ksconf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         Environment env = createEnvironment(context);
