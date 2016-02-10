@@ -8217,4 +8217,131 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                                       RuleModelDRLPersistenceImpl.getInstance().marshal( m ) );
     }
 
+    @Test
+    //https://issues.jboss.org/browse/GUVNOR-2030
+    public void testLHSTemplateKeys() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"MyRule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  Person( name == \"@{k1}\" )\n" +
+                "then\n" +
+                "end";
+
+        addModelField( "org.test.Person",
+                       "this",
+                       "org.test.Person",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Person",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "Person",
+                      fp0.getFactType() );
+
+        assertEquals( 1,
+                      fp0.getNumberOfConstraints() );
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        final SingleFieldConstraint sfc1 = (SingleFieldConstraint) fp0.getConstraint( 0 );
+        assertEquals( "Person",
+                      sfc1.getFactType() );
+        assertEquals( "name",
+                      sfc1.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfc1.getFieldType() );
+        assertEquals( SingleFieldConstraint.TYPE_TEMPLATE,
+                      sfc1.getConstraintValueType() );
+        assertEquals( "k1",
+                      sfc1.getValue() );
+
+        assertEquals( 0,
+                      m.rhs.length );
+    }
+
+    @Test
+    //https://issues.jboss.org/browse/GUVNOR-2030
+    public void testRHSTemplateKeys() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"MyRule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person( name == \"Fred\" )\n" +
+                "then\n" +
+                "  modify( $p ) { setName( \"@{k1}\" ) }\n" +
+                "end";
+
+        addModelField( "org.test.Person",
+                       "this",
+                       "org.test.Person",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Person",
+                       "name",
+                       String.class.getName(),
+                       DataType.TYPE_STRING );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "Person",
+                      fp0.getFactType() );
+
+        assertEquals( 1,
+                      fp0.getNumberOfConstraints() );
+        assertTrue( fp0.getConstraint( 0 ) instanceof SingleFieldConstraint );
+
+        final SingleFieldConstraint sfc1 = (SingleFieldConstraint) fp0.getConstraint( 0 );
+        assertEquals( "Person",
+                      sfc1.getFactType() );
+        assertEquals( "name",
+                      sfc1.getFieldName() );
+        assertEquals( DataType.TYPE_STRING,
+                      sfc1.getFieldType() );
+        assertEquals( SingleFieldConstraint.TYPE_LITERAL,
+                      sfc1.getConstraintValueType() );
+        assertEquals( "Fred",
+                      sfc1.getValue() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+
+        assertTrue( m.rhs[ 0 ] instanceof ActionUpdateField );
+        ActionUpdateField auf = (ActionUpdateField) m.rhs[ 0 ];
+        assertEquals( "$p",
+                      auf.getVariable() );
+        assertEquals( 1,
+                      auf.getFieldValues().length );
+        ActionFieldValue afv = auf.getFieldValues()[ 0 ];
+        assertEquals( "name",
+                      afv.getField() );
+        assertEquals( "k1",
+                      afv.getValue() );
+        assertEquals( FieldNatureType.TYPE_TEMPLATE,
+                      afv.getNature() );
+    }
+
 }

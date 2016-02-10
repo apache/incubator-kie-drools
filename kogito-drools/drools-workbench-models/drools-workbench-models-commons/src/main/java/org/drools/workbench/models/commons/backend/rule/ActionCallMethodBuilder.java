@@ -143,6 +143,9 @@ public class ActionCallMethodBuilder {
                 break;
             case FieldNatureType.TYPE_VARIABLE:
                 break;
+            case FieldNatureType.TYPE_TEMPLATE:
+                paramValue = unwrapTemplateKey( param );
+                break;
             default:
                 paramValue = adjustParam( dataType,
                                           param,

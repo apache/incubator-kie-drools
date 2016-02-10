@@ -38,6 +38,7 @@ import org.drools.workbench.models.datamodel.rule.ActionWorkItemFieldValue;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
 import org.drools.workbench.models.datamodel.rule.FieldConstraint;
+import org.drools.workbench.models.datamodel.rule.FreeFormLine;
 import org.drools.workbench.models.datamodel.rule.FromEntryPointFactPattern;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;
@@ -287,12 +288,19 @@ public class GuidedDTDRLPersistence {
                 } else if ( ivs.size() > 0 ) {
 
                     //Ensure every key has a value and substitute keys for values
+                    int templateKeyCount = 0;
                     for ( InterpolationVariable variable : ivs.keySet() ) {
                         String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
                         if ( !"".equals( value ) ) {
-                            addAction = true;
-                            break;
+                            templateKeyCount++;
                         }
+                    }
+
+                    //Ensure at least one key has a value (FreeFormLines need all values to be provided)
+                    if ( action instanceof FreeFormLine ) {
+                        addAction = templateKeyCount == ivs.size();
+                    } else if ( templateKeyCount > 0 ) {
+                        addAction = true;
                     }
                 }
 
@@ -303,7 +311,6 @@ public class GuidedDTDRLPersistence {
 
             }
         }
-
     }
 
     private boolean hasVariables( BRLActionColumn column ) {
@@ -596,13 +603,19 @@ public class GuidedDTDRLPersistence {
                     addPattern = true;
                 } else if ( ivs.size() > 0 ) {
 
-                    //Ensure every key has a value and substitute keys for values
+                    int templateKeyCount = 0;
                     for ( InterpolationVariable variable : ivs.keySet() ) {
                         String value = rowDataProvider.getTemplateKeyValue( variable.getVarName() );
                         if ( !"".equals( value ) ) {
-                            addPattern = true;
-                            break;
+                            templateKeyCount++;
                         }
+                    }
+
+                    //Ensure at least one key has a value (FreeFormLines need all values to be provided)
+                    if ( pattern instanceof FreeFormLine ) {
+                        addPattern = templateKeyCount == ivs.size();
+                    } else if ( templateKeyCount > 0 ) {
+                        addPattern = true;
                     }
                 }
 
