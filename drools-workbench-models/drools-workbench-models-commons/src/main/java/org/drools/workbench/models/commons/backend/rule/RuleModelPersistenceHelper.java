@@ -45,7 +45,24 @@ class RuleModelPersistenceHelper {
     static String unwrapParenthesis( final String s ) {
         int start = s.indexOf( '(' );
         int end = s.lastIndexOf( ')' );
+        if ( start < 0 || end < 0 ) {
+            return s;
+        }
         return s.substring( start + 1,
+                            end ).trim();
+    }
+
+    static String unwrapTemplateKey( final String s ) {
+        int start = s.indexOf( "@{" );
+        if ( start < 0 ) {
+            return s;
+        }
+        int end = s.indexOf( "}",
+                             start );
+        if ( end < 0 ) {
+            return s;
+        }
+        return s.substring( start + 2,
                             end ).trim();
     }
 
@@ -63,9 +80,11 @@ class RuleModelPersistenceHelper {
                                  final String value,
                                  final Map<String, String> boundParams,
                                  final boolean isJavaDialect ) {
-
         if ( boundParams.containsKey( value ) ) {
             return FieldNatureType.TYPE_VARIABLE;
+        }
+        if ( value.contains( "@{" ) ) {
+            return FieldNatureType.TYPE_TEMPLATE;
         }
 
         return inferFieldNature( dataType,

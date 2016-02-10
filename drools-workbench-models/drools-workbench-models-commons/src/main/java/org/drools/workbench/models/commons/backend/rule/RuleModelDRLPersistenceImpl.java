@@ -3223,6 +3223,9 @@ public class RuleModelDRLPersistenceImpl
             case FieldNatureType.TYPE_VARIABLE:
                 paramValue = "=" + paramValue;
                 break;
+            case FieldNatureType.TYPE_TEMPLATE:
+                paramValue = unwrapTemplateKey( value );
+                break;
             default:
                 paramValue = adjustParam( dataType,
                                           value,
@@ -3926,11 +3929,16 @@ public class RuleModelDRLPersistenceImpl
                                              final BaseSingleFieldConstraint con,
                                              String value ) {
             String type = null;
-            if ( value.startsWith( "\"" ) ) {
+            if ( value.contains( "@{" ) ) {
+                con.setConstraintValueType( BaseSingleFieldConstraint.TYPE_TEMPLATE );
+                con.setValue( unwrapTemplateKey( value ) );
+
+            } else if ( value.startsWith( "\"" ) ) {
                 type = DataType.TYPE_STRING;
                 con.setConstraintValueType( SingleFieldConstraint.TYPE_LITERAL );
                 con.setValue( value.substring( 1,
                                                value.length() - 1 ) );
+
             } else if ( value.startsWith( "(" ) ) {
                 if ( operator != null && operator.contains( "in" ) ) {
                     value = unwrapParenthesis( value );
@@ -3941,6 +3949,7 @@ public class RuleModelDRLPersistenceImpl
                     con.setConstraintValueType( SingleFieldConstraint.TYPE_RET_VALUE );
                     con.setValue( unwrapParenthesis( value ) );
                 }
+
             } else {
                 if ( !Character.isDigit( value.charAt( 0 ) ) ) {
                     if ( value.equals( "true" ) || value.equals( "false" ) ) {
