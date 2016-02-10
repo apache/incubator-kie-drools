@@ -15,7 +15,7 @@
 
 package org.drools.persistence.kie.persistence.cdi;
 
-import org.drools.persistence.util.PersistenceUtil;
+import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.jboss.weld.environment.se.Weld;
 import org.jboss.weld.environment.se.WeldContainer;
 import org.junit.After;
@@ -32,20 +32,22 @@ import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.KieSession;
 
 import javax.inject.Inject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.OPTIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.PESSIMISTIC_LOCKING;
+import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 public class CDITest {
 
-    private HashMap<String, Object> context;
+    private Map<String, Object> context;
     private Environment env;
     private boolean locking;
 
@@ -64,7 +66,7 @@ public class CDITest {
     
     @Before
     public void setUp() throws Exception {
-        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+        context = DroolsPersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         env = createEnvironment(context);
         if( locking ) { 
             env.set(EnvironmentName.USE_PESSIMISTIC_LOCKING, true);
@@ -73,7 +75,7 @@ public class CDITest {
 
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.cleanUp(context);
+        DroolsPersistenceUtil.cleanUp(context);
     }
 
     @Test

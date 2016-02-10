@@ -15,23 +15,12 @@
  */
 package org.drools.persistence.session;
 
-import static org.drools.persistence.util.PersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
-import static org.drools.persistence.util.PersistenceUtil.createEnvironment;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.io.impl.ClassPathResource;
-import org.drools.persistence.util.PersistenceUtil;
+import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,10 +41,21 @@ import org.kie.internal.command.Context;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.utils.KieHelper;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
 @RunWith(Parameterized.class)
 public class AgendaRuleFlowGroupsTest {
     
-    private HashMap<String, Object> context;
+    private Map<String, Object> context;
     private boolean locking;
 
     @Parameters
@@ -70,12 +70,12 @@ public class AgendaRuleFlowGroupsTest {
     
     @Before
     public void setUp() throws Exception {
-        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+        context = DroolsPersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
     }
 	
 	@After
 	public void tearDown() {
-		PersistenceUtil.cleanUp(context);
+		DroolsPersistenceUtil.cleanUp(context);
 	}
 
     @Test	

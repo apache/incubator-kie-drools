@@ -15,20 +15,12 @@
  */
 package org.drools.persistence.jta;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.transaction.UserTransaction;
-
 import bitronix.tm.internal.BitronixRollbackException;
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.jpa.JpaPersistenceContextManager;
-import org.drools.persistence.util.PersistenceUtil;
+import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.hibernate.TransientObjectException;
 import org.junit.After;
 import org.junit.Before;
@@ -43,19 +35,32 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.persistence.jpa.JPAKnowledgeService;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.test.util.db.PersistenceUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
-import static org.kie.api.runtime.EnvironmentName.*;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.transaction.UserTransaction;
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
+import static org.drools.persistence.util.DroolsPersistenceUtil.setupWithPoolingDataSource;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class JtaTransactionManagerTest {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     // Datasource (setup & clean up)
-    private HashMap<String, Object> context;
+    private Map<String, Object> context;
     private EntityManagerFactory emf;
 
     private static String simpleRule = "package org.kie.test\n"
@@ -75,12 +80,12 @@ public class JtaTransactionManagerTest {
         boolean testMarshalling = false;
 
         context = setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME, testMarshalling);
-        emf = (EntityManagerFactory) context.get(ENTITY_MANAGER_FACTORY);
+        emf = (EntityManagerFactory) context.get(PersistenceUtil.ENTITY_MANAGER_FACTORY);
     }
 
     @After
     public void tearDown() {
-        PersistenceUtil.cleanUp(context);
+        DroolsPersistenceUtil.cleanUp(context);
     }
 
     private KnowledgeBase initializeKnowledgeBase(String rule) { 

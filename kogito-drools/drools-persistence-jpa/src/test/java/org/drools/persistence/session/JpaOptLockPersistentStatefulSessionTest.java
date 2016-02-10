@@ -15,14 +15,10 @@
  */
 package org.drools.persistence.session;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.drools.core.command.impl.CommandBasedStatefulKnowledgeSession;
 import org.drools.persistence.SingleSessionCommandService;
 import org.drools.persistence.jpa.OptimisticLockRetryInterceptor;
-import org.drools.persistence.util.PersistenceUtil;
+import org.drools.persistence.util.DroolsPersistenceUtil;
 import org.hibernate.StaleObjectStateException;
 import org.junit.After;
 import org.junit.Before;
@@ -39,15 +35,21 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.createEnvironment;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 
 public class JpaOptLockPersistentStatefulSessionTest {
 
     private static Logger logger = LoggerFactory.getLogger(JpaOptLockPersistentStatefulSessionTest.class);
 
-    private HashMap<String, Object> context;
+    private Map<String, Object> context;
     private Environment env;
 
     public JpaOptLockPersistentStatefulSessionTest() {
@@ -55,13 +57,13 @@ public class JpaOptLockPersistentStatefulSessionTest {
     
     @Before
     public void setUp() throws Exception {
-        context = PersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
+        context = DroolsPersistenceUtil.setupWithPoolingDataSource(DROOLS_PERSISTENCE_UNIT_NAME);
         env = createEnvironment(context);
     }
         
     @After
     public void tearDown() throws Exception {
-        PersistenceUtil.cleanUp(context);
+        DroolsPersistenceUtil.cleanUp(context);
     }
 
     @Test
