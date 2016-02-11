@@ -101,7 +101,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         assertNotNull(solver);
     }
 
-    @Test @Ignore("ScanAnnotatedClasses cannot handle a KieContainer with non-compiled java files")
+    @Test
     public void buildScanAnnotatedSolverWithReleaseId() {
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(
                 releaseId, "testdata/kjar/scanAnnotatedKieContainerTestdataSolverConfig.solver");
@@ -109,7 +109,7 @@ public class KieContainerSolverFactoryTest extends CommonTestMethodBase {
         assertNotNull(solver);
     }
 
-    @Test @Ignore("ScanAnnotatedClasses cannot handle a KieContainer with non-compiled java files")
+    @Test
     public void buildScanAnnotatedSolverWithKieContainer() {
         KieContainer kieContainer = kieServices.newKieContainer(releaseId);
         SolverFactory<TestdataSolution> solverFactory = SolverFactory.createFromKieContainerXmlResource(

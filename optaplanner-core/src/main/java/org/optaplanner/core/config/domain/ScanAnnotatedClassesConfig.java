@@ -36,8 +36,6 @@ import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @XStreamAlias("scanAnnotatedClasses")
 public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClassesConfig> {
@@ -62,17 +60,8 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
         if (configContext.getClassLoader() != null) {
             classLoaders = new ClassLoader[] {configContext.getClassLoader()};
         } else if (configContext.getKieContainer() != null) {
-            ClassLoader kieContainerClassLoader = configContext.getKieContainer().getClassLoader();
-            if (kieContainerClassLoader instanceof ProjectClassLoader) {
-                // TODO this does not work if the kjar contains java source files which are not compiled in advance
-                // see ignored tests in KieContainerSolverFactoryTest
-                ClassLoader parent = kieContainerClassLoader.getParent();
-                classLoaders = new ClassLoader[] {parent};
-            } else {
-                throw new IllegalStateException("The kieContainer (" + configContext.getKieContainer()
-                        + ")'s class loader (" + kieContainerClassLoader
-                        + ") is not a " + ProjectClassLoader.class.getSimpleName() + ".");
-            }
+            classLoaders = new ClassLoader[] {configContext.getKieContainer().getClassLoader()};
+            ReflectionsKieVfsUrlType.register(configContext.getKieContainer());
         } else {
             classLoaders = new ClassLoader[0];
         }
@@ -80,13 +69,14 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
         if (!ConfigUtils.isEmptyCollection(packageIncludeList)) {
             FilterBuilder filterBuilder = new FilterBuilder();
             for (String packageInclude : packageIncludeList) {
-                builder.addUrls(ClasspathHelper.forPackage(packageInclude, classLoaders));
+                builder.addUrls(ReflectionsWorkaroundClasspathHelper.forPackage(packageInclude, classLoaders));
                 filterBuilder.includePackage(packageInclude);
             }
             builder.filterInputsBy(filterBuilder);
         } else {
-            builder.addUrls(ClasspathHelper.forPackage("", classLoaders));
+            builder.addUrls(ReflectionsWorkaroundClasspathHelper.forPackage("", classLoaders));
         }
+        builder.setClassLoaders(classLoaders);
         Reflections reflections = new Reflections(builder);
         Class<? extends Solution> solutionClass = loadSolutionClass(reflections);
         List<Class<?>> entityClassList = loadEntityClassList(reflections);
