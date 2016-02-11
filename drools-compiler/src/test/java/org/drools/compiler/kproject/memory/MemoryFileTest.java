@@ -81,7 +81,8 @@ public class MemoryFileTest {
             
         }      
     }
-    
+
+    @Test
     public void testFilePath() {
         FileSystem fs = new MemoryFileSystem();
         
@@ -91,7 +92,8 @@ public class MemoryFileTest {
         assertEquals( "src/main/java/org/domain/MyClass.java",
                       f1.getPath().toPortableString() );
     }
-    
+
+    @Test
     public void testRelativeToParentFilePath() {
         FileSystem fs = new MemoryFileSystem();
         
@@ -101,8 +103,9 @@ public class MemoryFileTest {
         File f1 = mres.getFile( "MyClass.java" );
         assertEquals( "../../MyClass.java",
                       f1.getPath().toRelativePortableString( f2.getPath() ) );
-    }  
-    
+    }
+
+    @Test
     public void testRelativeToBranchFilePath() {
         FileSystem fs = new MemoryFileSystem();
         
@@ -110,7 +113,8 @@ public class MemoryFileTest {
         Folder f2 = fs.getFolder( "src/main/resources/org/domain/" );
         
         File f1 = mres.getFile( "MyClass.java" );
-        assertEquals( "../../../src/main/java/org/domain/MyClass.java",
+        assertEquals( "../../../java/org/domain/MyClass.java",
                       f1.getPath().toRelativePortableString( f2.getPath() ) );
-    }     
+    }
+
 }
