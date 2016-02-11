@@ -36,7 +36,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-test-util</artifactId>
-      <!--<version>7.0.0-SNAPSHOT</version>&lt;!&ndash;this should be generalized&ndash;&gt;-->
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
