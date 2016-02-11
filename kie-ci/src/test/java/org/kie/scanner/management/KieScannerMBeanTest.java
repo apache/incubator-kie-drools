@@ -108,7 +108,7 @@ public class KieScannerMBeanTest extends AbstractKieCiTest {
         ks.getRepository().removeKieModule(releaseId);
     }
 
-    private void checkKSession(KieSession ksession, Object... results) {
+    protected void checkKSession(KieSession ksession, Object... results) {
         List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
         ksession.fireAllRules();

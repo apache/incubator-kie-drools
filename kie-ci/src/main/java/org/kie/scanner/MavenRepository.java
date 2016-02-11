@@ -15,6 +15,8 @@
 
 package org.kie.scanner;
 
+import org.apache.maven.model.DeploymentRepository;
+import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.project.MavenProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.eclipse.aether.artifact.Artifact;
@@ -52,6 +54,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import static org.kie.scanner.DependencyDescriptor.isRangedVersion;
+import static org.kie.scanner.embedder.MavenProjectLoader.parseMavenPom;
 
 public class MavenRepository {
 
@@ -188,16 +191,57 @@ public class MavenRepository {
     public void deployArtifact( ReleaseId releaseId,
                                 InternalKieModule kieModule,
                                 File pomfile ) {
-        File jarFile = bytesToFile( releaseId, kieModule.getBytes(), ".jar" );
-        deployArtifact( releaseId, jarFile, pomfile );
+        RemoteRepository repository = getRemoteRepositoryFromDistributionManagement( pomfile );
+        if (repository == null) {
+            throw new RuntimeException( "No Distribution Managament configured: unknown repository" );
+        }
+        deployArtifact( repository, releaseId, kieModule, pomfile );
     }
 
-    public void deployArtifact( ReleaseId releaseId,
-                                byte[] jarContent,
-                                byte[] pomContent ) {
-        File jarFile = bytesToFile( releaseId, jarContent, ".jar" );
-        File pomFile = bytesToFile( releaseId, pomContent, ".pom" );
-        deployArtifact( releaseId, jarFile, pomFile );
+    private RemoteRepository getRemoteRepositoryFromDistributionManagement( File pomfile ) {
+        MavenProject mavenProject = parseMavenPom( pomfile );
+        DistributionManagement distMan = mavenProject.getDistributionManagement();
+        if (distMan == null) {
+            return null;
+        }
+        DeploymentRepository deployRepo = mavenProject.getVersion().endsWith( "SNAPSHOT" ) ?
+                                          distMan.getSnapshotRepository() :
+                                          distMan.getRepository();
+        if (deployRepo == null) {
+            return null;
+        }
+        return new RemoteRepository.Builder( deployRepo.getId(), "default", deployRepo.getUrl() ).build();
+    }
+
+    public void deployArtifact( RemoteRepository repository,
+                                ReleaseId releaseId,
+                                InternalKieModule kieModule,
+                                File pomfile ) {
+        File jarFile = bytesToFile( releaseId, kieModule.getBytes(), ".jar" );
+        deployArtifact( repository, releaseId, jarFile, pomfile );
+    }
+
+    public void deployArtifact( RemoteRepository repository,
+                                ReleaseId releaseId,
+                                File jar,
+                                File pomfile ) {
+        Artifact jarArtifact = new DefaultArtifact( releaseId.getGroupId(), releaseId.getArtifactId(), "jar", releaseId.getVersion() );
+        jarArtifact = jarArtifact.setFile( jar );
+
+        Artifact pomArtifact = new SubArtifact( jarArtifact, "", "pom" );
+        pomArtifact = pomArtifact.setFile( pomfile );
+
+        DeployRequest deployRequest = new DeployRequest();
+        deployRequest
+                .addArtifact( jarArtifact )
+                .addArtifact( pomArtifact )
+                .setRepository( repository );
+
+        try {
+            aether.getSystem().deploy( aether.getSession(), deployRequest );
+        } catch ( DeploymentException e ) {
+            throw new RuntimeException( e );
+        }
     }
 
     private File bytesToFile( ReleaseId releaseId, byte[] bytes, String extension ) {
@@ -211,28 +255,6 @@ public class MavenRepository {
             throw new RuntimeException( e );
         }
         return file;
-    }
-
-    public void deployArtifact( ReleaseId releaseId,
-                                File jar,
-                                File pomfile ) {
-        Artifact jarArtifact = new DefaultArtifact( releaseId.getGroupId(), releaseId.getArtifactId(), "jar", releaseId.getVersion() );
-        jarArtifact = jarArtifact.setFile( jar );
-
-        Artifact pomArtifact = new SubArtifact( jarArtifact, "", "pom" );
-        pomArtifact = pomArtifact.setFile( pomfile );
-
-        DeployRequest deployRequest = new DeployRequest();
-        deployRequest
-                .addArtifact( jarArtifact )
-                .addArtifact( pomArtifact )
-                .setRepository( aether.getLocalRepository() );
-
-        try {
-            aether.getSystem().deploy( aether.getSession(), deployRequest );
-        } catch ( DeploymentException e ) {
-            throw new RuntimeException( e );
-        }
     }
 
     public void installArtifact( ReleaseId releaseId,

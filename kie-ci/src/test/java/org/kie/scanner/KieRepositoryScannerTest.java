@@ -512,25 +512,6 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         return pomFile;
     }
 
-    private void checkKSession(KieSession ksession, Object... results) {
-        checkKSession(true, ksession, results);
-    }
-
-    private void checkKSession(boolean dispose, KieSession ksession, Object... results) {
-        List<String> list = new ArrayList<String>();
-        ksession.setGlobal( "list", list );
-        ksession.fireAllRules();
-        if (dispose) {
-            ksession.dispose();
-        }
-
-        assertEquals(results.length, list.size());
-        for (Object result : results) {
-            assertTrue( String.format("Expected to contain: %s, got: %s", result, Arrays.toString(list.toArray())),
-                        list.contains( result ) );
-        }
-    }
-
     @Test
     public void testKieScannerOnClasspathContainerMustFail() {
         KieServices ks = KieServices.Factory.get();

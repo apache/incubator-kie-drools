@@ -29,11 +29,16 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.kie.api.conf.EqualityBehaviorOption;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class AbstractKieCiTest {
@@ -305,5 +310,24 @@ public class AbstractKieCiTest {
         File pomFile = fileManager.newFile("pom.xml");
         fileManager.write(pomFile, getPom(releaseId, dependencies));
         return pomFile;
+    }
+
+    protected void checkKSession( KieSession ksession, Object... results ) {
+        checkKSession(true, ksession, results);
+    }
+
+    protected void checkKSession(boolean dispose, KieSession ksession, Object... results) {
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+        ksession.fireAllRules();
+        if (dispose) {
+            ksession.dispose();
+        }
+
+        assertEquals(results.length, list.size());
+        for (Object result : results) {
+            assertTrue( String.format( "Expected to contain: %s, got: %s", result, Arrays.toString( list.toArray() ) ),
+                        list.contains( result ) );
+        }
     }
 }

@@ -26,7 +26,7 @@ import java.io.InputStream;
 public class MavenProjectLoader {
     private static final Logger log = LoggerFactory.getLogger(KieScanner.class);
 
-    private static MavenProject mavenProject;
+    static MavenProject mavenProject;
 
     public static MavenProject parseMavenPom(File pomFile) {
         return parseMavenPom(pomFile, false);
