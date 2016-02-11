@@ -15,7 +15,10 @@
 
 package org.kie.scanner;
 
+import org.apache.maven.model.DeploymentRepository;
+import org.apache.maven.model.DistributionManagement;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.settings.Server;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
@@ -29,7 +32,9 @@ import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.graph.DependencyVisitor;
 import org.eclipse.aether.installation.InstallRequest;
 import org.eclipse.aether.installation.InstallationException;
+import org.eclipse.aether.repository.Authentication;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.eclipse.aether.repository.RepositoryPolicy;
 import org.eclipse.aether.resolution.ArtifactRequest;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.eclipse.aether.resolution.ArtifactResult;
@@ -39,6 +44,8 @@ import org.eclipse.aether.resolution.VersionRangeResult;
 import org.eclipse.aether.util.artifact.SubArtifact;
 import org.eclipse.aether.version.Version;
 import org.kie.api.builder.ReleaseId;
+import org.kie.scanner.embedder.MavenEmbedder;
+import org.kie.scanner.embedder.MavenProjectLoader;
 import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,12 +59,13 @@ import java.util.HashSet;
 import java.util.List;
 
 import static org.kie.scanner.DependencyDescriptor.isRangedVersion;
+import static org.kie.scanner.embedder.MavenProjectLoader.parseMavenPom;
 
 public class MavenRepository {
 
     private static final Logger log = LoggerFactory.getLogger( MavenRepository.class );
 
-    private static MavenRepository defaultMavenRepository;
+    public static MavenRepository defaultMavenRepository;
 
     private final Aether aether;
     private final Collection<RemoteRepository> remoteRepositoriesForRequest;
@@ -185,19 +193,104 @@ public class MavenRepository {
         }
     }
 
+    /**
+     * Deploys the kjar in the given kieModule on the remote repository defined in the
+     * distributionManagement tag of the provided pom file. If the pom file doesn't define
+     * a distributionManagement no deployment will be performed and a warning message will be logged.
+     *
+     * @param releaseId The releaseId with which the deployment will be made
+     * @param kieModule The kieModule containing the kjar to be deployed
+     * @param pomfile The pom file to be deployed together with the kjar
+     */
     public void deployArtifact( ReleaseId releaseId,
                                 InternalKieModule kieModule,
                                 File pomfile ) {
-        File jarFile = bytesToFile( releaseId, kieModule.getBytes(), ".jar" );
-        deployArtifact( releaseId, jarFile, pomfile );
+        RemoteRepository repository = getRemoteRepositoryFromDistributionManagement( pomfile );
+        if (repository == null) {
+            log.warn( "No Distribution Managament configured: unknown repository" );
+            return;
+        }
+        deployArtifact( repository, releaseId, kieModule, pomfile );
     }
 
-    public void deployArtifact( ReleaseId releaseId,
-                                byte[] jarContent,
-                                byte[] pomContent ) {
-        File jarFile = bytesToFile( releaseId, jarContent, ".jar" );
-        File pomFile = bytesToFile( releaseId, pomContent, ".pom" );
-        deployArtifact( releaseId, jarFile, pomFile );
+    private RemoteRepository getRemoteRepositoryFromDistributionManagement( File pomfile ) {
+        MavenProject mavenProject = parseMavenPom( pomfile );
+        DistributionManagement distMan = mavenProject.getDistributionManagement();
+        if (distMan == null) {
+            return null;
+        }
+        DeploymentRepository deployRepo = distMan.getSnapshotRepository() != null && mavenProject.getVersion().endsWith( "SNAPSHOT" ) ?
+                                          distMan.getSnapshotRepository() :
+                                          distMan.getRepository();
+        if (deployRepo == null) {
+            return null;
+        }
+
+        RemoteRepository.Builder remoteRepoBuilder = new RemoteRepository.Builder( deployRepo.getId(), deployRepo.getLayout(), deployRepo.getUrl() )
+                .setSnapshotPolicy( new RepositoryPolicy( true,
+                                                          RepositoryPolicy.UPDATE_POLICY_DAILY,
+                                                          RepositoryPolicy.CHECKSUM_POLICY_WARN ) )
+                .setReleasePolicy( new RepositoryPolicy( true,
+                                                         RepositoryPolicy.UPDATE_POLICY_ALWAYS,
+                                                         RepositoryPolicy.CHECKSUM_POLICY_WARN ) );
+
+        Server server = MavenSettings.getSettings().getServer( deployRepo.getId() );
+        if ( server != null ) {
+            MavenEmbedder embedder = MavenProjectLoader.newMavenEmbedder( false );
+            Authentication authentication = embedder.getMavenSession().getRepositorySession()
+                                                    .getAuthenticationSelector()
+                                                    .getAuthentication( remoteRepoBuilder.build() );
+            remoteRepoBuilder.setAuthentication( authentication );
+        }
+
+        return remoteRepoBuilder.build();
+    }
+
+    /**
+     * Deploys the kjar in the given kieModule on a remote repository.
+     *
+     * @param repository The remote repository where the kjar will be deployed
+     * @param releaseId The releaseId with which the deployment will be made
+     * @param kieModule The kieModule containing the kjar to be deployed
+     * @param pomfile The pom file to be deployed together with the kjar
+     */
+    public void deployArtifact( RemoteRepository repository,
+                                ReleaseId releaseId,
+                                InternalKieModule kieModule,
+                                File pomfile ) {
+        File jarFile = bytesToFile( releaseId, kieModule.getBytes(), ".jar" );
+        deployArtifact( repository, releaseId, jarFile, pomfile );
+    }
+
+    /**
+     * Deploys a jar on a remote repository.
+     *
+     * @param repository The remote repository where the kjar will be deployed
+     * @param releaseId The releaseId with which the deployment will be made
+     * @param jar The jar to be deployed
+     * @param pomfile The pom file to be deployed together with the kjar
+     */
+    public void deployArtifact( RemoteRepository repository,
+                                ReleaseId releaseId,
+                                File jar,
+                                File pomfile ) {
+        Artifact jarArtifact = new DefaultArtifact( releaseId.getGroupId(), releaseId.getArtifactId(), "jar", releaseId.getVersion() );
+        jarArtifact = jarArtifact.setFile( jar );
+
+        Artifact pomArtifact = new SubArtifact( jarArtifact, "", "pom" );
+        pomArtifact = pomArtifact.setFile( pomfile );
+
+        DeployRequest deployRequest = new DeployRequest();
+        deployRequest
+                .addArtifact( jarArtifact )
+                .addArtifact( pomArtifact )
+                .setRepository( repository );
+
+        try {
+            aether.getSystem().deploy( aether.getSession(), deployRequest );
+        } catch ( DeploymentException e ) {
+            throw new RuntimeException( e );
+        }
     }
 
     private File bytesToFile( ReleaseId releaseId, byte[] bytes, String extension ) {
@@ -213,35 +306,27 @@ public class MavenRepository {
         return file;
     }
 
-    public void deployArtifact( ReleaseId releaseId,
-                                File jar,
-                                File pomfile ) {
-        Artifact jarArtifact = new DefaultArtifact( releaseId.getGroupId(), releaseId.getArtifactId(), "jar", releaseId.getVersion() );
-        jarArtifact = jarArtifact.setFile( jar );
-
-        Artifact pomArtifact = new SubArtifact( jarArtifact, "", "pom" );
-        pomArtifact = pomArtifact.setFile( pomfile );
-
-        DeployRequest deployRequest = new DeployRequest();
-        deployRequest
-                .addArtifact( jarArtifact )
-                .addArtifact( pomArtifact )
-                .setRepository( aether.getLocalRepository() );
-
-        try {
-            aether.getSystem().deploy( aether.getSession(), deployRequest );
-        } catch ( DeploymentException e ) {
-            throw new RuntimeException( e );
-        }
-    }
-
+    /**
+     * Installs the kjar in the given kieModule into the local repository.
+     *
+     * @param releaseId The releaseId with which the kjar will be installed
+     * @param kieModule The kieModule containing the kjar to be installed
+     * @param pomfile The pom file to be installed together with the kjar
+     */
     public void installArtifact( ReleaseId releaseId,
-                                InternalKieModule kieModule,
-                                File pomfile ) {
+                                 InternalKieModule kieModule,
+                                 File pomfile ) {
         File jarFile = bytesToFile( releaseId, kieModule.getBytes(), ".jar" );
         installArtifact( releaseId, jarFile, pomfile );
     }
 
+    /**
+     * Installs the given jar into the local repository.
+     *
+     * @param releaseId The releaseId with which the kjar will be installed
+     * @param jarContent A byte array containing the kjar to be installed
+     * @param pomContent A byte array containing the pom file to be installed together with the kjar
+     */
     public void installArtifact( ReleaseId releaseId,
                                  byte[] jarContent,
                                  byte[] pomContent ) {
@@ -250,6 +335,13 @@ public class MavenRepository {
         installArtifact( releaseId, jarFile, pomFile );
     }
 
+    /**
+     * Installs the given jar into the local repository.
+     *
+     * @param releaseId The releaseId with which the kjar will be installed
+     * @param jar The jar to be installed
+     * @param pomfile The pom file to be installed together with the kjar
+     */
     public void installArtifact( ReleaseId releaseId,
                                  File jar,
                                  File pomfile ) {

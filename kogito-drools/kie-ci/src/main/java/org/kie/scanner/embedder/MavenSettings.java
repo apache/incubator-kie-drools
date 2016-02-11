@@ -23,6 +23,8 @@ import org.apache.maven.settings.building.SettingsBuilder;
 import org.apache.maven.settings.building.SettingsBuildingException;
 import org.apache.maven.settings.building.SettingsSource;
 import org.apache.maven.settings.building.UrlSettingsSource;
+import org.kie.scanner.Aether;
+import org.kie.scanner.MavenRepository;
 import org.kie.scanner.MavenRepositoryConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +40,23 @@ public class MavenSettings {
     private static final String CUSTOM_SETTINGS_PROPERTY = "kie.maven.settings.custom";
 
     private static class SettingsHolder {
-        private static final SettingsSource userSettingsSource = initUserSettingsSource();
-        private static final Settings settings = initSettings(userSettingsSource);
-        private static final MavenRepositoryConfiguration mavenConf = new MavenRepositoryConfiguration(settings);
+        private static SettingsSource userSettingsSource = initUserSettingsSource();
+        private static Settings settings = initSettings(userSettingsSource);
+        private static MavenRepositoryConfiguration mavenConf = new MavenRepositoryConfiguration(settings);
+
+        private static void reinitSettings() {
+            userSettingsSource = initUserSettingsSource();
+            settings = initSettings(userSettingsSource);
+            mavenConf = new MavenRepositoryConfiguration(settings);
+            Aether.instance = null;
+            MavenProjectLoader.mavenProject = null;
+            MavenRepository.defaultMavenRepository = null;
+        }
+    }
+
+    // USE ONLY FOR TESTING PURPOSES
+    static void reinitSettings() {
+        SettingsHolder.reinitSettings();
     }
 
     public static SettingsSource getUserSettingsSource() {

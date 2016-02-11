@@ -15,10 +15,6 @@
 
 package org.kie.scanner;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.HashSet;
-
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.internal.MavenRepositorySystemUtils;
 import org.apache.maven.settings.Settings;
@@ -40,6 +36,10 @@ import org.kie.scanner.embedder.MavenSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
+
 import static org.kie.scanner.embedder.MavenProjectLoader.loadMavenProject;
 
 public class Aether {
@@ -57,8 +57,8 @@ public class Aether {
 
     private RemoteRepository localRepository;
 
-    private Aether( String localRepoDir,
-                    boolean offline ) {
+    public Aether( String localRepoDir,
+                   boolean offline ) {
         this( loadMavenProject( offline ), localRepoDir, offline );
     }
 
