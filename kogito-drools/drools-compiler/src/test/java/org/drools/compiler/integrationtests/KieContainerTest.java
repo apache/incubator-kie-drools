@@ -16,6 +16,7 @@
 package org.drools.compiler.integrationtests;
 
 import org.assertj.core.api.Assertions;
+import org.drools.compiler.kie.builder.impl.InternalKieContainer;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -29,11 +30,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.drools.compiler.integrationtests.IncrementalCompilationTest.createAndDeployJar;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class KieContainerTest {
+
+    @Test
+    public void testMainKieModule() {
+        KieServices ks = KieServices.Factory.get();
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "test-delete", "1.0.0");
+        createAndDeployJar( ks, releaseId, createDRL("ruleA") );
+
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
+        KieModule kmodule = ((InternalKieContainer) kieContainer).getMainKieModule();
+        assertEquals( releaseId, kmodule.getReleaseId() );
+    }
 
     @Test
     public void testSharedTypeDeclarationsUsingClassLoader() throws Exception {

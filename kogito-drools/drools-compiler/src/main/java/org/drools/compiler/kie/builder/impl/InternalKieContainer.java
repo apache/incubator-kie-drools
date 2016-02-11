@@ -15,6 +15,7 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
@@ -55,4 +56,10 @@ public interface InternalKieContainer extends KieContainer {
     Results updateDependencyToVersion(ReleaseId currentReleaseId, ReleaseId newReleaseId);
 
     InputStream getPomAsStream();
+
+    /**
+     * @return the {@link KieModule} of the {@link #getReleaseId()}
+     */
+    KieModule getMainKieModule();
+
 }

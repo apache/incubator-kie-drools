@@ -95,6 +95,10 @@ public class KieContainerImpl
 
     private ReleaseId containerReleaseId;
 
+    public KieModule getMainKieModule() {
+        return kr.getKieModule(getReleaseId());
+    }
+
     public KieContainerImpl(KieProject kProject, KieRepository kr) {
         this.kr = kr;
         this.kProject = kProject;
