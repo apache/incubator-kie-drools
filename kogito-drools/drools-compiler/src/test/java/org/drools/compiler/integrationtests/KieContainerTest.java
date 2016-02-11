@@ -16,21 +16,27 @@
 package org.drools.compiler.integrationtests;
 
 import org.assertj.core.api.Assertions;
+import org.drools.compiler.compiler.io.Folder;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.InternalKieContainer;
+import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.type.FactType;
+import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.drools.compiler.integrationtests.IncrementalCompilationTest.createAndDeployJar;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 public class KieContainerTest {
 
@@ -210,6 +216,39 @@ public class KieContainerTest {
                 break;
             }
         }
+    }
+
+    @Test
+    public void testMemoryFileSystemFolderUniqueness() {
+        KieServices kieServices = KieServices.Factory.get();
+        String drl = "package org.drools.test\n" +
+                     "rule R1 when\n" +
+                     "   $m : Object()\n" +
+                     "then\n" +
+                     "end\n";
+        Resource resource = kieServices.getResources().newReaderResource( new StringReader( drl), "UTF-8" );
+        resource.setTargetPath("org/drools/test/rules.drl");
+        String kmodule = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                         "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                         "  <kbase name=\"testKbase\" packages=\"org.drools.test\">\n" +
+                         "    <ksession name=\"testKsession\"/>\n" +
+                         "  </kbase>\n" +
+                         "</kmodule>";
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId = kieServices.newReleaseId("org.kie", "test-delete", "1.0.0");
+        createAndDeployJar(kieServices, kmodule, releaseId, resource);
+
+        KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+
+        KieModule kieModule = ((InternalKieContainer) kieContainer).getMainKieModule();
+        MemoryFileSystem memoryFileSystem = ((MemoryKieModule) kieModule).getMemoryFileSystem();
+        Folder rootFolder = memoryFileSystem.getFolder("");
+        Object[] members = rootFolder.getMembers().toArray();
+        assertEquals(2, members.length);
+        Folder firstFolder = (Folder) members[0];
+        Folder secondFolder = (Folder) members[1];
+        assertEquals(firstFolder.getParent(), secondFolder.getParent());
     }
 
     private String createDRL(String ruleName) {
