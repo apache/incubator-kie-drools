@@ -57,16 +57,19 @@ public class MemoryFileSystem
 
     private static final Logger log = LoggerFactory.getLogger( MemoryFileSystem.class );
 
-    private MemoryFolder               folder;
+    private final MemoryFolder               folder;
 
-    private Map<String, Set<Resource>> folders;
+    private final Map<String, Set<Resource>> folders;
 
-    private Map<String, byte[]>        fileContents;
+    private final Map<String, Folder>        folderMap;
 
-    private Set<String>                modifiedFilesSinceLastMark;
+    private final Map<String, byte[]>        fileContents;
+
+    private Set<String>                      modifiedFilesSinceLastMark;
 
     public MemoryFileSystem() {
         folders = new HashMap<String, Set<Resource>>();
+        folderMap = new HashMap<String, Folder>();
         fileContents = new HashMap<String, byte[]>();
 
         folder = new MemoryFolder( this,
@@ -108,17 +111,19 @@ public class MemoryFileSystem
                                    path,
                                    folder );
         }
-
     }
 
     public Folder getFolder(Path path) {
-        return new MemoryFolder( this,
-                                 path.toPortableString() );
+        return getFolder( path.toPortableString() );
     }
 
     public Folder getFolder(String path) {
-        return new MemoryFolder( this,
-                                 path );
+        Folder folder = folderMap.get(path);
+        if (folder == null) {
+            folder = new MemoryFolder( this, path );
+            folderMap.put( path, folder );
+        }
+        return folder;
     }
 
     public Set< ? extends Resource> getMembers(Folder folder) {
@@ -356,6 +361,11 @@ public class MemoryFileSystem
     public void write(String pResourceName,
                       byte[] pResourceData,
                       boolean createFolder) {
+        if (pResourceData.length == 0 && pResourceName.endsWith( "/" )) {
+            // avoid to create files for empty folders
+            return;
+        }
+
         MemoryFile memoryFile = (MemoryFile) getFile( pResourceName );
         if ( createFolder ) {
             String folderPath = memoryFile.getFolder().getPath().toPortableString();
