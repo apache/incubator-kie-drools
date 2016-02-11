@@ -11,15 +11,16 @@
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>test-kjar</artifactId>
+  <groupId>org.drools.testcoverage.standalone</groupId>
+  <artifactId>standalone-parent</artifactId>
+  <packaging>pom</packaging>
 
-  <name>Drools :: Test Coverage :: Test KJar</name>
+  <name>Drools :: Test Coverage :: Standalone reproducers</name>
+  <description>Tests that typically need standalone packaging due to specific dependencies or other Maven configuration.</description>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.drools.testcoverage</groupId>
-      <artifactId>test-domain</artifactId>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>kie-ci-with-domain</module>
+    <module>kie-ci-without-domain</module>
+  </modules>
 
 </project>

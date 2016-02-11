@@ -6,18 +6,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.drools.testcoverage</groupId>
-    <artifactId>drools-test-coverage-parent</artifactId>
+    <groupId>org.drools.testcoverage.standalone.kieciwithoutdomain</groupId>
+    <artifactId>parent</artifactId>
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kie-ci-without-domain</artifactId>
+  <artifactId>tests</artifactId>
 
-  <name>Drools :: Test Coverage :: KIE-CI Test Suite without Domain</name>
-  <description>KIE-CI Test Suite not depending on domain classes</description>
+  <name>Drools :: Test Coverage :: KIE-CI without Domain classes :: Tests</name>
 
   <dependencies>
     <!-- Internal dependencies -->
+    <!-- This module must NOT depend on org.drools.testcoverage.standalone.kieciwithoutdomain:test-domain -->
     <dependency>
       <groupId>org.drools.testcoverage</groupId>
       <artifactId>common</artifactId>
@@ -81,6 +81,18 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemProperties>
+            <kie.maven.settings.custom>${project.build.testOutputDirectory}/test-kie-maven-settings.xml</kie.maven.settings.custom>
+          </systemProperties>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
 </project>

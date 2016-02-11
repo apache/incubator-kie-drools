@@ -6,15 +6,14 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.drools.testcoverage</groupId>
-    <artifactId>drools-test-coverage-parent</artifactId>
+    <groupId>org.drools.testcoverage.standalone.kieciwithdomain</groupId>
+    <artifactId>parent</artifactId>
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>kie-ci-with-domain</artifactId>
+  <artifactId>tests</artifactId>
 
-  <name>Drools :: Test Coverage :: Test Suite with Domain</name>
-  <description>KIE-CI Test Suite depending on domain classes</description>
+  <name>Drools :: Test Coverage :: KIE-CI with Domain classes :: Tests</name>
 
   <dependencies>
     <!-- Internal dependencies -->
@@ -22,8 +21,9 @@
       <groupId>org.drools.testcoverage</groupId>
       <artifactId>common</artifactId>
     </dependency>
+    <!-- The test domain that KJar also depends on -->
     <dependency>
-      <groupId>org.drools.testcoverage</groupId>
+      <groupId>org.drools.testcoverage.standalone.kieciwithdomain</groupId>
       <artifactId>test-domain</artifactId>
     </dependency>
 
@@ -85,6 +85,18 @@
         <filtering>true</filtering>
       </testResource>
     </testResources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemProperties>
+            <kie.maven.settings.custom>${project.build.testOutputDirectory}/test-kie-maven-settings.xml</kie.maven.settings.custom>
+          </systemProperties>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 
 </project>

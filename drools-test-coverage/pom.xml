@@ -19,10 +19,7 @@
 
   <modules>
     <module>common</module>
-    <module>test-domain</module>
-    <module>test-kjar</module>
-    <module>kie-ci-without-domain</module>
-    <module>kie-ci-with-domain</module>
+    <module>standalone</module>
   </modules>
 
   <dependencyManagement>
@@ -30,11 +27,6 @@
       <dependency>
         <groupId>org.drools.testcoverage</groupId>
         <artifactId>common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.drools.testcoverage</groupId>
-        <artifactId>test-domain</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>
