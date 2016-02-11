@@ -20,15 +20,16 @@ import org.apache.maven.settings.building.DefaultSettingsBuilderFactory;
 import org.apache.maven.settings.building.DefaultSettingsBuildingRequest;
 import org.apache.maven.settings.building.SettingsBuilder;
 import org.apache.maven.settings.building.SettingsBuildingException;
-import org.junit.Test;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.junit.Test;
 
 import java.io.File;
 import java.util.Collection;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-public class MavenRepositoryTest {
+public class MavenRepositoryTest extends AbstractKieCiTest {
 
     @Test
     public void testMirrors() {
