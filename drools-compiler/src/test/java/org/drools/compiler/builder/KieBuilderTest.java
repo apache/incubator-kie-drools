@@ -95,7 +95,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
     }
     
     @Test
-    public void testKieModuleDepednencies() throws ClassNotFoundException, InterruptedException, IOException {
+    public void testKieModuleDependencies() throws ClassNotFoundException, InterruptedException, IOException {
         KieServices ks = KieServices.Factory.get();
         
         String namespace1 = "org.kie.test1";
