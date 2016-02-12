@@ -125,7 +125,7 @@ public class MemoryFolderTest {
         f2.create();
         
         assertEquals( "../../..", f2.getPath().toRelativePortableString( f1.getPath() ) );                
-    }      
+    }
     
     @Test
     public void testNestedRelativeDifferentPath() {
@@ -189,7 +189,6 @@ public class MemoryFolderTest {
         assertFalse( fs.getFile( "src/main/resources/org/MyClass3.java" ).exists() );
         assertFalse( fs.getFile( "src/main/resources/org/MyClass4.java" ).exists() );        
         assertFalse( fs.getFile( "src/main/resources/org/domain/MyClass4.java" ).exists() );
-
-                 
     }
+
 }

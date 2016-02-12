@@ -118,7 +118,7 @@ public class MemoryFolder
 
     public Collection<? extends Resource> getMembers() {
         return mfs.getMembers( this );
-    }    
+    }
 
     public boolean exists() {
         return mfs.existsFolder( path );

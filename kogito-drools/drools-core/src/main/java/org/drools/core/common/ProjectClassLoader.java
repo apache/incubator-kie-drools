@@ -62,7 +62,7 @@ public class ProjectClassLoader extends ClassLoader {
     }
 
     public static class IBMClassLoader extends ProjectClassLoader {
-        private final boolean parentImplemntsFindReosources;
+        private final boolean parentImplementsFindResources;
 
         private static final Enumeration<URL> EMPTY_RESOURCE_ENUM = new Vector<URL>().elements();
 
@@ -72,14 +72,14 @@ public class ProjectClassLoader extends ClassLoader {
             try {
                 m = parent.getClass().getMethod("findResources", String.class);
             } catch (NoSuchMethodException e) { }
-            parentImplemntsFindReosources = m != null && m.getDeclaringClass() == parent.getClass();
+            parentImplementsFindResources = m != null && m.getDeclaringClass() == parent.getClass();
         }
 
         @Override
         protected Enumeration<URL> findResources(String name) throws IOException {
             // if the parent doesn't implemnt this method call getResources directly on it
             // see https://blogs.oracle.com/bhaktimehta/entry/ibm_jdk_and_classloader_getresources
-            return parentImplemntsFindReosources ? EMPTY_RESOURCE_ENUM : getParent().getResources(name);
+            return parentImplementsFindResources ? EMPTY_RESOURCE_ENUM : getParent().getResources(name);
         }
     }
 

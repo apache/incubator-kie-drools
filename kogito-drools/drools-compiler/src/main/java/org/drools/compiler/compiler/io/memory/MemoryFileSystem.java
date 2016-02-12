@@ -167,7 +167,10 @@ public class MemoryFileSystem
     }
 
     public boolean existsFolder(String path) {
-        return folders.get( path ) != null;
+        if (path == null) {
+            throw new NullPointerException("Path can not be null!");
+        }
+        return folders.get( path.length() > 0 ? MemoryFolder.trimLeadingAndTrailing( path ) : path ) != null;
     }
 
     public boolean existsFile(String path) {
