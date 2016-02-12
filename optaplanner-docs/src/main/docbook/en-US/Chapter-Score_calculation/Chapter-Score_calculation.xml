@@ -29,8 +29,13 @@
           <imagedata fileref="images/Chapter-Score_calculation/optimalWithIncompleteConstraints.png"/>
         </imageobject>
       </mediaobject>
+    </section>
 
-      <para>Defining constraints in Planner is very flexible through the following score techniques:</para>
+    <section xml:id="formalizeTheBusinessConstraints">
+      <title>Formalize the Business Constraints</title>
+
+      <para>To implement a verbal business constraint, it needs to be formalized as a score constraint. Luckily,
+      defining constraints in Planner is very flexible through the following score techniques:</para>
 
       <itemizedlist>
         <listitem>
@@ -48,9 +53,12 @@
         </listitem>
 
         <listitem>
-          <para><emphasis role="bold">Pareto scoring</emphasis></para>
+          <para><emphasis role="bold">Pareto scoring</emphasis> (rarely used)</para>
         </listitem>
       </itemizedlist>
+
+      <para>Take the time to acquaint yourself with the first 3 techniques. Once you understand them, formalizing most
+      business constraints becomes straightforward.</para>
     </section>
 
     <section xml:id="scoreConstraintSignum">
@@ -99,15 +107,19 @@
         </imageobject>
       </mediaobject>
 
-      <para>Score weighting is often used in use cases where you can put a price tag on everything. In that case, the
-      positive constraints maximize revenue and the negative constraints minimize expenses, so together they maximize
-      profit. Alternatively, score weighting is also often used to create social <link
+      <para>Score weighting is easy in use cases where you can <emphasis>put a price tag on everything</emphasis>. In
+      that case, the positive constraints maximize revenue and the negative constraints minimize expenses, so together
+      they maximize profit. Alternatively, score weighting is also often used to create social <link
       linkend="fairnessScoreConstraints">fairness</link>. For example, a nurse, who requests a free day, pays a higher
       weight on New Years eve than on a normal day.</para>
 
+      <para>The weight of a constraint match can be dynamically based on the planning entities involved. For example in
+      cloud balance, the weight of the soft constraint match for an active <literal>Computer</literal> is the
+      <literal>cost</literal> of that <literal>Computer</literal> (which differs per computer).</para>
+
       <para>Putting a good weight on a constraint can be a difficult analytical decision, because it is about making
-      choices and tradeoffs with other constraints. However, a non-accurate weight is less damaging than mediocre
-      algorithms:</para>
+      choices and tradeoffs with other constraints. Don't spend too much time on it at the start of an implementation. A
+      non-accurate weight is less damaging than mediocre algorithms:</para>
 
       <mediaobject>
         <imageobject>
@@ -115,15 +127,15 @@
         </imageobject>
       </mediaobject>
 
-      <para>The weight of a constraint match can be dynamically based on the planning entities involved. For example in
-      cloud balance, the weight of the soft constraint match for an active <literal>Computer</literal> is the
-      <literal>cost</literal> of that <literal>Computer</literal> (which differs per computer).</para>
-
       <note>
-        <para>Furthermore, it is often useful to allow the end-user to recalibrate constraint weights in the user
-        interface, as demonstrated in the exam timetabling example with the
-        <literal>InstitutionParametrization</literal> class.</para>
+        <para>When deciding the weights of some constraints is debatable, it's recommended to make them configurable at
+        runtime, as demonstrated in the exam timetabling example with the <literal>InstitutionParametrization</literal>
+        class. This allow the end-user to recalibrate constraint weights in the user interface and immediatly discover
+        the impact of the new weights by running the solver again.</para>
       </note>
+
+      <para>Most use cases use a <literal>Score</literal> with <literal>int</literal> weights, such as <link
+      linkend="hardSoftScore">HardSoftScore</link>.</para>
     </section>
 
     <section xml:id="scoreLevel">
@@ -133,10 +145,11 @@
       broken. In that case, those score constraints are in different levels. For example, a nurse cannot do 2 shifts at
       the same time (due to the constraints of physical reality), this outranks all nurse happiness constraints.</para>
 
-      <para>Most use cases have only two score levels, hard and soft. Two scores are compared lexicographically. The
-      first score level gets compared first. If those differ, the others score levels are ignored. For example, a score
-      that breaks <literal>0</literal> hard constraints and <literal>1000000</literal> soft constraints is better than a
-      score that breaks <literal>1</literal> hard constraint and <literal>0</literal> soft constraints.</para>
+      <para>Most use cases have only two score levels, hard and soft. The levels of two scores are compared
+      lexicographically. The first score level gets compared first. If those differ, the remaining score levels are
+      ignored. For example, a score that breaks <literal>0</literal> hard constraints and <literal>1000000</literal>
+      soft constraints is better than a score that breaks <literal>1</literal> hard constraint and <literal>0</literal>
+      soft constraints.</para>
 
       <mediaobject>
         <imageobject>
@@ -144,8 +157,8 @@
         </imageobject>
       </mediaobject>
 
-      <para>If there are two (or more) score levels, for example a hard and soft level, then a score is feasible if no
-      hard constraints are broken.</para>
+      <para>If there are two (or more) score levels, for example a hard and soft level, then a score is
+      <emphasis>feasible</emphasis> if no hard constraints are broken.</para>
 
       <note>
         <para>By default, Planner will always assign all planning variables a planning value. If there is no feasible
@@ -182,6 +195,9 @@
         <para>To model fairness or load balancing, there is <link linkend="fairnessScoreConstraints">no need to use lots
         of score levels</link> (even though Planner can handle many score levels).</para>
       </note>
+
+      <para>Most use cases use a <literal>Score</literal> with two weights, such as <link
+      linkend="hardSoftScore">HardSoftScore</link>.</para>
     </section>
 
     <section xml:id="paretoScoring">

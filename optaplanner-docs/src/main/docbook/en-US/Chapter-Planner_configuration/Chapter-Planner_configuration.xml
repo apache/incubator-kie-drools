@@ -516,8 +516,19 @@ public class Lecture {
         lectures with more students are more difficult to schedule, and in n queens the middle queens are more difficult
         to fit on the board.</para>
 
-        <para>Therefore, you can set a <literal>difficultyComparatorClass</literal> to the
-        <literal>@PlanningEntity</literal> annotation:</para>
+        <note>
+          <para><emphasis role="bold">Do not try to use planning entity difficulty to implement a business
+          constraint.</emphasis> It will not affect the score function: if we have infinite solving time, the returned
+          solution will be the same.</para>
+
+          <para>To attain a schedule in which certain entities are scheduled earlier in the schedule, <link
+          linkend="formalizeTheBusinessConstraints">add a score constraint</link> to change the score function so it
+          prefers such solutions. Only consider adding planning entity difficulty too if it can make the solver more
+          efficient.</para>
+        </note>
+
+        <para>To allow the heuristics to take advantage of that domain specific information, set a
+        <literal>difficultyComparatorClass</literal> to the <literal>@PlanningEntity</literal> annotation:</para>
 
         <programlisting language="java">@PlanningEntity(difficultyComparatorClass = CloudProcessDifficultyComparator.class)
 public class CloudProcess {
@@ -904,13 +915,24 @@ public class NQueens implements Solution&lt;SimpleScore&gt; {
       <section xml:id="planningValueStrength">
         <title>Planning Value Strength</title>
 
-        <para>Some optimization algorithms work more efficiently if they have an estimation of which planning values are
-        stronger, which means they are more likely to satisfy a planning entity. For example: in bin packing bigger
-        containers are more likely to fit an item and in course scheduling bigger rooms are less likely to break the
-        student capacity constraint.</para>
+        <para>Some optimization algorithms work a bit more efficiently if they have an estimation of which planning
+        values are stronger, which means they are more likely to satisfy a planning entity. For example: in bin packing
+        bigger containers are more likely to fit an item and in course scheduling bigger rooms are less likely to break
+        the student capacity constraint. Usually, the efficiency gain of planning value strength is far less than that
+        of <link linkend="planningEntityDifficulty">planning entity difficulty</link>.</para>
 
-        <para>Therefore, you can set a <literal>strengthComparatorClass</literal> to the
-        <literal>@PlanningVariable</literal> annotation:</para>
+        <note>
+          <para><emphasis role="bold">Do not try to use planning value strength to implement a business
+          constraint.</emphasis> It will not affect the score function: if we have infinite solving time, the returned
+          solution will be the same.</para>
+
+          <para>To affect the score function, <link linkend="formalizeTheBusinessConstraints">add a score
+          constraint</link>. Only consider adding planning value strength too if it can make the solver more
+          efficient.</para>
+        </note>
+
+        <para>To allow the heuristics to take advantage of that domain specific information, set a
+        <literal>strengthComparatorClass</literal> to the <literal>@PlanningVariable</literal> annotation:</para>
 
         <programlisting language="java">    @PlanningVariable(..., strengthComparatorClass = CloudComputerStrengthComparator.class)
     public CloudComputer getComputer() {
