@@ -209,6 +209,23 @@ public class JaxWSServiceTaskTest extends AbstractBaseTest {
         assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
     }
     
+    @Test
+    public void testOneWayServiceInvocationProcessWSHandler() throws Exception {
+        KnowledgeBaseFactory.setKnowledgeBaseServiceFactory(new KnowledgeBaseFactoryServiceImpl());
+        KnowledgeBase kbase = readKnowledgeBase();
+        StatefulKnowledgeSession ksession = createSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Service Task", new WebServiceWorkItemHandler(ksession));
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("s", "john");
+        params.put("mode", "oneway");
+        
+        WorkflowProcessInstance processInstance = (WorkflowProcessInstance) ksession.startProcess("org.jboss.qa.jbpm.CallWS", params);
+        logger.info("Execution finished");
+        String variable = (String) processInstance.getVariable("s");
+        assertNull(variable);
+        assertEquals(ProcessInstance.STATE_COMPLETED, processInstance.getState());
+    }
+
     private void startWebService() {
         this.service = new SimpleService();
         this.endpoint = Endpoint.publish("http://127.0.0.1:9876/HelloService/greeting", service);
