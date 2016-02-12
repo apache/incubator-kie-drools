@@ -127,6 +127,7 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <configuration>
             <skip>${skipTests}</skip>
+            <runOrder>alphabetical</runOrder>
           </configuration>
         </plugin>
       </plugins>
