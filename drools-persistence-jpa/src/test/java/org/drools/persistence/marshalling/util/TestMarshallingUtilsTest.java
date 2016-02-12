@@ -15,18 +15,23 @@
  */
 package org.drools.persistence.marshalling.util;
 
-import static org.drools.persistence.marshalling.util.CompareViaReflectionUtil.compareInstances;
-import static org.drools.persistence.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
-import static org.drools.persistence.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
-import static org.drools.persistence.marshalling.util.MarshallingTestUtil.unmarshallObject;
-import static org.drools.persistence.util.PersistenceUtil.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
+import org.drools.core.impl.EnvironmentFactory;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.conf.EventProcessingOption;
+import org.kie.api.runtime.Environment;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.runtime.conf.TimerJobFactoryOption;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.persistence.EntityManagerFactory;
 import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
@@ -34,24 +39,18 @@ import java.util.PriorityQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.persistence.EntityManagerFactory;
-
-import org.drools.core.impl.EnvironmentFactory;
-import org.drools.core.reteoo.RuleRemovalContext.CleanupAdapter;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-import org.kie.api.runtime.Environment;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.conf.TimerJobFactoryOption;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.drools.persistence.marshalling.util.CompareViaReflectionUtil.compareInstances;
+import static org.drools.persistence.marshalling.util.MarshallingDBUtil.initializeMarshalledDataEMF;
+import static org.drools.persistence.marshalling.util.MarshallingTestUtil.retrieveMarshallingData;
+import static org.drools.persistence.marshalling.util.MarshallingTestUtil.unmarshallObject;
+import static org.drools.persistence.util.DroolsPersistenceUtil.DROOLS_PERSISTENCE_UNIT_NAME;
+import static org.drools.persistence.util.DroolsPersistenceUtil.cleanUp;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.api.runtime.EnvironmentName.ENTITY_MANAGER_FACTORY;
 
 public class TestMarshallingUtilsTest {
 
