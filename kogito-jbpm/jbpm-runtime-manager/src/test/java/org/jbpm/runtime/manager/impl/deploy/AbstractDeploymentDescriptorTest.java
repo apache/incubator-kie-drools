@@ -49,7 +49,7 @@ public abstract class AbstractDeploymentDescriptorTest extends AbstractBaseTest 
 	
 	/* helper methods */
 
-	protected void deployKjar(ReleaseId releaseId, InternalKieModule kJar1) {
+	protected void installKjar(ReleaseId releaseId, InternalKieModule kJar1) {
 		File pom = new File("target/kmodule", "pom.xml");
 		pom.getParentFile().mkdir();
 		try {
@@ -60,7 +60,7 @@ public abstract class AbstractDeploymentDescriptorTest extends AbstractBaseTest 
 
 		}
 		MavenRepository repository = getMavenRepository();
-		repository.deployArtifact(releaseId, kJar1, pom);
+		repository.installArtifact(releaseId, kJar1, pom);
 	}
 	
 	protected String getPom(ReleaseId releaseId, ReleaseId... dependencies) {

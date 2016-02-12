@@ -98,7 +98,7 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
             
         }
         MavenRepository repository = getMavenRepository();
-        repository.deployArtifact(releaseId, kJar1, pom);
+        repository.installArtifact(releaseId, kJar1, pom);
         
         Properties properties= new Properties();
         properties.setProperty("mary", "HR");
@@ -368,7 +368,7 @@ public class KjarRuntimeEnvironmentTest extends AbstractBaseTest {
         File kjar = new File("src/test/resources/kjar/jbpm-module.jar");
         File pom = new File("src/test/resources/kjar/pom.xml");
         MavenRepository repository = getMavenRepository();
-        repository.deployArtifact(releaseId, kjar, pom);
+        repository.installArtifact(releaseId, kjar, pom);
         
         RuntimeEnvironment environment = RuntimeEnvironmentBuilder.Factory.get()
                 .newDefaultBuilder(releaseId)

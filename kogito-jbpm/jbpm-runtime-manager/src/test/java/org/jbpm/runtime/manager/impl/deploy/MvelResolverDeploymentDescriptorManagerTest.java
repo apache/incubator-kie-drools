@@ -83,7 +83,7 @@ public class MvelResolverDeploymentDescriptorManagerTest extends AbstractDeploym
 				processString);
 
 		InternalKieModule kJar1 = createKieJar(ks, releaseId, resources);
-		deployKjar(releaseId, kJar1);
+		installKjar(releaseId, kJar1);
 
 		Properties properties = new Properties();
 		UserGroupCallback userGroupCallback = new JBossUserGroupCallbackImpl(
