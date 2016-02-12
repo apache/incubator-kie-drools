@@ -296,10 +296,10 @@ public class KieContainerTest {
         KieContainer kieContainer = kieServices.newKieContainer(releaseId);
 
         ClassLoader classLoader = kieContainer.getClassLoader();
-        assertEnumerationSize(1, classLoader.getResources("org/drools/testjava"));
+        assertEnumerationSize(1, classLoader.getResources("org/drools/testjava")); // no trailing "/"
 
-        assertEnumerationSize(1, classLoader.getResources("org/drools/testdrl"));
-        // make sure the package resource correctly lists all itch child resources (files in this case)
+        assertEnumerationSize(1, classLoader.getResources("org/drools/testdrl/")); // trailing "/" to test both variants
+        // make sure the package resource correctly lists all its child resources (files in this case)
         URL url = classLoader.getResources("org/drools/testdrl").nextElement();
         List<String> lines = IOUtils.readLines(url.openStream());
         Assertions.assertThat(lines).contains("rules1.drl", "rules1.drl.properties", "rules2.drl", "rules2.drl.properties");
@@ -311,7 +311,7 @@ public class KieContainerTest {
             actualSize++;
             enumeration.nextElement();
         }
-        Assertions.assertThat(expectedSize).isEqualTo(actualSize);
+        Assertions.assertThat(actualSize).isEqualTo(expectedSize);
     }
 
     private String createDRL(String ruleName) {
