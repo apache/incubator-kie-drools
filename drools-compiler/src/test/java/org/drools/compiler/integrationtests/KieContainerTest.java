@@ -26,17 +26,20 @@ import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import static org.drools.compiler.integrationtests.IncrementalCompilationTest.createAndDeployJar;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.*;
 
 public class KieContainerTest {
 
@@ -249,6 +252,58 @@ public class KieContainerTest {
         Folder firstFolder = (Folder) members[0];
         Folder secondFolder = (Folder) members[1];
         assertEquals(firstFolder.getParent(), secondFolder.getParent());
+    }
+
+    @Test
+    public void testClassLoaderGetResources() throws IOException {
+        KieServices kieServices = KieServices.Factory.get();
+        String drl1 = "package org.drools.testdrl;\n" +
+                     "rule R1 when\n" +
+                     "   $m : Object()\n" +
+                     "then\n" +
+                     "end\n";
+        Resource resource1 = kieServices.getResources().newReaderResource(new StringReader(drl1), "UTF-8");
+        resource1.setTargetPath("org/drools/testdrl/rules1.drl");
+
+        String drl2 = "package org.drools.testdrl;\n" +
+                     "rule R2 when\n" +
+                     "   $m : Object()\n" +
+                     "then\n" +
+                     "end\n";
+        Resource resource2 = kieServices.getResources().newReaderResource(new StringReader(drl2), "UTF-8");
+        resource2.setTargetPath("org/drools/testdrl/rules2.drl");
+
+        String java3 = "package org.drools.testjava;\n" +
+                     "public class Message {}";
+        Resource resource3 = kieServices.getResources().newReaderResource(new StringReader(java3), "UTF-8");
+        resource3.setTargetPath("org/drools/testjava/Message.java");
+        resource3.setResourceType(ResourceType.JAVA);
+
+        String kmodule = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                         "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                         "  <kbase name=\"testKbase\" packages=\"org.drools.testdrl\">\n" +
+                         "    <ksession name=\"testKsession\"/>\n" +
+                         "  </kbase>\n" +
+                         "</kmodule>";
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId = kieServices.newReleaseId("org.kie", "test-delete", "1.0.0");
+        createAndDeployJar(kieServices, kmodule, releaseId, resource1, resource3);
+
+        KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+
+        ClassLoader classLoader = kieContainer.getClassLoader();
+        assertEnumerationSize(2, classLoader.getResources("org/drools/testdrl"));
+        assertEnumerationSize(1, classLoader.getResources("org/drools/testjava"));
+    }
+
+    public static void assertEnumerationSize(int expectedSize, Enumeration<?> enumeration) {
+        int actualSize = 0;
+        while (enumeration.hasMoreElements()) {
+            actualSize++;
+            enumeration.nextElement();
+        }
+        assertEquals(expectedSize, actualSize);
     }
 
     private String createDRL(String ruleName) {
