@@ -170,11 +170,11 @@ public class MemoryFileSystem
         if (path == null) {
             throw new NullPointerException("Path can not be null!");
         }
-        return folders.get( path.length() > 0 ? MemoryFolder.trimLeadingAndTrailing( path ) : path ) != null;
+        return folders.get(MemoryFolder.trimLeadingAndTrailing(path)) != null;
     }
 
     public boolean existsFile(String path) {
-        return fileContents.containsKey( MemoryFolder.trimLeadingAndTrailing( path ) );
+        return fileContents.containsKey(MemoryFolder.trimLeadingAndTrailing(path));
     }
 
     public void createFolder(MemoryFolder folder) {                
