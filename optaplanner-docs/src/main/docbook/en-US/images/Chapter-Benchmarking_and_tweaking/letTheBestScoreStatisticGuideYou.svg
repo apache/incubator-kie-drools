@@ -7318,11 +7318,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.3516667"
-     inkscape:cx="401.47965"
+     inkscape:zoom="1.3066667"
+     inkscape:cx="400"
      inkscape:cy="300"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer3"
      showgrid="true"
      width="800px"
      borderlayer="true"
@@ -7703,7 +7703,7 @@
          style="font-weight:normal;font-size:15px;fill:#000000"
          id="flowPara6126">- Heavily improving every step</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
-         id="flowPara6114">- No deminishing returns yet</flowPara><flowPara
+         id="flowPara6114">- No diminishing returns yet</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
          id="flowPara6124">- Solution not near optimal</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
@@ -7711,11 +7711,11 @@
          style="font-weight:normal;font-size:15px;fill:#000000"
          id="flowPara6110">Recommendations:</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
-         id="flowPara6116">- Improve score calculation speed. Check the average calculation count per second.</flowPara><flowPara
+         id="flowPara6116">- Improve score calculation speed: check average calculation count per second</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
-         id="flowPara6118">- Use better hardware.</flowPara><flowPara
+         id="flowPara6118">- Use better hardware</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
-         id="flowPara6120">- Give it more time.</flowPara></flowRoot>  </g>
+         id="flowPara6120">- Give it more time</flowPara></flowRoot>  </g>
   <g
      inkscape:groupmode="layer"
      id="layer3"
@@ -7749,7 +7749,9 @@
          id="flowPara6206"
          style="font-weight:normal;font-size:15px;fill:#000000">Observations:</flowPara><flowPara
          id="flowPara6212"
-         style="font-weight:normal;font-size:15px;fill:#000000">- Some moves are lucky because they stray away from a local optima.</flowPara><flowPara
+         style="font-weight:normal;font-size:15px;fill:#000000">- Some moves are lucky because they break out</flowPara><flowPara
+         style="font-weight:normal;font-size:15px;fill:#000000"
+         id="flowPara4857">of a local optima</flowPara><flowPara
          id="flowPara6214"
          style="font-weight:normal;font-size:15px;fill:#000000" /><flowPara
          id="flowPara6216"
@@ -7759,7 +7761,7 @@
          style="font-weight:normal;font-size:15px;fill:#000000"
          id="flowPara6485">- Use constraint match statistic</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
-         id="flowPara6476">- Add a course-grained custom move</flowPara><flowPara
+         id="flowPara4859">- Add a course-grained custom move</flowPara><flowPara
          id="flowPara6222"
          style="font-weight:normal;font-size:15px;fill:#000000">- In score calculation, add a softer guiding constraint</flowPara></flowRoot>  </g>
   <g
@@ -7795,7 +7797,7 @@
          style="font-weight:normal;font-size:15px;fill:#000000"
          id="flowPara6278">Observations:</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
-         id="flowPara6280">- Law of deminishing returns</flowPara><flowPara
+         id="flowPara6280">- Law of diminishing returns</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
          id="flowPara6282">- Solution likely near optimal</flowPara><flowPara
          style="font-weight:normal;font-size:15px;fill:#000000"
