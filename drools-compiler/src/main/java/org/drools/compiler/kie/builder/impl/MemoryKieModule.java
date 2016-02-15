@@ -35,7 +35,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.Charset;
 import java.util.Collection;
 
 public class MemoryKieModule extends AbstractKieModule
@@ -241,6 +241,9 @@ public class MemoryKieModule extends AbstractKieModule
     }
 
     private static class FolderMembersInputStream extends InputStream {
+
+        private static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+
         private final InputStream dataIs;
 
         public FolderMembersInputStream(Folder folder) {
@@ -263,7 +266,7 @@ public class MemoryKieModule extends AbstractKieModule
                     sb.append("\n");
                 }
             }
-            return new ByteArrayInputStream(sb.toString().getBytes(StandardCharsets.UTF_8));
+            return new ByteArrayInputStream(sb.toString().getBytes(UTF8_CHARSET));
         }
     }
 }
