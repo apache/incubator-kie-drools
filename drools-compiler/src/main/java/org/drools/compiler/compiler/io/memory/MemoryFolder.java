@@ -98,13 +98,14 @@ public class MemoryFolder
             }
         }
         
-        
-        
         return pFolder;
     }
     
     
     public static String trimLeadingAndTrailing(String p) {
+        if (p.isEmpty()) {
+            return p;
+        }
         while ( p.charAt( 0 ) == '/') {
             p = p.substring( 1 );
         }
