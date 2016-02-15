@@ -191,4 +191,12 @@ public class MemoryFolderTest {
         assertFalse( fs.getFile( "src/main/resources/org/domain/MyClass4.java" ).exists() );
     }
 
+    @Test
+    public void trimLeadingAndTrailing() {
+        assertEquals("", MemoryFolder.trimLeadingAndTrailing(""));
+        assertEquals("src/main", MemoryFolder.trimLeadingAndTrailing("/src/main"));
+        assertEquals("src/main", MemoryFolder.trimLeadingAndTrailing("src/main/"));
+        assertEquals("src/main", MemoryFolder.trimLeadingAndTrailing("/src/main/"));
+    }
+
 }
