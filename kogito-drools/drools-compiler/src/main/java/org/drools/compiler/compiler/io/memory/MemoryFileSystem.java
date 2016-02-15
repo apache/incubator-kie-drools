@@ -168,13 +168,16 @@ public class MemoryFileSystem
 
     public boolean existsFolder(String path) {
         if (path == null) {
-            throw new NullPointerException("Path can not be null!");
+            throw new NullPointerException("Folder path can not be null!");
         }
-        return folders.get( path.length() > 0 ? MemoryFolder.trimLeadingAndTrailing( path ) : path ) != null;
+        return folders.get(MemoryFolder.trimLeadingAndTrailing(path)) != null;
     }
 
     public boolean existsFile(String path) {
-        return fileContents.containsKey( MemoryFolder.trimLeadingAndTrailing( path ) );
+        if (path == null) {
+            throw new NullPointerException("File path can not be null!");
+        }
+        return fileContents.containsKey(MemoryFolder.trimLeadingAndTrailing(path));
     }
 
     public void createFolder(MemoryFolder folder) {                
