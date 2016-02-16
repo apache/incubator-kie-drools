@@ -58,6 +58,7 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
+import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.command.CommandFactory;
@@ -669,12 +670,23 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertNotNull( rules.get( "R3" ) );
     }
 
-    private Map<String, Rule> rulestoMap( Collection<Rule> rules ) {
+    public static Map<String, Rule> rulestoMap( Collection<Rule> rules ) {
         Map<String, Rule> ret = new HashMap<String, Rule>();
         for ( Rule rule : rules ) {
             ret.put( rule.getName(), rule );
         }
         return ret;
+    }
+
+    public static Map<String, Rule> rulestoMap( KnowledgeBase kbase) {
+        List<Rule> rules = new ArrayList();
+        for ( KiePackage pkg : ((KnowledgeBaseImpl)kbase).getPackages() ) {
+            for ( Rule rule : pkg.getRules() ) {
+                rules.add(rule);
+            }
+        }
+
+        return rulestoMap(rules);
     }
 
     @Test
