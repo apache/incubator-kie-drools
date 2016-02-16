@@ -201,6 +201,10 @@ public class PersistenceUtil {
                 for (String propertyName : new String[] { "databaseName", "serverName", "portNumber", "url" }) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
                 }
+            } else if (driverClass.startsWith("org.mariadb")) {
+                for (String propertyName : new String[] { "databaseName", "serverName", "portNumber", "url" }) {
+                    pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
+                }
             } else if (driverClass.startsWith("com.sybase")) {
                 for (String propertyName : new String[] { "databaseName", "portNumber", "serverName" }) {
                     pds.getDriverProperties().put(propertyName, dsProps.getProperty(propertyName));
