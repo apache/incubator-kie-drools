@@ -21,6 +21,8 @@ import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseImpl;
+import org.drools.core.reteoo.builder.NodeFactory;
 import org.junit.Assert;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -94,27 +96,32 @@ public class CommonTestMethodBase extends Assert {
 	}
 
 	protected KnowledgeBase loadKnowledgeBaseFromString(String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, null, phreak,
+		return loadKnowledgeBaseFromString(null, null, phreak, null,
+				drlContentStrings);
+	}
+
+	protected KnowledgeBase loadKnowledgeBaseFromString(NodeFactory nodeFactory, String... drlContentStrings) {
+		return loadKnowledgeBaseFromString(null, null, phreak, nodeFactory,
 				drlContentStrings);
 	}
 
 	protected KnowledgeBase loadKnowledgeBaseFromString(RuleEngineOption phreak, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, null, phreak,
+		return loadKnowledgeBaseFromString(null, null, phreak, null,
 				drlContentStrings);
 	}
 
 	protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(config, null, phreak,
+		return loadKnowledgeBaseFromString(config, null, phreak, null,
 				drlContentStrings);
 	}
 
 	protected KnowledgeBase loadKnowledgeBaseFromString(
 			KieBaseConfiguration kBaseConfig, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, kBaseConfig, phreak,
+		return loadKnowledgeBaseFromString(null, kBaseConfig, phreak, null,
 				drlContentStrings);
 	}
 
-	protected KnowledgeBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, RuleEngineOption phreak, String... drlContentStrings) {
+	protected KnowledgeBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, RuleEngineOption phreak, NodeFactory nodeFactory, String... drlContentStrings) {
 		KnowledgeBuilder kbuilder = config == null ? KnowledgeBuilderFactory.newKnowledgeBuilder() : KnowledgeBuilderFactory.newKnowledgeBuilder(config);
 		for (String drlContentString : drlContentStrings) {
 			kbuilder.add(ResourceFactory.newByteArrayResource(drlContentString
@@ -129,6 +136,9 @@ public class CommonTestMethodBase extends Assert {
 		}
 		kBaseConfig.setOption(phreak);
 		KnowledgeBase kbase = kBaseConfig == null ? KnowledgeBaseFactory.newKnowledgeBase() : KnowledgeBaseFactory.newKnowledgeBase(kBaseConfig);
+		if (nodeFactory != null) {
+			((KnowledgeBaseImpl) kbase).getConfiguration().getComponentFactory().setNodeFactoryProvider( nodeFactory);
+		}
 		kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
 		return kbase;
 	}

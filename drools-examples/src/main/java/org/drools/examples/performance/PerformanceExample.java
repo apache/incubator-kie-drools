@@ -30,14 +30,15 @@ public class PerformanceExample {
     public static RuleEngineOption phreak = RuleEngineOption.PHREAK;
 
     public static void main(final String[] args) throws Exception{
-        final long numberOfRulesToBuild = 1000;
-        boolean useAccumulate = true;
+        final long numberOfRulesToBuild = 1;
+        boolean useAccumulate = false;
         String dialect = "mvel"; //noticed performance difference between java and mvel dialects
         boolean usekjars = false;
+        boolean collectionBasedRules = true;
 
         System.out.println("********* Numbers of rules: " + numberOfRulesToBuild + " kjars: " + usekjars + " accumulate: " + useAccumulate + " dialect: " + dialect + " *********");
-        String rules = getRules(numberOfRulesToBuild, useAccumulate, dialect);
-
+        String rules = getRules(numberOfRulesToBuild, useAccumulate, dialect, collectionBasedRules);
+        //System.out.println(rules);
         long startTime = System.currentTimeMillis();
         StatelessKieSession kSession;
         FactType ft;
@@ -47,23 +48,30 @@ public class PerformanceExample {
             ft = kContainer.getKieBase().getFactType("org.drools.examples.performance", "TransactionC");
         } else {
             /* Alternative way to load knowledge base without using kjars.
-            Found slowness issue with internalInvalidateSegmentPrototype() when number of rules are increase.*/
+            Found slowness issue with internalInvalidateSegmentPrototype() when number of rules are increased.*/
             KnowledgeBase kbase = loadKnowledgeBaseFromString( rules );
             kSession = kbase.newStatelessKieSession();
             ft = kbase.getFactType("org.drools.examples.performance", "TransactionC");
         }
         long endTime = System.currentTimeMillis();
-        System.out.println("Time to load knowledgebase: " + (endTime - startTime)  + " ms" );
+        System.out.println("Total time to build and load knowledgebase: " + (endTime - startTime)  + " ms" );
+
 
         ArrayList output = new ArrayList();
         kSession.setGlobal("mo", output);
         Object o = ft.newInstance();
         Gson gConverter = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
         Object fo = gConverter.fromJson(getFact(), o.getClass());
+        kSession.execute(fo); //initial execute
+        startTime = System.currentTimeMillis();
         kSession.execute(fo);
+        endTime = System.currentTimeMillis();
+        System.out.println("Execution time: " + (endTime - startTime)  + " ms" );
         String rulesOutput = gConverter.toJson(output);
         System.out.println(rulesOutput);
+
     }
+
 
     private static KieContainer loadContainerFromString(String rules)
     {
@@ -98,24 +106,18 @@ public class PerformanceExample {
         }
 
         if (kbuilder.hasErrors()) {
-            throw new RuntimeException("Build Errors:\n" + kbuilder.getResults().toString());
+            throw new RuntimeException("Build Errors:\n" + kbuilder.getErrors());
         }
         long endTime = System.currentTimeMillis();
-        System.out.println("Time to build knowldge builder: " + (endTime - startTime)  + " ms" );
+        System.out.println("Time to build rules: " + (endTime - startTime)  + " ms" );
 
         startTime = System.currentTimeMillis();
-
         KieBaseConfiguration kBaseConfig = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-
         kBaseConfig.setOption(phreak);
         KnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        endTime = System.currentTimeMillis();
-        System.out.println("Time to create knowledgebase: " + (endTime - startTime)  + " ms" );
-
-        startTime = System.currentTimeMillis();
         kbase.addKnowledgePackages(kbuilder.getKnowledgePackages());
         endTime = System.currentTimeMillis();
-        System.out.println("Time to produce package: " + (endTime - startTime) + " ms" );
+        System.out.println("Time to create knowledgebase: " + (endTime - startTime)  + " ms" );
 
         return kbase;
     }
@@ -140,7 +142,7 @@ public class PerformanceExample {
                 "}]\n" +
                 "}";
     }
-    private static String getRules(long numberofRules, boolean useAccumulate, String dialect)
+    private static String getRules(long numberofRules, boolean useAccumulate, String dialect, boolean collectionBasedRules)
     {
         final long startTime = System.currentTimeMillis();
         StringBuilder sb = new StringBuilder("package org.drools.examples.performance;\n");
@@ -148,24 +150,84 @@ public class PerformanceExample {
         sb.append("global ArrayList<Outcome> mo;");
         sb.append(getDeclareStatements());
         for (long l =0; l <numberofRules; l++) {
-            sb.append(createRule(l, useAccumulate, dialect));
+                sb.append(createRule(l, useAccumulate, dialect, collectionBasedRules));
         }
+        //sb.append(createRules2("mvel"));
         final long endTime = System.currentTimeMillis();
         System.out.println("Time to generate: " + (endTime - startTime) + " ms");
         return sb.toString();
     }
 
+    private static String createRule(long number, boolean useAccumulate, String dialect, boolean collectionBasedRules)
+    {
+        if (collectionBasedRules)
+            return createCollectionRule(number, useAccumulate, dialect);
+        else
+            return createRule(number, useAccumulate, dialect);
+    }
     private static String createRule(long number, boolean useAccumulate, String dialect)
     {
-        return "" +
-                "rule \"rule" + number + "\" \n" +
-                "dialect \"" + dialect + "\"\n" +
-                "when   t : TransactionC() \n" +
-                "d: TransactionDetailsC(ItemNumber == \"SKU" + number + "\") from t.TransactionDetails \n" +
-                "accumulate($item:TransactionDetailsC(ItemNumber == \"SKU" + number + "\") from t.TransactionDetails, $totQty: collectList($item.getQuantity()))\n" +
-                "then \n" +
+        String s = "" +
+                "rule \"rule" + number + "\" \n";
+                if (!dialect.isEmpty()) {
+                    s = s + "dialect \"" + dialect + "\"\n";
+                }
+                s = s + "when   t : TransactionC(CurrencyCode == \"USD" + number + "\") \n";
+                if (useAccumulate) {
+                    s = s + "accumulate($item:TransactionDetailsC() from t.TransactionDetails, $totQty: collectList($item.getQuantity()))\n";
+                }
+                s = s + "then \n" +
+                "mo.add(new Outcome(\"rule" + number + "\", t.getTransactionNumber()));\n" +
+                "end \n" ;
+        return s;
+    }
+
+    private static String createCollectionRule(long number, boolean useAccumulate, String dialect)
+    {
+        String s = "" +
+                "rule \"rule" + number + "\" \n";
+                if (!dialect.isEmpty()) {
+                    s = s + "dialect \"" + dialect + "\"\n";
+                }
+                s = s + "when   t : TransactionC() \n" +
+                "d: TransactionDetailsC(ItemNumber == \"SKU" + number + "\") from t.TransactionDetails \n";
+                if (useAccumulate) {
+                    s = s + "accumulate($item:TransactionDetailsC(ItemNumber == \"SKU" + number + "\") from t.TransactionDetails, $totQty: collectList($item.getQuantity()))\n";
+                }
+                s = s + "then \n" +
                 "mo.add(new Outcome(\"rule" + number + "\", d.getBrandID()));\n" +
                 "end \n" ;
+        return s;
+    }
+
+    private static String createRules2(String dialect)
+    {
+        return "" +
+                "rule \"r1\"\n" +
+                "dialect \"" + dialect + "\"\n" +
+                "when   t : TransactionC(CurrencyCode == \"USD\") \n" +
+                "then \n" +
+                "mo.add(new Outcome(\"r1\" , t.getTransactionNumber()));\n" +
+                "end \n" +
+                "rule \"r2\"\n" +
+                "dialect \"" + dialect + "\"\n" +
+                "when   t : TransactionC(CurrencyCode == \"USD\") \n" +
+                "then \n" +
+                "mo.add(new Outcome(\"r2\" , t.getTransactionNumber()));\n" +
+                "end \n" +
+                "rule \"r3\"\n" +
+                "dialect \"" + dialect + "\"\n" +
+                "when   t : TransactionC(CurrencyCode == \"CAD\") \n" +
+                "then \n" +
+                "mo.add(new Outcome(\"r3\", t.getTransactionNumber()));\n" +
+                "end \n" +
+                "rule \"r4\"\n" +
+                "dialect \"" + dialect + "\"\n" +
+                "when   t : TransactionC(CurrencyCode == \"USD\") \n" +
+                "then \n" +
+                "mo.add(new Outcome(\"r4\", t.getTransactionNumber()));\n" +
+                "end \n";
+
     }
 
     private static String getDeclareStatements()

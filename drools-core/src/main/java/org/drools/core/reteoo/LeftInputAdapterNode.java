@@ -484,8 +484,12 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
         final LeftInputAdapterNode other = (LeftInputAdapterNode) object;
 
-        return this.sinkMask.equals( other.sinkMask ) &&
+        return  this.sinkMask.equals( other.sinkMask ) &&
                this.objectSource.equals(other.objectSource);
+    }
+
+    public boolean thisNodeEqual(final Object object) {
+        return this.equals(object);
     }
 
     protected ObjectTypeNode getObjectTypeNode() {
