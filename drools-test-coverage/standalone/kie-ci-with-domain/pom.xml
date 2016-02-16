@@ -14,7 +14,7 @@
   <artifactId>drools-kie-ci-with-domain-parent</artifactId>
   <packaging>pom</packaging>
 
-  <name>Drools :: Test Coverage :: KIE-CI with Domain classes :: parent</name>
+  <name>Drools :: Test Coverage :: KIE-CI with Domain classes :: Parent</name>
   <description>Standalone tests of KIE-CI fetching a KJar depending on shared domain classes</description>
 
   <modules>
