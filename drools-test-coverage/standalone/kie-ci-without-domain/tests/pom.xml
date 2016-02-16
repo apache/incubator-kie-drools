@@ -19,11 +19,6 @@
     <!-- Internal dependencies -->
     <!-- This module must NOT depend on org.drools.testcoverage:drools-kie-ci-without-domain-test-domain -->
     <dependency>
-      <groupId>org.drools.testcoverage</groupId>
-      <artifactId>common</artifactId>
-    </dependency>
-
-    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
       <scope>test</scope>

@@ -18,18 +18,7 @@
   <name>Drools :: Test Coverage</name>
 
   <modules>
-    <module>common</module>
     <module>standalone</module>
   </modules>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.drools.testcoverage</groupId>
-        <artifactId>common</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
 </project>

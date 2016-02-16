@@ -17,10 +17,6 @@
 
   <dependencies>
     <!-- Internal dependencies -->
-    <dependency>
-      <groupId>org.drools.testcoverage</groupId>
-      <artifactId>common</artifactId>
-    </dependency>
     <!-- The test domain that KJar also depends on -->
     <dependency>
       <groupId>org.drools.testcoverage</groupId>

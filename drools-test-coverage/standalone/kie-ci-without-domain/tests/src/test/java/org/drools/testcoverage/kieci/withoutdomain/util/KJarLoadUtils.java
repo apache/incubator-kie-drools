@@ -1,4 +1,4 @@
-package org.drools.testcoverage.common.utils;
+package org.drools.testcoverage.kieci.withoutdomain.util;
 
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;

@@ -1,7 +1,7 @@
 package org.drools.testcoverage.kieci.withoutdomain;
 
 import org.assertj.core.api.Assertions;
-import org.drools.testcoverage.common.utils.KJarLoadUtils;
+import org.drools.testcoverage.kieci.withoutdomain.util.KJarLoadUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
