@@ -25,7 +25,6 @@ import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerFactory;
 import org.drools.persistence.TransactionManagerHelper;
 import org.drools.persistence.TransactionSynchronization;
-import org.drools.persistence.jta.JtaTransactionManager;
 import org.jbpm.process.core.timer.GlobalSchedulerService;
 import org.jbpm.process.core.timer.TimerServiceRegistry;
 import org.jbpm.process.core.timer.impl.GlobalTimerService;
@@ -52,6 +51,7 @@ import org.kie.internal.runtime.manager.InternalRegisterableItemsFactory;
 import org.kie.internal.runtime.manager.InternalRuntimeManager;
 import org.kie.internal.runtime.manager.RuntimeManagerRegistry;
 import org.kie.internal.runtime.manager.SecurityManager;
+import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.internal.task.api.EventService;
 import org.kie.internal.task.api.InternalTaskService;
 
@@ -160,15 +160,24 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     }
     
     protected boolean canDispose(RuntimeEngine runtime) {
-        if (hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
+        // avoid duplicated dispose
+        if (((RuntimeEngineImpl)runtime).isDisposed()) {
+            return false;
+        }
+        // if this method was called as part of afterCompletion or is no JTA at all, allow to dispose
+        if (((RuntimeEngineImpl)runtime).isAfterCompletion() || hasEnvironmentEntry("IS_JTA_TRANSACTION", false)) {
             return true;
         }
-        // register it if there is an active transaction as we assume then to be running in a managed environment e.g CMT       
-        TransactionManager tm = getTransactionManager(runtime.getKieSession().getEnvironment());
-        if (tm.getStatus() != TransactionManager.STATUS_NO_TRANSACTION
-                && tm.getStatus() != TransactionManager.STATUS_ROLLEDBACK
-                && tm.getStatus() != TransactionManager.STATUS_COMMITTED) {
-            return false;
+        try {
+            // check tx status to disallow dispose when within active transaction       
+            TransactionManager tm = getTransactionManager(runtime.getKieSession().getEnvironment());
+            if (tm.getStatus() != TransactionManager.STATUS_NO_TRANSACTION
+                    && tm.getStatus() != TransactionManager.STATUS_ROLLEDBACK
+                    && tm.getStatus() != TransactionManager.STATUS_COMMITTED) {
+                return false;
+            }
+        } catch (SessionNotFoundException e) {
+            // ignore it as it might be thrown for per process instance
         }
         
         return true;
@@ -256,7 +265,14 @@ public abstract class AbstractRuntimeManager implements InternalRuntimeManager {
     protected void removeRuntimeFromTaskService() {
     	TaskContentRegistry.get().removeMarshallerContext(getIdentifier());
     }
-    
+    /**
+     * Soft dispose means it will be invoked as sort of preparation step before actual dispose.
+     * Mainly used with transaction synchronization to be invoked as part of beforeCompletion
+     * to clean up any thread state - like thread local settings as afterCompletion can be invoked from another thread
+     */
+    public void softDispose(RuntimeEngine runtimeEngine) {
+        
+    }
 
     protected boolean canDestroy(RuntimeEngine runtime) {
     	if (hasEnvironmentEntry("IS_JTA_TRANSACTION", false) || ((RuntimeEngineImpl) runtime).isAfterCompletion()) {

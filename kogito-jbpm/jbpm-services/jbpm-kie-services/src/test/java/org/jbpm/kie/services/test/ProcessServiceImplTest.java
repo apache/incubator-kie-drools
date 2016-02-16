@@ -31,10 +31,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.naming.InitialContext;
+import javax.transaction.UserTransaction;
+
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.command.runtime.process.GetProcessInstanceCommand;
 import org.jbpm.kie.services.impl.KModuleDeploymentUnit;
 import org.jbpm.kie.test.util.AbstractKieServicesBaseTest;
+import org.jbpm.runtime.manager.impl.deploy.DeploymentDescriptorImpl;
 import org.jbpm.services.api.model.DeploymentUnit;
 import org.jbpm.services.api.model.NodeInstanceDesc;
 import org.jbpm.services.api.model.ProcessInstanceDesc;
@@ -45,9 +49,12 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.query.QueryContext;
 import org.kie.internal.KieInternalServices;
 import org.kie.internal.process.CorrelationKey;
-import org.kie.api.runtime.query.QueryContext;
+import org.kie.internal.runtime.conf.DeploymentDescriptor;
+import org.kie.internal.runtime.conf.RuntimeStrategy;
+import org.kie.internal.runtime.manager.SessionNotFoundException;
 import org.kie.scanner.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -711,5 +718,61 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     	
     	pi = processService.getProcessInstance(processInstanceId);    	
     	assertNull(pi);
+    }
+    
+    @Test
+    public void testStartAndAbortProcessInExternalTransactionsSingleton() throws Exception {
+        testStartAndAbortProcessInExternalTransactions(RuntimeStrategy.SINGLETON);
+    }
+    
+    @Test
+    public void testStartAndAbortProcessInExternalTransactionsPerRequest() throws Exception {
+        testStartAndAbortProcessInExternalTransactions(RuntimeStrategy.PER_REQUEST);
+    }
+    
+    @Test
+    public void testStartAndAbortProcessInExternalTransactionsPerProcessInstance() throws Exception {
+        testStartAndAbortProcessInExternalTransactions(RuntimeStrategy.PER_PROCESS_INSTANCE);
+    }
+    
+    
+    protected void testStartAndAbortProcessInExternalTransactions(RuntimeStrategy strategy) throws Exception {
+        assertNotNull(deploymentService);
+        
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+        customDescriptor.getBuilder()
+        .runtimeStrategy(strategy);
+        deploymentUnit.setDeploymentDescriptor(customDescriptor);
+        
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        assertNotNull(processService);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+        assertTrue(isDeployed);
+        
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        
+        long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+        
+        processService.signalEvent(deploymentUnit.getIdentifier(), "test", null);      
+        
+        ut.commit();
+        // now let's start another transaction
+        ut.begin();
+        
+        processService.abortProcessInstance(processInstanceId);        
+        ut.commit();
+        
+        try {
+            processService.getProcessInstance(processInstanceId);      
+        } catch (SessionNotFoundException e) {
+            
+        }
+        
     }
 }

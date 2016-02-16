@@ -119,6 +119,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     	if (isClosed()) {
     		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
     	}
+    	if (canDispose(runtime)) {
         local.set(null);
         try {
             if (canDestroy(runtime)) {
@@ -134,6 +135,7 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
                 ((Disposable) runtime).dispose();
             }
         }
+    }
     }
 
     @Override
