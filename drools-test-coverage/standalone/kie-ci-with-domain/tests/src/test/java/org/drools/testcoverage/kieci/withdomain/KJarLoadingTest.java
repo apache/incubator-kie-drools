@@ -42,6 +42,7 @@ public class KJarLoadingTest {
     @Test
     public void testLoadingKJarWithDeps() {
         Assertions.assertThat(this.kieSession).as("Failed to create KieSession.").isNotNull();
+        Assertions.assertThat(this.kieSession.getKieBase().getKiePackages()).as("No rules compiled.").isNotEmpty();
     }
 
     @Test
