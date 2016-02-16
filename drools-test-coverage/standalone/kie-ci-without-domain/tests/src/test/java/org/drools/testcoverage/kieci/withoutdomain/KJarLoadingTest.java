@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.drools.testcoverage.kieci.withoutdomain.util.KJarLoadUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
@@ -37,6 +38,7 @@ public class KJarLoadingTest {
     }
 
     @Test
+    @Ignore("BZ 1305798")
     public void testLoadingKJarWithDeps() {
         // BZ 1305798
         Assertions.assertThat(this.kieSession).as("Failed to create KieSession.").isNotNull();
