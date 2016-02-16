@@ -6,13 +6,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.drools.testcoverage.standalone</groupId>
-    <artifactId>standalone-parent</artifactId>
+    <groupId>org.drools.testcoverage</groupId>
+    <artifactId>drools-standalone-parent</artifactId>
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.drools.testcoverage.standalone.kieciwithdomain</groupId>
-  <artifactId>parent</artifactId>
+  <artifactId>drools-kie-ci-with-domain-parent</artifactId>
   <packaging>pom</packaging>
 
   <name>Drools :: Test Coverage :: KIE-CI with Domain classes :: parent</name>
@@ -27,8 +26,8 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.drools.testcoverage.standalone.kieciwithdomain</groupId>
-        <artifactId>test-domain</artifactId>
+        <groupId>org.drools.testcoverage</groupId>
+        <artifactId>drools-kie-ci-with-domain-test-domain</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

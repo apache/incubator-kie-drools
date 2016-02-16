@@ -11,8 +11,7 @@
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.drools.testcoverage.standalone</groupId>
-  <artifactId>standalone-parent</artifactId>
+  <artifactId>drools-standalone-parent</artifactId>
   <packaging>pom</packaging>
 
   <name>Drools :: Test Coverage :: Standalone reproducers</name>

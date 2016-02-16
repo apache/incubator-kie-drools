@@ -6,18 +6,18 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.drools.testcoverage.standalone.kieciwithoutdomain</groupId>
-    <artifactId>parent</artifactId>
+    <groupId>org.drools.testcoverage</groupId>
+    <artifactId>drools-kie-ci-without-domain-parent</artifactId>
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>tests</artifactId>
+  <artifactId>drools-kie-ci-without-domain-tests</artifactId>
 
   <name>Drools :: Test Coverage :: KIE-CI without Domain classes :: Tests</name>
 
   <dependencies>
     <!-- Internal dependencies -->
-    <!-- This module must NOT depend on org.drools.testcoverage.standalone.kieciwithoutdomain:test-domain -->
+    <!-- This module must NOT depend on org.drools.testcoverage:drools-kie-ci-without-domain-test-domain -->
     <dependency>
       <groupId>org.drools.testcoverage</groupId>
       <artifactId>common</artifactId>
