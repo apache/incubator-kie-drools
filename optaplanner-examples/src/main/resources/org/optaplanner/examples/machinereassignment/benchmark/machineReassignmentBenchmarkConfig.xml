@@ -64,7 +64,7 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>entityTabu7-2000</name>
+    <name>Tabu Search</name>
     <solver>
       <customPhase>
         <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
@@ -83,50 +83,8 @@
       </localSearch>
     </solver>
   </solverBenchmark>
-  <!--<solverBenchmark>-->
-    <!--<name>entityTabu7-fading7-2000</name>-->
-    <!--<solver>-->
-      <!--<customPhase>-->
-        <!--<customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>-->
-      <!--</customPhase>-->
-      <!--<localSearch>-->
-        <!--<unionMoveSelector>-->
-          <!--<changeMoveSelector/>-->
-          <!--<swapMoveSelector/>-->
-        <!--</unionMoveSelector>-->
-        <!--<acceptor>-->
-          <!--<entityTabuSize>7</entityTabuSize>-->
-          <!--<fadingEntityTabuSize>7</fadingEntityTabuSize>-->
-        <!--</acceptor>-->
-        <!--<forager>-->
-          <!--<acceptedCountLimit>2000</acceptedCountLimit>-->
-        <!--</forager>-->
-      <!--</localSearch>-->
-    <!--</solver>-->
-  <!--</solverBenchmark>-->
-  <!--<solverBenchmark>-->
-    <!--<name>entityTabu5-fading10-2000</name>-->
-    <!--<solver>-->
-      <!--<customPhase>-->
-        <!--<customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>-->
-      <!--</customPhase>-->
-      <!--<localSearch>-->
-        <!--<unionMoveSelector>-->
-          <!--<changeMoveSelector/>-->
-          <!--<swapMoveSelector/>-->
-        <!--</unionMoveSelector>-->
-        <!--<acceptor>-->
-          <!--<entityTabuSize>5</entityTabuSize>-->
-          <!--<fadingEntityTabuSize>10</fadingEntityTabuSize>-->
-        <!--</acceptor>-->
-        <!--<forager>-->
-          <!--<acceptedCountLimit>2000</acceptedCountLimit>-->
-        <!--</forager>-->
-      <!--</localSearch>-->
-    <!--</solver>-->
-  <!--</solverBenchmark>-->
   <solverBenchmark>
-    <name>lateAcceptance1000</name>
+    <name>Late Acceptance</name>
     <solver>
       <customPhase>
         <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
@@ -137,30 +95,10 @@
           <swapMoveSelector/>
         </unionMoveSelector>
         <acceptor>
-          <lateAcceptanceSize>1000</lateAcceptanceSize>
+          <lateAcceptanceSize>500</lateAcceptanceSize>
         </acceptor>
         <forager>
-          <acceptedCountLimit>500</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>lateAcceptance2000</name>
-    <solver>
-      <customPhase>
-        <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
-      </customPhase>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector/>
-          <swapMoveSelector/>
-        </unionMoveSelector>
-        <acceptor>
-          <lateAcceptanceSize>2000</lateAcceptanceSize>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>500</acceptedCountLimit>
+          <acceptedCountLimit>1</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
