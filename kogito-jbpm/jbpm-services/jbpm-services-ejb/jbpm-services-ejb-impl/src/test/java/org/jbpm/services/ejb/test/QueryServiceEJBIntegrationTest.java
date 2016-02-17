@@ -144,7 +144,7 @@ private static final Logger logger = LoggerFactory.getLogger(QueryServiceEJBInte
 
         }
         MavenRepository repository = getMavenRepository();
-        repository.deployArtifact(releaseId, kJar1, pom);
+        repository.installArtifact(releaseId, kJar1, pom);
    }
     
 

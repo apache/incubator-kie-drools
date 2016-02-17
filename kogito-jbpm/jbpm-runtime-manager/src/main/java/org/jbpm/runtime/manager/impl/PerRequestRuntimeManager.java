@@ -120,22 +120,28 @@ public class PerRequestRuntimeManager extends AbstractRuntimeManager {
     		throw new IllegalStateException("Runtime manager " + identifier + " is already closed");
     	}
     	if (canDispose(runtime)) {
-        local.set(null);
-        try {
-            if (canDestroy(runtime)) {
-                runtime.getKieSession().destroy();
-            } else {
+            local.set(null);
+            try {
+                if (canDestroy(runtime)) {
+                    runtime.getKieSession().destroy();
+                } else {
+                    if (runtime instanceof Disposable) {
+                        ((Disposable) runtime).dispose();
+                    }
+                }
+            } catch (Exception e) {
+                // do nothing
                 if (runtime instanceof Disposable) {
                     ((Disposable) runtime).dispose();
                 }
             }
-        } catch (Exception e) {
-            // do nothing
-            if (runtime instanceof Disposable) {
-                ((Disposable) runtime).dispose();
-            }
-        }
+    	}
     }
+
+    @Override
+    public void softDispose(RuntimeEngine runtimeEngine) {        
+        super.softDispose(runtimeEngine);
+        local.set(null);
     }
 
     @Override

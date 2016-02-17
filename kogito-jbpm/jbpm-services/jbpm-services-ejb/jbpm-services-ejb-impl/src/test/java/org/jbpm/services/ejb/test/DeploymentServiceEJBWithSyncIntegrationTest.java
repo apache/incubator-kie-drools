@@ -107,7 +107,7 @@ public class DeploymentServiceEJBWithSyncIntegrationTest extends AbstractTestSup
             
         }
         MavenRepository repository = getMavenRepository();
-        repository.deployArtifact(releaseId, kJar1, pom);
+        repository.installArtifact(releaseId, kJar1, pom);
         
         ReleaseId releaseIdSupport = ks.newReleaseId(GROUP_ID, "support", VERSION);
         List<String> processesSupport = new ArrayList<String>();
@@ -124,7 +124,7 @@ public class DeploymentServiceEJBWithSyncIntegrationTest extends AbstractTestSup
             
         }
 
-        repository.deployArtifact(releaseIdSupport, kJar2, pom2);
+        repository.installArtifact(releaseIdSupport, kJar2, pom2);
 	}
 	
     protected CoundDownDeploymentListener configureListener(int threads) {

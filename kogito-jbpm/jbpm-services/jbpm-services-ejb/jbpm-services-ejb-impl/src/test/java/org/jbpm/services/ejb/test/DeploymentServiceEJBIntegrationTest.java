@@ -114,7 +114,7 @@ public class DeploymentServiceEJBIntegrationTest extends AbstractTestSupport {
             
         }
         MavenRepository repository = getMavenRepository();
-        repository.deployArtifact(releaseId, kJar1, pom);
+        repository.installArtifact(releaseId, kJar1, pom);
         
         ReleaseId releaseIdSupport = ks.newReleaseId(GROUP_ID, "support", VERSION);
         List<String> processesSupport = new ArrayList<String>();
@@ -131,7 +131,7 @@ public class DeploymentServiceEJBIntegrationTest extends AbstractTestSupport {
             
         }
 
-        repository.deployArtifact(releaseIdSupport, kJar2, pom2);
+        repository.installArtifact(releaseIdSupport, kJar2, pom2);
         
         ReleaseId releaseId3 = ks.newReleaseId(GROUP_ID, ARTIFACT_ID, "1.1.0-SNAPSHOT");
         
@@ -146,7 +146,7 @@ public class DeploymentServiceEJBIntegrationTest extends AbstractTestSupport {
             
         }
         repository = getMavenRepository();
-        repository.deployArtifact(releaseId3, kJar3, pom3);
+        repository.installArtifact(releaseId3, kJar3, pom3);
 	}
 	
 

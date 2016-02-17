@@ -156,7 +156,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
         RuntimeEngine runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get());        
         runtimeEngine.getKieSession().signalEvent(type, event);  
         
-            disposeRuntimeEngine(runtimeEngine);
+        disposeRuntimeEngine(runtimeEngine);
     
         // next find out all instances waiting for given event type
         List<String> processInstances = ((InternalMapper) mapper).findContextIdForEvent(type, getIdentifier());
@@ -164,7 +164,7 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
             runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get(Long.parseLong(piId)));        
             runtimeEngine.getKieSession().signalEvent(type, event);        
             
-                disposeRuntimeEngine(runtimeEngine);
+            disposeRuntimeEngine(runtimeEngine);
             
         }
         
@@ -214,17 +214,21 @@ public class PerProcessInstanceRuntimeManager extends AbstractRuntimeManager {
     	}
     	
     	if (canDispose(runtime)) {
-    	removeLocalRuntime(runtime);
-    	if (runtime instanceof Disposable) {
-        	// special handling for in memory to not allow to dispose if there is any context in the mapper
-        	if (mapper instanceof InMemoryMapper && ((InMemoryMapper)mapper).hasContext(runtime.getKieSession().getIdentifier())){
-        		return;
-        	}
-            ((Disposable) runtime).dispose();
-        }
+        	removeLocalRuntime(runtime);
+        	if (runtime instanceof Disposable) {
+            	// special handling for in memory to not allow to dispose if there is any context in the mapper
+            	if (mapper instanceof InMemoryMapper && ((InMemoryMapper)mapper).hasContext(runtime.getKieSession().getIdentifier())){
+            		return;
+            	}
+                ((Disposable) runtime).dispose();
+            }
     	}
     }
-        
+    
+    @Override
+    public void softDispose(RuntimeEngine runtimeEngine) {        
+        super.softDispose(runtimeEngine);
+        removeLocalRuntime(runtimeEngine);
     }
 
     @Override

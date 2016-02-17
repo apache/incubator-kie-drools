@@ -16,6 +16,7 @@
 package org.jbpm.runtime.manager.impl.tx;
 
 import org.drools.persistence.OrderedTransactionSynchronization;
+import org.jbpm.runtime.manager.impl.AbstractRuntimeManager;
 import org.jbpm.runtime.manager.impl.RuntimeEngineImpl;
 import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.manager.RuntimeManager;
@@ -40,6 +41,8 @@ public class DisposeSessionTransactionSynchronization extends OrderedTransaction
 	}
 	
 	public void beforeCompletion() {
+	    // clean the manager state to make sure it's done as sometimes afterCompletion is done in another thread
+	    ((AbstractRuntimeManager) manager).softDispose(runtime);
 	}
 
 	public void afterCompletion(int status) {
