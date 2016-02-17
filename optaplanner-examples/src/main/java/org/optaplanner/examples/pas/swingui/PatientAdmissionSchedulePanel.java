@@ -57,7 +57,7 @@ import org.optaplanner.examples.pas.domain.RoomEquipment;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
-public class PatientAdmissionSchedulePanel extends SolutionPanel {
+public class PatientAdmissionSchedulePanel extends SolutionPanel<PatientAdmissionSchedule> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/pas/swingui/pasLogo.png";
 
@@ -84,14 +84,10 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
         return true;
     }
 
-    private PatientAdmissionSchedule getPatientAdmissionSchedule() {
-        return (PatientAdmissionSchedule) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution solution) {
+    @Override
+    public void resetPanel(PatientAdmissionSchedule patientAdmissionSchedule) {
         timeTablePanel.reset();
         equipmentTangoColorFactory = new TangoColorFactory();
-        PatientAdmissionSchedule patientAdmissionSchedule = (PatientAdmissionSchedule) solution;
         defineGrid(patientAdmissionSchedule);
         fillCells(patientAdmissionSchedule);
         repaint(); // Hack to force a repaint of TimeTableLayout during "refresh screen while solving"
@@ -192,7 +188,7 @@ public class PatientAdmissionSchedulePanel extends SolutionPanel {
 
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 1));
-            List<Bed> bedList = getPatientAdmissionSchedule().getBedList();
+            List<Bed> bedList = getSolution().getBedList();
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox bedListField = new JComboBox(
                     bedList.toArray(new Object[bedList.size() + 1]));

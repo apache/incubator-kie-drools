@@ -52,7 +52,7 @@ import org.optaplanner.examples.examination.domain.Room;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
-public class ExaminationPanel extends SolutionPanel {
+public class ExaminationPanel extends SolutionPanel<Examination> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/examination/swingui/examinationLogo.png";
 
@@ -88,7 +88,7 @@ public class ExaminationPanel extends SolutionPanel {
                     return;
                 }
                 institutionParametrizationDialog.setInstitutionParametrization(
-                        getExamination().getInstitutionParametrization());
+                        getSolution().getInstitutionParametrization());
                 institutionParametrizationDialog.setVisible(true);
             }
         };
@@ -113,13 +113,9 @@ public class ExaminationPanel extends SolutionPanel {
         return true;
     }
 
-    private Examination getExamination() {
-        return (Examination) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution solution) {
+    @Override
+    public void resetPanel(Examination examination) {
         roomsPanel.reset();
-        Examination examination = (Examination) solution;
         refreshMaximums(examination);
         defineGrid(examination);
         fillCells(examination);
@@ -235,7 +231,8 @@ public class ExaminationPanel extends SolutionPanel {
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 2));
             listFieldsPanel.add(new JLabel("Period:"));
-            List<Period> periodList = getExamination().getPeriodList();
+            Examination examination = getSolution();
+            List<Period> periodList = examination.getPeriodList();
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox periodListField = new JComboBox(
                     periodList.toArray(new Object[periodList.size() + 1]));
@@ -243,7 +240,7 @@ public class ExaminationPanel extends SolutionPanel {
             periodListField.setSelectedItem(exam.getPeriod());
             listFieldsPanel.add(periodListField);
             listFieldsPanel.add(new JLabel("Room:"));
-            List<Room> roomList = getExamination().getRoomList();
+            List<Room> roomList = examination.getRoomList();
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox roomListField = new JComboBox(
                     roomList.toArray(new Object[roomList.size() + 1]));

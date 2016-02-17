@@ -35,7 +35,7 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedC
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
-public class VehicleRoutingPanel extends SolutionPanel {
+public class VehicleRoutingPanel extends SolutionPanel<VehicleRoutingSolution> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/vehiclerouting/swingui/vehicleRoutingLogo.png";
 
@@ -63,19 +63,15 @@ public class VehicleRoutingPanel extends SolutionPanel {
         return true;
     }
 
-    public VehicleRoutingSolution getVehicleRoutingSolution() {
-        return (VehicleRoutingSolution) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution solutionObject) {
-        VehicleRoutingSolution solution = (VehicleRoutingSolution) solutionObject;
+    @Override
+    public void resetPanel(VehicleRoutingSolution solution) {
         vehicleRoutingWorldPanel.resetPanel(solution);
         resetNextLocationId();
     }
 
     private void resetNextLocationId() {
         long highestLocationId = 0L;
-        for (Location location : getVehicleRoutingSolution().getLocationList()) {
+        for (Location location : getSolution().getLocationList()) {
             if (highestLocationId < location.getId().longValue()) {
                 highestLocationId = location.getId();
             }
@@ -84,8 +80,7 @@ public class VehicleRoutingPanel extends SolutionPanel {
     }
 
     @Override
-    public void updatePanel(Solution solutionObject) {
-        VehicleRoutingSolution solution = (VehicleRoutingSolution) solutionObject;
+    public void updatePanel(VehicleRoutingSolution solution) {
         vehicleRoutingWorldPanel.updatePanel(solution);
     }
 
@@ -95,7 +90,7 @@ public class VehicleRoutingPanel extends SolutionPanel {
 
     public void insertLocationAndCustomer(double longitude, double latitude) {
         final Location newLocation;
-        switch (getVehicleRoutingSolution().getDistanceType()) {
+        switch (getSolution().getDistanceType()) {
             case AIR_DISTANCE:
                 newLocation = new AirLocation();
                 break;
@@ -106,7 +101,7 @@ public class VehicleRoutingPanel extends SolutionPanel {
                 logger.warn("Adding locations for a segmented road distance dataset is not supported.");
                 return;
             default:
-                throw new IllegalStateException("The distanceType (" + getVehicleRoutingSolution().getDistanceType()
+                throw new IllegalStateException("The distanceType (" + getSolution().getDistanceType()
                         + ") is not implemented.");
         }
         newLocation.setId(nextLocationId);

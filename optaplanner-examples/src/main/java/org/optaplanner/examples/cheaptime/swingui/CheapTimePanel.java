@@ -58,7 +58,7 @@ import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.swing.impl.TangoColorFactory;
 
-public class CheapTimePanel extends SolutionPanel {
+public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
 
     private StableTaskAssignmentComparator stableTaskAssignmentComparator = new StableTaskAssignmentComparator();
     private GroupByMachineTaskAssignmentComparator groupByMachineTaskAssignmentComparator = new GroupByMachineTaskAssignmentComparator();
@@ -74,7 +74,7 @@ public class CheapTimePanel extends SolutionPanel {
         groupByMachineCheckBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                updatePanel(solutionBusiness.getSolution());
+                updatePanel(getSolution());
                 validate();
             }
         });
@@ -85,14 +85,11 @@ public class CheapTimePanel extends SolutionPanel {
         return true;
     }
 
-    private CheapTimeSolution getCheapTimeSolution() {
-        return (CheapTimeSolution) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution solution) {
+    @Override
+    public void resetPanel(CheapTimeSolution solution) {
         removeAll();
         add(groupByMachineCheckBox, BorderLayout.NORTH);
-        ChartPanel chartPanel = new ChartPanel(createChart((CheapTimeSolution) solution));
+        ChartPanel chartPanel = new ChartPanel(createChart(solution));
         add(chartPanel, BorderLayout.CENTER);
     }
 

@@ -49,7 +49,7 @@ import org.optaplanner.examples.dinnerparty.domain.Seat;
 import org.optaplanner.examples.dinnerparty.domain.SeatDesignation;
 import org.optaplanner.examples.dinnerparty.domain.Table;
 
-public class DinnerPartyPanel extends SolutionPanel {
+public class DinnerPartyPanel extends SolutionPanel<DinnerParty> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/dinnerparty/swingui/dinnerPartyLogo.png";
     public static final int MALE_FEMALE_ICON_VARIATION = 5;
@@ -100,13 +100,9 @@ public class DinnerPartyPanel extends SolutionPanel {
         return true;
     }
 
-    private DinnerParty getDinnerParty() {
-        return (DinnerParty) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution solution) {
+    @Override
+    public void resetPanel(DinnerParty dinnerParty) {
         removeAll();
-        DinnerParty dinnerParty = (DinnerParty) solution;
         TangoColorFactory tangoColorFactory = new TangoColorFactory();
         gridLayout.setColumns((int) Math.ceil(Math.sqrt(dinnerParty.getTableList().size())));
         Map<Seat, SeatPanel> seatPanelMap = new HashMap<Seat, SeatPanel>(dinnerParty.getSeatList().size());
@@ -228,7 +224,7 @@ public class DinnerPartyPanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            List<SeatDesignation> seatDesignationList = getDinnerParty().getSeatDesignationList();
+            List<SeatDesignation> seatDesignationList = getSolution().getSeatDesignationList();
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox seatDesignationListField = new JComboBox(
                     seatDesignationList.toArray(new Object[seatDesignationList.size() + 1]));

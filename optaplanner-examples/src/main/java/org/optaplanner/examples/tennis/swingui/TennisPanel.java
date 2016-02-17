@@ -53,7 +53,7 @@ import org.optaplanner.examples.tennis.domain.UnavailabilityPenalty;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
-public class TennisPanel extends SolutionPanel {
+public class TennisPanel extends SolutionPanel<TennisSolution> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/tennis/swingui/tennisLogo.png";
 
@@ -81,14 +81,10 @@ public class TennisPanel extends SolutionPanel {
         return true;
     }
 
-    private TennisSolution getTennisSolution() {
-        return (TennisSolution) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution solution) {
+    @Override
+    public void resetPanel(TennisSolution tennisSolution) {
         datesPanel.reset();
         confrontationsPanel.reset();
-        TennisSolution tennisSolution = (TennisSolution) solution;
         defineGrid(tennisSolution);
         fillCells(tennisSolution);
         repaint(); // Hack to force a repaint of TimeTableLayout during "refresh screen while solving"
@@ -264,7 +260,7 @@ public class TennisPanel extends SolutionPanel {
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(2, 2));
             listFieldsPanel.add(new JLabel("Team:"));
-            List<Team> teamList = getTennisSolution().getTeamList();
+            List<Team> teamList = getSolution().getTeamList();
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox teamListField = new JComboBox(
                     teamList.toArray(new Object[teamList.size() + 1]));

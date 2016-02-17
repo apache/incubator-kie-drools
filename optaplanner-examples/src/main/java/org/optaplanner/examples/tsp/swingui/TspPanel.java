@@ -32,7 +32,7 @@ import org.optaplanner.examples.tsp.domain.Visit;
 import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.domain.location.AirLocation;
 
-public class TspPanel extends SolutionPanel {
+public class TspPanel extends SolutionPanel<TspSolution> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/tsp/swingui/tspLogo.png";
 
@@ -63,12 +63,7 @@ public class TspPanel extends SolutionPanel {
         return true;
     }
 
-    public TspSolution getTspSolution() {
-        return (TspSolution) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution solution) {
-        TspSolution tspSolution = (TspSolution) solution;
+    public void resetPanel(TspSolution tspSolution) {
         tspWorldPanel.resetPanel(tspSolution);
         tspListPanel.resetPanel(tspSolution);
         resetNextLocationId();
@@ -76,7 +71,7 @@ public class TspPanel extends SolutionPanel {
 
     private void resetNextLocationId() {
         long highestLocationId = 0L;
-        for (Location location : getTspSolution().getLocationList()) {
+        for (Location location : getSolution().getLocationList()) {
             if (highestLocationId < location.getId().longValue()) {
                 highestLocationId = location.getId();
             }
@@ -85,8 +80,7 @@ public class TspPanel extends SolutionPanel {
     }
 
     @Override
-    public void updatePanel(Solution solution) {
-        TspSolution tspSolution = (TspSolution) solution;
+    public void updatePanel(TspSolution tspSolution) {
         tspWorldPanel.updatePanel(tspSolution);
         tspListPanel.updatePanel(tspSolution);
     }
@@ -97,7 +91,7 @@ public class TspPanel extends SolutionPanel {
 
     public void insertLocationAndVisit(double longitude, double latitude) {
         final Location newLocation;
-        switch (getTspSolution().getDistanceType()) {
+        switch (getSolution().getDistanceType()) {
             case AIR_DISTANCE:
                 newLocation = new AirLocation();
                 break;
@@ -105,7 +99,7 @@ public class TspPanel extends SolutionPanel {
                 logger.warn("Adding locations for a road distance dataset is not supported.");
                 return;
             default:
-                throw new IllegalStateException("The distanceType (" + getTspSolution().getDistanceType()
+                throw new IllegalStateException("The distanceType (" + getSolution().getDistanceType()
                         + ") is not implemented.");
         }
         newLocation.setId(nextLocationId);
@@ -131,7 +125,7 @@ public class TspPanel extends SolutionPanel {
     }
     public void connectStandstills(Standstill sourceStandstill, Standstill targetStandstill) {
         if (targetStandstill instanceof Domicile) {
-            TspSolution tspSolution = getTspSolution();
+            TspSolution tspSolution = getSolution();
             Standstill lastStandstill = tspSolution.getDomicile();
             for (Visit nextVisit = findNextVisit(tspSolution, lastStandstill); nextVisit != null; nextVisit = findNextVisit(tspSolution, lastStandstill)) {
                 lastStandstill = nextVisit;
@@ -147,7 +141,7 @@ public class TspPanel extends SolutionPanel {
     }
 
     public Standstill findNearestStandstill(AirLocation clickLocation) {
-        TspSolution tspSolution = getTspSolution();
+        TspSolution tspSolution = getSolution();
         Standstill standstill = tspSolution.getDomicile();
         double minimumAirDistance = standstill.getLocation().getAirDistanceDoubleTo(clickLocation);
         for (Visit selectedVisit : tspSolution.getVisitList()) {

@@ -28,7 +28,7 @@ import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SolutionPanel extends JPanel implements Scrollable {
+public abstract class SolutionPanel<Solution_ extends Solution> extends JPanel implements Scrollable {
 
     protected static final String USAGE_EXPLANATION_PATH = "/org/optaplanner/examples/common/swingui/exampleUsageExplanation.png";
     // Size fits into screen resolution 1024*768
@@ -37,7 +37,7 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected SolverAndPersistenceFrame solverAndPersistenceFrame;
-    protected SolutionBusiness solutionBusiness;
+    protected SolutionBusiness<Solution_> solutionBusiness;
 
     public SolverAndPersistenceFrame getSolverAndPersistenceFrame() {
         return solverAndPersistenceFrame;
@@ -47,11 +47,11 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
         this.solverAndPersistenceFrame = solverAndPersistenceFrame;
     }
 
-    public SolutionBusiness getSolutionBusiness() {
+    public SolutionBusiness<Solution_> getSolutionBusiness() {
         return solutionBusiness;
     }
 
-    public void setSolutionBusiness(SolutionBusiness solutionBusiness) {
+    public void setSolutionBusiness(SolutionBusiness<Solution_> solutionBusiness) {
         this.solutionBusiness = solutionBusiness;
     }
 
@@ -67,10 +67,14 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
         return false;
     }
 
-    public abstract void resetPanel(Solution solution);
+    public abstract void resetPanel(Solution_ solution);
 
-    public void updatePanel(Solution solution) {
+    public void updatePanel(Solution_ solution) {
         resetPanel(solution);
+    }
+
+    public Solution_ getSolution() {
+        return (Solution_) solutionBusiness.getSolution();
     }
 
     public Dimension getPreferredScrollableViewportSize() {
@@ -105,7 +109,7 @@ public abstract class SolutionPanel extends JPanel implements Scrollable {
 
     public void doProblemFactChange(ProblemFactChange problemFactChange, boolean reset) {
         solutionBusiness.doProblemFactChange(problemFactChange);
-        Solution solution = solutionBusiness.getSolution();
+        Solution_ solution = getSolution();
         if (reset) {
             resetPanel(solution);
         } else {

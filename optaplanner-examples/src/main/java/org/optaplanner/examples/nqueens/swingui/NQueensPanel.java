@@ -40,7 +40,7 @@ import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.domain.Queen;
 import org.optaplanner.examples.nqueens.domain.Row;
 
-public class NQueensPanel extends SolutionPanel {
+public class NQueensPanel extends SolutionPanel<NQueens> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/nqueens/swingui/nqueensLogo.png";
     private static final String QUEEN_IMAGE_PATH = "/org/optaplanner/examples/nqueens/swingui/queenImage.png";
@@ -53,14 +53,10 @@ public class NQueensPanel extends SolutionPanel {
         queenImageIcon = new ImageIcon(getClass().getResource(QUEEN_IMAGE_PATH));
     }
 
-    private NQueens getNQueens() {
-        return (NQueens) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution solution) {
+    @Override
+    public void resetPanel(NQueens nQueens) {
         removeAll();
         repaint(); // When GridLayout doesn't fill up all the space
-        NQueens nQueens = (NQueens) solution;
         int n = nQueens.getN();
         if (n > 100) {
             JLabel tooBigToShowLabel = new JLabel("The dataset is too big to show.");
@@ -109,7 +105,7 @@ public class NQueensPanel extends SolutionPanel {
         public void actionPerformed(ActionEvent e) {
             JPanel messagePanel = new JPanel(new BorderLayout());
             messagePanel.add(new JLabel("Move to row: "), BorderLayout.WEST);
-            List<Row> rowList = getNQueens().getRowList();
+            List<Row> rowList = getSolution().getRowList();
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox rowListField = new JComboBox(
                     rowList.toArray(new Object[rowList.size() + 1]));

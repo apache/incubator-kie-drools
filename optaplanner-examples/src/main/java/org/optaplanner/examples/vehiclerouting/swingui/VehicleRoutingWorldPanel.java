@@ -40,7 +40,7 @@ public class VehicleRoutingWorldPanel extends JPanel {
             @Override
             public void componentResized(ComponentEvent e) {
                 // TODO Not thread-safe during solving
-                VehicleRoutingSolution solution = VehicleRoutingWorldPanel.this.vehicleRoutingPanel.getVehicleRoutingSolution();
+                VehicleRoutingSolution solution = VehicleRoutingWorldPanel.this.vehicleRoutingPanel.getSolution();
                 if (solution != null) {
                     resetPanel(solution);
                 }

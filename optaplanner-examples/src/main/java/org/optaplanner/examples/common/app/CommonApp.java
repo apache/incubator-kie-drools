@@ -100,7 +100,7 @@ public abstract class CommonApp<Solution_ extends Solution> extends LoggingMain 
         return solverFactory.buildSolver();
     }
 
-    protected abstract SolutionPanel createSolutionPanel();
+    protected abstract SolutionPanel<Solution_> createSolutionPanel();
 
     protected abstract SolutionDao createSolutionDao();
 

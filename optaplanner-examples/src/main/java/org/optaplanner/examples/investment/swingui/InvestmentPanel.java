@@ -50,7 +50,7 @@ import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
-public class InvestmentPanel extends SolutionPanel {
+public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/investment/swingui/investmentLogo.png";
 
@@ -105,16 +105,12 @@ public class InvestmentPanel extends SolutionPanel {
         return true;
     }
 
-    private InvestmentSolution getInvestmentSolution() {
-        return (InvestmentSolution) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution s) {
+    @Override
+    public void resetPanel(InvestmentSolution solution) {
         ignoreChangeEvents = true;
         assetClassPanel.reset();
         regionPanel.reset();
         sectorPanel.reset();
-        InvestmentSolution solution = (InvestmentSolution) s;
         InvestmentParametrization parametrization = solution.getParametrization();
         standardDeviationMaximumField.setValue((double) parametrization.getStandardDeviationMillisMaximum() / 1000.0);
         defineGrid(solution);

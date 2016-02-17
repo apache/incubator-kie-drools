@@ -143,7 +143,7 @@ public class EmployeePanel extends JPanel {
                 }
             }
             shiftDatePanel.setBackground(backgroundColor);
-            boolean inPlanningWindow = nurseRosteringPanel.getNurseRoster().getNurseRosterParametrization()
+            boolean inPlanningWindow = nurseRosteringPanel.getSolution().getNurseRosterParametrization()
                     .isInPlanningWindow(shiftDate);
             shiftDatePanel.setEnabled(inPlanningWindow);
             shiftDatePanel.setBorder(BorderFactory.createCompoundBorder(
@@ -234,7 +234,7 @@ public class EmployeePanel extends JPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            List<Employee> employeeList = nurseRosteringPanel.getNurseRoster().getEmployeeList();
+            List<Employee> employeeList = nurseRosteringPanel.getSolution().getEmployeeList();
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox employeeListField = new JComboBox(
                     employeeList.toArray(new Object[employeeList.size() + 1]));

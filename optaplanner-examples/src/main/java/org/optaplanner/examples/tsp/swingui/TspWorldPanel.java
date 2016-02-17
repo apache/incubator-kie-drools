@@ -68,7 +68,7 @@ public class TspWorldPanel extends JPanel {
             @Override
             public void componentResized(ComponentEvent e) {
                 // TODO Not thread-safe during solving
-                TspSolution tspSolution = TspWorldPanel.this.tspPanel.getTspSolution();
+                TspSolution tspSolution = TspWorldPanel.this.tspPanel.getSolution();
                 if (tspSolution != null) {
                     resetPanel(tspSolution);
                 }
@@ -83,7 +83,7 @@ public class TspWorldPanel extends JPanel {
                     if (e.getButton() == MouseEvent.BUTTON1) {
                         dragSourceStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
                                 new AirLocation(-1L, latitude, longitude));
-                        TspSolution tspSolution = TspWorldPanel.this.tspPanel.getTspSolution();
+                        TspSolution tspSolution = TspWorldPanel.this.tspPanel.getSolution();
                         dragTargetStandstill = tspSolution.getDomicile();
                         resetPanel(tspSolution);
                     } else if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
@@ -99,7 +99,7 @@ public class TspWorldPanel extends JPanel {
                         double latitude = translator.translateYToLatitude(e.getY());
                         dragTargetStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
                                 new AirLocation(-1L, latitude, longitude));
-                        TspSolution tspSolution = TspWorldPanel.this.tspPanel.getTspSolution();
+                        TspSolution tspSolution = TspWorldPanel.this.tspPanel.getSolution();
                         if (dragSourceStandstill == dragTargetStandstill) {
                             dragTargetStandstill = tspSolution.getDomicile();
                         }
@@ -116,7 +116,7 @@ public class TspWorldPanel extends JPanel {
                         double latitude = translator.translateYToLatitude(e.getY());
                         dragTargetStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
                                 new AirLocation(-1L, latitude, longitude));
-                        TspSolution tspSolution = TspWorldPanel.this.tspPanel.getTspSolution();
+                        TspSolution tspSolution = TspWorldPanel.this.tspPanel.getSolution();
                         if (dragSourceStandstill == dragTargetStandstill) {
                             dragTargetStandstill = tspSolution.getDomicile();
                         }

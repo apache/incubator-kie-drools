@@ -47,7 +47,7 @@ import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 
-public class CloudBalancingPanel extends SolutionPanel {
+public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/cloudbalancing/swingui/cloudBalancingLogo.png";
 
@@ -176,12 +176,8 @@ public class CloudBalancingPanel extends SolutionPanel {
         return true;
     }
 
-    private CloudBalance getCloudBalance() {
-        return (CloudBalance) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution solution) {
-        CloudBalance cloudBalance = (CloudBalance) solution;
+    @Override
+    public void resetPanel(CloudBalance cloudBalance) {
         maximumComputerCpuPower = 0;
         maximumComputerMemory = 0;
         maximumComputerNetworkBandwidth = 0;
@@ -206,12 +202,11 @@ public class CloudBalancingPanel extends SolutionPanel {
         unassignedPanel = new CloudComputerPanel(this, null);
         computersPanel.add(unassignedPanel);
         computerToPanelMap.put(null, unassignedPanel);
-        updatePanel(solution);
+        updatePanel(cloudBalance);
     }
 
     @Override
-    public void updatePanel(Solution solution) {
-        CloudBalance cloudBalance = (CloudBalance) solution;
+    public void updatePanel(CloudBalance cloudBalance) {
         Set<CloudComputer> deadCloudComputerSet = new LinkedHashSet<CloudComputer>(computerToPanelMap.keySet());
         deadCloudComputerSet.remove(null);
         for (CloudComputer computer : cloudBalance.getComputerList()) {
@@ -354,7 +349,7 @@ public class CloudBalancingPanel extends SolutionPanel {
         public void actionPerformed(ActionEvent e) {
             JPanel listFieldsPanel = new JPanel(new GridLayout(1, 2));
             listFieldsPanel.add(new JLabel("Computer:"));
-            List<CloudComputer> computerList = getCloudBalance().getComputerList();
+            List<CloudComputer> computerList = getSolution().getComputerList();
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox computerListField = new JComboBox(
                     computerList.toArray(new Object[computerList.size() + 1]));

@@ -123,7 +123,7 @@ public class TspListPanel extends JPanel implements Scrollable {
         }
 
         public void actionPerformed(ActionEvent e) {
-            TspSolution tspSolution = tspPanel.getTspSolution();
+            TspSolution tspSolution = tspPanel.getSolution();
             JComboBox previousStandstillListField = new JComboBox();
             for (Standstill previousStandstill : tspSolution.getVisitList()) {
                 previousStandstillListField.addItem(previousStandstill);

@@ -49,7 +49,7 @@ import org.optaplanner.examples.nurserostering.domain.Shift;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 import org.optaplanner.examples.nurserostering.domain.ShiftDate;
 
-public class NurseRosteringPanel extends SolutionPanel {
+public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/nurserostering/swingui/nurseRosteringLogo.png";
 
@@ -123,12 +123,8 @@ public class NurseRosteringPanel extends SolutionPanel {
         return true;
     }
 
-    public NurseRoster getNurseRoster() {
-        return (NurseRoster) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution solution) {
-        NurseRoster nurseRoster = (NurseRoster) solution;
+    @Override
+    public void resetPanel(NurseRoster nurseRoster) {
         for (EmployeePanel employeePanel : employeeToPanelMap.values()) {
             if (employeePanel.getEmployee() != null) {
                 employeeListPanel.remove(employeePanel);
@@ -146,8 +142,7 @@ public class NurseRosteringPanel extends SolutionPanel {
     }
 
     @Override
-    public void updatePanel(Solution solution) {
-        NurseRoster nurseRoster = (NurseRoster) solution;
+    public void updatePanel(NurseRoster nurseRoster) {
         List<ShiftDate> shiftDateList = nurseRoster.getShiftDateList();
         List<Shift> shiftList = nurseRoster.getShiftList();
         Set<Employee> deadEmployeeSet = new LinkedHashSet<Employee>(employeeToPanelMap.keySet());

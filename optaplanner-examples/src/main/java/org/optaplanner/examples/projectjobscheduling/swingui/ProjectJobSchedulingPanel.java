@@ -36,7 +36,7 @@ import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.Project;
 import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
 
-public class ProjectJobSchedulingPanel extends SolutionPanel {
+public class ProjectJobSchedulingPanel extends SolutionPanel<Schedule> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/projectjobscheduling/swingui/projectJobSchedulingLogo.png";
 
@@ -49,9 +49,9 @@ public class ProjectJobSchedulingPanel extends SolutionPanel {
         return true;
     }
 
-    public void resetPanel(Solution solution) {
+    @Override
+    public void resetPanel(Schedule schedule) {
         removeAll();
-        Schedule schedule = (Schedule) solution;
         ChartPanel chartPanel = new ChartPanel(createChart(schedule));
         add(chartPanel, BorderLayout.CENTER);
     }

@@ -45,7 +45,7 @@ import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
-public class TravelingTournamentPanel extends SolutionPanel {
+public class TravelingTournamentPanel extends SolutionPanel<TravelingTournament> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/travelingtournament/swingui/travelingTournamentLogo.png";
 
@@ -71,13 +71,9 @@ public class TravelingTournamentPanel extends SolutionPanel {
         return true;
     }
 
-    private TravelingTournament getTravelingTournament() {
-        return (TravelingTournament) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution solution) {
+    @Override
+    public void resetPanel(TravelingTournament travelingTournament) {
         teamsPanel.reset();
-        TravelingTournament travelingTournament = (TravelingTournament) solution;
         tangoColorFactory = new TangoColorFactory();
         defineGrid(travelingTournament);
         fillCells(travelingTournament);
@@ -165,7 +161,7 @@ public class TravelingTournamentPanel extends SolutionPanel {
 
         public void actionPerformed(ActionEvent e) {
             // TODO this allows the user to put the TTP in an inconsistent state, from which the solver cannot start
-            List<Day> dayList = getTravelingTournament().getDayList();
+            List<Day> dayList = getSolution().getDayList();
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox dayListField = new JComboBox(
                     dayList.toArray(new Object[dayList.size() + 1]));

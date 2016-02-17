@@ -46,7 +46,7 @@ import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheri
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.components.LabeledComboBoxRenderer;
 
-public class CoachShuttleGatheringPanel extends SolutionPanel {
+public class CoachShuttleGatheringPanel extends SolutionPanel<CoachShuttleGatheringSolution> {
 
     // TODO Create logo
     public static final String LOGO_PATH = null;
@@ -73,18 +73,13 @@ public class CoachShuttleGatheringPanel extends SolutionPanel {
         return true;
     }
 
-    public CoachShuttleGatheringSolution getCoachShuttleGatheringSolution() {
-        return (CoachShuttleGatheringSolution) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution s) {
-        CoachShuttleGatheringSolution solution = (CoachShuttleGatheringSolution) s;
+    @Override
+    public void resetPanel(CoachShuttleGatheringSolution solution) {
         coachShuttleGatheringWorldPanel.resetPanel(solution);
     }
 
     @Override
-    public void updatePanel(Solution s) {
-        CoachShuttleGatheringSolution solution = (CoachShuttleGatheringSolution) s;
+    public void updatePanel(CoachShuttleGatheringSolution solution) {
         coachShuttleGatheringWorldPanel.updatePanel(solution);
     }
 

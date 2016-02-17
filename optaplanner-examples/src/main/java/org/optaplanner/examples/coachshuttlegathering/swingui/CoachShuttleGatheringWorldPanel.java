@@ -51,7 +51,7 @@ public class CoachShuttleGatheringWorldPanel extends JPanel {
             @Override
             public void componentResized(ComponentEvent e) {
                 // TODO Not thread-safe during solving
-                CoachShuttleGatheringSolution solution = CoachShuttleGatheringWorldPanel.this.coachShuttleGatheringPanel.getCoachShuttleGatheringSolution();
+                CoachShuttleGatheringSolution solution = CoachShuttleGatheringWorldPanel.this.coachShuttleGatheringPanel.getSolution();
                 if (solution != null) {
                     resetPanel(solution);
                 }

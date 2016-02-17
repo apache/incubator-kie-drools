@@ -44,7 +44,7 @@ import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 import org.optaplanner.examples.machinereassignment.domain.MrResource;
 
-public class MachineReassignmentPanel extends SolutionPanel {
+public class MachineReassignmentPanel extends SolutionPanel<MachineReassignment> {
 
     public static final String LOGO_PATH
             = "/org/optaplanner/examples/machinereassignment/swingui/machineReassignmentLogo.png";
@@ -77,11 +77,8 @@ public class MachineReassignmentPanel extends SolutionPanel {
         machineToPanelMap.put(null, unassignedPanel);
     }
 
-    private MachineReassignment getMachineReassignment() {
-        return (MachineReassignment) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution solution) {
+    @Override
+    public void resetPanel(MachineReassignment machineReassignment) {
         for (MrMachinePanel machinePanel : machineToPanelMap.values()) {
             if (machinePanel.getMachine() != null) {
                 machineListPanel.remove(machinePanel);
@@ -90,12 +87,11 @@ public class MachineReassignmentPanel extends SolutionPanel {
         machineToPanelMap.clear();
         machineToPanelMap.put(null, unassignedPanel);
         unassignedPanel.clearProcessAssignments();
-        updatePanel(solution);
+        updatePanel(machineReassignment);
     }
 
     @Override
-    public void updatePanel(Solution solution) {
-        MachineReassignment machineReassignment = (MachineReassignment) solution;
+    public void updatePanel(MachineReassignment machineReassignment) {
         List<MrResource> resourceList = machineReassignment.getResourceList();
         unassignedPanel.setResourceList(resourceList);
         if (machineReassignment.getMachineList().size() > 1000) {
@@ -182,7 +178,7 @@ public class MachineReassignmentPanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-            List<MrMachine> machineList = getMachineReassignment().getMachineList();
+            List<MrMachine> machineList = getSolution().getMachineList();
             // Add 1 to array size to add null, which makes the entity unassigned
             JComboBox machineListField = new JComboBox(
                     machineList.toArray(new Object[machineList.size() + 1]));

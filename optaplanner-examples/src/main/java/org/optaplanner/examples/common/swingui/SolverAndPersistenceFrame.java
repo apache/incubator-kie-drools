@@ -76,7 +76,7 @@ public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFram
 
     private final SolutionBusiness<Solution_> solutionBusiness;
 
-    private SolutionPanel solutionPanel;
+    private SolutionPanel<Solution_> solutionPanel;
     private ConstraintMatchesDialog constraintMatchesDialog;
 
     private JPanel quickOpenUnsolvedPanel;
@@ -97,7 +97,8 @@ public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFram
     private JTextField scoreField;
     private ShowConstraintMatchesDialogAction showConstraintMatchesDialogAction;
 
-    public SolverAndPersistenceFrame(SolutionBusiness<Solution_> solutionBusiness, SolutionPanel solutionPanel) {
+    public SolverAndPersistenceFrame(SolutionBusiness<Solution_> solutionBusiness,
+            SolutionPanel<Solution_> solutionPanel) {
         super(solutionBusiness.getAppName() + " OptaPlanner example");
         this.solutionBusiness = solutionBusiness;
         this.solutionPanel = solutionPanel;
@@ -119,7 +120,7 @@ public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFram
     }
 
     public void bestSolutionChanged() {
-        Solution solution = solutionBusiness.getSolution();
+        Solution_ solution = solutionBusiness.getSolution();
         if (refreshScreenDuringSolvingCheckBox.isSelected()) {
             solutionPanel.updatePanel(solution);
             validate(); // TODO remove me?
@@ -614,7 +615,7 @@ public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFram
     }
 
     public void resetScreen() {
-        Solution solution = solutionBusiness.getSolution();
+        Solution_ solution = solutionBusiness.getSolution();
         solutionPanel.resetPanel(solution);
         validate();
         refreshScoreField(solution);

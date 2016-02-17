@@ -26,6 +26,7 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -50,7 +51,7 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderColumnKey.*;
 import static org.optaplanner.examples.common.swingui.timetable.TimeTablePanel.HeaderRowKey.*;
 
-public class MeetingSchedulingPanel extends SolutionPanel {
+public class MeetingSchedulingPanel extends SolutionPanel<MeetingSchedule> {
 
     public static final String LOGO_PATH = "/org/optaplanner/examples/meetingscheduling/swingui/meetingSchedulingLogo.png";
 
@@ -79,14 +80,10 @@ public class MeetingSchedulingPanel extends SolutionPanel {
         return false;
     }
 
-    private MeetingSchedule getMeetingSchedule() {
-        return (MeetingSchedule) solutionBusiness.getSolution();
-    }
-
-    public void resetPanel(Solution solution) {
+    @Override
+    public void resetPanel(MeetingSchedule meetingSchedule) {
         roomsPanel.reset();
         personsPanel.reset();
-        MeetingSchedule meetingSchedule = (MeetingSchedule) solution;
         defineGrid(meetingSchedule);
         fillCells(meetingSchedule);
         repaint(); // Hack to force a repaint of TimeTableLayout during "refresh screen while solving"
@@ -254,48 +251,10 @@ public class MeetingSchedulingPanel extends SolutionPanel {
         }
 
         public void actionPerformed(ActionEvent e) {
-//            JPanel listFieldsPanel = new JPanel(new GridLayout(3, 2));
-//            listFieldsPanel.add(new JLabel("Period:"));
-//            List<Period> periodList = getMeetingSchedule().getPeriodList();
-//            // Add 1 to array size to add null, which makes the entity unassigned
-//            JComboBox periodListField = new JComboBox(
-//                    periodList.toArray(new Object[periodList.size() + 1]));
-//            LabeledComboBoxRenderer.applyToComboBox(periodListField);
-//            periodListField.setSelectedItem(meetingAssignment.getPeriod());
-//            listFieldsPanel.add(periodListField);
-//            listFieldsPanel.add(new JLabel("Room:"));
-//            List<Room> roomList = getMeetingSchedule().getRoomList();
-//            // Add 1 to array size to add null, which makes the entity unassigned
-//            JComboBox roomListField = new JComboBox(
-//                    roomList.toArray(new Object[roomList.size() + 1]));
-//            LabeledComboBoxRenderer.applyToComboBox(roomListField);
-//            roomListField.setSelectedItem(meetingAssignment.getRoom());
-//            listFieldsPanel.add(roomListField);
-//            listFieldsPanel.add(new JLabel("Locked:"));
-//            JCheckBox lockedField = new JCheckBox("immovable during planning");
-//            lockedField.setSelected(meetingAssignment.isLocked());
-//            listFieldsPanel.add(lockedField);
-//            int result = JOptionPane.showConfirmDialog(MeetingSchedulingPanel.this.getRootPane(), listFieldsPanel,
-//                    "Select period and room", JOptionPane.OK_CANCEL_OPTION);
-//            if (result == JOptionPane.OK_OPTION) {
-//                Period toPeriod = (Period) periodListField.getSelectedItem();
-//                if (meetingAssignment.getPeriod() != toPeriod) {
-//                    solutionBusiness.doChangeMove(meetingAssignment, "period", toPeriod);
-//                }
-//                Room toRoom = (Room) roomListField.getSelectedItem();
-//                if (meetingAssignment.getRoom() != toRoom) {
-//                    solutionBusiness.doChangeMove(meetingAssignment, "room", toRoom);
-//                }
-//                boolean toLocked = lockedField.isSelected();
-//                if (meetingAssignment.isLocked() != toLocked) {
-//                    if (solutionBusiness.isSolving()) {
-//                        logger.error("Not doing user change because the solver is solving.");
-//                        return;
-//                    }
-//                    meetingAssignment.setLocked(toLocked);
-//                }
-//                solverAndPersistenceFrame.resetScreen();
-//            }
+            // TODO Add support for moving meetings like in other examples
+            JOptionPane.showMessageDialog(MeetingSchedulingPanel.this.getTopLevelAncestor(),
+                    "The GUI does not support this action yet.",
+                    "Unsupported in GUI", JOptionPane.ERROR_MESSAGE);
         }
 
     }
