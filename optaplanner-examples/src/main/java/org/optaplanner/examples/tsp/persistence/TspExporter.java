@@ -21,7 +21,7 @@ import java.io.IOException;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.tsp.domain.Standstill;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
 
 public class TspExporter extends AbstractTxtSolutionExporter {
@@ -47,18 +47,18 @@ public class TspExporter extends AbstractTxtSolutionExporter {
 
     public static class TspOutputBuilder extends TxtOutputBuilder {
 
-        private TravelingSalesmanTour tour;
+        private TspSolution tspSolution;
 
         public void setSolution(Solution solution) {
-            tour = (TravelingSalesmanTour) solution;
+            tspSolution = (TspSolution) solution;
         }
 
         public void writeSolution() throws IOException {
-            bufferedWriter.write("NAME : " + tour.getName() + "\n");
+            bufferedWriter.write("NAME : " + tspSolution.getName() + "\n");
             bufferedWriter.write("TYPE : TOUR\n");
-            bufferedWriter.write("DIMENSION : " + tour.getLocationList().size() + "\n");
+            bufferedWriter.write("DIMENSION : " + tspSolution.getLocationList().size() + "\n");
             bufferedWriter.write("TOUR_SECTION\n");
-            Standstill standstill = tour.getDomicile();
+            Standstill standstill = tspSolution.getDomicile();
             while (standstill != null) {
                 bufferedWriter.write(standstill.getLocation().getId() + "\n");
                 standstill = findNextVisit(standstill);
@@ -67,7 +67,7 @@ public class TspExporter extends AbstractTxtSolutionExporter {
         }
 
         private Visit findNextVisit(Standstill standstill) {
-            for (Visit visit : tour.getVisitList()) {
+            for (Visit visit : tspSolution.getVisitList()) {
                 if (visit.getPreviousStandstill() == standstill) {
                     return visit;
                 }

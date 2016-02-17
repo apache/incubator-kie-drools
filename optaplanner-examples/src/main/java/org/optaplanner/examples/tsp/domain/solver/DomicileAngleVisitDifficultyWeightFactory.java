@@ -19,16 +19,16 @@ package org.optaplanner.examples.tsp.domain.solver;
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.tsp.domain.Domicile;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
 
 /**
  * On large datasets, the constructed solution looks like pizza slices.
  */
 public class DomicileAngleVisitDifficultyWeightFactory
-        implements SelectionSorterWeightFactory<TravelingSalesmanTour, Visit> {
+        implements SelectionSorterWeightFactory<TspSolution, Visit> {
 
-    public Comparable createSorterWeight(TravelingSalesmanTour vehicleRoutingSolution, Visit visit) {
+    public Comparable createSorterWeight(TspSolution vehicleRoutingSolution, Visit visit) {
         Domicile domicile = vehicleRoutingSolution.getDomicile();
         return new DomicileAngleVisitDifficultyWeight(visit,
                 visit.getLocation().getAngle(domicile.getLocation()),

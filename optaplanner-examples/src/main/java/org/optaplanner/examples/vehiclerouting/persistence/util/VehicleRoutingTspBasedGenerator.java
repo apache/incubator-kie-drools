@@ -32,7 +32,7 @@ import org.apache.commons.io.IOUtils;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.tsp.domain.Domicile;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
 import org.optaplanner.examples.tsp.persistence.TspImporter;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
@@ -71,7 +71,7 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
     }
 
     public void generateVrp(File tspInputFile, int locationListSize, int vehicleListSize, int capacity) {
-        TravelingSalesmanTour tour = (TravelingSalesmanTour) tspImporter.readSolution(tspInputFile);
+        TspSolution tspSolution = (TspSolution) tspImporter.readSolution(tspInputFile);
         String name = tspInputFile.getName().replaceAll("\\d+\\.tsp", "")
                 + "-n" + locationListSize + "-k" + vehicleListSize;
         File vrpOutputFile = new File(vehicleRoutingDao.getDataDir(), "import/capacitated/" + name + ".vrp");
@@ -89,7 +89,7 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
             vrpWriter.write("EDGE_WEIGHT_TYPE: EUC_2D\n");
             vrpWriter.write("CAPACITY: " + capacity + "\n");
             vrpWriter.write("NODE_COORD_SECTION\n");
-            List<org.optaplanner.examples.tsp.domain.location.Location> tspLocationList = tour.getLocationList();
+            List<org.optaplanner.examples.tsp.domain.location.Location> tspLocationList = tspSolution.getLocationList();
             double selectionDecrement = (double) locationListSize / (double) tspLocationList.size();
             double selection = (double) locationListSize;
             int index = 1;
@@ -122,12 +122,12 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
         logger.info("Generated: {}", vrpOutputFile);
     }
 
-    public static VehicleRoutingSolution convert(TravelingSalesmanTour tour) {
+    public static VehicleRoutingSolution convert(TspSolution tspSolution) {
         VehicleRoutingSolution vehicleRoutingSolution = new VehicleRoutingSolution();
-        vehicleRoutingSolution.setName(tour.getName());
-        vehicleRoutingSolution.setDistanceType(convert(tour.getDistanceType()));
-        vehicleRoutingSolution.setDistanceUnitOfMeasurement(tour.getDistanceUnitOfMeasurement());
-        List<org.optaplanner.examples.vehiclerouting.domain.location.Location> locationList = convert(tour.getLocationList());
+        vehicleRoutingSolution.setName(tspSolution.getName());
+        vehicleRoutingSolution.setDistanceType(convert(tspSolution.getDistanceType()));
+        vehicleRoutingSolution.setDistanceUnitOfMeasurement(tspSolution.getDistanceUnitOfMeasurement());
+        List<org.optaplanner.examples.vehiclerouting.domain.location.Location> locationList = convert(tspSolution.getLocationList());
         vehicleRoutingSolution.setLocationList(locationList);
         org.optaplanner.examples.vehiclerouting.domain.location.Location firstLocation = locationList.get(0);
         Depot depot = new Depot();
@@ -146,19 +146,19 @@ public class VehicleRoutingTspBasedGenerator extends LoggingMain {
             customer.setLocation(location);
             customerList.add(customer);
         }
-        for (Visit visit : tour.getVisitList()) {
-            Customer customer = customerList.get(tour.getVisitList().indexOf(visit));
+        for (Visit visit : tspSolution.getVisitList()) {
+            Customer customer = customerList.get(tspSolution.getVisitList().indexOf(visit));
             Standstill previousStandstill;
             if (visit.getPreviousStandstill() instanceof Domicile) {
                 previousStandstill = vehicle;
             } else {
-                previousStandstill = customerList.get(tour.getVisitList().indexOf(visit.getPreviousStandstill()));
+                previousStandstill = customerList.get(tspSolution.getVisitList().indexOf(visit.getPreviousStandstill()));
             }
             customer.setPreviousStandstill(previousStandstill);
             previousStandstill.setNextCustomer(customer);
         }
         vehicleRoutingSolution.setCustomerList(customerList);
-        vehicleRoutingSolution.setScore(HardSoftLongScore.valueOf(0, tour.getScore().getScore()));
+        vehicleRoutingSolution.setScore(HardSoftLongScore.valueOf(0, tspSolution.getScore().getScore()));
         return vehicleRoutingSolution;
     }
 

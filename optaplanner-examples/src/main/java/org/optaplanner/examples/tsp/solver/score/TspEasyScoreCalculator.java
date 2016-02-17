@@ -24,13 +24,13 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
 
-public class TspEasyScoreCalculator implements EasyScoreCalculator<TravelingSalesmanTour> {
+public class TspEasyScoreCalculator implements EasyScoreCalculator<TspSolution> {
 
-    public SimpleLongScore calculateScore(TravelingSalesmanTour tour) {
-        List<Visit> visitList = tour.getVisitList();
+    public SimpleLongScore calculateScore(TspSolution tspSolution) {
+        List<Visit> visitList = tspSolution.getVisitList();
         Set<Visit> tailVisitSet = new HashSet<Visit>(visitList);
         long score = 0L;
         for (Visit visit : visitList) {
@@ -42,7 +42,7 @@ public class TspEasyScoreCalculator implements EasyScoreCalculator<TravelingSale
                 }
             }
         }
-        Domicile domicile = tour.getDomicile();
+        Domicile domicile = tspSolution.getDomicile();
         for (Visit tailVisit : tailVisitSet) {
             if (tailVisit.getPreviousStandstill() != null) {
                 score -= tailVisit.getDistanceTo(domicile);

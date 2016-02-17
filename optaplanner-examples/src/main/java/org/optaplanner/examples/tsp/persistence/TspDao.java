@@ -17,12 +17,12 @@
 package org.optaplanner.examples.tsp.persistence;
 
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 
 public class TspDao extends XStreamSolutionDao {
 
     public TspDao() {
-        super("tsp", TravelingSalesmanTour.class);
+        super("tsp", TspSolution.class);
     }
 
 }

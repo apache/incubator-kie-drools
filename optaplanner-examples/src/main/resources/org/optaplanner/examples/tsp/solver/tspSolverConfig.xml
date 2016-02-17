@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <solver>
   <!--<environmentMode>FULL_ASSERT</environmentMode>-->
-  <solutionClass>org.optaplanner.examples.tsp.domain.TravelingSalesmanTour</solutionClass>
+  <solutionClass>org.optaplanner.examples.tsp.domain.TspSolution</solutionClass>
   <entityClass>org.optaplanner.examples.tsp.domain.Visit</entityClass>
 
   <scoreDirectorFactory>

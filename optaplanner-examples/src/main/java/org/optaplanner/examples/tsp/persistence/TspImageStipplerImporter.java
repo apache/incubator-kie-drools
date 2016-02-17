@@ -19,20 +19,17 @@ package org.optaplanner.examples.tsp.persistence;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.io.FilenameUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractPngSolutionImporter;
 import org.optaplanner.examples.tsp.domain.Domicile;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
 import org.optaplanner.examples.tsp.domain.location.AirLocation;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.examples.tsp.domain.location.Location;
-import org.optaplanner.examples.tsp.domain.location.RoadLocation;
 
 public class TspImageStipplerImporter extends AbstractPngSolutionImporter {
 
@@ -56,30 +53,30 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter {
 
     public static class TspImageStipplerInputBuilder extends PngInputBuilder {
 
-        private TravelingSalesmanTour travelingSalesmanTour;
+        private TspSolution tspSolution;
 
         private int locationListSize;
 
         public Solution readSolution() throws IOException {
-            travelingSalesmanTour = new TravelingSalesmanTour();
-            travelingSalesmanTour.setId(0L);
-            travelingSalesmanTour.setName(FilenameUtils.getBaseName(inputFile.getName()));
+            tspSolution = new TspSolution();
+            tspSolution.setId(0L);
+            tspSolution.setName(FilenameUtils.getBaseName(inputFile.getName()));
             floydSteinbergDithering();
             createVisitList();
-            BigInteger possibleSolutionSize = factorial(travelingSalesmanTour.getLocationList().size() - 1);
-            logger.info("TravelingSalesmanTour {} has {} locations with a search space of {}.",
+            BigInteger possibleSolutionSize = factorial(tspSolution.getLocationList().size() - 1);
+            logger.info("TspSolution {} has {} locations with a search space of {}.",
                     getInputId(),
-                    travelingSalesmanTour.getLocationList().size(),
+                    tspSolution.getLocationList().size(),
                     getFlooredPossibleSolutionSize(possibleSolutionSize));
-            return travelingSalesmanTour;
+            return tspSolution;
         }
 
         /**
          * As described by <a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering">Floyd-Steinberg dithering</a>.
          */
         private void floydSteinbergDithering() {
-            travelingSalesmanTour.setDistanceType(DistanceType.AIR_DISTANCE);
-            travelingSalesmanTour.setDistanceUnitOfMeasurement("distance");
+            tspSolution.setDistanceType(DistanceType.AIR_DISTANCE);
+            tspSolution.setDistanceUnitOfMeasurement("distance");
             int width = image.getWidth();
             int height = image.getHeight();
             double[][] errorDiffusion = new double[width][height];
@@ -119,11 +116,11 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter {
                     }
                 }
             }
-            travelingSalesmanTour.setLocationList(locationList);
+            tspSolution.setLocationList(locationList);
         }
 
         private void createVisitList() {
-            List<Location> locationList = travelingSalesmanTour.getLocationList();
+            List<Location> locationList = tspSolution.getLocationList();
             List<Visit> visitList = new ArrayList<Visit>(locationList.size() - 1);
             int count = 0;
             for (Location location : locationList) {
@@ -131,7 +128,7 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter {
                     Domicile domicile = new Domicile();
                     domicile.setId(location.getId());
                     domicile.setLocation(location);
-                    travelingSalesmanTour.setDomicile(domicile);
+                    tspSolution.setDomicile(domicile);
                 } else {
                     Visit visit = new Visit();
                     visit.setId(location.getId());
@@ -141,7 +138,7 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter {
                 }
                 count++;
             }
-            travelingSalesmanTour.setVisitList(visitList);
+            tspSolution.setVisitList(visitList);
         }
 
     }

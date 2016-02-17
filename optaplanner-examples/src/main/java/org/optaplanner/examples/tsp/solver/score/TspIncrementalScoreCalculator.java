@@ -20,19 +20,19 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
 import org.optaplanner.core.impl.score.director.incremental.AbstractIncrementalScoreCalculator;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
 
-public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<TravelingSalesmanTour> {
+public class TspIncrementalScoreCalculator extends AbstractIncrementalScoreCalculator<TspSolution> {
 
     private Domicile domicile;
 
     private long score;
 
-    public void resetWorkingSolution(TravelingSalesmanTour tour) {
-        domicile = tour.getDomicile();
+    public void resetWorkingSolution(TspSolution tspSolution) {
+        domicile = tspSolution.getDomicile();
         score = 0L;
-        for (Visit visit : tour.getVisitList()) {
+        for (Visit visit : tspSolution.getVisitList()) {
             insert(visit);
         }
     }

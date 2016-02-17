@@ -20,13 +20,12 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
-import org.optaplanner.examples.tsp.domain.Visit;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 
-public class DomicileDistanceStandstillStrengthWeightFactory implements SelectionSorterWeightFactory<TravelingSalesmanTour, Standstill> {
+public class DomicileDistanceStandstillStrengthWeightFactory implements SelectionSorterWeightFactory<TspSolution, Standstill> {
 
-    public Comparable createSorterWeight(TravelingSalesmanTour tour, Standstill standstill) {
-        Domicile domicile = tour.getDomicile();
+    public Comparable createSorterWeight(TspSolution tspSolution, Standstill standstill) {
+        Domicile domicile = tspSolution.getDomicile();
         long domicileRoundTripDistance = domicile.getDistanceTo(standstill) + standstill.getDistanceTo(domicile);
         return new DomicileDistanceVisitDifficultyWeight(standstill, domicileRoundTripDistance);
     }

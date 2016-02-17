@@ -16,11 +16,9 @@
 
 package org.optaplanner.examples.tsp.persistence;
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,13 +29,12 @@ import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
 import org.optaplanner.examples.tsp.domain.location.AirLocation;
 import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.examples.tsp.domain.location.RoadLocation;
-import org.optaplanner.examples.vehiclerouting.domain.location.segmented.RoadSegmentLocation;
 
 public class TspImporter extends AbstractTxtSolutionImporter {
 
@@ -69,28 +66,28 @@ public class TspImporter extends AbstractTxtSolutionImporter {
 
     public static class TspInputBuilder extends TxtInputBuilder {
 
-        private TravelingSalesmanTour travelingSalesmanTour;
+        private TspSolution tspSolution;
 
         private int locationListSize;
 
         public Solution readSolution() throws IOException {
-            travelingSalesmanTour = new TravelingSalesmanTour();
-            travelingSalesmanTour.setId(0L);
+            tspSolution = new TspSolution();
+            tspSolution.setId(0L);
             String firstLine = readStringValue();
             if (firstLine.matches("\\s*NAME\\s*:.*")) {
-                travelingSalesmanTour.setName(removePrefixSuffixFromLine(firstLine, "\\s*NAME\\s*:", ""));
+                tspSolution.setName(removePrefixSuffixFromLine(firstLine, "\\s*NAME\\s*:", ""));
                 readTspLibFormat();
             } else {
-                travelingSalesmanTour.setName(FilenameUtils.getBaseName(inputFile.getName()));
+                tspSolution.setName(FilenameUtils.getBaseName(inputFile.getName()));
                 locationListSize = Integer.parseInt(firstLine.trim());
                 readCourseraFormat();
             }
-            BigInteger possibleSolutionSize = factorial(travelingSalesmanTour.getLocationList().size() - 1);
-            logger.info("TravelingSalesmanTour {} has {} locations with a search space of {}.",
+            BigInteger possibleSolutionSize = factorial(tspSolution.getLocationList().size() - 1);
+            logger.info("TspSolution {} has {} locations with a search space of {}.",
                     getInputId(),
-                    travelingSalesmanTour.getLocationList().size(),
+                    tspSolution.getLocationList().size(),
                     getFlooredPossibleSolutionSize(possibleSolutionSize));
-            return travelingSalesmanTour;
+            return tspSolution;
         }
 
         // ************************************************************************
@@ -110,9 +107,9 @@ public class TspImporter extends AbstractTxtSolutionImporter {
             locationListSize = readIntegerValue("DIMENSION *:");
             String edgeWeightType = readStringValue("EDGE_WEIGHT_TYPE *:");
             if (edgeWeightType.equalsIgnoreCase("EUC_2D")) {
-                travelingSalesmanTour.setDistanceType(DistanceType.AIR_DISTANCE);
+                tspSolution.setDistanceType(DistanceType.AIR_DISTANCE);
             } else if (edgeWeightType.equalsIgnoreCase("EXPLICIT")) {
-                travelingSalesmanTour.setDistanceType(DistanceType.ROAD_DISTANCE);
+                tspSolution.setDistanceType(DistanceType.ROAD_DISTANCE);
                 String edgeWeightFormat = readStringValue("EDGE_WEIGHT_FORMAT *:");
                 if (!edgeWeightFormat.equalsIgnoreCase("FULL_MATRIX")) {
                     throw new IllegalArgumentException("The edgeWeightFormat (" + edgeWeightFormat + ") is not supported.");
@@ -120,12 +117,12 @@ public class TspImporter extends AbstractTxtSolutionImporter {
             } else {
                 throw new IllegalArgumentException("The edgeWeightType (" + edgeWeightType + ") is not supported.");
             }
-            travelingSalesmanTour.setDistanceUnitOfMeasurement(readOptionalStringValue("EDGE_WEIGHT_UNIT_OF_MEASUREMENT *:", "distance"));
+            tspSolution.setDistanceUnitOfMeasurement(readOptionalStringValue("EDGE_WEIGHT_UNIT_OF_MEASUREMENT *:", "distance"));
         }
 
         private void readTspLibCityList() throws IOException {
             readConstantLine("NODE_COORD_SECTION");
-            DistanceType distanceType = travelingSalesmanTour.getDistanceType();
+            DistanceType distanceType = tspSolution.getDistanceType();
             List<Location> locationList = new ArrayList<Location>(locationListSize);
             for (int i = 0; i < locationListSize; i++) {
                 String line = bufferedReader.readLine();
@@ -151,7 +148,7 @@ public class TspImporter extends AbstractTxtSolutionImporter {
                 }
                 locationList.add(location);
             }
-            travelingSalesmanTour.setLocationList(locationList);
+            tspSolution.setLocationList(locationList);
             if (distanceType == DistanceType.ROAD_DISTANCE) {
                 readConstantLine("EDGE_WEIGHT_SECTION");
                 for (int i = 0; i < locationListSize; i++) {
@@ -177,7 +174,7 @@ public class TspImporter extends AbstractTxtSolutionImporter {
         }
 
         private void createVisitList() {
-            List<Location> locationList = travelingSalesmanTour.getLocationList();
+            List<Location> locationList = tspSolution.getLocationList();
             List<Visit> visitList = new ArrayList<Visit>(locationList.size() - 1);
             int count = 0;
             for (Location location : locationList) {
@@ -185,7 +182,7 @@ public class TspImporter extends AbstractTxtSolutionImporter {
                     Domicile domicile = new Domicile();
                     domicile.setId(location.getId());
                     domicile.setLocation(location);
-                    travelingSalesmanTour.setDomicile(domicile);
+                    tspSolution.setDomicile(domicile);
                 } else {
                     Visit visit = new Visit();
                     visit.setId(location.getId());
@@ -195,7 +192,7 @@ public class TspImporter extends AbstractTxtSolutionImporter {
                 }
                 count++;
             }
-            travelingSalesmanTour.setVisitList(visitList);
+            tspSolution.setVisitList(visitList);
         }
 
         private void readTspLibSolution() throws IOException {
@@ -204,14 +201,14 @@ public class TspImporter extends AbstractTxtSolutionImporter {
                 return;
             }
             long domicileId = readLongValue();
-            Domicile domicile = travelingSalesmanTour.getDomicile();
+            Domicile domicile = tspSolution.getDomicile();
             if (!domicile.getId().equals(domicileId)) {
                 throw new IllegalStateException("The domicileId (" + domicileId
                         + ") is not the domicile's id (" + domicile.getId() + ").");
             }
-            int visitListSize = travelingSalesmanTour.getVisitList().size();
+            int visitListSize = tspSolution.getVisitList().size();
             Map<Long, Visit> idToVisitMap = new HashMap<Long, Visit>(visitListSize);
-            for (Visit visit : travelingSalesmanTour.getVisitList()) {
+            for (Visit visit : tspSolution.getVisitList()) {
                 idToVisitMap.put(visit.getId(), visit);
             }
             Standstill previousStandstill = domicile;
@@ -244,7 +241,7 @@ public class TspImporter extends AbstractTxtSolutionImporter {
                 location.setLongitude(Double.parseDouble(lineTokens[1]));
                 locationList.add(location);
             }
-            travelingSalesmanTour.setLocationList(locationList);
+            tspSolution.setLocationList(locationList);
             createVisitList();
         }
 

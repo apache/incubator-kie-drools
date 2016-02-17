@@ -1,4 +1,4 @@
-<TravelingSalesmanTour id="1">
+<TspSolution id="1">
   <id>0</id>
   <name>lu980</name>
   <distanceType>AIR_DISTANCE</distanceType>
@@ -8827,4 +8827,4 @@
       <location class="TspAirLocation" reference="982"/>
     </Visit>
   </visitList>
-</TravelingSalesmanTour>
+</TspSolution>

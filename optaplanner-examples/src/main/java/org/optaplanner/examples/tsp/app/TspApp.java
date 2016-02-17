@@ -16,21 +16,19 @@
 
 package org.optaplanner.examples.tsp.app;
 
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.persistence.AbstractSolutionExporter;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.persistence.TspDao;
 import org.optaplanner.examples.tsp.persistence.TspExporter;
 import org.optaplanner.examples.tsp.persistence.TspImageStipplerImporter;
 import org.optaplanner.examples.tsp.persistence.TspImporter;
 import org.optaplanner.examples.tsp.swingui.TspPanel;
 
-public class TspApp extends CommonApp<TravelingSalesmanTour> {
+public class TspApp extends CommonApp<TspSolution> {
 
     public static final String SOLVER_CONFIG
             = "org/optaplanner/examples/tsp/solver/tspSolverConfig.xml";

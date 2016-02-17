@@ -36,11 +36,11 @@ import javax.swing.JPanel;
 
 import org.apache.commons.lang3.StringUtils;
 import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScore;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.swing.impl.TangoColorFactory;
 import org.optaplanner.examples.common.swingui.latitudelongitude.LatitudeLongitudeTranslator;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
 import org.optaplanner.examples.tsp.domain.Visit;
 import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
@@ -68,9 +68,9 @@ public class TspWorldPanel extends JPanel {
             @Override
             public void componentResized(ComponentEvent e) {
                 // TODO Not thread-safe during solving
-                TravelingSalesmanTour travelingSalesmanTour = TspWorldPanel.this.tspPanel.getTravelingSalesmanTour();
-                if (travelingSalesmanTour != null) {
-                    resetPanel(travelingSalesmanTour);
+                TspSolution tspSolution = TspWorldPanel.this.tspPanel.getTspSolution();
+                if (tspSolution != null) {
+                    resetPanel(tspSolution);
                 }
             }
         });
@@ -83,9 +83,9 @@ public class TspWorldPanel extends JPanel {
                     if (e.getButton() == MouseEvent.BUTTON1) {
                         dragSourceStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
                                 new AirLocation(-1L, latitude, longitude));
-                        TravelingSalesmanTour tour = TspWorldPanel.this.tspPanel.getTravelingSalesmanTour();
-                        dragTargetStandstill = tour.getDomicile();
-                        resetPanel(tour);
+                        TspSolution tspSolution = TspWorldPanel.this.tspPanel.getTspSolution();
+                        dragTargetStandstill = tspSolution.getDomicile();
+                        resetPanel(tspSolution);
                     } else if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
                         TspWorldPanel.this.tspPanel.insertLocationAndVisit(longitude, latitude);
                     }
@@ -99,11 +99,11 @@ public class TspWorldPanel extends JPanel {
                         double latitude = translator.translateYToLatitude(e.getY());
                         dragTargetStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
                                 new AirLocation(-1L, latitude, longitude));
-                        TravelingSalesmanTour tour = TspWorldPanel.this.tspPanel.getTravelingSalesmanTour();
+                        TspSolution tspSolution = TspWorldPanel.this.tspPanel.getTspSolution();
                         if (dragSourceStandstill == dragTargetStandstill) {
-                            dragTargetStandstill = tour.getDomicile();
+                            dragTargetStandstill = tspSolution.getDomicile();
                         }
-                        resetPanel(tour);
+                        resetPanel(tspSolution);
                     }
                 }
             }
@@ -116,9 +116,9 @@ public class TspWorldPanel extends JPanel {
                         double latitude = translator.translateYToLatitude(e.getY());
                         dragTargetStandstill = TspWorldPanel.this.tspPanel.findNearestStandstill(
                                 new AirLocation(-1L, latitude, longitude));
-                        TravelingSalesmanTour tour = TspWorldPanel.this.tspPanel.getTravelingSalesmanTour();
+                        TspSolution tspSolution = TspWorldPanel.this.tspPanel.getTspSolution();
                         if (dragSourceStandstill == dragTargetStandstill) {
-                            dragTargetStandstill = tour.getDomicile();
+                            dragTargetStandstill = tspSolution.getDomicile();
                         }
                         Standstill sourceStandstill = TspWorldPanel.this.dragSourceStandstill;
                         Standstill targetStandstill = TspWorldPanel.this.dragTargetStandstill;
@@ -135,9 +135,9 @@ public class TspWorldPanel extends JPanel {
         europaBackground = new ImageIcon(getClass().getResource("europaBackground.png"));
     }
 
-    public void resetPanel(TravelingSalesmanTour travelingSalesmanTour) {
+    public void resetPanel(TspSolution tspSolution) {
         translator = new LatitudeLongitudeTranslator();
-        for (Location location : travelingSalesmanTour.getLocationList()) {
+        for (Location location : tspSolution.getLocationList()) {
             translator.addCoordinates(location.getLatitude(), location.getLongitude());
         }
 
@@ -147,13 +147,12 @@ public class TspWorldPanel extends JPanel {
         translator.prepareFor(width, height);
 
         Graphics2D g = createCanvas(width, height);
-        String tourName = travelingSalesmanTour.getName();
-        if (tourName.startsWith("europe")) {
+        if (tspSolution.getName().startsWith("europe")) {
             g.drawImage(europaBackground.getImage(), 0, 0, translator.getImageWidth(), translator.getImageHeight(), this);
         }
         g.setFont(g.getFont().deriveFont((float) LOCATION_NAME_TEXT_SIZE));
         g.setColor(TangoColorFactory.PLUM_2);
-        List<Visit> visitList = travelingSalesmanTour.getVisitList();
+        List<Visit> visitList = tspSolution.getVisitList();
         for (Visit visit : visitList) {
             Location location = visit.getLocation();
             int x = translator.translateLongitudeToX(location.getLongitude());
@@ -164,7 +163,7 @@ public class TspWorldPanel extends JPanel {
             }
         }
         g.setColor(TangoColorFactory.ALUMINIUM_4);
-        Domicile domicile = travelingSalesmanTour.getDomicile();
+        Domicile domicile = tspSolution.getDomicile();
         Location domicileLocation = domicile.getLocation();
         int domicileX = translator.translateLongitudeToX(domicileLocation.getLongitude());
         int domicileY = translator.translateLatitudeToY(domicileLocation.getLatitude());
@@ -211,10 +210,10 @@ public class TspWorldPanel extends JPanel {
         g.fillRect(6, (int) height - 9, 3, 3);
         g.drawString("Visit", 15, (int) height - 5);
         g.setColor(TangoColorFactory.ALUMINIUM_5);
-        String locationsSizeString = travelingSalesmanTour.getLocationList().size() + " locations";
+        String locationsSizeString = tspSolution.getLocationList().size() + " locations";
         g.drawString(locationsSizeString,
                 ((int) width - g.getFontMetrics().stringWidth(locationsSizeString)) / 2, (int) height - 5);
-        if (travelingSalesmanTour.getDistanceType() == DistanceType.AIR_DISTANCE) {
+        if (tspSolution.getDistanceType() == DistanceType.AIR_DISTANCE) {
             String leftClickString = "Left click and drag between 2 locations to connect them.";
             g.drawString(leftClickString, (int) width - 5 - g.getFontMetrics().stringWidth(leftClickString), (int) height - 10 - TEXT_SIZE);
             String rightClickString = "Right click anywhere on the map to add a visit.";
@@ -222,9 +221,9 @@ public class TspWorldPanel extends JPanel {
         }
         // Show soft score
         g.setColor(TangoColorFactory.ORANGE_3);
-        SimpleLongScore score = travelingSalesmanTour.getScore();
+        SimpleLongScore score = tspSolution.getScore();
         if (score != null) {
-            String distanceString = travelingSalesmanTour.getDistanceString(NUMBER_FORMAT);
+            String distanceString = tspSolution.getDistanceString(NUMBER_FORMAT);
             g.setFont(g.getFont().deriveFont(Font.BOLD, (float) TEXT_SIZE * 2));
             g.drawString(distanceString,
                     (int) width - g.getFontMetrics().stringWidth(distanceString) - 10, (int) height - 15 - 2 * TEXT_SIZE);
@@ -232,8 +231,8 @@ public class TspWorldPanel extends JPanel {
         repaint();
     }
 
-    public void updatePanel(TravelingSalesmanTour travelingSalesmanTour) {
-        resetPanel(travelingSalesmanTour);
+    public void updatePanel(TspSolution tspSolution) {
+        resetPanel(tspSolution);
     }
 
     private Graphics2D createCanvas(double width, double height) {

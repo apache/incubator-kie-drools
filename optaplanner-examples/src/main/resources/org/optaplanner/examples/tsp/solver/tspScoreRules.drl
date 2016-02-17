@@ -22,7 +22,7 @@ import org.optaplanner.core.api.score.buildin.simplelong.SimpleLongScoreHolder;
 import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Visit;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 
 global SimpleLongScoreHolder scoreHolder;
 

@@ -36,8 +36,8 @@ import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
-@XStreamAlias("TravelingSalesmanTour")
-public class TravelingSalesmanTour extends AbstractPersistable implements Solution<SimpleLongScore> {
+@XStreamAlias("TspSolution")
+public class TspSolution extends AbstractPersistable implements Solution<SimpleLongScore> {
 
     private String name;
     protected DistanceType distanceType;

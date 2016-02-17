@@ -21,14 +21,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 
 import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
-import org.optaplanner.examples.tsp.domain.TravelingSalesmanTour;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
 import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.domain.location.AirLocation;
@@ -64,20 +63,20 @@ public class TspPanel extends SolutionPanel {
         return true;
     }
 
-    public TravelingSalesmanTour getTravelingSalesmanTour() {
-        return (TravelingSalesmanTour) solutionBusiness.getSolution();
+    public TspSolution getTspSolution() {
+        return (TspSolution) solutionBusiness.getSolution();
     }
 
     public void resetPanel(Solution solution) {
-        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
-        tspWorldPanel.resetPanel(travelingSalesmanTour);
-        tspListPanel.resetPanel(travelingSalesmanTour);
+        TspSolution tspSolution = (TspSolution) solution;
+        tspWorldPanel.resetPanel(tspSolution);
+        tspListPanel.resetPanel(tspSolution);
         resetNextLocationId();
     }
 
     private void resetNextLocationId() {
         long highestLocationId = 0L;
-        for (Location location : getTravelingSalesmanTour().getLocationList()) {
+        for (Location location : getTspSolution().getLocationList()) {
             if (highestLocationId < location.getId().longValue()) {
                 highestLocationId = location.getId();
             }
@@ -87,9 +86,9 @@ public class TspPanel extends SolutionPanel {
 
     @Override
     public void updatePanel(Solution solution) {
-        TravelingSalesmanTour travelingSalesmanTour = (TravelingSalesmanTour) solution;
-        tspWorldPanel.updatePanel(travelingSalesmanTour);
-        tspListPanel.updatePanel(travelingSalesmanTour);
+        TspSolution tspSolution = (TspSolution) solution;
+        tspWorldPanel.updatePanel(tspSolution);
+        tspListPanel.updatePanel(tspSolution);
     }
 
     public SolverAndPersistenceFrame getWorkflowFrame() {
@@ -98,7 +97,7 @@ public class TspPanel extends SolutionPanel {
 
     public void insertLocationAndVisit(double longitude, double latitude) {
         final Location newLocation;
-        switch (getTravelingSalesmanTour().getDistanceType()) {
+        switch (getTspSolution().getDistanceType()) {
             case AIR_DISTANCE:
                 newLocation = new AirLocation();
                 break;
@@ -106,7 +105,7 @@ public class TspPanel extends SolutionPanel {
                 logger.warn("Adding locations for a road distance dataset is not supported.");
                 return;
             default:
-                throw new IllegalStateException("The distanceType (" + getTravelingSalesmanTour().getDistanceType()
+                throw new IllegalStateException("The distanceType (" + getTspSolution().getDistanceType()
                         + ") is not implemented.");
         }
         newLocation.setId(nextLocationId);
@@ -116,15 +115,15 @@ public class TspPanel extends SolutionPanel {
         logger.info("Scheduling insertion of newLocation ({}).", newLocation);
         doProblemFactChange(new ProblemFactChange() {
             public void doChange(ScoreDirector scoreDirector) {
-                TravelingSalesmanTour tour = (TravelingSalesmanTour) scoreDirector.getWorkingSolution();
+                TspSolution tspSolution = (TspSolution) scoreDirector.getWorkingSolution();
                 scoreDirector.beforeProblemFactAdded(newLocation);
-                tour.getLocationList().add(newLocation);
+                tspSolution.getLocationList().add(newLocation);
                 scoreDirector.afterProblemFactAdded(newLocation);
                 Visit newVisit = new Visit();
                 newVisit.setId(newLocation.getId());
                 newVisit.setLocation(newLocation);
                 scoreDirector.beforeEntityAdded(newVisit);
-                tour.getVisitList().add(newVisit);
+                tspSolution.getVisitList().add(newVisit);
                 scoreDirector.afterEntityAdded(newVisit);
                 scoreDirector.triggerVariableListeners();
             }
@@ -132,9 +131,9 @@ public class TspPanel extends SolutionPanel {
     }
     public void connectStandstills(Standstill sourceStandstill, Standstill targetStandstill) {
         if (targetStandstill instanceof Domicile) {
-            TravelingSalesmanTour tour = getTravelingSalesmanTour();
-            Standstill lastStandstill = tour.getDomicile();
-            for (Visit nextVisit = findNextVisit(tour, lastStandstill); nextVisit != null; nextVisit = findNextVisit(tour, lastStandstill)) {
+            TspSolution tspSolution = getTspSolution();
+            Standstill lastStandstill = tspSolution.getDomicile();
+            for (Visit nextVisit = findNextVisit(tspSolution, lastStandstill); nextVisit != null; nextVisit = findNextVisit(tspSolution, lastStandstill)) {
                 lastStandstill = nextVisit;
             }
             targetStandstill = sourceStandstill;
@@ -148,10 +147,10 @@ public class TspPanel extends SolutionPanel {
     }
 
     public Standstill findNearestStandstill(AirLocation clickLocation) {
-        TravelingSalesmanTour tour = getTravelingSalesmanTour();
-        Standstill standstill = tour.getDomicile();
+        TspSolution tspSolution = getTspSolution();
+        Standstill standstill = tspSolution.getDomicile();
         double minimumAirDistance = standstill.getLocation().getAirDistanceDoubleTo(clickLocation);
-        for (Visit selectedVisit : tour.getVisitList()) {
+        for (Visit selectedVisit : tspSolution.getVisitList()) {
             double airDistance = selectedVisit.getLocation().getAirDistanceDoubleTo(clickLocation);
             if (airDistance < minimumAirDistance) {
                 standstill = selectedVisit;
@@ -161,9 +160,9 @@ public class TspPanel extends SolutionPanel {
         return standstill;
     }
 
-    private Visit findNextVisit(TravelingSalesmanTour tour, Standstill standstill) {
+    private Visit findNextVisit(TspSolution tspSolution, Standstill standstill) {
         // Using an @InverseRelationShadowVariable on the model like in vehicle routing is far more efficient
-        for (Visit visit : tour.getVisitList()) {
+        for (Visit visit : tspSolution.getVisitList()) {
             if (visit.getPreviousStandstill() == standstill) {
                 return visit;
             }
