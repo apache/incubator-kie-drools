@@ -62,6 +62,12 @@ public class DroolsScoreDirectorFactory extends AbstractScoreDirectorFactory {
                         + ksessionName + ") with that name.");
             }
         }
+        if (kieSessionModel.getType() != KieSessionModel.KieSessionType.STATEFUL) {
+            throw new IllegalStateException("The ksessionName (" + ksessionName
+                    + ") with type (" + kieSessionModel.getType() + ") is not stateful.\n"
+                    + "Stateless sessions are not allowed because they don't support incremental score calculation"
+                    + " and are therefore exponentially slower.");
+        }
         String kbaseName = kieSessionModel.getKieBaseModel().getName();
         KieBase kieBase = kieContainer.newKieBase(kbaseName, null);
         checkIfGlobalScoreHolderExists(kieBase);
