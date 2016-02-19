@@ -964,7 +964,14 @@
 
       <para>If you call the <literal>terminateEarly()</literal> method from another thread, the
       <literal>Solver</literal> will terminate at its earliest convenience and the <literal>solve(Solution)</literal>
-      method will return in the original <literal>Solver</literal> thread.</para>
+      method will return (in the original <literal>Solver</literal> thread).</para>
+
+      <note>
+        <para>Interrupting the Solver thread (which is the thread that called <literal>Solver.solve(Solution)</literal>)
+        has the same affect as calling <literal>terminateEarly()</literal> except that it leaves that thread in the
+        interrupted state. This guarantees a graceful shutdown when an <literal>ExecutorService</literal> (such as a
+        thread pool) is shutdown because that only interrupts all active threads in the pool.</para>
+      </note>
     </section>
   </section>
 
