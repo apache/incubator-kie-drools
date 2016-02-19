@@ -84,7 +84,7 @@ public abstract class AbstractKieProject implements KieProject {
     }
 
     public KieBaseModel getKieBaseModel(String kBaseName) {
-        return kBaseModels.get( kBaseName );
+        return kBaseName == null ? getDefaultKieBaseModel() : kBaseModels.get( kBaseName );
     }
 
     public Collection<String> getKieBaseNames() {
@@ -92,7 +92,7 @@ public abstract class AbstractKieProject implements KieProject {
     }
 
     public KieSessionModel getKieSessionModel(String kSessionName) {
-        return kSessionModels.get( kSessionName );
+        return kSessionName == null ? getDefaultKieSession() : kSessionModels.get( kSessionName );
     }
 
     protected void indexParts(Collection<InternalKieModule> kieModules,
