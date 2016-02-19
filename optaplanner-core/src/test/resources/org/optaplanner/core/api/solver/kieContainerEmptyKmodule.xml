@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kmodule xmlns="http://www.drools.org/xsd/kmodule">
+  <!-- This file is copy pasted to the META-INF director in the KieContainer tests to avoid false positive tests -->
+</kmodule>
