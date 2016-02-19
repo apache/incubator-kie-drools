@@ -6,10 +6,10 @@ import org.drools.core.spi.ObjectType;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MethodCountingObjectTyoeNode extends ObjectTypeNode {
+public class MethodCountingObjectTypeNode extends ObjectTypeNode {
     protected Map<String, Integer> methodCount;
 
-    public MethodCountingObjectTyoeNode(final int id,
+    public MethodCountingObjectTypeNode(final int id,
                           final EntryPointNode source,
                           final ObjectType objectType,
                           final BuildContext context) {
@@ -19,6 +19,11 @@ public class MethodCountingObjectTyoeNode extends ObjectTypeNode {
     public boolean equals(final Object object) {
         incrementCount("equals");
         return super.equals(object);
+    }
+
+    public boolean thisNodeEquals(final Object object) {
+        incrementCount("thisNodeEquals");
+        return super.thisNodeEquals(object);
     }
 
     private void incrementCount(String key) {

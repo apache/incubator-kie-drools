@@ -170,4 +170,8 @@ public class MockObjectSink
     public ObjectTypeNode.Id getRightInputOtnId() {
         return null;
     }
+
+    public boolean thisNodeEquals(final Object object) {
+        return false;
+    }
 }

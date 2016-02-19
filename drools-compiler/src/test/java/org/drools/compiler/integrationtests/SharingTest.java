@@ -4,9 +4,7 @@ import org.drools.compiler.Cheese;
 import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.*;
 import org.drools.core.reteoo.builder.MethodCountingNodeFactory;
 import org.drools.core.reteoo.builder.NodeFactory;
@@ -14,6 +12,7 @@ import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.internal.KnowledgeBase;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,12 +22,28 @@ public class SharingTest extends CommonTestMethodBase {
 
     private KnowledgeBase kbase;
     private Map<String, Rule> rules;
+    private AlphaNode alphaNode_1;
+    private AlphaNode alphaNode_2;
+    private LeftInputAdapterNode lian_1;
+    private LeftInputAdapterNode lian_2;
+    private ObjectTypeNode otn;
+    private JoinNode joinNode;
 
 
     public void setupKnowledgeBase() throws Exception {
         NodeFactory nodeFactory = MethodCountingNodeFactory.getInstance();
         kbase = loadKnowledgeBaseFromString( nodeFactory, getRules());
         rules = rulestoMap(kbase);
+        otn = getObjectTypeNode(kbase, Person.class );
+        alphaNode_1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0]; //AlphaNode name == "Mark"
+        alphaNode_2 = (AlphaNode) alphaNode_1.getSinkPropagator().getSinks()[0]; // 2nd level (age = 50)
+
+        lian_1 = (LeftInputAdapterNode) alphaNode_1.getSinkPropagator().getSinks()[1];
+        lian_2 = (LeftInputAdapterNode) alphaNode_2.getSinkPropagator().getSinks()[0];
+
+        AlphaNode an = ( AlphaNode ) otn.getSinkPropagator().getSinks()[1]; // name = "John"
+        LeftInputAdapterNode lian =(LeftInputAdapterNode) an.getSinkPropagator().getSinks()[1];
+        joinNode = (JoinNode) lian.getSinkPropagator().getSinks()[0]; //this == $personCheese
     }
 
     public static ObjectTypeNode getObjectTypeNode(KnowledgeBase kbase, Class<?> nodeClass) {
@@ -73,14 +88,14 @@ public class SharingTest extends CommonTestMethodBase {
         drl += "end\n";
         drl += "rule r6\n";
         drl += "when\n";
-        drl += "$cheddar : Cheese(type == \"cheddar\" )";
-        drl += "   Person(name == \"Smith\",$cheddar == cheese)\n";
+        drl += " Person(name == \"John\",$personCheese: cheese)\n";
+        drl += "Cheese(this == $personCheese )";
         drl += "then\n";
         drl += "end\n";
         drl += "rule r7\n";
         drl += "when\n";
-        drl += "$cheddar : Cheese(type == \"cheddar\" )";
-        drl += "   Person(name == \"Smith\",$cheddar == cheese)\n";
+        drl += " Person(name == \"John\",$personCheese: cheese)\n";
+        drl += "Cheese(this == $personCheese )";
         drl += "then\n";
         drl += "end\n";
         return drl;
@@ -88,92 +103,80 @@ public class SharingTest extends CommonTestMethodBase {
 
     //@Test(timeout=10000)
     @Test()
-    public void testNodeSharing() throws Exception {
+    public void testOTNSharing() throws Exception {
         setupKnowledgeBase();
-        ObjectTypeNode otn = getObjectTypeNode(kbase, Person.class );
-
-        assertEquals( 3, otn.getSinkPropagator().size() );
-
-        testAlphaNodeSharing(rules, otn);
-        testLeftInputAdapterNodeSharing(rules, otn);
-        testJoinNodeSharing(rules, otn);
+        assertEquals( 2, otn.getSinkPropagator().size() );
+        assertEquals(7, otn.getAssociationsSize());
     }
 
-    @Test()
-    public void testMethodCount() throws Exception {
+    @Test
+    public void testAlphaNodeSharing() throws Exception {
         setupKnowledgeBase();
-        ObjectTypeNode otn = getObjectTypeNode(kbase, Person.class );
 
-        MethodCountingAlphaNode mcan = (MethodCountingAlphaNode) otn.getSinkPropagator().getSinks()[2]; // name = "Mark"
-        assertNotNull(mcan.getMethodCountMap());
-        assertEquals(2, mcan.getMethodCountMap().get("equals").intValue());
-    }
+        assertEquals( 2, alphaNode_1.getSinkPropagator().size());
+        assertEquals( 4, alphaNode_1.getAssociationsSize() );
+        assertTrue( alphaNode_1.isAssociatedWith(rules.get("r1")));
+        assertTrue( alphaNode_1.isAssociatedWith(rules.get("r2")));
+        assertTrue( alphaNode_1.isAssociatedWith(rules.get("r3")));
+        assertTrue( alphaNode_1.isAssociatedWith(rules.get("r4")));
+        Map<String, Integer> countingMap = ((MethodCountingAlphaNode)alphaNode_1).getMethodCountMap();
+        assertNotNull(countingMap);
+        assertEquals(6,countingMap.get("thisNodeEquals").intValue());
 
-    private void testAlphaNodeSharing(Map<String, Rule> rules, ObjectTypeNode otn) {
-        //AlphaNode name == "Mark"
-        AlphaNode an = ( AlphaNode ) otn.getSinkPropagator().getSinks()[2];
-        testFirstLevelAlphaSharing(rules, an);
-        testSecondLevelAlphaSharing(rules, (AlphaNode) an.getSinkPropagator().getSinks()[0]);
-    }
-
-    private void testFirstLevelAlphaSharing(Map<String, Rule> rules, AlphaNode an) {
-        //name == "Mark"
-        assertEquals( 2, an.getSinkPropagator().size());
-        assertEquals( 4, an.getAssociationsSize() );
-        assertTrue( an.isAssociatedWith(rules.get("r1")));
-        assertTrue( an.isAssociatedWith(rules.get("r2")));
-        assertTrue( an.isAssociatedWith(rules.get("r3")));
-        assertTrue( an.isAssociatedWith(rules.get("r4")));
-    }
-
-    private void testSecondLevelAlphaSharing(Map<String, Rule> rules, AlphaNode an) {
         //Check 2nd level of sharing (age = 50)
-        assertEquals( 1, an.getSinkPropagator().size() );
-        assertEquals( 2, an.getAssociationsSize() );
-        assertTrue( an.isAssociatedWith(rules.get("r3")));
-        assertTrue( an.isAssociatedWith(rules.get("r4")));
+        assertEquals( 1, alphaNode_2.getSinkPropagator().size() );
+        assertEquals( 2, alphaNode_2.getAssociationsSize() );
+        assertTrue( alphaNode_2.isAssociatedWith(rules.get("r3")));
+        assertTrue( alphaNode_2.isAssociatedWith(rules.get("r4")));
+        countingMap = ((MethodCountingAlphaNode)alphaNode_2).getMethodCountMap();
+        assertNotNull(countingMap);
+        assertEquals(1,countingMap.get("thisNodeEquals").intValue());
     }
 
+    @Test
+    public void testLeftInputAdapterNodeSharing() throws Exception {
+        setupKnowledgeBase();
 
-    private void testLeftInputAdapterNodeSharing(Map<String, Rule> rules, ObjectTypeNode otn) {
         //Check first level of lian sharing
-        AlphaNode a1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[2]; //AlphaNode name == "Mark"
-        LeftInputAdapterNode a1_lian = (LeftInputAdapterNode) a1.getSinkPropagator().getSinks()[1];
-        assertEquals( 2, a1_lian.getSinkPropagator().size() );
-        assertTrue( a1_lian.isAssociatedWith(rules.get("r1")));
-        assertTrue( a1_lian.isAssociatedWith(rules.get("r2")));
-        testRuleTerminalNodeSharing(rules, a1_lian);
+        assertEquals( 2, lian_1.getSinkPropagator().size() );
+        assertTrue( lian_1.isAssociatedWith(rules.get("r1")));
+        assertTrue( lian_1.isAssociatedWith(rules.get("r2")));
+        RuleTerminalNode rtn1 = (RuleTerminalNode) lian_1.getSinkPropagator().getSinks()[0];
+        assertTrue(rtn1.isAssociatedWith(rules.get("r1")));
+        RuleTerminalNode rtn2 = (RuleTerminalNode) lian_1.getSinkPropagator().getSinks()[1];
+        assertTrue(rtn2.isAssociatedWith(rules.get("r2")));
+
+        Map<String, Integer> countingMap = ((MethodCountingLeftInputAdapterNode)lian_1).getMethodCountMap();
+        assertNotNull(countingMap);
+        assertEquals(3,countingMap.get("thisNodeEquals").intValue());
 
         //Check 2nd level of lian sharing
-        AlphaNode a1_1 = (AlphaNode) a1.getSinkPropagator().getSinks()[0];
-        LeftInputAdapterNode a1_1_lian = (LeftInputAdapterNode) a1_1.getSinkPropagator().getSinks()[0];
-        assertEquals( 2, a1_1_lian.getAssociationsSize());
-        assertEquals( 2, a1_1_lian.getSinkPropagator().size() );
-        assertTrue( a1_1_lian.isAssociatedWith(rules.get("r3")));
-        assertTrue( a1_1_lian.isAssociatedWith(rules.get("r4")));
-        testSeconLevelRuleTerminalNodeSharing(rules, a1_1_lian);
-    }
-
-    private void testJoinNodeSharing(Map<String, Rule> rules,ObjectTypeNode otn) {
-        AlphaNode an = ( AlphaNode ) otn.getSinkPropagator().getSinks()[1]; // name = "Smith"
-        JoinNode jn = (JoinNode) an.getSinkPropagator().getSinks()[0]; //cheese == $cheddar
-        assertEquals( 2, jn.getSinkPropagator().size() );
-        assertEquals( 2, jn.getAssociationsSize());
-        assertTrue( jn.isAssociatedWith(rules.get("r6")));
-        assertTrue( jn.isAssociatedWith(rules.get("r7")));
-    }
-
-    private void testRuleTerminalNodeSharing(Map<String, Rule> rules,LeftInputAdapterNode lian) {
-        RuleTerminalNode rtn1 = (RuleTerminalNode) lian.getSinkPropagator().getSinks()[0];
-        assertTrue(rtn1.isAssociatedWith(rules.get("r1")));
-        RuleTerminalNode rtn2 = (RuleTerminalNode) lian.getSinkPropagator().getSinks()[1];
-        assertTrue(rtn2.isAssociatedWith(rules.get("r2")));
-    }
-
-    private void testSeconLevelRuleTerminalNodeSharing(Map<String, Rule> rules,LeftInputAdapterNode lian) {
-        RuleTerminalNode rtn1 = (RuleTerminalNode) lian.getSinkPropagator().getSinks()[0];
+        assertEquals( 2, lian_2.getAssociationsSize());
+        assertEquals( 2, lian_2.getSinkPropagator().size() );
+        assertTrue( lian_2.isAssociatedWith(rules.get("r3")));
+        assertTrue( lian_2.isAssociatedWith(rules.get("r4")));
+        rtn1 = (RuleTerminalNode) lian_2.getSinkPropagator().getSinks()[0];
         assertTrue(rtn1.isAssociatedWith(rules.get("r3")));
-        RuleTerminalNode rtn2 = (RuleTerminalNode) lian.getSinkPropagator().getSinks()[1];
+        rtn2 = (RuleTerminalNode) lian_2.getSinkPropagator().getSinks()[1];
         assertTrue(rtn2.isAssociatedWith(rules.get("r4")));
+
+        countingMap = ((MethodCountingLeftInputAdapterNode)lian_2).getMethodCountMap();
+        assertNotNull(countingMap);
+        assertEquals(1,countingMap.get("thisNodeEquals").intValue());
+    }
+
+    @Test
+    public void testJoinNodeSharing() throws Exception {
+        setupKnowledgeBase();
+
+        assertEquals( 2, joinNode.getSinkPropagator().size() );
+        assertEquals( 2, joinNode.getAssociationsSize());
+        assertTrue( joinNode.isAssociatedWith(rules.get("r6")));
+        assertTrue( joinNode.isAssociatedWith(rules.get("r7")));
+
+        MethodCountingObjectTypeNode betaOTN  = (MethodCountingObjectTypeNode) joinNode.getRightInput();
+        Map<String, Integer> map = betaOTN.getMethodCountMap();
+        assertNotNull(map);
+        assertEquals(1,map.get("thisNodeEquals").intValue());
     }
 }

@@ -19,6 +19,11 @@ public class MethodCountingLeftInputAdapterNode extends LeftInputAdapterNode {
         return super.equals(object);
     }
 
+    public boolean thisNodeEquals(final Object object) {
+        incrementCount("thisNodeEquals");
+        return super.thisNodeEquals(object);
+    }
+
     private void incrementCount(String key) {
         if ( this.methodCount== null ) {
             this.methodCount = new HashMap<>();

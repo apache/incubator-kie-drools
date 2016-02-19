@@ -193,6 +193,12 @@ public class AlphaNode extends ObjectSource
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(final Object object) {
+        final AlphaNode other = (AlphaNode) object;
+
+        return thisNodeEquals(object) && this.source.equals( other.source );
+    }
+
+    public boolean thisNodeEquals(final Object object) {
         if ( this == object ) {
             return true;
         }
@@ -203,10 +209,9 @@ public class AlphaNode extends ObjectSource
 
         final AlphaNode other = (AlphaNode) object;
 
-        return this.source.equals( other.source ) &&
-               constraint instanceof MvelConstraint ?
-               ((MvelConstraint)constraint).equals( other.constraint, getKnowledgeBase() ) :
-               constraint.equals( other.constraint );
+        return constraint instanceof MvelConstraint ?
+                ((MvelConstraint)constraint).equals( other.constraint, getKnowledgeBase() ) :
+                constraint.equals( other.constraint );
     }
 
     /**
@@ -317,6 +322,10 @@ public class AlphaNode extends ObjectSource
 
         public boolean isAssociatedWith( Rule rule ) {
             return sink.isAssociatedWith( rule );
+        }
+
+        public boolean thisNodeEquals(final Object object) {
+            return false;
         }
     }
 

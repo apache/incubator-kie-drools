@@ -189,4 +189,9 @@ public abstract class BaseNode
     public boolean isAssociatedWith( Rule rule ) {
         return this.associations.contains( rule );
     }
+
+    //Default implementation
+    public boolean thisNodeEquals(final Object object) {
+        return false;
+    }
 }

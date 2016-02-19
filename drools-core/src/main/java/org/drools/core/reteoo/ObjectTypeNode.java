@@ -490,6 +490,12 @@ public class ObjectTypeNode extends ObjectSource
     }
 
     public boolean equals(final Object object) {
+        final ObjectTypeNode other = (ObjectTypeNode) object;
+
+        return thisNodeEquals(object) && this.source.equals(other.source);
+    }
+
+    public boolean thisNodeEquals(final Object object) {
         if (this == object) {
             return true;
         }
@@ -499,8 +505,7 @@ public class ObjectTypeNode extends ObjectSource
         }
 
         final ObjectTypeNode other = (ObjectTypeNode) object;
-
-        return this.objectType.equals(other.objectType) && this.source.equals(other.source);
+        return this.objectType.equals(other.objectType);
     }
 
     /**

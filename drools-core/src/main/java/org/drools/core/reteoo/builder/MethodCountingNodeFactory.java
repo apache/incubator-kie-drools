@@ -28,7 +28,7 @@ public class MethodCountingNodeFactory extends PhreakNodeFactory {
                 return new TraitObjectTypeNode( id, objectSource, objectType, context );
             }
         } else {
-            return new MethodCountingObjectTyoeNode( id, objectSource, objectType, context );
+            return new MethodCountingObjectTypeNode( id, objectSource, objectType, context );
         }
     }
 
