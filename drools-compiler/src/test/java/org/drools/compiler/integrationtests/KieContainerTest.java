@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
+import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.definition.type.FactType;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
@@ -305,6 +306,58 @@ public class KieContainerTest {
         URL url = classLoader.getResources("org/drools/testdrl").nextElement();
         List<String> lines = IOUtils.readLines(url.openStream());
         Assertions.assertThat(lines).contains("rules1.drl", "rules1.drl.properties", "rules2.drl", "rules2.drl.properties");
+    }
+
+    @Test
+    public void testGetDefaultKieSessionModel() {
+        KieServices kieServices = KieServices.Factory.get();
+        String drl = "package org.drools.test\n" +
+                "rule R1 when\n" +
+                "   $m : Object()\n" +
+                "then\n" +
+                "end\n";
+        Resource resource = kieServices.getResources().newReaderResource( new StringReader( drl), "UTF-8" );
+        resource.setTargetPath("org/drools/test/rules.drl");
+        String kmodule = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                "  <kbase name=\"testKbase\" packages=\"org.drools.test\">\n" +
+                "    <ksession name=\"testKsession\" default=\"true\"/>\n" +
+                "  </kbase>\n" +
+                "</kmodule>";
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId = kieServices.newReleaseId("org.kie", "test-testGetDefaultKieSessionModel", "1.0.0");
+        createAndDeployJar(kieServices, kmodule, releaseId, resource);
+
+        KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+
+        KieSessionModel sessionModel = kieContainer.getKieSessionModel(null);
+        assertNotNull(sessionModel);
+        assertEquals("testKsession", sessionModel.getName());
+    }
+
+    @Test
+    public void testGetDefaultKieSessionModelEmptyKmodule() {
+        KieServices kieServices = KieServices.Factory.get();
+        String drl = "package org.drools.test\n" +
+                "rule R1 when\n" +
+                "   $m : Object()\n" +
+                "then\n" +
+                "end\n";
+        Resource resource = kieServices.getResources().newReaderResource( new StringReader( drl), "UTF-8" );
+        resource.setTargetPath("org/drools/test/rules.drl");
+        String kmodule = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+                "<kmodule xmlns=\"http://www.drools.org/xsd/kmodule\">\n" +
+                "</kmodule>";
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId = kieServices.newReleaseId("org.kie", "test-testGetDefaultKieSessionModelEmptyKmodule", "1.0.0");
+        createAndDeployJar(kieServices, kmodule, releaseId, resource);
+
+        KieContainer kieContainer = kieServices.newKieContainer(releaseId);
+
+        KieSessionModel sessionModel = kieContainer.getKieSessionModel(null);
+        assertNotNull(sessionModel);
     }
 
     public static void assertEnumerationSize(int expectedSize, Enumeration<?> enumeration) {
