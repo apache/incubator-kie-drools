@@ -118,11 +118,18 @@ public class BasicPlumbingTermination extends AbstractTermination {
     // ************************************************************************
 
     public synchronized boolean isSolverTerminated(DefaultSolverScope solverScope) {
+        // Destroying a thread pool with solver threads will only cause it to interrupt those solver threads
+        if (Thread.currentThread().isInterrupted()) { // Does not clear the interrupted flag
+            logger.info("The solver thread got interrupted, so this solver is terminating early.");
+            terminatedEarly = true;
+        }
         return terminatedEarly || !problemFactChangeQueue.isEmpty();
     }
 
     public boolean isPhaseTerminated(AbstractPhaseScope phaseScope) {
-        throw new UnsupportedOperationException("BasicPlumbingTermination can only be used for solver termination.");
+        throw new IllegalStateException(
+                "BasicPlumbingTermination configured only as solver termination."
+                + " It is always bridged to phase termination.");
     }
 
     public double calculateSolverTimeGradient(DefaultSolverScope solverScope) {
@@ -130,7 +137,9 @@ public class BasicPlumbingTermination extends AbstractTermination {
     }
 
     public double calculatePhaseTimeGradient(AbstractPhaseScope phaseScope) {
-        throw new UnsupportedOperationException("BasicPlumbingTermination can only be used for solver termination.");
+        throw new IllegalStateException(
+                "BasicPlumbingTermination configured only as solver termination."
+                + " It is always bridged to phase termination.");
     }
 
 }
