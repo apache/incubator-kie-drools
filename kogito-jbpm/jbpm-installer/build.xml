@@ -263,41 +263,54 @@
     <mkdir dir="${install.home}/lib"/>
   	<get src="${jBPM.console.url}" dest="${install.home}/lib/jbpm-console-${jBPM.version}-${jboss.war.type}.war"  />
   </target>
-  <target name="check.jbpm.console.modules">
-    <condition property="jbpm.console.modules">
-	<equals arg1="${jBPM.console.modules}" arg2="true" />
-    </condition>
-  </target>
-  <target name="download.jBPM.console.modules.check" if="jbpm.console.modules" depends="check.jbpm.console.modules">
-    <echo message="Checking jBPM console modules download ..." />
-    <condition property="jBPM.console.modules.not.available">
-      <and>
-    	<not>
-          <available file="${install.home}/lib/jbpm-console-modules-${jBPM.version}.zip" />
-        </not>
-      </and>
-    </condition>
-  </target>
-  <target name="download.jBPM.console.modules" depends="download.jBPM.console.modules.check" if="jBPM.console.modules.not.available">
-    <echo message="Getting jBPM console modules ..." />
-    <mkdir dir="${install.home}/lib"/>
-  	<get src="${jBPM.console.modules.url}" dest="${install.home}/lib/jbpm-console-modules-${jBPM.version}.zip"  />
-  </target>
   <!-- temporary fix: updating hibernate version in wildfly to avoid bug in hibernate -->
   <target name="check.wildfly">
     <condition property="check.wildfly.property">
-	<equals arg1="${jboss.server.version}" arg2="wildfly-${jboss.server.wildfly.version}" />
+      <equals arg1="${jboss.server.version}" arg2="wildfly-${jboss.server.wildfly.version}" />
     </condition>
   </target>
-  <target name="download.hibernate" depends="check.wildfly" if="check.wildfly.property">
+  <target name="download.hibernate.check">
+    <echo message="Checking Hibernate download ..." />
+    <condition property="hibernate.not.available">
+      <or>
+    	<not>
+          <available file="${install.home}/lib/hibernate4/hibernate-core-4.3.11.Final.jar" />
+        </not>
+    	<not>
+          <available file="${install.home}/lib/hibernate4/hibernate-entitymanager-4.3.11.Final.jar" />
+        </not>
+       	<not>
+          <available file="${install.home}/lib/hibernate4/hibernate-envers-4.3.11.Final.jar" />
+        </not>
+      	<not>
+          <available file="${install.home}/lib/hibernate4/hibernate-infinispan-4.3.11.Final.jar" />
+        </not>
+      </or>
+    </condition>
+  </target>
+  <target name="download.hibernate" depends="download.hibernate.check" if="hibernate.not.available">
     <mkdir dir="${install.home}/lib/hibernate4"/>
     <get src="${hibernate4.download.url}/hibernate-core/4.3.11.Final/hibernate-core-4.3.11.Final.jar" dest="${install.home}/lib/hibernate4" />
     <get src="${hibernate4.download.url}/hibernate-entitymanager/4.3.11.Final/hibernate-entitymanager-4.3.11.Final.jar" dest="${install.home}/lib/hibernate4" />
     <get src="${hibernate4.download.url}/hibernate-envers/4.3.11.Final/hibernate-envers-4.3.11.Final.jar" dest="${install.home}/lib/hibernate4" />
     <get src="${hibernate4.download.url}/hibernate-infinispan/4.3.11.Final/hibernate-infinispan-4.3.11.Final.jar" dest="${install.home}/lib/hibernate4" />
-    <copy file="${install.home}/wildfly-hibernate4-main-module.xml"
-          tofile="${jboss.home}/modules/system/layers/base/org/hibernate/main/module.xml"
-          overwrite="true" />
+  </target>
+	
+  <!-- Download kie-server -->
+  <target name="download.kie.server.check">
+    <echo message="Checking KIE Server download ..." />
+    <condition property="kie.server.not.available">
+      <and>
+    	<not>
+          <available file="${install.home}/lib/kie-server-${jBPM.version}-${jboss.war.type}.war" />
+        </not>
+      </and>
+    </condition>
+  </target>
+  <target name="download.kie.server" depends="download.kie.server.check" if="kie.server.not.available">
+    <echo message="Getting KIE Server ..." />
+    <mkdir dir="${install.home}/lib"/>
+  	<get src="${kie.server.url}" dest="${install.home}/lib/kie-server-${jBPM.version}-${jboss.war.type}.war"  />
   </target>
 
   <!-- ############ INSTALL ############ -->
@@ -311,14 +324,8 @@
     <chmod perm="a+x" file="${jboss.home}/bin/jboss-cli.sh" />
   </target>
 	
-  <!-- Install jBPM console modules -->
-  <target name="install.jBPM-console-modules.into.jboss" depends="download.jBPM.console.modules" if="jbpm.console.modules">
-    <unzip src="${install.home}/lib/jbpm-console-modules-${jBPM.version}.zip"
-           dest="${jboss.home}"/>
-  </target>
-
   <!-- Install jBPM console -->
-  <target name="install.jBPM-console.into.jboss" depends="download.db.driver,download.jBPM.console">
+  <target name="install.jBPM-console.into.jboss" depends="download.db.driver,download.jBPM.console,install.configuration.into.jboss">
     <mkdir dir="${install.home}/target"/>
     <mkdir dir="${install.home}/target/jbpm-console-war"/>
     <unzip src="${install.home}/lib/jbpm-console-${jBPM.version}-${jboss.war.type}.war"
@@ -342,6 +349,8 @@
           tofile="${jboss.server.deploy.dir}/jbpm-console.war"
           overwrite="true" />
     <delete dir="${install.home}/target"/>
+  </target>
+  <target name="install.configuration.into.jboss">
     <copy file="${install.home}/standalone-${jboss.server.version}.xml"
           tofile="${jboss.home}/standalone/configuration/standalone.xml"
           overwrite="true" />
@@ -364,6 +373,12 @@
     <copy file="${install.home}/lib/hibernate4/hibernate-infinispan-4.3.11.Final.jar" todir="${jboss.home}/modules/system/layers/base/org/hibernate/main" />
     <copy file="${install.home}/wildfly-hibernate4-main-module.xml"
           tofile="${jboss.home}/modules/system/layers/base/org/hibernate/main/module.xml"
+          overwrite="true" />
+  </target>
+  <!-- Install jBPM console -->
+  <target name="install.kie-server.into.jboss" depends="download.kie.server,install.configuration.into.jboss">
+    <copy file="${install.home}/lib/kie-server-${jBPM.version}-${jboss.war.type}.war"
+          tofile="${jboss.server.deploy.dir}/kie-server.war"
           overwrite="true" />
   </target>
 
@@ -475,13 +490,13 @@
   </target>
 
   <!-- Install Demo -->
-  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console-modules.into.jboss,install.jBPM-console.into.jboss,install.hibernate4.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
+  <target name="install.demo" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.hibernate4.into.jboss,install.kie-server.into.jboss,install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
 
   <!-- Install Demo (Eclipse) -->
   <target name="install.demo.eclipse" depends="install.eclipse,install.jBPM.runtime,install.droolsjbpm-eclipse.into.eclipse,install.modeler.into.eclipse" />
 
   <!-- Install Demo (No Eclipse) -->
-  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console-modules.into.jboss,install.jBPM-console.into.jboss,install.hibernate4.into.jboss" />
+  <target name="install.demo.noeclipse" depends="install.jboss,install.db.files,install.jBPM-console.into.jboss,install.hibernate4.into.jboss,install.kie-server.into.jboss" />
   
   <!-- ############ START/STOP ############ -->
   <target name="start.h2.check">
@@ -518,6 +533,7 @@
       <arg value="--server-config=standalone-full.xml" />
       <arg value="-Dorg.kie.demo=true" />
       <arg value="-Dorg.kie.example=false" />
+      <arg value="-Dorg.kie.server.persistence.ds=java:jboss/datasources/jbpmDS" />
       <!--arg value="-Dorg.uberfire.nio.git.daemon.port=${org.uberfire.nio.git.daemon.port}" />
       <arg value="-Dorg.uberfire.nio.git.ssh.port=${org.uberfire.nio.git.ssh.port}" />
       <arg value="-Djboss.socket.binding.port-offset=${jboss.port.offset}" />
@@ -532,6 +548,7 @@
       <arg value="--server-config=standalone-full.xml" />
       <arg value="-Dorg.kie.demo=true" />
       <arg value="-Dorg.kie.example=false" />
+      <arg value="-Dorg.kie.server.persistence.ds=java:jboss/datasources/jbpmDS" />
       <!--arg value="-Dorg.uberfire.nio.git.daemon.port=${org.uberfire.nio.git.daemon.port}" />
       <arg value="-Dorg.uberfire.nio.git.ssh.port=${org.uberfire.nio.git.ssh.port}" />
       <arg value="-Djboss.socket.binding.port-offset=${jboss.port.offset}" />
