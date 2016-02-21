@@ -41,6 +41,16 @@ public final class SimpleScore extends AbstractScore<SimpleScore> {
 
     private final int score;
 
+    /**
+     * Private default constructor for default marshalling/unmarshalling of unknown frameworks that use reflection.
+     * Such integration is always inferior to the specialized integration modules, such as
+     * optaplanner-persistence-jpa, optaplanner-persistence-xstream, optaplanner-persistence-jaxb, ...
+     */
+    @SuppressWarnings("unused")
+    private SimpleScore() {
+        score = Integer.MIN_VALUE;
+    }
+
     private SimpleScore(int score) {
         this.score = score;
     }

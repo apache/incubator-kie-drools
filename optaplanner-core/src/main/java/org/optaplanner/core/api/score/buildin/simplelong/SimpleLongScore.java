@@ -41,6 +41,16 @@ public final class SimpleLongScore extends AbstractScore<SimpleLongScore> {
 
     private final long score;
 
+    /**
+     * Private default constructor for default marshalling/unmarshalling of unknown frameworks that use reflection.
+     * Such integration is always inferior to the specialized integration modules, such as
+     * optaplanner-persistence-jpa, optaplanner-persistence-xstream, optaplanner-persistence-jaxb, ...
+     */
+    @SuppressWarnings("unused")
+    private SimpleLongScore() {
+        score = Long.MIN_VALUE;
+    }
+
     private SimpleLongScore(long score) {
         this.score = score;
     }

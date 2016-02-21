@@ -67,6 +67,17 @@ public final class BendableLongScore extends AbstractScore<BendableLongScore>
     private final long[] hardScores;
     private final long[] softScores;
 
+    /**
+     * Private default constructor for default marshalling/unmarshalling of unknown frameworks that use reflection.
+     * Such integration is always inferior to the specialized integration modules, such as
+     * optaplanner-persistence-jpa, optaplanner-persistence-xstream, optaplanner-persistence-jaxb, ...
+     */
+    @SuppressWarnings("unused")
+    private BendableLongScore() {
+        hardScores = null;
+        softScores = null;
+    }
+
     protected BendableLongScore(long[] hardScores, long[] softScores) {
         this.hardScores = hardScores;
         this.softScores = softScores;

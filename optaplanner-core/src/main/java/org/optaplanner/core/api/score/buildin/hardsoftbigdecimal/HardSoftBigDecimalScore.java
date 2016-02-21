@@ -54,6 +54,17 @@ public final class HardSoftBigDecimalScore extends AbstractScore<HardSoftBigDeci
     private final BigDecimal hardScore;
     private final BigDecimal softScore;
 
+    /**
+     * Private default constructor for default marshalling/unmarshalling of unknown frameworks that use reflection.
+     * Such integration is always inferior to the specialized integration modules, such as
+     * optaplanner-persistence-jpa, optaplanner-persistence-xstream, optaplanner-persistence-jaxb, ...
+     */
+    @SuppressWarnings("unused")
+    private HardSoftBigDecimalScore() {
+        hardScore = null;
+        softScore = null;
+    }
+
     private HardSoftBigDecimalScore(BigDecimal hardScore, BigDecimal softScore) {
         this.hardScore = hardScore;
         this.softScore = softScore;

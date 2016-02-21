@@ -51,6 +51,17 @@ public final class HardSoftLongScore extends AbstractScore<HardSoftLongScore>
     private final long hardScore;
     private final long softScore;
 
+    /**
+     * Private default constructor for default marshalling/unmarshalling of unknown frameworks that use reflection.
+     * Such integration is always inferior to the specialized integration modules, such as
+     * optaplanner-persistence-jpa, optaplanner-persistence-xstream, optaplanner-persistence-jaxb, ...
+     */
+    @SuppressWarnings("unused")
+    private HardSoftLongScore() {
+        hardScore = Long.MIN_VALUE;
+        softScore = Long.MIN_VALUE;
+    }
+
     private HardSoftLongScore(long hardScore, long softScore) {
         this.hardScore = hardScore;
         this.softScore = softScore;

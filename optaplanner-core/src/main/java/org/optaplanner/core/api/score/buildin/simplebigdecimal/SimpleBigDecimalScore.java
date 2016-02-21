@@ -44,6 +44,16 @@ public final class SimpleBigDecimalScore extends AbstractScore<SimpleBigDecimalS
 
     private final BigDecimal score;
 
+    /**
+     * Private default constructor for default marshalling/unmarshalling of unknown frameworks that use reflection.
+     * Such integration is always inferior to the specialized integration modules, such as
+     * optaplanner-persistence-jpa, optaplanner-persistence-xstream, optaplanner-persistence-jaxb, ...
+     */
+    @SuppressWarnings("unused")
+    private SimpleBigDecimalScore() {
+        score = null;
+    }
+
     private SimpleBigDecimalScore(BigDecimal score) {
         this.score = score;
     }

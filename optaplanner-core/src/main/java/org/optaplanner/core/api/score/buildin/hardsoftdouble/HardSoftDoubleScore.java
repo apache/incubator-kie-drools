@@ -56,6 +56,17 @@ public final class HardSoftDoubleScore extends AbstractScore<HardSoftDoubleScore
     private final double hardScore;
     private final double softScore;
 
+    /**
+     * Private default constructor for default marshalling/unmarshalling of unknown frameworks that use reflection.
+     * Such integration is always inferior to the specialized integration modules, such as
+     * optaplanner-persistence-jpa, optaplanner-persistence-xstream, optaplanner-persistence-jaxb, ...
+     */
+    @SuppressWarnings("unused")
+    private HardSoftDoubleScore() {
+        hardScore = Double.NaN;
+        softScore = Double.NaN;
+    }
+
     private HardSoftDoubleScore(double hardScore, double softScore) {
         this.hardScore = hardScore;
         this.softScore = softScore;
