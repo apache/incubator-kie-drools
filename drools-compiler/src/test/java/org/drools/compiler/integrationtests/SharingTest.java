@@ -131,6 +131,7 @@ public class SharingTest extends CommonTestMethodBase {
         countingMap = ((MethodCountingAlphaNode)alphaNode_2).getMethodCountMap();
         assertNotNull(countingMap);
         assertEquals(1,countingMap.get("thisNodeEquals").intValue());
+        assertNull (countingMap.get("equals")); //Make sure we are not using recursive "equals" method
     }
 
     @Test
@@ -163,6 +164,7 @@ public class SharingTest extends CommonTestMethodBase {
         countingMap = ((MethodCountingLeftInputAdapterNode)lian_2).getMethodCountMap();
         assertNotNull(countingMap);
         assertEquals(1,countingMap.get("thisNodeEquals").intValue());
+        assertNull (countingMap.get("equals")); //Make sure we are not using recursive "equals" method
     }
 
     @Test
@@ -175,8 +177,9 @@ public class SharingTest extends CommonTestMethodBase {
         assertTrue( joinNode.isAssociatedWith(rules.get("r7")));
 
         MethodCountingObjectTypeNode betaOTN  = (MethodCountingObjectTypeNode) joinNode.getRightInput();
-        Map<String, Integer> map = betaOTN.getMethodCountMap();
-        assertNotNull(map);
-        assertEquals(1,map.get("thisNodeEquals").intValue());
+        Map<String, Integer> countingMap = betaOTN.getMethodCountMap();
+        assertNotNull(countingMap);
+        assertEquals(1,countingMap.get("thisNodeEquals").intValue());
+        assertNull (countingMap.get("equals")); //Make sure we are not using recursive "equals" method
     }
 }

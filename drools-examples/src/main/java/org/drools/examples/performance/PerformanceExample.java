@@ -2,6 +2,7 @@ package org.drools.examples.performance;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -30,8 +31,8 @@ public class PerformanceExample {
     public static RuleEngineOption phreak = RuleEngineOption.PHREAK;
 
     public static void main(final String[] args) throws Exception{
-        final long numberOfRulesToBuild = 1;
-        boolean useAccumulate = false;
+        final long numberOfRulesToBuild = 10;
+        boolean useAccumulate = true;
         String dialect = "mvel"; //noticed performance difference between java and mvel dialects
         boolean usekjars = false;
         boolean collectionBasedRules = true;
@@ -135,7 +136,7 @@ public class PerformanceExample {
                 "\"TransactionDetails\": [\n" +
                 "{\n" +
                 "\"Quantity\": 25,\n" +
-                "\"ItemNumber\": \"SKU1\",\n" +
+                "\"ItemNumber\": \"SKU1_0\",\n" +
                 "\"BrandID\": \"Nike\",\n" +
                 "\"SKU\": \"SKU1\",\n" +
                 "\"ProductCategoryCode\" : \"Clothing\"\n" +
@@ -184,15 +185,24 @@ public class PerformanceExample {
 
     private static String createCollectionRule(long number, boolean useAccumulate, String dialect)
     {
+        long NumOfSKU = 10;
+        String sku = "";
+        String prefix = "";
+        for (long l =0; l <NumOfSKU; l++) {
+            sku += prefix + "\"SKU" + number + "_" + l + "\"";
+            prefix = ",";
+        }
+
         String s = "" +
                 "rule \"rule" + number + "\" \n";
                 if (!dialect.isEmpty()) {
                     s = s + "dialect \"" + dialect + "\"\n";
                 }
                 s = s + "when   t : TransactionC() \n" +
-                "d: TransactionDetailsC(ItemNumber == \"SKU" + number + "\") from t.TransactionDetails \n";
+                //"d: TransactionDetailsC(ItemNumber == \"SKU" + number + "\") from t.TransactionDetails \n";
+                "d: TransactionDetailsC(ItemNumber in (" + sku  + ")) from t.TransactionDetails \n";
                 if (useAccumulate) {
-                    s = s + "accumulate($item:TransactionDetailsC(ItemNumber == \"SKU" + number + "\") from t.TransactionDetails, $totQty: collectList($item.getQuantity()))\n";
+                    s = s + "accumulate($item:TransactionDetailsC(ItemNumber in (" + sku  + ")) from t.TransactionDetails, $totQty: collectList($item.getQuantity()))\n";
                 }
                 s = s + "then \n" +
                 "mo.add(new Outcome(\"rule" + number + "\", d.getBrandID()));\n" +
