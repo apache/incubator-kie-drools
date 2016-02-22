@@ -101,7 +101,9 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
                     + ") has a PlanningVariable annotated property (" + variableMemberAccessor.getName()
                     + ") with chained (" + chained + ") and propertyType (" + variableMemberAccessor.getType()
                     + ") which is not a superclass/interface of or the same as the entityClass ("
-                    + entityDescriptor.getEntityClass() + ").");
+                    + entityDescriptor.getEntityClass() + ").\n"
+                    + "If an entity's chained planning variable cannot point to another entity of the same class,"
+                    + " then it is impossible to make chain longer than 1 entity and therefore chaining is useless.");
         }
         if (chained && nullable) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
