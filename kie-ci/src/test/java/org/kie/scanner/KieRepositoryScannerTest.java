@@ -738,7 +738,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         KieContainer kieContainer = ks.newKieContainer(releaseId);
 
         MavenRepository repository = getMavenRepository();
-        repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
+        repository.deployArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
 
         // create a ksesion and check it works as expected
         KieSession ksession = kieContainer.newKieSession("KSession1");
@@ -757,7 +757,7 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         InternalKieModule kJar2 = createKieJarWithGDRL(ks, releaseId, rule2);
 
         // deploy it on maven
-        repository.installArtifact(releaseId, kJar2, createKPom(fileManager, releaseId));
+        repository.deployArtifact(releaseId, kJar2, createKPom(fileManager, releaseId));
 
         // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
         KieScanner scanner = ks.newKieScanner(kieContainer);
