@@ -35,6 +35,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -149,14 +150,13 @@ public class ClassObjectTypeConf
     }
 
     private boolean checkPropertyListenerSupport( Class<?> clazz ) {
-        Method method = null;
-        try {
-            method = clazz.getMethod( "addPropertyChangeListener",
-                                      ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES );
-        } catch (Exception e) {
-            // intentionally left empty
+        for (Method method : clazz.getMethods()) {
+            if ("addPropertyChangeListener".equals(method.getName()) &&
+                    Arrays.deepEquals(ADD_REMOVE_PROPERTY_CHANGE_LISTENER_ARG_TYPES, method.getParameterTypes())){
+                return true;
+            }
         }
-        return method != null;
+        return false;
     }
 
     /**
