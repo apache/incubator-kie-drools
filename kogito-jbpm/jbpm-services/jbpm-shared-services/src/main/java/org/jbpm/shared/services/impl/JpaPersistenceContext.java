@@ -207,12 +207,17 @@ public class JpaPersistenceContext implements Context {
 	}
 
 	
-	public void close(boolean txOwner) {
+	public void close(boolean txOwner, boolean emOwner) {
 		check();
 		if (txOwner) {
 			this.em.clear();
+			
 		}
-		this.em.close();
+		
+		if (emOwner) {
+		    this.em.close();
+		}
+		
 	}
 	
 	protected void check() {

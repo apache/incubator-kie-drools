@@ -15,6 +15,7 @@
 
 package org.jbpm.shared.services.impl;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
 import org.drools.core.command.CommandService;
@@ -22,6 +23,7 @@ import org.drools.core.command.impl.GenericCommand;
 import org.drools.persistence.TransactionManager;
 import org.drools.persistence.TransactionManagerFactory;
 import org.kie.api.command.Command;
+import org.kie.api.runtime.EnvironmentName;
 import org.kie.internal.command.Context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,15 +55,22 @@ public class TransactionalCommandService implements CommandService {
 
 	public <T> T execute(Command<T> command) {
     	boolean transactionOwner = false;
+    	boolean emOwner = false;
 		T result = null;
 		
         try {
             transactionOwner = txm.begin();
-            JpaPersistenceContext context = new JpaPersistenceContext(emf.createEntityManager());
+            EntityManager em = getEntityManager(command);
+            
+            if (em == null) {
+                em = emf.createEntityManager();
+                emOwner = true;
+            }
+            JpaPersistenceContext context = new JpaPersistenceContext(em);
             context.joinTransaction();
             result = ((GenericCommand<T>)command).execute(context);
             txm.commit( transactionOwner );
-            context.close(transactionOwner);
+            context.close(transactionOwner, emOwner);
             return result;
 
         } catch ( RuntimeException re ) {
@@ -84,4 +93,15 @@ public class TransactionalCommandService implements CommandService {
 		}
 	}
 
+	protected EntityManager getEntityManager(Command<?> command) {
+	    EntityManager em = (EntityManager) txm.getResource(EnvironmentName.CMD_SCOPED_ENTITY_MANAGER);
+	    
+	    if (em != null && em.isOpen() && em.getEntityManagerFactory().equals(emf)) {
+	        
+	        return em;
+	    }
+	    
+	    return null; 
+	}
+	
 }

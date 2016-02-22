@@ -775,4 +775,56 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
         }
         
     }
+    
+    @Test
+    public void testStartAndGetProcessInExternalTransactionsSingleton() throws Exception {
+        testStartAndGetProcessInExternalTransactions(RuntimeStrategy.SINGLETON);
+    }
+    
+    @Test
+    public void testStartAndGetProcessInExternalTransactionsPerRequest() throws Exception {
+        testStartAndGetProcessInExternalTransactions(RuntimeStrategy.PER_REQUEST);
+    }
+    
+    @Test
+    public void testStartAndGetProcessInExternalTransactionsPerProcessInstance() throws Exception {
+        testStartAndGetProcessInExternalTransactions(RuntimeStrategy.PER_PROCESS_INSTANCE);
+    }
+    
+    protected void testStartAndGetProcessInExternalTransactions(RuntimeStrategy strategy) throws Exception {
+        assertNotNull(deploymentService);
+        
+        KModuleDeploymentUnit deploymentUnit = new KModuleDeploymentUnit(GROUP_ID, ARTIFACT_ID, VERSION);
+        DeploymentDescriptor customDescriptor = new DeploymentDescriptorImpl("org.jbpm.domain");
+        customDescriptor.getBuilder()
+        .runtimeStrategy(strategy);
+        deploymentUnit.setDeploymentDescriptor(customDescriptor);
+        
+        
+        deploymentService.deploy(deploymentUnit);
+        units.add(deploymentUnit);
+        assertNotNull(processService);
+        
+        boolean isDeployed = deploymentService.isDeployed(deploymentUnit.getIdentifier());
+        assertTrue(isDeployed);
+        
+        UserTransaction ut = InitialContext.doLookup("java:comp/UserTransaction");
+        ut.begin();
+        
+        long processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+        
+        ProcessInstance pi = processService.getProcessInstance(processInstanceId);
+        assertNotNull(pi);
+        
+        processService.abortProcessInstance(processInstanceId);        
+        ut.commit();
+        
+        try {
+            processService.getProcessInstance(processInstanceId);      
+        } catch (SessionNotFoundException e) {
+            
+        }
+        
+    }
 }
