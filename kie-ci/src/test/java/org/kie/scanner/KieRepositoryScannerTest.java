@@ -731,4 +731,87 @@ public class KieRepositoryScannerTest extends AbstractKieCiTest {
         assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
         return (InternalKieModule) kieBuilder.getKieModule();
     }
+
+    @Test
+    public void testKScannerWithGDRL() throws Exception {
+        // BZ-1310261
+        String rule1 =
+                "import java.util.List;\n" +
+                "rule R when\n" +
+                "  $s : String()\n" +
+                "then\n" +
+                "  list.add(\"Hello \" + $s);\n" +
+                "end";
+
+        String rule2 =
+                "import java.util.List;\n" +
+                "rule R when\n" +
+                "  $s : String()\n" +
+                "then\n" +
+                "  list.add(\"Hi \" + $s);\n" +
+                "end";
+
+        KieServices ks = KieServices.Factory.get();
+        ReleaseId releaseId = ks.newReleaseId("org.kie", "scanner-test", "1.0-SNAPSHOT");
+
+        InternalKieModule kJar1 = createKieJarWithGDRL(ks, releaseId, rule1);
+        KieContainer kieContainer = ks.newKieContainer(releaseId);
+
+        MavenRepository repository = getMavenRepository();
+        repository.installArtifact(releaseId, kJar1, createKPom(fileManager, releaseId));
+
+        // create a ksesion and check it works as expected
+        KieSession ksession = kieContainer.newKieSession("KSession1");
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+        ksession.insert( "Mario" );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "Hello Mario", list.get(0) );
+        list.clear();
+
+        ksession.dispose();
+
+        // create a new kjar
+        InternalKieModule kJar2 = createKieJarWithGDRL(ks, releaseId, rule2);
+
+        // deploy it on maven
+        repository.installArtifact(releaseId, kJar2, createKPom(fileManager, releaseId));
+
+        // since I am not calling start() on the scanner it means it won't have automatic scheduled scanning
+        KieScanner scanner = ks.newKieScanner(kieContainer);
+
+        // scan the maven repo to get the new kjar version and deploy it on the kcontainer
+        scanner.scanNow();
+
+        // create a ksesion and check it works as expected
+        // create a ksesion and check it works as expected
+        ksession = kieContainer.newKieSession("KSession1");
+        list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+        ksession.insert( "Mario" );
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "Hi Mario", list.get(0) );
+        list.clear();
+
+        ksession.dispose();
+
+        ks.getRepository().removeKieModule(releaseId);
+    }
+
+    private InternalKieModule createKieJarWithGDRL(KieServices ks, ReleaseId releaseId, String rule) throws IOException {
+        KieFileSystem kfs = createKieFileSystemWithKProject(ks, false);
+        kfs.writePomXML(getPom(releaseId));
+
+        kfs.write("src/main/resources/rule.drl", rule);
+        kfs.write("src/main/resources/global.gdrl", "global java.util.List list;");
+
+        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        return (InternalKieModule) kieBuilder.getKieModule();
+    }
+
 }

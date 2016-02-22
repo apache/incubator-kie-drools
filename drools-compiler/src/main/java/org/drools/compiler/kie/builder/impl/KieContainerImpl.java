@@ -165,7 +165,7 @@ public class KieContainerImpl
         final KieJarChangeSet cs = csb.build( currentKM, newKM );
 
         final List<String> modifiedClasses = getModifiedClasses(cs);
-        final List<String> dslFiles = getUnchangedDslFiles(newKM, cs);
+        final List<String> unchangedResources = getUnchangedResources( newKM, cs );
 
         ((KieModuleKieProject) kProject).updateToModule( newKM );
 
@@ -184,7 +184,7 @@ public class KieContainerImpl
                 boolean locked = kBase.tryLock();
                 if (locked) {
                     try {
-                        updateKBase( kBase, currentKM, newReleaseId, newKM, cs, modifiedClasses, dslFiles, results, kieBaseModel );
+                        updateKBase( kBase, currentKM, newReleaseId, newKM, cs, modifiedClasses, unchangedResources, results, kieBaseModel );
                     } finally {
                         kBase.unlock();
                     }
@@ -192,7 +192,7 @@ public class KieContainerImpl
                     kBase.enqueueModification( new Runnable() {
                         @Override
                         public void run() {
-                            updateKBase( kBase, currentKM, newReleaseId, newKM, cs, modifiedClasses, dslFiles, results, kieBaseModel );
+                            updateKBase( kBase, currentKM, newReleaseId, newKM, cs, modifiedClasses, unchangedResources, results, kieBaseModel );
                         }
                     } );
                 }
@@ -222,7 +222,9 @@ public class KieContainerImpl
         return results;
     }
 
-    private void updateKBase( InternalKnowledgeBase kBase, InternalKieModule currentKM, ReleaseId newReleaseId, InternalKieModule newKM, KieJarChangeSet cs, List<String> modifiedClasses, List<String> dslFiles, ResultsImpl results, KieBaseModel kieBaseModel ) {
+    private void updateKBase( InternalKnowledgeBase kBase, InternalKieModule currentKM, ReleaseId newReleaseId,
+                              InternalKieModule newKM, KieJarChangeSet cs, List<String> modifiedClasses, List<String> unchangedResources,
+                              ResultsImpl results, KieBaseModel kieBaseModel ) {
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( kBase );
         KnowledgeBuilderImpl pkgbuilder = (KnowledgeBuilderImpl)kbuilder;
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
@@ -241,7 +243,7 @@ public class KieContainerImpl
 
         if ( shouldRebuild ) {
             // readd unchanged dsl files to the kbuilder
-            for (String dslFile : dslFiles) {
+            for (String dslFile : unchangedResources) {
                 if (isFileInKBase(newKM, kieBaseModel, dslFile)) {
                     newKM.addResourceToCompiler(ckbuilder, kieBaseModel, dslFile);
                 }
@@ -254,14 +256,25 @@ public class KieContainerImpl
         }
     }
 
-    private List<String> getUnchangedDslFiles(InternalKieModule newKM, KieJarChangeSet cs) {
+    private List<String> getUnchangedResources( InternalKieModule newKM, KieJarChangeSet cs ) {
         List<String> dslFiles = new ArrayList<String>();
         for (String file : newKM.getFileNames()) {
-            if (ResourceType.DSL.matchesExtension(file) && !cs.contains(file)) {
+            if ( includeIfUnchanged( file ) && !cs.contains( file ) ) {
                 dslFiles.add(file);
             }
         }
         return dslFiles;
+    }
+
+    private static final ResourceType[] TYPES_TO_BE_INCLUDED = new ResourceType[] { ResourceType.DSL, ResourceType.GDRL };
+
+    private boolean includeIfUnchanged( String file ) {
+        for (ResourceType type : TYPES_TO_BE_INCLUDED ) {
+            if (type.matchesExtension( file )) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean applyResourceChanges(InternalKieModule currentKM, InternalKieModule newKM, KieJarChangeSet cs, List<String> modifiedClasses, KieBase kBase, KieBaseModel kieBaseModel, KnowledgeBuilderImpl pkgbuilder, CompositeKnowledgeBuilder ckbuilder) {
