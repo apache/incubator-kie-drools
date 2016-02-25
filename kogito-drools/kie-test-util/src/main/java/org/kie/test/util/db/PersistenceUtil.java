@@ -16,6 +16,7 @@
 package org.kie.test.util.db;
 
 import bitronix.tm.BitronixTransactionManager;
+import bitronix.tm.Configuration;
 import bitronix.tm.TransactionManagerServices;
 import bitronix.tm.resource.jdbc.PoolingDataSource;
 import org.h2.tools.DeleteDbFiles;
@@ -26,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
@@ -74,12 +76,9 @@ public class PersistenceUtil {
      *
      * @param persistenceUnitName
      *            The name of the persistence unit used by the test.
-     * @return HashMap<String Object> with persistence objects, such as the
-     *         EntityManagerFactory and DataSource
+     * @return Map with persistence objects, such as the EntityManagerFactory and DataSource
      */
     public static Map<String, Object> setupWithPoolingDataSource(final String persistenceUnitName, String dataSourceName, final boolean testMarshalling) {
-        Map<String, Object> context = new HashMap<String, Object>();
-
         // set the right jdbc url
         Properties dsProps = getDatasourceProperties();
         String jdbcUrl = dsProps.getProperty("url");
@@ -92,9 +91,9 @@ public class PersistenceUtil {
             ds1.getDriverProperties().setProperty("url", jdbcUrl);
         }
         ds1.init();
-        context.put(DATASOURCE, ds1);
 
-        // Setup persistence
+        Map<String, Object> context = new HashMap<String, Object>();
+        context.put(DATASOURCE, ds1);
         EntityManagerFactory emf = Persistence.createEntityManagerFactory(persistenceUnitName);
         context.put(ENTITY_MANAGER_FACTORY, emf);
         context.put(TRANSACTION_MANAGER, TransactionManagerServices.getTransactionManager());
