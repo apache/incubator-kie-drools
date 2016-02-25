@@ -22,6 +22,8 @@ import org.kie.internal.KnowledgeBase;
 import org.kie.internal.runtime.KnowledgeRuntime;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ReteDumper {
 
@@ -45,17 +47,20 @@ public class ReteDumper {
 
     public static void dumpRete(Rete rete) {
         for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
-            dumpNode( entryPointNode, "" );
+            dumpNode( entryPointNode, "", new HashSet<BaseNode>() );
         }
     }
 
-    private static void dumpNode(BaseNode node, String ident) {
+    private static void dumpNode(BaseNode node, String ident, Set<BaseNode> visitedNodes ) {
         System.out.println(ident + node);
+        if (!visitedNodes.add( node )) {
+            return;
+        }
         Sink[] sinks = getSinks( node );
         if (sinks != null) {
             for (Sink sink : sinks) {
                 if (sink instanceof BaseNode) {
-                    dumpNode((BaseNode)sink, ident + "    ");
+                    dumpNode((BaseNode)sink, ident + "    ", visitedNodes);
                 }
             }
         }

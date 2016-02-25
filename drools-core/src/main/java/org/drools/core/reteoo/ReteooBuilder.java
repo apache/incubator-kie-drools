@@ -34,6 +34,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -47,8 +48,8 @@ import java.util.Set;
  *
  */
 public class ReteooBuilder
-    implements
-    Externalizable {
+        implements
+        Externalizable {
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -185,84 +186,106 @@ public class ReteooBuilder
         BaseNode node = (BaseNode) tn;
         removeNodeAssociation(node, context.getRule());
 
-        Set<BaseNode> removedSources = new HashSet<BaseNode>();
-        LinkedList<BaseNode> betaStack = new LinkedList<BaseNode>();
-        LinkedList<BaseNode> alphaStack = new LinkedList<BaseNode>();
-        LinkedList<BaseNode> stillInUse = new LinkedList<BaseNode>();
-
-        // alpha and beta stacks must be separate
-        // beta stacks processed first.
-        boolean processRian = true;
-        while ( node != null ) {
-            removeNode(node, removedSources, alphaStack, betaStack, stillInUse, processRian, workingMemories, context);
-            if ( !betaStack.isEmpty() ) {
-                processRian = node.getType() == NodeTypeEnums.RightInputAdaterNode;
-                node = betaStack.removeLast();
-            } else if ( !alphaStack.isEmpty() ) {
-                node = alphaStack.removeLast();
-            } else {
-                node = null;
-            }
-        }
-
-        resetMasks(stillInUse);
+        resetMasks(removeNodes((AbstractTerminalNode)tn, workingMemories, context));
     }
 
-    private void removeNode(BaseNode node, Set<BaseNode> removedSources, LinkedList<BaseNode> alphaStack, LinkedList<BaseNode> betaStack, LinkedList<BaseNode> stillInUse, boolean processRian, InternalWorkingMemory[] workingMemories, RuleRemovalContext context )  {
-        if ( !betaStack.isEmpty() && node == betaStack.getLast() ) {
-            return;
+    private Collection<BaseNode> removeNodes(AbstractTerminalNode terminalNode, InternalWorkingMemory[] wms, RuleRemovalContext context) {
+        Map<Integer, BaseNode> stillInUse = new HashMap<Integer, BaseNode>();
+        Collection<ObjectSource> alphas = new HashSet<ObjectSource>();
+
+        removePath(wms, context, stillInUse, alphas, terminalNode);
+
+        Set<Integer> removedNodes = new HashSet<Integer>();
+        for (ObjectSource alpha : alphas) {
+            removeObjectSource( wms, stillInUse, removedNodes, alpha, context );
         }
 
-        if ( node.getType() == NodeTypeEnums.EntryPointNode ) {
-            return;
-        }
+        return stillInUse.values();
+    }
 
-        if ( node.isInUse() ) {
-            stillInUse.add(node);
-        }
+    /**
+     * Path's must be removed starting from the outer most path, iterating towards the inner most path.
+     * Each time it reaches a subnetwork beta node, the current path evaluation ends, and instead the subnetwork
+     * path continues.
+     */
+    private void removePath( InternalWorkingMemory[] wms, RuleRemovalContext context, Map<Integer, BaseNode> stillInUse, Collection<ObjectSource> alphas, PathEndNode endNode ) {
+        LeftTupleNode[] nodes = endNode.getPathNodes();
+        for (int i = endNode.getPositionInPath(); i >= 0; i--) {
+            BaseNode node = (BaseNode) nodes[i];
 
-        if ( node.getType() != NodeTypeEnums.ObjectTypeNode &&
-             node.getType() != NodeTypeEnums.AlphaNode &&
-             !node.isInUse() && kBase.getConfiguration().isPhreakEnabled() ) {
-            // phreak must clear node memories, although this should ideally be pushed into AddRemoveRule
-            for (InternalWorkingMemory workingMemory : workingMemories) {
-                workingMemory.clearNodeMemory( (MemoryFactory) node);
-            }
-        }
-
-        if ( NodeTypeEnums.isBetaNode( node ) ) {
-            BaseNode parent =  ((LeftTupleSink) node).getLeftTupleSource();
-            node.remove(context, this, workingMemories);
-
-            if ( !((BetaNode)node).isRightInputIsRiaNode() ) {
-                // all right inputs need processing too
-                alphaStack.addLast( ((BetaNode) node).getRightInput() );
+            boolean removed = false;
+            if ( NodeTypeEnums.isLeftTupleNode( node ) ) {
+                removed = removeLeftTupleNode(wms, context, stillInUse, node);
             }
 
-            if ( processRian && ((BetaNode)node).isRightInputIsRiaNode() ) {
-                betaStack.addLast( ((BetaNode) node).getLeftTupleSource() );
-                betaStack.addLast( ((BetaNode) node).getRightInput() );
-            } else {
-                removeNode( parent, removedSources, alphaStack, betaStack, stillInUse, true, workingMemories, context );
-            }
-        } else if ( NodeTypeEnums.isLeftTupleSink(node) ) {
-            BaseNode parent =  ((LeftTupleSink) node).getLeftTupleSource();
-            node.remove(context, this, workingMemories);
-            removeNode( parent, removedSources, alphaStack, betaStack, stillInUse, true, workingMemories, context );
-        } else if ( NodeTypeEnums.LeftInputAdapterNode == node.getType() ) {
-            BaseNode parent =  ((LeftInputAdapterNode) node).getParentObjectSource();
-            node.remove(context, this, workingMemories);
-            removeNode( parent , removedSources, alphaStack, betaStack, stillInUse, true, workingMemories, context );
-        } else if ( NodeTypeEnums.isObjectSource( node ) ) {
-            if ( !removedSources.contains(node) ) {
-                BaseNode parent = ((ObjectSource) node).getParentObjectSource();
-                if (node.remove(context, this, workingMemories)) {
-                    removedSources.add( node );
+            if ( removed || !kBase.getConfiguration().isPhreakEnabled() ) {
+                // reteoo requires to call remove on the OTN for tuples cleanup
+                if (NodeTypeEnums.isBetaNode(node) && !((BetaNode) node).isRightInputIsRiaNode()) {
+                    alphas.add(((BetaNode) node).getRightInput());
+                } else if (node.getType() == NodeTypeEnums.LeftInputAdapterNode) {
+                    alphas.add(((LeftInputAdapterNode) node).getObjectSource());
                 }
-                removeNode(parent, removedSources, alphaStack, betaStack, stillInUse, true, workingMemories, context);
+            }
+
+            if (NodeTypeEnums.isBetaNode(node) && ((BetaNode) node).isRightInputIsRiaNode()) {
+                endNode = (PathEndNode) ((BetaNode) node).getRightInput();
+                removePath(wms, context, stillInUse, alphas, endNode);
+                return;
+            }
+        }
+    }
+
+    private boolean removeLeftTupleNode(InternalWorkingMemory[] wms, RuleRemovalContext context, Map<Integer, BaseNode> stillInUse, BaseNode node) {
+        boolean removed;
+        removed = node.remove(context, this, wms);
+
+        if (removed) {
+            stillInUse.remove( node.getId() );
+            if (kBase.getConfiguration().isPhreakEnabled()) {
+                // phreak must clear node memories, although this should ideally be pushed into AddRemoveRule
+                for (InternalWorkingMemory workingMemory : wms) {
+                    workingMemory.clearNodeMemory((MemoryFactory) node);
+                }
             }
         } else {
-            throw new IllegalStateException("Defensive exception, should not fall through");
+            stillInUse.put( node.getId(), node );
+        }
+
+        return removed;
+    }
+
+    private void removeObjectSource(InternalWorkingMemory[] wms, Map<Integer, BaseNode> stillInUse, Set<Integer> removedNodes, ObjectSource node, RuleRemovalContext context ) {
+        if (removedNodes.contains( node.getId() )) {
+            return;
+        }
+        ObjectSource parent = node.getParentObjectSource();
+
+        boolean removed = node.remove( context, this, wms );
+
+        if ( !removed ) {
+            stillInUse.put( node.getId(), node );
+            if (!kBase.getConfiguration().isPhreakEnabled()) {
+                // reteoo requires to call remove on the OTN for tuples cleanup
+                if (parent != null && parent.getType() != NodeTypeEnums.EntryPointNode) {
+                    removeObjectSource(wms, stillInUse, removedNodes, parent, context);
+                }
+            }
+        } else {
+            stillInUse.remove(node.getId());
+            removedNodes.add(node.getId());
+
+            if ( node.getType() != NodeTypeEnums.ObjectTypeNode &&
+                 node.getType() != NodeTypeEnums.AlphaNode &&
+                 kBase.getConfiguration().isPhreakEnabled() ) {
+                // phreak must clear node memories, although this should ideally be pushed into AddRemoveRule
+                for (InternalWorkingMemory workingMemory : wms) {
+                    workingMemory.clearNodeMemory( (MemoryFactory) node);
+                }
+            }
+
+            if (parent != null && parent.getType() != NodeTypeEnums.EntryPointNode) {
+                removeObjectSource(wms, stillInUse, removedNodes, parent, context);
+            }
         }
     }
 
@@ -282,12 +305,21 @@ public class ReteooBuilder
         }
     }
 
-    public void resetMasks(List<BaseNode> nodes) {
+    private void resetMasks(Collection<BaseNode> nodes) {
         NodeSet leafSet = new NodeSet();
 
         for ( BaseNode node : nodes ) {
             if ( node.getType() == NodeTypeEnums.AlphaNode ) {
-                updateLeafSet(node, leafSet );
+                ObjectSource source = (AlphaNode) node;
+                while ( true ) {
+                    source.resetInferredMask();
+                    BaseNode parent = source.getParentObjectSource();
+                    if (parent.getType() != NodeTypeEnums.AlphaNode) {
+                        break;
+                    }
+                    source = (ObjectSource)parent;
+                }
+                updateLeafSet(source, leafSet );
             } else if( NodeTypeEnums.isBetaNode( node ) ) {
                 BetaNode betaNode = ( BetaNode ) node;
                 if ( betaNode.isInUse() ) {
@@ -312,7 +344,6 @@ public class ReteooBuilder
 
     private void updateLeafSet(BaseNode baseNode, NodeSet leafSet) {
         if ( baseNode.getType() == NodeTypeEnums.AlphaNode ) {
-            ((AlphaNode) baseNode).resetInferredMask();
             for ( ObjectSink sink : ((AlphaNode) baseNode).getObjectSinkPropagator().getSinks() ) {
                 if ( ((BaseNode)sink).isInUse() ) {
                     updateLeafSet( ( BaseNode ) sink, leafSet );
@@ -340,8 +371,8 @@ public class ReteooBuilder
     }
 
     public static class IdGenerator
-        implements
-        Externalizable {
+            implements
+            Externalizable {
 
         private static final long serialVersionUID = 510l;
 
@@ -358,7 +389,7 @@ public class ReteooBuilder
 
         @SuppressWarnings("unchecked")
         public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
+                                                        ClassNotFoundException {
             recycledIds = (Queue<Integer>) in.readObject();
             nextId = in.readInt();
         }
@@ -409,7 +440,7 @@ public class ReteooBuilder
     }
 
     public void readExternal(ObjectInput in) throws IOException,
-                                            ClassNotFoundException {
+                                                    ClassNotFoundException {
         boolean isDrools = in instanceof DroolsObjectInputStream;
         DroolsObjectInputStream droolsStream;
         ByteArrayInputStream bytes;

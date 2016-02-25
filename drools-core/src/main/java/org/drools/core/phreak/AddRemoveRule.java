@@ -43,6 +43,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+import static org.drools.core.phreak.SegmentUtilities.isRootNode;
+
 public class AddRemoveRule {
 
     private static final Logger log = LoggerFactory.getLogger(AddRemoveRule.class);
@@ -505,31 +507,36 @@ public class AddRemoveRule {
         int             smemIndex = getSegmentPos(splitStartNode, null); // index before the segments are merged
         SegmentMemory[] smems     = pmem.getSegmentMemories();
 
-        SegmentMemory   sm;
-        LeftTupleSink   sink;
-        Memory          mem;
+        SegmentMemory   sm        = null;
+        LeftTupleSink   sink      = null;
+        Memory          mem       = null;
         long            bit       = 1;
         if (splitStartNode.getAssociatedRuleSize() == 1 && (smems[0] == null || smems[0].getTipNode().getType() != NodeTypeEnums.LeftInputAdapterNode)) {
             // there is no sharing
             sm = smems[0];
-            if (sm == null || sm.getStagedLeftTuples().isEmpty()) {
-                return; // segment has not yet been initialized
+            if (sm != null && !sm.getStagedLeftTuples().isEmpty()) {
+                sink = sm.getRootNode().getSinkPropagator().getFirstLeftTupleSink();
+                mem = sm.getNodeMemories().get(1);
+                bit = 2; // adjust bit to point to next node
             }
-            sink = sm.getRootNode().getSinkPropagator().getFirstLeftTupleSink();
-            mem = sm.getNodeMemories().get(1);
-            bit = 2; // adjust bit to point to next node
         } else {
-            sm = smems[++smemIndex]; // segment after the split being removed.
-            if (sm == null || sm.getStagedLeftTuples().isEmpty()) {
-                return; // segment has not yet been initialized
+            smemIndex++;
+            while (smemIndex < smems.length) {
+                sm = smems[smemIndex];
+                if (sm != null && !sm.getStagedLeftTuples().isEmpty()) {
+                    sink = (LeftTupleSink) sm.getRootNode();
+                    mem = sm.getNodeMemories().get(0);
+                    break;
+                }
+                smemIndex++;
             }
-            sink = (LeftTupleSink) sm.getRootNode();
-            mem = sm.getNodeMemories().get(0);
         }
 
-        new RuleNetworkEvaluator().outerEval((LeftInputAdapterNode) smems[0].getRootNode(),
-                                             pmem, sink, bit, mem, smems, smemIndex,
-                                             sm.getStagedLeftTuples().takeAll(), wm, new LinkedList<StackEntry>(), true, pmem.getRuleAgendaItem().getRuleExecutor());
+        if ( sink != null ) {
+            new RuleNetworkEvaluator().outerEval( (LeftInputAdapterNode) smems[0].getRootNode(),
+                                                  pmem, sink, bit, mem, smems, smemIndex,
+                                                  sm.getStagedLeftTuples().takeAll(), wm, new LinkedList<StackEntry>(), true, pmem.getRuleAgendaItem().getRuleExecutor() );
+        }
     }
 
     public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode) {
@@ -1268,7 +1275,7 @@ public class AddRemoveRule {
         for (LeftTupleNode node : pathEndNodes.subjectEndNodes) {
             if (node.getType() == NodeTypeEnums.RightInputAdaterNode) {
                 RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemories().peekNodeMemory(node.getId());
-                if (riaMem == null && tnMems.otherPmems != null ) {
+                if (riaMem == null && !tnMems.otherPmems.isEmpty()) {
                     riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory<Memory>) node);
                 }
                 if (riaMem != null) {
@@ -1343,7 +1350,7 @@ public class AddRemoveRule {
             }
             if (hasProtos) {
                 if (isBelowNewSplit) {
-                    if (SegmentUtilities.isRootNode(sink, null)) {
+                    if ( isRootNode( sink, null )) {
                         kBase.invalidateSegmentPrototype( sink );
                     }
                 } else {
@@ -1379,7 +1386,7 @@ public class AddRemoveRule {
     }
 
     private static void invalidateRootNode( InternalKnowledgeBase kBase, LeftTupleNode lt ) {
-        while (!SegmentUtilities.isRootNode( lt, null )) {
+        while (!isRootNode( lt, null )) {
             lt = lt.getLeftTupleSource();
         }
         kBase.invalidateSegmentPrototype( lt );

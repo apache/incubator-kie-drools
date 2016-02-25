@@ -15,9 +15,11 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import org.drools.core.reteoo.ReteDumper;
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -136,6 +138,9 @@ public abstract class AbstractAddRemoveRulesTest {
                     break;
                 case INSERT_FACTS:
                     insertFactsIntoSession(session, (Object[]) testOperationParameter);
+                    break;
+                case DUMP_RETE:
+                    ReteDumper.dumpRete( (KieSession)session );
                     break;
                 default:
                     throw new IllegalArgumentException("Unsupported test operation: " + testOperationType + "!");

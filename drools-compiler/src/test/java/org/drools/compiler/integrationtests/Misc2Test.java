@@ -59,6 +59,7 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.ReteComparator;
+import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.spi.KnowledgeHelper;
@@ -8307,6 +8308,46 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 1, list.size() );
         assertEquals( "Bob", list.get( 0 ) );
+    }
+
+    @Test
+    public void testXXX() {
+        String drl =
+                "global java.util.List list\n" +
+/*
+                "rule R1 \n" +
+                "when \n" +
+                "  exists(Integer() and Integer()) \n" +
+                "  Integer() \n" +
+                "  Integer() \n" +
+                "then \n" +
+                " list.add('R1'); \n" +
+                "end\n" +
+*/
+                "rule R2 \n" +
+                "when \n" +
+                "  exists(Integer() and Integer()) \n" +
+                "  Integer() \n" +
+                "  exists(Integer() and exists(Integer() and Integer())) \n" +
+                "then \n" +
+                " list.add('R2'); \n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        ReteDumper.dumpRete( ksession );
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( 1 );
+
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "R1" ) );
+        assertTrue( list.contains( "R2" ) );
     }
 
 }

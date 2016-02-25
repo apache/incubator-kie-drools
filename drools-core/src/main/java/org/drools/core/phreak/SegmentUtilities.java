@@ -387,9 +387,10 @@ public class SegmentUtilities {
             if (NodeTypeEnums.isLeftTupleSource(sink)) {
                 nodeTypesInSegment = updateRiaAndTerminalMemory((LeftTupleSource) sink, originalLt, smem, wm, fromPrototype, nodeTypesInSegment);
             } else if (sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
-                // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork.
+                // Even though we don't add the pmem and smem together, all pmem's for all pathend nodes must be initialized
+                RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) sink);
+                // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork
                 if (inSubNetwork((RightInputAdapterNode) sink, originalLt)) {
-                    RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) sink);
                     PathMemory pmem = riaMem.getRiaPathMemory();
                     smem.addPathMemory( pmem );
                     if (smem.getPos() < pmem.getSegmentMemories().length) {
