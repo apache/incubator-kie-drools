@@ -34,6 +34,8 @@ import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
 import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
+import org.kie.api.io.ResourceType;
+import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.QueryListenerOption;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
@@ -45,15 +47,10 @@ import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
+import org.kie.internal.utils.KieHelper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class QueryTest extends CommonTestMethodBase {
 
@@ -873,6 +870,54 @@ public class QueryTest extends CommonTestMethodBase {
                       results.iterator().next().get( "$do" ) );
 
         ksession.dispose();
+    }
+
+    @Test
+    public void testX() {
+        String drl =
+                "global java.util.List list; " +
+                        "query foo( Integer $i ) " +
+                        "   $i := Integer( this < 10 ) " +
+                        "end\n" +
+                        "\n" +
+
+                        "rule r1 when " +
+                        "   foo( $i ; ) " +
+                        "   Integer( this == 10 ) " +
+                        "then " +
+                        "   System.out.println(\"10 \" + $i);" +
+                        //"   list.add( $i );\n" +
+                        "end\n" +
+                        "\n" +
+
+                        "rule r2 when " +
+                        "   foo( $i; ) " +
+                        "   Integer( this == 20 ) " +
+                        "then " +
+                        "   System.out.println(\"20 \" + $i);" +
+                        "end\n" +
+
+                        "rule r3 when " +
+                        "   $i : Integer( this == 1 ) " +
+                        "then " +
+                        "   System.out.println($i);" +
+                        "   update( kcontext.getKieRuntime().getFactHandle( $i ), $i + 1 );" +
+                        "end\n" +
+                        "\n";
+
+
+
+        KieHelper helper = new KieHelper();
+        helper.addContent( drl, ResourceType.DRL );
+        KieSession kieSession = helper.build().newKieSession();
+
+        List<Integer> list = new ArrayList<Integer>();
+        kieSession.setGlobal( "list", list );
+
+        kieSession.insert( 1 );
+        kieSession.insert( 20 );
+
+        kieSession.fireAllRules();
     }
 
 }
