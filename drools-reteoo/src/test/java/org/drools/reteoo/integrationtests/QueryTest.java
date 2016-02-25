@@ -874,5 +874,4 @@ public class QueryTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
-
 }

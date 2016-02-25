@@ -387,9 +387,10 @@ public class SegmentUtilities {
             if (NodeTypeEnums.isLeftTupleSource(sink)) {
                 nodeTypesInSegment = updateRiaAndTerminalMemory((LeftTupleSource) sink, originalLt, smem, wm, fromPrototype, nodeTypesInSegment);
             } else if (sink.getType() == NodeTypeEnums.RightInputAdaterNode) {
-                // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork.
+                // Even though we don't add the pmem and smem together, all pmem's for all pathend nodes must be initialized
+                RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) sink);
+                // Only add the RIANode, if the LeftTupleSource is part of the RIANode subnetwork
                 if (inSubNetwork((RightInputAdapterNode) sink, originalLt)) {
-                    RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemory((MemoryFactory) sink);
                     PathMemory pmem = riaMem.getRiaPathMemory();
                     smem.addPathMemory( pmem );
                     if (smem.getPos() < pmem.getSegmentMemories().length) {
@@ -441,13 +442,14 @@ public class SegmentUtilities {
         return updateNodeTypesMask(lt, nodeTypesInSegment);
     }
 
-    private static void checkEagerSegmentCreation(LeftTupleSource lt, InternalWorkingMemory wm, int nodeTypesInSegment) {
+    public static SegmentMemory checkEagerSegmentCreation(LeftTupleSource lt, InternalWorkingMemory wm, int nodeTypesInSegment) {
         // A Not node has to be eagerly initialized unless in its segment there is at least a join node
         if ( isSet(nodeTypesInSegment, NOT_NODE_BIT) &&
              !isSet(nodeTypesInSegment, JOIN_NODE_BIT) &&
              !isSet(nodeTypesInSegment, REACTIVE_EXISTS_NODE_BIT) ) {
-            createSegmentMemory(lt, wm);
+            return createSegmentMemory(lt, wm);
         }
+        return null;
     }
 
     /**
@@ -568,21 +570,23 @@ public class SegmentUtilities {
     private static final int REACTIVE_EXISTS_NODE_BIT   = 1 << 2;
     private static final int PASSIVE_EXISTS_NODE_BIT    = 1 << 3;
 
-    private static int updateNodeTypesMask(NetworkNode node, int mask) {
-        switch (node.getType()) {
-            case NodeTypeEnums.JoinNode:
-                mask |= JOIN_NODE_BIT;
-                break;
-            case NodeTypeEnums.ExistsNode:
-                if (((ExistsNode) node).isRightInputPassive()) {
-                    mask |= PASSIVE_EXISTS_NODE_BIT;
-                } else {
-                    mask |= REACTIVE_EXISTS_NODE_BIT;
-                }
-                break;
-            case NodeTypeEnums.NotNode:
-                mask |= NOT_NODE_BIT;
-                break;
+    public static int updateNodeTypesMask(NetworkNode node, int mask) {
+        if (node != null) {
+            switch ( node.getType() ) {
+                case NodeTypeEnums.JoinNode:
+                    mask |= JOIN_NODE_BIT;
+                    break;
+                case NodeTypeEnums.ExistsNode:
+                    if ( ( (ExistsNode) node ).isRightInputPassive() ) {
+                        mask |= PASSIVE_EXISTS_NODE_BIT;
+                    } else {
+                        mask |= REACTIVE_EXISTS_NODE_BIT;
+                    }
+                    break;
+                case NodeTypeEnums.NotNode:
+                    mask |= NOT_NODE_BIT;
+                    break;
+            }
         }
         return mask;
     }
