@@ -226,7 +226,7 @@ public class NotNode extends BetaNode {
             getRightInput().removeObjectSink( this );
             return true;
         }
-        return true;
+        return false;
     }
 
     public boolean isLeftUpdateOptimizationAllowed() {

@@ -85,10 +85,14 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.impl.EnvironmentFactory;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.io.impl.InputStreamResource;
 import org.drools.core.marshalling.impl.ClassObjectMarshallingStrategyAcceptor;
 import org.drools.core.marshalling.impl.IdentityPlaceholderResolverStrategy;
+import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.ObjectSink;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.rule.MapBackedClassLoader;
 import org.junit.Assert;
 import org.junit.Test;
@@ -9879,7 +9883,7 @@ import static org.mockito.Mockito.*;
                          "         ) or ( " +
                          "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 2 )\n" +
                          "         ) or (" +
-                         "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 3 )\n" +
+                         "           SimpleFact( patientSpaceId  == $patientSpaceIdRoot, block == 3 )\n" +
                          "         ) or (" +
                          "           SimpleFact( patientSpaceId == $patientSpaceIdRoot, block == 4 )\n" +
                          "         ) or (" +
@@ -9938,6 +9942,14 @@ import static org.mockito.Mockito.*;
          kbase.addKnowledgePackages( kpgs );
 
          kbase.removeKnowledgePackage( kpgs.iterator().next().getName() );
+
+         EntryPointNode epn = ( (InternalKnowledgeBase) kbase ).getRete().getEntryPointNodes().values().iterator().next();
+         for (ObjectTypeNode otn : epn.getObjectTypeNodes().values()) {
+             ObjectSink[] sinks = otn.getObjectSinkPropagator().getSinks();
+             if (sinks.length > 0) {
+                 fail( otn + " has sinks " + Arrays.toString( sinks ) );
+             }
+         }
      }
 
      @Test

@@ -33,17 +33,17 @@ import org.drools.core.util.AbstractBaseLinkedListNode;
 * To change this template use File | Settings | File Templates.
 */
 public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
-    private LeftInputAdapterNode liaNode;
-    private long                 bit;
-    private NetworkNode          node;
-    private LeftTupleSinkNode    sink;
-    private PathMemory           pmem;
-    private Memory               nodeMem;
-    private SegmentMemory[]      smems;
-    private int                  smemIndex;
-    private TupleSets<LeftTuple> trgTuples;
-    private boolean              resumeFromNextNode;
-    private boolean              processRian;
+    private final LeftInputAdapterNode liaNode;
+    private final long                 bit;
+    private final NetworkNode          node;
+    private final LeftTupleSinkNode    sink;
+    private final PathMemory           pmem;
+    private final Memory               nodeMem;
+    private final SegmentMemory[]      smems;
+    private final int                  smemIndex;
+    private final TupleSets<LeftTuple> trgTuples;
+    private final boolean              resumeFromNextNode;
+    private final boolean              processRian;
 
 
     public StackEntry(LeftInputAdapterNode liaNode,

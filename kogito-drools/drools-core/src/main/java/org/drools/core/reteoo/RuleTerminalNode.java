@@ -96,7 +96,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         super( id,
                context.getPartitionId(),
                context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation(),
-               source );
+               source,
+               context );
 
         this.rule = rule;
         this.subrule = subrule;

@@ -61,6 +61,8 @@ public class RightInputAdapterNode extends ObjectSource
 
     private LeftTupleNode[] pathNodes;
 
+    private transient PathEndNode[] pathEndNodes;
+
     public RightInputAdapterNode() {
     }
 
@@ -83,6 +85,7 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleSource = source;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.startTupleSource = startTupleSource;
+        context.getPathEndNodes().add(this);
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -102,6 +105,16 @@ public class RightInputAdapterNode extends ObjectSource
         out.writeObject( previousTupleSinkNode );
         out.writeObject( nextTupleSinkNode );
         out.writeObject( startTupleSource );
+    }
+
+    @Override
+    public void setPathEndNodes(PathEndNode[] pathEndNodes) {
+        this.pathEndNodes = pathEndNodes;
+    }
+
+    @Override
+    public PathEndNode[] getPathEndNodes() {
+        return pathEndNodes;
     }
 
     public LeftTupleSource getStartTupleSource() {

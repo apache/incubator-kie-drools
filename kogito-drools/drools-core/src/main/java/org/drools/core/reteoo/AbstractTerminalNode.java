@@ -40,6 +40,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
@@ -54,11 +55,15 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     private LeftTupleNode[] pathNodes;
 
+    private transient PathEndNode[] pathEndNodes;
+
     public AbstractTerminalNode() { }
 
-    public AbstractTerminalNode(int id, RuleBasePartitionId partitionId, boolean partitionsEnabled, LeftTupleSource source) {
+
+    public AbstractTerminalNode(int id, RuleBasePartitionId partitionId, boolean partitionsEnabled, LeftTupleSource source, final BuildContext context) {
         super(id, partitionId, partitionsEnabled);
         this.tupleSource = source;
+        context.getPathEndNodes().add(this);
     }
 
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
@@ -75,6 +80,16 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         out.writeObject(declaredMask);
         out.writeObject(inferredMask);
         out.writeObject(negativeMask);
+    }
+
+    @Override
+    public void setPathEndNodes(PathEndNode[] pathEndNodes) {
+        this.pathEndNodes = pathEndNodes;
+    }
+
+    @Override
+    public PathEndNode[] getPathEndNodes() {
+        return pathEndNodes;
     }
 
     public int getPositionInPath() {
@@ -175,7 +190,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
                 if ( bn.isRightInputIsRiaNode() ) {
                     updateBitInNewSegment = false;
                     // only ria's without reactive subnetworks can be disabled and thus need checking
-                    // The getNodeMemory will7 call this method recursive for sub networks it reaches
+                    // The getNodeMemory will call this method recursive for sub networks it reaches
                     RiaNodeMemory rnmem = ( RiaNodeMemory ) wm.getNodeMemory((MemoryFactory) bn.getRightInput());
                     if ( rnmem.getRiaPathMemory().getAllLinkedMaskTest() != 0 ) {
                         allLinkedTestMask = allLinkedTestMask | 1;

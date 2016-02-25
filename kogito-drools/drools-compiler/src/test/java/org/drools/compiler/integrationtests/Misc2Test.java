@@ -8308,5 +8308,4 @@ public class Misc2Test extends CommonTestMethodBase {
         assertEquals( 1, list.size() );
         assertEquals( "Bob", list.get( 0 ) );
     }
-
 }
