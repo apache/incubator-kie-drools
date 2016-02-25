@@ -21,11 +21,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.KieComponentFactory;
-import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.ObjectSource;
-import org.drools.core.reteoo.ObjectTypeNode;
-import org.drools.core.reteoo.ReteooBuilder;
+import org.drools.core.reteoo.*;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.GroupElement;
 import org.drools.core.rule.Pattern;
@@ -36,10 +32,7 @@ import org.drools.core.spi.BetaNodeFieldConstraint;
 import org.drools.core.spi.RuleComponent;
 import org.drools.core.time.TemporalDependencyMatrix;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * A build context for Reteoo Builder
@@ -78,6 +71,8 @@ public class BuildContext {
     private boolean                          tupleMemoryEnabled;
     private boolean                          objectTypeNodeMemoryEnabled;
     private boolean                          query;
+
+    private List<PathEndNode>                pathEndNodes = new ArrayList<PathEndNode>();
     /**
      * Stores the list of nodes being added that require partitionIds
      */
@@ -319,7 +314,11 @@ public class BuildContext {
         return xpathConstraints;
     }
 
-    public void setXpathConstraints( List<XpathConstraint> xpathConstraints ) {
+    public List<PathEndNode> getPathEndNodes() {
+        return pathEndNodes;
+    }
+
+    public void setXpathConstraints(List<XpathConstraint> xpathConstraints) {
         this.xpathConstraints = xpathConstraints;
     }
 

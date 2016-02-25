@@ -23,10 +23,7 @@ import org.drools.core.common.UpdateContext;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.phreak.AddRemoveRule;
-import org.drools.core.reteoo.ReteooBuilder;
-import org.drools.core.reteoo.RuleBuilder;
-import org.drools.core.reteoo.TerminalNode;
-import org.drools.core.reteoo.WindowNode;
+import org.drools.core.reteoo.*;
 import org.drools.core.rule.Collect;
 import org.drools.core.rule.ConditionalBranch;
 import org.drools.core.rule.EntryPointId;
@@ -186,6 +183,9 @@ public class ReteooRuleBuilder implements RuleBuilder {
         BaseNode baseTerminalNode = (BaseNode) terminal;
         baseTerminalNode.networkUpdated(new UpdateContext());
         baseTerminalNode.attach(context);
+
+        setPathEndNodes(context);
+
         if ( context.getKnowledgeBase().getConfiguration().isPhreakEnabled() ) {
             AddRemoveRule.addRule( terminal, context.getWorkingMemories(), context.getKnowledgeBase() );
         }
@@ -197,6 +197,16 @@ public class ReteooRuleBuilder implements RuleBuilder {
         //assignPartitionId(context);
 
         return terminal;
+    }
+
+    private void setPathEndNodes(BuildContext context) {
+        // Store the paths in reverse order, from the outermost (the main path) to the innermost subnetwork paths
+        PathEndNode[] pathEndNodes = context.getPathEndNodes().toArray(new PathEndNode[context.getPathEndNodes().size()]);
+        for ( int i = 0; i < pathEndNodes.length; i++ ) {
+            PathEndNode node = context.getPathEndNodes().get(pathEndNodes.length-1-i);
+            node.setPathEndNodes(pathEndNodes);
+            pathEndNodes[i] = node;
+        }
     }
 
     /**
