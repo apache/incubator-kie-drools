@@ -55,6 +55,7 @@ public class SimpleDoubleScoreHibernateTypeTest extends AbstractScoreHibernateTy
         public void setScore(SimpleDoubleScore score) {
             this.score = score;
         }
+
     }
 
 }

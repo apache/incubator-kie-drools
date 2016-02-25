@@ -36,9 +36,9 @@ import static org.junit.Assert.assertNotNull;
 
 public abstract class AbstractScoreHibernateTypeTest {
 
-    private Map<String, Object> context;
+    protected Map<String, Object> context;
     protected EntityManagerFactory entityManagerFactory;
-    private TransactionManager transactionManager;
+    protected TransactionManager transactionManager;
 
     @Before
     public void setUp() throws Exception {
