@@ -37,6 +37,7 @@ import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
 /**
  * Abstract class for tests that test adding and removing rules at runtime.
@@ -47,6 +48,10 @@ public abstract class AbstractAddRemoveRulesTest {
     protected static final String RULE1_NAME = "R1";
     protected static final String RULE2_NAME = "R2";
     protected static final String RULE3_NAME = "R3";
+
+    protected static void checkRunTurtleTests() {
+        assumeTrue("true".equals(System.getProperty("runTurtleTests")));
+    }
 
     protected KnowledgeBuilder createKnowledgeBuilder(final KnowledgeBase kbase, final String drl) {
         final KnowledgeBuilder kbuilder;
@@ -86,11 +91,15 @@ public abstract class AbstractAddRemoveRulesTest {
 
     protected void runAddRemoveTests(final String rule1, final String rule2, final String rule1Name,
             final String rule2Name, final Object[] facts, final Map<String, Object> additionalGlobals) {
-        final List<List<TestOperation>> testPlan = AddRemoveTestBuilder.getTestPlan(rule1, rule2, rule1Name, rule2Name,
+        final List<List<TestOperation>> testPlans = AddRemoveTestBuilder.getTestPlan(rule1, rule2, rule1Name, rule2Name,
                 facts);
-        int i = 0;
-        for (List<TestOperation> test : testPlan) {
-            runAddRemoveTest(test, additionalGlobals);
+        runAddRemoveTests(testPlans, additionalGlobals);
+    }
+
+    protected void runAddRemoveTests(final List<List<TestOperation>> testPlans,
+            final Map<String, Object> additionalGlobals) {
+        for (List<TestOperation> testPlan : testPlans) {
+            runAddRemoveTest(testPlan, additionalGlobals);
         }
     }
 

@@ -21,7 +21,6 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.NetworkNode;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
@@ -65,8 +64,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1363,9 +1360,6 @@ public class AddRemoveRule {
 
         collectPathEndNodes(kBase, lt, endNodes, tn, processedRule, hasProtos, hasWms, hasProtos && isSplit(lt));
 
-        // PathEndNodes has to be evaluated from the outermost (sub)network to the innermost one
-        Collections.sort( endNodes.subjectEndNodes, PATH_END_NODES_COMPARATOR );
-
         return endNodes;
     }
 
@@ -1377,7 +1371,9 @@ public class AddRemoveRule {
                                             boolean hasProtos,
                                             boolean hasWms,
                                             boolean isBelowNewSplit) {
-        for (LeftTupleSink sink : lt.getSinkPropagator().getSinks()) {
+        // Traverses the sinks in reverse order in order to collect PathEndNodes so that
+        // the outermost (sub)network are evaluated before the innermost one
+        for (LeftTupleSinkNode sink = lt.getSinkPropagator().getLastLeftTupleSink(); sink != null; sink = sink.getPreviousLeftTupleSinkNode()) {
             if (sink == tn) {
                 continue;
             }
@@ -1432,43 +1428,5 @@ public class AddRemoveRule {
         List<LeftTupleNode> subjectSplits   = new ArrayList<LeftTupleNode>();
         List<PathEndNode>   otherEndNodes   = new ArrayList<PathEndNode>();
         List<LeftTupleNode> otherSplits     = new ArrayList<LeftTupleNode>();
-    }
-
-    private static final PathEndNodesComparator PATH_END_NODES_COMPARATOR = new PathEndNodesComparator();
-
-    private static class PathEndNodesComparator implements Comparator<PathEndNode> {
-
-        @Override
-        public int compare( PathEndNode node1, PathEndNode node2 ) {
-            if (NodeTypeEnums.isTerminalNode( node1 )) {
-                return -1;
-            }
-            if (NodeTypeEnums.isTerminalNode( node2 )) {
-                return 1;
-            }
-            if (isAncestorOf( node1, node2 )) {
-                return -1;
-            }
-            if (isAncestorOf( node2, node1 )) {
-                return 1;
-            }
-            return node2.getId() - node1.getId();
-        }
-
-        private boolean isAncestorOf( NetworkNode node1, NetworkNode node2 ) {
-            if (NodeTypeEnums.isBetaNode( node1 )) {
-                NetworkNode parent = ( (BetaNode) node1 ).isRightInputIsRiaNode() ?
-                                     ( (BetaNode) node1 ).getRightInput() :
-                                     ( (BetaNode) node1 ).getLeftTupleSource();
-                return isAncestorOf( parent, node2 );
-            }
-            if (node1.getType() == NodeTypeEnums.RightInputAdaterNode) {
-                if ( node1 == node2 ) {
-                    return true;
-                }
-                return isAncestorOf( ( (RightInputAdapterNode) node1 ).getLeftTupleSource(), node2 );
-            }
-            return false;
-        }
     }
 }

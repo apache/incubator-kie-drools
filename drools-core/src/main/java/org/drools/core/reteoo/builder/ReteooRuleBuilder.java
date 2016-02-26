@@ -200,16 +200,12 @@ public class ReteooRuleBuilder implements RuleBuilder {
     }
 
     private void setPathEndNodes(BuildContext context) {
+        // Store the paths in reverse order, from the outermost (the main path) to the innermost subnetwork paths
         PathEndNode[] pathEndNodes = context.getPathEndNodes().toArray(new PathEndNode[context.getPathEndNodes().size()]);
-        for ( int i = 0, j = 1; i < pathEndNodes.length; i++ ) {
-            PathEndNode node = context.getPathEndNodes().get(i);
+        for ( int i = 0; i < pathEndNodes.length; i++ ) {
+            PathEndNode node = context.getPathEndNodes().get(pathEndNodes.length-1-i);
             node.setPathEndNodes(pathEndNodes);
-            if ( !NodeTypeEnums.isTerminalNode(node)) {
-                pathEndNodes[j++] = node;
-            } else {
-                // by convention RTN is always 0
-                pathEndNodes[0] = node;
-            }
+            pathEndNodes[i] = node;
         }
     }
 
