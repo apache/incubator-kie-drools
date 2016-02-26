@@ -21,18 +21,41 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.Memory;
 import org.drools.core.common.MemoryFactory;
+import org.drools.core.common.NetworkNode;
 import org.drools.core.common.PropagationContextFactory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.common.TupleSetsImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.AbstractTerminalNode;
+import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContext;
 import org.drools.core.reteoo.AccumulateNode.AccumulateMemory;
+import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.FromNode.FromMemory;
+import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.LeftInputAdapterNode.RightTupleSinkAdapter;
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleNode;
+import org.drools.core.reteoo.LeftTupleSink;
+import org.drools.core.reteoo.LeftTupleSinkNode;
+import org.drools.core.reteoo.LeftTupleSource;
+import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.core.reteoo.ObjectSource;
+import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
+import org.drools.core.reteoo.PathEndNode;
+import org.drools.core.reteoo.PathMemory;
+import org.drools.core.reteoo.QueryElementNode;
+import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RightInputAdapterNode.RiaNodeMemory;
+import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.SegmentMemory;
+import org.drools.core.reteoo.TerminalNode;
+import org.drools.core.reteoo.TupleMemory;
+import org.drools.core.reteoo.WindowNode;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
@@ -41,7 +64,15 @@ import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.drools.core.phreak.SegmentUtilities.isRootNode;
 
@@ -390,7 +421,6 @@ public class AddRemoveRule {
             LeftTupleNode child  = tipNode;
             LeftTupleNode parent = tipNode.getLeftTupleSource();
 
-            SegmentMemory[] smems = pmem.getSegmentMemories();
             while (true) {
                 if (visited.add(child)) {
                     if ( parent != null && parent.getAssociatedRuleSize() != 1 && child.getAssociatedRuleSize() == 1 ) {
@@ -404,7 +434,7 @@ public class AddRemoveRule {
                             if ( sm.getFirst() != null ) {
                                 SegmentMemory childSmem = SegmentUtilities.createChildSegment( wm, child );
                                 sm.add( childSmem );
-                                smems[childSmem.getPos()] = childSmem;
+                                pmem.setSegmentMemory( childSmem.getPos(), childSmem );
                                 smemsToNotify.add( childSmem );
                             }
                             correctMemoryOnSplitsChanged( parent, null, wm );
@@ -1333,6 +1363,9 @@ public class AddRemoveRule {
 
         collectPathEndNodes(kBase, lt, endNodes, tn, processedRule, hasProtos, hasWms, hasProtos && isSplit(lt));
 
+        // PathEndNodes has to be evaluated from the outermost (sub)network to the innermost one
+        Collections.sort( endNodes.subjectEndNodes, PATH_END_NODES_COMPARATOR );
+
         return endNodes;
     }
 
@@ -1401,4 +1434,41 @@ public class AddRemoveRule {
         List<LeftTupleNode> otherSplits     = new ArrayList<LeftTupleNode>();
     }
 
+    private static final PathEndNodesComparator PATH_END_NODES_COMPARATOR = new PathEndNodesComparator();
+
+    private static class PathEndNodesComparator implements Comparator<PathEndNode> {
+
+        @Override
+        public int compare( PathEndNode node1, PathEndNode node2 ) {
+            if (NodeTypeEnums.isTerminalNode( node1 )) {
+                return -1;
+            }
+            if (NodeTypeEnums.isTerminalNode( node2 )) {
+                return 1;
+            }
+            if (isAncestorOf( node1, node2 )) {
+                return -1;
+            }
+            if (isAncestorOf( node2, node1 )) {
+                return 1;
+            }
+            return node2.getId() - node1.getId();
+        }
+
+        private boolean isAncestorOf( NetworkNode node1, NetworkNode node2 ) {
+            if (NodeTypeEnums.isBetaNode( node1 )) {
+                NetworkNode parent = ( (BetaNode) node1 ).isRightInputIsRiaNode() ?
+                                     ( (BetaNode) node1 ).getRightInput() :
+                                     ( (BetaNode) node1 ).getLeftTupleSource();
+                return isAncestorOf( parent, node2 );
+            }
+            if (node1.getType() == NodeTypeEnums.RightInputAdaterNode) {
+                if ( node1 == node2 ) {
+                    return true;
+                }
+                return isAncestorOf( ( (RightInputAdapterNode) node1 ).getLeftTupleSource(), node2 );
+            }
+            return false;
+        }
+    }
 }

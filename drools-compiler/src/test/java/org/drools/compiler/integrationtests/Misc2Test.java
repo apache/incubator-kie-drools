@@ -8345,8 +8345,7 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert( 1 );
 
         ksession.fireAllRules();
-        assertEquals( 2, list.size() );
-        assertTrue( list.contains( "R1" ) );
+        assertEquals( 1, list.size() );
         assertTrue( list.contains( "R2" ) );
     }
 
