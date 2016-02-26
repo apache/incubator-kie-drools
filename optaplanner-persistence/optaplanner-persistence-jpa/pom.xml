@@ -110,32 +110,6 @@
     <maven.jdbc.schema>public</maven.jdbc.schema>
   </properties>
 
-  <profiles>
-    <profile>
-      <id>database</id>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.jbpm</groupId>
-            <artifactId>downloaded-jdbc-driver-jar</artifactId>
-            <version>1.0</version>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
-
-      <dependencies>
-        <!-- Add the downloaded jdbc driver jar for the database to the classpath.
-             !: <groupId>, <artifactId> and <version> are just placeholders and DO NOT MATTER! -->
-        <dependency>
-          <groupId>org.jbpm</groupId>
-          <artifactId>downloaded-jdbc-driver-jar</artifactId>
-          <scope>system</scope>
-          <systemPath>${maven.jdbc.driver.jar}</systemPath>
-        </dependency>
-      </dependencies>
-    </profile>
-  </profiles>
-
   <build>
     <testResources>
       <testResource>
@@ -159,6 +133,15 @@
               org.optaplanner.persistence.jpa.*
             </Export-Package>
           </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <additionalClasspathElements>
+            <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
+          </additionalClasspathElements>
         </configuration>
       </plugin>
     </plugins>
