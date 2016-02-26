@@ -6,7 +6,7 @@ create table TaskVariableImpl (
     processInstanceId bigint,
     taskId bigint,
     type integer,
-    value varchar(5000),
+    value varchar(4000),
     primary key (id)
 ) ENGINE=InnoDB;
 

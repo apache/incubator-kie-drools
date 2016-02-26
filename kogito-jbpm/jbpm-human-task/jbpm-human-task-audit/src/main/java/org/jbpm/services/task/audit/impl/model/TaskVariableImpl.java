@@ -50,7 +50,7 @@ public class TaskVariableImpl implements TaskVariable, Serializable {
 
     private String name;
 
-    @Column(length=5000)
+    @Column(length=4000)
     private String value;
 
     @Enumerated(EnumType.ORDINAL)

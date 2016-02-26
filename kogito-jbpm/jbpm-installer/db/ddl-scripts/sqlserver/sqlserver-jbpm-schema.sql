@@ -365,7 +365,7 @@
         processInstanceId numeric(19,0),
         taskId numeric(19,0),
         type int,
-        value varchar(5000),
+        value varchar(4000),
         primary key (id)
     );
 

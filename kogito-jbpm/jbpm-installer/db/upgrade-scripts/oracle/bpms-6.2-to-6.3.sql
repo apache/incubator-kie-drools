@@ -6,7 +6,7 @@ create table TaskVariableImpl (
     processInstanceId number(19,0),
     taskId number(19,0),
     type number(10,0),
-    value long,
+    value varchar2(4000 char),
     primary key (id)
 );
 create sequence TASK_VAR_ID_SEQ;
