@@ -57,8 +57,8 @@ import java.util.Properties;
  * mutable again. This is to avoid inconsistent behavior inside session.
  *
  * NOTE: This API is under review and may change in the future.
- * 
- * 
+ *
+ *
  * drools.keepReference = <true|false>
  * drools.clockType = <pseudo|realtime|heartbeat|implicit>
  */
@@ -76,7 +76,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     private TimedRuleExecutionFilter       timedRuleExecutionFilter;
 
     private ClockType                      clockType;
-    
+
     private BeliefSystemType               beliefSystemType;
 
     private QueryListenerOption            queryListener;
@@ -86,7 +86,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     private CommandService                 commandService;
 
     private transient ClassLoader          classLoader;
-    
+
     private TimerJobFactoryType              timerJobFactoryType;
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -127,7 +127,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
 
     /**
      * Creates a new session configuration using the provided properties
-     * as configuration options. 
+     * as configuration options.
      */
     public SessionConfigurationImpl( Properties properties ) {
         init( properties, null );
@@ -237,7 +237,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     public BeliefSystemType getBeliefSystemType() {
         return this.beliefSystemType;
     }
-    
+
     public void setBeliefSystemType(BeliefSystemType beliefSystemType) {
         checkCanChange(); // throws an exception if a change isn't possible;
         this.beliefSystemType = beliefSystemType;
@@ -274,15 +274,15 @@ public class SessionConfigurationImpl extends SessionConfiguration {
         return this.workItemHandlers;
 
     }
-    
+
     public Map<String, WorkItemHandler> getWorkItemHandlers(Map<String, Object> params) {
-        
+
         if ( this.workItemHandlers == null ) {
             initWorkItemHandlers(params);
         }
         return this.workItemHandlers;
     }
-    
+
 
     private void initWorkItemHandlers(Map<String, Object> params) {
         this.workItemHandlers = new HashMap<String, WorkItemHandler>();
@@ -327,11 +327,18 @@ public class SessionConfigurationImpl extends SessionConfiguration {
     @SuppressWarnings("unchecked")
     private void initWorkItemManagerFactory() {
         String className = this.chainedProperties.getProperty( "drools.workItemManagerFactory",
-                                                               "org.drools.core.process.instance.impl.DefaultWorkItemManagerFactory" );
+                                                               "org.jbpm.process.instance.impl.ProcessInstanceWorkItemManagerFactory" );
+
         Class<WorkItemManagerFactory> clazz = null;
         try {
             clazz = (Class<WorkItemManagerFactory>) this.classLoader.loadClass( className );
         } catch ( ClassNotFoundException e ) {
+            String droolsClassName = "org.drools.core.process.instance.impl.DefaultWorkItemManagerFactory";
+            try {
+                clazz = (Class<WorkItemManagerFactory>) this.classLoader.loadClass( droolsClassName );
+            } catch ( ClassNotFoundException e2 ) {
+
+            }
         }
 
         if ( clazz != null ) {
@@ -414,7 +421,7 @@ public class SessionConfigurationImpl extends SessionConfiguration {
             try {
                 return clazz.newInstance();
             } catch ( Exception e ) {
-                
+
                 throw new IllegalArgumentException(
                                                     "Unable to instantiate timer service '" + className
                                                             + "'",

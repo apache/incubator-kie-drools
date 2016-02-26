@@ -534,10 +534,10 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     public LiveQuery openLiveQuery(String query,
                                    Object[] arguments,
                                    ViewChangedEventListener listener) {
-        // TODO: implement thiss        
+        // TODO: implement thiss
         return null;
     }
-    
+
     public KieSessionConfiguration getSessionConfiguration() {
         return ((KnowledgeCommandContext) commandService.getContext()).getKieSession().getSessionConfiguration();
     }
@@ -550,21 +550,21 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     @Override
     public ProcessInstance startProcess(String processId,
             CorrelationKey correlationKey, Map<String, Object> parameters) {
-        
+
         return this.commandService.execute(new StartCorrelatedProcessCommand(processId, correlationKey, parameters));
     }
 
     @Override
     public ProcessInstance createProcessInstance(String processId,
             CorrelationKey correlationKey, Map<String, Object> parameters) {
-        
+
         return this.commandService.execute(
                 new CreateCorrelatedProcessInstanceCommand(processId, correlationKey, parameters));
     }
 
     @Override
     public ProcessInstance getProcessInstance(CorrelationKey correlationKey) {
-        
+
         return this.commandService.execute(new GetProcessInstanceByCorrelationKeyCommand(correlationKey));
     }
 }

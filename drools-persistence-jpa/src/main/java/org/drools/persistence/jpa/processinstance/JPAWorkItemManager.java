@@ -28,6 +28,7 @@ import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.EnvironmentName;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
+import org.kie.api.runtime.process.WorkflowProcessInstance;
 import org.kie.internal.runtime.Closeable;
 
 import java.util.HashMap;
