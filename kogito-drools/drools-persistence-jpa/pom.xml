@@ -56,6 +56,15 @@
           </instructions>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <additionalClasspathElements>
+            <additionalClasspathElement>${maven.jdbc.driver.jar}</additionalClasspathElement>
+          </additionalClasspathElements>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -204,38 +213,12 @@
     <maven.jdbc.driver.class>org.h2.Driver</maven.jdbc.driver.class>
     <maven.jdbc.db.name/>
     <maven.jdbc.db.port/>
-    <maven.jdbc.db.server/>     
+    <maven.jdbc.db.server/>
     <maven.jdbc.driver.jar/>
     <maven.jdbc.username></maven.jdbc.username>
     <maven.jdbc.password></maven.jdbc.password>
     <maven.jdbc.url>jdbc:h2:</maven.jdbc.url>
     <maven.jdbc.schema>public</maven.jdbc.schema>
   </properties>
-
-  <profiles>
-    <profile>
-      <id>database</id>
-      <dependencyManagement>
-          <dependencies>
-            <dependency>
-              <groupId>org.jbpm</groupId>
-              <artifactId>downloaded-jdbc-driver-jar</artifactId>
-              <version>1.0</version>
-            </dependency>
-          </dependencies>
-      </dependencyManagement>
-
-      <dependencies>
-        <!--  Add the downloaded jdbc driver jar for the database to the classpath.
-              !: <groupId>, <artifactId> and <version> are just placeholders and DO NOT MATTER! -->
-        <dependency>
-           <groupId>org.jbpm</groupId>
-           <artifactId>downloaded-jdbc-driver-jar</artifactId>
-           <scope>system</scope>
-           <systemPath>${maven.jdbc.driver.jar}</systemPath>
-        </dependency>  
-      </dependencies>
-    </profile>
- </profiles>
     
 </project>
