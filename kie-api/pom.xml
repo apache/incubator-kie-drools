@@ -12,7 +12,7 @@
   <artifactId>kie-api</artifactId>
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
-  <name>KIE API</name>
+  <name>KIE :: Public API</name>
   <description>The Drools and jBPM public API which is backwards compatible between releases.</description>
 
   <build>

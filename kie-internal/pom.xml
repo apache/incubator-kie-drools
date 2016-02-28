@@ -12,7 +12,7 @@
   <artifactId>kie-internal</artifactId>
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
-  <name>KIE Internal</name>
+  <name>KIE :: Internal</name>
   <description>The Drools and jBPM internal API which is NOT backwards compatible between releases.</description>
 
   <build>
