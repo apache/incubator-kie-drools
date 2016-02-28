@@ -22,13 +22,13 @@ package org.kie.api.runtime;
 public class ClassObjectFilter
     implements
     ObjectFilter {
-    private Class clazz;
+    private Class<?> clazz;
 
     /** 
      * The Allowed Class type
      * @param clazz
      */
-    public ClassObjectFilter(Class clazz) {
+    public ClassObjectFilter(Class<?> clazz) {
         this.clazz = clazz;
     }
 

@@ -52,6 +52,12 @@
         "code": "java.class.removed",
         "old": "class org.kie.api.osgi.Activator",
         "justification": "Not used. The class is not referenced in any of the downstream (Drools, jBPM) code. The Activator itself was disabled in 2013."
+      },
+      {
+        "code": "java.method.parameterTypeChanged",
+        "old": "method parameter void org.kie.api.runtime.ClassObjectFilter::<init>(===java.lang.Class===)",
+        "new": "method parameter void org.kie.api.runtime.ClassObjectFilter::<init>(===java.lang.Class<?>===)",
+        "justification": "Using generics is generally preferable."
       }
     ]
   }
