@@ -175,6 +175,7 @@
 </marker>
 
 
+
     inkscape:perspective
        sodipodi:type=&quot;inkscape:persp3d&quot;
        inkscape:vp_x=&quot;0 : 526.18109 : 1&quot;
@@ -476,7 +477,7 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1.3516667"
-     inkscape:cx="390.75216"
+     inkscape:cx="392.23181"
      inkscape:cy="300"
      inkscape:document-units="px"
      inkscape:current-layer="layer4"
@@ -1742,7 +1743,7 @@
            height="30.000282"
            width="360"
            id="rect4284" /></flowRegion><flowPara
-         id="flowPara4286">Machine Reassignment benchmark</flowPara></flowRoot>    <flowRoot
+         id="flowPara4286">MachineReassignment benchmark</flowPara></flowRoot>    <flowRoot
        transform="translate(549.98601,608.47812)"
        xml:space="preserve"
        id="flowRoot4288"
