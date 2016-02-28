@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
+
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -172,6 +173,7 @@
      d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
      id="path5767" />
 </marker>
+
 
     inkscape:perspective
        sodipodi:type=&quot;inkscape:persp3d&quot;
@@ -473,8 +475,8 @@
      borderopacity="1.0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.3066667"
-     inkscape:cx="400"
+     inkscape:zoom="1.3516667"
+     inkscape:cx="390.75216"
      inkscape:cy="300"
      inkscape:document-units="px"
      inkscape:current-layer="layer4"
@@ -1394,13 +1396,13 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#ce5c00;fill-opacity:1;stroke:none"><flowRegion
          id="flowRegion4532"><rect
            id="rect4534"
-           width="104.99958"
-           height="70"
+           width="134.99953"
+           height="70.000122"
            x="147.66626"
            y="-117.50765"
            style="font-size:15px;text-align:start;text-anchor:start;fill:#ce5c00" /></flowRegion><flowPara
          id="flowPara4538">Safety capacity</flowPara><flowPara
-         id="flowPara4552">(load balance)</flowPara></flowRoot>    <path
+         id="flowPara4552">(load fragmenation)</flowPara></flowRoot>    <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path4540"
@@ -1566,12 +1568,12 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#ce5c00;fill-opacity:1;stroke:none"><flowRegion
          id="flowRegion3987"><rect
            id="rect3989"
-           width="330"
+           width="350"
            height="50"
            x="39.336426"
            y="-69.361481"
            style="font-size:35px;text-align:start;text-anchor:start;fill:#ce5c00" /></flowRegion><flowPara
-         id="flowPara3991">Maintenance cost</flowPara></flowRoot>    <flowRoot
+         id="flowPara3991">Cloud hosting cost</flowPara></flowRoot>    <flowRoot
        transform="translate(-32.626219,519.35754)"
        xml:space="preserve"
        id="flowRoot3985-4"
@@ -1583,7 +1585,7 @@
            x="62.626221"
            y="-129.35782"
            style="font-size:15px;text-align:start;text-anchor:start" /></flowRegion><flowPara
-         id="flowPara3991-4">CloudBalancing example</flowPara></flowRoot>    <flowRoot
+         id="flowPara3991-4">CloudBalancing benchmark</flowPara></flowRoot>    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#888a85;fill-opacity:1;stroke:none"
        id="flowRoot4010"
        xml:space="preserve"
@@ -1599,7 +1601,7 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#ce5c00;fill-opacity:1;stroke:none"
        id="flowRoot3947"
        xml:space="preserve"
-       transform="translate(-172.26104,426.72396)"><flowRegion
+       transform="translate(-152.26104,426.72396)"><flowRegion
          id="flowRegion3949"><rect
            style="font-size:35px;text-align:center;text-anchor:middle;fill:#ce5c00"
            y="-16.723961"
@@ -1609,7 +1611,7 @@
            id="rect3951" /></flowRegion><flowPara
          style="font-weight:bold;fill:#ce5c00"
          id="flowPara3953">-18%</flowPara></flowRoot>    <flowRoot
-       transform="translate(262.00654,508.47811)"
+       transform="translate(282.00654,508.47811)"
        xml:space="preserve"
        id="flowRoot3956"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
@@ -1705,18 +1707,18 @@
            width="120"
            id="rect4200" /></flowRegion><flowPara
          id="flowPara4202">-21%</flowPara></flowRoot>    <flowRoot
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#888a85;fill-opacity:1;stroke:none"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#888a85;fill-opacity:1;stroke:none;"
        id="flowRoot4204"
        xml:space="preserve"
-       transform="translate(-32.626219,514.35754)"><flowRegion
+       transform="translate(-32.626219,509.35746)"><flowRegion
          id="flowRegion4206"><rect
-           style="font-size:15px;text-align:center;text-anchor:middle;fill:#888a85"
-           y="-59.35754"
-           x="62.626221"
+           style="font-size:15px;text-align:start;text-anchor:start;fill:#888a85;"
+           y="-54.35754"
+           x="82.626221"
            height="30"
-           width="740"
+           width="720"
            id="rect4208" /></flowRegion><flowPara
-         id="flowPara4210">Benchmark compares 5 minutes of OptaPlanner to traditional algorithms with domain knowledge.</flowPara></flowRoot>    <flowRoot
+         id="flowPara4210">OptaPlanner versus traditional algorithm with domain knowledge</flowPara></flowRoot>    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#ce5c00;fill-opacity:1;stroke:none"
        id="flowRoot4272"
        xml:space="preserve"
@@ -1725,10 +1727,10 @@
            style="font-size:35px;text-align:start;text-anchor:start;fill:#ce5c00"
            y="-69.361481"
            x="39.336426"
-           height="50.000004"
-           width="330"
+           height="49.999962"
+           width="350"
            id="rect4276" /></flowRegion><flowPara
-         id="flowPara4278">Unbalanced load</flowPara></flowRoot>    <flowRoot
+         id="flowPara4278">Hardware congestion</flowPara></flowRoot>    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot4280"
        xml:space="preserve"
@@ -1740,7 +1742,7 @@
            height="30.000282"
            width="360"
            id="rect4284" /></flowRegion><flowPara
-         id="flowPara4286">Machine Reassignment example (ROADEF 2012)</flowPara></flowRoot>    <flowRoot
+         id="flowPara4286">Machine Reassignment benchmark</flowPara></flowRoot>    <flowRoot
        transform="translate(549.98601,608.47812)"
        xml:space="preserve"
        id="flowRoot4288"
@@ -1753,7 +1755,7 @@
            y="-118.47811"
            style="font-size:15px;text-align:center;text-anchor:middle;fill:#888a85" /></flowRegion><flowPara
          id="flowPara4294">Biggest dataset</flowPara></flowRoot>    <flowRoot
-       transform="translate(-172.26104,526.72396)"
+       transform="translate(-152.26104,526.72396)"
        xml:space="preserve"
        id="flowRoot4296"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:35px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#ce5c00;fill-opacity:1;stroke:none"><flowRegion
@@ -1769,7 +1771,7 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot4304"
        xml:space="preserve"
-       transform="translate(262.00654,608.47812)"><flowRegion
+       transform="translate(282.00654,608.47812)"><flowRegion
          id="flowRegion4306"><rect
            style="font-size:15px;text-align:center;text-anchor:middle"
            y="-118.47811"
@@ -1862,16 +1864,58 @@
            y="-16.723961"
            style="font-size:15px;text-align:center;text-anchor:middle;fill:#888a85" /></flowRegion><flowPara
          id="flowPara4370">-97%</flowPara></flowRoot>    <flowRoot
-       transform="translate(-32.626219,614.35762)"
+       transform="translate(-32.626219,609.35754)"
        xml:space="preserve"
        id="flowRoot4372"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#888a85;fill-opacity:1;stroke:none"><flowRegion
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#888a85;fill-opacity:1;stroke:none"><flowRegion
          id="flowRegion4374"><rect
            id="rect4376"
-           width="740"
+           width="720"
            height="30"
-           x="62.626221"
-           y="-59.35754"
-           style="font-size:15px;text-align:center;text-anchor:middle;fill:#888a85" /></flowRegion><flowPara
-         id="flowPara4378">Benchmark compares 5 minutes of OptaPlanner to initial assignments.</flowPara></flowRoot>  </g>
+           x="82.626221"
+           y="-54.35762"
+           style="font-size:15px;text-align:start;text-anchor:start;fill:#888a85" /></flowRegion><flowPara
+         id="flowPara4378">OptaPlanner versus arbitrary feasible assignments</flowPara></flowRoot>    <flowRoot
+       transform="translate(109.40161,764.63778)"
+       xml:space="preserve"
+       id="flowRoot3739"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#888a85;fill-opacity:1;stroke:none"><flowRegion
+         id="flowRegion3741"><rect
+           id="rect3743"
+           width="310.77261"
+           height="129.99985"
+           x="107.99316"
+           y="-118.47811"
+           style="font-size:15px;text-align:start;text-anchor:start;fill:#888a85" /></flowRegion><flowPara
+         id="flowPara3745"># datasets:         5</flowPara><flowPara
+         id="flowPara3747">Time:                  5mins / dataset</flowPara><flowPara
+         id="flowPara3749">Biggest dataset: 1600 computers</flowPara><flowPara
+         id="flowPara3753">                           4800 processses</flowPara><flowPara
+         id="flowPara3759">Worst dataset:    -16%</flowPara><flowPara
+         id="flowPara3761">Best dataset:      -21% </flowPara><flowPara
+         id="flowPara3757" /></flowRoot>    <flowRoot
+       transform="translate(-32.626219,512.98023)"
+       xml:space="preserve"
+       id="flowRoot3763"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#888a85;fill-opacity:1;stroke:none"><flowRegion
+         id="flowRegion3765"><rect
+           id="rect3767"
+           width="720"
+           height="30"
+           x="82.626221"
+           y="-54.35754"
+           style="font-size:10px;text-align:end;text-anchor:end;fill:#888a85" /></flowRegion><flowPara
+         id="flowPara3769">5 mins Simulated Annealing vs First Fit Decreasing</flowPara></flowRoot>    <flowRoot
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10px;line-height:125%;font-family:Arial;-inkscape-font-specification:Arial;text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#888a85;fill-opacity:1;stroke:none"
+       id="flowRoot3773"
+       xml:space="preserve"
+       transform="translate(-32.626219,612.98031)"><flowRegion
+         id="flowRegion3775"><rect
+           style="font-size:10px;text-align:end;text-anchor:end;fill:#888a85"
+           y="-54.35754"
+           x="82.626221"
+           height="30"
+           width="720"
+           id="rect3777" /></flowRegion><flowPara
+         id="flowPara3779">5 mins Tabu Search vs First Feasible Fit</flowPara></flowRoot>  </g>
 </svg>
