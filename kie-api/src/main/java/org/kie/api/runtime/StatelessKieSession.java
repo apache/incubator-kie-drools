@@ -112,12 +112,13 @@ public interface StatelessKieSession
         KieRuntimeEventManager {
 
     /**
-     * Return the Globals store
+     * @return the Globals store
      */
     Globals getGlobals();
 
     /**
      * Sets a global value on the globals store
+     *
      * @param identifier the global identifier
      * @param value the value assigned to the global identifier
      */
@@ -142,14 +143,12 @@ public interface StatelessKieSession
     void unregisterChannel(String name);
 
     /**
-     * Returns a map with all registered channels.
-     * 
-     * @return
+     * @return a map with all registered channels.
      */
     Map<String, Channel> getChannels();
 
     /**
-     * Returns the KieBase reference from which this stateless session was created.
+     * @return the KieBase reference from which this stateless session was created.
      */
     KieBase getKieBase();
 }

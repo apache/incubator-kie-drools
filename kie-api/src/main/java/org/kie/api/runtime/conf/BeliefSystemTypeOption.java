@@ -30,16 +30,16 @@ public class BeliefSystemTypeOption implements SingleValueKieSessionOption {
     public static final String PROPERTY_NAME = "drools.beliefSystem";
     
     /**
-     * Belie System Type
+     * Belief System Type
      */
-    private final String belieSystemType;
+    private final String beliefSystemType;
     
     /**
      * Private constructor to enforce the use of the factory method
-     * @param belieSystemType
+     * @param beliefSystemType
      */
-    private BeliefSystemTypeOption( String belieSystemType ) {
-        this.belieSystemType = belieSystemType;
+    private BeliefSystemTypeOption( String beliefSystemType ) {
+        this.beliefSystemType = beliefSystemType;
     }
     
     /**
@@ -63,19 +63,17 @@ public class BeliefSystemTypeOption implements SingleValueKieSessionOption {
     }
     
     /**
-     * Returns the configured belief system type
-     * 
-     * @return
+     * @return the configured belief system type
      */
     public String getBeliefSystemType() {
-        return belieSystemType;
+        return beliefSystemType;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + (( belieSystemType == null) ? 0 :  belieSystemType.hashCode());
+        result = prime * result + (( beliefSystemType == null) ? 0 :  beliefSystemType.hashCode());
         return result;
     }
 
@@ -85,14 +83,14 @@ public class BeliefSystemTypeOption implements SingleValueKieSessionOption {
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
         BeliefSystemTypeOption other = (BeliefSystemTypeOption) obj;
-        if (  belieSystemType == null ) {
-            if ( other.belieSystemType != null ) return false;
-        } else if ( ! belieSystemType.equals( other.belieSystemType ) ) return false;
+        if (  beliefSystemType == null ) {
+            if ( other.beliefSystemType != null ) return false;
+        } else if ( ! beliefSystemType.equals( other.beliefSystemType) ) return false;
         return true;
     }
     
     @Override
     public String toString() {
-        return "BelieSystemTypeOption( "+ belieSystemType +" )";
+        return "BeliefSystemTypeOption( "+ beliefSystemType +" )";
     }
 }

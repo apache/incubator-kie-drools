@@ -39,16 +39,16 @@ public interface RuntimeManagerFactory {
 	 * @param environment environment instance for the new runtime manager
 	 * @return new instance of <code>RuntimeManager</code>
 	 */
-    public RuntimeManager newSingletonRuntimeManager(RuntimeEnvironment environment);
+    RuntimeManager newSingletonRuntimeManager(RuntimeEnvironment environment);
     
     /**
      * Produces new instance of singleton <code>RuntimeManager</code> with custom identifier. 
 	 * In case the given identifier is already in use error will be thrown indicating that managers must be identifier uniquely.
 	 * @param environment environment instance for the new runtime manager
      * @param identifier custom identifier for the manager
-     * @return@return new instance of <code>RuntimeManager</code>
+     * @return new instance of <code>RuntimeManager</code>
      */
-    public RuntimeManager newSingletonRuntimeManager(RuntimeEnvironment environment, String identifier);
+    RuntimeManager newSingletonRuntimeManager(RuntimeEnvironment environment, String identifier);
     
     /**
 	 * Produces new instance of per request <code>RuntimeManager</code> with default identifier. 
@@ -57,16 +57,16 @@ public interface RuntimeManagerFactory {
 	 * @param environment environment instance for the new runtime manager
 	 * @return new instance of <code>RuntimeManager</code>
 	 */
-    public RuntimeManager newPerRequestRuntimeManager(RuntimeEnvironment environment);
+    RuntimeManager newPerRequestRuntimeManager(RuntimeEnvironment environment);
     
     /**
      * Produces new instance of per request <code>RuntimeManager</code> with custom identifier. 
 	 * In case the given identifier is already in use error will be thrown indicating that managers must be identifier uniquely.
 	 * @param environment environment instance for the new runtime manager
      * @param identifier custom identifier for the manager
-     * @return@return new instance of <code>RuntimeManager</code>
+     * @return new instance of <code>RuntimeManager</code>
      */
-    public RuntimeManager newPerRequestRuntimeManager(RuntimeEnvironment environment, String identifier);
+    RuntimeManager newPerRequestRuntimeManager(RuntimeEnvironment environment, String identifier);
     
     /**
 	 * Produces new instance of per process instance <code>RuntimeManager</code> with default identifier. 
@@ -75,16 +75,16 @@ public interface RuntimeManagerFactory {
 	 * @param environment environment instance for the new runtime manager
 	 * @return new instance of <code>RuntimeManager</code>
 	 */
-    public RuntimeManager newPerProcessInstanceRuntimeManager(RuntimeEnvironment environment);
+    RuntimeManager newPerProcessInstanceRuntimeManager(RuntimeEnvironment environment);
     
     /**
      * Produces new instance of per process instance <code>RuntimeManager</code> with custom identifier. 
 	 * In case the given identifier is already in use error will be thrown indicating that managers must be identifier uniquely.
 	 * @param environment environment instance for the new runtime manager
      * @param identifier custom identifier for the manager
-     * @return@return new instance of <code>RuntimeManager</code>
+     * @return new instance of <code>RuntimeManager</code>
      */
-    public RuntimeManager newPerProcessInstanceRuntimeManager(RuntimeEnvironment environment, String identifier);
+    RuntimeManager newPerProcessInstanceRuntimeManager(RuntimeEnvironment environment, String identifier);
     
     /**
      * A Factory for this RuntimeManagerFactory

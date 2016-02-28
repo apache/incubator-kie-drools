@@ -26,51 +26,43 @@ import java.util.Date;
 public interface VariableInstanceLog {
 
 	/**
-	 * Process instance identifier
-	 * @return
+	 * @return process instance identifier
 	 */
 	Long getProcessInstanceId();
 
 	/**
-	 * Process id of the definition
-	 * @return
+	 * @return process id of the definition
 	 */
 	String getProcessId();
 
 	/**
-	 * Additional information in case variable is defined on composite node level to be able to distinguish 
+	 * @return additional information in case variable is defined on composite node level to be able to distinguish
 	 * it between top level and embedded level variables
-	 * @return
 	 */
 	String getVariableInstanceId();
 
 	/**
-	 * Identifier of the variable aka variable name
-	 * @return
+	 * @return identifier of the variable aka variable name
 	 */
 	String getVariableId();
 
 	/**
-	 * Current value of the variable
-	 * @return
+	 * @return current value of the variable
 	 */
 	String getValue();
 
 	/**
-	 * Previous value of the variable (if any)
-	 * @return
+	 * @return previous value of the variable (if any)
 	 */
 	String getOldValue();
 
 	/**
-	 * Date when the variable was set (to current value)
-	 * @return
+	 * @return date when the variable was set (to current value)
 	 */
 	Date getDate();
 
 	/**
-	 * External (optional) identifier associated with this process instance
-	 * @return
+	 * @return external (optional) identifier associated with this process instance
 	 */
 	String getExternalId();
 }

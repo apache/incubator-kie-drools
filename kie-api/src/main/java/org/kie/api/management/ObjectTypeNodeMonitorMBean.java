@@ -22,47 +22,34 @@ package org.kie.api.management;
 public interface ObjectTypeNodeMonitorMBean {
 
     /**
-     * The ID of the node
-     * 
-     * @return
+     * @return ID of the node
      */
-    public int getId();
+    int getId();
 
     /**
-     * The entry point for the node
-     * 
-     * @return
+     * @return entry point for the node
      */
-    public String getEntryPoint();
+    String getEntryPoint();
 
     /**
-     * The Object Type of the node
-     * 
-     * @return
+     * @return Object Type of the node
      */
-    public String getObjectType();
+    String getObjectType();
 
     /**
-     * The partition the node belongs to
-     * 
-     * @return
+     * @return partition the node belongs to
      */
-    public String getPartitionId();
+    String getPartitionId();
 
     /**
-     * True if this node corresponds to an event type
-     * 
-     * @return
+     * @return true if this node corresponds to an event type
      */
-    public boolean isEvent();
+    boolean isEvent();
 
     /**
-     * The calculated expiration offset for this node
-     * in case it is an event. -1 means it does not
-     * expires.
-     * 
-     * @return
+     * @return calculated expiration offset for this node in case it is an event.
+     * -1 means it does not expire.
      */
-    public long getExpirationOffset();
+    long getExpirationOffset();
 
 }

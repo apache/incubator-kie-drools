@@ -20,31 +20,26 @@ import java.util.Date;
 
 /**
  * Represents Error information of the executor service data model.
- *
  */
 public interface ErrorInfo {
 
     /**
-     * Returns unique identifier of the error instance.
-     * @return
+     * @return unique identifier of the error instance.
      */
     Long getId();
     
     /**
-     * Returns error message for the error instance.
-     * @return
+     * @return error message for the error instance.
      */
     String getMessage();
     
     /**
-     * Returns complete stack trace of the exception that generated this error instance
-     * @return
+     * @return complete stack trace of the exception that generated this error instance
      */
     String getStacktrace();
     
     /**
-     * Returns exact time when the exception happened.
-     * @return
+     * @return exact time when the exception happened.
      */
     Date getTime();
 }

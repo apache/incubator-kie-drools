@@ -48,69 +48,69 @@ public interface ExecutorService {
 	 */
 	public static final String EXECUTOR_ID = IdProvider.get();
 
-    public List<RequestInfo> getQueuedRequests(QueryContext queryContext);
+    List<RequestInfo> getQueuedRequests(QueryContext queryContext);
 
-    public List<RequestInfo> getCompletedRequests(QueryContext queryContext);
+    List<RequestInfo> getCompletedRequests(QueryContext queryContext);
 
-    public List<RequestInfo> getInErrorRequests(QueryContext queryContext);
+    List<RequestInfo> getInErrorRequests(QueryContext queryContext);
 
-    public List<RequestInfo> getCancelledRequests(QueryContext queryContext);
+    List<RequestInfo> getCancelledRequests(QueryContext queryContext);
 
-    public List<ErrorInfo> getAllErrors(QueryContext queryContext);
+    List<ErrorInfo> getAllErrors(QueryContext queryContext);
 
-    public List<RequestInfo> getAllRequests(QueryContext queryContext);
+    List<RequestInfo> getAllRequests(QueryContext queryContext);
     
-    public List<RequestInfo> getRequestsByStatus(List<STATUS> statuses, QueryContext queryContext);
+    List<RequestInfo> getRequestsByStatus(List<STATUS> statuses, QueryContext queryContext);
     
-    public List<RequestInfo> getRequestsByBusinessKey(String businessKey, QueryContext queryContext);
+    List<RequestInfo> getRequestsByBusinessKey(String businessKey, QueryContext queryContext);
     
-    public List<RequestInfo> getRequestsByCommand(String command, QueryContext queryContext);
+    List<RequestInfo> getRequestsByCommand(String command, QueryContext queryContext);
 
-    public int clearAllRequests();
+    int clearAllRequests();
 
-    public int clearAllErrors();
+    int clearAllErrors();
 
-    public Long scheduleRequest(String commandName, CommandContext ctx);
+    Long scheduleRequest(String commandName, CommandContext ctx);
 
-    public void cancelRequest(Long requestId);
+    void cancelRequest(Long requestId);
 
-    public void init();
+    void init();
 
-    public void destroy();
+    void destroy();
     
-    public boolean isActive();
+    boolean isActive();
 
-    public int getInterval();
+    int getInterval();
 
-    public void setInterval(int waitTime);
+    void setInterval(int waitTime);
 
-    public int getRetries();
+    int getRetries();
 
-    public void setRetries(int defaultNroOfRetries);
+    void setRetries(int defaultNroOfRetries);
 
-    public int getThreadPoolSize();
+    int getThreadPoolSize();
 
-    public void setThreadPoolSize(int nroOfThreads);
+    void setThreadPoolSize(int nroOfThreads);
     
-    public TimeUnit getTimeunit();
+    TimeUnit getTimeunit();
    
-    public void setTimeunit(TimeUnit timeunit);
+    void setTimeunit(TimeUnit timeunit);
     
-    public List<RequestInfo> getPendingRequests(QueryContext queryContext);
+    List<RequestInfo> getPendingRequests(QueryContext queryContext);
 
-    public List<RequestInfo> getPendingRequestById(Long id);
+    List<RequestInfo> getPendingRequestById(Long id);
 
-    public Long scheduleRequest(String commandId, Date date, CommandContext ctx);
+    Long scheduleRequest(String commandId, Date date, CommandContext ctx);
 
-    public List<RequestInfo> getRunningRequests(QueryContext queryContext);
+    List<RequestInfo> getRunningRequests(QueryContext queryContext);
     
-    public List<RequestInfo> getFutureQueuedRequests(QueryContext queryContext);
+    List<RequestInfo> getFutureQueuedRequests(QueryContext queryContext);
 
-    public RequestInfo getRequestById(Long requestId);
+    RequestInfo getRequestById(Long requestId);
 
-    public List<ErrorInfo> getErrorsByRequestId(Long requestId);
+    List<ErrorInfo> getErrorsByRequestId(Long requestId);
     
-    public static class IdProvider {
+    class IdProvider {
         private static boolean initialized = false;   
         private static String EXECUTOR_ID;
         private static Logger logger = LoggerFactory.getLogger(Factory.class);

@@ -70,17 +70,14 @@ public class WorkItemHandlerOption implements MultiValueKieSessionOption {
     }
     
     /**
-     * Returns the name of the configured work item handler
-     * 
-     * @return
+     * @return the name of the configured work item handler
      */
     public String getName() {
         return name;
     }
 
     /**
-     * Returns the work item handler instance
-     * @return
+     * @return the work item handler instance
      */
     public WorkItemHandler getHandler() {
         return handler;

@@ -30,39 +30,42 @@ public interface Resource extends Serializable {
     /**
      * Open an InputStream to the resource, the user must close this when finished.
      * 
-     * @return
+     * @return InputStream to the resource
      * @throws IOException
      */
-    public InputStream getInputStream() throws IOException;
+    InputStream getInputStream() throws IOException;
 
     /**
      * Opens a Reader to the resource, the user must close this when finished.
-     * @return
+     *
+     * @return Reader to the resource
      * @throws IOException
      */
-    public Reader getReader() throws IOException;
+    Reader getReader() throws IOException;
     
     /**
-     * Returns the name of the resource, if one is available.
+     * @return source path of the resource, if one is available.
      */
-    public String getSourcePath();
+    String getSourcePath();
     
     /**
-     * Returns the path that should be used when writing this resource down
+     * @return the target path that should be used when writing this resource down
      * to KieFileSystem.
      */
-    public String getTargetPath();
+    String getTargetPath();
     
     /**
      * Returns the type of the resource if one could be inferred by the
      * extension of the resource or if it was explicitly set.
+     *
+     * @return typo of the resource
      */
-    public ResourceType getResourceType();
+    ResourceType getResourceType();
     
     /**
-     * Returns the configuration for the resource if one is available.
+     * @return the configuration for the resource if one is available.
      */
-    public ResourceConfiguration getConfiguration();
+    ResourceConfiguration getConfiguration();
     
     /**
      * Sets this resource name. Some services require a resource to be
@@ -74,7 +77,7 @@ public interface Resource extends Serializable {
      * 
      * @return the resource itself in order to use it as a fluent API
      */
-    public Resource setSourcePath( String path );
+    Resource setSourcePath( String path );
     
     /**
      * In case this resource should be written to a different path
@@ -85,7 +88,7 @@ public interface Resource extends Serializable {
      * 
      * @return the resource itself in order to use it as a fluent API
      */
-    public Resource setTargetPath( String path );
+    Resource setTargetPath( String path );
     
     /**
      * Sets the resource type. For some resources it is possible to infer
@@ -96,7 +99,7 @@ public interface Resource extends Serializable {
      * 
      * @return the resource itself in order to use it as a fluent API
      */
-    public Resource setResourceType( ResourceType type );
+    Resource setResourceType( ResourceType type );
     
     /**
      * Sets the resource configuration in case it is necessary.
@@ -105,5 +108,5 @@ public interface Resource extends Serializable {
      * 
      * @return the resource itself in order to use it as a fluent API
      */
-    public Resource setConfiguration( ResourceConfiguration conf );
+    Resource setConfiguration( ResourceConfiguration conf );
 }

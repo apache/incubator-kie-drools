@@ -31,16 +31,12 @@ import java.util.Collection;
 public interface KiePackage {
 
     /**
-     * The namespace for this package
-     * @return
+     * @return namespace for this package
      */
     String getName();
 
     /**
-     * Return the rule definitions for this package.
-     * The collection is immutable.
-     * 
-     * @return
+     * @return immutable collection of rule definitions for this package.
      */
     Collection<Rule> getRules();
 

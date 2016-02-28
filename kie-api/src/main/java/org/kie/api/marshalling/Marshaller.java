@@ -41,7 +41,7 @@ public interface Marshaller {
      * Environment may be null and it will use the default.
      * 
      * @param stream
-     * @return
+     * @return unmarshlled KieSession
      * @throws IOException
      * @throws ClassNotFoundException
      */
@@ -55,7 +55,7 @@ public interface Marshaller {
      * @param stream
      * @param config
      * @param environment
-     * @return
+     * @return unmarshalled KieSession
      * @throws IOException
      * @throws ClassNotFoundException
      */
@@ -75,9 +75,7 @@ public interface Marshaller {
                     KieSession ksession) throws IOException, ClassNotFoundException;
 
     /**
-     * Returns the {@link org.kie.api.marshalling.MarshallingConfiguration} object for this marshaller.
-     * 
-     * @return
+     * @return the {@link org.kie.api.marshalling.MarshallingConfiguration} object for this marshaller.
      */
     MarshallingConfiguration getMarshallingConfiguration();
 

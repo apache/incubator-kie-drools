@@ -27,11 +27,9 @@ public interface Evaluator
     Serializable {
 
     /**
-     * Returns the operator representation object for this evaluator
-     * 
-     * @return
+     * @return the operator representation object for this evaluator
      */
-    public Operator getOperator();
+    Operator getOperator();
     
     /**
      * Returns true if this evaluator implements a temporal evaluation,
@@ -41,6 +39,6 @@ public interface Evaluator
      * 
      * @return true if the evaluator is a temporal evaluator. 
      */
-    public boolean isTemporal();
+    boolean isTemporal();
 
 }

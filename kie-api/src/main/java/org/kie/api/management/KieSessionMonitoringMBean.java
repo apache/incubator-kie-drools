@@ -22,81 +22,63 @@ import java.util.Map;
 import javax.management.ObjectName;
 
 /**
- * An MBean interface for Kie Session monitoring
+ * An MBean interface for {@link org.kie.api.runtime.KieSession} monitoring
  */
 public interface KieSessionMonitoringMBean {
 
     /**
      * Resets all stats
      */
-    public void reset();
+    void reset();
 
     /**
      * Returns this MBean name
-     * 
-     * @return
      */
-    public ObjectName getName();
+    ObjectName getName();
 
     /**
-     * Returns the associated Kie Base ID
-     * 
-     * @return
+     * @return the associated Kie Base ID
      */
-    public String getKieBaseId();
+    String getKieBaseId();
 
     /**
-     * Returns the associated Kie Session ID
-     * 
-     * @return
+     * @return the associated Kie Session ID
      */
-    public int getKieSessionId();
+    int getKieSessionId();
 
     /**
-     * Returns the total fact count current loaded into this session
-     * 
-     * @return
+     * @return the total fact count current loaded into this session
      */
-    public long getTotalFactCount();
+    long getTotalFactCount();
 
     /**
-     * Returns the total number of matches fired in this session since last 
+     * @return the total number of matches fired in this session since last
      * reset.
-     * 
-     * @return
      */
-    public long getTotalMatchesFired();
+    long getTotalMatchesFired();
 
     /**
-     * Returns the total number of matches cancelled in this session since 
+     * @return the total number of matches cancelled in this session since
      * last reset.
-     *  
-     * @return
      */
-    public long getTotalMatchesCancelled();
+    long getTotalMatchesCancelled();
 
     /**
-     * Returns the total number of matches created in this session since 
+     * @return the total number of matches created in this session since
      * last reset.
-     * 
-     * @return
      */
-    public long getTotalMatchesCreated();
+    long getTotalMatchesCreated();
 
     /**
-     * Returns the total milliseconds spent firing rules in this session since last reset.
-     * 
-     * @return
+     * @return the total milliseconds spent firing rules in this session since last reset.
      */
-    public long getTotalFiringTime();
+    long getTotalFiringTime();
 
     /**
-     * Returns the average firing time in milliseconds for rules in this session
+     * @return the average firing time in milliseconds for rules in this session
      * since last reset.
-     * 
-     * @return
      */
-    public double getAverageFiringTime();
+    double getAverageFiringTime();
 
     /**
      * Returns a formatted String with statistics for a single rule in this session,
@@ -104,28 +86,26 @@ public interface KieSessionMonitoringMBean {
      *  
      * @param ruleName the name of the rule for which statistics are requested.
      * 
-     * @return
+     * @return formatted String with statistics
      */
-    public String getStatsForRule(String ruleName);
+    String getStatsForRule(String ruleName);
 
     /**
-     * Returns the timestamp of the last stats reset
-     * 
-     * @return
+     * @return the timestamp of the last stats reset
      */
-    public Date getLastReset();
+    Date getLastReset();
     
-    public Map<String,String> getStatsByRule();
+    Map<String,String> getStatsByRule();
 
-    public long getTotalProcessInstancesStarted();
+    long getTotalProcessInstancesStarted();
     
-    public long getTotalProcessInstancesCompleted();
+    long getTotalProcessInstancesCompleted();
     
-    public String getStatsForProcess(String processId);
+    String getStatsForProcess(String processId);
     
-    public Map<String,String> getStatsByProcess();
+    Map<String,String> getStatsByProcess();
     
-    public String getStatsForProcessInstance(long processInstanceId);
+    String getStatsForProcessInstance(long processInstanceId);
     
-    public Map<Long,String> getStatsByProcessInstance();
+    Map<Long,String> getStatsByProcessInstance();
 }

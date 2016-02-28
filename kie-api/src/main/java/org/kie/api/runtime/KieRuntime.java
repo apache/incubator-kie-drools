@@ -32,8 +32,7 @@ public interface KieRuntime
     KieRuntimeEventManager {
 
     /**
-     * Returns the session clock instance assigned to this session
-     * @return
+     * @return the session clock instance assigned to this session
      */
     <T extends SessionClock> T getSessionClock();
 
@@ -54,7 +53,7 @@ public interface KieRuntime
     Environment getEnvironment();
 
     /**
-     * Returns the KieBase reference from which this stateful session was created.
+     * @return the KieBase reference from which this stateful session was created.
      */
     KieBase getKieBase();
 

@@ -85,7 +85,7 @@ import org.kie.api.runtime.rule.StatefulRuleSession;
  * for more details.
  * </p>
  *
- * See org.drools.core.runtime.Globals
+ * @see Globals
  */
 public interface KieSession
         extends
@@ -95,8 +95,9 @@ public interface KieSession
         KieRuntime {
 
 	/**
-	 * Deprecated use {@link #getIdentifier()} instead
-	 * @return
+	 * Deprecated. use {@link #getIdentifier()} instead
+     *
+	 * @return id of this session
 	 */
 	@Deprecated 	
     int getId();

@@ -26,24 +26,24 @@ public interface AccumulateFunction extends Externalizable {
 
     /**
      * Creates and returns a new context object
-     * @return
+     * @return new context object
      */
-    public Serializable createContext();
+    Serializable createContext();
 
     /**
      * Initializes the accumulator
      * @param context
      * @throws Exception
      */
-    public void init(Serializable context) throws Exception;
+    void init(Serializable context) throws Exception;
 
     /**
      * Executes the accumulation action
      * @param context
      * @param value
      */
-    public void accumulate(Serializable context,
-                           Object value);
+    void accumulate(Serializable context,
+                    Object value);
 
     /**
      * Reverses the accumulation action
@@ -51,29 +51,23 @@ public interface AccumulateFunction extends Externalizable {
      * @param value
      * @throws Exception
      */
-    public void reverse(Serializable context,
-                        Object value) throws Exception;
+    void reverse(Serializable context,
+                 Object value) throws Exception;
 
     /**
-     * Returns the current value in this accumulation session
-     *
-     * @param context
-     * @return
+     * @return the current value in this accumulation session
      * @throws Exception
      */
-    public Object getResult(Serializable context) throws Exception;
+    Object getResult(Serializable context) throws Exception;
 
     /**
-     * True if the function supports reverse. False otherwise.
-     *
-     * @return
+     * @return true if the function supports reverse, otherwise false
      */
-    public boolean supportsReverse();
+    boolean supportsReverse();
     
     /**
-     * Returns the class type of the result of this function 
-     * @return
+     * @return the class type of the result of this function
      */
-    public Class<?> getResultType();
+    Class<?> getResultType();
     
 }

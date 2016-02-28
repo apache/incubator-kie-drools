@@ -32,7 +32,7 @@ public interface Executor {
      * @param ctx - contextual data given by executor service
      * @return unique identifier of the request
      */
-    public Long scheduleRequest(String commandName, CommandContext ctx);
+    Long scheduleRequest(String commandName, CommandContext ctx);
     
     /**
      * Schedules execution of given command on defined time.
@@ -41,71 +41,67 @@ public interface Executor {
      * @param ctx - contextual data given by executor service
      * @return unique identifier of the request
      */
-    public Long scheduleRequest(String commandName, Date date, CommandContext ctx);
+    Long scheduleRequest(String commandName, Date date, CommandContext ctx);
 
     /**
      * Cancels active (queued, running or retrying) request
      * @param requestId - id of the request to cancel
      */
-    public void cancelRequest(Long requestId);
+    void cancelRequest(Long requestId);
 
     /**
-     * Returns configured interval at which executor threads are running
-     * @return
+     * @return configured interval at which executor threads are running
      */
-    public int getInterval();
+    int getInterval();
 
     /**
      * Sets interval at which executor threads are running. 
      * Should not be used after <code>init</code> method has been called.
      * @param waitTime
      */
-    public void setInterval(int waitTime);
+    void setInterval(int waitTime);
 
     /**
-     * Returns configured default number of retries that shall be attempted in case of an error
-     * @return
+     * @return configured default number of retries that shall be attempted in case of an error
      */
-    public int getRetries();
+    int getRetries();
 
     /**
      * Sets default number of retries that shall be attempted in case of an error. 
      * Should not be used after <code>init</code> method has been called.
      * @param defaultNroOfRetries
      */
-    public void setRetries(int defaultNroOfRetries);
+    void setRetries(int defaultNroOfRetries);
 
     /**
-     * Returns configured executor thread pool size
-     * @return
+     * @return configured executor thread pool size
      */
-    public int getThreadPoolSize();
+    int getThreadPoolSize();
 
     /**
      * Sets default executor thread pool size. Should not be used after <code>init</code> method has been called.
      * @param nroOfThreads
      */
-    public void setThreadPoolSize(int nroOfThreads);
+    void setThreadPoolSize(int nroOfThreads);
     
     /**
-     * Returns time unit configured for executor intervals
-     * @return
+     * @return time unit configured for executor intervals
      */
-    public TimeUnit getTimeunit();
+    TimeUnit getTimeunit();
     
     /**
      * Sets time unit for executor intervals
      * @param timeunit
      */
-    public void setTimeunit(TimeUnit timeunit);
+    void setTimeunit(TimeUnit timeunit);
     
     /**
      * Initialized executor
      */
-    public void init();
+    void init();
     
     /**
      * Destroys executor
      */
-    public void destroy();
+    void destroy();
 }

@@ -69,8 +69,7 @@ public interface KieModuleModel {
     Map<String, KieBaseModel> getKieBaseModels();
 
     /**
-     * Provides an XML representation of this KieModuleModel
-     * @return
+     * @return XML representation of this KieModuleModel
      */
     String toXML();
 }

@@ -30,46 +30,39 @@ import org.kie.api.task.UserGroupCallback;
 public interface RuntimeEnvironment {
 
 	/**
-	 * Returns <code>KieBase</code> that shall be used by the manager
-	 * @return
+	 * @return <code>KieBase</code> that shall be used by the manager
 	 */
     KieBase getKieBase();
     
     /**
-     * KieSession environment that shall be used to create instances of <code>KieSession</code>
-     * @return
+     * @return environment that shall be used to create instances of <code>KieSession</code>
      */
     Environment getEnvironment();
     
     /**
-     * KieSession configuration that shall be used to create instances of <code>KieSession</code>
-     * @return
+     * @return KieSession configuration that shall be used to create instances of <code>KieSession</code>
      */
     KieSessionConfiguration getConfiguration();
     
     /**
-     * Indicates if persistence shall be used for the KieSession instances
-     * @return
+     * @return indicates if persistence shall be used for the KieSession instances
      */
     boolean usePersistence();
     
     /**
-     * Delivers concrete implementation of <code>RegisterableItemsFactory</code> to obtain handlers and listeners
+     * @return concrete implementation of <code>RegisterableItemsFactory</code> to obtain handlers and listeners
      * that shall be registered on instances of <code>KieSession</code>
-     * @return
      */
     RegisterableItemsFactory getRegisterableItemsFactory();
     
     /**
-     * Delivers concrete implementation of <code>UserGroupCallback</code> that shall be registered on instances 
+     * @return concrete implementation of <code>UserGroupCallback</code> that shall be registered on instances
      * of <code>TaskService</code> for managing users and groups.
-     * @return
      */
     UserGroupCallback getUserGroupCallback();
     
     /**
-     * Delivers custom class loader that shall be used by the process engine and task service instances
-     * @return
+     * @return custom class loader that shall be used by the process engine and task service instances
      */
     ClassLoader getClassLoader();
     

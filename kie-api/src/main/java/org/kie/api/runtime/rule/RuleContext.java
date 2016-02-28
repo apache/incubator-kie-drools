@@ -22,16 +22,12 @@ import org.kie.api.runtime.KieContext;
 public interface RuleContext extends KieContext {
     
     /**
-     * Returns the active Rule for the current context
-     *  
-     * @return
+     * @return the active Rule for the current context
      */
     Rule getRule();
 
     /**
-     * Returns the current Match for the current context
-     * 
-     * @return
+     * @return the current Match for the current context
      */
     Match getMatch();
     
@@ -61,12 +57,12 @@ public interface RuleContext extends KieContext {
      * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
      * @param match
      */    
-    public void unblockAllMatches(Match match);
+    void unblockAllMatches(Match match);
     
     /** 
      * This is an experimental feature that must be explicitly enabled via DeclarativeAgendaOption, which is off by default. This method may change or disable at any time.
      * @param match
      */    
-    public void cancelMatch(Match match);
+    void cancelMatch(Match match);
     
 }
