@@ -32,7 +32,6 @@
             <Export-Package>
               org.kie.api.*
             </Export-Package>
-            <!-- <Bundle-Activator>org.kie.api.osgi.Activator</Bundle-Activator> -->
           </instructions>
         </configuration>
       </plugin>
@@ -139,16 +138,6 @@
   </build>
 
   <dependencies>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.jboss.spec.javax.xml.bind</groupId>
       <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
