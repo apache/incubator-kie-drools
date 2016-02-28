@@ -7,11 +7,10 @@
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.kie</groupId>
   <artifactId>kie-drools-archetype</artifactId>
   <packaging>maven-archetype</packaging>
 
-  <name>Kie Drools Archetype</name>
+  <name>KIE :: Drools Maven Archetype</name>
   <description>
       A basic kjar template with Drools rule example, JUnit 4 and logging binding.
       Use property droolsVersion to specify which version of Drools to use in generated kjar.
