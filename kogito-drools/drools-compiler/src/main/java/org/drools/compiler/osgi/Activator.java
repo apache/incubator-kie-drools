@@ -23,7 +23,6 @@ import org.drools.core.marshalling.impl.ProcessMarshallerFactoryService;
 import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.kie.api.Service;
 import org.kie.api.builder.KieScannerFactoryService;
-import org.kie.api.osgi.Activator.BundleContextInstantiator;
 import org.kie.internal.builder.KnowledgeBuilderFactoryService;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.ServiceRegistryImpl;
@@ -39,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.concurrent.Callable;
 
 public class Activator
     implements
@@ -159,6 +159,21 @@ public class Activator
             Service service = (Service) bc.getService( ref );
             ServiceRegistryImpl.getInstance().unregisterLocator( service.getClass().getInterfaces()[0] );
             logger.info( "unregistering compiler : " + service + " : " + service.getClass().getInterfaces()[0] );
+        }
+    }
+
+    public static class BundleContextInstantiator<V> implements Callable<V> {
+        private BundleContext bc;
+        private ServiceReference ref;
+
+        public BundleContextInstantiator(BundleContext bc,
+                                         ServiceReference ref) {
+            this.bc = bc;
+            this.ref = ref;
+        }
+
+        public V call() throws Exception {
+            return (V) this.bc.getService(this.ref);
         }
     }
 
