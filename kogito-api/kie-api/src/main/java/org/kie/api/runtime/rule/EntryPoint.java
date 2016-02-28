@@ -47,11 +47,9 @@ import java.util.Collection;
 public interface EntryPoint {
 
     /**
-     * Returns the String Id of this entry point
-     * 
-     * @return
+     * @return the String Id of this entry point
      */
-    public String getEntryPointId();
+    String getEntryPointId();
 
     /**
      * Inserts a new fact into this entry point
@@ -116,18 +114,11 @@ public interface EntryPoint {
     FactHandle getFactHandle(Object object);
 
     /**
-     * Returns the object associated with the given FactHandle.
-     * 
-     * @param factHandle
-     * @return
+     * @return the object associated with the given FactHandle.
      */
     Object getObject(FactHandle factHandle);
 
     /**
-     * <p>
-     * Returns all facts from the current session as a Collection.
-     * </p>
-     * 
      * <p>This class is <i>not</i> a general-purpose <tt>Collection</tt>
      * implementation!  While this class implements the <tt>Collection</tt> interface, it
      * intentionally violates <tt>Collection</tt> general contract, which mandates the
@@ -137,41 +128,31 @@ public interface EntryPoint {
      * method is dependent on the WorkingMemory configuration, where it can be configured for <tt>Identity</tt>
      * or for <tt>Equality</tt>.</p> 
      * 
-     * @return
+     * @return all facts from the current session as a Collection.
      */
     Collection<? extends Object> getObjects();
 
     /**
-     * Returns all facts from the current session that are accepted by the given <code>ObjectFilter</code>.
-     * 
      * @param filter the filter to be applied to the returned collection of facts.
-     *  
-     * @return
+     * @return all facts from the current session that are accepted by the given <code>ObjectFilter</code>.
      */
     Collection<? extends Object> getObjects(ObjectFilter filter);
 
     /**
-     * Returns all <code>FactHandle</code>s from the current session.
-     * 
-     * @return
+     * @return all <code>FactHandle</code>s from the current session.
      */
     <T extends FactHandle> Collection< T > getFactHandles();
 
     /**
-     * Returns all <code>FactHandle</code>s from the current session for which the facts are accepted by 
-     * the given filter.
-     * 
      * @param filter the filter to be applied to the returned collection of <code>FactHandle</code>s.
-     * 
-     * @return
+     * @return all <code>FactHandle</code>s from the current session for which the facts are accepted by
+     * the given filter.
      */
     <T extends FactHandle> Collection< T > getFactHandles(ObjectFilter filter);
     
     /**
-     * Returns the total number of facts currently in this entry point
-     * 
-     * @return
+     * @return the total number of facts currently in this entry point
      */
-    public long getFactCount();
+    long getFactCount();
     
 }

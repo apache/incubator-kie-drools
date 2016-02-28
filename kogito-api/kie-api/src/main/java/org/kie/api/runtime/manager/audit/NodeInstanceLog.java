@@ -37,45 +37,38 @@ public interface NodeInstanceLog {
 	public static final int TYPE_EXIT = 1;
 
 	/**
-	 * Process instance identifier
-	 * @return
+	 * @return process instance identifier
 	 */
     Long getProcessInstanceId();
 
     /**
-	 * Process id of the definition
-	 * @return
+	 * @return id of the definition
 	 */
     String getProcessId();
 
     /**
-     * Unique identifier of the node instance
-     * @return
+     * @return identifier of the node instance
      */
     String getNodeInstanceId();
     
     /**
-     * Identifier of the node which usually is the unique identifier from process definition,
+     * @return identifier of the node which usually is the unique identifier from process definition,
      * but can be unique identifier assigned by the engine when unique id is not available
-     * @return
      */
 	String getNodeId();
 	
 	/**
-	 * Name of the node from process definition
-	 * @return
+	 * @return name of the node from process definition
 	 */
 	String getNodeName();
 
 	/**
-	 * Date on when this node was triggered
-	 * @return
+	 * @return date on when this node was triggered
 	 */
 	Date getDate();
 	
 	/**
-	 * Identifier of work item that this node refers to, might be null if it's not work item based node
-	 * @return
+	 * @return identifier of work item that this node refers to, might be null if it's not work item based node
 	 */
 	Long getWorkItemId();
 
@@ -86,27 +79,24 @@ public interface NodeInstanceLog {
 	 * 	<li>entry type will contain incoming sequence flow</li>
 	 * 	<li>exit type will contain outgoing sequence flow</li>
 	 * </ul>
-	 * @return
+	 * @return Incoming or outgoing connection identifier
 	 * 
 	 * @see NodeInstanceLog#getType()
 	 */
     String getConnection();
 
     /**
-	 * External (optional) identifier associated with this process instance
-	 * @return
+	 * @return external (optional) identifier associated with this process instance
 	 */
     String getExternalId();
 
     /**
-     * Node type that indicates what sort of activity it was e.g. Human Task, Script Task, etc
-     * @return
+     * @return Node type that indicates what sort of activity it was e.g. Human Task, Script Task, etc
      */
     String getNodeType();
     
     /**
-     * Type of the node instance log entry - Entry or Exit
-     * @return
+     * @return Type of the node instance log entry - Entry or Exit
      * @see NodeInstanceLog#TYPE_ENTER
      * @see NodeInstanceLog#TYPE_EXIT
      */

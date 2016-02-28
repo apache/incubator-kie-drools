@@ -28,26 +28,22 @@ import org.kie.api.task.TaskService;
  * created manually. <code>RuntimeManager</code> provides all required information to build
  * and bootstrap the <code>RuntimeEngine</code> so it is configured and ready to be used
  * regardless of when it is invoked.
- *
  */
 public interface RuntimeEngine {
 
 	/**
-	 * Returns <code>KieSession</code> configured for this <code>RuntimeEngine</code>
-	 * @return
+	 * @return <code>KieSession</code> configured for this <code>RuntimeEngine</code>
 	 */
     KieSession getKieSession();
     
     /**
-	 * Returns <code>TaskService</code> configured for this <code>RuntimeEngine</code>
-	 * @return
+	 * @return <code>TaskService</code> configured for this <code>RuntimeEngine</code>
 	 */
     TaskService getTaskService();
     
     /**
-     * Returns <code>AuditService</code> that gives access to underlying runtime data such
+     * @return <code>AuditService</code> that gives access to underlying runtime data such
      * as process instance, node instance and variable log entries.
-     * @return
      */
     AuditService getAuditService();
 }

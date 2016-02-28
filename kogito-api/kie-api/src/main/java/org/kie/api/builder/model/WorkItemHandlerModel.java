@@ -22,10 +22,10 @@ package org.kie.api.builder.model;
 public interface WorkItemHandlerModel {
 
     /**
-     * Returns the name of the work item that the handler is for
-     * @return
+     * @return the name of the work item that the handler is for
      */
     String getName();
+
     /**
      * Returns the type of this WorkItemHandlerModel
      * (i.e. the name of the class implementing the WorkItemHandler)

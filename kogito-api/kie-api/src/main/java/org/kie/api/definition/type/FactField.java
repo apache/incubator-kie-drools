@@ -27,27 +27,22 @@ public interface FactField
     java.io.Externalizable {
 
     /**
-     * Returns the type of this field.
-     * 
-     * @return
+     * @return type of this field.
      */
-    public Class< ? > getType();
+    Class< ? > getType();
 
     /**
-     * Returns the name of this field.
-     * @return
+     * @return name of this field.
      */
-    public String getName();
+    String getName();
 
     /**
-     * Returns true if this field is a key field. A key field
+     * @return true if this field is a key field. A key field
      * is included in hashcode() calculation and on the equals() 
      * method evaluation. Non-key fields are not checked in this 
-     * methods.
-     * 
-     * @return
+     * method.
      */
-    public boolean isKey();
+    boolean isKey();
 
     /**
      * Sets the value of this field in the given fact.
@@ -55,18 +50,15 @@ public interface FactField
      * @param bean fact on which to set the field.
      * @param value the value to set on the field.
      */
-    public void set(Object bean,
-                    Object value);
+    void set(Object bean,
+             Object value);
 
     /**
-     * Returns the value of this field in the given fact.
-     * 
      * @param bean the fact from which the field will be read.
      * 
-     * @return the value of the field on the given fact.
+     * @return the value of this field on the given fact.
      */
-    public Object get(Object bean);
-
+    Object get(Object bean);
 
     /**
      * Returns the index of this field in the field list for
@@ -76,7 +68,7 @@ public interface FactField
      *
      * @return  the index of this field in the defining type
      */
-    public int getIndex();
+    int getIndex();
 
     /**
      * Returns the list of field-level annotations
@@ -84,7 +76,7 @@ public interface FactField
      *
      * @return  the list of field-level annotations
      */
-    public List<Annotation> getFieldAnnotations();
+    List<Annotation> getFieldAnnotations();
 
     /**
      * Returns the annotations of this field definition as
@@ -92,6 +84,6 @@ public interface FactField
      *
      * @return a key-value map of the field-level annotations
      */
-    public Map<String,Object> getMetaData();
+    Map<String,Object> getMetaData();
 
 }

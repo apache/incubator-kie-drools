@@ -25,9 +25,8 @@ import java.util.Date;
 public interface Reoccurring {
 
 	/**
-	 * Returns next time to be scheduled. Date must be in future as jobs cannot be scheduled in past.
-	 * Returns null in case it should not be scheduled any more.
-	 * @return
+	 * @return next time to be scheduled. Date must be in future as jobs cannot be scheduled in past.
+	 * null in case it should not be scheduled any more.
 	 */
 	Date getScheduleTime();
 }

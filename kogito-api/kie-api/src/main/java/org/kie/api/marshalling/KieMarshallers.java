@@ -36,17 +36,19 @@ public interface KieMarshallers extends Service {
 
     /**
      * The marshalling strategies for this method are undefined and thus they are derived from the ksession's or environment
-     * provided
+     * provided.
+     *
      * @param kbase
-     * @return
+     * @return marshaller created for the specified KieBase
      */
     Marshaller newMarshaller(KieBase kbase);
 
     /**
      * This will override the strategies specified in the ksession or environment.
+     *
      * @param kbase
      * @param strategies
-     * @return
+     * @return marshaller created for the specified KieBase with the custom marshalling strategies
      */
     Marshaller newMarshaller(KieBase kbase,
                              ObjectMarshallingStrategy[] strategies);

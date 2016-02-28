@@ -22,9 +22,7 @@ package org.kie.api.runtime;
 public interface ObjectFilter {
 
     /**
-     * Returning true means the Iterator accepts, and thus returns, the current Object.
-     * @param object
-     * @return
+     * @return true if the Iterator accepts, and thus returns, the current Object. Otherwise false.
      */
     boolean accept(Object object);
 }

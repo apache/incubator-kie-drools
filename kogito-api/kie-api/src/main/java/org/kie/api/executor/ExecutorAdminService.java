@@ -23,13 +23,11 @@ public interface ExecutorAdminService {
     
     /**
      * Removes all requests
-     * @return
      */
-    public int clearAllRequests();
+    int clearAllRequests();
     
     /**
      * Removes all errors
-     * @return
      */
-    public int clearAllErrors();
+    int clearAllErrors();
 }

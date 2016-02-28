@@ -26,6 +26,6 @@ public interface KieRuntimeLogger {
      * handles, network connections, etc.
      * It is a programming error to append to a closed appender.
      */
-    public void close();
+    void close();
 
 }

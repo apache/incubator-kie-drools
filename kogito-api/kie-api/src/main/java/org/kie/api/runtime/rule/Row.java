@@ -18,19 +18,15 @@ package org.kie.api.runtime.rule;
 
 public interface Row {
     /**
-     * Get the object that is bound to the given identifier
-     * @param identifier
-     *     The identifier of the bound object
-     * @return
+     * @param identifier the identifier of the bound object
+     * @return object that is bound to the given identifier
      */
-    public Object get(String identifier);
+    Object get(String identifier);
       
     
     /**
-     * Return the FactHandle associated with the given identifier
-     * @param identifier
-     * @return
+     * @return FactHandle associated with the given identifier
      */
-    public FactHandle getFactHandle(String identifier);
+    FactHandle getFactHandle(String identifier);
 
 }

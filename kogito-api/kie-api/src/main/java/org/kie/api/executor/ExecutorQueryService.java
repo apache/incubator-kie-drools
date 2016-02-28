@@ -22,26 +22,22 @@ import org.kie.api.runtime.query.QueryContext;
 
 /**
  * Executor query interface that provides runtime access to data.
- *
  */
 public interface ExecutorQueryService {
     /**
-     * Returns list of pending execution requests.
-     * @return
+     * @return list of pending execution requests.
      */
     List<RequestInfo> getPendingRequests(QueryContext queryContext);
     
     /**
-     * Returns given pending request identified by <code>id</code>
-     * @param id - unique id of the request
-     * @return
+     * @param id unique id of the request
+     * @return given pending request identified by <code>id</code>
      */
     List<RequestInfo> getPendingRequestById(Long id);
     
     /**
-     * Returns request identified by <code>id</code> regardless of its status
-     * @param id - unique id of the request
-     * @return
+     * @param id unique id of the request
+     * @return request identified by <code>id</code> regardless of its status
      */
     RequestInfo getRequestById(Long id);
     
@@ -49,77 +45,67 @@ public interface ExecutorQueryService {
      * Returns requests identified by <code>businessKey</code> usually it should be only one with given 
      * business key but it does not have to as same business key requests can be processed sequentially and 
      * thus might be in different statuses.
-     * @param businessKey - business key of the request
-     * @return
+     *
+     * @param businessKey business key of the request
+     * @return requests identified by the business key
      */
     List<RequestInfo> getRequestByBusinessKey(String businessKey, QueryContext queryContext);
     
     /**
-     * Returns requests configured with given <code>command</code> 
-     * @param command - command configured in the request
-     * @return
+     * @param command command configured in the request
+     * @return requests configured with given <code>command</code>
      */
     List<RequestInfo> getRequestByCommand(String command, QueryContext queryContext);
     
     /**
-     * Returns all errors (if any) for given request
-     * @param id - unique id of the request
-     * @return
+     * @param id unique id of the request
+     * @return all errors (if any) for given request
      */
     List<ErrorInfo> getErrorsByRequestId(Long id);
     
     /**
-     * Returns all queued requests
-     * @return
+     * @return all queued requests
      */
     List<RequestInfo> getQueuedRequests(QueryContext queryContext);
     
     /**
-     * Returns all comleted requests.
-     * @return
+     * @return all comleted requests.
      */
     List<RequestInfo> getCompletedRequests(QueryContext queryContext);
     
     /**
-     * Returns all requests that have errors.
-     * @return
+     * @return all requests that have errors.
      */
     List<RequestInfo> getInErrorRequests(QueryContext queryContext);
     
     /**
-     * Returns all requests that were cancelled
-     * @return
+     * @return all requests that were cancelled
      */
     List<RequestInfo> getCancelledRequests(QueryContext queryContext);
     
     /**
-     * Returns all errors.
-     * @return
+     * @return all errors.
      */
     List<ErrorInfo> getAllErrors(QueryContext queryContext); 
     
     /**
-     * Returns all requests
-     * @return
+     * @return all requests
      */
     List<RequestInfo> getAllRequests(QueryContext queryContext); 
     
     /**
-     * Returns all currently running requests
-     * @return
+     * @return all currently running requests
      */
     List<RequestInfo> getRunningRequests(QueryContext queryContext);
     
     /**
-     * Returns requests queued for future execution
-     * @return
+     * @return requests queued for future execution
      */
     List<RequestInfo> getFutureQueuedRequests(QueryContext queryContext);
     
     /**
-     * Returns requests based on their status
-     * @param statuses - statuses that requests should be in
-     * @return
+     * @param statuses statuses that requests should be in
+     * @return requests based on their status
      */
     List<RequestInfo> getRequestsByStatus(List<STATUS> statuses, QueryContext queryContext);
     
@@ -127,7 +113,6 @@ public interface ExecutorQueryService {
      * Dedicated method for handling special case that is get the request for processing.
      * To ensure its efficient use it shall perform necessary operation to minimize risk of 
      * race conditions and deadlock.
-     * @return
      */
     RequestInfo getRequestForProcessing();
     
@@ -135,7 +120,6 @@ public interface ExecutorQueryService {
      * Dedicated method for handling special case that is get the request for processing by id.
      * To ensure its efficient use it shall perform necessary operation to minimize risk of 
      * race conditions and deadlock.
-     * @return
      */
     RequestInfo getRequestForProcessing(Long requestId);
 }

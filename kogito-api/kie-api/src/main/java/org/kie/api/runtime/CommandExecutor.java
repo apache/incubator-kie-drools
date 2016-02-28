@@ -59,7 +59,7 @@ public interface CommandExecutor {
      * Execute the command and return a ExecutionResults for the results of the Command.
      * 
      * @param command
-     * @return
+     * @return execution result
      */
-    public <T> T execute(Command<T> command);
+    <T> T execute(Command<T> command);
 }

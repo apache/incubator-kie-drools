@@ -33,9 +33,7 @@ public class ClassObjectFilter
     }
 
     /**
-     * Returns true if the Iterator accepts the given object according to its class.
-     * @param object
-     * @return
+     * @return true if the Iterator accepts the given object according to its class.
      */
     public boolean accept(Object object) {
         return this.clazz.isAssignableFrom( object.getClass() );

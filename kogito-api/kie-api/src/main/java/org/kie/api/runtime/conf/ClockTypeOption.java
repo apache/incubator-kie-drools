@@ -63,9 +63,7 @@ public class ClockTypeOption implements SingleValueKieSessionOption {
     }
     
     /**
-     * Returns the configured clock type
-     * 
-     * @return
+     * @return the configured clock type
      */
     public String getClockType() {
         return clockType;

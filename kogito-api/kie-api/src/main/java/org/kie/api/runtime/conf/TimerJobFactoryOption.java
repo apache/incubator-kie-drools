@@ -29,7 +29,7 @@ public class TimerJobFactoryOption implements SingleValueKieSessionOption {
     public static final String PROPERTY_NAME = "drools.timerJobFactory";
 
     /**
-     * Belie System Type
+     * Timer Job Type
      */
     private final String timerJobType;
 
@@ -37,7 +37,7 @@ public class TimerJobFactoryOption implements SingleValueKieSessionOption {
      * Private constructor to enforce the use of the factory method
      * @param timerJobType
      */
-    private TimerJobFactoryOption( String timerJobType) {
+    private TimerJobFactoryOption( String timerJobType ) {
         this.timerJobType = timerJobType;
     }
 
@@ -62,9 +62,7 @@ public class TimerJobFactoryOption implements SingleValueKieSessionOption {
     }
 
     /**
-     * Returns the configured timer job factory manager
-     *
-     * @return
+     * @return the configured timer job factory manager
      */
     public String getTimerJobType() {
         return timerJobType;

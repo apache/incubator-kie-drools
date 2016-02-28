@@ -16,7 +16,7 @@
 package org.kie.api.runtime.manager;
 
 /**
- * RuntimeManager manages <code>RuntimeEngine</code>s that are esentially build with
+ * RuntimeManager manages <code>RuntimeEngine</code>s that are essentially build with
  * <code>KieSession</code> and <code>TaskService</code> to deliver executable environments for
  * processes and user tasks.<br>
  * Moreover <code>RuntimeManager</code> ensures that all components are configured and bootstrapped 
@@ -61,8 +61,7 @@ public interface RuntimeManager {
     RuntimeEngine getRuntimeEngine(Context<?> context);
     
     /**
-     * Unique identifier of the <code>RuntimeManager</code>
-     * @return
+     * @return unique identifier of this <code>RuntimeManager</code>
      */
     String getIdentifier();
    

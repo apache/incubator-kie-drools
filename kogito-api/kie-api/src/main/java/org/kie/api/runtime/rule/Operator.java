@@ -22,17 +22,13 @@ package org.kie.api.runtime.rule;
 public interface Operator {
 
     /**
-     * Returns the String representation for this operator
-     * 
-     * @return
+     * @return the String representation for this operator
      */
-    public String getOperatorString();
+    String getOperatorString();
 
     /**
-     * Returns true if this operator instance is negated.
-     * 
-     * @return
+     * @return true if this operator instance is negated, otherwise false.
      */
-    public boolean isNegated();
+    boolean isNegated();
 
 }

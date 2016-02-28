@@ -119,10 +119,10 @@ public interface TaskService extends CommandExecutor {
     
     /**
      * This method will be removed in jBPM 7.x because of new methods that better implement this functionality.
-     * </p>
+     * <p>
      * Using this method is not recommended. 
      * 
-     * @see {@link #getTasksByVariousFields(String, List, List, List, List, List, List, List, boolean)}
+     * @see #getTasksByVariousFields(String, List, List, List, List, List, List, List, List, boolean)
      */
     @Deprecated
     List<TaskSummary> getTasksByVariousFields( String userId, Map <String, List<?>> parameters, boolean union);

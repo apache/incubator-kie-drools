@@ -24,10 +24,8 @@ import java.io.Serializable;
 public interface Option extends Serializable {
     
     /**
-     * Returns the property name for this option
-     * 
-     * @return
+     * @return the property name for this option
      */
-    public String getPropertyName();
+    String getPropertyName();
 
 }

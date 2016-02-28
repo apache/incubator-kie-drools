@@ -41,17 +41,12 @@ public interface RuleRuntime
     void halt();
 
     /**
-     * Returns a reference to this session's <code>Agenda</code>.
-     * 
-     * @return
+     * @return a reference to this session's <code>Agenda</code>.
      */
     Agenda getAgenda();
 
     /**
-     * Returns the WorkingMemoryEntryPoint instance associated with the given name.
-     * 
-     * @param name
-     * @return
+     * @return the WorkingMemoryEntryPoint instance associated with the given name.
      */
     EntryPoint getEntryPoint(String name);
 
@@ -77,10 +72,10 @@ public interface RuleRuntime
      * 
      * @throws RuntimeException If the query does not exist
      */
-    public QueryResults getQueryResults(String query,
-                                        Object... arguments);
+    QueryResults getQueryResults(String query,
+                                 Object... arguments);
 
-    public LiveQuery openLiveQuery(String query,
-                                   Object[] arguments,
-                                   ViewChangedEventListener listener);
+    LiveQuery openLiveQuery(String query,
+                            Object[] arguments,
+                            ViewChangedEventListener listener);
 }
