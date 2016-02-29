@@ -296,21 +296,6 @@ public class SolutionDescriptor {
 
     private void determineGlobalShadowOrder() {
         // Topological sorting with Kahn's algorithm
-        Comparator<Pair<ShadowVariableDescriptor, Integer>> comparator = new Comparator<Pair<ShadowVariableDescriptor, Integer>>() {
-            @Override
-            public int compare(Pair<ShadowVariableDescriptor, Integer> a, Pair<ShadowVariableDescriptor, Integer> b) {
-                int aSourceSize = a.getValue();
-                int bSourceSize = b.getValue();
-                // TODO replace by Integer.compare() when Java 7 is minimum
-                if (aSourceSize > bSourceSize) {
-                    return 1;
-                } else if (aSourceSize < bSourceSize) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-            }
-        };
         List<Pair<ShadowVariableDescriptor, Integer>> pairList = new ArrayList<Pair<ShadowVariableDescriptor, Integer>>();
         Map<ShadowVariableDescriptor, Pair<ShadowVariableDescriptor, Integer>> shadowToPairMap
                 = new HashMap<ShadowVariableDescriptor, Pair<ShadowVariableDescriptor, Integer>>();
@@ -332,7 +317,7 @@ public class SolutionDescriptor {
         }
         int globalShadowOrder = 0;
         while (!pairList.isEmpty()) {
-            Collections.sort(pairList, comparator);
+            Collections.sort(pairList, (a, b) -> Integer.compare(a.getValue(), b.getValue()));
             Pair<ShadowVariableDescriptor, Integer> pair = pairList.remove(0);
             ShadowVariableDescriptor shadow = pair.getKey();
             if (pair.getValue() != 0) {
