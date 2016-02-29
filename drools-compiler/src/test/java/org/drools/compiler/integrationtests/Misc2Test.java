@@ -8327,8 +8327,8 @@ public class Misc2Test extends CommonTestMethodBase {
                 "rule R2 \n" +
                 "when \n" +
                 "  exists(Integer() and Integer()) \n" +
+                "  not(Double() and Double()) \n" +
                 "  Integer() \n" +
-                "  exists(Integer() and exists(Integer() and Integer())) \n" +
                 "then \n" +
                 " list.add('R2'); \n" +
                 "end";

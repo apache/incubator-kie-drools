@@ -130,7 +130,11 @@ public abstract class AbstractAddRemoveRulesTest {
                     removeRulesFromSession(session, (String[]) testOperationParameter);
                     break;
                 case FIRE_RULES:
-                    session.fireAllRules();
+                    try {
+                        session.fireAllRules();
+                    } catch (Exception e) {
+                        throw new RuntimeException( createTestFailMessage(testOperations, index, null, null), e );
+                    }
                     break;
                 case CHECK_RESULTS:
                     final Set<String> expectedResultsSet = new HashSet<String>();
@@ -226,14 +230,16 @@ public abstract class AbstractAddRemoveRulesTest {
             messageBuilder.append(lineSeparator);
             index++;
         }
-        messageBuilder.append("Expected results: " + lineSeparator + "[");
-        for (String expectedResult : expectedResults) {
-            messageBuilder.append(expectedResult + " ");
-        }
-        messageBuilder.append("]" + lineSeparator);
-        messageBuilder.append("Actual results: " + lineSeparator + "[");
-        for (String actualResult : actualResults) {
-            messageBuilder.append(actualResult + " ");
+        if (expectedResults != null && actualResults != null) {
+            messageBuilder.append( "Expected results: " + lineSeparator + "[" );
+            for ( String expectedResult : expectedResults ) {
+                messageBuilder.append( expectedResult + " " );
+            }
+            messageBuilder.append( "]" + lineSeparator );
+            messageBuilder.append( "Actual results: " + lineSeparator + "[" );
+            for ( String actualResult : actualResults ) {
+                messageBuilder.append( actualResult + " " );
+            }
         }
         messageBuilder.append("]" + lineSeparator);
         return messageBuilder.toString();

@@ -336,7 +336,11 @@ public class AddRemoveRule {
 
         @Override
         public void processSegmentMemories(SegmentMemory[] smems, PathMemory pmem) {
-            System.arraycopy(smems, 0, pmem.getSegmentMemories(), 0, smems.length);
+            for (int i = 0; i < smems.length; i++) {
+                if (smems[i] != null) {
+                    pmem.setSegmentMemory( smems[i].getPos(), smems[i] );
+                }
+            }
         }
 
         @Override
