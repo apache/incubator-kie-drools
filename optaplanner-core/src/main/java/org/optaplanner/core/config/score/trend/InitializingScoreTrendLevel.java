@@ -55,28 +55,4 @@ public enum InitializingScoreTrendLevel {
      */
     ONLY_DOWN;
 
-    public int getOptimisticBoundInt() {
-        return this == ONLY_DOWN ?  0 : Integer.MAX_VALUE;
-    }
-
-    public int getPessimisticBoundInt() {
-        return this == ONLY_UP ?  0 : Integer.MIN_VALUE;
-    }
-
-    public long getOptimisticBoundLong() {
-        return this == ONLY_DOWN ?  0L : Long.MAX_VALUE;
-    }
-
-    public long getPessimisticBoundLong() {
-        return this == ONLY_UP ?  0L : Long.MIN_VALUE;
-    }
-
-    public double getOptimisticBoundDouble() {
-        return this == ONLY_DOWN ?  0.0 : Double.POSITIVE_INFINITY;
-    }
-
-    public double getPessimisticBoundDouble() {
-        return this == ONLY_UP ?  0.0 : Double.NEGATIVE_INFINITY;
-    }
-
 }
