@@ -316,8 +316,8 @@ public class SolutionDescriptor {
             }
         }
         int globalShadowOrder = 0;
-        Collections.sort(pairList, (a, b) -> Integer.compare(a.getValue(), b.getValue()));
         while (!pairList.isEmpty()) {
+            Collections.sort(pairList, (a, b) -> Integer.compare(a.getValue(), b.getValue()));
             Pair<ShadowVariableDescriptor, Integer> pair = pairList.remove(0);
             ShadowVariableDescriptor shadow = pair.getKey();
             if (pair.getValue() != 0) {
