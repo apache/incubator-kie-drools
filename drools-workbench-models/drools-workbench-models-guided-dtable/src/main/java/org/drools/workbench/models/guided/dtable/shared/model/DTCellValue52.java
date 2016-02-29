@@ -36,7 +36,7 @@ public class DTCellValue52 {
     private Date valueDate;
     private Number valueNumeric;
     private String valueString;
-    private DataTypes dataType;
+    private DataTypes dataType = DataTypes.STRING;
 
     //Does this cell represent "all other values" to those explicitly defined for the column
     private boolean isOtherwise;
