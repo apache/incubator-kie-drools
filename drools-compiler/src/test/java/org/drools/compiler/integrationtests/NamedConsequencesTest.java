@@ -877,4 +877,35 @@ public class NamedConsequencesTest extends CommonTestMethodBase {
 
         assertEquals(2, counter.get());
     }
+
+    @Test
+    public void testDeleteWithBreakingBranch() throws Exception {
+        // DROOLS-1068
+        String drl =
+                "global java.util.List list;\n" +
+                "rule R when\n" +
+                "  Integer()\n" +
+                "  if (true) break[branch]\n" +
+                "  not Integer()\n" +
+                "then\n" +
+                "  list.add(\"main\");\n" +
+                "then[branch]\n" +
+                "  list.add(\"branch\");\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        FactHandle fh = ksession.insert(1);
+        ksession.fireAllRules();
+        ksession.delete(fh);
+        ksession.fireAllRules();
+
+        assertEquals( 1, list.size() );
+        assertEquals( "branch", list.get( 0 ) );
+    }
 }
