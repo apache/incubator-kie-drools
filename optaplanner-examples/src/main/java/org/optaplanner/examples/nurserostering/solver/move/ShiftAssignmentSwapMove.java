@@ -18,8 +18,8 @@ package org.optaplanner.examples.nurserostering.solver.move;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
@@ -39,7 +39,7 @@ public class ShiftAssignmentSwapMove extends AbstractMove {
     }
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        return !ObjectUtils.equals(leftShiftAssignment.getEmployee(), rightShiftAssignment.getEmployee());
+        return !Objects.equals(leftShiftAssignment.getEmployee(), rightShiftAssignment.getEmployee());
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {

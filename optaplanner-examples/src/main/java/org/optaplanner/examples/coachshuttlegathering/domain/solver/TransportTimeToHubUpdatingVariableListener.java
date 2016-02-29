@@ -17,8 +17,8 @@
 package org.optaplanner.examples.coachshuttlegathering.domain.solver;
 
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
@@ -89,7 +89,7 @@ public class TransportTimeToHubUpdatingVariableListener implements VariableListe
     }
 
     private void updateTransportTime(ScoreDirector scoreDirector, BusStop sourceStop, Bus bus, Integer transportTimeToHub) {
-        if (ObjectUtils.equals(sourceStop.getTransportTimeToHub(), transportTimeToHub)) {
+        if (Objects.equals(sourceStop.getTransportTimeToHub(), transportTimeToHub)) {
             return;
         }
         scoreDirector.beforeVariableChanged(sourceStop, "transportTimeToHub");

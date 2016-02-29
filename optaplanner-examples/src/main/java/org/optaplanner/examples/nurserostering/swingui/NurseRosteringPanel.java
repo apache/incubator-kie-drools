@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.BoxLayout;
@@ -37,7 +38,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
@@ -247,7 +247,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
                 NurseRoster nurseRoster = (NurseRoster) scoreDirector.getWorkingSolution();
                 // First remove the problem fact from all planning entities that use it
                 for (ShiftAssignment shiftAssignment : nurseRoster.getShiftAssignmentList()) {
-                    if (ObjectUtils.equals(shiftAssignment.getEmployee(), employee)) {
+                    if (Objects.equals(shiftAssignment.getEmployee(), employee)) {
                         scoreDirector.beforeVariableChanged(shiftAssignment, "employee");
                         shiftAssignment.setEmployee(null);
                         scoreDirector.afterVariableChanged(shiftAssignment, "employee");
@@ -260,7 +260,7 @@ public class NurseRosteringPanel extends SolutionPanel<NurseRoster> {
                 // Remove it the problem fact itself
                 for (Iterator<Employee> it = nurseRoster.getEmployeeList().iterator(); it.hasNext(); ) {
                     Employee workingEmployee = it.next();
-                    if (ObjectUtils.equals(workingEmployee, employee)) {
+                    if (Objects.equals(workingEmployee, employee)) {
                         scoreDirector.beforeProblemFactRemoved(workingEmployee);
                         it.remove(); // remove from list
                         scoreDirector.afterProblemFactRemoved(employee);

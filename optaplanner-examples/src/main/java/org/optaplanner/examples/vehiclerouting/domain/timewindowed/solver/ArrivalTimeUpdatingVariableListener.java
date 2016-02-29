@@ -16,7 +16,8 @@
 
 package org.optaplanner.examples.vehiclerouting.domain.timewindowed.solver;
 
-import org.apache.commons.lang3.ObjectUtils;
+import java.util.Objects;
+
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
@@ -60,7 +61,7 @@ public class ArrivalTimeUpdatingVariableListener implements VariableListener<Cus
                 ? ((TimeWindowedCustomer) previousStandstill).getDepartureTime() : null;
         TimeWindowedCustomer shadowCustomer = sourceCustomer;
         Long arrivalTime = calculateArrivalTime(shadowCustomer, departureTime);
-        while (shadowCustomer != null && ObjectUtils.notEqual(shadowCustomer.getArrivalTime(), arrivalTime)) {
+        while (shadowCustomer != null && !Objects.equals(shadowCustomer.getArrivalTime(), arrivalTime)) {
             scoreDirector.beforeVariableChanged(shadowCustomer, "arrivalTime");
             shadowCustomer.setArrivalTime(arrivalTime);
             scoreDirector.afterVariableChanged(shadowCustomer, "arrivalTime");

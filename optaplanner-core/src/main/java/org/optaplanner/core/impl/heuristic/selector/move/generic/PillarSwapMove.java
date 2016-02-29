@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.Solution;
@@ -65,7 +65,7 @@ public class PillarSwapMove extends AbstractMove {
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             Object leftValue = variableDescriptor.getValue(leftPillar.get(0));
             Object rightValue = variableDescriptor.getValue(rightPillar.get(0));
-            if (!ObjectUtils.equals(leftValue, rightValue)) {
+            if (!Objects.equals(leftValue, rightValue)) {
                 movable = true;
                 if (!variableDescriptor.isValueRangeEntityIndependent()) {
                     ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
@@ -98,7 +98,7 @@ public class PillarSwapMove extends AbstractMove {
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptors) {
             Object oldLeftValue = variableDescriptor.getValue(leftPillar.get(0));
             Object oldRightValue = variableDescriptor.getValue(rightPillar.get(0));
-            if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
+            if (!Objects.equals(oldLeftValue, oldRightValue)) {
                 for (Object leftEntity : leftPillar) {
                     scoreDirector.beforeVariableChanged(variableDescriptor, leftEntity);
                     variableDescriptor.setValue(leftEntity, oldRightValue);

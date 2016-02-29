@@ -19,8 +19,8 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.Solution;
@@ -61,7 +61,7 @@ public class PillarChangeMove extends AbstractMove {
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         Object oldValue = variableDescriptor.getValue(pillar.get(0));
-        if (ObjectUtils.equals(oldValue, toPlanningValue)) {
+        if (Objects.equals(oldValue, toPlanningValue)) {
             return false;
         }
         if (!variableDescriptor.isValueRangeEntityIndependent()) {

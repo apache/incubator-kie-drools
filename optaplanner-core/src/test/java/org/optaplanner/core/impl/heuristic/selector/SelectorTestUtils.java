@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableListMultimap;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.ListMultimap;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
@@ -239,7 +238,7 @@ public class SelectorTestUtils {
         TestdataChainedObject chainedObject = chainedObjects[0];
         for (int i = 1; i < chainedObjects.length; i++) {
             TestdataChainedEntity chainedEntity = (TestdataChainedEntity) chainedObjects[i];
-            if (!ObjectUtils.equals(chainedObject, chainedEntity.getChainedObject())) {
+            if (!Objects.equals(chainedObject, chainedEntity.getChainedObject())) {
                 fail("Chain assertion failed for chainedEntity (" + chainedEntity + ").\n"
                         + "Expected: " + chainedObject + "\n"
                         + "Actual:   "  + chainedEntity.getChainedObject() + "\n"

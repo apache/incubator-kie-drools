@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
@@ -141,7 +141,7 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
         SolutionDescriptor solutionDescriptor = getSolutionDescriptor();
         Solution cloneSolution = solutionDescriptor.getSolutionCloner().cloneSolution(originalSolution);
         if (scoreDirectorFactory.isAssertClonedSolution()) {
-            if (!ObjectUtils.equals(originalSolution.getScore(), cloneSolution.getScore())) {
+            if (!Objects.equals(originalSolution.getScore(), cloneSolution.getScore())) {
                 throw new IllegalStateException("Cloning corruption: "
                         + "the original's score (" + originalSolution.getScore()
                         + ") is different from the clone's score (" + cloneSolution.getScore() + ").\n"
@@ -340,7 +340,7 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
             for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptors) {
                 Object newValue = shadowVariableDescriptor.getValue(entity);
                 Object originalValue = shadowVariableValuesMap.get(shadowVariableDescriptor);
-                if (!ObjectUtils.equals(originalValue, newValue)) {
+                if (!Objects.equals(originalValue, newValue)) {
                     throw new IllegalStateException(VariableListener.class.getSimpleName() + " corruption:"
                             + " the entity (" + entity
                             + ")'s shadow variable (" + shadowVariableDescriptor.getSimpleEntityAndVariableName()

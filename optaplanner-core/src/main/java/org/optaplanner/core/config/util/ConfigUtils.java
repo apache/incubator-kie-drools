@@ -21,8 +21,8 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.config.AbstractConfig;
 
 public class ConfigUtils {
@@ -104,7 +104,7 @@ public class ConfigUtils {
     }
 
     public static <T> T mergeProperty(T a, T b) {
-        return ObjectUtils.equals(a, b) ? a : null;
+        return Objects.equals(a, b) ? a : null;
     }
 
     /**

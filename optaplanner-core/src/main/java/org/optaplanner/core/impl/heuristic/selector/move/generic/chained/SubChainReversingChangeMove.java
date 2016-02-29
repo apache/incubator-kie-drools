@@ -18,8 +18,8 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -53,7 +53,7 @@ public class SubChainReversingChangeMove extends AbstractMove {
             return false;
         }
         Object oldFirstValue = variableDescriptor.getValue(subChain.getFirstEntity());
-        return !ObjectUtils.equals(oldFirstValue, toPlanningValue);
+        return !Objects.equals(oldFirstValue, toPlanningValue);
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {

@@ -18,8 +18,8 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.Solution;
@@ -74,8 +74,8 @@ public class TailChainSwapMove extends AbstractMove {
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         Object leftValue = variableDescriptor.getValue(leftEntity);
         Object rightEntity = inverseVariableSupply.getInverseSingleton(rightValue);
-        if (ObjectUtils.equals(leftValue, rightValue)
-                || ObjectUtils.equals(leftEntity, rightValue) || ObjectUtils.equals(rightEntity, leftValue)) {
+        if (Objects.equals(leftValue, rightValue)
+                || Objects.equals(leftEntity, rightValue) || Objects.equals(rightEntity, leftValue)) {
             return false;
         }
         if (rightEntity == null) {

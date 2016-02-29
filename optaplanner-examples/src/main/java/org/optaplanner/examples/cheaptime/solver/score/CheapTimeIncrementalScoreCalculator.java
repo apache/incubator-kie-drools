@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.primlong.LongConstraintMatchTotal;
@@ -146,7 +146,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
     // ************************************************************************
 
     private void modifyMachine(TaskAssignment taskAssignment, Machine oldMachine, Machine newMachine) {
-        if (ObjectUtils.equals(oldMachine, newMachine)) {
+        if (Objects.equals(oldMachine, newMachine)) {
             return;
         }
         Integer startPeriod = taskAssignment.getStartPeriod();
@@ -165,7 +165,7 @@ public class CheapTimeIncrementalScoreCalculator extends AbstractIncrementalScor
     }
 
     private void modifyStartPeriod(TaskAssignment taskAssignment, Integer oldStartPeriod, Integer newStartPeriod) {
-        if (ObjectUtils.equals(oldStartPeriod, newStartPeriod)) {
+        if (Objects.equals(oldStartPeriod, newStartPeriod)) {
             return;
         }
         Task task = taskAssignment.getTask();

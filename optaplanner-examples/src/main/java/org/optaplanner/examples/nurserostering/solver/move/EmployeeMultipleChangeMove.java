@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
@@ -43,7 +43,7 @@ public class EmployeeMultipleChangeMove extends AbstractMove {
     }
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        return !ObjectUtils.equals(fromEmployee, toEmployee);
+        return !Objects.equals(fromEmployee, toEmployee);
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {

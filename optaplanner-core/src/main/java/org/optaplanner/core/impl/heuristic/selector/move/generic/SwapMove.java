@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.Solution;
@@ -62,7 +62,7 @@ public class SwapMove extends AbstractMove {
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
             Object leftValue = variableDescriptor.getValue(leftEntity);
             Object rightValue = variableDescriptor.getValue(rightEntity);
-            if (!ObjectUtils.equals(leftValue, rightValue)) {
+            if (!Objects.equals(leftValue, rightValue)) {
                 movable = true;
                 if (!variableDescriptor.isValueRangeEntityIndependent()) {
                     ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
@@ -90,7 +90,7 @@ public class SwapMove extends AbstractMove {
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);
             Object oldRightValue = variableDescriptor.getValue(rightEntity);
-            if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
+            if (!Objects.equals(oldLeftValue, oldRightValue)) {
                 scoreDirector.beforeVariableChanged(variableDescriptor, leftEntity);
                 variableDescriptor.setValue(leftEntity, oldRightValue);
                 scoreDirector.afterVariableChanged(variableDescriptor, leftEntity);

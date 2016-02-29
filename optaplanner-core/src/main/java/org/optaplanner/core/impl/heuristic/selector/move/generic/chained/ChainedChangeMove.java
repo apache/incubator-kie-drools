@@ -16,7 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
-import org.apache.commons.lang3.ObjectUtils;
+import java.util.Objects;
+
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -40,7 +41,7 @@ public class ChainedChangeMove extends ChangeMove {
     @Override
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         return super.isMoveDoable(scoreDirector)
-                && !ObjectUtils.equals(entity, toPlanningValue);
+                && !Objects.equals(entity, toPlanningValue);
     }
 
     @Override

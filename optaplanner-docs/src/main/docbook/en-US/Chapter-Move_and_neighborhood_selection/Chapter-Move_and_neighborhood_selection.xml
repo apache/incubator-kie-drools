@@ -1447,7 +1447,7 @@
       doable:</para>
 
       <programlisting language="java">    public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        return !ObjectUtils.equals(queen.getRow(), toRow);
+        return !Objects.equals(queen.getRow(), toRow);
     }</programlisting>
 
       <para>Because we won't generate a move which can move a queen outside the board limits, we don't need to check it.

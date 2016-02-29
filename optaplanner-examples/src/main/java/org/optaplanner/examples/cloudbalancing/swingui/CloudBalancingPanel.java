@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.GroupLayout;
@@ -36,7 +37,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.swing.impl.SwingUtils;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -267,7 +267,7 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
                 CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
                 // First remove the problem fact from all planning entities that use it
                 for (CloudProcess process : cloudBalance.getProcessList()) {
-                    if (ObjectUtils.equals(process.getComputer(), computer)) {
+                    if (Objects.equals(process.getComputer(), computer)) {
                         scoreDirector.beforeVariableChanged(process, "computer");
                         process.setComputer(null);
                         scoreDirector.afterVariableChanged(process, "computer");
@@ -280,7 +280,7 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
                 // Remove the problem fact itself
                 for (Iterator<CloudComputer> it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
                     CloudComputer workingComputer = it.next();
-                    if (ObjectUtils.equals(workingComputer, computer)) {
+                    if (Objects.equals(workingComputer, computer)) {
                         scoreDirector.beforeProblemFactRemoved(workingComputer);
                         it.remove(); // remove from list
                         scoreDirector.afterProblemFactRemoved(workingComputer);
@@ -321,7 +321,7 @@ public class CloudBalancingPanel extends SolutionPanel<CloudBalance> {
                 // Remove the planning entity itself
                 for (Iterator<CloudProcess> it = cloudBalance.getProcessList().iterator(); it.hasNext(); ) {
                     CloudProcess workingProcess = it.next();
-                    if (ObjectUtils.equals(workingProcess, process)) {
+                    if (Objects.equals(workingProcess, process)) {
                         scoreDirector.beforeEntityRemoved(workingProcess);
                         it.remove(); // remove from list
                         scoreDirector.afterEntityRemoved(workingProcess);

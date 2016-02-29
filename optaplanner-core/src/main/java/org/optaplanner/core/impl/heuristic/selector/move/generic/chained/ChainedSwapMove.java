@@ -18,8 +18,8 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -51,7 +51,7 @@ public class ChainedSwapMove extends SwapMove {
             GenuineVariableDescriptor variableDescriptor = variableDescriptorList.get(i);
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);
             Object oldRightValue = variableDescriptor.getValue(rightEntity);
-            if (!ObjectUtils.equals(oldLeftValue, oldRightValue)) {
+            if (!Objects.equals(oldLeftValue, oldRightValue)) {
                 if (!variableDescriptor.isChained()) {
                     scoreDirector.changeVariableFacade(variableDescriptor, leftEntity, oldRightValue);
                     scoreDirector.changeVariableFacade(variableDescriptor, rightEntity, oldLeftValue);

@@ -18,8 +18,8 @@ package org.optaplanner.examples.cloudbalancing.solver.move;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
@@ -39,7 +39,7 @@ public class CloudProcessSwapMove extends AbstractMove {
     }
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        return !ObjectUtils.equals(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
+        return !Objects.equals(leftCloudProcess.getComputer(), rightCloudProcess.getComputer());
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {

@@ -18,8 +18,8 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -54,7 +54,7 @@ public class ChangeMove extends AbstractMove {
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         Object oldValue = variableDescriptor.getValue(entity);
-        return !ObjectUtils.equals(oldValue, toPlanningValue);
+        return !Objects.equals(oldValue, toPlanningValue);
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {

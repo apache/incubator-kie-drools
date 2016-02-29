@@ -16,8 +16,9 @@
 
 package org.optaplanner.examples.machinereassignment.domain;
 
+import java.util.Objects;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -66,7 +67,7 @@ public class MrProcessAssignment extends AbstractPersistable {
     }
 
     public boolean isMoved() {
-        return !ObjectUtils.equals(originalMachine, machine);
+        return !Objects.equals(originalMachine, machine);
     }
 
     public int getProcessMoveCost() {

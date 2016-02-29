@@ -18,7 +18,6 @@ package org.optaplanner.examples.tsp.domain.location;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.vehiclerouting.domain.VehicleRoutingSolution;
 

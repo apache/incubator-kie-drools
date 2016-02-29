@@ -17,9 +17,9 @@
 package org.optaplanner.examples.projectjobscheduling.domain.solver;
 
 import java.util.ArrayDeque;
+import java.util.Objects;
 import java.util.Queue;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
@@ -74,7 +74,7 @@ public class PredecessorsDoneDateUpdatingVariableListener implements VariableLis
             int endDate = predecessorAllocation.getEndDate();
             doneDate = Math.max(doneDate, endDate);
         }
-        if (ObjectUtils.equals(doneDate, allocation.getPredecessorsDoneDate())) {
+        if (Objects.equals(doneDate, allocation.getPredecessorsDoneDate())) {
             return false;
         }
         scoreDirector.beforeVariableChanged(allocation, "predecessorsDoneDate");

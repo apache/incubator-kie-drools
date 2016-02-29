@@ -27,12 +27,12 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
@@ -460,7 +460,7 @@ public class ProblemBenchmarkResult {
                     newPlannerBenchmarkResult.getUnifiedProblemBenchmarkResultList().add(newResult);
                 } else {
                     newResult = fileToNewResultMap.get(oldResult.inputSolutionFile);
-                    if (!ObjectUtils.equals(oldResult.name, newResult.name)) {
+                    if (!Objects.equals(oldResult.name, newResult.name)) {
                         throw new IllegalStateException(
                                 "The oldResult (" + oldResult + ") and newResult (" + newResult
                                 + ") should have the same name, because they have the same inputSolutionFile ("

@@ -255,7 +255,7 @@ end</programlisting>
                 CloudBalance cloudBalance = (CloudBalance) scoreDirector.getWorkingSolution();
                 // First remove the problem fact from all planning entities that use it
                 for (CloudProcess process : cloudBalance.getProcessList()) {
-                    if (ObjectUtils.equals(process.getComputer(), computer)) {
+                    if (Objects.equals(process.getComputer(), computer)) {
                         scoreDirector.beforeVariableChanged(process, "computer");
                         process.setComputer(null);
                         scoreDirector.afterVariableChanged(process, "computer");
@@ -267,7 +267,7 @@ end</programlisting>
                 // Next remove it the problem fact itself
                 for (Iterator&lt;CloudComputer&gt; it = cloudBalance.getComputerList().iterator(); it.hasNext(); ) {
                     CloudComputer workingComputer = it.next();
-                    if (ObjectUtils.equals(workingComputer, computer)) {
+                    if (Objects.equals(workingComputer, computer)) {
                         scoreDirector.beforeProblemFactRemoved(workingComputer);
                         it.remove(); // remove from list
                         scoreDirector.afterProblemFactRemoved(workingComputer);

@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;

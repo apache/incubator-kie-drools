@@ -18,8 +18,8 @@ package org.optaplanner.examples.pas.solver.move;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.impl.heuristic.move.AbstractMove;
@@ -39,7 +39,7 @@ public class BedChangeMove extends AbstractMove {
     }
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
-        return !ObjectUtils.equals(bedDesignation.getBed(), toBed);
+        return !Objects.equals(bedDesignation.getBed(), toBed);
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
