@@ -428,11 +428,14 @@ public class AddRemoveRule {
                         Memory mem = wm.getNodeMemories().peekNodeMemory( parent.getId() );
                         if ( mem != null && mem.getSegmentMemory() != null ) {
                             SegmentMemory sm = mem.getSegmentMemory();
-                            if ( sm.getFirst() != null ) {
-                                SegmentMemory childSmem = SegmentUtilities.createChildSegment( wm, child );
-                                sm.add( childSmem );
-                                pmem.setSegmentMemory( childSmem.getPos(), childSmem );
-                                smemsToNotify.add( childSmem );
+                            if ( sm.getFirst() != null && sm.size() < parent.getSinkPropagator().size()) {
+                                LeftTupleSink[] sinks = parent.getSinkPropagator().getSinks();
+                                for (int i = sm.size(); i < sinks.length; i++) {
+                                    SegmentMemory childSmem = SegmentUtilities.createChildSegment( wm, sinks[i] );
+                                    sm.add( childSmem );
+                                    pmem.setSegmentMemory( childSmem.getPos(), childSmem );
+                                    smemsToNotify.add( childSmem );
+                                }
                             }
                             correctMemoryOnSplitsChanged( parent, null, wm );
                         }
