@@ -128,4 +128,29 @@ public class DTCellValue52Test {
                       dcv.getStringValue() );
     }
 
+    @Test
+    public void testDefaultValue() throws Exception {
+        final DTCellValue52 defaultValue = new DTCellValue52( 1 );
+        final DTCellValue52 clone = new DTCellValue52( defaultValue );
+        assertEquals( DataType.DataTypes.NUMERIC_INTEGER,
+                      clone.getDataType() );
+        assertNull( clone.getBooleanValue() );
+        assertNull( clone.getDateValue() );
+        assertEquals( 1,
+                      clone.getNumericValue() );
+        assertNull( clone.getStringValue() );
+    }
+
+    @Test
+    public void testDefaultValueNull() throws Exception {
+        final DTCellValue52 defaultValue = null;
+        final DTCellValue52 clone = new DTCellValue52( defaultValue );
+        assertEquals( DataType.DataTypes.STRING,
+                      clone.getDataType() );
+        assertNull( clone.getBooleanValue() );
+        assertNull( clone.getDateValue() );
+        assertNull( clone.getNumericValue() );
+        assertNull( clone.getStringValue() );
+    }
+
 }
