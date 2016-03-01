@@ -208,9 +208,10 @@ public class AddRemoveRule {
 
         void adjustSegment(InternalWorkingMemory wm, Set<SegmentMemory> smemsToNotify, SegmentMemory smem, int smemSplitAdjustAmount);
 
-        void handleSplit(SegmentMemory[] prevSmems, SegmentMemory[] smems, int smemIndex, int prevSmemIndex,
+        void handleSplit(PathMemory pmem, SegmentMemory[] prevSmems, SegmentMemory[] smems, int smemIndex, int prevSmemIndex,
                          LeftTupleNode parentNode, LeftTupleNode node, Rule rule,
-                         Set<LeftTupleNode> visited, Set<SegmentMemory> smemsToNotify, Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap, InternalWorkingMemory wm);
+                         Set<LeftTupleNode> visited, Set<SegmentMemory> smemsToNotify, Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap,
+                         InternalWorkingMemory wm);
 
         void processSegmentMemories(SegmentMemory[] smems, PathMemory pmem);
 
@@ -236,9 +237,10 @@ public class AddRemoveRule {
         }
 
         @Override
-        public void handleSplit(SegmentMemory[] prevSmems, SegmentMemory[] smems, int smemIndex, int prevSmemIndex,
+        public void handleSplit(PathMemory pmem, SegmentMemory[] prevSmems, SegmentMemory[] smems, int smemIndex, int prevSmemIndex,
                                 LeftTupleNode parentNode, LeftTupleNode node, Rule rule,
-                                Set<LeftTupleNode> visited, Set<SegmentMemory> smemsToNotify, Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap, InternalWorkingMemory wm) {
+                                Set<LeftTupleNode> visited, Set<SegmentMemory> smemsToNotify, Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap,
+                                InternalWorkingMemory wm) {
             if (smems[smemIndex - 1] != null) {
                 SegmentMemory sm2 = nodeToSegmentMap.get(node);
                 if (sm2 == null) {
@@ -296,9 +298,10 @@ public class AddRemoveRule {
         }
 
         @Override
-        public void handleSplit(SegmentMemory[] prevSmems, SegmentMemory[] smems, int smemIndex, int prevSmemIndex,
+        public void handleSplit(PathMemory pmem, SegmentMemory[] prevSmems, SegmentMemory[] smems, int smemIndex, int prevSmemIndex,
                                 LeftTupleNode parentNode, LeftTupleNode node, Rule rule,
-                                Set<LeftTupleNode> visited, Set<SegmentMemory> smemsToNotify, Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap, InternalWorkingMemory wm) {
+                                Set<LeftTupleNode> visited, Set<SegmentMemory> smemsToNotify, Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap,
+                                InternalWorkingMemory wm) {
             if (visited.contains(node)) {
                 return;
             }
@@ -370,11 +373,13 @@ public class AddRemoveRule {
             SegmentMemory[] prevSmems = prevSmemsLookup.get(pmem);
             SegmentMemory[] smems     = strategy.getSegmenMemories(pmem);
 
-            LeftTupleNode node                  = null;
+            LeftTupleNode node;
             int           prevSmemIndex         = 0;
             int           smemIndex             = 0;
             int           smemSplitAdjustAmount = 0;
             int           nodeIndex             = 0;
+            int           nodeTypesInSegment    = 0;
+
             // excluding the rule just added iterate while not split (i.e. find the next split, prior to this rule being added)
             // note it's checking for when the parent is the split, and thus node is the next root root.
 
@@ -382,10 +387,11 @@ public class AddRemoveRule {
             do {
                 node = nodes[nodeIndex++];
                 LeftTupleNode parentNode = node.getLeftTupleSource();
+                nodeTypesInSegment = SegmentUtilities.updateNodeTypesMask( parentNode, nodeTypesInSegment );
                 if (isSplit(parentNode)) {
                     smemIndex = strategy.incSmemIndex1(smemIndex);
                     prevSmemIndex = strategy.incPrevSmemIndex1(prevSmemIndex);
-                    if (isSplit(parentNode, rule)) {
+                    if (isSplit(parentNode, rule)) { // check if the split is there even without the processed rule
                         smemIndex = strategy.incSmemIndex2(smemIndex);
                         prevSmemIndex = strategy.incPrevSmemIndex2(prevSmemIndex);
                         smems[smemIndex] = prevSmems[prevSmemIndex];
@@ -393,9 +399,15 @@ public class AddRemoveRule {
                             strategy.adjustSegment( wm, smemsToNotify, smems[smemIndex], smemSplitAdjustAmount );
                         }
                     } else {
-                        strategy.handleSplit(prevSmems, smems, smemIndex, prevSmemIndex, parentNode, node, rule, visitedNodes, smemsToNotify,nodeToSegmentMap, wm);
+                        strategy.handleSplit(pmem, prevSmems, smems, smemIndex, prevSmemIndex,
+                                             parentNode, node, rule, visitedNodes,
+                                             smemsToNotify, nodeToSegmentMap, wm);
                         smemSplitAdjustAmount++;
                     }
+                    if (smems[smemIndex] == null) {
+                        SegmentUtilities.checkEagerSegmentCreation( (LeftTupleSource) parentNode, wm, nodeTypesInSegment );
+                    }
+                    nodeTypesInSegment = 0;
                 }
             } while (!NodeTypeEnums.isEndNode(node));
             strategy.processSegmentMemories(smems, pmem);
