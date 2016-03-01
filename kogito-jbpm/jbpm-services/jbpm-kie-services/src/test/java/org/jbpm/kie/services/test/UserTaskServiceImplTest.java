@@ -169,25 +169,45 @@ private static final Logger logger = LoggerFactory.getLogger(KModuleDeploymentSe
     
     @Test
     public void testStartAndComplete() {
-    	processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
-    	assertNotNull(processInstanceId);
-    	List<Long> taskIds = runtimeDataService.getTasksByProcessInstanceId(processInstanceId);
-    	assertNotNull(taskIds);
-    	assertEquals(1, taskIds.size());
-    	
-    	Long taskId = taskIds.get(0);
-    	
-    	userTaskService.start(taskId, "salaboy");
-    	UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
-    	assertNotNull(task);
-    	assertEquals(Status.InProgress.toString(), task.getStatus());
-    	
-    	Map<String, Object> results = new HashMap<String, Object>();
-    	results.put("Result", "some document data");
-    	userTaskService.complete(taskId, "salaboy", results);
-    	task = runtimeDataService.getTaskById(taskId);
-    	assertNotNull(task);
-    	assertEquals(Status.Completed.toString(), task.getStatus());
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+        List<Long> taskIds = runtimeDataService.getTasksByProcessInstanceId(processInstanceId);
+        assertNotNull(taskIds);
+        assertEquals(1, taskIds.size());
+        
+        Long taskId = taskIds.get(0);
+        
+        userTaskService.start(taskId, "salaboy");
+        UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
+        assertNotNull(task);
+        assertEquals(Status.InProgress.toString(), task.getStatus());
+        
+        Map<String, Object> results = new HashMap<String, Object>();
+        results.put("Result", "some document data");
+        userTaskService.complete(taskId, "salaboy", results);
+        task = runtimeDataService.getTaskById(taskId);
+        assertNotNull(task);
+        assertEquals(Status.Completed.toString(), task.getStatus());
+    }
+    
+    @Test
+    public void testCompleteAutoProgress() {
+        processInstanceId = processService.startProcess(deploymentUnit.getIdentifier(), "org.jbpm.writedocument");
+        assertNotNull(processInstanceId);
+        List<Long> taskIds = runtimeDataService.getTasksByProcessInstanceId(processInstanceId);
+        assertNotNull(taskIds);
+        assertEquals(1, taskIds.size());
+        
+        Long taskId = taskIds.get(0);
+        userTaskService.release(taskId, "salaboy");
+        
+        Map<String, Object> results = new HashMap<String, Object>();
+        results.put("Result", "some document data");
+        // claim, start, and complete the task
+        userTaskService.completeAutoProgress(taskId, "salaboy", results);
+        UserTaskInstanceDesc task = runtimeDataService.getTaskById(taskId);
+        assertNotNull(task);
+        assertEquals(Status.Completed.toString(), task.getStatus());
     }
     
     @Test
