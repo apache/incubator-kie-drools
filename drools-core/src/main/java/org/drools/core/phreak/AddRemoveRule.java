@@ -204,8 +204,6 @@ public class AddRemoveRule {
         ExistingPathStrategy ADD_STRATEGY = new AddExistingPaths();
         ExistingPathStrategy REMOVE_STRATEGY = new RemoveExistingPaths();
 
-        LeftTupleNode getNextNode(LeftTupleNode[] nodes, LeftTupleNode node, int index);
-
         SegmentMemory[] getSegmenMemories(PathMemory pmem);
 
         void adjustSegment(InternalWorkingMemory wm, Set<SegmentMemory> smemsToNotify, SegmentMemory smem, int smemSplitAdjustAmount);
@@ -213,6 +211,7 @@ public class AddRemoveRule {
         void handleSplit(SegmentMemory[] prevSmems, SegmentMemory[] smems, int smemIndex, int prevSmemIndex,
                          LeftTupleNode parentNode, LeftTupleNode node, Rule rule,
                          Set<LeftTupleNode> visited, Set<SegmentMemory> smemsToNotify, Map<LeftTupleNode, SegmentMemory> nodeToSegmentMap, InternalWorkingMemory wm);
+
         void processSegmentMemories(SegmentMemory[] smems, PathMemory pmem);
 
         int incSmemIndex1(int smemIndex);
@@ -223,10 +222,6 @@ public class AddRemoveRule {
     }
 
     public static class AddExistingPaths implements ExistingPathStrategy {
-        @Override
-        public LeftTupleNode getNextNode(LeftTupleNode[] nodes, LeftTupleNode node, int index) {
-            return nodes[index];
-        }
 
         @Override
         public SegmentMemory[] getSegmenMemories(PathMemory pmem) {
@@ -287,10 +282,6 @@ public class AddRemoveRule {
     }
 
     public static class RemoveExistingPaths implements ExistingPathStrategy {
-        @Override
-        public LeftTupleNode getNextNode(LeftTupleNode[] nodes, LeftTupleNode node, int index) {
-            return nodes[index];
-        }
 
         @Override
         public SegmentMemory[] getSegmenMemories(PathMemory pmem) {
@@ -319,9 +310,11 @@ public class AddRemoveRule {
 
             if (sm1 != null && sm2 == null) {
                 sm2 = SegmentUtilities.createChildSegment(wm,node);
+                prevSmems[prevSmemIndex] = sm2;
                 sm1.add(sm2);
             } else if (sm1 == null && sm2 != null) {
                 sm1 = SegmentUtilities.createChildSegment(wm, parentNode);
+                smems[smemIndex] = sm1;
                 sm1.add(sm2);
             }
 
@@ -387,7 +380,7 @@ public class AddRemoveRule {
 
             smems[smemIndex] = prevSmems[prevSmemIndex];
             do {
-                node = strategy.getNextNode(nodes, node, nodeIndex++);
+                node = nodes[nodeIndex++];
                 LeftTupleNode parentNode = node.getLeftTupleSource();
                 if (isSplit(parentNode)) {
                     smemIndex = strategy.incSmemIndex1(smemIndex);
@@ -397,7 +390,7 @@ public class AddRemoveRule {
                         prevSmemIndex = strategy.incPrevSmemIndex2(prevSmemIndex);
                         smems[smemIndex] = prevSmems[prevSmemIndex];
                         if ( smems[smemIndex] != null && smemSplitAdjustAmount > 0 && visitedSegments.add(smems[smemIndex])) {
-                            strategy.adjustSegment(wm, smemsToNotify, smems[smemIndex], smemSplitAdjustAmount);
+                            strategy.adjustSegment( wm, smemsToNotify, smems[smemIndex], smemSplitAdjustAmount );
                         }
                     } else {
                         strategy.handleSplit(prevSmems, smems, smemIndex, prevSmemIndex, parentNode, node, rule, visitedNodes, smemsToNotify,nodeToSegmentMap, wm);
@@ -409,8 +402,6 @@ public class AddRemoveRule {
         }
         return smemsToNotify;
     }
-
-
 
     private static void addNewPaths(InternalWorkingMemory wm, Set<SegmentMemory> smemsToNotify, List<PathMemory> pmems) {
         // Multiple paths may be renetrant, in the case of a second subnetwork on the same rule.
@@ -626,7 +617,7 @@ public class AddRemoveRule {
         return previousSmems;
     }
 
-    public static void notifySegments(Set<SegmentMemory> smems, InternalWorkingMemory wm) {
+    private static void notifySegments(Set<SegmentMemory> smems, InternalWorkingMemory wm) {
         for (SegmentMemory sm : smems) {
             sm.notifyRuleLinkSegment(wm);
         }

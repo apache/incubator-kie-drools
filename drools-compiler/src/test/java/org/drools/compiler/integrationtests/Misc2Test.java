@@ -8314,21 +8314,18 @@ public class Misc2Test extends CommonTestMethodBase {
     public void testXXX() {
         String drl =
                 "global java.util.List list\n" +
-/*
                 "rule R1 \n" +
                 "when \n" +
-                "  exists(Integer() and Integer()) \n" +
-                "  Integer() \n" +
+                "  exists(Integer()) \n" +
+                "  not(Double() and Double()) \n" +
                 "  Integer() \n" +
                 "then \n" +
                 " list.add('R1'); \n" +
                 "end\n" +
-*/
                 "rule R2 \n" +
                 "when \n" +
-                "  exists(Integer() and Integer()) \n" +
+                "  exists(Integer()) \n" +
                 "  not(Double() and Double()) \n" +
-                "  Integer() \n" +
                 "then \n" +
                 " list.add('R2'); \n" +
                 "end";
@@ -8345,8 +8342,8 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.insert( 1 );
 
         ksession.fireAllRules();
-        assertEquals( 1, list.size() );
+        assertEquals( 2, list.size() );
+        assertTrue( list.contains( "R1" ) );
         assertTrue( list.contains( "R2" ) );
     }
-
 }
