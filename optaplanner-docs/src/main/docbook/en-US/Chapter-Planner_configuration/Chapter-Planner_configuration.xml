@@ -215,7 +215,9 @@
   ...
 &lt;/solver&gt;</programlisting>
 
-        <para>If there are multiple models in your classpath (or just to speed up scanning), specify the packages to
+        <para>This comes at a bootstrap performance cost.</para>
+
+        <para>If there are multiple models in your classpath or to speed up scanning, specify the packages to
         scan:</para>
 
         <programlisting language="xml">&lt;solver&gt;
@@ -227,7 +229,7 @@
   ...
 &lt;/solver&gt;</programlisting>
 
-        <para>This will find all solution and entity classes in the package or subpackages.</para>
+        <para>This finds all solution and entity classes in that package or its subpackages.</para>
 
         <note>
           <para>If <literal>scanAnnotatedClasses</literal> is not specified, the <literal>org.reflections</literal>
@@ -1142,6 +1144,16 @@ public class Visit ... implements Standstill {
         shadow variables): it just assures that when a genuine variable changes, any dependent shadow variables are
         changed accordingly.</para>
 
+        <important>
+          <para><emphasis role="bold">Any class that has at least one shadow variable, is a planning entity
+          class</emphasis>, even if it has no genuine planning variables. That entity class needs to be defined in the
+          solver configuration (unless classes are <link linkend="automaticScanningForAnnotations">automatically
+          scanned</link>) and be annotated accordingly.</para>
+
+          <para>An genuine planning entity class has at least one genuine planning variable. A shadow planning entity
+          class has no genuine planning variables and at least one shadow planning variable.</para>
+        </important>
+
         <para>There are several build-in shadow variables:</para>
       </section>
 
@@ -1279,9 +1291,6 @@ public class Customer {
           <literal>entityClass</literal> on <literal>@CustomShadowVariable.Source</literal>. In that case, make sure
           that that <literal>entityClass</literal> is also properly configured as a planning entity class in the solver
           config, or the <literal>VariableListener</literal> will simply never trigger.</para>
-
-          <para>Any class that has at least one shadow variable, is a planning entity class, even it has no genuine
-          planning variables.</para>
         </note>
 
         <para>For example, the <literal>VehicleUpdatingVariableListener</literal> assures that every
