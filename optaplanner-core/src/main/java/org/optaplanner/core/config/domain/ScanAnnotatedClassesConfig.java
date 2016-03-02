@@ -24,6 +24,7 @@ import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.lang3.StringUtils;
 import org.drools.core.common.ProjectClassLoader;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -69,12 +70,18 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
         if (!ConfigUtils.isEmptyCollection(packageIncludeList)) {
             FilterBuilder filterBuilder = new FilterBuilder();
             for (String packageInclude : packageIncludeList) {
+                if (StringUtils.isEmpty(packageInclude)) {
+                    throw new IllegalArgumentException("The scanAnnotatedClasses (" + this
+                            + ") has a packageInclude (" + packageInclude
+                            + ") that is empty or null. Remove it or fill it in.");
+                }
                 builder.addUrls(ReflectionsWorkaroundClasspathHelper.forPackage(packageInclude, classLoaders));
                 filterBuilder.includePackage(packageInclude);
             }
             builder.filterInputsBy(filterBuilder);
         } else {
-            builder.addUrls(ReflectionsWorkaroundClasspathHelper.forPackage("", classLoaders));
+            // Do not use ClasspathHelper.forPackage("", classLoaders) because it does not include all packages
+            builder.addUrls(ReflectionsWorkaroundClasspathHelper.forClassLoader(classLoaders));
         }
         builder.setClassLoaders(classLoaders);
         Reflections reflections = new Reflections(builder);
@@ -89,7 +96,14 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
         if (ConfigUtils.isEmptyCollection(solutionClassSet)) {
             throw new IllegalStateException("The scanAnnotatedClasses (" + this
                     + ") did not find any classes with a " + PlanningSolution.class.getSimpleName()
-                    + " annotation.");
+                    + " annotation.\n"
+                    + "Maybe you forgot to annotate a class with a " + PlanningSolution.class.getSimpleName()
+                    + " annotation.\n"
+                    + (ConfigUtils.isEmptyCollection(packageIncludeList) ? ""
+                    : "Maybe the annotated class does match the packageIncludeList (" + packageIncludeList + ").\n"
+                    + "Maybe you're using special classloading mechanisms (OSGi, ...) and this is a bug."
+                    + " If you can confirm that, report it to our issue tracker"
+                    + " and workaround it by defining the classes explicitly in the solver configuration."));
         } else if (solutionClassSet.size() > 1) {
             throw new IllegalStateException("The scanAnnotatedClasses (" + this
                     + ") found multiple classes (" + solutionClassSet
