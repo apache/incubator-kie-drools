@@ -1973,7 +1973,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
         runAddRemoveTest(builder.build(), new HashMap<String, Object>());
     }
 
-    @Test @Ignore
+    @Test
     public void testInsertFireRemoveWith2Nots() {
         final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
                 " global java.util.List list\n" +
@@ -2013,7 +2013,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testInsertRemoveFireWith2Nots() {
         final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
                 " global java.util.List list\n" +
@@ -2048,7 +2048,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
     }
 
-    @Test @Ignore
+    @Test
     public void testInsertFireRemoveAddWith2Nots() {
 
         final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
