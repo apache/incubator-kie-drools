@@ -83,8 +83,6 @@ public abstract class AbstractAddRemoveGenerated2RulesTest extends AbstractAddRe
     @Test(timeout = 10000)
     public void testInsertFactsFireRulesRemoveRules() {
         checkRunTurtleTests();
-        logger.info("Rule 1: \n" + rule1);
-        logger.info("Rule 2: \n" + rule2);
         final List<List<TestOperation>> testPlans =
                 AddRemoveTestBuilder.createInsertFactsFireRulesRemoveRulesTestPlan(
                         rule1, rule2, RULE1_NAME, RULE2_NAME, getFacts());
@@ -95,8 +93,6 @@ public abstract class AbstractAddRemoveGenerated2RulesTest extends AbstractAddRe
     @Test(timeout = 10000)
     public void testInsertFactsFireRulesRemoveRulesRevertedRules() {
         checkRunTurtleTests();
-        logger.info("Rule 1: \n" + rule2);
-        logger.info("Rule 2: \n" + rule1);
         final List<List<TestOperation>> testPlans =
                 AddRemoveTestBuilder.createInsertFactsFireRulesRemoveRulesTestPlan(
                         rule2, rule1, RULE2_NAME, RULE1_NAME, getFacts());
@@ -107,8 +103,6 @@ public abstract class AbstractAddRemoveGenerated2RulesTest extends AbstractAddRe
     @Test(timeout = 10000)
     public void testFireRulesInsertFactsFireRulesRemoveRules() {
         checkRunTurtleTests();
-        logger.info("Rule 1: \n" + rule1);
-        logger.info("Rule 2: \n" + rule2);
         final List<List<TestOperation>> testPlans =
                 AddRemoveTestBuilder.createFireRulesInsertFactsFireRulesRemoveRulesTestPlan(
                         rule1, rule2, RULE1_NAME, RULE2_NAME, getFacts());
@@ -119,8 +113,6 @@ public abstract class AbstractAddRemoveGenerated2RulesTest extends AbstractAddRe
     @Test(timeout = 10000)
     public void testFireRulesInsertFactsFireRulesRemoveRulesRevertedRules() {
         checkRunTurtleTests();
-        logger.info("Rule 1: \n" + rule2);
-        logger.info("Rule 2: \n" + rule1);
         final List<List<TestOperation>> testPlans =
                 AddRemoveTestBuilder.createFireRulesInsertFactsFireRulesRemoveRulesTestPlan(
                         rule2, rule1, RULE2_NAME, RULE1_NAME, getFacts());
@@ -131,8 +123,6 @@ public abstract class AbstractAddRemoveGenerated2RulesTest extends AbstractAddRe
     @Test(timeout = 10000)
     public void testInsertFactsRemoveRulesFireRulesRemoveRules() {
         checkRunTurtleTests();
-        logger.info("Rule 1: \n" + rule1);
-        logger.info("Rule 2: \n" + rule2);
         final List<List<TestOperation>> testPlans =
                 AddRemoveTestBuilder.createInsertFactsRemoveRulesFireRulesRemoveRulesTestPlan(
                         rule1, rule2, RULE1_NAME, RULE2_NAME, getFacts());
@@ -143,8 +133,6 @@ public abstract class AbstractAddRemoveGenerated2RulesTest extends AbstractAddRe
     @Test(timeout = 10000)
     public void testInsertFactsRemoveRulesFireRulesRemoveRulesRevertedRules() {
         checkRunTurtleTests();
-        logger.info("Rule 1: \n" + rule2);
-        logger.info("Rule 2: \n" + rule1);
         final List<List<TestOperation>> testPlans =
                 AddRemoveTestBuilder.createInsertFactsRemoveRulesFireRulesRemoveRulesTestPlan(
                         rule2, rule1, RULE2_NAME, RULE1_NAME, getFacts());
@@ -155,8 +143,6 @@ public abstract class AbstractAddRemoveGenerated2RulesTest extends AbstractAddRe
     @Test(timeout = 10000)
     public void testInsertFactsFireRulesRemoveRulesReinsertRules() {
         checkRunTurtleTests();
-        logger.info("Rule 1: \n" + rule1);
-        logger.info("Rule 2: \n" + rule2);
         final List<List<TestOperation>> testPlans =
                 AddRemoveTestBuilder.createInsertFactsFireRulesRemoveRulesReinsertRulesTestPlan(
                         rule1, rule2, RULE1_NAME, RULE2_NAME, getFacts());
@@ -167,8 +153,6 @@ public abstract class AbstractAddRemoveGenerated2RulesTest extends AbstractAddRe
     @Test(timeout = 10000)
     public void testInsertFactsFireRulesRemoveRulesReinsertRulesRevertedRules() {
         checkRunTurtleTests();
-        logger.info("Rule 1: \n" + rule2);
-        logger.info("Rule 2: \n" + rule1);
         final List<List<TestOperation>> testPlans =
                 AddRemoveTestBuilder.createInsertFactsFireRulesRemoveRulesReinsertRulesTestPlan(
                         rule2, rule1, RULE2_NAME, RULE1_NAME, getFacts());
