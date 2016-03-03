@@ -67,24 +67,16 @@
               <packages>org.kie.time*</packages>
             </group>
           </groups>
-          <!--
-            yWorks UML Doclet (AKA ydoc) is used for the UML diagrams in drools-docs.
-            To use it:
-            - Download version 3.0.2 or higher from http://www.yworks.com/en/products_ydoc.html#download
-            - Install it to for example /home/gdesmet/opt/other/yworks-uml-doclet
-            - Edit yworks-uml-doclet/resources/ydoc.cfg:
-            - Replace every "original-style.xml" by "dotnet-style.xml"
-            - For "tiling", set property "enabled" to "false"
-            - Save and close ydoc.cfg
-            - Uncomment the lines below. Adjust <docletPath> accordingly.
-            - cd .../droolsjbpm/droolsjbpm-knowledge/kie-api
-            - mvn clean install -Dfull
-            - cd .../droolsjbpm
-            - droolsjbpm-build-bootstrap/script/docs/copy-ydoc-output.sh
-          -->
-          <!--doclet>ydoc.doclets.YStandard</doclet>
-          <docletPath>/opt/yworks-uml-doclet-3.0_02-jdk1.5/lib/ydoc.jar:/opt/yworks-uml-doclet-3.0_02-jdk1.5/lib/styleed.jar:/opt/yworks-uml-doclet-3.0_02-jdk1.5/resources</docletPath>
-          <additionalparam>-umlautogen</additionalparam-->
+          <!-- Important: this doclet requires Graphviz (the 'dot' command) to be installed.
+               It logs warning if it can not find the command. -->
+          <doclet>org.jboss.apiviz.APIviz</doclet>
+          <docletArtifact>
+            <groupId>com.grahamedgecombe.apiviz</groupId>
+            <artifactId>apiviz</artifactId>
+            <version>1.3.3</version>
+          </docletArtifact>
+          <useStandardDocletOptions>true</useStandardDocletOptions>
+          <additionalparam>-sourceclasspath ${project.build.outputDirectory}</additionalparam>
         </configuration>
       </plugin>
       <plugin>
