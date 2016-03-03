@@ -22,6 +22,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Global;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 
@@ -79,6 +80,12 @@ public class DroolsScoreDirectorFactory extends AbstractScoreDirectorFactory {
             for (Global global : kiePackage.getGlobalVariables()) {
                 if (DroolsScoreDirector.GLOBAL_SCORE_HOLDER_KEY.equals(global.getName())) {
                     hasGlobalScoreHolder = true;
+                    // TODO Fail fast once global.getType() can be turned into a Class instead of a String
+//                    if (!ScoreHolder.class.isAssignableFrom(global.getType())) {
+//                        throw new IllegalStateException("The global with name (" + global.getName()
+//                                + ") has a type (" + global.getType()
+//                                + ") that does not implement " + ScoreHolder.class.getSimpleName() + ".");
+//                    }
                     break;
                 }
             }
