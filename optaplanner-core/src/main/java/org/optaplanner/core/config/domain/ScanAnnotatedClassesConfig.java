@@ -100,10 +100,10 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
                     + "Maybe you forgot to annotate a class with a " + PlanningSolution.class.getSimpleName()
                     + " annotation.\n"
                     + (ConfigUtils.isEmptyCollection(packageIncludeList) ? ""
-                    : "Maybe the annotated class does match the packageIncludeList (" + packageIncludeList + ").\n"
+                    : "Maybe the annotated class does match the packageIncludeList (" + packageIncludeList + ").\n")
                     + "Maybe you're using special classloading mechanisms (OSGi, ...) and this is a bug."
                     + " If you can confirm that, report it to our issue tracker"
-                    + " and workaround it by defining the classes explicitly in the solver configuration."));
+                    + " and workaround it by defining the classes explicitly in the solver configuration.");
         } else if (solutionClassSet.size() > 1) {
             throw new IllegalStateException("The scanAnnotatedClasses (" + this
                     + ") found multiple classes (" + solutionClassSet
