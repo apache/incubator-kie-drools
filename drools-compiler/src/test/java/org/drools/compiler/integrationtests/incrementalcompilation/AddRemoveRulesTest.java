@@ -1936,7 +1936,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
         runAddRemoveTest(builder.build(), new HashMap<String, Object>());
     }
 
-    @Test @Ignore
+    @Test
     public void testSubNetworkWithNot4() {
         final String rule1 = "package " + PKG_NAME_TEST + ";" +
                              "global java.util.List list\n" +
