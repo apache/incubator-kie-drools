@@ -116,47 +116,47 @@ public abstract class AbstractAddRemoveRulesTest {
             if (testOperationType != TestOperationType.CREATE_SESSION) {
                 checkSessionInitialized(session);
             }
-            switch (testOperationType) {
-                case CREATE_SESSION:
-                    session = createNewSession((String[]) testOperationParameter, resultsList, additionalGlobals);
-                    break;
-                case ADD_RULES:
-                    addRulesToSession(session, (String[]) testOperationParameter, false);
-                    break;
-                case ADD_RULES_REINSERT_OLD:
-                    addRulesToSession(session, (String[]) testOperationParameter, true);
-                    break;
-                case REMOVE_RULES:
-                    removeRulesFromSession(session, (String[]) testOperationParameter);
-                    break;
-                case FIRE_RULES:
-                    try {
+            try {
+                switch (testOperationType) {
+                    case CREATE_SESSION:
+                        session = createNewSession((String[]) testOperationParameter, resultsList, additionalGlobals);
+                        break;
+                    case ADD_RULES:
+                        addRulesToSession(session, (String[]) testOperationParameter, false);
+                        break;
+                    case ADD_RULES_REINSERT_OLD:
+                        addRulesToSession(session, (String[]) testOperationParameter, true);
+                        break;
+                    case REMOVE_RULES:
+                        removeRulesFromSession(session, (String[]) testOperationParameter);
+                        break;
+                    case FIRE_RULES:
                         session.fireAllRules();
-                    } catch (Exception e) {
-                        throw new RuntimeException( createTestFailMessage(testOperations, index, null, null), e );
-                    }
-                    break;
-                case CHECK_RESULTS:
-                    final Set<String> expectedResultsSet = new HashSet<String>();
-                    expectedResultsSet.addAll(Arrays.asList((String[])testOperationParameter));
-                    if (expectedResultsSet.size() > 0) {
+                        break;
+                    case CHECK_RESULTS:
+                        final Set<String> expectedResultsSet = new HashSet<String>();
+                        expectedResultsSet.addAll(Arrays.asList((String[]) testOperationParameter));
+                        if (expectedResultsSet.size() > 0) {
+                            assertTrue(createTestFailMessage(testOperations, index, expectedResultsSet, resultsList),
+                                    resultsList.size() > 0);
+                        }
                         assertTrue(createTestFailMessage(testOperations, index, expectedResultsSet, resultsList),
-                                resultsList.size() > 0);
-                    }
-                    assertTrue(createTestFailMessage(testOperations, index, expectedResultsSet, resultsList),
-                            expectedResultsSet.containsAll(resultsList));
-                    assertTrue(createTestFailMessage(testOperations, index, expectedResultsSet, resultsList),
-                            resultsList.containsAll(expectedResultsSet));
-                    resultsList.clear();
-                    break;
-                case INSERT_FACTS:
-                    insertFactsIntoSession(session, (Object[]) testOperationParameter);
-                    break;
-                case DUMP_RETE:
-                    ReteDumper.dumpRete( (KieSession)session );
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unsupported test operation: " + testOperationType + "!");
+                                expectedResultsSet.containsAll(resultsList));
+                        assertTrue(createTestFailMessage(testOperations, index, expectedResultsSet, resultsList),
+                                resultsList.containsAll(expectedResultsSet));
+                        resultsList.clear();
+                        break;
+                    case INSERT_FACTS:
+                        insertFactsIntoSession(session, (Object[]) testOperationParameter);
+                        break;
+                    case DUMP_RETE:
+                        ReteDumper.dumpRete((KieSession) session);
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Unsupported test operation: " + testOperationType + "!");
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(createTestFailMessage(testOperations, index, null, null), e);
             }
             index++;
         }

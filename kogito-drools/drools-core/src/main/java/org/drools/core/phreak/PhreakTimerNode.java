@@ -471,7 +471,7 @@ public class PhreakTimerNode {
         RuleNetworkEvaluator rne = new RuleNetworkEvaluator();
         LinkedList<StackEntry> outerStack = new LinkedList<StackEntry>();
 
-        rne.outerEval(lian, pmem, sink, bit, tm,
+        rne.outerEval(pmem, sink, bit, tm,
                       smems, smemIndex, trgLeftTuples,
                       wm, new LinkedList<StackEntry>(), true,
                       pmem.getRuleAgendaItem().getRuleExecutor());

@@ -33,7 +33,6 @@ import org.drools.core.util.AbstractBaseLinkedListNode;
 * To change this template use File | Settings | File Templates.
 */
 public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
-    private final LeftInputAdapterNode liaNode;
     private final long                 bit;
     private final NetworkNode          node;
     private final LeftTupleSinkNode    sink;
@@ -46,8 +45,7 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
     private final boolean              processRian;
 
 
-    public StackEntry(LeftInputAdapterNode liaNode,
-                      NetworkNode node,
+    public StackEntry(NetworkNode node,
                       long bit,
                       LeftTupleSinkNode sink,
                       PathMemory pmem,
@@ -57,7 +55,6 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
                       TupleSets<LeftTuple> trgTuples,
                       boolean resumeFromNextNode,
                       boolean processRian) {
-        this.liaNode = liaNode;
         this.bit = bit;
         this.node = node;
         this.sink = sink;
@@ -68,12 +65,6 @@ public class StackEntry extends AbstractBaseLinkedListNode<StackEntry> {
         this.trgTuples = trgTuples;
         this.resumeFromNextNode = resumeFromNextNode;
         this.processRian = processRian;
-    }
-
-
-
-    public LeftInputAdapterNode getLiaNode() {
-        return this.liaNode;
     }
 
     public long getBit() {
