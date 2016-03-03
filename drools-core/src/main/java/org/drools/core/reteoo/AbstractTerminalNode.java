@@ -40,7 +40,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.drools.core.reteoo.PropertySpecificUtil.*;
@@ -154,19 +153,19 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     public PathMemory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
         PathMemory pmem = new PathMemory(this);
-        initPathMemory(pmem, this, null, wm, null );
+        initPathMemory(pmem, null, wm, null);
         return pmem;
     }
 
     /**
      * Creates and return the node memory
      */
-    public static void initPathMemory(PathMemory pmem, LeftTupleNode endNode, LeftTupleSource startTupleSource, InternalWorkingMemory wm, Rule removingRule) {
+    public static void initPathMemory(PathMemory pmem, LeftTupleSource startTupleSource, InternalWorkingMemory wm, Rule removingRule) {
         int counter = 1;
         long allLinkedTestMask = 0;
 
-        LeftTupleSource tupleSource = endNode.getLeftTupleSource();
-        if ( SegmentUtilities.isRootNode(endNode, removingRule)) {
+        LeftTupleSource tupleSource = pmem.getPathEndNode().getLeftTupleSource();
+        if ( SegmentUtilities.isRootNode(pmem.getPathEndNode(), removingRule)) {
             counter++;
         }
 

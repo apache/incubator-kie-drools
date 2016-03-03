@@ -19,6 +19,7 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.SubnetworkTuple;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -1936,7 +1937,7 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
         runAddRemoveTest(builder.build(), new HashMap<String, Object>());
     }
 
-    @Test @Ignore
+    @Test
     public void testSubNetworkWithNot4() {
         final String rule1 = "package " + PKG_NAME_TEST + ";" +
                              "global java.util.List list\n" +
@@ -1971,5 +1972,241 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
         ;
 
         runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+    }
+
+    @Test
+    public void testInsertFireRemoveWith2Nots() {
+        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+                " global java.util.List list\n" +
+                " rule " + RULE1_NAME + " \n" +
+                " when \n" +
+                "   Integer() \n" +
+                "   Integer() \n" +
+                " then\n" +
+                "   list.add('" + RULE1_NAME + "'); \n" +
+                " end";
+
+        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+                " global java.util.List list\n" +
+                " rule " + RULE2_NAME + " \n" +
+                " when \n" +
+                "   Integer() \n" +
+                "   Integer() \n" +
+                "   not(not(Integer() and Integer())) \n" +
+                " then\n" +
+                "   list.add('" + RULE2_NAME + "'); \n" +
+                " end";
+
+        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
+        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule2, rule1})
+                .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1})
+                .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME})
+                .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
+                .addOperation(TestOperationType.FIRE_RULES)
+                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{});
+
+        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+
+    }
+
+    @Test
+    public void testSubSubNetwork5() {
+        final String rule1 = "package " + PKG_NAME_TEST + ";" +
+                             "global java.util.List list\n" +
+                             "rule " + RULE1_NAME + " \n" +
+                             "when\n" +
+                             "  Integer() \n" +
+                             "  Integer() \n" +
+                             "  exists(Integer() and Integer()) \n" +
+                             "then\n" +
+                             " list.add('" + RULE1_NAME + "'); \n" +
+                             "end\n";
+
+        final String rule2 = "package " + PKG_NAME_TEST + ";" +
+                             "global java.util.List list\n" +
+                             "rule " + RULE2_NAME + " \n" +
+                             "when \n" +
+                             "  Integer() \n" +
+                             "  exists(Integer() and Integer()) \n" +
+                             "then \n" +
+                             " list.add('" + RULE2_NAME + "'); \n" +
+                             "end";
+
+        AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
+        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
+               .addOperation(TestOperationType.INSERT_FACTS, new Object[] {1})
+               .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME})
+               .addOperation(TestOperationType.FIRE_RULES)
+               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME})
+        ;
+
+        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+    }
+
+    @Test
+    public void testInsertRemoveFireWith2Nots() {
+        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+                " global java.util.List list\n" +
+                " rule " + RULE1_NAME + " \n" +
+                " when \n" +
+                "   exists(Integer() and Integer()) \n" +
+                "   Integer() \n" +
+                "   not(exists(Integer() and Integer())) \n" +
+                " then\n" +
+                "   list.add('" + RULE1_NAME + "'); \n" +
+                " end";
+
+        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+                " global java.util.List list\n" +
+                " rule " + RULE2_NAME + " \n" +
+                " when \n" +
+                "   exists(Integer() and Integer()) \n" +
+                "   not(exists(Integer() and Integer())) \n" +
+                " then\n" +
+                "   list.add('" + RULE2_NAME + "'); \n" +
+                " end";
+
+        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
+        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2});
+
+        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+    }
+
+    @Test
+    public void testSharedRian() {
+
+        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+                " global java.util.List list\n" +
+                " rule " + RULE1_NAME + " \n" +
+                " when \n" +
+                "   Integer() \n" +
+                "   not(Integer() and Integer()) \n" +
+                " then\n" +
+                "   list.add('" + RULE1_NAME + "'); \n" +
+                " end";
+
+        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+                " global java.util.List list\n" +
+                " rule " + RULE2_NAME + " \n" +
+                " when \n" +
+                "   Integer() \n" +
+                "   exists(Integer() and Integer()) \n" +
+                " then\n" +
+                "   list.add('" + RULE2_NAME + "'); \n" +
+                " end";
+
+        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
+        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1})
+                .addOperation(TestOperationType.INSERT_FACTS, new Object[]{1})
+                .addOperation(TestOperationType.ADD_RULES, new String[]{rule2})
+                .addOperation(TestOperationType.FIRE_RULES)
+                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME});
+
+        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+    }
+
+    @Test
+    public void testSharedRianWithFire() {
+
+        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+                " global java.util.List list\n" +
+                " rule " + RULE1_NAME + " \n" +
+                " when \n" +
+                "   Integer() \n" +
+                "   not(Integer() and Integer()) \n" +
+                " then\n" +
+                "   list.add('" + RULE1_NAME + "'); \n" +
+                " end";
+
+        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+                " global java.util.List list\n" +
+                " rule " + RULE2_NAME + " \n" +
+                " when \n" +
+                "   Integer() \n" +
+                "   exists(Integer() and Integer()) \n" +
+                " then\n" +
+                "   list.add('" + RULE2_NAME + "'); \n" +
+                " end";
+
+        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
+        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1})
+                .addOperation(TestOperationType.INSERT_FACTS, new Object[]{1})
+                .addOperation(TestOperationType.FIRE_RULES)
+                .addOperation(TestOperationType.ADD_RULES, new String[]{rule2})
+                .addOperation(TestOperationType.FIRE_RULES)
+                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME});
+
+        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+    }
+
+    @Test
+    public void testSharedRian2() {
+
+        final String rule1 = " package " + PKG_NAME_TEST + ";\n" +
+                " global java.util.List list\n" +
+                " rule " + RULE1_NAME + " \n" +
+                " when \n" +
+                "   Integer() \n" +
+                "   Integer() \n" +
+                "   not(not(Integer() and Integer())) \n" +
+                " then\n" +
+                "   list.add('" + RULE1_NAME + "'); \n" +
+                " end";
+
+        final String rule2 = " package " + PKG_NAME_TEST + ";\n" +
+                " global java.util.List list\n" +
+                " rule " + RULE2_NAME + " \n" +
+                " when \n" +
+                "   Integer() \n" +
+                "   exists(Integer() and exists(Integer() and Integer())) \n" +
+                " then\n" +
+                "   list.add('" + RULE2_NAME + "'); \n" +
+                " end";
+
+        final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
+        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1})
+               .addOperation(TestOperationType.INSERT_FACTS, new Object[]{1})
+               .addOperation(TestOperationType.FIRE_RULES)
+               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME})
+               .addOperation(TestOperationType.ADD_RULES, new String[]{rule2})
+               .addOperation(TestOperationType.FIRE_RULES)
+               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE2_NAME});
+
+        runAddRemoveTest(builder.build(), new HashMap<String, Object>());
+    }
+
+    @Test
+    public void testRemoveRuleWithSharedRia() {
+        final String rule1Name = "rule1";
+        final String rule2Name = "rule2";
+        final String rule1 = "rule " + rule1Name + " \n" +
+                             "when \n" +
+                             "   Integer() \n" +
+                             "   not(Integer() and Integer()) \n" +
+                             "then \n" +
+                             "System.out.println('test rule 1'); \n"+
+                             "end";
+
+        final String rule2 = "rule " + rule2Name + " \n" +
+                             "when \n" +
+                             "   Integer() \n" +
+                             "   exists(Integer() and Integer()) \n" +
+                             "then \n" +
+                             "System.out.println('test  rule 2'); \n"+
+                             "end";
+
+        KieSession session = base.newKieSession();
+
+        this.addRuleToEngine(rule1);
+        InternalFactHandle fh = (InternalFactHandle)session.insert( 1 );
+        session.fireAllRules();
+
+        this.addRuleToEngine(rule2);
+
+        SubnetworkTuple tuple = (SubnetworkTuple)fh.getFirstLeftTuple().getFirstChild().getFirstChild();
+        assertNotNull( tuple.getPeer() );
+
+        this.deleteRule(rule2Name);
+        assertNull( tuple.getPeer() );
     }
 }
