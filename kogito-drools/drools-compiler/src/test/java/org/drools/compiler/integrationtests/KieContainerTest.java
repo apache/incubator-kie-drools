@@ -37,10 +37,10 @@ import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 import static org.drools.compiler.integrationtests.incrementalcompilation.IncrementalCompilationTest.createAndDeployJar;
+import static org.drools.core.util.DroolsAssert.*;
 import static org.junit.Assert.*;
 
 public class KieContainerTest {
@@ -302,6 +302,8 @@ public class KieContainerTest {
         URL url = classLoader.getResources("org/drools/testdrl").nextElement();
         List<String> lines = IOUtils.readLines(url.openStream());
         Assertions.assertThat(lines).contains("rules1.drl", "rules1.drl.properties", "rules2.drl", "rules2.drl.properties");
+
+        assertUrlEnumerationContainsMatch("^mfs\\:/$", classLoader.getResources(""));
     }
 
     @Test
@@ -354,15 +356,6 @@ public class KieContainerTest {
 
         KieSessionModel sessionModel = kieContainer.getKieSessionModel(null);
         assertNotNull(sessionModel);
-    }
-
-    public static void assertEnumerationSize(int expectedSize, Enumeration<?> enumeration) {
-        int actualSize = 0;
-        while (enumeration.hasMoreElements()) {
-            actualSize++;
-            enumeration.nextElement();
-        }
-        Assertions.assertThat(actualSize).isEqualTo(expectedSize);
     }
 
     private String createDRL(String ruleName) {
