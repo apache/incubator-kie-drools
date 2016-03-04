@@ -48,8 +48,8 @@ public class CacheManagerImpl implements CacheManager {
 	@Override
 	public void dispose() {
 		for (Map.Entry<String, Object> entry : cache.entrySet()) {
-			if (entry instanceof Cacheable) {
-				((Cacheable) entry).close();
+			if (entry.getValue() instanceof Cacheable) {
+				((Cacheable) entry.getValue()).close();
 			}
 		}
 		cache.clear();
