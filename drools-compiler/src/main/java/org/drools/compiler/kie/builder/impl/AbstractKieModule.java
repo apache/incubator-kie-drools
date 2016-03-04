@@ -537,12 +537,18 @@ public abstract class AbstractKieModule
 
         @Override
         public InputStream getResourceAsStream(String name) throws IOException {
+            if (name.endsWith( "/" )) {
+                name = name.substring( 0, name.length()-1 );
+            }
             Resource resource = kieModule.getResource(name);
             return resource != null ? resource.getInputStream() : null;
         }
 
         @Override
         public URL getResource(String name) {
+            if (name.endsWith( "/" )) {
+                name = name.substring( 0, name.length()-1 );
+            }
             return kieModule.hasResource(name) ? createURLForResource(name) : null;
         }
 

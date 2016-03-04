@@ -30,6 +30,7 @@ import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -133,8 +134,10 @@ public class IoUtils {
     }
     
     public static Map<String, byte[]> indexZipFile(java.io.File jarFile) {
+        Map<String, List<String>> folders = new HashMap<String, List<String>>();
         Map<String, byte[]> files = new HashMap<String, byte[]>();
         ZipFile zipFile = null;
+
         try {
             zipFile = new ZipFile( jarFile );
             Enumeration< ? extends ZipEntry> entries = zipFile.entries();
@@ -142,10 +145,24 @@ public class IoUtils {
                 ZipEntry entry = entries.nextElement();
                 if (entry.getName().endsWith(".dex")) {
                     continue; //avoid out of memory error, it is useless anyway
-                }                
-                byte[] bytes = readBytesFromInputStream( zipFile.getInputStream( entry ) );
-                files.put( entry.getName(),
-                           bytes );
+                }
+                String entryName = entry.getName();
+                if (entry.isDirectory()) {
+                    if (entryName.endsWith( "/" )) {
+                        entryName = entryName.substring( 0, entryName.length()-1 );
+                    }
+                } else {
+                    byte[] bytes = readBytesFromInputStream( zipFile.getInputStream( entry ) );
+                    files.put( entryName, bytes );
+                }
+                int lastSlashPos = entryName.lastIndexOf( '/' );
+                String folderName = lastSlashPos < 0 ? "" : entryName.substring( 0, lastSlashPos );
+                List<String> folder = folders.get(folderName);
+                if (folder == null) {
+                    folder = new ArrayList<String>();
+                    folders.put( folderName, folder );
+                }
+                folder.add(lastSlashPos < 0 ? entryName : entryName.substring( lastSlashPos+1 ));
             }
         } catch ( IOException e ) {
             throw new RuntimeException( "Unable to get all ZipFile entries: " + jarFile, e );
@@ -158,6 +175,15 @@ public class IoUtils {
                 }
             }
         }
+
+        for (Map.Entry<String, List<String>> folder : folders.entrySet()) {
+            StringBuilder sb = new StringBuilder();
+            for (String child : folder.getValue()) {
+                sb.append( child ).append( "\n" );
+            }
+            files.put( folder.getKey(), sb.toString().getBytes( StandardCharsets.UTF_8 ) );
+        }
+
         return files;
     }
 
