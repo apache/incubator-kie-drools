@@ -24,6 +24,7 @@ import org.drools.compiler.kproject.xml.DependencyFilter;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.factmodel.ClassDefinition;
 import org.drools.core.factmodel.FieldDefinition;
+import org.drools.core.rule.Collect;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -41,11 +42,15 @@ import org.kie.api.runtime.KieSession;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 
+import static org.drools.core.util.DroolsAssert.assertUrlEnumerationContainsMatch;
 import static org.junit.Assert.*;
 import static org.kie.scanner.MavenRepository.getMavenRepository;
 
@@ -63,7 +68,7 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
 
         ReleaseId releaseId = ks.newReleaseId("org.kie", "maven-test", "1.0-SNAPSHOT");
         InternalKieModule kJar1 = createKieJar(ks, releaseId, true, "rule1", "rule2");
-        String pomText = getPom(releaseId, null);
+        String pomText = getPom(releaseId);
         File pomFile = new File(System.getProperty("java.io.tmpdir"), MavenRepository.toFileName(releaseId, null) + ".pom");
         try {
             FileOutputStream fos = new FileOutputStream(pomFile);
@@ -80,6 +85,10 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         assertNotNull("Default kbase was not found", kbaseModel);
         String kbaseName = kbaseModel.getName();
         assertEquals("KBase1", kbaseName);
+
+        // Check classloader
+        assertUrlEnumerationContainsMatch(".*org/kie/maven\\-test\\-1.0-SNAPSHOT.*", kieContainer.getClassLoader().getResources(""));
+        assertUrlEnumerationContainsMatch(".*org/kie/maven\\-test\\-1.0-SNAPSHOT.*", kieContainer.getClassLoader().getResources("KBase1/org/test"));
     }
 
     @Test
