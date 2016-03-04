@@ -80,8 +80,7 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
             }
             builder.filterInputsBy(filterBuilder);
         } else {
-            // Do not use ClasspathHelper.forPackage("", classLoaders) because it does not include all packages
-            builder.addUrls(ReflectionsWorkaroundClasspathHelper.forClassLoader(classLoaders));
+            builder.addUrls(ReflectionsWorkaroundClasspathHelper.forPackage("", classLoaders));
         }
         builder.setClassLoaders(classLoaders);
         Reflections reflections = new Reflections(builder);
