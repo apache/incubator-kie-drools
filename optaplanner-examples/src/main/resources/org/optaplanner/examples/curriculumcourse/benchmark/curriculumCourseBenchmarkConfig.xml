@@ -41,27 +41,33 @@
         <scoreDrl>org/optaplanner/examples/curriculumcourse/solver/curriculumCourseScoreRules.drl</scoreDrl>
       </scoreDirectorFactory>
       <termination>
-        <!--
-          Official benchmark secondsSpentLimit allowed on:
-          ge0ffrey's main pc: 429
-          ge0ffrey's old pc: 1152
-        -->
-        <secondsSpentLimit>429</secondsSpentLimit>
+        <minutesSpentLimit>5</minutesSpentLimit>
       </termination>
-      <constructionHeuristic>
-        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
-      </constructionHeuristic>
     </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
-    <name>FIRST_FIT_DECREASING</name>
+    <name>First Fit</name>
     <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT</constructionHeuristicType>
+      </constructionHeuristic>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>First Fit Decreasing</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
     </solver>
   </solverBenchmark>
   <solverBenchmark>
     <name>Tabu Search</name>
     <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
           <changeMoveSelector/>
@@ -79,8 +85,11 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>Late Acceptance</name>
+    <name>Late Acceptance special</name>
     <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
       <localSearch>
         <unionMoveSelector>
           <changeMoveSelector/>
@@ -93,6 +102,28 @@
         </acceptor>
         <forager>
           <acceptedCountLimit>4</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Late Acceptance</name>
+    <solver>
+      <constructionHeuristic>
+        <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
+      </constructionHeuristic>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector>
+            <filterClass>org.optaplanner.examples.curriculumcourse.solver.move.DifferentCourseSwapMoveFilter</filterClass>
+          </swapMoveSelector>
+        </unionMoveSelector>
+        <acceptor>
+          <lateAcceptanceSize>1000</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>1</acceptedCountLimit>
         </forager>
       </localSearch>
     </solver>
