@@ -59,10 +59,10 @@ public class SwapMove extends AbstractMove {
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         boolean movable = false;
+        if (leftEntity == null || rightEntity == null) {
+            return false;
+        }
         for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
-            if (leftEntity == null || rightEntity == null) {
-                return false;
-            }
             Object leftValue = variableDescriptor.getValue(leftEntity);
             Object rightValue = variableDescriptor.getValue(rightEntity);
             if (!Objects.equals(leftValue, rightValue)) {
