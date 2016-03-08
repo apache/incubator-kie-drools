@@ -11,6 +11,13 @@
         "new" : "method org.kie.api.runtime.KieSessionConfiguration org.kie.api.runtime.KieContainer::getKieSessionConfiguration(java.lang.String)",
         "justification" : "Enables retrieving the named session configuration directly from KieContainer."
       },
+
+      {
+        "code" : "java.method.addedToInterface",
+        "new" : "method org.kie.api.command.Command org.kie.api.command.KieCommands::newDispose()",
+        "justification" : "Enables creating new instance of DisposeCommand"
+      },
+
       {
         "code" : "java.method.addedToInterface",
         "new" : "method org.kie.api.builder.model.KieBaseModel org.kie.api.builder.model.KieSessionModel::getKieBaseModel()",
