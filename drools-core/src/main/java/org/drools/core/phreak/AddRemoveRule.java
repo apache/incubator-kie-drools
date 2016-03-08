@@ -16,14 +16,7 @@
 package org.drools.core.phreak;
 
 
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.Memory;
-import org.drools.core.common.MemoryFactory;
-import org.drools.core.common.PropagationContextFactory;
-import org.drools.core.common.TupleSets;
-import org.drools.core.common.TupleSetsImpl;
+import org.drools.core.common.*;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.AbstractTerminalNode;
@@ -167,30 +160,29 @@ public class AddRemoveRule {
 
             PathEndNodeMemories tnms = getPathEndMemories(wm, pathEndNodes, true);
 
-            if (NodeTypeEnums.LeftInputAdapterNode == firstSplit.getType() && firstSplit.getAssociatedRuleSize() == 1) {
-                if ( tnms.subjectPmem != null ) {
-                    flushStagedTuples(firstSplit, tnms.subjectPmem, wm);
+            if ( !tnms.subjectPmems.isEmpty() ) {
+                if (NodeTypeEnums.LeftInputAdapterNode == firstSplit.getType() && firstSplit.getAssociatedRuleSize() == 1) {
+                    if (tnms.subjectPmem != null) {
+                        flushStagedTuples(firstSplit, tnms.subjectPmem, wm);
+                    }
+
+                    processLeftTuples(firstSplit, wm, false, tn.getRule());
+
+                    removeNewPaths(wm, tnms.subjectPmems);
+                } else {
+                    flushStagedTuples(tnms.subjectPmem, pathEndNodes, wm);
+
+                    processLeftTuples(firstSplit, wm, false, tn.getRule());
+
+                    Map<PathMemory, SegmentMemory[]> prevSmemsLookup = reInitPathMemories(wm, tnms.otherPmems, rule);
+
+                    // must collect all visited SegmentMemories, for link notification
+                    Set<SegmentMemory> smemsToNotify = handleExistingPaths(rule, prevSmemsLookup, tnms.otherPmems, wm, ExistingPathStrategy.REMOVE_STRATEGY);
+
+                    removeNewPaths(wm, tnms.subjectPmems);
+
+                    notifySegments(smemsToNotify, wm);
                 }
-
-                processLeftTuples(firstSplit, wm, false, tn.getRule());
-
-                removeNewPaths(wm, tnms.subjectPmems);
-            } else {
-
-                for (PathMemory pmem : tnms.pmemsToBeFlushed) {
-                    flushStagedTuples(firstSplit, pmem, wm);
-                }
-
-                processLeftTuples(firstSplit, wm, false, tn.getRule());
-
-                Map<PathMemory, SegmentMemory[]> prevSmemsLookup = reInitPathMemories(wm, tnms.otherPmems, rule);
-
-                // must collect all visited SegmentMemories, for link notification
-                Set<SegmentMemory> smemsToNotify = handleExistingPaths(rule, prevSmemsLookup, tnms.otherPmems, wm, ExistingPathStrategy.REMOVE_STRATEGY);
-
-                removeNewPaths(wm, tnms.subjectPmems);
-
-                notifySegments(smemsToNotify, wm);
             }
 
             if (tnms.subjectPmem != null && tnms.subjectPmem.getRuleAgendaItem() != null && tnms.subjectPmem.getRuleAgendaItem().isQueued()) {
@@ -534,6 +526,58 @@ public class AddRemoveRule {
 
     }
 
+    public static class Flushed {
+        SegmentMemory segmentMemory;
+        PathMemory pathMemory;
+
+        public Flushed(SegmentMemory segmentMemory, PathMemory pathMemory) {
+            this.segmentMemory = segmentMemory;
+            this.pathMemory = pathMemory;
+        }
+    }
+
+    private static void flushStagedTuples(PathMemory pmem, PathEndNodes pathEndNodes, InternalWorkingMemory wm) {
+        // first flush the subject rule, then flush any staging lists that are part of a merge
+        if ( pmem.getRuleAgendaItem() != null ) {
+            new RuleNetworkEvaluator().evaluateNetwork(pmem, pmem.getRuleAgendaItem().getRuleExecutor(), wm);
+        }
+
+        // With the removing rules being flushed, we need to check any splits that will be merged, to see if they need flushing
+        // Beware that flushing a higher up node, might again cause lower nodes to have more staged items. So track flushed items
+        // incase they need to be reflushed
+        List<Flushed> flushed = new ArrayList<Flushed>();
+
+        for ( LeftTupleNode node : pathEndNodes.subjectSplits ) {
+            if (!isSplit(node, pmem.getRule())) { // check if the split is there even without the processed rule
+                Memory mem = wm.getNodeMemories().peekNodeMemory(node.getId());
+                if ( mem != null) {
+                    SegmentMemory smem = mem.getSegmentMemory();
+
+                    if ( !smem.isEmpty() ) {
+                        for ( SegmentMemory childSmem = smem.getFirst(); childSmem != null; childSmem = childSmem.getNext() ) {
+                            if ( !childSmem.getStagedLeftTuples().isEmpty() ) {
+                                PathMemory childPmem = childSmem.getPathMemories().get(0);
+                                flushed.add( new Flushed(childSmem, childPmem));
+                                forceFlushLeftTuple(childPmem, childSmem, wm, childSmem.getStagedLeftTuples().takeAll());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        int flushCount = 1; // need to ensure that there is one full iteration, without any flushing. To avoid one flush causing populat of another already flushed segment
+        while (!flushed.isEmpty() && flushCount != 0) {
+            flushCount = 0;
+            for (Flushed path : flushed) {
+                if ( !path.segmentMemory.getStagedLeftTuples().isEmpty() ) {
+                    flushCount++;
+                    forceFlushLeftTuple(pmem, path.segmentMemory, wm, path.segmentMemory.getStagedLeftTuples().takeAll());
+                }
+            }
+        }
+    }
+
     private static void flushStagedTuples(LeftTupleNode splitStartNode, PathMemory pmem, InternalWorkingMemory wm) {
         if (pmem.getRuleAgendaItem() == null ) {
             // The rule has never been linked in and evaluated, so there will be nothing to flush.
@@ -579,10 +623,6 @@ public class AddRemoveRule {
 
     private static boolean forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, TupleSets<LeftTuple> leftTupleSets) {
         SegmentMemory[] smems = pmem.getSegmentMemories();
-        if (smems[0] == null) {
-            throw new IllegalStateException("Defensive Programming: I think this bit can be removed, just double checking mdp");
-            //return false; // segment has not yet been initialized
-        }
 
         LeftTupleNode node;
         Memory        mem;
@@ -597,9 +637,16 @@ public class AddRemoveRule {
             mem = sm.getNodeMemories().get(0);
         }
 
+        PathMemory rtnPmem;
+        if ( NodeTypeEnums.isTerminalNode(pmem.getPathEndNode()) ) {
+            rtnPmem = pmem;
+        } else {
+            rtnPmem = wm.getNodeMemory((AbstractTerminalNode) pmem.getPathEndNode().getPathEndNodes()[0]);
+        }
+
         new RuleNetworkEvaluator().outerEval(pmem, node, bit, mem, smems, sm.getPos(), leftTupleSets, wm,
                                              new LinkedList<StackEntry>(),
-                                             true, pmem.getOrCreateRuleAgendaItem(wm).getRuleExecutor());
+                                             true, rtnPmem.getOrCreateRuleAgendaItem(wm).getRuleExecutor());
         return true;
     }
 
@@ -1266,19 +1313,6 @@ public class AddRemoveRule {
                                                           boolean isRemoving) {
         PathEndNodeMemories tnMems = new PathEndNodeMemories();
 
-        if (isRemoving) {
-            List<LeftTupleNode> nodes = new ArrayList<LeftTupleNode>();
-            nodes.addAll(pathEndNodes.subjectSplits);
-            nodes.addAll(pathEndNodes.otherSplits);
-
-            for (LeftTupleNode splitNode : nodes) {
-                findPmemToBeFlushed( tnMems, wm.getNodeMemories().peekNodeMemory(splitNode.getId()) );
-                for (LeftTupleSink sink : splitNode.getSinkPropagator().getSinks()) {
-                    findPmemToBeFlushed( tnMems, wm.getNodeMemories().peekNodeMemory(sink.getId()) );
-                }
-            }
-        }
-
         for (LeftTupleNode node : pathEndNodes.otherEndNodes) {
             if (node.getType() == NodeTypeEnums.RightInputAdaterNode) {
                 RiaNodeMemory riaMem = (RiaNodeMemory) wm.getNodeMemories().peekNodeMemory(node.getId());
@@ -1319,25 +1353,10 @@ public class AddRemoveRule {
         return tnMems;
     }
 
-    private static void findPmemToBeFlushed( PathEndNodeMemories tnMems, Memory mem ) {
-        if (mem != null) {
-            SegmentMemory smem = mem.getSegmentMemory();
-            if (smem != null && !smem.getStagedLeftTuples().isEmpty()) {
-                for (PathMemory pmem : smem.getPathMemories()) {
-                    // Must add all pmem's. As the flushing of one, will populate the child segment of another that will be part of the merge. So that other path needs flushing too.
-                    if (pmem.getRuleAgendaItem() != null) {
-                        tnMems.pmemsToBeFlushed.add( pmem );
-                    }
-                }
-            }
-        }
-    }
-
     private static class PathEndNodeMemories {
         PathMemory subjectPmem;
         List<PathMemory> subjectPmems = new ArrayList<PathMemory>();
         List<PathMemory> otherPmems = new ArrayList<PathMemory>();
-        Set<PathMemory> pmemsToBeFlushed = new HashSet<PathMemory>();
     }
 
     private static PathEndNodes getPathEndNodes(InternalKnowledgeBase kBase,
@@ -1391,10 +1410,8 @@ public class AddRemoveRule {
             }
             if (NodeTypeEnums.isLeftTupleSource(sink)) {
                 if (hasWms && SegmentUtilities.isTipNode(sink, null)) {
-                    if (isUnsharedSinkForRule(tn.getRule(), sink)) {
+                    if (!SegmentUtilities.isTipNode(sink, tn.getRule())) {
                         endNodes.subjectSplits.add(sink);
-                    } else {
-                        endNodes.otherSplits.add(sink);
                     }
                 }
 
@@ -1427,6 +1444,5 @@ public class AddRemoveRule {
         List<PathEndNode>   subjectEndNodes = new ArrayList<PathEndNode>();
         List<LeftTupleNode> subjectSplits   = new ArrayList<LeftTupleNode>();
         List<PathEndNode>   otherEndNodes   = new ArrayList<PathEndNode>();
-        List<LeftTupleNode> otherSplits     = new ArrayList<LeftTupleNode>();
     }
 }

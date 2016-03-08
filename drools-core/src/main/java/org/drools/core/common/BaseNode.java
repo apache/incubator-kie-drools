@@ -27,6 +27,7 @@ import org.kie.api.definition.rule.Rule;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 
 /**
  * The base class for all Rete nodes.
@@ -191,5 +192,9 @@ public abstract class BaseNode
 
     public boolean isAssociatedWith( Rule rule ) {
         return this.associations.contains( rule );
+    }
+
+    public Collection<Rule> getRuleAssociations() {
+        return this.associations.keys();
     }
 }
