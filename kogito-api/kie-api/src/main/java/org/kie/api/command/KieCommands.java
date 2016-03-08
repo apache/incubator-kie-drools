@@ -31,12 +31,14 @@ import java.util.Map;
 public interface KieCommands {
     Command newInsert(Object object);
 
+    Command newDispose();
+
     Command newInsert(Object object, String outIdentifier);
 
     Command newInsert(Object object, String outIdentifier, boolean returnObject, String entryPoint);
 
     Command newInsertElements(Iterable objects);
-    
+
     Command newInsertElements(Iterable objects, String outIdentifier);
 
     Command newInsertElements(Iterable objects, String outIdentifier, boolean returnObject, String entryPoint);
@@ -113,12 +115,12 @@ public interface KieCommands {
     BatchExecutionCommand newBatchExecution(List< ? extends Command> commands, String lookup);
 
     Command newRegisterWorkItemHandlerCommand(WorkItemHandler handler, String workItemName);
-    
+
     Command newAbortWorkItem(long workItemId);
 
     Command newCompleteWorkItem(long workItemId,
                                 Map<String, Object> results);
-    
+
     Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm);
 
     Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm, boolean disconnected);
@@ -126,4 +128,3 @@ public interface KieCommands {
     Command newAgendaGroupSetFocus(String name);
 
 }
-
