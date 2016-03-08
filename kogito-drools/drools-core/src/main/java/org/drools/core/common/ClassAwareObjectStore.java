@@ -242,12 +242,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
     public SingleClassStore getOrCreateClassStore(Class<?> clazz) {
         SingleClassStore store = storesMap.get(clazz.getName());
         if (store == null) {
-            store = createClassStore(clazz);
-            for (SingleClassStore classStore : storesMap.values()) {
-                if (classStore.isConcrete() && clazz.isAssignableFrom(classStore.getStoredClass())) {
-                    store.addConcreteStore(((ConcreteClassStore) classStore));
-                }
-            }
+            store = createClassStoreAndAddConcreteSubStores(clazz);
             storesMap.put(clazz.getName(), store);
         }
         return store;
@@ -258,32 +253,36 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
     }
 
     private ConcreteClassStore getOrCreateConcreteClassStore(Class<?> clazz) {
-        SingleClassStore existingStore = storesMap.get(clazz.getName());
-        if (existingStore == null) {
-            // There was no store for this class
-            ConcreteClassStore store = createClassStore(clazz).makeConcrete();
-            for (SingleClassStore classStore : storesMap.values()) {
-                if (classStore.getStoredClass().isAssignableFrom(clazz)) {
-                    classStore.addConcreteStore(store);
-                } else if (classStore.isConcrete() && clazz.isAssignableFrom(classStore.getStoredClass())) {
-                    store.addConcreteStore(((ConcreteClassStore) classStore));
-                }
-            }
-            storesMap.put(clazz.getName(), store);
-            concreteStores.add(store);
-            return store;
-        } else if (existingStore.isConcrete()) {
+        SingleClassStore existingStore = getOrCreateClassStore(clazz);
+        if (existingStore.isConcrete()) {
             return (ConcreteClassStore) existingStore;
         } else {
             // The existing store was abstract so has to be converted in a concrete one
-            ConcreteClassStore store = existingStore.makeConcrete();
-            concreteStores.add(store);
-            return store;
+            return makeStoreConcrete(existingStore);
         }
     }
 
-    private SingleClassStore createClassStore(Class<?> clazz) {
-        return isEqualityBehaviour ? new ConcreteEqualityClassStore(clazz, equalityMap) : new ConcreteIdentityClassStore(clazz);
+    private ConcreteClassStore makeStoreConcrete(SingleClassStore storeToMakeConcrete) {
+        ConcreteClassStore store = storeToMakeConcrete.makeConcrete();
+        Class<?> storedClass = storeToMakeConcrete.getStoredClass();
+
+        for (SingleClassStore classStore : storesMap.values()) {
+            if (classStore.getStoredClass().isAssignableFrom(storedClass)) {
+                classStore.addConcreteStore(store);
+            }
+        }
+        concreteStores.add(store);
+        return store;
+    }
+
+    private SingleClassStore createClassStoreAndAddConcreteSubStores(Class<?> clazz) {
+        SingleClassStore newStore = isEqualityBehaviour ? new ConcreteEqualityClassStore(clazz, equalityMap) : new ConcreteIdentityClassStore(clazz);
+        for (SingleClassStore classStore : storesMap.values()) {
+            if (classStore.isConcrete() && clazz.isAssignableFrom(classStore.getStoredClass())) {
+                newStore.addConcreteStore(((ConcreteClassStore) classStore));
+            }
+        }
+        return newStore;
     }
 
     public interface SingleClassStore extends Externalizable {
@@ -421,7 +420,6 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
             negMap = new ObjectHashMap();
             identityMap = new ObjectHashMap();
             identityMap.setComparator( new IdentityAssertMapComparator() );
-            addConcreteStore(this);
             return this;
         }
     }
