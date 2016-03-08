@@ -52,7 +52,7 @@ public class DisposeCommandPublicAPITest {
         session.fireAllRules();
         session.execute(dispose);
         try {
-
+            session.insert("whatever");
         } catch (Exception e) {
             Assert.assertEquals(e.getMessage(), "Illegal method call. This session was previously disposed.");
 
