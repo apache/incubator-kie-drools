@@ -99,6 +99,10 @@ public class Bag<T> implements Collection<T>, Serializable {
         return false;
     }
 
+    public Collection<T> keys() {
+        return map.keySet();
+    }
+
     @Override
     public boolean containsAll( Collection<?> c ) {
         return map.keySet().containsAll( c );

@@ -169,7 +169,8 @@ public class PhreakQueryTerminalNode {
 
             // node must be marked as dirty
             ((QueryElementNodeMemory)stackEntry.getNodeMem()).setNodeDirtyWithoutNotify();
-            if (stackEntry.getLiaNode()== ((LeftTupleSink)rootEntry.getTupleSink()).getLeftTupleSource()) {
+
+            if (stackEntry.getRmem().getPathEndNode().getPathNodes()[0] == ((LeftTupleSink)rootEntry.getTupleSink()).getLeftTupleSource()) {
                 // query is recursive, so just re-add the stack entry to the current stack. This happens for reactive queries, triggered by a beta node right input
                 stack.add(stackEntry);
             } else {
