@@ -47,6 +47,7 @@ import org.drools.core.command.runtime.rule.GetFactHandlesCommand;
 import org.drools.core.command.runtime.rule.GetObjectCommand;
 import org.drools.core.command.runtime.rule.GetObjectsCommand;
 import org.drools.core.command.runtime.rule.InsertElementsCommand;
+import org.drools.core.command.runtime.DisposeCommand;
 import org.drools.core.command.runtime.rule.InsertObjectCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand;
 import org.drools.core.command.runtime.rule.ModifyCommand.SetterImpl;
@@ -70,6 +71,11 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
         cmd.setOutIdentifier(outIdentifier);
         return cmd;
     }
+
+    public Command newDispose() {
+        return new DisposeCommand();
+    }
+
 
     public Command newInsertElements(Iterable objects) {
         return new InsertElementsCommand( i2c(objects) );
@@ -130,7 +136,7 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
                              String value) {
         return new SetterImpl(accessor, value);
     }
-    
+
     public Command newModify(FactHandle factHandle,
                              List<Setter> setters) {
         return new ModifyCommand(factHandle, setters);
@@ -219,18 +225,18 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
                                Object event) {
         return new SignalEventCommand( type, event );
     }
-    
+
     public Command newSignalEvent(long processInstanceId,
                                String type,
                                Object event) {
         return new SignalEventCommand( processInstanceId, type, event );
     }
-    
+
     public Command newCompleteWorkItem(long workItemId,
                                        Map<String, Object> results) {
         return new CompleteWorkItemCommand(workItemId, results);
     }
-    
+
     public Command newAbortWorkItem(long workItemId) {
         return new AbortWorkItemCommand( workItemId);
     }
@@ -238,8 +244,8 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
     public Command newRegisterWorkItemHandlerCommand(WorkItemHandler handler,
                                                      String workItemName) {
         return new RegisterWorkItemHandlerCommand( workItemName, handler );
-    }    
-    
+    }
+
     public Command newQuery(String identifier, String name) {
         return new QueryCommand(identifier, name, null);
     }
@@ -260,19 +266,19 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
     public Command newKBuilderSetPropertyCommand(String id, String name, String value) {
         return new KBuilderSetPropertyCommand(id, name, value);
     }
-    
+
     public Command newKnowledgeBuilderSetPropertyCommand(String id, String name, String value) {
         return new KBuilderSetPropertyCommand(id, name, value);
-    }    
-    
+    }
+
     public Command newNewKnowledgeBuilderConfigurationCommand(String localId){
         return new NewKnowledgeBuilderConfigurationCommand(localId);
     }
-    
+
     public Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm) {
         return fromExternalFactHandleCommand(factHandleExternalForm, false);
     }
-    
+
     public Command<FactHandle> fromExternalFactHandleCommand(String factHandleExternalForm,
             boolean disconnected) {
         return new FromExternalFactHandleCommand(factHandleExternalForm, disconnected);
@@ -331,6 +337,6 @@ public class CommandFactoryServiceImpl implements ExtendedKieCommands {
     public Command newEnableAuditLog( String filename ) {
         return new EnableAuditLogCommand( null, filename );
     }
-	
-	
+
+
 }
