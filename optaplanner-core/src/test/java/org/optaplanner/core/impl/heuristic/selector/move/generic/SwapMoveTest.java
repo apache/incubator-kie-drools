@@ -16,6 +16,11 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -26,11 +31,8 @@ import org.optaplanner.core.impl.testdata.domain.entityproviding.TestdataEntityP
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataMultiVarEntity;
 import org.optaplanner.core.impl.testdata.domain.multivar.TestdataOtherValue;
 
-import java.util.Arrays;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class SwapMoveTest {
 
@@ -212,22 +214,6 @@ public class SwapMoveTest {
         assertEquals("a {null, null, null} <-> c {v2, v4, w2}", new SwapMove(variableDescriptorList, a, c).toString());
         assertEquals("b {v1, v3, w1} <-> c {v2, v4, w2}", new SwapMove(variableDescriptorList, b, c).toString());
         assertEquals("c {v2, v4, w2} <-> b {v1, v3, w1}", new SwapMove(variableDescriptorList, c, b).toString());
-    }
-
-    @Test
-    public void nullValueMove() {
-        TestdataValue v1 = new TestdataValue("1");
-        TestdataValue v2 = new TestdataValue("2");
-        TestdataValue v3 = new TestdataValue("3");
-
-        TestdataEntityProvidingEntity a = new TestdataEntityProvidingEntity("a", Arrays.asList(v1, v2, v3), null);
-
-        ScoreDirector scoreDirector = mock(ScoreDirector.class);
-        EntityDescriptor entityDescriptor = TestdataEntityProvidingEntity.buildEntityDescriptor();
-
-        SwapMove anullMove = new SwapMove(entityDescriptor.getGenuineVariableDescriptorList(), a, null);
-
-        anullMove.isMoveDoable(scoreDirector);
     }
 
 }
