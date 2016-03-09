@@ -51,8 +51,8 @@ public class EvaluatorWrapper
     private Declaration                                leftBinding;
     private Declaration                                rightBinding;
 
-    private InternalFactHandle                         leftHandle;
-    private InternalFactHandle                         rightHandle;
+    private transient InternalFactHandle               leftHandle;
+    private transient InternalFactHandle               rightHandle;
 
     private InternalReadAccessor                       leftExtractor;
     private InternalReadAccessor                       rightExtractor;
