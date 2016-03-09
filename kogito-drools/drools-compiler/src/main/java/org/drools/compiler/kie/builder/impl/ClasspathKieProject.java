@@ -158,11 +158,11 @@ public class ClasspathKieProject extends AbstractKieProject {
         }
     }
 
-    private static void fetchKModuleFromSpring(URL kModuleUrl, String fixedURL){
+    private static void fetchKModuleFromSpring(URL kModuleUrl, String fixedURL) {
         try{
             Class clazz = Class.forName("org.kie.spring.KModuleSpringMarshaller");
-            Method method = clazz.getDeclaredMethod("fromXML", java.net.URL.class, String.class);
-            method.invoke(null, kModuleUrl, fixedURL);
+            Method method = clazz.getDeclaredMethod("fromXML", java.net.URL.class);
+            method.invoke(null, kModuleUrl);
         } catch (Exception e) {
             log.error("It is necessary to have the kie-spring module on the path in order to create a KieProject from a spring context", e);
             throw new RuntimeException(e);
@@ -370,7 +370,7 @@ public class ClasspathKieProject extends AbstractKieProject {
         } else {
             if (url.toString().contains("-spring.xml")){
                 urlPath = urlPath.substring( 0, urlPath.length() - ("/" + KieModuleModelImpl.KMODULE_SPRING_JAR_PATH).length() );
-            } else {
+            } else if (url.toString().endsWith(KieModuleModelImpl.KMODULE_JAR_PATH)) {
                 urlPath = urlPath.substring( 0,
                         urlPath.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
             }
