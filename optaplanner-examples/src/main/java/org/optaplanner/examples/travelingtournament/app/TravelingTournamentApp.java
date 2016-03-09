@@ -51,7 +51,7 @@ public class TravelingTournamentApp extends CommonApp<TravelingTournament> {
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected SolutionPanel<TravelingTournament> createSolutionPanel() {
         return new TravelingTournamentPanel();
     }
 

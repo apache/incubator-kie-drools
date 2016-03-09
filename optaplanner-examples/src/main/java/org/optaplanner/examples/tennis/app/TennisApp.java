@@ -45,7 +45,7 @@ public class TennisApp extends CommonApp<TennisSolution> {
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected SolutionPanel<TennisSolution> createSolutionPanel() {
         return new TennisPanel();
     }
 

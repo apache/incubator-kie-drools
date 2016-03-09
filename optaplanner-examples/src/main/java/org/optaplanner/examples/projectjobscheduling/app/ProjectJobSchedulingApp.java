@@ -48,7 +48,7 @@ public class ProjectJobSchedulingApp extends CommonApp<Schedule> {
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected SolutionPanel<Schedule> createSolutionPanel() {
         return new ProjectJobSchedulingPanel();
     }
 

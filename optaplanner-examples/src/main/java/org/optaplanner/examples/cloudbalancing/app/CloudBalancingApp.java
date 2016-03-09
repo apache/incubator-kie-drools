@@ -54,7 +54,7 @@ public class CloudBalancingApp extends CommonApp<CloudBalance> {
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected SolutionPanel<CloudBalance> createSolutionPanel() {
         return new CloudBalancingPanel();
     }
 

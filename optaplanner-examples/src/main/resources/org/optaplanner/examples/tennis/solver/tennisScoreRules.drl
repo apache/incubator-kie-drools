@@ -58,6 +58,7 @@ rule "fairAssignmentCountPerTeam"
             count($a)
         )
     then
+        // Fairness and load balancing trick (see docs): squared to assure correctness in corner cases
         scoreHolder.addMediumConstraintMatch(kcontext, - ($total.intValue() * $total.intValue()));
 end
 
@@ -75,5 +76,6 @@ rule "evenlyConfrontationCount"
             count($a)
         )
     then
+        // Fairness and load balancing trick (see docs): squared to assure correctness in corner cases
         scoreHolder.addSoftConstraintMatch(kcontext, - ($total.intValue() * $total.intValue()));
 end

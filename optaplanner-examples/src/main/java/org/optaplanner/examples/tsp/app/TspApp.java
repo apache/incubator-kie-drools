@@ -48,7 +48,7 @@ public class TspApp extends CommonApp<TspSolution> {
     }
 
     @Override
-    protected SolutionPanel createSolutionPanel() {
+    protected SolutionPanel<TspSolution> createSolutionPanel() {
         return new TspPanel();
     }
 
