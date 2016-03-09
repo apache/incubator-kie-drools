@@ -278,4 +278,5 @@ public class ChangeMoveSelectorTest {
         verifyPhaseLifecycle(entitySelector, 1, 2, 5);
         verifyPhaseLifecycle(valueSelector, 1, 2, 5);
     }
+
 }

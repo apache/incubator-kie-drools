@@ -48,6 +48,7 @@ public abstract class AbstractOriginalSwapIterator<S, SubS> extends UpcomingSele
         leftEqualsRight = (leftSubSelector == rightSubSelector);
         leftSubSelectionIterator = leftSubSelector.listIterator();
         rightSubSelectionIterator = (ListIterator<SubS>) ImmutableList.of().listIterator(); //IteratorUtils.emptyListIterator();
+        // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
     }
 
     @Override

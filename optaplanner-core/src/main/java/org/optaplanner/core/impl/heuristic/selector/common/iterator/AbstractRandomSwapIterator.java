@@ -32,10 +32,7 @@ public abstract class AbstractRandomSwapIterator<S, SubS> extends UpcomingSelect
         this.rightSubSelector = rightSubSelector;
         leftSubSelectionIterator = this.leftSubSelector.iterator();
         rightSubSelectionIterator = this.rightSubSelector.iterator();
-        if (!leftSubSelectionIterator.hasNext() || !rightSubSelectionIterator.hasNext()) {
-            upcomingSelection = noUpcomingSelection();
-            upcomingCreated = true;
-        }
+        // Don't do hasNext() in constructor (to avoid upcoming selections breaking mimic recording)
     }
 
     @Override
@@ -46,10 +43,16 @@ public abstract class AbstractRandomSwapIterator<S, SubS> extends UpcomingSelect
         // But empty selectors and ending selectors (such as non-random or shuffled) make it more complex
         if (!leftSubSelectionIterator.hasNext()) {
             leftSubSelectionIterator = leftSubSelector.iterator();
+            if (!leftSubSelectionIterator.hasNext()) {
+                return noUpcomingSelection();
+            }
         }
         SubS leftSubSelection = leftSubSelectionIterator.next();
         if (!rightSubSelectionIterator.hasNext()) {
             rightSubSelectionIterator = rightSubSelector.iterator();
+            if (!rightSubSelectionIterator.hasNext()) {
+                return noUpcomingSelection();
+            }
         }
         SubS rightSubSelection = rightSubSelectionIterator.next();
         return newSwapSelection(leftSubSelection, rightSubSelection);
