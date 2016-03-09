@@ -26,9 +26,7 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
-import org.optaplanner.core.impl.score.buildin.hardmediumsoft.HardMediumSoftScoreDefinition;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
@@ -55,15 +53,6 @@ public class TaskAssigningSolution extends AbstractPersistable implements Soluti
         this.skillList = skillList;
     }
 
-    @PlanningEntityCollectionProperty
-    public List<Task> getTaskList() {
-        return taskList;
-    }
-
-    public void setTaskList(List<Task> taskList) {
-        this.taskList = taskList;
-    }
-
     @ValueRangeProvider(id = "employeeRange")
     public List<Employee> getEmployeeList() {
         return employeeList;
@@ -87,6 +76,16 @@ public class TaskAssigningSolution extends AbstractPersistable implements Soluti
 
     public void setCustomerList(List<Customer> customerList) {
         this.customerList = customerList;
+    }
+
+    @PlanningEntityCollectionProperty
+    @ValueRangeProvider(id = "taskRange")
+    public List<Task> getTaskList() {
+        return taskList;
+    }
+
+    public void setTaskList(List<Task> taskList) {
+        this.taskList = taskList;
     }
 
     @Override

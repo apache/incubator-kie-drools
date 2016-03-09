@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<solver>
+  <!--<environmentMode>FAST_ASSERT</environmentMode>-->
+  <solutionClass>org.optaplanner.examples.taskassigning.domain.TaskAssigningSolution</solutionClass>
+  <entityClass>org.optaplanner.examples.taskassigning.domain.Task</entityClass>
+
+  <scoreDirectorFactory>
+    <scoreDefinitionType>HARD_SOFT</scoreDefinitionType>
+    <scoreDrl>org/optaplanner/examples/taskassigning/solver/taskAssigningScoreRules.drl</scoreDrl>
+  </scoreDirectorFactory>
+
+  <termination>
+    <minutesSpentLimit>5</minutesSpentLimit>
+  </termination>
+</solver>

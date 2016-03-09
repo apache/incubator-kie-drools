@@ -17,24 +17,29 @@
 package org.optaplanner.examples.taskassigning.domain;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import org.apache.commons.lang3.text.WordUtils;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
-import org.optaplanner.examples.meetingscheduling.domain.Meeting;
-import org.optaplanner.examples.meetingscheduling.domain.Room;
-import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
+import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVariableListener;
 
 @PlanningEntity()
 @XStreamAlias("MsTask")
-public class Task extends AbstractPersistable {
+public class Task extends AbstractPersistable implements TaskOrEmployee {
 
     private TaskType taskType;
     private int indexInTaskType;
     private Customer customer;
 
     // Planning variables: changes during planning, between score calculations.
+    private TaskOrEmployee previousTaskOrEmployee;
+
+    // Shadow variables
+    private Task nextTask;
     private Employee employee;
+    private Integer startTime;
 
     public TaskType getTaskType() {
         return taskType;
@@ -60,13 +65,45 @@ public class Task extends AbstractPersistable {
         this.customer = customer;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"employeeRange"})
+    @PlanningVariable(valueRangeProviderRefs = {"employeeRange", "taskRange"},
+            graphType = PlanningVariableGraphType.CHAINED)
+    public TaskOrEmployee getPreviousTaskOrEmployee() {
+        return previousTaskOrEmployee;
+    }
+
+    public void setPreviousTaskOrEmployee(TaskOrEmployee previousTaskOrEmployee) {
+        this.previousTaskOrEmployee = previousTaskOrEmployee;
+    }
+
+    @Override
+    public Task getNextTask() {
+        return nextTask;
+    }
+
+    @Override
+    public void setNextTask(Task nextTask) {
+        this.nextTask = nextTask;
+    }
+
+    @AnchorShadowVariable(sourceVariableName = "previousTaskOrEmployee")
     public Employee getEmployee() {
         return employee;
     }
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
+    }
+
+    @CustomShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
+            // Arguable, to adhere to API specs (although this works), nextTask and employee should also be a source,
+            // because this shadow must be triggered after nextTask and employee (but there is no need to be triggered by those)
+            sources = {@CustomShadowVariable.Source(variableName = "previousTaskOrEmployee")})
+    public Integer getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Integer startTime) {
+        this.startTime = startTime;
     }
 
     // ************************************************************************
@@ -89,6 +126,13 @@ public class Task extends AbstractPersistable {
     public int getDuration() {
         Affinity affinity = (employee == null) ? Affinity.NONE : employee.getAffinity(customer);
         return taskType.getBaseDuration() * affinity.getDurationMultiplier();
+    }
+
+    public Integer getEndTime() {
+        if (startTime == null) {
+            return null;
+        }
+        return startTime + getDuration();
     }
 
     public String getLabel() {

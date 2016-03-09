@@ -24,12 +24,15 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 @XStreamAlias("TaEmployee")
-public class Employee extends AbstractPersistable implements Labeled {
+public class Employee extends AbstractPersistable implements TaskOrEmployee, Labeled {
 
     private String fullName;
 
     private Set<Skill> skillSet;
     private Map<Customer, Affinity> affinityMap;
+
+    // Shadow variables
+    private Task nextTask;
 
     public String getFullName() {
         return fullName;
@@ -55,9 +58,29 @@ public class Employee extends AbstractPersistable implements Labeled {
         this.affinityMap = affinityMap;
     }
 
+    @Override
+    public Task getNextTask() {
+        return nextTask;
+    }
+
+    @Override
+    public void setNextTask(Task nextTask) {
+        this.nextTask = nextTask;
+    }
+
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    @Override
+    public Employee getEmployee() {
+        return this;
+    }
+
+    @Override
+    public Integer getEndTime() {
+        return 0;
+    }
 
     /**
      * @param customer never null
