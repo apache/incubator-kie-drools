@@ -100,7 +100,10 @@ public class VariableListenerSupport implements SupplyManager {
             supply = demand.createExternalizedSupply(scoreDirector);
             if (supply instanceof StatefulVariableListener) {
                 StatefulVariableListener variableListener = (StatefulVariableListener) supply;
-                variableListener.resetWorkingSolution(scoreDirector);
+                // An external ScoreDirector can be created before the working solution is set
+                if (scoreDirector.getWorkingSolution() != null) {
+                    variableListener.resetWorkingSolution(scoreDirector);
+                }
                 VariableDescriptor source = variableListener.getSourceVariableDescriptor();
                 VariableListenerNotifiable notifiable = new VariableListenerNotifiable(variableListener, nextGlobalOrder);
                 nextGlobalOrder++;
