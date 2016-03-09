@@ -123,6 +123,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -8307,5 +8308,62 @@ public class Misc2Test extends CommonTestMethodBase {
         ksession.fireAllRules();
         assertEquals( 1, list.size() );
         assertEquals( "Bob", list.get( 0 ) );
+    }
+
+    @Test
+    public void testNonSerializableInEvaluatorWrapper() throws Exception {
+        // BZ-1315143
+        String str = "package org.drools.compiler\n" +
+                     "rule B\n" +
+                     "  when\n" +
+                     "    $m1 : Message( $message1 : message, $date1 : birthday )\n" +
+                     "    $m2 : Message( this != $m1, message != $message1, birthday after $date1 )\n" +
+                     "  then\n" +
+                     "end";
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write( ResourceFactory.newByteArrayResource( str.getBytes() ).setTargetPath( "org/drools/compiler/rules.drl" ) );
+
+        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder( kfs );
+        kbuilder.buildAll();
+
+        assertEquals( 0, kbuilder.getResults().getMessages().size() );
+
+        KieSession ksession1 = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
+
+        Message message1 = new Message();
+        message1.setMessage("Hello World");
+        message1.setBirthday(new SimpleDateFormat("yyyy-MM-dd").parse("2015-12-15"));
+
+        Message message2 = new Message();
+        message2.setMessage("Goodbye World");
+        message2.setBirthday(new SimpleDateFormat( "yyyy-MM-dd").parse( "2015-12-16" ) );
+
+        ksession1.insert(message1);
+        ksession1.insert(message2);
+
+        int fired1 = ksession1.fireAllRules();
+
+        assertEquals( 1, fired1 );
+        ksession1.dispose();
+
+        // Force deepClone
+        KieSession ksession2 = ks.newKieContainer( kbuilder.getKieModule().getReleaseId() ).newKieSession();
+        Message message3 = new Message();
+        message3.setMessage("Hello World");
+        message3.setBirthday(new SimpleDateFormat("yyyy-MM-dd").parse("2015-12-15"));
+
+        Message message4 = new Message();
+        message4.setMessage("Goodbye World");
+        message4.setBirthday(new SimpleDateFormat("yyyy-MM-dd").parse("2015-12-16"));
+
+        ksession2.insert(message3);
+        ksession2.insert(message4);
+
+        int fired2 = ksession2.fireAllRules();
+
+        assertEquals( 1, fired2 );
+        ksession2.dispose();
     }
 }
