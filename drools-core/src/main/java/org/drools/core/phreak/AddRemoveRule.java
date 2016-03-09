@@ -41,6 +41,7 @@ import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
+import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
@@ -828,12 +829,6 @@ public class AddRemoveRule {
 
             if (NodeTypeEnums.isBetaNode(node)) {
                 BetaMemory    bm;
-                SegmentMemory childSmem = sm; // if there is no split the child smem is same as current node
-
-                if (sm.getTipNode() == node) {
-                    // There is a network split, so must use the next sm
-                    childSmem = sm.getFirst();
-                }
                 if (NodeTypeEnums.AccumulateNode == node.getType()) {
                     AccumulateMemory am = (AccumulateMemory) memory;
                     bm = am.getBetaMemory();
@@ -841,7 +836,7 @@ public class AddRemoveRule {
                     Tuple        lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
                     for (; lt != null; lt = (LeftTuple) it.next(lt)) {
                         AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
-                        visitChild(accctx.getResultLeftTuple(), childSmem, insert, wm, rule);
+                        visitChild(accctx.getResultLeftTuple(), insert, wm, rule);
                     }
                 } else if (NodeTypeEnums.ExistsNode == node.getType()) {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
@@ -849,14 +844,14 @@ public class AddRemoveRule {
                     RightTuple   rt = (RightTuple) BetaNode.getFirstTuple(bm.getRightTupleMemory(), it);
                     for (; rt != null; rt = (RightTuple) it.next(rt)) {
                         for (LeftTuple lt = rt.getBlocked(); lt != null; lt = lt.getBlockedNext()) {
-                            visitChild(wm, insert, rule, childSmem, it, lt);
+                            visitChild(wm, insert, rule, it, lt);
                         }
                     }
                 } else {
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getLeftTupleMemory().fullFastIterator();
                     Tuple        lt = BetaNode.getFirstTuple(bm.getLeftTupleMemory(), it);
-                    visitChild(wm, insert, rule, childSmem, it, lt);
+                    visitChild(wm, insert, rule, it, lt);
                 }
                 return;
             } else if (NodeTypeEnums.FromNode == node.getType()) {
@@ -864,7 +859,7 @@ public class AddRemoveRule {
                 TupleMemory  ltm = fm.getBetaMemory().getLeftTupleMemory();
                 FastIterator it  = ltm.fullFastIterator();
                 for (LeftTuple lt = (LeftTuple) ltm.getFirst(null); lt != null; lt = (LeftTuple) it.next(lt)) {
-                    visitChild(lt, sm, insert, wm, rule);
+                    visitChild(lt, insert, wm, rule);
                 }
                 return;
             }
@@ -898,12 +893,7 @@ public class AddRemoveRule {
 
                 // Each lt is for a different lian, skip any lian not associated with the rule. Need to use lt parent (souce) not child to check the lian.
                 if (lt.getTupleSource().isAssociatedWith(rule)) {
-                    SegmentMemory childSmem = sm;
-                    if (sm.getFirst() != null && sm.getFirst().getRootNode() == lt.getTupleSink()) {
-                        // child lt sink is root of next segment, so assign. This happens when the Lian is in a segment of it's own
-                        childSmem = sm.getFirst();
-                    }
-                    visitChild(lt, childSmem, insert, wm, rule);
+                    visitChild(lt, insert, wm, rule);
 
                     if (lt.getHandlePrevious() != null) {
                         lt.getHandlePrevious().setHandleNext( nextLt );
@@ -918,18 +908,18 @@ public class AddRemoveRule {
         }
     }
 
-    private static void visitChild(InternalWorkingMemory wm, boolean insert, Rule rule, SegmentMemory childSmem, FastIterator it, Tuple lt) {
+    private static void visitChild(InternalWorkingMemory wm, boolean insert, Rule rule, FastIterator it, Tuple lt) {
         for (; lt != null; lt = (LeftTuple) it.next(lt)) {
             LeftTuple childLt = lt.getFirstChild();
             while (childLt != null) {
                 LeftTuple nextLt = childLt.getHandleNext();
-                visitChild(childLt, childSmem, insert, wm, rule);
+                visitChild(childLt, insert, wm, rule);
                 childLt = nextLt;
             }
         }
     }
 
-    private static void visitChild(LeftTuple lt, SegmentMemory smem, boolean insert, InternalWorkingMemory wm, Rule rule) {
+    private static void visitChild(LeftTuple lt, boolean insert, InternalWorkingMemory wm, Rule rule) {
         LeftTuple prevLt = null;
         LeftTupleSinkNode sink = lt.getTupleSink();
 
@@ -940,16 +930,11 @@ public class AddRemoveRule {
 
                     if (lt.getTupleSink().getAssociatedRuleSize() > 1) {
                         if (lt.getFirstChild() != null) {
-                            SegmentMemory childSmem = smem; // if there is no split the child smem is same as current node
-
-                            if ( smem.getFirst() != null && smem.getFirst().getRootNode() == lt.getFirstChild().getTupleSink() ) {
-                                // There is a network split, so must use child smem
-                                childSmem = smem.getFirst();
-                            }
-
                             for ( LeftTuple child = lt.getFirstChild(); child != null; child =  child.getHandleNext() ) {
-                                visitChild(child, childSmem, insert, wm, rule);
+                                visitChild(child, insert, wm, rule);
                             }
+                        } else if (lt.getTupleSink().getType() == NodeTypeEnums.RightInputAdaterNode) {
+                            insertPeerRightTuple(lt, wm, rule, insert);
                         }
                     } else if (!insert) {
                         LeftTuple lt2 = null;
@@ -970,14 +955,29 @@ public class AddRemoveRule {
                 // there is a sink without a peer LT, so create the peer LT
                 prevLt = insertPeerLeftTuple(prevLt, sink, wm);
             }
-
-            if (smem != null) {
-                // will go null when it reaches an LT for a newly added sink, as these need to be initialised
-                smem = smem.getNext();
-            }
         }
     }
 
+    private static void insertPeerRightTuple( LeftTuple lt, InternalWorkingMemory wm, Rule rule, boolean insert ) {
+        // There's a shared RightInputAdaterNode, so check if one of its sinks is associated only to the new rule
+        LeftTuple prevLt = null;
+        RightInputAdapterNode rian = (RightInputAdapterNode) lt.getTupleSink();
+
+        for (ObjectSink sink : rian.getObjectSinkPropagator().getSinks()) {
+            if (lt != null) {
+                if (prevLt != null && !insert && sink.isAssociatedWith(rule) && sink.getAssociatedRuleSize() == 1) {
+                    prevLt.setPeer( null );
+                }
+                prevLt = lt;
+                lt = lt.getPeer();
+            } else if (insert) {
+                BetaMemory bm = (BetaMemory) wm.getNodeMemory( (BetaNode) sink );
+                prevLt = rian.createPeer( prevLt );
+                bm.linkNode( wm );
+                bm.getStagedRightTuples().addInsert((RightTuple)prevLt);
+            }
+        }
+    }
 
     /**
      * Create all missing peers
@@ -988,21 +988,20 @@ public class AddRemoveRule {
             liaMem = wm.getNodeMemory(((LeftInputAdapterNode) node.getLeftTupleSource()));
         }
 
-        lt = node.createPeer(lt);
+        LeftTuple peer = node.createPeer(lt);
         Memory memory = wm.getNodeMemories().peekNodeMemory(node.getId());
         if (memory == null || memory.getSegmentMemory() == null) {
             throw new IllegalStateException("Defensive Programming: this should not be possilbe, as the addRule code should init child segments if they are needed ");
         }
 
-
         if ( liaMem == null) {
-            memory.getSegmentMemory().getStagedLeftTuples().addInsert(lt);
+            memory.getSegmentMemory().getStagedLeftTuples().addInsert(peer);
         } else {
             // If parent is Lian, then this must be called, so that any linking or unlinking can be done.
-            LeftInputAdapterNode.doInsertSegmentMemory(wm, true, liaMem, memory.getSegmentMemory(), lt, node.getLeftTupleSource().isStreamMode());
+            LeftInputAdapterNode.doInsertSegmentMemory(wm, true, liaMem, memory.getSegmentMemory(), peer, node.getLeftTupleSource().isStreamMode());
         }
 
-        return lt;
+        return peer;
     }
 
     private static void deletePeerLeftTuple(LeftTuple lt, LeftTuple lt2, LeftTuple prevLt, InternalWorkingMemory wm) {
@@ -1023,7 +1022,10 @@ public class AddRemoveRule {
         } else {
             for (LeftTuple child = lt.getFirstChild(); child != null; child = child.getHandleNext()) {
                 for (LeftTuple peer = child; peer != null; peer = peer.getPeer()) {
-                    iterateLeftTuple(peer, wm);
+                    if (peer.getPeer() == null) {
+                        // it's unnnecessary to visit the unshared networks, so only iterate the last peer
+                        iterateLeftTuple( peer, wm );
+                    }
                 }
             }
         }
