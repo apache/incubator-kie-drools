@@ -59,7 +59,11 @@ public class SynchronizedBypassPropagationList extends SynchronizedPropagationLi
     @Override
     public void flush() {
         if (!executing.get()) {
-            super.flush();
+            PropagationEntry head = takeAll();
+            while (head != null) {
+                flush( workingMemory, head );
+                head = takeAll();
+            }
         }
     }
 
