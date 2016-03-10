@@ -278,6 +278,12 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
             // The existing store was abstract so has to be converted in a concrete one
             ConcreteClassStore store = existingStore.makeConcrete();
             concreteStores.add(store);
+            for (Class<?> superClass = clazz.getSuperclass(); superClass != null; superClass = superClass.getSuperclass()) {
+                SingleClassStore superStore = storesMap.get( superClass.getName() );
+                if (superStore != null) {
+                    superStore.addConcreteStore( store );
+                }
+            }
             return store;
         }
     }
