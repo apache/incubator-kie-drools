@@ -402,4 +402,27 @@ class RuleModelPersistenceHelper {
         return methods;
     }
 
+    static String removeNumericSuffix( final String value,
+                                       final String dataType ) {
+        if ( DataType.TYPE_NUMERIC_DOUBLE.equals( dataType ) ) {
+            if ( value.endsWith( "d" ) ) {
+                return value.substring( 0,
+                                        value.indexOf( "d" ) );
+            }
+        } else if ( DataType.TYPE_NUMERIC_FLOAT.equals( dataType ) ) {
+            if ( value.endsWith( "f" ) ) {
+                return value.substring( 0,
+                                        value.indexOf( "f" ) );
+            }
+
+        } else if ( DataType.TYPE_NUMERIC_LONG.equals( dataType ) ) {
+            if ( value.endsWith( "L" ) ) {
+                return value.substring( 0,
+                                        value.indexOf( "L" ) );
+
+            }
+        }
+        return value;
+    }
+
 }
