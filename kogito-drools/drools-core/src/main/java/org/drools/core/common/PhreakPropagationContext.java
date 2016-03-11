@@ -307,6 +307,7 @@ public class PhreakPropagationContext
         BitMask cachedMask = classObjectType.getTransformedMask(modifiedClass, originalMask);
 
         if (cachedMask != null) {
+            modificationMask = cachedMask;
             return this;
         }
 
