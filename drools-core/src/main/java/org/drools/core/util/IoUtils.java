@@ -30,7 +30,6 @@ import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -181,7 +180,7 @@ public class IoUtils {
             for (String child : folder.getValue()) {
                 sb.append( child ).append( "\n" );
             }
-            files.put( folder.getKey(), sb.toString().getBytes( StandardCharsets.UTF_8 ) );
+            files.put( folder.getKey(), sb.toString().getBytes( UTF8_CHARSET ) );
         }
 
         return files;
