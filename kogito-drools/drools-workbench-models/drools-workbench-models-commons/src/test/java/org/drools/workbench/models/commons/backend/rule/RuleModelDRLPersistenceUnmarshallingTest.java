@@ -8344,4 +8344,86 @@ public class RuleModelDRLPersistenceUnmarshallingTest {
                       afv.getNature() );
     }
 
+    @Test
+    //See https://issues.jboss.org/browse/GUVNOR-2455
+    public void testRHS_DataTypeSuffixes() throws Exception {
+        String drl = "package org.test;\n" +
+                "rule \"MyRule\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  $p : Person( )\n" +
+                "then\n" +
+                "  modify( $p ) { setDouble( 25.0d ), setFloat( 25.0f ), setLong( 25L ) }\n" +
+                "end";
+
+        addModelField( "org.test.Person",
+                       "this",
+                       "org.test.Person",
+                       DataType.TYPE_THIS );
+        addModelField( "org.test.Person",
+                       "double",
+                       Double.class.getName(),
+                       DataType.TYPE_NUMERIC_DOUBLE );
+        addModelField( "org.test.Person",
+                       "float",
+                       Float.class.getName(),
+                       DataType.TYPE_NUMERIC_FLOAT );
+        addModelField( "org.test.Person",
+                       "long",
+                       Long.class.getName(),
+                       DataType.TYPE_NUMERIC_LONG );
+
+        when( dmo.getPackageName() ).thenReturn( "org.test" );
+
+        final RuleModel m = RuleModelDRLPersistenceImpl.getInstance().unmarshal( drl,
+                                                                                 new ArrayList<String>(),
+                                                                                 dmo );
+
+        assertNotNull( m );
+
+        assertEquals( 1,
+                      m.lhs.length );
+        final IPattern p0 = m.lhs[ 0 ];
+        assertTrue( p0 instanceof FactPattern );
+        final FactPattern fp0 = (FactPattern) p0;
+        assertEquals( "Person",
+                      fp0.getFactType() );
+
+        assertEquals( 0,
+                      fp0.getNumberOfConstraints() );
+
+        assertEquals( 1,
+                      m.rhs.length );
+
+        assertTrue( m.rhs[ 0 ] instanceof ActionUpdateField );
+        ActionUpdateField auf = (ActionUpdateField) m.rhs[ 0 ];
+        assertEquals( "$p",
+                      auf.getVariable() );
+        assertEquals( 3,
+                      auf.getFieldValues().length );
+        ActionFieldValue afv0 = auf.getFieldValues()[ 0 ];
+        assertEquals( "double",
+                      afv0.getField() );
+        assertEquals( "25.0",
+                      afv0.getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      afv0.getNature() );
+
+        ActionFieldValue afv1 = auf.getFieldValues()[ 1 ];
+        assertEquals( "float",
+                      afv1.getField() );
+        assertEquals( "25.0",
+                      afv1.getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      afv1.getNature() );
+
+        ActionFieldValue afv2 = auf.getFieldValues()[ 2 ];
+        assertEquals( "long",
+                      afv2.getField() );
+        assertEquals( "25",
+                      afv2.getValue() );
+        assertEquals( FieldNatureType.TYPE_LITERAL,
+                      afv2.getNature() );
+    }
+
 }

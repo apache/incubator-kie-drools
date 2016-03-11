@@ -131,6 +131,8 @@ public class ActionCallMethodBuilder {
 
     private ActionFieldFunction getActionFieldFunction( String param,
                                                         String dataType ) {
+        param = removeNumericSuffix( param,
+                                     dataType );
         final int fieldNature = inferFieldNature( dataType,
                                                   param,
                                                   boundParams,

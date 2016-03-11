@@ -3110,4 +3110,96 @@ public class GuidedDecisionTreeDRLPersistenceUnmarshallingTest extends AbstractG
 
         getAndTestUnmarshalledModel( drl, "test", 0 );
     }
+
+    @Test
+    //See https://issues.jboss.org/browse/GUVNOR-2455
+    public void testSingleRule_ActionSetDataTypeSuffixes() throws Exception {
+        final String drl = "rule \"test_0\"\n" +
+                "when \n" +
+                "  $p : Person( )\n" +
+                "then \n" +
+                "  $p.setDouble( 25.0d );\n" +
+                "  $p.setFloat( 25.0f );\n" +
+                "  $p.setLong( 25L );\n" +
+                "end";
+
+        final GuidedDecisionTree expected = new GuidedDecisionTree();
+        expected.setTreeName( "test" );
+
+        final TypeNode type = new TypeNodeImpl( "Person" );
+        type.setBinding( "$p" );
+        expected.setRoot( type );
+
+        final ActionUpdateNode action = new ActionUpdateNodeImpl( type );
+        action.setModify( false );
+        action.getFieldValues().add( new ActionFieldValueImpl( "double",
+                                                               new DoubleValue( 25.0d ) ) );
+        action.getFieldValues().add( new ActionFieldValueImpl( "float",
+                                                               new FloatValue( 25.0f ) ) );
+        action.getFieldValues().add( new ActionFieldValueImpl( "long",
+                                                               new LongValue( 25L ) ) );
+        type.addChild( action );
+
+        addModelField( "Person",
+                       "this",
+                       "Person",
+                       DataType.TYPE_THIS );
+        addModelField( "Person",
+                       "double",
+                       Double.class.getName(),
+                       DataType.TYPE_NUMERIC_DOUBLE );
+        addModelField( "Person",
+                       "float",
+                       Float.class.getName(),
+                       DataType.TYPE_NUMERIC_FLOAT );
+        addModelField( "Person",
+                       "long",
+                       Long.class.getName(),
+                       DataType.TYPE_NUMERIC_LONG );
+
+        final GuidedDecisionTree model = getAndTestUnmarshalledModel( drl,
+                                                                      "test",
+                                                                      0 );
+        assertEquals( expected.getTreeName(),
+                      model.getTreeName() );
+
+        assertNotNull( model.getRoot() );
+        assertEquals( type.getClassName(),
+                      model.getRoot().getClassName() );
+        assertTrue( model.getRoot().isBound() );
+        assertEquals( type.getBinding(),
+                      model.getRoot().getBinding() );
+
+        assertEquals( 1,
+                      model.getRoot().getChildren().size() );
+        assertNotNull( model.getRoot().getChildren().get( 0 ) );
+        assertTrue( model.getRoot().getChildren().get( 0 ) instanceof ActionUpdateNode );
+
+        final ActionUpdateNode _action = (ActionUpdateNode) model.getRoot().getChildren().get( 0 );
+
+        assertEquals( action.getBoundNode().getBinding(),
+                      _action.getBoundNode().getBinding() );
+        assertEquals( action.isModify(),
+                      _action.isModify() );
+        assertEquals( action.getFieldValues().size(),
+                      _action.getFieldValues().size() );
+        assertEquals( 3,
+                      _action.getFieldValues().size() );
+        assertEquals( action.getFieldValues().get( 0 ).getFieldName(),
+                      _action.getFieldValues().get( 0 ).getFieldName() );
+        assertEquals( action.getFieldValues().get( 0 ).getValue().getValue().toString(),
+                      _action.getFieldValues().get( 0 ).getValue().getValue().toString() );
+        assertEquals( action.getFieldValues().get( 1 ).getFieldName(),
+                      _action.getFieldValues().get( 1 ).getFieldName() );
+        assertEquals( action.getFieldValues().get( 1 ).getValue().getValue().toString(),
+                      _action.getFieldValues().get( 1 ).getValue().getValue().toString() );
+        assertEquals( action.getFieldValues().get( 2 ).getFieldName(),
+                      _action.getFieldValues().get( 2 ).getFieldName() );
+        assertEquals( action.getFieldValues().get( 2 ).getValue().getValue().toString(),
+                      _action.getFieldValues().get( 2 ).getValue().getValue().toString() );
+
+        assertEquals( 0,
+                      _action.getChildren().size() );
+    }
+
 }
