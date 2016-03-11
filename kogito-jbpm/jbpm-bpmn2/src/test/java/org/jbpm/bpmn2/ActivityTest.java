@@ -31,6 +31,7 @@ import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.jbpm.bpmn2.handler.ReceiveTaskHandler;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.handler.ServiceTaskHandler;
+import org.jbpm.bpmn2.objects.Address;
 import org.jbpm.bpmn2.objects.HelloService;
 import org.jbpm.bpmn2.objects.Person;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
@@ -1762,5 +1763,37 @@ public class ActivityTest extends JbpmBpmn2TestCase {
         ksession.getWorkItemManager().completeWorkItem(workItem.getId(), null);
         assertProcessInstanceFinished(processInstance, ksession);
         ksession.dispose();
+    }
+    
+    @Test
+    public void testMultipleBusinessRuleTaskWithDataInputsWithPersistence()
+            throws Exception {
+        KieBase kbase = createKnowledgeBaseWithoutDumper(
+                "BPMN2-MultipleRuleTasksWithDataInput.bpmn2",
+                "BPMN2-MultipleRuleTasks.drl");
+        ksession = createKnowledgeSession(kbase);
+        
+        ksession.addEventListener(new TriggerRulesEventListener(ksession));
+        
+        List<String> listPerson = new ArrayList<String>();
+        List<String> listAddress = new ArrayList<String>();
+        
+        ksession.setGlobal("listPerson", listPerson);
+        ksession.setGlobal("listAddress", listAddress);
+
+        Person person = new Person();
+        person.setName("john");
+        
+        Address address = new Address();
+        address.setStreet("5th avenue");
+        
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("person", person);
+        params.put("address", address);
+        ProcessInstance processInstance = ksession.startProcess("multiple-rule-tasks", params);
+
+        assertEquals(1, listPerson.size());
+        assertEquals(1, listAddress.size());
+        assertProcessInstanceFinished(processInstance, ksession);
     }
 }

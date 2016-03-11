@@ -15,10 +15,12 @@
 
 package org.jbpm.bpmn2.objects;
 
+import java.io.Serializable;
+
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Address {
+public class Address implements Serializable {
 
 	private String street;
 
