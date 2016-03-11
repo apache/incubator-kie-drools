@@ -3177,7 +3177,7 @@ public class RuleModelDRLPersistenceImpl
 
     private ActionFieldValue buildFieldValue( final boolean isJavaDialect,
                                               String field,
-                                              final String value,
+                                              String value,
                                               final String dataType,
                                               final Map<String, String> boundParams ) {
         if ( value.contains( "wiWorkItem.getResult" ) ) {
@@ -3210,6 +3210,8 @@ public class RuleModelDRLPersistenceImpl
             }
         }
 
+        value = removeNumericSuffix( value,
+                                     dataType );
         final int fieldNature = inferFieldNature( dataType,
                                                   value,
                                                   boundParams,
