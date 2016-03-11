@@ -1418,4 +1418,84 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
             this.code = code;
         }
     }
+
+    public static class ParentDummyBean {
+        private String id;
+
+        public ParentDummyBean(String id) { this.id = id; }
+
+        public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
+    }
+
+    @PropertyReactive
+    public interface DummyBeanInterface {
+        boolean isActive();
+        void setActive(boolean active);
+    }
+
+    @PropertyReactive
+    public static class DummyBean extends ParentDummyBean implements DummyBeanInterface {
+        private boolean active;
+
+        public DummyBean(String id) {
+            super(id);
+        }
+
+        public boolean isActive() {
+            return active;
+        }
+
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+
+        @Override
+        public String toString() {
+            return "DummyEvent{" + "id='" + getId() + '\'' + ", active=" + active + '}';
+        }
+    }
+
+    @Test
+    public void testPropReactiveWithParentClassNotImplementingChildInterface() {
+        // DROOLS-1090
+        String str1 =
+                "import " + DummyBeanInterface.class.getCanonicalName() + "\n" +
+                "import " + DummyBean.class.getCanonicalName() + "\n" +
+                "rule \"RG_TEST_1\"\n" +
+                "    when\n" +
+                "       $event: DummyBean (!active)\n" +
+                "    then\n" +
+                "        modify($event){\n" +
+                "            setActive(true)\n" +
+                "        }\n" +
+                "        System.out.println(\"RG_TEST_1 fired\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"RG_TEST_2\"\n" +
+                "    when\n" +
+                "       $event: DummyBeanInterface (!active)\n" +
+                "    then\n" +
+                "        System.out.println(\"RG_TEST_2 fired, with event \" + $event);\n" +
+                "        throw new IllegalStateException(\"Should not happen since the event is active\");\n" +
+                "end\n" +
+                "\n" +
+                "rule \"RG_TEST_3\"\n" +
+                "    when\n" +
+                "       $event: DummyBean ()\n" +
+                "    then\n" +
+                "        retract($event)\n" +
+                "        System.out.println(\"RG_TEST_3 fired\");\n" +
+                "end";
+
+        KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        ksession.insert(new DummyBean("1"));
+        ksession.fireAllRules();
+
+        ksession.insert(new DummyBean("2"));
+        ksession.fireAllRules();
+    }
 }
