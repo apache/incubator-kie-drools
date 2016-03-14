@@ -74,6 +74,11 @@ public class ExceptionAfterTimerNodeTest extends JbpmTestCase {
         countDownListener.waitTillCompleted();
         
         pi = ksession.getProcessInstance(pi.getId());
+        assertNotNull(pi);
+        
+        ksession.abortProcessInstance(pi.getId());
+
+        pi = ksession.getProcessInstance(pi.getId());
         assertNull(pi);
 	}
 }

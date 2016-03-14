@@ -1387,7 +1387,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     @RequirePersistence
     @Test(timeout=10000)
     public void testNullVariableInScriptTaskProcess() throws Exception {
-        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("After Timer", 1);
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("Timer", 1, true);
         KieBase kbase = createKnowledgeBase("BPMN2-NullVariableInScriptTaskProcess.bpmn2");
         ksession = createKnowledgeSession(kbase);
         ksession.addEventListener(countDownListener);
@@ -1398,7 +1398,10 @@ public class ActivityTest extends JbpmBpmn2TestCase {
 
         countDownListener.waitTillCompleted();
         ProcessInstance pi = ksession.getProcessInstance(processInstance.getId());
-        assertNull(pi);
+        assertNotNull(pi);
+        
+        assertProcessInstanceActive(processInstance);
+        ksession.abortProcessInstance(processInstance.getId());
 
         assertProcessInstanceFinished(processInstance, ksession);
     }

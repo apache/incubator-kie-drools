@@ -18,6 +18,7 @@ package org.jbpm.bpmn2;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +43,7 @@ import org.jbpm.bpmn2.test.RequirePersistence;
 import org.jbpm.persistence.ProcessPersistenceContext;
 import org.jbpm.persistence.ProcessPersistenceContextManager;
 import org.jbpm.process.instance.InternalProcessRuntime;
+import org.jbpm.process.instance.command.UpdateTimerCommand;
 import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventLister;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
@@ -2503,5 +2505,38 @@ public class IntermediateEventTest extends JbpmBpmn2TestCase {
         });
         assertNotNull(processInstances);
         assertEquals(0, processInstances.size());
+    }
+    
+    @Test(timeout=10000)
+    @RequirePersistence
+    public void testIntermediateCatchEventTimerDurationWithError()
+            throws Exception {
+        CountDownProcessEventListener countDownListener = new CountDownProcessEventListener("timer", 1);
+        
+        KieBase kbase = createKnowledgeBase("BPMN2-IntermediateCatchEventTimerDurationWithError.bpmn2");
+        ksession = createKnowledgeSession(kbase);
+        ksession.getWorkItemManager().registerWorkItemHandler("Human Task", new DoNothingWorkItemHandler());
+        ksession.addEventListener(countDownListener);
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("x", 0);
+        ProcessInstance processInstance = ksession.startProcess("IntermediateCatchEvent", params);
+        
+        long waitTime = 2;
+        assertProcessInstanceActive(processInstance);
+        // now wait for 1 second for timer to trigger
+        countDownListener.waitTillCompleted(waitTime * 1000);
+        assertProcessInstanceActive(processInstance);
+
+        processInstance = ksession.getProcessInstance(processInstance.getId());
+
+        // reschedule it to allow to move on
+        ksession.setGlobal("TestOK", Boolean.TRUE);
+     
+        ksession.execute(new UpdateTimerCommand(processInstance.getId(), "timer", waitTime + 1));
+        countDownListener.reset(1);
+        countDownListener.waitTillCompleted();
+                
+        assertProcessInstanceFinished(processInstance, ksession);
+
     }
 }

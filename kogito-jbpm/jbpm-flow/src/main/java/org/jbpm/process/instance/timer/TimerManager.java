@@ -16,6 +16,13 @@
 
 package org.jbpm.process.instance.timer;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.marshalling.impl.MarshallerReaderContext;
@@ -39,19 +46,11 @@ import org.jbpm.process.core.timer.impl.RegisteredTimerServiceDelegate;
 import org.jbpm.process.instance.InternalProcessRuntime;
 import org.jbpm.process.instance.ProcessInstance;
 import org.jbpm.process.instance.ProcessRuntimeImpl;
-import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.time.SessionClock;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 
@@ -312,11 +311,6 @@ public class TimerManager {
 
             } catch (Throwable e) {
                 logger.error("Error when executing timer job", e);
-                WorkflowProcessInstanceImpl processInstance = (WorkflowProcessInstanceImpl) kruntime
-                        .getProcessInstance(processInstanceId);
-                if (processInstance != null && ctx.getTimer().getPeriod() == 0) {
-                    processInstance.setState(ProcessInstance.STATE_ABORTED);
-                }
             }
         }
 

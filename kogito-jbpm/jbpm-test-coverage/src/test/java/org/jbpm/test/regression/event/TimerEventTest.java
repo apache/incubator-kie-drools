@@ -61,6 +61,10 @@ public class TimerEventTest extends JbpmTestCase {
         KieSession ksession = createKSession(EXCEPTION_AFTER_TIMER);
         ProcessInstance pi = ksession.startProcess(EXCEPTION_AFTER_TIMER_ID);
         Thread.sleep(3000);
+        
+        assertProcessInstanceActive(pi.getId());
+        
+        ksession.abortProcessInstance(pi.getId());
         assertProcessInstanceAborted(pi.getId());
     }
 
