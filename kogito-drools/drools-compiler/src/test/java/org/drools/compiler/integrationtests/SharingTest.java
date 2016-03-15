@@ -5,18 +5,24 @@ import org.drools.compiler.CommonTestMethodBase;
 import org.drools.compiler.Person;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.core.reteoo.*;
+import org.drools.core.reteoo.AlphaNode;
+import org.drools.core.reteoo.JoinNode;
+import org.drools.core.reteoo.LeftInputAdapterNode;
+import org.drools.core.reteoo.MethodCountingAlphaNode;
+import org.drools.core.reteoo.MethodCountingLeftInputAdapterNode;
+import org.drools.core.reteoo.MethodCountingObjectTypeNode;
+import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.builder.MethodCountingNodeFactory;
 import org.drools.core.reteoo.builder.NodeFactory;
 import org.junit.Test;
 import org.kie.api.definition.rule.Rule;
 import org.kie.internal.KnowledgeBase;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.drools.compiler.integrationtests.IncrementalCompilationTest.rulestoMap;
+import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 
 public class SharingTest extends CommonTestMethodBase {
 
@@ -30,19 +36,20 @@ public class SharingTest extends CommonTestMethodBase {
     private JoinNode joinNode;
 
 
+
     public void setupKnowledgeBase() throws Exception {
         NodeFactory nodeFactory = MethodCountingNodeFactory.getInstance();
         kbase = loadKnowledgeBaseFromString( nodeFactory, getRules());
         rules = rulestoMap(kbase);
         otn = getObjectTypeNode(kbase, Person.class );
-        alphaNode_1 = ( AlphaNode ) otn.getSinkPropagator().getSinks()[0]; //AlphaNode name == "Mark"
-        alphaNode_2 = (AlphaNode) alphaNode_1.getSinkPropagator().getSinks()[0]; // 2nd level (age = 50)
+        alphaNode_1 = ( AlphaNode ) otn.getObjectSinkPropagator().getSinks()[0]; //AlphaNode name == "Mark"
+        alphaNode_2 = (AlphaNode) alphaNode_1.getObjectSinkPropagator().getSinks()[0]; // 2nd level (age = 50)
 
-        lian_1 = (LeftInputAdapterNode) alphaNode_1.getSinkPropagator().getSinks()[1];
-        lian_2 = (LeftInputAdapterNode) alphaNode_2.getSinkPropagator().getSinks()[0];
+        lian_1 = (LeftInputAdapterNode) alphaNode_1.getObjectSinkPropagator().getSinks()[1];
+        lian_2 = (LeftInputAdapterNode) alphaNode_2.getObjectSinkPropagator().getSinks()[0];
 
-        AlphaNode an = ( AlphaNode ) otn.getSinkPropagator().getSinks()[1]; // name = "John"
-        LeftInputAdapterNode lian =(LeftInputAdapterNode) an.getSinkPropagator().getSinks()[1];
+        AlphaNode an = ( AlphaNode ) otn.getObjectSinkPropagator().getSinks()[1]; // name = "John"
+        LeftInputAdapterNode lian =(LeftInputAdapterNode) an.getObjectSinkPropagator().getSinks()[1];
         joinNode = (JoinNode) lian.getSinkPropagator().getSinks()[0]; //this == $personCheese
     }
 
@@ -101,11 +108,10 @@ public class SharingTest extends CommonTestMethodBase {
         return drl;
     }
 
-    //@Test(timeout=10000)
-    @Test()
+    @Test
     public void testOTNSharing() throws Exception {
         setupKnowledgeBase();
-        assertEquals( 2, otn.getSinkPropagator().size() );
+        assertEquals( 2, otn.getObjectSinkPropagator().size() );
         assertEquals(7, otn.getAssociationsSize());
     }
 
@@ -113,7 +119,7 @@ public class SharingTest extends CommonTestMethodBase {
     public void testAlphaNodeSharing() throws Exception {
         setupKnowledgeBase();
 
-        assertEquals( 2, alphaNode_1.getSinkPropagator().size());
+        assertEquals( 2, alphaNode_1.getObjectSinkPropagator().size());
         assertEquals( 4, alphaNode_1.getAssociationsSize() );
         assertTrue( alphaNode_1.isAssociatedWith(rules.get("r1")));
         assertTrue( alphaNode_1.isAssociatedWith(rules.get("r2")));
@@ -124,7 +130,7 @@ public class SharingTest extends CommonTestMethodBase {
         assertEquals(6,countingMap.get("thisNodeEquals").intValue());
 
         //Check 2nd level of sharing (age = 50)
-        assertEquals( 1, alphaNode_2.getSinkPropagator().size() );
+        assertEquals( 1, alphaNode_2.getObjectSinkPropagator().size() );
         assertEquals( 2, alphaNode_2.getAssociationsSize() );
         assertTrue( alphaNode_2.isAssociatedWith(rules.get("r3")));
         assertTrue( alphaNode_2.isAssociatedWith(rules.get("r4")));

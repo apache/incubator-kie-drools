@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.drools.compiler.integrationtests.incrementalcompilation.IncrementalCompilationTest.rulestoMap;
+import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 import static org.junit.Assert.*;
 
 public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {

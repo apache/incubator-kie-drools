@@ -57,7 +57,4 @@ public interface NetworkNode
     boolean isAssociatedWith( Rule rule );
 
     boolean thisNodeEquals(final Object object);
-
-    int nodeHashCode();
-
 }

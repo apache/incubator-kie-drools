@@ -187,6 +187,10 @@ public class AccumulateNode extends BetaNode {
                                                                                                                          other.resultConstraints );
     }
 
+    public boolean thisNodeEquals(final Object object) {
+        return equals( object );
+    }
+
     /**
      * Creates a BetaMemory for the BetaNode's memory.
      */

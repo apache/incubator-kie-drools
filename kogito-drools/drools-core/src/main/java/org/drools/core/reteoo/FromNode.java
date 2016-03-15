@@ -40,8 +40,11 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import static org.drools.core.util.ClassUtils.areNullSafeEquals;
 
 public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     implements
@@ -104,6 +107,24 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         out.writeObject( betaConstraints );
         out.writeBoolean( tupleMemoryEnabled );
         out.writeObject( from );
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || !(obj instanceof FromNode)) {
+            return false;
+        }
+
+        FromNode other = (FromNode) obj;
+
+        return leftInput.equals( other.leftInput ) &&
+               dataProvider.equals( other.dataProvider ) &&
+               areNullSafeEquals(from.getResultPattern(), other.from.getResultPattern() ) &&
+               Arrays.equals( alphaConstraints, other.alphaConstraints ) &&
+               betaConstraints.equals( other.betaConstraints );
     }
 
     public DataProvider getDataProvider() {

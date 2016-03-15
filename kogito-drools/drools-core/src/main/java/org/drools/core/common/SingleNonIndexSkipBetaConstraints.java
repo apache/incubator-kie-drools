@@ -18,7 +18,6 @@ package org.drools.core.common;
 
 import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.reteoo.BetaMemory;
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.MutableTypeConstraint;
@@ -125,7 +124,7 @@ public class SingleNonIndexSkipBetaConstraints
     }
 
     public boolean equals(Object object) {
-        return constraints.equals( object );
+        return object instanceof SingleNonIndexSkipBetaConstraints && constraints.equals( ((SingleNonIndexSkipBetaConstraints)object).constraints );
     }
 
     public void resetFactHandle(ContextEntry[] context) {

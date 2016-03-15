@@ -142,12 +142,11 @@ public class AlphaNetworkModifyTest extends CommonTestMethodBase {
         LeftInputAdapterNode liaNode = ( LeftInputAdapterNode ) otnInit.getObjectSinkPropagator().getSinks()[0];
         
         LeftTupleSink[] sinks = liaNode.getSinkPropagator().getSinks();
-        
+
+        assertEquals(2, sinks.length );
         assertEquals(0, sinks[0].getLeftInputOtnId().getId() );
         assertEquals(1, sinks[1].getLeftInputOtnId().getId() );
-        assertEquals(2, sinks[2].getLeftInputOtnId().getId() );
-        assertEquals(3, sinks[3].getLeftInputOtnId().getId() );
-    }        
+    }
     
     @Test
     public void testModifyWithLiaToAcc() {
