@@ -17,6 +17,7 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AddRemoveTestBuilder {
     private final List<TestOperation> testPlan = new ArrayList<TestOperation>();

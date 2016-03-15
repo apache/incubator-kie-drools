@@ -15,29 +15,24 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
-import org.drools.core.reteoo.ReteDumper;
+import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
 
 /**
  * Abstract class for tests that test adding and removing rules at runtime.
@@ -106,61 +101,16 @@ public abstract class AbstractAddRemoveRulesTest {
     protected StatefulKnowledgeSession runAddRemoveTest(final List<TestOperation> testOperations,
             final Map<String, Object> additionalGlobals) {
 
-        StatefulKnowledgeSession session = null;
         final List resultsList = new ArrayList();
-
-        int index = 1;
-        for (TestOperation testOperation : testOperations) {
-            final TestOperationType testOperationType = testOperation.getType();
-            final Object testOperationParameter = testOperation.getParameter();
-            if (testOperationType != TestOperationType.CREATE_SESSION) {
-                checkSessionInitialized(session);
-            }
-            try {
-                switch (testOperationType) {
-                    case CREATE_SESSION:
-                        session = createNewSession((String[]) testOperationParameter, resultsList, additionalGlobals);
-                        break;
-                    case ADD_RULES:
-                        addRulesToSession(session, (String[]) testOperationParameter, false);
-                        break;
-                    case ADD_RULES_REINSERT_OLD:
-                        addRulesToSession(session, (String[]) testOperationParameter, true);
-                        break;
-                    case REMOVE_RULES:
-                        removeRulesFromSession(session, (String[]) testOperationParameter);
-                        break;
-                    case FIRE_RULES:
-                        session.fireAllRules();
-                        break;
-                    case CHECK_RESULTS:
-                        final Set<String> expectedResultsSet = new HashSet<String>();
-                        expectedResultsSet.addAll(Arrays.asList((String[]) testOperationParameter));
-                        if (expectedResultsSet.size() > 0) {
-                            assertTrue(createTestFailMessage(testOperations, index, expectedResultsSet, resultsList),
-                                    resultsList.size() > 0);
-                        }
-                        assertTrue(createTestFailMessage(testOperations, index, expectedResultsSet, resultsList),
-                                expectedResultsSet.containsAll(resultsList));
-                        assertTrue(createTestFailMessage(testOperations, index, expectedResultsSet, resultsList),
-                                resultsList.containsAll(expectedResultsSet));
-                        resultsList.clear();
-                        break;
-                    case INSERT_FACTS:
-                        insertFactsIntoSession(session, (Object[]) testOperationParameter);
-                        break;
-                    case DUMP_RETE:
-                        ReteDumper.dumpRete((KieSession) session);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unsupported test operation: " + testOperationType + "!");
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(createTestFailMessage(testOperations, index, null, null), e);
-            }
-            index++;
+        final Map<String, Object> sessionGlobals = new HashMap<String, Object>();
+        if (additionalGlobals != null) {
+            sessionGlobals.putAll(additionalGlobals);
         }
-        return session;
+        sessionGlobals.put("list", resultsList);
+
+        final TestContext testContext = new TestContext(PKG_NAME_TEST, sessionGlobals, resultsList);
+        testContext.executeTestOperations(testOperations);
+        return testContext.getSession();
     }
 
     protected int getRulesCount(final KnowledgeBase kBase) {
