@@ -19,12 +19,10 @@ import static org.junit.Assert.*;
 import static org.junit.Assume.assumeTrue;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.kie.api.KieBase;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
@@ -119,79 +117,5 @@ public abstract class AbstractAddRemoveRulesTest {
             result += kiePackage.getRules().size();
         }
         return result;
-    }
-
-    private void checkSessionInitialized(final StatefulKnowledgeSession session) {
-        if (session == null) {
-            throw new IllegalStateException("Session is not initialized! Please, initialize session first.");
-        }
-    }
-
-    private StatefulKnowledgeSession createNewSession(final String[] drls, final List resultsList,
-            final Map<String, Object> additionalGlobals) {
-        final StatefulKnowledgeSession session = buildSessionInSteps(drls);
-        session.setGlobal("list", resultsList);
-        if (additionalGlobals != null) {
-            insertGlobalsIntoSession(session, additionalGlobals);
-        }
-        return session;
-    }
-
-    private void addRulesToSession(final StatefulKnowledgeSession session, final String[] drls,
-            final boolean reimportAllRules) {
-        for (String drl : drls) {
-            final KnowledgeBuilder kBuilder;
-            if (reimportAllRules) {
-                kBuilder = createKnowledgeBuilder(session.getKieBase(), drl);
-            } else {
-                kBuilder = createKnowledgeBuilder(null, drl);
-            }
-            session.getKieBase().addKnowledgePackages(kBuilder.getKnowledgePackages());
-        }
-    }
-
-    private void removeRulesFromSession(final StatefulKnowledgeSession session, final String[] ruleNames) {
-        final KieBase kieBase = session.getKieBase();
-        for (String ruleName : ruleNames) {
-            kieBase.removeRule(PKG_NAME_TEST, ruleName);
-        }
-    }
-
-    private void insertFactsIntoSession(final StatefulKnowledgeSession session, final Object[] facts) {
-        for (Object fact: facts) {
-            session.insert(fact);
-        }
-    }
-
-    private void insertGlobalsIntoSession(final StatefulKnowledgeSession session, final Map<String, Object> globals) {
-        for (Map.Entry<String, Object> globalEntry : globals.entrySet()) {
-            session.setGlobal(globalEntry.getKey(), globalEntry.getValue());
-        }
-    }
-
-    private String createTestFailMessage(final List<TestOperation> testOperations, final int operationIndex,
-            final Collection<String> expectedResults, final Collection<String> actualResults) {
-        final StringBuilder messageBuilder = new StringBuilder();
-        final String lineSeparator = System.getProperty("line.separator");
-        messageBuilder.append("Test failed on " + operationIndex + ". operation! Operations:" + lineSeparator);
-        int index = 1;
-        for (TestOperation testOperation : testOperations) {
-            messageBuilder.append(index + ". " + testOperation.toString());
-            messageBuilder.append(lineSeparator);
-            index++;
-        }
-        if (expectedResults != null && actualResults != null) {
-            messageBuilder.append( "Expected results: " + lineSeparator + "[" );
-            for ( String expectedResult : expectedResults ) {
-                messageBuilder.append( expectedResult + " " );
-            }
-            messageBuilder.append( "]" + lineSeparator );
-            messageBuilder.append( "Actual results: " + lineSeparator + "[" );
-            for ( String actualResult : actualResults ) {
-                messageBuilder.append( actualResult + " " );
-            }
-        }
-        messageBuilder.append("]" + lineSeparator);
-        return messageBuilder.toString();
     }
 }
