@@ -31,4 +31,4 @@ rule "Accumulate with From Chaining" salience 80
                                                 result( l ) )
     then
         results.add( $list );
-end  
+end

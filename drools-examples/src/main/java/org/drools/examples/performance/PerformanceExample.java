@@ -2,35 +2,29 @@ package org.drools.examples.performance;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.Message;
+import org.kie.api.definition.type.FactType;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.definition.type.FactType;
-import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
-import org.kie.internal.SystemEventListener;
 import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.RuleEngineOption;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
-
 
 import java.util.ArrayList;
 
 public class PerformanceExample {
     public static RuleEngineOption phreak = RuleEngineOption.PHREAK;
 
-    public static void main(final String[] args) throws Exception{
+    public static void main(final String[] args) throws Exception {
         final long numberOfRulesToBuild = 10;
         boolean useAccumulate = true;
         String dialect = "mvel"; //noticed performance difference between java and mvel dialects
@@ -73,9 +67,7 @@ public class PerformanceExample {
 
     }
 
-
-    private static KieContainer loadContainerFromString(String rules)
-    {
+    private static KieContainer loadContainerFromString(String rules) {
         long startTime = System.currentTimeMillis();
         KieServices ks = KieServices.Factory.get();
         KieRepository kr = ks.getRepository();
@@ -123,9 +115,7 @@ public class PerformanceExample {
         return kbase;
     }
 
-
-    private static String getFact()
-    {
+    private static String getFact() {
         return "{\n" +
                 "\"TransactionNumber\": \"88882\",\n" +
                 "\"TrackingID\": \"T001\",\n" +
@@ -143,8 +133,8 @@ public class PerformanceExample {
                 "}]\n" +
                 "}";
     }
-    private static String getRules(long numberofRules, boolean useAccumulate, String dialect, boolean collectionBasedRules)
-    {
+
+    private static String getRules(long numberofRules, boolean useAccumulate, String dialect, boolean collectionBasedRules) {
         final long startTime = System.currentTimeMillis();
         StringBuilder sb = new StringBuilder("package org.drools.examples.performance;\n");
         sb.append(getImportStatements());
@@ -159,15 +149,15 @@ public class PerformanceExample {
         return sb.toString();
     }
 
-    private static String createRule(long number, boolean useAccumulate, String dialect, boolean collectionBasedRules)
-    {
-        if (collectionBasedRules)
-            return createCollectionRule(number, useAccumulate, dialect);
-        else
-            return createRule(number, useAccumulate, dialect);
+    private static String createRule(long number, boolean useAccumulate, String dialect, boolean collectionBasedRules) {
+        if (collectionBasedRules) {
+            return createCollectionRule( number, useAccumulate, dialect );
+        } else {
+            return createRule( number, useAccumulate, dialect );
+        }
     }
-    private static String createRule(long number, boolean useAccumulate, String dialect)
-    {
+
+    private static String createRule(long number, boolean useAccumulate, String dialect) {
         String s = "" +
                 "rule \"rule" + number + "\" \n";
                 if (!dialect.isEmpty()) {
@@ -183,8 +173,7 @@ public class PerformanceExample {
         return s;
     }
 
-    private static String createCollectionRule(long number, boolean useAccumulate, String dialect)
-    {
+    private static String createCollectionRule(long number, boolean useAccumulate, String dialect) {
         long NumOfSKU = 10;
         String sku = "";
         String prefix = "";
@@ -210,8 +199,7 @@ public class PerformanceExample {
         return s;
     }
 
-    private static String createRules2(String dialect)
-    {
+    private static String createRules2(String dialect) {
         return "" +
                 "rule \"r1\"\n" +
                 "dialect \"" + dialect + "\"\n" +
@@ -240,8 +228,7 @@ public class PerformanceExample {
 
     }
 
-    private static String getDeclareStatements()
-    {
+    private static String getDeclareStatements() {
         return "" +
                 "declare TransactionC \n" +
                 "CardNumber : String \n" +
@@ -265,8 +252,7 @@ public class PerformanceExample {
                 "end \n";
     }
 
-    private static String getImportStatements()
-    {
+    private static String getImportStatements() {
         return "import java.util.ArrayList \n" +
                 "import java.util.List \n";
     }

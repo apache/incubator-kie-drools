@@ -46,6 +46,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -162,6 +163,22 @@ public class MVELCompilationUnit
 
     public String getExpression() {
         return expression;
+    }
+
+    @Override
+    public boolean equals( Object obj ) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || !(obj instanceof MVELCompilationUnit)) {
+            return false;
+        }
+
+        MVELCompilationUnit other = (MVELCompilationUnit) obj;
+
+        return expression.equals( other.expression ) &&
+               Arrays.equals(previousDeclarations, other.previousDeclarations) &&
+               Arrays.equals(localDeclarations, other.localDeclarations);
     }
 
     public void writeExternal( ObjectOutput out ) throws IOException {

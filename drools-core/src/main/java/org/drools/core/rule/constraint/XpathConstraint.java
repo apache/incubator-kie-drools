@@ -48,6 +48,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.drools.core.util.ClassUtils.areNullSafeEquals;
+
 public class XpathConstraint extends MutableTypeConstraint {
 
     private final LinkedList<XpathChunk> chunks;
@@ -208,6 +210,20 @@ public class XpathConstraint extends MutableTypeConstraint {
         @Override
         public String toString() {
             return chunk.toString();
+        }
+
+        @Override
+        public boolean equals( Object obj ) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || !(obj instanceof SingleChunkXpathEvaluator)) {
+                return false;
+            }
+
+            SingleChunkXpathEvaluator other = (SingleChunkXpathEvaluator) obj;
+
+            return chunk.equals( other.chunk );
         }
     }
 
@@ -387,6 +403,25 @@ public class XpathConstraint extends MutableTypeConstraint {
         public void setClassObjectType( ClassObjectType classObjectType ) {
             this.classObjectType = classObjectType;
         }
+
+        @Override
+        public boolean equals( Object obj ) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || !(obj instanceof XpathChunk)) {
+                return false;
+            }
+
+            XpathChunk other = (XpathChunk) obj;
+
+            return field.equals( other.field ) &&
+                   index == other.index &&
+                   iterate == other.iterate &&
+                   lazy == other.lazy &&
+                   array == other.array &&
+                   areNullSafeEquals(declaration, other.declaration);
+        }
     }
 
     public static class XpathDataProvider implements DataProvider {
@@ -434,6 +469,21 @@ public class XpathConstraint extends MutableTypeConstraint {
         @Override
         public String toString() {
             return xpathEvaluator.toString();
+        }
+
+        @Override
+        public boolean equals( Object obj ) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null || !(obj instanceof XpathChunk)) {
+                return false;
+            }
+
+            XpathDataProvider other = (XpathDataProvider) obj;
+
+            return xpathEvaluator.equals( other.xpathEvaluator ) &&
+                   areNullSafeEquals(declaration, other.declaration);
         }
     }
 }

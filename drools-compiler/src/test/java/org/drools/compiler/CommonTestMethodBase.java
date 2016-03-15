@@ -96,29 +96,28 @@ public class CommonTestMethodBase extends Assert {
 	}
 
 	protected KnowledgeBase loadKnowledgeBaseFromString(String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, null, phreak, null,
-				drlContentStrings);
+		return loadKnowledgeBaseFromString(null, null, phreak, drlContentStrings);
 	}
 
 	protected KnowledgeBase loadKnowledgeBaseFromString(NodeFactory nodeFactory, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, null, phreak, nodeFactory,
-				drlContentStrings);
+		return loadKnowledgeBaseFromString(null, null, phreak, nodeFactory, drlContentStrings);
 	}
 
 	protected KnowledgeBase loadKnowledgeBaseFromString(RuleEngineOption phreak, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, null, phreak, null,
-				drlContentStrings);
+		return loadKnowledgeBaseFromString(null, null, phreak, drlContentStrings);
 	}
 
 	protected KnowledgeBase loadKnowledgeBaseFromString(KnowledgeBuilderConfiguration config, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(config, null, phreak, null,
-				drlContentStrings);
+		return loadKnowledgeBaseFromString(config, null, phreak, drlContentStrings);
 	}
 
 	protected KnowledgeBase loadKnowledgeBaseFromString(
 			KieBaseConfiguration kBaseConfig, String... drlContentStrings) {
-		return loadKnowledgeBaseFromString(null, kBaseConfig, phreak, null,
-				drlContentStrings);
+		return loadKnowledgeBaseFromString(null, kBaseConfig, phreak, drlContentStrings);
+	}
+
+	protected KnowledgeBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, RuleEngineOption phreak, String... drlContentStrings) {
+		return loadKnowledgeBaseFromString( config, kBaseConfig, phreak, (NodeFactory)null, drlContentStrings);
 	}
 
 	protected KnowledgeBase loadKnowledgeBaseFromString( KnowledgeBuilderConfiguration config, KieBaseConfiguration kBaseConfig, RuleEngineOption phreak, NodeFactory nodeFactory, String... drlContentStrings) {

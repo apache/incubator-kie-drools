@@ -195,12 +195,6 @@ public abstract class BaseNode
 
     //Default implementation
     public boolean thisNodeEquals(final Object object) {
-        return false;
-    }
-
-    //Default implementation
-    public int nodeHashCode()
-    {
-        return this.hashCode();
+        return this.equals( object );
     }
 }
