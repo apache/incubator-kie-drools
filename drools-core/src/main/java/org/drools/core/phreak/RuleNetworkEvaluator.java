@@ -621,19 +621,14 @@ public class RuleNetworkEvaluator {
             rightTuples.addInsert( (RightTuple) leftTuple );
 
             if (bns != null) {
-                // Add peered RightTuples, they are attached to FH - unlink LeftTuples that has a peer ref
                 for (int i = 0; i < length; i++) {
-                    //rightTuple = new RightTupleImpl(handle, bns[i]);
-                    //rightTuple.setPropagationContext(pctx);
-
                     if ( bms[i].getStagedRightTuples().isEmpty() ) {
                         bms[i].setNodeDirtyWithoutNotify();
                     }
-                    //bms[i].getStagedRightTuples().addInsert(rightTuple);
+                    leftTuple = riaNode.createPeer( leftTuple );
                     bms[i].getStagedRightTuples().addInsert((RightTuple)leftTuple);
                 }
             }
-
 
             leftTuple = next;
         }
@@ -648,14 +643,13 @@ public class RuleNetworkEvaluator {
             rightTuples.addDelete((RightTuple)leftTuple);
 
             if (bns != null) {
-                // Add peered RightTuples, they are attached to FH - unlink LeftTuples that has a peer ref
                 for (int i = 0; i < length; i++) {
-                    leftTuple = leftTuple.getHandleNext();
-                    rightTuples = bms[i].getStagedRightTuples();
-                    if ( rightTuples.isEmpty() ) {
+                    leftTuple = leftTuple.getPeer();
+                    if ( bms[i].getStagedRightTuples().isEmpty() ) {
                         bms[i].setNodeDirtyWithoutNotify();
                     }
-                    rightTuples.addDelete((RightTuple)leftTuple);
+                    leftTuple.clearStaged();
+                    bms[i].getStagedRightTuples().addDelete((RightTuple)leftTuple);
                 }
             }
 
@@ -672,15 +666,14 @@ public class RuleNetworkEvaluator {
             rightTuples.addUpdate((RightTuple)leftTuple);
 
             if (bns != null) {
-                // Add peered RightTuples, they are attached to FH - unlink LeftTuples that has a peer ref
                 for (int i = 0; i < length; i++) {
-                    leftTuple = leftTuple.getHandleNext();
-                    rightTuples = bms[i].getStagedRightTuples();
+                    leftTuple = leftTuple.getPeer();
 
-                    if ( rightTuples.isEmpty() ) {
+                    if ( bms[i].getStagedRightTuples().isEmpty() ) {
                         bms[i].setNodeDirtyWithoutNotify();
                     }
-                    rightTuples.addUpdate((RightTuple)leftTuple);
+                    leftTuple.clearStaged();
+                    bms[i].getStagedRightTuples().addUpdate((RightTuple)leftTuple);
                 }
             }
 

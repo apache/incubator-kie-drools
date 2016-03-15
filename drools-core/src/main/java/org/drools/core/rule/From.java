@@ -69,6 +69,18 @@ public class From extends ConditionalElement
         out.writeObject(  resultClass );
     }
 
+    @Override
+    public boolean equals( Object obj ) {
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null || !( obj instanceof From ) ) {
+            return false;
+        }
+
+        return dataProvider.equals( ((From) obj).dataProvider );
+    }
+
     public void wire(Object object) {
         this.dataProvider = KiePolicyHelper.isPolicyEnabled() ? new SafeDataProvider(( DataProvider ) object) : ( DataProvider ) object;
     }

@@ -60,8 +60,6 @@ public class AlphaNode extends ObjectSource
 
     private int hashcode;
 
-    private int nodeHashCode = -1;
-
     public AlphaNode() {
 
     }
@@ -187,19 +185,12 @@ public class AlphaNode extends ObjectSource
         return hashcode;
     }
 
-    public int calculateHashCode() {
+    private int calculateHashCode() {
         return (this.source != null ? this.source.hashCode() : 0) * 37 + (this.constraint != null ? this.constraint.hashCode() : 0) * 31;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     public boolean equals(final Object object) {
-        final AlphaNode other = (AlphaNode) object;
-
-        return thisNodeEquals(object) && this.source.equals(other.source);
+        return thisNodeEquals(object) && (this.source != null ? this.source.equals(((AlphaNode) object).source) : ((AlphaNode) object).source == null);
     }
 
     public boolean thisNodeEquals(final Object object) {
@@ -207,28 +198,11 @@ public class AlphaNode extends ObjectSource
             return true;
         }
 
-        if (!(object instanceof AlphaNode) || hashCode() != object.hashCode()) {
-            return false;
-        }
-
-        final AlphaNode other = (AlphaNode) object;
-
-        return this.nodeHashCode() == other.nodeHashCode() &&
-                constraint instanceof MvelConstraint ?
-                ((MvelConstraint) constraint).equals(other.constraint, getKnowledgeBase()) :
-                constraint.equals(other.constraint);
-    }
-
-    public int nodeHashCode() {
-        int result = nodeHashCode;
-        if (result == -1) {
-            final int PRIME = 31;
-            result = 1;
-            result = PRIME * result + (constraint instanceof MvelConstraint ? ((MvelConstraint) constraint).hashCode() : constraint.hashCode());
-            //cache the value
-            nodeHashCode = result;
-        }
-        return result;
+        return object instanceof AlphaNode &&
+               this.hashCode() == object.hashCode() &&
+               (constraint instanceof MvelConstraint ?
+                    ((MvelConstraint) constraint).equals(((AlphaNode)object).constraint, getKnowledgeBase()) :
+                    constraint.equals(((AlphaNode)object).constraint));
     }
 
     /**

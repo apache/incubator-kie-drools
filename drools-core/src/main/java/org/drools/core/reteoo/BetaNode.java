@@ -100,6 +100,8 @@ public abstract class BetaNode extends LeftTupleSource
 
     private boolean rightInputIsPassive;
 
+    private int hashcode;
+
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------

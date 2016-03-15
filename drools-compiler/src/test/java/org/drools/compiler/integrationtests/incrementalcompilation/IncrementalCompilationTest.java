@@ -58,7 +58,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.command.CommandFactory;
@@ -68,7 +67,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -80,6 +78,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
+import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 
 public class IncrementalCompilationTest extends CommonTestMethodBase {
 
@@ -668,25 +667,6 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
         assertNotNull( rules.get( "R1" ) );
         assertNull( rules.get( "R2" ) );
         assertNotNull( rules.get( "R3" ) );
-    }
-
-    public static Map<String, Rule> rulestoMap( KnowledgeBase kbase) {
-        List<Rule> rules = new ArrayList();
-        for ( KiePackage pkg : ((KnowledgeBaseImpl)kbase).getPackages() ) {
-            for ( Rule rule : pkg.getRules() ) {
-                rules.add(rule);
-            }
-        }
-
-        return rulestoMap(rules);
-    }
-
-    public static Map<String, Rule> rulestoMap( Collection<Rule> rules ) {
-        Map<String, Rule> ret = new HashMap<String, Rule>();
-        for ( Rule rule : rules ) {
-            ret.put( rule.getName(), rule );
-        }
-        return ret;
     }
 
     @Test
