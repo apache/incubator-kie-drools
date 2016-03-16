@@ -41,4 +41,8 @@ public class ActivationGroupNode extends AbstractBaseLinkedListNode<ActivationGr
         return this.activationGroup;
     }
 
+    @Override
+    public String toString() {
+        return "activation: " + activation + " in " + activationGroup;
+    }
 }

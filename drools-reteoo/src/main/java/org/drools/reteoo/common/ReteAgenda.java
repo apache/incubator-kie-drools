@@ -119,7 +119,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
     private InternalAgendaGroup main;
 
-    private LinkedList<RuleAgendaItem> eager;
+    private org.drools.core.util.LinkedList<RuleAgendaItem> eager;
 
     private AgendaGroupFactory agendaGroupFactory;
 
@@ -191,7 +191,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
             this.focusStack.add(this.main);
         }
-        eager = new LinkedList<RuleAgendaItem>();
+        eager = new org.drools.core.util.LinkedList<RuleAgendaItem>();
 
         Object object = ClassUtils.instantiateObject(kBase.getConfiguration().getConsequenceExceptionHandler(),
                                                      kBase.getConfiguration().getClassLoader());
@@ -294,7 +294,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
     @Override
     public void addEagerRuleAgendaItem(RuleAgendaItem item) {
-        if ( item.isInList() ) {
+        if ( item.isInList(eager) ) {
             return;
         }
 
@@ -306,7 +306,7 @@ public class ReteAgenda<M extends ModedAssertion<M>>
 
     @Override
     public void removeEagerRuleAgendaItem(RuleAgendaItem item) {
-        if ( !item.isInList() ) {
+        if ( !item.isInList(eager) ) {
             return;
         }
 
