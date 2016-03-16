@@ -21,6 +21,7 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
+import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +74,8 @@ public class RuleAgendaItem extends AgendaItemImpl implements LinkedListNode<Rul
         this.next = next;
     }
 
-    public boolean isInList() {
-        return previous != null && next != null;
+    public boolean isInList( LinkedList<RuleAgendaItem> list ) {
+        return previous != null || next != null || list.getFirst() == this;
     }
 
     public boolean isBlocked() {
