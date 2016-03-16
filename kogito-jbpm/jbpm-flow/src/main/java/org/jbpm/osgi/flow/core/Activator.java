@@ -22,6 +22,7 @@ import org.drools.core.runtime.process.ProcessRuntimeFactoryService;
 import org.jbpm.marshalling.impl.ProcessMarshallerFactoryServiceImpl;
 import org.jbpm.process.instance.ProcessRuntimeFactoryServiceImpl;
 import org.kie.api.Service;
+import org.kie.api.runtime.manager.RuntimeManagerFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -42,6 +43,7 @@ public class Activator
         this.processRuntimeReg2 = bc.registerService( new String[]{ ProcessMarshallerFactoryService.class.getName(), Service.class.getName()},
                                                                    new ProcessMarshallerFactoryServiceImpl(),
                                                                    new Hashtable() );
+        RuntimeManagerFactory.Factory.reset();
         ProcessRuntimeFactory.reInitializeProvider();
     }
 
