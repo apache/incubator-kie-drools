@@ -87,4 +87,8 @@ public class ActivationGroupImpl
         this.triggeredForRecency = executedForRecency;
     }
 
+    @Override
+    public String toString() {
+        return "activation-group: " + name;
+    }
 }
