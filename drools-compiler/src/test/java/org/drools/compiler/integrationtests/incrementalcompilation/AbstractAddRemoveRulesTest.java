@@ -15,7 +15,6 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
-import static org.junit.Assert.*;
 import static org.junit.Assume.assumeTrue;
 
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Assert;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.KnowledgeBase;
@@ -46,6 +46,7 @@ public abstract class AbstractAddRemoveRulesTest {
         assumeTrue("true".equals(System.getProperty("runTurtleTests")));
     }
 
+    // TODO - remove these two methods - they are also in TestContext
     protected KnowledgeBuilder createKnowledgeBuilder(final KnowledgeBase kbase, final String drl) {
         final KnowledgeBuilder kbuilder;
         if (kbase == null) {
@@ -56,7 +57,7 @@ public abstract class AbstractAddRemoveRulesTest {
 
         kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
         if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
+            Assert.fail(kbuilder.getErrors().toString());
         }
         return kbuilder;
     }

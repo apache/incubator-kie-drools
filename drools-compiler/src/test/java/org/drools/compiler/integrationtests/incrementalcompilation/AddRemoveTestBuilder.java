@@ -36,6 +36,10 @@ public class AddRemoveTestBuilder {
         return testPlan;
     }
 
+    public void clear() {
+        testPlan.clear();
+    }
+
     public static List<List<TestOperation>> getTestPlan(final String rule1, final String rule2,
             final String rule1Name, final String rule2Name, final Object[] facts) {
         final List<List<TestOperation>> testPlan = new ArrayList<List<TestOperation>>();

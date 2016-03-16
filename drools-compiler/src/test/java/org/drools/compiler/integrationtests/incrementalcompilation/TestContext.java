@@ -113,6 +113,7 @@ public class TestContext {
             default:
                 throw new IllegalArgumentException("Unsupported test operation: " + testOperationType + "!");
         }
+        executedOperations.add(testOperation);
     }
 
     public void dumpRete() {
@@ -122,6 +123,10 @@ public class TestContext {
 
     public Map<FactHandle, Object> getActualSessionFacts() {
         return actualSessionFacts;
+    }
+
+    public Set<FactHandle> getActualSessionFactHandles() {
+        return actualSessionFacts.keySet();
     }
 
     public List<TestOperation> getExecutedOperations() {
