@@ -93,6 +93,8 @@ public interface RuntimeManagerFactory {
         private static boolean initialized = false;
         private static RuntimeManagerFactory INSTANCE;
         private static Logger logger = LoggerFactory.getLogger(Factory.class);
+        
+        private static Exception initializationException;
 
         /**
          * Returns a reference to the RuntimeManagerFactory singleton
@@ -105,7 +107,7 @@ public interface RuntimeManagerFactory {
             if (!initialized) {
                 INSTANCE = create(classLoader);
             } else if (INSTANCE == null) {
-                throw new RuntimeException("RuntimeManagerFactory was not initialized, see previous errors");
+                throw new RuntimeException("RuntimeManagerFactory was not initialized due to "+ initializationException.getMessage(), initializationException);
             }
             return INSTANCE;
         }
@@ -119,9 +121,21 @@ public interface RuntimeManagerFactory {
                        ( RuntimeManagerFactory ) Class.forName( className, true, classLoader ).newInstance() :
                        ( RuntimeManagerFactory ) Class.forName( className ).newInstance();
             } catch (Exception e) {
+                initializationException = e;
                 logger.error("Unable to instance RuntimeManagerFactory due to " + e.getMessage());
             }
             return null;
+        }
+        
+        /**
+         * This method is used in jBPM OSGi Activators as we need a way to force reset when starting
+         * the bundles in case it failed previously.
+         */
+        public static synchronized void reset() {
+            if (initializationException != null) {
+                initializationException = null;
+                initialized = false;
+            }
         }
     }
 }
