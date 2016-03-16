@@ -26,7 +26,7 @@ public class MethodCountingLeftInputAdapterNode extends LeftInputAdapterNode {
 
     private void incrementCount(String key) {
         if ( this.methodCount== null ) {
-            this.methodCount = new HashMap<>();
+            this.methodCount = new HashMap<String, Integer>();
         }
         int count = methodCount.containsKey(key) ? methodCount.get(key) : 0;
         methodCount.put(key, count + 1);
