@@ -39,9 +39,11 @@ import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.api.event.rule.MatchCancelledEvent;
 import org.kie.api.event.rule.MatchCreatedEvent;
+import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.conf.RuleEngineOption;
+import org.kie.internal.utils.KieHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -1137,5 +1139,43 @@ public class ExecutionFlowControlTest extends CommonTestMethodBase {
 
         assertEquals( 3, ruleList.get(6));
         assertEquals( 3, ruleList.get(7));
+    }
+
+    @Test
+    public void testActivationGroupWithNots() {
+        // BZ-1318052
+        String drl =
+                "global java.util.List list;\n" +
+                "rule R1 activation-group \"fatal\" when\n" +
+                "    $s : String()\n" +
+                "    not Integer( this.toString() == $s )\n" +
+                "then\n" +
+                "    list.add(\"R1\");\n" +
+                "end\n" +
+                "rule R2 activation-group \"fatal\" when\n" +
+                "    $s : String()\n" +
+                "    not Long( this.toString() == $s )\n" +
+                "then\n" +
+                "    list.add(\"R2\");\n" +
+                "end\n" +
+                "rule R3 activation-group \"fatal\" when\n" +
+                "    Long( )\n" +
+                "then\n" +
+                "    list.add(\"R3\");\n" +
+                "end\n";
+
+        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
+                                             .build()
+                                             .newKieSession();
+
+        List<String> list = new ArrayList<String>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert( "1" );
+        ksession.insert( 2 );
+        ksession.insert( 3L );
+
+        ksession.fireAllRules();
+        assertEquals( 1, list.size() );
     }
 }

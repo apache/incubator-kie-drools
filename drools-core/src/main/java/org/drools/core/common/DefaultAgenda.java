@@ -275,7 +275,7 @@ public class DefaultAgenda
             return;
         }
 
-        if ( item.isInList() ) {
+        if ( item.isInList(eager) ) {
             return;
         }
 
@@ -287,7 +287,7 @@ public class DefaultAgenda
 
     @Override
     public void removeEagerRuleAgendaItem(RuleAgendaItem item) {
-        if ( !item.isInList() ) {
+        if ( !item.isInList(eager) ) {
             return;
         }
 
