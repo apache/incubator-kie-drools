@@ -17,6 +17,7 @@
 package org.drools.core.base;
 
 import org.drools.core.WorkingMemory;
+import org.drools.core.common.InsertionState;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemoryActions;
 import org.drools.core.definitions.rule.impl.RuleImpl;
@@ -162,17 +163,8 @@ public class SequentialKnowledgeHelper
         return null;
     }
 
-    public <T, K> T don(Thing<K> core, Class<T> trait, boolean logical) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     @Override
     public <T, K> T don( K core, Class<T> trait, Mode... modes ) {
-        return null;
-    }
-
-    @Override
-    public <T, K> T don( Thing<K> core, Class<T> trait, Mode... modes ) {
         return null;
     }
 
@@ -286,6 +278,10 @@ public class SequentialKnowledgeHelper
         // TODO Auto-generated method stub
     }
 
+    public void delete(FactHandle handle, InsertionState insertionState ) {
+        // TODO Auto-generated method stub
+    }
+
     public void update(Object newObject) {
         // TODO Auto-generated method stub
     }
@@ -299,6 +295,10 @@ public class SequentialKnowledgeHelper
     }
 
     public void delete(Object handle) {
+        // TODO Auto-generated method stub
+    }
+
+    public void delete(Object handle, InsertionState insertionState) {
         // TODO Auto-generated method stub
     }
 

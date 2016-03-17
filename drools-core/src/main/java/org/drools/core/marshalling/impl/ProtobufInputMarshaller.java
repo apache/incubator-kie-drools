@@ -490,8 +490,8 @@ public class ProtobufInputMarshaller {
                                             InternalFactHandle handle,
                                             List<PropagationContext> pctxs) {
         Object object = handle.getObject();
-        InternalWorkingMemoryEntryPoint ep = (InternalWorkingMemoryEntryPoint) handle.getEntryPoint();
-        ObjectTypeConf typeConf = ((InternalWorkingMemoryEntryPoint) handle.getEntryPoint()).getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(), object );
+        InternalWorkingMemoryEntryPoint ep = handle.getEntryPoint();
+        ObjectTypeConf typeConf = ep.getObjectTypeConfigurationRegistry().getObjectTypeConf( ep.getEntryPoint(), object );
 
         PropagationContextFactory pctxFactory = wm.getKnowledgeBase().getConfiguration().getComponentFactory().getPropagationContextFactory();
 
@@ -544,7 +544,7 @@ public class ProtobufInputMarshaller {
                 handle = new DefaultFactHandle( _handle.getId(),
                                                 object,
                                                 _handle.getRecency(),
-                                                entryPoint,
+                                                (InternalWorkingMemoryEntryPoint) entryPoint,
                                                 typeConf != null && typeConf.isTrait() );
                 break;
             }
@@ -560,7 +560,7 @@ public class ProtobufInputMarshaller {
                                               _handle.getRecency(),
                                               _handle.getTimestamp(),
                                               _handle.getDuration(),
-                                              entryPoint,
+                                              (InternalWorkingMemoryEntryPoint) entryPoint,
                                               typeConf != null && typeConf.isTrait() );
                 ((EventFactHandle) handle).setExpired( _handle.getIsExpired() );
                 // the event is re-propagated through the network, so the activations counter will be recalculated

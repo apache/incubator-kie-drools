@@ -444,9 +444,16 @@ public class NamedEntryPoint
                  null );
     }
 
-    public void delete(final FactHandle factHandle,
-                       final RuleImpl rule,
-                       final Activation activation) {
+    public void delete(FactHandle factHandle,
+                       RuleImpl rule,
+                       Activation activation) {
+        delete(factHandle, rule, activation, InsertionState.ALL);
+    }
+
+    public void delete(FactHandle factHandle,
+                       RuleImpl rule,
+                       Activation activation,
+                       InsertionState insertionState) {
         if ( factHandle == null ) {
             throw new IllegalArgumentException( "FactHandle cannot be null " );
         }
@@ -469,63 +476,74 @@ public class NamedEntryPoint
                 handle = this.objectStore.reconnect( handle );
             }
 
-            final EqualityKey key = handle.getEqualityKey();
-            if ( key != null && key.getLogicalFactHandle() == handle ) {
-                throw new IllegalArgumentException( "The FactHandle did not originate from WM : " + handle);
-            }
-
-
-            if ( handle.isTraitable() ) {
-                traitHelper.deleteWMAssertedTraitProxies( handle, rule, activation );
-            }
-
             if ( handle.getEntryPoint() != this ) {
                 throw new IllegalArgumentException( "Invalid Entry Point. You updated the FactHandle on entry point '" + handle.getEntryPoint().getEntryPointId() + "' instead of '" + getEntryPointId() + "'" );
-            }            
-
-            final Object object = handle.getObject();
-            
-            final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint,
-                                                                                object );
-
-            if( typeConf.isSupportsPropertyChangeListeners() ) {
-                removePropertyChangeListener( handle, true );
-            }          
-            
-            if ( activation != null ) {
-                // release resources so that they can be GC'ed
-                activation.getPropagationContext().releaseResources();
             }
 
-            PropagationContext propagationContext  = delete(handle, object, typeConf, rule, activation );
-
-            if ( typeConf.isTMSEnabled() && key != null ) { // key can be null if we're expiring an event that has been already deleted
-                TruthMaintenanceSystem tms = getTruthMaintenanceSystem();
-
-                // Update the equality key, which maintains a list of stated FactHandles
-                key.removeFactHandle( handle );
-                handle.setEqualityKey( null );
-
-                // If the equality key is now empty, then remove it, as it's no longer state either
-                if ( key.isEmpty() && key.getLogicalFactHandle() == null ) {
-                    tms.remove( key );
-                } else if ( key.getLogicalFactHandle() != null) {
-                    // The justified set can be unstaged, now that the last stated has been deleted
-                    final InternalFactHandle justifiedHandle = key.getLogicalFactHandle();
-
-
-                    BeliefSet bs = justifiedHandle.getEqualityKey().getBeliefSet();
-                    bs.getBeliefSystem().unstage( propagationContext, bs );
-                }
+            EqualityKey key = handle.getEqualityKey();
+            if (insertionState.isStated()) {
+                deleteStated( rule, activation, handle, key );
             }
-
-            this.handleFactory.destroyFactHandle( handle );            
-            
-
+            if (insertionState.isLogical()) {
+                deleteLogical( key );
+            }
         } finally {
             this.wm.endOperation();
             this.lock.unlock();
             this.kBase.readUnlock();
+        }
+    }
+
+    private void deleteStated( RuleImpl rule, Activation activation, InternalFactHandle handle, EqualityKey key ) {
+        if ( key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
+            return;
+        }
+
+        if ( handle.isTraitable() ) {
+            traitHelper.deleteWMAssertedTraitProxies( handle, rule, activation );
+        }
+
+        final Object object = handle.getObject();
+
+        final ObjectTypeConf typeConf = this.typeConfReg.getObjectTypeConf( this.entryPoint, object );
+
+        if( typeConf.isSupportsPropertyChangeListeners() ) {
+            removePropertyChangeListener( handle, true );
+        }
+
+        if ( activation != null ) {
+            // release resources so that they can be GC'ed
+            activation.getPropagationContext().releaseResources();
+        }
+
+        PropagationContext propagationContext = delete( handle, object, typeConf, rule, activation );
+
+        if ( typeConf.isTMSEnabled() && key != null ) { // key can be null if we're expiring an event that has been already deleted
+            TruthMaintenanceSystem tms = getTruthMaintenanceSystem();
+
+            // Update the equality key, which maintains a list of stated FactHandles
+            key.removeFactHandle( handle );
+            handle.setEqualityKey( null );
+
+            // If the equality key is now empty, then remove it, as it's no longer state either
+            if ( key.isEmpty() && key.getLogicalFactHandle() == null ) {
+                tms.remove( key );
+            } else if ( key.getLogicalFactHandle() != null) {
+                // The justified set can be unstaged, now that the last stated has been deleted
+                final InternalFactHandle justifiedHandle = key.getLogicalFactHandle();
+
+
+                BeliefSet bs = justifiedHandle.getEqualityKey().getBeliefSet();
+                bs.getBeliefSystem().unstage( propagationContext, bs );
+            }
+        }
+
+        this.handleFactory.destroyFactHandle( handle );
+    }
+
+    private void deleteLogical(EqualityKey key) {
+        if ( key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
+            getTruthMaintenanceSystem().delete( key.getLogicalFactHandle() );
         }
     }
 

@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.concurrent.locks.Lock;
 
 public interface InternalWorkingMemory
-    extends WorkingMemory {
+    extends WorkingMemory, InternalWorkingMemoryEntryPoint {
 
     InternalAgenda getAgenda();
 
