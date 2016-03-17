@@ -23,7 +23,6 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.spi.Tuple;
 import org.drools.core.xml.jaxb.util.JaxbUnknownAdapter;
-import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -196,7 +195,7 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
-    public EntryPoint getEntryPoint() {
+    public InternalWorkingMemoryEntryPoint getEntryPoint() {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
@@ -231,7 +230,7 @@ public class DisconnectedFactHandle
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 
-    public void setEntryPoint(EntryPoint ep) {
+    public void setEntryPoint(InternalWorkingMemoryEntryPoint ep) {
         throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
 

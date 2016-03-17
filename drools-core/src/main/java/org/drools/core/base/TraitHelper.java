@@ -461,7 +461,7 @@ public class TraitHelper implements Externalizable {
         TraitableBean<K,? extends TraitableBean> inner = needsWrapping ? builder.asTraitable( core, coreDef ) : (TraitableBean<K,? extends TraitableBean>) core;
         if ( needsWrapping ) {
             InternalFactHandle h = (InternalFactHandle) lookupFactHandle( core );
-            InternalWorkingMemoryEntryPoint ep = h != null ? (InternalWorkingMemoryEntryPoint) h.getEntryPoint() : (InternalWorkingMemoryEntryPoint) ((StatefulKnowledgeSessionImpl)workingMemory).getEntryPoint("DEFAULT");
+            InternalWorkingMemoryEntryPoint ep = h != null ? h.getEntryPoint() : (InternalWorkingMemoryEntryPoint) ((StatefulKnowledgeSessionImpl)workingMemory).getEntryPoint("DEFAULT");
             ObjectTypeConfigurationRegistry reg = ep.getObjectTypeConfigurationRegistry();
 
             ObjectTypeConf coreConf = reg.getObjectTypeConf( ep.getEntryPoint(), core );
@@ -581,11 +581,11 @@ public class TraitHelper implements Externalizable {
                        final Object newObject,
                        final Activation activation ){
         InternalFactHandle h = (InternalFactHandle) handle;
-        ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
-                                                                      newObject,
-                                                                      onlyTraitBitSetMask(),
-                                                                      newObject.getClass(),
-                                                                      activation );
+        h.getEntryPoint().update( h,
+                                  newObject,
+                                  onlyTraitBitSetMask(),
+                                  newObject.getClass(),
+                                  activation );
     }
 
     public void update( final FactHandle handle,
@@ -604,9 +604,9 @@ public class TraitHelper implements Externalizable {
     }
 
     public void delete( final FactHandle handle, Activation activation ) {
-        ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).delete( handle,
-                                                                                                  activation.getRule(),
-                                                                                                  activation );
+        ((InternalFactHandle) handle).getEntryPoint().delete( handle,
+                                                              activation.getRule(),
+                                                              activation );
     }
 
     public FactHandle insert(final Object object,

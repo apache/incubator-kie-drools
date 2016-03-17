@@ -39,6 +39,7 @@ import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EndOperationListener;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.EventSupport;
+import org.drools.core.common.InsertionState;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalKnowledgeRuntime;
@@ -1487,25 +1488,33 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                       null);
     }
 
-    public void retract(final FactHandle handle) {
-        delete(handle,
-               null,
-               null);
+    public void retract(FactHandle handle) {
+        delete(handle);
     }
 
-    public void delete(final FactHandle handle) {
-        delete(handle,
-               null,
-               null);
+    public void delete(FactHandle handle) {
+        delete(handle, null, null);
+    }
+
+    public void delete(FactHandle handle, InsertionState insertionState) {
+        delete(handle, null, null, insertionState);
     }
 
     public void delete(final FactHandle factHandle,
                        final RuleImpl rule,
                        final Activation activation) {
+        delete(factHandle, rule, activation, InsertionState.ALL);
+    }
+
+    public void delete(FactHandle factHandle,
+                       RuleImpl rule,
+                       Activation activation,
+                       InsertionState insertionState ) {
         checkAlive();
         this.defaultEntryPoint.delete(factHandle,
                                       rule,
-                                      activation);
+                                      activation,
+                                      insertionState);
     }
 
     public EntryPointNode getEntryPointNode() {

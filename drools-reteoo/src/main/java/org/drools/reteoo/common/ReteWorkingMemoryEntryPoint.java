@@ -15,6 +15,7 @@
 
 package org.drools.reteoo.common;
 
+import org.drools.core.common.InsertionState;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.spi.FactHandleFactory;
@@ -144,6 +145,11 @@ public class ReteWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint, Int
     @Override
     public void delete(FactHandle factHandle, RuleImpl rule, Activation activation) {
         ((InternalWorkingMemoryEntryPoint)delegate).delete(factHandle, rule, activation);
+    }
+
+    @Override
+    public void delete(FactHandle factHandle, RuleImpl rule, Activation activation, InsertionState insertionState ) {
+        ((InternalWorkingMemoryEntryPoint)delegate).delete(factHandle, rule, activation, insertionState);
     }
 
     @Override
