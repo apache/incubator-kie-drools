@@ -19,5 +19,18 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
  * Represents possible test operations in incremental compilation tests.
  */
 public enum TestOperationType {
-    CREATE_SESSION, ADD_RULES, ADD_RULES_REINSERT_OLD, REMOVE_RULES, CHECK_RESULTS, FIRE_RULES, INSERT_FACTS, DUMP_RETE
+    CREATE_SESSION,
+
+    ADD_RULES,
+    ADD_RULES_REINSERT_OLD,
+    REMOVE_RULES,
+
+    INSERT_FACTS,
+    REMOVE_FACTS,
+
+    FIRE_RULES,
+
+    CHECK_RESULTS,
+
+    DUMP_RETE
 }

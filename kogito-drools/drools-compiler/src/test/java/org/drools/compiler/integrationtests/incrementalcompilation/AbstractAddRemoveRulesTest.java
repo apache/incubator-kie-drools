@@ -15,29 +15,22 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
-import org.drools.core.reteoo.ReteDumper;
-import org.kie.api.KieBase;
+import static org.junit.Assume.assumeTrue;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Assert;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
 import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
 
 /**
  * Abstract class for tests that test adding and removing rules at runtime.
@@ -53,6 +46,7 @@ public abstract class AbstractAddRemoveRulesTest {
         assumeTrue("true".equals(System.getProperty("runTurtleTests")));
     }
 
+    // TODO - remove these two methods - they are also in TestContext
     protected KnowledgeBuilder createKnowledgeBuilder(final KnowledgeBase kbase, final String drl) {
         final KnowledgeBuilder kbuilder;
         if (kbase == null) {
@@ -63,7 +57,7 @@ public abstract class AbstractAddRemoveRulesTest {
 
         kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
         if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
+            Assert.fail(kbuilder.getErrors().toString());
         }
         return kbuilder;
     }
@@ -106,61 +100,16 @@ public abstract class AbstractAddRemoveRulesTest {
     protected StatefulKnowledgeSession runAddRemoveTest(final List<TestOperation> testOperations,
             final Map<String, Object> additionalGlobals) {
 
-        StatefulKnowledgeSession session = null;
         final List resultsList = new ArrayList();
-
-        int index = 1;
-        for (TestOperation testOperation : testOperations) {
-            final TestOperationType testOperationType = testOperation.getType();
-            final Object testOperationParameter = testOperation.getParameter();
-            if (testOperationType != TestOperationType.CREATE_SESSION) {
-                checkSessionInitialized(session);
-            }
-            try {
-                switch (testOperationType) {
-                    case CREATE_SESSION:
-                        session = createNewSession((String[]) testOperationParameter, resultsList, additionalGlobals);
-                        break;
-                    case ADD_RULES:
-                        addRulesToSession(session, (String[]) testOperationParameter, false);
-                        break;
-                    case ADD_RULES_REINSERT_OLD:
-                        addRulesToSession(session, (String[]) testOperationParameter, true);
-                        break;
-                    case REMOVE_RULES:
-                        removeRulesFromSession(session, (String[]) testOperationParameter);
-                        break;
-                    case FIRE_RULES:
-                        session.fireAllRules();
-                        break;
-                    case CHECK_RESULTS:
-                        final Set<String> expectedResultsSet = new HashSet<String>();
-                        expectedResultsSet.addAll(Arrays.asList((String[]) testOperationParameter));
-                        if (expectedResultsSet.size() > 0) {
-                            assertTrue(createTestFailMessage(testOperations, index, expectedResultsSet, resultsList),
-                                    resultsList.size() > 0);
-                        }
-                        assertTrue(createTestFailMessage(testOperations, index, expectedResultsSet, resultsList),
-                                expectedResultsSet.containsAll(resultsList));
-                        assertTrue(createTestFailMessage(testOperations, index, expectedResultsSet, resultsList),
-                                resultsList.containsAll(expectedResultsSet));
-                        resultsList.clear();
-                        break;
-                    case INSERT_FACTS:
-                        insertFactsIntoSession(session, (Object[]) testOperationParameter);
-                        break;
-                    case DUMP_RETE:
-                        ReteDumper.dumpRete((KieSession) session);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("Unsupported test operation: " + testOperationType + "!");
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(createTestFailMessage(testOperations, index, null, null), e);
-            }
-            index++;
+        final Map<String, Object> sessionGlobals = new HashMap<String, Object>();
+        if (additionalGlobals != null) {
+            sessionGlobals.putAll(additionalGlobals);
         }
-        return session;
+        sessionGlobals.put("list", resultsList);
+
+        final TestContext testContext = new TestContext(PKG_NAME_TEST, sessionGlobals, resultsList);
+        testContext.executeTestOperations(testOperations);
+        return testContext.getSession();
     }
 
     protected int getRulesCount(final KnowledgeBase kBase) {
@@ -169,79 +118,5 @@ public abstract class AbstractAddRemoveRulesTest {
             result += kiePackage.getRules().size();
         }
         return result;
-    }
-
-    private void checkSessionInitialized(final StatefulKnowledgeSession session) {
-        if (session == null) {
-            throw new IllegalStateException("Session is not initialized! Please, initialize session first.");
-        }
-    }
-
-    private StatefulKnowledgeSession createNewSession(final String[] drls, final List resultsList,
-            final Map<String, Object> additionalGlobals) {
-        final StatefulKnowledgeSession session = buildSessionInSteps(drls);
-        session.setGlobal("list", resultsList);
-        if (additionalGlobals != null) {
-            insertGlobalsIntoSession(session, additionalGlobals);
-        }
-        return session;
-    }
-
-    private void addRulesToSession(final StatefulKnowledgeSession session, final String[] drls,
-            final boolean reimportAllRules) {
-        for (String drl : drls) {
-            final KnowledgeBuilder kBuilder;
-            if (reimportAllRules) {
-                kBuilder = createKnowledgeBuilder(session.getKieBase(), drl);
-            } else {
-                kBuilder = createKnowledgeBuilder(null, drl);
-            }
-            session.getKieBase().addKnowledgePackages(kBuilder.getKnowledgePackages());
-        }
-    }
-
-    private void removeRulesFromSession(final StatefulKnowledgeSession session, final String[] ruleNames) {
-        final KieBase kieBase = session.getKieBase();
-        for (String ruleName : ruleNames) {
-            kieBase.removeRule(PKG_NAME_TEST, ruleName);
-        }
-    }
-
-    private void insertFactsIntoSession(final StatefulKnowledgeSession session, final Object[] facts) {
-        for (Object fact: facts) {
-            session.insert(fact);
-        }
-    }
-
-    private void insertGlobalsIntoSession(final StatefulKnowledgeSession session, final Map<String, Object> globals) {
-        for (Map.Entry<String, Object> globalEntry : globals.entrySet()) {
-            session.setGlobal(globalEntry.getKey(), globalEntry.getValue());
-        }
-    }
-
-    private String createTestFailMessage(final List<TestOperation> testOperations, final int operationIndex,
-            final Collection<String> expectedResults, final Collection<String> actualResults) {
-        final StringBuilder messageBuilder = new StringBuilder();
-        final String lineSeparator = System.getProperty("line.separator");
-        messageBuilder.append("Test failed on " + operationIndex + ". operation! Operations:" + lineSeparator);
-        int index = 1;
-        for (TestOperation testOperation : testOperations) {
-            messageBuilder.append(index + ". " + testOperation.toString());
-            messageBuilder.append(lineSeparator);
-            index++;
-        }
-        if (expectedResults != null && actualResults != null) {
-            messageBuilder.append( "Expected results: " + lineSeparator + "[" );
-            for ( String expectedResult : expectedResults ) {
-                messageBuilder.append( expectedResult + " " );
-            }
-            messageBuilder.append( "]" + lineSeparator );
-            messageBuilder.append( "Actual results: " + lineSeparator + "[" );
-            for ( String actualResult : actualResults ) {
-                messageBuilder.append( actualResult + " " );
-            }
-        }
-        messageBuilder.append("]" + lineSeparator);
-        return messageBuilder.toString();
     }
 }

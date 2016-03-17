@@ -17,6 +17,7 @@ package org.drools.compiler.integrationtests.incrementalcompilation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AddRemoveTestBuilder {
     private final List<TestOperation> testPlan = new ArrayList<TestOperation>();
@@ -33,6 +34,10 @@ public class AddRemoveTestBuilder {
 
     public List<TestOperation> build() {
         return testPlan;
+    }
+
+    public void clear() {
+        testPlan.clear();
     }
 
     public static List<List<TestOperation>> getTestPlan(final String rule1, final String rule2,
