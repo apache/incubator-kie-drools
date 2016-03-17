@@ -16,35 +16,42 @@
 
 package org.drools.core.common;
 
-import org.drools.core.spi.FactHandleFactory;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.FactHandleFactory;
 import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
 public interface InternalWorkingMemoryEntryPoint extends EntryPoint {
     ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry();
+
     InternalKnowledgeBase getKnowledgeBase();
-    public void delete(final FactHandle factHandle,
-                        final RuleImpl rule,
-                        final Activation activation);
-    public void update(FactHandle handle,
-                       Object object,
-                       BitMask mask,
-                       Class<?> modifiedClass,
-                       Activation activation);
 
-    public TruthMaintenanceSystem getTruthMaintenanceSystem();
+    void delete(FactHandle factHandle,
+                RuleImpl rule,
+                Activation activation);
 
-    public EntryPointId getEntryPoint();
-    public InternalWorkingMemory getInternalWorkingMemory();
+    void delete(FactHandle factHandle,
+                RuleImpl rule,
+                Activation activation,
+                FactHandle.State fhState);
 
-    public FactHandle getFactHandleByIdentity(final Object object);
+    void update(FactHandle handle,
+                Object object,
+                BitMask mask,
+                Class<?> modifiedClass,
+                Activation activation);
+
+    TruthMaintenanceSystem getTruthMaintenanceSystem();
+
+    EntryPointId getEntryPoint();
+    InternalWorkingMemory getInternalWorkingMemory();
+
+    FactHandle getFactHandleByIdentity(Object object);
     
     void reset();
     

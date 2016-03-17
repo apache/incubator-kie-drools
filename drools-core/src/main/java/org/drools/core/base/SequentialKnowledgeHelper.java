@@ -163,17 +163,8 @@ public class SequentialKnowledgeHelper
         return null;
     }
 
-    public <T, K> T don(Thing<K> core, Class<T> trait, boolean logical) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
     @Override
     public <T, K> T don( K core, Class<T> trait, Mode... modes ) {
-        return null;
-    }
-
-    @Override
-    public <T, K> T don( Thing<K> core, Class<T> trait, Mode... modes ) {
         return null;
     }
 
@@ -287,6 +278,10 @@ public class SequentialKnowledgeHelper
         // TODO Auto-generated method stub
     }
 
+    public void delete(FactHandle handle, FactHandle.State fhState) {
+        // TODO Auto-generated method stub
+    }
+
     public void update(Object newObject) {
         // TODO Auto-generated method stub
     }
@@ -300,6 +295,10 @@ public class SequentialKnowledgeHelper
     }
 
     public void delete(Object handle) {
+        // TODO Auto-generated method stub
+    }
+
+    public void delete(Object handle, FactHandle.State fhState) {
         // TODO Auto-generated method stub
     }
 

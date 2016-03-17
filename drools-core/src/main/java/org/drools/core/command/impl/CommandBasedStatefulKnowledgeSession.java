@@ -16,14 +16,24 @@
 
 package org.drools.core.command.impl;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
 import org.drools.core.command.CommandService;
 import org.drools.core.command.GetSessionClockCommand;
 import org.drools.core.command.Interceptor;
-import org.drools.core.command.runtime.*;
+import org.drools.core.command.runtime.AddEventListenerCommand;
+import org.drools.core.command.runtime.DestroySessionCommand;
+import org.drools.core.command.runtime.DisposeCommand;
+import org.drools.core.command.runtime.GetCalendarsCommand;
+import org.drools.core.command.runtime.GetChannelsCommand;
+import org.drools.core.command.runtime.GetEnvironmentCommand;
+import org.drools.core.command.runtime.GetFactCountCommand;
+import org.drools.core.command.runtime.GetGlobalCommand;
+import org.drools.core.command.runtime.GetGlobalsCommand;
+import org.drools.core.command.runtime.GetIdCommand;
+import org.drools.core.command.runtime.GetKnowledgeBaseCommand;
+import org.drools.core.command.runtime.RegisterChannelCommand;
+import org.drools.core.command.runtime.RemoveEventListenerCommand;
+import org.drools.core.command.runtime.SetGlobalCommand;
+import org.drools.core.command.runtime.UnregisterChannelCommand;
 import org.drools.core.command.runtime.process.AbortProcessInstanceCommand;
 import org.drools.core.command.runtime.process.AbortWorkItemCommand;
 import org.drools.core.command.runtime.process.CompleteWorkItemCommand;
@@ -63,33 +73,37 @@ import org.drools.core.impl.AbstractRuntime;
 import org.drools.core.process.instance.WorkItem;
 import org.drools.core.process.instance.WorkItemManager;
 import org.drools.core.rule.EntryPointId;
-import org.kie.api.event.rule.RuleRuntimeEventListener;
-import org.kie.internal.KnowledgeBase;
 import org.kie.api.command.Command;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.internal.process.CorrelationAwareProcessRuntime;
-import org.kie.internal.process.CorrelationKey;
+import org.kie.api.event.rule.RuleRuntimeEventListener;
 import org.kie.api.runtime.Calendars;
 import org.kie.api.runtime.Channel;
 import org.kie.api.runtime.Environment;
 import org.kie.api.runtime.Globals;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.ObjectFilter;
-import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.rule.ActivationGroup;
 import org.kie.api.runtime.rule.Agenda;
 import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.AgendaGroup;
+import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.RuleFlowGroup;
-import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
+import org.kie.internal.KnowledgeBase;
+import org.kie.internal.process.CorrelationAwareProcessRuntime;
+import org.kie.internal.process.CorrelationKey;
+import org.kie.internal.runtime.StatefulKnowledgeSession;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
     implements
@@ -416,6 +430,10 @@ public class CommandBasedStatefulKnowledgeSession extends AbstractRuntime
 
     public void delete(FactHandle handle) {
         commandService.execute( new DeleteCommand( handle ) );
+    }
+
+    public void delete(FactHandle handle, FactHandle.State fhState) {
+        commandService.execute( new DeleteCommand( handle, fhState ) );
     }
 
     public void update(FactHandle handle,

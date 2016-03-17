@@ -61,6 +61,11 @@ public class CommandBasedEntryPoint implements EntryPoint {
     }
 
     @Override
+    public void delete(FactHandle handle, FactHandle.State fhState) {
+        commandService.execute( new DeleteFromEntryPointCommand( handle, entryPoint, fhState ) );
+    }
+
+    @Override
     public void update(FactHandle handle, Object object) {
         commandService.execute( new UpdateInEntryPointCommand( handle, object, entryPoint ) );
     }
