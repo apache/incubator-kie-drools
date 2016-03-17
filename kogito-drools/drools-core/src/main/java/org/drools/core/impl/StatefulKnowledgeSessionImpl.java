@@ -1487,25 +1487,33 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                       null);
     }
 
-    public void retract(final FactHandle handle) {
-        delete(handle,
-               null,
-               null);
+    public void retract(FactHandle handle) {
+        delete(handle);
     }
 
-    public void delete(final FactHandle handle) {
-        delete(handle,
-               null,
-               null);
+    public void delete(FactHandle handle) {
+        delete(handle, null, null);
+    }
+
+    public void delete(FactHandle handle, FactHandle.State fhState) {
+        delete(handle, null, null, fhState);
     }
 
     public void delete(final FactHandle factHandle,
                        final RuleImpl rule,
                        final Activation activation) {
+        delete(factHandle, rule, activation, FactHandle.State.ALL);
+    }
+
+    public void delete(FactHandle factHandle,
+                       RuleImpl rule,
+                       Activation activation,
+                       FactHandle.State fhState ) {
         checkAlive();
         this.defaultEntryPoint.delete(factHandle,
                                       rule,
-                                      activation);
+                                      activation,
+                                      fhState);
     }
 
     public EntryPointNode getEntryPointNode() {

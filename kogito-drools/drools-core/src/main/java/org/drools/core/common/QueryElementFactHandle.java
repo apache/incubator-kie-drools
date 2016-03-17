@@ -20,7 +20,6 @@ import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.spi.Tuple;
-import org.kie.api.runtime.rule.EntryPoint;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -95,7 +94,7 @@ public class QueryElementFactHandle
         this.object = object;
     }    
 
-    public EntryPoint getEntryPoint() {
+    public InternalWorkingMemoryEntryPoint getEntryPoint() {
         return null;
         //throw new UnsupportedOperationException( "DisonnectedFactHandle does not support this method" );
     }
@@ -136,7 +135,7 @@ public class QueryElementFactHandle
         return true;
     }
 
-    public void setEntryPoint(EntryPoint ep) {
+    public void setEntryPoint(InternalWorkingMemoryEntryPoint ep) {
         throw new UnsupportedOperationException( "QueryElementFactHandle does not support this method" );
     }
 

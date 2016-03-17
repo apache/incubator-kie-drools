@@ -263,6 +263,11 @@ public class ExternalSheetListenerTest {
                 }
 
                 @Override
+                public void delete(org.kie.api.runtime.rule.FactHandle handle, org.kie.api.runtime.rule.FactHandle.State fhState) {
+
+                }
+
+                @Override
                 public void update(org.kie.api.runtime.rule.FactHandle handle, Object object) {
 
                 }

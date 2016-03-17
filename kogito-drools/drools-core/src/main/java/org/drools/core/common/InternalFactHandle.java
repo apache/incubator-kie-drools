@@ -20,7 +20,6 @@ import org.drools.core.factmodel.traits.TraitTypeEnum;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.spi.Tuple;
-import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
 public interface InternalFactHandle
@@ -74,10 +73,9 @@ public interface InternalFactHandle
 
     LeftTuple getFirstLeftTuple();
     LeftTuple getLastLeftTuple();
-    
-    EntryPoint getEntryPoint();
-    
-    void setEntryPoint( EntryPoint ep );
+
+    InternalWorkingMemoryEntryPoint getEntryPoint();
+    void setEntryPoint( InternalWorkingMemoryEntryPoint ep );
     
     InternalFactHandle clone();
     

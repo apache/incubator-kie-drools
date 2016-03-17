@@ -16,17 +16,17 @@
 
 package org.drools.core.command.runtime.rule;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import org.drools.core.command.impl.GenericCommand;
 import org.drools.core.command.impl.KnowledgeCommandContext;
 import org.drools.core.common.DisconnectedFactHandle;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.command.Context;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.NONE)
@@ -35,11 +35,18 @@ public class DeleteCommand
 
     private DisconnectedFactHandle handle;
 
+    private FactHandle.State fhState = FactHandle.State.ALL;
+
     public DeleteCommand() {
     }
 
     public DeleteCommand(FactHandle handle) {
         this.handle = DisconnectedFactHandle.newFrom( handle );
+    }
+
+    public DeleteCommand(FactHandle handle, FactHandle.State fhState) {
+        this(handle);
+        this.fhState = fhState;
     }
 
     public FactHandle getFactHandle() {
@@ -61,7 +68,7 @@ public class DeleteCommand
 
     public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        ksession.getEntryPoint( handle.getEntryPointId() ).delete( handle );
+        ksession.getEntryPoint( handle.getEntryPointId() ).delete( handle, fhState );
         return null;
     }
 

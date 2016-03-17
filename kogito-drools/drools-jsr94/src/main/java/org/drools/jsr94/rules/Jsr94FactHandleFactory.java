@@ -19,10 +19,10 @@ package org.drools.jsr94.rules;
 import org.drools.core.common.AbstractFactHandleFactory;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
-import org.kie.api.runtime.rule.EntryPoint;
 
 /**
  * A factory for creating <code>Handle</code>s.
@@ -31,12 +31,12 @@ public final class Jsr94FactHandleFactory extends AbstractFactHandleFactory {
 
     private static final long serialVersionUID = 510l;
 
-    public final InternalFactHandle newFactHandle(final int id,
-                                                     final Object object,
-                                                     final long recency,
-                                                     final ObjectTypeConf conf,
-                                                     final InternalWorkingMemory workingMemory,
-                                                     final EntryPoint entryPoint) {
+    public final InternalFactHandle newFactHandle( final int id,
+                                                   final Object object,
+                                                   final long recency,
+                                                   final ObjectTypeConf conf,
+                                                   final InternalWorkingMemory workingMemory,
+                                                   InternalWorkingMemoryEntryPoint entryPoint) {
         if ( conf != null && conf.isEvent() ) {
             // later we need to centralize the following code snippet in a common method
             // shared by all fact handle factory implementations

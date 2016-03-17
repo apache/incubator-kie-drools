@@ -19,7 +19,6 @@ package org.drools.core.phreak;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSinkNode;
 import org.drools.core.reteoo.ReactiveFromNode;
@@ -55,7 +54,7 @@ public class ReactiveObjectUtil {
 
     private static InternalWorkingMemory getInternalWorkingMemory(PropagationContext propagationContext) {
         InternalFactHandle fh = (InternalFactHandle) propagationContext.getFactHandle();
-        return ((InternalWorkingMemoryEntryPoint) fh.getEntryPoint()).getInternalWorkingMemory();
+        return fh.getEntryPoint().getInternalWorkingMemory();
     }
 
     static class ReactivePropagation extends PropagationEntry.AbstractPropagationEntry {

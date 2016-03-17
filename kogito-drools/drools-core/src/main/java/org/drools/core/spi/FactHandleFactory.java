@@ -16,13 +16,13 @@
 
 package org.drools.core.spi;
 
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.reteoo.ObjectTypeConf;
-import org.kie.api.runtime.rule.EntryPoint;
+
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Factory Interface to return new <code>FactHandle</code>s
@@ -33,17 +33,17 @@ public interface FactHandleFactory {
      * 
      * @return The handle.
      */
-    public InternalFactHandle newFactHandle(Object object, 
-                                            ObjectTypeConf conf, 
-                                            InternalWorkingMemory workingMemory, 
-                                            EntryPoint wmEntryPoint );
+    InternalFactHandle newFactHandle(Object object,
+                                     ObjectTypeConf conf,
+                                     InternalWorkingMemory workingMemory,
+                                     InternalWorkingMemoryEntryPoint wmEntryPoint );
     
-    public InternalFactHandle newFactHandle(final int id,
-                                            final Object object,
-                                            final long recency,
-                                            final ObjectTypeConf conf,
-                                            final InternalWorkingMemory workingMemory,
-                                            final EntryPoint wmEntryPoint);
+    InternalFactHandle newFactHandle(int id,
+                                     Object object,
+                                     long recency,
+                                     ObjectTypeConf conf,
+                                     InternalWorkingMemory workingMemory,
+                                     InternalWorkingMemoryEntryPoint wmEntryPoint );
     
     /**
      * Increases the recency of the FactHandle
@@ -51,26 +51,26 @@ public interface FactHandleFactory {
      * @param factHandle
      *      The fact handle to have its recency increased.
      */
-    public void increaseFactHandleRecency(InternalFactHandle factHandle);
+    void increaseFactHandleRecency(InternalFactHandle factHandle);
 
-    public void destroyFactHandle(InternalFactHandle factHandle);
+    void destroyFactHandle(InternalFactHandle factHandle);
 
     /**
      * @return a fresh instance of the fact handle factory, with any IDs reset etc.
      */
-    public FactHandleFactory newInstance();
+    FactHandleFactory newInstance();
     
-    public FactHandleFactory newInstance(int id, long counter);
+    FactHandleFactory newInstance(int id, long counter);
 
-    public Class<?> getFactHandleType();
+    Class<?> getFactHandleType();
 
-    public int getId();
+    int getId();
 
-    public long getRecency();
+    long getRecency();
     
-    public AtomicInteger getAtomicId();
+    AtomicInteger getAtomicId();
     
-    public AtomicLong getAtomicRecency();      
+    AtomicLong getAtomicRecency();
     
-    public void clear(int id, long counter);
+    void clear(int id, long counter);
 }

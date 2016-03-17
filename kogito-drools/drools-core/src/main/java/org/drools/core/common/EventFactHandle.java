@@ -19,7 +19,6 @@ package org.drools.core.common;
 import org.drools.core.time.JobHandle;
 import org.drools.core.time.TimerService;
 import org.drools.core.util.LinkedList;
-import org.kie.api.runtime.rule.EntryPoint;
 
 public class EventFactHandle extends DefaultFactHandle implements Comparable<EventFactHandle> {
 
@@ -56,22 +55,22 @@ public class EventFactHandle extends DefaultFactHandle implements Comparable<Eve
      * @param timestamp the timestamp of the occurrence of this event
      * @param duration the duration of this event. May be 0 (zero) in case this is a primitive event.
      */
-    public EventFactHandle(final int id,
-                           final Object object,
-                           final long recency,
-                           final long timestamp,
-                           final long duration,
-                           final EntryPoint wmEntryPoint ) {
+    public EventFactHandle(int id,
+                           Object object,
+                           long recency,
+                           long timestamp,
+                           long duration,
+                           InternalWorkingMemoryEntryPoint wmEntryPoint ) {
         this( id, object, recency, timestamp, duration, wmEntryPoint, false );
     }
 
-    public EventFactHandle(final int id,
-                           final Object object,
-                           final long recency,
-                           final long timestamp,
-                           final long duration,
-                           final EntryPoint wmEntryPoint,
-                           final boolean isTraitOrTraitable ) {
+    public EventFactHandle(int id,
+                           Object object,
+                           long recency,
+                           long timestamp,
+                           long duration,
+                           InternalWorkingMemoryEntryPoint wmEntryPoint,
+                           boolean isTraitOrTraitable ) {
         super( id,
                object,
                recency,

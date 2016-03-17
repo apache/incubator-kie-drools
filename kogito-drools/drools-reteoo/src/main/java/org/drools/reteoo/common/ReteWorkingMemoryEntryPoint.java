@@ -15,21 +15,21 @@
 
 package org.drools.reteoo.common;
 
-import org.drools.core.util.bitmask.BitMask;
-import org.drools.core.common.TruthMaintenanceSystem;
-import org.drools.core.spi.FactHandleFactory;
-import org.kie.api.runtime.rule.FactHandle;
 import org.drools.core.WorkingMemoryEntryPoint;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.ObjectStore;
 import org.drools.core.common.ObjectTypeConfigurationRegistry;
+import org.drools.core.common.TruthMaintenanceSystem;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.Activation;
+import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.util.bitmask.BitMask;
 import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.rule.FactHandle;
 
 import java.util.Collection;
 
@@ -78,6 +78,11 @@ public class ReteWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint, Int
     @Override
     public void delete(FactHandle handle) {
         delegate.delete(handle);
+    }
+
+    @Override
+    public void delete(FactHandle handle, FactHandle.State fhState) {
+        delegate.delete(handle, fhState);
     }
 
     @Override
@@ -144,6 +149,11 @@ public class ReteWorkingMemoryEntryPoint implements WorkingMemoryEntryPoint, Int
     @Override
     public void delete(FactHandle factHandle, RuleImpl rule, Activation activation) {
         ((InternalWorkingMemoryEntryPoint)delegate).delete(factHandle, rule, activation);
+    }
+
+    @Override
+    public void delete(FactHandle factHandle, RuleImpl rule, Activation activation, FactHandle.State fhState ) {
+        ((InternalWorkingMemoryEntryPoint)delegate).delete(factHandle, rule, activation, fhState);
     }
 
     @Override

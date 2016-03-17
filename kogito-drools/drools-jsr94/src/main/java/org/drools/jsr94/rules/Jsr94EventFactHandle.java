@@ -55,10 +55,11 @@ package org.drools.jsr94.rules;
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import javax.rules.Handle;
-
 import org.drools.core.common.EventFactHandle;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.kie.api.runtime.rule.EntryPoint;
+
+import javax.rules.Handle;
 
 /**
  * The Drools implementation of the <code>Handle</code> interface which provides
@@ -99,7 +100,7 @@ public class Jsr94EventFactHandle extends EventFactHandle
                recency,
                timestamp,
                duration,
-               entryPoint );
+               (InternalWorkingMemoryEntryPoint) entryPoint );
     }
 
 }

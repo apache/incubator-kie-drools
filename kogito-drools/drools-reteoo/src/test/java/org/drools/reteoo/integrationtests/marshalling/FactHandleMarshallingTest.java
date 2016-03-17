@@ -19,6 +19,7 @@ import org.drools.compiler.Person;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.impl.EnvironmentFactory;
@@ -42,8 +43,6 @@ import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.rule.EntryPoint;
-import org.kie.internal.KnowledgeBase;
 import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.internal.marshalling.MarshallerFactory;
 
@@ -73,7 +72,7 @@ public class FactHandleMarshallingTest {
 
         RuleBasePartitionId partionId = new RuleBasePartitionId("P-MAIN");
         EntryPointNode entryPointNode = nFacotry.buildEntryPointNode(1, partionId, false, (ObjectSource) rete , EntryPointId.DEFAULT);
-        EntryPoint wmEntryPoint = new NamedEntryPoint(EntryPointId.DEFAULT, entryPointNode, wm);
+        InternalWorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint( EntryPointId.DEFAULT, entryPointNode, wm);
 
         EventFactHandle factHandle = new EventFactHandle(1, (Object) new Person(),0, (new Date()).getTime(), 0, wmEntryPoint);
         

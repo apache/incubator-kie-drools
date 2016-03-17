@@ -37,6 +37,8 @@ public class DeleteFromEntryPointCommand
 
     private DisconnectedFactHandle handle;
 
+    private FactHandle.State fhState = FactHandle.State.ALL;
+
     public DeleteFromEntryPointCommand() {
     }
 
@@ -45,9 +47,14 @@ public class DeleteFromEntryPointCommand
         this.entryPoint = entryPoint;
     }
 
+    public DeleteFromEntryPointCommand(FactHandle handle, String entryPoint, FactHandle.State fhState) {
+        this(handle, entryPoint);
+        this.fhState = fhState;
+    }
+
     public Void execute(Context context) {
         KieSession ksession = ((KnowledgeCommandContext) context).getKieSession();
-        ksession.getEntryPoint( entryPoint ).retract( handle );
+        ksession.getEntryPoint( entryPoint ).delete( handle, fhState );
         return null;
     }
 

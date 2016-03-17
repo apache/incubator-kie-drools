@@ -31,7 +31,6 @@ import org.kie.internal.runtime.beliefs.Mode;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.IdentityHashMap;
 import java.util.Map;
 
 /**
@@ -107,13 +106,16 @@ public interface KnowledgeHelper
     /**
      * @deprecated Use delete
      */
-    void retract(Object handle) ;
+    void retract(Object handle);
 
-    void delete(FactHandle handle) ;
 
-    void delete(Object handle) ;
+    void delete(Object handle);
+    void delete(Object object, FactHandle.State fhState);
 
-    public Object get(Declaration declaration);
+    void delete(FactHandle handle);
+    void delete(FactHandle handle, FactHandle.State fhState);
+
+    Object get(Declaration declaration);
 
     /**
      * @return - The rule name
@@ -142,11 +144,7 @@ public interface KnowledgeHelper
 
     <T, K> T don( K core, Class<T> trait, boolean logical );
 
-    <T, K> T don( Thing<K> core, Class<T> trait, boolean logical );
-
     <T, K> T don( K core, Class<T> trait, Mode... modes );
-
-    <T, K> T don( Thing<K> core, Class<T> trait, Mode... modes );
 
     <T, K> T don( K core, Class<T> trait );
 

@@ -19,6 +19,7 @@ package org.drools.core.marshalling.impl;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.QueryElementFactHandle;
 import org.drools.core.process.instance.WorkItem;
@@ -104,7 +105,7 @@ public class InputMarshaller {
                 handle = new DefaultFactHandle( id,
                                                 object,
                                                 recency,
-                                                entryPoint,
+                                                (InternalWorkingMemoryEntryPoint) entryPoint,
                                                 typeConf != null && typeConf.isTrait() );
                 break;
 
@@ -116,7 +117,9 @@ public class InputMarshaller {
                 break;
             }
             case 2: {
-                handle = new EventFactHandle( id, object, recency, startTimeStamp, duration, entryPoint, typeConf != null && typeConf.isTrait() );
+                handle = new EventFactHandle( id, object, recency, startTimeStamp, duration,
+                                              (InternalWorkingMemoryEntryPoint) entryPoint,
+                                              typeConf != null && typeConf.isTrait() );
                 ( (EventFactHandle) handle ).setExpired( expired );
                 ( (EventFactHandle) handle ).setActivationsCount( activationsCount );
                 break;

@@ -15,14 +15,20 @@
 
 package org.drools.core.common;
 
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.EntryPointNode;
+import org.drools.core.rule.EntryPointId;
+import org.drools.core.spi.Activation;
+import org.drools.core.spi.FactHandleFactory;
+import org.drools.core.util.bitmask.BitMask;
+import org.kie.api.runtime.ObjectFilter;
+import org.kie.api.runtime.rule.FactHandle;
+
 import java.io.Serializable;
 import java.util.Collection;
 
-import org.kie.api.runtime.ObjectFilter;
-import org.kie.api.runtime.rule.FactHandle;
-import org.kie.api.runtime.rule.EntryPoint;
-
-public class DisconnectedWorkingMemoryEntryPoint implements EntryPoint, Serializable {
+public class DisconnectedWorkingMemoryEntryPoint implements InternalWorkingMemoryEntryPoint, Serializable {
     
     private String id;
     
@@ -74,9 +80,77 @@ public class DisconnectedWorkingMemoryEntryPoint implements EntryPoint, Serializ
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
 
+    public void delete(FactHandle handle, FactHandle.State fhState) {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
     public void update(FactHandle handle,
                        Object object) {
         throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
     }
 
+    @Override
+    public ObjectTypeConfigurationRegistry getObjectTypeConfigurationRegistry() {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public InternalKnowledgeBase getKnowledgeBase() {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public void delete( FactHandle factHandle, RuleImpl rule, Activation activation ) {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public void delete( FactHandle factHandle, RuleImpl rule, Activation activation, FactHandle.State fhState ) {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public void update( FactHandle handle, Object object, BitMask mask, Class<?> modifiedClass, Activation activation ) {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public TruthMaintenanceSystem getTruthMaintenanceSystem() {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public EntryPointId getEntryPoint() {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public InternalWorkingMemory getInternalWorkingMemory() {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public FactHandle getFactHandleByIdentity( Object object ) {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public void reset() {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public ObjectStore getObjectStore() {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public FactHandleFactory getHandleFactory() {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
+
+    @Override
+    public EntryPointNode getEntryPointNode() {
+        throw new UnsupportedOperationException( "This method is not supported for disconnected objects" );
+    }
 }

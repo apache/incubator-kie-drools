@@ -55,10 +55,11 @@ package org.drools.jsr94.rules;
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-import javax.rules.Handle;
-
 import org.drools.core.common.DefaultFactHandle;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.kie.api.runtime.rule.EntryPoint;
+
+import javax.rules.Handle;
 
 /**
  * The Drools implementation of the <code>Handle</code> interface which provides
@@ -96,6 +97,6 @@ public class Jsr94FactHandle extends DefaultFactHandle
         super( (int) id,
                object,
                recency,
-               entryPoint );
+               (InternalWorkingMemoryEntryPoint)entryPoint );
     }
 }

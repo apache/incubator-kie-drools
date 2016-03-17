@@ -121,7 +121,7 @@ public class SimpleBeliefSystem
 
         InternalFactHandle bfh = beliefSet.getFactHandle();
 
-        if ( beliefSet.isEmpty() && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
+        if ( beliefSet.isEmpty() && bfh.getEqualityKey() != null && bfh.getEqualityKey().getStatus() == EqualityKey.JUSTIFIED ) {
             ep.delete(bfh, bfh.getObject(), getObjectTypeConf(beliefSet), (RuleImpl) context.getRule(), (Activation) context.getLeftTupleOrigin() );
         } else if ( !beliefSet.isEmpty() && bfh.getObject() == payload && payload != bfh.getObject() ) {
             // prime has changed, to update new object
@@ -131,7 +131,7 @@ public class SimpleBeliefSystem
             ((NamedEntryPoint) bfh.getEntryPoint() ).update( bfh, bfh.getObject(), allSetButTraitBitMask(), Object.class, null );
         }
 
-        if ( beliefSet.isEmpty() ) {
+        if ( beliefSet.isEmpty() && bfh.getEqualityKey() != null ) {
             // if the beliefSet is empty, we must null the logical handle
             EqualityKey key = bfh.getEqualityKey();
             key.setLogicalFactHandle( null );

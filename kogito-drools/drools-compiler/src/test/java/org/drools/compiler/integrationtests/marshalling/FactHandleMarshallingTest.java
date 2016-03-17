@@ -15,26 +15,16 @@
 
 package org.drools.compiler.integrationtests.marshalling;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.Date;
-
 import org.drools.compiler.Person;
+import org.drools.compiler.integrationtests.marshalling.util.OldOutputMarshallerMethods;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.NamedEntryPoint;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.impl.EnvironmentFactory;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseImpl;
-import org.drools.compiler.integrationtests.marshalling.util.OldOutputMarshallerMethods;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.marshalling.impl.InputMarshaller;
 import org.drools.core.marshalling.impl.MarshallerProviderImpl;
@@ -44,19 +34,27 @@ import org.drools.core.marshalling.impl.ObjectMarshallingStrategyStoreImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.Rete;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.reteoo.builder.NodeFactory;
+import org.drools.core.rule.EntryPointId;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.KieBaseConfiguration;
-import org.kie.internal.KnowledgeBase;
-import org.kie.internal.KnowledgeBaseFactory;
 import org.kie.api.conf.EventProcessingOption;
-import org.kie.internal.marshalling.MarshallerFactory;
 import org.kie.api.marshalling.ObjectMarshallingStrategy;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.internal.KnowledgeBaseFactory;
+import org.kie.internal.marshalling.MarshallerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.lang.reflect.Field;
+import java.util.Collections;
+import java.util.Date;
+
+import static org.junit.Assert.assertTrue;
 
 public class FactHandleMarshallingTest {
 
@@ -74,7 +72,7 @@ public class FactHandleMarshallingTest {
 
         RuleBasePartitionId partionId = new RuleBasePartitionId("P-MAIN");
         EntryPointNode entryPointNode = nFacotry.buildEntryPointNode(1, partionId, false, (ObjectSource) rete , EntryPointId.DEFAULT);
-        EntryPoint wmEntryPoint = new NamedEntryPoint(EntryPointId.DEFAULT, entryPointNode, wm);
+        InternalWorkingMemoryEntryPoint wmEntryPoint = new NamedEntryPoint( EntryPointId.DEFAULT, entryPointNode, wm);
 
         EventFactHandle factHandle = new EventFactHandle(1, (Object) new Person(),0, (new Date()).getTime(), 0, wmEntryPoint);
         
