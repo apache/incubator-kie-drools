@@ -101,7 +101,7 @@ public class UserDataServiceProvider {
 			userInfo = new DBUserInfoImpl(true);
 		} else if ("props".equalsIgnoreCase(USER_INFO_IMPL)) {
 			userInfo = new PropertyUserInfoImpl(true);
-		} else if ("custom".equalsIgnoreCase(USER_CALLBACK_IMPL)) {
+		} else if ("custom".equalsIgnoreCase(USER_INFO_IMPL)) {
 			try {
 				userInfo = (UserInfo) Class.forName(CUSTOM_USER_INFO_IMPL).newInstance();
 			} catch (Exception e) {
