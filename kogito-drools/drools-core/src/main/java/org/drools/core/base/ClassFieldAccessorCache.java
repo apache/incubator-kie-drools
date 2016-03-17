@@ -90,31 +90,39 @@ public class ClassFieldAccessorCache {
     }
     
     public BaseClassFieldReader getReadAcessor(ClassFieldReader reader) {
+        // get the ReaderAccessor for this key
+        Class cls = getClass( reader.getClassName() );
+        return getCacheEntry( cls ).getReadAccessor( getAccessorKey( reader ), cls );
+    }
+
+    public void setReadAcessor(ClassFieldReader reader, BaseClassFieldReader readAccessor) {
+        // get the ReaderAccessor for this key
+        Class cls = getClass( reader.getClassName() );
+        getCacheEntry( cls ).setReadAccessor( getAccessorKey( reader ), readAccessor );
+    }
+
+    private AccessorKey getAccessorKey( ClassFieldReader reader ) {
         String className = reader.getClassName();
         String fieldName = reader.getFieldName();
-
-        Class cls = getClass( className );
-        CacheEntry cache = getCacheEntry( cls );
-
-        // get the ReaderAccessor for this key
-        return cache.getReadAccessor( new AccessorKey( className,
-                                                       fieldName,
-                                                       AccessorKey.AccessorType.FieldAccessor ),
-                                      cls );
+        return new AccessorKey( className, fieldName, AccessorKey.AccessorType.FieldAccessor );
     }
 
     public BaseClassFieldWriter getWriteAcessor(ClassFieldWriter writer) {
+        // get the ReaderAccessor for this key
+        Class cls = getClass( writer.getClassName() );
+        return getCacheEntry( cls ).getWriteAccessor( getAccessorKey( writer ), cls );
+    }
+
+    public void setWriteAcessor(ClassFieldWriter writer, BaseClassFieldWriter writeAccessor ) {
+        // get the ReaderAccessor for this key
+        Class cls = getClass( writer.getClassName() );
+        getCacheEntry( cls ).setWriteAccessor( getAccessorKey( writer ), writeAccessor );
+    }
+
+    private AccessorKey getAccessorKey( ClassFieldWriter writer ) {
         String className = writer.getClassName();
         String fieldName = writer.getFieldName();
-
-        Class cls = getClass( className );
-        CacheEntry cache = getCacheEntry( cls );
-
-        // get the ReaderAccessor for this key
-        return cache.getWriteAccessor( new AccessorKey( className,
-                                                        fieldName,
-                                                        AccessorKey.AccessorType.FieldAccessor ),
-                                       cls );
+        return new AccessorKey( className, fieldName, AccessorKey.AccessorType.FieldAccessor );
     }
 
     public Class getClass(String className) {
@@ -141,7 +149,7 @@ public class ClassFieldAccessorCache {
     }
 
     public static class CacheEntry {
-        private ByteArrayClassLoader                                     byteArrayClassLoader;
+        private final ByteArrayClassLoader                                     byteArrayClassLoader;
         private final ConcurrentMap<AccessorKey, BaseClassFieldReader>   readCache   = new ConcurrentHashMap<AccessorKey, BaseClassFieldReader>();
         private final ConcurrentMap<AccessorKey, BaseClassFieldWriter>   writeCache  = new ConcurrentHashMap<AccessorKey, BaseClassFieldWriter>();
 
@@ -183,6 +191,10 @@ public class ClassFieldAccessorCache {
             return reader;
         }
 
+        public void setReadAccessor(AccessorKey key, BaseClassFieldReader reader) {
+            this.readCache.put( key, reader );
+        }
+
         public BaseClassFieldWriter getWriteAccessor(AccessorKey key,
                                                      Class cls) {
             BaseClassFieldWriter writer = this.writeCache.get( key );
@@ -201,6 +213,10 @@ public class ClassFieldAccessorCache {
             }
 
             return writer;
+        }
+
+        public void setWriteAccessor(AccessorKey key, BaseClassFieldWriter writer) {
+            this.writeCache.put( key, writer );
         }
 
         public Map<Class< ? >, ClassFieldInspector> getInspectors() {
