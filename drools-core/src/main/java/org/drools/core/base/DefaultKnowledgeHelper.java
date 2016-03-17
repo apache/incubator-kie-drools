@@ -269,18 +269,10 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
             return ( (BeliefSet) dep.getJustified() ).getFactHandle();
         } else {
             // no previous matching logical dependency, so create a new one
-            InternalFactHandle handle = workingMemory.getTruthMaintenanceSystem().insert(object,
-                                                                                         value,
-                                                                                         this.activation.getRule(),
-                                                                                         this.activation);
-//            FactHandle handle = this.workingMemory.insert( object,
-//                                                           value,
-//                                                           dynamic,
-//                                                           true,
-//                                                           this.activation.getRule(),
-//                                                           this.activation );
-
-            return handle;
+            return workingMemory.getTruthMaintenanceSystem().insert( object,
+                                                                     value,
+                                                                     this.activation.getRule(),
+                                                                     this.activation );
         }
     }
 
@@ -390,11 +382,11 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     public void update(final FactHandle handle,
                        final Object newObject){
         InternalFactHandle h = (InternalFactHandle) handle;
-        ((InternalWorkingMemoryEntryPoint) h.getEntryPoint()).update( h,
-                                                                      newObject,
-                                                                      onlyTraitBitSetMask(),
-                                                                      newObject.getClass(),
-                                                                      this.activation );
+        h.getEntryPoint().update( h,
+                                  newObject,
+                                  onlyTraitBitSetMask(),
+                                  newObject.getClass(),
+                                  this.activation );
     }
 
     public void update(final FactHandle handle) {
@@ -433,26 +425,25 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
         delete( getFactHandle( object ) );
     }
 
+    public void delete(Object object, FactHandle.State fhState) {
+        delete( getFactHandle( object ), fhState );
+    }
+
     public void delete(FactHandle handle) {
+        delete(handle, FactHandle.State.ALL);
+    }
+
+    public void delete(FactHandle handle, FactHandle.State fhState ) {
         Object o = ((InternalFactHandle) handle).getObject();
         if ( ((InternalFactHandle) handle).isTraiting() ) {
             delete( ((Thing) o).getCore() );
             return;
         }
-        EqualityKey key = workingMemory.getTruthMaintenanceSystem().get( o );
 
-        if ( key == null || key.getStatus() == EqualityKey.STATED ) {
-            ((InternalWorkingMemoryEntryPoint) ((InternalFactHandle) handle).getEntryPoint()).delete(handle,
-                                                                                                     this.activation.getRule(),
-                                                                                                     this.activation);
-        }
-
-        // after removing the stated, it could still be justified
-        if ( key != null && key.getStatus() == EqualityKey.JUSTIFIED ) {
-            InternalFactHandle ifh = key.getLogicalFactHandle();
-            ((InternalWorkingMemoryEntryPoint) ifh.getEntryPoint()).getTruthMaintenanceSystem().delete( ifh );
-        }
-
+        ((InternalFactHandle) handle).getEntryPoint().delete(handle,
+                                                             this.activation.getRule(),
+                                                             this.activation,
+                                                             fhState);
     }
 
     public RuleImpl getRule() {
@@ -480,7 +471,7 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     public Object get(final Declaration declaration) {
-        InternalWorkingMemoryEntryPoint wmTmp = ((InternalWorkingMemoryEntryPoint) (this.tuple.get( declaration )).getEntryPoint());
+        InternalWorkingMemoryEntryPoint wmTmp = (this.tuple.get( declaration )).getEntryPoint();
         return wmTmp != null ?
                declaration.getValue( wmTmp.getInternalWorkingMemory(),
                                                      this.tuple.getObject( declaration ) )
@@ -569,14 +560,6 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
 
 
     /* Trait helper methods */
-
-    public <T, K> T don( Thing<K> core, Class<T> trait, boolean logical ) {
-        return don( core, trait, logical, null );
-    }
-
-    public <T, K> T don( Thing<K> core, Class<T> trait, Mode... modes ) {
-        return don( core, trait, true, modes );
-    }
 
     public <T, K> T don( Thing<K> core, Class<T> trait, boolean logical, Mode... modes ) {
         return don( core.getCore(), trait, logical, modes );

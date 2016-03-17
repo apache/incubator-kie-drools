@@ -25,7 +25,6 @@ import org.drools.core.reteoo.RightTuple;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
 import org.drools.core.util.StringUtils;
-import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.FactHandle;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -64,7 +63,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     private LeftTuple               firstLeftTuple;
     private LeftTuple               lastLeftTuple;
 
-    private EntryPoint entryPoint;
+    private InternalWorkingMemoryEntryPoint entryPoint;
 
     private boolean                 disconnected;
 
@@ -102,14 +101,14 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
     public DefaultFactHandle(final int id,
                              final Object object,
                              final long recency,
-                             final EntryPoint wmEntryPoint) {
+                             final InternalWorkingMemoryEntryPoint wmEntryPoint) {
         this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint, false );
     }
 
     public DefaultFactHandle(final int id,
                              final Object object,
                              final long recency,
-                             final EntryPoint wmEntryPoint,
+                             final InternalWorkingMemoryEntryPoint wmEntryPoint,
                              final boolean isTraitOrTraitable ) {
         this( id, determineIdentityHashCode( object ), object, recency, wmEntryPoint, isTraitOrTraitable );
     }
@@ -118,7 +117,7 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
                              final int identityHashCode,
                              final Object object,
                              final long recency,
-                             final EntryPoint wmEntryPoint,
+                             final InternalWorkingMemoryEntryPoint wmEntryPoint,
                              final boolean isTraitOrTraitable ) {
         this.id = id;
         this.entryPoint = wmEntryPoint;
@@ -372,11 +371,11 @@ public class DefaultFactHandle extends AbstractBaseLinkedListNode<DefaultFactHan
         return this.lastLeftTuple;
     }
 
-    public EntryPoint getEntryPoint() {
+    public InternalWorkingMemoryEntryPoint getEntryPoint() {
         return entryPoint;
     }
 
-    public void setEntryPoint( EntryPoint sourceNode ) {
+    public void setEntryPoint( InternalWorkingMemoryEntryPoint sourceNode ) {
         this.entryPoint = sourceNode;
     }
     
