@@ -2617,4 +2617,78 @@ public class IncrementalCompilationTest extends CommonTestMethodBase {
 
         ksession.fireAllRules();
     }
+
+    @Test
+    public void testIncrementalCompilationWithClassFieldReader() {
+        // BZ-1318532
+        String personSrc = "package org.test;" +
+                           "import java.util.ArrayList;" +
+                           "import java.util.List;" +
+                           "public class Person {" +
+                           "    private String name;" +
+                           "    private List<String> addresses = new ArrayList<String>();" +
+                           "    public Person() {}" +
+                           "    public Person(final String name) { this.name = name; }" +
+                           "    public List<String> getAddresses() { return addresses; }" +
+                           "    public void setAddresses(List<String> addresses) { this.addresses = addresses; }" +
+                           "    public void addAddress(String address) { this.addresses.add(address); }" +
+                           "    public String getName() { return this.name; }" +
+                           "    public void setName(final String name) { this.name = name; }" +
+                           "}";
+
+        String drl1 = "package org.drools.compiler\n" +
+                      "" +
+                      "import org.test.Person;\n" +
+                      "" +
+                      "rule R0 salience 100 when\n" +
+                      " String()" +
+                      "then\n" +
+                      " Person person = new Person(\"John\");" +
+                      " person.addAddress(\"A street\");" +
+                      " insert(person);" +
+                      "end\n" +
+                      "" +
+                      "rule R1 when\n" +
+                      " $p : Person($addresses : addresses) " +
+                      " $a : Address() from $addresses " +
+                      "then\n" +
+                      "end\n" +
+                      "";
+
+        String drl2 = drl1 + " "; // just a trivial update
+
+        KieServices ks = KieServices.Factory.get();
+        KieFileSystem kfs = ks.newKieFileSystem();
+        ReleaseId id = ks.newReleaseId( "org.test", "myTest", "1.0.0" );
+
+        KieBuilder kieBuilder = ks.newKieBuilder( kfs );
+
+        kfs.generateAndWritePomXML( id );
+
+        kfs.write("src/main/java/org/test/Person.java",
+                  ks.getResources().newReaderResource(new StringReader(personSrc)));
+
+        kfs.write( ks.getResources()
+                     .newReaderResource( new StringReader( drl1 ) )
+                     .setResourceType( ResourceType.DRL )
+                     .setSourcePath( "drl1.drl" ) );
+
+        kieBuilder.buildAll();
+
+        KieContainer kc = ks.newKieContainer( id );
+        KieSession ksession = kc.newKieSession();
+
+        kfs.write( ks.getResources()
+                     .newReaderResource( new StringReader( drl2 ) )
+                     .setResourceType( ResourceType.DRL )
+                     .setSourcePath( "drl1.drl" ) ); // update the drl1.drl file
+
+        IncrementalResults results = ( (InternalKieBuilder) kieBuilder ).incrementalBuild();
+
+        // don't call updateToVersion(). This test intends to prove that incrementalBuild doesn't do harm to existing ksession.
+
+        ksession.insert( "start" );
+        int fired = ksession.fireAllRules();
+
+    }
 }
