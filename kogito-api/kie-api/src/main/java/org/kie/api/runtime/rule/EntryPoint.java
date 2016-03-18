@@ -16,9 +16,9 @@
 
 package org.kie.api.runtime.rule;
 
-import java.util.Collection;
-
 import org.kie.api.runtime.ObjectFilter;
+
+import java.util.Collection;
 
 /**
  * <p>An entry-point is an abstract channel through where facts are inserted into the engine.</p>
@@ -72,11 +72,22 @@ public interface EntryPoint {
     void retract(FactHandle handle);
 
     /**
-     * Retracts the fact for which the given FactHandle was assigned.
+     * Retracts the fact for which the given FactHandle was assigned
+     * regardless if it has been explicitly or logically inserted.
      * 
      * @param handle the handle whose fact is to be retracted.
      */
     void delete(FactHandle handle);
+
+    /**
+     * Retracts the fact for which the given FactHandle was assigned.
+     *
+     * @param handle the handle whose fact is to be retracted.
+     * @param fhState defines how the handle has to be retracted:
+     *                as an explicitly inserted fact (STATED), from the
+     *                Truth Maintenance System (LOGICAL), or both (ALL)
+     */
+    void delete(FactHandle handle, FactHandle.State fhState);
 
     /**
      * Updates the fact for which the given FactHandle was assigned with the new
