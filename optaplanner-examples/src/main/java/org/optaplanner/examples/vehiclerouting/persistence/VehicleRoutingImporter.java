@@ -16,15 +16,7 @@
 
 package org.optaplanner.examples.vehiclerouting.persistence;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.io.FilenameUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.vehiclerouting.domain.Customer;
 import org.optaplanner.examples.vehiclerouting.domain.Depot;
@@ -40,7 +32,14 @@ import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedC
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedDepot;
 import org.optaplanner.examples.vehiclerouting.domain.timewindowed.TimeWindowedVehicleRoutingSolution;
 
-public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+public class VehicleRoutingImporter extends AbstractTxtSolutionImporter<VehicleRoutingSolution> {
 
     public static void main(String[] args) {
         VehicleRoutingImporter importer = new VehicleRoutingImporter();
@@ -67,11 +66,11 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         return VehicleRoutingFileIO.FILE_EXTENSION;
     }
 
-    public TxtInputBuilder createTxtInputBuilder() {
+    public TxtInputBuilder<VehicleRoutingSolution> createTxtInputBuilder() {
         return new VehicleRoutingInputBuilder();
     }
 
-    public static class VehicleRoutingInputBuilder extends TxtInputBuilder {
+    public static class VehicleRoutingInputBuilder extends TxtInputBuilder<VehicleRoutingSolution> {
 
         private VehicleRoutingSolution solution;
 
@@ -82,7 +81,7 @@ public class VehicleRoutingImporter extends AbstractTxtSolutionImporter {
         private Map<Long, Location> locationMap;
         private List<Depot> depotList;
 
-        public Solution readSolution() throws IOException {
+        public VehicleRoutingSolution readSolution() throws IOException {
             String firstLine = readStringValue();
             if (firstLine.matches("\\s*NAME\\s*:.*")) {
                 // Might be replaced by TimeWindowedVehicleRoutingSolution later on

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,13 +21,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningEntityProperty;
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 
@@ -37,32 +36,35 @@ import org.optaplanner.core.impl.domain.common.ReflectionHelper;
  * We can never enforce it, as the user might want to use a different superclass.
  * @param <S> the {@link Score} type used by this use case
  */
-public abstract class AbstractSolution<S extends Score> implements Solution<S>, Serializable {
+public abstract class AbstractSolution<S extends Score> implements Serializable {
 
     protected S score;
 
-    @Override
+    @PlanningScore
     public S getScore() {
         return score;
     }
 
-    @Override
     public void setScore(S score) {
         this.score = score;
     }
 
-    @Override
-    public Collection<?> getProblemFacts() {
-        List<Object> factList = new ArrayList<Object>();
+    /**
+     * Convenience method for tests.
+     *
+     * @return All entities from anywhere in this class' hierarchy.
+     */
+    @PlanningFactCollectionProperty
+    protected Collection<?> getProblemFacts() {
         Class<? extends AbstractSolution> instanceClass = getClass();
-        addProblemFactsFromClass(factList, instanceClass);
-        return factList;
+        return getProblemFactsFromClass(instanceClass);
     }
 
-    private void addProblemFactsFromClass(List<Object> factList, Class<?> instanceClass) {
+    private Collection<Object> getProblemFactsFromClass(Class<?> instanceClass) {
+        Collection<Object> factList = new ArrayList<>();
         if (instanceClass.equals(AbstractSolution.class)) {
             // The field score should not be included
-            return;
+            return factList;
         }
         for (Field field : instanceClass.getDeclaredFields()) {
             field.setAccessible(true);
@@ -89,8 +91,9 @@ public abstract class AbstractSolution<S extends Score> implements Solution<S>, 
         }
         Class<?> superclass = instanceClass.getSuperclass();
         if (superclass != null) {
-            addProblemFactsFromClass(factList, superclass);
+            factList.addAll(getProblemFactsFromClass(superclass));
         }
+        return factList;
     }
 
     private boolean isFieldAPlanningEntityPropertyOrPlanningEntityCollectionProperty(Field field,

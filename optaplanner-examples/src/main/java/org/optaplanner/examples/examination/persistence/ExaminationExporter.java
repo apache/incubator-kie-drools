@@ -16,16 +16,15 @@
 
 package org.optaplanner.examples.examination.persistence;
 
-import java.io.IOException;
-import java.util.Collections;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.domain.PersistableIdComparator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.examination.domain.Exam;
 import org.optaplanner.examples.examination.domain.Examination;
 
-public class ExaminationExporter extends AbstractTxtSolutionExporter {
+import java.io.IOException;
+import java.util.Collections;
+
+public class ExaminationExporter extends AbstractTxtSolutionExporter<Examination> {
 
     private static final String OUTPUT_FILE_SUFFIX = "sln";
 
@@ -42,16 +41,16 @@ public class ExaminationExporter extends AbstractTxtSolutionExporter {
         return OUTPUT_FILE_SUFFIX;
     }
 
-    public TxtOutputBuilder createTxtOutputBuilder() {
+    public TxtOutputBuilder<Examination> createTxtOutputBuilder() {
         return new ExaminationOutputBuilder();
     }
 
-    public static class ExaminationOutputBuilder extends TxtOutputBuilder {
+    public static class ExaminationOutputBuilder extends TxtOutputBuilder<Examination> {
 
         private Examination examination;
 
-        public void setSolution(Solution solution) {
-            examination = (Examination) solution;
+        public void setSolution(Examination solution) {
+            examination = solution;
         }
 
         public void writeSolution() throws IOException {

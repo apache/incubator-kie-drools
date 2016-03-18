@@ -128,12 +128,10 @@ public class BenchmarkResultIO {
             if (problemBenchmarkResult.getProblemStatisticList() == null) {
                 problemBenchmarkResult.setProblemStatisticList(new ArrayList<ProblemStatistic>(0));
             }
-            for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
-                problemStatistic.setProblemBenchmarkResult(problemBenchmarkResult);
-            }
-            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
-                singleBenchmarkResult.setProblemBenchmarkResult(problemBenchmarkResult);
-            }
+            List<ProblemStatistic> statistics = problemBenchmarkResult.getProblemStatisticList();
+            statistics.forEach(statistic -> statistic.setProblemBenchmarkResult(problemBenchmarkResult));
+            List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
+            results.forEach(result -> result.setProblemBenchmarkResult(problemBenchmarkResult));
         }
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             solverBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);

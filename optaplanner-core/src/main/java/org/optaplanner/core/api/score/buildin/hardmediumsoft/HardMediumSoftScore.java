@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.api.score.buildin.hardmediumsoft;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;

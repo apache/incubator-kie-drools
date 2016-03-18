@@ -16,14 +16,20 @@
 
 package org.optaplanner.examples.common.swingui;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import org.apache.commons.io.FilenameUtils;
+import org.optaplanner.core.api.score.FeasibilityScore;
+import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.impl.score.ScoreUtils;
+import org.optaplanner.examples.common.business.SolutionBusiness;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
+import org.optaplanner.swing.impl.SwingUtils;
+import org.optaplanner.swing.impl.TangoColorFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -31,43 +37,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JSplitPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.SwingWorker;
-import javax.swing.filechooser.FileFilter;
 
-import org.apache.commons.io.FilenameUtils;
-import org.optaplanner.swing.impl.SwingUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.core.api.score.FeasibilityScore;
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.impl.score.ScoreUtils;
-import org.optaplanner.examples.common.business.SolutionBusiness;
-import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-import org.optaplanner.swing.impl.TangoColorFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFrame {
+public class SolverAndPersistenceFrame<Solution_> extends JFrame {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -121,11 +92,12 @@ public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFram
 
     public void bestSolutionChanged() {
         Solution_ solution = solutionBusiness.getSolution();
+        Score score = solutionBusiness.getScore();
         if (refreshScreenDuringSolvingCheckBox.isSelected()) {
             solutionPanel.updatePanel(solution);
             validate(); // TODO remove me?
         }
-        refreshScoreField(solution);
+        refreshScoreField(score);
     }
 
     public void init(Component centerForComponent) {
@@ -311,7 +283,7 @@ public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFram
         @Override
         protected void done() {
             try {
-                Solution bestSolution = get();
+                Solution_ bestSolution = get();
                 solutionBusiness.setSolution(bestSolution);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
@@ -616,15 +588,15 @@ public class SolverAndPersistenceFrame<Solution_ extends Solution> extends JFram
 
     public void resetScreen() {
         Solution_ solution = solutionBusiness.getSolution();
+        Score score = solutionBusiness.getScore();
         solutionPanel.resetPanel(solution);
         validate();
-        refreshScoreField(solution);
+        refreshScoreField(score);
     }
 
-    public void refreshScoreField(Solution solution) {
+    public void refreshScoreField(Score score) {
         // TODO Fix after https://issues.jboss.org/browse/PLANNER-405
         int uninitializedVariableCount = solutionBusiness.getUninitializedVariableCount();
-        Score score = solution.getScore();
         scoreField.setForeground(determineScoreFieldForeground(uninitializedVariableCount, score));
         scoreField.setText("Latest best score: " + ScoreUtils.getScoreWithUninitializedPrefix(uninitializedVariableCount, score));
     }

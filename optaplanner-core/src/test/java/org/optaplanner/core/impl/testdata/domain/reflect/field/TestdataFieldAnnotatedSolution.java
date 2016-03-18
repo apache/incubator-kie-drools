@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.testdata.domain.reflect.field;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -29,17 +29,19 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataFieldAnnotatedSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataFieldAnnotatedSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataFieldAnnotatedSolution.class, TestdataFieldAnnotatedEntity.class);
     }
 
     @ValueRangeProvider(id = "valueRange")
+    @PlanningFactCollectionProperty
     private List<TestdataValue> valueList;
     @PlanningEntityCollectionProperty
     private List<TestdataFieldAnnotatedEntity> entityList;
 
+    @PlanningScore
     private SimpleScore score;
 
     public TestdataFieldAnnotatedSolution() {
@@ -74,9 +76,5 @@ public class TestdataFieldAnnotatedSolution extends TestdataObject implements So
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    public Collection<? extends Object> getProblemFacts() {
-        return valueList;
-    }
 
 }

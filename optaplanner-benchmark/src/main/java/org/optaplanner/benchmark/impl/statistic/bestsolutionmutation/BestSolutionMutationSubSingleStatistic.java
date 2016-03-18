@@ -16,12 +16,9 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestsolutionmutation;
 
-import java.util.List;
-
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
@@ -30,7 +27,10 @@ import org.optaplanner.core.impl.domain.solution.mutation.MutationCounter;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 
-public class BestSolutionMutationSubSingleStatistic extends ProblemBasedSubSingleStatistic<BestSolutionMutationStatisticPoint> {
+import java.util.List;
+
+public class BestSolutionMutationSubSingleStatistic<Solution_>
+        extends ProblemBasedSubSingleStatistic<Solution_, BestSolutionMutationStatisticPoint> {
 
     private BestSolutionMutationSubSingleStatisticListener listener;
 
@@ -43,24 +43,25 @@ public class BestSolutionMutationSubSingleStatistic extends ProblemBasedSubSingl
     // Lifecycle methods
     // ************************************************************************
 
-    public void open(Solver<Solution> solver) {
-        InnerScoreDirectorFactory scoreDirectorFactory = (InnerScoreDirectorFactory) solver.getScoreDirectorFactory();
-        SolutionDescriptor solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
-        listener.setMutationCounter(new MutationCounter(solutionDescriptor));
+    public void open(Solver<Solution_> solver) {
+        InnerScoreDirectorFactory<Solution_> scoreDirectorFactory
+                = (InnerScoreDirectorFactory<Solution_>) solver.getScoreDirectorFactory();
+        SolutionDescriptor<Solution_> solutionDescriptor = scoreDirectorFactory.getSolutionDescriptor();
+        listener.setMutationCounter(new MutationCounter<>(solutionDescriptor));
         solver.addEventListener(listener);
     }
 
-    public void close(Solver<Solution> solver) {
+    public void close(Solver<Solution_> solver) {
         solver.removeEventListener(listener);
     }
 
-    private class BestSolutionMutationSubSingleStatisticListener implements SolverEventListener<Solution> {
+    private class BestSolutionMutationSubSingleStatisticListener implements SolverEventListener<Solution_> {
 
-        private MutationCounter mutationCounter;
+        private MutationCounter<Solution_> mutationCounter;
 
-        private Solution oldBestSolution = null;
+        private Solution_ oldBestSolution = null;
 
-        private void setMutationCounter(MutationCounter mutationCounter) {
+        private void setMutationCounter(MutationCounter<Solution_> mutationCounter) {
             if (this.mutationCounter != null) {
                 throw new IllegalStateException("Impossible state: mutationCounter (" + this.mutationCounter
                         + ") is not null.");
@@ -68,9 +69,9 @@ public class BestSolutionMutationSubSingleStatistic extends ProblemBasedSubSingl
             this.mutationCounter = mutationCounter;
         }
 
-        public void bestSolutionChanged(BestSolutionChangedEvent<Solution> event) {
+        public void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event) {
             int mutationCount;
-            Solution newBestSolution = event.getNewBestSolution();
+            Solution_ newBestSolution = event.getNewBestSolution();
             if (oldBestSolution == null) {
                 mutationCount = 0;
             } else {

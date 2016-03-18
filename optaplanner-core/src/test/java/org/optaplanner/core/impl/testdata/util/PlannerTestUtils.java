@@ -16,28 +16,21 @@
 
 package org.optaplanner.core.impl.testdata.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Serializable;
-
 import com.thoughtworks.xstream.XStream;
 import org.apache.commons.lang3.SerializationUtils;
 import org.mockito.AdditionalAnswers;
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
-import org.optaplanner.core.impl.score.director.easy.EasyScoreDirector;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-import static org.mockito.Mockito.*;
+import java.io.Serializable;
+
+import static org.mockito.Mockito.mock;
 
 public class PlannerTestUtils {
 
@@ -45,13 +38,9 @@ public class PlannerTestUtils {
     // ScoreDirector methods
     // ************************************************************************
 
-    public static InnerScoreDirector mockScoreDirector(SolutionDescriptor solutionDescriptor) {
-        EasyScoreDirectorFactory scoreDirectorFactory = new EasyScoreDirectorFactory(new EasyScoreCalculator() {
-            @Override
-            public Score calculateScore(Solution solution) {
-                return SimpleScore.valueOf(0);
-            }
-        });
+    public static <Solution_> InnerScoreDirector mockScoreDirector(SolutionDescriptor<Solution_> solutionDescriptor) {
+        EasyScoreDirectorFactory<Solution_> scoreDirectorFactory =
+                new EasyScoreDirectorFactory<>((EasyScoreCalculator<Solution_>) solution -> SimpleScore.valueOf(0));
         scoreDirectorFactory.setSolutionDescriptor(solutionDescriptor);
         scoreDirectorFactory.setScoreDefinition(new SimpleScoreDefinition());
         scoreDirectorFactory.setInitializingScoreTrend(

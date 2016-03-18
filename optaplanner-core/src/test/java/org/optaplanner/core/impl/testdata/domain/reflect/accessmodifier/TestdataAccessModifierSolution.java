@@ -16,12 +16,7 @@
 
 package org.optaplanner.core.impl.testdata.domain.reflect.accessmodifier;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -29,8 +24,11 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
+import java.util.Collection;
+import java.util.List;
+
 @PlanningSolution
-public class TestdataAccessModifierSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataAccessModifierSolution extends TestdataObject {
 
     private static final String STATIC_FINAL_FIELD = "staticFinalFieldValue";
 
@@ -58,6 +56,7 @@ public class TestdataAccessModifierSolution extends TestdataObject implements So
     private List<TestdataValue> valueList;
     private List<TestdataEntity> entityList;
 
+    @PlanningScore
     private SimpleScore score;
 
     private TestdataAccessModifierSolution() {
@@ -114,6 +113,7 @@ public class TestdataAccessModifierSolution extends TestdataObject implements So
     // Complex methods
     // ************************************************************************
 
+    @PlanningFactCollectionProperty
     public Collection<? extends Object> getProblemFacts() {
         return valueList;
     }

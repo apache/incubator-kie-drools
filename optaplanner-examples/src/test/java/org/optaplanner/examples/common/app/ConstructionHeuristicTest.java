@@ -16,25 +16,39 @@
 
 package org.optaplanner.examples.common.app;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
-
-import org.junit.Ignore;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
-import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.examples.common.persistence.SolutionDao;
+import org.optaplanner.examples.curriculumcourse.persistence.CurriculumCourseDao;
 
-public abstract class ConstructionHeuristicTest extends PhaseTest {
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
-    protected static Collection<Object[]> buildParameters(SolutionDao solutionDao, String... unsolvedFileNames) {
-        return buildParameters(solutionDao, ConstructionHeuristicType.values(),
-                unsolvedFileNames);
+public abstract class ConstructionHeuristicTest<Solution_> extends PhaseTest<Solution_> {
+
+    protected static <Solution_> Collection<Object[]> buildParameters(SolutionDao<Solution_> solutionDao,
+                                                                      String... unsolvedFileNames) {
+        if (solutionDao instanceof CurriculumCourseDao) {
+            /*
+             * TODO Delete this temporary workaround to ignore ALLOCATE_TO_VALUE_FROM_QUEUE,
+             * see https://issues.jboss.org/browse/PLANNER-486
+             */
+            List<ConstructionHeuristicType> typeList = new ArrayList<>();
+            for (ConstructionHeuristicType type : ConstructionHeuristicType.values()) {
+                if (type != ConstructionHeuristicType.ALLOCATE_TO_VALUE_FROM_QUEUE) {
+                    typeList.add(type);
+                }
+            }
+            return buildParameters(solutionDao, typeList.toArray(new ConstructionHeuristicType[0]), unsolvedFileNames);
+        } else {
+            return buildParameters(solutionDao, ConstructionHeuristicType.values(), unsolvedFileNames);
+        }
     }
 
     protected ConstructionHeuristicType constructionHeuristicType;
@@ -45,13 +59,13 @@ public abstract class ConstructionHeuristicTest extends PhaseTest {
         this.constructionHeuristicType = constructionHeuristicType;
     }
 
-    protected SolverFactory<Solution> buildSolverFactory() {
-        SolverFactory<Solution> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
+    protected SolverFactory<Solution_> buildSolverFactory() {
+        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.setTerminationConfig(new TerminationConfig());
         ConstructionHeuristicPhaseConfig constructionHeuristicPhaseConfig = new ConstructionHeuristicPhaseConfig();
         constructionHeuristicPhaseConfig.setConstructionHeuristicType(constructionHeuristicType);
-        solverConfig.setPhaseConfigList(Arrays.<PhaseConfig>asList(constructionHeuristicPhaseConfig));
+        solverConfig.setPhaseConfigList(Arrays.asList(constructionHeuristicPhaseConfig));
         return solverFactory;
     }
 

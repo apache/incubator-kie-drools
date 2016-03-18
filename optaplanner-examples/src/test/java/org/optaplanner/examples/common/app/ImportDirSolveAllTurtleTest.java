@@ -16,19 +16,18 @@
 
 package org.optaplanner.examples.common.app;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.Before;
+import org.optaplanner.examples.common.business.ProblemFileComparator;
+import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.examples.common.business.ProblemFileComparator;
-import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
-
-public abstract class ImportDirSolveAllTurtleTest extends SolveAllTurtleTest {
+public abstract class ImportDirSolveAllTurtleTest<Solution_> extends SolveAllTurtleTest<Solution_> {
 
     protected static Collection<Object[]> getImportDirFilesAsParameters(AbstractSolutionImporter solutionImporter) {
         List<Object[]> filesAsParameters = new ArrayList<Object[]>();
@@ -48,7 +47,7 @@ public abstract class ImportDirSolveAllTurtleTest extends SolveAllTurtleTest {
     }
 
     protected File dataFile;
-    protected AbstractSolutionImporter solutionImporter;
+    protected AbstractSolutionImporter<Solution_> solutionImporter;
 
     protected ImportDirSolveAllTurtleTest(File dataFile) {
         this.dataFile = dataFile;
@@ -59,9 +58,9 @@ public abstract class ImportDirSolveAllTurtleTest extends SolveAllTurtleTest {
         solutionImporter = createSolutionImporter();
     }
 
-    protected abstract AbstractSolutionImporter createSolutionImporter();
+    protected abstract AbstractSolutionImporter<Solution_> createSolutionImporter();
 
-    protected Solution readPlanningProblem() {
+    protected Solution_ readPlanningProblem() {
         return solutionImporter.readSolution(dataFile);
     }
 

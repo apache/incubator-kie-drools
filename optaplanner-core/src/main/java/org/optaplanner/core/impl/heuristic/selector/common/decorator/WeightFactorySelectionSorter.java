@@ -24,7 +24,6 @@ import java.util.TreeMap;
 
 import com.google.common.collect.Ordering;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
@@ -35,7 +34,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * @param <Solution_> the solution type
  * @param <T> the selection type
  */
-public class WeightFactorySelectionSorter<Solution_ extends Solution, T> implements SelectionSorter<Solution_, T> {
+public class WeightFactorySelectionSorter<Solution_, T> implements SelectionSorter<Solution_, T> {
 
     private final SelectionSorterWeightFactory<Solution_, T> selectionSorterWeightFactory;
     private final Comparator<Comparable> appliedWeightComparator;

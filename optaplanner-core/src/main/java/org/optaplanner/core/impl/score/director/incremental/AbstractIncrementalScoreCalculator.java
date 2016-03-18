@@ -16,12 +16,10 @@
 
 package org.optaplanner.core.impl.score.director.incremental;
 
-import org.optaplanner.core.api.domain.solution.Solution;
-
 /**
  * Abstract superclass for {@link IncrementalScoreCalculator}.
  * @see IncrementalScoreCalculator
  */
-public abstract class AbstractIncrementalScoreCalculator<Solution_ extends Solution> implements IncrementalScoreCalculator<Solution_> {
+public abstract class AbstractIncrementalScoreCalculator<Solution_> implements IncrementalScoreCalculator<Solution_> {
 
 }

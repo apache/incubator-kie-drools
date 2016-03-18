@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,16 @@
 package org.optaplanner.examples.coachshuttlegathering.domain;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
@@ -35,7 +36,7 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("CsgCoachShuttleGatheringSolution")
-public class CoachShuttleGatheringSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
+public class CoachShuttleGatheringSolution extends AbstractPersistable {
 
     protected String name;
     protected List<RoadLocation> locationList;
@@ -55,6 +56,7 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
         this.name = name;
     }
 
+    @PlanningFactCollectionProperty
     public List<RoadLocation> getLocationList() {
         return locationList;
     }
@@ -93,6 +95,7 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
         this.stopList = stopList;
     }
 
+    @PlanningFactProperty
     public BusHub getHub() {
         return hub;
     }
@@ -101,6 +104,7 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
         this.hub = hub;
     }
 
+    @PlanningScore
     public HardSoftLongScore getScore() {
         return score;
     }
@@ -116,14 +120,6 @@ public class CoachShuttleGatheringSolution extends AbstractPersistable implement
     @ValueRangeProvider(id = "hubRange")
     public List<BusHub> getHubRange() {
         return Collections.singletonList(hub);
-    }
-
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(locationList);
-        facts.add(hub);
-        // Do not add the planning entities (coachList, shuttleList, busStopList) because that will be done automatically
-        return facts;
     }
 
     public List<Bus> getBusList() {

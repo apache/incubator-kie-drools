@@ -16,21 +16,20 @@
 
 package org.optaplanner.examples.common.app;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.Before;
+import org.optaplanner.examples.common.business.ProblemFileComparator;
+import org.optaplanner.examples.common.persistence.SolutionDao;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.junit.Before;
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.examples.common.business.ProblemFileComparator;
-import org.optaplanner.examples.common.persistence.SolutionDao;
+public abstract class UnsolvedDirSolveAllTurtleTest<Solution_> extends SolveAllTurtleTest<Solution_> {
 
-public abstract class UnsolvedDirSolveAllTurtleTest extends SolveAllTurtleTest {
-
-    protected static Collection<Object[]> getUnsolvedDirFilesAsParameters(SolutionDao solutionDao) {
+    protected static <Solution_> Collection<Object[]> getUnsolvedDirFilesAsParameters(SolutionDao<Solution_> solutionDao) {
         List<Object[]> filesAsParameters = new ArrayList<Object[]>();
         File dataDir = solutionDao.getDataDir();
         File unsolvedDataDir = new File(dataDir, "unsolved");
@@ -49,7 +48,7 @@ public abstract class UnsolvedDirSolveAllTurtleTest extends SolveAllTurtleTest {
     }
 
     protected File dataFile;
-    protected SolutionDao solutionDao;
+    protected SolutionDao<Solution_> solutionDao;
 
     protected UnsolvedDirSolveAllTurtleTest(File dataFile) {
         this.dataFile = dataFile;
@@ -60,9 +59,9 @@ public abstract class UnsolvedDirSolveAllTurtleTest extends SolveAllTurtleTest {
         solutionDao = createSolutionDao();
     }
 
-    protected abstract SolutionDao createSolutionDao();
+    protected abstract SolutionDao<Solution_> createSolutionDao();
 
-    protected Solution readPlanningProblem() {
+    protected Solution_ readPlanningProblem() {
         return solutionDao.readSolution(dataFile);
     }
 

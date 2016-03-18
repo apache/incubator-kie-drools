@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,21 +16,20 @@
 
 package org.optaplanner.examples.tennis.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningSolution
 @XStreamAlias("TennisSolution")
-public class TennisSolution extends AbstractPersistable implements Solution<HardMediumSoftScore> {
+public class TennisSolution extends AbstractPersistable {
 
     private List<Team> teamList;
     private List<Day> dayList;
@@ -41,6 +40,7 @@ public class TennisSolution extends AbstractPersistable implements Solution<Hard
     private HardMediumSoftScore score;
 
     @ValueRangeProvider(id = "teamRange")
+    @PlanningFactCollectionProperty
     public List<Team> getTeamList() {
         return teamList;
     }
@@ -49,6 +49,7 @@ public class TennisSolution extends AbstractPersistable implements Solution<Hard
         this.teamList = teamList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Day> getDayList() {
         return dayList;
     }
@@ -57,6 +58,7 @@ public class TennisSolution extends AbstractPersistable implements Solution<Hard
         this.dayList = dayList;
     }
 
+    @PlanningFactCollectionProperty
     public List<UnavailabilityPenalty> getUnavailabilityPenaltyList() {
         return unavailabilityPenaltyList;
     }
@@ -74,22 +76,13 @@ public class TennisSolution extends AbstractPersistable implements Solution<Hard
         this.teamAssignmentList = teamAssignmentList;
     }
 
+    @PlanningScore
     public HardMediumSoftScore getScore() {
         return score;
     }
 
     public void setScore(HardMediumSoftScore score) {
         this.score = score;
-    }
-
-    @Override
-    public Collection<?> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(teamList);
-        facts.addAll(dayList);
-        facts.addAll(unavailabilityPenaltyList);
-        // Do not add the planning entity's (teamAssignmentList) because that will be done automatically
-        return facts;
     }
 
 }

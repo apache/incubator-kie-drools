@@ -19,7 +19,6 @@ package org.optaplanner.examples.common.app;
 import java.awt.Component;
 import javax.swing.WindowConstants;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.swing.impl.SwingUncaughtExceptionHandler;
 import org.optaplanner.swing.impl.SwingUtils;
@@ -33,7 +32,7 @@ import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class CommonApp<Solution_ extends Solution> extends LoggingMain {
+public abstract class CommonApp<Solution_> extends LoggingMain {
 
     protected static final Logger logger = LoggerFactory.getLogger(CommonApp.class);
 

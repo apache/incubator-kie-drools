@@ -16,16 +16,15 @@
 
 package org.optaplanner.core.impl.localsearch.scope;
 
-import java.util.Random;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class LocalSearchMoveScope {
+import java.util.Random;
 
-    private final LocalSearchStepScope stepScope;
+public class LocalSearchMoveScope<Solution_> {
+
+    private final LocalSearchStepScope<Solution_> stepScope;
 
     private int moveIndex;
     private Move move = null;
@@ -33,11 +32,11 @@ public class LocalSearchMoveScope {
     private Score score = null;
     private Boolean accepted = null;
 
-    public LocalSearchMoveScope(LocalSearchStepScope stepScope) {
+    public LocalSearchMoveScope(LocalSearchStepScope<Solution_> stepScope) {
         this.stepScope = stepScope;
     }
 
-    public LocalSearchStepScope getStepScope() {
+    public LocalSearchStepScope<Solution_> getStepScope() {
         return stepScope;
     }
 
@@ -85,11 +84,11 @@ public class LocalSearchMoveScope {
     // Calculated methods
     // ************************************************************************
 
-    public ScoreDirector getScoreDirector() {
+    public ScoreDirector<Solution_> getScoreDirector() {
         return stepScope.getScoreDirector();
     }
 
-    public Solution getWorkingSolution() {
+    public Solution_ getWorkingSolution() {
         return stepScope.getWorkingSolution();
     }
 

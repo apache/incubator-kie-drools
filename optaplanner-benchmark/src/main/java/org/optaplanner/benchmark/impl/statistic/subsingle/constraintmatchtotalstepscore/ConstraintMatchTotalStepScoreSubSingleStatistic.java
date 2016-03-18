@@ -16,14 +16,6 @@
 
 package org.optaplanner.benchmark.impl.statistic.subsingle.constraintmatchtotalstepscore;
 
-import java.io.File;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.jfree.chart.JFreeChart;
@@ -39,7 +31,6 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
@@ -50,8 +41,13 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
+import java.io.File;
+import java.text.NumberFormat;
+import java.util.*;
+
 @XStreamAlias("constraintMatchTotalStepScoreSubSingleStatistic")
-public class ConstraintMatchTotalStepScoreSubSingleStatistic extends PureSubSingleStatistic<ConstraintMatchTotalStepScoreStatisticPoint> {
+public class ConstraintMatchTotalStepScoreSubSingleStatistic<Solution_>
+        extends PureSubSingleStatistic<Solution_, ConstraintMatchTotalStepScoreStatisticPoint> {
 
     @XStreamOmitField
     private ConstraintMatchTotalStepScoreSubSingleStatisticListener listener;
@@ -76,14 +72,14 @@ public class ConstraintMatchTotalStepScoreSubSingleStatistic extends PureSubSing
     // Lifecycle methods
     // ************************************************************************
 
-    public void open(Solver<Solution> solver) {
-        DefaultSolver<Solution> defaultSolver = (DefaultSolver<Solution>) solver;
+    public void open(Solver<Solution_> solver) {
+        DefaultSolver<Solution_> defaultSolver = (DefaultSolver<Solution_>) solver;
         defaultSolver.setConstraintMatchEnabledPreference(true);
         defaultSolver.addPhaseLifecycleListener(listener);
     }
 
-    public void close(Solver<Solution> solver) {
-        ((DefaultSolver<Solution>) solver).removePhaseLifecycleListener(listener);
+    public void close(Solver<Solution_> solver) {
+        ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }
 
     private class ConstraintMatchTotalStepScoreSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {
@@ -110,8 +106,8 @@ public class ConstraintMatchTotalStepScoreSubSingleStatistic extends PureSubSing
         private void localSearchStepEnded(LocalSearchStepScope stepScope) {
             if (constraintMatchEnabled) {
                 long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
-                for (ConstraintMatchTotal constraintMatchTotal
-                        : stepScope.getScoreDirector().getConstraintMatchTotals()) {
+                Collection<ConstraintMatchTotal> matches = stepScope.getScoreDirector().getConstraintMatchTotals();
+                for (ConstraintMatchTotal constraintMatchTotal : matches) {
                     pointList.add(new ConstraintMatchTotalStepScoreStatisticPoint(
                             timeMillisSpent,
                             constraintMatchTotal.getConstraintPackage(),

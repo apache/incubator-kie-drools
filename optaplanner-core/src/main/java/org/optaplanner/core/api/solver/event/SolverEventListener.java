@@ -18,12 +18,11 @@ package org.optaplanner.core.api.solver.event;
 
 import java.util.EventListener;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
-public interface SolverEventListener<Solution_ extends Solution> extends EventListener {
+public interface SolverEventListener<Solution_> extends EventListener {
 
     /**
      * Called once every time when a better {@link Solution} is found.

@@ -16,18 +16,15 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import java.util.List;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
-import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
 import org.optaplanner.core.impl.domain.variable.supply.SupplyManager;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
-public interface InnerScoreDirector extends ScoreDirector {
+import java.util.List;
+
+public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> {
 
     /**
      * @return used to check {@link #isWorkingEntityListDirty(long)} later on
@@ -43,12 +40,12 @@ public interface InnerScoreDirector extends ScoreDirector {
     /**
      * @return never null
      */
-    InnerScoreDirectorFactory getScoreDirectorFactory();
+    InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory();
 
     /**
      * @return never null
      */
-    SolutionDescriptor getSolutionDescriptor();
+    SolutionDescriptor<Solution_> getSolutionDescriptor();
 
     /**
      * @return never null
@@ -58,13 +55,13 @@ public interface InnerScoreDirector extends ScoreDirector {
     /**
      * @return never null
      */
-    Solution cloneWorkingSolution();
+    Solution_ cloneWorkingSolution();
 
     /**
      * @param originalSolution never null
      * @return never null
      */
-    Solution cloneSolution(Solution originalSolution);
+    Solution_ cloneSolution(Solution_ originalSolution);
 
     /**
      * @return {@code >= 0}
@@ -96,14 +93,14 @@ public interface InnerScoreDirector extends ScoreDirector {
     SupplyManager getSupplyManager();
 
     /**
-     * Clones this {@link ScoreDirector} and its {@link Solution workingSolution}.
-     * Use {@link #getWorkingSolution()} to retrieve the {@link Solution workingSolution} of that clone.
+     * Clones this {@link ScoreDirector} and its {@link Solution_ workingSolution}.
+     * Use {@link #getWorkingSolution()} to retrieve the {@link Solution_ workingSolution} of that clone.
      * <p>
      * This is heavy method, because it usually breaks incremental score calculation. Use it sparingly.
      * Therefore it's best to clone lazily by delaying the clone call as long as possible.
      * @return never null
      */
-    ScoreDirector clone();
+    ScoreDirector<Solution_> clone();
 
     /**
      * Do not waste performance by propagating changes to step (or higher) mechanisms.
@@ -112,7 +109,7 @@ public interface InnerScoreDirector extends ScoreDirector {
     void setAllChangesWillBeUndoneBeforeStepEnds(boolean allChangesWillBeUndoneBeforeStepEnds);
 
     /**
-     * Asserts that if the {@link Score} is calculated for the current {@link Solution workingSolution}
+     * Asserts that if the {@link Score} is calculated for the current {@link Solution_ workingSolution}
      * in the current {@link ScoreDirector} (with possibly incremental calculation residue),
      * it is equal to the parameter {@link Score expectedWorkingScore}.
      * <p>
@@ -126,8 +123,8 @@ public interface InnerScoreDirector extends ScoreDirector {
     /**
      * Asserts that if all {@link VariableListener}s are forcibly triggered,
      * and therefore all shadow variables are updated if needed,
-     * that none of the shadow variables of the {@link Solution workingSolution} change,
-     * Then also asserts that the {@link Score} calculated for the {@link Solution workingSolution} afterwards
+     * that none of the shadow variables of the {@link Solution_ workingSolution} change,
+     * Then also asserts that the {@link Score} calculated for the {@link Solution_ workingSolution} afterwards
      * is equal to the parameter {@link Score expectedWorkingScore}.
      * <p>
      * Used to assert that the shadow variables' state is consistent with the genuine variables' state.
@@ -138,7 +135,7 @@ public interface InnerScoreDirector extends ScoreDirector {
     void assertShadowVariablesAreNotStale(Score expectedWorkingScore, Object completedAction);
 
     /**
-     * Asserts that if the {@link Score} is calculated for the current {@link Solution workingSolution}
+     * Asserts that if the {@link Score} is calculated for the current {@link Solution_ workingSolution}
      * in a fresh {@link ScoreDirector} (with no incremental calculation residue),
      * it is equal to the parameter {@link Score workingScore}.
      * <p>
@@ -146,7 +143,7 @@ public interface InnerScoreDirector extends ScoreDirector {
      * @param workingScore never null
      * @param completedAction sometimes null, when assertion fails then the completedAction's {@link Object#toString()}
      * is included in the exception message
-     * @see InnerScoreDirectorFactory#assertScoreFromScratch(Solution)
+     * @see InnerScoreDirectorFactory#assertScoreFromScratch(Solution_)
      */
     void assertWorkingScoreFromScratch(Score workingScore, Object completedAction);
 

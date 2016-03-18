@@ -16,16 +16,15 @@
 
 package org.optaplanner.examples.travelingtournament.persistence;
 
-import java.io.IOException;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.travelingtournament.domain.Day;
 import org.optaplanner.examples.travelingtournament.domain.Match;
 import org.optaplanner.examples.travelingtournament.domain.Team;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-public class TravelingTournamentExporter extends AbstractTxtSolutionExporter {
+import java.io.IOException;
+
+public class TravelingTournamentExporter extends AbstractTxtSolutionExporter<TravelingTournament> {
 
     private static final String OUTPUT_FILE_SUFFIX = "trick.txt";
 
@@ -42,16 +41,16 @@ public class TravelingTournamentExporter extends AbstractTxtSolutionExporter {
         return OUTPUT_FILE_SUFFIX;
     }
 
-    public TxtOutputBuilder createTxtOutputBuilder() {
+    public TxtOutputBuilder<TravelingTournament> createTxtOutputBuilder() {
         return new TravelingTournamentOutputBuilder();
     }
 
-    public static class TravelingTournamentOutputBuilder extends TxtOutputBuilder {
+    public static class TravelingTournamentOutputBuilder extends TxtOutputBuilder<TravelingTournament> {
 
         private TravelingTournament travelingTournament;
 
-        public void setSolution(Solution solution) {
-            travelingTournament = (TravelingTournament) solution;
+        public void setSolution(TravelingTournament solution) {
+            travelingTournament = solution;
         }
 
         public void writeSolution() throws IOException {

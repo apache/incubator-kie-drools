@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.investment.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +23,10 @@ import java.util.Map;
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeFactory;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -38,7 +38,7 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("InvestmentSolution")
-public class InvestmentSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
+public class InvestmentSolution extends AbstractPersistable {
 
     private InvestmentParametrization parametrization;
     private List<Region> regionList;
@@ -50,6 +50,7 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftLongScoreDefinition.class})
     private HardSoftLongScore score;
 
+    @PlanningFactProperty
     public InvestmentParametrization getParametrization() {
         return parametrization;
     }
@@ -58,6 +59,7 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
         this.parametrization = parametrization;
     }
 
+    @PlanningFactCollectionProperty
     public List<Region> getRegionList() {
         return regionList;
     }
@@ -66,6 +68,7 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
         this.regionList = regionList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Sector> getSectorList() {
         return sectorList;
     }
@@ -74,6 +77,7 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
         this.sectorList = sectorList;
     }
 
+    @PlanningFactCollectionProperty
     public List<AssetClass> getAssetClassList() {
         return assetClassList;
     }
@@ -91,6 +95,7 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
         this.assetClassAllocationList = assetClassAllocationList;
     }
 
+    @PlanningScore
     public HardSoftLongScore getScore() {
         return score;
     }
@@ -106,16 +111,6 @@ public class InvestmentSolution extends AbstractPersistable implements Solution<
     @ValueRangeProvider(id = "quantityMillisRange")
     public CountableValueRange<Long> getQuantityMillisRange() {
         return ValueRangeFactory.createLongValueRange(0L, InvestmentNumericUtil.MAXIMUM_QUANTITY_MILLIS + 1L);
-    }
-
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.add(parametrization);
-        facts.addAll(regionList);
-        facts.addAll(sectorList);
-        facts.addAll(assetClassList);
-        // Do not add the planning entity's (assetClassAllocationList) because that will be done automatically
-        return facts;
     }
 
     /**

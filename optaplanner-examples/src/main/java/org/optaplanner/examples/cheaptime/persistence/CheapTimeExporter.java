@@ -16,13 +16,6 @@
 
 package org.optaplanner.examples.cheaptime.persistence;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
@@ -30,7 +23,13 @@ import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 
-public class CheapTimeExporter extends AbstractTxtSolutionExporter {
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+public class CheapTimeExporter extends AbstractTxtSolutionExporter<CheapTimeSolution> {
 
     public static void main(String[] args) {
         new CheapTimeExporter().convertAll();
@@ -49,16 +48,16 @@ public class CheapTimeExporter extends AbstractTxtSolutionExporter {
         return CheapTimeSolutionFileIO.OUTPUT_FILE_EXTENSION;
     }
 
-    public TxtOutputBuilder createTxtOutputBuilder() {
+    public TxtOutputBuilder<CheapTimeSolution> createTxtOutputBuilder() {
         return new CheapTimeOutputBuilder();
     }
 
-    public static class CheapTimeOutputBuilder extends TxtOutputBuilder {
+    public static class CheapTimeOutputBuilder extends TxtOutputBuilder<CheapTimeSolution> {
 
         private CheapTimeSolution solution;
 
-        public void setSolution(Solution solution) {
-            this.solution = (CheapTimeSolution) solution;
+        public void setSolution(CheapTimeSolution solution) {
+            this.solution = solution;
         }
 
         public void writeSolution() throws IOException {

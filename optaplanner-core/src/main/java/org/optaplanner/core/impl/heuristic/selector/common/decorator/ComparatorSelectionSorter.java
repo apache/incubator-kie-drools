@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
@@ -29,7 +28,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
  * @param <Solution_> the solution type
  * @param <T> the selection type
  */
-public class ComparatorSelectionSorter<Solution_ extends Solution, T> implements SelectionSorter<Solution_, T> {
+public class ComparatorSelectionSorter<Solution_, T> implements SelectionSorter<Solution_, T> {
 
     private final Comparator<T> appliedComparator;
 

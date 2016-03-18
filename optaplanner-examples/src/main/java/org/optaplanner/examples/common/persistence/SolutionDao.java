@@ -18,12 +18,10 @@ package org.optaplanner.examples.common.persistence;
 
 import java.io.File;
 
-import org.optaplanner.core.api.domain.solution.Solution;
-
 /**
  * Data Access Object for the examples.
  */
-public interface SolutionDao {
+public interface SolutionDao<Solution_> {
 
     String getDirName();
 
@@ -31,8 +29,8 @@ public interface SolutionDao {
 
     String getFileExtension();
 
-    Solution readSolution(File inputSolutionFile);
+    Solution_ readSolution(File inputSolutionFile);
 
-    void writeSolution(Solution solution, File outputSolutionFile);
+    void writeSolution(Solution_ solution, File outputSolutionFile);
 
 }

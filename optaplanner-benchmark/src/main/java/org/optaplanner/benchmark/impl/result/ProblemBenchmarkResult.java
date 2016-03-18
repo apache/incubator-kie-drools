@@ -16,20 +16,6 @@
 
 package org.optaplanner.benchmark.impl.result;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
@@ -42,18 +28,20 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.util.*;
+
 /**
  * Represents 1 problem instance (data set) benchmarked on multiple {@link Solver} configurations.
  */
 @XStreamAlias("problemBenchmarkResult")
-public class ProblemBenchmarkResult {
+public class ProblemBenchmarkResult<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -63,7 +51,7 @@ public class ProblemBenchmarkResult {
     private String name = null;
 
     @XStreamOmitField // TODO move solutionFileIO out of ProblemBenchmarkResult
-    private SolutionFileIO solutionFileIO = null;
+    private SolutionFileIO<Solution_> solutionFileIO = null;
     private boolean writeOutputSolutionEnabled = false;
 
     private File inputSolutionFile = null;
@@ -113,11 +101,11 @@ public class ProblemBenchmarkResult {
         this.name = name;
     }
 
-    public SolutionFileIO getSolutionFileIO() {
+    public SolutionFileIO<Solution_> getSolutionFileIO() {
         return solutionFileIO;
     }
 
-    public void setSolutionFileIO(SolutionFileIO solutionFileIO) {
+    public void setSolutionFileIO(SolutionFileIO<Solution_> solutionFileIO) {
         this.solutionFileIO = solutionFileIO;
     }
 
@@ -277,11 +265,11 @@ public class ProblemBenchmarkResult {
         return totalSubSingleCount;
     }
 
-    public Solution readPlanningProblem() {
+    public Solution_ readPlanningProblem() {
         return solutionFileIO.read(inputSolutionFile);
     }
 
-    public void writeOutputSolution(SubSingleBenchmarkResult subSingleBenchmarkResult, Solution outputSolution) {
+    public void writeOutputSolution(SubSingleBenchmarkResult subSingleBenchmarkResult, Solution_ outputSolution) {
         if (!writeOutputSolutionEnabled) {
             return;
         }
@@ -447,7 +435,8 @@ public class ProblemBenchmarkResult {
                     newResult.inputSolutionFile = oldResult.inputSolutionFile;
                     // Skip oldResult.problemReportDirectory
                     newResult.problemStatisticList = new ArrayList<ProblemStatistic>(oldResult.problemStatisticList.size());
-                    for (ProblemStatistic oldProblemStatistic : oldResult.problemStatisticList) {
+                    List<ProblemStatistic> statistics = oldResult.problemStatisticList;
+                    for (ProblemStatistic oldProblemStatistic : statistics) {
                         newResult.problemStatisticList.add(
                                 oldProblemStatistic.getProblemStatisticType().buildProblemStatistic(newResult));
                     }

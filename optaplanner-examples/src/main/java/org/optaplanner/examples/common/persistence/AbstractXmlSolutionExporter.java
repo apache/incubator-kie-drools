@@ -16,23 +16,18 @@
 
 package org.optaplanner.examples.common.persistence;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import org.apache.commons.io.IOUtils;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
-import org.optaplanner.core.api.domain.solution.Solution;
 
-public abstract class AbstractXmlSolutionExporter extends AbstractSolutionExporter {
+import java.io.*;
+
+public abstract class AbstractXmlSolutionExporter<Solution_> extends AbstractSolutionExporter<Solution_> {
 
     protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = "xml";
 
-    protected AbstractXmlSolutionExporter(SolutionDao solutionDao) {
+    protected AbstractXmlSolutionExporter(SolutionDao<Solution_> solutionDao) {
         super(solutionDao);
     }
 
@@ -44,30 +39,26 @@ public abstract class AbstractXmlSolutionExporter extends AbstractSolutionExport
         return DEFAULT_OUTPUT_FILE_SUFFIX;
     }
 
-    public abstract XmlOutputBuilder createXmlOutputBuilder();
+    public abstract XmlOutputBuilder<Solution_> createXmlOutputBuilder();
 
-    public void writeSolution(Solution solution, File outputFile) {
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(outputFile);
+    public void writeSolution(Solution_ solution, File outputFile) {
+        try (OutputStream out = new BufferedOutputStream(new FileOutputStream(outputFile))){
             Document document = new Document();
-            XmlOutputBuilder xmlOutputBuilder = createXmlOutputBuilder();
+            XmlOutputBuilder<Solution_> xmlOutputBuilder = createXmlOutputBuilder();
             xmlOutputBuilder.setDocument(document);
             xmlOutputBuilder.setSolution(solution);
             xmlOutputBuilder.writeSolution();
             XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
             outputter.output(document, out);
+            logger.info("Exported: {}", outputFile);
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not write the file (" + outputFile.getName() + ").", e);
         } catch (JDOMException e) {
             throw new IllegalArgumentException("Could not format the XML file (" + outputFile.getName() + ").", e);
-        } finally {
-            IOUtils.closeQuietly(out);
         }
-        logger.info("Exported: {}", outputFile);
     }
 
-    public static abstract class XmlOutputBuilder extends OutputBuilder {
+    public static abstract class XmlOutputBuilder<Solution_> extends OutputBuilder {
 
         protected Document document;
 
@@ -75,7 +66,7 @@ public abstract class AbstractXmlSolutionExporter extends AbstractSolutionExport
             this.document = document;
         }
 
-        public abstract void setSolution(Solution solution);
+        public abstract void setSolution(Solution_ solution);
 
         public abstract void writeSolution() throws IOException, JDOMException;
 

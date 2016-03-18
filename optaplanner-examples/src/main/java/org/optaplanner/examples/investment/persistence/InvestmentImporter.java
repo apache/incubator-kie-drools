@@ -16,28 +16,18 @@
 
 package org.optaplanner.examples.investment.persistence;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionImporter;
+import org.optaplanner.examples.investment.domain.*;
+import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.examples.common.persistence.AbstractXlsxSolutionImporter;
-import org.optaplanner.examples.investment.domain.AssetClass;
-import org.optaplanner.examples.investment.domain.AssetClassAllocation;
-import org.optaplanner.examples.investment.domain.InvestmentSolution;
-import org.optaplanner.examples.investment.domain.InvestmentParametrization;
-import org.optaplanner.examples.investment.domain.Region;
-import org.optaplanner.examples.investment.domain.Sector;
-import org.optaplanner.examples.investment.domain.util.InvestmentNumericUtil;
-
-public class InvestmentImporter extends AbstractXlsxSolutionImporter {
+public class InvestmentImporter extends AbstractXlsxSolutionImporter<InvestmentSolution> {
 
     public static void main(String[] args) {
         InvestmentImporter importer = new InvestmentImporter();
@@ -54,18 +44,18 @@ public class InvestmentImporter extends AbstractXlsxSolutionImporter {
     }
 
     @Override
-    public XslxInputBuilder createXslxInputBuilder() {
+    public XslxInputBuilder<InvestmentSolution> createXslxInputBuilder() {
         return new InvestmentAllocationInputBuilder();
     }
 
-    public static class InvestmentAllocationInputBuilder extends XslxInputBuilder {
+    public static class InvestmentAllocationInputBuilder extends XslxInputBuilder<InvestmentSolution> {
 
         private InvestmentSolution solution;
 
         private Map<String, Region> regionMap;
         private Map<String, Sector> sectorMap;
 
-        public Solution readSolution() throws IOException {
+        public InvestmentSolution readSolution() throws IOException {
             solution = new InvestmentSolution();
             solution.setId(0L);
             readParametrization();

@@ -16,44 +16,18 @@
 
 package org.optaplanner.examples.examination.persistence;
 
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.examination.domain.*;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.examination.domain.Exam;
-import org.optaplanner.examples.examination.domain.Examination;
-import org.optaplanner.examples.examination.domain.FollowingExam;
-import org.optaplanner.examples.examination.domain.InstitutionParametrization;
-import org.optaplanner.examples.examination.domain.LeadingExam;
-import org.optaplanner.examples.examination.domain.Period;
-import org.optaplanner.examples.examination.domain.PeriodPenalty;
-import org.optaplanner.examples.examination.domain.PeriodPenaltyType;
-import org.optaplanner.examples.examination.domain.Room;
-import org.optaplanner.examples.examination.domain.RoomPenalty;
-import org.optaplanner.examples.examination.domain.RoomPenaltyType;
-import org.optaplanner.examples.examination.domain.Student;
-import org.optaplanner.examples.examination.domain.Topic;
-
-public class ExaminationImporter extends AbstractTxtSolutionImporter {
+public class ExaminationImporter extends AbstractTxtSolutionImporter<Examination> {
 
     private static final String INPUT_FILE_SUFFIX = "exam";
     private static final String SPLIT_REGEX = "\\,\\ ?";
@@ -71,11 +45,11 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter {
         return INPUT_FILE_SUFFIX;
     }
 
-    public TxtInputBuilder createTxtInputBuilder() {
+    public TxtInputBuilder<Examination> createTxtInputBuilder() {
         return new ExaminationInputBuilder();
     }
 
-    public static class ExaminationInputBuilder extends TxtInputBuilder {
+    public static class ExaminationInputBuilder extends TxtInputBuilder<Examination> {
 
         private Examination examination;
 
@@ -83,7 +57,7 @@ public class ExaminationImporter extends AbstractTxtSolutionImporter {
         private Map<Topic, Set<Topic>> exclusionMap;
         private Map<Topic, Set<Topic>> afterMap;
 
-        public Solution readSolution() throws IOException {
+        public Examination readSolution() throws IOException {
             examination = new Examination();
             examination.setId(0L);
 

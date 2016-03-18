@@ -16,9 +16,6 @@
 
 package org.optaplanner.benchmark.config;
 
-import java.util.ArrayList;
-import java.util.regex.Pattern;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
@@ -27,13 +24,15 @@ import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 
+import java.util.ArrayList;
+
 @XStreamAlias("solverBenchmark")
-public class SolverBenchmarkConfig extends AbstractConfig<SolverBenchmarkConfig> {
+public class SolverBenchmarkConfig<Solution_> extends AbstractConfig<SolverBenchmarkConfig> {
 
     private String name = null;
 
     @XStreamAlias("solver")
-    private SolverConfig solverConfig = null;
+    private SolverConfig<Solution_> solverConfig = null;
 
     @XStreamAlias("problemBenchmarks")
     private ProblemBenchmarksConfig problemBenchmarksConfig = null;
@@ -48,11 +47,11 @@ public class SolverBenchmarkConfig extends AbstractConfig<SolverBenchmarkConfig>
         this.name = name;
     }
 
-    public SolverConfig getSolverConfig() {
+    public SolverConfig<Solution_> getSolverConfig() {
         return solverConfig;
     }
 
-    public void setSolverConfig(SolverConfig solverConfig) {
+    public void setSolverConfig(SolverConfig<Solution_> solverConfig) {
         this.solverConfig = solverConfig;
     }
 

@@ -16,16 +16,15 @@
 
 package org.optaplanner.examples.nurserostering.persistence;
 
-import java.io.IOException;
-
 import org.jdom.Element;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractXmlSolutionExporter;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.Shift;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 
-public class NurseRosteringExporter extends AbstractXmlSolutionExporter {
+import java.io.IOException;
+
+public class NurseRosteringExporter extends AbstractXmlSolutionExporter<NurseRoster> {
 
     public static void main(String[] args) {
         new NurseRosteringExporter().convertAll();
@@ -35,16 +34,16 @@ public class NurseRosteringExporter extends AbstractXmlSolutionExporter {
         super(new NurseRosteringDao());
     }
 
-    public XmlOutputBuilder createXmlOutputBuilder() {
+    public XmlOutputBuilder<NurseRoster> createXmlOutputBuilder() {
         return new NurseRosteringOutputBuilder();
     }
 
-    public static class NurseRosteringOutputBuilder extends XmlOutputBuilder {
+    public static class NurseRosteringOutputBuilder extends XmlOutputBuilder<NurseRoster> {
 
         private NurseRoster nurseRoster;
 
-        public void setSolution(Solution solution) {
-            nurseRoster = (NurseRoster) solution;
+        public void setSolution(NurseRoster solution) {
+            nurseRoster = solution;
         }
 
         public void writeSolution() throws IOException {

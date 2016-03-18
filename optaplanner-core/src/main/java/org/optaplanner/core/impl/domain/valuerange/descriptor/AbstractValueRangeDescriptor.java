@@ -22,19 +22,19 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.buildin.composite.NullableCountableValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
-public abstract class AbstractValueRangeDescriptor implements ValueRangeDescriptor {
+public abstract class AbstractValueRangeDescriptor<Solution_> implements ValueRangeDescriptor<Solution_> {
 
-    protected final GenuineVariableDescriptor variableDescriptor;
+    protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
     protected final boolean addNullInValueRange;
 
-    public AbstractValueRangeDescriptor(GenuineVariableDescriptor variableDescriptor,
+    public AbstractValueRangeDescriptor(GenuineVariableDescriptor<Solution_> variableDescriptor,
             boolean addNullInValueRange) {
         this.variableDescriptor = variableDescriptor;
         this.addNullInValueRange = addNullInValueRange;
     }
 
     @Override
-    public GenuineVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
         return variableDescriptor;
     }
 
@@ -44,7 +44,8 @@ public abstract class AbstractValueRangeDescriptor implements ValueRangeDescript
 
     @Override
     public boolean mightContainEntity() {
-        SolutionDescriptor solutionDescriptor = variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
+        SolutionDescriptor<Solution_> solutionDescriptor
+                = variableDescriptor.getEntityDescriptor().getSolutionDescriptor();
         Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
         for (Class<?> entityClass : solutionDescriptor.getEntityClassSet()) {
             if (variablePropertyType.isAssignableFrom(entityClass)) {

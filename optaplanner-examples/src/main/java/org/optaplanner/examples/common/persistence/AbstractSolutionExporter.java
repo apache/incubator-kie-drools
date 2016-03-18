@@ -16,19 +16,18 @@
 
 package org.optaplanner.examples.common.persistence;
 
-import java.io.File;
-import java.util.Arrays;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 
-public abstract class AbstractSolutionExporter extends LoggingMain {
+import java.io.File;
+import java.util.Arrays;
+
+public abstract class AbstractSolutionExporter<Solution_> extends LoggingMain {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = "xml";
-    protected SolutionDao solutionDao;
+    protected SolutionDao<Solution_> solutionDao;
 
-    public AbstractSolutionExporter(SolutionDao solutionDao) {
+    public AbstractSolutionExporter(SolutionDao<Solution_> solutionDao) {
         this.solutionDao = solutionDao;
     }
 
@@ -66,7 +65,7 @@ public abstract class AbstractSolutionExporter extends LoggingMain {
         for (File inputFile : inputFiles) {
             String inputFileName = inputFile.getName();
             if (inputFileName.endsWith("." + getInputFileSuffix())) {
-                Solution solution = solutionDao.readSolution(inputFile);
+                Solution_ solution = solutionDao.readSolution(inputFile);
                 String outputFileName = inputFileName.substring(0,
                         inputFileName.length() - getInputFileSuffix().length())
                         + getOutputFileSuffix();
@@ -76,7 +75,7 @@ public abstract class AbstractSolutionExporter extends LoggingMain {
         }
     }
 
-    public abstract void writeSolution(Solution solution, File outputFile);
+    public abstract void writeSolution(Solution_ solution, File outputFile);
 
     public static abstract class OutputBuilder extends LoggingMain {
 

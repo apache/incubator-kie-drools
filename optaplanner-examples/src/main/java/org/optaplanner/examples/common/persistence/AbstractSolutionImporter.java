@@ -16,25 +16,24 @@
 
 package org.optaplanner.examples.common.persistence;
 
+import com.google.common.math.BigIntegerMath;
+import org.optaplanner.examples.common.app.LoggingMain;
+import org.optaplanner.examples.common.business.ProblemFileComparator;
+
 import java.io.File;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
 
-import com.google.common.math.BigIntegerMath;
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.examples.common.app.LoggingMain;
-import org.optaplanner.examples.common.business.ProblemFileComparator;
-
-public abstract class AbstractSolutionImporter extends LoggingMain {
+public abstract class AbstractSolutionImporter<Solution_> extends LoggingMain {
 
     protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = "xml";
 
-    protected final SolutionDao solutionDao;
+    protected final SolutionDao<Solution_> solutionDao;
     protected final File inputDir;
     protected final File outputDir;
 
-    public AbstractSolutionImporter(SolutionDao solutionDao) {
+    public AbstractSolutionImporter(SolutionDao<Solution_> solutionDao) {
         this.solutionDao = solutionDao;
         inputDir = new File(solutionDao.getDataDir(), "import");
         if (!inputDir.exists()) {
@@ -98,7 +97,7 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
     }
 
     protected void convert(File inputFile, File outputFile) {
-        Solution solution = readSolution(inputFile);
+        Solution_ solution = readSolution(inputFile);
         solutionDao.writeSolution(solution, outputFile);
     }
 
@@ -118,7 +117,7 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
         return true;
     }
 
-    public abstract Solution readSolution(File inputFile);
+    public abstract Solution_ readSolution(File inputFile);
 
     public static abstract class InputBuilder extends LoggingMain {
 

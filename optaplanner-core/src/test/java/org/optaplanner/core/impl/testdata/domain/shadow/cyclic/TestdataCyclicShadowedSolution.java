@@ -16,20 +16,18 @@
 
 package org.optaplanner.core.impl.testdata.domain.shadow.cyclic;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
+import java.util.Collection;
+import java.util.List;
+
 @PlanningSolution
-public class TestdataCyclicShadowedSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataCyclicShadowedSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataCyclicShadowedSolution.class,
@@ -66,6 +64,7 @@ public class TestdataCyclicShadowedSolution extends TestdataObject implements So
         this.entityList = entityList;
     }
 
+    @PlanningScore
     public SimpleScore getScore() {
         return score;
     }
@@ -78,6 +77,7 @@ public class TestdataCyclicShadowedSolution extends TestdataObject implements So
     // Complex methods
     // ************************************************************************
 
+    @PlanningFactCollectionProperty
     public Collection<? extends Object> getProblemFacts() {
         return valueList;
     }

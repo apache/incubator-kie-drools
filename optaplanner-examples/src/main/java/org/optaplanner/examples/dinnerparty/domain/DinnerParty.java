@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,15 @@
 
 package org.optaplanner.examples.dinnerparty.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
@@ -34,7 +33,7 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("DinnerParty")
-public class DinnerParty extends AbstractPersistable implements Solution<SimpleScore> {
+public class DinnerParty extends AbstractPersistable {
 
     private List<Job> jobList;
     private List<Guest> guestList;
@@ -47,6 +46,12 @@ public class DinnerParty extends AbstractPersistable implements Solution<SimpleS
     @XStreamConverter(value = XStreamScoreConverter.class, types = {SimpleScoreDefinition.class})
     private SimpleScore score;
 
+    @PlanningFactCollectionProperty
+    public EnumSet<Hobby> getHobbyType() {
+        return EnumSet.allOf(Hobby.class);
+    }
+
+    @PlanningFactCollectionProperty
     public List<Job> getJobList() {
         return jobList;
     }
@@ -55,6 +60,12 @@ public class DinnerParty extends AbstractPersistable implements Solution<SimpleS
         this.jobList = jobList;
     }
 
+    @PlanningFactCollectionProperty
+    public EnumSet<JobType> getJobType() {
+        return EnumSet.allOf(JobType.class);
+    }
+
+    @PlanningFactCollectionProperty
     public List<Guest> getGuestList() {
         return guestList;
     }
@@ -63,6 +74,7 @@ public class DinnerParty extends AbstractPersistable implements Solution<SimpleS
         this.guestList = guestList;
     }
 
+    @PlanningFactCollectionProperty
     public List<HobbyPractician> getHobbyPracticianList() {
         return hobbyPracticianList;
     }
@@ -71,6 +83,7 @@ public class DinnerParty extends AbstractPersistable implements Solution<SimpleS
         this.hobbyPracticianList = hobbyPracticianList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Table> getTableList() {
         return tableList;
     }
@@ -80,6 +93,7 @@ public class DinnerParty extends AbstractPersistable implements Solution<SimpleS
     }
 
     @ValueRangeProvider(id = "seatRange")
+    @PlanningFactCollectionProperty
     public List<Seat> getSeatList() {
         return seatList;
     }
@@ -97,6 +111,7 @@ public class DinnerParty extends AbstractPersistable implements Solution<SimpleS
         this.seatDesignationList = seatDesignationList;
     }
 
+    @PlanningScore
     public SimpleScore getScore() {
         return score;
     }
@@ -108,18 +123,5 @@ public class DinnerParty extends AbstractPersistable implements Solution<SimpleS
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(EnumSet.allOf(JobType.class));
-        facts.addAll(jobList);
-        facts.addAll(guestList);
-        facts.addAll(EnumSet.allOf(Hobby.class));
-        facts.addAll(hobbyPracticianList);
-        facts.addAll(tableList);
-        facts.addAll(seatList);
-        // Do not add the planning entity's (seatDesignationList) because that will be done automatically
-        return facts;
-    }
 
 }

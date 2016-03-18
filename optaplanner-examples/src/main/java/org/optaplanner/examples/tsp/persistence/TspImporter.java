@@ -16,27 +16,22 @@
 
 package org.optaplanner.examples.tsp.persistence;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.io.FilenameUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
 import org.optaplanner.examples.tsp.domain.location.AirLocation;
-import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
+import org.optaplanner.examples.tsp.domain.location.Location;
 import org.optaplanner.examples.tsp.domain.location.RoadLocation;
 
-public class TspImporter extends AbstractTxtSolutionImporter {
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.*;
+
+public class TspImporter extends AbstractTxtSolutionImporter<TspSolution> {
 
     public static final String INPUT_FILE_SUFFIX = "tsp";
 
@@ -60,17 +55,17 @@ public class TspImporter extends AbstractTxtSolutionImporter {
         return INPUT_FILE_SUFFIX;
     }
 
-    public TxtInputBuilder createTxtInputBuilder() {
+    public TxtInputBuilder<TspSolution> createTxtInputBuilder() {
         return new TspInputBuilder();
     }
 
-    public static class TspInputBuilder extends TxtInputBuilder {
+    public static class TspInputBuilder extends TxtInputBuilder<TspSolution> {
 
         private TspSolution tspSolution;
 
         private int locationListSize;
 
-        public Solution readSolution() throws IOException {
+        public TspSolution readSolution() throws IOException {
             tspSolution = new TspSolution();
             tspSolution.setId(0L);
             String firstLine = readStringValue();

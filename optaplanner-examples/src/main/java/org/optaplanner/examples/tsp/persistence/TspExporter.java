@@ -16,15 +16,14 @@
 
 package org.optaplanner.examples.tsp.persistence;
 
-import java.io.IOException;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.tsp.domain.Standstill;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.examples.tsp.domain.Visit;
 
-public class TspExporter extends AbstractTxtSolutionExporter {
+import java.io.IOException;
+
+public class TspExporter extends AbstractTxtSolutionExporter<TspSolution> {
 
     public static final String OUTPUT_FILE_SUFFIX = "tour";
 
@@ -41,15 +40,15 @@ public class TspExporter extends AbstractTxtSolutionExporter {
         return OUTPUT_FILE_SUFFIX;
     }
 
-    public TxtOutputBuilder createTxtOutputBuilder() {
+    public TxtOutputBuilder<TspSolution> createTxtOutputBuilder() {
         return new TspOutputBuilder();
     }
 
-    public static class TspOutputBuilder extends TxtOutputBuilder {
+    public static class TspOutputBuilder extends TxtOutputBuilder<TspSolution> {
 
         private TspSolution tspSolution;
 
-        public void setSolution(Solution solution) {
+        public void setSolution(TspSolution solution) {
             tspSolution = (TspSolution) solution;
         }
 

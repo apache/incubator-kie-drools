@@ -16,13 +16,6 @@
 
 package org.optaplanner.core.impl.exhaustivesearch;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.exhaustivesearch.decider.ExhaustiveSearchDecider;
 import org.optaplanner.core.impl.exhaustivesearch.node.ExhaustiveSearchLayer;
@@ -36,6 +29,8 @@ import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+
+import java.util.*;
 
 /**
  * Default implementation of {@link ExhaustiveSearchPhase}.
@@ -211,7 +206,7 @@ public class DefaultExhaustiveSearchPhase extends AbstractPhase implements Exhau
             restoreMove.doMove(scoreDirector);
         }
         // there is no need to recalculate the score, but we still need to set it
-        phaseScope.getWorkingSolution().setScore(stepScope.getStartingStepScore());
+        phaseScope.getSolutionDescriptor().setScore(phaseScope.getWorkingSolution(), stepScope.getStartingStepScore());
         if (assertWorkingSolutionScoreFromScratch) {
             // In BRUTE_FORCE the stepScore can be null because it was not calculated
             if (stepScope.getStartingStepScore() != null) {

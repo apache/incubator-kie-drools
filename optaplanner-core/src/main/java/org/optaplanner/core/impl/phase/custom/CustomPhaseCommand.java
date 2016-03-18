@@ -18,14 +18,12 @@ package org.optaplanner.core.impl.phase.custom;
 
 import java.util.Map;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
-import org.optaplanner.core.impl.solver.termination.AbstractTermination;
 
 /**
  * Runs a custom algorithm as a {@link Phase} of the {@link Solver} that changes the planning variables.

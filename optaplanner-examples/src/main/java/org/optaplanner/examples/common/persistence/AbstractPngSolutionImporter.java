@@ -16,24 +16,18 @@
 
 package org.optaplanner.examples.common.persistence;
 
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
-
-public abstract class AbstractPngSolutionImporter extends AbstractSolutionImporter {
+public abstract class AbstractPngSolutionImporter<Solution_> extends AbstractSolutionImporter<Solution_> {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = "png";
 
-    protected AbstractPngSolutionImporter(SolutionDao solutionDao) {
+    protected AbstractPngSolutionImporter(SolutionDao<Solution_> solutionDao) {
         super(solutionDao);
     }
 
@@ -45,18 +39,18 @@ public abstract class AbstractPngSolutionImporter extends AbstractSolutionImport
         return DEFAULT_INPUT_FILE_SUFFIX;
     }
 
-    public abstract PngInputBuilder createPngInputBuilder();
+    public abstract PngInputBuilder<Solution_> createPngInputBuilder();
 
-    public Solution readSolution(File inputFile) {
-        Solution solution;
-        InputStream in = null;
+    public Solution_ readSolution(File inputFile) {
         try {
             BufferedImage image = ImageIO.read(inputFile);
-            PngInputBuilder pngInputBuilder = createPngInputBuilder();
+            PngInputBuilder<Solution_> pngInputBuilder = createPngInputBuilder();
             pngInputBuilder.setInputFile(inputFile);
             pngInputBuilder.setImage(image);
             try {
-                solution = pngInputBuilder.readSolution();
+                Solution_ solution = pngInputBuilder.readSolution();
+                logger.info("Imported: {}", inputFile);
+                return solution;
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Exception in inputFile (" + inputFile + ")", e);
             } catch (IllegalStateException e) {
@@ -64,14 +58,10 @@ public abstract class AbstractPngSolutionImporter extends AbstractSolutionImport
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not read the file (" + inputFile.getName() + ").", e);
-        } finally {
-            IOUtils.closeQuietly(in);
         }
-        logger.info("Imported: {}", inputFile);
-        return solution;
     }
 
-    public static abstract class PngInputBuilder extends InputBuilder {
+    public static abstract class PngInputBuilder<Solution_> extends InputBuilder {
 
         protected File inputFile;
         protected BufferedImage image;
@@ -84,7 +74,7 @@ public abstract class AbstractPngSolutionImporter extends AbstractSolutionImport
             this.image = image;
         }
 
-        public abstract Solution readSolution() throws IOException;
+        public abstract Solution_ readSolution() throws IOException;
 
         // ************************************************************************
         // Helper methods

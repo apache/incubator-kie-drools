@@ -16,31 +16,30 @@
 
 package org.optaplanner.examples.common.persistence;
 
-import java.io.File;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionFileIO;
 
-public abstract class XStreamSolutionDao extends AbstractSolutionDao {
+import java.io.File;
 
-    protected XStreamSolutionFileIO xStreamSolutionFileIO;
+public abstract class XStreamSolutionDao<Solution_> extends AbstractSolutionDao<Solution_> {
+
+    protected XStreamSolutionFileIO<Solution_> xStreamSolutionFileIO;
 
     public XStreamSolutionDao(String dirName, Class... xStreamAnnotations) {
         super(dirName);
-        xStreamSolutionFileIO = new XStreamSolutionFileIO(xStreamAnnotations);
+        xStreamSolutionFileIO = new XStreamSolutionFileIO<>(xStreamAnnotations);
     }
 
     public String getFileExtension() {
         return xStreamSolutionFileIO.getOutputFileExtension();
     }
 
-    public Solution readSolution(File inputSolutionFile) {
-        Solution solution = xStreamSolutionFileIO.read(inputSolutionFile);
+    public Solution_ readSolution(File inputSolutionFile) {
+        Solution_ solution = xStreamSolutionFileIO.read(inputSolutionFile);
         logger.info("Opened: {}", inputSolutionFile);
         return solution;
     }
 
-    public void writeSolution(Solution solution, File outputSolutionFile) {
+    public void writeSolution(Solution_ solution, File outputSolutionFile) {
         xStreamSolutionFileIO.write(solution, outputSolutionFile);
         logger.info("Saved: {}", outputSolutionFile);
     }

@@ -37,7 +37,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 
 import org.optaplanner.swing.impl.SwingUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.swingui.SolutionPanel;
 import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.optaplanner.swing.impl.TangoColorFactory;

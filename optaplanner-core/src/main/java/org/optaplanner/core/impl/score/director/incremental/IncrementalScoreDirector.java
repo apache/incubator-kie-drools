@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.score.director.incremental;
 
-import java.util.Collection;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -26,23 +23,27 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
+import java.util.Collection;
+
 /**
  * Incremental java implementation of {@link ScoreDirector}, which only recalculates the {@link Score}
- * of the part of the {@link Solution} workingSolution that changed,
- * instead of the going through the entire {@link Solution}. This is incremental calculation, which is fast.
+ * of the part of the {@link Solution_} workingSolution that changed,
+ * instead of the going through the entire {@link Solution_}. This is incremental calculation, which is fast.
  * @see ScoreDirector
  */
-public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalScoreDirectorFactory> {
+public class IncrementalScoreDirector<Solution_>
+        extends AbstractScoreDirector<Solution_, IncrementalScoreDirectorFactory<Solution_>> {
 
-    private final IncrementalScoreCalculator incrementalScoreCalculator;
+    private final IncrementalScoreCalculator<Solution_> incrementalScoreCalculator;
 
     public IncrementalScoreDirector(IncrementalScoreDirectorFactory scoreDirectorFactory,
-            boolean constraintMatchEnabledPreference, IncrementalScoreCalculator incrementalScoreCalculator) {
+                                    boolean constraintMatchEnabledPreference,
+                                    IncrementalScoreCalculator<Solution_> incrementalScoreCalculator) {
         super(scoreDirectorFactory, constraintMatchEnabledPreference);
         this.incrementalScoreCalculator = incrementalScoreCalculator;
     }
 
-    public IncrementalScoreCalculator getIncrementalScoreCalculator() {
+    public IncrementalScoreCalculator<Solution_> getIncrementalScoreCalculator() {
         return incrementalScoreCalculator;
     }
 
@@ -51,7 +52,7 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     // ************************************************************************
 
     @Override
-    public void setWorkingSolution(Solution workingSolution) {
+    public void setWorkingSolution(Solution_ workingSolution) {
         super.setWorkingSolution(workingSolution);
         if (incrementalScoreCalculator instanceof ConstraintMatchAwareIncrementalScoreCalculator) {
             ((ConstraintMatchAwareIncrementalScoreCalculator) incrementalScoreCalculator)
@@ -86,13 +87,13 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     // ************************************************************************
 
     @Override
-    public void beforeEntityAdded(EntityDescriptor entityDescriptor, Object entity) {
+    public void beforeEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         incrementalScoreCalculator.beforeEntityAdded(entity);
         super.beforeEntityAdded(entityDescriptor, entity);
     }
 
     @Override
-    public void afterEntityAdded(EntityDescriptor entityDescriptor, Object entity) {
+    public void afterEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         incrementalScoreCalculator.afterEntityAdded(entity);
         super.afterEntityAdded(entityDescriptor, entity);
     }
@@ -110,13 +111,13 @@ public class IncrementalScoreDirector extends AbstractScoreDirector<IncrementalS
     }
 
     @Override
-    public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
+    public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         incrementalScoreCalculator.beforeEntityRemoved(entity);
         super.beforeEntityRemoved(entityDescriptor, entity);
     }
 
     @Override
-    public void afterEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
+    public void afterEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         incrementalScoreCalculator.afterEntityRemoved(entity);
         super.afterEntityRemoved(entityDescriptor, entity);
     }

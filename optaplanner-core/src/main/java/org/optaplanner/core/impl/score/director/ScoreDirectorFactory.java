@@ -19,12 +19,12 @@ package org.optaplanner.core.impl.score.director;
 /**
  * Builds a {@link ScoreDirector}.
  */
-public interface ScoreDirectorFactory {
+public interface ScoreDirectorFactory<Solution_> {
 
     /**
      * Creates a new {@link ScoreDirector} instance.
      * @return never null
      */
-    ScoreDirector buildScoreDirector();
+    ScoreDirector<Solution_> buildScoreDirector();
 
 }

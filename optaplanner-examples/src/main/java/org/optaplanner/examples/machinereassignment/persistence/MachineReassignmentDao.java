@@ -19,7 +19,7 @@ package org.optaplanner.examples.machinereassignment.persistence;
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 
-public class MachineReassignmentDao extends XStreamSolutionDao {
+public class MachineReassignmentDao extends XStreamSolutionDao<MachineReassignment> {
 
     public MachineReassignmentDao() {
         super("machinereassignment", MachineReassignment.class);

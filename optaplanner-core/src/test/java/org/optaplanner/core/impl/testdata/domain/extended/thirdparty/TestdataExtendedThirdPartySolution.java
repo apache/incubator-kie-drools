@@ -16,19 +16,17 @@
 
 package org.optaplanner.core.impl.testdata.domain.extended.thirdparty;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
+import java.util.Collection;
+import java.util.List;
+
 @PlanningSolution
-public class TestdataExtendedThirdPartySolution extends TestdataThirdPartySolutionPojo implements Solution<SimpleScore> {
+public class TestdataExtendedThirdPartySolution extends TestdataThirdPartySolutionPojo {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedThirdPartySolution.class, TestdataExtendedThirdPartyEntity.class);
@@ -58,6 +56,7 @@ public class TestdataExtendedThirdPartySolution extends TestdataThirdPartySoluti
         this.extraObject = extraObject;
     }
 
+    @PlanningScore
     public SimpleScore getScore() {
         return score;
     }
@@ -80,6 +79,7 @@ public class TestdataExtendedThirdPartySolution extends TestdataThirdPartySoluti
         return super.getEntityList();
     }
 
+    @PlanningFactCollectionProperty
     public Collection<? extends Object> getProblemFacts() {
         return getValueList();
     }

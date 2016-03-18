@@ -16,16 +16,15 @@
 
 package org.optaplanner.benchmark.impl.ranking;
 
-import java.util.Comparator;
-import java.util.List;
-
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
+
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * This {@link SolverRankingWeightFactory} orders a {@link SolverBenchmarkResult} by how how many time each of it's
@@ -33,7 +32,7 @@ import org.optaplanner.core.api.score.Score;
  * It maximizes the overall ranking.
  * <p>
  * When the inputSolutions differ greatly in size or difficulty, this often produces a difference in
- * {@link Score} magnitude between each {@link Solution}. For example: score 10 for dataset A versus 1000 for dataset B.
+ * {@link Score} magnitude between each solution. For example: score 10 for dataset A versus 1000 for dataset B.
  * In such cases, this ranking is more fair than {@link TotalScoreSolverRankingComparator},
  * because in this ranking, dataset B wouldn't marginalize dataset A.
  */
@@ -47,7 +46,8 @@ public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightF
         int lowerCount = 0;
         List<SingleBenchmarkResult> singleBenchmarkResultList = solverBenchmarkResult.getSingleBenchmarkResultList();
         for (SingleBenchmarkResult single : solverBenchmarkResult.getSingleBenchmarkResultList()) {
-            for (SingleBenchmarkResult otherSingle : single.getProblemBenchmarkResult().getSingleBenchmarkResultList()) {
+            List<SingleBenchmarkResult> results = single.getProblemBenchmarkResult().getSingleBenchmarkResultList();
+            for (SingleBenchmarkResult otherSingle : results) {
                 if (single == otherSingle) {
                     continue;
                 }

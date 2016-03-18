@@ -16,11 +16,6 @@
 
 package org.optaplanner.core.impl.solver;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
@@ -37,30 +32,35 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Default implementation for {@link Solver}.
  * @see Solver
  */
-public class DefaultSolver<Solution_ extends Solution> implements Solver<Solution_> {
+public class DefaultSolver<Solution_> implements Solver<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected SolverEventSupport<Solution_> solverEventSupport = new SolverEventSupport<Solution_>(this);
+    protected SolverEventSupport<Solution_> solverEventSupport = new SolverEventSupport<>(this);
 
     protected EnvironmentMode environmentMode;
     protected RandomFactory randomFactory;
     protected boolean constraintMatchEnabledPreference = false;
-    protected InnerScoreDirectorFactory scoreDirectorFactory;
+    protected InnerScoreDirectorFactory<Solution_> scoreDirectorFactory;
 
     protected BasicPlumbingTermination basicPlumbingTermination;
     // Note that the basicPlumbingTermination is a component of this termination
     protected Termination termination;
-    protected BestSolutionRecaller bestSolutionRecaller;
+    protected BestSolutionRecaller<Solution_> bestSolutionRecaller;
     protected List<Phase> phaseList;
 
     protected AtomicBoolean solving = new AtomicBoolean(false);
 
-    protected DefaultSolverScope solverScope = new DefaultSolverScope();
+    protected DefaultSolverScope<Solution_> solverScope = new DefaultSolverScope<>();
 
     public EnvironmentMode getEnvironmentMode() {
         return environmentMode;
@@ -86,11 +86,11 @@ public class DefaultSolver<Solution_ extends Solution> implements Solver<Solutio
         this.constraintMatchEnabledPreference = constraintMatchEnabledPreference;
     }
 
-    public InnerScoreDirectorFactory getScoreDirectorFactory() {
+    public InnerScoreDirectorFactory<Solution_> getScoreDirectorFactory() {
         return scoreDirectorFactory;
     }
 
-    public void setScoreDirectorFactory(InnerScoreDirectorFactory scoreDirectorFactory) {
+    public void setScoreDirectorFactory(InnerScoreDirectorFactory<Solution_> scoreDirectorFactory) {
         this.scoreDirectorFactory = scoreDirectorFactory;
     }
 
@@ -102,11 +102,11 @@ public class DefaultSolver<Solution_ extends Solution> implements Solver<Solutio
         this.termination = termination;
     }
 
-    public BestSolutionRecaller getBestSolutionRecaller() {
+    public BestSolutionRecaller<Solution_> getBestSolutionRecaller() {
         return bestSolutionRecaller;
     }
 
-    public void setBestSolutionRecaller(BestSolutionRecaller bestSolutionRecaller) {
+    public void setBestSolutionRecaller(BestSolutionRecaller<Solution_> bestSolutionRecaller) {
         this.bestSolutionRecaller = bestSolutionRecaller;
         this.bestSolutionRecaller.setSolverEventSupport(solverEventSupport);
     }
@@ -119,7 +119,7 @@ public class DefaultSolver<Solution_ extends Solution> implements Solver<Solutio
         this.phaseList = phaseList;
     }
 
-    public DefaultSolverScope getSolverScope() {
+    public DefaultSolverScope<Solution_> getSolverScope() {
         return solverScope;
     }
 
@@ -128,7 +128,7 @@ public class DefaultSolver<Solution_ extends Solution> implements Solver<Solutio
     // ************************************************************************
 
     public Solution_ getBestSolution() {
-        return (Solution_) solverScope.getBestSolution();
+        return solverScope.getBestSolution();
     }
 
     public long getTimeMillisSpent() {
@@ -178,10 +178,19 @@ public class DefaultSolver<Solution_ extends Solution> implements Solver<Solutio
             restartSolver = checkProblemFactChanges();
         }
         outerSolvingEnded(solverScope);
-        return (Solution_) solverScope.getBestSolution();
+        return solverScope.getBestSolution();
     }
 
-    public void outerSolvingStarted(DefaultSolverScope solverScope) {
+    public Solution_ solve(Solution planningProblem) {
+        if (planningProblem == null) {
+            throw new IllegalArgumentException("The planningProblem (" + planningProblem
+                    + ") must not be null.");
+        }
+        // we can do this, since this legacy Solution is in fact the same type as Solution_
+        return solve((Solution_)planningProblem);
+    }
+
+    public void outerSolvingStarted(DefaultSolverScope<Solution_> solverScope) {
         solving.set(true);
         basicPlumbingTermination.resetTerminateEarly();
         solverScope.setStartingSolverCount(0);
@@ -189,7 +198,7 @@ public class DefaultSolver<Solution_ extends Solution> implements Solver<Solutio
         solverScope.setScoreDirector(scoreDirectorFactory.buildScoreDirector(constraintMatchEnabledPreference));
     }
 
-    public void solvingStarted(DefaultSolverScope solverScope) {
+    public void solvingStarted(DefaultSolverScope<Solution_> solverScope) {
         solverScope.setStartingSystemTimeMillis(System.currentTimeMillis());
         solverScope.setEndingSystemTimeMillis(null);
         solverScope.getScoreDirector().resetCalculateCount();
@@ -220,7 +229,7 @@ public class DefaultSolver<Solution_ extends Solution> implements Solver<Solutio
         // TODO support doing round-robin of phases (only non-construction heuristics)
     }
 
-    public void solvingEnded(DefaultSolverScope solverScope) {
+    public void solvingEnded(DefaultSolverScope<Solution_> solverScope) {
         for (Phase phase : phaseList) {
             phase.solvingEnded(solverScope);
         }
@@ -228,7 +237,7 @@ public class DefaultSolver<Solution_ extends Solution> implements Solver<Solutio
         solverScope.setEndingSystemTimeMillis(System.currentTimeMillis());
     }
 
-    public void outerSolvingEnded(DefaultSolverScope solverScope) {
+    public void outerSolvingEnded(DefaultSolverScope<Solution_> solverScope) {
         // Must be kept open for doProblemFactChange
         solverScope.getScoreDirector().dispose();
         long timeMillisSpent = getTimeMillisSpent();
@@ -261,7 +270,7 @@ public class DefaultSolver<Solution_ extends Solution> implements Solver<Solutio
                 problemFactChange = problemFactChangeQueue.poll();
             }
             basicPlumbingTermination.endProblemFactChangesProcessing();
-            Solution newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
+            Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
             // TODO BestSolutionRecaller.solverStarted() already calls countUninitializedVariables()
             int newBestUninitializedVariableCount = solverScope.getSolutionDescriptor()
                     .countUninitializedVariables(newBestSolution);

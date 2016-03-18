@@ -16,15 +16,14 @@
 
 package org.optaplanner.examples.taskassigning.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
@@ -33,16 +32,24 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("TaTaskAssigningSolution")
-public class TaskAssigningSolution extends AbstractPersistable implements Solution<HardSoftScore> {
+public class TaskAssigningSolution extends AbstractPersistable {
 
+    @PlanningFactCollectionProperty
     private List<Skill> skillList;
+    @PlanningFactCollectionProperty
+    @ValueRangeProvider(id = "employeeRange")
     private List<Employee> employeeList;
+    @PlanningFactCollectionProperty
     private List<TaskType> taskTypeList;
+    @PlanningFactCollectionProperty
     private List<Customer> customerList;
 
+    @PlanningEntityCollectionProperty
+    @ValueRangeProvider(id = "taskRange")
     private List<Task> taskList;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
+    @PlanningScore
     private HardSoftScore score;
 
     public List<Skill> getSkillList() {
@@ -53,7 +60,6 @@ public class TaskAssigningSolution extends AbstractPersistable implements Soluti
         this.skillList = skillList;
     }
 
-    @ValueRangeProvider(id = "employeeRange")
     public List<Employee> getEmployeeList() {
         return employeeList;
     }
@@ -78,8 +84,6 @@ public class TaskAssigningSolution extends AbstractPersistable implements Soluti
         this.customerList = customerList;
     }
 
-    @PlanningEntityCollectionProperty
-    @ValueRangeProvider(id = "taskRange")
     public List<Task> getTaskList() {
         return taskList;
     }
@@ -88,28 +92,12 @@ public class TaskAssigningSolution extends AbstractPersistable implements Soluti
         this.taskList = taskList;
     }
 
-    @Override
     public HardSoftScore getScore() {
         return score;
     }
 
-    @Override
     public void setScore(HardSoftScore score) {
         this.score = score;
-    }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
-
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(skillList);
-        facts.addAll(employeeList);
-        facts.addAll(taskTypeList);
-        facts.addAll(customerList);
-        // Do not add the planning entity's (taskList) because that will be done automatically
-        return facts;
     }
 
 }

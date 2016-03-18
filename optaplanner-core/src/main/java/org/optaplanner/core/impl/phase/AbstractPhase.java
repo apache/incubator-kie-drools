@@ -16,9 +16,6 @@
 
 package org.optaplanner.core.impl.phase;
 
-import java.util.Iterator;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -34,17 +31,19 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Iterator;
+
 /**
  * @see DefaultLocalSearchPhase
  */
-public abstract class AbstractPhase implements Phase {
+public abstract class AbstractPhase<Solution_> implements Phase {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected int phaseIndex = -1;
 
     protected Termination termination;
-    protected BestSolutionRecaller bestSolutionRecaller;
+    protected BestSolutionRecaller<Solution_> bestSolutionRecaller;
 
     protected PhaseLifecycleSupport phaseLifecycleSupport = new PhaseLifecycleSupport();
 
@@ -64,7 +63,7 @@ public abstract class AbstractPhase implements Phase {
         this.termination = termination;
     }
 
-    public void setBestSolutionRecaller(BestSolutionRecaller bestSolutionRecaller) {
+    public void setBestSolutionRecaller(BestSolutionRecaller<Solution_> bestSolutionRecaller) {
         this.bestSolutionRecaller = bestSolutionRecaller;
     }
 
@@ -74,18 +73,21 @@ public abstract class AbstractPhase implements Phase {
     // Lifecycle methods
     // ************************************************************************
 
+    @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         // bestSolutionRecaller.solvingStarted(...) is called by DefaultSolver
         termination.solvingStarted(solverScope);
         phaseLifecycleSupport.fireSolvingStarted(solverScope);
     }
 
+    @Override
     public void solvingEnded(DefaultSolverScope solverScope) {
         // bestSolutionRecaller.solvingEnded(...) is called by DefaultSolver
         termination.solvingEnded(solverScope);
         phaseLifecycleSupport.fireSolvingEnded(solverScope);
     }
 
+    @Override
     public void phaseStarted(AbstractPhaseScope phaseScope) {
         phaseScope.reset();
         bestSolutionRecaller.phaseStarted(phaseScope);
@@ -93,28 +95,33 @@ public abstract class AbstractPhase implements Phase {
         phaseLifecycleSupport.firePhaseStarted(phaseScope);
     }
 
+    @Override
     public void stepStarted(AbstractStepScope stepScope) {
         bestSolutionRecaller.stepStarted(stepScope);
         termination.stepStarted(stepScope);
         phaseLifecycleSupport.fireStepStarted(stepScope);
     }
 
+    @Override
     public void stepEnded(AbstractStepScope stepScope) {
         bestSolutionRecaller.stepEnded(stepScope);
         termination.stepEnded(stepScope);
         phaseLifecycleSupport.fireStepEnded(stepScope);
     }
 
+    @Override
     public void phaseEnded(AbstractPhaseScope phaseScope) {
         bestSolutionRecaller.phaseEnded(phaseScope);
         termination.phaseEnded(phaseScope);
         phaseLifecycleSupport.firePhaseEnded(phaseScope);
     }
 
+    @Override
     public void addPhaseLifecycleListener(PhaseLifecycleListener phaseLifecycleListener) {
         phaseLifecycleSupport.addEventListener(phaseLifecycleListener);
     }
 
+    @Override
     public void removePhaseLifecycleListener(PhaseLifecycleListener phaseLifecycleListener) {
         phaseLifecycleSupport.removeEventListener(phaseLifecycleListener);
     }
@@ -123,16 +130,17 @@ public abstract class AbstractPhase implements Phase {
     // Assert methods
     // ************************************************************************
 
-    protected void assertWorkingSolutionInitialized(AbstractPhaseScope phaseScope) {
-        InnerScoreDirector scoreDirector = phaseScope.getScoreDirector();
-        SolutionDescriptor solutionDescriptor = scoreDirector.getSolutionDescriptor();
-        Solution workingSolution = scoreDirector.getWorkingSolution();
+    protected void assertWorkingSolutionInitialized(AbstractPhaseScope<Solution_> phaseScope) {
+        InnerScoreDirector<Solution_> scoreDirector = phaseScope.getScoreDirector();
+        SolutionDescriptor<Solution_> solutionDescriptor = scoreDirector.getSolutionDescriptor();
+        Solution_ workingSolution = scoreDirector.getWorkingSolution();
         for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
             Object entity = it.next();
             if (!solutionDescriptor.isEntityInitializedOrImmovable(scoreDirector, entity)) {
-                EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
+                EntityDescriptor<Solution_> entityDescriptor
+                        = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
                 String variableRef = null;
-                for (GenuineVariableDescriptor variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
+                for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
                     if (!variableDescriptor.isInitialized(entity)) {
                         variableRef = variableDescriptor.getSimpleEntityAndVariableName();
                         break;

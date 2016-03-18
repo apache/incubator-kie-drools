@@ -17,38 +17,59 @@
 package org.optaplanner.core.impl.solver.recaller;
 
 import org.junit.Test;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicPhaseScope;
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
+import org.optaplanner.core.impl.domain.solution.AbstractSolution;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.event.SolverEventSupport;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import org.optaplanner.core.impl.score.director.InnerScoreDirector;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class BestSolutionRecallerTest {
 
+    private static <Solution_> DefaultSolverScope<Solution_> createSolverScope() {
+        DefaultSolverScope<Solution_> solverScope = new DefaultSolverScope<>();
+        InnerScoreDirector<Solution_> scoreDirector = mock(InnerScoreDirector.class);
+        SolutionDescriptor<Solution_> solutionDescriptor = mock(SolutionDescriptor.class);
+        when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
+        solverScope.setScoreDirector(scoreDirector);
+        return solverScope;
+    }
+
+    private static <Solution_> ConstructionHeuristicStepScope<Solution_> setupConstrunctionHeuristics(
+            DefaultSolverScope<Solution_> solverScope) {
+        ConstructionHeuristicPhaseScope<Solution_>  phaseScope = mock(ConstructionHeuristicPhaseScope.class);
+        when(phaseScope.getSolverScope()).thenReturn(solverScope);
+        ConstructionHeuristicStepScope<Solution_>  stepScope = mock(ConstructionHeuristicStepScope.class);
+        when(stepScope.getPhaseScope()).thenReturn(phaseScope);
+        return stepScope;
+    }
+
+    private static <Solution_> BestSolutionRecaller<Solution_> createBestSolutionRecaller() {
+        BestSolutionRecaller<Solution_> recaller = new BestSolutionRecaller<>();
+        recaller.setSolverEventSupport(mock(SolverEventSupport.class));
+        return recaller;
+    }
+
     @Test
     public void unimprovedUninitializedProcessWorkingSolutionDuringStep() {
-        BestSolutionRecaller recaller = new BestSolutionRecaller();
-        recaller.setSolverEventSupport(mock(SolverEventSupport.class));
-        DefaultSolverScope solverScope = new DefaultSolverScope();
-        ConstructionHeuristicPhaseScope phaseScope = mock(ConstructionHeuristicPhaseScope.class);
-        when(phaseScope.getSolverScope()).thenReturn(solverScope);
-        ConstructionHeuristicStepScope stepScope = mock(ConstructionHeuristicStepScope.class);
-        when(stepScope.getPhaseScope()).thenReturn(phaseScope);
+        DefaultSolverScope<AbstractSolution> solverScope = new DefaultSolverScope<>();
+        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
 
-        Solution solution = mock(Solution.class);
+        AbstractSolution solution = mock(AbstractSolution.class);
         Score score = SimpleScore.parseScore("0");
         when(solution.getScore()).thenReturn(score);
         when(stepScope.createOrGetClonedSolution()).thenReturn(solution);
 
         when(stepScope.getUninitializedVariableCount()).thenReturn(2);
         solverScope.setBestUninitializedVariableCount(1);
+
+        BestSolutionRecaller recaller = createBestSolutionRecaller();
         recaller.processWorkingSolutionDuringStep(stepScope);
         assertEquals(null, solverScope.getBestSolution());
         assertEquals(null, solverScope.getBestScore());
@@ -57,21 +78,16 @@ public class BestSolutionRecallerTest {
 
     @Test
     public void unimprovedInitializedProcessWorkingSolutionDuringStep() {
-        BestSolutionRecaller recaller = new BestSolutionRecaller();
-        recaller.setSolverEventSupport(mock(SolverEventSupport.class));
-        DefaultSolverScope solverScope = new DefaultSolverScope();
-        ConstructionHeuristicPhaseScope phaseScope = mock(ConstructionHeuristicPhaseScope.class);
-        when(phaseScope.getSolverScope()).thenReturn(solverScope);
-        ConstructionHeuristicStepScope stepScope = mock(ConstructionHeuristicStepScope.class);
-        when(stepScope.getPhaseScope()).thenReturn(phaseScope);
+        DefaultSolverScope<AbstractSolution> solverScope = new DefaultSolverScope<>();
+        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
 
-        Solution solution = mock(Solution.class);
+        AbstractSolution solution = mock(AbstractSolution.class);
         Score score = SimpleScore.parseScore("0");
         when(solution.getScore()).thenReturn(score);
         solverScope.setBestSolution(solution);
         solverScope.setBestScore(score);
 
-        Solution solution2 = mock(Solution.class);
+        AbstractSolution solution2 = mock(AbstractSolution.class);
         Score score2 = SimpleScore.parseScore("-1");
         when(solution2.getScore()).thenReturn(score2);
         when(stepScope.createOrGetClonedSolution()).thenReturn(solution2);
@@ -79,6 +95,8 @@ public class BestSolutionRecallerTest {
 
         when(stepScope.getUninitializedVariableCount()).thenReturn(0);
         solverScope.setBestUninitializedVariableCount(0);
+
+        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
         recaller.processWorkingSolutionDuringStep(stepScope);
         assertEquals(solution, solverScope.getBestSolution());
         assertEquals(score, solverScope.getBestScore());
@@ -86,22 +104,19 @@ public class BestSolutionRecallerTest {
     }
 
     @Test
-    public void improvedUninitializedProcessWorkingSolutionDurintStep() {
-        BestSolutionRecaller recaller = new BestSolutionRecaller();
-        recaller.setSolverEventSupport(mock(SolverEventSupport.class));
-        DefaultSolverScope solverScope = new DefaultSolverScope();
-        ConstructionHeuristicPhaseScope phaseScope = mock(ConstructionHeuristicPhaseScope.class);
-        when(phaseScope.getSolverScope()).thenReturn(solverScope);
-        ConstructionHeuristicStepScope stepScope = mock(ConstructionHeuristicStepScope.class);
-        when(stepScope.getPhaseScope()).thenReturn(phaseScope);
+    public void improvedUninitializedProcessWorkingSolutionDuringStep() {
+        DefaultSolverScope<AbstractSolution> solverScope = createSolverScope();
+        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
 
-        Solution solution = mock(Solution.class);
+        AbstractSolution solution = mock(AbstractSolution.class);
         Score score = SimpleScore.parseScore("0");
-        when(solution.getScore()).thenReturn(score);
+        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(solution)).thenReturn(score);
         when(stepScope.createOrGetClonedSolution()).thenReturn(solution);
 
         when(stepScope.getUninitializedVariableCount()).thenReturn(1);
         solverScope.setBestUninitializedVariableCount(2);
+
+        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
         recaller.processWorkingSolutionDuringStep(stepScope);
         assertEquals(solution, solverScope.getBestSolution());
         assertEquals(score, solverScope.getBestScore());
@@ -110,28 +125,25 @@ public class BestSolutionRecallerTest {
 
     @Test
     public void improvedInitializedProcessWorkingSolutionDuringStep() {
-        BestSolutionRecaller recaller = new BestSolutionRecaller();
-        recaller.setSolverEventSupport(mock(SolverEventSupport.class));
-        DefaultSolverScope solverScope = new DefaultSolverScope();
-        ConstructionHeuristicPhaseScope phaseScope = mock(ConstructionHeuristicPhaseScope.class);
-        when(phaseScope.getSolverScope()).thenReturn(solverScope);
-        ConstructionHeuristicStepScope stepScope = mock(ConstructionHeuristicStepScope.class);
-        when(stepScope.getPhaseScope()).thenReturn(phaseScope);
+        DefaultSolverScope<AbstractSolution> solverScope = createSolverScope();
+        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
 
-        Solution solution = mock(Solution.class);
+        AbstractSolution solution = mock(AbstractSolution.class);
         Score score = SimpleScore.parseScore("-1");
-        when(solution.getScore()).thenReturn(score);
+        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(solution)).thenReturn(score);
         solverScope.setBestSolution(solution);
         solverScope.setBestScore(score);
 
-        Solution solution2 = mock(Solution.class);
+        AbstractSolution solution2 = mock(AbstractSolution.class);
         Score score2 = SimpleScore.parseScore("0");
-        when(solution2.getScore()).thenReturn(score2);
+        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(solution2)).thenReturn(score2);
         when(stepScope.getScore()).thenReturn(score2);
         when(stepScope.createOrGetClonedSolution()).thenReturn(solution2);
 
         when(stepScope.getUninitializedVariableCount()).thenReturn(0);
         solverScope.setBestUninitializedVariableCount(0);
+
+        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
         recaller.processWorkingSolutionDuringStep(stepScope);
         assertEquals(solution2, solverScope.getBestSolution());
         assertEquals(score2, solverScope.getBestScore());
@@ -140,33 +152,26 @@ public class BestSolutionRecallerTest {
 
     @Test
     public void unimprovedUninitializedProcessWorkingSolutionDuringMove() {
-        BestSolutionRecaller recaller = new BestSolutionRecaller();
-        recaller.setSolverEventSupport(mock(SolverEventSupport.class));
-        DefaultSolverScope solverScope = new DefaultSolverScope();
-        ConstructionHeuristicPhaseScope phaseScope = mock(ConstructionHeuristicPhaseScope.class);
-        when(phaseScope.getSolverScope()).thenReturn(solverScope);
-        ConstructionHeuristicStepScope stepScope = mock(ConstructionHeuristicStepScope.class);
-        when(stepScope.getPhaseScope()).thenReturn(phaseScope);
+        DefaultSolverScope<AbstractSolution> solverScope = new DefaultSolverScope<>();
+        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
 
         Score score = SimpleScore.parseScore("-1");
         solverScope.setBestUninitializedVariableCount(0);
+
+        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
         recaller.processWorkingSolutionDuringMove(1, score, stepScope);
         assertEquals(null, solverScope.getBestSolution());
         assertEquals(null, solverScope.getBestScore());
         assertEquals(0, solverScope.getBestUninitializedVariableCount());
     }
 
+
     @Test
     public void unimprovedInitializedProcessWorkingSolutionDuringMove() {
-        BestSolutionRecaller recaller = new BestSolutionRecaller();
-        recaller.setSolverEventSupport(mock(SolverEventSupport.class));
-        DefaultSolverScope solverScope = new DefaultSolverScope();
-        ConstructionHeuristicPhaseScope phaseScope = mock(ConstructionHeuristicPhaseScope.class);
-        when(phaseScope.getSolverScope()).thenReturn(solverScope);
-        ConstructionHeuristicStepScope stepScope = mock(ConstructionHeuristicStepScope.class);
-        when(stepScope.getPhaseScope()).thenReturn(phaseScope);
+        DefaultSolverScope<AbstractSolution> solverScope = new DefaultSolverScope<>();
+        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
 
-        Solution solution = mock(Solution.class);
+        AbstractSolution solution = mock(AbstractSolution.class);
         Score score2 = SimpleScore.parseScore("0");
         when(solution.getScore()).thenReturn(score2);
         solverScope.setBestScore(score2);
@@ -174,6 +179,8 @@ public class BestSolutionRecallerTest {
 
         Score score = SimpleScore.parseScore("-1");
         solverScope.setBestUninitializedVariableCount(0);
+
+        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
         recaller.processWorkingSolutionDuringMove(0, score, stepScope);
         assertEquals(solution, solverScope.getBestSolution());
         assertEquals(0, ((SimpleScore) solverScope.getBestScore()).getScore());
@@ -182,23 +189,18 @@ public class BestSolutionRecallerTest {
 
     @Test
     public void improvedUninitializedProcessWorkingSolutionDuringMove() {
-        BestSolutionRecaller recaller = new BestSolutionRecaller();
-        recaller.setSolverEventSupport(mock(SolverEventSupport.class));
-        DefaultSolverScope solverScope = new DefaultSolverScope();
-        ConstructionHeuristicPhaseScope phaseScope = mock(ConstructionHeuristicPhaseScope.class);
-        when(phaseScope.getSolverScope()).thenReturn(solverScope);
-        ConstructionHeuristicStepScope stepScope = mock(ConstructionHeuristicStepScope.class);
-        when(stepScope.getPhaseScope()).thenReturn(phaseScope);
+        DefaultSolverScope<AbstractSolution> solverScope = createSolverScope();
+        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
 
-        InnerScoreDirector sd = mock(InnerScoreDirector.class);
-        solverScope.setScoreDirector(sd);
-        Solution helpSolution = mock(Solution.class);
-        when(helpSolution.getScore()).thenReturn(SimpleScore.parseScore("-2"));
-        when(sd.cloneWorkingSolution()).thenReturn(helpSolution);
+        AbstractSolution helpSolution = mock(AbstractSolution.class);
+        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(helpSolution))
+                .thenReturn(SimpleScore.parseScore("-2"));
+        when(solverScope.getScoreDirector().cloneWorkingSolution()).thenReturn(helpSolution);
 
         solverScope.setBestUninitializedVariableCount(1);
         Score score = SimpleScore.parseScore("-1");
 
+        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
         recaller.processWorkingSolutionDuringMove(0, score, stepScope);
         assertEquals(helpSolution, solverScope.getBestSolution());
         assertEquals(-2, ((SimpleScore) solverScope.getBestScore()).getScore());
@@ -207,28 +209,24 @@ public class BestSolutionRecallerTest {
 
     @Test
     public void improvedInitializedProcessWorkingSolutionDuringMove() {
-        BestSolutionRecaller recaller = new BestSolutionRecaller();
-        recaller.setSolverEventSupport(mock(SolverEventSupport.class));
-        DefaultSolverScope solverScope = new DefaultSolverScope();
-        ConstructionHeuristicPhaseScope phaseScope = mock(ConstructionHeuristicPhaseScope.class);
-        when(phaseScope.getSolverScope()).thenReturn(solverScope);
-        ConstructionHeuristicStepScope stepScope = mock(ConstructionHeuristicStepScope.class);
-        when(stepScope.getPhaseScope()).thenReturn(phaseScope);
+        DefaultSolverScope<AbstractSolution> solverScope = createSolverScope();
+        ConstructionHeuristicStepScope<AbstractSolution> stepScope = setupConstrunctionHeuristics(solverScope);
 
-        Solution solution = mock(Solution.class);
+        AbstractSolution solution = mock(AbstractSolution.class);
         Score score = SimpleScore.parseScore("-2");
         when(solution.getScore()).thenReturn(score);
         solverScope.setBestScore(score);
         solverScope.setBestSolution(solution);
 
-        InnerScoreDirector sd = mock(InnerScoreDirector.class);
-        solverScope.setScoreDirector(sd);
-        Solution helpSolution = mock(Solution.class);
-        when(helpSolution.getScore()).thenReturn(SimpleScore.parseScore("0"));
-        when(sd.cloneWorkingSolution()).thenReturn(helpSolution);
+        AbstractSolution helpSolution = mock(AbstractSolution.class);
+        when(solverScope.getScoreDirector().getSolutionDescriptor().getScore(helpSolution))
+                .thenReturn(SimpleScore.parseScore("0"));
+        when(solverScope.getScoreDirector().cloneWorkingSolution()).thenReturn(helpSolution);
 
         Score score2 = SimpleScore.parseScore("-1");
         solverScope.setBestUninitializedVariableCount(0);
+
+        BestSolutionRecaller<AbstractSolution> recaller = createBestSolutionRecaller();
         recaller.processWorkingSolutionDuringMove(0, score2, stepScope);
         assertEquals(helpSolution, solverScope.getBestSolution());
         assertEquals(0, ((SimpleScore) solverScope.getBestScore()).getScore());

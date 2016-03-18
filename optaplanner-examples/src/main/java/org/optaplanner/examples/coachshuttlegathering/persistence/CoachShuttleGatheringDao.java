@@ -19,7 +19,7 @@ package org.optaplanner.examples.coachshuttlegathering.persistence;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
 
-public class CoachShuttleGatheringDao extends XStreamSolutionDao {
+public class CoachShuttleGatheringDao extends XStreamSolutionDao<CoachShuttleGatheringSolution> {
 
     public CoachShuttleGatheringDao() {
         super("coachshuttlegathering", CoachShuttleGatheringSolution.class);

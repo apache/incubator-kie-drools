@@ -16,22 +16,21 @@
 
 package org.optaplanner.core.impl.phase.scope;
 
-import java.util.Random;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 
-public abstract class AbstractStepScope {
+import java.util.Random;
+
+public abstract class AbstractStepScope<Solution_> {
 
     protected final int stepIndex;
 
     protected Score score = null;
     protected Boolean bestScoreImproved;
     // Stays null if there is no need to clone it
-    protected Solution clonedSolution = null;
+    protected Solution_ clonedSolution = null;
 
-    public abstract AbstractPhaseScope getPhaseScope();
+    public abstract AbstractPhaseScope<Solution_> getPhaseScope();
 
     public AbstractStepScope(int stepIndex) {
         this.stepIndex = stepIndex;
@@ -63,11 +62,11 @@ public abstract class AbstractStepScope {
         this.bestScoreImproved = bestScoreImproved;
     }
 
-    public Solution getClonedSolution() {
+    public Solution_ getClonedSolution() {
         return clonedSolution;
     }
 
-    public void setClonedSolution(Solution clonedSolution) {
+    public void setClonedSolution(Solution_ clonedSolution) {
         this.clonedSolution = clonedSolution;
     }
 
@@ -75,11 +74,11 @@ public abstract class AbstractStepScope {
     // Calculated methods
     // ************************************************************************
 
-    public InnerScoreDirector getScoreDirector() {
+    public InnerScoreDirector<Solution_> getScoreDirector() {
         return getPhaseScope().getScoreDirector();
     }
 
-    public Solution getWorkingSolution() {
+    public Solution_ getWorkingSolution() {
         return getPhaseScope().getWorkingSolution();
     }
 
@@ -87,7 +86,7 @@ public abstract class AbstractStepScope {
         return getPhaseScope().getWorkingRandom();
     }
 
-    public Solution createOrGetClonedSolution() {
+    public Solution_ createOrGetClonedSolution() {
         if (clonedSolution == null) {
             clonedSolution = getScoreDirector().cloneWorkingSolution();
         }

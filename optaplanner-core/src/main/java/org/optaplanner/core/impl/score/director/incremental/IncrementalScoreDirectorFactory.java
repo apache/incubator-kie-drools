@@ -25,7 +25,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
  * @see IncrementalScoreDirector
  * @see ScoreDirectorFactory
  */
-public class IncrementalScoreDirectorFactory extends AbstractScoreDirectorFactory {
+public class IncrementalScoreDirectorFactory<Solution_> extends AbstractScoreDirectorFactory<Solution_> {
 
     private Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass;
 
@@ -41,10 +41,10 @@ public class IncrementalScoreDirectorFactory extends AbstractScoreDirectorFactor
     // Complex methods
     // ************************************************************************
 
-    public IncrementalScoreDirector buildScoreDirector(boolean constraintMatchEnabledPreference) {
-        IncrementalScoreCalculator incrementalScoreCalculator = ConfigUtils.newInstance(this,
+    public IncrementalScoreDirector<Solution_> buildScoreDirector(boolean constraintMatchEnabledPreference) {
+        IncrementalScoreCalculator<Solution_> incrementalScoreCalculator = ConfigUtils.newInstance(this,
                 "incrementalScoreCalculatorClass", incrementalScoreCalculatorClass);
-        return new IncrementalScoreDirector(this, constraintMatchEnabledPreference, incrementalScoreCalculator);
+        return new IncrementalScoreDirector<>(this, constraintMatchEnabledPreference, incrementalScoreCalculator);
     }
 
 }

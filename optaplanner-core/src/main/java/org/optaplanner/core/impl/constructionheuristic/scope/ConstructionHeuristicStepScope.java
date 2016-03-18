@@ -19,9 +19,9 @@ package org.optaplanner.core.impl.constructionheuristic.scope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
-public class ConstructionHeuristicStepScope extends AbstractStepScope {
+public class ConstructionHeuristicStepScope<Solution_> extends AbstractStepScope<Solution_> {
 
-    private final ConstructionHeuristicPhaseScope phaseScope;
+    private final ConstructionHeuristicPhaseScope<Solution_> phaseScope;
 
     private Object entity = null;
     private Move step = null;
@@ -29,17 +29,17 @@ public class ConstructionHeuristicStepScope extends AbstractStepScope {
     private Move undoStep = null;
     private Long selectedMoveCount = null;
 
-    public ConstructionHeuristicStepScope(ConstructionHeuristicPhaseScope phaseScope) {
+    public ConstructionHeuristicStepScope(ConstructionHeuristicPhaseScope<Solution_> phaseScope) {
         this(phaseScope, phaseScope.getNextStepIndex());
     }
 
-    public ConstructionHeuristicStepScope(ConstructionHeuristicPhaseScope phaseScope, int stepIndex) {
+    public ConstructionHeuristicStepScope(ConstructionHeuristicPhaseScope<Solution_> phaseScope, int stepIndex) {
         super(stepIndex);
         this.phaseScope = phaseScope;
     }
 
     @Override
-    public ConstructionHeuristicPhaseScope getPhaseScope() {
+    public ConstructionHeuristicPhaseScope<Solution_> getPhaseScope() {
         return phaseScope;
     }
 

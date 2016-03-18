@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.solver.recaller;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
@@ -31,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A BestSolutionRecaller remembers the best solution that a {@link Solver} encounters.
  */
-public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
+public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapter {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -64,14 +63,14 @@ public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
     @Override
     public void solvingStarted(DefaultSolverScope solverScope) {
         // Starting bestSolution is already set by Solver.solve(Solution)
-        InnerScoreDirector scoreDirector = solverScope.getScoreDirector();
+        InnerScoreDirector<Solution_> scoreDirector = solverScope.getScoreDirector();
         int uninitializedVariableCount = scoreDirector.countWorkingSolutionUninitializedVariables();
         solverScope.setBestUninitializedVariableCount(uninitializedVariableCount);
         Score score = scoreDirector.calculateScore();
         solverScope.setBestScore(score);
         solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
         // The original bestSolution might be the final bestSolution and should have an accurate Score
-        solverScope.getBestSolution().setScore(score);
+        solverScope.getSolutionDescriptor().setScore(solverScope.getBestSolution(), score);
         if (uninitializedVariableCount == 0) {
             solverScope.setStartingInitializedScore(score);
         } else {
@@ -85,7 +84,7 @@ public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
         }
     }
 
-    public void processWorkingSolutionDuringStep(AbstractStepScope stepScope) {
+    public void processWorkingSolutionDuringStep(AbstractStepScope<Solution_> stepScope) {
         AbstractPhaseScope phaseScope = stepScope.getPhaseScope();
         int uninitializedVariableCount = stepScope.getUninitializedVariableCount();
         Score score = stepScope.getScore();
@@ -101,7 +100,7 @@ public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
         stepScope.setBestScoreImproved(bestScoreImproved);
         if (bestScoreImproved) {
             phaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
-            Solution newBestSolution = stepScope.createOrGetClonedSolution();
+            Solution_ newBestSolution = stepScope.createOrGetClonedSolution();
             updateBestSolution(solverScope, newBestSolution, uninitializedVariableCount);
         } else if (assertBestScoreIsUnmodified) {
             solverScope.assertScoreFromScratch(solverScope.getBestSolution());
@@ -109,9 +108,9 @@ public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
     }
 
     public void processWorkingSolutionDuringMove(
-            int uninitializedVariableCount, Score score, AbstractStepScope stepScope) {
-        AbstractPhaseScope phaseScope = stepScope.getPhaseScope();
-        DefaultSolverScope solverScope = phaseScope.getSolverScope();
+            int uninitializedVariableCount, Score score, AbstractStepScope<Solution_> stepScope) {
+        AbstractPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
+        DefaultSolverScope<Solution_> solverScope = phaseScope.getSolverScope();
         int bestUninitializedVariableCount = solverScope.getBestUninitializedVariableCount();
         Score bestScore = solverScope.getBestScore();
         boolean bestScoreImproved;
@@ -127,22 +126,23 @@ public class BestSolutionRecaller extends PhaseLifecycleListenerAdapter {
         }
         if (bestScoreImproved) {
             phaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
-            Solution newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
+            Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
             updateBestSolution(solverScope, newBestSolution, uninitializedVariableCount);
         } else if (assertBestScoreIsUnmodified) {
             solverScope.assertScoreFromScratch(solverScope.getBestSolution());
         }
     }
 
-    public void updateBestSolution(DefaultSolverScope solverScope, Solution solution, int uninitializedVariableCount) {
+    public void updateBestSolution(DefaultSolverScope<Solution_> solverScope, Solution_ solution, int uninitializedVariableCount) {
+        Score score = solverScope.getSolutionDescriptor().getScore(solution);
         if (uninitializedVariableCount == 0) {
             if (!solverScope.isBestSolutionInitialized()) {
-                solverScope.setStartingInitializedScore(solution.getScore());
+                solverScope.setStartingInitializedScore(score);
             }
         }
         solverScope.setBestUninitializedVariableCount(uninitializedVariableCount);
         solverScope.setBestSolution(solution);
-        solverScope.setBestScore(solution.getScore());
+        solverScope.setBestScore(score);
         solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
         solverEventSupport.fireBestSolutionChanged(solution, uninitializedVariableCount);
     }

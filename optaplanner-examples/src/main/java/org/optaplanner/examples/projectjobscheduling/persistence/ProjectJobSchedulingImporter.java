@@ -16,37 +16,17 @@
 
 package org.optaplanner.examples.projectjobscheduling.persistence;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-
 import org.apache.commons.io.IOUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
-import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
-import org.optaplanner.examples.projectjobscheduling.domain.Job;
-import org.optaplanner.examples.projectjobscheduling.domain.JobType;
-import org.optaplanner.examples.projectjobscheduling.domain.Project;
-import org.optaplanner.examples.projectjobscheduling.domain.ResourceRequirement;
-import org.optaplanner.examples.projectjobscheduling.domain.Schedule;
+import org.optaplanner.examples.projectjobscheduling.domain.*;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.GlobalResource;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.LocalResource;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
 
-public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
+import java.io.*;
+import java.util.*;
+
+public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter<Schedule> {
 
     public static void main(String[] args) {
         new ProjectJobSchedulingImporter().convertAll();
@@ -56,11 +36,11 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
         super(new ProjectJobSchedulingDao());
     }
 
-    public TxtInputBuilder createTxtInputBuilder() {
+    public TxtInputBuilder<Schedule> createTxtInputBuilder() {
         return new ProjectJobSchedulingInputBuilder();
     }
 
-    public static class ProjectJobSchedulingInputBuilder extends TxtInputBuilder {
+    public static class ProjectJobSchedulingInputBuilder extends TxtInputBuilder<Schedule> {
 
         private Schedule schedule;
 
@@ -76,7 +56,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
 
         private Map<Project, File> projectFileMap;
 
-        public Solution readSolution() throws IOException {
+        public Schedule readSolution() throws IOException {
             schedule = new Schedule();
             schedule.setId(0L);
             readProjectList();
@@ -174,7 +154,7 @@ public class ProjectJobSchedulingImporter extends AbstractTxtSolutionImporter {
                 this.project = project;
             }
 
-            public Solution readSolution() throws IOException {
+            public Schedule readSolution() throws IOException {
                 readHeader();
                 readResourceList();
                 readProjectInformation();

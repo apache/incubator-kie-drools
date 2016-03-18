@@ -16,27 +16,26 @@
 
 package org.optaplanner.examples.common.app;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.examples.common.persistence.SolutionDao;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.api.solver.SolverFactory;
-import org.optaplanner.examples.common.persistence.SolutionDao;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
-public abstract class PhaseTest extends LoggingTest {
+public abstract class PhaseTest<Solution_> extends LoggingTest {
 
-    protected static <Enum_ extends Enum> Collection<Object[]> buildParameters(SolutionDao solutionDao,
-            Enum_[] types, String... unsolvedFileNames) {
+    protected static <Solution_, Enum_ extends Enum> Collection<Object[]> buildParameters(
+            SolutionDao<Solution_> solutionDao, Enum_[] types, String... unsolvedFileNames) {
         List<Object[]> filesAsParameters = new ArrayList<Object[]>(unsolvedFileNames.length * types.length);
         File dataDir = solutionDao.getDataDir();
         File unsolvedDataDir = new File(dataDir, "unsolved");
@@ -53,7 +52,7 @@ public abstract class PhaseTest extends LoggingTest {
         return filesAsParameters;
     }
 
-    protected SolutionDao solutionDao;
+    protected SolutionDao<Solution_> solutionDao;
     protected File dataFile;
 
     protected PhaseTest(File dataFile) {
@@ -65,28 +64,27 @@ public abstract class PhaseTest extends LoggingTest {
         solutionDao = createSolutionDao();
     }
 
-    protected abstract SolutionDao createSolutionDao();
+    protected abstract SolutionDao<Solution_> createSolutionDao();
 
     @Test(timeout = 600000)
     public void runPhase() {
-        SolverFactory<Solution> solverFactory = buildSolverFactory();
-        Solution planningProblem = readPlanningProblem();
-        Solver<Solution> solver = solverFactory.buildSolver();
+        SolverFactory<Solution_> solverFactory = buildSolverFactory();
+        Solution_ planningProblem = readPlanningProblem();
+        Solver<Solution_> solver = solverFactory.buildSolver();
 
-        Solution bestSolution = solver.solve(planningProblem);
+        Solution_ bestSolution = solver.solve(planningProblem);
         assertSolution(bestSolution);
     }
 
-    protected void assertSolution(Solution bestSolution) {
+    protected void assertSolution(Solution_ bestSolution) {
         assertNotNull(bestSolution);
-        assertNotNull(bestSolution.getScore());
     }
 
-    protected abstract SolverFactory<Solution> buildSolverFactory();
+    protected abstract SolverFactory<Solution_> buildSolverFactory();
 
     protected abstract String createSolverConfigResource();
 
-    protected Solution readPlanningProblem() {
+    protected Solution_ readPlanningProblem() {
         return solutionDao.readSolution(dataFile);
     }
 

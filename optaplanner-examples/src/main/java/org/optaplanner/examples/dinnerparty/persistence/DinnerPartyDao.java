@@ -19,7 +19,7 @@ package org.optaplanner.examples.dinnerparty.persistence;
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
 import org.optaplanner.examples.dinnerparty.domain.DinnerParty;
 
-public class DinnerPartyDao extends XStreamSolutionDao {
+public class DinnerPartyDao extends XStreamSolutionDao<DinnerParty> {
 
     public DinnerPartyDao() {
         super("dinnerparty", DinnerParty.class);

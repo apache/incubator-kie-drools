@@ -16,24 +16,23 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.composite.CompositeCountableValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
-public class CompositeValueRangeDescriptor extends AbstractValueRangeDescriptor
-        implements EntityIndependentValueRangeDescriptor {
+import java.util.ArrayList;
+import java.util.List;
 
-    protected final List<ValueRangeDescriptor> childValueRangeDescriptorList;
+public class CompositeValueRangeDescriptor<Solution_> extends AbstractValueRangeDescriptor<Solution_>
+        implements EntityIndependentValueRangeDescriptor<Solution_> {
+
+    protected final List<ValueRangeDescriptor<Solution_>> childValueRangeDescriptorList;
     protected boolean entityIndependent;
 
     public CompositeValueRangeDescriptor(
-            GenuineVariableDescriptor variableDescriptor, boolean addNullInValueRange,
-            List<ValueRangeDescriptor> childValueRangeDescriptorList) {
+            GenuineVariableDescriptor<Solution_> variableDescriptor, boolean addNullInValueRange,
+            List<ValueRangeDescriptor<Solution_>> childValueRangeDescriptorList) {
         super(variableDescriptor, addNullInValueRange);
         this.childValueRangeDescriptorList = childValueRangeDescriptorList;
         entityIndependent = true;
@@ -63,19 +62,19 @@ public class CompositeValueRangeDescriptor extends AbstractValueRangeDescriptor
         return entityIndependent;
     }
 
-    public ValueRange<?> extractValueRange(Solution solution, Object entity) {
-        List<CountableValueRange<?>> childValueRangeList = new ArrayList<CountableValueRange<?>>(childValueRangeDescriptorList.size());
-        for (ValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
+    public ValueRange<?> extractValueRange(Solution_ solution, Object entity) {
+        List<CountableValueRange<?>> childValueRangeList = new ArrayList<>(childValueRangeDescriptorList.size());
+        for (ValueRangeDescriptor<Solution_> valueRangeDescriptor : childValueRangeDescriptorList) {
             childValueRangeList.add((CountableValueRange) valueRangeDescriptor.extractValueRange(solution, entity));
         }
         return doNullInValueRangeWrapping(new CompositeCountableValueRange(childValueRangeList));
     }
 
     @Override
-    public ValueRange<?> extractValueRange(Solution solution) {
-        List<CountableValueRange<?>> childValueRangeList = new ArrayList<CountableValueRange<?>>(childValueRangeDescriptorList.size());
-        for (ValueRangeDescriptor valueRangeDescriptor : childValueRangeDescriptorList) {
-            EntityIndependentValueRangeDescriptor entityIndependentValueRangeDescriptor
+    public ValueRange<?> extractValueRange(Solution_ solution) {
+        List<CountableValueRange<?>> childValueRangeList = new ArrayList<>(childValueRangeDescriptorList.size());
+        for (ValueRangeDescriptor<Solution_> valueRangeDescriptor : childValueRangeDescriptorList) {
+            EntityIndependentValueRangeDescriptor<Solution_> entityIndependentValueRangeDescriptor
                     = (EntityIndependentValueRangeDescriptor) valueRangeDescriptor;
             childValueRangeList.add((CountableValueRange) entityIndependentValueRangeDescriptor.extractValueRange(solution));
         }

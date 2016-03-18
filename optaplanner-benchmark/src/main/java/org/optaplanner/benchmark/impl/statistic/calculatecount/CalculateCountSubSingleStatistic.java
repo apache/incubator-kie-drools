@@ -16,12 +16,9 @@
 
 package org.optaplanner.benchmark.impl.statistic.calculatecount;
 
-import java.util.List;
-
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
@@ -29,7 +26,10 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class CalculateCountSubSingleStatistic extends ProblemBasedSubSingleStatistic<CalculateCountStatisticPoint> {
+import java.util.List;
+
+public class CalculateCountSubSingleStatistic<Solution_>
+        extends ProblemBasedSubSingleStatistic<Solution_, CalculateCountStatisticPoint> {
 
     private final long timeMillisThresholdInterval;
 
@@ -53,12 +53,12 @@ public class CalculateCountSubSingleStatistic extends ProblemBasedSubSingleStati
     // Lifecycle methods
     // ************************************************************************
 
-    public void open(Solver<Solution> solver) {
-        ((DefaultSolver<Solution>) solver).addPhaseLifecycleListener(listener);
+    public void open(Solver<Solution_> solver) {
+        ((DefaultSolver<Solution_>) solver).addPhaseLifecycleListener(listener);
     }
 
-    public void close(Solver<Solution> solver) {
-        ((DefaultSolver<Solution>) solver).removePhaseLifecycleListener(listener);
+    public void close(Solver<Solution_> solver) {
+        ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }
 
     private class CalculateCountSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {

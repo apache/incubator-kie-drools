@@ -16,31 +16,18 @@
 
 package org.optaplanner.benchmark.impl.statistic;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.apache.commons.io.IOUtils;
 import org.optaplanner.benchmark.impl.report.ReportHelper;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.*;
+import java.util.*;
 
 /**
  * 1 statistic of {@link SubSingleBenchmarkResult}.
@@ -48,7 +35,7 @@ import org.slf4j.LoggerFactory;
 @XStreamInclude({
         PureSubSingleStatistic.class
 })
-public abstract class SubSingleStatistic<P extends StatisticPoint> {
+public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends StatisticPoint> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -56,7 +43,7 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
     protected SubSingleBenchmarkResult subSingleBenchmarkResult;
 
     @XStreamOmitField
-    protected List<P> pointList;
+    protected List<StatisticPoint_> pointList;
 
     protected SubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         this.subSingleBenchmarkResult = subSingleBenchmarkResult;
@@ -72,10 +59,10 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
 
     public abstract StatisticType getStatisticType();
 
-    public List<P> getPointList() {
+    public List<StatisticPoint_> getPointList() {
         return pointList;
     }
-    public void setPointList(List<P> pointList) {
+    public void setPointList(List<StatisticPoint_> pointList) {
         this.pointList = pointList;
     }
 
@@ -104,16 +91,16 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
     // Lifecycle methods
     // ************************************************************************
 
-    public abstract void open(Solver<Solution> solver);
+    public abstract void open(Solver<Solution_> solver);
 
-    public abstract void close(Solver<Solution> solver);
+    public abstract void close(Solver<Solution_> solver);
 
     // ************************************************************************
     // Write methods
     // ************************************************************************
 
     public void initPointList() {
-        pointList = new ArrayList<P>();
+        pointList = new ArrayList<StatisticPoint_>();
     }
 
     protected abstract String getCsvHeader();
@@ -189,8 +176,6 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
                 }
                 pointList.add(createPointFromCsvLine(scoreDefinition, csvLine));
             }
-        } catch (RuntimeException e) {
-            throw new IllegalArgumentException("Failed reading csvFile (" + csvFile + ").", e);
         } catch (IOException e) {
             throw new IllegalArgumentException("Failed reading csvFile (" + csvFile + ").", e);
         } finally {
@@ -215,7 +200,7 @@ public abstract class SubSingleStatistic<P extends StatisticPoint> {
         pointList = null;
     }
 
-    protected abstract P createPointFromCsvLine(ScoreDefinition scoreDefinition, List<String> csvLine);
+    protected abstract StatisticPoint_ createPointFromCsvLine(ScoreDefinition scoreDefinition, List<String> csvLine);
 
     // ************************************************************************
     // Report accumulates

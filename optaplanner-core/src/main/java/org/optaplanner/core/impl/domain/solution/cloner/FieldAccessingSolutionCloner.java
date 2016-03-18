@@ -16,51 +16,26 @@
 
 package org.optaplanner.core.impl.domain.solution.cloner;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
 import org.apache.commons.lang3.tuple.Pair;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 
-public class FieldAccessingSolutionCloner<Solution_ extends Solution> implements SolutionCloner<Solution_> {
+import java.lang.reflect.*;
+import java.util.*;
 
-    protected final SolutionDescriptor solutionDescriptor;
+public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
 
-    protected final Map<Class, Constructor> constructorCache = new HashMap<Class, Constructor>();
-    protected final Map<Class, List<Field>> fieldListCache = new HashMap<Class, List<Field>>();
-    protected final Map<Pair<Field, Class>, Boolean> deepCloneDecisionFieldCache = new HashMap<Pair<Field, Class>, Boolean>();
-    protected final Map<Class, Boolean> deepCloneDecisionActualValueClassCache = new HashMap<Class, Boolean>();
+    protected final SolutionDescriptor<Solution_> solutionDescriptor;
 
-    public FieldAccessingSolutionCloner(SolutionDescriptor solutionDescriptor) {
+    protected final Map<Class, Constructor> constructorCache = new HashMap<>();
+    protected final Map<Class, List<Field>> fieldListCache = new HashMap<>();
+    protected final Map<Pair<Field, Class>, Boolean> deepCloneDecisionFieldCache = new HashMap<>();
+    protected final Map<Class, Boolean> deepCloneDecisionActualValueClassCache = new HashMap<>();
+
+    public FieldAccessingSolutionCloner(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
     }
 
@@ -227,17 +202,7 @@ public class FieldAccessingSolutionCloner<Solution_ extends Solution> implements
             try {
                 Constructor<C> constructor = retrieveCachedConstructor(clazz);
                 return constructor.newInstance();
-                // TODO Upgrade to JDK 1.7: catch (ReflectiveOperationException e) instead of these 4
-            } catch (InvocationTargetException e) {
-                throw new IllegalStateException("The class (" + clazz
-                        + ") should have a no-arg constructor to create a clone.", e);
-            } catch (NoSuchMethodException e) {
-                throw new IllegalStateException("The class (" + clazz
-                        + ") should have a no-arg constructor to create a clone.", e);
-            } catch (InstantiationException e) {
-                throw new IllegalStateException("The class (" + clazz
-                        + ") should have a no-arg constructor to create a clone.", e);
-            } catch (IllegalAccessException e) {
+            } catch (ReflectiveOperationException e) {
                 throw new IllegalStateException("The class (" + clazz
                         + ") should have a no-arg constructor to create a clone.", e);
             }

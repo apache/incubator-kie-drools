@@ -19,21 +19,21 @@ package org.optaplanner.core.impl.localsearch.scope;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class LocalSearchPhaseScope extends AbstractPhaseScope {
+public class LocalSearchPhaseScope<Solution_> extends AbstractPhaseScope<Solution_> {
 
-    private LocalSearchStepScope lastCompletedStepScope;
+    private LocalSearchStepScope<Solution_> lastCompletedStepScope;
 
-    public LocalSearchPhaseScope(DefaultSolverScope solverScope) {
+    public LocalSearchPhaseScope(DefaultSolverScope<Solution_> solverScope) {
         super(solverScope);
         lastCompletedStepScope = new LocalSearchStepScope(this, -1);
         lastCompletedStepScope.setTimeGradient(0.0);
     }
 
-    public LocalSearchStepScope getLastCompletedStepScope() {
+    public LocalSearchStepScope<Solution_> getLastCompletedStepScope() {
         return lastCompletedStepScope;
     }
 
-    public void setLastCompletedStepScope(LocalSearchStepScope lastCompletedStepScope) {
+    public void setLastCompletedStepScope(LocalSearchStepScope<Solution_> lastCompletedStepScope) {
         this.lastCompletedStepScope = lastCompletedStepScope;
     }
 

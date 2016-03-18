@@ -19,20 +19,20 @@ package org.optaplanner.core.impl.phase.custom.scope;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class CustomPhaseScope extends AbstractPhaseScope {
+public class CustomPhaseScope<Solution_> extends AbstractPhaseScope<Solution_> {
 
-    private CustomStepScope lastCompletedStepScope;
+    private CustomStepScope<Solution_> lastCompletedStepScope;
 
-    public CustomPhaseScope(DefaultSolverScope solverScope) {
+    public CustomPhaseScope(DefaultSolverScope<Solution_> solverScope) {
         super(solverScope);
         lastCompletedStepScope = new CustomStepScope(this, -1);
     }
 
-    public CustomStepScope getLastCompletedStepScope() {
+    public CustomStepScope<Solution_> getLastCompletedStepScope() {
         return lastCompletedStepScope;
     }
 
-    public void setLastCompletedStepScope(CustomStepScope lastCompletedStepScope) {
+    public void setLastCompletedStepScope(CustomStepScope<Solution_> lastCompletedStepScope) {
         this.lastCompletedStepScope = lastCompletedStepScope;
     }
 

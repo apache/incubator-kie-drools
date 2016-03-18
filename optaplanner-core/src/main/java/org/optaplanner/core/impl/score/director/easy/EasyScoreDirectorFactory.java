@@ -24,15 +24,15 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
  * @see EasyScoreDirector
  * @see ScoreDirectorFactory
  */
-public class EasyScoreDirectorFactory extends AbstractScoreDirectorFactory {
+public class EasyScoreDirectorFactory<Solution_> extends AbstractScoreDirectorFactory<Solution_> {
 
-    private final EasyScoreCalculator easyScoreCalculator;
+    private final EasyScoreCalculator<Solution_> easyScoreCalculator;
 
-    public EasyScoreDirectorFactory(EasyScoreCalculator easyScoreCalculator) {
+    public EasyScoreDirectorFactory(EasyScoreCalculator<Solution_> easyScoreCalculator) {
         this.easyScoreCalculator = easyScoreCalculator;
     }
 
-    public EasyScoreCalculator getEasyScoreCalculator() {
+    public EasyScoreCalculator<Solution_> getEasyScoreCalculator() {
         return easyScoreCalculator;
     }
 
@@ -40,8 +40,8 @@ public class EasyScoreDirectorFactory extends AbstractScoreDirectorFactory {
     // Complex methods
     // ************************************************************************
 
-    public EasyScoreDirector buildScoreDirector(boolean constraintMatchEnabledPreference) {
-        return new EasyScoreDirector(this, constraintMatchEnabledPreference, easyScoreCalculator);
+    public EasyScoreDirector<Solution_> buildScoreDirector(boolean constraintMatchEnabledPreference) {
+        return new EasyScoreDirector<>(this, constraintMatchEnabledPreference, easyScoreCalculator);
     }
 
 }

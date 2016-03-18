@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,15 @@
 package org.optaplanner.examples.examination.domain;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
@@ -34,8 +35,7 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution()
 @XStreamAlias("Examination")
-public class Examination extends AbstractPersistable
-        implements Solution<HardSoftScore> {
+public class Examination extends AbstractPersistable {
 
     private InstitutionParametrization institutionParametrization;
 
@@ -52,6 +52,7 @@ public class Examination extends AbstractPersistable
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
     private HardSoftScore score;
 
+    @PlanningFactProperty
     public InstitutionParametrization getInstitutionParametrization() {
         return institutionParametrization;
     }
@@ -68,6 +69,7 @@ public class Examination extends AbstractPersistable
         this.studentList = studentList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Topic> getTopicList() {
         return topicList;
     }
@@ -77,6 +79,7 @@ public class Examination extends AbstractPersistable
     }
 
     @ValueRangeProvider(id = "periodRange")
+    @PlanningFactCollectionProperty
     public List<Period> getPeriodList() {
         return periodList;
     }
@@ -86,6 +89,7 @@ public class Examination extends AbstractPersistable
     }
 
     @ValueRangeProvider(id = "roomRange")
+    @PlanningFactCollectionProperty
     public List<Room> getRoomList() {
         return roomList;
     }
@@ -94,6 +98,7 @@ public class Examination extends AbstractPersistable
         this.roomList = roomList;
     }
 
+    @PlanningFactCollectionProperty
     public List<PeriodPenalty> getPeriodPenaltyList() {
         return periodPenaltyList;
     }
@@ -102,6 +107,7 @@ public class Examination extends AbstractPersistable
         this.periodPenaltyList = periodPenaltyList;
     }
 
+    @PlanningFactCollectionProperty
     public List<RoomPenalty> getRoomPenaltyList() {
         return roomPenaltyList;
     }
@@ -119,6 +125,7 @@ public class Examination extends AbstractPersistable
         this.examList = examList;
     }
 
+    @PlanningScore
     public HardSoftScore getScore() {
         return score;
     }
@@ -131,24 +138,8 @@ public class Examination extends AbstractPersistable
     // Complex methods
     // ************************************************************************
 
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.add(institutionParametrization);
-        // Student isn't used in the DRL at the moment
-        // Notice that asserting them is not a noticable performance cost, only a memory cost.
-        // facts.addAll(studentList);
-        facts.addAll(topicList);
-        facts.addAll(periodList);
-        facts.addAll(roomList);
-        facts.addAll(periodPenaltyList);
-        facts.addAll(roomPenaltyList);
-        // A faster alternative to a insertLogicalTopicConflicts rule.
-        facts.addAll(precalculateTopicConflictList());
-        // Do not add the planning entity's (examList) because that will be done automatically
-        return facts;
-    }
-
-    private List<TopicConflict> precalculateTopicConflictList() {
+    @PlanningFactCollectionProperty
+    private List<TopicConflict> getTopicConflictList() {
         List<TopicConflict> topicConflictList = new ArrayList<TopicConflict>();
         for (Topic leftTopic : topicList) {
             for (Topic rightTopic : topicList) {

@@ -22,7 +22,6 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Global;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.optaplanner.core.api.score.holder.ScoreHolder;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 
@@ -31,7 +30,7 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
  * @see DroolsScoreDirector
  * @see ScoreDirectorFactory
  */
-public class DroolsScoreDirectorFactory extends AbstractScoreDirectorFactory {
+public class DroolsScoreDirectorFactory<Solution_> extends AbstractScoreDirectorFactory<Solution_> {
 
     protected final KieContainer kieContainer;
     protected final String ksessionName;
@@ -112,7 +111,7 @@ public class DroolsScoreDirectorFactory extends AbstractScoreDirectorFactory {
     // Complex methods
     // ************************************************************************
 
-    public DroolsScoreDirector buildScoreDirector(boolean constraintMatchEnabledPreference) {
+    public DroolsScoreDirector<Solution_> buildScoreDirector(boolean constraintMatchEnabledPreference) {
         return new DroolsScoreDirector(this, constraintMatchEnabledPreference);
     }
 

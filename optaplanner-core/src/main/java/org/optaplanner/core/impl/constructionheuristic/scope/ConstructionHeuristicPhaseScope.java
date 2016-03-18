@@ -19,20 +19,20 @@ package org.optaplanner.core.impl.constructionheuristic.scope;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
-public class ConstructionHeuristicPhaseScope extends AbstractPhaseScope {
+public class ConstructionHeuristicPhaseScope<Solution_> extends AbstractPhaseScope<Solution_> {
 
-    private ConstructionHeuristicStepScope lastCompletedStepScope;
+    private ConstructionHeuristicStepScope<Solution_> lastCompletedStepScope;
 
-    public ConstructionHeuristicPhaseScope(DefaultSolverScope solverScope) {
+    public ConstructionHeuristicPhaseScope(DefaultSolverScope<Solution_> solverScope) {
         super(solverScope);
         lastCompletedStepScope = new ConstructionHeuristicStepScope(this, -1);
     }
 
-    public ConstructionHeuristicStepScope getLastCompletedStepScope() {
+    public ConstructionHeuristicStepScope<Solution_> getLastCompletedStepScope() {
         return lastCompletedStepScope;
     }
 
-    public void setLastCompletedStepScope(ConstructionHeuristicStepScope lastCompletedStepScope) {
+    public void setLastCompletedStepScope(ConstructionHeuristicStepScope<Solution_> lastCompletedStepScope) {
         this.lastCompletedStepScope = lastCompletedStepScope;
     }
 

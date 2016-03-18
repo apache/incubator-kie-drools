@@ -16,13 +16,6 @@
 
 package org.optaplanner.benchmark.impl.statistic.memoryuse;
 
-import java.awt.BasicStroke;
-import java.io.File;
-import java.text.NumberFormat;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -40,6 +33,13 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
+
+import java.awt.*;
+import java.io.File;
+import java.text.NumberFormat;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 @XStreamAlias("memoryUseProblemStatistic")
 public class MemoryUseProblemStatistic extends ProblemStatistic {
@@ -77,7 +77,8 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         plot.setOrientation(PlotOrientation.VERTICAL);
         int seriesIndex = 0;
-        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+        List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
+        for (SingleBenchmarkResult singleBenchmarkResult : results) {
             XYSeries usedSeries = new XYSeries(
                     singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " used");
             // TODO enable max memory, but in the same color as used memory, but with a dotted line instead
@@ -87,7 +88,8 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
             if (singleBenchmarkResult.hasAllSuccess()) {
                 MemoryUseSubSingleStatistic subSingleStatistic = (MemoryUseSubSingleStatistic)
                         singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
-                for (MemoryUseStatisticPoint point : subSingleStatistic.getPointList()) {
+                List<MemoryUseStatisticPoint> points = subSingleStatistic.getPointList();
+                for (MemoryUseStatisticPoint point : points) {
                     long timeMillisSpent = point.getTimeMillisSpent();
                     MemoryUseMeasurement memoryUseMeasurement = point.getMemoryUseMeasurement();
                     usedSeries.add(timeMillisSpent, memoryUseMeasurement.getUsedMemory());

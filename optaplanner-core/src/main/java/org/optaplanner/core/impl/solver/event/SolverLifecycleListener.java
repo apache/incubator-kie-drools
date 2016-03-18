@@ -16,9 +16,9 @@
 
 package org.optaplanner.core.impl.solver.event;
 
-import java.util.EventListener;
-
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
+
+import java.util.EventListener;
 
 public interface SolverLifecycleListener extends EventListener {
 

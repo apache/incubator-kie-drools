@@ -16,25 +16,6 @@
 
 package org.optaplanner.benchmark.impl.report;
 
-import java.awt.BasicStroke;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.NavigableSet;
-import java.util.TreeSet;
-import javax.imageio.ImageIO;
-
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -54,18 +35,13 @@ import org.jfree.chart.renderer.category.BoxAndWhiskerRenderer;
 import org.jfree.chart.renderer.xy.StandardXYItemRenderer;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
 import org.jfree.data.statistics.DefaultBoxAndWhiskerCategoryDataset;
 import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.TextAnchor;
 import org.optaplanner.benchmark.impl.ranking.SolverRankingWeightFactory;
-import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
-import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
-import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
-import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
-import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
+import org.optaplanner.benchmark.impl.result.*;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
@@ -73,6 +49,14 @@ import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFo
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.text.NumberFormat;
+import java.util.*;
+import java.util.List;
 
 public class BenchmarkReport {
 
@@ -234,7 +218,8 @@ public class BenchmarkReport {
         writeTimeSpentScalabilitySummaryChart();
         writeBestScorePerTimeSpentSummaryChart();
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
-            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+            List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
+            for (SingleBenchmarkResult singleBenchmarkResult : results) {
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
                     if (!subSingleBenchmarkResult.hasAllSuccess()) {
                         continue;
@@ -256,10 +241,12 @@ public class BenchmarkReport {
         }
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
             if (problemBenchmarkResult.hasAnySuccess()) {
-                for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
+                List<ProblemStatistic> statistics = problemBenchmarkResult.getProblemStatisticList();
+                for (ProblemStatistic problemStatistic : statistics) {
                     problemStatistic.writeGraphFiles(this);
                 }
-                for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+                List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
+                for (SingleBenchmarkResult singleBenchmarkResult : results) {
                     if (singleBenchmarkResult.hasAllSuccess()) {
                         for (PureSubSingleStatistic pureSubSingleStatistic : singleBenchmarkResult.getMedian().getPureSubSingleStatisticList()) {
                             pureSubSingleStatistic.writeGraphFiles(this);
@@ -269,7 +256,8 @@ public class BenchmarkReport {
             }
         }
         for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
-            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+            List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
+            for (SingleBenchmarkResult singleBenchmarkResult : results) {
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
                     if (!subSingleBenchmarkResult.hasAllSuccess()) {
                         continue;
@@ -710,7 +698,8 @@ public class BenchmarkReport {
                 for (int i = 0; i < differenceCount.length; i++) {
                     differenceCount[i] = 0;
                 }
-                for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+                List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
+                for (SingleBenchmarkResult singleBenchmarkResult : results) {
                     if (singleBenchmarkResult.hasAllSuccess()) {
                         double[] scoreLevels = ScoreUtils.extractLevelDoubles(singleBenchmarkResult.getAverageScore());
                         for (int i = 0; i < scoreLevels.length; i++) {

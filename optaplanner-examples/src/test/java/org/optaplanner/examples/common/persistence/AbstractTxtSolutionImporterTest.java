@@ -16,20 +16,20 @@
 
 package org.optaplanner.examples.common.persistence;
 
+import org.junit.Test;
+
 import java.io.IOException;
 
-import org.junit.Test;
-import org.optaplanner.core.api.domain.solution.Solution;
+import static org.junit.Assert.assertArrayEquals;
 
-import static org.junit.Assert.*;
-
-public class AbstractTxtSolutionImporterTest {
+public class AbstractTxtSolutionImporterTest<Solution_> {
 
     @Test
     public void splitBySpace() {
-        AbstractTxtSolutionImporter.TxtInputBuilder inputBuilder = new AbstractTxtSolutionImporter.TxtInputBuilder() {
+        AbstractTxtSolutionImporter.TxtInputBuilder inputBuilder
+                = new AbstractTxtSolutionImporter.TxtInputBuilder() {
             @Override
-            public Solution readSolution() throws IOException {
+            public Solution_ readSolution() throws IOException {
                 return null;
             }
         };

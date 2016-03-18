@@ -19,7 +19,7 @@ package org.optaplanner.examples.investment.persistence;
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
 import org.optaplanner.examples.investment.domain.InvestmentSolution;
 
-public class InvestmentDao extends XStreamSolutionDao {
+public class InvestmentDao extends XStreamSolutionDao<InvestmentSolution> {
 
     public InvestmentDao() {
         super("investment", InvestmentSolution.class);

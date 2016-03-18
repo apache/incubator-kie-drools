@@ -19,7 +19,6 @@ package org.optaplanner.examples.common.app;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -34,7 +33,7 @@ import static org.junit.Assume.*;
  * Turtle tests are not run by default. They are only run if <code>-DrunTurtleTests=true</code> because it takes days.
  */
 @RunWith(Parameterized.class)
-public abstract class SolveAllTurtleTest extends LoggingTest {
+public abstract class SolveAllTurtleTest<Solution_> extends LoggingTest {
 
     protected static void checkRunTurtleTests() {
         assumeTrue("true".equals(System.getProperty("runTurtleTests")));
@@ -42,13 +41,13 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
 
     protected abstract String createSolverConfigResource();
 
-    protected abstract Solution readPlanningProblem();
+    protected abstract Solution_ readPlanningProblem();
 
     @Test
     public void runFastAndFullAssert() {
         checkRunTurtleTests();
-        SolverFactory<Solution> solverFactory = buildSolverFactory();
-        Solution planningProblem = readPlanningProblem();
+        SolverFactory<Solution_> solverFactory = buildSolverFactory();
+        Solution_ planningProblem = readPlanningProblem();
         // Specifically use NON_INTRUSIVE_FULL_ASSERT instead of FULL_ASSERT to flush out bugs hidden by intrusiveness
         // 1) NON_INTRUSIVE_FULL_ASSERT ASSERT to find CH bugs (but covers little ground)
         planningProblem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, planningProblem, 2L);
@@ -58,8 +57,8 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
         planningProblem = buildAndSolve(solverFactory, EnvironmentMode.NON_INTRUSIVE_FULL_ASSERT, planningProblem, 3L);
     }
 
-    protected Solution buildAndSolve(SolverFactory<Solution> solverFactory, EnvironmentMode environmentMode,
-            Solution planningProblem, long maximumMinutesSpent) {
+    protected Solution_ buildAndSolve(SolverFactory<Solution_> solverFactory, EnvironmentMode environmentMode,
+            Solution_ planningProblem, long maximumMinutesSpent) {
         SolverConfig solverConfig = solverFactory.getSolverConfig();
         solverConfig.getTerminationConfig().setMinutesSpentLimit(maximumMinutesSpent);
         solverConfig.setEnvironmentMode(environmentMode);
@@ -70,8 +69,8 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
             solverConfig.getScoreDirectorFactoryConfig().setAssertionScoreDirectorFactory(
                     assertionScoreDirectorFactoryConfig);
         }
-        Solver<Solution> solver = solverFactory.buildSolver();
-        Solution bestSolution = solver.solve(planningProblem);
+        Solver<Solution_> solver = solverFactory.buildSolver();
+        Solution_ bestSolution = solver.solve(planningProblem);
         if (bestSolution == null) {
             // Solver didn't make it past initialization // TODO remove me once getBestSolution() never returns null
             bestSolution = planningProblem;
@@ -83,8 +82,8 @@ public abstract class SolveAllTurtleTest extends LoggingTest {
         return null;
     }
 
-    protected SolverFactory<Solution> buildSolverFactory() {
-        SolverFactory<Solution> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
+    protected SolverFactory<Solution_> buildSolverFactory() {
+        SolverFactory<Solution_> solverFactory = SolverFactory.createFromXmlResource(createSolverConfigResource());
         TerminationConfig terminationConfig = new TerminationConfig();
         // buildAndSolve() fills in minutesSpentLimit
         solverFactory.getSolverConfig().setTerminationConfig(terminationConfig);

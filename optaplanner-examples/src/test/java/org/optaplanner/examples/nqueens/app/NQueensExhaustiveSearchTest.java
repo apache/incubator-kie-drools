@@ -16,29 +16,26 @@
 
 package org.optaplanner.examples.nqueens.app;
 
-import java.io.File;
-import java.util.Collection;
-
 import org.junit.runners.Parameterized;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.exhaustivesearch.ExhaustiveSearchType;
 import org.optaplanner.examples.common.app.ExhaustiveSearchTest;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.nqueens.domain.NQueens;
 import org.optaplanner.examples.nqueens.persistence.NQueensDao;
 
-import static org.junit.Assert.*;
+import java.io.File;
+import java.util.Collection;
 
-public class NQueensExhaustiveSearchTest extends ExhaustiveSearchTest {
+import static org.junit.Assert.assertEquals;
+
+public class NQueensExhaustiveSearchTest extends ExhaustiveSearchTest<NQueens> {
 
     @Parameterized.Parameters(name = "{index}: {0} - {1}")
     public static Collection<Object[]> getSolutionFilesAsParameters() {
-        return buildParameters(new NQueensDao(),
-                "4queens.xml");
+        return buildParameters(new NQueensDao(), "4queens.xml");
     }
 
-    public NQueensExhaustiveSearchTest(File unsolvedDataFile,
-            ExhaustiveSearchType exhaustiveSearchType) {
+    public NQueensExhaustiveSearchTest(File unsolvedDataFile, ExhaustiveSearchType exhaustiveSearchType) {
         super(unsolvedDataFile, exhaustiveSearchType);
     }
 
@@ -48,12 +45,12 @@ public class NQueensExhaustiveSearchTest extends ExhaustiveSearchTest {
     }
 
     @Override
-    protected SolutionDao createSolutionDao() {
+    protected SolutionDao<NQueens> createSolutionDao() {
         return new NQueensDao();
     }
 
     @Override
-    protected void assertSolution(Solution bestSolution) {
+    protected void assertSolution(NQueens bestSolution) {
         super.assertSolution(bestSolution);
         assertEquals(0, ((NQueens) bestSolution).getScore().getScore());
     }

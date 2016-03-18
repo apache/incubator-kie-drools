@@ -18,10 +18,10 @@ package org.optaplanner.examples.machinereassignment.persistence;
 
 import java.io.File;
 
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-public class MachineReassignmentFileIO implements SolutionFileIO {
+public class MachineReassignmentFileIO implements SolutionFileIO<MachineReassignment> {
 
     public static final String FILE_EXTENSION = "txt";
 
@@ -36,11 +36,11 @@ public class MachineReassignmentFileIO implements SolutionFileIO {
         return FILE_EXTENSION;
     }
 
-    public Solution read(File inputSolutionFile) {
+    public MachineReassignment read(File inputSolutionFile) {
         return importer.readSolution(inputSolutionFile);
     }
 
-    public void write(Solution solution, File outputSolutionFile) {
+    public void write(MachineReassignment solution, File outputSolutionFile) {
         exporter.writeSolution(solution, outputSolutionFile);
     }
 

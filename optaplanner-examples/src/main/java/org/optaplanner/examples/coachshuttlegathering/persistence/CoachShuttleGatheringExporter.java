@@ -16,23 +16,12 @@
 
 package org.optaplanner.examples.coachshuttlegathering.persistence;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
-import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
-import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
-import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
-import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
-import org.optaplanner.examples.coachshuttlegathering.domain.StopOrHub;
+import org.optaplanner.examples.coachshuttlegathering.domain.*;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
-import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
-import org.optaplanner.examples.machinereassignment.domain.MrMachine;
-import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
-import org.optaplanner.examples.machinereassignment.persistence.MachineReassignmentFileIO;
 
-public class CoachShuttleGatheringExporter extends AbstractTxtSolutionExporter {
+import java.io.IOException;
+
+public class CoachShuttleGatheringExporter extends AbstractTxtSolutionExporter<CoachShuttleGatheringSolution> {
 
     public static final String OUTPUT_FILE_SUFFIX = "csv";
 
@@ -49,16 +38,16 @@ public class CoachShuttleGatheringExporter extends AbstractTxtSolutionExporter {
         return OUTPUT_FILE_SUFFIX;
     }
 
-    public TxtOutputBuilder createTxtOutputBuilder() {
+    public TxtOutputBuilder<CoachShuttleGatheringSolution> createTxtOutputBuilder() {
         return new CoachShuttleGatheringOutputBuilder();
     }
 
-    public static class CoachShuttleGatheringOutputBuilder extends TxtOutputBuilder {
+    public static class CoachShuttleGatheringOutputBuilder extends TxtOutputBuilder<CoachShuttleGatheringSolution> {
 
         private CoachShuttleGatheringSolution solution;
 
-        public void setSolution(Solution solution) {
-            this.solution = (CoachShuttleGatheringSolution) solution;
+        public void setSolution(CoachShuttleGatheringSolution solution) {
+            this.solution = solution;
         }
 
         public void writeSolution() throws IOException {

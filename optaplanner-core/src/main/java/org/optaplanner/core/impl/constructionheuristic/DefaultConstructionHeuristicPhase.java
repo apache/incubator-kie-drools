@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.constructionheuristic;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
@@ -29,7 +28,8 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 /**
  * Default implementation of {@link ConstructionHeuristicPhase}.
  */
-public class DefaultConstructionHeuristicPhase extends AbstractPhase implements ConstructionHeuristicPhase {
+public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<Solution_>
+        implements ConstructionHeuristicPhase {
 
     protected EntityPlacer entityPlacer;
     protected ConstructionHeuristicDecider decider;
@@ -62,12 +62,13 @@ public class DefaultConstructionHeuristicPhase extends AbstractPhase implements 
     // Worker methods
     // ************************************************************************
 
+    @Override
     public void solve(DefaultSolverScope solverScope) {
-        ConstructionHeuristicPhaseScope phaseScope = new ConstructionHeuristicPhaseScope(solverScope);
+        ConstructionHeuristicPhaseScope<Solution_> phaseScope = new ConstructionHeuristicPhaseScope<>(solverScope);
         phaseStarted(phaseScope);
 
         for (Placement placement : entityPlacer) {
-            ConstructionHeuristicStepScope stepScope = new ConstructionHeuristicStepScope(phaseScope);
+            ConstructionHeuristicStepScope<Solution_> stepScope = new ConstructionHeuristicStepScope<>(phaseScope);
             stepStarted(stepScope);
             decider.decideNextStep(stepScope, placement);
             if (stepScope.getStep() == null) {
@@ -98,12 +99,12 @@ public class DefaultConstructionHeuristicPhase extends AbstractPhase implements 
         phaseEnded(phaseScope);
     }
 
-    private void doStep(ConstructionHeuristicStepScope stepScope) {
-        ConstructionHeuristicPhaseScope phaseScope = stepScope.getPhaseScope();
+    private void doStep(ConstructionHeuristicStepScope<Solution_> stepScope) {
+        ConstructionHeuristicPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         Move nextStep = stepScope.getStep();
         nextStep.doMove(stepScope.getScoreDirector());
         // there is no need to recalculate the score, but we still need to set it
-        phaseScope.getWorkingSolution().setScore(stepScope.getScore());
+        phaseScope.getSolutionDescriptor().setScore(phaseScope.getWorkingSolution(), stepScope.getScore());
         if (assertStepScoreFromScratch) {
             phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), nextStep);
         }
@@ -119,19 +120,20 @@ public class DefaultConstructionHeuristicPhase extends AbstractPhase implements 
         decider.solvingStarted(solverScope);
     }
 
-    public void phaseStarted(ConstructionHeuristicPhaseScope phaseScope) {
+    public void phaseStarted(ConstructionHeuristicPhaseScope<Solution_> phaseScope) {
         super.phaseStarted(phaseScope);
         entityPlacer.phaseStarted(phaseScope);
         decider.phaseStarted(phaseScope);
     }
 
-    public void stepStarted(ConstructionHeuristicStepScope stepScope) {
+
+    public void stepStarted(ConstructionHeuristicStepScope<Solution_> stepScope) {
         super.stepStarted(stepScope);
         entityPlacer.stepStarted(stepScope);
         decider.stepStarted(stepScope);
     }
 
-    public void stepEnded(ConstructionHeuristicStepScope stepScope) {
+    public void stepEnded(ConstructionHeuristicStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
         entityPlacer.stepEnded(stepScope);
         decider.stepEnded(stepScope);
@@ -146,9 +148,9 @@ public class DefaultConstructionHeuristicPhase extends AbstractPhase implements 
         }
     }
 
-    public void phaseEnded(ConstructionHeuristicPhaseScope phaseScope) {
+    public void phaseEnded(ConstructionHeuristicPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
-        Solution newBestSolution = phaseScope.getScoreDirector().cloneWorkingSolution();
+        Solution_ newBestSolution = phaseScope.getScoreDirector().cloneWorkingSolution();
         int newBestUninitializedVariableCount = phaseScope.getSolutionDescriptor()
                 .countUninitializedVariables(newBestSolution);
         bestSolutionRecaller.updateBestSolution(phaseScope.getSolverScope(),

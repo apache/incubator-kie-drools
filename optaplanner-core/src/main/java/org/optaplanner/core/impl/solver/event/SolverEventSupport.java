@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.solver.event;
 
 import java.util.Iterator;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -26,7 +25,7 @@ import org.optaplanner.core.impl.solver.DefaultSolver;
 /**
  * Internal API.
  */
-public class SolverEventSupport<Solution_ extends Solution> extends AbstractEventSupport<SolverEventListener<Solution_>> {
+public class SolverEventSupport<Solution_> extends AbstractEventSupport<SolverEventListener<Solution_>> {
 
     private DefaultSolver<Solution_> solver;
 

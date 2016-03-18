@@ -19,7 +19,7 @@ package org.optaplanner.examples.travelingtournament.persistence;
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
 import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
 
-public class TravelingTournamentDao extends XStreamSolutionDao {
+public class TravelingTournamentDao extends XStreamSolutionDao<TravelingTournament> {
 
     public TravelingTournamentDao() {
         super("travelingtournament", TravelingTournament.class);

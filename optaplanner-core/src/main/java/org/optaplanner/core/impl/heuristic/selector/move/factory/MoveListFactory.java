@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.heuristic.selector.move.factory;
 import java.util.Iterator;
 import java.util.List;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.move.Move;
 
@@ -28,7 +27,7 @@ import org.optaplanner.core.impl.heuristic.move.Move;
  * <p>
  * For a more powerful version, see {@link MoveIteratorFactory}.
  */
-public interface MoveListFactory<Solution_ extends Solution> {
+public interface MoveListFactory<Solution_> {
 
     /**
      * When it is called depends on the configured {@link SelectionCacheType}.

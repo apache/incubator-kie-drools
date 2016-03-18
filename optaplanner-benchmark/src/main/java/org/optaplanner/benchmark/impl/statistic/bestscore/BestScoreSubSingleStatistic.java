@@ -16,18 +16,18 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestscore;
 
-import java.util.List;
-
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
-public class BestScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<BestScoreStatisticPoint> {
+import java.util.List;
+
+public class BestScoreSubSingleStatistic<Solution_>
+        extends ProblemBasedSubSingleStatistic<Solution_, BestScoreStatisticPoint> {
 
     private final BestScoreSubSingleStatisticListener listener;
 
@@ -40,19 +40,18 @@ public class BestScoreSubSingleStatistic extends ProblemBasedSubSingleStatistic<
     // Lifecycle methods
     // ************************************************************************
 
-    public void open(Solver<Solution> solver) {
+    public void open(Solver<Solution_> solver) {
         solver.addEventListener(listener);
     }
 
-    public void close(Solver<Solution> solver) {
+    public void close(Solver<Solution_> solver) {
         solver.removeEventListener(listener);
     }
 
-    private class BestScoreSubSingleStatisticListener implements SolverEventListener<Solution> {
+    private class BestScoreSubSingleStatisticListener implements SolverEventListener<Solution_> {
 
-        public void bestSolutionChanged(BestSolutionChangedEvent<Solution> event) {
-            pointList.add(new BestScoreStatisticPoint(
-                    event.getTimeMillisSpent(), event.getNewBestSolution().getScore()));
+        public void bestSolutionChanged(BestSolutionChangedEvent<Solution_> event) {
+            pointList.add(new BestScoreStatisticPoint(event.getTimeMillisSpent(), event.getNewBestScore()));
         }
 
     }

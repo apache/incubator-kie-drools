@@ -1,5 +1,5 @@
 /*
- * Copyright 2011 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,15 @@
 package org.optaplanner.examples.machinereassignment.domain;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
@@ -34,7 +35,7 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("MachineReassignment")
-public class MachineReassignment extends AbstractPersistable implements Solution<HardSoftLongScore> {
+public class MachineReassignment extends AbstractPersistable {
 
     private MrGlobalPenaltyInfo globalPenaltyInfo;
     private List<MrResource> resourceList;
@@ -51,6 +52,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftLongScoreDefinition.class})
     private HardSoftLongScore score;
 
+    @PlanningFactProperty
     public MrGlobalPenaltyInfo getGlobalPenaltyInfo() {
         return globalPenaltyInfo;
     }
@@ -59,6 +61,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         this.globalPenaltyInfo = globalPenaltyInfo;
     }
 
+    @PlanningFactCollectionProperty
     public List<MrResource> getResourceList() {
         return resourceList;
     }
@@ -67,6 +70,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         this.resourceList = resourceList;
     }
 
+    @PlanningFactCollectionProperty
     public List<MrNeighborhood> getNeighborhoodList() {
         return neighborhoodList;
     }
@@ -75,6 +79,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         this.neighborhoodList = neighborhoodList;
     }
 
+    @PlanningFactCollectionProperty
     public List<MrLocation> getLocationList() {
         return locationList;
     }
@@ -84,6 +89,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
     }
 
     @ValueRangeProvider(id = "machineRange")
+    @PlanningFactCollectionProperty
     public List<MrMachine> getMachineList() {
         return machineList;
     }
@@ -92,6 +98,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         this.machineList = machineList;
     }
 
+    @PlanningFactCollectionProperty
     public List<MrMachineCapacity> getMachineCapacityList() {
         return machineCapacityList;
     }
@@ -100,6 +107,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         this.machineCapacityList = machineCapacityList;
     }
 
+    @PlanningFactCollectionProperty
     public List<MrService> getServiceList() {
         return serviceList;
     }
@@ -108,6 +116,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         this.serviceList = serviceList;
     }
 
+    @PlanningFactCollectionProperty
     public List<MrProcess> getProcessList() {
         return processList;
     }
@@ -116,6 +125,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         this.processList = processList;
     }
 
+    @PlanningFactCollectionProperty
     public List<MrBalancePenalty> getBalancePenaltyList() {
         return balancePenaltyList;
     }
@@ -133,6 +143,7 @@ public class MachineReassignment extends AbstractPersistable implements Solution
         this.processAssignmentList = processAssignmentList;
     }
 
+    @PlanningScore
     public HardSoftLongScore getScore() {
         return score;
     }
@@ -145,23 +156,8 @@ public class MachineReassignment extends AbstractPersistable implements Solution
     // Complex methods
     // ************************************************************************
 
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.add(globalPenaltyInfo);
-        facts.addAll(resourceList);
-        facts.addAll(neighborhoodList);
-        facts.addAll(locationList);
-        facts.addAll(machineList);
-        facts.addAll(machineCapacityList);
-        facts.addAll(serviceList);
-        facts.addAll(createServiceDependencyList());
-        facts.addAll(processList);
-        facts.addAll(balancePenaltyList);
-        // Do not add the planning entity's (bedDesignationList) because that will be done automatically
-        return facts;
-    }
-
-    private List<MrServiceDependency> createServiceDependencyList() {
+    @PlanningFactCollectionProperty
+    private List<MrServiceDependency> getServiceDependencyList() {
         List<MrServiceDependency> serviceDependencyList = new ArrayList<MrServiceDependency>(serviceList.size() * 5);
         for (MrService service : serviceList) {
             for (MrService toService : service.getToDependencyServiceList()) {

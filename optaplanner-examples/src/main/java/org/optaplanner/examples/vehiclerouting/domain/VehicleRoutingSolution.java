@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@
 package org.optaplanner.examples.vehiclerouting.domain;
 
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import com.thoughtworks.xstream.annotations.XStreamInclude;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoftlong.HardSoftLongScore;
 import org.optaplanner.core.impl.score.buildin.hardsoftlong.HardSoftLongScoreDefinition;
@@ -41,7 +40,7 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 @XStreamInclude({
         TimeWindowedVehicleRoutingSolution.class
 })
-public class VehicleRoutingSolution extends AbstractPersistable implements Solution<HardSoftLongScore> {
+public class VehicleRoutingSolution extends AbstractPersistable {
 
     protected String name;
     protected DistanceType distanceType;
@@ -79,6 +78,7 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
         this.distanceUnitOfMeasurement = distanceUnitOfMeasurement;
     }
 
+    @PlanningFactCollectionProperty
     public List<Location> getLocationList() {
         return locationList;
     }
@@ -87,6 +87,7 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
         this.locationList = locationList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Depot> getDepotList() {
         return depotList;
     }
@@ -115,6 +116,7 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
         this.customerList = customerList;
     }
 
+    @PlanningScore
     public HardSoftLongScore getScore() {
         return score;
     }
@@ -126,14 +128,6 @@ public class VehicleRoutingSolution extends AbstractPersistable implements Solut
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(locationList);
-        facts.addAll(depotList);
-        // Do not add the planning entities (vehicleList, customerList) because that will be done automatically
-        return facts;
-    }
 
     public String getDistanceString(NumberFormat numberFormat) {
         if (score == null) {

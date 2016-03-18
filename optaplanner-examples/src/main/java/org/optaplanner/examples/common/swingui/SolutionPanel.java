@@ -16,19 +16,16 @@
 
 package org.optaplanner.examples.common.swingui;
 
-import java.awt.Dimension;
-import java.awt.Rectangle;
-import javax.swing.JPanel;
-import javax.swing.JViewport;
-import javax.swing.Scrollable;
-
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class SolutionPanel<Solution_ extends Solution> extends JPanel implements Scrollable {
+import javax.swing.*;
+import java.awt.*;
+
+public abstract class SolutionPanel<Solution_> extends JPanel implements Scrollable {
 
     protected static final String USAGE_EXPLANATION_PATH = "/org/optaplanner/examples/common/swingui/exampleUsageExplanation.png";
     // Size fits into screen resolution 1024*768
@@ -110,13 +107,14 @@ public abstract class SolutionPanel<Solution_ extends Solution> extends JPanel i
     public void doProblemFactChange(ProblemFactChange problemFactChange, boolean reset) {
         solutionBusiness.doProblemFactChange(problemFactChange);
         Solution_ solution = getSolution();
+        Score score = solutionBusiness.getScore();
         if (reset) {
             resetPanel(solution);
         } else {
             updatePanel(solution);
         }
         validate();
-        solverAndPersistenceFrame.refreshScoreField(solution);
+        solverAndPersistenceFrame.refreshScoreField(score);
     }
 
 }

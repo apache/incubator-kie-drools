@@ -22,7 +22,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;

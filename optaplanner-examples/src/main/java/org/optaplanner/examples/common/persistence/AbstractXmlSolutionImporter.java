@@ -16,24 +16,19 @@
 
 package org.optaplanner.examples.common.persistence;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
-import org.optaplanner.core.api.domain.solution.Solution;
 
-public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImporter {
+import java.io.*;
+
+public abstract class AbstractXmlSolutionImporter<Solution_> extends AbstractSolutionImporter<Solution_> {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = "xml";
 
-    protected AbstractXmlSolutionImporter(SolutionDao solutionDao) {
+    protected AbstractXmlSolutionImporter(SolutionDao<Solution_> solutionDao) {
         super(solutionDao);
     }
 
@@ -45,20 +40,19 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
         return DEFAULT_INPUT_FILE_SUFFIX;
     }
 
-    public abstract XmlInputBuilder createXmlInputBuilder();
+    public abstract XmlInputBuilder<Solution_> createXmlInputBuilder();
 
-    public Solution readSolution(File inputFile) {
-        Solution solution;
-        InputStream in = null;
-        try {
-            in = new FileInputStream(inputFile);
+    public Solution_ readSolution(File inputFile) {
+        try (InputStream in = new BufferedInputStream(new FileInputStream(inputFile))) {
             SAXBuilder builder = new SAXBuilder(false);
             Document document = builder.build(in);
-            XmlInputBuilder xmlInputBuilder = createXmlInputBuilder();
+            XmlInputBuilder<Solution_> xmlInputBuilder = createXmlInputBuilder();
             xmlInputBuilder.setInputFile(inputFile);
             xmlInputBuilder.setDocument(document);
             try {
-                solution = xmlInputBuilder.readSolution();
+                Solution_ solution = xmlInputBuilder.readSolution();
+                logger.info("Imported: {}", inputFile);
+                return solution;
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Exception in inputFile (" + inputFile + ")", e);
             } catch (IllegalStateException e) {
@@ -68,14 +62,10 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
             throw new IllegalArgumentException("Could not read the file (" + inputFile.getName() + ").", e);
         } catch (JDOMException e) {
             throw new IllegalArgumentException("Could not parse the XML file (" + inputFile.getName() + ").", e);
-        } finally {
-            IOUtils.closeQuietly(in);
         }
-        logger.info("Imported: {}", inputFile);
-        return solution;
     }
 
-    public static abstract class XmlInputBuilder extends InputBuilder {
+    public static abstract class XmlInputBuilder<Solution_> extends InputBuilder {
 
         protected File inputFile;
         protected Document document;
@@ -88,7 +78,7 @@ public abstract class AbstractXmlSolutionImporter extends AbstractSolutionImport
             this.document = document;
         }
 
-        public abstract Solution readSolution() throws IOException, JDOMException;
+        public abstract Solution_ readSolution() throws IOException, JDOMException;
 
         // ************************************************************************
         // Helper methods

@@ -16,24 +16,16 @@
 
 package org.optaplanner.core.config.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import org.optaplanner.core.config.AbstractConfig;
+
+import java.util.*;
 
 public class ConfigUtils {
 
     public static <T> T newInstance(Object bean, String propertyName, Class<T> clazz) {
         try {
             return clazz.newInstance();
-        } catch (InstantiationException e) {
-            throw new IllegalArgumentException("The " + bean.getClass().getSimpleName() + "'s " + propertyName + " ("
-                    + clazz.getName() + ") does not have a public no-arg constructor.", e);
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             throw new IllegalArgumentException("The " + bean.getClass().getSimpleName() + "'s " + propertyName + " ("
                     + clazz.getName() + ") does not have a public no-arg constructor.", e);
         }

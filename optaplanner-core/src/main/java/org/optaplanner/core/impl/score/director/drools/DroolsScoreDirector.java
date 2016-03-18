@@ -18,10 +18,8 @@ package org.optaplanner.core.impl.score.director.drools;
 
 import java.util.Collection;
 
-import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
@@ -32,18 +30,19 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Drools implementation of {@link ScoreDirector}, which directs the Rule Engine to calculate the {@link Score}
- * of the {@link Solution} workingSolution.
+ * of the {@link Solution_} workingSolution.
  * @see ScoreDirector
  */
-public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirectorFactory> {
+public class DroolsScoreDirector<Solution_>
+        extends AbstractScoreDirector<Solution_, DroolsScoreDirectorFactory<Solution_>> {
 
     public static final String GLOBAL_SCORE_HOLDER_KEY = "scoreHolder";
 
     protected KieSession kieSession;
     protected ScoreHolder workingScoreHolder;
 
-    public DroolsScoreDirector(DroolsScoreDirectorFactory scoreDirectorFactory,
-            boolean constraintMatchEnabledPreference) {
+    public DroolsScoreDirector(DroolsScoreDirectorFactory<Solution_> scoreDirectorFactory,
+                               boolean constraintMatchEnabledPreference) {
         super(scoreDirectorFactory, constraintMatchEnabledPreference);
     }
 
@@ -56,7 +55,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     // ************************************************************************
 
     @Override
-    public void setWorkingSolution(Solution workingSolution) {
+    public void setWorkingSolution(Solution_ workingSolution) {
         super.setWorkingSolution(workingSolution);
         resetKieSession();
     }
@@ -101,14 +100,14 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     }
 
     @Override
-    public DroolsScoreDirector clone() {
+    public DroolsScoreDirector<Solution_> clone() {
         // TODO experiment with serializing the KieSession to clone it and its entities but not its other facts.
         // See drools-compiler's test SerializationHelper.getSerialisedStatefulKnowledgeSession(...)
         // and use an identity FactFactory that:
         // - returns the reference for a non-@PlanningEntity fact
         // - returns a clone for a @PlanningEntity fact (Pitfall: chained planning entities)
         // Note: currently that will break incremental score calculation, but future drools versions might fix that
-        return (DroolsScoreDirector) super.clone();
+        return (DroolsScoreDirector<Solution_>) super.clone();
     }
 
     @Override
@@ -127,7 +126,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     // public void beforeEntityAdded(EntityDescriptor entityDescriptor, Object entity) // Do nothing
 
     @Override
-    public void afterEntityAdded(EntityDescriptor entityDescriptor, Object entity) {
+    public void afterEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         if (entity == null) {
             throw new IllegalArgumentException("The entity (" + entity + ") cannot be added to the ScoreDirector.");
         }
@@ -166,7 +165,7 @@ public class DroolsScoreDirector extends AbstractScoreDirector<DroolsScoreDirect
     // public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) // Do nothing
 
     @Override
-    public void afterEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
+    public void afterEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         FactHandle factHandle = kieSession.getFactHandle(entity);
         if (factHandle == null) {
             throw new IllegalArgumentException("The entity (" + entity

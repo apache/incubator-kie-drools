@@ -19,7 +19,7 @@ package org.optaplanner.examples.pas.persistence;
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
-public class PatientAdmissionScheduleDao extends XStreamSolutionDao {
+public class PatientAdmissionScheduleDao extends XStreamSolutionDao<PatientAdmissionSchedule> {
 
     public PatientAdmissionScheduleDao() {
         super("pas", PatientAdmissionSchedule.class);

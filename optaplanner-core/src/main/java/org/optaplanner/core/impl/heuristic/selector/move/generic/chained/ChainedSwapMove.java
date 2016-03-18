@@ -16,21 +16,20 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.domain.variable.inverserelation.SingletonInverseVariableSupply;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.move.generic.SwapMove;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class ChainedSwapMove extends SwapMove {
+import java.util.List;
+import java.util.Objects;
+
+public class ChainedSwapMove<Solution_> extends SwapMove<Solution_> {
 
     protected final List<SingletonInverseVariableSupply> inverseVariableSupplyList;
 
-    public ChainedSwapMove(List<GenuineVariableDescriptor> variableDescriptorList,
+    public ChainedSwapMove(List<GenuineVariableDescriptor<Solution_>> variableDescriptorList,
             List<SingletonInverseVariableSupply> inverseVariableSupplyList, Object leftEntity, Object rightEntity) {
         super(variableDescriptorList, leftEntity, rightEntity);
         this.inverseVariableSupplyList = inverseVariableSupplyList;
@@ -42,13 +41,13 @@ public class ChainedSwapMove extends SwapMove {
 
     @Override
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new ChainedSwapMove(variableDescriptorList, inverseVariableSupplyList, rightEntity, leftEntity);
+        return new ChainedSwapMove<>(variableDescriptorList, inverseVariableSupplyList, rightEntity, leftEntity);
     }
 
     @Override
     protected void doMoveOnGenuineVariables(ScoreDirector scoreDirector) {
         for (int i = 0; i < variableDescriptorList.size(); i++) {
-            GenuineVariableDescriptor variableDescriptor = variableDescriptorList.get(i);
+            GenuineVariableDescriptor<Solution_> variableDescriptor = variableDescriptorList.get(i);
             Object oldLeftValue = variableDescriptor.getValue(leftEntity);
             Object oldRightValue = variableDescriptor.getValue(rightEntity);
             if (!Objects.equals(oldLeftValue, oldRightValue)) {

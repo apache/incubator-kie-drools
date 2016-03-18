@@ -17,13 +17,9 @@
 package org.optaplanner.core.impl.score.director.drools;
 
 import org.kie.api.KieBase;
-import org.kie.api.definition.KiePackage;
-import org.kie.api.definition.rule.Global;
 import org.kie.api.runtime.KieSession;
-import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
-import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 
-public class LegacyDroolsScoreDirectorFactory extends DroolsScoreDirectorFactory {
+public class LegacyDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDirectorFactory<Solution_> {
 
     protected final KieBase kieBase;
 
@@ -42,8 +38,8 @@ public class LegacyDroolsScoreDirectorFactory extends DroolsScoreDirectorFactory
     // ************************************************************************
 
     @Override
-    public DroolsScoreDirector buildScoreDirector(boolean constraintMatchEnabledPreference) {
-        return new DroolsScoreDirector(this, constraintMatchEnabledPreference);
+    public DroolsScoreDirector<Solution_> buildScoreDirector(boolean constraintMatchEnabledPreference) {
+        return new DroolsScoreDirector<>(this, constraintMatchEnabledPreference);
     }
 
     @Override

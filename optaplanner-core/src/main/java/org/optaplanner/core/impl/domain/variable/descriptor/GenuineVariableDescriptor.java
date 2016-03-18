@@ -16,14 +16,7 @@
 
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-
 import org.apache.commons.lang3.ArrayUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -37,25 +30,23 @@ import org.optaplanner.core.impl.domain.valuerange.descriptor.CompositeValueRang
 import org.optaplanner.core.impl.domain.valuerange.descriptor.FromEntityPropertyValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.FromSolutionPropertyValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.ComparatorSelectionSorter;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorter;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionSorterWeightFactory;
-import org.optaplanner.core.impl.heuristic.selector.common.decorator.WeightFactorySelectionSorter;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.*;
 import org.optaplanner.core.impl.heuristic.selector.entity.decorator.NullValueReinitializeVariableEntityFilter;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class GenuineVariableDescriptor extends VariableDescriptor {
+import java.util.*;
+
+public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor {
 
     private boolean chained;
 
-    private ValueRangeDescriptor valueRangeDescriptor;
+    private ValueRangeDescriptor<Solution_> valueRangeDescriptor;
     private boolean nullable;
     private SelectionFilter reinitializeVariableEntityFilter;
     private SelectionSorter increasingStrengthSorter;
     private SelectionSorter decreasingStrengthSorter;
 
-    public GenuineVariableDescriptor(EntityDescriptor entityDescriptor,
+    public GenuineVariableDescriptor(EntityDescriptor<Solution_> entityDescriptor,
             MemberAccessor variableMemberAccessor) {
         super(entityDescriptor, variableMemberAccessor);
     }
@@ -120,7 +111,7 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
                     + " annotated property (" + variableMemberAccessor.getName()
                     + ") that has no valueRangeProviderRefs (" + Arrays.toString(valueRangeProviderRefs) + ").");
         }
-        List<ValueRangeDescriptor> valueRangeDescriptorList = new ArrayList<ValueRangeDescriptor>(valueRangeProviderRefs.length);
+        List<ValueRangeDescriptor<Solution_>> valueRangeDescriptorList = new ArrayList<>(valueRangeProviderRefs.length);
         boolean addNullInValueRange = nullable && valueRangeProviderRefs.length == 1;
         for (String valueRangeProviderRef : valueRangeProviderRefs) {
             valueRangeDescriptorList.add(buildValueRangeDescriptor(descriptorPolicy, valueRangeProviderRef, addNullInValueRange));
@@ -128,18 +119,18 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
         if (valueRangeDescriptorList.size() == 1) {
             valueRangeDescriptor = valueRangeDescriptorList.get(0);
         } else {
-            valueRangeDescriptor = new CompositeValueRangeDescriptor(this, nullable, valueRangeDescriptorList);
+            valueRangeDescriptor = new CompositeValueRangeDescriptor<>(this, nullable, valueRangeDescriptorList);
         }
     }
 
-    private ValueRangeDescriptor buildValueRangeDescriptor(DescriptorPolicy descriptorPolicy,
+    private ValueRangeDescriptor<Solution_> buildValueRangeDescriptor(DescriptorPolicy descriptorPolicy,
             String valueRangeProviderRef, boolean addNullInValueRange) {
         if (descriptorPolicy.hasFromSolutionValueRangeProvider(valueRangeProviderRef)) {
             MemberAccessor memberAccessor = descriptorPolicy.getFromSolutionValueRangeProvider(valueRangeProviderRef);
-            return new FromSolutionPropertyValueRangeDescriptor(this, addNullInValueRange, memberAccessor);
+            return new FromSolutionPropertyValueRangeDescriptor<>(this, addNullInValueRange, memberAccessor);
         } else if (descriptorPolicy.hasFromEntityValueRangeProvider(valueRangeProviderRef)) {
             MemberAccessor memberAccessor = descriptorPolicy.getFromEntityValueRangeProvider(valueRangeProviderRef);
-            return new FromEntityPropertyValueRangeDescriptor(this, addNullInValueRange, memberAccessor);
+            return new FromEntityPropertyValueRangeDescriptor<>(this, addNullInValueRange, memberAccessor);
         } else {
             Collection<String> providerIds = descriptorPolicy.getValueRangeProviderIds();
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
@@ -209,7 +200,7 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
         return reinitializeVariableEntityFilter;
     }
 
-    public ValueRangeDescriptor getValueRangeDescriptor() {
+    public ValueRangeDescriptor<Solution_> getValueRangeDescriptor() {
         return valueRangeDescriptor;
     }
 
@@ -235,7 +226,7 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
         return variable != null;
     }
 
-    public boolean isReinitializable(ScoreDirector scoreDirector, Object entity) {
+    public boolean isReinitializable(ScoreDirector<Solution_> scoreDirector, Object entity) {
         return reinitializeVariableEntityFilter.accept(scoreDirector, entity);
     }
 
@@ -247,7 +238,7 @@ public class GenuineVariableDescriptor extends VariableDescriptor {
         return decreasingStrengthSorter;
     }
 
-    public long getValueCount(Solution solution, Object entity) {
+    public long getValueCount(Solution_ solution, Object entity) {
         if (!valueRangeDescriptor.isCountable()) {
             // TODO report this better than just ignoring it
             return 0L;

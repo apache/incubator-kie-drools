@@ -16,28 +16,14 @@
 
 package org.optaplanner.examples.curriculumcourse.persistence;
 
+import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.curriculumcourse.domain.*;
+
 import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.curriculumcourse.domain.Course;
-import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
-import org.optaplanner.examples.curriculumcourse.domain.Curriculum;
-import org.optaplanner.examples.curriculumcourse.domain.Day;
-import org.optaplanner.examples.curriculumcourse.domain.Lecture;
-import org.optaplanner.examples.curriculumcourse.domain.Period;
-import org.optaplanner.examples.curriculumcourse.domain.Room;
-import org.optaplanner.examples.curriculumcourse.domain.Teacher;
-import org.optaplanner.examples.curriculumcourse.domain.Timeslot;
-import org.optaplanner.examples.curriculumcourse.domain.UnavailablePeriodPenalty;
-
-public class CurriculumCourseImporter extends AbstractTxtSolutionImporter {
+public class CurriculumCourseImporter extends AbstractTxtSolutionImporter<CourseSchedule> {
 
     private static final String INPUT_FILE_SUFFIX = "ctt";
     private static final String SPLIT_REGEX = "[\\ \\t]+";
@@ -55,13 +41,13 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter {
         return INPUT_FILE_SUFFIX;
     }
 
-    public TxtInputBuilder createTxtInputBuilder() {
+    public TxtInputBuilder<CourseSchedule> createTxtInputBuilder() {
         return new CurriculumCourseInputBuilder();
     }
 
-    public static class CurriculumCourseInputBuilder extends TxtInputBuilder {
+    public static class CurriculumCourseInputBuilder extends TxtInputBuilder<CourseSchedule> {
 
-        public Solution readSolution() throws IOException {
+        public CourseSchedule readSolution() throws IOException {
             CourseSchedule schedule = new CourseSchedule();
             schedule.setId(0L);
             // Name: ToyExample

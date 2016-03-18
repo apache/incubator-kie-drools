@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,14 @@
 
 package org.optaplanner.examples.projectjobscheduling.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
 import org.optaplanner.core.impl.score.buildin.bendable.BendableScoreDefinition;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
@@ -33,7 +32,7 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("PjsSchedule")
-public class Schedule extends AbstractPersistable implements Solution<BendableScore> {
+public class Schedule extends AbstractPersistable {
 
     private List<Project> projectList;
     private List<Job> jobList;
@@ -46,6 +45,7 @@ public class Schedule extends AbstractPersistable implements Solution<BendableSc
     @XStreamConverter(value = XStreamScoreConverter.class, types = {BendableScoreDefinition.class}, ints = {1, 2})
     private BendableScore score;
 
+    @PlanningFactCollectionProperty
     public List<Project> getProjectList() {
         return projectList;
     }
@@ -54,6 +54,7 @@ public class Schedule extends AbstractPersistable implements Solution<BendableSc
         this.projectList = projectList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Job> getJobList() {
         return jobList;
     }
@@ -62,6 +63,7 @@ public class Schedule extends AbstractPersistable implements Solution<BendableSc
         this.jobList = jobList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ExecutionMode> getExecutionModeList() {
         return executionModeList;
     }
@@ -70,6 +72,7 @@ public class Schedule extends AbstractPersistable implements Solution<BendableSc
         this.executionModeList = executionModeList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Resource> getResourceList() {
         return resourceList;
     }
@@ -78,6 +81,7 @@ public class Schedule extends AbstractPersistable implements Solution<BendableSc
         this.resourceList = resourceList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ResourceRequirement> getResourceRequirementList() {
         return resourceRequirementList;
     }
@@ -95,6 +99,7 @@ public class Schedule extends AbstractPersistable implements Solution<BendableSc
         this.allocationList = allocationList;
     }
 
+    @PlanningScore
     public BendableScore getScore() {
         return score;
     }
@@ -106,16 +111,5 @@ public class Schedule extends AbstractPersistable implements Solution<BendableSc
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(projectList);
-        facts.addAll(jobList);
-        facts.addAll(executionModeList);
-        facts.addAll(resourceList);
-        facts.addAll(resourceRequirementList);
-        // Do not add the planning entity's (allocationList) because that will be done automatically
-        return facts;
-    }
 
 }

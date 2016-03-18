@@ -16,15 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -32,14 +25,16 @@ import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class SwapMove extends AbstractMove {
+import java.util.*;
 
-    protected final List<GenuineVariableDescriptor> variableDescriptorList;
+public class SwapMove<Solution_> extends AbstractMove {
+
+    protected final List<GenuineVariableDescriptor<Solution_>> variableDescriptorList;
 
     protected final Object leftEntity;
     protected final Object rightEntity;
 
-    public SwapMove(List<GenuineVariableDescriptor> variableDescriptorList, Object leftEntity, Object rightEntity) {
+    public SwapMove(List<GenuineVariableDescriptor<Solution_>> variableDescriptorList, Object leftEntity, Object rightEntity) {
         this.variableDescriptorList = variableDescriptorList;
         this.leftEntity = leftEntity;
         this.rightEntity = rightEntity;
@@ -59,14 +54,15 @@ public class SwapMove extends AbstractMove {
 
     public boolean isMoveDoable(ScoreDirector scoreDirector) {
         boolean movable = false;
-        for (GenuineVariableDescriptor variableDescriptor : variableDescriptorList) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
             Object leftValue = variableDescriptor.getValue(leftEntity);
             Object rightValue = variableDescriptor.getValue(rightEntity);
             if (!Objects.equals(leftValue, rightValue)) {
                 movable = true;
                 if (!variableDescriptor.isValueRangeEntityIndependent()) {
-                    ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
-                    Solution workingSolution = scoreDirector.getWorkingSolution();
+                    ValueRangeDescriptor<Solution_> valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
+                    // type cast in order to avoid having to make Move and all its sub-types generic
+                    Solution_ workingSolution = (Solution_) scoreDirector.getWorkingSolution();
                     ValueRange rightValueRange = valueRangeDescriptor.extractValueRange(workingSolution, rightEntity);
                     if (!rightValueRange.contains(leftValue)) {
                         return false;
@@ -82,7 +78,7 @@ public class SwapMove extends AbstractMove {
     }
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
-        return new SwapMove(variableDescriptorList, rightEntity, leftEntity);
+        return new SwapMove<>(variableDescriptorList, rightEntity, leftEntity);
     }
 
     @Override

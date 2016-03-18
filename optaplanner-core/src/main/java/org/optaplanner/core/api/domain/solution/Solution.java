@@ -16,13 +16,13 @@
 
 package org.optaplanner.core.api.domain.solution;
 
-import java.util.Collection;
-
 import org.kie.api.runtime.KieSession;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
+
+import java.util.Collection;
 
 /**
  * A Solution represents a problem and a possible solution of that problem.
@@ -39,6 +39,7 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
  * describes declarative properties.
  * @param <S> the {@link Score} type used by this use case
  */
+@Deprecated
 public interface Solution<S extends Score> {
 
     /**

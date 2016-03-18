@@ -16,15 +16,13 @@
 
 package org.optaplanner.examples.curriculumcourse.persistence;
 
-import java.io.IOException;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.curriculumcourse.domain.CourseSchedule;
 import org.optaplanner.examples.curriculumcourse.domain.Lecture;
 
-public class CurriculumCourseExporter extends AbstractTxtSolutionExporter {
+import java.io.IOException;
 
+public class CurriculumCourseExporter extends AbstractTxtSolutionExporter<CourseSchedule> {
     private static final String OUTPUT_FILE_SUFFIX = "sol";
 
     public static void main(String[] args) {
@@ -40,16 +38,16 @@ public class CurriculumCourseExporter extends AbstractTxtSolutionExporter {
         return OUTPUT_FILE_SUFFIX;
     }
 
-    public TxtOutputBuilder createTxtOutputBuilder() {
+    public TxtOutputBuilder<CourseSchedule> createTxtOutputBuilder() {
         return new CurriculumCourseOutputBuilder();
     }
 
-    public static class CurriculumCourseOutputBuilder extends TxtOutputBuilder {
+    public static class CurriculumCourseOutputBuilder extends TxtOutputBuilder<CourseSchedule> {
 
         private CourseSchedule schedule;
 
-        public void setSolution(Solution solution) {
-            schedule = (CourseSchedule) solution;
+        public void setSolution(CourseSchedule solution) {
+            schedule = solution;
         }
 
         public void writeSolution() throws IOException {

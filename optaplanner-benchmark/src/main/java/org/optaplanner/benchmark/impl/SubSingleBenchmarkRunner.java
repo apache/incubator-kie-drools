@@ -16,12 +16,9 @@
 
 package org.optaplanner.benchmark.impl;
 
-import java.util.concurrent.Callable;
-
 import org.optaplanner.benchmark.impl.result.ProblemBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -32,7 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
-public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunner> {
+import java.util.concurrent.Callable;
+
+public class SubSingleBenchmarkRunner<Solution_> implements Callable<SubSingleBenchmarkRunner<Solution_>> {
 
     public static final String NAME_MDC = "subSingleBenchmark.name";
 
@@ -77,11 +76,11 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
     // ************************************************************************
 
     @Override
-    public SubSingleBenchmarkRunner call() {
+    public SubSingleBenchmarkRunner<Solution_> call() {
         MDC.put(NAME_MDC, subSingleBenchmarkResult.getName());
         Runtime runtime = Runtime.getRuntime();
-        ProblemBenchmarkResult problemBenchmarkResult = subSingleBenchmarkResult.getSingleBenchmarkResult().getProblemBenchmarkResult();
-        Solution inputSolution = problemBenchmarkResult.readPlanningProblem();
+        ProblemBenchmarkResult<Solution_> problemBenchmarkResult = subSingleBenchmarkResult.getSingleBenchmarkResult().getProblemBenchmarkResult();
+        Solution_ inputSolution = problemBenchmarkResult.readPlanningProblem();
         if (!problemBenchmarkResult.getPlannerBenchmarkResult().hasMultipleParallelBenchmarks()) {
             runtime.gc();
             subSingleBenchmarkResult.setUsedMemoryAfterInputSolution(runtime.totalMemory() - runtime.freeMemory());
@@ -89,28 +88,28 @@ public class SubSingleBenchmarkRunner implements Callable<SubSingleBenchmarkRunn
         logger.trace("Benchmark inputSolution has been read for subSingleBenchmarkResult ({}).",
                 subSingleBenchmarkResult);
 
-        SolverConfig solverConfig = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig();
+        SolverConfig<Solution_> solverConfig = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult().getSolverConfig();
         if (subSingleBenchmarkResult.getSingleBenchmarkResult().getSubSingleCount() > 1) {
-            solverConfig = new SolverConfig(solverConfig);
+            solverConfig = new SolverConfig<>(solverConfig);
             solverConfig.offerRandomSeedFromSubSingleIndex((long) subSingleBenchmarkResult.getSubSingleBenchmarkIndex());
         }
         // Intentionally create a fresh solver for every SingleBenchmarkResult to reset Random, tabu lists, ...
-        Solver<Solution> solver = solverConfig.buildSolver(solverConfigContext);
+        Solver<Solution_> solver = solverConfig.buildSolver(solverConfigContext);
 
         for (SubSingleStatistic subSingleStatistic : subSingleBenchmarkResult.getEffectiveSubSingleStatisticMap().values()) {
             subSingleStatistic.open(solver);
             subSingleStatistic.initPointList();
         }
 
-        Solution outputSolution = solver.solve(inputSolution);
+        Solution_ outputSolution = solver.solve(inputSolution);
         long timeMillisSpent = solver.getTimeMillisSpent();
 
-        DefaultSolverScope solverScope = ((DefaultSolver) solver).getSolverScope();
-        SolutionDescriptor solutionDescriptor = solverScope.getSolutionDescriptor();
+        DefaultSolverScope<Solution_> solverScope = ((DefaultSolver<Solution_>) solver).getSolverScope();
+        SolutionDescriptor<Solution_> solutionDescriptor = solverScope.getSolutionDescriptor();
         problemBenchmarkResult.registerScale(solutionDescriptor.getEntityCount(outputSolution),
                 solutionDescriptor.getGenuineVariableCount(outputSolution),
                 solutionDescriptor.getProblemScale(outputSolution));
-        subSingleBenchmarkResult.setScore(outputSolution.getScore());
+        subSingleBenchmarkResult.setScore(solutionDescriptor.getScore(outputSolution));
         subSingleBenchmarkResult.setUninitializedVariableCount(solverScope.getBestUninitializedVariableCount());
         subSingleBenchmarkResult.setTimeMillisSpent(timeMillisSpent);
         subSingleBenchmarkResult.setCalculateCount(solverScope.getCalculateCount());

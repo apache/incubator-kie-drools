@@ -16,20 +16,13 @@
 
 package org.optaplanner.examples.common.persistence;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
 
-import org.apache.commons.io.IOUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
-
-public abstract class AbstractTxtSolutionExporter extends AbstractSolutionExporter {
+public abstract class AbstractTxtSolutionExporter<Solution_> extends AbstractSolutionExporter<Solution_> {
 
     protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = "txt";
 
-    protected AbstractTxtSolutionExporter(SolutionDao solutionDao) {
+    protected AbstractTxtSolutionExporter(SolutionDao<Solution_> solutionDao) {
         super(solutionDao);
     }
 
@@ -41,25 +34,22 @@ public abstract class AbstractTxtSolutionExporter extends AbstractSolutionExport
         return DEFAULT_OUTPUT_FILE_SUFFIX;
     }
 
-    public abstract TxtOutputBuilder createTxtOutputBuilder();
+    public abstract TxtOutputBuilder<Solution_> createTxtOutputBuilder();
 
-    public void writeSolution(Solution solution, File outputFile) {
-        BufferedWriter bufferedWriter = null;
-        try {
-            bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"));
-            TxtOutputBuilder txtOutputBuilder = createTxtOutputBuilder();
-            txtOutputBuilder.setBufferedWriter(bufferedWriter);
+    public void writeSolution(Solution_ solution, File outputFile) {
+        try (BufferedWriter writer =
+                     new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFile), "UTF-8"))) {
+            TxtOutputBuilder<Solution_> txtOutputBuilder = createTxtOutputBuilder();
+            txtOutputBuilder.setBufferedWriter(writer);
             txtOutputBuilder.setSolution(solution);
             txtOutputBuilder.writeSolution();
+            logger.info("Exported: {}", outputFile);
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not write the file (" + outputFile.getName() + ").", e);
-        } finally {
-            IOUtils.closeQuietly(bufferedWriter);
         }
-        logger.info("Exported: {}", outputFile);
     }
 
-    public static abstract class TxtOutputBuilder extends OutputBuilder {
+    public static abstract class TxtOutputBuilder<Solution_> extends OutputBuilder {
 
         protected BufferedWriter bufferedWriter;
 
@@ -67,7 +57,7 @@ public abstract class AbstractTxtSolutionExporter extends AbstractSolutionExport
             this.bufferedWriter = bufferedWriter;
         }
 
-        public abstract void setSolution(Solution solution);
+        public abstract void setSolution(Solution_ solution);
 
         public abstract void writeSolution() throws IOException;
 

@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.api.domain.solution.cloner;
 
-import org.optaplanner.core.api.domain.solution.Solution;
-
 /**
  * Clones a {@link Solution} during planning.
  * Used to remember the state of a good {@link Solution} so it can be recalled at a later then
@@ -26,7 +24,7 @@ import org.optaplanner.core.api.domain.solution.Solution;
  * <p>
  * Planning cloning is hard: avoid doing it yourself.
  */
-public interface SolutionCloner<Solution_ extends Solution> {
+public interface SolutionCloner<Solution_> {
 
     /**
      * Does a planning clone. The returned {@link Solution} clone must fulfill these requirements:

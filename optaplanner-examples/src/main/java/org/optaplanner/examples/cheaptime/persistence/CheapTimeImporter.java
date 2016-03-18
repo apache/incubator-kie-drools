@@ -16,30 +16,18 @@
 
 package org.optaplanner.examples.cheaptime.persistence;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.optaplanner.examples.cheaptime.domain.*;
+import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
+import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+
+import java.io.*;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
-import org.optaplanner.examples.cheaptime.domain.Machine;
-import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
-import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
-import org.optaplanner.examples.cheaptime.domain.Resource;
-import org.optaplanner.examples.cheaptime.domain.Task;
-import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
-import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
-import org.optaplanner.examples.cheaptime.solver.CheapTimeCostCalculator;
-import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-
-public class CheapTimeImporter extends AbstractTxtSolutionImporter {
+public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolution> {
 
     public static void main(String[] args) {
         CheapTimeImporter importer = new CheapTimeImporter();
@@ -123,24 +111,24 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
         throw new IllegalStateException("The inputFile is a directory, so there is no suffix.");
     }
 
-    public TxtInputBuilder createTxtInputBuilder() {
+    public TxtInputBuilder<CheapTimeSolution> createTxtInputBuilder() {
         return new CheapTimeInputBuilder();
     }
 
     @Override
-    public Solution readSolution(File inputFile) {
+    public CheapTimeSolution readSolution(File inputFile) {
         // TODO Bridging hack because InputBuilder is designed for a single File.
         File instanceFile = new File(inputFile, "instance.txt");
         return super.readSolution(instanceFile);
     }
 
-    public static class CheapTimeInputBuilder extends TxtInputBuilder {
+    public static class CheapTimeInputBuilder extends TxtInputBuilder<CheapTimeSolution> {
 
         private CheapTimeSolution solution;
 
         private int resourceListSize;
 
-        public Solution readSolution() throws IOException {
+        public CheapTimeSolution readSolution() throws IOException {
             solution = new CheapTimeSolution();
             solution.setId(0L);
             int timeResolutionInMinutes = readIntegerValue();
@@ -305,10 +293,10 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter {
             }
         }
 
-        public class ForecastInputBuilder extends TxtInputBuilder {
+        public class ForecastInputBuilder extends TxtInputBuilder<CheapTimeSolution> {
 
             @Override
-            public Solution readSolution() throws IOException {
+            public CheapTimeSolution readSolution() throws IOException {
                 int periodListSize = readIntegerValue();
                 long periodDurationPerHour = CheapTimeCostCalculator.divideTwoMicros(
                         CheapTimeCostCalculator.toMicroCost(1440),

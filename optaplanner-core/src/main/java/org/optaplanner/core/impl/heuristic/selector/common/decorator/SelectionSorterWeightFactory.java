@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
 
@@ -27,7 +26,7 @@ import org.optaplanner.core.impl.heuristic.selector.Selector;
  * The selections are then sorted by their weight,
  * normally ascending unless its configured descending.
  */
-public interface SelectionSorterWeightFactory<Solution_ extends Solution, T> {
+public interface SelectionSorterWeightFactory<Solution_, T> {
 
     /**
      * @param solution never null, the {@link Solution} to which the selection belongs or applies to

@@ -16,8 +16,6 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
-import java.util.Collections;
-
 import org.junit.Test;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
@@ -34,22 +32,25 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedEntity;
 import org.optaplanner.core.impl.testdata.domain.chained.rich.TestdataRichChainedSolution;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.*;
+import java.util.Collections;
+
+import static org.junit.Assert.assertSame;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertInstanceOf;
 
 public class VariableListenerSupportTest {
 
     @Test
     public void demandBasic() {
-        SolutionDescriptor solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
+        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
+        InnerScoreDirector<TestdataSolution> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         TestdataSolution solution = new TestdataSolution();
         solution.setEntityList(Collections.<TestdataEntity>emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
-        VariableListenerSupport variableListenerSupport = new VariableListenerSupport(scoreDirector);
+        VariableListenerSupport<TestdataSolution> variableListenerSupport = new VariableListenerSupport<>(scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
         VariableDescriptor variableDescriptor = solutionDescriptor.getEntityDescriptorStrict(TestdataEntity.class)
@@ -64,14 +65,16 @@ public class VariableListenerSupportTest {
 
     @Test
     public void demandChained() {
-        SolutionDescriptor solutionDescriptor = TestdataChainedSolution.buildSolutionDescriptor();
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
+        SolutionDescriptor<TestdataChainedSolution> solutionDescriptor
+                = TestdataChainedSolution.buildSolutionDescriptor();
+        InnerScoreDirector<TestdataChainedSolution> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         TestdataChainedSolution solution = new TestdataChainedSolution();
         solution.setChainedEntityList(Collections.<TestdataChainedEntity>emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
-        VariableListenerSupport variableListenerSupport = new VariableListenerSupport(scoreDirector);
+        VariableListenerSupport<TestdataChainedSolution> variableListenerSupport
+                = new VariableListenerSupport<>(scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
         VariableDescriptor variableDescriptor = solutionDescriptor.getEntityDescriptorStrict(TestdataChainedEntity.class)
@@ -87,14 +90,16 @@ public class VariableListenerSupportTest {
 
     @Test
     public void demandRichChained() {
-        SolutionDescriptor solutionDescriptor = TestdataRichChainedSolution.buildSolutionDescriptor();
-        InnerScoreDirector scoreDirector = mock(InnerScoreDirector.class);
+        SolutionDescriptor<TestdataRichChainedSolution> solutionDescriptor
+                = TestdataRichChainedSolution.buildSolutionDescriptor();
+        InnerScoreDirector<TestdataRichChainedSolution> scoreDirector = mock(InnerScoreDirector.class);
         when(scoreDirector.getSolutionDescriptor()).thenReturn(solutionDescriptor);
         TestdataRichChainedSolution solution = new TestdataRichChainedSolution();
         solution.setChainedEntityList(Collections.<TestdataRichChainedEntity>emptyList());
         when(scoreDirector.getWorkingSolution()).thenReturn(solution);
         when(scoreDirector.getSupplyManager()).thenReturn(mock(SupplyManager.class));
-        VariableListenerSupport variableListenerSupport = new VariableListenerSupport(scoreDirector);
+        VariableListenerSupport<TestdataRichChainedSolution> variableListenerSupport
+                = new VariableListenerSupport<>(scoreDirector);
         variableListenerSupport.linkVariableListeners();
 
         VariableDescriptor variableDescriptor = solutionDescriptor.getEntityDescriptorStrict(TestdataRichChainedEntity.class)

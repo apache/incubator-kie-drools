@@ -16,30 +16,27 @@
 
 package org.optaplanner.core.config.domain;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import org.apache.commons.lang3.StringUtils;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.config.AbstractConfig;
+import org.optaplanner.core.config.SolverConfigContext;
+import org.optaplanner.core.config.util.ConfigUtils;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.reflections.Reflections;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
+
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamImplicit;
-import org.apache.commons.lang3.StringUtils;
-import org.drools.core.common.ProjectClassLoader;
-import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.core.config.AbstractConfig;
-import org.optaplanner.core.config.SolverConfigContext;
-import org.optaplanner.core.config.util.ConfigUtils;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.reflections.Reflections;
-import org.reflections.util.ClasspathHelper;
-import org.reflections.util.ConfigurationBuilder;
-import org.reflections.util.FilterBuilder;
-
 @XStreamAlias("scanAnnotatedClasses")
-public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClassesConfig> {
+public class ScanAnnotatedClassesConfig<Solution_> extends AbstractConfig<ScanAnnotatedClassesConfig> {
 
     @XStreamImplicit(itemFieldName = "packageInclude")
     private List<String> packageIncludeList = null;
@@ -56,7 +53,7 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
     // Builder methods
     // ************************************************************************
 
-    public SolutionDescriptor buildSolutionDescriptor(SolverConfigContext configContext) {
+    public SolutionDescriptor<Solution_> buildSolutionDescriptor(SolverConfigContext configContext) {
         ClassLoader[] classLoaders;
         if (configContext.getClassLoader() != null) {
             classLoaders = new ClassLoader[] {configContext.getClassLoader()};
@@ -84,12 +81,12 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
         }
         builder.setClassLoaders(classLoaders);
         Reflections reflections = new Reflections(builder);
-        Class<? extends Solution> solutionClass = loadSolutionClass(reflections);
+        Class<Solution_> solutionClass = loadSolutionClass(reflections);
         List<Class<?>> entityClassList = loadEntityClassList(reflections);
         return SolutionDescriptor.buildSolutionDescriptor(solutionClass, entityClassList);
     }
 
-    protected Class<? extends Solution> loadSolutionClass(Reflections reflections) {
+    protected Class<Solution_> loadSolutionClass(Reflections reflections) {
         Set<Class<?>> solutionClassSet = reflections.getTypesAnnotatedWith(PlanningSolution.class);
         retainOnlyClassesWithDeclaredAnnotation(solutionClassSet, PlanningSolution.class);
         if (ConfigUtils.isEmptyCollection(solutionClassSet)) {
@@ -108,7 +105,7 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
                     + ") found multiple classes (" + solutionClassSet
                     + ") with a " + PlanningSolution.class.getSimpleName() + " annotation.");
         }
-        Class<? extends Solution> solutionClass = (Class<? extends Solution>) solutionClassSet.iterator().next();
+        Class<Solution_> solutionClass = (Class<Solution_>) solutionClassSet.iterator().next();
         return solutionClass;
     }
 
@@ -120,7 +117,7 @@ public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClas
                     + ") did not find any classes with a " + PlanningEntity.class.getSimpleName()
                     + " annotation.");
         }
-        return new ArrayList<Class<?>>(entityClassSet);
+        return new ArrayList<>(entityClassSet);
     }
 
     private void retainOnlyClassesWithDeclaredAnnotation(Set<Class<?>> classSet, Class<? extends Annotation> annotation) {

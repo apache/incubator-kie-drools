@@ -19,7 +19,7 @@ package org.optaplanner.core.impl.localsearch.scope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
-public class LocalSearchStepScope extends AbstractStepScope {
+public class LocalSearchStepScope<Solution_> extends AbstractStepScope<Solution_> {
 
     private final LocalSearchPhaseScope phaseScope;
 
@@ -30,17 +30,17 @@ public class LocalSearchStepScope extends AbstractStepScope {
     private Long selectedMoveCount = null;
     private Long acceptedMoveCount = null;
 
-    public LocalSearchStepScope(LocalSearchPhaseScope phaseScope) {
+    public LocalSearchStepScope(LocalSearchPhaseScope<Solution_> phaseScope) {
         this(phaseScope, phaseScope.getNextStepIndex());
     }
 
-    public LocalSearchStepScope(LocalSearchPhaseScope phaseScope, int stepIndex) {
+    public LocalSearchStepScope(LocalSearchPhaseScope<Solution_> phaseScope, int stepIndex) {
         super(stepIndex);
         this.phaseScope = phaseScope;
     }
 
     @Override
-    public LocalSearchPhaseScope getPhaseScope() {
+    public LocalSearchPhaseScope<Solution_> getPhaseScope() {
         return phaseScope;
     }
 

@@ -16,16 +16,15 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
-public class FromEntityPropertyValueRangeDescriptor extends AbstractFromPropertyValueRangeDescriptor {
+public class FromEntityPropertyValueRangeDescriptor<Solution_>
+        extends AbstractFromPropertyValueRangeDescriptor<Solution_> {
 
-    public FromEntityPropertyValueRangeDescriptor(
-            GenuineVariableDescriptor variableDescriptor, boolean addNullInValueRange,
-            MemberAccessor memberAccessor) {
+    public FromEntityPropertyValueRangeDescriptor(GenuineVariableDescriptor<Solution_> variableDescriptor,
+                                                  boolean addNullInValueRange, MemberAccessor memberAccessor) {
         super(variableDescriptor, addNullInValueRange, memberAccessor);
     }
 
@@ -39,7 +38,7 @@ public class FromEntityPropertyValueRangeDescriptor extends AbstractFromProperty
     }
 
     @Override
-    public ValueRange<?> extractValueRange(Solution solution, Object entity) {
+    public ValueRange<?> extractValueRange(Solution_ solution, Object entity) {
         return readValueRange(entity);
     }
 

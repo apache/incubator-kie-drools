@@ -16,11 +16,6 @@
 
 package org.optaplanner.core.impl.solver.scope;
 
-import java.util.List;
-import java.util.Random;
-
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.ScoreUtils;
@@ -29,20 +24,23 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DefaultSolverScope {
+import java.util.List;
+import java.util.Random;
+
+public class DefaultSolverScope<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     protected int startingSolverCount;
     protected Random workingRandom;
-    protected InnerScoreDirector scoreDirector;
+    protected InnerScoreDirector<Solution_> scoreDirector;
 
     protected Long startingSystemTimeMillis;
     protected Long endingSystemTimeMillis;
 
     protected Score startingInitializedScore; // TODO after initialization => ambiguous with solve()'s planningProblem
 
-    protected volatile Solution bestSolution;
+    protected volatile Solution_ bestSolution;
     protected int bestUninitializedVariableCount; // TODO remove me by folding me into bestSolution.getScore(): https://issues.jboss.org/browse/PLANNER-405
     protected Score bestScore; // TODO remove me by folding me into bestSolution.getScore(): https://issues.jboss.org/browse/PLANNER-405
     protected Long bestSolutionTimeMillis;
@@ -64,11 +62,11 @@ public class DefaultSolverScope {
         this.workingRandom = workingRandom;
     }
 
-    public InnerScoreDirector getScoreDirector() {
+    public InnerScoreDirector<Solution_> getScoreDirector() {
         return scoreDirector;
     }
 
-    public void setScoreDirector(InnerScoreDirector scoreDirector) {
+    public void setScoreDirector(InnerScoreDirector<Solution_> scoreDirector) {
         this.scoreDirector = scoreDirector;
     }
 
@@ -88,7 +86,7 @@ public class DefaultSolverScope {
         this.endingSystemTimeMillis = endingSystemTimeMillis;
     }
 
-    public SolutionDescriptor getSolutionDescriptor() {
+    public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return scoreDirector.getSolutionDescriptor();
     }
 
@@ -96,7 +94,7 @@ public class DefaultSolverScope {
         return scoreDirector.getScoreDefinition();
     }
 
-    public Solution getWorkingSolution() {
+    public Solution_ getWorkingSolution() {
         return scoreDirector.getWorkingSolution();
     }
 
@@ -124,7 +122,7 @@ public class DefaultSolverScope {
         scoreDirector.assertWorkingScoreFromScratch(workingScore, completedAction);
     }
 
-    public void assertScoreFromScratch(Solution solution) {
+    public void assertScoreFromScratch(Solution_ solution) {
         scoreDirector.getScoreDirectorFactory().assertScoreFromScratch(solution);
     }
 
@@ -140,7 +138,7 @@ public class DefaultSolverScope {
         return scoreDirector.getCalculateCount();
     }
 
-    public Solution getBestSolution() {
+    public Solution_ getBestSolution() {
         return bestSolution;
     }
 
@@ -148,7 +146,7 @@ public class DefaultSolverScope {
      * The bestSolution must never be the same instance as the workingSolution, it should be a (un)changed clone.
      * @param bestSolution never null
      */
-    public void setBestSolution(Solution bestSolution) {
+    public void setBestSolution(Solution_ bestSolution) {
         this.bestSolution = bestSolution;
     }
 

@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.score.director.incremental;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -31,7 +30,7 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
  * @param <Solution_> Subclass of {@link Solution}
  * @see IncrementalScoreDirector
  */
-public interface IncrementalScoreCalculator<Solution_ extends Solution> {
+public interface IncrementalScoreCalculator<Solution_> {
 
     /**
      * There are no {@link #beforeEntityAdded(Object)} and {@link #afterEntityAdded(Object)} calls

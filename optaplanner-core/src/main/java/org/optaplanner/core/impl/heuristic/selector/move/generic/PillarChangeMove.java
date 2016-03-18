@@ -16,14 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -31,17 +25,23 @@ import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 /**
  * Non-cacheable.
  */
-public class PillarChangeMove extends AbstractMove {
+public class PillarChangeMove<Solution_> extends AbstractMove {
 
-    protected final GenuineVariableDescriptor variableDescriptor;
+    protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
 
     protected final List<Object> pillar;
     protected final Object toPlanningValue;
 
-    public PillarChangeMove(List<Object> pillar, GenuineVariableDescriptor variableDescriptor, Object toPlanningValue) {
+    public PillarChangeMove(List<Object> pillar, GenuineVariableDescriptor<Solution_> variableDescriptor,
+                            Object toPlanningValue) {
         this.pillar = pillar;
         this.variableDescriptor = variableDescriptor;
         this.toPlanningValue = toPlanningValue;
@@ -65,8 +65,9 @@ public class PillarChangeMove extends AbstractMove {
             return false;
         }
         if (!variableDescriptor.isValueRangeEntityIndependent()) {
-            ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
-            Solution workingSolution = scoreDirector.getWorkingSolution();
+            ValueRangeDescriptor<Solution_> valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
+            // type cast in order to avoid having to make Move and all its sub-types generic
+            Solution_ workingSolution = (Solution_) scoreDirector.getWorkingSolution();
             for (Object entity : pillar) {
                 ValueRange rightValueRange = valueRangeDescriptor.extractValueRange(workingSolution, entity);
                 if (!rightValueRange.contains(toPlanningValue)) {
@@ -79,7 +80,7 @@ public class PillarChangeMove extends AbstractMove {
 
     public Move createUndoMove(ScoreDirector scoreDirector) {
         Object oldValue = variableDescriptor.getValue(pillar.get(0));
-        return new PillarChangeMove(pillar, variableDescriptor, oldValue);
+        return new PillarChangeMove<>(pillar, variableDescriptor, oldValue);
     }
 
     @Override

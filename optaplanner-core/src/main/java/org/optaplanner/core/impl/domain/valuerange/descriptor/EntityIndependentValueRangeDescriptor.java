@@ -16,17 +16,16 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 
-public interface EntityIndependentValueRangeDescriptor extends ValueRangeDescriptor {
+public interface EntityIndependentValueRangeDescriptor<Solution_> extends ValueRangeDescriptor<Solution_> {
 
     /**
-     * As specified by {@link #extractValueRange(Solution, Object)}.
+     * As specified by {@link #extractValueRange(Solution_, Object)}.
      * @param solution never null
      * @return never null
-     * @see #extractValueRange(Solution, Object)
+     * @see #extractValueRange(Solution_, Object)
      */
-    ValueRange<?> extractValueRange(Solution solution);
+    ValueRange<?> extractValueRange(Solution_ solution);
 
 }

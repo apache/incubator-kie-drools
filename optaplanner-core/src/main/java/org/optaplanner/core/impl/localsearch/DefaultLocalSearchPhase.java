@@ -22,7 +22,6 @@ import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleList
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.AbstractPhase;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
@@ -101,7 +100,7 @@ public class DefaultLocalSearchPhase extends AbstractPhase implements LocalSearc
         Move nextStep = stepScope.getStep();
         nextStep.doMove(stepScope.getScoreDirector());
         // there is no need to recalculate the score, but we still need to set it
-        phaseScope.getWorkingSolution().setScore(stepScope.getScore());
+        phaseScope.getSolutionDescriptor().setScore(phaseScope.getWorkingSolution(), stepScope.getScore());
         if (assertStepScoreFromScratch) {
             phaseScope.assertWorkingScoreFromScratch(stepScope.getScore(), nextStep);
         }

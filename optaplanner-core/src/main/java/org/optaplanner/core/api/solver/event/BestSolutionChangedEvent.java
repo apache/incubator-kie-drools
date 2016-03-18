@@ -16,20 +16,21 @@
 
 package org.optaplanner.core.api.solver.event;
 
-import java.util.EventObject;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.FeasibilityScore;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
+
+import java.util.EventObject;
 
 /**
  * Delivered when the best {@link Solution} changes during solving.
  * Delivered in the solver thread (which is the thread that calls {@link Solver#solve(Solution)}.
  */
-public class BestSolutionChangedEvent<Solution_ extends Solution> extends EventObject {
+public class BestSolutionChangedEvent<Solution_> extends EventObject {
 
-    private final Solver<Solution_> solver;
+    private final DefaultSolver<Solution_> solver;
     private final long timeMillisSpent;
     private final Solution_ newBestSolution;
     private final int newUninitializedVariableCount;
@@ -40,8 +41,8 @@ public class BestSolutionChangedEvent<Solution_ extends Solution> extends EventO
      * @param newBestSolution never null
      * @param newUninitializedVariableCount {@code >= 0}
      */
-    public BestSolutionChangedEvent(Solver<Solution_> solver, long timeMillisSpent, Solution_ newBestSolution,
-            int newUninitializedVariableCount) {
+    public BestSolutionChangedEvent(DefaultSolver<Solution_> solver, long timeMillisSpent, Solution_ newBestSolution,
+                                    int newUninitializedVariableCount) {
         super(solver);
         this.solver = solver;
         this.timeMillisSpent = timeMillisSpent;
@@ -69,6 +70,14 @@ public class BestSolutionChangedEvent<Solution_ extends Solution> extends EventO
      */
     public Solution_ getNewBestSolution() {
         return newBestSolution;
+    }
+
+    /**
+     *
+     * @return never null
+     */
+    public Score getNewBestScore() {
+        return this.solver.getSolverScope().getSolutionDescriptor().getScore(this.getNewBestSolution());
     }
 
     /**

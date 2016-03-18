@@ -16,27 +16,26 @@
 
 package org.optaplanner.core.impl.constructionheuristic.scope;
 
-import java.util.Random;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
-public class ConstructionHeuristicMoveScope {
+import java.util.Random;
 
-    private final ConstructionHeuristicStepScope stepScope;
+public class ConstructionHeuristicMoveScope<Solution_> {
+
+    private final ConstructionHeuristicStepScope<Solution_> stepScope;
 
     private int moveIndex;
     private Move move = null;
     private Move undoMove = null;
     private Score score = null;
 
-    public ConstructionHeuristicMoveScope(ConstructionHeuristicStepScope stepScope) {
+    public ConstructionHeuristicMoveScope(ConstructionHeuristicStepScope<Solution_> stepScope) {
         this.stepScope = stepScope;
     }
 
-    public ConstructionHeuristicStepScope getStepScope() {
+    public ConstructionHeuristicStepScope<Solution_> getStepScope() {
         return stepScope;
     }
 
@@ -76,11 +75,11 @@ public class ConstructionHeuristicMoveScope {
     // Calculated methods
     // ************************************************************************
 
-    public ScoreDirector getScoreDirector() {
+    public ScoreDirector<Solution_> getScoreDirector() {
         return stepScope.getScoreDirector();
     }
 
-    public Solution getWorkingSolution() {
+    public Solution_ getWorkingSolution() {
         return stepScope.getWorkingSolution();
     }
 

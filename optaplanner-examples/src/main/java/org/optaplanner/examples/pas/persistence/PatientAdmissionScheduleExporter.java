@@ -16,18 +16,16 @@
 
 package org.optaplanner.examples.pas.persistence;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-
 import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.pas.domain.BedDesignation;
 import org.optaplanner.examples.pas.domain.Patient;
 import org.optaplanner.examples.pas.domain.PatientAdmissionSchedule;
 
-public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporter {
+import java.io.IOException;
+import java.util.Collections;
+
+public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporter<PatientAdmissionSchedule> {
 
     public static void main(String[] args) {
         new PatientAdmissionScheduleExporter().convertAll();
@@ -37,28 +35,24 @@ public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporte
         super(new PatientAdmissionScheduleDao());
     }
 
-    public TxtOutputBuilder createTxtOutputBuilder() {
+    public TxtOutputBuilder<PatientAdmissionSchedule> createTxtOutputBuilder() {
         return new PatientAdmissionScheduleOutputBuilder();
     }
 
-    public static class PatientAdmissionScheduleOutputBuilder extends TxtOutputBuilder {
+    public static class PatientAdmissionScheduleOutputBuilder extends TxtOutputBuilder<PatientAdmissionSchedule> {
 
         private PatientAdmissionSchedule patientAdmissionSchedule;
 
-        public void setSolution(Solution solution) {
-            patientAdmissionSchedule = (PatientAdmissionSchedule) solution;
+        public void setSolution(PatientAdmissionSchedule solution) {
+            patientAdmissionSchedule = solution;
         }
 
         public void writeSolution() throws IOException {
-            Collections.sort(patientAdmissionSchedule.getBedDesignationList(), new Comparator<BedDesignation>() {
-                public int compare(BedDesignation a, BedDesignation b) {
-                    return new CompareToBuilder()
-                            .append(a.getAdmissionPart(), b.getAdmissionPart())
-                            .append(a.getBed(), b.getBed())
-                            .append(a.getId(), b.getId())
-                            .toComparison();
-                }
-            });
+            Collections.sort(patientAdmissionSchedule.getBedDesignationList(), (a, b) -> new CompareToBuilder()
+                    .append(a.getAdmissionPart(), b.getAdmissionPart())
+                    .append(a.getBed(), b.getBed())
+                    .append(a.getId(), b.getId())
+                    .toComparison());
             for (Patient patient : patientAdmissionSchedule.getPatientList()) {
                 bufferedWriter.write(Long.toString(patient.getId()));
                 for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {

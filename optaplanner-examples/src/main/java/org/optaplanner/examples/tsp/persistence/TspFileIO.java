@@ -16,12 +16,12 @@
 
 package org.optaplanner.examples.tsp.persistence;
 
-import java.io.File;
-
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.examples.tsp.domain.TspSolution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-public class TspFileIO implements SolutionFileIO {
+import java.io.File;
+
+public class TspFileIO implements SolutionFileIO<TspSolution> {
 
     private TspImporter importer = new TspImporter();
     private TspExporter exporter = new TspExporter();
@@ -34,11 +34,11 @@ public class TspFileIO implements SolutionFileIO {
         return TspExporter.OUTPUT_FILE_SUFFIX;
     }
 
-    public Solution read(File inputSolutionFile) {
+    public TspSolution read(File inputSolutionFile) {
         return importer.readSolution(inputSolutionFile);
     }
 
-    public void write(Solution solution, File outputSolutionFile) {
+    public void write(TspSolution solution, File outputSolutionFile) {
         exporter.writeSolution(solution, outputSolutionFile);
     }
 

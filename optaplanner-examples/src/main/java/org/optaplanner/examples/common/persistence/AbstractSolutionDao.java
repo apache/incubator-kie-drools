@@ -16,12 +16,12 @@
 
 package org.optaplanner.examples.common.persistence;
 
-import java.io.File;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractSolutionDao implements SolutionDao {
+import java.io.File;
+
+public abstract class AbstractSolutionDao<Solution_> implements SolutionDao<Solution_> {
 
     /**
      * The path to the data directory, preferably with unix slashes for portability.

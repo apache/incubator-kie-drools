@@ -19,7 +19,7 @@ package org.optaplanner.examples.tsp.persistence;
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
 import org.optaplanner.examples.tsp.domain.TspSolution;
 
-public class TspDao extends XStreamSolutionDao {
+public class TspDao extends XStreamSolutionDao<TspSolution> {
 
     public TspDao() {
         super("tsp", TspSolution.class);

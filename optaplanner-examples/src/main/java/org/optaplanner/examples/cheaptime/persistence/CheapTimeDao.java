@@ -19,7 +19,7 @@ package org.optaplanner.examples.cheaptime.persistence;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
 
-public class CheapTimeDao extends XStreamSolutionDao {
+public class CheapTimeDao extends XStreamSolutionDao<CheapTimeSolution> {
 
     public CheapTimeDao() {
         super("cheaptime", CheapTimeSolution.class);

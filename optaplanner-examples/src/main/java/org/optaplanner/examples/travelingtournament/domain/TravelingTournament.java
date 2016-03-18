@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package org.optaplanner.examples.travelingtournament.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,8 +23,9 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
@@ -35,7 +34,7 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("TravelingTournament")
-public class TravelingTournament extends AbstractPersistable implements Solution<HardSoftScore> {
+public class TravelingTournament extends AbstractPersistable {
 
     private List<Day> dayList;
     private List<Team> teamList;
@@ -46,6 +45,7 @@ public class TravelingTournament extends AbstractPersistable implements Solution
     private HardSoftScore score;
 
     @ValueRangeProvider(id = "dayRange")
+    @PlanningFactCollectionProperty
     public List<Day> getDayList() {
         return dayList;
     }
@@ -54,6 +54,7 @@ public class TravelingTournament extends AbstractPersistable implements Solution
         this.dayList = dayList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Team> getTeamList() {
         return teamList;
     }
@@ -71,6 +72,7 @@ public class TravelingTournament extends AbstractPersistable implements Solution
         this.matchList = matchSets;
     }
 
+    @PlanningScore
     public HardSoftScore getScore() {
         return score;
     }
@@ -85,14 +87,6 @@ public class TravelingTournament extends AbstractPersistable implements Solution
 
     public int getN() {
         return teamList.size();
-    }
-
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(dayList);
-        facts.addAll(teamList);
-        // Do not add the planning entity's (matchList) because that will be done automatically
-        return facts;
     }
 
     public boolean equals(Object o) {

@@ -16,20 +16,18 @@
 
 package org.optaplanner.core.impl.testdata.domain.collection;
 
-import java.util.Collection;
-import java.util.Set;
-
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
+import java.util.Collection;
+import java.util.Set;
+
 @PlanningSolution
-public class TestdataSetBasedSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataSetBasedSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataSetBasedSolution.class, TestdataSetBasedEntity.class);
@@ -65,6 +63,7 @@ public class TestdataSetBasedSolution extends TestdataObject implements Solution
         this.entitySet = entitySet;
     }
 
+    @PlanningScore
     public SimpleScore getScore() {
         return score;
     }
@@ -77,6 +76,7 @@ public class TestdataSetBasedSolution extends TestdataObject implements Solution
     // Complex methods
     // ************************************************************************
 
+    @PlanningFactCollectionProperty
     public Collection<? extends Object> getProblemFacts() {
         return valueSet;
     }

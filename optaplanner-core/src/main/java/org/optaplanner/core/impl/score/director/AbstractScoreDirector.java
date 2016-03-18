@@ -16,17 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
@@ -42,6 +31,8 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.*;
+
 /**
  * Abstract superclass for {@link ScoreDirector}.
  * <p>
@@ -52,8 +43,8 @@ import org.slf4j.LoggerFactory;
  * </ul>
  * @see ScoreDirector
  */
-public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirectorFactory>
-        implements InnerScoreDirector, Cloneable {
+public abstract class AbstractScoreDirector<Solution_, Factory_ extends AbstractScoreDirectorFactory<Solution_>>
+        implements InnerScoreDirector<Solution_>, Cloneable {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -61,7 +52,7 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
     protected final boolean constraintMatchEnabledPreference;
     protected final VariableListenerSupport variableListenerSupport;
 
-    protected Solution workingSolution;
+    protected Solution_ workingSolution;
     protected long workingEntityListRevision = 0L;
 
     protected boolean allChangesWillBeUndoneBeforeStepEnds = false;
@@ -79,7 +70,7 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
         return scoreDirectorFactory;
     }
 
-    public SolutionDescriptor getSolutionDescriptor() {
+    public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return scoreDirectorFactory.getSolutionDescriptor();
     }
 
@@ -87,7 +78,7 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
         return scoreDirectorFactory.getScoreDefinition();
     }
 
-    public Solution getWorkingSolution() {
+    public Solution_ getWorkingSolution() {
         return workingSolution;
     }
 
@@ -119,7 +110,7 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
     // Complex methods
     // ************************************************************************
 
-    public void setWorkingSolution(Solution workingSolution) {
+    public void setWorkingSolution(Solution_ workingSolution) {
         this.workingSolution = workingSolution;
         variableListenerSupport.resetWorkingSolution();
         setWorkingEntityListDirty();
@@ -133,18 +124,20 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
         workingEntityListRevision++;
     }
 
-    public Solution cloneWorkingSolution() {
+    public Solution_ cloneWorkingSolution() {
         return cloneSolution(workingSolution);
     }
 
-    public Solution cloneSolution(Solution originalSolution) {
-        SolutionDescriptor solutionDescriptor = getSolutionDescriptor();
-        Solution cloneSolution = solutionDescriptor.getSolutionCloner().cloneSolution(originalSolution);
+    public Solution_ cloneSolution(Solution_ originalSolution) {
+        SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
+        Score originalScore = solutionDescriptor.getScore(originalSolution);
+        Solution_ cloneSolution = solutionDescriptor.getSolutionCloner().cloneSolution(originalSolution);
+        Score cloneScore = solutionDescriptor.getScore(cloneSolution);
         if (scoreDirectorFactory.isAssertClonedSolution()) {
-            if (!Objects.equals(originalSolution.getScore(), cloneSolution.getScore())) {
+            if (!Objects.equals(originalScore, cloneScore)) {
                 throw new IllegalStateException("Cloning corruption: "
-                        + "the original's score (" + originalSolution.getScore()
-                        + ") is different from the clone's score (" + cloneSolution.getScore() + ").\n"
+                        + "the original's score (" + originalScore
+                        + ") is different from the clone's score (" + cloneScore + ").\n"
                         + "Check the " + SolutionCloner.class.getSimpleName() + ".");
             }
             List<Object> originalEntityList = solutionDescriptor.getEntityList(originalSolution);
@@ -188,7 +181,7 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
     }
 
     protected void setCalculatedScore(Score score) {
-        workingSolution.setScore(score);
+        getSolutionDescriptor().setScore(workingSolution, score);
         calculateCount++;
     }
 
@@ -237,11 +230,11 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
         afterEntityRemoved(getSolutionDescriptor().findEntityDescriptorOrFail(entity.getClass()), entity);
     }
 
-    public void beforeEntityAdded(EntityDescriptor entityDescriptor, Object entity) {
+    public void beforeEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         variableListenerSupport.beforeEntityAdded(entityDescriptor, entity);
     }
 
-    public void afterEntityAdded(EntityDescriptor entityDescriptor, Object entity) {
+    public void afterEntityAdded(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         variableListenerSupport.afterEntityAdded(entityDescriptor, entity);
         if (!allChangesWillBeUndoneBeforeStepEnds) {
             setWorkingEntityListDirty();
@@ -262,11 +255,11 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
         afterVariableChanged(variableDescriptor, entity);
     }
 
-    public void beforeEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
+    public void beforeEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         variableListenerSupport.beforeEntityRemoved(entityDescriptor, entity);
     }
 
-    public void afterEntityRemoved(EntityDescriptor entityDescriptor, Object entity) {
+    public void afterEntityRemoved(EntityDescriptor<Solution_> entityDescriptor, Object entity) {
         variableListenerSupport.afterEntityRemoved(entityDescriptor, entity);
         if (!allChangesWillBeUndoneBeforeStepEnds) {
             setWorkingEntityListDirty();
@@ -316,15 +309,15 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
     }
 
     public void assertShadowVariablesAreNotStale(Score expectedWorkingScore, Object completedAction) {
-        SolutionDescriptor solutionDescriptor = getSolutionDescriptor();
-        Map<Object, Map<ShadowVariableDescriptor, Object>> entityToShadowVariableValuesMap
-                = new IdentityHashMap<Object, Map<ShadowVariableDescriptor, Object>>();
+        SolutionDescriptor<Solution_> solutionDescriptor = getSolutionDescriptor();
+        Map<Object, Map<ShadowVariableDescriptor, Object>> entityToShadowVariableValuesMap = new IdentityHashMap<>();
         for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
             Object entity = it.next();
-            EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
+            EntityDescriptor<Solution_> entityDescriptor
+                    = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
             Collection<ShadowVariableDescriptor> shadowVariableDescriptors = entityDescriptor.getShadowVariableDescriptors();
             Map<ShadowVariableDescriptor, Object> shadowVariableValuesMap
-                    = new HashMap<ShadowVariableDescriptor, Object>(shadowVariableDescriptors.size());
+                    = new HashMap<>(shadowVariableDescriptors.size());
             for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptors) {
                 Object value = shadowVariableDescriptor.getValue(entity);
                 shadowVariableValuesMap.put(shadowVariableDescriptor, value);
@@ -334,7 +327,8 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
         variableListenerSupport.triggerAllVariableListeners();
         for (Iterator<Object> it = solutionDescriptor.extractAllEntitiesIterator(workingSolution); it.hasNext();) {
             Object entity = it.next();
-            EntityDescriptor entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
+            EntityDescriptor<Solution_> entityDescriptor
+                    = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
             Collection<ShadowVariableDescriptor> shadowVariableDescriptors = entityDescriptor.getShadowVariableDescriptors();
             Map<ShadowVariableDescriptor, Object> shadowVariableValuesMap = entityToShadowVariableValuesMap.get(entity);
             for (ShadowVariableDescriptor shadowVariableDescriptor : shadowVariableDescriptors) {
@@ -364,12 +358,12 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
     }
 
     public void assertWorkingScoreFromScratch(Score workingScore, Object completedAction) {
-        InnerScoreDirectorFactory assertionScoreDirectorFactory
+        InnerScoreDirectorFactory<Solution_> assertionScoreDirectorFactory
                 = scoreDirectorFactory.getAssertionScoreDirectorFactory();
         if (assertionScoreDirectorFactory == null) {
             assertionScoreDirectorFactory = scoreDirectorFactory;
         }
-        InnerScoreDirector uncorruptedScoreDirector = assertionScoreDirectorFactory.buildScoreDirector(true);
+        InnerScoreDirector<Solution_> uncorruptedScoreDirector = assertionScoreDirectorFactory.buildScoreDirector(true);
         uncorruptedScoreDirector.setWorkingSolution(workingSolution);
         Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
         if (!workingScore.equals(uncorruptedScore)) {
@@ -388,7 +382,7 @@ public abstract class AbstractScoreDirector<Factory_ extends AbstractScoreDirect
      * @param uncorruptedScoreDirector never null
      * @return never null
      */
-    protected String buildScoreCorruptionAnalysis(ScoreDirector uncorruptedScoreDirector) {
+    protected String buildScoreCorruptionAnalysis(ScoreDirector<Solution_> uncorruptedScoreDirector) {
         if (!isConstraintMatchEnabled() || !uncorruptedScoreDirector.isConstraintMatchEnabled()) {
             return "  Score corruption analysis could not be generated because"
                     + " either corrupted constraintMatchEnabled (" + isConstraintMatchEnabled()

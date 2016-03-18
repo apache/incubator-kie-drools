@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@
 
 package org.optaplanner.examples.cheaptime.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.core.impl.score.buildin.hardmediumsoftlong.HardMediumSoftLongScoreDefinition;
@@ -33,11 +33,14 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("CtCheapTimeSolution")
-public class CheapTimeSolution extends AbstractPersistable implements Solution<HardMediumSoftLongScore> {
+public class CheapTimeSolution extends AbstractPersistable {
 
     private int timeResolutionInMinutes;
     private int globalPeriodRangeFrom; // Inclusive
     private int globalPeriodRangeTo; // Exclusive
+
+    @PlanningFactProperty
+    private CheapTimeSolution selfReference = this;
 
     private List<Resource> resourceList;
     @ValueRangeProvider(id = "machineRange")
@@ -48,7 +51,6 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
     // Order is equal to global periodRange so int period can be used for the index
     private List<PeriodPowerPrice> periodPowerPriceList;
 
-    @PlanningEntityCollectionProperty
     private List<TaskAssignment> taskAssignmentList;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardMediumSoftLongScoreDefinition.class})
@@ -78,10 +80,12 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         this.globalPeriodRangeTo = globalPeriodRangeTo;
     }
 
+    @PlanningFactCollectionProperty
     public List<Resource> getResourceList() {
         return resourceList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Machine> getMachineList() {
         return machineList;
     }
@@ -94,6 +98,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         this.resourceList = resourceList;
     }
 
+    @PlanningFactCollectionProperty
     public List<MachineCapacity> getMachineCapacityList() {
         return machineCapacityList;
     }
@@ -102,6 +107,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         this.machineCapacityList = machineCapacityList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Task> getTaskList() {
         return taskList;
     }
@@ -110,6 +116,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         this.taskList = taskList;
     }
 
+    @PlanningFactCollectionProperty
     public List<TaskRequirement> getTaskRequirementList() {
         return taskRequirementList;
     }
@@ -118,6 +125,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         this.taskRequirementList = taskRequirementList;
     }
 
+    @PlanningFactCollectionProperty
     public List<PeriodPowerPrice> getPeriodPowerPriceList() {
         return periodPowerPriceList;
     }
@@ -126,6 +134,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         this.periodPowerPriceList = periodPowerPriceList;
     }
 
+    @PlanningEntityCollectionProperty
     public List<TaskAssignment> getTaskAssignmentList() {
         return taskAssignmentList;
     }
@@ -134,6 +143,7 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
         this.taskAssignmentList = taskAssignmentList;
     }
 
+    @PlanningScore
     public HardMediumSoftLongScore getScore() {
         return score;
     }
@@ -145,18 +155,5 @@ public class CheapTimeSolution extends AbstractPersistable implements Solution<H
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.addAll(resourceList);
-        facts.addAll(machineList);
-        facts.addAll(machineCapacityList);
-        facts.addAll(taskList);
-        facts.addAll(taskRequirementList);
-        facts.addAll(periodPowerPriceList);
-        facts.add(this);
-        // Do not add the planning entity's (taskAssignmentList) because that will be done automatically
-        return facts;
-    }
 
 }

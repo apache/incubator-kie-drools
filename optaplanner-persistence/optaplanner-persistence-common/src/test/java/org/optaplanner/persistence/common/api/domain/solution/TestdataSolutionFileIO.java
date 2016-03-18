@@ -16,15 +16,14 @@
 
 package org.optaplanner.persistence.common.api.domain.solution;
 
-import java.io.File;
-import java.util.Arrays;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
-public class TestdataSolutionFileIO implements SolutionFileIO {
+import java.io.File;
+import java.util.Arrays;
+
+public class TestdataSolutionFileIO implements SolutionFileIO<TestdataSolution> {
 
     @Override
     public String getInputFileExtension() {
@@ -37,7 +36,7 @@ public class TestdataSolutionFileIO implements SolutionFileIO {
     }
 
     @Override
-    public Solution read(File inputSolutionFile) {
+    public TestdataSolution read(File inputSolutionFile) {
         TestdataSolution solution = new TestdataSolution("s1");
         solution.setValueList(Arrays.asList(new TestdataValue("v1")));
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1")));
@@ -45,7 +44,7 @@ public class TestdataSolutionFileIO implements SolutionFileIO {
     }
 
     @Override
-    public void write(Solution solution, File outputSolutionFile) {
+    public void write(TestdataSolution solution, File outputSolutionFile) {
         // Do nothing
     }
 

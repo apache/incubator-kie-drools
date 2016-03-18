@@ -19,7 +19,7 @@ package org.optaplanner.examples.nurserostering.persistence;
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 
-public class NurseRosteringDao extends XStreamSolutionDao {
+public class NurseRosteringDao extends XStreamSolutionDao<NurseRoster> {
 
     public NurseRosteringDao() {
         super("nurserostering", NurseRoster.class);

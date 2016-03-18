@@ -16,14 +16,14 @@
 
 package org.optaplanner.core.config;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * A config class is a user friendly, validating configuration class that maps XML input.

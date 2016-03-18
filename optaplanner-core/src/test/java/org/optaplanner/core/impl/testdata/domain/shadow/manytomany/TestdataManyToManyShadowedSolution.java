@@ -19,9 +19,7 @@ package org.optaplanner.core.impl.testdata.domain.shadow.manytomany;
 import java.util.Collection;
 import java.util.List;
 
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -29,7 +27,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 @PlanningSolution
-public class TestdataManyToManyShadowedSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataManyToManyShadowedSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataManyToManyShadowedSolution.class,
@@ -66,6 +64,7 @@ public class TestdataManyToManyShadowedSolution extends TestdataObject implement
         this.entityList = entityList;
     }
 
+    @PlanningScore
     public SimpleScore getScore() {
         return score;
     }
@@ -78,6 +77,7 @@ public class TestdataManyToManyShadowedSolution extends TestdataObject implement
     // Complex methods
     // ************************************************************************
 
+    @PlanningFactCollectionProperty
     public Collection<? extends Object> getProblemFacts() {
         return valueList;
     }

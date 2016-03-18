@@ -16,31 +16,31 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
-import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.common.accessor.MemberAccessor;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
-public abstract class AbstractFromPropertyValueRangeDescriptor extends AbstractValueRangeDescriptor {
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
+        extends AbstractValueRangeDescriptor<Solution_> {
 
     protected final MemberAccessor memberAccessor;
     protected boolean collectionWrapping;
     protected boolean countable;
 
-    public AbstractFromPropertyValueRangeDescriptor(
-            GenuineVariableDescriptor variableDescriptor, boolean addNullInValueRange,
-            MemberAccessor memberAccessor) {
+    public AbstractFromPropertyValueRangeDescriptor(GenuineVariableDescriptor<Solution_> variableDescriptor,
+                                                    boolean addNullInValueRange,
+                                                    MemberAccessor memberAccessor) {
         super(variableDescriptor, addNullInValueRange);
         this.memberAccessor = memberAccessor;
         ValueRangeProvider valueRangeProviderAnnotation = memberAccessor.getAnnotation(ValueRangeProvider.class);

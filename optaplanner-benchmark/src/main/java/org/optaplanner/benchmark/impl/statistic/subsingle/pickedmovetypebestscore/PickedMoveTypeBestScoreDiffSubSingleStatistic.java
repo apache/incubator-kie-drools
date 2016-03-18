@@ -16,14 +16,6 @@
 
 package org.optaplanner.benchmark.impl.statistic.subsingle.pickedmovetypebestscore;
 
-import java.io.File;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamOmitField;
 import org.jfree.chart.JFreeChart;
@@ -39,7 +31,6 @@ import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
@@ -51,8 +42,13 @@ import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
+import java.io.File;
+import java.text.NumberFormat;
+import java.util.*;
+
 @XStreamAlias("pickedMoveTypeBestScoreDiffSubSingleStatistic")
-public class PickedMoveTypeBestScoreDiffSubSingleStatistic extends PureSubSingleStatistic<PickedMoveTypeBestScoreDiffStatisticPoint> {
+public class PickedMoveTypeBestScoreDiffSubSingleStatistic<Solution_>
+        extends PureSubSingleStatistic<Solution_, PickedMoveTypeBestScoreDiffStatisticPoint> {
 
     @XStreamOmitField
     private PickedMoveTypeBestScoreDiffSubSingleStatisticListener listener;
@@ -77,12 +73,12 @@ public class PickedMoveTypeBestScoreDiffSubSingleStatistic extends PureSubSingle
     // Lifecycle methods
     // ************************************************************************
 
-    public void open(Solver<Solution> solver) {
-        ((DefaultSolver<Solution>) solver).addPhaseLifecycleListener(listener);
+    public void open(Solver<Solution_> solver) {
+        ((DefaultSolver<Solution_>) solver).addPhaseLifecycleListener(listener);
     }
 
-    public void close(Solver<Solution> solver) {
-        ((DefaultSolver<Solution>) solver).removePhaseLifecycleListener(listener);
+    public void close(Solver<Solution_> solver) {
+        ((DefaultSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
     }
 
     private class PickedMoveTypeBestScoreDiffSubSingleStatisticListener extends PhaseLifecycleListenerAdapter {

@@ -16,38 +16,38 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value;
 
-import java.util.Iterator;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 
+import java.util.Iterator;
+
 /**
  * This is the common {@link ValueSelector} implementation.
  */
-public class FromEntityPropertyValueSelector extends AbstractValueSelector {
+public class FromEntityPropertyValueSelector<Solution_> extends AbstractValueSelector {
 
-    protected final ValueRangeDescriptor valueRangeDescriptor;
+    protected final ValueRangeDescriptor<Solution_> valueRangeDescriptor;
     protected final boolean randomSelection;
 
-    protected Solution workingSolution;
+    protected Solution_ workingSolution;
 
-    public FromEntityPropertyValueSelector(ValueRangeDescriptor valueRangeDescriptor, boolean randomSelection) {
+    public FromEntityPropertyValueSelector(ValueRangeDescriptor<Solution_> valueRangeDescriptor, boolean randomSelection) {
         this.valueRangeDescriptor = valueRangeDescriptor;
         this.randomSelection = randomSelection;
     }
 
-    public GenuineVariableDescriptor getVariableDescriptor() {
+    public GenuineVariableDescriptor<Solution_> getVariableDescriptor() {
         return valueRangeDescriptor.getVariableDescriptor();
     }
 
     @Override
     public void phaseStarted(AbstractPhaseScope phaseScope) {
         super.phaseStarted(phaseScope);
-        workingSolution = phaseScope.getWorkingSolution();
+        // type cast in order to avoid SolverLifeCycleListener and all its children needing to be generified
+        workingSolution = (Solution_) phaseScope.getWorkingSolution();
     }
 
     @Override

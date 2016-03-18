@@ -16,11 +16,6 @@
 
 package org.optaplanner.core.api.solver;
 
-import java.util.Collection;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Future;
-
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
@@ -29,29 +24,33 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
+import java.util.Collection;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Future;
+
 /**
  * A Solver solves a planning problem.
- * Clients usually call {@link #solve(Solution)} and then {@link #getBestSolution()}.
+ * Clients usually call {@link #solve(Solution_)} and then {@link #getBestSolution()}.
  * <p>
  * These methods are not thread-safe and should be called from the same thread,
  * except for the methods that are explicitly marked as thread-safe.
- * Note that despite that {@link #solve(Solution)} is not thread-safe for clients of this class,
+ * Note that despite that {@link #solve(Solution_)} is not thread-safe for clients of this class,
  * that method is free to do multi-threading inside itself.
  * <p>
  * Build by a {@link SolverFactory}.
  */
-public interface Solver<Solution_ extends Solution> {
+public interface Solver<Solution_> {
 
     /**
      * The best solution is the best solution found during solving:
      * it might or might not be optimal, feasible or even initialized.
      * <p/>
-     * The {@link #solve(Solution)} method also returns the best solution,
+     * The {@link #solve(Solution_)} method also returns the best solution,
      * but this method is useful in rare asynchronous situations (although
      * {@link SolverEventListener#bestSolutionChanged(BestSolutionChangedEvent)} is often more appropriate).
      * <p>
      * This method is thread-safe.
-     * @return never null, but it can return the original, uninitialized {@link Solution} with a {@link Score} null.
+     * @return never null, but it can return the original, uninitialized {@link Solution_} with a {@link Score} null.
      */
     Solution_ getBestSolution();
 
@@ -68,21 +67,35 @@ public interface Solver<Solution_ extends Solution> {
      * depending on the {@link Termination} configuration.
      * To terminate a {@link Solver} early, call {@link #terminateEarly()}.
      * @param planningProblem never null, usually its planning variables are uninitialized
-     * @return never null, but it can return the original, uninitialized {@link Solution} with a {@link Score} null.
+     * @return never null, but it can return the original, uninitialized {@link Solution_} with a {@link Score} null.
      * @see #terminateEarly()
      */
     Solution_ solve(Solution_ planningProblem);
 
     /**
+     * Solves the planning problem and returns the best solution encountered
+     * (which might or might not be optimal, feasible or even initialized).
+     * <p>
+     * It can take seconds, minutes, even hours or days before this method returns,
+     * depending on the {@link Termination} configuration.
+     * To terminate a {@link Solver} early, call {@link #terminateEarly()}.
+     * @param planningProblem never null, usually its planning variables are uninitialized
+     * @return never null, but it can return the original, uninitialized {@link Solution_} with a {@link Score} null.
+     * @see #terminateEarly()
+     */
+    @Deprecated
+    Solution_ solve(Solution planningProblem);
+
+    /**
      * This method is thread-safe.
-     * @return true if the {@link #solve(Solution)} method is still running.
+     * @return true if the {@link #solve(Solution_)} method is still running.
      */
     boolean isSolving();
 
     /**
      * Notifies the solver that it should stop at its earliest convenience.
      * This method returns immediately, but it takes an undetermined time
-     * for the {@link #solve(Solution)} to actually return.
+     * for the {@link #solve(Solution_)} to actually return.
      * <p>
      * This method is thread-safe.
      * @return true if successful
@@ -135,6 +148,6 @@ public interface Solver<Solution_ extends Solution> {
      *
      * @return never null
      */
-    ScoreDirectorFactory getScoreDirectorFactory();
+    ScoreDirectorFactory<Solution_> getScoreDirectorFactory();
 
 }

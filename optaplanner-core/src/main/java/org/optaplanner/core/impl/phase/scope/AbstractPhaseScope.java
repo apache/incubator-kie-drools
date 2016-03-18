@@ -16,10 +16,6 @@
 
 package org.optaplanner.core.impl.phase.scope;
 
-import java.util.List;
-import java.util.Random;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -31,11 +27,14 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractPhaseScope {
+import java.util.List;
+import java.util.Random;
+
+public abstract class AbstractPhaseScope<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected final DefaultSolverScope solverScope;
+    protected final DefaultSolverScope<Solution_> solverScope;
 
     protected long startingSystemTimeMillis;
 
@@ -43,11 +42,11 @@ public abstract class AbstractPhaseScope {
 
     protected int bestSolutionStepIndex;
 
-    public AbstractPhaseScope(DefaultSolverScope solverScope) {
+    public AbstractPhaseScope(DefaultSolverScope<Solution_> solverScope) {
         this.solverScope = solverScope;
     }
 
-    public DefaultSolverScope getSolverScope() {
+    public DefaultSolverScope<Solution_> getSolverScope() {
         return solverScope;
     }
 
@@ -67,7 +66,7 @@ public abstract class AbstractPhaseScope {
         this.bestSolutionStepIndex = bestSolutionStepIndex;
     }
 
-    public abstract AbstractStepScope getLastCompletedStepScope();
+    public abstract AbstractStepScope<Solution_> getLastCompletedStepScope();
 
     // ************************************************************************
     // Calculated methods
@@ -83,7 +82,7 @@ public abstract class AbstractPhaseScope {
         }
     }
 
-    public SolutionDescriptor getSolutionDescriptor() {
+    public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solverScope.getSolutionDescriptor();
     }
 
@@ -100,11 +99,11 @@ public abstract class AbstractPhaseScope {
         return now - startingSystemTimeMillis;
     }
 
-    public InnerScoreDirector getScoreDirector() {
+    public InnerScoreDirector<Solution_> getScoreDirector() {
         return solverScope.getScoreDirector();
     }
 
-    public Solution getWorkingSolution() {
+    public Solution_ getWorkingSolution() {
         return solverScope.getWorkingSolution();
     }
 

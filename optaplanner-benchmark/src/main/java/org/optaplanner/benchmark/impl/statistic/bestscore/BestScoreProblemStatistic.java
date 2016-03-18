@@ -16,13 +16,6 @@
 
 package org.optaplanner.benchmark.impl.statistic.bestscore;
 
-import java.awt.BasicStroke;
-import java.io.File;
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -42,6 +35,13 @@ import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
 import org.optaplanner.core.impl.score.ScoreUtils;
+
+import java.awt.*;
+import java.io.File;
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 @XStreamAlias("bestScoreProblemStatistic")
 public class BestScoreProblemStatistic extends ProblemStatistic {
@@ -73,14 +73,16 @@ public class BestScoreProblemStatistic extends ProblemStatistic {
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         List<XYPlot> plotList = new ArrayList<XYPlot>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         int seriesIndex = 0;
-        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+        List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
+        for (SingleBenchmarkResult singleBenchmarkResult : results) {
             List<XYSeries> seriesList = new ArrayList<XYSeries>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();
             if (singleBenchmarkResult.hasAllSuccess()) {
                 BestScoreSubSingleStatistic subSingleStatistic = (BestScoreSubSingleStatistic)
                         singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
-                for (BestScoreStatisticPoint point : subSingleStatistic.getPointList()) {
+                List<BestScoreStatisticPoint> points = subSingleStatistic.getPointList();
+                for (BestScoreStatisticPoint point : points) {
                     long timeMillisSpent = point.getTimeMillisSpent();
                     double[] levelValues = ScoreUtils.extractLevelDoubles(point.getScore());
                     for (int i = 0; i < levelValues.length && i < BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE; i++) {

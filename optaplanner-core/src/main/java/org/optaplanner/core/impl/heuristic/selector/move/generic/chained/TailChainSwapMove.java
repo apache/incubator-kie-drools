@@ -16,13 +16,8 @@
 
 package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableSupply;
@@ -32,19 +27,23 @@ import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Objects;
+
 /**
  * Also known as a 2-opt move.
  */
-public class TailChainSwapMove extends AbstractMove {
+public class TailChainSwapMove<Solution_> extends AbstractMove {
 
-    protected final GenuineVariableDescriptor variableDescriptor;
+    protected final GenuineVariableDescriptor<Solution_> variableDescriptor;
     protected final SingletonInverseVariableSupply inverseVariableSupply;
     protected final AnchorVariableSupply anchorVariableSupply;
 
     protected final Object leftEntity;
     protected final Object rightValue;
 
-    public TailChainSwapMove(GenuineVariableDescriptor variableDescriptor,
+    public TailChainSwapMove(GenuineVariableDescriptor<Solution_> variableDescriptor,
             SingletonInverseVariableSupply inverseVariableSupply, AnchorVariableSupply anchorVariableSupply,
             Object leftEntity, Object rightValue) {
         this.variableDescriptor = variableDescriptor;
@@ -87,8 +86,9 @@ public class TailChainSwapMove extends AbstractMove {
             }
         }
         if (!variableDescriptor.isValueRangeEntityIndependent()) {
-            ValueRangeDescriptor valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
-            Solution workingSolution = scoreDirector.getWorkingSolution();
+            ValueRangeDescriptor<Solution_> valueRangeDescriptor = variableDescriptor.getValueRangeDescriptor();
+            // type cast in order to avoid having to make Move and all its sub-types generic
+            Solution_ workingSolution = (Solution_) scoreDirector.getWorkingSolution();
             if (rightEntity != null) {
                 ValueRange rightValueRange = valueRangeDescriptor.extractValueRange(workingSolution, rightEntity);
                 if (!rightValueRange.contains(leftValue)) {
@@ -108,12 +108,12 @@ public class TailChainSwapMove extends AbstractMove {
         Object rightAnchor = determineRightAnchor();
         Object leftValue = variableDescriptor.getValue(leftEntity);
         if (leftAnchor != rightAnchor) {
-            return new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
-                    leftEntity, leftValue);
+            return new TailChainSwapMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply, leftEntity,
+                    leftValue);
         } else {
             Object rightEntity = inverseVariableSupply.getInverseSingleton(rightValue);
             if (rightEntity != null) {
-                return new TailChainSwapMove(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
+                return new TailChainSwapMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
                         rightEntity, rightValue);
             } else {
                 // TODO Currently unsupported because we fail to create a valid undoMove... even though doMove supports it

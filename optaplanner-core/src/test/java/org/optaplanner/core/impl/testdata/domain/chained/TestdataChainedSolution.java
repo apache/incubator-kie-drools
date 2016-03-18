@@ -16,21 +16,19 @@
 
 package org.optaplanner.core.impl.testdata.domain.chained;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 
-@PlanningSolution
-public class TestdataChainedSolution extends TestdataObject implements Solution<SimpleScore> {
+import java.util.Collection;
+import java.util.List;
 
-    public static SolutionDescriptor buildSolutionDescriptor() {
+@PlanningSolution
+public class TestdataChainedSolution extends TestdataObject {
+
+    public static SolutionDescriptor<TestdataChainedSolution> buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataChainedSolution.class, TestdataChainedEntity.class);
     }
 
@@ -65,6 +63,7 @@ public class TestdataChainedSolution extends TestdataObject implements Solution<
         this.chainedEntityList = chainedEntityList;
     }
 
+    @PlanningScore
     public SimpleScore getScore() {
         return score;
     }
@@ -77,6 +76,7 @@ public class TestdataChainedSolution extends TestdataObject implements Solution<
     // Complex methods
     // ************************************************************************
 
+    @PlanningFactCollectionProperty
     public Collection<? extends Object> getProblemFacts() {
         return chainedAnchorList;
     }

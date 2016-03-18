@@ -16,33 +16,18 @@
 
 package org.optaplanner.examples.coachshuttlegathering.persistence;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.examples.coachshuttlegathering.domain.Bus;
-import org.optaplanner.examples.coachshuttlegathering.domain.BusHub;
-import org.optaplanner.examples.coachshuttlegathering.domain.BusStop;
-import org.optaplanner.examples.coachshuttlegathering.domain.Coach;
-import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
-import org.optaplanner.examples.coachshuttlegathering.domain.Shuttle;
+import org.optaplanner.examples.coachshuttlegathering.domain.*;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocation;
 import org.optaplanner.examples.coachshuttlegathering.domain.location.RoadLocationArc;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
 
-public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
+import java.io.*;
+import java.math.BigInteger;
+import java.util.*;
+
+public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter<CoachShuttleGatheringSolution> {
 
     public static void main(String[] args) {
         CoachShuttleGatheringImporter importer = new CoachShuttleGatheringImporter();
@@ -67,12 +52,12 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
         throw new IllegalStateException("The inputFile is a directory, so there is no suffix.");
     }
 
-    public TxtInputBuilder createTxtInputBuilder() {
+    public TxtInputBuilder<CoachShuttleGatheringSolution> createTxtInputBuilder() {
         return new CoachShuttleGatheringInputBuilder();
     }
 
     @Override
-    public Solution readSolution(File inputFile) {
+    public CoachShuttleGatheringSolution readSolution(File inputFile) {
         // TODO Bridging hack because InputBuilder is designed for a single File.
         File instanceFile = new File(inputFile, "Busstops.csv");
         return super.readSolution(instanceFile);
@@ -85,7 +70,7 @@ public class CoachShuttleGatheringImporter extends AbstractTxtSolutionImporter {
         private Map<List<Double>, RoadLocation> latLongToLocationMap;
         private long busOrStopOrHubId;
 
-        public Solution readSolution() throws IOException {
+        public CoachShuttleGatheringSolution readSolution() throws IOException {
             solution = new CoachShuttleGatheringSolution();
             solution.setId(0L);
             readLocationList();

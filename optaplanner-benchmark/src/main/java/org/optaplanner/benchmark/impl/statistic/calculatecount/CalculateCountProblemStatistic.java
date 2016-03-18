@@ -16,13 +16,6 @@
 
 package org.optaplanner.benchmark.impl.statistic.calculatecount;
 
-import java.awt.BasicStroke;
-import java.io.File;
-import java.text.NumberFormat;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
@@ -40,6 +33,13 @@ import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemStatistic;
 import org.optaplanner.benchmark.impl.statistic.SubSingleStatistic;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
+
+import java.awt.*;
+import java.io.File;
+import java.text.NumberFormat;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 @XStreamAlias("calculateCountProblemStatistic")
 public class CalculateCountProblemStatistic extends ProblemStatistic {
@@ -78,13 +78,15 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         plot.setOrientation(PlotOrientation.VERTICAL);
         int seriesIndex = 0;
-        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+        List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
+        for (SingleBenchmarkResult singleBenchmarkResult : results) {
             XYSeries series = new XYSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmarkResult.hasAllSuccess()) {
                 CalculateCountSubSingleStatistic subSingleStatistic = (CalculateCountSubSingleStatistic)
                         singleBenchmarkResult.getSubSingleStatistic(problemStatisticType);
-                for (CalculateCountStatisticPoint point : subSingleStatistic.getPointList()) {
+                List<CalculateCountStatisticPoint> points = subSingleStatistic.getPointList();
+                for (CalculateCountStatisticPoint point : points) {
                     long timeMillisSpent = point.getTimeMillisSpent();
                     long calculateCountPerSecond = point.getCalculateCountPerSecond();
                     series.add(timeMillisSpent, calculateCountPerSecond);

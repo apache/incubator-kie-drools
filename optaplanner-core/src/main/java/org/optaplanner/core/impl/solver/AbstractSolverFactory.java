@@ -16,17 +16,16 @@
 
 package org.optaplanner.core.impl.solver;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 
-public class AbstractSolverFactory<Solution_ extends Solution> extends SolverFactory<Solution_> {
+public class AbstractSolverFactory<Solution_> extends SolverFactory<Solution_> {
 
     protected final SolverConfigContext solverConfigContext;
 
-    protected SolverConfig solverConfig = null;
+    protected SolverConfig<Solution_> solverConfig = null;
 
     public AbstractSolverFactory(SolverConfigContext solverConfigContext) {
         this.solverConfigContext = solverConfigContext;

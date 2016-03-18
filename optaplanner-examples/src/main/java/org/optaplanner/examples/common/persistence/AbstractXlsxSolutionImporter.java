@@ -16,27 +16,19 @@
 
 package org.optaplanner.examples.common.persistence;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.optaplanner.core.api.domain.solution.Solution;
 
-public abstract class AbstractXlsxSolutionImporter extends AbstractSolutionImporter {
+import java.io.*;
+
+public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSolutionImporter<Solution_> {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = "xlsx";
 
-    protected AbstractXlsxSolutionImporter(SolutionDao solutionDao) {
+    protected AbstractXlsxSolutionImporter(SolutionDao<Solution_> solutionDao) {
         super(solutionDao);
     }
 
@@ -48,19 +40,18 @@ public abstract class AbstractXlsxSolutionImporter extends AbstractSolutionImpor
         return DEFAULT_INPUT_FILE_SUFFIX;
     }
 
-    public abstract XslxInputBuilder createXslxInputBuilder();
+    public abstract XslxInputBuilder<Solution_> createXslxInputBuilder();
 
-    public Solution readSolution(File inputFile) {
-        Solution solution;
-        InputStream in = null;
-        try {
-            in = new FileInputStream(inputFile);
+    public Solution_ readSolution(File inputFile) {
+        try (InputStream in = new BufferedInputStream(new FileInputStream(inputFile))) {
             XSSFWorkbook workbook = new XSSFWorkbook(in);
-            XslxInputBuilder xlsxInputBuilder = createXslxInputBuilder();
+            XslxInputBuilder<Solution_> xlsxInputBuilder = createXslxInputBuilder();
             xlsxInputBuilder.setInputFile(inputFile);
             xlsxInputBuilder.setWorkbook(workbook);
             try {
-                solution = xlsxInputBuilder.readSolution();
+                Solution_ solution = xlsxInputBuilder.readSolution();
+                logger.info("Imported: {}", inputFile);
+                return solution;
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Exception in inputFile (" + inputFile + ")", e);
             } catch (IllegalStateException e) {
@@ -68,14 +59,10 @@ public abstract class AbstractXlsxSolutionImporter extends AbstractSolutionImpor
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not read the file (" + inputFile.getName() + ").", e);
-        } finally {
-            IOUtils.closeQuietly(in);
         }
-        logger.info("Imported: {}", inputFile);
-        return solution;
     }
 
-    public static abstract class XslxInputBuilder extends InputBuilder {
+    public static abstract class XslxInputBuilder<Solution_> extends InputBuilder {
 
         protected File inputFile;
         protected XSSFWorkbook workbook;
@@ -88,7 +75,7 @@ public abstract class AbstractXlsxSolutionImporter extends AbstractSolutionImpor
             this.workbook = document;
         }
 
-        public abstract Solution readSolution() throws IOException;
+        public abstract Solution_ readSolution() throws IOException;
 
         // ************************************************************************
         // Helper methods

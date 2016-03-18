@@ -16,22 +16,14 @@
 
 package org.optaplanner.persistence.xstream.impl.domain.solution;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import org.apache.commons.io.IOUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-public class XStreamSolutionFileIO implements SolutionFileIO {
+import java.io.*;
+
+public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
 
     public static final String FILE_EXTENSION = "xml";
 
@@ -55,13 +47,13 @@ public class XStreamSolutionFileIO implements SolutionFileIO {
         return FILE_EXTENSION;
     }
 
-    public Solution read(File inputSolutionFile) {
-        Solution unsolvedSolution;
+    public Solution_ read(File inputSolutionFile) {
+        Solution_ unsolvedSolution;
         Reader reader = null;
         try {
             // xStream.fromXml(InputStream) does not use UTF-8
             reader = new InputStreamReader(new FileInputStream(inputSolutionFile), "UTF-8");
-            unsolvedSolution = (Solution) xStream.fromXML(reader);
+            unsolvedSolution = (Solution_) xStream.fromXML(reader);
         } catch (XStreamException e) {
             throw new IllegalArgumentException("Problem reading inputSolutionFile (" + inputSolutionFile + ").", e);
         } catch (IOException e) {
@@ -72,7 +64,7 @@ public class XStreamSolutionFileIO implements SolutionFileIO {
         return unsolvedSolution;
     }
 
-    public void write(Solution solution, File outputSolutionFile) {
+    public void write(Solution_ solution, File outputSolutionFile) {
         Writer writer = null;
         try {
             writer = new OutputStreamWriter(new FileOutputStream(outputSolutionFile), "UTF-8");

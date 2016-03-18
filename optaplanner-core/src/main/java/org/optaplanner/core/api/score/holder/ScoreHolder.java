@@ -19,7 +19,6 @@ package org.optaplanner.core.api.score.holder;
 import java.util.Collection;
 
 import org.kie.api.runtime.KieSession;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;

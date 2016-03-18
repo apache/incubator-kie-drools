@@ -16,12 +16,12 @@
 
 package org.optaplanner.examples.cheaptime.persistence;
 
-import java.io.File;
-
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
-public class CheapTimeSolutionFileIO implements SolutionFileIO {
+import java.io.File;
+
+public class CheapTimeSolutionFileIO implements SolutionFileIO<CheapTimeSolution> {
 
     public static final String OUTPUT_FILE_EXTENSION = "txt";
 
@@ -36,11 +36,11 @@ public class CheapTimeSolutionFileIO implements SolutionFileIO {
         return OUTPUT_FILE_EXTENSION;
     }
 
-    public Solution read(File inputSolutionFile) {
+    public CheapTimeSolution read(File inputSolutionFile) {
         return importer.readSolution(inputSolutionFile);
     }
 
-    public void write(Solution solution, File outputSolutionFile) {
+    public void write(CheapTimeSolution solution, File outputSolutionFile) {
         exporter.writeSolution(solution, outputSolutionFile);
     }
 

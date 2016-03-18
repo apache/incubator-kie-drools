@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,15 +16,15 @@
 
 package org.optaplanner.examples.nurserostering.domain;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
@@ -41,7 +41,7 @@ import org.optaplanner.persistence.xstream.impl.score.XStreamScoreConverter;
 
 @PlanningSolution
 @XStreamAlias("NurseRoster")
-public class NurseRoster extends AbstractPersistable implements Solution<HardSoftScore> {
+public class NurseRoster extends AbstractPersistable {
 
     private String code;
 
@@ -75,6 +75,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.code = code;
     }
 
+    @PlanningFactProperty
     public NurseRosterParametrization getNurseRosterParametrization() {
         return nurseRosterParametrization;
     }
@@ -83,6 +84,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.nurseRosterParametrization = nurseRosterParametrization;
     }
 
+    @PlanningFactCollectionProperty
     public List<Skill> getSkillList() {
         return skillList;
     }
@@ -91,6 +93,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.skillList = skillList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ShiftType> getShiftTypeList() {
         return shiftTypeList;
     }
@@ -99,6 +102,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.shiftTypeList = shiftTypeList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ShiftTypeSkillRequirement> getShiftTypeSkillRequirementList() {
         return shiftTypeSkillRequirementList;
     }
@@ -107,6 +111,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.shiftTypeSkillRequirementList = shiftTypeSkillRequirementList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Pattern> getPatternList() {
         return patternList;
     }
@@ -115,6 +120,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.patternList = patternList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Contract> getContractList() {
         return contractList;
     }
@@ -123,6 +129,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.contractList = contractList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ContractLine> getContractLineList() {
         return contractLineList;
     }
@@ -131,6 +138,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.contractLineList = contractLineList;
     }
 
+    @PlanningFactCollectionProperty
     public List<PatternContractLine> getPatternContractLineList() {
         return patternContractLineList;
     }
@@ -140,6 +148,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
     }
 
     @ValueRangeProvider(id = "employeeRange")
+    @PlanningFactCollectionProperty
     public List<Employee> getEmployeeList() {
         return employeeList;
     }
@@ -148,6 +157,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.employeeList = employeeList;
     }
 
+    @PlanningFactCollectionProperty
     public List<SkillProficiency> getSkillProficiencyList() {
         return skillProficiencyList;
     }
@@ -156,6 +166,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.skillProficiencyList = skillProficiencyList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ShiftDate> getShiftDateList() {
         return shiftDateList;
     }
@@ -164,6 +175,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.shiftDateList = shiftDateList;
     }
 
+    @PlanningFactCollectionProperty
     public List<Shift> getShiftList() {
         return shiftList;
     }
@@ -172,6 +184,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.shiftList = shiftList;
     }
 
+    @PlanningFactCollectionProperty
     public List<DayOffRequest> getDayOffRequestList() {
         return dayOffRequestList;
     }
@@ -180,6 +193,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.dayOffRequestList = dayOffRequestList;
     }
 
+    @PlanningFactCollectionProperty
     public List<DayOnRequest> getDayOnRequestList() {
         return dayOnRequestList;
     }
@@ -188,6 +202,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.dayOnRequestList = dayOnRequestList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ShiftOffRequest> getShiftOffRequestList() {
         return shiftOffRequestList;
     }
@@ -196,6 +211,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.shiftOffRequestList = shiftOffRequestList;
     }
 
+    @PlanningFactCollectionProperty
     public List<ShiftOnRequest> getShiftOnRequestList() {
         return shiftOnRequestList;
     }
@@ -213,6 +229,7 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
         this.shiftAssignmentList = shiftAssignmentList;
     }
 
+    @PlanningScore
     public HardSoftScore getScore() {
         return score;
     }
@@ -224,27 +241,5 @@ public class NurseRoster extends AbstractPersistable implements Solution<HardSof
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    public Collection<? extends Object> getProblemFacts() {
-        List<Object> facts = new ArrayList<Object>();
-        facts.add(nurseRosterParametrization);
-        facts.addAll(skillList);
-        facts.addAll(shiftTypeList);
-        facts.addAll(shiftTypeSkillRequirementList);
-        facts.addAll(patternList);
-        facts.addAll(contractList);
-        facts.addAll(contractLineList);
-        facts.addAll(patternContractLineList);
-        facts.addAll(employeeList);
-        facts.addAll(skillProficiencyList);
-        facts.addAll(shiftDateList);
-        facts.addAll(shiftList);
-        facts.addAll(dayOffRequestList);
-        facts.addAll(dayOnRequestList);
-        facts.addAll(shiftOffRequestList);
-        facts.addAll(shiftOnRequestList);
-        // Do not add the planning entity's (shiftAssignmentList) because that will be done automatically
-        return facts;
-    }
 
 }

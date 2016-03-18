@@ -16,20 +16,20 @@
 
 package org.optaplanner.core.impl.testdata.domain.shadow.cyclic.reference;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
+import java.util.Collection;
+import java.util.List;
+
 @PlanningSolution
-public class TestdataCyclicReferencedShadowedSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataCyclicReferencedShadowedSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataCyclicReferencedShadowedSolution.class,
@@ -66,6 +66,7 @@ public class TestdataCyclicReferencedShadowedSolution extends TestdataObject imp
         this.entityList = entityList;
     }
 
+    @PlanningScore
     public SimpleScore getScore() {
         return score;
     }

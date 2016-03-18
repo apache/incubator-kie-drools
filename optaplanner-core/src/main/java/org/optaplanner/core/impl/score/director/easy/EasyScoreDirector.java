@@ -16,25 +16,26 @@
 
 package org.optaplanner.core.impl.score.director.easy;
 
-import java.util.Collection;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
+import java.util.Collection;
+
 /**
  * Easy java implementation of {@link ScoreDirector}, which recalculates the {@link Score}
- * of the {@link Solution} workingSolution every time. This is non-incremental calculation, which is slow.
+ * of the {@link Solution_} workingSolution every time. This is non-incremental calculation, which is slow.
  * @see ScoreDirector
  */
-public class EasyScoreDirector extends AbstractScoreDirector<EasyScoreDirectorFactory> {
+public class EasyScoreDirector<Solution_>
+        extends AbstractScoreDirector<Solution_, EasyScoreDirectorFactory<Solution_>> {
 
-    private final EasyScoreCalculator easyScoreCalculator;
+    private final EasyScoreCalculator<Solution_> easyScoreCalculator;
 
-    public EasyScoreDirector(EasyScoreDirectorFactory scoreDirectorFactory, boolean constraintMatchEnabledPreference,
-            EasyScoreCalculator easyScoreCalculator) {
+    public EasyScoreDirector(EasyScoreDirectorFactory<Solution_> scoreDirectorFactory,
+                             boolean constraintMatchEnabledPreference,
+                             EasyScoreCalculator<Solution_> easyScoreCalculator) {
         super(scoreDirectorFactory, constraintMatchEnabledPreference);
         this.easyScoreCalculator = easyScoreCalculator;
     }

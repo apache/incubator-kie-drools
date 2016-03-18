@@ -16,6 +16,12 @@
 
 package org.optaplanner.examples.travelingtournament.persistence;
 
+import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
+import org.optaplanner.examples.travelingtournament.domain.Day;
+import org.optaplanner.examples.travelingtournament.domain.Match;
+import org.optaplanner.examples.travelingtournament.domain.Team;
+import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -23,14 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.optaplanner.core.api.domain.solution.Solution;
-import org.optaplanner.examples.common.persistence.AbstractTxtSolutionImporter;
-import org.optaplanner.examples.travelingtournament.domain.Day;
-import org.optaplanner.examples.travelingtournament.domain.Match;
-import org.optaplanner.examples.travelingtournament.domain.Team;
-import org.optaplanner.examples.travelingtournament.domain.TravelingTournament;
-
-public class TravelingTournamentImporter extends AbstractTxtSolutionImporter {
+public class TravelingTournamentImporter extends AbstractTxtSolutionImporter<TravelingTournament> {
 
     public static void main(String[] args) {
         new TravelingTournamentImporter().convertAll();
@@ -40,13 +39,13 @@ public class TravelingTournamentImporter extends AbstractTxtSolutionImporter {
         super(new TravelingTournamentDao());
     }
 
-    public TxtInputBuilder createTxtInputBuilder() {
+    public TxtInputBuilder<TravelingTournament> createTxtInputBuilder() {
         return new TravelingTournamentInputBuilder();
     }
 
-    public static class TravelingTournamentInputBuilder extends TxtInputBuilder {
+    public static class TravelingTournamentInputBuilder extends TxtInputBuilder<TravelingTournament> {
 
-        public Solution readSolution() throws IOException {
+        public TravelingTournament readSolution() throws IOException {
             TravelingTournament travelingTournament = new TravelingTournament();
             travelingTournament.setId(0L);
             int n = readN();

@@ -29,7 +29,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.junit.Test;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
@@ -65,7 +64,7 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertNull;
 
 public abstract class AbstractSolutionClonerTest {
 
-    protected abstract <Solution_ extends Solution> SolutionCloner<Solution_> createSolutionCloner(
+    protected abstract <Solution_> SolutionCloner<Solution_> createSolutionCloner(
             SolutionDescriptor solutionDescriptor);
 
     @Test

@@ -16,25 +16,19 @@
 
 package org.optaplanner.examples.common.persistence;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigInteger;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
-
-public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImporter {
+public abstract class AbstractTxtSolutionImporter<Solution_> extends AbstractSolutionImporter<Solution_> {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = "txt";
 
-    protected AbstractTxtSolutionImporter(SolutionDao solutionDao) {
+    protected AbstractTxtSolutionImporter(SolutionDao<Solution_> solutionDao) {
         super(solutionDao);
     }
 
@@ -46,18 +40,17 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
         return DEFAULT_INPUT_FILE_SUFFIX;
     }
 
-    public abstract TxtInputBuilder createTxtInputBuilder();
+    public abstract TxtInputBuilder<Solution_> createTxtInputBuilder();
 
-    public Solution readSolution(File inputFile) {
-        Solution solution;
-        BufferedReader bufferedReader = null;
-        try {
-            bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), "UTF-8"));
-            TxtInputBuilder txtInputBuilder = createTxtInputBuilder();
+    public Solution_ readSolution(File inputFile) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(inputFile), "UTF-8"))) {
+            TxtInputBuilder<Solution_> txtInputBuilder = createTxtInputBuilder();
             txtInputBuilder.setInputFile(inputFile);
-            txtInputBuilder.setBufferedReader(bufferedReader);
+            txtInputBuilder.setBufferedReader(reader);
             try {
-                solution = txtInputBuilder.readSolution();
+                Solution_ solution = txtInputBuilder.readSolution();
+                logger.info("Imported: {}", inputFile);
+                return solution;
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Exception in inputFile (" + inputFile + ")", e);
             } catch (IllegalStateException e) {
@@ -65,18 +58,14 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not read the file (" + inputFile.getName() + ").", e);
-        } finally {
-            IOUtils.closeQuietly(bufferedReader);
         }
-        logger.info("Imported: {}", inputFile);
-        return solution;
     }
 
-    public Solution readSolution(URL inputURL) {
+    public Solution_ readSolution(URL inputURL) {
         BufferedReader bufferedReader = null;
         try {
             bufferedReader = new BufferedReader(new InputStreamReader(inputURL.openStream(), "UTF-8"));
-            TxtInputBuilder txtInputBuilder = createTxtInputBuilder();
+            TxtInputBuilder<Solution_> txtInputBuilder = createTxtInputBuilder();
             txtInputBuilder.setInputFile(new File(inputURL.getFile()));
             txtInputBuilder.setBufferedReader(bufferedReader);
             try {
@@ -93,7 +82,7 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
         }
     }
 
-    public static abstract class TxtInputBuilder extends InputBuilder {
+    public static abstract class TxtInputBuilder<Solution_> extends InputBuilder {
 
         protected File inputFile;
         protected BufferedReader bufferedReader;
@@ -106,7 +95,7 @@ public abstract class AbstractTxtSolutionImporter extends AbstractSolutionImport
             this.bufferedReader = bufferedReader;
         }
 
-        public abstract Solution readSolution() throws IOException;
+        public abstract Solution_ readSolution() throws IOException;
 
         // ************************************************************************
         // Helper methods

@@ -16,7 +16,6 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -28,24 +27,24 @@ import org.slf4j.LoggerFactory;
  * Abstract superclass for {@link ScoreDirectorFactory}.
  * @see ScoreDirectorFactory
  */
-public abstract class AbstractScoreDirectorFactory implements InnerScoreDirectorFactory {
+public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerScoreDirectorFactory<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected SolutionDescriptor solutionDescriptor;
+    protected SolutionDescriptor<Solution_> solutionDescriptor;
     protected ScoreDefinition scoreDefinition;
 
     protected InitializingScoreTrend initializingScoreTrend;
 
-    protected InnerScoreDirectorFactory assertionScoreDirectorFactory = null;
+    protected InnerScoreDirectorFactory<Solution_> assertionScoreDirectorFactory = null;
 
     protected boolean assertClonedSolution = false;
 
-    public SolutionDescriptor getSolutionDescriptor() {
+    public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
     }
 
-    public void setSolutionDescriptor(SolutionDescriptor solutionDescriptor) {
+    public void setSolutionDescriptor(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
     }
 
@@ -65,11 +64,11 @@ public abstract class AbstractScoreDirectorFactory implements InnerScoreDirector
         this.initializingScoreTrend = initializingScoreTrend;
     }
 
-    public InnerScoreDirectorFactory getAssertionScoreDirectorFactory() {
+    public InnerScoreDirectorFactory<Solution_> getAssertionScoreDirectorFactory() {
         return assertionScoreDirectorFactory;
     }
 
-    public void setAssertionScoreDirectorFactory(InnerScoreDirectorFactory assertionScoreDirectorFactory) {
+    public void setAssertionScoreDirectorFactory(InnerScoreDirectorFactory<Solution_> assertionScoreDirectorFactory) {
         this.assertionScoreDirectorFactory = assertionScoreDirectorFactory;
     }
 
@@ -85,14 +84,14 @@ public abstract class AbstractScoreDirectorFactory implements InnerScoreDirector
     // Complex methods
     // ************************************************************************
 
-    public InnerScoreDirector buildScoreDirector() {
+    public InnerScoreDirector<Solution_> buildScoreDirector() {
         return buildScoreDirector(true);
     }
 
-    public void assertScoreFromScratch(Solution solution) {
+    public void assertScoreFromScratch(Solution_ solution) {
         // Get the score before uncorruptedScoreDirector.calculateScore() modifies it
-        Score score = solution.getScore();
-        InnerScoreDirector uncorruptedScoreDirector = buildScoreDirector(true);
+        Score score = getSolutionDescriptor().getScore(solution);
+        InnerScoreDirector<Solution_> uncorruptedScoreDirector = buildScoreDirector(true);
         uncorruptedScoreDirector.setWorkingSolution(solution);
         Score uncorruptedScore = uncorruptedScoreDirector.calculateScore();
         uncorruptedScoreDirector.dispose();

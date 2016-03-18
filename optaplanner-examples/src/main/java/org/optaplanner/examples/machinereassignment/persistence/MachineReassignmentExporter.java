@@ -16,16 +16,15 @@
 
 package org.optaplanner.examples.machinereassignment.persistence;
 
-import java.io.IOException;
-import java.util.List;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractTxtSolutionExporter;
 import org.optaplanner.examples.machinereassignment.domain.MachineReassignment;
 import org.optaplanner.examples.machinereassignment.domain.MrMachine;
 import org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment;
 
-public class MachineReassignmentExporter extends AbstractTxtSolutionExporter {
+import java.io.IOException;
+import java.util.List;
+
+public class MachineReassignmentExporter extends AbstractTxtSolutionExporter<MachineReassignment> {
 
     public static void main(String[] args) {
         new MachineReassignmentExporter().convertAll();
@@ -40,15 +39,15 @@ public class MachineReassignmentExporter extends AbstractTxtSolutionExporter {
         return MachineReassignmentFileIO.FILE_EXTENSION;
     }
 
-    public TxtOutputBuilder createTxtOutputBuilder() {
+    public TxtOutputBuilder<MachineReassignment> createTxtOutputBuilder() {
         return new MachineReassignmentOutputBuilder();
     }
 
-    public static class MachineReassignmentOutputBuilder extends TxtOutputBuilder {
+    public static class MachineReassignmentOutputBuilder extends TxtOutputBuilder<MachineReassignment> {
 
         private MachineReassignment machineReassignment;
 
-        public void setSolution(Solution solution) {
+        public void setSolution(MachineReassignment solution) {
             machineReassignment = (MachineReassignment) solution;
         }
 

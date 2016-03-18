@@ -16,13 +16,7 @@
 
 package org.optaplanner.examples.tsp.persistence;
 
-import java.io.IOException;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.commons.io.FilenameUtils;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.examples.common.persistence.AbstractPngSolutionImporter;
 import org.optaplanner.examples.tsp.domain.Domicile;
 import org.optaplanner.examples.tsp.domain.TspSolution;
@@ -31,7 +25,12 @@ import org.optaplanner.examples.tsp.domain.location.AirLocation;
 import org.optaplanner.examples.tsp.domain.location.DistanceType;
 import org.optaplanner.examples.tsp.domain.location.Location;
 
-public class TspImageStipplerImporter extends AbstractPngSolutionImporter {
+import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
+public class TspImageStipplerImporter extends AbstractPngSolutionImporter<TspSolution> {
 
     private static final double GRAY_MAXIMUM = 256.0 * 3.0;
 
@@ -47,17 +46,17 @@ public class TspImageStipplerImporter extends AbstractPngSolutionImporter {
         super(withoutDao);
     }
 
-    public PngInputBuilder createPngInputBuilder() {
+    public PngInputBuilder<TspSolution> createPngInputBuilder() {
         return new TspImageStipplerInputBuilder();
     }
 
-    public static class TspImageStipplerInputBuilder extends PngInputBuilder {
+    public static class TspImageStipplerInputBuilder extends PngInputBuilder<TspSolution> {
 
         private TspSolution tspSolution;
 
         private int locationListSize;
 
-        public Solution readSolution() throws IOException {
+        public TspSolution readSolution() throws IOException {
             tspSolution = new TspSolution();
             tspSolution.setId(0L);
             tspSolution.setName(FilenameUtils.getBaseName(inputFile.getName()));

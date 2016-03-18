@@ -16,16 +16,15 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
-public interface ValueRangeDescriptor {
+public interface ValueRangeDescriptor<Solution_> {
 
     /**
      * @return never null
      */
-    GenuineVariableDescriptor getVariableDescriptor();
+    GenuineVariableDescriptor<Solution_> getVariableDescriptor();
 
     /**
      * @return true if the {@link ValueRange} is countable
@@ -49,9 +48,9 @@ public interface ValueRangeDescriptor {
     /**
      * @param solution never null
      * @param entity never null. To avoid this parameter,
-     * use {@link EntityIndependentValueRangeDescriptor#extractValueRange(Solution)} instead.
+     * use {@link EntityIndependentValueRangeDescriptor#extractValueRange(Solution_)} instead.
      * @return never null
      */
-    ValueRange<?> extractValueRange(Solution solution, Object entity);
+    ValueRange<?> extractValueRange(Solution_ solution, Object entity);
 
 }

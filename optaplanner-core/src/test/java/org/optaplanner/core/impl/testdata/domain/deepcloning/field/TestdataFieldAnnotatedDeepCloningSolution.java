@@ -16,12 +16,7 @@
 
 package org.optaplanner.core.impl.testdata.domain.deepcloning.field;
 
-import java.util.Collection;
-import java.util.List;
-
-import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
-import org.optaplanner.core.api.domain.solution.PlanningSolution;
-import org.optaplanner.core.api.domain.solution.Solution;
+import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -29,8 +24,11 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
+import java.util.Collection;
+import java.util.List;
+
 @PlanningSolution
-public class TestdataFieldAnnotatedDeepCloningSolution extends TestdataObject implements Solution<SimpleScore> {
+public class TestdataFieldAnnotatedDeepCloningSolution extends TestdataObject {
 
     public static SolutionDescriptor buildSolutionDescriptor() {
         return SolutionDescriptor.buildSolutionDescriptor(TestdataFieldAnnotatedDeepCloningSolution.class, TestdataFieldAnnotatedDeepCloningEntity.class);
@@ -43,6 +41,7 @@ public class TestdataFieldAnnotatedDeepCloningSolution extends TestdataObject im
     @DeepPlanningClone
     private List<String> generalShadowVariableList;
 
+    @PlanningScore
     private SimpleScore score;
 
     public TestdataFieldAnnotatedDeepCloningSolution() {
@@ -88,6 +87,7 @@ public class TestdataFieldAnnotatedDeepCloningSolution extends TestdataObject im
     // Complex methods
     // ************************************************************************
 
+    @PlanningFactCollectionProperty
     public Collection<? extends Object> getProblemFacts() {
         return valueList;
     }

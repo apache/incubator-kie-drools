@@ -16,19 +16,18 @@
 
 package org.optaplanner.core.impl.score.director;
 
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
 
-public interface InnerScoreDirectorFactory extends ScoreDirectorFactory {
+public interface InnerScoreDirectorFactory<Solution_> extends ScoreDirectorFactory<Solution_> {
 
     /**
      * @return never null
      */
-    SolutionDescriptor getSolutionDescriptor();
+    SolutionDescriptor<Solution_> getSolutionDescriptor();
 
     /**
      * @return never null
@@ -36,7 +35,7 @@ public interface InnerScoreDirectorFactory extends ScoreDirectorFactory {
     ScoreDefinition getScoreDefinition();
 
     @Override
-    InnerScoreDirector buildScoreDirector();
+    InnerScoreDirector<Solution_> buildScoreDirector();
 
     /**
      * Like {@link #buildScoreDirector()}, but optionally disables {@link ConstraintMatch} tracking
@@ -47,7 +46,7 @@ public interface InnerScoreDirectorFactory extends ScoreDirectorFactory {
      * @see ScoreDirector#isConstraintMatchEnabled()
      * @see ScoreDirector#getConstraintMatchTotals()
      */
-    InnerScoreDirector buildScoreDirector(boolean constraintMatchEnabledPreference);
+    InnerScoreDirector<Solution_> buildScoreDirector(boolean constraintMatchEnabledPreference);
 
     /**
      * @return never null
@@ -56,10 +55,10 @@ public interface InnerScoreDirectorFactory extends ScoreDirectorFactory {
 
     /**
      * Asserts that if the {@link Score} is calculated for the parameter solution,
-     * it would be equal to the {@link Solution#getScore()} of that parameter.
+     * it would be equal to the score of that parameter.
      * @param solution never null
      * @see InnerScoreDirector#assertWorkingScoreFromScratch(Score, Object)
      */
-    void assertScoreFromScratch(Solution solution);
+    void assertScoreFromScratch(Solution_ solution);
 
 }

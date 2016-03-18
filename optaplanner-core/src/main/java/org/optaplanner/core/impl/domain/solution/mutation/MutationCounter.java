@@ -16,19 +16,18 @@
 
 package org.optaplanner.core.impl.domain.solution.mutation;
 
-import java.util.Iterator;
-import java.util.List;
-
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
-public class MutationCounter {
+import java.util.Iterator;
+import java.util.List;
 
-    protected final SolutionDescriptor solutionDescriptor;
+public class MutationCounter<Solution_> {
 
-    public MutationCounter(SolutionDescriptor solutionDescriptor) {
+    protected final SolutionDescriptor<Solution_> solutionDescriptor;
+
+    public MutationCounter(SolutionDescriptor<Solution_> solutionDescriptor) {
         this.solutionDescriptor = solutionDescriptor;
     }
 
@@ -38,9 +37,9 @@ public class MutationCounter {
      * @param b never null
      * @return {@code >= 0}, the number of planning variables that have a different value in {@code a} and {@code b}.
      */
-    public int countMutations(Solution a, Solution b) {
+    public int countMutations(Solution_ a, Solution_ b) {
         int mutationCount = 0;
-        for (EntityDescriptor entityDescriptor : solutionDescriptor.getGenuineEntityDescriptors()) {
+        for (EntityDescriptor<Solution_> entityDescriptor : solutionDescriptor.getGenuineEntityDescriptors()) {
             List<Object> aEntities = entityDescriptor.extractEntities(a);
             List<Object> bEntities = entityDescriptor.extractEntities(b);
             for (Iterator aIt = aEntities.iterator(), bIt = bEntities.iterator(); aIt.hasNext() && bIt.hasNext(); ) {

@@ -23,7 +23,6 @@ import java.io.Reader;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
-import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.solver.EmptySolverFactory;
@@ -36,7 +35,7 @@ import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
  * <p>
  * Supports tweaking the configuration programmatically before a {@link Solver} instance is build.
  */
-public abstract class SolverFactory<Solution_ extends Solution> {
+public abstract class SolverFactory<Solution_> {
 
     // ************************************************************************
     // Static creation methods
@@ -48,7 +47,7 @@ public abstract class SolverFactory<Solution_ extends Solution> {
      * and configure the remainder programmatically with {@link #getSolverConfig()}.
      * @return never null
      */
-    public static <Solution_ extends Solution> SolverFactory<Solution_> createEmpty() {
+    public static <Solution_> SolverFactory<Solution_> createEmpty() {
         return new EmptySolverFactory<Solution_>();
     }
 
@@ -58,7 +57,7 @@ public abstract class SolverFactory<Solution_ extends Solution> {
      *      null to use the default {@link ClassLoader}
      * @return never null
      */
-    public static <Solution_ extends Solution> SolverFactory<Solution_> createEmpty(ClassLoader classLoader) {
+    public static <Solution_> SolverFactory<Solution_> createEmpty(ClassLoader classLoader) {
         return new EmptySolverFactory<Solution_>(new SolverConfigContext(classLoader));
     }
 
@@ -68,7 +67,7 @@ public abstract class SolverFactory<Solution_ extends Solution> {
      * as defined by {@link ClassLoader#getResource(String)}
      * @return never null
      */
-    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromKieContainerXmlResource(
+    public static <Solution_> SolverFactory<Solution_> createFromKieContainerXmlResource(
             String solverConfigResource) {
         KieContainer kieContainer = KieServices.Factory.get().getKieClasspathContainer();
         return new XStreamXmlSolverFactory<Solution_>(new SolverConfigContext(kieContainer))
@@ -81,7 +80,7 @@ public abstract class SolverFactory<Solution_ extends Solution> {
      * as defined by {@link ClassLoader#getResource(String)}
      * @return never null
      */
-    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromKieContainerXmlResource(
+    public static <Solution_> SolverFactory<Solution_> createFromKieContainerXmlResource(
             ReleaseId releaseId, String solverConfigResource) {
         KieContainer kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
         return createFromKieContainerXmlResource(kieContainer, solverConfigResource);
@@ -93,7 +92,7 @@ public abstract class SolverFactory<Solution_ extends Solution> {
      * as defined by {@link ClassLoader#getResource(String)}
      * @return never null
      */
-    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromKieContainerXmlResource(
+    public static <Solution_> SolverFactory<Solution_> createFromKieContainerXmlResource(
             KieContainer kieContainer, String solverConfigResource) {
         return new XStreamXmlSolverFactory<Solution_>(new SolverConfigContext(kieContainer))
                 .configure(solverConfigResource);
@@ -104,7 +103,7 @@ public abstract class SolverFactory<Solution_ extends Solution> {
      * as defined by {@link ClassLoader#getResource(String)}
      * @return never null
      */
-    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource) {
+    public static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource) {
         return new XStreamXmlSolverFactory<Solution_>()
                 .configure(solverConfigResource);
     }
@@ -117,7 +116,7 @@ public abstract class SolverFactory<Solution_ extends Solution> {
      *      null to use the default {@link ClassLoader}
      * @return never null
      */
-    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource, ClassLoader classLoader) {
+    public static <Solution_> SolverFactory<Solution_> createFromXmlResource(String solverConfigResource, ClassLoader classLoader) {
         return new XStreamXmlSolverFactory<Solution_>(new SolverConfigContext(classLoader))
                 .configure(solverConfigResource);
     }
@@ -126,7 +125,7 @@ public abstract class SolverFactory<Solution_ extends Solution> {
      * @param solverConfigFile never null
      * @return never null
      */
-    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile) {
+    public static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile) {
         return new XStreamXmlSolverFactory<Solution_>()
                 .configure(solverConfigFile);
     }
@@ -137,7 +136,7 @@ public abstract class SolverFactory<Solution_ extends Solution> {
      *      null to use the default {@link ClassLoader}
      * @return never null
      */
-    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile, ClassLoader classLoader) {
+    public static <Solution_> SolverFactory<Solution_> createFromXmlFile(File solverConfigFile, ClassLoader classLoader) {
         return new XStreamXmlSolverFactory<Solution_>(new SolverConfigContext(classLoader))
                 .configure(solverConfigFile);
     }
@@ -146,7 +145,7 @@ public abstract class SolverFactory<Solution_ extends Solution> {
      * @param in never null, gets closed
      * @return never null
      */
-    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlInputStream(InputStream in) {
+    public static <Solution_> SolverFactory<Solution_> createFromXmlInputStream(InputStream in) {
         return new XStreamXmlSolverFactory<Solution_>()
                 .configure(in);
     }
@@ -157,7 +156,7 @@ public abstract class SolverFactory<Solution_ extends Solution> {
      *      null to use the default {@link ClassLoader}
      * @return never null
      */
-    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
+    public static <Solution_> SolverFactory<Solution_> createFromXmlInputStream(InputStream in, ClassLoader classLoader) {
         return new XStreamXmlSolverFactory<Solution_>(new SolverConfigContext(classLoader))
                 .configure(in);
     }
@@ -166,7 +165,7 @@ public abstract class SolverFactory<Solution_ extends Solution> {
      * @param reader never null, gets closed
      * @return never null
      */
-    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlReader(Reader reader) {
+    public static <Solution_> SolverFactory<Solution_> createFromXmlReader(Reader reader) {
         return new XStreamXmlSolverFactory<Solution_>()
                 .configure(reader);
     }
@@ -177,7 +176,7 @@ public abstract class SolverFactory<Solution_ extends Solution> {
      *      null to use the default {@link ClassLoader}
      * @return never null
      */
-    public static <Solution_ extends Solution> SolverFactory<Solution_> createFromXmlReader(Reader reader, ClassLoader classLoader) {
+    public static <Solution_> SolverFactory<Solution_> createFromXmlReader(Reader reader, ClassLoader classLoader) {
         return new XStreamXmlSolverFactory<Solution_>(new SolverConfigContext(classLoader))
                 .configure(reader);
     }

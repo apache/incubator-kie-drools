@@ -19,7 +19,7 @@ package org.optaplanner.examples.examination.persistence;
 import org.optaplanner.examples.common.persistence.XStreamSolutionDao;
 import org.optaplanner.examples.examination.domain.Examination;
 
-public class ExaminationDao extends XStreamSolutionDao {
+public class ExaminationDao extends XStreamSolutionDao<Examination> {
 
     public ExaminationDao() {
         super("examination", Examination.class);
