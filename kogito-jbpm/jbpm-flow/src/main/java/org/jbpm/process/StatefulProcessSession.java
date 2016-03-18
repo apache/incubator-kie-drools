@@ -342,6 +342,10 @@ public class StatefulProcessSession extends AbstractRuntime implements StatefulK
         throw new UnsupportedOperationException();
     }
 
+    public void delete(FactHandle handle, FactHandle.State fhState) {
+        throw new UnsupportedOperationException();
+    }
+
 	public void update(FactHandle handle, Object object) {
 		throw new UnsupportedOperationException();
 	}

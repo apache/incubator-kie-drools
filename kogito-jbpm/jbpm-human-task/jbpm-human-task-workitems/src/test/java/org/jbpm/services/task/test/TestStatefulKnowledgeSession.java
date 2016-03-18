@@ -293,6 +293,10 @@ public class TestStatefulKnowledgeSession extends AbstractRuntime implements Sta
     }
 
     @Override
+    public void delete(FactHandle fh, FactHandle.State fhState) {
+    }
+
+    @Override
     public void destroy() {
         dispose();        
     }
