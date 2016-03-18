@@ -514,6 +514,15 @@ $ mvn exec:java
       </itemizedlist>
     </section>
 
+    <section xml:id="releaseNotes">
+      <title>Release Notes</title>
+
+      <para>We release a <literal>Beta</literal> or <literal>CR</literal> version every few weeks and a
+      <literal>Final</literal> version every few months. <link
+      xlink:href="http://www.optaplanner.org/download/releaseNotes/">Read the release notes of each release on our
+      website.</link></para>
+    </section>
+
     <section xml:id="backwardsCompatibility">
       <title>Backwards Compatibility</title>
 
@@ -525,8 +534,8 @@ $ mvn exec:java
           role="bold">org.optaplanner.core.api</emphasis> are 100% <emphasis role="bold">backwards compatible</emphasis>
           in future releases (especially minor and hotfix releases). In rare circumstances, if the major version number
           changes, a few specific classes might have a few backwards incompatible changes, but those will be clearly
-          documented in <link xlink:href="http://www.optaplanner.org/download/upgradeRecipe/">
-          the upgrade recipe</link>.</para>
+          documented in <link xlink:href="http://www.optaplanner.org/download/upgradeRecipe/">the upgrade
+          recipe</link>.</para>
         </listitem>
 
         <listitem>
@@ -539,17 +548,16 @@ $ mvn exec:java
         <listitem>
           <para><emphasis role="bold">Implementation classes</emphasis>: All classes in the package namespace <emphasis
           role="bold">org.optaplanner.core.impl</emphasis> are <emphasis>not</emphasis> backwards compatible: they will
-          change in future major or minor releases (but probably not in hotfix releases). The
-          <link xlink:href="http://www.optaplanner.org/download/upgradeRecipe/">upgrade recipe</link>
-          describes every such relevant change and on how to quickly deal with it when upgrading to a newer
-          version. That recipe file is included in every release zip.</para>
+          change in future major or minor releases (but probably not in hotfix releases). <link
+          xlink:href="http://www.optaplanner.org/download/upgradeRecipe/">The upgrade recipe</link> describes every such
+          relevant change and on how to quickly deal with it when upgrading to a newer version.</para>
         </listitem>
       </itemizedlist>
 
       <note>
-        <para>This documentation covers some impl classes too. Those documented impl classes are reliable and safe to
-        use (unless explicitly marked as experimental in this documentation), but we're just not entirely comfortable
-        yet to write their signatures in stone.</para>
+        <para>This documentation covers some <literal>impl</literal> classes too. Those documented
+        <literal>impl</literal> classes are reliable and safe to use (unless explicitly marked as experimental in this
+        documentation), but we're just not entirely comfortable yet to write their signatures in stone.</para>
       </note>
     </section>
 
