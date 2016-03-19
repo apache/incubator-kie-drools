@@ -10,7 +10,7 @@
           <id>0</id>
           <person id="6">
             <id>9</id>
-            <fullName>Steph J. X Snos</fullName>
+            <fullName>Steph J. X. Snos</fullName>
           </person>
           <meeting reference="3"/>
         </MsRequiredAttendance>
@@ -298,7 +298,7 @@
           <id>35</id>
           <person id="79">
             <id>18</id>
-            <fullName>Micha I. X Snos</fullName>
+            <fullName>Micha I. X. Snos</fullName>
           </person>
           <meeting reference="36"/>
         </MsPreferredAttendance>
@@ -311,7 +311,7 @@
           <id>37</id>
           <person id="82">
             <id>27</id>
-            <fullName>Peter H. X Snos</fullName>
+            <fullName>Peter H. X. Snos</fullName>
           </person>
           <meeting reference="36"/>
         </MsPreferredAttendance>

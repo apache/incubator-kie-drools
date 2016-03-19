@@ -24,6 +24,7 @@ import java.util.Random;
 
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.persistence.AbstractSolutionImporter;
+import org.optaplanner.examples.common.persistence.StringDataGenerator;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 import org.optaplanner.examples.meetingscheduling.domain.Attendance;
 import org.optaplanner.examples.meetingscheduling.domain.Day;
@@ -38,8 +39,8 @@ import org.optaplanner.examples.meetingscheduling.domain.TimeGrain;
 
 public class MeetingSchedulingGenerator extends LoggingMain {
 
-    private static final String[][] topicPartOptions = {
-            new String[] {
+    private static final StringDataGenerator topicGenerator = new StringDataGenerator()
+            .addPart(
                     "Strategize",
                     "Fast track",
                     "Cross sell",
@@ -49,9 +50,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
                     "Downsize",
                     "Ramp up",
                     "On board",
-                    "Reinvigorate"
-            },
-            new String[] {
+                    "Reinvigorate")
+            .addPart(
                     "data driven",
                     "sales driven",
                     "compelling",
@@ -61,9 +61,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
                     "laser-focused",
                     "flexible",
                     "real-time",
-                    "targeted"
-            },
-            new String[] {
+                    "targeted")
+            .addPart(
                     "B2B",
                     "e-business",
                     "virtualization",
@@ -73,9 +72,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
                     "data mining",
                     "policies",
                     "synergies",
-                    "user experience"
-            },
-            new String[] {
+                    "user experience")
+            .addPart(
                     "in a nutshell",
                     "in practice",
                     "for dummies",
@@ -85,9 +83,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
                     "for decision makers",
                     "on the whiteboard",
                     "out of the box",
-                    "in the new economy"
-            }
-    };
+                    "in the new economy");
 
     private static final int[] durationInGrainsOptions = {
             1, // 15 mins
@@ -153,8 +149,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             17 * 60 + 45, // 17:45
     };
 
-    private static final String[][] fullNamePartOptions = {
-            new String[] {
+    private static final StringDataGenerator fullNameGenerator = new StringDataGenerator()
+            .addPart(
                     "Geoff",
                     "Mark",
                     "Edson",
@@ -164,9 +160,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
                     "Shelly",
                     "Peter",
                     "Micha",
-                    "Steph",
-            },
-            new String[] {
+                    "Steph")
+            .addPart(
                     "A.",
                     "B.",
                     "C.",
@@ -176,9 +171,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
                     "G.",
                     "H.",
                     "I.",
-                    "J.",
-            },
-            new String[] {
+                    "J.")
+            .addPart(
                     "O.",
                     "P.",
                     "Q.",
@@ -188,9 +182,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
                     "U.",
                     "V.",
                     "W.",
-                    "X",
-            },
-            new String[] {
+                    "X.")
+            .addPart(
                     "Smet",
                     "Proc",
                     "Fusco",
@@ -200,9 +193,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
                     "Gowan",
                     "Siro",
                     "Kief",
-                    "Snos",
-            }
-    };
+                    "Snos");
 
     public static void main(String[] args) {
         new MeetingSchedulingGenerator().generate();
@@ -239,6 +230,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
 
     public MeetingSchedule createMeetingSchedule(String fileName, int meetingListSize, int timeGrainListSize, int roomListSize) {
         random = new Random(37);
+        topicGenerator.reset();
+        fullNameGenerator.reset();
         MeetingSchedule meetingSchedule = new MeetingSchedule();
         meetingSchedule.setId(0L);
 
@@ -267,7 +260,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         for (int i = 0; i < meetingListSize; i++) {
             Meeting meeting = new Meeting();
             meeting.setId((long) i);
-            String topic = generateStringFromPartOptions(topicPartOptions, i);
+            String topic = topicGenerator.generateNextValue();
             meeting.setTopic(topic);
             int durationInGrains = durationInGrainsOptions[random.nextInt(durationInGrainsOptions.length)];
             meeting.setDurationInGrains(durationInGrains);
@@ -367,7 +360,8 @@ public class MeetingSchedulingGenerator extends LoggingMain {
         for (int i = 0; i < personListSize; i++) {
             Person person = new Person();
             person.setId((long) i);
-            String fullName = generateStringFromPartOptions(fullNamePartOptions, i);
+            String fullName = fullNameGenerator.generateNextValue();
+            System.out.println(fullName);
             person.setFullName(fullName);
             logger.trace("Created person with fullName ({}).",
                     fullName);
@@ -403,31 +397,6 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             meetingAssignmentList.add(meetingAssignment);
         }
         meetingSchedule.setMeetingAssignmentList(meetingAssignmentList);
-    }
-
-    private String generateStringFromPartOptions(String[][] partOptions, int index) {
-        if (partOptions.length != 4) {
-            throw new IllegalStateException("The partOptions length (" + partOptions.length + ") is invalid.");
-        }
-        final int partLength = partOptions[0].length;
-        for (int i = 0; i < partOptions.length; i++) {
-            if (partOptions[i].length != partLength) {
-                throw new IllegalStateException("The partOptions[" + i + "] length (" + partOptions[i].length
-                        + ") is not the same as the partOptions[0] length (" + partLength + ").");
-            }
-        }
-        if (index > (int) Math.pow(partLength, partOptions.length)) {
-            throw new IllegalStateException("The index (" + index + ") is invalid.");
-        }
-        int firstIndex = index % partLength;
-        int secondIndex = (firstIndex + (index % (int) Math.pow(partLength, 3) / (int) Math.pow(partLength, 2)))
-                % partLength;
-        int thirdIndex = (secondIndex + (index % (int) Math.pow(partLength, 2) / (int) partLength))
-                % partLength;
-        int fourthIndex = (thirdIndex + (index / (int) Math.pow(partLength, 3)))
-                % partLength;
-        return partOptions[0][firstIndex] + " " + partOptions[1][secondIndex]
-                + " " + partOptions[2][thirdIndex] + " " + partOptions[3][fourthIndex];
     }
 
 }
