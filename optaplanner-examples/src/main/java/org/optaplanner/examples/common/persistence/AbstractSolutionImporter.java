@@ -122,7 +122,7 @@ public abstract class AbstractSolutionImporter extends LoggingMain {
 
     public static abstract class InputBuilder extends LoggingMain {
 
-        public BigInteger factorial(int base) {
+        public static BigInteger factorial(int base) {
             BigInteger value = BigInteger.ONE;
             for (int i = 1; i <= base; i++) {
                 value = value.multiply(BigInteger.valueOf(base));

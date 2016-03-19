@@ -22,6 +22,54 @@ import java.util.List;
 
 public class StringDataGenerator {
 
+    public static StringDataGenerator build10kFullNames() {
+        return new StringDataGenerator()
+                .addPart(
+                        "Geoff",
+                        "Mark",
+                        "Edson",
+                        "Ondrej",
+                        "Lukas",
+                        "Vicky",
+                        "Shelly",
+                        "Peter",
+                        "Micha",
+                        "Steph")
+                .addPart(
+                        "A.",
+                        "B.",
+                        "C.",
+                        "D.",
+                        "E.",
+                        "F.",
+                        "G.",
+                        "H.",
+                        "I.",
+                        "J.")
+                .addPart(
+                        "O.",
+                        "P.",
+                        "Q.",
+                        "R.",
+                        "S.",
+                        "T.",
+                        "U.",
+                        "V.",
+                        "W.",
+                        "X.")
+                .addPart(
+                        "Smet",
+                        "Proc",
+                        "Fusco",
+                        "Skop",
+                        "Davis",
+                        "Smith",
+                        "Gowan",
+                        "Siro",
+                        "Kief",
+                        "Snos");
+    }
+
     private List<String[]> partValuesList = new ArrayList<>();
     private int partValuesLength;
     private int index = 0;

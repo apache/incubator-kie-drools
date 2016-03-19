@@ -149,51 +149,7 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             17 * 60 + 45, // 17:45
     };
 
-    private static final StringDataGenerator fullNameGenerator = new StringDataGenerator()
-            .addPart(
-                    "Geoff",
-                    "Mark",
-                    "Edson",
-                    "Ondrej",
-                    "Lukas",
-                    "Vicky",
-                    "Shelly",
-                    "Peter",
-                    "Micha",
-                    "Steph")
-            .addPart(
-                    "A.",
-                    "B.",
-                    "C.",
-                    "D.",
-                    "E.",
-                    "F.",
-                    "G.",
-                    "H.",
-                    "I.",
-                    "J.")
-            .addPart(
-                    "O.",
-                    "P.",
-                    "Q.",
-                    "R.",
-                    "S.",
-                    "T.",
-                    "U.",
-                    "V.",
-                    "W.",
-                    "X.")
-            .addPart(
-                    "Smet",
-                    "Proc",
-                    "Fusco",
-                    "Skop",
-                    "Davis",
-                    "Smith",
-                    "Gowan",
-                    "Siro",
-                    "Kief",
-                    "Snos");
+    private static final StringDataGenerator fullNameGenerator = StringDataGenerator.build10kFullNames();
 
     public static void main(String[] args) {
         new MeetingSchedulingGenerator().generate();
@@ -361,7 +317,6 @@ public class MeetingSchedulingGenerator extends LoggingMain {
             Person person = new Person();
             person.setId((long) i);
             String fullName = fullNameGenerator.generateNextValue();
-            System.out.println(fullName);
             person.setFullName(fullName);
             logger.trace("Created person with fullName ({}).",
                     fullName);
