@@ -1,0 +1,26 @@
+package org.drools.persistence.kie.persistence.session
+
+import org.drools.compiler.Person
+import org.drools.persistence.kie.persistence.session.PersistentSessionForallTest.Pet
+
+import java.util.ArrayList;
+
+// all people known as "cat lady" have only cats as pets
+rule "Forall1"
+	when
+		forall ( $pet : Pet ( owner.name  == 'cat lady' )
+	          			Pet ( this == $pet, type == Pet.PetType.cat )
+	    )
+	then
+		//consequences
+end
+
+// all people known as "dog lady" have only dogs as pets
+rule "Forall2"
+	when
+		forall ( $pet : Pet ( owner.name == 'dog lady')
+						Pet ( this == $pet, type == Pet.PetType.dog )
+		)
+	then
+		//consequences
+end
