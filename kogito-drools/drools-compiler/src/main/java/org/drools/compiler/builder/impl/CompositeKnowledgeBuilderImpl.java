@@ -192,7 +192,10 @@ public class CompositeKnowledgeBuilderImpl implements CompositeKnowledgeBuilder 
     private static final ResourceBuilder XSD_RESOURCE_BUILDER = new ResourceBuilder() {
         @Override
         public void build( KnowledgeBuilderImpl kBuilder, ResourceDescr resourceDescr ) throws Exception {
-            kBuilder.addPackageFromXSD( resourceDescr.resource, (JaxbConfigurationImpl) resourceDescr.configuration );
+            if (resourceDescr.configuration instanceof JaxbConfigurationImpl) {
+                // if the xsd file doesn't have a jaxb configuration it doesn't belong to the kprojact and then can be skipped
+                kBuilder.addPackageFromXSD( resourceDescr.resource, (JaxbConfigurationImpl) resourceDescr.configuration );
+            }
         }
     };
 
