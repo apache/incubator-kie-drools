@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+   <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+         <!-- XML Schema Generated from XML Document on Wed Jul 16 2014 15:15:56 GMT-0400 (Eastern Daylight Time) -->
+         <!-- with XmlGrid.net Free Online Service http://xmlgrid.net -->
+         <xs:element name="root">
+               <xs:complexType>
+                     <xs:sequence>
+                           <xs:element name="FileName" type="xs:string"></xs:element>
+                           <xs:element name="Recipient" type="xs:string"></xs:element>
+                     </xs:sequence>
+               </xs:complexType>
+         </xs:element>
+   </xs:schema>
+
