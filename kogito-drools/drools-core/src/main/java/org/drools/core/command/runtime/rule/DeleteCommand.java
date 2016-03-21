@@ -35,6 +35,7 @@ public class DeleteCommand
 
     private DisconnectedFactHandle handle;
 
+    @XmlElement
     private FactHandle.State fhState = FactHandle.State.ALL;
 
     public DeleteCommand() {
