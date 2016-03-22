@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.score.director.incremental;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
@@ -27,7 +28,7 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
  * This is much faster than {@link EasyScoreCalculator} but requires much more code to implement too.
  * <p>
  * Any implementation is naturally stateful.
- * @param <Solution_> Subclass of {@link Solution}
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see IncrementalScoreDirector
  */
 public interface IncrementalScoreCalculator<Solution_> {

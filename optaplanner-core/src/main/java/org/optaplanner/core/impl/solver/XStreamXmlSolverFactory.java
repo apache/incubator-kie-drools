@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.solver;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.ConversionException;
 import org.apache.commons.io.IOUtils;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.SolverConfigContext;
@@ -28,6 +29,7 @@ import java.io.*;
 
 /**
  * XML based configuration that builds a {@link Solver} with {@link XStream}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see SolverFactory
  */
 public class XStreamXmlSolverFactory<Solution_> extends AbstractSolverFactory<Solution_> {

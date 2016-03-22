@@ -26,7 +26,7 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
- * Specifies that a property (or a field) on a {@link Solution} class is a planning entity.
+ * Specifies that a property (or a field) on a {@link PlanningSolution} class is a planning entity.
  * <p>
  * The planning entity should have the {@link PlanningEntity} annotation.
  * The planning entity will be added to the {@link ScoreDirector}.

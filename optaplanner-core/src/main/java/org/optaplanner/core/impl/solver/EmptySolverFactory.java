@@ -16,9 +16,13 @@
 
 package org.optaplanner.core.impl.solver;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class EmptySolverFactory<Solution_> extends AbstractSolverFactory<Solution_> {
 
     public EmptySolverFactory() {

@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.domain.variable.descriptor;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
@@ -36,6 +37,9 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 import java.util.*;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor {
 
     private boolean chained;

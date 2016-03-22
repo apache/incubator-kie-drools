@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.solver.event;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
@@ -25,8 +26,9 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 import java.util.EventObject;
 
 /**
- * Delivered when the best {@link Solution} changes during solving.
- * Delivered in the solver thread (which is the thread that calls {@link Solver#solve(Solution)}.
+ * Delivered when the best {@link PlanningSolution} changes during solving.
+ * Delivered in the solver thread (which is the thread that calls {@link Solver#solve(Solution_)}).
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class BestSolutionChangedEvent<Solution_> extends EventObject {
 
@@ -63,8 +65,8 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
      * <ul>
      *     <li>In real-time planning, not all {@link ProblemFactChange}s might be processed:
      *     check {@link #isEveryProblemFactChangeProcessed()}.</li>
-     *     <li>this {@link Solution} might be uninitialized: check {@link #isNewBestSolutionInitialized()}.</li>
-     *     <li>this {@link Solution} might be infeasible: check {@link FeasibilityScore#isFeasible()}.</li>
+     *     <li>this {@link PlanningSolution} might be uninitialized: check {@link #isNewBestSolutionInitialized()}.</li>
+     *     <li>this {@link PlanningSolution} might be infeasible: check {@link FeasibilityScore#isFeasible()}.</li>
      * </ul>
      * @return never null
      */

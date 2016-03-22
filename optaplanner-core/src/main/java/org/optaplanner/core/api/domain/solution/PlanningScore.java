@@ -26,7 +26,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Specifies that a property (or a field) on a {@link Solution} class is a {@link Score}.
+ * Specifies that a property (or a field) on a {@link PlanningSolution} class is a {@link Score}.
  */
 @Target({METHOD, FIELD})
 @Retention(RUNTIME)

@@ -20,9 +20,13 @@ import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
 import java.io.*;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public abstract class AbstractXmlSolutionExporter<Solution_> extends AbstractSolutionExporter<Solution_> {
 
     protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = "xml";

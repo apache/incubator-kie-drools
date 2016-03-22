@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.phase;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -34,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Iterator;
 
 /**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see DefaultLocalSearchPhase
  */
 public abstract class AbstractPhase<Solution_> implements Phase {

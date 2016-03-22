@@ -63,6 +63,9 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class SolutionDescriptor<Solution_> {
 
     public static <Solution_> SolutionDescriptor<Solution_> buildSolutionDescriptor(Class<Solution_> solutionClass,

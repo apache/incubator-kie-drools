@@ -34,7 +34,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * (unless the {@link #solutionCloner()} is specified).
  * <p>
  * This annotation describes declarative properties of the planning solution.
- * The planning solution class must also implement {@link Solution},
+ * The planning solution class must also implement {@link PlanningSolution},
  * which is needed to get/set state.
  */
 @Target({TYPE})
@@ -42,9 +42,9 @@ import static java.lang.annotation.RetentionPolicy.*;
 public @interface PlanningSolution {
 
     /**
-     * Overrides the default {@link SolutionCloner} to implement a custom {@link Solution} cloning implementation.
+     * Overrides the default {@link SolutionCloner} to implement a custom {@link PlanningSolution} cloning implementation.
      * <p>
-     * If this is not specified and the {@link Solution} does not implements {@link PlanningCloneable},
+     * If this is not specified and the {@link PlanningSolution} does not implements {@link PlanningCloneable},
      * the default reflection-based {@link SolutionCloner} is used, so you don't have to worry about it.
      * @return {@link NullSolutionCloner} when it is null (workaround for annotation limitation)
      */

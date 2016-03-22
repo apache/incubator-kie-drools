@@ -19,6 +19,7 @@ package org.optaplanner.examples.common.app;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -30,7 +31,8 @@ import org.optaplanner.core.impl.score.director.easy.EasyScoreCalculator;
 import static org.junit.Assume.*;
 
 /**
- * Turtle tests are not run by default. They are only run if <code>-DrunTurtleTests=true</code> because it takes days.
+ * Turtle tests are not run by default. They are only run if {@code -DrunTurtleTests=true} because it takes days.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 @RunWith(Parameterized.class)
 public abstract class SolveAllTurtleTest<Solution_> extends LoggingTest {

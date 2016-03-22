@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.domain.entity.descriptor;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.api.domain.variable.AnchorShadowVariable;
 import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
@@ -47,6 +48,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class EntityDescriptor<Solution_> {
 
     public static final List<Class<? extends Annotation>> VARIABLE_ANNOTATION_CLASSES = Arrays.asList(

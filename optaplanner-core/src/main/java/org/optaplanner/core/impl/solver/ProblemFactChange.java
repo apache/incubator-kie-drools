@@ -16,28 +16,31 @@
 
 package org.optaplanner.core.impl.solver;
 
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
- * A ProblemFactChange represents a change in 1 or more problem facts of a {@link Solution}.
+ * A ProblemFactChange represents a change in 1 or more problem facts of a {@link PlanningSolution}.
  * Problem facts used by a {@link Solver} must not be changed while it is solving,
  * but by scheduling this command to the {@link Solver}, you can change them when the time is right.
  * <p>
- * Note that the {@link Solver} clones a {@link Solution} at will.
- * So any change must be done on the problem facts and planning entities referenced by the {@link Solution}
+ * Note that the {@link Solver} clones a {@link PlanningSolution} at will.
+ * So any change must be done on the problem facts and planning entities referenced by the {@link PlanningSolution}
  * of the {@link ScoreDirector}. On each change it should also notify the {@link ScoreDirector} accordingly.
  */
 public interface ProblemFactChange {
 
     /**
-     * Does the change on the {@link Solution} of the {@link ScoreDirector}
+     * Does the change on the {@link PlanningSolution} of the {@link ScoreDirector}
      * and notifies the {@link ScoreDirector} accordingly.
-     * Every modification to the {@link Solution}, must be correctly notified to the {@link ScoreDirector},
+     * Every modification to the {@link PlanningSolution}, must be correctly notified to the {@link ScoreDirector},
      * otherwise the {@link Score} calculation will be corrupted.
      * @param scoreDirector never null
-     * Contains the working {@link Solution} which contains the problem facts (and planning entities) to change.
+     * Contains the {@link PlanningSolution working solution} which contains the problem facts
+     * (and {@link PlanningEntity planning entities}) to change.
      * Also needs to get notified of those changes.
      */
     void doChange(ScoreDirector scoreDirector);

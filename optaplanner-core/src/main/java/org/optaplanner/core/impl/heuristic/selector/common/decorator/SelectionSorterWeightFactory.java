@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
 
@@ -29,7 +30,7 @@ import org.optaplanner.core.impl.heuristic.selector.Selector;
 public interface SelectionSorterWeightFactory<Solution_, T> {
 
     /**
-     * @param solution never null, the {@link Solution} to which the selection belongs or applies to
+     * @param solution never null, the {@link PlanningSolution} to which the selection belongs or applies to
      * @param selection never null, a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}
      * @return never null, for example a {@link Integer}, {@link Double} or a more complex {@link Comparable}
      */

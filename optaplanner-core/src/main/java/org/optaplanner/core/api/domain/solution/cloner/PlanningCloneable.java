@@ -16,8 +16,10 @@
 
 package org.optaplanner.core.api.domain.solution.cloner;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+
 /**
- * Tagging interface for a {@link Solution} that implements its own planning cloning
+ * Tagging interface for a {@link PlanningSolution} that implements its own planning cloning
  * instead of letting the default or a custom {@link SolutionCloner} do it.
  * <p>
  * Planning cloning is hard: avoid doing it yourself.
@@ -25,18 +27,18 @@ package org.optaplanner.core.api.domain.solution.cloner;
 public interface PlanningCloneable<T> {
 
     /**
-     * Does a planning clone. A returned {@link Solution} clone must fulfill these requirements:
+     * Does a planning clone. A returned {@link PlanningSolution} clone must fulfill these requirements:
      * <ul>
      * <li>The clone must represent the same planning problem.
      * Usually it reuses the same instances of the problem facts and problem fact collections as the {@code original}.
      * </li>
      * <li>The clone must use different, cloned instances of the entities and entity collections.
      * If a cloned entity changes, the original must remain unchanged.
-     * If an entity is added or removed in a cloned {@link Solution},
-     * the original {@link Solution} must remain unchanged.</li>
+     * If an entity is added or removed in a cloned {@link PlanningSolution},
+     * the original {@link PlanningSolution} must remain unchanged.</li>
      * </ul>
      * Note that a class might support more than 1 clone method: planning clone is just one of them.
-     * @return never null, the cloned {@link Solution}
+     * @return never null, the cloned {@link PlanningSolution}
      */
     T planningClone();
 

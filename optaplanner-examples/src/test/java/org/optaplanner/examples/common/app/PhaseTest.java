@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.examples.common.persistence.SolutionDao;
@@ -31,6 +32,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 @RunWith(Parameterized.class)
 public abstract class PhaseTest<Solution_> extends LoggingTest {
 

@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Abstract superclass for {@link ScoreDirectorFactory}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirectorFactory
  */
 public abstract class AbstractScoreDirectorFactory<Solution_> implements InnerScoreDirectorFactory<Solution_> {

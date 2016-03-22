@@ -16,11 +16,13 @@
 
 package org.optaplanner.core.impl.score.director.easy;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 
 /**
  * Easy implementation of {@link ScoreDirectorFactory}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see EasyScoreDirector
  * @see ScoreDirectorFactory
  */

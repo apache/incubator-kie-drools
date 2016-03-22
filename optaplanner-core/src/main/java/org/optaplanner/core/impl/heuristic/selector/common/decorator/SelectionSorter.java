@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.heuristic.selector.common.decorator;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.Selector;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
@@ -26,7 +27,7 @@ import java.util.List;
 /**
  * Decides the order of a {@link List} of selection
  * (which is a {@link PlanningEntity}, a planningValue, a {@link Move} or a {@link Selector}).
- * @param <Solution_> the solution type
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
  */
 public interface SelectionSorter<Solution_, T> {

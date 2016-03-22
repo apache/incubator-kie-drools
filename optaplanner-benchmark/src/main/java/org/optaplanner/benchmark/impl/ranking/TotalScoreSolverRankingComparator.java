@@ -21,14 +21,15 @@ import java.util.Comparator;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 
 /**
  * This ranking {@link Comparator} orders a {@link SolverBenchmarkResult} by its total {@link Score}.
- * It maximize the overall score, so it minimizes the overall cost if all {@link Solution}s would be executed.
+ * It maximize the overall score, so it minimizes the overall cost if all {@link PlanningSolution}s would be executed.
  * <p>
  * When the inputSolutions differ greatly in size or difficulty, this often results in a big difference in
- * {@link Score} magnitude between each {@link Solution}. For example: score 10 for dataset A versus 1000 for dataset B.
+ * {@link Score} magnitude between each {@link PlanningSolution}. For example: score 10 for dataset A versus 1000 for dataset B.
  * In such cases, dataset B would marginalize dataset A.
  * To avoid that, use {@link TotalRankSolverRankingWeightFactory}.
  */

@@ -18,12 +18,16 @@ package org.optaplanner.examples.common.persistence;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public abstract class AbstractTxtSolutionImporter<Solution_> extends AbstractSolutionImporter<Solution_> {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = "txt";

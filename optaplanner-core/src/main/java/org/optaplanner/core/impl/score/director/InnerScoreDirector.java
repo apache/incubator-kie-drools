@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.listener.VariableListener;
@@ -24,6 +25,9 @@ import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 
 import java.util.List;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> {
 
     /**
@@ -93,8 +97,8 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
     SupplyManager getSupplyManager();
 
     /**
-     * Clones this {@link ScoreDirector} and its {@link Solution_ workingSolution}.
-     * Use {@link #getWorkingSolution()} to retrieve the {@link Solution_ workingSolution} of that clone.
+     * Clones this {@link ScoreDirector} and its {@link PlanningSolution working solution}.
+     * Use {@link #getWorkingSolution()} to retrieve the {@link PlanningSolution working solution} of that clone.
      * <p>
      * This is heavy method, because it usually breaks incremental score calculation. Use it sparingly.
      * Therefore it's best to clone lazily by delaying the clone call as long as possible.
@@ -109,7 +113,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
     void setAllChangesWillBeUndoneBeforeStepEnds(boolean allChangesWillBeUndoneBeforeStepEnds);
 
     /**
-     * Asserts that if the {@link Score} is calculated for the current {@link Solution_ workingSolution}
+     * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}
      * in the current {@link ScoreDirector} (with possibly incremental calculation residue),
      * it is equal to the parameter {@link Score expectedWorkingScore}.
      * <p>
@@ -123,8 +127,8 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
     /**
      * Asserts that if all {@link VariableListener}s are forcibly triggered,
      * and therefore all shadow variables are updated if needed,
-     * that none of the shadow variables of the {@link Solution_ workingSolution} change,
-     * Then also asserts that the {@link Score} calculated for the {@link Solution_ workingSolution} afterwards
+     * that none of the shadow variables of the {@link PlanningSolution working solution} change,
+     * Then also asserts that the {@link Score} calculated for the {@link PlanningSolution working solution} afterwards
      * is equal to the parameter {@link Score expectedWorkingScore}.
      * <p>
      * Used to assert that the shadow variables' state is consistent with the genuine variables' state.
@@ -135,7 +139,7 @@ public interface InnerScoreDirector<Solution_> extends ScoreDirector<Solution_> 
     void assertShadowVariablesAreNotStale(Score expectedWorkingScore, Object completedAction);
 
     /**
-     * Asserts that if the {@link Score} is calculated for the current {@link Solution_ workingSolution}
+     * Asserts that if the {@link Score} is calculated for the current {@link PlanningSolution working solution}
      * in a fresh {@link ScoreDirector} (with no incremental calculation residue),
      * it is equal to the parameter {@link Score workingScore}.
      * <p>

@@ -21,6 +21,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.optaplanner.benchmark.impl.result.SingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 
 import java.util.Comparator;
@@ -32,7 +33,7 @@ import java.util.List;
  * It maximizes the overall ranking.
  * <p>
  * When the inputSolutions differ greatly in size or difficulty, this often produces a difference in
- * {@link Score} magnitude between each solution. For example: score 10 for dataset A versus 1000 for dataset B.
+ * {@link Score} magnitude between each {@link PlanningSolution}. For example: score 10 for dataset A versus 1000 for dataset B.
  * In such cases, this ranking is more fair than {@link TotalScoreSolverRankingComparator},
  * because in this ranking, dataset B wouldn't marginalize dataset A.
  */
@@ -45,9 +46,9 @@ public class TotalRankSolverRankingWeightFactory implements SolverRankingWeightF
         int equalCount = 0;
         int lowerCount = 0;
         List<SingleBenchmarkResult> singleBenchmarkResultList = solverBenchmarkResult.getSingleBenchmarkResultList();
-        for (SingleBenchmarkResult single : solverBenchmarkResult.getSingleBenchmarkResultList()) {
-            List<SingleBenchmarkResult> results = single.getProblemBenchmarkResult().getSingleBenchmarkResultList();
-            for (SingleBenchmarkResult otherSingle : results) {
+        for (SingleBenchmarkResult single : singleBenchmarkResultList) {
+            List<SingleBenchmarkResult> otherSingleList = single.getProblemBenchmarkResult().getSingleBenchmarkResultList();
+            for (SingleBenchmarkResult otherSingle : otherSingleList) {
                 if (single == otherSingle) {
                     continue;
                 }

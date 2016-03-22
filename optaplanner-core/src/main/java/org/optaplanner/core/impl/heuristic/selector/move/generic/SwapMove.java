@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -27,6 +28,9 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 import java.util.*;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class SwapMove<Solution_> extends AbstractMove {
 
     protected final List<GenuineVariableDescriptor<Solution_>> variableDescriptorList;

@@ -23,6 +23,7 @@ import java.util.List;
 import javax.swing.SwingUtilities;
 
 import org.apache.commons.io.FileUtils;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
@@ -50,6 +51,9 @@ import org.optaplanner.examples.common.swingui.SolverAndPersistenceFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class SolutionBusiness<Solution_> {
 
     private static final ProblemFileComparator FILE_COMPARATOR = new ProblemFileComparator();

@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.solver;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
@@ -39,6 +40,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Default implementation for {@link Solver}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see Solver
  */
 public class DefaultSolver<Solution_> implements Solver<Solution_> {

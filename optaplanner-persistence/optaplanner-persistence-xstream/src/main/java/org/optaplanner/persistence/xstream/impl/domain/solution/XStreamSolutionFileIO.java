@@ -19,10 +19,14 @@ package org.optaplanner.persistence.xstream.impl.domain.solution;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.XStreamException;
 import org.apache.commons.io.IOUtils;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 import java.io.*;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class XStreamSolutionFileIO<Solution_> implements SolutionFileIO<Solution_> {
 
     public static final String FILE_EXTENSION = "xml";

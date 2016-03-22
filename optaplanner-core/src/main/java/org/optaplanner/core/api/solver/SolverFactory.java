@@ -23,6 +23,7 @@ import java.io.Reader;
 import org.kie.api.KieServices;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.SolverConfigContext;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.impl.solver.EmptySolverFactory;
@@ -34,6 +35,7 @@ import org.optaplanner.core.impl.solver.XStreamXmlSolverFactory;
  * To build an instance, use {@link #createFromXmlResource(String)} or any of the other creation methods.
  * <p>
  * Supports tweaking the configuration programmatically before a {@link Solver} instance is build.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public abstract class SolverFactory<Solution_> {
 

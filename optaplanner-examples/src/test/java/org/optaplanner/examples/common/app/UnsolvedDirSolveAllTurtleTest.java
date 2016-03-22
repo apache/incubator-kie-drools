@@ -18,6 +18,7 @@ package org.optaplanner.examples.common.app;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 import org.optaplanner.examples.common.persistence.SolutionDao;
 
@@ -27,6 +28,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public abstract class UnsolvedDirSolveAllTurtleTest<Solution_> extends SolveAllTurtleTest<Solution_> {
 
     protected static <Solution_> Collection<Object[]> getUnsolvedDirFilesAsParameters(SolutionDao<Solution_> solutionDao) {

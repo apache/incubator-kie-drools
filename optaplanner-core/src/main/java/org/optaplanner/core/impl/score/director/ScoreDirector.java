@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.director;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.solver.Solver;
@@ -24,25 +25,26 @@ import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import java.util.Collection;
 
 /**
- * The ScoreDirector holds the {@link Solution_ workingSolution}
- * and calculates the {@link Score} for that {@link Solution_}.
+ * The ScoreDirector holds the {@link PlanningSolution working solution}
+ * and calculates the {@link Score} for it.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public interface ScoreDirector<Solution_> {
 
     /**
-     * The {@link Solution_} that is used to calculate the {@link Score}.
+     * The {@link PlanningSolution} that is used to calculate the {@link Score}.
      * <p>
      * Because a {@link Score} is best calculated incrementally (by delta's),
-     * the {@link ScoreDirector} needs to be notified when it's {@link Solution_ workingSolution} changes.
+     * the {@link ScoreDirector} needs to be notified when it's {@link PlanningSolution working solution} changes.
      * <p>
-     * If the {@link Solution_} has been changed since {@link #calculateScore} has been called,
-     * the score of this {@link Solution_} won't be correct.
+     * If the {@link PlanningSolution working solution} has been changed since {@link #calculateScore} has been called,
+     * its {@link Score} won't be correct.
      * @return never null
      */
     Solution_ getWorkingSolution();
 
     /**
-     * The {@link Solution_ workingSolution} must never be the same instance as the {@link Solution_ bestSolution},
+     * The {@link PlanningSolution working solution} must never be the same instance as the {@link PlanningSolution best solution},
      * it should be a (un)changed clone.
      * <p>
      * Only call this method on a separate {@link ScoreDirector} instance,
@@ -53,8 +55,8 @@ public interface ScoreDirector<Solution_> {
     void setWorkingSolution(Solution_ workingSolution);
 
     /**
-     * Calculates the {@link Score} and updates the {@link Solution_ workingSolution} accordingly.
-     * @return never null, the {@link Score} of the {@link Solution_ workingSolution}
+     * Calculates the {@link Score} and updates the {@link PlanningSolution working solution} accordingly.
+     * @return never null, the {@link Score} of the {@link PlanningSolution working solution}
      */
     Score calculateScore();
 

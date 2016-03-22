@@ -16,12 +16,16 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.valuerange.buildin.composite.NullableCountableValueRange;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public abstract class AbstractValueRangeDescriptor<Solution_> implements ValueRangeDescriptor<Solution_> {
 
     protected final GenuineVariableDescriptor<Solution_> variableDescriptor;

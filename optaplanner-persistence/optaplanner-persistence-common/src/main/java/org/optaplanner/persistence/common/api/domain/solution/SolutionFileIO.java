@@ -18,10 +18,13 @@ package org.optaplanner.persistence.common.api.domain.solution;
 
 import java.io.File;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+
 /**
- * Reads or writes a {@link Solution_} from or to a {@link File}.
+ * Reads or writes a {@link PlanningSolution} from or to a {@link File}.
  * <p>
  * An implementation must be thread-safe.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public interface SolutionFileIO<Solution_> {
 
@@ -34,7 +37,7 @@ public interface SolutionFileIO<Solution_> {
     String getInputFileExtension();
 
     /**
-     * Every {@link Solution_} type potentially has its own file extension.
+     * Every {@link PlanningSolution} type potentially has its own file extension.
      * If no specific file extension is defined by the use case, the following are recommended:
      * <ul>
      *     <li>If this {@link SolutionFileIO} implementation serializes to XML, use file extension "xml".</li>

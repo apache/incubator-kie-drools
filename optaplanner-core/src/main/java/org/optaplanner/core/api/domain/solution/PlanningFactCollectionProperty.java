@@ -25,7 +25,7 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Specifies that a property (or a field) on a {@link Solution} class is a {@link Collection} of planning facts.
+ * Specifies that a property (or a field) on a {@link PlanningSolution} class is a {@link Collection} of planning facts.
  */
 @Target({METHOD, FIELD})
 @Retention(RUNTIME)

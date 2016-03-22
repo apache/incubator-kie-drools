@@ -16,12 +16,16 @@
 
 package org.optaplanner.examples.common.persistence;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 
 import java.io.File;
 import java.util.Arrays;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public abstract class AbstractSolutionExporter<Solution_> extends LoggingMain {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = "xml";

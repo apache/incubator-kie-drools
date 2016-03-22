@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.phase.scope;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -30,6 +31,9 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public abstract class AbstractPhaseScope<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());

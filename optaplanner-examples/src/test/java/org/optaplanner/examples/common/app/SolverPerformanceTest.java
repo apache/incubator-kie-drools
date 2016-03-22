@@ -17,6 +17,8 @@
 package org.optaplanner.examples.common.app;
 
 import org.junit.Before;
+import org.junit.Test;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -31,15 +33,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Runs an example solver.
- * All tests ending with the suffix <code>PerformanceTest</code> are reported on by hudson
- * in graphs which show the execution time over builds.
+ * Runs an example {@link Solver}.
  * <p>
- * Recommended courtesy notes: Always use a timeout value on @Test.
+ * Always use a {@link Test#timeout()} value on {@link Test}.
  * The timeout should be the triple of the timeout on a normal 3 year old desktop computer,
- * because some of the hudson machines are old.
+ * because some of the jenkins machines are old.
  * For example, on a normal 3 year old desktop computer it always finishes in less than 1 minute,
  * then specify a timeout of 3 minutes.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public abstract class SolverPerformanceTest<Solution_> extends LoggingTest {
 

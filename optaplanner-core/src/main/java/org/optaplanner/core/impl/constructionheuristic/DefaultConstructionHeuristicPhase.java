@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.constructionheuristic;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.constructionheuristic.decider.ConstructionHeuristicDecider;
 import org.optaplanner.core.impl.constructionheuristic.placer.EntityPlacer;
 import org.optaplanner.core.impl.constructionheuristic.placer.Placement;
@@ -27,6 +28,7 @@ import org.optaplanner.core.impl.solver.scope.DefaultSolverScope;
 
 /**
  * Default implementation of {@link ConstructionHeuristicPhase}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<Solution_>
         implements ConstructionHeuristicPhase {

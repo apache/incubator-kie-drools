@@ -16,9 +16,13 @@
 
 package org.optaplanner.core.impl.localsearch.scope;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class LocalSearchStepScope<Solution_> extends AbstractStepScope<Solution_> {
 
     private final LocalSearchPhaseScope phaseScope;

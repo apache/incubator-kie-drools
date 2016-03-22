@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.score.buildin.hardmediumsoftlong;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.AbstractScore;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
@@ -113,7 +114,7 @@ public final class HardMediumSoftLongScore extends AbstractScore<HardMediumSoftL
     // ************************************************************************
 
     /**
-     * A {@link Solution} is feasible if it has no broken hard constraints.
+     * A {@link PlanningSolution} is feasible if it has no broken hard constraints.
      * @return true if the {@link #getHardScore()} is 0 or higher
      */
     public boolean isFeasible() {

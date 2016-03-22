@@ -16,12 +16,16 @@
 
 package org.optaplanner.core.impl.constructionheuristic.scope;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 import java.util.Random;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class ConstructionHeuristicMoveScope<Solution_> {
 
     private final ConstructionHeuristicStepScope<Solution_> stepScope;

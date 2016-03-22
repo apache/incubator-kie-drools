@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.phase.custom;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.custom.scope.CustomPhaseScope;
@@ -28,6 +29,7 @@ import java.util.List;
 
 /**
  * Default implementation of {@link CustomPhase}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> implements CustomPhase {
 

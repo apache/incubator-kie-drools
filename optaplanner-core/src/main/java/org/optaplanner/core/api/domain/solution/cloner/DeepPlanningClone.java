@@ -30,7 +30,7 @@ import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Marks a problem fact class as being required to be deep planning cloned.
- * Not needed for a {@link Solution} or {@link PlanningEntity} because those are automatically deep cloned.
+ * Not needed for a {@link PlanningSolution} or {@link PlanningEntity} because those are automatically deep cloned.
  * <p>
  * It can also mark a property (getter for a field) as being required to be deep planning cloned.
  * This is especially useful for {@link Collection} (or {@link Map}) properties.
@@ -41,7 +41,7 @@ import static java.lang.annotation.RetentionPolicy.*;
  * but its elements (or keys and values) are only cloned if they are of a type that needs to be planning cloned.
  * <p>
  * This annotation is ignored if a custom {@link SolutionCloner} is set with {@link PlanningSolution#solutionCloner()}
- * or if the {@link Solution} implements {@link PlanningCloneable}.
+ * or if the {@link PlanningSolution} implements {@link PlanningCloneable}.
  */
 @Target({TYPE, METHOD, FIELD})
 @Inherited

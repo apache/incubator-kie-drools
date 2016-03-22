@@ -22,11 +22,13 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Global;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 
 /**
  * Drools implementation of {@link ScoreDirectorFactory}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see DroolsScoreDirector
  * @see ScoreDirectorFactory
  */

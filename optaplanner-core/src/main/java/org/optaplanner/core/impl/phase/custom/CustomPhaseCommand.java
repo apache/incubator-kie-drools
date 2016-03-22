@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.phase.custom;
 
 import java.util.Map;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
@@ -43,8 +44,8 @@ public interface CustomPhaseCommand {
     void applyCustomProperties(Map<String, String> customPropertyMap);
 
     /**
-     * Changes {@link Solution workingSolution} of {@link ScoreDirector#getWorkingSolution()}.
-     * When the {@link Solution workingSolution} is modified, the {@link ScoreDirector} must be correctly notified
+     * Changes {@link PlanningSolution working solution} of {@link ScoreDirector#getWorkingSolution()}.
+     * When the {@link PlanningSolution working solution} is modified, the {@link ScoreDirector} must be correctly notified
      * (through {@link ScoreDirector#beforeVariableChanged(Object, String)},
      * {@link ScoreDirector#afterProblemFactChanged(Object)}, etc),
      * otherwise calculated {@link Score}s will be corrupted.

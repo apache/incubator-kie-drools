@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.domain.solution.cloner;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.DeepPlanningClone;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.impl.domain.common.ReflectionHelper;
@@ -26,6 +27,9 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import java.lang.reflect.*;
 import java.util.*;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class FieldAccessingSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
 
     protected final SolutionDescriptor<Solution_> solutionDescriptor;

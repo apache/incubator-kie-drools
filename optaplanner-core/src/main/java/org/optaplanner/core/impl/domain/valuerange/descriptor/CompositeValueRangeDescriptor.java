@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.buildin.composite.CompositeCountableValueRange;
@@ -24,6 +25,9 @@ import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescr
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class CompositeValueRangeDescriptor<Solution_> extends AbstractValueRangeDescriptor<Solution_>
         implements EntityIndependentValueRangeDescriptor<Solution_> {
 

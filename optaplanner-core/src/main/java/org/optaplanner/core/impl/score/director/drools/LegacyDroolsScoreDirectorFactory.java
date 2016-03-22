@@ -18,7 +18,11 @@ package org.optaplanner.core.impl.score.director.drools;
 
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class LegacyDroolsScoreDirectorFactory<Solution_> extends DroolsScoreDirectorFactory<Solution_> {
 
     protected final KieBase kieBase;

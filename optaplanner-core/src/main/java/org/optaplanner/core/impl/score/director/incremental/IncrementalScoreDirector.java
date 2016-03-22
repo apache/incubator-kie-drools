@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.director.incremental;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
@@ -27,8 +28,9 @@ import java.util.Collection;
 
 /**
  * Incremental java implementation of {@link ScoreDirector}, which only recalculates the {@link Score}
- * of the part of the {@link Solution_} workingSolution that changed,
- * instead of the going through the entire {@link Solution_}. This is incremental calculation, which is fast.
+ * of the part of the {@link PlanningSolution working solution} that changed,
+ * instead of the going through the entire {@link PlanningSolution}. This is incremental calculation, which is fast.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirector
  */
 public class IncrementalScoreDirector<Solution_>

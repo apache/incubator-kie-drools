@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.score.director.easy;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
@@ -25,7 +26,8 @@ import java.util.Collection;
 
 /**
  * Easy java implementation of {@link ScoreDirector}, which recalculates the {@link Score}
- * of the {@link Solution_} workingSolution every time. This is non-incremental calculation, which is slow.
+ * of the {@link PlanningSolution working solution} every time. This is non-incremental calculation, which is slow.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirector
  */
 public class EasyScoreDirector<Solution_>

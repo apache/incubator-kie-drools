@@ -56,7 +56,7 @@ public interface Solution<S extends Score> {
     void setScore(S score);
 
     /**
-     * Called by the {@link DroolsScoreDirector} when the {@link Solution} needs to be inserted
+     * Called by the {@link DroolsScoreDirector} when the {@link PlanningSolution} needs to be inserted
      * into an empty {@link KieSession}.
      * These facts can be used by the score rules.
      * They don't change during planning (except through {@link ProblemFactChange} events).

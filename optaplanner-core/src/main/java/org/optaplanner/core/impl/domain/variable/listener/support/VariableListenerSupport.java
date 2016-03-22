@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.domain.variable.listener.support;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
@@ -31,6 +32,9 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 import java.util.*;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class VariableListenerSupport<Solution_> implements SupplyManager {
 
     protected final InnerScoreDirector<Solution_> scoreDirector;

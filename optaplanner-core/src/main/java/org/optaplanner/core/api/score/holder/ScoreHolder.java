@@ -19,6 +19,7 @@ package org.optaplanner.core.api.score.holder;
 import java.util.Collection;
 
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
@@ -38,7 +39,7 @@ public interface ScoreHolder {
      * Extracts the {@link Score}, calculated by the {@link KieSession} for {@link DroolsScoreDirector}.
      * <p>
      * Should not be called directly, use {@link ScoreDirector#calculateScore()} instead.
-     * @return never null, the  {@link Score} of the working {@link Solution}
+     * @return never null, the {@link Score} of the working {@link PlanningSolution}
      */
     Score extractScore();
 

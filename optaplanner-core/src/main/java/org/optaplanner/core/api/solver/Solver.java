@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.api.solver;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.Solution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
@@ -38,6 +39,7 @@ import java.util.concurrent.Future;
  * that method is free to do multi-threading inside itself.
  * <p>
  * Build by a {@link SolverFactory}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public interface Solver<Solution_> {
 

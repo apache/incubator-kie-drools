@@ -18,6 +18,7 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
 import org.optaplanner.core.impl.domain.variable.anchor.AnchorVariableSupply;
@@ -33,6 +34,7 @@ import java.util.Objects;
 
 /**
  * Also known as a 2-opt move.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class TailChainSwapMove<Solution_> extends AbstractMove {
 

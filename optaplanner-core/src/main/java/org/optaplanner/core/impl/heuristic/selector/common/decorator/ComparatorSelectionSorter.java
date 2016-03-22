@@ -20,12 +20,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.heuristic.selector.common.decorator.SelectionSorterOrder;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Sorts a selection {@link List} based on a {@link Comparator}.
- * @param <Solution_> the solution type
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @param <T> the selection type
  */
 public class ComparatorSelectionSorter<Solution_, T> implements SelectionSorter<Solution_, T> {

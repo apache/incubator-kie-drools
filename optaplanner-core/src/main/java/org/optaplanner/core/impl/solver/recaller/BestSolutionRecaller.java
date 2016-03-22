@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.solver.recaller;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
@@ -28,7 +29,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A BestSolutionRecaller remembers the best solution that a {@link Solver} encounters.
+ * Remembers the {@link PlanningSolution best solution} that a {@link Solver} encounters.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapter {
 

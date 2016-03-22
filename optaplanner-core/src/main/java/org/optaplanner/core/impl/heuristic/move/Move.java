@@ -22,23 +22,25 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.localsearch.decider.acceptor.AcceptorType;
 import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
+import org.optaplanner.core.impl.localsearch.decider.acceptor.tabu.MoveTabuAcceptor;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * A Move represents a change of 1 or more  {@link PlanningVariable}s of 1 or more  {@link PlanningEntity}s
- * in the working {@link Solution}.
+ * in the working {@link PlanningSolution}.
  * <p>
- * Usually the move holds a direct reference to each {@link PlanningEntity} of the {@link Solution}
+ * Usually the move holds a direct reference to each {@link PlanningEntity} of the {@link PlanningSolution}
  * which it will change when {@link #doMove(ScoreDirector)} is called.
  * On that change it should also notify the {@link ScoreDirector} accordingly.
  * <p>
- * A Move should implement {@link Object#equals(Object)} and {@link Object#hashCode()}.
+ * A Move should implement {@link Object#equals(Object)} and {@link Object#hashCode()} for {@link MoveTabuAcceptor}.
  * <p>
  * An implementation must extend {@link AbstractMove} to ensure backwards compatibility in future versions.
  * @see AbstractMove
@@ -49,7 +51,7 @@ public interface Move {
      * Called before a move is evaluated to decide whether the move can be done and evaluated.
      * A Move is not doable if:
      * <ul>
-     * <li>Either doing it would change nothing in the {@link Solution}.</li>
+     * <li>Either doing it would change nothing in the {@link PlanningSolution}.</li>
      * <li>Either it's simply not possible to do (for example due to build-in hard constraints).</li>
      * </ul>
      * <p>
@@ -73,7 +75,7 @@ public interface Move {
 
     /**
      * Does the move (which indirectly affects the {@link ScoreDirector#getWorkingSolution()}).
-     * When the {@link Solution workingSolution} is modified, the {@link ScoreDirector} must be correctly notified
+     * When the {@link PlanningSolution working solution} is modified, the {@link ScoreDirector} must be correctly notified
      * (through {@link ScoreDirector#beforeVariableChanged(Object, String)},
      * {@link ScoreDirector#afterProblemFactChanged(Object)}, etc),
      * otherwise later calculated {@link Score}s will be corrupted.

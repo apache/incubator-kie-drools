@@ -17,6 +17,7 @@
 package org.optaplanner.examples.common.persistence;
 
 import com.google.common.math.BigIntegerMath;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.app.LoggingMain;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
 
@@ -25,6 +26,9 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public abstract class AbstractSolutionImporter<Solution_> extends LoggingMain {
 
     protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = "xml";

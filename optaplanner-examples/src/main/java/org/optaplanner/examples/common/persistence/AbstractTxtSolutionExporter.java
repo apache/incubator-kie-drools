@@ -18,6 +18,11 @@ package org.optaplanner.examples.common.persistence;
 
 import java.io.*;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public abstract class AbstractTxtSolutionExporter<Solution_> extends AbstractSolutionExporter<Solution_> {
 
     protected static final String DEFAULT_OUTPUT_FILE_SUFFIX = "txt";

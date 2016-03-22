@@ -16,12 +16,14 @@
 
 package org.optaplanner.core.impl.score.director.incremental;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 
 /**
  * Incremental implementation of {@link ScoreDirectorFactory}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see IncrementalScoreDirector
  * @see ScoreDirectorFactory
  */

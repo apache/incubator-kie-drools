@@ -17,6 +17,7 @@
 package org.optaplanner.examples.common.swingui;
 
 import org.apache.commons.io.FilenameUtils;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.score.ScoreUtils;
@@ -38,6 +39,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class SolverAndPersistenceFrame<Solution_> extends JFrame {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());

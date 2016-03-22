@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.solver.scope;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.ScoreUtils;
@@ -27,6 +28,9 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class DefaultSolverScope<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
@@ -143,7 +147,8 @@ public class DefaultSolverScope<Solution_> {
     }
 
     /**
-     * The bestSolution must never be the same instance as the workingSolution, it should be a (un)changed clone.
+     * The {@link PlanningSolution best solution} must never be the same instance
+     * as the {@link PlanningSolution working solution}, it should be a (un)changed clone.
      * @param bestSolution never null
      */
     public void setBestSolution(Solution_ bestSolution) {

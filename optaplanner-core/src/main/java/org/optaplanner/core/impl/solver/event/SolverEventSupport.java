@@ -18,12 +18,14 @@ package org.optaplanner.core.impl.solver.event;
 
 import java.util.Iterator;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 
 /**
  * Internal API.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class SolverEventSupport<Solution_> extends AbstractEventSupport<SolverEventListener<Solution_>> {
 

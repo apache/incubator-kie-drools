@@ -20,6 +20,7 @@ import java.util.Collection;
 
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.holder.ScoreHolder;
@@ -30,7 +31,8 @@ import org.optaplanner.core.impl.score.director.ScoreDirector;
 
 /**
  * Drools implementation of {@link ScoreDirector}, which directs the Rule Engine to calculate the {@link Score}
- * of the {@link Solution_} workingSolution.
+ * of the {@link PlanningSolution working solution}.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  * @see ScoreDirector
  */
 public class DroolsScoreDirector<Solution_>

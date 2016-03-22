@@ -17,12 +17,16 @@
 package org.optaplanner.examples.common.persistence;
 
 import org.apache.commons.io.FilenameUtils;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public abstract class AbstractPngSolutionImporter<Solution_> extends AbstractSolutionImporter<Solution_> {
 
     private static final String DEFAULT_INPUT_FILE_SUFFIX = "png";

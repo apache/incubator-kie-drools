@@ -16,9 +16,13 @@
 
 package org.optaplanner.core.impl.domain.solution.cloner;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public class PlanningCloneableSolutionCloner<Solution_> implements SolutionCloner<Solution_> {
 
     public Solution_ cloneSolution(Solution_ original) {

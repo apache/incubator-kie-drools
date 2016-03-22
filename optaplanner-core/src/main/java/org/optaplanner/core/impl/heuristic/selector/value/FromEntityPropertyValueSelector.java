@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.heuristic.selector.value;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.impl.domain.valuerange.descriptor.ValueRangeDescriptor;
@@ -26,6 +27,7 @@ import java.util.Iterator;
 
 /**
  * This is the common {@link ValueSelector} implementation.
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class FromEntityPropertyValueSelector<Solution_> extends AbstractValueSelector {
 

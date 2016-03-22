@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.domain.valuerange.descriptor;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.CountableValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRange;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -31,6 +32,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
         extends AbstractValueRangeDescriptor<Solution_> {
 

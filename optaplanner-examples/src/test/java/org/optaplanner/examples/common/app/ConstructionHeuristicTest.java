@@ -16,6 +16,7 @@
 
 package org.optaplanner.examples.common.app;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicType;
@@ -30,6 +31,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+ */
 public abstract class ConstructionHeuristicTest<Solution_> extends PhaseTest<Solution_> {
 
     protected static <Solution_> Collection<Object[]> buildParameters(SolutionDao<Solution_> solutionDao,

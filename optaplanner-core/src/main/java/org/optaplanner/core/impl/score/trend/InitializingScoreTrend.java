@@ -18,11 +18,12 @@ package org.optaplanner.core.impl.score.trend;
 
 import java.io.Serializable;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 
 /**
- * Bounds the possible {@link Score}s for a {@link Solution} as more and more variables are initialized
+ * Bounds the possible {@link Score}s for a {@link PlanningSolution} as more and more variables are initialized
  * (while the already initialized variables don't change).
  * @see InitializingScoreTrendLevel
  */
