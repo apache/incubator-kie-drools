@@ -459,6 +459,9 @@ public class ProtobufOutputMarshaller {
                                       (LeftTuple) entry : // with phreak the entry is always both a right and a left tuple
                                       (LeftTuple) entry.getFactHandle().getObject(); // this is necessary only for reteoo
                 InternalFactHandle handle = (InternalFactHandle) leftTuple.getFactHandle();
+                if (handle == null) {
+                    continue;
+                }
                 FactHandle _handle = ProtobufMessages.FactHandle.newBuilder()
                         .setId( handle.getId() )
                         .setRecency( handle.getRecency() )
