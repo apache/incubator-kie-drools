@@ -61,6 +61,11 @@ public class DeploymentSynchronizerEJBImpl extends DeploymentSynchronizer {
 	
 	@PostConstruct
 	public void configure() {
+        DeploymentStore store = new DeploymentStore();
+        store.setCommandService(commandService);
+        
+        setDeploymentStore(store);
+        
 		if (DEPLOY_SYNC_ENABLED) {
 			ScheduleExpression schedule = new ScheduleExpression();
 			
@@ -68,10 +73,6 @@ public class DeploymentSynchronizerEJBImpl extends DeploymentSynchronizer {
 			schedule.minute("*");
 			schedule.second("*/" + DEPLOY_SYNC_INTERVAL);
 			timer = timerService.createCalendarTimer(schedule, new TimerConfig(null, false));
-			DeploymentStore store = new DeploymentStore();
-			store.setCommandService(commandService);
-			
-			setDeploymentStore(store);
 		}
 	}
 	
