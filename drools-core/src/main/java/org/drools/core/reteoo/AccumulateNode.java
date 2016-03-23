@@ -81,6 +81,12 @@ public class AccumulateNode extends BetaNode {
         this.accumulate = accumulate;
         this.unwrapRightObject = unwrapRightObject;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
+
+        hashcode = this.leftInput.hashCode() ^
+                   this.rightInput.hashCode() ^
+                   this.accumulate.hashCode() ^
+                   this.resultBinder.hashCode() ^
+                   Arrays.hashCode( this.resultConstraints );
     }
 
     public void readExternal( ObjectInput in ) throws IOException,
@@ -158,37 +164,29 @@ public class AccumulateNode extends BetaNode {
         super.attach( context );
     }
 
-    /* (non-Javadoc)
-         * @see org.kie.reteoo.BaseNode#hashCode()
-         */
-    public int hashCode() {
-        return this.leftInput.hashCode() ^ this.rightInput.hashCode() ^ this.accumulate.hashCode() ^ this.resultBinder.hashCode() ^ Arrays.hashCode( this.resultConstraints );
+    protected int calculateHashCode() {
+        return 0;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
+    @Override
     public boolean equals( final Object object ) {
-        if ( this == object ) {
-            return true;
-        }
-
-        if ( object == null || !(object instanceof AccumulateNode) ) {
-            return false;
-        }
-
-        final AccumulateNode other = (AccumulateNode) object;
-
-        if ( this.getClass() != other.getClass() || (!this.leftInput.equals( other.leftInput )) || (!this.rightInput.equals( other.rightInput )) || (!this.constraints.equals( other.constraints )) ) {
-            return false;
-        }
-
-        return this.accumulate.equals( other.accumulate ) && resultBinder.equals( other.resultBinder ) && Arrays.equals( this.resultConstraints,
-                                                                                                                         other.resultConstraints );
+        return this == object ||
+               ( internalEquals( object ) &&
+               this.leftInput.thisNodeEquals( ((AccumulateNode) object).leftInput ) &&
+               this.rightInput.thisNodeEquals( ((AccumulateNode) object).rightInput ) );
     }
 
-    public boolean thisNodeEquals(final Object object) {
-        return equals( object );
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof AccumulateNode ) || this.hashCode() != object.hashCode() ) {
+            return false;
+        }
+
+        AccumulateNode other = (AccumulateNode) object;
+        return this.constraints.equals( other.constraints ) &&
+               this.accumulate.equals( other.accumulate ) &&
+               resultBinder.equals( other.resultBinder ) &&
+               Arrays.equals( this.resultConstraints, other.resultConstraints );
     }
 
     /**

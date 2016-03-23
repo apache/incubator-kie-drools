@@ -81,7 +81,12 @@ public class From extends ConditionalElement
         return dataProvider.equals( ((From) obj).dataProvider );
     }
 
-    public void wire(Object object) {
+    @Override
+    public int hashCode() {
+        return dataProvider.hashCode();
+    }
+
+    public void wire( Object object ) {
         this.dataProvider = KiePolicyHelper.isPolicyEnabled() ? new SafeDataProvider(( DataProvider ) object) : ( DataProvider ) object;
     }
 
@@ -175,6 +180,16 @@ public class From extends ConditionalElement
         @Override
         public SafeDataProvider clone() {
             return new SafeDataProvider( delegate.clone() );
+        }
+
+        @Override
+        public boolean equals( Object obj ) {
+            return delegate.equals( obj );
+        }
+
+        @Override
+        public int hashCode() {
+            return delegate.hashCode();
         }
     }
 

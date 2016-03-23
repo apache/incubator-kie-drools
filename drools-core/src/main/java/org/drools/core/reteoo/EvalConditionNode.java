@@ -70,6 +70,8 @@ public class EvalConditionNode extends LeftTupleSource
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
 
         initMasks(context, tupleSource);
+
+        hashcode = calculateHashCode();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -127,22 +129,23 @@ public class EvalConditionNode extends LeftTupleSource
         return "[EvalConditionNode: cond=" + this.condition + "]";
     }
 
-    public int hashCode() {
+    private int calculateHashCode() {
         return this.leftInput.hashCode() ^ this.condition.hashCode();
     }
 
+    @Override
     public boolean equals(final Object object) {
-        if ( this == object ) {
-            return true;
-        }
+        return this == object ||
+               ( internalEquals( object ) && this.leftInput.thisNodeEquals( ((EvalConditionNode)object).leftInput ) );
+    }
 
-        if ( object == null || object.getClass() != EvalConditionNode.class ) {
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof EvalConditionNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
-        final EvalConditionNode other = (EvalConditionNode) object;
-
-        return this.leftInput.equals( other.leftInput ) && this.condition.equals( other.condition );
+        return this.condition.equals( ((EvalConditionNode)object).condition );
     }
 
     public EvalMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {
