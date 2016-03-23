@@ -27,18 +27,18 @@ public interface DataProvider
     Serializable,
     Cloneable {
 
-    public Declaration[] getRequiredDeclarations();
+    Declaration[] getRequiredDeclarations();
 
-    public Object createContext();
+    Object createContext();
 
-    public Iterator getResults(Tuple tuple,
-                               InternalWorkingMemory wm,
-                               PropagationContext ctx,
-                               Object providerContext);
+    Iterator getResults(Tuple tuple,
+                        InternalWorkingMemory wm,
+                        PropagationContext ctx,
+                        Object providerContext);
 
-    public DataProvider clone();
+    DataProvider clone();
 
-    public void replaceDeclaration(Declaration declaration,
-                                   Declaration resolved);
+    void replaceDeclaration(Declaration declaration,
+                            Declaration resolved);
 
 }

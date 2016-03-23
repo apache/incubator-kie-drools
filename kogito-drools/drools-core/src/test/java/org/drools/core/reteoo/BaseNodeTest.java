@@ -78,6 +78,9 @@ public class BaseNodeTest {
             return 0;
         }
 
+        @Override
+        protected boolean internalEquals( Object object ) {
+            return false;
+        }
     }
-
 }

@@ -76,6 +76,8 @@ public class PropagationQueuingNode extends ObjectSource
                context.getKnowledgeBase().getConfiguration().getAlphaNodeHashingThreshold() );
         this.action = new PropagateAction( this );
         initDeclaredMask(context);
+
+        hashcode = calculateHashCode();
     }
     
     @Override
@@ -259,30 +261,23 @@ public class PropagationQueuingNode extends ObjectSource
         return new PropagationQueueingNodeMemory();
     }
     
-    public int hashCode() {
+    public int calculateHashCode() {
         return this.source.hashCode();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
+    @Override
     public boolean equals(final Object object) {
-        if ( this == object ) {
-            return true;
-        }
-
-        if ( object == null || !(object instanceof PropagationQueuingNode) ) {
-            return false;
-        }
-
-        final PropagationQueuingNode other = (PropagationQueuingNode) object;
-
-        return this.source.equals( other.source );
+        return this == object ||
+               ( internalEquals( object ) && this.source.thisNodeEquals( ((PropagationQueuingNode)object).source ) );
     }
 
-    
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof PropagationQueuingNode) || this.hashCode() != object.hashCode() ) {
+            return false;
+        }
+        return true;
+    }
 
     /**
      * Memory implementation for the node

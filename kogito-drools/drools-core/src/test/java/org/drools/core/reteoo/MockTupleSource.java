@@ -82,4 +82,8 @@ public class MockTupleSource extends LeftTupleSource {
         return null;
     }
 
+    @Override
+    protected boolean internalEquals( Object object ) {
+        return false;
+    }
 }

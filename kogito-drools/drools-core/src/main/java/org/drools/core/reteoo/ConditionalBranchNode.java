@@ -57,6 +57,8 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         this.branchEvaluator = branchEvaluator;
 
         initMasks(context, tupleSource);
+
+        hashcode = calculateHashCode();
     }
 
     @Override
@@ -101,22 +103,23 @@ public class ConditionalBranchNode extends LeftTupleSource implements LeftTupleS
         return "[ConditionalBranchNode: cond=" + this.branchEvaluator + "]";
     }
 
-    public int hashCode() {
+    private int calculateHashCode() {
         return this.tupleSource.hashCode() ^ this.branchEvaluator.hashCode();
     }
 
-    public boolean equals(final Object object) {
-        if ( this == object ) {
-            return true;
-        }
+    @Override
+    public boolean equals(Object object) {
+        return this == object ||
+               ( internalEquals( object ) && this.tupleSource.thisNodeEquals( ((ConditionalBranchNode)object).tupleSource ) );
+    }
 
-        if ( object == null || object.getClass() != ConditionalBranchNode.class ) {
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof ConditionalBranchNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
-        final ConditionalBranchNode other = (ConditionalBranchNode) object;
-
-        return this.tupleSource.equals( other.tupleSource ) && this.branchEvaluator.equals( other.branchEvaluator );
+        return this.branchEvaluator.equals( ((ConditionalBranchNode)object).branchEvaluator );
     }
 
     public ConditionalBranchMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {

@@ -41,6 +41,8 @@ public abstract class BaseNode
     protected Bag<Rule>                associations;
     private   boolean                  streamMode;
 
+    protected int hashcode;
+
     public BaseNode() {
 
     }
@@ -69,6 +71,7 @@ public abstract class BaseNode
         partitionsEnabled = in.readBoolean();
         associations = (Bag<Rule>) in.readObject();
         streamMode = in.readBoolean();
+        hashcode = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -77,6 +80,7 @@ public abstract class BaseNode
         out.writeBoolean( partitionsEnabled );
         out.writeObject( associations );
         out.writeBoolean( streamMode );
+        out.writeInt(hashcode);
     }
 
     /* (non-Javadoc)
@@ -133,13 +137,6 @@ public abstract class BaseNode
      */
     public abstract boolean isInUse();
 
-    /**
-     * The hashCode return is simply the unique id of the node. It is expected that base classes will also implement equals(Object object).
-     */
-    public int hashCode() {
-        return this.id;
-    }
-
     public String toString() {
         return "[" + this.getClass().getSimpleName() + "(" + this.id + ")]";
     }
@@ -193,8 +190,14 @@ public abstract class BaseNode
         return this.associations.contains( rule );
     }
 
-    //Default implementation
     public boolean thisNodeEquals(final Object object) {
-        return this.equals( object );
+        return this == object || internalEquals( object );
+    }
+
+    protected abstract boolean internalEquals( Object object );
+
+    @Override
+    public final int hashCode() {
+        return hashcode;
     }
 }

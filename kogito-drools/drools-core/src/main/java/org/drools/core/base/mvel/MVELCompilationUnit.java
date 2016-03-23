@@ -181,6 +181,13 @@ public class MVELCompilationUnit
                Arrays.equals(localDeclarations, other.localDeclarations);
     }
 
+    @Override
+    public int hashCode() {
+        return 23 * expression.hashCode() +
+               29 * Arrays.hashCode( previousDeclarations ) +
+               31 * Arrays.hashCode( localDeclarations );
+    }
+
     public void writeExternal( ObjectOutput out ) throws IOException {
         out.writeUTF( name );
 

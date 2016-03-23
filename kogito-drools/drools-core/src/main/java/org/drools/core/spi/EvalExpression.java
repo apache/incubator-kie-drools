@@ -24,15 +24,15 @@ public interface EvalExpression
     Invoker,
     Cloneable {
     
-    public Object createContext();
+    Object createContext();
     
-    public boolean evaluate(Tuple tuple,
-                            Declaration[] requiredDeclarations,
-                            WorkingMemory workingMemory,
-                            Object context ) throws Exception;
+    boolean evaluate(Tuple tuple,
+                     Declaration[] requiredDeclarations,
+                     WorkingMemory workingMemory,
+                     Object context ) throws Exception;
 
-    public void replaceDeclaration(Declaration declaration,
-                                   Declaration resolved);
-    
-    public EvalExpression clone();
+    void replaceDeclaration(Declaration declaration,
+                            Declaration resolved);
+
+    EvalExpression clone();
 }

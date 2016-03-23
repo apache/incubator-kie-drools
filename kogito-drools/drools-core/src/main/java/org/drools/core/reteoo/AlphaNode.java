@@ -58,8 +58,6 @@ public class AlphaNode extends ObjectSource
     private ObjectSinkNode previousRightTupleSinkNode;
     private ObjectSinkNode nextRightTupleSinkNode;
 
-    private int hashcode;
-
     public AlphaNode() {
 
     }
@@ -101,7 +99,6 @@ public class AlphaNode extends ObjectSource
         constraint = (AlphaNodeFieldConstraint) in.readObject();
         declaredMask = (BitMask) in.readObject();
         inferredMask = (BitMask) in.readObject();
-        hashcode = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -109,7 +106,6 @@ public class AlphaNode extends ObjectSource
         out.writeObject(constraint);
         out.writeObject(declaredMask);
         out.writeObject(inferredMask);
-        out.writeInt(hashcode);
     }
 
     /**
@@ -181,26 +177,26 @@ public class AlphaNode extends ObjectSource
         return "[AlphaNode(" + this.id + ") constraint=" + this.constraint + "]";
     }
 
-    public int hashCode() {
-        return hashcode;
-    }
-
     private int calculateHashCode() {
         return (this.source != null ? this.source.hashCode() : 0) * 37 + (this.constraint != null ? this.constraint.hashCode() : 0) * 31;
     }
 
-    public boolean equals(final Object object) {
-        return thisNodeEquals(object) && (this.source != null ? this.source.equals(((AlphaNode) object).source) : ((AlphaNode) object).source == null);
+    @Override
+    public boolean equals(Object object) {
+        return this == object ||
+               (internalEquals((AlphaNode)object) &&
+               (this.source != null ?
+                this.source.thisNodeEquals(((AlphaNode) object).source) :
+                ((AlphaNode) object).source == null) );
     }
 
-    public boolean thisNodeEquals(final Object object) {
-        if (this == object) {
-            return true;
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof AlphaNode) || this.hashCode() != object.hashCode() ) {
+            return false;
         }
 
-        return object instanceof AlphaNode &&
-               this.hashCode() == object.hashCode() &&
-               (constraint instanceof MvelConstraint ?
+        return (constraint instanceof MvelConstraint ?
                     ((MvelConstraint) constraint).equals(((AlphaNode)object).constraint, getKnowledgeBase()) :
                     constraint.equals(((AlphaNode)object).constraint));
     }

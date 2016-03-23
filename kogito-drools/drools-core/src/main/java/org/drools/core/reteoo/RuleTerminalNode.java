@@ -115,6 +115,8 @@ public class RuleTerminalNode extends AbstractTerminalNode {
 
         initDeclaredMask(context);        
         initInferredMask();
+
+        hashcode = calculateHashCode();
     }
     
     public void setDeclarations(Map<String, Declaration> decls) {
@@ -330,19 +332,20 @@ public class RuleTerminalNode extends AbstractTerminalNode {
         this.previousTupleSinkNode = previous;
     }
 
-    public int hashCode() {
-        return this.rule.hashCode();
+    private int calculateHashCode() {
+        return 31 * this.rule.hashCode() + (consequenceName == null ? 0 : 37 * consequenceName.hashCode());
     }
 
+    @Override
     public boolean equals(final Object object) {
-        if ( object == this ) {
-            return true;
-        }
+        return this == object || internalEquals( object );
+    }
 
-        if ( !(object instanceof RuleTerminalNode) ) {
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof RuleTerminalNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
-
         final RuleTerminalNode other = (RuleTerminalNode) object;
         return rule.equals(other.rule) && (consequenceName == null ? other.consequenceName == null : consequenceName.equals(other.consequenceName));
     }

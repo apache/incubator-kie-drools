@@ -70,8 +70,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
 
     private BitMask sinkMask;
 
-    private int hashcode;
-
     public LeftInputAdapterNode() {
 
     }
@@ -126,7 +124,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         objectSource = (ObjectSource) in.readObject();
         leftTupleMemoryEnabled = in.readBoolean();
         sinkMask = (BitMask) in.readObject();
-        hashcode = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -134,7 +131,6 @@ public class LeftInputAdapterNode extends LeftTupleSource
         out.writeObject(objectSource);
         out.writeBoolean(leftTupleMemoryEnabled);
         out.writeObject(sinkMask);
-        out.writeInt(hashcode);
     }
 
     public ObjectSource getObjectSource() {
@@ -475,27 +471,23 @@ public class LeftInputAdapterNode extends LeftTupleSource
         this.previousRightTupleSinkNode = previous;
     }
 
-    public int hashCode() {
-        return hashcode;
-    }
-
     private int calculateHashCode() {
         return 31 * this.objectSource.hashCode() + 37 * sinkMask.hashCode();
     }
 
+    @Override
     public boolean equals(final Object object) {
-        return thisNodeEquals(object) &&
-               this.objectSource.equals(((LeftInputAdapterNode)object).objectSource);
+        return this == object ||
+               ( internalEquals(object) &&
+                 this.objectSource.equals(((LeftInputAdapterNode)object).objectSource) );
     }
 
-    public boolean thisNodeEquals(final Object object) {
-        if ( object == this ) {
-            return true;
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof LeftInputAdapterNode) || this.hashCode() != object.hashCode() ) {
+            return false;
         }
-
-        return object instanceof LeftInputAdapterNode &&
-               this.hashCode() == object.hashCode() &&
-               this.sinkMask.equals( ((LeftInputAdapterNode) object).sinkMask );
+        return this.sinkMask.equals( ((LeftInputAdapterNode) object).sinkMask );
     }
 
     protected ObjectTypeNode getObjectTypeNode() {

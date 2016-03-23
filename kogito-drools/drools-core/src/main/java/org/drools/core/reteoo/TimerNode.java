@@ -68,6 +68,8 @@ public class TimerNode extends LeftTupleSource
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
 
         initMasks(context, tupleSource);
+
+        hashcode = calculateHashCode();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -125,7 +127,7 @@ public class TimerNode extends LeftTupleSource
         return "[TimerNode(" + this.id + "): cond=" + this.timer + " calendars=" + ((calendarNames == null) ? "null" : Arrays.asList(calendarNames)) + "]";
     }
 
-    public int hashCode() {
+    private int calculateHashCode() {
         int hash = this.leftInput.hashCode() ^ this.timer.hashCode();
         if (calendarNames != null) {
             for ( String calendarName : calendarNames ) {
@@ -136,16 +138,17 @@ public class TimerNode extends LeftTupleSource
     }
 
     public boolean equals(final Object object) {
-        if (this == object) {
-            return true;
-        }
+        return this == object ||
+               ( internalEquals( object ) && this.leftInput.thisNodeEquals(((TimerNode)object).leftInput) );
+    }
 
-        if (object == null || object.getClass() != TimerNode.class) {
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof TimerNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
-        final TimerNode other = (TimerNode) object;
-
+        TimerNode other = (TimerNode) object;
         if (calendarNames != null) {
             if (other.getCalendarNames() == null || other.getCalendarNames().length != calendarNames.length) {
                 return false;
@@ -158,8 +161,8 @@ public class TimerNode extends LeftTupleSource
             }
         }
 
-        return Arrays.deepEquals(declarations, other.declarations) &&
-               this.timer.equals(other.timer) && this.leftInput.equals(other.leftInput);
+        return Arrays.deepEquals( declarations, other.declarations ) &&
+               this.timer.equals(other.timer);
     }
 
     public TimerNodeMemory createMemory(final RuleBaseConfiguration config, InternalWorkingMemory wm) {

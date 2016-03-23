@@ -87,6 +87,8 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         resultClass = this.from.getResultClass();
 
         initMasks(context, tupleSource);
+
+        hashcode = calculateHashCode();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -109,19 +111,34 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         out.writeObject( from );
     }
 
-    @Override
-    public boolean equals( Object obj ) {
-        if (this == obj) {
-            return true;
+    private int calculateHashCode() {
+        int hash = ( 23 * leftInput.hashCode() ) + ( 29 * dataProvider.hashCode() );
+        if (from.getResultPattern() != null) {
+            hash += 31 * from.getResultPattern().hashCode();
         }
-        if (obj == null || !(obj instanceof FromNode)) {
+        if (alphaConstraints != null) {
+            hash += 37 * Arrays.hashCode( alphaConstraints );
+        }
+        if (betaConstraints != null) {
+            hash += 41 * betaConstraints.hashCode();
+        }
+        return hash;
+    }
+
+    @Override
+    public boolean equals( Object object ) {
+        return this == object || (internalEquals( object ) && leftInput.thisNodeEquals( ((FromNode) object).leftInput ) );
+    }
+
+    @Override
+    protected boolean internalEquals( Object obj ) {
+        if (obj == null || !(obj instanceof FromNode ) || this.hashCode() != obj.hashCode() ) {
             return false;
         }
 
         FromNode other = (FromNode) obj;
 
-        return leftInput.equals( other.leftInput ) &&
-               dataProvider.equals( other.dataProvider ) &&
+        return dataProvider.equals( other.dataProvider ) &&
                areNullSafeEquals(from.getResultPattern(), other.from.getResultPattern() ) &&
                Arrays.equals( alphaConstraints, other.alphaConstraints ) &&
                betaConstraints.equals( other.betaConstraints );
@@ -220,8 +237,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
                                           this.betaConstraints.createContext(),
                                           NodeTypeEnums.FromNode );
         return (T) new FromMemory( beta,
-                                   this.dataProvider,
-                                   this.alphaConstraints );
+                                   this.dataProvider );
     }
    
 
@@ -293,8 +309,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         public Object                    providerContext;
 
         public FromMemory(BetaMemory betaMemory,
-                          DataProvider dataProvider,
-                          AlphaNodeFieldConstraint[] constraints) {
+                          DataProvider dataProvider) {
             this.betaMemory = betaMemory;
             this.dataProvider = dataProvider;
             this.providerContext = dataProvider.createContext();

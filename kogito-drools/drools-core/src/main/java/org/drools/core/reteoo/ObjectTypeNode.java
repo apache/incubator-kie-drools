@@ -111,8 +111,6 @@ public class ObjectTypeNode extends ObjectSource
         return idGenerator.otnIdCounter;
     }
 
-    private int hashcode;
-
     public ObjectTypeNode() {
 
     }
@@ -220,7 +218,6 @@ public class ObjectTypeNode extends ObjectSource
         queryNode = in.readBoolean();
         dirty = true;
         idGenerator = new IdGenerator(id);
-        hashcode = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -229,7 +226,6 @@ public class ObjectTypeNode extends ObjectSource
         out.writeBoolean(objectMemoryEnabled);
         out.writeLong(expirationOffset);
         out.writeBoolean(queryNode);
-        out.writeInt(hashcode);
     }
 
     public short getType() {
@@ -488,29 +484,21 @@ public class ObjectTypeNode extends ObjectSource
         return "[ObjectTypeNode(" + this.id + ")::" + ((EntryPointNode) this.source).getEntryPoint() + " objectType=" + this.objectType + " expiration=" + this.getExpirationOffset() + "ms ]";
     }
 
-    /**
-     * Uses he hashCode() of the underlying ObjectType implementation.
-     */
-    public int hashCode() {
-        return hashcode;
-    }
-
     private int calculateHashCode() {
         return (this.objectType != null ? this.objectType.hashCode() : 0) * 37 + (this.source != null ? this.source.hashCode() : 0) * 31;
     }
 
     public boolean equals(final Object object) {
-        return thisNodeEquals(object) && this.source.equals(((ObjectTypeNode) object).source);
+        return this == object ||
+               (internalEquals(object) && this.source.thisNodeEquals(((ObjectTypeNode) object).source));
     }
 
-    public boolean thisNodeEquals(final Object object) {
-        if (this == object) {
-            return true;
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof ObjectTypeNode) || this.hashCode() != object.hashCode() ) {
+            return false;
         }
-
-        return object instanceof ObjectTypeNode &&
-               this.hashCode() == object.hashCode() &&
-               this.objectType.equals(((ObjectTypeNode) object).objectType);
+        return this.objectType.equals( ((ObjectTypeNode)object).objectType );
     }
 
     /**

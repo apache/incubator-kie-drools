@@ -108,6 +108,8 @@ public class EntryPointNode extends ObjectSource
                999 ); // irrelevant for this node, since it overrides sink management
         this.entryPoint = entryPoint;
         this.objectTypeNodes = new ConcurrentHashMap<ObjectType, ObjectTypeNode>();
+
+        hashcode = calculateHashCode();
     }
 
     // ------------------------------------------------------------
@@ -421,21 +423,22 @@ public class EntryPointNode extends ObjectSource
         return this.objectTypeNodes;
     }
 
-    public int hashCode() {
+    private int calculateHashCode() {
         return this.entryPoint.hashCode();
     }
 
+    @Override
     public boolean equals(final Object object) {
-        if ( object == this ) {
-            return true;
-        }
+        return this == object || internalEquals( object );
+    }
 
-        if ( object == null || !(object instanceof EntryPointNode) ) {
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof EntryPointNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
-        final EntryPointNode other = (EntryPointNode) object;
-        return this.entryPoint.equals( other.entryPoint );
+        return this.entryPoint.equals( ((EntryPointNode)object).entryPoint );
     }
 
     public void updateSink(final ObjectSink sink,

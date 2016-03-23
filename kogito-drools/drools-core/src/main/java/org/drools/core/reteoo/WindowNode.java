@@ -97,6 +97,8 @@ public class WindowNode extends ObjectSource
             }
         }
         epNode = (EntryPointNode) getObjectTypeNode().getParentObjectSource();
+
+        hashcode = calculateHashCode();
     }
 
     @SuppressWarnings("unchecked")
@@ -283,27 +285,23 @@ public class WindowNode extends ObjectSource
         return "[WindowNode(" + this.id + ") constraints=" + this.constraints + "]";
     }
 
-    public int hashCode() {
+    private int calculateHashCode() {
         return this.source.hashCode() * 17 + ((this.constraints != null) ? this.constraints.hashCode() : 0);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
+    @Override
     public boolean equals(final Object object) {
-        if (this == object) {
-            return true;
-        }
+        return this == object ||
+               ( internalEquals( object ) && this.source.thisNodeEquals(((WindowNode) object).source) );
+    }
 
-        if (object == null || !(object instanceof WindowNode)) {
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof WindowNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
-
-        final WindowNode other = (WindowNode) object;
-
-        return this.source.equals(other.source) && this.constraints.equals(other.constraints) && behavior.equals(other.behavior);
+        WindowNode other = (WindowNode) object;
+        return this.constraints.equals(other.constraints) && behavior.equals(other.behavior);
     }
 
     /**

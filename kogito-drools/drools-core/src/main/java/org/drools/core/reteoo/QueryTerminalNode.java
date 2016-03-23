@@ -91,6 +91,8 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         initDeclaredMask(context);        
         initInferredMask();
         initDeclarations();
+
+        hashcode = calculateHashCode();
     }
 
     // ------------------------------------------------------------
@@ -120,12 +122,26 @@ public class QueryTerminalNode extends AbstractTerminalNode implements LeftTuple
         return this.query;
     }
 
+    private int calculateHashCode() {
+        return this.query.hashCode();
+    }
 
+    @Override
+    public boolean equals(final Object object) {
+        return this == object || internalEquals( (Rete) object );
+    }
+
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof QueryTerminalNode) || this.hashCode() != object.hashCode() ) {
+            return false;
+        }
+        return query.equals(((QueryTerminalNode) object).query);
+    }
 
     public String toString() {
         return "[QueryTerminalNode(" + this.getId() + "): query=" + this.query.getName() + "]";
     }
-
 
     /**
      * @return the subrule
