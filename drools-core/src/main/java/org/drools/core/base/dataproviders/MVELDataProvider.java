@@ -70,13 +70,17 @@ public class MVELDataProvider
         if (this == obj) {
             return true;
         }
+
         if (obj == null || !(obj instanceof MVELDataProvider)) {
             return false;
         }
 
-        MVELDataProvider other = (MVELDataProvider) obj;
+        return unit.equals( ((MVELDataProvider) obj).unit );
+    }
 
-        return unit.equals( other.unit );
+    @Override
+    public int hashCode() {
+        return unit.hashCode();
     }
 
     public void readExternal( ObjectInput in ) throws IOException,

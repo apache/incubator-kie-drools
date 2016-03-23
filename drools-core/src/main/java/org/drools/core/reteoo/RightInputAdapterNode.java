@@ -86,6 +86,8 @@ public class RightInputAdapterNode extends ObjectSource
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         this.startTupleSource = startTupleSource;
         context.getPathEndNodes().add(this);
+
+        hashcode = calculateHashCode();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -255,27 +257,23 @@ public class RightInputAdapterNode extends ObjectSource
         return NodeTypeEnums.RightInputAdaterNode;
     }
 
-    public int hashCode() {
+    private int calculateHashCode() {
         return this.tupleSource.hashCode() * 17 + ((this.tupleMemoryEnabled) ? 1234 : 4321);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(final Object object) {
-        if ( this == object ) {
-            return true;
-        }
+    @Override
+    public boolean equals(Object object) {
+        return this == object ||
+               ( internalEquals( object ) && this.tupleSource.thisNodeEquals( ((RightInputAdapterNode)object).tupleSource ) );
+    }
 
-        if ( object == null || !(object instanceof RightInputAdapterNode) ) {
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof RightInputAdapterNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
-        final RightInputAdapterNode other = (RightInputAdapterNode) object;
-
-        return this.tupleMemoryEnabled == other.tupleMemoryEnabled && this.tupleSource.equals( other.tupleSource );
+        return this.tupleMemoryEnabled == ((RightInputAdapterNode)object).tupleMemoryEnabled;
     }
 
     @Override

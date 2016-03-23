@@ -219,4 +219,8 @@ public class MockLeftTupleSink extends LeftTupleSource
         return null;
     }
 
+    @Override
+    protected boolean internalEquals( Object object ) {
+        return false;
+    }
 }

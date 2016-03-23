@@ -105,6 +105,10 @@ public class MockObjectSource extends ObjectSource {
     @Override
     public BitMask calculateDeclaredMask(List<String> settableProperties) {
         throw new UnsupportedOperationException();
-    }    
+    }
 
+    @Override
+    protected boolean internalEquals( Object object ) {
+        return false;
+    }
 }
