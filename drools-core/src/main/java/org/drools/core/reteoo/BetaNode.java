@@ -100,8 +100,6 @@ public abstract class BetaNode extends LeftTupleSource
 
     private boolean rightInputIsPassive;
 
-    private int hashcode;
-
     // ------------------------------------------------------------
     // Constructors
     // ------------------------------------------------------------
@@ -139,6 +137,8 @@ public abstract class BetaNode extends LeftTupleSource
         initMasks(context, leftInput);
 
         setStreamMode( context.isStreamMode() && getObjectTypeNode(context).getObjectType().isEvent() );
+
+        hashcode = calculateHashCode();
     }
 
     private ObjectTypeNode getObjectTypeNode(BuildContext context) {
@@ -308,7 +308,7 @@ public abstract class BetaNode extends LeftTupleSource
 
             // we skipped this node, due to alpha hashing, so retract now
             rightTuple.setPropagationContext( context );
-            BetaMemory bm  = getBetaMemory( (BetaNode) rightTuple.getTupleSink(), wm );
+            BetaMemory bm  = getBetaMemory( rightTuple.getTupleSink(), wm );
             (( BetaNode ) rightTuple.getTupleSink()).doDeleteRightTuple( rightTuple, wm, bm );
             rightTuple = modifyPreviousTuples.peekRightTuple();
         }
@@ -543,10 +543,7 @@ public abstract class BetaNode extends LeftTupleSource
         return this.leftInput;
     }
 
-    /* (non-Javadoc)
-     * @see org.kie.reteoo.BaseNode#hashCode()
-     */
-    public int hashCode() {
+    protected int calculateHashCode() {
         int hash = ( 23 * leftInput.hashCode() ) + ( 29 * rightInput.hashCode() ) + ( 31 * constraints.hashCode() );
         if (leftListenedProperties != null) {
             hash += 37 * leftListenedProperties.hashCode();
@@ -557,31 +554,26 @@ public abstract class BetaNode extends LeftTupleSource
         return hash + (rightInputIsPassive ? 43 : 0);
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(final Object object) {
-        return thisNodeEquals(object);
+    @Override
+    public boolean equals(Object object) {
+        return this == object ||
+               ( internalEquals(object) &&
+               this.leftInput.thisNodeEquals( ((BetaNode) object).leftInput ) &&
+               this.rightInput.thisNodeEquals( ((BetaNode) object).rightInput ) );
     }
 
-    public boolean thisNodeEquals(final Object object) {
-        if ( this == object ) {
-            return true;
-        }
-
-        if ( object == null || !(object instanceof BetaNode) ) {
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof BetaNode) || this.hashCode() != object.hashCode() ) {
             return false;
         }
 
-        final BetaNode other = (BetaNode) object;
-
+        BetaNode other = (BetaNode) object;
         return this.getClass() == other.getClass() &&
-                this.leftInput.thisNodeEquals( other.leftInput ) &&
-                this.rightInput.thisNodeEquals( other.rightInput ) &&
-                this.constraints.equals( other.constraints ) &&
-                this.rightInputIsPassive == other.rightInputIsPassive &&
-                areNullSafeEquals(this.leftListenedProperties, other.leftListenedProperties) &&
-                areNullSafeEquals(this.rightListenedProperties, other.rightListenedProperties);
+               this.constraints.equals( other.constraints ) &&
+               this.rightInputIsPassive == other.rightInputIsPassive &&
+               areNullSafeEquals(this.leftListenedProperties, other.leftListenedProperties) &&
+               areNullSafeEquals(this.rightListenedProperties, other.rightListenedProperties);
     }
 
     /**

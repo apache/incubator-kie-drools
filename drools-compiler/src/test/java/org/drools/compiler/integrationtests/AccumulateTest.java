@@ -889,7 +889,7 @@ public class AccumulateTest extends CommonTestMethodBase {
         wm.insert( new Person( "Bob", "stilton" ) );
     }
 
-    @Test(timeout = 10000)
+    @Test//(timeout = 10000)
     public void testAccumulateWithSameSubnetwork() throws Exception {
         String rule = "package org.drools.compiler.test;\n" +
                       "import org.drools.compiler.Cheese;\n" +

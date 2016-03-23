@@ -70,6 +70,8 @@ public class QueryRiaFixerNode extends LeftTupleSource
         super(id, context);
         setLeftTupleSource(tupleSource);
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
+
+        hashcode = calculateHashCode();
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -148,11 +150,18 @@ public class QueryRiaFixerNode extends LeftTupleSource
         return "[RiaQueryFixerNode: ]";
     }
 
-    public int hashCode() {
+    public int calculateHashCode() {
         return this.leftInput.hashCode();
     }
 
+    @Override
     public boolean equals(final Object object) {
+        // we never node share, so only return true if we are instance equal
+        return this == object;
+    }
+
+    @Override
+    protected boolean internalEquals(final Object object) {
         // we never node share, so only return true if we are instance equal
         return this == object;
     }

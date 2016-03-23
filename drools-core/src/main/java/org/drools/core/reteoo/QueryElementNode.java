@@ -92,6 +92,8 @@ public class QueryElementNode extends LeftTupleSource
         this.dataDriven = context != null && context.getRule().isDataDriven();
         initMasks( context, tupleSource );
         initArgsTemplate( context );
+
+        hashcode = calculateHashCode();
     }
 
     private void initArgsTemplate(BuildContext context) {
@@ -603,8 +605,7 @@ public class QueryElementNode extends LeftTupleSource
                                               leftTupleMemoryEnabled );
     }
 
-    @Override
-    public int hashCode() {
+    private int calculateHashCode() {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + (openQuery ? 1231 : 1237);
@@ -614,19 +615,23 @@ public class QueryElementNode extends LeftTupleSource
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
-        QueryElementNode other = (QueryElementNode) obj;
+    public boolean equals(Object object) {
+        return this == object ||
+               ( internalEquals( object ) && this.leftInput.thisNodeEquals( ((QueryElementNode)object).leftInput ) );
+    }
+
+    @Override
+    protected boolean internalEquals( Object object ) {
+        if ( object == null || !(object instanceof QueryElementNode) || this.hashCode() != object.hashCode() ) {
+            return false;
+        }
+
+        QueryElementNode other = (QueryElementNode) object;
         if ( openQuery != other.openQuery ) return false;
         if ( !openQuery && dataDriven != other.dataDriven ) return false;
         if ( queryElement == null ) {
             if ( other.queryElement != null ) return false;
         } else if ( !queryElement.equals( other.queryElement ) ) return false;
-        if ( leftInput == null ) {
-            if ( other.leftInput != null ) return false;
-        } else if ( !leftInput.equals( other.leftInput ) ) return false;
         return true;
     }
 

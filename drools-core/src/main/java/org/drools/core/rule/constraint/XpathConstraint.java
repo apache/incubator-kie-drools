@@ -225,6 +225,11 @@ public class XpathConstraint extends MutableTypeConstraint {
 
             return chunk.equals( other.chunk );
         }
+
+        @Override
+        public int hashCode() {
+            return chunk.hashCode();
+        }
     }
 
     public static class XpathChunk implements AcceptsClassObjectType {
@@ -422,6 +427,24 @@ public class XpathConstraint extends MutableTypeConstraint {
                    array == other.array &&
                    areNullSafeEquals(declaration, other.declaration);
         }
+
+        @Override
+        public int hashCode() {
+            int hash = 23 * field.hashCode() + 29 * index;
+            if (declaration != null) {
+                hash += 31 * declaration.hashCode();
+            }
+            if (iterate) {
+                hash += 37;
+            }
+            if (lazy) {
+                hash += 41;
+            }
+            if (array) {
+                hash += 43;
+            }
+            return hash;
+        }
     }
 
     public static class XpathDataProvider implements DataProvider {
@@ -484,6 +507,15 @@ public class XpathConstraint extends MutableTypeConstraint {
 
             return xpathEvaluator.equals( other.xpathEvaluator ) &&
                    areNullSafeEquals(declaration, other.declaration);
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 31 * xpathEvaluator.hashCode();
+            if (declaration != null) {
+                hash += 37 * declaration.hashCode();
+            }
+            return hash;
         }
     }
 }
