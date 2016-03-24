@@ -102,11 +102,11 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
         @Override
         public void stepEnded(AbstractStepScope stepScope) {
             if (stepScope instanceof LocalSearchStepScope) {
-                localSearchStepEnded((LocalSearchStepScope) stepScope);
+                localSearchStepEnded((LocalSearchStepScope<Solution_>) stepScope);
             }
         }
 
-        private void localSearchStepEnded(LocalSearchStepScope stepScope) {
+        private void localSearchStepEnded(LocalSearchStepScope<Solution_> stepScope) {
             long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpent();
             String moveType = stepScope.getStep().getSimpleMoveTypeDescription();
             Score newStepScore = stepScope.getScore();

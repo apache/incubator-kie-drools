@@ -419,24 +419,23 @@ public class ProblemBenchmarkResult<Solution_> {
     // Merger methods
     // ************************************************************************
 
-    protected static Map<ProblemBenchmarkResult, ProblemBenchmarkResult> createMergeMap(
+    protected static <Solution_> Map<ProblemBenchmarkResult, ProblemBenchmarkResult> createMergeMap(
             PlannerBenchmarkResult newPlannerBenchmarkResult, List<SingleBenchmarkResult> singleBenchmarkResultList) {
         // IdentityHashMap but despite that different ProblemBenchmarkResult instances are merged
         Map<ProblemBenchmarkResult, ProblemBenchmarkResult> mergeMap
                 = new IdentityHashMap<ProblemBenchmarkResult, ProblemBenchmarkResult>();
         Map<File, ProblemBenchmarkResult> fileToNewResultMap = new HashMap<File, ProblemBenchmarkResult>();
         for (SingleBenchmarkResult singleBenchmarkResult : singleBenchmarkResultList) {
-            ProblemBenchmarkResult oldResult = singleBenchmarkResult.getProblemBenchmarkResult();
+            ProblemBenchmarkResult<Solution_> oldResult = singleBenchmarkResult.getProblemBenchmarkResult();
             if (!mergeMap.containsKey(oldResult)) {
-                ProblemBenchmarkResult newResult;
+                ProblemBenchmarkResult<Solution_> newResult;
                 if (!fileToNewResultMap.containsKey(oldResult.inputSolutionFile)) {
-                    newResult = new ProblemBenchmarkResult(newPlannerBenchmarkResult);
+                    newResult = new ProblemBenchmarkResult<Solution_>(newPlannerBenchmarkResult);
                     newResult.name = oldResult.name;
                     newResult.inputSolutionFile = oldResult.inputSolutionFile;
                     // Skip oldResult.problemReportDirectory
                     newResult.problemStatisticList = new ArrayList<ProblemStatistic>(oldResult.problemStatisticList.size());
-                    List<ProblemStatistic> statistics = oldResult.problemStatisticList;
-                    for (ProblemStatistic oldProblemStatistic : statistics) {
+                    for (ProblemStatistic oldProblemStatistic : oldResult.problemStatisticList) {
                         newResult.problemStatisticList.add(
                                 oldProblemStatistic.getProblemStatisticType().buildProblemStatistic(newResult));
                     }

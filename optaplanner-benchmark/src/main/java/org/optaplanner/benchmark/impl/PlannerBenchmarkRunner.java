@@ -293,7 +293,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                     firstFailureSubSingleBenchmarkRunner = subSingleBenchmarkRunner;
                 }
             }
-        };
+        }
     }
 
     public void benchmarkingEnded() {

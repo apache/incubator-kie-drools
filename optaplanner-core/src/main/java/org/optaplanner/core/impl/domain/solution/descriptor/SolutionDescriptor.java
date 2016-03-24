@@ -422,7 +422,7 @@ public class SolutionDescriptor<Solution_> {
                     logger.trace("            Variable {} ({})", variableDescriptor.getVariableName(),
                             variableDescriptor instanceof GenuineVariableDescriptor ? "genuine" : "shadow");
                 }
-            };
+            }
         }
     }
 
