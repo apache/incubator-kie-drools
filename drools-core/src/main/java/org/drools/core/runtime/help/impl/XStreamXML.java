@@ -909,7 +909,7 @@ public class XStreamXML {
                     results.put( identifier,
                                  value );
                     reader.moveUp();
-                    reader.moveUp();
+
                 } else if ( reader.getNodeName().equals( "fact-handle" ) ) {
                     String identifier = reader.getAttribute( "identifier" );
                     facts.put( identifier,
@@ -927,6 +927,7 @@ public class XStreamXML {
                 } else {
                     throw new IllegalArgumentException( "Element '" + reader.getNodeName() + "' is not supported here" );
                 }
+                reader.moveUp();
             }
 
             return result;
