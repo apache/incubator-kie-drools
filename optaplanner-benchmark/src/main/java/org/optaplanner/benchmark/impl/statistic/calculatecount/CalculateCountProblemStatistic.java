@@ -78,8 +78,7 @@ public class CalculateCountProblemStatistic extends ProblemStatistic {
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         plot.setOrientation(PlotOrientation.VERTICAL);
         int seriesIndex = 0;
-        List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
-        for (SingleBenchmarkResult singleBenchmarkResult : results) {
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
             XYSeries series = new XYSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new XYLineAndShapeRenderer();
             if (singleBenchmarkResult.hasAllSuccess()) {

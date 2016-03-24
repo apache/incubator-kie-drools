@@ -71,8 +71,7 @@ public class BestSolutionMutationProblemStatistic extends ProblemStatistic {
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         XYPlot plot = createPlot(benchmarkReport);
         int seriesIndex = 0;
-        List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
-        for (SingleBenchmarkResult singleBenchmarkResult : results) {
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
             XYIntervalSeries series = new XYIntervalSeries(singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix());
             XYItemRenderer renderer = new YIntervalRenderer();
             if (singleBenchmarkResult.hasAllSuccess()) {

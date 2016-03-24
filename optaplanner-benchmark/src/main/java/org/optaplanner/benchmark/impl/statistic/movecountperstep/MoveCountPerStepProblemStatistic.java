@@ -81,8 +81,7 @@ public class MoveCountPerStepProblemStatistic extends ProblemStatistic {
         plot.setOrientation(PlotOrientation.VERTICAL);
 
         int seriesIndex = 0;
-        List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
-        for (SingleBenchmarkResult singleBenchmarkResult : results) {
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
             XYSeries acceptedSeries = new XYSeries(
                     singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " accepted");
             XYSeries selectedSeries = new XYSeries(

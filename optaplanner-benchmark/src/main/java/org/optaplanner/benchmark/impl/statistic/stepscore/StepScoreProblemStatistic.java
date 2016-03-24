@@ -73,8 +73,7 @@ public class StepScoreProblemStatistic extends ProblemStatistic {
     public void writeGraphFiles(BenchmarkReport benchmarkReport) {
         List<XYPlot> plotList = new ArrayList<XYPlot>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
         int seriesIndex = 0;
-        List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
-        for (SingleBenchmarkResult singleBenchmarkResult : results) {
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
             List<XYSeries> seriesList = new ArrayList<XYSeries>(BenchmarkReport.CHARTED_SCORE_LEVEL_SIZE);
             // No direct ascending lines between 2 points, but a stepping line instead
             XYItemRenderer renderer = new XYStepRenderer();

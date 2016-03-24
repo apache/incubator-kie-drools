@@ -246,9 +246,8 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
 
     protected void runSingleBenchmarks() {
         Map<SubSingleBenchmarkRunner, Future<SubSingleBenchmarkRunner>> futureMap = new HashMap<>();
-        for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
-            List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
-            for (SingleBenchmarkResult singleBenchmarkResult : results) {
+        for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
+            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
                 for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) {
                     SubSingleBenchmarkRunner subSingleBenchmarkRunner = new SubSingleBenchmarkRunner(
                             subSingleBenchmarkResult, solverConfigContext);
@@ -258,7 +257,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
             }
         }
         // Wait for the benchmarks to complete
-        futureMap.entrySet().forEach(futureEntry -> {
+        for (Map.Entry<SubSingleBenchmarkRunner, Future<SubSingleBenchmarkRunner>> futureEntry : futureMap.entrySet()) {
             SubSingleBenchmarkRunner subSingleBenchmarkRunner = futureEntry.getKey();
             Future<SubSingleBenchmarkRunner> future = futureEntry.getValue();
             Throwable failureThrowable = null;
@@ -294,7 +293,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                     firstFailureSubSingleBenchmarkRunner = subSingleBenchmarkRunner;
                 }
             }
-        });
+        };
     }
 
     public void benchmarkingEnded() {
@@ -384,15 +383,7 @@ public class PlannerBenchmarkRunner implements PlannerBenchmark {
                         }
                     }
                     ProblemBenchmarkResult problemBenchmarkResult = singleBenchmarkResult.getProblemBenchmarkResult();
-                    List<ProblemStatistic> originalProblemStatisticList = problemBenchmarkResult.getProblemStatisticList();
-                    if (!originalProblemStatisticMap.containsKey(problemBenchmarkResult)) { // TODO: After Java 8, do Map#putIfAbsent
-                        List<ProblemStatistic> problemStatisticPutResult = originalProblemStatisticMap.put(problemBenchmarkResult, originalProblemStatisticList);
-                        if (problemStatisticPutResult != null) {
-                            throw new IllegalStateException("OriginalProblemStatisticMap already contained key ("
-                                    + problemBenchmarkResult + ") with value ("
-                                    + problemStatisticPutResult + ").");
-                        }
-                    }
+                    originalProblemStatisticMap.putIfAbsent(problemBenchmarkResult, problemBenchmarkResult.getProblemStatisticList());
                     singleBenchmarkResult.getProblemBenchmarkResult().setProblemStatisticList(Collections.<ProblemStatistic>emptyList());
                     for (SubSingleBenchmarkResult subSingleBenchmarkResult : singleBenchmarkResult.getSubSingleBenchmarkResultList()) { // needs to happen after all problem stats
                         subSingleBenchmarkResult.setPureSubSingleStatisticList(Collections.<PureSubSingleStatistic>emptyList());

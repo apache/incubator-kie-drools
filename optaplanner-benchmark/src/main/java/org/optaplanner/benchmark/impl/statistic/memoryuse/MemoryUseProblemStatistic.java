@@ -77,8 +77,7 @@ public class MemoryUseProblemStatistic extends ProblemStatistic {
         XYPlot plot = new XYPlot(null, xAxis, yAxis, null);
         plot.setOrientation(PlotOrientation.VERTICAL);
         int seriesIndex = 0;
-        List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
-        for (SingleBenchmarkResult singleBenchmarkResult : results) {
+        for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
             XYSeries usedSeries = new XYSeries(
                     singleBenchmarkResult.getSolverBenchmarkResult().getNameWithFavoriteSuffix() + " used");
             // TODO enable max memory, but in the same color as used memory, but with a dotted line instead

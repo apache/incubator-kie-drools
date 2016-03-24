@@ -55,7 +55,7 @@ public abstract class ProblemStatistic {
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
     @XStreamOmitField // Bi-directional relationship restored through BenchmarkResultIO
-    protected ProblemBenchmarkResult problemBenchmarkResult;
+    protected ProblemBenchmarkResult<Object> problemBenchmarkResult;
 
     protected final ProblemStatisticType problemStatisticType;
 

@@ -123,15 +123,17 @@ public class BenchmarkResultIO {
     }
 
     private void restoreOmittedBidirectionalFields(PlannerBenchmarkResult plannerBenchmarkResult) {
-        for (ProblemBenchmarkResult problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
+        for (ProblemBenchmarkResult<Object> problemBenchmarkResult : plannerBenchmarkResult.getUnifiedProblemBenchmarkResultList()) {
             problemBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);
             if (problemBenchmarkResult.getProblemStatisticList() == null) {
                 problemBenchmarkResult.setProblemStatisticList(new ArrayList<ProblemStatistic>(0));
             }
-            List<ProblemStatistic> statistics = problemBenchmarkResult.getProblemStatisticList();
-            statistics.forEach(statistic -> statistic.setProblemBenchmarkResult(problemBenchmarkResult));
-            List<SingleBenchmarkResult> results = problemBenchmarkResult.getSingleBenchmarkResultList();
-            results.forEach(result -> result.setProblemBenchmarkResult(problemBenchmarkResult));
+            for (ProblemStatistic problemStatistic : problemBenchmarkResult.getProblemStatisticList()) {
+                problemStatistic.setProblemBenchmarkResult(problemBenchmarkResult);
+            }
+            for (SingleBenchmarkResult singleBenchmarkResult : problemBenchmarkResult.getSingleBenchmarkResultList()) {
+                singleBenchmarkResult.setProblemBenchmarkResult(problemBenchmarkResult);
+            }
         }
         for (SolverBenchmarkResult solverBenchmarkResult : plannerBenchmarkResult.getSolverBenchmarkResultList()) {
             solverBenchmarkResult.setPlannerBenchmarkResult(plannerBenchmarkResult);

@@ -415,14 +415,14 @@ public class SolutionDescriptor<Solution_> {
         determineGlobalShadowOrder();
         if (logger.isTraceEnabled()) {
             logger.trace("    Model annotations parsed for Solution {}:", solutionClass.getSimpleName());
-            entityDescriptorMap.entrySet().forEach(entry -> {
+            for (Map.Entry<Class<?>, EntityDescriptor<Solution_>> entry : entityDescriptorMap.entrySet()) {
                 EntityDescriptor<Solution_> entityDescriptor = entry.getValue();
                 logger.trace("        Entity {}:", entityDescriptor.getEntityClass().getSimpleName());
                 for (VariableDescriptor variableDescriptor : entityDescriptor.getDeclaredVariableDescriptors()) {
                     logger.trace("            Variable {} ({})", variableDescriptor.getVariableName(),
                             variableDescriptor instanceof GenuineVariableDescriptor ? "genuine" : "shadow");
                 }
-            });
+            };
         }
     }
 

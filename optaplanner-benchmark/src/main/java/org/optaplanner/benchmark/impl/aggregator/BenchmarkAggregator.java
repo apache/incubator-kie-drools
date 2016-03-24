@@ -88,9 +88,11 @@ public class BenchmarkAggregator {
         // Handle renamed solver benchmarks after statistics have been read (they're resolved by
         // original solver benchmarks' names)
         if (solverBenchmarkResultNameMap != null) {
-            for (Entry<SolverBenchmarkResult, String> results : solverBenchmarkResultNameMap.entrySet()) {
-                if (!results.getKey().getName().equals(results.getValue())) {
-                    results.getKey().setName(results.getValue());
+            for (Entry<SolverBenchmarkResult, String> entry : solverBenchmarkResultNameMap.entrySet()) {
+                SolverBenchmarkResult result = entry.getKey();
+                String newName = entry.getValue();
+                if (!result.getName().equals(newName)) {
+                    result.setName(newName);
                 }
             }
         }
