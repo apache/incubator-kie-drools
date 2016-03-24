@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -43,6 +44,7 @@ public class ClassloadedTestdataSolution {
     }
 
     @ValueRangeProvider(id = "valueRange")
+    @PlanningFactCollectionProperty
     public List<ClassloadedTestdataValue> getValueList() {
         return valueList;
     }
@@ -72,9 +74,5 @@ public class ClassloadedTestdataSolution {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    public Collection<? extends Object> getProblemFacts() {
-        return valueList;
-    }
 
 }

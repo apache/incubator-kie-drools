@@ -70,6 +70,7 @@ public class TestdataExtendedThirdPartySolution extends TestdataThirdPartySoluti
     // ************************************************************************
 
     @ValueRangeProvider(id = "valueRange")
+    @PlanningFactCollectionProperty
     public List<TestdataValue> getValueList() {
         return super.getValueList();
     }
@@ -77,11 +78,6 @@ public class TestdataExtendedThirdPartySolution extends TestdataThirdPartySoluti
     @PlanningEntityCollectionProperty
     public List<TestdataThirdPartyEntityPojo> getEntityList() {
         return super.getEntityList();
-    }
-
-    @PlanningFactCollectionProperty
-    public Collection<? extends Object> getProblemFacts() {
-        return getValueList();
     }
 
 }

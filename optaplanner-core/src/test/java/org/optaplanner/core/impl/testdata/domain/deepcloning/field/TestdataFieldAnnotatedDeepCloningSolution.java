@@ -35,6 +35,7 @@ public class TestdataFieldAnnotatedDeepCloningSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "valueRange")
+    @PlanningFactCollectionProperty
     private List<TestdataValue> valueList;
     @PlanningEntityCollectionProperty
     private List<TestdataFieldAnnotatedDeepCloningEntity> entityList;
@@ -86,10 +87,5 @@ public class TestdataFieldAnnotatedDeepCloningSolution extends TestdataObject {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @PlanningFactCollectionProperty
-    public Collection<? extends Object> getProblemFacts() {
-        return valueList;
-    }
 
 }

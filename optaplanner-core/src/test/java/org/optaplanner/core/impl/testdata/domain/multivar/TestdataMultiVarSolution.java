@@ -48,6 +48,7 @@ public class TestdataMultiVarSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "valueRange")
+    @PlanningFactCollectionProperty
     public List<TestdataValue> getValueList() {
         return valueList;
     }
@@ -57,6 +58,7 @@ public class TestdataMultiVarSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "otherValueRange")
+    @PlanningFactCollectionProperty
     public List<TestdataOtherValue> getOtherValueList() {
         return otherValueList;
     }
@@ -86,13 +88,5 @@ public class TestdataMultiVarSolution extends TestdataObject {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @PlanningFactCollectionProperty
-    public Collection<Object> getProblemFacts() {
-        List<Object> problemFacts = new ArrayList<Object>(valueList.size() + otherValueList.size());
-        problemFacts.addAll(valueList);
-        problemFacts.addAll(otherValueList);
-        return problemFacts;
-    }
 
 }

@@ -17,6 +17,7 @@
 package org.optaplanner.core.impl.testdata.domain.shadow.cyclic.reference;
 
 import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningFactCollectionProperty;
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
@@ -49,6 +50,7 @@ public class TestdataCyclicReferencedShadowedSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "valueRange")
+    @PlanningFactCollectionProperty
     public List<TestdataValue> getValueList() {
         return valueList;
     }
@@ -78,9 +80,5 @@ public class TestdataCyclicReferencedShadowedSolution extends TestdataObject {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    public Collection<? extends Object> getProblemFacts() {
-        return valueList;
-    }
 
 }

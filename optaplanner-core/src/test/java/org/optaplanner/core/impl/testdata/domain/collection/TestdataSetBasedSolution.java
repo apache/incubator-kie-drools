@@ -46,6 +46,7 @@ public class TestdataSetBasedSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "valueRange")
+    @PlanningFactCollectionProperty
     public Set<TestdataValue> getValueSet() {
         return valueSet;
     }
@@ -75,10 +76,5 @@ public class TestdataSetBasedSolution extends TestdataObject {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @PlanningFactCollectionProperty
-    public Collection<? extends Object> getProblemFacts() {
-        return valueSet;
-    }
 
 }

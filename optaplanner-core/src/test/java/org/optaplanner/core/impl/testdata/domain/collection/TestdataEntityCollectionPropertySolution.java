@@ -48,6 +48,7 @@ public class TestdataEntityCollectionPropertySolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "valueRange")
+    @PlanningFactCollectionProperty
     public List<TestdataValue> getValueList() {
         return valueList;
     }
@@ -76,10 +77,5 @@ public class TestdataEntityCollectionPropertySolution extends TestdataObject {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @PlanningFactCollectionProperty
-    public Collection<? extends Object> getProblemFacts() {
-        return valueList;
-    }
 
 }

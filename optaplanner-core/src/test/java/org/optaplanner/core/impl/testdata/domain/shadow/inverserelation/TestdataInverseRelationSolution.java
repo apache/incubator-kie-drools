@@ -46,6 +46,7 @@ public class TestdataInverseRelationSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "valueRange")
+    @PlanningFactCollectionProperty
     public List<TestdataInverseRelationValue> getValueList() {
         return valueList;
     }
@@ -75,10 +76,5 @@ public class TestdataInverseRelationSolution extends TestdataObject {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @PlanningFactCollectionProperty
-    public Collection<? extends Object> getProblemFacts() {
-        return valueList;
-    }
 
 }

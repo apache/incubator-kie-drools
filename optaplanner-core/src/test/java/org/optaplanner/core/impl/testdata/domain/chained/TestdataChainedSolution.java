@@ -45,6 +45,7 @@ public class TestdataChainedSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "chainedAnchorRange")
+    @PlanningFactCollectionProperty
     public List<TestdataChainedAnchor> getChainedAnchorList() {
         return chainedAnchorList;
     }
@@ -75,10 +76,5 @@ public class TestdataChainedSolution extends TestdataObject {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @PlanningFactCollectionProperty
-    public Collection<? extends Object> getProblemFacts() {
-        return chainedAnchorList;
-    }
 
 }

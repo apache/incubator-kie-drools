@@ -84,6 +84,7 @@ public class TestdataAccessModifierSolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "valueRange")
+    @PlanningFactCollectionProperty
     public List<TestdataValue> getValueList() {
         return valueList;
     }
@@ -112,10 +113,5 @@ public class TestdataAccessModifierSolution extends TestdataObject {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @PlanningFactCollectionProperty
-    public Collection<? extends Object> getProblemFacts() {
-        return valueList;
-    }
 
 }

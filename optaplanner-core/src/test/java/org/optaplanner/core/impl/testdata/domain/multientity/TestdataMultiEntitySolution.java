@@ -49,6 +49,7 @@ public class TestdataMultiEntitySolution extends TestdataObject {
     }
 
     @ValueRangeProvider(id = "valueRange")
+    @PlanningFactCollectionProperty
     public List<TestdataValue> getValueList() {
         return valueList;
     }
@@ -88,12 +89,5 @@ public class TestdataMultiEntitySolution extends TestdataObject {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
-
-    @PlanningFactCollectionProperty
-    public Collection<Object> getProblemFacts() {
-        List<Object> problemFacts = new ArrayList<Object>(valueList.size());
-        problemFacts.addAll(valueList);
-        return problemFacts;
-    }
 
 }
