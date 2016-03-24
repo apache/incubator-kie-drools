@@ -1,5 +1,10 @@
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.runtime.rule.FactHandle;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -8,11 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.kie.api.runtime.rule.FactHandle;
 
 @RunWith(Parameterized.class)
 public class AddRemoveRulesAddDeleteFactsTest extends AbstractAddRemoveRulesTest {
@@ -42,6 +42,7 @@ public class AddRemoveRulesAddDeleteFactsTest extends AbstractAddRemoveRulesTest
 
     @Test
     public void testAddRemoveRulesAddRemoveFacts() {
+        checkRunTurtleTests();
         final List resultsList = new ArrayList();
         final Map<String, Object> sessionGlobals = new HashMap<String, Object>();
         sessionGlobals.put("list", resultsList);

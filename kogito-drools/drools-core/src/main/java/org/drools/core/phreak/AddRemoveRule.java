@@ -937,14 +937,17 @@ public class AddRemoveRule {
                             insertPeerRightTuple(lt, wm, rule, insert);
                         }
                     } else if (!insert) {
+                        iterateLeftTuple( lt, wm );
                         LeftTuple lt2 = null;
-                        if ( lt.getPeer() != null && lt.getPeer().getTupleSink().isAssociatedWith(rule) && lt.getPeer().getTupleSink().getAssociatedRuleSize() == 1 ) {
-                            // this LT is associated with a peer, due to subnetwork, so process together.
-                            lt2 = lt.getPeer();
+                        for ( LeftTuple peerLt = lt.getPeer();
+                              peerLt != null && peerLt.getTupleSink().isAssociatedWith(rule) && peerLt.getTupleSink().getAssociatedRuleSize() == 1;
+                              peerLt = peerLt.getPeer() ) {
+                            iterateLeftTuple( peerLt, wm );
+                            lt2 = peerLt;
                         }
 
                         // this sink is not shared and is associated with the rule being removed delete it's children
-                        deletePeerLeftTuple(lt, lt2, prevLt, wm);
+                        deleteLeftTuple(lt, lt2, prevLt);
                         break; // only one rule is deleted at a time, we know there are no more peers to delete so break.
                     }
                 }
@@ -1002,15 +1005,6 @@ public class AddRemoveRule {
         }
 
         return peer;
-    }
-
-    private static void deletePeerLeftTuple(LeftTuple lt, LeftTuple lt2, LeftTuple prevLt, InternalWorkingMemory wm) {
-        iterateLeftTuple( lt, wm);
-        if ( lt2 != null ) {
-            iterateLeftTuple( lt2, wm);
-        }
-
-        deleteLeftTuple(lt, lt2, prevLt);
     }
 
     private static void iterateLeftTuple(LeftTuple lt, InternalWorkingMemory wm) {
