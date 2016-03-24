@@ -18,25 +18,31 @@ package org.optaplanner.examples.taskassigning.domain;
 
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.InverseRelationShadowVariable;
+import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 @PlanningEntity
-public interface TaskOrEmployee {
+public abstract class TaskOrEmployee extends AbstractPersistable {
 
-    /**
-     * @return sometimes null
-     */
-    Integer getEndTime();
-
-    /**
-     * @return sometimes null
-     */
-    Employee getEmployee();
-
-    /**
-     * @return sometimes null
-     */
+    // Shadow variables
     @InverseRelationShadowVariable(sourceVariableName = "previousTaskOrEmployee")
-    Task getNextTask();
-    void setNextTask(Task nextTask);
+    protected Task nextTask;
+
+    public Task getNextTask() {
+        return nextTask;
+    }
+
+    public void setNextTask(Task nextTask) {
+        this.nextTask = nextTask;
+    }
+
+    /**
+     * @return sometimes null
+     */
+    public abstract Integer getEndTime();
+
+    /**
+     * @return sometimes null
+     */
+    public abstract Employee getEmployee();
 
 }

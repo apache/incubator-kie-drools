@@ -46,7 +46,6 @@ public class CourseSchedule extends AbstractPersistable {
     private List<Period> periodList;
     private List<Room> roomList;
 
-    @PlanningFactCollectionProperty
     private List<UnavailablePeriodPenalty> unavailablePeriodPenaltyList;
 
     private List<Lecture> lectureList;
@@ -127,6 +126,7 @@ public class CourseSchedule extends AbstractPersistable {
         this.roomList = roomList;
     }
 
+    @PlanningFactCollectionProperty
     public List<UnavailablePeriodPenalty> getUnavailablePeriodPenaltyList() {
         return unavailablePeriodPenaltyList;
     }

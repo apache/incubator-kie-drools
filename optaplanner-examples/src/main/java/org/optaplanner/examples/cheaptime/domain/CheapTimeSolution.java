@@ -39,11 +39,7 @@ public class CheapTimeSolution extends AbstractPersistable {
     private int globalPeriodRangeFrom; // Inclusive
     private int globalPeriodRangeTo; // Exclusive
 
-    @PlanningFactProperty
-    private CheapTimeSolution selfReference = this;
-
     private List<Resource> resourceList;
-    @ValueRangeProvider(id = "machineRange")
     private List<Machine> machineList;
     private List<MachineCapacity> machineCapacityList;
     private List<Task> taskList;
@@ -85,6 +81,7 @@ public class CheapTimeSolution extends AbstractPersistable {
         return resourceList;
     }
 
+    @ValueRangeProvider(id = "machineRange")
     @PlanningFactCollectionProperty
     public List<Machine> getMachineList() {
         return machineList;
@@ -155,5 +152,10 @@ public class CheapTimeSolution extends AbstractPersistable {
     // ************************************************************************
     // Complex methods
     // ************************************************************************
+
+    @PlanningFactProperty
+    public CheapTimeSolution getCheapTimeSolution() {
+        return this;
+    }
 
 }

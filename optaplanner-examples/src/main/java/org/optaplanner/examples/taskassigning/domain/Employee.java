@@ -20,19 +20,18 @@ import java.util.Map;
 import java.util.Set;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.common.swingui.components.Labeled;
 
 @XStreamAlias("TaEmployee")
-public class Employee extends AbstractPersistable implements TaskOrEmployee, Labeled {
+public class Employee extends TaskOrEmployee implements Labeled {
 
     private String fullName;
 
     private Set<Skill> skillSet;
     private Map<Customer, Affinity> affinityMap;
-
-    // Shadow variables
-    private Task nextTask;
 
     public String getFullName() {
         return fullName;
@@ -56,16 +55,6 @@ public class Employee extends AbstractPersistable implements TaskOrEmployee, Lab
 
     public void setAffinityMap(Map<Customer, Affinity> affinityMap) {
         this.affinityMap = affinityMap;
-    }
-
-    @Override
-    public Task getNextTask() {
-        return nextTask;
-    }
-
-    @Override
-    public void setNextTask(Task nextTask) {
-        this.nextTask = nextTask;
     }
 
     // ************************************************************************

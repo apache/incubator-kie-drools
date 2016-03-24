@@ -36,8 +36,8 @@ public class TaskAssigningSolution extends AbstractPersistable {
 
     @PlanningFactCollectionProperty
     private List<Skill> skillList;
-    @PlanningFactCollectionProperty
     @ValueRangeProvider(id = "employeeRange")
+    @PlanningFactCollectionProperty
     private List<Employee> employeeList;
     @PlanningFactCollectionProperty
     private List<TaskType> taskTypeList;
@@ -49,7 +49,6 @@ public class TaskAssigningSolution extends AbstractPersistable {
     private List<Task> taskList;
 
     @XStreamConverter(value = XStreamScoreConverter.class, types = {HardSoftScoreDefinition.class})
-    @PlanningScore
     private HardSoftScore score;
 
     public List<Skill> getSkillList() {
@@ -92,6 +91,7 @@ public class TaskAssigningSolution extends AbstractPersistable {
         this.taskList = taskList;
     }
 
+    @PlanningScore
     public HardSoftScore getScore() {
         return score;
     }
@@ -99,5 +99,9 @@ public class TaskAssigningSolution extends AbstractPersistable {
     public void setScore(HardSoftScore score) {
         this.score = score;
     }
+
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
 
 }

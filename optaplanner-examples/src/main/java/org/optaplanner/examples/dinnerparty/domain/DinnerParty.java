@@ -47,7 +47,7 @@ public class DinnerParty extends AbstractPersistable {
     private SimpleScore score;
 
     @PlanningFactCollectionProperty
-    public EnumSet<Hobby> getHobbyType() {
+    public EnumSet<Hobby> getHobbySet() {
         return EnumSet.allOf(Hobby.class);
     }
 
@@ -61,7 +61,7 @@ public class DinnerParty extends AbstractPersistable {
     }
 
     @PlanningFactCollectionProperty
-    public EnumSet<JobType> getJobType() {
+    public EnumSet<JobType> getJobSet() {
         return EnumSet.allOf(JobType.class);
     }
 

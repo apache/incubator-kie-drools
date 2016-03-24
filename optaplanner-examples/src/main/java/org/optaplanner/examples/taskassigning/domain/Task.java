@@ -27,18 +27,25 @@ import org.optaplanner.examples.taskassigning.domain.solver.StartTimeUpdatingVar
 
 @PlanningEntity()
 @XStreamAlias("MsTask")
-public class Task extends AbstractPersistable implements TaskOrEmployee {
+public class Task extends TaskOrEmployee {
 
     private TaskType taskType;
     private int indexInTaskType;
     private Customer customer;
 
     // Planning variables: changes during planning, between score calculations.
+    @PlanningVariable(valueRangeProviderRefs = {"employeeRange", "taskRange"},
+            graphType = PlanningVariableGraphType.CHAINED)
     private TaskOrEmployee previousTaskOrEmployee;
 
     // Shadow variables
-    private Task nextTask;
+    // Task nextTask inherited from superclass
+    @AnchorShadowVariable(sourceVariableName = "previousTaskOrEmployee")
     private Employee employee;
+    @CustomShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
+            // Arguable, to adhere to API specs (although this works), nextTask and employee should also be a source,
+            // because this shadow must be triggered after nextTask and employee (but there is no need to be triggered by those)
+            sources = {@CustomShadowVariable.Source(variableName = "previousTaskOrEmployee")})
     private Integer startTime;
 
     public TaskType getTaskType() {
@@ -65,8 +72,6 @@ public class Task extends AbstractPersistable implements TaskOrEmployee {
         this.customer = customer;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"employeeRange", "taskRange"},
-            graphType = PlanningVariableGraphType.CHAINED)
     public TaskOrEmployee getPreviousTaskOrEmployee() {
         return previousTaskOrEmployee;
     }
@@ -75,17 +80,6 @@ public class Task extends AbstractPersistable implements TaskOrEmployee {
         this.previousTaskOrEmployee = previousTaskOrEmployee;
     }
 
-    @Override
-    public Task getNextTask() {
-        return nextTask;
-    }
-
-    @Override
-    public void setNextTask(Task nextTask) {
-        this.nextTask = nextTask;
-    }
-
-    @AnchorShadowVariable(sourceVariableName = "previousTaskOrEmployee")
     public Employee getEmployee() {
         return employee;
     }
@@ -94,10 +88,6 @@ public class Task extends AbstractPersistable implements TaskOrEmployee {
         this.employee = employee;
     }
 
-    @CustomShadowVariable(variableListenerClass = StartTimeUpdatingVariableListener.class,
-            // Arguable, to adhere to API specs (although this works), nextTask and employee should also be a source,
-            // because this shadow must be triggered after nextTask and employee (but there is no need to be triggered by those)
-            sources = {@CustomShadowVariable.Source(variableName = "previousTaskOrEmployee")})
     public Integer getStartTime() {
         return startTime;
     }

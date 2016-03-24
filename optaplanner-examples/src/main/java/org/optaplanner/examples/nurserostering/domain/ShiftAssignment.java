@@ -34,6 +34,8 @@ public class ShiftAssignment extends AbstractPersistable {
     private int indexInShift;
 
     // Planning variables: changes during planning, between score calculations.
+    @PlanningVariable(valueRangeProviderRefs = {"employeeRange"},
+            strengthComparatorClass = EmployeeStrengthComparator.class)
     private Employee employee;
 
     public Shift getShift() {
@@ -52,8 +54,6 @@ public class ShiftAssignment extends AbstractPersistable {
         this.indexInShift = indexInShift;
     }
 
-    @PlanningVariable(valueRangeProviderRefs = {"employeeRange"},
-            strengthComparatorClass = EmployeeStrengthComparator.class)
     public Employee getEmployee() {
         return employee;
     }
