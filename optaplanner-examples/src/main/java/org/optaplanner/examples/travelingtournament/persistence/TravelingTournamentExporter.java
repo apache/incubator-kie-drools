@@ -47,33 +47,27 @@ public class TravelingTournamentExporter extends AbstractTxtSolutionExporter<Tra
 
     public static class TravelingTournamentOutputBuilder extends TxtOutputBuilder<TravelingTournament> {
 
-        private TravelingTournament travelingTournament;
-
-        public void setSolution(TravelingTournament solution) {
-            travelingTournament = solution;
-        }
-
         public void writeSolution() throws IOException {
             int maximumTeamNameLength = 0;
-            for (Team team : travelingTournament.getTeamList()) {
+            for (Team team : solution.getTeamList()) {
                 if (team.getName().length() > maximumTeamNameLength) {
                     maximumTeamNameLength = team.getName().length();
                 }
             }
-            for (Team team : travelingTournament.getTeamList()) {
+            for (Team team : solution.getTeamList()) {
                 bufferedWriter.write(String.format("%-" + (maximumTeamNameLength + 3) + "s", team.getName()));
             }
             bufferedWriter.write("\n");
-            for (Team team : travelingTournament.getTeamList()) {
+            for (Team team : solution.getTeamList()) {
                 bufferedWriter.write(String.format("%-" + (maximumTeamNameLength + 3) + "s", team.getName().replaceAll("[\\w\\d]", "-")));
             }
             bufferedWriter.write("\n");
-            for (Day day : travelingTournament.getDayList()) {
-                for (Team team : travelingTournament.getTeamList()) {
+            for (Day day : solution.getDayList()) {
+                for (Team team : solution.getTeamList()) {
                     // this could be put in a hashmap first for performance
                     boolean opponentIsHome = false;
                     Team opponentTeam = null;
-                    for (Match match : travelingTournament.getMatchList()) {
+                    for (Match match : solution.getMatchList()) {
                         if (match.getDay().equals(day)) {
                             if (match.getHomeTeam().equals(team)) {
                                 opponentIsHome = false;

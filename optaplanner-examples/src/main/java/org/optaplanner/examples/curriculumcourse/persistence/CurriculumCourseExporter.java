@@ -44,14 +44,8 @@ public class CurriculumCourseExporter extends AbstractTxtSolutionExporter<Course
 
     public static class CurriculumCourseOutputBuilder extends TxtOutputBuilder<CourseSchedule> {
 
-        private CourseSchedule schedule;
-
-        public void setSolution(CourseSchedule solution) {
-            schedule = solution;
-        }
-
         public void writeSolution() throws IOException {
-            for (Lecture lecture : schedule.getLectureList()) {
+            for (Lecture lecture : solution.getLectureList()) {
                 bufferedWriter.write(lecture.getCourse().getCode()
                         + " r" + lecture.getRoom().getCode()
                         + " " + lecture.getPeriod().getDay().getDayIndex()

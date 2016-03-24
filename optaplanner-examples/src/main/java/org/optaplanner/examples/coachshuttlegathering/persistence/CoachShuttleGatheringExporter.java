@@ -44,12 +44,6 @@ public class CoachShuttleGatheringExporter extends AbstractTxtSolutionExporter<C
 
     public static class CoachShuttleGatheringOutputBuilder extends TxtOutputBuilder<CoachShuttleGatheringSolution> {
 
-        private CoachShuttleGatheringSolution solution;
-
-        public void setSolution(CoachShuttleGatheringSolution solution) {
-            this.solution = solution;
-        }
-
         public void writeSolution() throws IOException {
             bufferedWriter.append("VEHICLE_ID;TOUR_POSITION;LOCATION_ID;LOCATION_TYPE\n");
             for (Bus bus : solution.getBusList()) {

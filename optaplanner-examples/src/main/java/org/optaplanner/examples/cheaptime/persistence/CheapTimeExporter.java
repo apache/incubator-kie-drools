@@ -54,12 +54,6 @@ public class CheapTimeExporter extends AbstractTxtSolutionExporter<CheapTimeSolu
 
     public static class CheapTimeOutputBuilder extends TxtOutputBuilder<CheapTimeSolution> {
 
-        private CheapTimeSolution solution;
-
-        public void setSolution(CheapTimeSolution solution) {
-            this.solution = solution;
-        }
-
         public void writeSolution() throws IOException {
             int globalPeriodRangeTo = solution.getGlobalPeriodRangeTo();
             List<Machine> machineList = solution.getMachineList();

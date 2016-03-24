@@ -41,21 +41,15 @@ public class PatientAdmissionScheduleExporter extends AbstractTxtSolutionExporte
 
     public static class PatientAdmissionScheduleOutputBuilder extends TxtOutputBuilder<PatientAdmissionSchedule> {
 
-        private PatientAdmissionSchedule patientAdmissionSchedule;
-
-        public void setSolution(PatientAdmissionSchedule solution) {
-            patientAdmissionSchedule = solution;
-        }
-
         public void writeSolution() throws IOException {
-            Collections.sort(patientAdmissionSchedule.getBedDesignationList(), (a, b) -> new CompareToBuilder()
+            Collections.sort(solution.getBedDesignationList(), (a, b) -> new CompareToBuilder()
                     .append(a.getAdmissionPart(), b.getAdmissionPart())
                     .append(a.getBed(), b.getBed())
                     .append(a.getId(), b.getId())
                     .toComparison());
-            for (Patient patient : patientAdmissionSchedule.getPatientList()) {
+            for (Patient patient : solution.getPatientList()) {
                 bufferedWriter.write(Long.toString(patient.getId()));
-                for (BedDesignation bedDesignation : patientAdmissionSchedule.getBedDesignationList()) {
+                for (BedDesignation bedDesignation : solution.getBedDesignationList()) {
                     if (bedDesignation.getPatient().equals(patient)) {
                         for (int i = 0; i < bedDesignation.getAdmissionPart().getNightCount(); i++) {
                             bufferedWriter.write(" " + Long.toString(bedDesignation.getBed().getId()));

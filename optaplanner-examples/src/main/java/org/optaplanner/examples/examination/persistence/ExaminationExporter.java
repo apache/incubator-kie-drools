@@ -47,15 +47,9 @@ public class ExaminationExporter extends AbstractTxtSolutionExporter<Examination
 
     public static class ExaminationOutputBuilder extends TxtOutputBuilder<Examination> {
 
-        private Examination examination;
-
-        public void setSolution(Examination solution) {
-            examination = solution;
-        }
-
         public void writeSolution() throws IOException {
-            Collections.sort(examination.getExamList(), new PersistableIdComparator()); // TODO remove me when obsolete
-            for (Exam exam : examination.getExamList()) {
+            Collections.sort(solution.getExamList(), new PersistableIdComparator()); // TODO remove me when obsolete
+            for (Exam exam : solution.getExamList()) {
                 bufferedWriter.write(exam.getPeriod().getId() + ", " + exam.getRoom().getId() + "\r\n");
             }
         }

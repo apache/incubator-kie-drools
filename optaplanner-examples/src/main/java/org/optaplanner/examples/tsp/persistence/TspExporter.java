@@ -46,18 +46,12 @@ public class TspExporter extends AbstractTxtSolutionExporter<TspSolution> {
 
     public static class TspOutputBuilder extends TxtOutputBuilder<TspSolution> {
 
-        private TspSolution tspSolution;
-
-        public void setSolution(TspSolution solution) {
-            tspSolution = (TspSolution) solution;
-        }
-
         public void writeSolution() throws IOException {
-            bufferedWriter.write("NAME : " + tspSolution.getName() + "\n");
+            bufferedWriter.write("NAME : " + solution.getName() + "\n");
             bufferedWriter.write("TYPE : TOUR\n");
-            bufferedWriter.write("DIMENSION : " + tspSolution.getLocationList().size() + "\n");
+            bufferedWriter.write("DIMENSION : " + solution.getLocationList().size() + "\n");
             bufferedWriter.write("TOUR_SECTION\n");
-            Standstill standstill = tspSolution.getDomicile();
+            Standstill standstill = solution.getDomicile();
             while (standstill != null) {
                 bufferedWriter.write(standstill.getLocation().getId() + "\n");
                 standstill = findNextVisit(standstill);
@@ -66,7 +60,7 @@ public class TspExporter extends AbstractTxtSolutionExporter<TspSolution> {
         }
 
         private Visit findNextVisit(Standstill standstill) {
-            for (Visit visit : tspSolution.getVisitList()) {
+            for (Visit visit : solution.getVisitList()) {
                 if (visit.getPreviousStandstill() == standstill) {
                     return visit;
                 }

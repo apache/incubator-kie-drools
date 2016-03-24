@@ -45,16 +45,10 @@ public class MachineReassignmentExporter extends AbstractTxtSolutionExporter<Mac
 
     public static class MachineReassignmentOutputBuilder extends TxtOutputBuilder<MachineReassignment> {
 
-        private MachineReassignment machineReassignment;
-
-        public void setSolution(MachineReassignment solution) {
-            machineReassignment = (MachineReassignment) solution;
-        }
-
         public void writeSolution() throws IOException {
             boolean first = true;
-            List<MrMachine> machineList = machineReassignment.getMachineList();
-            for (MrProcessAssignment processAssignment : machineReassignment.getProcessAssignmentList()) {
+            List<MrMachine> machineList = solution.getMachineList();
+            for (MrProcessAssignment processAssignment : solution.getProcessAssignmentList()) {
                 if (first) {
                     first = false;
                 } else {

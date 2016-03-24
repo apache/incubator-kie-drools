@@ -57,12 +57,15 @@ public abstract class AbstractTxtSolutionExporter<Solution_> extends AbstractSol
     public static abstract class TxtOutputBuilder<Solution_> extends OutputBuilder {
 
         protected BufferedWriter bufferedWriter;
+        protected Solution_ solution;
 
         public void setBufferedWriter(BufferedWriter bufferedWriter) {
             this.bufferedWriter = bufferedWriter;
         }
 
-        public abstract void setSolution(Solution_ solution);
+        public void setSolution(Solution_ solution) {
+            this.solution = solution;
+        }
 
         public abstract void writeSolution() throws IOException;
 
