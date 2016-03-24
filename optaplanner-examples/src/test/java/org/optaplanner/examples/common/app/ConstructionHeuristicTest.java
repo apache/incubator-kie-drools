@@ -37,7 +37,7 @@ import java.util.List;
 public abstract class ConstructionHeuristicTest<Solution_> extends PhaseTest<Solution_> {
 
     protected static <Solution_> Collection<Object[]> buildParameters(SolutionDao<Solution_> solutionDao,
-                                                                      String... unsolvedFileNames) {
+            String... unsolvedFileNames) {
         if (solutionDao instanceof CurriculumCourseDao) {
             /*
              * TODO Delete this temporary workaround to ignore ALLOCATE_TO_VALUE_FROM_QUEUE,
@@ -50,9 +50,8 @@ public abstract class ConstructionHeuristicTest<Solution_> extends PhaseTest<Sol
                 }
             }
             return buildParameters(solutionDao, typeList.toArray(new ConstructionHeuristicType[0]), unsolvedFileNames);
-        } else {
-            return buildParameters(solutionDao, ConstructionHeuristicType.values(), unsolvedFileNames);
         }
+        return buildParameters(solutionDao, ConstructionHeuristicType.values(), unsolvedFileNames);
     }
 
     protected ConstructionHeuristicType constructionHeuristicType;

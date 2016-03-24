@@ -37,7 +37,7 @@ import java.util.Collection;
 public abstract class ExhaustiveSearchTest<Solution_> extends PhaseTest<Solution_> {
 
     protected static <Solution_> Collection<Object[]> buildParameters(SolutionDao<Solution_> solutionDao,
-                String... unsolvedFileNames) {
+            String... unsolvedFileNames) {
         return buildParameters(solutionDao, ExhaustiveSearchType.values(),
                 unsolvedFileNames);
     }

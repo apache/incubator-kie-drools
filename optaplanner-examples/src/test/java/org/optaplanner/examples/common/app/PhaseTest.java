@@ -78,6 +78,7 @@ public abstract class PhaseTest<Solution_> extends LoggingTest {
 
         Solution_ bestSolution = solver.solve(planningProblem);
         assertSolution(bestSolution);
+        assertNotNull(solver.getBestScore());
     }
 
     protected void assertSolution(Solution_ bestSolution) {

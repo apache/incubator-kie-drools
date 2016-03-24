@@ -133,6 +133,10 @@ public class DefaultSolver<Solution_> implements Solver<Solution_> {
         return solverScope.getBestSolution();
     }
 
+    public Score getBestScore() {
+        return solverScope.getBestScore();
+    }
+
     public long getTimeMillisSpent() {
         Long endingSystemTimeMillis = solverScope.getEndingSystemTimeMillis();
         if (endingSystemTimeMillis == null) {

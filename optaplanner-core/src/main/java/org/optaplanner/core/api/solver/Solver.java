@@ -44,7 +44,7 @@ import java.util.concurrent.Future;
 public interface Solver<Solution_> {
 
     /**
-     * The best solution is the best solution found during solving:
+     * The best solution is the {@link PlanningSolution best solution} found during solving:
      * it might or might not be optimal, feasible or even initialized.
      * <p/>
      * The {@link #solve(Solution_)} method also returns the best solution,
@@ -52,9 +52,15 @@ public interface Solver<Solution_> {
      * {@link SolverEventListener#bestSolutionChanged(BestSolutionChangedEvent)} is often more appropriate).
      * <p>
      * This method is thread-safe.
-     * @return never null, but it can return the original, uninitialized {@link Solution_} with a {@link Score} null.
+     * @return never null, but it can return the original, uninitialized {@link PlanningSolution} with a {@link Score} null.
      */
     Solution_ getBestSolution();
+
+    /**
+     * Return the {@link Score} of the {@link #getBestSolution()}.
+     * @return null if the {@link PlanningSolution} is still uninitialized
+     */
+    Score getBestScore();
 
     /**
      * @return the amount of millis spent between when this solver started (or last restarted) and ended
@@ -69,7 +75,7 @@ public interface Solver<Solution_> {
      * depending on the {@link Termination} configuration.
      * To terminate a {@link Solver} early, call {@link #terminateEarly()}.
      * @param planningProblem never null, usually its planning variables are uninitialized
-     * @return never null, but it can return the original, uninitialized {@link Solution_} with a {@link Score} null.
+     * @return never null, but it can return the original, uninitialized {@link PlanningSolution} with a {@link Score} null.
      * @see #terminateEarly()
      */
     Solution_ solve(Solution_ planningProblem);
@@ -82,7 +88,7 @@ public interface Solver<Solution_> {
      * depending on the {@link Termination} configuration.
      * To terminate a {@link Solver} early, call {@link #terminateEarly()}.
      * @param planningProblem never null, usually its planning variables are uninitialized
-     * @return never null, but it can return the original, uninitialized {@link Solution_} with a {@link Score} null.
+     * @return never null, but it can return the original, uninitialized {@link PlanningSolution} with a {@link Score} null.
      * @see #terminateEarly()
      */
     @Deprecated
