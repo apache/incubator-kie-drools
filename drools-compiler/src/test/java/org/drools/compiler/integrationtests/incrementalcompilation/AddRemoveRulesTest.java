@@ -15,18 +15,6 @@
 
 package org.drools.compiler.integrationtests.incrementalcompilation;
 
-import static org.junit.Assert.*;
-
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.RightTuple;
@@ -49,7 +37,18 @@ import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.runtime.StatelessKnowledgeSession;
 import org.kie.internal.utils.KieHelper;
 
+import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
+import static org.junit.Assert.*;
 
 public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
 
@@ -2233,38 +2232,26 @@ public class AddRemoveRulesTest extends AbstractAddRemoveRulesTest {
                 "   list.add('" + RULE2_NAME + "'); \n" +
                 " end";
 
-        final String rule3 = " package " + PKG_NAME_TEST + ";\n" +
-                " global java.util.List list\n" +
-                " rule " + RULE3_NAME + " \n" +
-                " when \n" +
-                "   Integer() \n" +
-                "   exists(Integer() and Integer()) \n" +
-                "   String() \n" +
-                " then\n" +
-                "   list.add('" + RULE3_NAME + "'); \n" +
-                " end";
-
         final List resultsList = new ArrayList();
         final Map<String, Object> globals = new HashMap<String, Object>();
         globals.put("list", resultsList);
         final TestContext context = new TestContext(PKG_NAME_TEST, globals, resultsList);
 
         final AddRemoveTestBuilder builder = new AddRemoveTestBuilder();
-        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2, rule3})
-                .addOperation(TestOperationType.INSERT_FACTS, new Object[]{1, "1"});
+        builder.addOperation(TestOperationType.CREATE_SESSION, new String[]{rule1, rule2})
+                .addOperation(TestOperationType.INSERT_FACTS, new Object[]{1});
 
         context.executeTestOperations(builder.build());
         builder.clear();
 
         final Set<FactHandle> sessionFacts = context.getActualSessionFactHandles();
 
-        builder.addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{RULE1_NAME, RULE2_NAME, RULE3_NAME})
-                .addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE1_NAME, RULE2_NAME})
-                .addOperation(TestOperationType.ADD_RULES, new String[]{rule1, rule2})
-                .addOperation(TestOperationType.REMOVE_FACTS, sessionFacts.toArray(new FactHandle[]{}))
-                .addOperation(TestOperationType.FIRE_RULES)
-                .addOperation(TestOperationType.CHECK_RESULTS, new String[]{});
+        builder.addOperation(TestOperationType.REMOVE_RULES, new String[]{RULE2_NAME, RULE1_NAME})
+               .addOperation(TestOperationType.FIRE_RULES)
+               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{})
+               .addOperation(TestOperationType.REMOVE_FACTS, sessionFacts.toArray(new FactHandle[]{}))
+               .addOperation(TestOperationType.FIRE_RULES)
+               .addOperation(TestOperationType.CHECK_RESULTS, new String[]{});
         context.executeTestOperations(builder.build());
     }
 }
