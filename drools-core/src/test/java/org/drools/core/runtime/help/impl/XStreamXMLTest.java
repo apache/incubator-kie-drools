@@ -16,20 +16,27 @@
 package org.drools.core.runtime.help.impl;
 
 import com.thoughtworks.xstream.XStream;
-import org.drools.core.QueryResultsImpl;
 import org.drools.core.command.runtime.process.StartProcessCommand;
-import org.drools.core.command.runtime.rule.*;
+import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
+import org.drools.core.command.runtime.rule.ClearActivationGroupCommand;
+import org.drools.core.command.runtime.rule.ClearAgendaCommand;
+import org.drools.core.command.runtime.rule.ClearAgendaGroupCommand;
+import org.drools.core.command.runtime.rule.ClearRuleFlowGroupCommand;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.runtime.impl.ExecutionResultImpl;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
-import org.drools.core.spi.FactHandleFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 public class XStreamXMLTest {
 
@@ -133,14 +140,14 @@ public class XStreamXMLTest {
                 20,
                 msg2 );
 
-        HashMap<String, Object> factHandles = new HashMap<String, Object>();
+        HashMap<String, Object> factHandles = new LinkedHashMap<String, Object>();
         factHandles.put("first", msgHandle);
         factHandles.put("second", msgHandle2);
 
         ExecutionResultImpl executionResult = new ExecutionResultImpl();
         executionResult.setFactHandles(factHandles);
 
-        HashMap<String, Object> results = new HashMap<String, Object>();
+        HashMap<String, Object> results = new LinkedHashMap<String, Object>();
         results.put("message1", msg);
         results.put("message2", msg2);
 
@@ -149,14 +156,14 @@ public class XStreamXMLTest {
         String xmlString = xstream.toXML(executionResult);
         Assert.assertEquals(
                 "<execution-results>\n" +
-                "  <result identifier=\"message2\">\n" +
-                "    <org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n" +
-                "      <msg>Hello World again!</msg>\n" +
-                "    </org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n" +
-                "  </result>\n" +
                 "  <result identifier=\"message1\">\n" +
                 "    <org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n" +
                 "      <msg>Hello World!</msg>\n" +
+                "    </org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n" +
+                "  </result>\n" +
+                "  <result identifier=\"message2\">\n" +
+                "    <org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n" +
+                "      <msg>Hello World again!</msg>\n" +
                 "    </org.drools.core.runtime.help.impl.XStreamXMLTest_-Message>\n" +
                 "  </result>\n" +
                 "  <fact-handle identifier=\"first\" external-form=\"0:1:10:10:20:null:NON_TRAIT:org.drools.core.runtime.help.impl.XStreamXMLTest$Message\"/>\n" +
