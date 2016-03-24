@@ -184,8 +184,6 @@ public class SharingTest extends CommonTestMethodBase {
 
         MethodCountingObjectTypeNode betaOTN  = (MethodCountingObjectTypeNode) joinNode.getRightInput();
         Map<String, Integer> countingMap = betaOTN.getMethodCountMap();
-        assertNotNull(countingMap);
-        assertEquals(1,countingMap.get("thisNodeEquals").intValue());
-        assertNull (countingMap.get("equals")); //Make sure we are not using recursive "equals" method
+        assertNull(countingMap);
     }
 }
