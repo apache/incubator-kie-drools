@@ -205,6 +205,7 @@
                    in ECJ directly to export the versions correctly in the MANIFEST.MF. -->
               org.eclipse.jdt.*;version="[0,1)";resolution:=optional,
               org.osgi.*;resolution:=optional,
+              org.jbpm.process.instance.impl;resolution:=optional,
               =org.kie.spring;resolution:=optional,
               =org.kie.scanner.*;resolution:=optional,
               *
