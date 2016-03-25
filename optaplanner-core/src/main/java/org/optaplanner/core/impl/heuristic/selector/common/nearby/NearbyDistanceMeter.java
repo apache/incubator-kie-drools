@@ -22,7 +22,7 @@ public interface NearbyDistanceMeter<O, D> {
      * Measures the distance from the origin to the destination.
      * The distance can be in any unit, such a meters, foot, seconds or milliseconds.
      * For example, vehicle routing often uses driving time in seconds.
-     * <p/>
+     * <p>
      * Distances can be asymmetrical: the distance from an origin to a destination
      * often differs from the distance from that destination to that origin.
      * @param origin never null

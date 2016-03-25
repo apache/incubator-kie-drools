@@ -46,7 +46,7 @@ public interface Solver<Solution_> {
     /**
      * The best solution is the {@link PlanningSolution best solution} found during solving:
      * it might or might not be optimal, feasible or even initialized.
-     * <p/>
+     * <p>
      * The {@link #solve(Solution_)} method also returns the best solution,
      * but this method is useful in rare asynchronous situations (although
      * {@link SolverEventListener#bestSolutionChanged(BestSolutionChangedEvent)} is often more appropriate).
