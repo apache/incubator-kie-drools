@@ -21,21 +21,33 @@ import java.lang.annotation.Target;
 
 import org.optaplanner.core.api.domain.solution.cloner.PlanningCloneable;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
+import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
 
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.*;
 
 /**
  * Specifies that the class is a planning solution.
+ * A solution represents a problem and a possible solution of that problem.
+ * A possible solution does not need to be optimal or even feasible.
+ * A solution's planning variables might not be initialized (especially when delivered as a problem).
+ * <p>
+ * A solution is mutable.
+ * For scalability reasons (to facilitate incremental score calculation),
+ * the same solution instance (called the working solution per move thread) is continuously modified.
+ * It's cloned to recall the best solution.
+ * <p>
+ * Each planning solution must have at exactly 1 {@link PlanningScore} property.
+ * <p>
  * Each planning solution must have at least 1 {@link PlanningEntityCollectionProperty}
  * or {@link PlanningEntityProperty} property.
  * <p>
+ * Each planning solution used with Drools score calculation must have at least 1 {@link PlanningFactCollectionProperty}
+ * or {@link PlanningFactProperty} property.
+ * <p>
  * The class should have a public no-arg constructor, so it can be cloned
  * (unless the {@link #solutionCloner()} is specified).
- * <p>
- * This annotation describes declarative properties of the planning solution.
- * The planning solution class must also implement {@link PlanningSolution},
- * which is needed to get/set state.
  */
 @Target({TYPE})
 @Retention(RUNTIME)

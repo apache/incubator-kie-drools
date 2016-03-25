@@ -17,6 +17,8 @@
 package org.optaplanner.core.api.domain.solution;
 
 import org.kie.api.runtime.KieSession;
+import org.optaplanner.core.api.domain.solution.drools.PlanningFactCollectionProperty;
+import org.optaplanner.core.api.domain.solution.drools.PlanningFactProperty;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
@@ -25,7 +27,9 @@ import org.optaplanner.core.impl.solver.ProblemFactChange;
 import java.util.Collection;
 
 /**
- * A Solution represents a problem and a possible solution of that problem.
+ * Retained for backwards compatibility with 6.x. This interface will be removed in 8.0.
+ * <p>
+ * A solution represents a problem and a possible solution of that problem.
  * A possible solution does not need to be optimal or even feasible.
  * A Solution's variables do not even have to be initialized.
  * <p>
@@ -38,6 +42,7 @@ import java.util.Collection;
  * But the planning solution class must also be annotated with {@link PlanningSolution}
  * describes declarative properties.
  * @param <S> the {@link Score} type used by this use case
+ * @deprecated In favor of {@link PlanningScore}, {@link PlanningFactCollectionProperty} and {@link PlanningFactProperty}.
  */
 @Deprecated
 public interface Solution<S extends Score> {
@@ -51,7 +56,7 @@ public interface Solution<S extends Score> {
 
     /**
      * Called by the {@link Solver} when the {@link Score} of this Solution has been calculated.
-     * @param score null if the Solution has changed and the new {@link Score} has not yet been recalculated
+     * @param score sometimes null
      */
     void setScore(S score);
 
@@ -62,8 +67,7 @@ public interface Solution<S extends Score> {
      * They don't change during planning (except through {@link ProblemFactChange} events).
      * <p>
      * Do not include the planning entities as problem facts:
-     * they are automatically inserted into the {@link KieSession} if and only if they are initialized.
-     * When they are initialized later, they are also automatically inserted.
+     * they are automatically inserted into the {@link KieSession}.
      * @return never null (although an empty collection is allowed),
      *         all the facts of this solution except for the planning entities
      */

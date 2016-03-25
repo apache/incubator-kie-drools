@@ -20,13 +20,19 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import org.optaplanner.core.api.score.Score;
+import org.optaplanner.core.api.solver.Solver;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Specifies that a property (or a field) on a {@link PlanningSolution} class is a {@link Score}.
+ * Specifies that a property (or a field) on a {@link PlanningSolution} class holds the {@link Score} of that solution.
+ * <p>
+ * This property can be null if the {@link PlanningSolution} is uninitialized.
+ * <p>
+ * This property is modified by the {@link Solver},
+ * every time when the {@link Score} of this {@link PlanningSolution} has been calculated.
  */
 @Target({METHOD, FIELD})
 @Retention(RUNTIME)

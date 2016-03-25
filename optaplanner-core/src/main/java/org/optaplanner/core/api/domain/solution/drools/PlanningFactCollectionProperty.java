@@ -25,15 +25,22 @@ import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.score.director.ScoreDirector;
 import org.optaplanner.core.impl.score.director.drools.DroolsScoreDirector;
+import org.optaplanner.core.impl.solver.ProblemFactChange;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Specifies that a property (or a field) on a {@link PlanningSolution} class is a {@link Collection} of planning facts.
+ * Specifies that a property (or a field) on a {@link PlanningSolution} class is a {@link Collection} of problem facts.
+ * A problem fact must not change during solving (except through {@link ProblemFactChange} event).
  * <p>
- * The planning facts will be added as facts in the Drools {@link KieSession} of the {@link DroolsScoreDirector}.
+ * The problem facts will be added as facts in the {@link KieSession} of the {@link DroolsScoreDirector},
+ * so the score rules can use them.
+ * <p>
+ * Do not annotate {@link PlanningEntity planning entities} as problem facts:
+ * they are automatically inserted into the {@link KieSession}.
+ * @see PlanningFactProperty
  */
 @Target({METHOD, FIELD})
 @Retention(RUNTIME)

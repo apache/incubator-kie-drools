@@ -35,7 +35,4 @@ import static java.lang.annotation.RetentionPolicy.*;
 @Retention(RUNTIME)
 public @interface PlanningEntityProperty {
 
-    // TODO factory for dynamic length entity collections
-    // PlanningEntityFactory factory() default Void.class;
-
 }
