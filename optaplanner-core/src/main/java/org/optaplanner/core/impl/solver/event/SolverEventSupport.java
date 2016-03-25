@@ -19,6 +19,7 @@ package org.optaplanner.core.impl.solver.event;
 import java.util.Iterator;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -37,9 +38,11 @@ public class SolverEventSupport<Solution_> extends AbstractEventSupport<SolverEv
 
     public void fireBestSolutionChanged(Solution_ newBestSolution, int newUninitializedVariableCount) {
         final Iterator<SolverEventListener<Solution_>> it = eventListenerSet.iterator();
+        long timeMillisSpent = solver.getSolverScope().calculateTimeMillisSpent();
+        Score newBestScore = solver.getSolverScope().getSolutionDescriptor().getScore(newBestSolution);
         if (it.hasNext()) {
             final BestSolutionChangedEvent<Solution_> event = new BestSolutionChangedEvent<Solution_>(solver,
-                    solver.getSolverScope().calculateTimeMillisSpent(), newBestSolution, newUninitializedVariableCount);
+                    timeMillisSpent, newBestSolution, newBestScore, newUninitializedVariableCount);
             do {
                 it.next().bestSolutionChanged(event);
             } while (it.hasNext());

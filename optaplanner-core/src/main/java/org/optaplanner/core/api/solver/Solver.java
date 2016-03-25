@@ -57,7 +57,10 @@ public interface Solver<Solution_> {
     Solution_ getBestSolution();
 
     /**
-     * Return the {@link Score} of the {@link #getBestSolution()}.
+     * Returns the {@link Score} of the {@link #getBestSolution()}.
+     * <p>
+     * This is useful for generic code, which doesn't know the type of the {@link PlanningSolution}
+     * to retrieve the {@link Score} from the {@link #getBestSolution()} easily.
      * @return null if the {@link PlanningSolution} is still uninitialized
      */
     Score getBestScore();

@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.api.solver.event;
 
+import java.util.EventObject;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.FeasibilityScore;
 import org.optaplanner.core.api.score.Score;
@@ -23,10 +25,8 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.solver.DefaultSolver;
 import org.optaplanner.core.impl.solver.ProblemFactChange;
 
-import java.util.EventObject;
-
 /**
- * Delivered when the best {@link PlanningSolution} changes during solving.
+ * Delivered when the {@link PlanningSolution bets solution} changes during solving.
  * Delivered in the solver thread (which is the thread that calls {@link Solver#solve(Solution_)}).
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
@@ -35,7 +35,8 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
     private final DefaultSolver<Solution_> solver;
     private final long timeMillisSpent;
     private final Solution_ newBestSolution;
-    private final int newUninitializedVariableCount;
+    private final Score newBestScore;
+    private final int newUninitializedVariableCount; // TODO will be removed very soon
 
     /**
      * @param solver never null
@@ -43,12 +44,13 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
      * @param newBestSolution never null
      * @param newUninitializedVariableCount {@code >= 0}
      */
-    public BestSolutionChangedEvent(DefaultSolver<Solution_> solver, long timeMillisSpent, Solution_ newBestSolution,
-                                    int newUninitializedVariableCount) {
+    public BestSolutionChangedEvent(DefaultSolver<Solution_> solver, long timeMillisSpent,
+            Solution_ newBestSolution, Score newBestScore, int newUninitializedVariableCount) {
         super(solver);
         this.solver = solver;
         this.timeMillisSpent = timeMillisSpent;
         this.newBestSolution = newBestSolution;
+        this.newBestScore = newBestScore;
         this.newUninitializedVariableCount = newUninitializedVariableCount;
     }
 
@@ -75,11 +77,14 @@ public class BestSolutionChangedEvent<Solution_> extends EventObject {
     }
 
     /**
-     *
-     * @return never null
+     * Returns the {@link Score} of the {@link #getNewBestSolution()}.
+     * <p>
+     * This is useful for generic code, which doesn't know the type of the {@link PlanningSolution}
+     * to retrieve the {@link Score} from the {@link #getNewBestSolution()} easily.
+     * @return never null, because at this point it's always already calculated
      */
     public Score getNewBestScore() {
-        return this.solver.getSolverScope().getSolutionDescriptor().getScore(this.getNewBestSolution());
+        return newBestScore;
     }
 
     /**
