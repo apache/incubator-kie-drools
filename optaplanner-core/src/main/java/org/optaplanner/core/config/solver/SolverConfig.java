@@ -46,7 +46,7 @@ import java.util.List;
 import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 @XStreamAlias("solver")
-public class SolverConfig<Solution_> extends AbstractConfig<SolverConfig> {
+public class SolverConfig extends AbstractConfig<SolverConfig> {
 
     protected static final long DEFAULT_RANDOM_SEED = 0L;
 
@@ -60,8 +60,8 @@ public class SolverConfig<Solution_> extends AbstractConfig<SolverConfig> {
     protected Class<? extends RandomFactory> randomFactoryClass = null;
 
     @XStreamAlias("scanAnnotatedClasses")
-    protected ScanAnnotatedClassesConfig<Solution_> scanAnnotatedClassesConfig = null;
-    protected Class<Solution_> solutionClass = null;
+    protected ScanAnnotatedClassesConfig scanAnnotatedClassesConfig = null;
+    protected Class<?> solutionClass = null;
     @XStreamImplicit(itemFieldName = "entityClass")
     protected List<Class<?>> entityClassList = null;
 
@@ -121,19 +121,19 @@ public class SolverConfig<Solution_> extends AbstractConfig<SolverConfig> {
         this.randomFactoryClass = randomFactoryClass;
     }
 
-    public ScanAnnotatedClassesConfig<Solution_> getScanAnnotatedClassesConfig() {
+    public ScanAnnotatedClassesConfig getScanAnnotatedClassesConfig() {
         return scanAnnotatedClassesConfig;
     }
 
-    public void setScanAnnotatedClassesConfig(ScanAnnotatedClassesConfig<Solution_> scanAnnotatedClassesConfig) {
+    public void setScanAnnotatedClassesConfig(ScanAnnotatedClassesConfig scanAnnotatedClassesConfig) {
         this.scanAnnotatedClassesConfig = scanAnnotatedClassesConfig;
     }
 
-    public Class<Solution_> getSolutionClass() {
+    public Class<?> getSolutionClass() {
         return solutionClass;
     }
 
-    public void setSolutionClass(Class<Solution_> solutionClass) {
+    public void setSolutionClass(Class<?> solutionClass) {
         this.solutionClass = solutionClass;
     }
 
@@ -193,9 +193,9 @@ public class SolverConfig<Solution_> extends AbstractConfig<SolverConfig> {
      * @param configContext never null
      * @return never null
      */
-    public Solver<Solution_> buildSolver(SolverConfigContext configContext) {
+    public Solver buildSolver(SolverConfigContext configContext) {
         configContext.validate();
-        DefaultSolver<Solution_> solver = new DefaultSolver<>();
+        DefaultSolver solver = new DefaultSolver();
         EnvironmentMode environmentMode_ = determineEnvironmentMode();
         solver.setEnvironmentMode(environmentMode_);
         boolean daemon_ = defaultIfNull(daemon, false);
@@ -217,7 +217,7 @@ public class SolverConfig<Solution_> extends AbstractConfig<SolverConfig> {
                 : terminationConfig;
         Termination termination = terminationConfig_.buildTermination(configPolicy, basicPlumbingTermination);
         solver.setTermination(termination);
-        BestSolutionRecaller<Solution_> bestSolutionRecaller = buildBestSolutionRecaller(environmentMode_);
+        BestSolutionRecaller bestSolutionRecaller = buildBestSolutionRecaller(environmentMode_);
         solver.setBestSolutionRecaller(bestSolutionRecaller);
         solver.setPhaseList(buildPhaseList(configPolicy, bestSolutionRecaller, termination));
         return solver;
@@ -244,7 +244,7 @@ public class SolverConfig<Solution_> extends AbstractConfig<SolverConfig> {
         return randomFactory;
     }
 
-    protected SolutionDescriptor<Solution_> buildSolutionDescriptor(SolverConfigContext configContext) {
+    protected SolutionDescriptor buildSolutionDescriptor(SolverConfigContext configContext) {
         if (scanAnnotatedClassesConfig != null) {
             if (solutionClass != null || entityClassList != null) {
                 throw new IllegalArgumentException("The solver configuration with scanAnnotatedClasses ("
@@ -267,8 +267,8 @@ public class SolverConfig<Solution_> extends AbstractConfig<SolverConfig> {
         }
     }
 
-    protected BestSolutionRecaller<Solution_> buildBestSolutionRecaller(EnvironmentMode environmentMode) {
-        BestSolutionRecaller<Solution_> bestSolutionRecaller = new BestSolutionRecaller<>();
+    protected BestSolutionRecaller buildBestSolutionRecaller(EnvironmentMode environmentMode) {
+        BestSolutionRecaller bestSolutionRecaller = new BestSolutionRecaller();
         if (environmentMode.isNonIntrusiveFullAsserted()) {
             bestSolutionRecaller.setAssertInitialScoreFromScratch(true);
             bestSolutionRecaller.setAssertShadowVariablesAreNotStale(true);
@@ -278,7 +278,7 @@ public class SolverConfig<Solution_> extends AbstractConfig<SolverConfig> {
     }
 
     protected List<Phase> buildPhaseList(HeuristicConfigPolicy configPolicy,
-                                         BestSolutionRecaller<Solution_> bestSolutionRecaller,
+                                         BestSolutionRecaller bestSolutionRecaller,
                                          Termination termination) {
         List<PhaseConfig> phaseConfigList_ = phaseConfigList;
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {

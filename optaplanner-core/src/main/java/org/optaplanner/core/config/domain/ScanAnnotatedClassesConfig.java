@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.Set;
 
 @XStreamAlias("scanAnnotatedClasses")
-public class ScanAnnotatedClassesConfig<Solution_> extends AbstractConfig<ScanAnnotatedClassesConfig> {
+public class ScanAnnotatedClassesConfig extends AbstractConfig<ScanAnnotatedClassesConfig> {
 
     @XStreamImplicit(itemFieldName = "packageInclude")
     private List<String> packageIncludeList = null;
@@ -53,7 +53,7 @@ public class ScanAnnotatedClassesConfig<Solution_> extends AbstractConfig<ScanAn
     // Builder methods
     // ************************************************************************
 
-    public SolutionDescriptor<Solution_> buildSolutionDescriptor(SolverConfigContext configContext) {
+    public SolutionDescriptor buildSolutionDescriptor(SolverConfigContext configContext) {
         ClassLoader[] classLoaders;
         if (configContext.getClassLoader() != null) {
             classLoaders = new ClassLoader[] {configContext.getClassLoader()};
@@ -81,12 +81,12 @@ public class ScanAnnotatedClassesConfig<Solution_> extends AbstractConfig<ScanAn
         }
         builder.setClassLoaders(classLoaders);
         Reflections reflections = new Reflections(builder);
-        Class<Solution_> solutionClass = loadSolutionClass(reflections);
+        Class<?> solutionClass = loadSolutionClass(reflections);
         List<Class<?>> entityClassList = loadEntityClassList(reflections);
         return SolutionDescriptor.buildSolutionDescriptor(solutionClass, entityClassList);
     }
 
-    protected Class<Solution_> loadSolutionClass(Reflections reflections) {
+    protected Class<?> loadSolutionClass(Reflections reflections) {
         Set<Class<?>> solutionClassSet = reflections.getTypesAnnotatedWith(PlanningSolution.class);
         retainOnlyClassesWithDeclaredAnnotation(solutionClassSet, PlanningSolution.class);
         if (ConfigUtils.isEmptyCollection(solutionClassSet)) {
@@ -105,7 +105,7 @@ public class ScanAnnotatedClassesConfig<Solution_> extends AbstractConfig<ScanAn
                     + ") found multiple classes (" + solutionClassSet
                     + ") with a " + PlanningSolution.class.getSimpleName() + " annotation.");
         }
-        Class<Solution_> solutionClass = (Class<Solution_>) solutionClassSet.iterator().next();
+        Class<?> solutionClass = solutionClassSet.iterator().next();
         return solutionClass;
     }
 

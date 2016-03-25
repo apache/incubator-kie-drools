@@ -35,8 +35,9 @@ import java.io.*;
 public class XStreamXmlSolverFactory<Solution_> extends AbstractSolverFactory<Solution_> {
 
     /**
-     * Builds the {@link XStream} setup which is used to read/write solver configs and benchmark configs.
-     * It should never be used to read/write solutions. Use XStreamSolutionFileIO for that instead.
+     * Builds the {@link XStream} setup which is used to read/write {@link SolverConfig solver configs} and benchmark configs.
+     * It should never be used to read/write {@link PlanningSolution solutions}.
+     * Use XStreamSolutionFileIO for that instead.
      * @return never null.
      */
     public static XStream buildXStream() {
