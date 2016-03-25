@@ -20,9 +20,12 @@ import org.optaplanner.core.api.domain.solution.*;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @PlanningSolution
 public class TestdataEntityProvidingSolution extends TestdataObject {
@@ -65,8 +68,12 @@ public class TestdataEntityProvidingSolution extends TestdataObject {
     // ************************************************************************
 
     @PlanningFactCollectionProperty
-    public Collection<? extends Object> getProblemFacts() {
-        throw new UnsupportedOperationException();
+    public Collection<TestdataValue> getProblemFacts() {
+        Set<TestdataValue> valueSet = new HashSet<>();
+        for (TestdataEntityProvidingEntity entity : entityList) {
+            valueSet.addAll(entity.getValueRange());
+        }
+        return valueSet;
     }
 
 }

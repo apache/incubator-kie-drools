@@ -17,23 +17,20 @@ package org.optaplanner.core.impl.domain.solution.descriptor;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.optaplanner.core.impl.testdata.domain.extended.unimplemented.TestdataExtendedAbstractSolution;
-import org.optaplanner.core.impl.testdata.domain.misannotated.TestdataEntityWithInvalidFactPropertyGetter;
+import org.optaplanner.core.impl.testdata.domain.extended.abstractsolution.TestdataExtendedAbstractSolution;
+import org.optaplanner.core.impl.testdata.domain.problemfacts.TestdataInvalidProblemFactCollectionPropertySolution;
 
 public class SolutionDescriptorTest {
 
     @Test(expected = IllegalStateException.class)
-    public void testSolutionWithFactPropertyGetterHavingAttributes() {
-        SolutionDescriptor<TestdataEntityWithInvalidFactPropertyGetter> descriptor =
-                new SolutionDescriptor<>(TestdataEntityWithInvalidFactPropertyGetter.class);
-        descriptor.processAnnotations(null);
+    public void invalidProblemFactCollectionProperty() {
+        TestdataInvalidProblemFactCollectionPropertySolution.buildSolutionDescriptor();
     }
 
     @Test
-    public void testExtendingAbstractSolution() {
+    public void extendedAbstractSolution() {
         SolutionDescriptor<TestdataExtendedAbstractSolution> descriptor
-                = new SolutionDescriptor<>(TestdataExtendedAbstractSolution.class);
-        descriptor.processAnnotations(null);
+                = TestdataExtendedAbstractSolution.buildSolutionDescriptor();
         Assert.assertEquals("Fact collection inherited from abstract class is not registered.",
                 1, descriptor.getFactCollectionPropertyAccessorMap().size());
         Assert.assertEquals("Private fact property from the solution class is not registered.",

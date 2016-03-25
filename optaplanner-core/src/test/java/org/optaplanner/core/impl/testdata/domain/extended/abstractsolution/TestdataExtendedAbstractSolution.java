@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2016 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.testdata.domain.extended.unimplemented;
+package org.optaplanner.core.impl.testdata.domain.extended.abstractsolution;
 
 import java.util.List;
 
@@ -22,14 +22,19 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningFactProperty;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.impl.domain.solution.AbstractSolution;
+import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 
 @PlanningSolution
 public class TestdataExtendedAbstractSolution extends AbstractSolution {
 
+    public static SolutionDescriptor buildSolutionDescriptor() {
+        return SolutionDescriptor.buildSolutionDescriptor(TestdataExtendedAbstractSolution.class, TestdataEntity.class);
+    }
+
     private Object extraObject;
 
-    @PlanningEntityCollectionProperty
-    private List<Object> entities;
+    private List<TestdataEntity> entityList;
 
     public TestdataExtendedAbstractSolution(String code) {
         super();
@@ -42,6 +47,15 @@ public class TestdataExtendedAbstractSolution extends AbstractSolution {
 
     public void setExtraObject(Object extraObject) {
         this.extraObject = extraObject;
+    }
+
+    @PlanningEntityCollectionProperty
+    public List<TestdataEntity> getEntityList() {
+        return entityList;
+    }
+
+    public void setEntityList(List<TestdataEntity> entityList) {
+        this.entityList = entityList;
     }
 
     // ************************************************************************
